@@ -54,7 +54,7 @@ function plugin_order_showItem($instID,$search='') {
 				$colsup=0;
 			}
 			echo "<form method='post' name='order_form$rand' id='order_form$rand'  action=\"".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php\">";
-			echo "<div class='center'><table class='tab_cadre_fixe'>";
+			echo "<div class='center'><table class='tab_cadrehov'>";
 			echo "<tr><th colspan='".($canedit?(5+$colsup):(4+$colsup))."'>".$LANG['plugin_order']['item'][0].":</th></tr><tr>";
 			if ($canedit) {
 				echo "<th>&nbsp;</th>";
@@ -143,7 +143,7 @@ function plugin_order_showItem($instID,$search='') {
 				echo "</table></div>" ;
 				
 				echo "<div class='center'>";
-				echo "<table width='80%' class='tab_cadre_fixe'>";
+				echo "<table width='80%' class='tab_glpi'>";
 				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 			
 				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=none'>".$LANG['buttons'][19]."</a>";
@@ -172,7 +172,7 @@ function plugin_order_showdetail($ID, $mode)
 function plugin_order_showdelivery($FK_order){
 global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
 
-	$query=" 	SELECT * FROM glpi_plugin_order_detail 
+	$query="SELECT * FROM glpi_plugin_order_detail 
 			WHERE FK_order=$FK_order 
 			AND glpi_plugin_order_detail.quantity!=glpi_plugin_order_detail.delivredquantity";
 	$result=$DB->query($query);
@@ -185,7 +185,7 @@ global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
 		echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
 		echo "<input type='hidden' name='num' value=\"$num\">";
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan=10>".$LANG['plugin_order']['detail'][0].":</th></tr>";
+		echo "<tr><th colspan='8'>".$LANG['plugin_order']['detail'][0].":</th></tr>";
 		echo "<tr><th>".$LANG['plugin_order']['detail'][14]."</th>";
 		echo "<th>".$LANG['plugin_order']['detail'][1]."</th>";
 		echo "<th>".$LANG['plugin_order']['detail'][11]."</th>";
@@ -193,7 +193,8 @@ global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
 		echo "<th>".$LANG['plugin_order']['detail'][7]."</th>";
 		echo "<th>".$LANG['plugin_order']['detail'][3]."</th>";
 		echo "<th>".$LANG['plugin_order']['detail'][12]."</th>";
-		echo "<th>".$LANG['plugin_order']['detail'][13]."</th></tr>";
+		echo "<th>".$LANG['plugin_order']['detail'][13]."</th>";
+		echo "</tr>";
 		$i=0;
 		while ($i<$num){
 			/* type */
@@ -217,7 +218,7 @@ global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
 			$res=$DB->query($query);
 			$manufacturer=$DB->result($res,0,"name");
 			$j=$i+1;
-			echo "<tr>";
+			echo "<tr class='tab_bg_1'>";
 			echo "<td align='center'>".$j."</td>";
 			echo "<td align='center'>".$ci->getType()."</td>";
 			echo "<td align='center'>".$manufacturer."</td>";
@@ -225,10 +226,11 @@ global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
 			echo "<td align='center'>".$quantity."</td>";
 			echo "<td align='center'>".$delivredquantity."</td>";
 			echo "<td align='center'><input type='text' name='qreceived[$i]'></td>"; 
-			echo "<td align='center'>";
-			if($type<6)
+			if($type<6){
+				echo "<td align='center'>";
 				echo "<input type='checkbox' name='generate[$i]'>";
-			echo "</td>";
+				echo "</td>";
+			}
 			echo "<td align='center'><input type='submit' name='delivery[$i]' value=".$LANG['plugin_order']['delivery'][2]." class=submit></td>"; 
 			$ID=$DB->result($result,$i,"ID");
 			echo "<input type='hidden' name='ID[$i]' value=\"$ID\">";

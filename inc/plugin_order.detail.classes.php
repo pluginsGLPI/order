@@ -47,12 +47,13 @@ class plugin_order_detail extends CommonDBTM {
                         $rand=mt_rand();
                         $plugin_order=new plugin_order();
                         $canedit=$plugin_order->can($FK_order,'w');
-			echo "<form action=\"".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order_detail.form.php\" method='post'>";
-			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
+
+				echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  action=\"".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order_detail.form.php\">";
+				echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
                         if ($num>0)
                         {
-                                echo "<div class='center'><table class='tab_cadre_fixe'>";
-                                echo "<tr><th colspan=10>".$LANG['plugin_order']['detail'][17].":</th></tr>";
+                                echo "<div class='center'><table class='tab_cadrehov'>";
+                                echo "<tr><th colspan='10'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
                                 echo "<tr>";
                                 if($canedit && $mode==1)
                                         echo "<th></th>";
@@ -98,7 +99,7 @@ class plugin_order_detail extends CommonDBTM {
                                         $idd=$DB->result($result,$i,"ID");
                                         $this->getFromDB($idd);
                                         if($delivredquantity==$quantity)
-                                                echo "<tr>";
+                                                echo "<tr class='tab_bg_2'>";
                                         else
                                                 echo "<tr class='tab_bg_4'>";
                                         if ($canedit && $mode==1){
@@ -123,10 +124,10 @@ class plugin_order_detail extends CommonDBTM {
                                 }
 				echo "</table>";
 				if ($canedit && $mode==1){
-                                        echo "<div class='center'>";
-                                        echo "<table width='80%' class='tab_cadre_fixe'>";
-                                        echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
-                                        echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=none'>".$LANG['buttons'][19]."</a>";
+                                       echo "<div class='center'>";
+													echo "<table width='80%' class='tab_glpi'>";
+                                        echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+                                        echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=none'>".$LANG['buttons'][19]."</a>";
                                         echo "</td><td align='left' width='80%'>";
                                         echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
                                         echo "</td>";
@@ -138,15 +139,16 @@ class plugin_order_detail extends CommonDBTM {
 				/* table creation */
 				echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 				/* title */
-				echo "<tr><th colspan=10 align='center'>".$LANG['plugin_order']['detail'][5].":</th></tr>";
+				echo "<tr><th colspan='7' align='center'>".$LANG['plugin_order']['detail'][5].":</th></tr>";
 				echo "<tr><th align='center'>".$LANG['plugin_order']['detail'][1]."</th>";
 				echo "<th align='center'>".$LANG['plugin_order']['detail'][11]."</th>";
 				echo "<th align='center'>".$LANG['plugin_order']['detail'][2]."</th>";
 				echo "<th align='center'>".$LANG['plugin_order']['detail'][7]."*</th>";
 				echo "<th align='center'>".$LANG['plugin_order']['detail'][4]."*</th>";
-				echo "<th align='center'>".$LANG['plugin_order']['detail'][8]."*</th></tr>";
+				echo "<th align='center'>".$LANG['plugin_order']['detail'][8]."*</th>";
+				echo "<th align='center'>&nbsp;</th></tr>";
 				/* type */
-				echo "<tr><td align='center'>";
+				echo "<tr class='tab_bg_2'><td align='center'>";
 				$types[]=COMPUTER_TYPE;
 				$types[]=NETWORKING_TYPE;
 				$types[]=PRINTER_TYPE;
