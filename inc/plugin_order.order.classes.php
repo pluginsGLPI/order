@@ -58,16 +58,6 @@ class plugin_order extends CommonDBTM {
 	}
 	
 	/*clean order if items are deleted */
-	function cleanDocuments($ID) {
-		global $DB;
-			
-		$query = "DELETE FROM glpi_doc_device 
-						WHERE FK_doc = '$ID' 
-						AND device_type = '".PLUGIN_ORDER_TYPE."'";
-		$DB->query($query);
-	}
-	
-	/*clean order if items are deleted */
 	function cleanItems($ID,$type) {
 		global $DB;
 		
@@ -123,10 +113,11 @@ class plugin_order extends CommonDBTM {
 					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 				}
 			echo "<div class='center' id='tabsbody'>";
-			echo "<table class='tab_cadre_fixe' cellpadding='2'>";
+			echo "<table class='tab_cadre_fixe'>";
 			$this->showFormHeader($ID,'',2);
 			echo "<tr><td class='tab_bg_1' valign='top'>";
-			echo "<table cellpadding='1' cellspacing='2' border='0'>\n";
+	
+			echo "<table cellpadding='2' cellspacing='2' border='0'>\n";
 			
 			/* num order */
 			echo "<tr><td>".$LANG['plugin_order'][0]."*: </td>";
@@ -135,19 +126,7 @@ class plugin_order extends CommonDBTM {
 				autocompletionTextField("name","glpi_plugin_order","name",$this->fields["name"],30,$this->fields["FK_entities"]);	
 			else
 				echo "".$this->fields["name"]."";
-			echo "</td>";
-			
-			/* date of order */
-			$editcalendar=($withtemplate!=2);
-			echo "<td>".$LANG['plugin_order'][1] ."*:	</td><td>";
-			if ($canedit)
-				if($this->fields["date"]==NULL)
-					showDateFormItem("date",date("Y-m-d"),true,$editcalendar);
-				else
-					showDateFormItem("date",$this->fields["date"],true,$editcalendar);
-			else
-				echo "".$this->fields["date"]."";
-			echo "</td>";
+			echo "</td></tr>";
 			
 			/* num order supplier */
 			echo "<tr><td>".$LANG['plugin_order'][31].": </td><td>";
@@ -155,14 +134,6 @@ class plugin_order extends CommonDBTM {
 				autocompletionTextField("numordersupplier","glpi_plugin_order","numordersupplier",$this->fields["numordersupplier"],30,$this->fields["FK_entities"]);	
 			else
 				echo "".$this->fields["numordersupplier"]."";
-			echo "</td>";
-			
-			/* budget */
-			echo "<td>".$LANG['plugin_order'][3].": </td><td>";
-			if ($canedit)
-				dropdownValue("glpi_dropdown_budget", "budget", $this->fields["budget"],1,$this->fields["FK_entities"]);
-			else
-				echo getdropdownname("glpi_dropdown_budget",$this->fields["budget"]);
 			echo "</td></tr>";
 			
 			/* number of bill */
@@ -171,15 +142,7 @@ class plugin_order extends CommonDBTM {
 				autocompletionTextField("numbill","glpi_plugin_order","numbill",$this->fields["numbill"],30,$this->fields["FK_entities"]);	
 			else
 				echo "".$this->fields["numbill"]."";
-			echo "</td>";
-			
-			/* payment */
-			echo "<td>".$LANG['plugin_order'][32].": </td><td>";
-			if ($canedit)
-				dropdownValue("glpi_dropdown_plugin_order_payment","payment",$this->fields["payment"],1,$this->fields["FK_entities"]);
-			else
-				echo getdropdownname("glpi_dropdown_plugin_order_payment",$this->fields["payment"]);
-			echo "</td>";
+			echo "</td></tr>";
 			
 			/* delivery number */
 			echo "<tr><td>".$LANG['plugin_order'][12].": </td>";
@@ -188,15 +151,42 @@ class plugin_order extends CommonDBTM {
 				autocompletionTextField("deliverynum","glpi_plugin_order","deliverynum",$this->fields["deliverynum"],30,$this->fields["FK_entities"]);	
 			else
 				echo "".$this->fields["deliverynum"]."";
-			echo "</td>";
+			echo "</td></tr>";
 			
-			/* total price (without taxes) */
-			if($this->fields["price"]!=NULL){
-			echo "<td>".$LANG['plugin_order'][13].": </td>";
-			echo "<td>";
-			echo "".$this->fields["price"]."&euro;";
+			echo "</table>";
+			echo "</td>";	
+			echo "<td class='tab_bg_1' valign='top'>";
+			echo "<table cellpadding='2' cellspacing='2' border='0'>";
+			
+			/* date of order */
+			$editcalendar=($withtemplate!=2);
+			echo "<tr><td>".$LANG['plugin_order'][1] ."*:	</td><td>";
+			if ($canedit)
+				if($this->fields["date"]==NULL)
+					showDateFormItem("date",date("Y-m-d"),true,$editcalendar);
+				else
+					showDateFormItem("date",$this->fields["date"],true,$editcalendar);
+			else
+				echo "".$this->fields["date"]."";
+			echo "</td>";
 			echo "</tr>";
-			}
+			
+			/* budget */
+			echo "<tr><td>".$LANG['plugin_order'][3].": </td><td>";
+			if ($canedit)
+				dropdownValue("glpi_dropdown_budget", "budget", $this->fields["budget"],1,$this->fields["FK_entities"]);
+			else
+				echo getdropdownname("glpi_dropdown_budget",$this->fields["budget"]);
+			echo "</td></tr>";
+			
+			/* payment */
+			echo "<tr><td>".$LANG['plugin_order'][32].": </td><td>";
+			if ($canedit)
+				dropdownValue("glpi_dropdown_plugin_order_payment","payment",$this->fields["payment"],1,$this->fields["FK_entities"]);
+			else
+				echo getdropdownname("glpi_dropdown_plugin_order_payment",$this->fields["payment"]);
+			echo "</td>";
+			echo "</tr>";
 			
 			/* supplier of order */
 			echo "<tr><td>".$LANG['plugin_order']['setup'][14].": </td>";
@@ -205,28 +195,35 @@ class plugin_order extends CommonDBTM {
 				dropdownValue("glpi_enterprises","FK_enterprise",$this->fields["FK_enterprise"],1,$this->fields["FK_entities"]);
 			else
 			echo getdropdownname("glpi_enterprises",$this->fields["FK_enterprise"]);
-			echo "</td>";
+			echo "</td></tr>";
 			
+			echo "</table>";
+			echo "</td>";	
+			echo "<td class='tab_bg_1' valign='top'>";
+			echo "<table cellpadding='2' cellspacing='2' border='0'>";
+			
+			/* total price (without taxes) */
+			if($this->fields["price"]!=NULL){
+			echo "<tr><td>".$LANG['plugin_order'][13].": </td>";
+			echo "<td>";
+			echo "".$this->fields["price"]."&euro;";
+			echo "</td></tr>";
+			}
+		
 			/* total price (without taxes) */
 			if(!empty($this->fields["price"])){
 				$query=" SELECT sum(totalpricetaxes) AS sum FROM glpi_plugin_order_detail 
 					WHERE FK_order=$ID";
 				$result=$DB->query($query);
 				$price=$DB->result($result,0,'sum');
-				echo "<td>".$LANG['plugin_order'][14].": </td>";
+				echo "<tr><td>".$LANG['plugin_order'][14].": </td>";
 				echo "<td>";
 				if($price!=NULL)
 					echo "".$price."&euro;";
 				else
 					echo "0.00&euro;";
-				echo "</td>";
-				echo "</tr>";
+				echo "</td></tr>";		
 			}
-
-			/* comments of order */
-			echo "<tr><td>".$LANG['plugin_order'][2].":	</td>";
-			echo "<td><textarea cols='50' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
-			echo "</td>";
 			
 			/* status */
 			if($this->fields["status"]!=NULL){
@@ -238,9 +235,21 @@ class plugin_order extends CommonDBTM {
 			echo "".$status."";
 			echo "</td></tr>";
 			}
-			echo "</table>";
-			echo "</td>";
 			
+			echo "</table>";
+	
+			echo "</td></tr>";
+			
+			echo "<tr><td class='tab_bg_1' valign='top' colspan='3'>";
+			//comments of order
+			echo "<table cellpadding='2' cellspacing='2' border='0'><tr><td>";
+			echo $LANG['plugin_order'][2].":	</td>";
+			echo "<td><textarea cols='50' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
+			echo "</td>";
+			echo "</table>";
+			
+			echo "</td>";
+			echo "</tr>";
 			
 			if ($canedit) {
 				if (empty($ID)||$ID<0){
@@ -251,7 +260,7 @@ class plugin_order extends CommonDBTM {
 					echo "</tr>";
 				} else {
 					echo "<tr>";
-					echo "<td align='center' width='100%'><div align='center'>";
+					echo "<td class='tab_bg_2' valign='top' colspan='3'><div align='center'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 					echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
 					if ($this->fields["deleted"]=='0'){

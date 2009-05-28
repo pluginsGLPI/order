@@ -36,7 +36,7 @@ function plugin_init_order() {
 	global $PLUGIN_HOOKS,$CFG_GLPI,$LANG;
 	
 	/* params : plugin name - string type - number - class - table - form page */
-	registerPluginType('order', 'PLUGIN_ORDER_TYPE', 2500, array(
+	registerPluginType('order', 'PLUGIN_ORDER_TYPE', 3150, array(
 		'classname'  => 'plugin_order',
 		'tablename'  => 'glpi_plugin_order',
 		'formpage'   => 'front/plugin_order.form.php',
@@ -55,25 +55,6 @@ function plugin_init_order() {
 	$PLUGIN_HOOKS['change_profile']['order'] = 'plugin_order_changeprofile';
 	/*if glpi is loaded */
 	if (isset($_SESSION["glpiID"])){
-		/* if environment plugin is installed */
-		if (isset($_SESSION["glpi_plugin_environment_installed"]) && $_SESSION["glpi_plugin_environment_installed"]==1){	
-			/* init $_SESSION for environment using */
-			$_SESSION["glpi_plugin_environment_order"]=1;
-			if(plugin_order_haveRight("order","r")){
-				$PLUGIN_HOOKS['menu_entry']['order'] = false;
-				$PLUGIN_HOOKS['submenu_entry']['environment']['search']['order'] = 'front/plugin_environment.form.php?plugin=order&search=1';
-				$PLUGIN_HOOKS['headings']['order'] = 'plugin_get_headings_order';
-				$PLUGIN_HOOKS['headings_action']['order'] = 'plugin_headings_actions_order';
-			}
-			if (plugin_order_haveRight("order","w")){
-				$PLUGIN_HOOKS['submenu_entry']['environment']['add']['order'] = 'front/plugin_environment.form.php?plugin=order&add=1';
-				$PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/plugin_order.config.php';
-				$PLUGIN_HOOKS['pre_item_delete']['order'] = 'plugin_pre_item_delete_order';
-				$PLUGIN_HOOKS['item_purge']['order'] = 'plugin_item_purge_order';
-				$PLUGIN_HOOKS['use_massive_action']['order']=1;
-			}
-		/* if environment plugin isn't installed */
-		}else{
 			if(plugin_order_haveRight("order","r")){
 				$PLUGIN_HOOKS['menu_entry']['order'] = true;
 				$PLUGIN_HOOKS['submenu_entry']['order']['search'] = 'index.php';
@@ -87,7 +68,7 @@ function plugin_init_order() {
 				$PLUGIN_HOOKS['item_purge']['order'] = 'plugin_item_purge_order';
 				$PLUGIN_HOOKS['use_massive_action']['order']=1;
 			}
-		}
+		
 	}
 }
 
