@@ -37,11 +37,6 @@ function plugin_order_install(){
 		
 		if(!TableExists("glpi_plugin_order") ){
 			plugin_order_installing("1.0.0");
-			/* creation of differents states */
-			$query="INSERT INTO `glpi_dropdown_plugin_order_status`(ID, name) VALUES (1, '".$LANG['plugin_order']['status'][1]."');";
-			$DB->query($query);
-			$query="INSERT INTO `glpi_dropdown_plugin_order_status`(ID, name) VALUES (2, '".$LANG['plugin_order']['status'][2]."');";
-			$DB->query($query);
 		}
 		plugin_order_createfirstaccess($_SESSION['glpiactiveprofile']['ID']);
 		return true;

@@ -56,9 +56,15 @@ $LANG['plugin_order'][37] = "Gestion des commandes générées à partir des inf
 $LANG['plugin_order'][38] = "Menu de configuration du plugin Gestion de commandes";
 
 
+
+
 $LANG['plugin_order']['status'][0]="Statut commande";
 $LANG['plugin_order']['status'][1]="En cours";
 $LANG['plugin_order']['status'][2]="Livrée";
+$LANG['plugin_order']['status'][3] = "Gestion des statuts par défaut";
+$LANG['plugin_order']['status'][4] = "Statut par défaut à la création d'une commande:";
+$LANG['plugin_order']['status'][5] = "Statut par défaut d'une commande livrée:";
+$LANG['plugin_order']['status'][6] = "Statut par défaut d'une commande pas totalement livrée:";
 
 $LANG['plugin_order']['item'][0]="Matériel(s) lié(s)";
 $LANG['plugin_order']['item'][1]="Dissocier le(s) matériels(s)";

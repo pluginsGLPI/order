@@ -33,15 +33,6 @@ if (!defined('GLPI_ROOT'))
 include (GLPI_ROOT."/inc/includes.php");
 useplugin('order',true);
 
-commonHeader($LANG['plugin_order'][4],$_SERVER['PHP_SELF'],"plugins","order");
-echo "<div class='center'>";
-echo "<b>".$LANG['plugin_order'][38]."</b><br><br>";
-echo "<b>".$LANG['plugin_order'][37]."</b><br>";
-echo "<a href=".$_SERVER["PHP_SELF"]."?action=createorder>".$LANG['plugin_order'][34]."</a><br>";
-echo "<a href=".$_SERVER["PHP_SELF"]."?action=deleteorder>".$LANG['plugin_order'][35]."</a><br><br>";
-echo "</div>";
-commonFooter();
-
 if(!isset($_GET["action"])) $_GET["action"] = "";
 $action=$_GET["action"];
 /* create orders with infocoms */
@@ -70,5 +61,52 @@ if($action=="createorder") {
 			WHERE num_commande!='' 
 			AND `glpi_infocoms`.num_commande=`glpi_plugin_order`.name);";
 	$DB->query($query);
+} elseif(isset($_POST["update_status_creation"])) {
+	$DB=new DB;
+	$query=" 	UPDATE glpi_plugin_order_config
+			SET status_creation=".$_POST["status_creation"]."
+			WHERE ID=1";
+	$DB->query($query);
+} elseif(isset($_POST["update_status_delivered"])) {
+	$DB=new DB;
+	$query=" 	UPDATE glpi_plugin_order_config
+			SET status_delivered=".$_POST["status_delivered"]."
+			WHERE ID=1";
+	$DB->query($query);
+} elseif(isset($_POST["update_status_nodelivered"])) {
+	$DB=new DB;
+	$query=" 	UPDATE glpi_plugin_order_config
+			SET status_nodelivered=".$_POST["status_nodelivered"]."
+			WHERE ID=1";
+	$DB->query($query);
 }
+
+commonHeader($LANG['plugin_order'][4],$_SERVER['PHP_SELF'],"plugins","order");
+echo "<div class='center'>";
+echo "<b>".$LANG['plugin_order'][38]."</b><br><br>";
+echo "<b>".$LANG['plugin_order'][37]."</b><br><br>";
+echo "<a href=".$_SERVER["PHP_SELF"]."?action=createorder>".$LANG['plugin_order'][34]."</a><br>";
+echo "<a href=".$_SERVER["PHP_SELF"]."?action=deleteorder>".$LANG['plugin_order'][35]."</a><br><br>";
+echo "<b>".$LANG['plugin_order']['status'][3]."</b>";
+echo "<form method='post' name=form action=''>";
+$config= new plugin_order_config();
+$config->getFromDB(1);
+echo "<table class='tab_cadre' cellpadding='5'>";
+/* default status order creation */
+echo "<tr><td><b>".$LANG['plugin_order']['status'][4]."</b></td><td>";
+dropdownValue("glpi_dropdown_plugin_order_status", "status_creation", $config->fields["status_creation"],1);
+echo "</td><td><input type='submit' name='update_status_creation' value=\"".$LANG['buttons'][7]."\" class='submit' ></td>";
+/* default status delivered order */
+echo "<tr><td><b>".$LANG['plugin_order']['status'][5]."</b></td><td>";
+dropdownValue("glpi_dropdown_plugin_order_status", "status_delivered", $config->fields["status_delivered"],1);
+echo "</td><td><input type='submit' name='update_status_delivered' value=\"".$LANG['buttons'][7]."\" class='submit' ></td>";
+/* default status no delivered order */
+echo "<tr><td><b>".$LANG['plugin_order']['status'][6]."</b></td><td>";
+dropdownValue("glpi_dropdown_plugin_order_status", "status_nodelivered", $config->fields["status_nodelivered"],1);
+echo "</td><td><input type='submit' name='update_status_nodelivered' value=\"".$LANG['buttons'][7]."\" class='submit' ></td>";
+echo "</table>";
+echo "</div>";
+commonFooter();
+
+
 ?>

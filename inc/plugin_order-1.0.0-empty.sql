@@ -49,8 +49,6 @@ CREATE TABLE `glpi_dropdown_plugin_order_taxes` (
 INSERT INTO `glpi_dropdown_plugin_order_taxes`(ID,name, value) VALUES (1,'5,5', 1.055);
 INSERT INTO `glpi_dropdown_plugin_order_taxes`(ID,name, value) VALUES (2,'19,6', 1.196);
 
-
-
 DROP TABLE IF EXISTS `glpi_plugin_order_detail`;
 CREATE TABLE `glpi_plugin_order_detail` (
 	`ID` int(11) NOT NULL auto_increment,
@@ -84,6 +82,17 @@ CREATE TABLE `glpi_plugin_order_profiles` (
 	PRIMARY KEY  (`ID`),
 	KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_plugin_order_config`;
+CREATE TABLE `glpi_plugin_order_config` (
+	`ID` int(11) NOT NULL auto_increment,
+	`status_creation` int(11) NOT NULL,
+	`status_delivered` int(11) NOT NULL,
+	`status_nodelivered` int(11) NOT NULL,
+	PRIMARY KEY  (`ID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `glpi_plugin_order_config`(ID,status_creation, status_delivered, status_nodelivered) VALUES (1,0,0,0);
 	
 INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3150','1','1','0');
 INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3150','2','2','0');

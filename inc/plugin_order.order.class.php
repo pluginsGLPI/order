@@ -221,11 +221,18 @@ class plugin_order extends CommonDBTM {
 			}
 			
 			/* status */
-			if($this->fields["status"]!=NULL && $canedit){
-			echo "<td valign='top'>".$LANG['plugin_order']['status'][0].": </td>";
-			echo "<td valign='top'>";
-			dropdownValue("glpi_dropdown_plugin_order_status","status",$this->fields["status"],1,$this->fields["FK_entities"]);
-			echo "</td></tr>";
+			if($this->fields["status"]==NULL && $canedit){
+				echo "<td valign='top'>".$LANG['plugin_order']['status'][0].": </td>";
+				echo "<td valign='top'>";
+				$config= new plugin_order_config();
+				$config->getFromDB(1);
+				dropdownValue("glpi_dropdown_plugin_order_status","status",$config->fields["status_creation"],1,$this->fields["FK_entities"]);
+				echo "</td></tr>";
+			}elseif($this->fields["status"]!=NULL && $canedit){
+				echo "<td valign='top'>".$LANG['plugin_order']['status'][0].": </td>";
+				echo "<td valign='top'>";
+				dropdownValue("glpi_dropdown_plugin_order_status","status",$this->fields["status"],1,$this->fields["FK_entities"]);
+				echo "</td></tr>";
 			}
 			
 			echo "</table>";

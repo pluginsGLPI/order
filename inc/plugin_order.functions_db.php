@@ -66,14 +66,20 @@ function plugin_order_update_status($ID){
         $query="SELECT sum(delivredquantity) AS somme FROM glpi_plugin_order_detail WHERE FK_order=$ID";
         $result=$DB->query($query);
         $dquantity=$DB->result($result,0, "somme");
+	
+	$query_status=" SELECT * FROM glpi_plugin_order_config
+				 WHERE ID=1";
+	$result_status=$DB->query($query_status);
+	$status1=$DB->result($result_status,0,"status_delivered");
+	$status2=$DB->result($result_status,0,"status_nodelivered");
        
         if($quantity==$dquantity)
         {
-                $query="UPDATE glpi_plugin_order SET status=2 WHERE ID=$ID";
+                $query="UPDATE glpi_plugin_order SET status=$status1 WHERE ID=$ID";
                 $result=$DB->query($query);
                  
         }else{
-                $query="UPDATE glpi_plugin_order SET status=1 WHERE ID=$ID";
+                $query="UPDATE glpi_plugin_order SET status=$status2 WHERE ID=$ID";
                 $result=$DB->query($query);
         }
 }
