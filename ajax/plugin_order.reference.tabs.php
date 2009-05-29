@@ -22,25 +22,48 @@
    You should have received a copy of the GNU General Public License
    along with GLPI; if not, write to the Free Software
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-   ----------------------------------------------------------------------
+   ----------------------------------------------------------------------*/
 /*----------------------------------------------------------------------
     Original Author of file: 
     Purpose of file:
     ----------------------------------------------------------------------*/
-   
-$NEEDED_ITEMS=array("computer","printer","networking","monitor","software","peripheral","phone","user","search","tracking");
-define('GLPI_ROOT', '../..'); 
-include (GLPI_ROOT."/inc/includes.php");
 
-commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order","order");
+$NEEDED_ITEMS=array("document","user","enterprise");
 
-if(plugin_order_haveRight("order","r") || haveRight("config","w")){
-	manageGetValuesInSearch(PLUGIN_ORDER_TYPE);
-	searchForm(PLUGIN_ORDER_TYPE,$_GET);
-	showList(PLUGIN_ORDER_TYPE,$_GET);	
-}else{
-	echo "<div align='center'><br><br><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
-	echo "<b>".$LANG['login'][5]."</b></div>";
+define('GLPI_ROOT', '../../..');
+include (GLPI_ROOT . "/inc/includes.php");
+
+useplugin('order',true);
+		
+if(!isset($_POST["ID"])) {
+	exit();
 }
-commonFooter();
+if(!isset($_POST["sort"])) $_POST["sort"] = "";
+if(!isset($_POST["order"])) $_POST["order"] = "";
+if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
+
+	plugin_order_checkRight("order","r");
+
+	if (empty($_POST["ID"])){
+		switch($_POST['glpi_tab']){
+			default :
+				break;
+		}
+	}else{
+		switch($_POST['glpi_tab']){
+			case 3 :
+				/* show documents linking form */
+				showDocumentAssociated(PLUGIN_ORDER_REFERENCE_TYPE,$_POST["ID"],$_POST["withtemplate"]);
+				break;
+
+			case 12 :
+				/* show history form */
+				showHistory(PLUGIN_ORDER_REFERENCE_TYPE,$_POST["ID"]);
+				break;
+
+			default :
+				break;
+		}
+		 ajaxFooter();
+	}
 ?>

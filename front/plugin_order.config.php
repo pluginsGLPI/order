@@ -83,11 +83,12 @@ if($action=="createorder") {
 
 commonHeader($LANG['plugin_order'][4],$_SERVER['PHP_SELF'],"plugins","order");
 echo "<div class='center'>";
-echo "<b>".$LANG['plugin_order'][38]."</b><br><br>";
-echo "<b>".$LANG['plugin_order'][37]."</b><br><br>";
-echo "<a href=".$_SERVER["PHP_SELF"]."?action=createorder>".$LANG['plugin_order'][34]."</a><br>";
-echo "<a href=".$_SERVER["PHP_SELF"]."?action=deleteorder>".$LANG['plugin_order'][35]."</a><br><br>";
-echo "<b>".$LANG['plugin_order']['status'][3]."</b>";
+echo "<table class='tab_cadre'>";
+echo "<tr><th>".$LANG['plugin_order'][4]."</th></tr>";
+echo "<tr class='tab_bg_1' align='center'><td><a href=".$_SERVER["PHP_SELF"]."?action=createorder>".$LANG['plugin_order'][34]."</a></td></tr>";
+echo "<tr class='tab_bg_1' align='center'><td><a href=".$_SERVER["PHP_SELF"]."?action=deleteorder>".$LANG['plugin_order'][35]."</a></td></tr>";
+echo "</table>";
+
 echo "<form method='post' name=form action=''>";
 $config= new plugin_order_config();
 $config->getFromDB(1);

@@ -59,6 +59,13 @@ class plugin_order_Profile extends CommonDBTM {
 		dropdownNoneReadWrite("order",$this->fields["order"],1,1,1);
 		echo "</td>";
 		echo "</tr>";
+
+		echo "<tr class='tab_bg_2'>";
+		echo "<td>".$LANG['plugin_order']['detail'][2].":</td><td>";
+		dropdownNoneReadWrite("reference",$this->fields["reference"],1,1,1);
+		echo "</td>";
+		echo "</tr>";
+
 		if ($canedit){
 			echo "<tr class='tab_bg_1'>";
 			echo "<td align='center' colspan='2'>";

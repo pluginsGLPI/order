@@ -31,16 +31,17 @@
 function plugin_order_createfirstaccess($ID){
 
 	$plugin_order_Profile=new plugin_order_Profile();
-	if (!$plugin_order_Profile->GetfromDB($ID)){
+	if (!$plugin_order_Profile->getFromDB($ID)){
 		
 		$Profile=new Profile();
-		$Profile->GetfromDB($ID);
+		$Profile->getFromDB($ID);
 		$name=$Profile->fields["name"];
 
 		$plugin_order_Profile->add(array(
 			'ID' => $ID,
 			'name' => $name,
-			'order' => 'w'));
+			'order' => 'w',
+			'reference'=>'w'));
 	}
 	
 }

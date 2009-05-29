@@ -52,7 +52,8 @@ function plugin_order_uninstall(){
 					"glpi_plugin_order_profiles",
 					"glpi_dropdown_plugin_order_status",
 					"glpi_dropdown_plugin_order_taxes",
-					"glpi_dropdown_plugin_order_payment");
+					"glpi_dropdown_plugin_order_payment",
+					"glpi_plugin_order_references");
 					
 	foreach($tables as $table)				
 		$DB->query("DROP TABLE `$table`;");
@@ -175,6 +176,39 @@ function plugin_order_getSearchOption(){
 			$sopt[PLUGIN_ORDER_TYPE][80]['field']='completename';
 			$sopt[PLUGIN_ORDER_TYPE][80]['linkfield']='FK_entities';
 			$sopt[PLUGIN_ORDER_TYPE][80]['name']=$LANG['entity'][0];
+
+
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE]['common']=$LANG['plugin_order']['reference'][1];
+
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['table']='glpi_plugin_order_references';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['field']='ID';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['linkfield']='ID';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['name']='ID';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['datatype']='itemlink';
+			
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['table']='glpi_plugin_order_references';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['field']='name';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['linkfield']='name';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['name']=$LANG['plugin_order']['detail'][2];
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['datatype']='itemlink';
+			
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['table']='glpi_plugin_order_references';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['field']='price';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['linkfield']='price';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['name']=$LANG['plugin_order'][13];
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['datatype']='float';
+			
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['table']='glpi_enterprises';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['field']='name';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['linkfield']='FK_enterprise';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['name']=$LANG['financial'][26];
+
+			/* entity */
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['table']='glpi_entities';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['field']='completename';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['linkfield']='FK_entities';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['name']=$LANG['entity'][0];
+
 		}
 		return $sopt;
 }
@@ -424,13 +458,13 @@ function plugin_item_purge_order($parm){
 }
 
 /* define headings added by the plugin */
-function plugin_get_headings_order($type,$withtemplate){
+function plugin_get_headings_order($type,$withtemplate=''){
 	global $LANG;
-		
+	
 	if (in_array($type,array(COMPUTER_TYPE,
 			MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE,TRACKING_TYPE,ENTERPRISE_TYPE,CONTRACT_TYPE,PROFILE_TYPE))){
 		/* template case */
-		if ($withtemplate)
+		if ($withtemplate='')
 			return array();
 		/* non template case */
 		else 

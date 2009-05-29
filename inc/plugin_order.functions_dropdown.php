@@ -78,27 +78,23 @@ function plugin_order_dropdownorder($myname,$entity_restrict='',$used=array()) {
 	return $rand;
 }
 
-function plugin_order_dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$types='') {
+function plugin_order_dropdownAllItems($myname,$value=0,$types='') {
     global $LANG,$CFG_GLPI;
-    if (!is_array($types)){
-	$types=plugin_suppliertag_getTypes ();
-    }
+	if ($types == '')
+		$types = array (COMPUTER_TYPE, MONITOR_TYPE, NETWORKING_TYPE, PRINTER_TYPE, PERIPHERAL_TYPE);
+ 
     $rand=mt_rand();
     $ci=new CommonItem();
     $options=array();
     
+    $options[0] = '-----';
+    
     foreach ($types as $type){
-	$ci->setType($type);
-	$options[$type]=$ci->getType();
+		$ci->setType($type);
+		$options[$type]=$ci->getType();
     }
     asort($options);
-    if (count($options)){
-	echo "<select name='type' id='item_type$rand'>\n";
-	    echo "<option value='0'>-----</option>\n";
-	foreach ($options as $key => $val){
-	    echo "<option value='".$key."' ".($key==$value?"selected": "").">".$val."</option>\n";
-	}
-	echo "</select>&nbsp;";
-    }
+    
+    dropdownArrayValues($myname,$options,$value);
 }
 ?>

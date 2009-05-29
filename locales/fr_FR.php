@@ -95,6 +95,9 @@ $LANG['plugin_order']['delivery'][2]="Réceptionner";
 $LANG['plugin_order']['profile'][0] = "Gestion des droits"; 
 $LANG['plugin_order']['profile'][1] = "$title"; 
 
+$LANG['plugin_order']['reference'][1]="Référence produit";
+
+
 $LANG['plugin_order']['setup'][1] = "Catégorie";
 $LANG['plugin_order']['setup'][2] = "Plugin non utilisable depuis le helpdesk";
 $LANG['plugin_order']['setup'][11] = "Serveur";

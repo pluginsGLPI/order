@@ -189,7 +189,7 @@ class plugin_order extends CommonDBTM {
 			if ($canedit)
 				dropdownValue("glpi_enterprises","FK_enterprise",$this->fields["FK_enterprise"],1,$this->fields["FK_entities"]);
 			else
-			echo getdropdownname("glpi_enterprises",$this->fields["FK_enterprise"]);
+			echo getDropdownName("glpi_enterprises",$this->fields["FK_enterprise"]);
 			echo "</td></tr>";
 			
 			echo "</table>";
@@ -239,7 +239,7 @@ class plugin_order extends CommonDBTM {
 	
 			echo "</td></tr>";
 			
-			echo "<tr><td class='tab_bg_1' valign='top' colspan='3'>";
+			echo "<tr><td class='tab_bg_1' align='center' colspan='3'>";
 			//comments of order
 			echo "<table cellpadding='2' cellspacing='2' border='0'><tr><td>";
 			echo $LANG['plugin_order'][2].":	</td>";

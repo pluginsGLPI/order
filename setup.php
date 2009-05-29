@@ -47,6 +47,17 @@ function plugin_init_order() {
 		'recursive_type' => true
 		));
 
+	registerPluginType('order', 'PLUGIN_ORDER_REFERENCE_TYPE', 3151, array(
+		'classname'  => 'plugin_order_reference',
+		'tablename'  => 'glpi_plugin_order_references',
+		'formpage'   => 'front/plugin_order.reference.form.php',
+		'searchpage' => 'front/plugin_order.reference.php',
+		'typename'   => $LANG['plugin_order']['reference'][1],
+		'deleted_tables' => true,
+		'specif_entities_tables' => true,
+		'recursive_type' => true
+		));
+
 	/* link to the config page in plugins menu */
 	if (plugin_order_haveRight("order", "w") || haveRight("config", "w"))
 		$PLUGIN_HOOKS['config_page']['order'] = 'front/plugin_order.config.php';
@@ -57,12 +68,22 @@ function plugin_init_order() {
 	if (isset($_SESSION["glpiID"])){
 			if(plugin_order_haveRight("order","r")){
 				$PLUGIN_HOOKS['menu_entry']['order'] = true;
-				$PLUGIN_HOOKS['submenu_entry']['order']['search'] = 'index.php';
+				$PLUGIN_HOOKS['submenu_entry']['order']['search']['order'] = 'index.php';
+				$PLUGIN_HOOKS['submenu_entry']['order']['search']['reference'] = 'front/plugin_order.reference.php';
 				$PLUGIN_HOOKS['headings']['order'] = 'plugin_get_headings_order';
 				$PLUGIN_HOOKS['headings_action']['order'] = 'plugin_headings_actions_order';
 			}
+
+			if (plugin_order_haveRight("reference","w")){
+				$PLUGIN_HOOKS['submenu_entry']['order']['add']['reference'] = 'front/plugin_order.reference.form.php';
+				$PLUGIN_HOOKS['submenu_entry']['order']["<img  src='".$CFG_GLPI["root_doc"]."/pics/dollaradd.png' title='".$LANG["plugin_order"]["reference"][1]."' alt='".$LANG["plugin_order"]["reference"][1]."'>"]['order'] = 'front/plugin_order.reference.php';
+			}
+
 			if (plugin_order_haveRight("order","w")){
-				$PLUGIN_HOOKS['submenu_entry']['order']['add'] = 'front/plugin_order.form.php';
+				$PLUGIN_HOOKS['submenu_entry']['order']['add']['order'] = 'front/plugin_order.form.php';
+				$PLUGIN_HOOKS['submenu_entry']['order']["<img  src='".$CFG_GLPI["root_doc"]."/pics/menu_show.png' title='".$LANG["plugin_order"]["reference"][1]."' alt='".$LANG["plugin_order"]["reference"][1]."'>"]['reference'] = 'index.php';
+
+
 				$PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/plugin_order.config.php';
 				$PLUGIN_HOOKS['pre_item_delete']['order'] = 'plugin_pre_item_delete_order';
 				$PLUGIN_HOOKS['item_purge']['order'] = 'plugin_item_purge_order';
@@ -103,6 +124,9 @@ function plugin_order_haveTypeRight($type,$right){
 	switch ($type){
 		case PLUGIN_ORDER_TYPE :
 			return plugin_order_haveRight("order",$right);
+			break;
+		case PLUGIN_ORDER_REFERENCE_TYPE:
+			return true;
 			break;
 	}
 }
