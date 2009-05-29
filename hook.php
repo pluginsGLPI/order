@@ -28,11 +28,8 @@
     Purpose of file:
     ----------------------------------------------------------------------*/
 
-include_once ("inc/plugin_order.order.classes.php");
-include_once ("inc/plugin_order.functions_dropdown.php");
-include_once ("inc/plugin_order.functions_display.php");
-include_once ("inc/plugin_order.functions_setup.php");
-include_once ("inc/plugin_order.functions_db.php");
+foreach (glob(GLPI_ROOT . '/plugins/order/inc/*.php') as $file)
+	include_once ($file);
 
 function plugin_order_install(){
 	global $DB, $LANG, $CFG_GLPI;

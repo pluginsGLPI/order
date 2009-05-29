@@ -28,9 +28,8 @@
     Purpose of file:
     ----------------------------------------------------------------------*/
     
-    
-foreach (glob(GLPI_ROOT . '/plugins/order/inc/*.php') as $file)
-	include_once ($file);
+include_once ("inc/plugin_order.functions_auth.php");
+include_once ("inc/plugin_order.profile.class.php");
     
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
