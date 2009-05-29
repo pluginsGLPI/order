@@ -54,26 +54,17 @@ function plugin_order_uninstall(){
 	global $DB;
 	
 		/* drop all the plugin tables */
-		/* order table */
-		$query = "DROP TABLE `glpi_plugin_order`;";
-		$DB->query($query);
-		/* detail table */
-		$query = "DROP TABLE `glpi_plugin_order_detail`;";
-		$DB->query($query);
-		/* device table */
-		$query = "DROP TABLE `glpi_plugin_order_device`;";
-		$DB->query($query);
-		/* profile table */
-		$query = "DROP TABLE `glpi_plugin_order_profiles`;";
-		$DB->query($query);
-		/* status dropdown */
-		$query ="DROP TABLE `glpi_dropdown_plugin_order_status`;";
-		$DB->query($query);
-		/* taxes dropdown */
-		$query ="DROP TABLE `glpi_dropdown_plugin_order_taxes`;";
-		/* payment dropdown */
-		$query ="DROP TABLE `glpi_dropdown_plugin_order_payment`;";
-		$DB->query($query);
+		$tables = array("glpi_plugin_order",
+					"glpi_plugin_order_detail",
+					"glpi_plugin_order_device",
+					"glpi_plugin_order_profiles",
+					"glpi_dropdown_plugin_order_status",
+					"glpi_dropdown_plugin_order_taxes",
+					"glpi_dropdown_plugin_order_payment");
+					
+	foreach($tables as $table)				
+		$DB->query("DROP TABLE `$table`;");
+
 		/* clean glpi_display */
 		$query="DELETE FROM glpi_display WHERE type='".PLUGIN_ORDER_TYPE."';";
 		$DB->query($query);
