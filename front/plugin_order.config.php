@@ -42,6 +42,7 @@ echo "<a href=".$_SERVER["PHP_SELF"]."?action=deleteorder>".$LANG['plugin_order'
 echo "</div>";
 commonFooter();
 
+if(!isset($_GET["action"])) $_GET["action"] = "";
 $action=$_GET["action"];
 /* create orders with infocoms */
 if($action=="createorder") {
