@@ -28,10 +28,6 @@
     Purpose of file:
     ----------------------------------------------------------------------*/
 
-if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
-
 /*order dropdown selection */
 function plugin_order_dropdownorder($myname,$entity_restrict='',$used=array()) {
 	global $DB,$LANG,$CFG_GLPI;

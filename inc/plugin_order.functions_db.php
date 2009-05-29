@@ -27,12 +27,6 @@
     Original Author of file: 
     Purpose of file:
     ----------------------------------------------------------------------*/
-
-if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
-
-
 /* link order to items of glpi */
 function plugin_order_linkdevice($conID,$ID,$type){
 

@@ -27,12 +27,7 @@
     Original Author of file: 
     Purpose of file:
     ----------------------------------------------------------------------*/
-    
-include_once("plugin_order.detail.classes.php");
-if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
-
+ 
 /* show form of linking order to glpi items */
 function plugin_order_showItem($instID,$search='') {
 	global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;

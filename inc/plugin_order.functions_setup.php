@@ -27,10 +27,6 @@
     Original Author of file: 
     Purpose of file:
     ----------------------------------------------------------------------*/
-    
-if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
 	
 /* installation function */
 function plugin_order_installing($version) {

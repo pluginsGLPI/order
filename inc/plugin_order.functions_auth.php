@@ -28,11 +28,6 @@
     Purpose of file:
     ----------------------------------------------------------------------*/
 
-if (!defined('GLPI_ROOT')){
-	die("Sorry. You can't access directly to this file");
-	}
-
-
 function plugin_order_createfirstaccess($ID){
 
 	$plugin_order_Profile=new plugin_order_Profile();

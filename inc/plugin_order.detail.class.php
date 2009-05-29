@@ -27,13 +27,8 @@
     Original Author of file: Benjamin Fontan
     Purpose of file:
     ----------------------------------------------------------------------*/
-         
-if (!defined('GLPI_ROOT')) 
-{
-        die("Sorry. You can't access directly to this file");
-}
 class plugin_order_detail extends CommonDBTM {
-        function plugin_order_detail () 
+        function __construct () 
         {
                 $this->table="glpi_plugin_order_detail";                
         }
