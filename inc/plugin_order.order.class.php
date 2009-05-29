@@ -221,13 +221,10 @@ class plugin_order extends CommonDBTM {
 			}
 			
 			/* status */
-			if($this->fields["status"]!=NULL){
+			if($this->fields["status"]!=NULL && $canedit){
 			echo "<td valign='top'>".$LANG['plugin_order']['status'][0].": </td>";
 			echo "<td valign='top'>";
-			$query=" SELECT name FROM glpi_dropdown_plugin_order_status WHERE ID=".$this->fields["status"]."";
-			$result=$DB->query($query);
-			$status=$DB->result($result,0,'name');
-			echo "".$status."";
+			dropdownValue("glpi_dropdown_plugin_order_status","status",$this->fields["status"],1,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 			}
 			
