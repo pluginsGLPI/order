@@ -38,12 +38,15 @@ $action=$_GET["action"];
 /* create orders with infocoms */
 if($action=="createorder") {
 	plugin_order_config_infocoms_create();
+	glpi_header($_SERVER['HTTP_REFERER']);
 /* delete orders created with infocoms */
 } elseif($action=="deleteorder") {
 	plugin_order_config_infocoms_delete();
+	glpi_header($_SERVER['HTTP_REFERER']);
 /* update default status config */
 } elseif(isset($_POST["update_status"])) {
 	plugin_order_config_default_status();
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 commonHeader($LANG['plugin_order'][4],$_SERVER['PHP_SELF'],"plugins","order");
