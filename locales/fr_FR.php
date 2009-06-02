@@ -52,8 +52,8 @@ $LANG['plugin_order'][33] = "Les champs marqués d'une * sont obligatoires";
 $LANG['plugin_order'][34] = "Générer les entêtes des commandes à partir des informations financières";
 $LANG['plugin_order'][35] = "Supprimer les entêtes des commandes générées à partir des informations financières";
 $LANG['plugin_order'][36] = "Quantité reçue éronnée";
-$LANG['plugin_order'][37] = "Gestion des commandes générées à partir des informations financières";
-$LANG['plugin_order'][38] = "Menu de configuration du plugin Gestion de commandes";
+$LANG['plugin_order'][37] = "Commandes générées à partir des informations financières:";
+$LANG['plugin_order'][38] = "Statuts par défaut:";
 
 
 
