@@ -49,7 +49,7 @@ if($action=="createorder") {
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-commonHeader($LANG['plugin_order'][4],$_SERVER['PHP_SELF'],"plugins","order");
+commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order","order");
 echo "<div class='center'>";
 echo "<table class='tab_cadre'>";
 echo "<tr><th>".$LANG['plugin_order'][4]."</th></tr>";
@@ -74,7 +74,7 @@ echo "</td><td></td>";
 /* default status no delivered order */
 echo "<tr class='tab_bg_1'><td><b>".$LANG['plugin_order']['status'][6]."</b></td><td>";
 dropdownValue("glpi_dropdown_plugin_order_status", "status_nodelivered", $config->fields["status_nodelivered"],1);
-echo "</td><td><input type='submit' name='update_status' value=\"".$LANG['buttons'][7]."\" class='submit' ></td>";
+echo "</td></tr><tr  class='tab_bg_1'><td colspan='2' align='center'><input type='submit' name='update_status' value=\"".$LANG['buttons'][7]."\" class='submit' ></td>";
 echo "</table></td></tr>";
 echo "</table>";
 echo "</div>";

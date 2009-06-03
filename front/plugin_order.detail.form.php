@@ -143,7 +143,7 @@ else
 	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 	if (isset($_GET['onglet'])) 
 		$_SESSION['glpi_tab']=$_GET['onglet'];
-	commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order");
+	commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order","order");
 	commonFooter();
 }
 ?>

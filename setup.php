@@ -81,7 +81,7 @@ function plugin_init_order() {
 
 			if (plugin_order_haveRight("order","w")){
 				$PLUGIN_HOOKS['submenu_entry']['order']['add']['order'] = 'front/plugin_order.form.php';
-				$PLUGIN_HOOKS['submenu_entry']['order']["<img  src='".$CFG_GLPI["root_doc"]."/pics/menu_show.png' title='".$LANG["plugin_order"]["reference"][1]."' alt='".$LANG["plugin_order"]["reference"][1]."'>"]['reference'] = 'index.php';
+				//$PLUGIN_HOOKS['submenu_entry']['order']["<img  src='".$CFG_GLPI["root_doc"]."/pics/menu_show.png' title='".$LANG["plugin_order"]["reference"][1]."' alt='".$LANG["plugin_order"]["reference"][1]."'>"]['reference'] = 'index.php';
 
 
 				$PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/plugin_order.config.php';
