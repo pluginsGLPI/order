@@ -53,6 +53,13 @@ if (isset($_POST["add"]))
                 }else{
 			$DB = new DB;
 			$newID=$plugin_order_detail->add($_POST);
+			$i=0;
+			while($i<$_POST["quantity"]){
+				$query="	INSERT INTO glpi_plugin_order_deliver (FK_order, FK_detail)
+						values (".$_POST["FK_order"].",$newID)";
+				$DB->query($query);
+				$i++;
+			}
 			$query=" SELECT * FROM glpi_plugin_order
 					WHERE ID=".$_POST["FK_order"]."";
 			$result=$DB->query($query);
@@ -136,12 +143,7 @@ else
 	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 	if (isset($_GET['onglet'])) 
 		$_SESSION['glpi_tab']=$_GET['onglet'];
-	/* check environment meta-plugin installtion for change header */
-	$plugin = new Plugin();
-	if ($plugin->isInstalled("environment") && $plugin->isActivated("environment"))
-		commonHeader($LANG['plugin_order'][4],$_SERVER['PHP_SELF'],"plugins","environment","order");
-	else
-		commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order");
+	commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order");
 	commonFooter();
 }
 ?>

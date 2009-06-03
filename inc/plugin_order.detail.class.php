@@ -36,15 +36,18 @@ class plugin_order_detail extends CommonDBTM {
         function showFormDetail ($FK_order, $target, $mode) {
                 GLOBAL  $CFG_GLPI, $LANG,$DB;
 			
-                        $query=" SELECT * FROM glpi_plugin_order_detail WHERE FK_order=$FK_order";
+                        $query=" SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, glpi_plugin_order_references.type, glpi_plugin_order_references.FK_enterprise, glpi_plugin_order_references.name, glpi_plugin_order_detail.price, glpi_plugin_order_detail.taxesprice, glpi_plugin_order_detail.reductedprice, SUM(glpi_plugin_order_detail.price) AS totalprice, SUM(glpi_plugin_order_detail.taxesprice) AS totaltaxesprice
+					FROM glpi_plugin_order_detail, glpi_plugin_order_references
+					WHERE glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID
+					AND glpi_plugin_order_detail.FK_order=$FK_order
+					GROUP BY glpi_plugin_order_references.ID";
                         $result=$DB->query($query);
                         $num=$DB->numrows($result);
                         $rand=mt_rand();
                         $plugin_order=new plugin_order();
                         $canedit=$plugin_order->can($FK_order,'w');
-
-				echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  action=\"".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order_detail.form.php\">";
-				echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
+			echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  action=\"".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.detail.form.php\">";
+			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
                         if ($num>0)
                         {
                                 echo "<div class='center'><table class='tab_cadrehov'>";
@@ -63,64 +66,57 @@ class plugin_order_detail extends CommonDBTM {
                                 echo "<th>".$LANG['plugin_order']['detail'][10]."</th></tr>";
                                 $i=0;
                                 while ($i<$num){
-                                        /* type */
-                                        $type=$DB->result($result, $i, "type");
-                                        /* reference */
-                                        $ref=$DB->result($result,$i,"reference");
-                                        /* quantity */
-                                        $quantity=$DB->result($result,$i,"quantity");
-                                        /* delivred quantity */
-                                        $delivredquantity=$DB->result($result,$i,"delivredquantity");
-                                        /* unit price */
-                                        $unitprice=$DB->result($result,$i,"unitprice");
-                                        /* taxes */
-                                        $idtaxes=$DB->result($result,$i,"taxes");
-                                        $query=" SELECT * FROM glpi_dropdown_plugin_order_taxes WHERE ID=$idtaxes";
-                                        $res=$DB->query($query);
-                                        $taxes=$DB->result($res,0,"name");
-                                        $vtaxes=$DB->result($res,0,"value");
-                                        /* manufacturer */
-                                        $idman=$DB->result($result,$i,"manufacturer");
-                                        $query=" SELECT * FROM glpi_dropdown_manufacturer WHERE ID=$idman";
-                                        $res=$DB->query($query);
-                                        $manufacturer=$DB->result($res,0,"name");
-                                        /* total price (without taxes) */
-                                        $totalprice=$quantity*$unitprice;
-                                        $totalprice=number_format($totalprice, 2);
-                                        /* total price (with taxes) */
-                                        $totalpricet=$totalprice*$vtaxes;
-                                        $totalpricet=number_format($totalpricet, 2);
-                                        /* idd */
-                                        $idd=$DB->result($result,$i,"ID");
-                                        $this->getFromDB($idd);
+					$ID=$DB->result($result,$i,"IDD");
+                                        $this->getFromDB($ID);
+					$IDR=$DB->result($result,0,"IDR");
+					$query_quantity="	SELECT count(*) AS quantity FROM glpi_plugin_order_detail
+									WHERE FK_order=$FK_order
+									AND FK_ref=$IDR";
+					$result_quantity=$DB->query($query_quantity);
+					$quantity=$DB->result($result_quantity,0,'quantity');
+					$query_quantity="	SELECT count(*) AS delivredquantity FROM glpi_plugin_order_detail
+									WHERE FK_order=$FK_order
+									AND FK_ref=$IDR
+									AND status='1'";
+					$result_quantity=$DB->query($query_quantity);
+					$delivredquantity=$DB->result($result_quantity,0,'delivredquantity');
                                         if($delivredquantity==$quantity)
                                                 echo "<tr class='tab_bg_2'>";
                                         else
                                                 echo "<tr class='tab_bg_4'>";
                                         if ($canedit && $mode==1){
-                                                 echo "<td width='10'>";
+                                                echo "<td width='10'>";
                                                 $sel="";
                                                 if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
                                                 echo "<input type='checkbox' name='item[".$this->fields["ID"]."]' value='1' $sel>";
                                                 echo "</td>";
                                         }
-                                        $ci=new CommonItem();
-                                        $ci->setType($type);
-                                        echo "<td align='center'>".$ci->getType()."</td>";
-                                        echo "<td align='center'>".$manufacturer."</td>";
-                                        echo "<td align='center'>".$ref."</td>";
-                                        echo "<td align='center'>".$quantity."</td>";
-                                        echo "<td align='center'>".$delivredquantity."</td>";
-                                        echo "<td align='center'>".$unitprice."</td>";
-                                        echo "<td align='center'>".$taxes."</td>";
-                                        echo "<td align='center'>".$totalprice."</td>";
-                                        echo "<td align='center'>".$totalpricet."</td></tr>";
+					/* type */
+					$ci=new CommonItem();
+					$ci->setType($DB->result($result,0,"type"));
+					echo "<td align='center'>".$ci->getType()."</td>";
+					/* manufacturer */
+					echo "<td align='center'>".getDropdownName("glpi_enterprises",$DB->result($result,0,"FK_enterprise"))."</td>";
+					/* reference */
+					echo "<td align='center'>".$DB->result($result,0,"name")."</td>";
+					/* quantity */
+					echo "<td align='center'>".$quantity."</td>";	
+					/* delivered quantity */
+					echo "<td align='center'>".$delivredquantity."</td>";	
+					/*price */
+					echo "<td align='center'>".$DB->result($result,0,"price")."</td>";
+					/* price with taxes */
+					echo "<td align='center'>".$DB->result($result,0,"taxesprice")."</td>";
+					/* total price */
+					echo "<td align='center'>".$DB->result($result,0,"totalprice")."</td>";
+					/* total price with taxes  */
+					echo "<td align='center'>".$DB->result($result,0,"totaltaxesprice")."</td>";
                                         $i++;
                                 }
 				echo "</table>";
 				if ($canedit && $mode==1){
                                        echo "<div class='center'>";
-													echo "<table width='80%' class='tab_glpi'>";
+					echo "<table width='80%' class='tab_glpi'>";
                                         echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
                                         echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=none'>".$LANG['buttons'][19]."</a>";
                                         echo "</td><td align='left' width='80%'>";
@@ -142,17 +138,6 @@ class plugin_order_detail extends CommonDBTM {
 				echo "<th align='center'>".$LANG['plugin_order']['detail'][4]."*</th>";
 				echo "<th align='center'>".$LANG['plugin_order']['detail'][8]."*</th>";
 				echo "<th align='center'>&nbsp;</th></tr>";
-				/* type */
-				echo "<tr class='tab_bg_2'><td align='center'>";
-				$types[]=COMPUTER_TYPE;
-				$types[]=NETWORKING_TYPE;
-				$types[]=PRINTER_TYPE;
-				$types[]=MONITOR_TYPE;
-				$types[]=PERIPHERAL_TYPE;
-				$types[]=CARTRIDGE_ITEM_TYPE;
-				$types[]=CONSUMABLE_ITEM_TYPE;
-				 plugin_order_dropdownAllItems("type",0,'',-1,$types); 
-				echo "</td>";
 				/* manufacturer */
 				echo "<td align='center'>";
 				dropdownValue("glpi_dropdown_manufacturer", "manufacturer", 0);

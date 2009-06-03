@@ -53,7 +53,8 @@ function plugin_order_uninstall(){
 					"glpi_dropdown_plugin_order_status",
 					"glpi_dropdown_plugin_order_taxes",
 					"glpi_dropdown_plugin_order_payment",
-					"glpi_plugin_order_references");
+					"glpi_plugin_order_references",
+					"glpi_plugin_order_config");
 					
 	foreach($tables as $table)				
 		$DB->query("DROP TABLE `$table`;");

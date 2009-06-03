@@ -64,15 +64,15 @@ echo "<form method='post' name=form action=''>";
 $config= new plugin_order_config();
 $config->getFromDB(1);
 /* default status order creation */
-echo "<tr><td><b>".$LANG['plugin_order']['status'][4]."</b></td><td>";
+echo "<tr class='tab_bg_1'><td><b>".$LANG['plugin_order']['status'][4]."</b></td><td>";
 dropdownValue("glpi_dropdown_plugin_order_status", "status_creation", $config->fields["status_creation"],1);
-echo "</td>";
+echo "</td><td></td>";
 /* default status delivered order */
-echo "<tr><td><b>".$LANG['plugin_order']['status'][5]."</b></td><td>";
+echo "<tr class='tab_bg_1'><td><b>".$LANG['plugin_order']['status'][5]."</b></td><td>";
 dropdownValue("glpi_dropdown_plugin_order_status", "status_delivered", $config->fields["status_delivered"],1);
-echo "</td>";
+echo "</td><td></td>";
 /* default status no delivered order */
-echo "<tr><td><b>".$LANG['plugin_order']['status'][6]."</b></td><td>";
+echo "<tr class='tab_bg_1'><td><b>".$LANG['plugin_order']['status'][6]."</b></td><td>";
 dropdownValue("glpi_dropdown_plugin_order_status", "status_nodelivered", $config->fields["status_nodelivered"],1);
 echo "</td><td><input type='submit' name='update_status' value=\"".$LANG['buttons'][7]."\" class='submit' ></td>";
 echo "</table></td></tr>";

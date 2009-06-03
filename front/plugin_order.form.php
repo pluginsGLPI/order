@@ -115,14 +115,7 @@ else
 	if (isset($_GET['onglet'])) {
 		$_SESSION['glpi_tab']=$_GET['onglet'];
 	}
-	
-	/*check environment meta-plugin installtion for change header */
-	$plugin = new Plugin();
-	if ($plugin->isInstalled("environment") && $plugin->isActivated("environment"))
-		commonHeader($LANG['plugin_order'][4],$_SERVER['PHP_SELF'],"plugins","environment","order");
-	else
-		commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order");
-	
+	commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order");
 	/* load order form */
 	$plugin_order->showForm($_SERVER["PHP_SELF"],$_GET["ID"]);
 

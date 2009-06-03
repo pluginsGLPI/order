@@ -51,17 +51,16 @@ INSERT INTO `glpi_dropdown_plugin_order_taxes`(ID,name, value) VALUES (2,'19,6',
 
 DROP TABLE IF EXISTS `glpi_plugin_order_detail`;
 CREATE TABLE `glpi_plugin_order_detail` (
-	`ID` int(11) NOT NULL auto_increment,
-	`FK_order` int(11) NOT NULL default '0',
-	`type`int(11) NOT NULL,
-	`reference` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-        `manufacturer`int(11) NOT NULL,
-	`quantity`int (11) NOT NULL,
-	`delivredquantity`int (11) NOT NULL default 0,
-	`unitprice`decimal(15,2) NOT NULL,
-        `taxes`int(11) NOT NULL default 2,
-	`totalpricetaxes`decimal(15,2) NOT NULL default 0,
-	PRIMARY KEY  (`ID`)
+  `ID` int(11) NOT NULL auto_increment,
+  `FK_order` int(11) NOT NULL default 0,
+  `FK_device` int(11) NOT NULL default 0,
+  `FK_ref` int(11) NOT NULL default 0,
+  `price`decimal(15,2) NOT NULL default 0,
+  `reductedprice`decimal(15,2) NOT NULL default 0,
+  `taxesprice`decimal(15,2) NOT NULL default 0,
+  `status`int(1) NOT NULL default 0,
+  `date`date NOT NULL default 0,
+  PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `glpi_plugin_order_device`;
@@ -107,6 +106,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references` (
   `comments` text character set latin1 NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
 
 INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3150','1','1','0');
 INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3150','2','2','0');
