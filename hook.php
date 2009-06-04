@@ -133,6 +133,11 @@ function plugin_order_getSearchOption(){
 			$sopt[PLUGIN_ORDER_TYPE][3]['field']='name';
 			$sopt[PLUGIN_ORDER_TYPE][3]['linkfield']='budget';
 			$sopt[PLUGIN_ORDER_TYPE][3]['name']=$LANG['plugin_order'][3];
+			/* location */
+			$sopt[PLUGIN_ORDER_TYPE][4]['table']='glpi_dropdown_locations';
+			$sopt[PLUGIN_ORDER_TYPE][4]['field']='name';
+			$sopt[PLUGIN_ORDER_TYPE][4]['linkfield']='location';
+			$sopt[PLUGIN_ORDER_TYPE][4]['name']=$LANG['plugin_order'][40];
 			/* status */
 			$sopt[PLUGIN_ORDER_TYPE][5]['table']='glpi_dropdown_plugin_order_status';
 			$sopt[PLUGIN_ORDER_TYPE][5]['field']='name';
@@ -158,6 +163,11 @@ function plugin_order_getSearchOption(){
 			$sopt[PLUGIN_ORDER_TYPE][9]['field']='numbill';
 			$sopt[PLUGIN_ORDER_TYPE][9]['linkfield']='numbill';
 			$sopt[PLUGIN_ORDER_TYPE][9]['name']=$LANG['plugin_order'][28];
+			/* title */
+			$sopt[PLUGIN_ORDER_TYPE][10]['table']='glpi_plugin_order';
+			$sopt[PLUGIN_ORDER_TYPE][10]['field']='title';
+			$sopt[PLUGIN_ORDER_TYPE][10]['linkfield']='title';
+			$sopt[PLUGIN_ORDER_TYPE][10]['name']=$LANG['plugin_order'][39];
 			/* comments */
 			$sopt[PLUGIN_ORDER_TYPE][16]['table']='glpi_plugin_order';
 			$sopt[PLUGIN_ORDER_TYPE][16]['field']='comment';
