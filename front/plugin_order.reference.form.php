@@ -76,6 +76,32 @@ else if (isset($_POST["update"]))
 		$plugin_order_ref->update($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
+else if (isset($_POST["update_reference_manufacturer"]))
+{
+	if(plugin_order_HaveRight("reference","w"))
+	{
+		$ref = new PluginOrderReferenceManufacturer;
+		foreach ($_POST["item"] as $ID => $value)
+		{
+			$input["ID"] = $ID;
+			$input["price"] = $_POST["price"][$ID]; 
+			$ref->update($input);
+		}
+	}	
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+if (isset($_POST["add_reference_manufacturer"]))
+{
+	if(plugin_order_HaveRight("reference","w"))
+	{
+		if (isset($_POST["FK_enterprise"]) && $_POST["FK_enterprise"] > 0)
+		{
+			$ref = new PluginOrderReferenceManufacturer;
+			$newID=$ref->add($_POST);
+		}
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
 else
 {
 	plugin_order_checkRight("reference","r");

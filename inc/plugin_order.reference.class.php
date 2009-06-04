@@ -140,7 +140,7 @@ class plugin_order_reference extends CommonDBTM {
 class PluginOrderReferenceManufacturer extends CommonDBTM {
 	function __construct ()
 	{
-		$this->table = "glpi_plugin_order_references_manufecturers";
+		$this->table = "glpi_plugin_order_references_manufacturers";
 	}	
 }
 ?>

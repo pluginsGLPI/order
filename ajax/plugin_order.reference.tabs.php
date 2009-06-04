@@ -52,10 +52,10 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 	}else{
 		switch($_POST['glpi_tab']){
 			case 2 :
-				plugin_order_showReferenceManufacturers($_SERVER["PHP_SELF"],$_POST["ID"]);
+				plugin_order_showReferenceManufacturers($_SERVER['HTTP_REFERER'],$_POST["ID"]);
 				break;
 			case 3 :
-				showNotesForm($_SERVER["PHP_SELF"],PLUGIN_ORDER_REFERENCE_TYPE,$_POST["ID"]);
+				showNotesForm($_SERVER['HTTP_REFERER'],PLUGIN_ORDER_REFERENCE_TYPE,$_POST["ID"]);
 				break;
 			case 4 :
 				/* show documents linking form */

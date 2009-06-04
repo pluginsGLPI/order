@@ -1,4 +1,5 @@
 <?php
+
 /*----------------------------------------------------------------------
    GLPI - Gestionnaire Libre de Parc Informatique
    Copyright (C) 2003-2008 by the INDEPNET Development Team.
@@ -27,45 +28,66 @@
     Original Author of file: Walid Nouh
     Purpose of file:
     ----------------------------------------------------------------------*/
-function plugin_order_showReferenceManufacturers($target,$ID)
-{
-	global $LANG,$DB;
+function plugin_order_showReferenceManufacturers($target, $ID) {
+	global $LANG, $DB;
 	$query = "SELECT * FROM `glpi_plugin_order_references_manufacturers` WHERE FK_reference='$ID'";
 	$result = $DB->query($query);
 
-	echo "<div class='center'>";	
+	echo "<div class='center'>";
 	echo "<form method='post' name=form action=\"$target\">";
-	echo "<input type='hidden' name='FK_reference' value='".$ID."'>";
+	echo "<input type='hidden' name='FK_reference' value='" . $ID . "'>";
 	echo "<table class='tab_cadre'>";
+
+	echo "<tr><th></th><th>" . $LANG['financial'][26] . "</th><th>" . $LANG['plugin_order']['detail'][4] . "</th></tr>";
+
+	$suppliers = array();
 	
-	echo "<tr><th></th><th>".$LANG['financial'][26]."</th><th>".$LANG['plugin_order']['detail'][4]."</th></tr>";
+	if ($DB->numrows($result)) {
+		echo "<form method='post' name='shwo_ref_manu' action=\"$target\">";
+		echo "<input type='hidden' name='FK_reference' value='" . $ID . "'>";
+		echo "<table class='tab_cadre'>";
 
-
-	if ($DB->numrows($result))
-	{
-		echo "<form method='post' name=form action=\"$target\">";
-
-		while ($data = $DB->fetch_array($result))
-		{
+		while ($data = $DB->fetch_array($result)) {
+			$suppliers[] = $data["ID"];
+			echo "<input type='hidden' name='item[" . $data["ID"] . "]' value='" . $ID . "'>";
 			echo "<tr>";
 			echo "<td class='tab_bg_1'>";
-			echo "<input type='checkbox' name='price[" . $data["ID"] . "]'>";
+			echo "<input type='checkbox' name='check[" . $data["ID"] . "]'>";
 			echo "</td>";
-			echo "<td class='tab_bg_1'>".getDropdownName("glpi_enterprises",$data["FK_enterprise"])."</td>";
+			echo "<td class='tab_bg_1'>" . getDropdownName("glpi_enterprises", $data["FK_enterprise"]) . "</td>";
 			echo "<td class='tab_bg_1'>";
-			autocompletionTextField("price","glpi_plugin_order_references_manufacturers","price",$data["price"],7);
+			autocompletionTextField("price[".$data["ID"]."]", "glpi_plugin_order_references_manufacturers", "price", $data["price"], 7);
 			echo "</td>";
 			echo "</tr>";
 		}
-			echo "<tr>";
-			echo "<td class='tab_bg_1' align='center' colspan='3'>";
-			echo "<input type='submit' name='update_reference_manufacturer' value=\"".$LANG['buttons'][7]."\" class='submit' >";
-			echo "</td>";
-			echo "</tr>";
+		echo "<tr>";
+		echo "<td class='tab_bg_1' align='center' colspan='3'>";
+		echo "<input type='submit' name='update_reference_manufacturer' value=\"" . $LANG['buttons'][7] . "\" class='submit' >";
+		echo "</td>";
+		echo "</tr>";
 
 		echo "</form>";
 	}
-	
-	echo "</table></form></div>";
+	echo "</table></form>"; 
+
+	echo "<form method='post' name='add_ref_manu' action=\"$target\">";
+	echo "<table class='tab_cadre'>";
+	echo "<input type='hidden' name='FK_reference' value='" . $ID . "'>";
+	echo "<tr>";
+	echo "<td class='tab_bg_1'>";
+	echo "<td class='tab_bg_1'>"; 
+	dropdownValue("glpi_enterprises","FK_enterprise","",1,$_SESSION["glpiactive_entity"],'',$suppliers); 
+	echo "</td>";
+	echo "<td class='tab_bg_1'>";
+	autocompletionTextField("price", "glpi_plugin_order_references_manufacturers", "price", $data["price"], 7);
+	echo "</td>";
+	echo "</tr>";
+	echo "<tr>";
+	echo "<td class='tab_bg_1' align='center' colspan='3'>";
+	echo "<input type='submit' name='add_reference_manufacturer' value=\"" . $LANG['buttons'][7] . "\" class='submit' >";
+	echo "</td>";
+	echo "</tr>";
+	echo "</table></form>";	
+	echo "</div>";
 }
 ?>
