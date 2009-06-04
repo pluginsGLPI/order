@@ -102,6 +102,17 @@ if (isset($_POST["add_reference_manufacturer"]))
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
+else if (isset($_POST["delete_reference_manufacturer"]))
+{
+	if(plugin_order_HaveRight("reference","w"))
+	{
+		$ref = new PluginOrderReferenceManufacturer;
+		foreach ($_POST["check"] as $ID => $value)
+			$ref->delete(array("ID"=>$ID));
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+
 else
 {
 	plugin_order_checkRight("reference","r");

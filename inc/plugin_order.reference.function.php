@@ -29,26 +29,25 @@
     Purpose of file:
     ----------------------------------------------------------------------*/
 function plugin_order_showReferenceManufacturers($target, $ID) {
-	global $LANG, $DB;
+	global $LANG, $DB, $CFG_GLPI;
 	$query = "SELECT * FROM `glpi_plugin_order_references_manufacturers` WHERE FK_reference='$ID'";
 	$result = $DB->query($query);
 
 	echo "<div class='center'>";
 	echo "<form method='post' name=form action=\"$target\">";
 	echo "<input type='hidden' name='FK_reference' value='" . $ID . "'>";
-	echo "<table class='tab_cadre'>";
+	echo "<table class='tab_cadre_fixe'>";
 
 	echo "<tr><th></th><th>" . $LANG['financial'][26] . "</th><th>" . $LANG['plugin_order']['detail'][4] . "</th></tr>";
 
 	$suppliers = array();
 	
-	if ($DB->numrows($result)) {
-		echo "<form method='post' name='shwo_ref_manu' action=\"$target\">";
+	if ($DB->numrows($result) > 0) {
+		echo "<form method='post' name='show_ref_manu' action=\"$target\">";
 		echo "<input type='hidden' name='FK_reference' value='" . $ID . "'>";
-		echo "<table class='tab_cadre'>";
 
 		while ($data = $DB->fetch_array($result)) {
-			$suppliers[] = $data["ID"];
+			$suppliers[$data["ID"]] = $data["ID"];
 			echo "<input type='hidden' name='item[" . $data["ID"] . "]' value='" . $ID . "'>";
 			echo "<tr>";
 			echo "<td class='tab_bg_1'>";
@@ -60,16 +59,23 @@ function plugin_order_showReferenceManufacturers($target, $ID) {
 			echo "</td>";
 			echo "</tr>";
 		}
-		echo "<tr>";
-		echo "<td class='tab_bg_1' align='center' colspan='3'>";
+		echo "</table>";
+
+		echo "<table width='80%'>";
+		echo "<tr>"; 
+		echo "<td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markAllRows('show_ref_manu') ) return false;\" href='".$_SERVER['PHP_SELF']."?check=all'>".$LANG["buttons"][18]."</a></td>";
+		echo "<td>/</td><td align='center'><a onclick= \"if ( unMarkAllRows('show_ref_manu') ) return false;\" href='".$_SERVER['PHP_SELF']."?check=none'>".$LANG["buttons"][19]."</a>";
+		echo "</td><td align='left' width='80%'>"; 
+		echo "<input type='submit' name='delete_reference_manufacturer' value=\"" . $LANG['buttons'][6] . "\" class='submit' >";
+		echo "&nbsp;";
 		echo "<input type='submit' name='update_reference_manufacturer' value=\"" . $LANG['buttons'][7] . "\" class='submit' >";
 		echo "</td>";
 		echo "</tr>";
-
-		echo "</form>";
+		echo "</table>";
 	}
-	echo "</table></form>"; 
-
+	else
+		echo "</table>";
+	echo "</form>";
 	echo "<form method='post' name='add_ref_manu' action=\"$target\">";
 	echo "<table class='tab_cadre'>";
 	echo "<input type='hidden' name='FK_reference' value='" . $ID . "'>";
@@ -79,7 +85,7 @@ function plugin_order_showReferenceManufacturers($target, $ID) {
 	dropdownValue("glpi_enterprises","FK_enterprise","",1,$_SESSION["glpiactive_entity"],'',$suppliers); 
 	echo "</td>";
 	echo "<td class='tab_bg_1'>";
-	autocompletionTextField("price", "glpi_plugin_order_references_manufacturers", "price", $data["price"], 7);
+	autocompletionTextField("price", "glpi_plugin_order_references_manufacturers", "price", 0, 7);
 	echo "</td>";
 	echo "</tr>";
 	echo "<tr>";
