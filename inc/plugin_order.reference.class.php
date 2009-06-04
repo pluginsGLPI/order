@@ -98,7 +98,6 @@ class plugin_order_reference extends CommonDBTM {
 			echo "<td>";
 			plugin_order_dropdownTemplate("template",$_SESSION["glpiactive_entity"],"glpi_computers",$this->fields["FK_manufacturer"]);
 			echo "</td></tr>";
-
 			
 			echo "<tr class='tab_bg_2'><td>".$LANG['common'][25].": </td>";
 			echo "<td colspan='3'><textarea cols='50' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";

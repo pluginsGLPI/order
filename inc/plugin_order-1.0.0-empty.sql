@@ -9,13 +9,13 @@ CREATE TABLE `glpi_plugin_order` (
 	`payment` int (11) NOT NULL default 0,
 	`status` int(11) NOT NULL default 1,
 	`FK_entities` int(11) NOT NULL default 0,
-	`price`decimal(15,2) NOT NULL default 0,
+	`price` FLOAT NOT NULL default 0,
 	`date` date,
-	`FK_enterprise` SMALLINT(6) NOT NULL DEFAULT '0',
+	`FK_enterprise` INT(11) NOT NULL DEFAULT 0,
     `location` int(11) NOT NULL default 0,
     `FK_contact` int(11) NOT NULL default 0,
-	`recursive` tinyint(1) NOT NULL default '1',
-	`deleted` smallint(6) NOT NULL default '0',
+	`recursive` INT(1) NOT NULL default 1,
+	`deleted` INT(1) NOT NULL default 0,
 	`comment` varchar(255) collate utf8_unicode_ci NOT NULL default '',
 	PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -42,7 +42,7 @@ DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_taxes`;
 CREATE TABLE `glpi_dropdown_plugin_order_taxes` (
 	`ID` int(11) NOT NULL auto_increment,
 	`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-        `value`decimal(4,3),
+    `value` FLOAT,
 	`comments` text,
 	PRIMARY KEY  (`ID`),
 	KEY `name` (`name`)
@@ -57,10 +57,10 @@ CREATE TABLE `glpi_plugin_order_detail` (
   `FK_order` int(11) NOT NULL default 0,
   `FK_device` int(11) NOT NULL default 0,
   `FK_ref` int(11) NOT NULL default 0,
-  `price`decimal(15,2) NOT NULL default 0,
-  `reductedprice`decimal(15,2) NOT NULL default 0,
-  `taxesprice`decimal(15,2) NOT NULL default 0,
-  `status`int(1) NOT NULL default 0,
+  `price` FLOAT NOT NULL default 0,
+  `reductedprice` FLOAT NOT NULL default 0,
+  `taxesprice` FLOAT NOT NULL default 0,
+  `status` int(1) NOT NULL default 0,
   `date`date NOT NULL default 0,
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -100,6 +100,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_entities` int(11) NOT NULL DEFAULT 0,
   `FK_manufacturer` int(11) NOT NULL DEFAULT 0,
+  `FK_model` INT(11) NOT NULL DEFAULT 0,
   `name` varchar(255) character set latin1 NOT NULL,
   `type` int(11) NOT NULL DEFAULT 0,
   `template` int(11) NOT NULL DEFAULT 0,
