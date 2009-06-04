@@ -196,13 +196,11 @@ class plugin_order extends CommonDBTM {
 			echo "<table cellpadding='2' cellspacing='2' border='0'>";
 			
 			/* total price (without taxes) */
-			if(getPrice($ID)!=-1) {
+			if($ID > 0 && getPrice($ID)!=-1) {
 				echo "<tr><td>".$LANG['plugin_order'][13].": </td>";
 				echo "<td>".getPrice($ID)."</td></tr>";
-			}
 			
 			/* total price (without taxes) */
-			if(getPrice($ID)!=-1) {
 				echo "<tr><td>".$LANG['plugin_order'][14].": </td>";
 				echo "<td>".getTaxesPrice($ID)."</td></tr>";
 			}
