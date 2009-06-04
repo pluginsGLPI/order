@@ -24,34 +24,23 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
    ----------------------------------------------------------------------*/
 /*----------------------------------------------------------------------
-    Original Author of file: Benjamin Fontan
+    Original Author of file:
     Purpose of file:
     ----------------------------------------------------------------------*/
     
-function getQuantity($FK_order, $FK_ref) {
-	global $CFG_GLPI, $DB;
-		$query="	SELECT count(*) AS quantity FROM glpi_plugin_order_detail
-						WHERE FK_order=$FK_order
-						AND FK_ref=$FK_ref";
+function getPrice($FK_order) {
+	global $DB;
+		$query=" SELECT sum(reductedprice) AS result from glpi_plugin_order_detail
+				WHERE FK_order=$FK_order";
 		$result=$DB->query($query);
-		return($DB->result($result,0,'quantity'));
+		return(sprintf("%01.2f", $DB->result($result,0,'result')));
 }
-function getDelivredQuantity($FK_order, $FK_ref) {
-	global  $CFG_GLPI, $DB;
-		$query="	SELECT count(*) AS delivredquantity FROM glpi_plugin_order_detail
-						WHERE FK_order=$FK_order
-						AND FK_ref=$FK_ref
-						AND status='1'";
+
+function getTaxesPrice($FK_order) {
+	global $DB;
+		$query=" SELECT  SUM(reductedprice*(taxesprice/price)) AS result from glpi_plugin_order_detail
+				WHERE FK_order=$FK_order";
 		$result=$DB->query($query);
-		return($DB->result($result,0,'delivredquantity'));
-}
-function getTaxes($FK_order, $FK_ref) {
-	global  $CFG_GLPI, $DB;
-		$query="	SELECT price, taxesprice FROM glpi_plugin_order_detail
-						WHERE FK_order=$FK_order
-						AND FK_ref=$FK_ref";
-		$result=$DB->query($query);
-		$taxes=$DB->result($result,0,'taxesprice')/$DB->result($result,0,'price');
-		return($taxes);
+		return(sprintf("%01.2f", $DB->result($result,0,'result')));
 }
 ?>

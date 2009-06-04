@@ -198,26 +198,15 @@ class plugin_order extends CommonDBTM {
 			echo "<table cellpadding='2' cellspacing='2' border='0'>";
 			
 			/* total price (without taxes) */
-			if($this->fields["price"]!=NULL){
-			echo "<tr><td>".$LANG['plugin_order'][13].": </td>";
-			echo "<td>";
-			echo "".$this->fields["price"]."&euro;";
-			echo "</td></tr>";
+			if(getPrice($ID)!=NULL){
+				echo "<tr><td>".$LANG['plugin_order'][13].": </td>";
+				echo "<td>".getPrice($ID)."</td></tr>";
 			}
 		
 			/* total price (without taxes) */
-			if(!empty($this->fields["price"])){
-				$query=" SELECT sum(totalpricetaxes) AS sum FROM glpi_plugin_order_detail 
-					WHERE FK_order=$ID";
-				$result=$DB->query($query);
-				$price=$DB->result($result,0,'sum');
+			if(getTaxesPrice($ID)!=NULL){
 				echo "<tr><td>".$LANG['plugin_order'][14].": </td>";
-				echo "<td>";
-				if($price!=NULL)
-					echo "".$price."&euro;";
-				else
-					echo "0.00&euro;";
-				echo "</td></tr>";		
+				echo "<td>".getTaxesPrice($ID)."</td></tr>";
 			}
 			
 			/* status */

@@ -36,7 +36,7 @@ class plugin_order_detail extends CommonDBTM {
         function showFormDetail ($FK_order, $target, $mode) {
                 GLOBAL  $CFG_GLPI, $LANG,$DB;
 			
-                        $query=" SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, glpi_plugin_order_references.type, glpi_plugin_order_references.FK_manufacturer, glpi_plugin_order_references.name, glpi_plugin_order_detail.price, glpi_plugin_order_detail.taxesprice, glpi_plugin_order_detail.reductedprice, SUM(glpi_plugin_order_detail.price) AS totalprice, SUM(glpi_plugin_order_detail.taxesprice) AS totaltaxesprice
+                        $query=" SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, glpi_plugin_order_references.type, glpi_plugin_order_references.FK_manufacturer, glpi_plugin_order_references.name, glpi_plugin_order_detail.price, glpi_plugin_order_detail.taxesprice, glpi_plugin_order_detail.reductedprice, SUM(glpi_plugin_order_detail.reductedprice) AS totalprice
 					FROM glpi_plugin_order_detail, glpi_plugin_order_references
 					WHERE glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID
 					AND glpi_plugin_order_detail.FK_order=$FK_order
@@ -98,7 +98,7 @@ class plugin_order_detail extends CommonDBTM {
 					/* total price */
 					echo "<td align='center'>".$DB->result($result,$i,"totalprice")."</td>";
 					/* total price with taxes  */
-					echo "<td align='center'>".$DB->result($result,$i,"totaltaxesprice")."</td>";
+					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"totalprice")*getTaxes($FK_order, $IDR))."</td>";
                                         $i++;
                                 }
 				echo "</table>";
