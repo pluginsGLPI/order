@@ -43,8 +43,10 @@ class plugin_order_reference extends CommonDBTM {
 		$ong[1]=$LANG['title'][26];
 		if ($ID > 0 )
 		{
+			$ong[2]=$LANG['Menu'][23];
+			$ong[3]=$LANG['title'][37];
 			if (haveRight("document","r"))
-				$ong[3]=$LANG['Menu'][27];
+				$ong[4]=$LANG['Menu'][27];
 			$ong[12]=$LANG['title'][38];
 		}
 
@@ -79,7 +81,7 @@ class plugin_order_reference extends CommonDBTM {
 			$this->showFormHeader($ID,'',1);
 			echo "<tr class='tab_bg_2'><td>".$LANG['plugin_order']['reference'][1].": </td>";
 			echo "<td>";
-			autocompletionTextField("name","glpi_plugin_order_references","name",$this->fields["name"],30,$this->fields["FK_entities"]);	
+			autocompletionTextField("name","glpi_plugin_order_references","name",$this->fields["name"],70,$this->fields["FK_entities"]);	
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_2'><td>".$LANG['common'][17].": </td>";
@@ -87,11 +89,21 @@ class plugin_order_reference extends CommonDBTM {
 			plugin_order_dropdownAllItems("type",$this->fields["type"]);
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_2'><td>".$LANG['financial'][26].": </td>";
+			echo "<tr class='tab_bg_2'><td>".$LANG['common'][5].": </td>";
 			echo "<td>";
-			dropdownValue("glpi_enterprises","FK_enterprise",$this->fields["FK_enterprise"],1,$_SESSION["glpiactive_entity"]);
+			dropdownValue("glpi_dropdown_manufacturer","FK_manufacturer",$this->fields["FK_manufacturer"]);
 			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_2'><td>".$LANG['common'][13].": </td>";
+			echo "<td>";
+			plugin_order_dropdownTemplate("template",$_SESSION["glpiactive_entity"],"glpi_computers",$this->fields["FK_manufacturer"]);
+			echo "</td></tr>";
+
 			
+			echo "<tr class='tab_bg_2'><td>".$LANG['common'][25].": </td>";
+			echo "<td colspan='3'><textarea cols='50' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+			echo "</td></tr>";
+	
 			if ($canedit) {
 				if (empty($ID)||$ID<0){
 					echo "<tr>";
@@ -123,5 +135,12 @@ class plugin_order_reference extends CommonDBTM {
 		}
 		return true;
 	}
+}
+
+class PluginOrderReferenceManufacturer extends CommonDBTM {
+	function __construct ()
+	{
+		$this->table = "glpi_plugin_order_references_manufecturers";
+	}	
 }
 ?>

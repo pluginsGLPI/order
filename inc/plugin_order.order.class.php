@@ -85,7 +85,7 @@ class plugin_order extends CommonDBTM {
 	}
 
 	function showForm ($target,$ID,$withtemplate='') {
-		GLOBAL  $CFG_GLPI, $LANG,$DB;
+		global  $CFG_GLPI, $LANG,$DB;
 
 		if (!plugin_order_haveRight("order","r")) return false;
 		$spotted = false;

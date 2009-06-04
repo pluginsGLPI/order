@@ -54,6 +54,8 @@ function plugin_order_uninstall(){
 					"glpi_dropdown_plugin_order_taxes",
 					"glpi_dropdown_plugin_order_payment",
 					"glpi_plugin_order_references",
+					"glpi_plugin_order_references_manufacturers",
+					"glpi_plugin_order_references",
 					"glpi_plugin_order_config");
 					
 	foreach($tables as $table)				
@@ -192,7 +194,7 @@ function plugin_order_getSearchOption(){
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['linkfield']='name';
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['name']=$LANG['plugin_order']['detail'][2];
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['datatype']='itemlink';
-			
+/*			
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['table']='glpi_plugin_order_references';
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['field']='price';
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['linkfield']='price';
@@ -203,6 +205,7 @@ function plugin_order_getSearchOption(){
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['field']='name';
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['linkfield']='FK_enterprise';
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['name']=$LANG['financial'][26];
+*/
 
 			/* entity */
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['table']='glpi_entities';
@@ -430,7 +433,7 @@ function plugin_pre_item_delete_order($input){
 		}
 	return $input;
 }
-
+/*
 function plugin_item_delete_order($parm){
 		if (isset($parm["type"]))
 			switch ($parm["type"]){
@@ -441,7 +444,7 @@ function plugin_item_delete_order($parm){
 					break;
 			}
 	return false;
-}
+}*/
 
 /* hook done on purge item case */
 function plugin_item_purge_order($parm){

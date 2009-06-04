@@ -51,7 +51,13 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 		}
 	}else{
 		switch($_POST['glpi_tab']){
+			case 2 :
+				plugin_order_showReferenceManufacturers($_SERVER["PHP_SELF"],$_POST["ID"]);
+				break;
 			case 3 :
+				showNotesForm($_SERVER["PHP_SELF"],PLUGIN_ORDER_REFERENCE_TYPE,$_POST["ID"]);
+				break;
+			case 4 :
 				/* show documents linking form */
 				showDocumentAssociated(PLUGIN_ORDER_REFERENCE_TYPE,$_POST["ID"],$_POST["withtemplate"]);
 				break;
@@ -64,6 +70,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 			default :
 				break;
 		}
-		 ajaxFooter();
 	}
+ ajaxFooter();
+
 ?>
