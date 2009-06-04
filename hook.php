@@ -133,11 +133,6 @@ function plugin_order_getSearchOption(){
 			$sopt[PLUGIN_ORDER_TYPE][3]['field']='name';
 			$sopt[PLUGIN_ORDER_TYPE][3]['linkfield']='budget';
 			$sopt[PLUGIN_ORDER_TYPE][3]['name']=$LANG['plugin_order'][3];
-			/* price */
-			$sopt[PLUGIN_ORDER_TYPE][4]['table']='glpi_plugin_order';
-			$sopt[PLUGIN_ORDER_TYPE][4]['field']='price';
-			$sopt[PLUGIN_ORDER_TYPE][4]['linkfield']='price';
-			$sopt[PLUGIN_ORDER_TYPE][4]['name']=$LANG['plugin_order'][26];
 			/* status */
 			$sopt[PLUGIN_ORDER_TYPE][5]['table']='glpi_dropdown_plugin_order_status';
 			$sopt[PLUGIN_ORDER_TYPE][5]['field']='name';

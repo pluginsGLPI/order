@@ -87,6 +87,7 @@ $LANG['plugin_order']['detail'][14]="Ligne";
 $LANG['plugin_order']['detail'][15]="Réseau";
 $LANG['plugin_order']['detail'][16]="Type";
 $LANG['plugin_order']['detail'][17]="Ligne(s) détail";
+$LANG['plugin_order']['detail'][18]="Prix unitaire remisé";
 
 
 $LANG['plugin_order']['delivery'][1]="Réception matériel(s)";
