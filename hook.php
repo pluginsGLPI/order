@@ -55,23 +55,22 @@ function plugin_order_uninstall(){
 					"glpi_dropdown_plugin_order_payment",
 					"glpi_plugin_order_references",
 					"glpi_plugin_order_references_manufacturers",
-					"glpi_plugin_order_references",
 					"glpi_plugin_order_config");
 					
 	foreach($tables as $table)				
 		$DB->query("DROP TABLE `$table`;");
 
 		/* clean glpi_display */
-		$query="DELETE FROM glpi_display WHERE type='".PLUGIN_ORDER_TYPE."';";
+		$query="DELETE FROM glpi_display WHERE type='".PLUGIN_ORDER_TYPE."' OR type='".PLUGIN_ORDER_REFERENCE_TYPE."';";
 		$DB->query($query);
 		/* clean glpi_doc_device */
-		$query="DELETE FROM glpi_doc_device WHERE device_type='".PLUGIN_ORDER_TYPE."';";
+		$query="DELETE FROM glpi_doc_device WHERE device_type='".PLUGIN_ORDER_TYPE."' OR device_type='".PLUGIN_ORDER_REFERENCE_TYPE."';";
 		$DB->query($query);
 		/* clean glpi_bookmark */
-		$query="DELETE FROM glpi_bookmark WHERE device_type='".PLUGIN_ORDER_TYPE."';";
+		$query="DELETE FROM glpi_bookmark WHERE device_type='".PLUGIN_ORDER_TYPE."' OR device_type='".PLUGIN_ORDER_REFERENCE_TYPE."';";
 		$DB->query($query);
 		/* clean glpi_history */
-		$query="DELETE FROM glpi_history WHERE device_type='".PLUGIN_ORDER_TYPE."';";
+		$query="DELETE FROM glpi_history WHERE device_type='".PLUGIN_ORDER_TYPE."' OR device_type='".PLUGIN_ORDER_REFERENCE_TYPE."';";
 		$DB->query($query);
 		
 		if (TableExists("glpi_plugin_data_injection_models"))
