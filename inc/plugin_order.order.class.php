@@ -214,6 +214,16 @@ class plugin_order extends CommonDBTM {
 				echo "</td></tr>";
 			}
 			
+			/* supplier of order */
+			echo "<tr><td>".$LANG['plugin_order'][40].": </td>";
+			echo "<td>";
+			if ($canedit)
+				dropdownValue("glpi_dropdown_locations","location",$this->fields["location"],1,$this->fields["FK_entities"]);
+			else
+				echo getDropdownName("glpi_dropdown_locations",$this->fields["FK_enterprise"]);
+			echo "</td></tr>";
+			
+			
 			echo "</table>";
 			echo "</td>";	
 			

@@ -55,6 +55,8 @@ $LANG['plugin_order'][36] = "Quantité reçue éronnée";
 $LANG['plugin_order'][37] = "Commandes générées à partir des informations financières:";
 $LANG['plugin_order'][38] = "Statuts par défaut:";
 $LANG['plugin_order'][39] = "Titre de la commande";
+$LANG['plugin_order'][40] = "Lieu de livraison de la commande";
+
 
 
 
