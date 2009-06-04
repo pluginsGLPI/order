@@ -29,7 +29,7 @@
     Purpose of file:
     ----------------------------------------------------------------------*/
 function plugin_order_showReferenceManufacturers($target, $ID) {
-	global $LANG, $DB, $CFG_GLPI;
+	global $LANG, $DB, $CFG_GLPI,$INFOFORM_PAGES;
 	$query = "SELECT * FROM `glpi_plugin_order_references_manufacturers` WHERE FK_reference='$ID'";
 	$result = $DB->query($query);
 
@@ -53,7 +53,7 @@ function plugin_order_showReferenceManufacturers($target, $ID) {
 			echo "<td class='tab_bg_1'>";
 			echo "<input type='checkbox' name='check[" . $data["ID"] . "]'>";
 			echo "</td>";
-			echo "<td class='tab_bg_1'>" . getDropdownName("glpi_enterprises", $data["FK_enterprise"]) . "</td>";
+			echo "<td class='tab_bg_1'><a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[ENTERPRISE_TYPE]."?ID=".$data["FK_enterprise"]."\">" . getDropdownName("glpi_enterprises", $data["FK_enterprise"]) . "</a></td>";
 			echo "<td class='tab_bg_1'>";
 			autocompletionTextField("price[".$data["ID"]."]", "glpi_plugin_order_references_manufacturers", "price", $data["price"], 7);
 			echo "</td>";
@@ -80,7 +80,8 @@ function plugin_order_showReferenceManufacturers($target, $ID) {
 	echo "<table class='tab_cadre'>";
 	echo "<input type='hidden' name='FK_reference' value='" . $ID . "'>";
 	echo "<tr>";
-	echo "<td class='tab_bg_1'>";
+	echo "<th colspan='2'>".$LANG['plugin_order']['reference'][2]."</th></tr>";
+	echo "<tr>";
 	echo "<td class='tab_bg_1'>"; 
 	dropdownValue("glpi_enterprises","FK_enterprise","",1,$_SESSION["glpiactive_entity"],'',$suppliers); 
 	echo "</td>";
@@ -95,5 +96,53 @@ function plugin_order_showReferenceManufacturers($target, $ID) {
 	echo "</tr>";
 	echo "</table></form>";	
 	echo "</div>";
+}
+
+function plugin_order_showReferencesBySupplierID($ID)
+{
+	global $LANG, $DB, $CFG_GLPI,$INFOFORM_PAGES;
+	$query = "SELECT gr.ID, gr.FK_manufacturer, gr.FK_entities, gr.type, gr.name, grm.price FROM `glpi_plugin_order_references_manufacturers` as grm, `glpi_plugin_order_references` as gr " .
+			"WHERE grm.FK_enterprise='$ID' AND grm.FK_reference=gr.ID";
+	$result = $DB->query($query);
+
+	echo "<div class='center'>";
+	echo "<table class='tab_cadre_fixe'>";
+	echo "<tr><th colspan='5'>".$LANG['plugin_order']['reference'][3]."</th></tr>";
+	echo "<tr>"; 
+	echo "<th>".$LANG['entity'][0]."</th>";
+	echo "<th>".$LANG['common'][5]."</th>";
+	echo "<th>".$LANG['plugin_order']['reference'][1]."</th>";
+	echo "<th>". $LANG['common'][17]."</th><th>".$LANG['plugin_order']['detail'][4]."</th></tr>";
+	
+	if ($DB->numrows($result) > 0)
+	{
+		$commonitem = new CommonItem;
+		while ($data = $DB->fetch_array($result))
+		{
+			echo "<tr>";
+			echo "<td class='tab_bg_1'>";
+			echo getDropdownName("glpi_entities",$data["FK_entities"]);
+			echo "</td>";
+
+			echo "<td class='tab_bg_1'>";
+			echo getDropdownName("glpi_dropdown_manufacturer",$data["FK_manufacturer"]);
+			echo "</td>";
+
+			echo "<td class='tab_bg_1'>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[PLUGIN_ORDER_REFERENCE_TYPE]."?ID=".$data["ID"]."\">".$data["name"]."</a>";
+			echo "</td>";
+			echo "<td class='tab_bg_1'>"; 
+			$commonitem->setType($data["type"]);
+			echo $commonitem->getType();
+			echo "</td>";
+			echo "<td class='tab_bg_1'>";
+			echo $data["price"];
+			echo "</td>";
+			echo "</tr>";	
+		}
+	}
+	echo "</table>";	
+	echo "</div>";
+	
 }
 ?>

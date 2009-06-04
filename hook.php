@@ -511,7 +511,7 @@ function plugin_headings_order($type,$ID,$withtemplate=0){
 			break;
 			case ENTERPRISE_TYPE :
 				echo "<div align='center'>";
-				plugin_order_showenterpriseAssociated(ENTERPRISE_TYPE,$ID);
+				plugin_order_showReferencesBySupplierID($ID);
 				echo "</div>";
 			break;
 			case PROFILE_TYPE :
