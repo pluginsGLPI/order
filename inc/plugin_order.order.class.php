@@ -109,7 +109,7 @@ class plugin_order extends CommonDBTM {
 				}
 			echo "<div class='center' id='tabsbody'>";
 			echo "<table class='tab_cadre_fixe'>";
-			$this->showFormHeader($ID,'',2);
+			$this->showFormHeader($ID,'',1);
 			echo "<tr><td class='tab_bg_1' valign='top'>";
 	
 			echo "<table cellpadding='2' cellspacing='2' border='0'>\n";
@@ -146,6 +146,15 @@ class plugin_order extends CommonDBTM {
 				autocompletionTextField("deliverynum","glpi_plugin_order","deliverynum",$this->fields["deliverynum"],30,$this->fields["FK_entities"]);	
 			else
 				echo "".$this->fields["deliverynum"]."";
+			echo "</td></tr>";
+			
+			/* title */
+			echo "<tr><td>".$LANG['plugin_order'][39].": </td>";
+			echo "<td>";
+			if ($canedit)
+				autocompletionTextField("title","glpi_plugin_order","title",$this->fields["title"],30,$this->fields["FK_entities"]);	
+			else
+				echo "".$this->fields["title"]."";
 			echo "</td></tr>";
 			
 			echo "</table>";
@@ -190,14 +199,41 @@ class plugin_order extends CommonDBTM {
 				echo getDropdownName("glpi_enterprises",$this->fields["FK_enterprise"]);
 			echo "</td></tr>";
 			
+			/* status */
+			if($this->fields["status"]==NULL && $canedit){
+				echo "<tr><td valign='top'>".$LANG['plugin_order']['status'][0].": </td>";
+				echo "<td valign='top'>";
+				$config= new plugin_order_config();
+				$config->getFromDB(1);
+				dropdownValue("glpi_dropdown_plugin_order_status","status",$config->fields["status_creation"],1,$this->fields["FK_entities"]);
+				echo "</td></tr>";
+			} elseif($this->fields["status"]!=NULL && $canedit) {
+				echo "<tr><td valign='top'>".$LANG['plugin_order']['status'][0].": </td>";
+				echo "<td valign='top'>";
+				dropdownValue("glpi_dropdown_plugin_order_status","status",$this->fields["status"],1,$this->fields["FK_entities"]);
+				echo "</td></tr>";
+			}
+			
 			echo "</table>";
 			echo "</td>";	
-			echo "<td class='tab_bg_1' valign='top'>";
-			echo "<table cellpadding='2' cellspacing='2' border='0'>";
 			
+			
+			
+
+			echo "</td></tr>";
+			
+			echo "<tr><td class='tab_bg_1' align='left'>";
+			//comments of order
+			echo "<table cellpadding='2' cellspacing='2' border='0'><tr><td>";
+			echo $LANG['plugin_order'][2].":	</td>";
+			echo "<td><textarea cols='45' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
+			echo "</td></tr>";
+			echo "</table>";
+			echo "<td class='tab_bg_1' align='left'>";
+			echo "<table cellpadding='2' cellspacing='2' border='0'><tr><td>";
 			/* total price (without taxes) */
 			if($ID > 0 && getPrice($ID)!=-1) {
-				echo "<tr><td>".$LANG['plugin_order'][13].": </td>";
+				echo "".$LANG['plugin_order'][13].": </td>";
 				echo "<td>".getPrice($ID)."</td></tr>";
 			
 			/* total price (without taxes) */
@@ -205,33 +241,7 @@ class plugin_order extends CommonDBTM {
 				echo "<td>".getTaxesPrice($ID)."</td></tr>";
 			}
 			
-			/* status */
-			if($this->fields["status"]==NULL && $canedit){
-				echo "<td valign='top'>".$LANG['plugin_order']['status'][0].": </td>";
-				echo "<td valign='top'>";
-				$config= new plugin_order_config();
-				$config->getFromDB(1);
-				dropdownValue("glpi_dropdown_plugin_order_status","status",$config->fields["status_creation"],1,$this->fields["FK_entities"]);
-				echo "</td></tr>";
-			} elseif($this->fields["status"]!=NULL && $canedit) {
-				echo "<td valign='top'>".$LANG['plugin_order']['status'][0].": </td>";
-				echo "<td valign='top'>";
-				dropdownValue("glpi_dropdown_plugin_order_status","status",$this->fields["status"],1,$this->fields["FK_entities"]);
-				echo "</td></tr>";
-			}
-			
 			echo "</table>";
-	
-			echo "</td></tr>";
-			
-			echo "<tr><td class='tab_bg_1' align='center' colspan='3'>";
-			//comments of order
-			echo "<table cellpadding='2' cellspacing='2' border='0'><tr><td>";
-			echo $LANG['plugin_order'][2].":	</td>";
-			echo "<td><textarea cols='50' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
-			echo "</td>";
-			echo "</table>";
-			
 			echo "</td>";
 			echo "</tr>";
 			
