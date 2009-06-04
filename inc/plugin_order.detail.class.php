@@ -36,7 +36,7 @@ class plugin_order_detail extends CommonDBTM {
         function showFormDetail ($FK_order, $target, $mode) {
                 GLOBAL  $CFG_GLPI, $LANG,$DB;
 			
-                        $query=" SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, glpi_plugin_order_references.type, glpi_plugin_order_references.FK_enterprise, glpi_plugin_order_references.name, glpi_plugin_order_detail.price, glpi_plugin_order_detail.taxesprice, glpi_plugin_order_detail.reductedprice, SUM(glpi_plugin_order_detail.price) AS totalprice, SUM(glpi_plugin_order_detail.taxesprice) AS totaltaxesprice
+                        $query=" SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, glpi_plugin_order_references.type, glpi_plugin_order_references.FK_manufacturer, glpi_plugin_order_references.name, glpi_plugin_order_detail.price, glpi_plugin_order_detail.taxesprice, glpi_plugin_order_detail.reductedprice, SUM(glpi_plugin_order_detail.price) AS totalprice, SUM(glpi_plugin_order_detail.taxesprice) AS totaltaxesprice
 					FROM glpi_plugin_order_detail, glpi_plugin_order_references
 					WHERE glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID
 					AND glpi_plugin_order_detail.FK_order=$FK_order
@@ -84,7 +84,7 @@ class plugin_order_detail extends CommonDBTM {
 					$ci->setType($DB->result($result,$i,"type"));
 					echo "<td align='center'>".$ci->getType()."</td>";
 					/* manufacturer */
-					echo "<td align='center'>".getDropdownName("glpi_enterprises",$DB->result($result,$i,"FK_enterprise"))."</td>";
+					echo "<td align='center'>".getDropdownName("glpi_dropdown_manufacturer",$DB->result($result,$i,"FK_manufacturer"))."</td>";
 					/* reference */
 					echo "<td align='center'>".$DB->result($result,$i,"name")."</td>";
 					/* quantity */

@@ -37,12 +37,12 @@ function getQuantity($FK_order, $FK_ref) {
 		return($DB->result($result,0,'quantity'));
 }
 function getDelivredQuantity($FK_order, $FK_ref) {
-GLOBAL  $CFG_GLPI, $DB;
-	$query="	SELECT count(*) AS delivredquantity FROM glpi_plugin_order_detail
-					WHERE FK_order=$FK_order
-					AND FK_ref=$FK_ref
-					AND status='1'";
-	$result=$DB->query($query);
-	return($DB->result($result,0,'delivredquantity'));
+	global  $CFG_GLPI, $DB;
+		$query="	SELECT count(*) AS delivredquantity FROM glpi_plugin_order_detail
+						WHERE FK_order=$FK_order
+						AND FK_ref=$FK_ref
+						AND status='1'";
+		$result=$DB->query($query);
+		return($DB->result($result,0,'delivredquantity'));
 }
 ?>
