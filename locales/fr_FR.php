@@ -54,6 +54,7 @@ $LANG['plugin_order'][35] = "Supprimer les entêtes des commandes générées à
 $LANG['plugin_order'][36] = "Quantité reçue éronnée";
 $LANG['plugin_order'][37] = "Commandes générées à partir des informations financières:";
 $LANG['plugin_order'][38] = "Statuts par défaut:";
+$LANG['plugin_order'][39] = "Titre de la commande";
 
 
 
