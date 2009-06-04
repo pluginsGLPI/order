@@ -32,7 +32,7 @@ class plugin_order_detail extends CommonDBTM {
         {
                 $this->table="glpi_plugin_order_detail";                
         }
-        
+	
         function showFormDetail ($FK_order, $target, $mode) {
                 GLOBAL  $CFG_GLPI, $LANG,$DB;
 			
@@ -40,7 +40,7 @@ class plugin_order_detail extends CommonDBTM {
 					FROM glpi_plugin_order_detail, glpi_plugin_order_references
 					WHERE glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID
 					AND glpi_plugin_order_detail.FK_order=$FK_order
-					GROUP BY glpi_plugin_order_references.ID";
+					GROUP BY glpi_plugin_order_detail.FK_ref";
                         $result=$DB->query($query);
                         $num=$DB->numrows($result);
                         $rand=mt_rand();
@@ -67,20 +67,8 @@ class plugin_order_detail extends CommonDBTM {
                                 $i=0;
                                 while ($i<$num){
 					$ID=$DB->result($result,$i,"IDD");
-                                        $this->getFromDB($ID);
-					$IDR=$DB->result($result,0,"IDR");
-					$query_quantity="	SELECT count(*) AS quantity FROM glpi_plugin_order_detail
-									WHERE FK_order=$FK_order
-									AND FK_ref=$IDR";
-					$result_quantity=$DB->query($query_quantity);
-					$quantity=$DB->result($result_quantity,0,'quantity');
-					$query_quantity="	SELECT count(*) AS delivredquantity FROM glpi_plugin_order_detail
-									WHERE FK_order=$FK_order
-									AND FK_ref=$IDR
-									AND status='1'";
-					$result_quantity=$DB->query($query_quantity);
-					$delivredquantity=$DB->result($result_quantity,0,'delivredquantity');
-                                        if($delivredquantity==$quantity)
+					$IDR=$DB->result($result,$i,"IDR");
+                                        if(getDelivredQuantity($FK_order, $IDR)==getQuantity($FK_order, $IDR))
                                                 echo "<tr class='tab_bg_2'>";
                                         else
                                                 echo "<tr class='tab_bg_4'>";
@@ -93,24 +81,24 @@ class plugin_order_detail extends CommonDBTM {
                                         }
 					/* type */
 					$ci=new CommonItem();
-					$ci->setType($DB->result($result,0,"type"));
+					$ci->setType($DB->result($result,$i,"type"));
 					echo "<td align='center'>".$ci->getType()."</td>";
 					/* manufacturer */
-					echo "<td align='center'>".getDropdownName("glpi_enterprises",$DB->result($result,0,"FK_enterprise"))."</td>";
+					echo "<td align='center'>".getDropdownName("glpi_enterprises",$DB->result($result,$i,"FK_enterprise"))."</td>";
 					/* reference */
-					echo "<td align='center'>".$DB->result($result,0,"name")."</td>";
+					echo "<td align='center'>".$DB->result($result,$i,"name")."</td>";
 					/* quantity */
-					echo "<td align='center'>".$quantity."</td>";	
+					echo "<td align='center'>".getQuantity($FK_order, $IDR)."</td>";	
 					/* delivered quantity */
-					echo "<td align='center'>".$delivredquantity."</td>";	
+					echo "<td align='center'>".getDelivredQuantity($FK_order, $IDR)."</td>";	
 					/*price */
-					echo "<td align='center'>".$DB->result($result,0,"price")."</td>";
+					echo "<td align='center'>".$DB->result($result,$i,"price")."</td>";
 					/* price with taxes */
-					echo "<td align='center'>".$DB->result($result,0,"taxesprice")."</td>";
+					echo "<td align='center'>".$DB->result($result,$i,"taxesprice")."</td>";
 					/* total price */
-					echo "<td align='center'>".$DB->result($result,0,"totalprice")."</td>";
+					echo "<td align='center'>".$DB->result($result,$i,"totalprice")."</td>";
 					/* total price with taxes  */
-					echo "<td align='center'>".$DB->result($result,0,"totaltaxesprice")."</td>";
+					echo "<td align='center'>".$DB->result($result,$i,"totaltaxesprice")."</td>";
                                         $i++;
                                 }
 				echo "</table>";
