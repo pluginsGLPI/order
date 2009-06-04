@@ -36,9 +36,10 @@ class plugin_order_detail extends CommonDBTM {
    function showFormDetail ($FK_order, $target, $mode) {
       global  $CFG_GLPI, $LANG,$DB;
 		
-			$query=" SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, 
+			$query="	SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, 
 								glpi_plugin_order_references.type, glpi_plugin_order_references.FK_manufacturer, glpi_plugin_order_references.name, 
-								glpi_plugin_order_detail.price, glpi_plugin_order_detail.taxesprice, glpi_plugin_order_detail.reductedprice, SUM(glpi_plugin_order_detail.reductedprice) AS totalprice
+								glpi_plugin_order_detail.price, glpi_plugin_order_detail.taxesprice, glpi_plugin_order_detail.reductedprice, 
+								SUM(glpi_plugin_order_detail.reductedprice) AS totalprice
 								FROM glpi_plugin_order_detail, glpi_plugin_order_references
 								WHERE glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID
 								AND glpi_plugin_order_detail.FK_order=$FK_order
@@ -53,7 +54,7 @@ class plugin_order_detail extends CommonDBTM {
 			if ($num>0)
 			{
 				echo "<div class='center'><table class='tab_cadrehov'>";
-				echo "<tr><th colspan='10'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
+				echo "<tr><th colspan='11'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
 				echo "<tr>";
 				if($canedit && $mode==1)
 					echo "<th></th>";
@@ -64,6 +65,7 @@ class plugin_order_detail extends CommonDBTM {
 				echo "<th>".$LANG['plugin_order']['detail'][3]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][4]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][8]."</th>";
+				echo "<th>".$LANG['plugin_order']['detail'][18]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][9]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][10]."</th></tr>";
 				$i=0;
@@ -97,6 +99,8 @@ class plugin_order_detail extends CommonDBTM {
 					echo "<td align='center'>".$DB->result($result,$i,"price")."</td>";
 					/* price with taxes */
 					echo "<td align='center'>".$DB->result($result,$i,"taxesprice")."</td>";
+					/* price with reduction */
+					echo "<td align='center'>".$DB->result($result,$i,"reductedprice")."</td>";
 					/* total price */
 					echo "<td align='center'>".$DB->result($result,$i,"totalprice")."</td>";
 					/* total price with taxes  */

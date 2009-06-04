@@ -31,16 +31,22 @@
 function getPrice($FK_order) {
 	global $DB;
 		$query=" SELECT sum(reductedprice) AS result from glpi_plugin_order_detail
-				WHERE FK_order=$FK_order";
+						WHERE FK_order=$FK_order";
 		$result=$DB->query($query);
-		return(sprintf("%01.2f", $DB->result($result,0,'result')));
+		if ($DB->result($result,0,'result') != NULL)
+			return(sprintf("%01.2f", $DB->result($result,0,'result')));
+		else
+			return(-1);
 }
 
 function getTaxesPrice($FK_order) {
 	global $DB;
 		$query=" SELECT  SUM(reductedprice*(taxesprice/price)) AS result from glpi_plugin_order_detail
-				WHERE FK_order=$FK_order";
+						WHERE FK_order=$FK_order";
 		$result=$DB->query($query);
-		return(sprintf("%01.2f", $DB->result($result,0,'result')));
+		if ($DB->result($result,0,'result') != NULL)
+			return(sprintf("%01.2f", $DB->result($result,0,'result')));
+		else 
+			return(-1);
 }
 ?>

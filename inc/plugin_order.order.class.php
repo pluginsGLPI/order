@@ -40,15 +40,15 @@ class plugin_order extends CommonDBTM {
 	function cleanDBonPurge($ID) {
 		global $DB;
 
-		$query = "DELETE FROM glpi_plugin_order_device 
-						WHERE FK_order = '$ID'";
+		$query="	DELETE FROM glpi_plugin_order_device 
+							WHERE FK_order = '$ID'";
 		$DB->query($query);
-		$query = "DELETE FROM glpi_doc_device 
-						WHERE FK_device = '$ID' 
-						AND device_type= '".PLUGIN_ORDER_TYPE."' ";
+		$query="	DELETE FROM glpi_doc_device 
+							WHERE FK_device = '$ID' 
+							AND device_type= '".PLUGIN_ORDER_TYPE."' ";
 		$DB->query($query);
-		$query=	"DELETE FROM glpi_plugin_order_detail
-						WHERE FK_order='$ID'";
+		$query="	DELETE FROM glpi_plugin_order_detail
+							WHERE FK_order='$ID'";
 		$DB->query($query);
 	}
 	
@@ -56,9 +56,9 @@ class plugin_order extends CommonDBTM {
 	function cleanItems($ID,$type) {
 		global $DB;
 		
-		$query = "DELETE FROM glpi_plugin_order_device
-						WHERE FK_device = '$ID' 
-						AND device_type= '$type'";
+		$query=" DELETE FROM glpi_plugin_order_device
+							WHERE FK_device = '$ID' 
+							AND device_type= '$type'";
 		$DB->query($query);
 	}
 	
@@ -163,8 +163,7 @@ class plugin_order extends CommonDBTM {
 					showDateFormItem("date",$this->fields["date"],true,$editcalendar);
 			else
 				echo "".$this->fields["date"]."";
-			echo "</td>";
-			echo "</tr>";
+			echo "</td></tr>";
 			
 			/* budget */
 			echo "<tr><td>".$LANG['plugin_order'][3].": </td><td>";
@@ -180,8 +179,7 @@ class plugin_order extends CommonDBTM {
 				dropdownValue("glpi_dropdown_plugin_order_payment","payment",$this->fields["payment"],1,$this->fields["FK_entities"]);
 			else
 				echo getdropdownname("glpi_dropdown_plugin_order_payment",$this->fields["payment"]);
-			echo "</td>";
-			echo "</tr>";
+			echo "</td></tr>";
 			
 			/* supplier of order */
 			echo "<tr><td>".$LANG['plugin_order']['setup'][14].": </td>";
@@ -189,7 +187,7 @@ class plugin_order extends CommonDBTM {
 			if ($canedit)
 				dropdownValue("glpi_enterprises","FK_enterprise",$this->fields["FK_enterprise"],1,$this->fields["FK_entities"]);
 			else
-			echo getDropdownName("glpi_enterprises",$this->fields["FK_enterprise"]);
+				echo getDropdownName("glpi_enterprises",$this->fields["FK_enterprise"]);
 			echo "</td></tr>";
 			
 			echo "</table>";
@@ -198,13 +196,13 @@ class plugin_order extends CommonDBTM {
 			echo "<table cellpadding='2' cellspacing='2' border='0'>";
 			
 			/* total price (without taxes) */
-			if(getPrice($ID)!=NULL){
+			if(getPrice($ID)!=-1) {
 				echo "<tr><td>".$LANG['plugin_order'][13].": </td>";
 				echo "<td>".getPrice($ID)."</td></tr>";
 			}
-		
+			
 			/* total price (without taxes) */
-			if(getTaxesPrice($ID)!=NULL){
+			if(getPrice($ID)!=-1) {
 				echo "<tr><td>".$LANG['plugin_order'][14].": </td>";
 				echo "<td>".getTaxesPrice($ID)."</td></tr>";
 			}
@@ -217,7 +215,7 @@ class plugin_order extends CommonDBTM {
 				$config->getFromDB(1);
 				dropdownValue("glpi_dropdown_plugin_order_status","status",$config->fields["status_creation"],1,$this->fields["FK_entities"]);
 				echo "</td></tr>";
-			}elseif($this->fields["status"]!=NULL && $canedit){
+			} elseif($this->fields["status"]!=NULL && $canedit) {
 				echo "<td valign='top'>".$LANG['plugin_order']['status'][0].": </td>";
 				echo "<td valign='top'>";
 				dropdownValue("glpi_dropdown_plugin_order_status","status",$this->fields["status"],1,$this->fields["FK_entities"]);

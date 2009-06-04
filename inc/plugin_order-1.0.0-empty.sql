@@ -9,7 +9,6 @@ CREATE TABLE `glpi_plugin_order` (
 	`payment` int (11) NOT NULL default 0,
 	`status` int(11) NOT NULL default 1,
 	`FK_entities` int(11) NOT NULL default 0,
-	`price` FLOAT NOT NULL default 0,
 	`date` date,
 	`FK_enterprise` INT(11) NOT NULL DEFAULT 0,
     `location` int(11) NOT NULL default 0,
