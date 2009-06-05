@@ -42,7 +42,7 @@ class plugin_order_detail extends CommonDBTM {
 
 		if ($canedit)
 		{
-			echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\"".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.detail.form.php\">";
+			echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\"$target\">";
 			echo "<input type='hidden' name='FK_order' value=\"$orderID\">";
 	
 			echo "<div class='center'>"; 
@@ -75,8 +75,8 @@ class plugin_order_detail extends CommonDBTM {
 			
 	}
 	
-   function showFormDetail ($FK_order, $target, $mode) {
-      global  $CFG_GLPI, $LANG,$DB;
+   function showFormDetail ($target,$FK_order) {
+      global  $CFG_GLPI, $LANG,$DB,$INFOFORM_PAGES;
 		
 			$query="	SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, 
 								glpi_plugin_order_references.type, glpi_plugin_order_references.FK_manufacturer, glpi_plugin_order_references.name, 
@@ -92,14 +92,14 @@ class plugin_order_detail extends CommonDBTM {
 			$rand=mt_rand();
 			$plugin_order=new plugin_order();
 			$canedit=$plugin_order->can($FK_order,'w');
-			echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  action=\"".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.detail.form.php\">";
+			echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  action=\"$target\">";
 			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
 			if ($num>0)
 			{
 				echo "<div class='center'><table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='11'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
 				echo "<tr>";
-				if($canedit && $mode==1)
+				if($canedit)
 					echo "<th></th>";
 				echo "<th>".$LANG['plugin_order']['detail'][1]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][11]."</th>";
@@ -118,12 +118,12 @@ class plugin_order_detail extends CommonDBTM {
 					if(getDelivredQuantity($FK_order, $IDR)==getQuantity($FK_order, $IDR))
 						echo "<tr class='tab_bg_2'>";
 					else
-						echo "<tr class='tab_bg_4'>";
-					if ($canedit && $mode==1){
+						echo "<tr class='tab_bg_1'>";
+					if ($canedit){
 						echo "<td width='10'>";
 						$sel="";
 						if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-						echo "<input type='checkbox' name='' value='1' $sel>";
+						echo "<input type='checkbox' name='detail[".$DB->result($result,$i,"IDD")."]' value='1' $sel>";
 						echo "</td>";
 					}
 					/* type */
@@ -133,7 +133,7 @@ class plugin_order_detail extends CommonDBTM {
 					/* manufacturer */
 					echo "<td align='center'>".getDropdownName("glpi_dropdown_manufacturer",$DB->result($result,$i,"FK_manufacturer"))."</td>";
 					/* reference */
-					echo "<td align='center'>".$DB->result($result,$i,"name")."</td>";
+					echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[PLUGIN_ORDER_REFERENCE_TYPE]."?ID=".$DB->result($result,$i,"IDR")."'>".$DB->result($result,$i,"name")."</a></td>";
 					/* quantity */
 					echo "<td align='center'>".getQuantity($FK_order, $IDR)."</td>";	
 					/* delivered quantity */
@@ -151,18 +151,21 @@ class plugin_order_detail extends CommonDBTM {
 					$i++;
 				}
 				echo "</table>";
-				if ($canedit && $mode==1) {
+
+				if ($canedit) {
 					echo "<div class='center'>";
 					echo "<table width='80%' class='tab_glpi'>";
 					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=none'>".$LANG['buttons'][19]."</a>";
 					echo "</td><td align='left' width='80%'>";
-					echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
+					echo "<input type='submit' name='delete_detail' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 					echo "</td>";
 					echo "</table>";
 					echo "</div>";
 				}	
+
 			}
 	}
+
 }
 ?>

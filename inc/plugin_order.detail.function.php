@@ -54,4 +54,22 @@ function getTaxes($FK_order, $FK_ref) {
 		$taxes=$DB->result($result,0,'taxesprice')/$DB->result($result,0,'price');
 		return($taxes);
 }
+
+function addDetails($referenceID,$orderID,$quantity,$price,$discounted_price,$taxes)
+{
+	if ($quantity > 0)
+	{
+		$detail = new plugin_order_detail;
+		for ($i=0;$i<$quantity;$i++)
+		{
+			$input["FK_order"] = $orderID;
+			$input["FK_ref"] = $referenceID;
+			$input["price"] = $price;
+			$input["reductedprice"] = $discounted_price; 
+			$input["status"] = ORDER_STATUS_DELIVERED;
+			$detail->add($input);
+		}
+	}   	
+}
+
 ?>

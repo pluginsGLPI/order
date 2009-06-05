@@ -63,7 +63,8 @@ if ($_POST["FK_reference"] > 0)
 			autocompletionTextField("reductedprice","glpi_plugin_order_detail","reductedprice",$price,5);
 		break;
 		case 'validate':
-			echo "<input type='submit' name='add' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+			echo "<input type='hidden' name='FK_reference' value='".$_POST["FK_reference"]."' class='submit' >";
+			echo "<input type='submit' name='add_detail' value=\"".$LANG['buttons'][7]."\" class='submit' >";
 		break;					
 	}	
 }

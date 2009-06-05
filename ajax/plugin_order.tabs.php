@@ -53,7 +53,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 		switch($_POST['glpi_tab']){
 			case -1 :
 				/* show items linking form from all */
-				plugin_order_showdetail($_POST["ID"]);
+				plugin_order_showdetail($_SERVER["HTTP_REFERER"],$_POST["ID"]);
 				plugin_order_showItem($_POST["ID"]);
 				showDocumentAssociated(PLUGIN_ORDER_TYPE,$_POST["ID"],$_POST["withtemplate"]);
 				break;
@@ -68,7 +68,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 				showDocumentAssociated(PLUGIN_ORDER_TYPE,$_POST["ID"],$_POST["withtemplate"]);
 				break;
 			case 4 : 
-				plugin_order_showdetail($_POST["ID"], 1);
+				plugin_order_showdetail($_SERVER["HTTP_REFERER"],$_POST["ID"], 1);
 				break;
 			case 5 : 
 				plugin_order_showReceptionForm($_POST["ID"]);

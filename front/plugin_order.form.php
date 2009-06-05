@@ -107,6 +107,20 @@ else if (isset($_POST["deleteitem"])){
 		plugin_order_unlinkdevice($_GET["ID"]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
+else if (isset($_POST["add_detail"]))
+{
+	addDetails($_POST["FK_reference"],$_POST["FK_order"],$_POST["quantity"],$_POST["price"],$_POST["reductedprice"],$_POST["taxes"]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_POST["delete_detail"]))
+{
+	plugin_order_checkRight("order","w");
+	$detail = new plugin_order_detail;
+	foreach ($_POST["detail"] as $ID => $value)
+		$detail->delete(array("ID"=>$ID));
+
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
 else
 {
 	plugin_order_checkRight("order","r");

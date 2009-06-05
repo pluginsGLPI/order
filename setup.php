@@ -30,7 +30,9 @@
     
 include_once ("inc/plugin_order.functions_auth.php");
 include_once ("inc/plugin_order.profile.class.php");
-    
+
+define ("ORDER_STATUS_NOT_DELIVERED",0);   
+define ("ORDER_STATUS_DELIVERED",1);    
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
 	global $PLUGIN_HOOKS,$CFG_GLPI,$LANG;
