@@ -31,10 +31,14 @@ $NEEDED_ITEMS=array("computer","printer","networking","monitor","software","peri
 define('GLPI_ROOT', '../../..'); 
 include (GLPI_ROOT."/inc/includes.php");
 
-if(isset($_POST["reception"])) {
-	if(isset($_POST["item"])) {
-		 foreach ($_POST["item"] as $key => $val){
-			if ($val==1) {
+if(isset($_POST["reception"])) 
+{
+	if(isset($_POST["item"]))
+	{
+		 foreach ($_POST["item"] as $key => $val)
+		 {
+			if ($val==1) 
+			{
 				$DB = new DB;
 				$query=" UPDATE glpi_plugin_order_detail
 						SET status=1
@@ -49,20 +53,25 @@ if(isset($_POST["showGeneration"])) {
 	commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order","order");
 	echo "<div class='center'>";
 	echo "<table class='tab_cadre'>";
-	if(isset($_POST["item"])) {
+	if(isset($_POST["item"])) 
+	{
 		echo "<form method='post' name='order_materialGeneration' id='order_materialGeneration'  action=".$_SERVER["PHP_SELF"].">";
 		echo "<tr><th colspan='4'>".$LANG['plugin_order']['delivery'][3]."</tr></th>";
 		echo "<tr><th>".$LANG['plugin_order']['reference'][1]."</th>";
 		echo "<th>".$LANG['plugin_order']['delivery'][6]."</th>";
 		echo "<th>".$LANG['plugin_order']['delivery'][7]."</th>";
 		echo "<th>".$LANG['plugin_order']['delivery'][8]."</th></tr>";
-		foreach ($_POST["item"] as $key => $val){
-			if ($val==1) {
+		echo "<input type='hidden' name='FK_order' value=".$_POST["FK_order"].">";
+		foreach ($_POST["item"] as $key => $val)
+		{
+			if ($val==1) 
+			{
 				echo "<tr><td><a href=".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.reference.form.php?ID=".$key.">".$_POST["name"][$key-1]."</a></td>";
 				echo "<td><input type='text' size='20' name='serial[$key]'></td>";
 				echo "<td><input type='text' size='20' name='inventory[$key]'></td>";
 				echo "<td><input type='text' size='20' name='name[$key]'></td></tr>";
 				echo "<input type='hidden' name='type[$key]' value=".$_POST['type'][$key-1].">";
+				echo "<input type='hidden' name='ID[$key]' value=".$_POST['ID'][$key-1].">";
 			}
 		}
 		echo "<tr><td align='center' colspan='4' class='tab_bg_2'><input type='submit' name='generation' class='submit' value=".$LANG['plugin_order']['delivery'][9]."></td></tr>";
@@ -72,20 +81,41 @@ if(isset($_POST["showGeneration"])) {
 	echo "</div>";
 	commonFooter();
 } 
-if(isset($_POST["generation"])) {
+if(isset($_POST["generation"])) 
+{
 	$i=1;
-	while(isset($_POST["serial"][$i])) {
-		plugin_order_generateAssociatedMaterial($_POST["type"][$i], $_POST["serial"][$i]);
+	while(isset($_POST["serial"][$i])) 
+	{
+		plugin_order_generateAssociatedMaterial($_POST["type"][$i], $_POST["serial"][$i], $_POST["inventory"][$i], $_POST["name"][$i]);
+		plugin_order_createLinkWithAssociatedMaterial($_POST["type"][$i], $_POST["serial"][$i], $_POST["FK_order"], $_POST["ID"][$i]);
 		$i++;
 	}
-	glpi_header($_SERVER["HTTP_REFERER"]);
+	glpi_header("".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["FK_order"]."");
 }
-function plugin_order_generateAssociatedMaterial($type, $serial) {
+function plugin_order_generateAssociatedMaterial($type, $serial, $numinv, $name) 
+{
 	global $DB, $LINK_ID_TABLE;
-	$query=" INSERT INTO ".$LINK_ID_TABLE[$type]." (serial, ) 
-			values ($serial)";
+	
+	$query=" INSERT INTO ".$LINK_ID_TABLE[$type]." (serial, otherserial, name) 
+			values ('$serial', '$numinv', '$name')";
 	$DB->query($query);
 }
-
-
+function plugin_order_createLinkWithAssociatedMaterial($type, $serial, $FK_order, $IDD)
+{
+	global $DB, $LINK_ID_TABLE;
+	
+	$query=" SELECT ID FROM ".$LINK_ID_TABLE[$type]." WHERE serial='$serial'"; 
+	$result=$DB->query($query);
+	$ID=$DB->result($result,0,'ID');
+	$query=" INSERT INTO glpi_plugin_order_device (FK_order, FK_device, device_type) 
+			values ('$FK_order', '$ID', '$type')";
+	$DB->query($query);
+	$query=" SELECT ID FROM glpi_plugin_order_device WHERE FK_order='$FK_order' AND FK_device='$ID' AND device_type='$type'"; 
+	$result=$DB->query($query);
+	$ID_device=$DB->result($result,0,'ID');
+	$query=" UPDATE glpi_plugin_order_detail
+						SET FK_device=$ID_device
+						WHERE ID=$IDD";
+	$DB->query($query);
+}
  ?>

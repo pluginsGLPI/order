@@ -72,6 +72,7 @@ $LANG['plugin_order']['status'][8] ="Réceptionné";
 
 $LANG['plugin_order']['item'][0]="Matériel(s) lié(s)";
 $LANG['plugin_order']['item'][1]="Dissocier le(s) matériels(s)";
+$LANG['plugin_order']['item'][2]="Aucun matériel associé";
 
 $LANG['plugin_order']['detail'][0]="Détail(s)";
 $LANG['plugin_order']['detail'][1]="Type";

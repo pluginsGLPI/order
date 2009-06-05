@@ -27,7 +27,6 @@
     Original Author of file:
     Purpose of file:
     ----------------------------------------------------------------------*/
-    
 function plugin_order_showReceptionForm($FK_order) {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
 	
@@ -66,6 +65,7 @@ function plugin_order_showReceptionForm($FK_order) {
 						echo "<input type='checkbox' name='item[".$ID."]' value='1' $sel>";
 						echo "</td>";
 			}
+			$type=$DB->result($result,$i,'type');
 			echo "<td align='center'>".getDetailType($ID)."</td>";
 			echo "<td align='center'>".getDetailManufacturer($ID)."</td>";
 			$name=$DB->result($result,$i,'name');
@@ -78,10 +78,10 @@ function plugin_order_showReceptionForm($FK_order) {
 				echo "".$LANG['plugin_order']['status'][7]."";
 			echo "</td>";
 			echo "<td align='center'>".$DB->result($result,$i,'date')."</td>";
-			echo "<td align='center'>".$DB->result($result,$i,'FK_device')."</td>";
+			echo "<td align='center'>".getDeviceSerial($DB->result($result,$i,'FK_device'), $type)."</td>";
 			echo "<input type='hidden' name='ID[$i]' value='$ID'>";
 			echo "<input type='hidden' name='name[$i]' value='$name'>";
-			$type=$DB->result($result,$i,'type');
+			
 			echo "<input type='hidden' name='type[$i]' value='$type'>";
 			$i++;
 		}
@@ -93,23 +93,17 @@ function plugin_order_showReceptionForm($FK_order) {
 		
 			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=none'>".$LANG['buttons'][19]."</a>";
 			echo "</td><td>";
-			/*echo "<select name='action'>";
+			echo "<select name='action'>";
 			echo "<option value='reception'>-----</option>";
 			echo "<option value='reception'>".$LANG['plugin_order']['delivery'][2]."</option>";
 			echo "<option value='reception'>".$LANG['plugin_order']['delivery'][3]."</option>";
-			echo "</select>";*/
+			echo "</select>";
 			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
-			echo "<input type='submit' name='reception' value=\"".$LANG['plugin_order']['delivery'][2]."\" class='submit'>";
-			echo "</td>";
-			echo "<td align='left' width='80%'>";
-			echo "<input type='submit' name='showGeneration' value=\"".$LANG['plugin_order']['delivery'][3]."\" class='submit'>";
 			echo "</td>";
 			echo "</table>";
 			echo "</div>";
 		}
 	}
-	
-	
 }
 
 function getDetailManufacturer($ID) {
@@ -141,5 +135,19 @@ function getDetailType($ID) {
 	else
 		return(-1);
 }
-	
+
+function getDeviceSerial($ID, $type) {
+	global $DB, $LINK_ID_TABLE, $INFOFORM_PAGES, $CFG_GLPI, $LANG;
+	$query=" SELECT FK_device FROM glpi_plugin_order_device WHERE ID=$ID";
+	$result=$DB->query($query);
+	if($DB->numrows($result)>0) 
+	{
+		$ID_device=$DB->result($result,0,'FK_device');
+		$query=" SELECT serial FROM ".$LINK_ID_TABLE[$type]." WHERE ID=$ID_device";
+		$result=$DB->query($query);
+		$serial=$DB->result($result,0,'serial');
+		return($serial);
+	} else 
+		return($LANG['plugin_order']['item'][2]);
+}
 ?>
