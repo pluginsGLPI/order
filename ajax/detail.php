@@ -58,6 +58,7 @@ $fields = array ("quantity","priceht","pricediscounted","validate");
 foreach ($fields as $field)
 {
 	$paramsaction['update'] = $field;
+	ajaxUpdateItem("show_$field",$CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",$paramsaction,false,"dropdown_reference$rand");
 	ajaxUpdateItemOnSelectEvent("dropdown_reference$rand","show_$field",$CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",$paramsaction);
 }	
 ?>

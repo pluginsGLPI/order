@@ -158,7 +158,8 @@ function plugin_order_showItem($instID,$search='') {
 function plugin_order_showdetail($ID)
 {
 	$plugin_order_detail = new plugin_order_detail();
-	$plugin_order_detail->showForm($_SERVER["PHP_SELF"], $ID);
+	$plugin_order_detail->showAddForm($_SERVER["PHP_SELF"], $ID);
+	$plugin_order_detail->showFormDetail($ID,$_SERVER["PHP_SELF"], 0);
 }
 
 /* show delivery of orders */

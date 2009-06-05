@@ -33,7 +33,7 @@ class plugin_order_detail extends CommonDBTM {
       $this->table="glpi_plugin_order_detail";                
    }
 	
-	function showForm($target, $orderID)
+	function showAddForm($target, $orderID)
 	{
        global  $CFG_GLPI, $LANG,$DB;
 
@@ -61,10 +61,10 @@ class plugin_order_detail extends CommonDBTM {
 			echo "<td class='tab_bg_1'>";
 			plugin_order_dropdownAllItems("type",true,0,$order->fields["ID"],$order->fields["FK_enterprise"],$order->fields["FK_entities"]);	
 			echo "</td>";
-			echo "<td class='tab_bg_1'><span id='show_reference'>&nbsp;</span></td>";
-			echo "<td class='tab_bg_1'><span id='show_quantity'>&nbsp;</span></td>";
-			echo "<td class='tab_bg_1'><span id='show_priceht'>&nbsp;</span></td>";
-			echo "<td class='tab_bg_1'><span id='show_pricediscounted'>&nbsp;</span></td>";
+			echo "<td class='tab_bg_1' align='center'><span id='show_reference'>&nbsp;</span></td>";
+			echo "<td class='tab_bg_1' align='center'><span id='show_quantity'>&nbsp;</span></td>";
+			echo "<td class='tab_bg_1' align='center'><span id='show_priceht'>&nbsp;</span></td>";
+			echo "<td class='tab_bg_1' align='center'><span id='show_pricediscounted'>&nbsp;</span></td>";
 			echo "<td  class='tab_bg_1' align='center'>";
 			dropdownValue("glpi_dropdown_plugin_order_taxes","taxes",2);
 			echo "</td>";
@@ -163,43 +163,6 @@ class plugin_order_detail extends CommonDBTM {
 					echo "</div>";
 				}	
 			}
-			if ($canedit && $mode==1) {
-				/* table creation */
-				echo "<table class='tab_cadre_fixe' cellpadding='1'>";
-				/* title */
-				echo "<tr><th colspan='7' align='center'>".$LANG['plugin_order']['detail'][5].":</th></tr>";
-				echo "<tr><th align='center'>".$LANG['plugin_order']['detail'][1]."</th>";
-				echo "<th align='center'>".$LANG['plugin_order']['detail'][11]."</th>";
-				echo "<th align='center'>".$LANG['plugin_order']['detail'][2]."</th>";
-				echo "<th align='center'>".$LANG['plugin_order']['detail'][7]."*</th>";
-				echo "<th align='center'>".$LANG['plugin_order']['detail'][4]."*</th>";
-				echo "<th align='center'>".$LANG['plugin_order']['detail'][8]."*</th>";
-				echo "<th align='center'>&nbsp;</th></tr>";
-				/* manufacturer */
-				echo "<td align='center'>";
-				dropdownValue("glpi_dropdown_manufacturer", "manufacturer", 0);
-				echo "</td>";
-				/* reference */
-				echo "<td align='center'>";
-				autocompletionTextField("reference","glpi_plugin_order_detail","reference",'',15);
-				echo "</td>";
-				/* quantity */
-				echo "<td align='center'>";
-				autocompletionTextField("quantity","glpi_plugin_order_detail","quantity",'',15);
-				echo "</td>";
-				/* unit price */
-				echo "<td align='center'>";
-				autocompletionTextField("unitprice","glpi_plugin_order_detail","unitprice",'',15);
-				echo "</td align='center'>";
-				/* taxes */
-				echo "<td align='center' width=10%>";
-				dropdownValue("glpi_dropdown_plugin_order_taxes","taxes",2);
-				echo "</td>";
-				echo "<td>";
-				echo "<input type='submit' name='add' value=\"".$LANG['plugin_order']['detail'][6]."\" class='submit' >";
-				echo "</td></tr>";
-				echo "</table>";
-			}	
 	}
 }
 ?>
