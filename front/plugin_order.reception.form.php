@@ -50,17 +50,20 @@ if(isset($_POST["showGeneration"])) {
 	echo "<div class='center'>";
 	echo "<table class='tab_cadre'>";
 	if(isset($_POST["item"])) {
-		echo "<tr><th colspan='3'>".$LANG['plugin_order']['delivery'][3]."</tr></th>";
-		echo "<tr><th>ID</th>";
-		echo "<th>".$LANG['plugin_order']['reference'][1]."</th>";
-		echo "<th>ID</th></tr>";
+		echo "<tr><th colspan='4'>".$LANG['plugin_order']['delivery'][3]."</tr></th>";
+		echo "<tr><th>".$LANG['plugin_order']['reference'][1]."</th>";
+		echo "<th>".$LANG['plugin_order']['delivery'][6]."</th>";
+		echo "<th>".$LANG['plugin_order']['delivery'][7]."</th>";
+		echo "<th>".$LANG['plugin_order']['delivery'][8]."</th></tr>";
 		foreach ($_POST["item"] as $key => $val){
 			if ($val==1) {
-				echo "<tr><td>$key</td>";
-				echo "<td><a href=".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.reference.form.php?ID=".$key.">".$_POST["name"][$val]."</a>";
-				
+				echo "<tr><td><a href=".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.reference.form.php?ID=".$key.">".$_POST["name"][$key-1]."</a></td>";
+				echo "<td><input type='text' size='20' name='serial[$key-1]'></td>";
+				echo "<td><input type='text' size='20' name='inventory[$key-1]'></td>";
+				echo "<td><input type='text' size='20' name='name[$key-1]'></td></tr>";
 			}
 		}
+		echo "<tr><td align='center' colspan='4' class='tab_bg_2'><input type='submit' name='generation' class='submit' value=".$LANG['plugin_order']['delivery'][9]."></td></tr>";
 	} else 
 		glpi_header($_SERVER["HTTP_REFERER"]);
 	echo "</table>";
