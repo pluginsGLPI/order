@@ -44,13 +44,14 @@ if (isset($_POST["add"]))
 {
 	if(plugin_order_HaveRight("order","w")) 
         {
+            /*
                 if (!isset($_POST["type"]) || !isset($_POST["manufacturer"]) || !isset($_POST["quantity"]) || empty($_POST["quantity"]) || !isset($_POST["unitprice"]) || empty($_POST["unitprice"]) || !isset($_POST["taxes"]) || empty($_POST["taxes"]))
                 {
                         commonHeader($LANG['plugin_order'][4],$_SERVER['PHP_SELF'],"plugins","order");
                         echo "<div align='center'><br><br><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='warning'><br><br>";
                         echo "<b>".$LANG['plugin_order'][33]."</b></div>";
                         commonFooter();
-                }else{
+                }else{*/
 			$DB = new DB;
 			$newID=$plugin_order_detail->add($_POST);
 			$i=0;
@@ -77,7 +78,7 @@ if (isset($_POST["add"]))
 					WHERE ID=$newID";
 			$result=$DB->query($query);
 			plugin_order_update_status($_POST["FK_order"]);
-                }
+               // }
         }
 	glpi_header($_SERVER['HTTP_REFERER']);
 	

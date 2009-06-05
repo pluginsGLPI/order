@@ -78,24 +78,31 @@ function plugin_order_dropdownorder($myname,$entity_restrict='',$used=array()) {
 	return $rand;
 }
 
-function plugin_order_dropdownAllItems($myname,$value=0,$types='') {
+function plugin_order_dropdownAllItems($myname,$ajax=false,$value=0,$orderID=0,$supplier=0,$entity=0) {
     global $LANG,$CFG_GLPI;
-	if ($types == '')
-		$types = array (COMPUTER_TYPE, MONITOR_TYPE, NETWORKING_TYPE, PRINTER_TYPE, PERIPHERAL_TYPE);
- 
-    $rand=mt_rand();
+	$types = array (COMPUTER_TYPE, MONITOR_TYPE, NETWORKING_TYPE, PHONE_TYPE, PRINTER_TYPE, PERIPHERAL_TYPE, CONSUMABLE_ITEM_TYPE, CARTRIDGE_ITEM_TYPE);
+ 	
     $ci=new CommonItem();
-    $options=array();
-    
-    $options[0] = '-----';
-    
-    foreach ($types as $type){
+
+   	echo "<select name=\"$myname\" id='$myname'>";
+	echo "<option value='0' selected>------</option>\n";
+	
+    foreach ($types as $tmp => $type){
 		$ci->setType($type);
-		$options[$type]=$ci->getType();
+		echo "<option value='$type' ".($type==$value?" selected":'').">".$ci->getType()."</option>\n";
     }
-    asort($options);
-    
-    dropdownArrayValues($myname,$options,$value);
+	echo "</select>";
+	
+	if ($ajax)
+	{
+		$params=array('type'=>'__VALUE__',
+		'FK_enterprise'=>$supplier,
+		'entity_restrict'=>$entity,
+		'orderID'=>$orderID,
+		);
+
+		ajaxUpdateItemOnSelectEvent($myname,"show_reference",$CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php",$params);
+	}
 }
 
 function plugin_order_dropdownTemplate($name,$entity,$table,$value='')
@@ -113,5 +120,12 @@ function plugin_order_dropdownTemplate($name,$entity,$table,$value='')
 
 	echo "</select>";	
 	return $rand;
+}
+
+function plugin_order_dropdownReferencesByEnterprise($name,$type,$enterpriseID)
+{
+	$references = plugin_order_getAllReferencesByEnterpriseAndType($type,$enterpriseID);
+	$references[0] = '-----';
+	return dropdownArrayValues($name, $references,0);
 }
 ?>

@@ -145,4 +145,29 @@ function plugin_order_showReferencesBySupplierID($ID)
 	echo "</div>";
 	
 }
+
+function plugin_order_getAllReferencesByEnterpriseAndType($type,$enterpriseID)
+{
+	global $DB;
+	$query = "SELECT gr.name, gr.ID FROM glpi_plugin_order_references as gr, glpi_plugin_order_references_manufacturers as grm" .
+			" WHERE gr.type=$type AND grm.FK_enterprise=$enterpriseID AND grm.FK_reference=gr.ID";
+
+	$result = $DB->query($query);
+	$references = array();
+	while ($data = $DB->fetch_array($result))
+		$references[$data["ID"]] = $data["name"];
+
+	return $references;		
+}
+
+function plugin_order_getPriceByReferenceAndSupplier($referenceID,$supplierID)
+{
+	global $DB;
+	$query = "SELECT price FROM glpi_plugin_order_references_manufacturers WHERE FK_reference=$referenceID AND FK_enterprise=$supplierID";
+	$result = $DB->query($query);
+	if ($DB->numrows($result) > 0)
+		return $DB->result($result,0,"price");
+	else
+		return 0;	
+}
 ?>

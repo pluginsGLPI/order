@@ -52,15 +52,14 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 	}else{
 		switch($_POST['glpi_tab']){
 			case -1 :
-				$plugin = new Plugin();
 				/* show items linking form from all */
-				plugin_order_showdetail($_POST["ID"],1);
+				plugin_order_showdetail($_POST["ID"]);
 				plugin_order_showItem($_POST["ID"]);
 				showDocumentAssociated(PLUGIN_ORDER_TYPE,$_POST["ID"],$_POST["withtemplate"]);
 				break;
-			case 1 : 
+/*			case 1 : 
 				plugin_order_showdetail($_POST["ID"], 0);
-				break;
+*/				break;
 			case 2 :
 				plugin_order_showItem($_POST["ID"]);
 				break;

@@ -86,7 +86,7 @@ class plugin_order_reference extends CommonDBTM {
 
 			echo "<tr class='tab_bg_2'><td>".$LANG['common'][17].": </td>";
 			echo "<td>";
-			plugin_order_dropdownAllItems("type",$this->fields["type"]);
+			plugin_order_dropdownAllItems("type",false,$this->fields["type"]);
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_2'><td>".$LANG['common'][5].": </td>";
