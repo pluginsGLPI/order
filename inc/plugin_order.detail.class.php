@@ -47,7 +47,7 @@ class plugin_order_detail extends CommonDBTM {
 	
 			echo "<div class='center'>"; 
 			echo"<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='7'>".$LANG['plugin_order']['detail'][17]."</th></tr>";
+			echo "<tr><th colspan='7'>".$LANG['plugin_order']['detail'][5]."</th></tr>";
 			echo "<tr>"; 
 			echo "<th align='center'>".$LANG['common'][17]."</th>"; 
 			echo "<th align='center'>".$LANG['plugin_order']['reference'][1]."</th>";
@@ -96,7 +96,7 @@ class plugin_order_detail extends CommonDBTM {
 			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
 			if ($num>0)
 			{
-				echo "<div class='center'><table class='tab_cadrehov'>";
+				echo "<div class='center'><table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='11'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
 				echo "<tr>";
 				if($canedit && $mode==1)
