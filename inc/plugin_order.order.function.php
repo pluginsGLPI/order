@@ -27,7 +27,6 @@
     Original Author of file:
     Purpose of file:
     ----------------------------------------------------------------------*/
-    
 function getPrice($FK_order) {
 	global $DB;
 		$query=" SELECT sum(reductedprice) AS result from glpi_plugin_order_detail

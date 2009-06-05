@@ -157,7 +157,7 @@ function plugin_order_showItem($instID,$search='') {
 /* show details of orders */
 function plugin_order_showdetail($ID, $mode)
 {
-	global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
+	global $DB,$CFG_GLPI, $LANG;
 
 		$plugin_order_detail = new plugin_order_detail();
 		$plugin_order_detail->showFormDetail($ID,$_SERVER["PHP_SELF"], $mode);

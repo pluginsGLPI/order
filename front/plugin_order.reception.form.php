@@ -24,63 +24,74 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
    ----------------------------------------------------------------------*/
 /*----------------------------------------------------------------------
-    Original Author of file: 
+    Original Author of file:
     Purpose of file:
     ----------------------------------------------------------------------*/
-
 $NEEDED_ITEMS=array("computer","printer","networking","monitor","software","peripheral","phone","tracking","document","user","enterprise","contract","infocom","group");
+define('GLPI_ROOT', '../../..'); 
+include (GLPI_ROOT."/inc/includes.php");
 
-define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT . "/inc/includes.php");
-
-useplugin('order',true);
-		
-if(!isset($_POST["ID"])) {
-	exit();
-}
-if(!isset($_POST["sort"])) $_POST["sort"] = "";
-if(!isset($_POST["order"])) $_POST["order"] = "";
-if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
-
-	plugin_order_checkRight("order","r");
-
-	if (empty($_POST["ID"])){
-		switch($_POST['glpi_tab']){
-			default :
-				break;
+if(isset($_POST["reception"])) {
+	if(isset($_POST["item"])) {
+		 foreach ($_POST["item"] as $key => $val){
+			if ($val==1) {
+				$DB = new DB;
+				$query=" UPDATE glpi_plugin_order_detail
+						SET status=1
+						WHERE ID=$key";
+				$DB->query($query);
+			}
 		}
-	}else{
-		switch($_POST['glpi_tab']){
-			case -1 :
-				$plugin = new Plugin();
-				/* show items linking form from all */
-				plugin_order_showdetail($_POST["ID"],1);
-				plugin_order_showItem($_POST["ID"]);
-				showDocumentAssociated(PLUGIN_ORDER_TYPE,$_POST["ID"],$_POST["withtemplate"]);
-				break;
-			case 1 : 
-				plugin_order_showdetail($_POST["ID"], 0);
-				break;
-			case 2 :
-				plugin_order_showItem($_POST["ID"]);
-				break;
-			case 3 :
-				/* show documents linking form */
-				showDocumentAssociated(PLUGIN_ORDER_TYPE,$_POST["ID"],$_POST["withtemplate"]);
-				break;
-			case 4 : 
-				plugin_order_showdetail($_POST["ID"], 1);
-				break;
-			case 5 : 
-				plugin_order_showReceptionForm($_POST["ID"]);
-				break;
-			case 12 :
-				/* show history form */
-				showHistory(PLUGIN_ORDER_TYPE,$_POST["ID"]);
-				break;
-			default :
-				break;
-		}
-		 ajaxFooter();
 	}
-?>
+	glpi_header($_SERVER["HTTP_REFERER"]);
+}
+if(isset($_POST["showGeneration"])) {
+	commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order","order");
+	echo "<div class='center'>";
+	echo "<table class='tab_cadre'>";
+	if(isset($_POST["item"])) {
+		echo "<tr><th colspan='3'>".$LANG['plugin_order']['delivery'][3]."</tr></th>";
+		echo "<tr><th>ID</th>";
+		echo "<th>".$LANG['plugin_order']['reference'][1]."</th>";
+		echo "<th>ID</th></tr>";
+		foreach ($_POST["item"] as $key => $val){
+			if ($val==1) {
+				echo "<tr><td>$key</td>";
+				echo "<td><a href=".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.reference.form.php?ID=".$key.">".$_POST["name"][$val]."</a>";
+				
+			}
+		}
+	} else 
+		glpi_header($_SERVER["HTTP_REFERER"]);
+	echo "</table>";
+	echo "</div>";
+	commonFooter();
+}
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ?>

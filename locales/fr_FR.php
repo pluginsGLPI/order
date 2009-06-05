@@ -56,18 +56,19 @@ $LANG['plugin_order'][37] = "Commandes générées à partir des informations fi
 $LANG['plugin_order'][38] = "Statuts par défaut:";
 $LANG['plugin_order'][39] = "Titre de la commande";
 $LANG['plugin_order'][40] = "Lieu de livraison de la commande";
-
-
+$LANG['plugin_order'][41] = "Matériel lié à la commande avec succès";
 
 
 
 $LANG['plugin_order']['status'][0]="Statut commande";
 $LANG['plugin_order']['status'][1]="En cours";
 $LANG['plugin_order']['status'][2]="Livrée";
-$LANG['plugin_order']['status'][3] = "Gestion des statuts par défaut";
-$LANG['plugin_order']['status'][4] = "Statut par défaut à la création d'une commande:";
-$LANG['plugin_order']['status'][5] = "Statut par défaut d'une commande livrée:";
-$LANG['plugin_order']['status'][6] = "Statut par défaut d'une commande pas totalement livrée:";
+$LANG['plugin_order']['status'][3] ="Gestion des statuts par défaut";
+$LANG['plugin_order']['status'][4] ="Statut par défaut à la création d'une commande:";
+$LANG['plugin_order']['status'][5] ="Statut par défaut d'une commande livrée:";
+$LANG['plugin_order']['status'][6] ="Statut par défaut d'une commande pas totalement livrée:";
+$LANG['plugin_order']['status'][7] ="En attente";
+$LANG['plugin_order']['status'][8] ="Réceptionné";
 
 $LANG['plugin_order']['item'][0]="Matériel(s) lié(s)";
 $LANG['plugin_order']['item'][1]="Dissocier le(s) matériels(s)";
@@ -91,10 +92,18 @@ $LANG['plugin_order']['detail'][15]="Réseau";
 $LANG['plugin_order']['detail'][16]="Type";
 $LANG['plugin_order']['detail'][17]="Ligne(s) détail";
 $LANG['plugin_order']['detail'][18]="Prix unitaire remisé";
+$LANG['plugin_order']['detail'][19]="Statut matériel";
+$LANG['plugin_order']['detail'][20]="Pas de matériel à réceptionner";
+$LANG['plugin_order']['detail'][21]="Date réception";
+$LANG['plugin_order']['detail'][22]="Matériel associé";
 
 
 $LANG['plugin_order']['delivery'][1]="Réception matériel(s)";
 $LANG['plugin_order']['delivery'][2]="Réceptionner";
+$LANG['plugin_order']['delivery'][3]="Générer matériel associé";
+$LANG['plugin_order']['delivery'][4]="Matériel réceptionné";
+$LANG['plugin_order']['delivery'][5]="Matériel(s) réceptionné(s) avec succès";
+$LANG['plugin_order']['delivery'][6]="Numéro de série";
 
 $LANG['plugin_order']['profile'][0] = "Gestion des droits"; 
 $LANG['plugin_order']['profile'][1] = "$title"; 

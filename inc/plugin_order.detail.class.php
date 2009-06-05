@@ -43,7 +43,8 @@ class plugin_order_detail extends CommonDBTM {
 								FROM glpi_plugin_order_detail, glpi_plugin_order_references
 								WHERE glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID
 								AND glpi_plugin_order_detail.FK_order=$FK_order
-								GROUP BY glpi_plugin_order_detail.FK_ref";
+								GROUP BY glpi_plugin_order_detail.FK_ref
+								ORDER BY glpi_plugin_order_detail.ID";
 			$result=$DB->query($query);
 			$num=$DB->numrows($result);
 			$rand=mt_rand();
@@ -80,7 +81,7 @@ class plugin_order_detail extends CommonDBTM {
 						echo "<td width='10'>";
 						$sel="";
 						if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-						echo "<input type='checkbox' name='item[".$this->fields["ID"]."]' value='1' $sel>";
+						echo "<input type='checkbox' name='' value='1' $sel>";
 						echo "</td>";
 					}
 					/* type */
