@@ -29,7 +29,7 @@
     ----------------------------------------------------------------------*/
     
 function plugin_order_showReceptionForm($FK_order) {
-	global $DB, $CFG_GLPI, $LANG;
+	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
 	
 	$plugin_order=new plugin_order();
 	$canedit=$plugin_order->can($FK_order,'w');
@@ -81,6 +81,8 @@ function plugin_order_showReceptionForm($FK_order) {
 			echo "<td align='center'>".$DB->result($result,$i,'FK_device')."</td>";
 			echo "<input type='hidden' name='ID[$i]' value='$ID'>";
 			echo "<input type='hidden' name='name[$i]' value='$name'>";
+			$type=$DB->result($result,$i,'type');
+			echo "<input type='hidden' name='type[$i]' value='$type'>";
 			$i++;
 		}
 		echo "</table></div>";
@@ -125,7 +127,7 @@ function getDetailManufacturer($ID) {
 }
 
 function getDetailType($ID) {
-	global $DB;
+	global $DB, $LINK_ID_TABLE;
 	$query=" SELECT glpi_plugin_order_detail.ID, type 
 			FROM glpi_plugin_order_detail, glpi_plugin_order_references
 			WHERE glpi_plugin_order_detail.ID=$ID
@@ -139,20 +141,5 @@ function getDetailType($ID) {
 	else
 		return(-1);
 }
-
-function generateAssociatedMaterial($type, $serial) {
-	global $DB, $LINK_ID_TABLE;
-	$query=" INSERT INTO".$LINK_ID_TABLE[$type]." (serial) 
-			values ($serial)";
-	$DB->query($query);
-}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 ?>

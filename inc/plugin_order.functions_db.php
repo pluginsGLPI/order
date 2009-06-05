@@ -93,4 +93,4 @@ function plugin_order_update_delivery($ID, $qreceived){
 	$query="UPDATE glpi_plugin_order_detail SET delivredquantity=$dquantity+$qreceived WHERE ID=$ID";
 	$result=$DB->query($query);
 }
-
+?>
