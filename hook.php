@@ -320,9 +320,6 @@ function plugin_order_MassiveActions($type){
 			return array(
 				/* GLPI core one */
 				"add_document"=>$LANG['document'][16],
-				/* association with glpi items */
-				"plugin_order_install"=>$LANG['plugin_order']['item'][1],
-				"plugin_order_desinstall"=>$LANG['plugin_order']['item'][0],
 				/* tranfer order to another entity */
 				"plugin_order_transfert"=>$LANG['buttons'][48],
 				);
@@ -343,17 +340,6 @@ function plugin_order_MassiveActionsDisplay($type,$action){
 		case PLUGIN_ORDER_TYPE:
 			switch ($action){
 				/* no case for add_document : use GLPI core one */
-				case "plugin_order_install":
-					echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['plugin_order']['item'][1]."\" >";
-				break;
-				case "plugin_order_desinstall":
-					$types=$CFG_GLPI["state_types"];
-					$plugin = new Plugin();
-					if ($plugin->isInstalled("applicatifs") && $plugin->isActivated("applicatifs"))
-						$types[]=PLUGIN_APPLICATIFS_TYPE;
-					dropdownAllItems("item_item",0,0,-1,$types);
-				echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
-				break;
 				case "plugin_order_transfert":
 					dropdownValue("glpi_entities", "FK_entities", '');
 				echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
@@ -373,41 +359,6 @@ function plugin_order_MassiveActionsProcess($data){
 	global $LANG,$DB;
 	
 	switch ($data['action']){
-		case "plugin_order_add_item":
-			$plugin_order=new plugin_order();
-			$ci2=new CommonItem();
-			if ($plugin_order->getFromDB($data['conID'])){
-				foreach ($data["item"] as $key => $val){
-					if ($val==1) {
-						/* items exists ? */
-						if ($ci2->getFromDB($data["device_type"],$key)){
-							/* entity security */
-							if (!isset($plugin_order->obj->fields["FK_entities"])
-								||$ci2->obj->fields["FK_entities"]==$plugin_order->obj->fields["FK_entities"]
-								||($ci2->obj->fields["recursive"] && in_array($ci2->obj->fields["FK_entities"], getEntityAncestors($plugin_order->obj->fields["FK_entities"])))){
-								plugin_order_linkdevice($data["conID"],$key,$data['device_type']);
-							}
-						}
-					}
-				}
-			}
-		break;
-		case "plugin_order_install":
-		break;
-		case "plugin_order_desinstall":
-				if ($data['device_type']==PLUGIN_ORDER_TYPE){
-					foreach ($data["item"] as $key => $val){
-						if ($val==1){
-							$query="DELETE FROM 
-									glpi_plugin_order_device 
-									WHERE device_type='".$data['type']."' 
-									AND FK_device='".$data['item_item']."' 
-									AND FK_order = '$key'";
-							$DB->query($query);
-					}
-				}
-			}
-		break;
 		case "plugin_order_transfert":
 		if ($data['device_type']==PLUGIN_ORDER_TYPE){
 			foreach ($data["item"] as $key => $val){
@@ -469,8 +420,7 @@ function plugin_item_purge_order($parm){
 function plugin_get_headings_order($type,$withtemplate=''){
 	global $LANG;
 	
-	if (in_array($type,array(COMPUTER_TYPE,
-			MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE,TRACKING_TYPE,ENTERPRISE_TYPE,CONTRACT_TYPE,PROFILE_TYPE))){
+	if (in_array($type,array(ENTERPRISE_TYPE,PROFILE_TYPE))){
 		/* template case */
 		if ($withtemplate='')
 			return array();
@@ -486,8 +436,7 @@ function plugin_get_headings_order($type,$withtemplate=''){
 /* define headings actions added by the plugin */
 function plugin_headings_actions_order($type){	
 
-	if (in_array($type,array(COMPUTER_TYPE,
-			MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE,TRACKING_TYPE,ENTERPRISE_TYPE,CONTRACT_TYPE,PROFILE_TYPE))){
+	if (in_array($type,array(ENTERPRISE_TYPE, PROFILE_TYPE))){
 		return array(
 					1 => "plugin_headings_order",
 					);
@@ -500,19 +449,6 @@ function plugin_headings_order($type,$ID,$withtemplate=0){
 	global $CFG_GLPI,$LANG;
 	
 		switch ($type){
-			case COMPUTER_TYPE :
-			case MONITOR_TYPE :
-			case NETWORKING_TYPE :
-			case PERIPHERAL_TYPE :
-			case PHONE_TYPE :
-			case PRINTER_TYPE :
-			case SOFTWARE_TYPE :
-			case CONTRACT_TYPE :
-			case TRACKING_TYPE :
-				echo "<div align='center'>";
-				echo plugin_order_showAssociated($type,$ID);
-				echo "</div>";
-			break;
 			case ENTERPRISE_TYPE :
 				echo "<div align='center'>";
 				plugin_order_showReferencesBySupplierID($ID);
