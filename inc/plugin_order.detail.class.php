@@ -54,20 +54,18 @@ class plugin_order_detail extends CommonDBTM {
 			echo "<th align='center'>".$LANG['plugin_order']['detail'][7]."</th>";
 			echo "<th align='center'>".$LANG['plugin_order']['detail'][4]."</th>";
 			echo "<th align='center'>".$LANG['plugin_order']['detail'][18]."</th>";
-			echo "<th align='center'>".$LANG['plugin_order']['detail'][8]."*</th>";
+			echo "<th align='center'>".$LANG['plugin_order'][25]."</th>";
 			echo "<th></th>";
 			echo"</tr>";
 			echo "<tr>";
-			echo "<td class='tab_bg_1'>";
+			echo "<td class='tab_bg_1' align='center'>";
 			plugin_order_dropdownAllItems("type",true,0,$order->fields["ID"],$order->fields["FK_enterprise"],$order->fields["FK_entities"]);	
 			echo "</td>";
 			echo "<td class='tab_bg_1' align='center'><span id='show_reference'>&nbsp;</span></td>";
 			echo "<td class='tab_bg_1' align='center'><span id='show_quantity'>&nbsp;</span></td>";
 			echo "<td class='tab_bg_1' align='center'><span id='show_priceht'>&nbsp;</span></td>";
 			echo "<td class='tab_bg_1' align='center'><span id='show_pricediscounted'>&nbsp;</span></td>";
-			echo "<td  class='tab_bg_1' align='center'>";
-			dropdownValue("glpi_dropdown_plugin_order_taxes","taxes",2);
-			echo "</td>";
+			echo "<td  class='tab_bg_1' align='center'><span id='show_taxes'>&nbsp;</span></td>";
 			echo "<td class='tab_bg_1' align='center'><span id='show_validate'>&nbsp;</span></td>";
 			echo "</tr>";
 			echo "</table></div></form>";
@@ -123,7 +121,7 @@ class plugin_order_detail extends CommonDBTM {
 						echo "<td width='10'>";
 						$sel="";
 						if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-						echo "<input type='checkbox' name='detail[".$DB->result($result,$i,"IDD")."]' value='1' $sel>";
+						echo "<input type='checkbox' name='detail[".$DB->result($result,$i,"IDR")."]' value='1' $sel>";
 						echo "</td>";
 					}
 					/* type */
@@ -139,13 +137,13 @@ class plugin_order_detail extends CommonDBTM {
 					/* delivered quantity */
 					echo "<td align='center'>".getDelivredQuantity($FK_order, $IDR)."</td>";	
 					/*price */
-					echo "<td align='center'>".$DB->result($result,$i,"price")."</td>";
+					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"price"))."</td>";
 					/* price with taxes */
-					echo "<td align='center'>".$DB->result($result,$i,"taxesprice")."</td>";
+					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"taxesprice"))."</td>";
 					/* price with reduction */
-					echo "<td align='center'>".$DB->result($result,$i,"reductedprice")."</td>";
+					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"reductedprice"))."</td>";
 					/* total price */
-					echo "<td align='center'>".$DB->result($result,$i,"totalprice")."</td>";
+					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"totalprice"))."</td>";
 					/* total price with taxes  */
 					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"totalprice")*getTaxes($FK_order, $IDR))."</td>";
 					$i++;
@@ -154,16 +152,16 @@ class plugin_order_detail extends CommonDBTM {
 
 				if ($canedit) {
 					echo "<div class='center'>";
-					echo "<table width='80%' class='tab_glpi'>";
+					echo "<table class='tab_cadre_fixe'>";
 					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=none'>".$LANG['buttons'][19]."</a>";
-					echo "</td><td align='left' width='80%'>";
+					echo "</td><td align='left' width='75%'>";
 					echo "<input type='submit' name='delete_detail' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 					echo "</td>";
 					echo "</table>";
 					echo "</div>";
+					echo "<br>";
 				}	
-
 			}
 	}
 

@@ -77,48 +77,19 @@ else if (isset($_POST["update"]))
 		$plugin_order->update($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-/* link order to items of glpi */
-else if (isset($_POST["additem"])){
-
-	$template=0;
-	if (isset($_POST["is_template"])) $template=1;
-
-	if ($_POST['type']>0&&$_POST['item']>0){
-		if(plugin_order_HaveRight("order","w"))
-			plugin_order_linkdevice($_POST["conID"],$_POST['item'],$_POST['type'],$template);
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
-
-}
-/* unlink order to items of glpi */
-else if (isset($_POST["deleteitem"])){
-
-	if(plugin_order_HaveRight("order","w"))
-		foreach ($_POST["item"] as $key => $val){
-		if ($val==1) {
-			plugin_order_unlinkdevice($key);
-			}
-		}
-	glpi_header($_SERVER['HTTP_REFERER']);
-/* unlink order to items of glpi from the items form */
-}else if (isset($_GET["deleteorder"])){
-
-	if(plugin_order_HaveRight("order","w"))
-		plugin_order_unlinkdevice($_GET["ID"]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
 else if (isset($_POST["add_detail"]))
 {
 	addDetails($_POST["FK_reference"],$_POST["FK_order"],$_POST["quantity"],$_POST["price"],$_POST["reductedprice"],$_POST["taxes"]);
+	updateOrderStatus($_POST["FK_order"]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete_detail"]))
 {
 	plugin_order_checkRight("order","w");
 	$detail = new plugin_order_detail;
-	foreach ($_POST["detail"] as $ID => $value)
-		$detail->delete(array("ID"=>$ID));
-
+	foreach ($_POST["detail"] as $FK_ref => $value)
+		deleteDetails($FK_ref, $_POST["FK_order"]);
+	updateOrderStatus($_POST["FK_order"]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else

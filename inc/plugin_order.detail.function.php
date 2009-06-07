@@ -65,11 +65,21 @@ function addDetails($referenceID,$orderID,$quantity,$price,$discounted_price,$ta
 			$input["FK_order"] = $orderID;
 			$input["FK_ref"] = $referenceID;
 			$input["price"] = $price;
-			$input["reductedprice"] = $discounted_price; 
-			$input["status"] = ORDER_STATUS_DELIVERED;
+			$input["taxesprice"] = (($price*getDropdownName("glpi_dropdown_plugin_order_taxes",$taxes))/100)+$price;
+			$input["reductedprice"] = $discounted_price;
+			$input["status"] = ORDER_STATUS_NOT_DELIVERED;
 			$detail->add($input);
 		}
 	}   	
+}
+
+function deleteDetails($referenceID,$orderID)
+{
+	global $DB;
+	$query=" DELETE FROM glpi_plugin_order_detail
+			WHERE FK_order=$orderID 
+			AND FK_ref=$referenceID";
+	$DB->query($query);
 }
 
 ?>

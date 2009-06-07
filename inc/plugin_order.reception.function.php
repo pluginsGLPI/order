@@ -27,24 +27,26 @@
     Original Author of file:
     Purpose of file:
     ----------------------------------------------------------------------*/
-function plugin_order_showReceptionForm($FK_order) {
-	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
+function showReceptionForm($orderID) {
+	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE, $INFOFORM_PAGES;
 	
 	$plugin_order=new plugin_order();
-	$canedit=$plugin_order->can($FK_order,'w');
-	$query="	SELECT glpi_plugin_order_detail.ID AS IDD, price, reductedprice, taxesprice, status, date, FK_manufacturer, name, type, FK_device
+	$canedit=$plugin_order->can($orderID,'w');
+	$query="	SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, price, reductedprice, taxesprice, status, date, FK_manufacturer, name, type, FK_device
 			FROM glpi_plugin_order_detail, glpi_plugin_order_references
-			WHERE FK_order=$FK_order
+			WHERE FK_order=$orderID
 			AND glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID
 			ORDER BY glpi_plugin_order_detail.ID";
 	$result=$DB->query($query);
 	$num=$DB->numrows($result);
 	$rand=mt_rand();
+	
 	echo "<form method='post' name='order_reception_form$rand' id='order_reception_form$rand'  action=\"".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.reception.form.php\">";
-	echo "<div class='center'><table class='tab_cadrehov'>";
+	echo "<div class='center'><table class='tab_cadre_fixe'>";
 	if($num==0) 
 		echo "<tr><th>".$LANG['plugin_order']['detail'][20]."</th></tr></table></div>";
-	else {
+	else 
+	{
 		echo "<tr>";
 		if($canedit)
 			echo "<th></th>";
@@ -66,10 +68,10 @@ function plugin_order_showReceptionForm($FK_order) {
 						echo "</td>";
 			}
 			$type=$DB->result($result,$i,'type');
-			echo "<td align='center'>".getDetailType($ID)."</td>";
-			echo "<td align='center'>".getDetailManufacturer($ID)."</td>";
+			echo "<td align='center'>".getReceptionType($ID)."</td>";
+			echo "<td align='center'>".getReceptionManufacturer($ID)."</td>";
 			$name=$DB->result($result,$i,'name');
-			$ref="<a href=".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.reference.form.php?ID=".$ID.">".$DB->result($result,$i,'name')."</a>";
+			$ref="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[PLUGIN_ORDER_REFERENCE_TYPE]."?ID=".$DB->result($result,$i,"IDR")."'>".$DB->result($result,$i,"name")."</a></td>";
 			echo "<td align='center'>$ref</td>";
 			echo "<td align='center'>";
 			if($DB->result($result,$i,'status')==1) 
@@ -77,36 +79,35 @@ function plugin_order_showReceptionForm($FK_order) {
 			else
 				echo "".$LANG['plugin_order']['status'][7]."";
 			echo "</td>";
-			echo "<td align='center'>".$DB->result($result,$i,'date')."</td>";
-			echo "<td align='center'>".getDeviceSerial($DB->result($result,$i,'FK_device'), $type)."</td>";
+			echo "<td align='center'>".getReceptionDate($ID)."</td>";
+			echo "<td align='center'>".getReceptionSerial($DB->result($result,$i,'FK_device'), $type)."</td>";
 			echo "<input type='hidden' name='ID[$i]' value='$ID'>";
 			echo "<input type='hidden' name='name[$i]' value='$name'>";
-			
 			echo "<input type='hidden' name='type[$i]' value='$type'>";
 			$i++;
 		}
 		echo "</table></div>";
 		if($canedit) {
 			echo "<div class='center'>";
-			echo "<table width='80%' class='tab_glpi'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+			echo "<table class='tab_cadre_fixe'>";
+			echo "<tr><td width='5%'><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center' width='%'><a onclick= \"if ( markCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 		
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=none'>".$LANG['buttons'][19]."</a>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 			echo "</td><td>";
 			echo "<select name='action'>";
 			echo "<option value='reception'>-----</option>";
 			echo "<option value='reception'>".$LANG['plugin_order']['delivery'][2]."</option>";
 			echo "<option value='reception'>".$LANG['plugin_order']['delivery'][3]."</option>";
 			echo "</select>";
-			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
-			echo "</td>";
+			echo "<input type='hidden' name='orderID' value='$orderID'>";
+			echo "</td>"; 
 			echo "</table>";
 			echo "</div>";
 		}
 	}
 }
 
-function getDetailManufacturer($ID) {
+function getReceptionManufacturer($ID) {
 	global $DB;
 	$query=" SELECT glpi_plugin_order_detail.ID, FK_manufacturer
 			FROM glpi_plugin_order_detail, glpi_plugin_order_references
@@ -120,7 +121,20 @@ function getDetailManufacturer($ID) {
 		return(-1);
 }
 
-function getDetailType($ID) {
+function getReceptionDate($ID) {
+	global $DB, $LANG;
+	$query=" SELECT date
+			FROM glpi_plugin_order_detail
+			WHERE ID=$ID";
+	$result=$DB->query($query);
+	if ($DB->result($result,0,'date') != 0) {
+		return($DB->result($result,0,'date') != 0);
+	}
+	else
+		return($LANG['plugin_order']['detail'][23]);
+}
+
+function getReceptionType($ID) {
 	global $DB, $LINK_ID_TABLE;
 	$query=" SELECT glpi_plugin_order_detail.ID, type 
 			FROM glpi_plugin_order_detail, glpi_plugin_order_references
@@ -136,7 +150,7 @@ function getDetailType($ID) {
 		return(-1);
 }
 
-function getDeviceSerial($ID, $type) {
+function getReceptionSerial($ID, $type) {
 	global $DB, $LINK_ID_TABLE, $INFOFORM_PAGES, $CFG_GLPI, $LANG;
 	$query=" SELECT FK_device FROM glpi_plugin_order_device WHERE ID=$ID";
 	$result=$DB->query($query);

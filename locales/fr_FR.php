@@ -73,6 +73,7 @@ $LANG['plugin_order']['status'][8] ="Réceptionné";
 $LANG['plugin_order']['item'][0]="Matériel(s) lié(s)";
 $LANG['plugin_order']['item'][1]="Dissocier le(s) matériels(s)";
 $LANG['plugin_order']['item'][2]="Aucun matériel associé";
+$LANG['plugin_order']['item'][3]="Pas de matériel lié à la commande";
 
 $LANG['plugin_order']['detail'][0]="Détail(s)";
 $LANG['plugin_order']['detail'][1]="Type";
@@ -92,11 +93,12 @@ $LANG['plugin_order']['detail'][14]="Ligne";
 $LANG['plugin_order']['detail'][15]="Réseau";
 $LANG['plugin_order']['detail'][16]="Type";
 $LANG['plugin_order']['detail'][17]="Ligne(s) détail";
-$LANG['plugin_order']['detail'][18]="Prix unitaire remisé";
+$LANG['plugin_order']['detail'][18]="Prix unitaire remisé (HT)";
 $LANG['plugin_order']['detail'][19]="Statut matériel";
 $LANG['plugin_order']['detail'][20]="Pas de matériel à réceptionner";
 $LANG['plugin_order']['detail'][21]="Date réception";
 $LANG['plugin_order']['detail'][22]="Matériel associé";
+$LANG['plugin_order']['detail'][23]="Matériel non réceptionné";
 
 
 $LANG['plugin_order']['delivery'][1]="Réception matériel(s)";

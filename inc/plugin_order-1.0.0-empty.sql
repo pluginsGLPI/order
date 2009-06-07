@@ -16,6 +16,7 @@ CREATE TABLE `glpi_plugin_order` (
     `FK_contact` int(11) NOT NULL default 0,
 	`recursive` INT(1) NOT NULL default 1,
 	`deleted` INT(1) NOT NULL default 0,
+	`notes` LONGTEXT,
 	`comment` varchar(255) collate utf8_unicode_ci NOT NULL default '',
 	PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -42,14 +43,13 @@ DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_taxes`;
 CREATE TABLE `glpi_dropdown_plugin_order_taxes` (
 	`ID` int(11) NOT NULL auto_increment,
 	`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-    `value` FLOAT,
 	`comments` text,
 	PRIMARY KEY  (`ID`),
 	KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_dropdown_plugin_order_taxes`(ID,name, value) VALUES (1,'5,5', 1.055);
-INSERT INTO `glpi_dropdown_plugin_order_taxes`(ID,name, value) VALUES (2,'19,6', 1.196);
+INSERT INTO `glpi_dropdown_plugin_order_taxes`(ID,name) VALUES (1,'5,5');
+INSERT INTO `glpi_dropdown_plugin_order_taxes`(ID,name) VALUES (2,'19,6');
 
 DROP TABLE IF EXISTS `glpi_plugin_order_detail`;
 CREATE TABLE `glpi_plugin_order_detail` (

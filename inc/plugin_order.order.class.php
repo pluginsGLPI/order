@@ -78,6 +78,8 @@ class plugin_order extends CommonDBTM {
 			/* documents */
 			if (haveRight("document","r"))
 				$ong[3]=$LANG['Menu'][27];
+			if (haveRight("notes","r")) 
+				$ong[11]=$LANG['title'][37];
 			/* all */
 			$ong[12]=$LANG['title'][38];
 		}
