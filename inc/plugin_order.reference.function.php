@@ -32,9 +32,9 @@ function plugin_order_showReferenceManufacturers($target, $ID) {
 	global $LANG, $DB, $CFG_GLPI,$INFOFORM_PAGES;
 	$query = "SELECT * FROM `glpi_plugin_order_references_manufacturers` WHERE FK_reference='$ID'";
 	$result = $DB->query($query);
-
+	$rand=mt_rand();
 	echo "<div class='center'>";
-	echo "<form method='post' name=form action=\"$target\">";
+	echo "<form method='post' name='show_ref_manu$rand' id='show_ref_manu$rand' action=\"$target\">";
 	echo "<input type='hidden' name='FK_reference' value='" . $ID . "'>";
 	echo "<table class='tab_cadre_fixe'>";
 
@@ -61,11 +61,11 @@ function plugin_order_showReferenceManufacturers($target, $ID) {
 		}
 		echo "</table>";
 
-		echo "<table width='80%'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr>"; 
-		echo "<td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markAllRows('show_ref_manu') ) return false;\" href='".$_SERVER['PHP_SELF']."?check=all'>".$LANG["buttons"][18]."</a></td>";
-		echo "<td>/</td><td align='center'><a onclick= \"if ( unMarkAllRows('show_ref_manu') ) return false;\" href='".$_SERVER['PHP_SELF']."?check=none'>".$LANG["buttons"][19]."</a>";
-		echo "</td><td align='left' width='80%'>"; 
+		echo "<td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markAllRows('show_ref_manu$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;check=all'>".$LANG["buttons"][18]."</a></td>";
+		echo "<td>/</td><td align='center'><a onclick= \"if ( unMarkAllRows('show_ref_manu$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;check=none'>".$LANG["buttons"][19]."</a>";
+		echo "</td><td align='left' width='75%'>"; 
 		echo "<input type='submit' name='delete_reference_manufacturer' value=\"" . $LANG['buttons'][6] . "\" class='submit' >";
 		echo "&nbsp;";
 		echo "<input type='submit' name='update_reference_manufacturer' value=\"" . $LANG['buttons'][7] . "\" class='submit' >";

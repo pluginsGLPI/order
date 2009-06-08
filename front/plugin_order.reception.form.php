@@ -61,17 +61,24 @@ if(isset($_POST["showGeneration"])) {
 		echo "<th>".$LANG['plugin_order']['delivery'][6]."</th>";
 		echo "<th>".$LANG['plugin_order']['delivery'][7]."</th>";
 		echo "<th>".$LANG['plugin_order']['delivery'][8]."</th></tr>";
-		echo "<input type='hidden' name='FK_order' value=".$_POST["FK_order"].">";
+		echo "<input type='hidden' name='FK_order' value=".$_POST["orderID"].">";
+		$i=0;
 		foreach ($_POST["item"] as $key => $val)
 		{
 			if ($val==1) 
 			{
-				echo "<tr><td><a href=".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.reference.form.php?ID=".$key.">".$_POST["name"][$key-1]."</a></td>";
-				echo "<td><input type='text' size='20' name='serial[$key]'></td>";
-				echo "<td><input type='text' size='20' name='inventory[$key]'></td>";
-				echo "<td><input type='text' size='20' name='name[$key]'></td></tr>";
-				echo "<input type='hidden' name='type[$key]' value=".$_POST['type'][$key-1].">";
-				echo "<input type='hidden' name='ID[$key]' value=".$_POST['ID'][$key-1].">";
+				if($_POST["status"][$key]==ORDER_STATUS_NOT_DELIVERED)
+				{
+					addMessageAfterRedirect($LANG['plugin_order']['delivery'][10]);
+					glpi_header($_SERVER["HTTP_REFERER"]);
+				}
+				echo "<tr><td><a href=".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.reference.form.php?ID=".$key.">".$_POST["name"][$key]."</a></td>";
+				echo "<td><input type='text' size='20' name='serial[$i]'></td>";
+				echo "<td><input type='text' size='20' name='inventory[$i]'></td>";
+				echo "<td><input type='text' size='20' name='name[$i]'></td></tr>";
+				echo "<input type='hidden' name='type[$i]' value=".$_POST['type'][$key].">";
+				echo "<input type='hidden' name='ID[$i]' value=".$_POST['ID'][$key].">";
+				$i++;
 			}
 		}
 		echo "<tr><td align='center' colspan='4' class='tab_bg_2'><input type='submit' name='generation' class='submit' value=".$LANG['plugin_order']['delivery'][9]."></td></tr>";
@@ -83,7 +90,7 @@ if(isset($_POST["showGeneration"])) {
 } 
 if(isset($_POST["generation"])) 
 {
-	$i=1;
+	$i=0;
 	while(isset($_POST["serial"][$i])) 
 	{
 		plugin_order_generateAssociatedMaterial($_POST["type"][$i], $_POST["serial"][$i], $_POST["inventory"][$i], $_POST["name"][$i]);
@@ -96,8 +103,9 @@ function plugin_order_generateAssociatedMaterial($type, $serial, $numinv, $name)
 {
 	global $DB, $LINK_ID_TABLE;
 	
-	$query=" INSERT INTO ".$LINK_ID_TABLE[$type]." (serial, otherserial, name) 
-			values ('$serial', '$numinv', '$name')";
+	$entity=$_SESSION["glpiactive_entity"];
+	$query=" INSERT INTO ".$LINK_ID_TABLE[$type]." (serial, otherserial, name, FK_entities) 
+			values ('$serial', '$numinv', '$name', $entity)";
 	$DB->query($query);
 }
 function plugin_order_createLinkWithAssociatedMaterial($type, $serial, $FK_order, $IDD)
@@ -114,8 +122,8 @@ function plugin_order_createLinkWithAssociatedMaterial($type, $serial, $FK_order
 	$result=$DB->query($query);
 	$ID_device=$DB->result($result,0,'ID');
 	$query=" UPDATE glpi_plugin_order_detail
-						SET FK_device=$ID_device
-						WHERE ID=$IDD";
+			SET FK_device=$ID_device
+			WHERE ID=$IDD";
 	$DB->query($query);
 }
  ?>

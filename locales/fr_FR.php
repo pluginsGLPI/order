@@ -110,6 +110,7 @@ $LANG['plugin_order']['delivery'][6]="Numéro de série";
 $LANG['plugin_order']['delivery'][7]="Numéro d'inventaire";
 $LANG['plugin_order']['delivery'][8]="Nom";
 $LANG['plugin_order']['delivery'][9]="Générer";
+$LANG['plugin_order']['delivery'][10]="L'un des matériels que vous essayez de générer n'est pas réceptionné";
 
 $LANG['plugin_order']['profile'][0] = "Gestion des droits"; 
 $LANG['plugin_order']['profile'][1] = "$title"; 

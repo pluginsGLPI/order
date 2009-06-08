@@ -160,7 +160,6 @@ class plugin_order_detail extends CommonDBTM {
 					echo "</td>";
 					echo "</table>";
 					echo "</div>";
-					echo "<br>";
 				}	
 			}
 	}
