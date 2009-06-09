@@ -51,13 +51,14 @@ if(isset($_POST["reception"]))
 	}
 	glpi_header($_SERVER["HTTP_REFERER"]);
 } 
-if(isset($_POST["generation"])) {
+if(isset($_POST["generation"])) 
+{
 	commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order","order");
 	echo "<div class='center'>";
 	echo "<table class='tab_cadre'>";
 	if(isset($_POST["item"])) 
 	{
-		echo "<form method='post' name='order_materialGeneration' id='order_materialGeneration'  action=".$_SERVER["PHP_SELF"].">";
+		echo "<form method='post' name='order_deviceGeneration' id='order_deviceGeneration'  action=".$_SERVER["PHP_SELF"].">";
 		echo "<tr><th colspan='4'>".$LANG['plugin_order']['delivery'][3]."</tr></th>";
 		echo "<tr><th>".$LANG['plugin_order']['reference'][1]."</th>";
 		echo "<th>".$LANG['plugin_order']['delivery'][6]."</th>";
@@ -69,14 +70,9 @@ if(isset($_POST["generation"])) {
 		{
 			if ($val==1) 
 			{
-				if($_POST["status"][$key]==ORDER_STATUS_NOT_DELIVERED)
-				{
-					addMessageAfterRedirect($LANG['plugin_order']['delivery'][10]);
-					glpi_header($_SERVER["HTTP_REFERER"]);
-				}
 				echo "<tr><td><a href=".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.reference.form.php?ID=".$key.">".$_POST["name"][$key]."</a></td>";
 				echo "<td><input type='text' size='20' name='serial[$i]'></td>";
-				echo "<td><input type='text' size='20' name='inventory[$i]'></td>";
+				echo "<td><input type='text' size='20' name='otherserial[$i]'></td>";
 				echo "<td><input type='text' size='20' name='name[$i]'></td></tr>";
 				echo "<input type='hidden' name='type[$i]' value=".$_POST['type'][$key].">";
 				echo "<input type='hidden' name='ID[$i]' value=".$_POST['ID'][$key].">";
@@ -95,27 +91,40 @@ if(isset($_POST["generate"]))
 	$i=0;
 	while(isset($_POST["serial"][$i])) 
 	{
-		$newID=plugin_order_generateMaterial($_POST["type"][$i], $_POST["serial"][$i], $_POST["inventory"][$i], $_POST["name"][$i]);
-		plugin_order_createLinkWithMaterial($_POST["ID"][$i], $newID);
+		$ci=new CommonItem();
+		$ci->setType($_POST["type"][$i],true);
+		$newID=$ci->obj->add(array(	'serial'=>$_POST["serial"][$i],
+										'otherserial'=>$_POST["otherserial"][$i],
+										'name'=>$_POST["name"][$i],
+										'FK_entities'=>$_SESSION["glpiactive_entity"]));
+		plugin_order_createLinkWithDevice($_POST["ID"][$i], $newID, $_POST["type"][$i], $_POST["orderID"]);
+		$i++;
 	}
 	glpi_header("".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
 }
-if(isset($_POST["deleteLink"])) 
+if(isset($_POST["deleteLinkWithDevice"])) 
 {
 	foreach ($_POST["item"] as $key => $val)
 	{
 		if ($val==1) 
-			plugin_order_deleteLinkWithMaterial($key);
+			plugin_order_deleteLinkWithDevice($key);
 	}
 	glpi_header("".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
 }
-if(isset($_POST["createLink"])) 
+if(isset($_POST["createLinkWithDevice"])) 
 {
-	foreach ($_POST["item"] as $key => $val)
+	$i=0;
+	if(sizeof($_POST["item"])<=1)
 	{
-		if ($val==1) 
-			plugin_order_createLinkWithMaterial($key, $_POST["material"]);
+		foreach ($_POST["item"] as $key => $val)
+		{
+		
+			if ($val==1) 
+				plugin_order_createLinkWithDevice($key, $_POST["device"], $_POST["type"][$key], $_POST["orderID"]);
+		}
 	}
+	else
+		addMessageAfterRedirect($LANG['plugin_order'][42] );
 	glpi_header("".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
 }
  ?>

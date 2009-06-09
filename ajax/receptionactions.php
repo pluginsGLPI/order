@@ -50,19 +50,20 @@ $type=$_POST["type"];
 if (isset($_POST["action"])){
 	switch($_POST["action"]){
 		case "reception":
+			echo "</td><td valign='bottom'>";
 			showDateFormItem("date",date("Y-m-d"),true,1);
-			echo "<input type='submit' name='reception' class='submit' value='".$LANG['buttons'][2]."'>";
+			echo "</td><td valign='bottom'><input type='submit' name='reception' class='submit' value='".$LANG['buttons'][2]."'></td>";
 		break;
 		case "generation":
-			echo "<input type='submit' name='generation' class='submit' value='".$LANG['buttons'][2]."'>";
+			echo "</td><td valign='bottom'><input type='submit' name='generation' class='submit' value='".$LANG['buttons'][2]."'></td>";
 		break;
 		case "createLink":
-			echo $type;
-			plugin_order_dropdownAllItemsByType("material", $type, $_SESSION["glpiactive_entity"]);
-			echo "&nbsp;<input type='submit' name='createLink' class='submit' value='".$LANG['buttons'][2]."'>";
+			echo "</td><td valign='bottom'>";
+			plugin_order_dropdownAllItemsByType("device", $type, $_SESSION["glpiactive_entity"]);
+			echo "</td><td valign='bottom'><input type='submit' name='createLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'></td>";
 		break;
 		case "deleteLink":
-			echo "<input type='submit' name='deleteLink' class='submit' value='".$LANG['buttons'][2]."'>";
+			echo "</td><td valign='bottom'><input type='submit' name='deleteLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'></td>";
 		break;
 	}
 }

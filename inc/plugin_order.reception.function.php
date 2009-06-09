@@ -200,35 +200,43 @@ function getReceptionSerial($deviceID, $type)
 function getAllItemsByType($type,$entity)
 {
 	global $DB, $LINK_ID_TABLE;
-	$query = "SELECT ID, name FROM ".$LINK_ID_TABLE[$type]." WHERE FK_entities=".$entity." AND is_template=0";
+	$query = "SELECT ID, name FROM ".$LINK_ID_TABLE[$type]." 
+			WHERE FK_entities=".$entity." 
+			AND is_template=0
+			AND ID not in(SELECT FK_device FROM glpi_plugin_order_detail)";
 
 	$result = $DB->query($query);
-	$item = array();
+	$device = array();
 	while ($data = $DB->fetch_array($result))
-		$item[$data["ID"]] = $data["name"];
+		$device[$data["ID"]] = $data["name"];
 
-	return $item;		
+	return $device;		
 }
 
-function plugin_order_generateMaterial($type, $serial, $numinv, $name) 
-{
-	$ci=new CommonItem();
-	$ci->setType($type,true);
-	$newID=$ci->obj->add($_POST);
-}
-
-function plugin_order_createLinkWithMaterial($detailID, $materialID) 
+function plugin_order_createLinkWithDevice($detailID, $deviceID, $deviceType, $orderID) 
 {
 	global $DB;
 	$query="UPDATE glpi_plugin_order_detail
-			SET FK_device=".$materialID."
+			SET FK_device=".$deviceID."
 			WHERE ID=".$detailID."";
+	$DB->query($query);
+	$query="INSERT INTO glpi_plugin_order_device (FK_order, FK_device, device_type)
+			values (".$orderID.",".$deviceID.",".$deviceType.")";
 	$DB->query($query);
 }
 
-function plugin_order_deleteLinkWithMaterial($detailID) 
+function plugin_order_deleteLinkWithDevice($detailID) 
 {
 	global $DB;
+	$query="SELECT FK_device 
+			FROM glpi_plugin_order_detail 
+			WHERE ID=".$detailID."";
+	$result=$DB->query($query);
+	$deviceID=$DB->result($result,0,'FK_device');
+	$query="DELETE 
+			FROM glpi_plugin_order_device 
+			WHERE FK_device=".$deviceID."";
+	$DB->query($query);
 	$query="UPDATE glpi_plugin_order_detail
 			SET FK_device=0
 			WHERE ID=".$detailID."";

@@ -151,6 +151,6 @@ function plugin_order_dropdownReceptionActions($type)
 					'type'=>$type);
 	ajaxUpdateItemOnSelectEvent("receptionActions","show_receptionActions",$CFG_GLPI["root_doc"]."/plugins/order/ajax/receptionactions.php",$params);
 	echo "</td>";
-	echo "<td><span id='show_receptionActions'>&nbsp;</span></td>";
+	echo "<td valign=middle><span id='show_receptionActions'>&nbsp;</span></td>";
 }
 ?>
