@@ -86,7 +86,6 @@ else if (isset($_POST["add_detail"]))
 else if (isset($_POST["delete_detail"]))
 {
 	plugin_order_checkRight("order","w");
-	$detail = new plugin_order_detail;
 	foreach ($_POST["detail"] as $FK_ref => $value)
 		deleteDetails($FK_ref, $_POST["FK_order"]);
 	updateOrderStatus($_POST["FK_order"]);

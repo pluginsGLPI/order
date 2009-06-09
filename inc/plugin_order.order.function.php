@@ -27,12 +27,12 @@
     Original Author of file:
     Purpose of file:
     ----------------------------------------------------------------------*/
-function getPrice($FK_order) 
+function getPrice($orderID) 
 {
 	global $DB;
 	
 	$query="SELECT sum(reductedprice) AS result from glpi_plugin_order_detail
-			WHERE FK_order=$FK_order";
+			WHERE FK_order=$orderID";
 	$result=$DB->query($query);
 	if ($DB->result($result,0,'result') != NULL)
 		return(sprintf("%01.2f", $DB->result($result,0,'result')));
@@ -40,12 +40,12 @@ function getPrice($FK_order)
 		return(-1);
 }
 
-function getTaxesPrice($FK_order) 
+function getTaxesPrice($orderID) 
 {
 	global $DB;
 	
 	$query="SELECT  SUM(reductedprice*(taxesprice/price)) AS result from glpi_plugin_order_detail
-			WHERE FK_order=$FK_order";
+			WHERE FK_order=$orderID";
 	$result=$DB->query($query);
 	if ($DB->result($result,0,'result') != NULL)
 		return(sprintf("%01.2f", $DB->result($result,0,'result')));
@@ -53,7 +53,7 @@ function getTaxesPrice($FK_order)
 		return(-1);
 }
 
-function updateOrderStatus($ID)
+function updateOrderStatus($orderID)
 {
 	global $DB;
 	
@@ -62,17 +62,17 @@ function updateOrderStatus($ID)
 	$result_status=$DB->query($query_status);
 	$status_delivered=$DB->result($result_status,0,"status_delivered");
 	$status_not_delivered=$DB->result($result_status,0,"status_nodelivered");
-	$query="SELECT * FROM glpi_plugin_order_detail WHERE FK_order=$ID AND status=0";
+	$query="SELECT * FROM glpi_plugin_order_detail WHERE FK_order=$orderID AND status=0";
       $result=$DB->query($query);
       if($DB->numrows($result)>0)
       {
-            $query="UPDATE glpi_plugin_order SET status=$status_not_delivered WHERE ID=$ID";
+            $query="UPDATE glpi_plugin_order SET status=$status_not_delivered WHERE ID=$orderID";
 		$result=$DB->query($query);
                  
       } 
 	else 
 	{
-            $query="UPDATE glpi_plugin_order SET status=$status_delivered WHERE ID=$ID";
+            $query="UPDATE glpi_plugin_order SET status=$status_delivered WHERE ID=$orderID";
             $result=$DB->query($query);
       }
 }

@@ -128,4 +128,29 @@ function plugin_order_dropdownReferencesByEnterprise($name,$type,$enterpriseID)
 	$references[0] = '-----';
 	return dropdownArrayValues($name, $references,0);
 }
+
+function plugin_order_dropdownAllItemsByType($name,$type,$entity)
+{
+	$items = getAllItemsByType($type, $entity);
+	$items[0] = '-----';
+	return dropdownArrayValues($name, $items,0);
+}
+
+function plugin_order_dropdownReceptionActions($type)
+{
+	global $LANG, $CFG_GLPI;
+	echo "<td width='5%'>";
+	echo "<select name='receptionActions' id='receptionActions'>";
+	echo "<option value='0' selected>-----</option>";
+	echo "<option value='reception'>".$LANG['plugin_order']['delivery'][2]."</option>";
+	echo "<option value='generation'>".$LANG['plugin_order']['delivery'][3]."</option>";
+	echo "<option value='createLink'>".$LANG['plugin_order']['delivery'][11]."</option>";
+	echo "<option value='deleteLink'>".$LANG['plugin_order']['delivery'][12]."</option>";
+	echo "</select>";
+	$params=array('action'=>'__VALUE__',
+					'type'=>$type);
+	ajaxUpdateItemOnSelectEvent("receptionActions","show_receptionActions",$CFG_GLPI["root_doc"]."/plugins/order/ajax/receptionactions.php",$params);
+	echo "</td>";
+	echo "<td><span id='show_receptionActions'>&nbsp;</span></td>";
+}
 ?>

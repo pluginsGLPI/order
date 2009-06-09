@@ -30,6 +30,8 @@
 $NEEDED_ITEMS=array("computer","printer","networking","monitor","software","peripheral","phone","tracking","document","user","enterprise","contract","infocom","group");
 define('GLPI_ROOT', '../../..'); 
 include (GLPI_ROOT."/inc/includes.php");
+include (GLPI_ROOT."/plugins/order/inc/plugin_order.reception.function.php");
+
 
 if(isset($_POST["reception"])) 
 {
@@ -41,7 +43,7 @@ if(isset($_POST["reception"]))
 			{
 				$DB = new DB;
 				$query=" UPDATE glpi_plugin_order_detail
-						SET status=1
+						SET status=1, date='".$_POST["date"]."'
 						WHERE ID=$key";
 				$DB->query($query);
 			}
@@ -49,7 +51,7 @@ if(isset($_POST["reception"]))
 	}
 	glpi_header($_SERVER["HTTP_REFERER"]);
 } 
-if(isset($_POST["showGeneration"])) {
+if(isset($_POST["generation"])) {
 	commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order","order");
 	echo "<div class='center'>";
 	echo "<table class='tab_cadre'>";
@@ -61,7 +63,7 @@ if(isset($_POST["showGeneration"])) {
 		echo "<th>".$LANG['plugin_order']['delivery'][6]."</th>";
 		echo "<th>".$LANG['plugin_order']['delivery'][7]."</th>";
 		echo "<th>".$LANG['plugin_order']['delivery'][8]."</th></tr>";
-		echo "<input type='hidden' name='FK_order' value=".$_POST["orderID"].">";
+		echo "<input type='hidden' name='orderID' value=".$_POST["orderID"].">";
 		$i=0;
 		foreach ($_POST["item"] as $key => $val)
 		{
@@ -81,49 +83,39 @@ if(isset($_POST["showGeneration"])) {
 				$i++;
 			}
 		}
-		echo "<tr><td align='center' colspan='4' class='tab_bg_2'><input type='submit' name='generation' class='submit' value=".$LANG['plugin_order']['delivery'][9]."></td></tr>";
+		echo "<tr><td align='center' colspan='4' class='tab_bg_2'><input type='submit' name='generate' class='submit' value=".$LANG['plugin_order']['delivery'][9]."></td></tr>";
 	} else 
 		glpi_header($_SERVER["HTTP_REFERER"]);
 	echo "</table>";
 	echo "</div>";
 	commonFooter();
 } 
-if(isset($_POST["generation"])) 
+if(isset($_POST["generate"])) 
 {
 	$i=0;
 	while(isset($_POST["serial"][$i])) 
 	{
-		plugin_order_generateAssociatedMaterial($_POST["type"][$i], $_POST["serial"][$i], $_POST["inventory"][$i], $_POST["name"][$i]);
-		plugin_order_createLinkWithAssociatedMaterial($_POST["type"][$i], $_POST["serial"][$i], $_POST["FK_order"], $_POST["ID"][$i]);
-		$i++;
+		$newID=plugin_order_generateMaterial($_POST["type"][$i], $_POST["serial"][$i], $_POST["inventory"][$i], $_POST["name"][$i]);
+		plugin_order_createLinkWithMaterial($_POST["ID"][$i], $newID);
 	}
-	glpi_header("".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["FK_order"]."");
+	glpi_header("".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
 }
-function plugin_order_generateAssociatedMaterial($type, $serial, $numinv, $name) 
+if(isset($_POST["deleteLink"])) 
 {
-	global $DB, $LINK_ID_TABLE;
-	
-	$entity=$_SESSION["glpiactive_entity"];
-	$query=" INSERT INTO ".$LINK_ID_TABLE[$type]." (serial, otherserial, name, FK_entities) 
-			values ('$serial', '$numinv', '$name', $entity)";
-	$DB->query($query);
+	foreach ($_POST["item"] as $key => $val)
+	{
+		if ($val==1) 
+			plugin_order_deleteLinkWithMaterial($key);
+	}
+	glpi_header("".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
 }
-function plugin_order_createLinkWithAssociatedMaterial($type, $serial, $FK_order, $IDD)
+if(isset($_POST["createLink"])) 
 {
-	global $DB, $LINK_ID_TABLE;
-	
-	$query=" SELECT ID FROM ".$LINK_ID_TABLE[$type]." WHERE serial='$serial'"; 
-	$result=$DB->query($query);
-	$ID=$DB->result($result,0,'ID');
-	$query=" INSERT INTO glpi_plugin_order_device (FK_order, FK_device, device_type) 
-			values ('$FK_order', '$ID', '$type')";
-	$DB->query($query);
-	$query=" SELECT ID FROM glpi_plugin_order_device WHERE FK_order='$FK_order' AND FK_device='$ID' AND device_type='$type'"; 
-	$result=$DB->query($query);
-	$ID_device=$DB->result($result,0,'ID');
-	$query=" UPDATE glpi_plugin_order_detail
-			SET FK_device=$ID_device
-			WHERE ID=$IDD";
-	$DB->query($query);
+	foreach ($_POST["item"] as $key => $val)
+	{
+		if ($val==1) 
+			plugin_order_createLinkWithMaterial($key, $_POST["material"]);
+	}
+	glpi_header("".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
 }
  ?>

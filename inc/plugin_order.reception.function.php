@@ -32,7 +32,7 @@ function showReceptionForm($orderID) {
 	
 	$plugin_order=new plugin_order();
 	$canedit=$plugin_order->can($orderID,'w');
-	$query_ref=" 	SELECT glpi_plugin_order_detail.FK_ref AS ref, name FROM glpi_plugin_order_detail, glpi_plugin_order_references WHERE FK_order=$orderID AND glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID  GROUP BY glpi_plugin_order_detail.FK_ref";
+	$query_ref=" 	SELECT glpi_plugin_order_detail.ID, glpi_plugin_order_detail.FK_ref AS ref, name, type FROM glpi_plugin_order_detail, glpi_plugin_order_references WHERE FK_order=$orderID AND glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID  GROUP BY glpi_plugin_order_detail.FK_ref ORDER BY glpi_plugin_order_detail.ID";
 	$result_ref=$DB->query($query_ref);
 	$numref=$DB->numrows($result_ref);
 	$j=0;
@@ -41,6 +41,7 @@ function showReceptionForm($orderID) {
 		if($numref!=0) 
 		{
 			$refID=$DB->result($result_ref,$j,'ref');
+			$typeRef=$DB->result($result_ref,$j,'type');
 			$query="	SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, price, reductedprice, taxesprice, status, date, FK_manufacturer, name, type, FK_device
 					FROM glpi_plugin_order_detail, glpi_plugin_order_references
 					WHERE FK_order=$orderID
@@ -103,17 +104,11 @@ function showReceptionForm($orderID) {
 			{
 				echo "<div class='center'>";
 				echo "<table class='tab_cadre_fixe'>";
-				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
-				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=none'>".$LANG['buttons'][19]."</a>";
+				echo "<tr><td width='5%'><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center' width='5%'><a onclick= \"if ( markCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+				echo "<td width='1%'>/</td><td class='center' width='5%'><a onclick= \"if ( unMarkCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 				echo "</td>";
-				/*echo "<select name='action'>";
-				echo "<option value='reception'>-----</option>";
-				echo "<option value='reception'>".$LANG['plugin_order']['delivery'][2]."</option>";
-				echo "<option value='reception'>".$LANG['plugin_order']['delivery'][3]."</option>";
-				echo "</select>";*/
 				echo "<input type='hidden' name='orderID' value='$orderID'>";
-				echo "<td><input type='submit' name='reception' class='submit'></td>";
-				echo "<td width='70%'><input type='submit' name='showGeneration' class='submit'></td>";
+				plugin_order_dropdownReceptionActions($typeRef);
 				echo "</form>";
 				echo "</td>"; 
 				echo "</table>";
@@ -189,19 +184,54 @@ function getReceptionType($ID)
 		return(-1);
 }
 
-function getReceptionSerial($ID, $type) 
+function getReceptionSerial($deviceID, $type) 
 {
 	global $DB, $LINK_ID_TABLE, $INFOFORM_PAGES, $CFG_GLPI, $LANG;
-	$query=" SELECT FK_device FROM glpi_plugin_order_device WHERE ID=$ID";
+	$query=" SELECT serial FROM ".$LINK_ID_TABLE[$type]." WHERE ID=".$deviceID."";
 	$result=$DB->query($query);
-	if($DB->numrows($result)>0) 
+	if($deviceID !=0) 
 	{
-		$ID_device=$DB->result($result,0,'FK_device');
-		$query=" SELECT serial FROM ".$LINK_ID_TABLE[$type]." WHERE ID=$ID_device";
-		$result=$DB->query($query);
 		$serial=$DB->result($result,0,'serial');
-		return("<a href=".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=$ID_device>$serial</a>");
+		return("<a href=".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=$deviceID>$serial</a>");
 	} else 
 		return($LANG['plugin_order']['item'][2]);
+}
+
+function getAllItemsByType($type,$entity)
+{
+	global $DB, $LINK_ID_TABLE;
+	$query = "SELECT ID, name FROM ".$LINK_ID_TABLE[$type]." WHERE FK_entities=".$entity." AND is_template=0";
+
+	$result = $DB->query($query);
+	$item = array();
+	while ($data = $DB->fetch_array($result))
+		$item[$data["ID"]] = $data["name"];
+
+	return $item;		
+}
+
+function plugin_order_generateMaterial($type, $serial, $numinv, $name) 
+{
+	$ci=new CommonItem();
+	$ci->setType($type,true);
+	$newID=$ci->obj->add($_POST);
+}
+
+function plugin_order_createLinkWithMaterial($detailID, $materialID) 
+{
+	global $DB;
+	$query="UPDATE glpi_plugin_order_detail
+			SET FK_device=".$materialID."
+			WHERE ID=".$detailID."";
+	$DB->query($query);
+}
+
+function plugin_order_deleteLinkWithMaterial($detailID) 
+{
+	global $DB;
+	$query="UPDATE glpi_plugin_order_detail
+			SET FK_device=0
+			WHERE ID=".$detailID."";
+	$DB->query($query);
 }
 ?>
