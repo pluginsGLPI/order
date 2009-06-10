@@ -100,7 +100,7 @@ class plugin_order_reference extends CommonDBTM {
 			$commonitem = new CommonItem;
 			$commonitem->setType($this->fields["type"],true);
 			
-			$exclusion_types = array(CONSUMABLE_TYPE, CARTRIDGE_TYPE);
+			$exclusion_types = array(0, CONSUMABLE_TYPE, CARTRIDGE_TYPE);
 			echo "<tr class='tab_bg_2'><td>".$LANG['common'][17].": </td>";
 			echo "<td><span id='show_type'>";
 			if (!in_array($this->fields["type"], $exclusion_types) )
