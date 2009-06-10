@@ -1,4 +1,5 @@
 <?php
+
 /*----------------------------------------------------------------------
    GLPI - Gestionnaire Libre de Parc Informatique
    Copyright (C) 2003-2008 by the INDEPNET Development Team.
@@ -27,58 +28,74 @@
     Original Author of file: Benjamin Fontan
     Purpose of file:
     ----------------------------------------------------------------------*/
-    
+
 function getQuantity($FK_order, $FK_ref) {
 	global $CFG_GLPI, $DB;
-		$query="	SELECT count(*) AS quantity FROM glpi_plugin_order_detail
-							WHERE FK_order=$FK_order
-							AND FK_ref=$FK_ref";
-		$result=$DB->query($query);
-		return($DB->result($result,0,'quantity'));
+	$query = "	SELECT count(*) AS quantity FROM glpi_plugin_order_detail
+								WHERE FK_order=$FK_order
+								AND FK_ref=$FK_ref";
+	$result = $DB->query($query);
+	return ($DB->result($result, 0, 'quantity'));
 }
 function getDelivredQuantity($FK_order, $FK_ref) {
-	global  $CFG_GLPI, $DB;
-		$query="	SELECT count(*) AS delivredquantity FROM glpi_plugin_order_detail
-							WHERE FK_order=$FK_order
-							AND FK_ref=$FK_ref
-							AND status='1'";
-		$result=$DB->query($query);
-		return($DB->result($result,0,'delivredquantity'));
+	global $CFG_GLPI, $DB;
+	$query = "	SELECT count(*) AS delivredquantity FROM glpi_plugin_order_detail
+								WHERE FK_order=$FK_order
+								AND FK_ref=$FK_ref
+								AND status='1'";
+	$result = $DB->query($query);
+	return ($DB->result($result, 0, 'delivredquantity'));
 }
 function getTaxes($FK_order, $FK_ref) {
-	global  $CFG_GLPI, $DB;
-		$query="	SELECT price, taxesprice FROM glpi_plugin_order_detail
-							WHERE FK_order=$FK_order
-							AND FK_ref=$FK_ref";
-		$result=$DB->query($query);
-		$taxes=$DB->result($result,0,'taxesprice')/$DB->result($result,0,'price');
-		return($taxes);
+	global $CFG_GLPI, $DB;
+	$query = "	SELECT price, taxesprice FROM glpi_plugin_order_detail
+								WHERE FK_order=$FK_order
+								AND FK_ref=$FK_ref";
+	$result = $DB->query($query);
+	$taxes = $DB->result($result, 0, 'taxesprice') / $DB->result($result, 0, 'price');
+	return ($taxes);
 }
 
-function addDetails($referenceID,$orderID,$quantity,$price,$discounted_price,$taxes)
-{
-	if ($quantity > 0)
-	{
+function getPrices($FK_order) {
+	global $CFG_GLPI, $DB;
+	$query = "SELECT SUM(taxesprice) as priceTTC, SUM(reductedprice) as priceHT FROM `glpi_plugin_order_detail` WHERE FK_order=$FK_order";
+	$result = $DB->query($query);
+	return $DB->fetch_array($result);
+}
+
+function getPriceTaxIncluded($priceHT, $taxes) {
+	if (!$priceHT)
+		return 0;
+	else
+		return $priceHT + (($priceHT * $taxes) / 100);
+}
+
+function addDetails($referenceID, $orderID, $quantity, $price, $discounted_price, $taxes) {
+	if ($quantity > 0) {
 		$detail = new plugin_order_detail;
-		for ($i=0;$i<$quantity;$i++)
-		{
+		for ($i = 0; $i < $quantity; $i++) {
 			$input["FK_order"] = $orderID;
 			$input["FK_ref"] = $referenceID;
 			$input["price"] = $price;
-			$input["reductedprice"] = $discounted_price; 
+			$input["reductedprice"] = $discounted_price;
 			$input["status"] = ORDER_STATUS_NOT_DELIVERED;
+			$input["taxesprice"] = getPriceTaxIncluded($input["reductedprice"], $taxes);
 			$detail->add($input);
 		}
-	}  
+	}
 }
 
-function deleteDetails($referenceID,$orderID)
-{
+function deleteDetails($referenceID, $orderID) {
 	global $DB;
-	$query=" DELETE FROM glpi_plugin_order_detail
-			WHERE FK_order=$orderID 
-			AND FK_ref=$referenceID";
+	
+	$query = " DELETE FROM `glpi_plugin_order_detail`
+				WHERE FK_order=$orderID 
+				AND FK_ref=$referenceID";
 	$DB->query($query);
-}
 
+	$query = " DELETE FROM `glpi_plugin_order_device`
+				WHERE FK_order=$orderID ";
+	$DB->query($query);
+
+}
 ?>

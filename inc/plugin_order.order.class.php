@@ -75,6 +75,11 @@ class plugin_order extends CommonDBTM {
 			$ong[5]=$LANG['plugin_order']['delivery'][1];
 			/* item */
 			$ong[2]=$LANG['plugin_order']['item'][0];
+
+			if (haveRight("show_all_ticket","1")) {
+				$ong[6]=$LANG['title'][28];
+			}
+
 			/* documents */
 			if (haveRight("document","r"))
 				$ong[3]=$LANG['Menu'][27];
@@ -245,13 +250,16 @@ class plugin_order extends CommonDBTM {
 			echo "<td class='tab_bg_1' align='left'>";
 			echo "<table cellpadding='2' cellspacing='2' border='0'><tr><td>";
 			/* total price (without taxes) */
-			if($ID > 0 && getPrice($ID)!=-1) {
-				echo "".$LANG['plugin_order'][13].": </td>";
-				echo "<td>".getPrice($ID)."</td></tr>";
 			
-			/* total price (without taxes) */
+			if($ID > 0) {
+				$prices = getPrices($ID);
+
+				echo "".$LANG['plugin_order'][13].": </td>";
+				echo "<td>".$prices["priceHT"]."</td></tr>";
+			
+			/* total price (with taxes) */
 				echo "<tr><td>".$LANG['plugin_order'][14].": </td>";
-				echo "<td>".getTaxesPrice($ID)."</td></tr>";
+				echo "<td>".$prices["priceTTC"]."</td></tr>";
 			}
 			
 			echo "</table>";

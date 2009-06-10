@@ -73,6 +73,10 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 			case 5 : 
 				showReceptionForm($_POST["ID"]);
 				break;
+			case 6:
+				showJobListForItem(PLUGIN_ORDER_TYPE,$_POST["ID"]);
+				//plugin_applicatifs_showTickets($_POST["ID"]);
+				break;
 			case 11 :
 				showNotesForm($_POST['target'],PLUGIN_ORDER_TYPE,$_POST["ID"]);
 				break;

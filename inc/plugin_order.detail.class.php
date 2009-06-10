@@ -85,8 +85,9 @@ class plugin_order_detail extends CommonDBTM {
 			$query="	SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, 
 								glpi_plugin_order_references.type, glpi_plugin_order_references.FK_manufacturer, glpi_plugin_order_references.name, 
 								glpi_plugin_order_detail.price, glpi_plugin_order_detail.taxesprice, glpi_plugin_order_detail.reductedprice, 
-								SUM(glpi_plugin_order_detail.reductedprice) AS totalprice
-								FROM glpi_plugin_order_detail, glpi_plugin_order_references
+								SUM(glpi_plugin_order_detail.reductedprice) AS totalpriceHT, 
+								SUM(glpi_plugin_order_detail.taxesprice) AS totalpriceTTC 
+								FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
 								WHERE glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID
 								AND glpi_plugin_order_detail.FK_order=$FK_order
 								GROUP BY glpi_plugin_order_detail.FK_ref
@@ -149,9 +150,9 @@ class plugin_order_detail extends CommonDBTM {
 					/* price with reduction */
 					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"reductedprice"))."</td>";
 					/* total price */
-					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"totalprice"))."</td>";
+					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"totalpriceHT"))."</td>";
 					/* total price with taxes  */
-					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"totalprice")*getTaxes($FK_order, $IDR))."</td>";
+					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"totalpriceTTC"))."</td>";
 					$i++;
 				}
 				echo "</table>";
