@@ -56,18 +56,21 @@ function showReceptionForm($orderID) {
 		if ($numref == 0)
 			echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
 		else {
-			echo "<tr class='tab_bg_2'>";
-			echo "<td>";
-			echo "<ul><li>";
+			echo "<tr><th><ul><li>";
 			echo "<a href=\"javascript:showHideDiv('reception$rand','reception$rand','" . $CFG_GLPI["root_doc"] . "/pics/deplier_down.png','" . $CFG_GLPI["root_doc"] . "/pics/deplier_up.png');\">";
-			echo "<img alt='' name='reception$rand' src=\"" . $CFG_GLPI["root_doc"] . "/pics/deplier_up.png\">";
-			echo "</a>";
-			echo "</li></ul></td>";
-			echo "<td colspan='7' align='center'>" . $LANG['plugin_order']['detail'][2] . " : " .getReceptionReferenceLink($refID, $DB->result($result_ref, $j, 'name')) . " ";
-			echo "- " . $LANG['plugin_order']['delivery'][5] . " : " . getDelivredQuantity($orderID, $refID) . " / " . getQuantity($orderID, $refID) . " ";
-			echo "- " . $LANG['plugin_order']['item'][0] . " : " . getNumberOfLinkedMaterial($orderID, $refID) . " / " . getQuantity($orderID, $refID) . " </th>";
-			echo "<div  class='center' id='reception$rand'>";
-			echo "<tr><th></th><th>" . $LANG['plugin_order']['detail'][1] . "</th>";
+			echo "<img alt='' name='reception$rand' src=\"" . $CFG_GLPI["root_doc"] . "/pics/deplier_down.png\">";
+			echo "</a></li></ul></th>";
+			echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
+			echo "<th>" . $LANG['plugin_order']['delivery'][5] . "</th>";
+			echo "<th>" . $LANG['plugin_order']['item'][0] . "</th></tr>";
+			echo "<tr><td class='tab_bg_1' width='15'></td><td align='center' class='tab_bg_1'>" . getReceptionReferenceLink($refID, $DB->result($result_ref, $j, 'name')) . "</td>";
+			echo "<td align='center' class='tab_bg_1'>". getDelivredQuantity($orderID, $refID) . " / " . getQuantity($orderID, $refID) . "</td>";
+			echo "<td align='center' class='tab_bg_1'>". getNumberOfLinkedMaterial($orderID, $refID) . " / " . getQuantity($orderID, $refID) . "</td></tr></table>";
+			echo "<div class='center' id='reception$rand' style='display:none'><table class='tab_cadre_fixe'>";
+			echo "<tr>";
+			if ($canedit) 
+				echo "<th width='15'></th>";
+			echo "<th>" . $LANG['plugin_order']['detail'][1] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][11] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
@@ -79,7 +82,7 @@ function showReceptionForm($orderID) {
 				$detailID = $DB->result($result, $i, 'IDD');
 				echo "<tr class='tab_bg_2'>";
 				if ($canedit) {
-					echo "<td width='10'>";
+					echo "<td width='15' align='left'>";
 					$sel = "";
 					if (isset ($_GET["select"]) && $_GET["select"] == "all")
 						$sel = "checked";
@@ -102,9 +105,8 @@ function showReceptionForm($orderID) {
 				echo "<input type='hidden' name='status[$detailID]' value='" . $DB->result($result, $i, 'status') . "'>";
 				$i++;
 			}
-			echo "</table></div>";
+			echo "</table>";
 			if ($canedit) {
-				echo "<div class='center'>";
 				echo "<table class='tab_cadre_fixe'>";
 				echo "<tr><td width='5%'><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center' width='5%'><a onclick= \"if ( markCheckboxes('order_reception_form$rand') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$orderID&amp;select=all'>" . $LANG['buttons'][18] . "</a></td>";
 				echo "<td width='1%'>/</td><td class='center' width='5%'><a onclick= \"if ( unMarkCheckboxes('order_reception_form$rand') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$orderID&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
@@ -114,10 +116,10 @@ function showReceptionForm($orderID) {
 				echo "</form>";
 				echo "</td>";
 				echo "</table>";
-				echo "</div>";
+				echo "</div></td></tr></table>";
 			}
 		}
-		echo "</div>";
+		echo "<br>";
 		$j++;
 	}
 }
