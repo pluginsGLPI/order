@@ -33,6 +33,29 @@ class plugin_order_detail extends CommonDBTM {
       $this->table="glpi_plugin_order_detail";                
    }
 	
+	/*clean order if items are deleted */
+	function cleanItems($ID,$type) {
+		global $DB;
+		$query=" SELECT glpi_plugin_order_detail.ID AS detailID, glpi_plugin_order_references.ID
+							FROM glpi_plugin_order_detail, glpi_plugin_order_references
+							WHERE FK_ref=glpi_plugin_order_references.ID
+							AND glpi_plugin_order_references.type=$type
+							AND glpi_plugin_order_detail.FK_device=$ID";
+		if($DB->query($query))
+		{
+			$result=$DB->query($query);
+			if($DB->result($result,0,'detailID'))
+				$detailID=$DB->result($result,0,'detailID');
+		}
+		$query=" UPDATE glpi_plugin_order_detail
+							SET FK_device=0
+							WHERE ID=$detailID";
+		$DB->query($query);
+		$query=" DELETE FROM glpi_plugin_order_detail
+							WHERE FK_device = '$ID' 
+							AND device_type= '$type'";
+		$DB->query($query);
+	}
 	function showAddForm($target, $orderID)
 	{
        global  $CFG_GLPI, $LANG,$DB;
@@ -59,13 +82,7 @@ class plugin_order_detail extends CommonDBTM {
 			echo"</tr>";
 			echo "<tr>";
 			echo "<td class='tab_bg_1' align='center'>";
-			plugin_order_dropdownAllItems("type",
-			true,
-			0,
-			$order->fields["ID"],
-			$order->fields["FK_enterprise"],
-			$order->fields["FK_entities"],
-			$CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php");	
+			plugin_order_dropdownAllItems("type", true, 0, $order->fields["ID"], $order->fields["FK_enterprise"], $order->fields["FK_entities"], $CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php");	
 			echo "</td>";
 			echo "<td class='tab_bg_1' align='center'><span id='show_reference'>&nbsp;</span></td>";
 			echo "<td class='tab_bg_1' align='center'><span id='show_quantity'>&nbsp;</span></td>";
@@ -84,9 +101,9 @@ class plugin_order_detail extends CommonDBTM {
 		
 			$query="	SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, 
 								glpi_plugin_order_references.type, glpi_plugin_order_references.FK_manufacturer, glpi_plugin_order_references.name, 
-								glpi_plugin_order_detail.price, glpi_plugin_order_detail.taxesprice, glpi_plugin_order_detail.reductedprice, 
-								SUM(glpi_plugin_order_detail.reductedprice) AS totalpriceHT, 
-								SUM(glpi_plugin_order_detail.taxesprice) AS totalpriceTTC 
+								glpi_plugin_order_detail.price_taxfree, glpi_plugin_order_detail.price_ati, glpi_plugin_order_detail.price_discounted, 
+								SUM(glpi_plugin_order_detail.price_discounted) AS totalpriceHT, 
+								SUM(glpi_plugin_order_detail.price_ati) AS totalpriceTTC 
 								FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
 								WHERE glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID
 								AND glpi_plugin_order_detail.FK_order=$FK_order
@@ -144,11 +161,11 @@ class plugin_order_detail extends CommonDBTM {
 					/* delivered quantity */
 					echo "<td align='center'>".getDelivredQuantity($FK_order, $IDR)."</td>";	
 					/*price */
-					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"price"))."</td>";
+					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"price_taxfree"))."</td>";
 					/* price with taxes */
-					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"taxesprice"))."</td>";
+					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"price_ati"))."</td>";
 					/* price with reduction */
-					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"reductedprice"))."</td>";
+					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"price_discounted"))."</td>";
 					/* total price */
 					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"totalpriceHT"))."</td>";
 					/* total price with taxes  */

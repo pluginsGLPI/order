@@ -50,7 +50,7 @@ function getDelivredQuantity($FK_order, $FK_ref) {
 
 function getPrices($FK_order) {
 	global $CFG_GLPI, $DB;
-	$query = "SELECT SUM(taxesprice) as priceTTC, SUM(reductedprice) as priceHT FROM `glpi_plugin_order_detail` WHERE FK_order=$FK_order";
+	$query = "SELECT SUM(price_ati) as priceTTC, SUM(price_discounted) as priceHT FROM `glpi_plugin_order_detail` WHERE FK_order=$FK_order";
 	$result = $DB->query($query);
 	return $DB->fetch_array($result);
 }
@@ -68,10 +68,10 @@ function addDetails($referenceID, $orderID, $quantity, $price, $discounted_price
 		for ($i = 0; $i < $quantity; $i++) {
 			$input["FK_order"] = $orderID;
 			$input["FK_ref"] = $referenceID;
-			$input["price"] = $price;
-			$input["reductedprice"] = $discounted_price;
+			$input["price_taxfree"] = $price;
+			$input["price_discounted"] = $discounted_price;
 			$input["status"] = ORDER_STATUS_NOT_DELIVERED;
-			$input["taxesprice"] = getPriceTaxIncluded($input["reductedprice"], $taxes);
+			$input["price_ati"] = getPriceTaxIncluded($input["price_discounted"], $taxes);
 			$detail->add($input);
 		}
 	}

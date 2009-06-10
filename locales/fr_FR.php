@@ -58,6 +58,7 @@ $LANG['plugin_order'][39] = "Titre de la commande";
 $LANG['plugin_order'][40] = "Lieu de livraison de la commande";
 $LANG['plugin_order'][41] = "Opération réalisée avec succès.";
 $LANG['plugin_order'][42] = "Impossible de lier le même matériel à plusieurs lignes détail.";
+$LANG['plugin_order'][43] = "Retour à la page menu";
 
 
 

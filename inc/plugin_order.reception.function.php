@@ -33,6 +33,7 @@ function showReceptionForm($orderID) {
 
 	$plugin_order = new plugin_order();
 	$canedit = $plugin_order->can($orderID, 'w');
+	$rand=mt_rand();
 	$query_ref = " 	SELECT glpi_plugin_order_detail.ID, glpi_plugin_order_detail.FK_ref AS ref, name, type FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` WHERE FK_order=$orderID AND glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID  GROUP BY glpi_plugin_order_detail.FK_ref ORDER BY glpi_plugin_order_detail.ID";
 	$result_ref = $DB->query($query_ref);
 	$numref = $DB->numrows($result_ref);
@@ -41,7 +42,7 @@ function showReceptionForm($orderID) {
 		if ($numref != 0) {
 			$refID = $DB->result($result_ref, $j, 'ref');
 			$typeRef = $DB->result($result_ref, $j, 'type');
-			$query = "	SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, price, reductedprice, taxesprice, status, date, FK_manufacturer, name, type, FK_device
+			$query = "	SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, status, date, FK_manufacturer, name, type, FK_device
 								FROM glpi_plugin_order_detail, glpi_plugin_order_references
 								WHERE FK_order=$orderID
 								AND glpi_plugin_order_detail.FK_ref=$refID
@@ -50,7 +51,6 @@ function showReceptionForm($orderID) {
 			$result = $DB->query($query);
 			$num = $DB->numrows($result);
 		}
-		$rand = mt_rand();
 		echo "<form method='post' name='order_reception_form$rand' id='order_reception_form$rand'  action=\"" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.reception.form.php\">";
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
 		if ($numref == 0)
@@ -73,6 +73,7 @@ function showReceptionForm($orderID) {
 			echo "<th>" . $LANG['plugin_order']['detail'][22] . "</th></tr>";
 			$i = 0;
 			while ($i < $num) {
+				$rand = mt_rand();
 				$detailID = $DB->result($result, $i, 'IDD');
 				echo "<tr class='tab_bg_2'>";
 				if ($canedit) {
@@ -88,7 +89,11 @@ function showReceptionForm($orderID) {
 				echo "<td align='center'>".getReceptionReferenceLink($DB->result($result,$i,'IDR'), $DB->result($result,$i,'name'))."</td>";
 				echo "<td align='center'>".getReceptionStatus($detailID)."</td>";
 				echo "<td align='center'>".getReceptionDate($detailID)."</td>";
-				echo "<td align='center'>".getReceptionDeviceName($DB->result($result,$i,'FK_device'), $DB->result($result,$i,'type'))."</td>";
+				echo "<td align='center'>".getReceptionDeviceName($DB->result($result,$i,'FK_device'), $DB->result($result,$i,'type'));
+				if($DB->result($result,$i,'FK_device')!=0) {
+					echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$rand')\" onmouseover=\"cleandisplay('comments_$rand')\" ";
+					echo "<span class='over_link' id='comments_$rand'>".nl2br(getReceptionMaterialInfo($DB->result($result,$i,'type'), $DB->result($result,$i,'FK_device')))."</span>";
+				}
 				echo "<input type='hidden' name='ID[$detailID]' value='$detailID'>";
 				echo "<input type='hidden' name='name[$detailID]' value='" . $DB->result($result, $i, 'name') . "'>";
 				echo "<input type='hidden' name='type[$detailID]' value='" . $DB->result($result, $i, 'type') . "'>";
@@ -113,7 +118,24 @@ function showReceptionForm($orderID) {
 		$j++;
 	}
 }
-
+function getReceptionMaterialInfo($deviceType, $deviceID) {
+	global $DB, $LINK_ID_TABLE, $LANG;
+	$query = "SELECT * FROM ".$LINK_ID_TABLE[$deviceType]." WHERE ID=".$deviceID."";
+	if ($result = $DB->query($query)){
+		if($DB->numrows($result) != 0) {
+			$data=$DB->fetch_assoc($result);
+			$name = $data["name"];
+			if (isset($data["serial"]))
+				$comments ="<strong>".$LANG['plugin_order']['delivery'][6].":</strong> ".$data["serial"];
+			if (isset($data["otherserial"]))
+				$comments .="<br><strong>".$LANG['plugin_order']['delivery'][7].":</strong> ".$data["otherserial"];
+			if (isset($data["name"]))
+				$comments .="<br><strong>".$LANG['plugin_order']['delivery'][8].":</strong> ".$data["name"];
+		}
+	}
+	return($comments);
+}	
+					
 function getReceptionReferenceLink($ID, $name) {
 	global $CFG_GLPI, $INFOFORM_PAGES;
 	return ("<a href=" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[PLUGIN_ORDER_REFERENCE_TYPE] . "?ID=" . $ID . "'>" . $name . "</a>");

@@ -255,11 +255,11 @@ class plugin_order extends CommonDBTM {
 				$prices = getPrices($ID);
 
 				echo "".$LANG['plugin_order'][13].": </td>";
-				echo "<td>".$prices["priceHT"]."</td></tr>";
+				echo "<td>".sprintf("%01.2f", $prices["priceHT"])."</td></tr>";
 			
 			/* total price (with taxes) */
 				echo "<tr><td>".$LANG['plugin_order'][14].": </td>";
-				echo "<td>".$prices["priceTTC"]."</td></tr>";
+				echo "<td>".sprintf("%01.2f", $prices["priceTTC"])."</td></tr>";
 			}
 			
 			echo "</table>";

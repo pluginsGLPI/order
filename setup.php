@@ -42,7 +42,7 @@ function plugin_init_order() {
 		'classname'  => 'plugin_order',
 		'tablename'  => 'glpi_plugin_order',
 		'formpage'   => 'front/plugin_order.form.php',
-		'searchpage' => 'index.php',
+		'searchpage' => 'front/plugin_order.order.php',
 		'typename'   => $LANG['plugin_order'][4],
 		'deleted_tables' => true,
 		'specif_entities_tables' => true,
@@ -66,32 +66,31 @@ function plugin_init_order() {
 		
 	/* load changeprofile function */
 	$PLUGIN_HOOKS['change_profile']['order'] = 'plugin_order_changeprofile';
+	
 	/*if glpi is loaded */
 	if (isset($_SESSION["glpiID"])){
-			if(plugin_order_haveRight("order","r")){
-				$PLUGIN_HOOKS['menu_entry']['order'] = true;
-				$PLUGIN_HOOKS['submenu_entry']['order']['search']['order'] = 'index.php';
-				$PLUGIN_HOOKS['submenu_entry']['order']['search']['reference'] = 'front/plugin_order.reference.php';
-				$PLUGIN_HOOKS['headings']['order'] = 'plugin_get_headings_order';
-				$PLUGIN_HOOKS['headings_action']['order'] = 'plugin_headings_actions_order';
-			}
+		if(plugin_order_haveRight("order","r")){
+			$PLUGIN_HOOKS['menu_entry']['order'] = true;
+			$PLUGIN_HOOKS['submenu_entry']['order']['search']['order'] = 'front/plugin_order.order.php';
+			$PLUGIN_HOOKS['submenu_entry']['order']['search']['reference'] = 'front/plugin_order.reference.php';
+			$PLUGIN_HOOKS['submenu_entry']['order']["<img  src='".$CFG_GLPI["root_doc"]."/pics/menu_show.png' title='".$LANG['plugin_order'][43]."' alt='".$LANG['plugin_order'][43]."'>"]['reference'] = 'index.php';
+			$PLUGIN_HOOKS['submenu_entry']['order']["<img  src='".$CFG_GLPI["root_doc"]."/pics/menu_show.png' title='".$LANG['plugin_order'][43]."' alt='".$LANG['plugin_order'][43]."'>"]['order'] = 'index.php';
+			$PLUGIN_HOOKS['headings']['order'] = 'plugin_get_headings_order';
+			$PLUGIN_HOOKS['headings_action']['order'] = 'plugin_headings_actions_order';
+		}
 
-			if (plugin_order_haveRight("reference","w")){
-				$PLUGIN_HOOKS['submenu_entry']['order']['add']['reference'] = 'front/plugin_order.reference.form.php';
-				$PLUGIN_HOOKS['submenu_entry']['order']["<img  src='".$CFG_GLPI["root_doc"]."/pics/dollaradd.png' title='".$LANG["plugin_order"]["reference"][1]."' alt='".$LANG["plugin_order"]["reference"][1]."'>"]['order'] = 'front/plugin_order.reference.php';
-			}
+		if (plugin_order_haveRight("reference","w")){
+			$PLUGIN_HOOKS['submenu_entry']['order']['add']['reference'] = 'front/plugin_order.reference.form.php';
+			$PLUGIN_HOOKS['submenu_entry']['order']['config']['reference'] = 'front/plugin_order.config.php';
+		}
 
-			if (plugin_order_haveRight("order","w")){
-				$PLUGIN_HOOKS['submenu_entry']['order']['add']['order'] = 'front/plugin_order.form.php';
-				//$PLUGIN_HOOKS['submenu_entry']['order']["<img  src='".$CFG_GLPI["root_doc"]."/pics/menu_show.png' title='".$LANG["plugin_order"]["reference"][1]."' alt='".$LANG["plugin_order"]["reference"][1]."'>"]['reference'] = 'index.php';
-
-
-				$PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/plugin_order.config.php';
-				$PLUGIN_HOOKS['pre_item_delete']['order'] = 'plugin_pre_item_delete_order';
-				$PLUGIN_HOOKS['item_purge']['order'] = 'plugin_item_purge_order';
-				$PLUGIN_HOOKS['use_massive_action']['order']=1;
-			}
-		
+		if (plugin_order_haveRight("order","w")){
+			$PLUGIN_HOOKS['submenu_entry']['order']['add']['order'] = 'front/plugin_order.form.php';
+			$PLUGIN_HOOKS['submenu_entry']['order']['config']['order'] = 'front/plugin_order.config.php';
+			$PLUGIN_HOOKS['pre_item_delete']['order'] = 'plugin_pre_item_delete_order';
+			$PLUGIN_HOOKS['item_purge']['order'] = 'plugin_item_purge_order';
+			$PLUGIN_HOOKS['use_massive_action']['order']=1;
+		}
 	}
 }
 

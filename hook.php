@@ -407,6 +407,8 @@ function plugin_item_purge_order($parm){
 			MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE,CONTRACT_TYPE,PROFILE_TYPE))){
 		$plugin_order=new plugin_order;
 		$plugin_order->cleanItems($parm["ID"],$parm["type"]);
+		$detail=new plugin_order_detail;
+		$detail->cleanItems($parm["ID"],$parm["type"]);
 		return true;
 	}elseif (in_array($parm["type"],array(DOCUMENT_TYPE))){
 		$plugin_order=new plugin_order;
