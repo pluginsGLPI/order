@@ -33,12 +33,12 @@ function showReceptionForm($orderID) {
 
 	$plugin_order = new plugin_order();
 	$canedit = $plugin_order->can($orderID, 'w');
-	$rand=mt_rand();
 	$query_ref = " 	SELECT glpi_plugin_order_detail.ID, glpi_plugin_order_detail.FK_ref AS ref, name, type FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` WHERE FK_order=$orderID AND glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID  GROUP BY glpi_plugin_order_detail.FK_ref ORDER BY glpi_plugin_order_detail.ID";
 	$result_ref = $DB->query($query_ref);
 	$numref = $DB->numrows($result_ref);
 	$j = 0;
 	while ($j < $numref || $j == 0) {
+		$rand=mt_rand();
 		if ($numref != 0) {
 			$refID = $DB->result($result_ref, $j, 'ref');
 			$typeRef = $DB->result($result_ref, $j, 'type');
@@ -56,16 +56,18 @@ function showReceptionForm($orderID) {
 		if ($numref == 0)
 			echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
 		else {
-			echo "<tr>";
-			if ($canedit) {
-				echo "<th>";
-				echo "<ul><li>";
-				echo "<a href=\"javascript:showHideDiv('checklist_view_in_mode','checklistimg','" . $CFG_GLPI["root_doc"] . "/pics/deplier_down.png','" . $CFG_GLPI["root_doc"] . "/pics/deplier_up.png');\">";
-				echo "<img alt='' name='checklistimg' src=\"" . $CFG_GLPI["root_doc"] . "/pics/deplier_up.png\">";
-				echo "</a>";
-				echo "</li></ul></th>";
-			}
-			echo "<th>" . $LANG['plugin_order']['detail'][1] . "</th>";
+			echo "<tr class='tab_bg_2'>";
+			echo "<td>";
+			echo "<ul><li>";
+			echo "<a href=\"javascript:showHideDiv('reception$rand','reception$rand','" . $CFG_GLPI["root_doc"] . "/pics/deplier_down.png','" . $CFG_GLPI["root_doc"] . "/pics/deplier_up.png');\">";
+			echo "<img alt='' name='reception$rand' src=\"" . $CFG_GLPI["root_doc"] . "/pics/deplier_up.png\">";
+			echo "</a>";
+			echo "</li></ul></td>";
+			echo "<td colspan='7' align='center'>" . $LANG['plugin_order']['detail'][2] . " : " .getReceptionReferenceLink($refID, $DB->result($result_ref, $j, 'name')) . " ";
+			echo "- " . $LANG['plugin_order']['delivery'][5] . " : " . getDelivredQuantity($orderID, $refID) . " / " . getQuantity($orderID, $refID) . " ";
+			echo "- " . $LANG['plugin_order']['item'][0] . " : " . getNumberOfLinkedMaterial($orderID, $refID) . " / " . getQuantity($orderID, $refID) . " </th>";
+			echo "<div  class='center' id='reception$rand'>";
+			echo "<tr><th></th><th>" . $LANG['plugin_order']['detail'][1] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][11] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
@@ -73,7 +75,7 @@ function showReceptionForm($orderID) {
 			echo "<th>" . $LANG['plugin_order']['detail'][22] . "</th></tr>";
 			$i = 0;
 			while ($i < $num) {
-				$rand = mt_rand();
+				$random = mt_rand();
 				$detailID = $DB->result($result, $i, 'IDD');
 				echo "<tr class='tab_bg_2'>";
 				if ($canedit) {
@@ -91,8 +93,8 @@ function showReceptionForm($orderID) {
 				echo "<td align='center'>".getReceptionDate($detailID)."</td>";
 				echo "<td align='center'>".getReceptionDeviceName($DB->result($result,$i,'FK_device'), $DB->result($result,$i,'type'));
 				if($DB->result($result,$i,'FK_device')!=0) {
-					echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$rand')\" onmouseover=\"cleandisplay('comments_$rand')\" ";
-					echo "<span class='over_link' id='comments_$rand'>".nl2br(getReceptionMaterialInfo($DB->result($result,$i,'type'), $DB->result($result,$i,'FK_device')))."</span>";
+					echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$random')\" onmouseover=\"cleandisplay('comments_$random')\" ";
+					echo "<span class='over_link' id='comments_$random'>".nl2br(getReceptionMaterialInfo($DB->result($result,$i,'type'), $DB->result($result,$i,'FK_device')))."</span>";
 				}
 				echo "<input type='hidden' name='ID[$detailID]' value='$detailID'>";
 				echo "<input type='hidden' name='name[$detailID]' value='" . $DB->result($result, $i, 'name') . "'>";
@@ -115,9 +117,26 @@ function showReceptionForm($orderID) {
 				echo "</div>";
 			}
 		}
+		echo "</div>";
 		$j++;
 	}
 }
+
+function getNumberOfLinkedMaterial($orderID, $refID) {
+	global $DB;
+	$query = "SELECT count(*) AS result FROM glpi_plugin_order_detail
+						WHERE FK_order = " . $orderID . "
+						AND FK_ref = " . $refID . "
+						AND FK_device != '0' ";
+	if($result=$DB->query($query)) {
+		if($DB->result($result,0,'result') != 0) {
+			return ($DB->result($result,0,'result'));
+		} else 
+			return('0');
+	}
+}
+
+
 function getReceptionMaterialInfo($deviceType, $deviceID) {
 	global $DB, $LINK_ID_TABLE, $LANG;
 	$query = "SELECT * FROM ".$LINK_ID_TABLE[$deviceType]." WHERE ID=".$deviceID."";
