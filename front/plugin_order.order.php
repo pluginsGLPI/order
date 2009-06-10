@@ -29,7 +29,7 @@
     ----------------------------------------------------------------------*/
    
 $NEEDED_ITEMS=array("computer","printer","networking","monitor","software","peripheral","phone","user","search","tracking");
-define('GLPI_ROOT', '../..'); 
+define('GLPI_ROOT', '../../..'); 
 include (GLPI_ROOT."/inc/includes.php");
 
 commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order","order");

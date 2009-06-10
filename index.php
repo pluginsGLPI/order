@@ -34,10 +34,18 @@ include (GLPI_ROOT."/inc/includes.php");
 
 commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order","order");
 
-if(plugin_order_haveRight("order","r") || haveRight("config","w")){
-	manageGetValuesInSearch(PLUGIN_ORDER_TYPE);
-	searchForm(PLUGIN_ORDER_TYPE,$_GET);
-	showList(PLUGIN_ORDER_TYPE,$_GET);	
+if(plugin_order_haveRight("order","r") && plugin_order_haveRight("reference","r"))
+{
+	echo "<div class='center'>";
+	echo "<table class='tab_cadre'>";
+	echo "<tr><th>".$LANG['plugin_order'][4]."</th></tr>";
+	echo "<tr class='tab_bg_1' align='center'><td><a href='./front/plugin_order.order.php'>".$LANG['plugin_order']['menu'][1]."</a></td></tr>";
+	echo "<tr class='tab_bg_1' align='center'><td><a href='./front/plugin_order.reference.php'>".$LANG['plugin_order']['menu'][2]."</a></td></tr>";
+	echo "</table></div>";
+} 
+elseif (plugin_order_haveRight("order","r"))
+{
+	glpi_header("./front/plugin_order.order.php");	
 }else{
 	echo "<div align='center'><br><br><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 	echo "<b>".$LANG['login'][5]."</b></div>";

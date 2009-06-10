@@ -133,4 +133,7 @@ $LANG['plugin_order']['setup'][23] = "Associer";
 $LANG['plugin_order']['setup'][24] = "Dissocier";
 $LANG['plugin_order']['setup'][25] = "Associer à l'application Web";
 $LANG['plugin_order']['setup'][28] = "Editeur ";
+
+$LANG['plugin_order']['menu'][1] = "Gérer les commandes";
+$LANG['plugin_order']['menu'][2] = "Gérer le catalogue de références produits";
 ?>
