@@ -70,11 +70,6 @@ function addDetails($referenceID,$orderID,$quantity,$price,$discounted_price,$ta
 			$detail->add($input);
 		}
 	}  
-	
-function deleteDetails($FK_detail)
-{
-	
-}	 	
 }
 
 function deleteDetails($referenceID,$orderID)

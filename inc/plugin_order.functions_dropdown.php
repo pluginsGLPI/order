@@ -139,8 +139,9 @@ function plugin_order_dropdownAllItemsByType($name,$type,$entity)
 function plugin_order_dropdownReceptionActions($type)
 {
 	global $LANG, $CFG_GLPI;
+	$rand=mt_rand();
 	echo "<td width='5%'>";
-	echo "<select name='receptionActions' id='receptionActions'>";
+	echo "<select name='receptionActions$rand' id='receptionActions$rand'>";
 	echo "<option value='0' selected>-----</option>";
 	echo "<option value='reception'>".$LANG['plugin_order']['delivery'][2]."</option>";
 	echo "<option value='generation'>".$LANG['plugin_order']['delivery'][3]."</option>";
@@ -149,8 +150,8 @@ function plugin_order_dropdownReceptionActions($type)
 	echo "</select>";
 	$params=array('action'=>'__VALUE__',
 					'type'=>$type);
-	ajaxUpdateItemOnSelectEvent("receptionActions","show_receptionActions",$CFG_GLPI["root_doc"]."/plugins/order/ajax/receptionactions.php",$params);
+	ajaxUpdateItemOnSelectEvent("receptionActions$rand","show_receptionActions$rand",$CFG_GLPI["root_doc"]."/plugins/order/ajax/receptionactions.php",$params);
 	echo "</td>";
-	echo "<td valign=middle><span id='show_receptionActions'>&nbsp;</span></td>";
+	echo "<td valign=middle><span id='show_receptionActions$rand'>&nbsp;</span></td>";
 }
 ?>

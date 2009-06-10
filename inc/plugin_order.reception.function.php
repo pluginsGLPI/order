@@ -92,7 +92,7 @@ function showReceptionForm($orderID) {
 				echo "<td align='center'>".getReceptionReferenceLink($DB->result($result,$i,'IDR'), $DB->result($result,$i,'name'))."</td>";
 				echo "<td align='center'>".getReceptionStatus($detailID)."</td>";
 				echo "<td align='center'>".getReceptionDate($detailID)."</td>";
-				echo "<td align='center'>".getReceptionSerial($DB->result($result,$i,'FK_device'), $DB->result($result,$i,'type'))."</td>";
+				echo "<td align='center'>".getReceptionDeviceName($DB->result($result,$i,'FK_device'), $DB->result($result,$i,'type'))."</td>";
 				echo "<input type='hidden' name='ID[$detailID]' value='$detailID'>";
 				echo "<input type='hidden' name='name[$detailID]' value='".$DB->result($result,$i,'name')."'>";
 				echo "<input type='hidden' name='type[$detailID]' value='".$DB->result($result,$i,'type')."'>";
@@ -184,15 +184,15 @@ function getReceptionType($ID)
 		return(-1);
 }
 
-function getReceptionSerial($deviceID, $type) 
+function getReceptionDeviceName($deviceID, $type) 
 {
 	global $DB, $LINK_ID_TABLE, $INFOFORM_PAGES, $CFG_GLPI, $LANG;
-	$query=" SELECT serial FROM ".$LINK_ID_TABLE[$type]." WHERE ID=".$deviceID."";
+	$query=" SELECT name FROM ".$LINK_ID_TABLE[$type]." WHERE ID=".$deviceID."";
 	$result=$DB->query($query);
 	if($deviceID !=0) 
 	{
-		$serial=$DB->result($result,0,'serial');
-		return("<a href=".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=$deviceID>$serial</a>");
+		$name=$DB->result($result,0,'name');
+		return("<a href=".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=$deviceID>$name</a>");
 	} else 
 		return($LANG['plugin_order']['item'][2]);
 }
@@ -202,7 +202,6 @@ function getAllItemsByType($type,$entity)
 	global $DB, $LINK_ID_TABLE;
 	$query = "SELECT ID, name FROM ".$LINK_ID_TABLE[$type]." 
 			WHERE FK_entities=".$entity." 
-			AND is_template=0
 			AND ID not in(SELECT FK_device FROM glpi_plugin_order_detail)";
 
 	$result = $DB->query($query);
