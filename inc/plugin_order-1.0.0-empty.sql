@@ -100,6 +100,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_entities` int(11) NOT NULL DEFAULT 0,
   `FK_manufacturer` int(11) NOT NULL DEFAULT 0,
+  `FK_type` INT(11) NOT NULL DEFAULT 0,
   `FK_model` INT(11) NOT NULL DEFAULT 0,
   `name` varchar(255) character set latin1 NOT NULL,
   `type` int(11) NOT NULL DEFAULT 0,

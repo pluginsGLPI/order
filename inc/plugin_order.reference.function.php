@@ -170,4 +170,57 @@ function plugin_order_getPriceByReferenceAndSupplier($referenceID,$supplierID)
 	else
 		return 0;	
 }
+
+function plugin_order_getModelTable($type)
+{
+	$prefix = "glpi_dropdown_model";
+	
+	switch ($type)
+	{
+		case COMPUTER_TYPE:
+			return $prefix;
+		case MONITOR_TYPE:
+			return $prefix."_monitors";
+		case PRINTER_TYPE:
+			return $prefix."_printers";
+		case NETWORKING_TYPE:
+			return $prefix."_networkings";	
+		case SOFTWARE_TYPE:
+			return $prefix."_softwares";
+		case PERIPHERAL_TYPE:
+			return $prefix."_peripherals";	
+		case PHONE_TYPE:
+			return $prefix."_printers";				
+		default :
+			return "";
+			break;	
+
+	}
+}
+
+function plugin_order_getTypeTable($type)
+{
+	$prefix = "glpi_type";
+	
+	switch ($type)
+	{
+		case COMPUTER_TYPE:
+				return $prefix."_computers";
+		case MONITOR_TYPE:
+			return $prefix."_monitors";
+		case PRINTER_TYPE:
+			return $prefix."_printers";
+		case NETWORKING_TYPE:
+			return $prefix."_networking";	
+		case SOFTWARE_TYPE:
+			return $prefix."_softwares";
+		case PERIPHERAL_TYPE:
+			return $prefix."_peripherals";	
+		case PHONE_TYPE:
+			return $prefix."_printers";	
+		default :
+			return "";
+			break;	
+	}
+}
 ?>

@@ -59,7 +59,13 @@ class plugin_order_detail extends CommonDBTM {
 			echo"</tr>";
 			echo "<tr>";
 			echo "<td class='tab_bg_1' align='center'>";
-			plugin_order_dropdownAllItems("type",true,0,$order->fields["ID"],$order->fields["FK_enterprise"],$order->fields["FK_entities"]);	
+			plugin_order_dropdownAllItems("type",
+			true,
+			0,
+			$order->fields["ID"],
+			$order->fields["FK_enterprise"],
+			$order->fields["FK_entities"],
+			$CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php");	
 			echo "</td>";
 			echo "<td class='tab_bg_1' align='center'><span id='show_reference'>&nbsp;</span></td>";
 			echo "<td class='tab_bg_1' align='center'><span id='show_quantity'>&nbsp;</span></td>";

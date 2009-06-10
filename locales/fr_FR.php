@@ -121,6 +121,7 @@ $LANG['plugin_order']['profile'][1] = "$title";
 $LANG['plugin_order']['reference'][1]="Référence produit";
 $LANG['plugin_order']['reference'][2]="Ajouter une référence produit";
 $LANG['plugin_order']['reference'][3]="Liste des références";
+$LANG['plugin_order']['reference'][4]="Type de matériel";
 
 $LANG['plugin_order']['setup'][1] = "Catégorie";
 $LANG['plugin_order']['setup'][2] = "Plugin non utilisable depuis le helpdesk";

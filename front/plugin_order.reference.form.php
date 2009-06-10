@@ -28,7 +28,7 @@
     Purpose of file:
     ----------------------------------------------------------------------*/
 
-$NEEDED_ITEMS=array("document","user","enterprise");
+$NEEDED_ITEMS=array("document","user","enterprise","computer","monitor","peripheral","networking","phone","printer","consumable","cartridge");
 define('GLPI_ROOT', '../../..'); 
 include (GLPI_ROOT."/inc/includes.php");
 

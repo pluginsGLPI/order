@@ -84,21 +84,41 @@ class plugin_order_reference extends CommonDBTM {
 			autocompletionTextField("name","glpi_plugin_order_references","name",$this->fields["name"],70,$this->fields["FK_entities"]);	
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_2'><td>".$LANG['common'][17].": </td>";
-			echo "<td>";
-			plugin_order_dropdownAllItems("type",false,$this->fields["type"]);
-			echo "</td></tr>";
-
 			echo "<tr class='tab_bg_2'><td>".$LANG['common'][5].": </td>";
 			echo "<td>";
 			dropdownValue("glpi_dropdown_manufacturer","FK_manufacturer",$this->fields["FK_manufacturer"]);
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_2'><td>".$LANG['common'][13].": </td>";
+			echo "<tr class='tab_bg_2'><td>".$LANG['plugin_order']['reference'][4].": </td>";
 			echo "<td>";
-			plugin_order_dropdownTemplate("template",$_SESSION["glpiactive_entity"],"glpi_computers",$this->fields["FK_manufacturer"]);
-			echo "</td></tr>";
+			plugin_order_dropdownAllItems("type",
+			true,
+			$this->fields["type"],
+			0,0,$_SESSION["glpiactive_entity"],$CFG_GLPI["root_doc"]."/plugins/order/ajax/reference.php");
+			echo "<span id='show_reference'></span></td></tr>";
+	
+			$commonitem = new CommonItem;
+			$commonitem->setType($this->fields["type"],true);
 			
+			$exclusion_types = array(CONSUMABLE_TYPE, CARTRIDGE_TYPE);
+			echo "<tr class='tab_bg_2'><td>".$LANG['common'][17].": </td>";
+			echo "<td><span id='show_type'>";
+			if (!in_array($this->fields["type"], $exclusion_types) )
+				dropdownValue(plugin_order_getTypeTable($this->fields["type"]), "FK_type",$this->fields["FK_type"]);
+			echo "</span></td></tr>";
+			
+			echo "<tr class='tab_bg_2'><td>".$LANG['common'][22].": </td>";
+			echo "<td><span id='show_model'>";
+			if (!in_array($this->fields["type"], $exclusion_types) )
+				dropdownValue(plugin_order_getModelTable($this->fields["type"]), "FK_model",$this->fields["FK_model"]);
+			echo "</span></td></tr>";
+
+			echo "<tr class='tab_bg_2'><td>".$LANG['common'][13].": </td>";
+			echo "<td><span id='show_template'>";
+			if (!in_array($this->fields["type"], $exclusion_types) )
+				plugin_order_dropdownTemplate("template", $this->fields["FK_entities"], $commonitem->obj->table,$this->fields["template"]);
+			echo "</span></td></tr>";
+
 			echo "<tr class='tab_bg_2'><td>".$LANG['common'][25].": </td>";
 			echo "<td colspan='3'><textarea cols='50' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 			echo "</td></tr>";

@@ -78,9 +78,9 @@ function plugin_order_dropdownorder($myname,$entity_restrict='',$used=array()) {
 	return $rand;
 }
 
-function plugin_order_dropdownAllItems($myname,$ajax=false,$value=0,$orderID=0,$supplier=0,$entity=0) {
+function plugin_order_dropdownAllItems($myname,$ajax=false,$value=0,$orderID=0,$supplier=0,$entity=0,$ajax_page='') {
     global $LANG,$CFG_GLPI;
-	$types = array (COMPUTER_TYPE, MONITOR_TYPE, NETWORKING_TYPE, PHONE_TYPE, PRINTER_TYPE, PERIPHERAL_TYPE, CONSUMABLE_ITEM_TYPE, CARTRIDGE_ITEM_TYPE);
+	$types = array (COMPUTER_TYPE, MONITOR_TYPE, NETWORKING_TYPE, PHONE_TYPE, PRINTER_TYPE, PERIPHERAL_TYPE, CONSUMABLE_TYPE, CARTRIDGE_TYPE);
  	
     $ci=new CommonItem();
 
@@ -101,7 +101,7 @@ function plugin_order_dropdownAllItems($myname,$ajax=false,$value=0,$orderID=0,$
 		'orderID'=>$orderID,
 		);
 
-		ajaxUpdateItemOnSelectEvent($myname,"show_reference",$CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php",$params);
+		ajaxUpdateItemOnSelectEvent($myname,"show_reference",$ajax_page,$params);
 	}
 }
 

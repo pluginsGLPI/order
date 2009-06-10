@@ -115,6 +115,15 @@ class plugin_order extends CommonDBTM {
 			echo "<tr><td class='tab_bg_1' valign='top'>";
 	
 			echo "<table cellpadding='2' cellspacing='2' border='0'>\n";
+
+			/* title */
+			echo "<tr><td>".$LANG['plugin_order'][39].": </td>";
+			echo "<td>";
+			if ($canedit)
+				autocompletionTextField("title","glpi_plugin_order","title",$this->fields["title"],30,$this->fields["FK_entities"]);	
+			else
+				echo "".$this->fields["title"]."";
+			echo "</td></tr>";
 			
 			/* num order */
 			echo "<tr><td>".$LANG['plugin_order'][0]."*: </td>";
@@ -150,14 +159,6 @@ class plugin_order extends CommonDBTM {
 				echo "".$this->fields["deliverynum"]."";
 			echo "</td></tr>";
 			
-			/* title */
-			echo "<tr><td>".$LANG['plugin_order'][39].": </td>";
-			echo "<td>";
-			if ($canedit)
-				autocompletionTextField("title","glpi_plugin_order","title",$this->fields["title"],30,$this->fields["FK_entities"]);	
-			else
-				echo "".$this->fields["title"]."";
-			echo "</td></tr>";
 			
 			echo "</table>";
 			echo "</td>";	
