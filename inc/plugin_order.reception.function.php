@@ -161,7 +161,7 @@ function getReceptionDate($ID)
 			WHERE ID=$ID";
 	$result=$DB->query($query);
 	if (getReceptionStatus($ID)!=$LANG['plugin_order']['status'][7]) {
-		return($DB->result($result,0,'date'));
+		return(convDate($DB->result($result,0,'date')));
 	}
 	else
 		return($LANG['plugin_order']['detail'][23]);

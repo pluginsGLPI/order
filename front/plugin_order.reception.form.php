@@ -31,6 +31,7 @@ $NEEDED_ITEMS=array("computer","printer","networking","monitor","software","peri
 define('GLPI_ROOT', '../../..'); 
 include (GLPI_ROOT."/inc/includes.php");
 include (GLPI_ROOT."/plugins/order/inc/plugin_order.reception.function.php");
+include (GLPI_ROOT."/plugins/order/inc/plugin_order.order.function.php");
 
 
 if(isset($_POST["reception"])) 
@@ -48,6 +49,7 @@ if(isset($_POST["reception"]))
 				$DB->query($query);
 			}
 		}
+	updateOrderStatus($_POST["orderID"]);
 	}
 	glpi_header($_SERVER["HTTP_REFERER"]);
 } 
@@ -124,7 +126,7 @@ if(isset($_POST["createLinkWithDevice"]))
 		}
 	}
 	else
-		addMessageAfterRedirect($LANG['plugin_order'][42] );
+		addMessageAfterRedirect($LANG['plugin_order'][42],false,ERROR);
 	glpi_header("".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
 }
  ?>
