@@ -29,20 +29,20 @@
     Purpose of file:
     ----------------------------------------------------------------------*/
 
-function getQuantity($FK_order, $FK_ref) {
+function getQuantity($FK_order, $FK_reference) {
 	global $CFG_GLPI, $DB;
 	$query = "	SELECT count(*) AS quantity FROM glpi_plugin_order_detail
 								WHERE FK_order=$FK_order
-								AND FK_ref=$FK_ref";
+								AND FK_reference=$FK_reference";
 	$result = $DB->query($query);
 	return ($DB->result($result, 0, 'quantity'));
 }
 
-function getDelivredQuantity($FK_order, $FK_ref) {
+function getDelivredQuantity($FK_order, $FK_reference) {
 	global $CFG_GLPI, $DB;
 	$query = "	SELECT count(*) AS delivredquantity FROM glpi_plugin_order_detail
 								WHERE FK_order=$FK_order
-								AND FK_ref=$FK_ref
+								AND FK_reference=$FK_reference
 								AND status='1'";
 	$result = $DB->query($query);
 	return ($DB->result($result, 0, 'delivredquantity'));
@@ -63,11 +63,15 @@ function getPriceTaxIncluded($priceHT, $taxes) {
 }
 
 function addDetails($referenceID, $orderID, $quantity, $price, $discounted_price, $taxes) {
+	global $LANG;
+	if (referenceExistsInOrder($orderID,$referenceID))
+		addMessageAfterRedirect($LANG['plugin_order']['detail'][28],false,ERROR);
+	
 	if ($quantity > 0) {
 		$detail = new plugin_order_detail;
 		for ($i = 0; $i < $quantity; $i++) {
 			$input["FK_order"] = $orderID;
-			$input["FK_ref"] = $referenceID;
+			$input["FK_reference"] = $referenceID;
 			$input["price_taxfree"] = $price;
 			$input["price_discounted"] = $price-($price*($discounted_price/100));
 			$input["status"] = ORDER_STATUS_DRAFT;
@@ -77,12 +81,22 @@ function addDetails($referenceID, $orderID, $quantity, $price, $discounted_price
 	}
 }
 
+function referenceExistsInOrder($orderID,$referenceID)
+{
+	global $DB;
+	$query = "SELECT ID FROM `glpi_plugin_order_detail` WHERE FK_order=$orderID AND FK_reference=$referenceID";
+	$result = $DB->query($query);
+	if ($DB->numrows($result))
+		return true;
+	else
+		return false;	
+}
 function deleteDetails($referenceID, $orderID) {
 	global $DB;
 	
 	$query = " DELETE FROM `glpi_plugin_order_detail`
 				WHERE FK_order=$orderID 
-				AND FK_ref=$referenceID";
+				AND FK_reference=$referenceID";
 	$DB->query($query);
 
 	$query = " DELETE FROM `glpi_plugin_order_device`

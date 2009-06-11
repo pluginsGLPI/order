@@ -38,7 +38,7 @@ class plugin_order_detail extends CommonDBTM {
 		global $DB;
 		$query=" SELECT glpi_plugin_order_detail.ID AS detailID, glpi_plugin_order_references.ID
 							FROM glpi_plugin_order_detail, glpi_plugin_order_references
-							WHERE FK_ref=glpi_plugin_order_references.ID
+							WHERE FK_reference=glpi_plugin_order_references.ID
 							AND glpi_plugin_order_references.type=$type
 							AND glpi_plugin_order_detail.FK_device=$ID";
 		if($DB->query($query))
@@ -67,30 +67,36 @@ class plugin_order_detail extends CommonDBTM {
 		{
 			echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\"$target\">";
 			echo "<input type='hidden' name='FK_order' value=\"$orderID\">";
-	
 			echo "<div class='center'>"; 
 			echo"<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='7'>".$LANG['plugin_order']['detail'][5]."</th></tr>";
-			echo "<tr>"; 
-			echo "<th align='center'>".$LANG['common'][17]."</th>"; 
-			echo "<th align='center'>".$LANG['plugin_order']['reference'][1]."</th>";
-			echo "<th align='center'>".$LANG['plugin_order']['detail'][7]."</th>";
-			echo "<th align='center'>".$LANG['plugin_order']['detail'][4]."</th>";
-			echo "<th align='center'>".$LANG['plugin_order']['detail'][25]."</th>";
-			echo "<th align='center'>".$LANG['plugin_order'][25]."</th>";
-			echo "<th></th>";
-			echo"</tr>";
-			echo "<tr>";
-			echo "<td class='tab_bg_1' align='center'>";
-			plugin_order_dropdownAllItems("type", true, 0, $order->fields["ID"], $order->fields["FK_enterprise"], $order->fields["FK_entities"], $CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php");	
-			echo "</td>";
-			echo "<td class='tab_bg_1' align='center'><span id='show_reference'>&nbsp;</span></td>";
-			echo "<td class='tab_bg_1' align='center'><span id='show_quantity'>&nbsp;</span></td>";
-			echo "<td class='tab_bg_1' align='center'><span id='show_priceht'>&nbsp;</span></td>";
-			echo "<td class='tab_bg_1' align='center'><span id='show_pricediscounted'>&nbsp;</span></td>";
-			echo "<td  class='tab_bg_1' align='center'><span id='show_taxes'>&nbsp;</span></td>";
-			echo "<td class='tab_bg_1' align='center'><span id='show_validate'>&nbsp;</span></td>";
-			echo "</tr>";
+	
+			if ($order->fields["FK_enterprise"])
+			{
+				echo "<tr>"; 
+				echo "<th align='center'>".$LANG['common'][17]."</th>"; 
+				echo "<th align='center'>".$LANG['plugin_order']['reference'][1]."</th>";
+				echo "<th align='center'>".$LANG['plugin_order']['detail'][7]."</th>";
+				echo "<th align='center'>".$LANG['plugin_order']['detail'][4]."</th>";
+				echo "<th align='center'>".$LANG['plugin_order']['detail'][25]."</th>";
+				echo "<th align='center'>".$LANG['plugin_order'][25]."</th>";
+				echo "<th></th>";
+				echo"</tr>";
+				echo "<tr>";
+				echo "<td class='tab_bg_1' align='center'>";
+				plugin_order_dropdownAllItems("type", true, 0, $order->fields["ID"], $order->fields["FK_enterprise"], $order->fields["FK_entities"], $CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php");	
+				echo "</td>";
+				echo "<td class='tab_bg_1' align='center'><span id='show_reference'>&nbsp;</span></td>";
+				echo "<td class='tab_bg_1' align='center'><span id='show_quantity'>&nbsp;</span></td>";
+				echo "<td class='tab_bg_1' align='center'><span id='show_priceht'>&nbsp;</span></td>";
+				echo "<td class='tab_bg_1' align='center'><span id='show_pricediscounted'>&nbsp;</span></td>";
+				echo "<td  class='tab_bg_1' align='center'><span id='show_taxes'>&nbsp;</span></td>";
+				echo "<td class='tab_bg_1' align='center'><span id='show_validate'>&nbsp;</span></td>";
+				echo "</tr>";
+			}
+			else
+				echo "<tr><td align='center'>".$LANG['plugin_order']['detail'][27]."</td></tr>";
+	
 			echo "</table></div></form>";
 		}
 			
@@ -105,9 +111,9 @@ class plugin_order_detail extends CommonDBTM {
 								SUM(glpi_plugin_order_detail.price_discounted) AS totalpriceHT, 
 								SUM(glpi_plugin_order_detail.price_ati) AS totalpriceTTC 
 								FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
-								WHERE glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID
+								WHERE glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID
 								AND glpi_plugin_order_detail.FK_order=$FK_order
-								GROUP BY glpi_plugin_order_detail.FK_ref
+								GROUP BY glpi_plugin_order_detail.FK_reference
 								ORDER BY glpi_plugin_order_detail.ID";
 			$result=$DB->query($query);
 			$num=$DB->numrows($result);

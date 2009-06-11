@@ -56,7 +56,7 @@ CREATE TABLE `glpi_plugin_order_detail` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_order` int(11) NOT NULL default 0,
   `FK_device` int(11) NOT NULL default 0,
-  `FK_ref` int(11) NOT NULL default 0,
+  `FK_reference` int(11) NOT NULL default 0,
   `price_taxfree` FLOAT NOT NULL default 0,
   `price_discounted` FLOAT NOT NULL default 0,
   `price_ati` FLOAT NOT NULL default 0,

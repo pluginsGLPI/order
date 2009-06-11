@@ -33,7 +33,7 @@ function showReceptionForm($orderID) {
 
 	$plugin_order = new plugin_order();
 	$canedit = $plugin_order->can($orderID, 'w');
-	$query_ref = " 	SELECT glpi_plugin_order_detail.ID, glpi_plugin_order_detail.FK_ref AS ref, name, type FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` WHERE FK_order=$orderID AND glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID  GROUP BY glpi_plugin_order_detail.FK_ref ORDER BY glpi_plugin_order_detail.ID";
+	$query_ref = " 	SELECT glpi_plugin_order_detail.ID, glpi_plugin_order_detail.FK_reference AS ref, name, type FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` WHERE FK_order=$orderID AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID  GROUP BY glpi_plugin_order_detail.FK_ref ORDER BY glpi_plugin_order_detail.ID";
 	$result_ref = $DB->query($query_ref);
 	$numref = $DB->numrows($result_ref);
 	$j = 0;
@@ -44,8 +44,8 @@ function showReceptionForm($orderID) {
 			$query = "	SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, status, date, price_taxfree, price_ati, price_discounted,  FK_manufacturer, name, type, FK_device
 								FROM glpi_plugin_order_detail, glpi_plugin_order_references
 								WHERE FK_order=$orderID
-								AND glpi_plugin_order_detail.FK_ref=$refID
-								AND glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID
+								AND glpi_plugin_order_detail.FK_reference=$refID
+								AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID
 								ORDER BY glpi_plugin_order_detail.ID";
 			$result = $DB->query($query);
 			$num = $DB->numrows($result);
@@ -133,7 +133,7 @@ function getNumberOfLinkedMaterial($orderID, $refID) {
 	global $DB;
 	$query = "SELECT count(*) AS result FROM glpi_plugin_order_detail
 						WHERE FK_order = " . $orderID . "
-						AND FK_ref = " . $refID . "
+						AND FK_reference = " . $refID . "
 						AND FK_device != '0' ";
 	if($result=$DB->query($query)) {
 		if($DB->result($result,0,'result') != 0) {
@@ -204,7 +204,7 @@ function getReceptionManufacturer($ID) {
 	$query = " SELECT glpi_plugin_order_detail.ID, FK_manufacturer
 				FROM glpi_plugin_order_detail, glpi_plugin_order_references
 				WHERE glpi_plugin_order_detail.ID=$ID
-				AND glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID";
+				AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID";
 	$result = $DB->query($query);
 	if ($DB->result($result, 0, 'FK_manufacturer') != NULL) {
 		return (getDropdownName("glpi_dropdown_manufacturer", $DB->result($result, 0, 'FK_manufacturer')));
@@ -230,7 +230,7 @@ function getReceptionType($ID) {
 	$query = " SELECT glpi_plugin_order_detail.ID, type 
 				FROM glpi_plugin_order_detail, glpi_plugin_order_references
 				WHERE glpi_plugin_order_detail.ID=$ID
-				AND glpi_plugin_order_detail.FK_ref=glpi_plugin_order_references.ID";
+				AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID";
 	$result = $DB->query($query);
 	if ($DB->result($result, 0, 'type') != NULL) {
 		$ci = new CommonItem();

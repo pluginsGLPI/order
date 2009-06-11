@@ -108,7 +108,8 @@ $LANG['plugin_order']['detail'][23]="Matériel non réceptionné";
 $LANG['plugin_order']['detail'][24]="Utilisateur";
 $LANG['plugin_order']['detail'][25]="Remise (%)";
 $LANG['plugin_order']['detail'][26]="Lieu";
-
+$LANG['plugin_order']['detail'][27]="Veuillez sélectionner un fournisseur";
+$LANG['plugin_order']['detail'][28]="Cette référence est déjà utilisée dans la commande";
 
 $LANG['plugin_order']['delivery'][1]="Réception matériel(s)";
 $LANG['plugin_order']['delivery'][2]="Réceptionner matériel";
