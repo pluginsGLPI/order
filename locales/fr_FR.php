@@ -73,6 +73,7 @@ $LANG['plugin_order']['status'][7] ="En attente d'approuvation";
 $LANG['plugin_order']['status'][8] ="Réceptionné";
 $LANG['plugin_order']['status'][9] ="En cours d'édition";
 $LANG['plugin_order']['status'][10] ="Annulée";
+$LANG['plugin_order']['status'][11] ="En attente de livraison";
 
 $LANG['plugin_order']['item'][0]="Matériel(s) lié(s)";
 $LANG['plugin_order']['item'][1]="Dissocier le(s) matériels(s)";

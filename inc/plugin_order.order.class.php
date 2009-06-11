@@ -125,7 +125,7 @@ class plugin_order extends CommonDBTM {
 			echo "<tr><td>".$LANG['plugin_order'][39].": </td>";
 			echo "<td>";
 			if ($canedit)
-				autocompletionTextField("title","glpi_plugin_order","title",$this->fields["title"],30,$this->fields["FK_entities"]);	
+				autocompletionTextField("name","glpi_plugin_order","name",$this->fields["name"],30,$this->fields["FK_entities"]);	
 			else
 				echo "".$this->fields["title"]."";
 			echo "</td></tr>";
@@ -134,9 +134,9 @@ class plugin_order extends CommonDBTM {
 			echo "<tr><td>".$LANG['plugin_order'][0]."*: </td>";
 			echo "<td>";
 			if ($canedit)
-				autocompletionTextField("name","glpi_plugin_order","name",$this->fields["name"],30,$this->fields["FK_entities"]);	
+				autocompletionTextField("numorder","glpi_plugin_order","name",$this->fields["numorder"],30,$this->fields["FK_entities"]);	
 			else
-				echo "".$this->fields["name"]."";
+				echo "".$this->fields["numorder"]."";
 			echo "</td></tr>";
 			
 			/* num order supplier */

@@ -36,7 +36,7 @@ function plugin_order_config_infocoms_create() {
 			WHERE ID=1";
 	$result=$DB->query($query);
 	$status=$DB->result($result,0,'status_delivered');
-	$query=" 	INSERT INTO `glpi_plugin_order`(name, budget, date, FK_enterprise, deliverynum, numbill, price, comment, status, FK_entities)
+	$query=" 	INSERT INTO `glpi_plugin_order`(name, budget, date, FK_enterprise, deliverynum, numbill, price_taxfree, comment, status, FK_entities)
 			SELECT num_commande, budget, buy_date, FK_enterprise , bon_livraison,facture, sum(value), comments, $status, $entity FROM glpi_infocoms  
 			WHERE num_commande !='' 
 			GROUP BY num_commande";

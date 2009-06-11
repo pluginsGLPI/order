@@ -183,13 +183,19 @@ function getReceptionReferenceLink($ID, $name) {
 
 function getReceptionStatus($ID) {
 	global $DB, $LANG;
-	$query = " SELECT status FROM glpi_plugin_order_detail
-				WHERE ID=$ID";
-	$result = $DB->query($query);
-	if ($DB->result($result, 0, 'status')) {
-		return ($LANG['plugin_order']['status'][8]);
-	} else
-		return ($LANG['plugin_order']['status'][7]);
+	
+	$detail = new plugin_order_detail;
+	$detail->getFromDB($ID);
+
+	switch ($detail->fields["status"])
+	{
+		case ORDER_DEVICE_NOT_DELIVRED:
+		   return $LANG['plugin_order']['status'][11];
+		case ORDER_DEVICE_DELIVRED:
+		   return $LANG['plugin_order']['status'][8];
+		default :
+			return "";
+	}
 }
 
 function getReceptionManufacturer($ID) {

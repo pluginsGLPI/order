@@ -31,6 +31,9 @@
 include_once ("inc/plugin_order.functions_auth.php");
 include_once ("inc/plugin_order.profile.class.php");
 
+define ("ORDER_DEVICE_NOT_DELIVRED",0);   
+define ("ORDER_DEVICE_DELIVRED",1);   
+
 // Define order status
 define ("ORDER_STATUS_DRAFT",0);   
 define ("ORDER_STATUS_WAITING_APPROVAL",1);   

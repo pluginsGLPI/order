@@ -118,8 +118,8 @@ function plugin_order_getSearchOption(){
 			$sopt[PLUGIN_ORDER_TYPE]['common']=$LANG['plugin_order'][4];
 			/* order number */
 			$sopt[PLUGIN_ORDER_TYPE][1]['table']='glpi_plugin_order';
-			$sopt[PLUGIN_ORDER_TYPE][1]['field']='name';
-			$sopt[PLUGIN_ORDER_TYPE][1]['linkfield']='name';
+			$sopt[PLUGIN_ORDER_TYPE][1]['field']='numorder';
+			$sopt[PLUGIN_ORDER_TYPE][1]['linkfield']='numorder';
 			$sopt[PLUGIN_ORDER_TYPE][1]['name']=$LANG['plugin_order'][0];
 			$sopt[PLUGIN_ORDER_TYPE][1]['datatype']='itemlink';
 			/* date */
@@ -164,8 +164,8 @@ function plugin_order_getSearchOption(){
 			$sopt[PLUGIN_ORDER_TYPE][9]['name']=$LANG['plugin_order'][28];
 			/* title */
 			$sopt[PLUGIN_ORDER_TYPE][10]['table']='glpi_plugin_order';
-			$sopt[PLUGIN_ORDER_TYPE][10]['field']='title';
-			$sopt[PLUGIN_ORDER_TYPE][10]['linkfield']='title';
+			$sopt[PLUGIN_ORDER_TYPE][10]['field']='name';
+			$sopt[PLUGIN_ORDER_TYPE][10]['linkfield']='name';
 			$sopt[PLUGIN_ORDER_TYPE][10]['name']=$LANG['plugin_order'][39];
 			/* comments */
 			$sopt[PLUGIN_ORDER_TYPE][16]['table']='glpi_plugin_order';
