@@ -28,10 +28,10 @@
     Purpose of file:
     ----------------------------------------------------------------------*/
 $NEEDED_ITEMS=array("computer","printer","networking","monitor","software","peripheral","phone","tracking","document","user","enterprise","contract","infocom","group");
-define('GLPI_ROOT', '../../..'); 
+define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
-include (GLPI_ROOT."/plugins/order/inc/plugin_order.reception.function.php");
-include (GLPI_ROOT."/plugins/order/inc/plugin_order.order.function.php");
+
+useplugin('order',true);
 
 /* reception d'une ligne d�tail */
 if(isset($_POST["reception"])) 
@@ -119,17 +119,14 @@ if(isset($_POST["deleteLinkWithDevice"]))
 if(isset($_POST["createLinkWithDevice"])) 
 {
 	$i=0;
-	if(count($_POST["item"])<=1)
+	if(count($_POST["item"])<=1 || in_array($_POST["FK_type"], $ORDER_RESTRICTED_TYPES))
 	{
 		foreach ($_POST["item"] as $key => $val)
-		{
-		
 			if ($val==1) 
 				plugin_order_createLinkWithDevice($key, $_POST["device"], $_POST["type"][$key], $_POST["orderID"]);
-		}
 	}
 	else
-		addMessageAfterRedirect($LANG['plugin_order'][42],false,ERROR);
+		addMessageAfterRedirect($LANG['plugin_order'][42],true,ERROR);
 	glpi_header("".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
 }
  ?>

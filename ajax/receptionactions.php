@@ -59,6 +59,7 @@ if (isset($_POST["action"])){
 		break;
 		case "createLink":
 			echo "</td><td valign='bottom'>";
+			echo "<input type='hidden' name='FK_type' value='$type'>";
 			plugin_order_dropdownAllItemsByType("device", $type, $_SESSION["glpiactive_entity"]);
 			echo "</td><td valign='bottom'><input type='submit' name='createLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'></td>";
 		break;

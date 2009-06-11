@@ -27,9 +27,6 @@
     Original Author of file: 
     Purpose of file:
     ----------------------------------------------------------------------*/
-    
-include_once ("inc/plugin_order.functions_auth.php");
-include_once ("inc/plugin_order.profile.class.php");
 
 define ("ORDER_DEVICE_NOT_DELIVRED",0);   
 define ("ORDER_DEVICE_DELIVRED",1);   
@@ -40,10 +37,17 @@ define ("ORDER_STATUS_WAITING_APPROVAL",1);
 define ("ORDER_STATUS_PARTIALLY_DELIVRED",2);
 define ("ORDER_STATUS_DELIVERED",3);
 define ("ORDER_STATUS_CANCELED",4);
+
+
+include_once ("inc/plugin_order.functions_auth.php");
+include_once ("inc/plugin_order.profile.class.php");
  
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
-	global $PLUGIN_HOOKS,$CFG_GLPI,$LANG;
+	global $PLUGIN_HOOKS,$CFG_GLPI,$LANG,$ORDER_AVAILABLE_TYPES,$ORDER_RESTRICTED_TYPES;
+
+	$ORDER_AVAILABLE_TYPES = array (COMPUTER_TYPE, MONITOR_TYPE, NETWORKING_TYPE, PHONE_TYPE, PRINTER_TYPE, PERIPHERAL_TYPE, CONSUMABLE_ITEM_TYPE, CARTRIDGE_ITEM_TYPE);
+	$ORDER_RESTRICTED_TYPES = array(CONSUMABLE_ITEM_TYPE,CARTRIDGE_ITEM_TYPE);
 	
 	/* params : plugin name - string type - number - class - table - form page */
 	registerPluginType('order', 'PLUGIN_ORDER_TYPE', 3150, array(

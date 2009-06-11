@@ -146,6 +146,7 @@ function getNumberOfLinkedMaterial($orderID, $refID) {
 
 function getReceptionMaterialInfo($deviceType, $deviceID) {
 	global $DB, $LINK_ID_TABLE, $LANG;
+	
 	$query = "SELECT * FROM ".$LINK_ID_TABLE[$deviceType]." WHERE ID=".$deviceID."";
 	if ($result = $DB->query($query)){
 		if($DB->numrows($result) != 0) {
@@ -242,13 +243,11 @@ function getReceptionType($ID) {
 function getReceptionDeviceName($deviceID, $type) 
 {
 	global $DB, $LINK_ID_TABLE, $INFOFORM_PAGES, $CFG_GLPI, $LANG;
-	$query=" SELECT name FROM ".$LINK_ID_TABLE[$type]." WHERE ID=".$deviceID."";
-	$result=$DB->query($query);
-	if($deviceID !=0) 
-	{
-		$name=$DB->result($result,0,'name');
-		return("<a href=".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=$deviceID>$name</a>");
-	} else 
+	
+	$commonitem = new CommonItem;
+	if ($commonitem->getFromDB($type,$deviceID))
+		return("<a href=".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=$deviceID>".$commonitem->obj->fields["name"]."</a>");
+	else
 		return($LANG['plugin_order']['item'][2]);
 }
 
@@ -288,10 +287,16 @@ function getAllItemsByType($type, $entity) {
 
 function plugin_order_createLinkWithDevice($detailID, $deviceID, $deviceType, $orderID) {
 	global $DB;
+	$detail = new plugin_order_detail;
+	$input["ID"] = $detailID;
+	$input["FK_device"] = $deviceID;
+	$detail->update($input);
+	/*
 	$query = "UPDATE glpi_plugin_order_detail
 				SET FK_device=" . $deviceID . "
 				WHERE ID=" . $detailID . "";
 	$DB->query($query);
+	*/
 	$query = "INSERT INTO glpi_plugin_order_device (FK_order, FK_device, device_type)
 				values (" . $orderID . "," . $deviceID . "," . $deviceType . ")";
 	$DB->query($query);

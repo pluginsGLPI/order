@@ -79,15 +79,14 @@ function plugin_order_dropdownorder($myname,$entity_restrict='',$used=array()) {
 }
 
 function plugin_order_dropdownAllItems($myname,$ajax=false,$value=0,$orderID=0,$supplier=0,$entity=0,$ajax_page='') {
-    global $LANG,$CFG_GLPI;
-	$types = array (COMPUTER_TYPE, MONITOR_TYPE, NETWORKING_TYPE, PHONE_TYPE, PRINTER_TYPE, PERIPHERAL_TYPE, CONSUMABLE_ITEM_TYPE, CARTRIDGE_ITEM_TYPE);
+    global $LANG,$CFG_GLPI,$ORDER_AVAILABLE_TYPES;
  	
     $ci=new CommonItem();
 
    	echo "<select name=\"$myname\" id='$myname'>";
 	echo "<option value='0' selected>------</option>\n";
 	
-    foreach ($types as $tmp => $type){
+    foreach ($ORDER_AVAILABLE_TYPES as $tmp => $type){
 		$ci->setType($type);
 		echo "<option value='$type' ".($type==$value?" selected":'').">".$ci->getType()."</option>\n";
     }
