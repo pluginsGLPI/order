@@ -76,7 +76,7 @@ class plugin_order_detail extends CommonDBTM {
 			echo "<th align='center'>".$LANG['plugin_order']['reference'][1]."</th>";
 			echo "<th align='center'>".$LANG['plugin_order']['detail'][7]."</th>";
 			echo "<th align='center'>".$LANG['plugin_order']['detail'][4]."</th>";
-			echo "<th align='center'>".$LANG['plugin_order']['detail'][18]."</th>";
+			echo "<th align='center'>".$LANG['plugin_order']['detail'][25]."</th>";
 			echo "<th align='center'>".$LANG['plugin_order'][25]."</th>";
 			echo "<th></th>";
 			echo"</tr>";
@@ -129,8 +129,8 @@ class plugin_order_detail extends CommonDBTM {
 				echo "<th>".$LANG['plugin_order']['detail'][7]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][3]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][4]."</th>";
-				echo "<th>".$LANG['plugin_order']['detail'][8]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][18]."</th>";
+				echo "<th>".$LANG['plugin_order']['detail'][8]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][9]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][10]."</th></tr>";
 				$i=0;
@@ -162,10 +162,10 @@ class plugin_order_detail extends CommonDBTM {
 					echo "<td align='center'>".getDelivredQuantity($FK_order, $IDR)."</td>";	
 					/*price */
 					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"price_taxfree"))."</td>";
-					/* price with taxes */
-					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"price_ati"))."</td>";
 					/* price with reduction */
 					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"price_discounted"))."</td>";
+					/* price with taxes */
+					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"price_ati"))."</td>";
 					/* total price */
 					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"totalpriceHT"))."</td>";
 					/* total price with taxes  */
