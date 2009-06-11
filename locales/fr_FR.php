@@ -103,6 +103,7 @@ $LANG['plugin_order']['detail'][22]="Matériel associé";
 $LANG['plugin_order']['detail'][23]="Matériel non réceptionné";
 $LANG['plugin_order']['detail'][24]="Utilisateur";
 $LANG['plugin_order']['detail'][25]="Remise (%)";
+$LANG['plugin_order']['detail'][26]="Lieu";
 
 
 $LANG['plugin_order']['delivery'][1]="Réception matériel(s)";

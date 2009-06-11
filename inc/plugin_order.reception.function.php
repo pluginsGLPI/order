@@ -151,12 +151,19 @@ function getReceptionMaterialInfo($deviceType, $deviceID) {
 		if($DB->numrows($result) != 0) {
 			$data=$DB->fetch_assoc($result);
 			$name = $data["name"];
+			if (isset($data["name"]))
+				$comments ="<strong>".$LANG['plugin_order']['delivery'][8].":</strong> ".$data["name"];
 			if (isset($data["serial"]))
-				$comments ="<strong>".$LANG['plugin_order']['delivery'][6].":</strong> ".$data["serial"];
+				$comments .="<br><strong>".$LANG['plugin_order']['delivery'][6].":</strong> ".$data["serial"];
 			if (isset($data["otherserial"]))
 				$comments .="<br><strong>".$LANG['plugin_order']['delivery'][7].":</strong> ".$data["otherserial"];
-			if (isset($data["name"]))
-				$comments .="<br><strong>".$LANG['plugin_order']['delivery'][8].":</strong> ".$data["name"];
+			if (isset($data["location"]) && $data["location"] != 0) {
+				$query="SELECT name FROM glpi_dropdown_locations WHERE ID=".$data["location"]."";
+				$result=$DB->query($query);
+				$DB->result($result,0,'name');
+				$location=$DB->result($result,0, 'name');
+				$comments .="<br><strong>".$LANG['plugin_order']['detail'][26].":</strong> ".$location;
+			}
 			if (isset($data["FK_users"]) && $data["FK_users"] != 0) {
 				$query="SELECT name FROM glpi_users WHERE ID=".$data["FK_users"]."";
 				$result=$DB->query($query);
@@ -241,10 +248,26 @@ function getReceptionDeviceName($deviceID, $type)
 
 function getAllItemsByType($type, $entity) {
 	global $DB, $LINK_ID_TABLE;
-	$query = "SELECT ID, name FROM ".$LINK_ID_TABLE[$type]." 
-			WHERE FK_entities=".$entity." 
-			AND ID not in(SELECT FK_device FROM glpi_plugin_order_detail)";
-
+	switch($LINK_ID_TABLE[$type])
+	{
+		case 'glpi_computers' :
+		case 'glpi_monitors' : 
+		case 'glpi_networking' :
+		case 'glpi_peripherals' :
+		case 'glpi_phones' :
+		case 'glpi_printers' :
+			$query = "SELECT ID, name FROM ".$LINK_ID_TABLE[$type]." 
+									WHERE FK_entities=".$entity." 
+									AND is_template=0
+									AND ID not in(SELECT FK_device FROM glpi_plugin_order_detail)";
+		break;
+		case 'glpi_consumables_type' :
+		case 'glpi_cartridges_type' :
+			$query = "SELECT ID, name FROM ".$LINK_ID_TABLE[$type]." 
+									WHERE FK_entities=".$entity." 
+									AND ID not in(SELECT FK_device FROM glpi_plugin_order_detail)";
+		break;
+	}
 	$result = $DB->query($query);
 	$device = array ();
 	while ($data = $DB->fetch_array($result))
