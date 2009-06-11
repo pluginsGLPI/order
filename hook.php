@@ -58,20 +58,20 @@ function plugin_order_uninstall(){
 					"glpi_plugin_order_config");
 					
 	foreach($tables as $table)				
-		$DB->query("DROP TABLE `$table`;");
+		$DB->query("DROP TABLE IF EXISTS `$table`;");
 
+		$in = "IN (".implode(',',array(PLUGIN_ORDER_TYPE,PLUGIN_ORDER_REFERENCE_TYPE,PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE)).")";
 		/* clean glpi_display */
-		$query="DELETE FROM glpi_display WHERE type='".PLUGIN_ORDER_TYPE."' OR type='".PLUGIN_ORDER_REFERENCE_TYPE."';";
+		$query="DELETE FROM `glpi_display` WHERE type ".$in;
 		$DB->query($query);
-		/* clean glpi_doc_device */
-		$query="DELETE FROM glpi_doc_device WHERE device_type='".PLUGIN_ORDER_TYPE."' OR device_type='".PLUGIN_ORDER_REFERENCE_TYPE."';";
-		$DB->query($query);
-		/* clean glpi_bookmark */
-		$query="DELETE FROM glpi_bookmark WHERE device_type='".PLUGIN_ORDER_TYPE."' OR device_type='".PLUGIN_ORDER_REFERENCE_TYPE."';";
-		$DB->query($query);
-		/* clean glpi_history */
-		$query="DELETE FROM glpi_history WHERE device_type='".PLUGIN_ORDER_TYPE."' OR device_type='".PLUGIN_ORDER_REFERENCE_TYPE."';";
-		$DB->query($query);
+		
+		$tables = array("glpi_doc_device","glpi_bookmark","glpi_history");
+
+		foreach ($tables as $table)
+		{
+			$query="DELETE FROM `$table` WHERE device_type ".$in;
+			$DB->query($query);
+		}
 		
 		if (TableExists("glpi_plugin_data_injection_models"))
 			$DB->query("DELETE FROM glpi_plugin_data_injection_models, glpi_plugin_data_injection_mappings, glpi_plugin_data_injection_infos USING glpi_plugin_data_injection_models, glpi_plugin_data_injection_mappings, glpi_plugin_data_injection_infos
@@ -188,28 +188,21 @@ function plugin_order_getSearchOption(){
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE]['common']=$LANG['plugin_order']['reference'][1];
 
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['table']='glpi_plugin_order_references';
-			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['field']='ID';
-			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['linkfield']='ID';
-			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['name']='ID';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['field']='name';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['linkfield']='name';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['name']=$LANG['plugin_order']['detail'][2];
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['datatype']='itemlink';
 			
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['table']='glpi_plugin_order_references';
-			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['field']='name';
-			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['linkfield']='name';
-			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['name']=$LANG['plugin_order']['detail'][2];
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['field']='ID';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['linkfield']='ID';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['name']="ID";
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['datatype']='itemlink';
-/*			
+
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['table']='glpi_plugin_order_references';
-			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['field']='price';
-			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['linkfield']='price';
-			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['name']=$LANG['plugin_order'][13];
-			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['datatype']='float';
-			
-			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['table']='glpi_enterprises';
-			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['field']='name';
-			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['linkfield']='FK_enterprise';
-			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['name']=$LANG['financial'][26];
-*/
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['field']='comments';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['linkfield']='comments';
+			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['name']=$LANG['common'][25];
 
 			/* entity */
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['table']='glpi_entities';
@@ -217,9 +210,10 @@ function plugin_order_getSearchOption(){
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['linkfield']='FK_entities';
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['name']=$LANG['entity'][0];
 
+
 			$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['table']='glpi_plugin_order_references_manufacturers';
-			$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['field']='price';
-			$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['linkfield']='price';
+			$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['field']='price_taxfree';
+			$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['linkfield']='price_taxfree';
 			$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['name']=$LANG['plugin_order']['detail'][4];
 
 		}

@@ -65,7 +65,7 @@ class PluginOrderReferenceManufacturer extends CommonDBTM {
 			echo "<tr><th>" . $LANG['financial'][26] . "</th><th>" . $LANG['plugin_order']['detail'][4] . "</th></tr>";
 			echo "<td class='tab_bg_1' align='center'><a href=\"" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[ENTERPRISE_TYPE] . "?ID=" . $this->fields["FK_enterprise"] . "\">" . getDropdownName("glpi_enterprises", $this->fields["FK_enterprise"]) . "</a></td>";
 			echo "<td class='tab_bg_1' align='center'>";
-			autocompletionTextField("price", "glpi_plugin_order_references_manufacturers", "price", $this->fields["price"], 7);
+			autocompletionTextField("price_taxfree", "glpi_plugin_order_references_manufacturers", "price_taxfree", $this->fields["price_taxfree"], 7);
 			echo "</td></tr>";
 			echo "</tr>";
 			echo "<td class='tab_bg_1'align='center' colspan='2'>";

@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_manufacturers` (
   `FK_entities` int(11) NOT NULL DEFAULT 0,
   `FK_reference` int(11) NOT NULL DEFAULT 0,
   `FK_enterprise` int(11) NOT NULL DEFAULT 0,
-  `price` float NOT NULL DEFAULT 0,
+  `price_taxfree` float NOT NULL DEFAULT 0,
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -131,7 +131,7 @@ INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALU
 INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3150','8','8','0');
 INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3150','9','9','0');
 INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3150','10','10','0');
+
 INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3151','1','1','0');
 INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3151','2','2','0');
 INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3151','3','3','0');
-INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3151','4','4','0');

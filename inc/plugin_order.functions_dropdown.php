@@ -154,4 +154,16 @@ function plugin_order_dropdownReceptionActions($type)
 	echo "</td>";
 	echo "<td valign=middle><span id='show_receptionActions$rand'>&nbsp;</span></td>";
 }
+
+function plugin_order_dropdownStatus($name,$value=0)
+{
+	global $LANG;
+	$status[ORDER_STATUS_DRAFT] = $LANG['plugin_order']['status'][9];
+	$status[ORDER_STATUS_WAITING_APPROVAL] = $LANG['plugin_order']['status'][7];
+	$status[ORDER_STATUS_PARTIALLY_DELIVRED] = $LANG['plugin_order']['status'][1];
+	$status[ORDER_STATUS_DELIVRED] = $LANG['plugin_order']['status'][2];
+	$status[ORDER_STATUS_CANCELED] = $LANG['plugin_order']['status'][10];
+	
+	return dropdownArrayValues($name,$status,$value);
+}
 ?>

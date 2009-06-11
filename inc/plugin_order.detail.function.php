@@ -70,7 +70,7 @@ function addDetails($referenceID, $orderID, $quantity, $price, $discounted_price
 			$input["FK_ref"] = $referenceID;
 			$input["price_taxfree"] = $price;
 			$input["price_discounted"] = $price-($price*($discounted_price/100));
-			$input["status"] = ORDER_STATUS_NOT_DELIVERED;
+			$input["status"] = ORDER_STATUS_DRAFT;
 			$input["price_ati"] = getPriceTaxIncluded($input["price_discounted"], $taxes);
 			$detail->add($input);
 		}

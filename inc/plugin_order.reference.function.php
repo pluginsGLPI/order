@@ -59,7 +59,7 @@ function plugin_order_showReferenceManufacturers($target, $ID) {
 			echo "</td>";
 			echo "<td class='tab_bg_1' align='center'><a href=\"".GLPI_ROOT."/".$INFOFORM_PAGES[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE]."?ID=".$data["ID"]."&referenceID=".$data["FK_enterprise"]."\">" . getDropdownName("glpi_enterprises", $data["FK_enterprise"]) . "</a></td>";
 			echo "<td class='tab_bg_1' align='center'>";
-			echo $data["price"];
+			echo $data["price_taxfree"];
 			echo "</td>";
 			echo "</tr>";
 		}
@@ -104,7 +104,7 @@ function plugin_order_addSupplierToReference($target,$referenceID)
 	dropdownValue("glpi_enterprises","FK_enterprise","",1,$_SESSION["glpiactive_entity"],'',$suppliers); 
 	echo "</td>";
 	echo "<td class='tab_bg_1' align='center'>";
-	autocompletionTextField("price", "glpi_plugin_order_references_manufacturers", "price", 0, 7);
+	autocompletionTextField("price_taxfree", "glpi_plugin_order_references_manufacturers", "price_taxfree", 0, 7);
 	echo "</td>";
 	echo "</tr>";
 	echo "<tr>";
@@ -182,10 +182,10 @@ function plugin_order_getAllReferencesByEnterpriseAndType($type,$enterpriseID)
 function plugin_order_getPriceByReferenceAndSupplier($referenceID,$supplierID)
 {
 	global $DB;
-	$query = "SELECT price FROM glpi_plugin_order_references_manufacturers WHERE FK_reference=$referenceID AND FK_enterprise=$supplierID";
+	$query = "SELECT price_taxfree FROM `glpi_plugin_order_references_manufacturers` WHERE FK_reference=$referenceID AND FK_enterprise=$supplierID";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0)
-		return $DB->result($result,0,"price");
+		return $DB->result($result,0,"price_taxfree");
 	else
 		return 0;	
 }

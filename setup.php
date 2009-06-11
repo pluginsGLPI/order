@@ -31,8 +31,13 @@
 include_once ("inc/plugin_order.functions_auth.php");
 include_once ("inc/plugin_order.profile.class.php");
 
-define ("ORDER_STATUS_NOT_DELIVERED",0);   
-define ("ORDER_STATUS_DELIVERED",1);    
+// Define order status
+define ("ORDER_STATUS_DRAFT",0);   
+define ("ORDER_STATUS_WAITING_APPROVAL",1);   
+define ("ORDER_STATUS_PARTIALLY_DELIVRED",2);
+define ("ORDER_STATUS_DELIVERED",3);
+define ("ORDER_STATUS_CANCELED",4);
+ 
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
 	global $PLUGIN_HOOKS,$CFG_GLPI,$LANG;
@@ -77,12 +82,19 @@ function plugin_init_order() {
 	
 	/*if glpi is loaded */
 	if (isset($_SESSION["glpiID"])){
-		if(plugin_order_haveRight("order","r")){
+		
+		if(plugin_order_haveRight("order","r") || plugin_order_haveRight("reference","r"))
+		{
+			$PLUGIN_HOOKS['submenu_entry']['order']["<img  src='".$CFG_GLPI["root_doc"]."/pics/menu_show.png' title='".$LANG['plugin_order'][43]."' alt='".$LANG['plugin_order'][43]."'>"] = 'index.php';
 			$PLUGIN_HOOKS['menu_entry']['order'] = true;
+			$PLUGIN_HOOKS['use_massive_action']['order']=1;
+			
+			if (haveRight("config","w"))
+				$PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/plugin_order.config.php';
+		}
+
+		if(plugin_order_haveRight("order","r")){
 			$PLUGIN_HOOKS['submenu_entry']['order']['search']['order'] = 'front/plugin_order.order.php';
-			//$PLUGIN_HOOKS['submenu_entry']['order']['search']['reference'] = 'front/plugin_order.reference.php';
-			$PLUGIN_HOOKS['submenu_entry']['order']["<img  src='".$CFG_GLPI["root_doc"]."/pics/menu_show.png' title='".$LANG['plugin_order'][43]."' alt='".$LANG['plugin_order'][43]."'>"]['reference'] = 'index.php';
-			$PLUGIN_HOOKS['submenu_entry']['order']["<img  src='".$CFG_GLPI["root_doc"]."/pics/menu_show.png' title='".$LANG['plugin_order'][43]."' alt='".$LANG['plugin_order'][43]."'>"]['order'] = 'index.php';
 			$PLUGIN_HOOKS['headings']['order'] = 'plugin_get_headings_order';
 			$PLUGIN_HOOKS['headings_action']['order'] = 'plugin_headings_actions_order';
 		}
@@ -93,15 +105,12 @@ function plugin_init_order() {
 		
 		if (plugin_order_haveRight("reference","w")){
 			$PLUGIN_HOOKS['submenu_entry']['order']['add']['reference'] = 'front/plugin_order.reference.form.php';
-			$PLUGIN_HOOKS['submenu_entry']['order']['config']['reference'] = 'front/plugin_order.config.php';
 		}
 
 		if (plugin_order_haveRight("order","w")){
 			$PLUGIN_HOOKS['submenu_entry']['order']['add']['order'] = 'front/plugin_order.form.php';
-			//$PLUGIN_HOOKS['submenu_entry']['order']['config']['order'] = 'front/plugin_order.config.php';
 			$PLUGIN_HOOKS['pre_item_delete']['order'] = 'plugin_pre_item_delete_order';
 			$PLUGIN_HOOKS['item_purge']['order'] = 'plugin_item_purge_order';
-			$PLUGIN_HOOKS['use_massive_action']['order']=1;
 		}
 	}
 }
