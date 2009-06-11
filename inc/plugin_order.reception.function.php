@@ -33,7 +33,7 @@ function showReceptionForm($orderID) {
 
 	$plugin_order = new plugin_order();
 	$canedit = $plugin_order->can($orderID, 'w');
-	$query_ref = " 	SELECT glpi_plugin_order_detail.ID, glpi_plugin_order_detail.FK_reference AS ref, name, type FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` WHERE FK_order=$orderID AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID  GROUP BY glpi_plugin_order_detail.FK_ref ORDER BY glpi_plugin_order_detail.ID";
+	$query_ref = "SELECT glpi_plugin_order_detail.ID, glpi_plugin_order_detail.FK_reference AS ref, name, type FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` WHERE FK_order=$orderID AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID  GROUP BY glpi_plugin_order_detail.FK_reference ORDER BY glpi_plugin_order_detail.ID";
 	$result_ref = $DB->query($query_ref);
 	$numref = $DB->numrows($result_ref);
 	$j = 0;
