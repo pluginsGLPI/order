@@ -104,21 +104,15 @@ function plugin_order_dropdownAllItems($myname,$ajax=false,$value=0,$orderID=0,$
 	}
 }
 
-function plugin_order_dropdownTemplate($name,$entity,$table,$value='')
+function plugin_order_dropdownTemplate($name,$entity,$table,$value=0)
 {
 	global $DB;
 	$result = $DB->query("SELECT tplname, ID FROM ".$table." WHERE FK_entities=".$entity." AND tplname <> '' GROUP BY tplname ORDER BY tplname");
 	
-	$rand=mt_rand();
-	echo "<select name='$name' id='dropdown_".$name.$rand."'>";
-
-	echo "<option value='0'".($value==0?" selected ":"").">-------------</option>";
-
+	$option[0] = '-------------';
 	while ($data = $DB->fetch_array($result))
-		echo "<option value='".$data["ID"]."'".($value==$data["tplname"]?" selected ":"").">".$data["tplname"]."</option>";
-
-	echo "</select>";	
-	return $rand;
+		$option[$data["ID"]] = $data["tplname"];
+	return dropdownArrayValues($name,$option,$value);			
 }
 
 function plugin_order_dropdownReferencesByEnterprise($name,$type,$enterpriseID)

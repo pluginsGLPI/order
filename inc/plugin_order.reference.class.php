@@ -43,7 +43,6 @@ class plugin_order_reference extends CommonDBTM {
 		$ong[1]=$LANG['title'][26];
 		if ($ID > 0 )
 		{
-			$ong[2]=$LANG['Menu'][23];
 			$ong[3]=$LANG['title'][37];
 			if (haveRight("document","r"))
 				$ong[4]=$LANG['Menu'][27];

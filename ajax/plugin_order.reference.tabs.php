@@ -51,7 +51,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 		}
 	}else{
 		switch($_POST['glpi_tab']){
-			case 2 :
+			case 1 :
 				plugin_order_showReferenceManufacturers($_SERVER['HTTP_REFERER'],$_POST["ID"]);
 				plugin_order_addSupplierToReference($_SERVER['HTTP_REFERER'],$_POST["ID"]);
 				break;
