@@ -53,6 +53,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 		switch($_POST['glpi_tab']){
 			case 2 :
 				plugin_order_showReferenceManufacturers($_SERVER['HTTP_REFERER'],$_POST["ID"]);
+				plugin_order_addSupplierToReference($_SERVER['HTTP_REFERER'],$_POST["ID"]);
 				break;
 			case 3 :
 				showNotesForm($_SERVER['HTTP_REFERER'],PLUGIN_ORDER_REFERENCE_TYPE,$_POST["ID"]);
@@ -66,7 +67,12 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 				/* show history form */
 				showHistory(PLUGIN_ORDER_REFERENCE_TYPE,$_POST["ID"]);
 				break;
-
+			case -1:
+				plugin_order_showReferenceManufacturers($_SERVER['HTTP_REFERER'],$_POST["ID"]);
+				plugin_order_addSupplierToReference($_SERVER['HTTP_REFERER'],$_POST["ID"]);
+				showNotesForm($_SERVER['HTTP_REFERER'],PLUGIN_ORDER_REFERENCE_TYPE,$_POST["ID"]);
+				showDocumentAssociated(PLUGIN_ORDER_REFERENCE_TYPE,$_POST["ID"],$_POST["withtemplate"]);
+				showHistory(PLUGIN_ORDER_REFERENCE_TYPE,$_POST["ID"]);
 			default :
 				break;
 		}

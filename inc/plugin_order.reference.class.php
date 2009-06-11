@@ -89,16 +89,21 @@ class plugin_order_reference extends CommonDBTM {
 			dropdownValue("glpi_dropdown_manufacturer","FK_manufacturer",$this->fields["FK_manufacturer"]);
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_2'><td>".$LANG['plugin_order']['reference'][4].": </td>";
-			echo "<td>";
-			plugin_order_dropdownAllItems("type",
-			true,
-			$this->fields["type"],
-			0,0,$_SESSION["glpiactive_entity"],$CFG_GLPI["root_doc"]."/plugins/order/ajax/reference.php");
-			echo "<span id='show_reference'></span></td></tr>";
-	
 			$commonitem = new CommonItem;
 			$commonitem->setType($this->fields["type"],true);
+
+			echo "<tr class='tab_bg_2'><td>".$LANG['plugin_order']['reference'][4].": </td>";
+			echo "<td>";
+			if ($ID > 0)
+				echo $commonitem->getType();				
+			else
+			{
+				plugin_order_dropdownAllItems("type",
+				true,
+				$this->fields["type"],
+				0,0,$_SESSION["glpiactive_entity"],$CFG_GLPI["root_doc"]."/plugins/order/ajax/reference.php");
+				echo "<span id='show_reference'></span></td></tr>";
+			}			
 			
 			$exclusion_types = array(0, CONSUMABLE_TYPE, CARTRIDGE_TYPE);
 			echo "<tr class='tab_bg_2'><td>".$LANG['common'][17].": </td>";
@@ -106,7 +111,6 @@ class plugin_order_reference extends CommonDBTM {
 			if (!in_array($this->fields["type"], $exclusion_types) )
 				dropdownValue(plugin_order_getTypeTable($this->fields["type"]), "FK_type",$this->fields["FK_type"]);
 			echo "</span></td></tr>";
-			
 			echo "<tr class='tab_bg_2'><td>".$LANG['common'][22].": </td>";
 			echo "<td><span id='show_model'>";
 			if (!in_array($this->fields["type"], $exclusion_types) )
@@ -154,12 +158,5 @@ class plugin_order_reference extends CommonDBTM {
 		}
 		return true;
 	}
-}
-
-class PluginOrderReferenceManufacturer extends CommonDBTM {
-	function __construct ()
-	{
-		$this->table = "glpi_plugin_order_references_manufacturers";
-	}	
 }
 ?>
