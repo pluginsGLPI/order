@@ -65,10 +65,7 @@ function plugin_init_order() {
 		'tablename'  => 'glpi_plugin_order_references_manufacturers',
 		'formpage'   => 'front/plugin_order.referencemanufacturer.form.php',
 		'searchpage' => '',
-		'typename'   => $LANG['plugin_order']['reference'][1],
-		'deleted_tables' => true,
-		'specif_entities_tables' => true,
-		'recursive_type' => true
+		'typename'   => $LANG['plugin_order']['reference'][5],
 		));
 
 	/* link to the config page in plugins menu */
@@ -142,7 +139,8 @@ function plugin_order_haveTypeRight($type,$right){
 			return plugin_order_haveRight("order",$right);
 			break;
 		case PLUGIN_ORDER_REFERENCE_TYPE:
-			return true;
+		case PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE:
+			return plugin_order_haveRight("reference",$right);
 			break;
 	}
 }

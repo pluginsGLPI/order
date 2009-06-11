@@ -40,7 +40,7 @@ if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 $plugin_order_ref = new PluginOrderReferenceManufacturer;
 if (isset($_POST["update"]))
 {
-	if(plugin_order_HaveRight("order","w"))
+	if(plugin_order_HaveRight("reference","w"))
 		$plugin_order_ref->update($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

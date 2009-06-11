@@ -33,7 +33,9 @@ class PluginOrderReferenceManufacturer extends CommonDBTM {
 	function __construct() {
 		$this->table = "glpi_plugin_order_references_manufacturers";
 		$this->type = PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE;
-		$this->dohistory = true;
+		$this->entity_assign=true;
+		$this->may_be_recursive=false;
+		$this->dohistory=true;
 	}
 
 	function defineTabs($ID, $withtemplate) {
@@ -70,8 +72,9 @@ class PluginOrderReferenceManufacturer extends CommonDBTM {
 			echo "<input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit' >";
 			echo "</td>";
 			echo "</tr>";
-			echo "</table></form></div>";
+			echo "</table></div></form>";
 			echo "<div id='tabcontent'></div>";
+			echo "<script type='text/javascript'>loadDefaultTab();</script>";
 		return true;
 	}
 }

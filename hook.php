@@ -217,6 +217,11 @@ function plugin_order_getSearchOption(){
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['linkfield']='FK_entities';
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['name']=$LANG['entity'][0];
 
+			$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['table']='glpi_plugin_order_references_manufacturers';
+			$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['field']='price';
+			$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['linkfield']='price';
+			$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['name']=$LANG['plugin_order']['detail'][4];
+
 		}
 		return $sopt;
 }

@@ -35,7 +35,7 @@ $NEEDED_ITEMS = array (
 	"user",
 	"enterprise"
 );
-echo "aaa";
+
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -51,19 +51,18 @@ if (!isset ($_POST["order"]))
 if (!isset ($_POST["withtemplate"]))
 	$_POST["withtemplate"] = "";
 
-plugin_order_checkRight("order", "r");
+plugin_order_checkRight("reference", "r");
 switch ($_POST['glpi_tab']) {
 	case 4 :
 		/* show documents linking form */
-		showDocumentAssociated(PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
+		showDocumentAssociated(PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE, $_POST["ID"]);
 		break;
-
 	case 12 :
 		/* show history form */
 		showHistory(PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE, $_POST["ID"]);
 		break;
 	case -1 :
-		showDocumentAssociated(PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
+		showDocumentAssociated(PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE, $_POST["ID"]);
 		showHistory(PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE, $_POST["ID"]);
 	default :
 		break;
