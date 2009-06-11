@@ -61,10 +61,8 @@ $plugin_order = new plugin_order();
 
 /* add order */
 if (isset ($_POST["add"])) {
-	if (plugin_order_HaveRight("order", "w")) {
-		if (isset ($_POST["name"]) && $_POST["name"] != '')
+	if (plugin_order_HaveRight("order", "w"))
 			$newID = $plugin_order->add($_POST);
-	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 /* delete order */

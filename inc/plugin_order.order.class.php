@@ -91,12 +91,20 @@ class plugin_order extends CommonDBTM {
 		return $ong;
 	}
 
-/*
+
 	function prepareInputForAdd($input)
 	{
-		if (!isset($input["name"]))
+		global $LANG;
+		if (!isset($input["numorder"]) || $input["numorder"] == '')
+		{
+			addMessageAfterRedirect($LANG['plugin_order'][44],false,ERROR);
+			return array();
+		}elseif(!isset($input["name"]) || $input["name"] == '')
+			$input["name"] = $input["numorder"]; 
+		
+		return $input;	
 	}
-*/
+
 	
 	function showForm ($target,$ID,$withtemplate='') {
 		global  $CFG_GLPI, $LANG,$DB;
