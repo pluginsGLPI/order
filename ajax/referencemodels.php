@@ -49,7 +49,7 @@ if (!defined('GLPI_ROOT')) {
 }
 checkCentralAccess();
 
-$exclusion_types = array(CONSUMABLE_TYPE, CARTRIDGE_TYPE);
+$exclusion_types = array(CONSUMABLE_ITEM_TYPE, CARTRIDGE_ITEM_TYPE);
 if (!in_array($_POST["type"], $exclusion_types) )
 {
 	switch ($_POST["field"])

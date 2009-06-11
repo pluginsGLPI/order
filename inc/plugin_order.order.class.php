@@ -91,6 +91,13 @@ class plugin_order extends CommonDBTM {
 		return $ong;
 	}
 
+/*
+	function prepareInputForAdd($input)
+	{
+		if (!isset($input["name"]))
+	}
+*/
+	
 	function showForm ($target,$ID,$withtemplate='') {
 		global  $CFG_GLPI, $LANG,$DB;
 
@@ -127,14 +134,14 @@ class plugin_order extends CommonDBTM {
 			if ($canedit)
 				autocompletionTextField("name","glpi_plugin_order","name",$this->fields["name"],30,$this->fields["FK_entities"]);	
 			else
-				echo "".$this->fields["title"]."";
+				echo "".$this->fields["name"]."";
 			echo "</td></tr>";
 			
 			/* num order */
 			echo "<tr><td>".$LANG['plugin_order'][0]."*: </td>";
 			echo "<td>";
 			if ($canedit)
-				autocompletionTextField("numorder","glpi_plugin_order","name",$this->fields["numorder"],30,$this->fields["FK_entities"]);	
+				autocompletionTextField("numorder","glpi_plugin_order","numorder",$this->fields["numorder"],30,$this->fields["FK_entities"]);	
 			else
 				echo "".$this->fields["numorder"]."";
 			echo "</td></tr>";
@@ -179,7 +186,7 @@ class plugin_order extends CommonDBTM {
 				else
 					showDateFormItem("date",$this->fields["date"],true,$editcalendar);
 			else
-				echo "".$this->fields["date"]."";
+				echo "".convDate($this->fields["date"])."";
 			echo "</td></tr>";
 			
 			/* budget */

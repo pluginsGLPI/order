@@ -33,7 +33,7 @@ include (GLPI_ROOT."/inc/includes.php");
 include (GLPI_ROOT."/plugins/order/inc/plugin_order.reception.function.php");
 include (GLPI_ROOT."/plugins/order/inc/plugin_order.order.function.php");
 
-/* reception d'une ligne détail */
+/* reception d'une ligne dï¿½tail */
 if(isset($_POST["reception"])) 
 {
 	if(isset($_POST["item"]))
@@ -52,7 +52,7 @@ if(isset($_POST["reception"]))
 	}
 	glpi_header($_SERVER["HTTP_REFERER"]);
 } 
-/* affiche le tableau permettant la génération de matériel */
+/* affiche le tableau permettant la gï¿½nï¿½ration de matï¿½riel */
 if(isset($_POST["generation"])) 
 {
 	commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order","order");
@@ -88,7 +88,7 @@ if(isset($_POST["generation"]))
 	echo "</div>";
 	commonFooter();
 } 
-/* génère le matériel */
+/* gï¿½nï¿½re le matï¿½riel */
 if(isset($_POST["generate"])) 
 {
 	$i=0;
@@ -105,7 +105,7 @@ if(isset($_POST["generate"]))
 	}
 	glpi_header("".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
 }
-/* supprime un lien d'une ligne détail vers un matériel */
+/* supprime un lien d'une ligne dï¿½tail vers un matï¿½riel */
 if(isset($_POST["deleteLinkWithDevice"])) 
 {
 	foreach ($_POST["item"] as $key => $val)
@@ -115,11 +115,11 @@ if(isset($_POST["deleteLinkWithDevice"]))
 	}
 	glpi_header("".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
 }
-/* crée un lien d'une ligne détail vers un matériel */
+/* crï¿½e un lien d'une ligne dï¿½tail vers un matï¿½riel */
 if(isset($_POST["createLinkWithDevice"])) 
 {
 	$i=0;
-	if(sizeof($_POST["item"])<=1)
+	if(count($_POST["item"])<=1)
 	{
 		foreach ($_POST["item"] as $key => $val)
 		{

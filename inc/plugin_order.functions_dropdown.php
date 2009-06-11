@@ -80,7 +80,7 @@ function plugin_order_dropdownorder($myname,$entity_restrict='',$used=array()) {
 
 function plugin_order_dropdownAllItems($myname,$ajax=false,$value=0,$orderID=0,$supplier=0,$entity=0,$ajax_page='') {
     global $LANG,$CFG_GLPI;
-	$types = array (COMPUTER_TYPE, MONITOR_TYPE, NETWORKING_TYPE, PHONE_TYPE, PRINTER_TYPE, PERIPHERAL_TYPE, CONSUMABLE_TYPE, CARTRIDGE_TYPE);
+	$types = array (COMPUTER_TYPE, MONITOR_TYPE, NETWORKING_TYPE, PHONE_TYPE, PRINTER_TYPE, PERIPHERAL_TYPE, CONSUMABLE_ITEM_TYPE, CARTRIDGE_ITEM_TYPE);
  	
     $ci=new CommonItem();
 

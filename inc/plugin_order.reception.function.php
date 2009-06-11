@@ -254,24 +254,28 @@ function getReceptionDeviceName($deviceID, $type)
 
 function getAllItemsByType($type, $entity) {
 	global $DB, $LINK_ID_TABLE;
-	switch($LINK_ID_TABLE[$type])
+	switch($type)
 	{
-		case 'glpi_computers' :
-		case 'glpi_monitors' : 
-		case 'glpi_networking' :
-		case 'glpi_peripherals' :
-		case 'glpi_phones' :
-		case 'glpi_printers' :
+		case COMPUTER_TYPE :
+		case MONITOR_TYPE : 
+		case NETWORKING_TYPE :
+		case PERIPHERAL_TYPE :
+		case PHONE_TYPE :
+		case PRINTER_TYPE :
 			$query = "SELECT ID, name FROM ".$LINK_ID_TABLE[$type]." 
 									WHERE FK_entities=".$entity." 
 									AND is_template=0
-									AND ID not in(SELECT FK_device FROM glpi_plugin_order_detail)";
+									AND ID NOT IN (SELECT FK_device FROM glpi_plugin_order_detail)";
 		break;
-		case 'glpi_consumables_type' :
-		case 'glpi_cartridges_type' :
-			$query = "SELECT ID, name FROM ".$LINK_ID_TABLE[$type]." 
+		case CONSUMABLE_TYPE :
+			$query = "SELECT ID, name FROM glp_consumable_type 
 									WHERE FK_entities=".$entity." 
-									AND ID not in(SELECT FK_device FROM glpi_plugin_order_detail)";
+									AND ID NOT IN (SELECT FK_device FROM glpi_plugin_order_detail)";
+		break;
+		case CARTRIDGE_ITEM_TYPE :
+			$query = "SELECT ID, name FROM glpi_cartridges_type 
+									WHERE FK_entities=".$entity." 
+									AND ID NOT IN (SELECT FK_device FROM glpi_plugin_order_detail)";
 		break;
 	}
 	$result = $DB->query($query);
