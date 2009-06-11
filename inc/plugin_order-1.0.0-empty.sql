@@ -113,6 +113,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references` (
 
 CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_manufacturers` (
   `ID` int(11) NOT NULL auto_increment,
+  `FK_entities` int(11) NOT NULL DEFAULT 0,
   `FK_reference` int(11) NOT NULL DEFAULT 0,
   `FK_enterprise` int(11) NOT NULL DEFAULT 0,
   `price` float NOT NULL DEFAULT 0,
