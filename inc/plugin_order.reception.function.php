@@ -38,11 +38,10 @@ function showReceptionForm($orderID) {
 	$numref = $DB->numrows($result_ref);
 	$j = 0;
 	while ($j < $numref || $j == 0) {
-		$rand=mt_rand();
 		if ($numref != 0) {
 			$refID = $DB->result($result_ref, $j, 'ref');
 			$typeRef = $DB->result($result_ref, $j, 'type');
-			$query = "	SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, status, date, FK_manufacturer, name, type, FK_device
+			$query = "	SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, status, date, price_taxfree, price_ati, price_discounted,  FK_manufacturer, name, type, FK_device
 								FROM glpi_plugin_order_detail, glpi_plugin_order_references
 								WHERE FK_order=$orderID
 								AND glpi_plugin_order_detail.FK_ref=$refID
@@ -51,7 +50,6 @@ function showReceptionForm($orderID) {
 			$result = $DB->query($query);
 			$num = $DB->numrows($result);
 		}
-		echo "<form method='post' name='order_reception_form$rand' id='order_reception_form$rand'  action=\"" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.reception.form.php\">";
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
 		if ($numref == 0)
 			echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
@@ -62,11 +60,20 @@ function showReceptionForm($orderID) {
 			echo "</a></li></ul></th>";
 			echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['delivery'][5] . "</th>";
-			echo "<th>" . $LANG['plugin_order']['item'][0] . "</th></tr>";
+			echo "<th>" . $LANG['plugin_order']['item'][0] . "</th>";
+			echo "<th>".$LANG['plugin_order']['detail'][4]."</th>";
+			echo "<th>".$LANG['plugin_order']['detail'][8]."</th>";
+			echo "<th>".$LANG['plugin_order']['detail'][18]."</th></tr>";
 			echo "<tr><td class='tab_bg_1' width='15'></td><td align='center' class='tab_bg_1'>" . getReceptionReferenceLink($refID, $DB->result($result_ref, $j, 'name')) . "</td>";
 			echo "<td align='center' class='tab_bg_1'>". getDelivredQuantity($orderID, $refID) . " / " . getQuantity($orderID, $refID) . "</td>";
-			echo "<td align='center' class='tab_bg_1'>". getNumberOfLinkedMaterial($orderID, $refID) . " / " . getQuantity($orderID, $refID) . "</td></tr></table>";
-			echo "<div class='center' id='reception$rand' style='display:none'><table class='tab_cadre_fixe'>";
+			echo "<td align='center' class='tab_bg_1'>". getNumberOfLinkedMaterial($orderID, $refID) . " / " . getQuantity($orderID, $refID) . "</td>";
+			echo "<td align='center' class='tab_bg_1'>". sprintf("%01.2f", $DB->result($result,$j,"price_taxfree")) . "</td>";
+			echo "<td align='center' class='tab_bg_1'>". sprintf("%01.2f", $DB->result($result,$j,"price_ati")) . "</td>";
+			echo "<td align='center' class='tab_bg_1'>". sprintf("%01.2f", $DB->result($result,$j,"price_discounted")) . "</td></tr></table>";
+			echo "<div class='center' id='reception$rand' style='display:none'>";
+			$rand=mt_rand();
+			echo "<form method='post' name='order_reception_form$rand' id='order_reception_form$rand'  action=\"" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.reception.form.php\">";
+			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr>";
 			if ($canedit) 
 				echo "<th width='15'></th>";
@@ -113,10 +120,8 @@ function showReceptionForm($orderID) {
 				echo "</td>";
 				echo "<input type='hidden' name='orderID' value='$orderID'>";
 				plugin_order_dropdownReceptionActions($typeRef);
-				echo "</form>";
-				echo "</td>";
-				echo "</table>";
-				echo "</div></td></tr></table>";
+				echo "</td></tr>";
+				echo "</table></form></div>";
 			}
 		}
 		echo "<br>";
@@ -152,6 +157,13 @@ function getReceptionMaterialInfo($deviceType, $deviceID) {
 				$comments .="<br><strong>".$LANG['plugin_order']['delivery'][7].":</strong> ".$data["otherserial"];
 			if (isset($data["name"]))
 				$comments .="<br><strong>".$LANG['plugin_order']['delivery'][8].":</strong> ".$data["name"];
+			if (isset($data["FK_users"]) && $data["FK_users"] != 0) {
+				$query="SELECT name FROM glpi_users WHERE ID=".$data["FK_users"]."";
+				$result=$DB->query($query);
+				$DB->result($result,0,'name');
+				$user=$DB->result($result,0, 'name');
+				$comments .="<br><strong>".$LANG['plugin_order']['detail'][24].":</strong> ".$user;
+			}
 		}
 	}
 	return($comments);

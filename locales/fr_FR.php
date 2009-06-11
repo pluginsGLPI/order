@@ -101,6 +101,7 @@ $LANG['plugin_order']['detail'][20]="Pas de matériel à réceptionner";
 $LANG['plugin_order']['detail'][21]="Date réception";
 $LANG['plugin_order']['detail'][22]="Matériel associé";
 $LANG['plugin_order']['detail'][23]="Matériel non réceptionné";
+$LANG['plugin_order']['detail'][24]="Utilisateur";
 
 
 $LANG['plugin_order']['delivery'][1]="Réception matériel(s)";

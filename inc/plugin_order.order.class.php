@@ -222,7 +222,7 @@ class plugin_order extends CommonDBTM {
 				echo "</td></tr>";
 			}
 			
-			/* supplier of order */
+			/* location */
 			echo "<tr><td>".$LANG['plugin_order'][40].": </td>";
 			echo "<td>";
 			if ($canedit)

@@ -72,7 +72,7 @@ if(isset($_POST["generation"]))
 		{
 			if ($val==1) 
 			{
-				echo "<tr><td><a href=".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.reference.form.php?ID=".$key.">".$_POST["name"][$key]."</a></td>";
+				echo "<tr class='tab_bg_1'><td align='center'><a href=".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.reference.form.php?ID=".$key.">".$_POST["name"][$key]."</a></td>";
 				echo "<td><input type='text' size='20' name='serial[$i]'></td>";
 				echo "<td><input type='text' size='20' name='otherserial[$i]'></td>";
 				echo "<td><input type='text' size='20' name='name[$i]'></td></tr>";
