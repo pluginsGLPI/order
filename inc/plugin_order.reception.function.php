@@ -388,21 +388,21 @@ function plugin_order_generateNewDevice($params, $entity) {
 	global $DB, $LANG;
 	$i = 0;
 
-	while (isset ($_POST["serial"][$i])) {
+	while (isset ($params["serial"][$i])) {
 		//Look for a template in the entity
-		$templateID = plugin_order_templateExistsInEntity($_POST["ID"][$i], $_POST["type"][$i], $entity);
+		$templateID = plugin_order_templateExistsInEntity($params["ID"][$i], $params["type"][$i], $entity);
 
 		$input["FK_entities"] = $entity;
-		$input["serial"] = $_POST["serial"][$i];
-		$input["otherserial"] = $_POST["otherserial"][$i];
-		$input["name"] = $_POST["name"][$i];
+		$input["serial"] = $params["serial"][$i];
+		$input["otherserial"] = $params["otherserial"][$i];
+		$input["name"] = $params["name"][$i];
 
 		$commonitem = new CommonItem;
-		$commonitem->setType($_POST["type"][$i], true);
+		$commonitem->setType($params["type"][$i], true);
 		$newID = $commonitem->obj->add($input);
 
 		$commonitem_template = new CommonItem;
-		$commonitem_template->getFromDB($_POST["type"][$i], $templateID);
+		$commonitem_template->getFromDB($params["type"][$i], $templateID);
 
 		//Unset fields from template
 		unset ($commonitem_template->obj->fields["ID"]);
@@ -418,9 +418,52 @@ function plugin_order_generateNewDevice($params, $entity) {
 		$fields["ID"] = $newID;
 		$commonitem->obj->update($fields);
 
-		plugin_order_createLinkWithDevice($_POST["ID"][$i], $newID, $_POST["type"][$i], $_POST["orderID"]);
+		plugin_order_generateInfoComRelatedToOrder($entity,$params["ID"][$i],$params["type"][$i],$newID,$templateID);
+		plugin_order_createLinkWithDevice($params["ID"][$i], $newID, $params["type"][$i], $params["orderID"]);
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][30]);
 		$i++;
 	}
 }
+
+function plugin_order_generateInfoComRelatedToOrder($entity,$detailID,$device_type,$deviceID,$templateID)
+{
+		global $LANG;
+		
+		$detail = new plugin_order_detail;	
+		$detail->getFromDB($detailID);
+		$order = new plugin_order;
+		$order->getFromDB($detail->fields["FK_order"]);
+			
+		// ADD Infocoms
+			$ic= new Infocom();
+			$fields = array();
+			if ($templateID)
+			{
+				if ($ic->getFromDBforDevice($device_type,$templateID)){
+					$fields = $ic->fields;
+					unset ($fields["ID"]);
+					if (isset($fields["num_immo"])) {
+						$fields["num_immo"] = autoName($fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$entity);
+					}
+					if (empty($fields['use_date'])){
+						unset($fields['use_date']);
+					}
+					if (empty($fields['buy_date'])){
+						unset($fields['buy_date']);
+					}
+			}
+			$fields["device_type"]=$device_type;
+			$fields["FK_device"]=$deviceID;
+			$fields["num_commande"] = $order->fields["numorder"];
+			$fields["bon_livraison"] = $order->fields["deliverynum"];
+			$fields["budget"] = $order->fields["budget"];
+			$fields["FK_enterprise"] = $order->fields["FK_enterprise"];
+			$fields["facture"] = $order->fields["numbill"];
+			$fields["value"] = $detail->fields["price_discounted"];
+			$fields["buy_date"] = $order->fields["date"];
+			$ic->add($fields);
+			}
+	
+}
+
 ?>
