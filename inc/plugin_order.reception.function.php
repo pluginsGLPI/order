@@ -327,7 +327,7 @@ function plugin_order_deleteLinkWithDevice($detailID) {
 
 	$device = new plugin_order_device;
 	$device->delete(array (
-		"ID" => $detai->fields["FK_device"]
+		"ID" => $detail->fields["FK_device"]
 	));
 
 	$input = $detail->fields;
@@ -457,7 +457,9 @@ function plugin_order_generateInfoComRelatedToOrder($entity,$detailID,$device_ty
 					if (empty($fields['buy_date'])){
 						unset($fields['buy_date']);
 					}
+				}
 			}
+
 			$fields["device_type"]=$device_type;
 			$fields["FK_device"]=$deviceID;
 			$fields["num_commande"] = $order->fields["numorder"];
@@ -468,8 +470,6 @@ function plugin_order_generateInfoComRelatedToOrder($entity,$detailID,$device_ty
 			$fields["value"] = $detail->fields["price_discounted"];
 			$fields["buy_date"] = $order->fields["date"];
 			$ic->add($fields);
-			}
-	
 }
 
 ?>

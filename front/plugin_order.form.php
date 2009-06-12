@@ -96,7 +96,7 @@ else
 else
 	if (isset ($_POST["add_detail"])) {
 			addDetails($_POST["FK_reference"], $_POST["FK_order"], $_POST["quantity"], $_POST["price"], $_POST["reductedprice"], $_POST["taxes"]);
-			updateOrderStatus($_POST["FK_order"]);
+			//updateOrderStatus($_POST["FK_order"]);
 			glpi_header($_SERVER['HTTP_REFERER']);
 	} 
 else
@@ -104,7 +104,7 @@ else
 		plugin_order_checkRight("order", "w");
 		foreach ($_POST["detail"] as $FK_reference => $value)
 			deleteDetails($FK_reference, $_POST["FK_order"]);
-		updateOrderStatus($_POST["FK_order"]);
+		//updateOrderStatus($_POST["FK_order"]);
 		glpi_header($_SERVER['HTTP_REFERER']);
 	} 
 else 
