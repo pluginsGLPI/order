@@ -159,9 +159,9 @@ function getReceptionMaterialInfo($deviceType, $deviceID) {
 			$ci->getFromDB($deviceType,$deviceID);
 			if (isset($ci->obj->fields["name"]))
 				$comments ="<strong>".$LANG['plugin_order']['delivery'][8].":</strong> ".$ci->obj->fields["name"];
-			if (isset($ci->obj->fields["serial"]))
+			if (isset($ci->obj->fields["serial"]) && $ci->obj->fields["serial"] != '')
 				$comments .="<br><strong>".$LANG['plugin_order']['delivery'][6].":</strong> ".$ci->obj->fields["serial"];
-			if (isset($ci->obj->fields["otherserial"]))
+			if (isset($ci->obj->fields["otherserial"]) && $ci->obj->fields["otherserial"] != '')
 				$comments .="<br><strong>".$LANG['plugin_order']['delivery'][7].":</strong> ".$ci->obj->fields["otherserial"];
 			if (isset($ci->obj->fields["location"]) && $ci->obj->fields["location"] != 0) 
 				$comments .="<br><strong>".$LANG['plugin_order']['detail'][26].":</strong> ".getDropdownName('glpi_dropdown_location', $ci->obj->fields["location"]);
@@ -294,10 +294,11 @@ function getAllItemsByType($type, $entity) {
 			$query = "SELECT ID, name FROM ".$LINK_ID_TABLE[$type]." 
 									WHERE FK_entities=".$entity." 
 									AND is_template=0
+									AND deleted=0
 									AND ID NOT IN (SELECT FK_device FROM glpi_plugin_order_detail)";
 		break;
 		case CONSUMABLE_ITEM_TYPE :
-			$query = "SELECT ID, name FROM glp_consumable_type 
+			$query = "SELECT ID, name FROM glpi_consumables_type 
 									WHERE FK_entities=".$entity."";
 		break;
 		case CARTRIDGE_ITEM_TYPE :
@@ -320,7 +321,7 @@ function plugin_order_createLinkWithDevice($detailID, $deviceID, $deviceType, $o
 	$input["FK_device"] = $deviceID;
 	$detail->update($input);
 	$query = "INSERT INTO glpi_plugin_order_device (FK_order, FK_device, device_type)
-				values (" . $orderID . "," . $deviceID . "," . $deviceType . ")";
+				values (" . $orderID . "," . $deviceID . ",'CONSUMABLE_TYPE')";
 	$DB->query($query);
 }
 

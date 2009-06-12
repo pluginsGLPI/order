@@ -66,17 +66,19 @@ function addDetails($referenceID, $orderID, $quantity, $price, $discounted_price
 	global $LANG;
 	if (referenceExistsInOrder($orderID,$referenceID))
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][28],false,ERROR);
-	
-	if ($quantity > 0) {
-		$detail = new plugin_order_detail;
-		for ($i = 0; $i < $quantity; $i++) {
-			$input["FK_order"] = $orderID;
-			$input["FK_reference"] = $referenceID;
-			$input["price_taxfree"] = $price;
-			$input["price_discounted"] = $price-($price*($discounted_price/100));
-			$input["status"] = ORDER_STATUS_DRAFT;
-			$input["price_ati"] = getPriceTaxIncluded($input["price_discounted"], $taxes);
-			$detail->add($input);
+	else 
+	{
+		if ($quantity > 0) {
+			$detail = new plugin_order_detail;
+			for ($i = 0; $i < $quantity; $i++) {
+				$input["FK_order"] = $orderID;
+				$input["FK_reference"] = $referenceID;
+				$input["price_taxfree"] = $price;
+				$input["price_discounted"] = $price-($price*($discounted_price/100));
+				$input["status"] = ORDER_STATUS_DRAFT;
+				$input["price_ati"] = getPriceTaxIncluded($input["price_discounted"], getdropdownname("glpi_dropdown_plugin_order_taxes",$taxes));
+				$detail->add($input);
+			}
 		}
 	}
 }

@@ -92,30 +92,34 @@ else
 		if (plugin_order_HaveRight("order", "w"))
 			$plugin_order->update($_POST);
 		glpi_header($_SERVER['HTTP_REFERER']);
-	} else
-		if (isset ($_POST["add_detail"])) {
+	} 
+else
+	if (isset ($_POST["add_detail"])) {
 			addDetails($_POST["FK_reference"], $_POST["FK_order"], $_POST["quantity"], $_POST["price"], $_POST["reductedprice"], $_POST["taxes"]);
 			updateOrderStatus($_POST["FK_order"]);
 			glpi_header($_SERVER['HTTP_REFERER']);
-		} else
-			if (isset ($_POST["delete_detail"])) {
-				plugin_order_checkRight("order", "w");
-				foreach ($_POST["detail"] as $FK_reference => $value)
-					deleteDetails($FK_reference, $_POST["FK_order"]);
-				updateOrderStatus($_POST["FK_order"]);
-				glpi_header($_SERVER['HTTP_REFERER']);
-			} else {
-				plugin_order_checkRight("order", "r");
+	} 
+else
+	if (isset ($_POST["delete_detail"])) {
+		plugin_order_checkRight("order", "w");
+		foreach ($_POST["detail"] as $FK_reference => $value)
+			deleteDetails($FK_reference, $_POST["FK_order"]);
+		updateOrderStatus($_POST["FK_order"]);
+		glpi_header($_SERVER['HTTP_REFERER']);
+	} 
+else 
+{
+	plugin_order_checkRight("order", "r");
 
-				if (!isset ($_SESSION['glpi_tab']))
-					$_SESSION['glpi_tab'] = 1;
-				if (isset ($_GET['onglet'])) {
-					$_SESSION['glpi_tab'] = $_GET['onglet'];
-				}
-				commonHeader($LANG['plugin_order'][4], $_SERVER["PHP_SELF"], "plugins", "order", "order");
-				/* load order form */
-				$plugin_order->showForm($_SERVER["PHP_SELF"], $_GET["ID"]);
+	if (!isset ($_SESSION['glpi_tab']))
+		$_SESSION['glpi_tab'] = 1;
+	if (isset ($_GET['onglet'])) 
+		$_SESSION['glpi_tab'] = $_GET['onglet'];
 
-				commonFooter();
-			}
+	commonHeader($LANG['plugin_order'][4], $_SERVER["PHP_SELF"], "plugins", "order", "order");
+	/* load order form */
+	$plugin_order->showForm($_SERVER["PHP_SELF"], $_GET["ID"]);
+
+	commonFooter();
+}
 ?>

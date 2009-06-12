@@ -57,9 +57,11 @@ $LANG['plugin_order'][38] = "Statuts par défaut:";
 $LANG['plugin_order'][39] = "Titre de la commande";
 $LANG['plugin_order'][40] = "Lieu de livraison de la commande";
 $LANG['plugin_order'][41] = "Opération réalisée avec succès.";
-$LANG['plugin_order'][42] = "Impossible de lier le même matériel à plusieurs lignes détail.";
+$LANG['plugin_order'][42] = "Impossible de lier le même matériel à plusieurs lignes détail";
 $LANG['plugin_order'][43] = "Retour à la page menu";
 $LANG['plugin_order'][44] = "Un numéro de commande est obligatoire !";
+$LANG['plugin_order'][45] = "Impossible de générer du matériel non réceptionné";
+$LANG['plugin_order'][46] = "Impossible de lier du matériel non réceptionné";
 
 
 
