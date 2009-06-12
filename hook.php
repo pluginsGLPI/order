@@ -128,10 +128,11 @@ function plugin_order_getSearchOption(){
 			$sopt[PLUGIN_ORDER_TYPE][2]['linkfield']='date';
 			$sopt[PLUGIN_ORDER_TYPE][2]['name']=$LANG['plugin_order'][1];
 			/* budget */
-			$sopt[PLUGIN_ORDER_TYPE][3]['table']='`glpi_dropdown_budget`';
+			$sopt[PLUGIN_ORDER_TYPE][3]['table']='glpi_dropdown_budget';
 			$sopt[PLUGIN_ORDER_TYPE][3]['field']='name';
 			$sopt[PLUGIN_ORDER_TYPE][3]['linkfield']='budget';
 			$sopt[PLUGIN_ORDER_TYPE][3]['name']=$LANG['plugin_order'][3];
+			
 			/* location */
 			$sopt[PLUGIN_ORDER_TYPE][4]['table']='glpi_dropdown_locations';
 			$sopt[PLUGIN_ORDER_TYPE][4]['field']='name';
