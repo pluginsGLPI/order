@@ -28,7 +28,7 @@
     Purpose of file:
     ----------------------------------------------------------------------*/
 	   
-$title = "Commandes";
+$title = "Gestion des commandes";
 
 $LANG['plugin_order'][0] = "N° commande";
 $LANG['plugin_order'][1] = "Date commande";

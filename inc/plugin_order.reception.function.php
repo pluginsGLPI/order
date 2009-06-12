@@ -341,10 +341,16 @@ function plugin_order_updateReceptionStatus($params) {
 	if (isset($params["item"])) {
 		foreach ($params["item"] as $key => $val)
 			if ($val == 1) {
-				$input["ID"] = $key;
-				$input["status"] = 1;
-				$input["date"] = $params["date"];
-				$detail->update($input);
+				if ($detail->getFromDB($key))
+				{
+					if (!$detail->fields["status"])
+					{
+						$input["ID"] = $key;
+						$input["status"] = 1;
+						$input["date"] = $params["date"];
+						$detail->update($input);
+					}
+				}
 			}
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][31]);
 	}
