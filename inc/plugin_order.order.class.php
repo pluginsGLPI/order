@@ -319,5 +319,16 @@ class plugin_order_device extends CommonDBTM {
 	{
 		$this->table = "glpi_plugin_order_device";
 	}
+
+	function isDeviceLinkedToOrder($device_type,$deviceID)
+	{
+		global $DB;
+		$query = "SELECT ID FROM ".$this->table." WHERE device_type=$device_type AND FK_device=$deviceID";
+		$result = $DB->query($query);
+		if ($DB->numrows($result))
+			return true;
+		else
+			return false;	
+	}
 }
 ?>

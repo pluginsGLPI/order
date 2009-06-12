@@ -394,6 +394,34 @@ function plugin_pre_item_delete_order($input){
 		}
 	return $input;
 }
+
+function plugin_pre_item_update_order($input){
+	global $LANG;
+	if (isset($input["_item_type_"]))
+		switch ($input["_item_type_"]){
+			case INFOCOM_TYPE :
+				$infocom = new InfoCom;
+				$infocom->getFromDB($input["ID"]);
+				
+				$device = new plugin_order_device;
+				if ($device->isDeviceLinkedToOrder($infocom->fields["device_type"],$infocom->fields["FK_device"]))
+				{
+					$field_set = false;
+					$unset_fields = array("num_commande","bon_livraison","budget","FK_enterprise","facture","value","buy_date");
+					foreach ($unset_fields as $field)
+						if (isset($input[$field]))
+						{
+							$field_set = true;
+							unset($input[$field]);
+						}
+					if ($field_set)
+						addMessageAfterRedirect($LANG['plugin_order']['infocom'][1]);								
+				}
+				break;
+		}
+	return $input;
+}
+
 /*
 function plugin_item_delete_order($parm){
 		if (isset($parm["type"]))

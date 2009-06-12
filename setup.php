@@ -80,6 +80,8 @@ function plugin_init_order() {
 		'typename'   => $LANG['plugin_order']['reference'][5],
 		));
 
+	$PLUGIN_HOOKS['pre_item_update']['order'] = 'plugin_pre_item_update_order';
+
 	/* link to the config page in plugins menu */
 	if (plugin_order_haveRight("order", "w") || haveRight("config", "w"))
 		$PLUGIN_HOOKS['config_page']['order'] = 'front/plugin_order.config.php';
