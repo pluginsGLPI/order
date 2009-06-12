@@ -321,7 +321,7 @@ function plugin_order_createLinkWithDevice($detailID, $deviceID, $deviceType, $o
 	$input["FK_device"] = $deviceID;
 	$detail->update($input);
 	$query = "INSERT INTO glpi_plugin_order_device (FK_order, FK_device, device_type)
-				values (" . $orderID . "," . $deviceID . ",'CONSUMABLE_TYPE')";
+				values (" . $orderID . "," . $deviceID . ", " . $deviceType . ")";
 	$DB->query($query);
 }
 
