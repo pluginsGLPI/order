@@ -167,6 +167,12 @@ function plugin_order_getSearchOption(){
 			$sopt[PLUGIN_ORDER_TYPE][10]['field']='name';
 			$sopt[PLUGIN_ORDER_TYPE][10]['linkfield']='name';
 			$sopt[PLUGIN_ORDER_TYPE][10]['name']=$LANG['plugin_order'][39];
+
+			$sopt[PLUGIN_ORDER_TYPE][11]['table']='glpi_dropdown_budget';
+			$sopt[PLUGIN_ORDER_TYPE][11]['field']='name';
+			$sopt[PLUGIN_ORDER_TYPE][11]['linkfield']='budget';
+			$sopt[PLUGIN_ORDER_TYPE][11]['name']=$LANG['financial'][87];
+		
 			/* comments */
 			$sopt[PLUGIN_ORDER_TYPE][16]['table']='glpi_plugin_order';
 			$sopt[PLUGIN_ORDER_TYPE][16]['field']='comment';
@@ -203,6 +209,7 @@ function plugin_order_getSearchOption(){
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['field']='comments';
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['linkfield']='comments';
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['name']=$LANG['common'][25];
+
 
 			/* entity */
 			$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['table']='glpi_entities';

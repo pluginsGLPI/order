@@ -160,4 +160,23 @@ function plugin_order_dropdownStatus($name,$value=0)
 	
 	return dropdownArrayValues($name,$status,$value);
 }
+
+function plugin_order_templateExistsInEntity($detailID,$type,$entity)
+{
+	global $DB;
+	$query="SELECT glpi_plugin_order_references.template AS templateID FROM glpi_plugin_order_detail, glpi_plugin_order_references WHERE glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID AND glpi_plugin_order_detail.ID=".$detailID;
+	$result = $DB->query($query);
+	if (!$DB->numrows($result))
+		return 0;
+	else
+	{
+		$commonitem = new CommonItem;
+		$commonitem->getFromDB($type,$DB->result($result,0,"templateID"));
+		if ($commonitem->getField('FK_entities') == $entity)
+			return $commonitem->getField('ID');
+		else
+			return 0;	
+	}
+		
+}
 ?>

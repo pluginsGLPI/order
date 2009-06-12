@@ -36,20 +36,7 @@ useplugin('order',true);
 /* reception d'une ligne d�tail */
 if(isset($_POST["reception"])) 
 {
-	if(isset($_POST["item"]))
-	{
-		 foreach ($_POST["item"] as $key => $val)
-		 {
-			if ($val==1) 
-			{
-				$DB = new DB;
-				$query=" UPDATE glpi_plugin_order_detail
-						SET status=1, date='".$_POST["date"]."'
-						WHERE ID=$key";
-				$DB->query($query);
-			}
-		}
-	}
+	plugin_order_updateReceptionStatus($_POST);
 	glpi_header($_SERVER["HTTP_REFERER"]);
 } 
 /* affiche le tableau permettant la g�n�ration de mat�riel */
@@ -65,88 +52,20 @@ if(isset($_POST["generation"]))
 			}
 		}
 	}
-	commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order","order");
-	echo "<div class='center'>";
-	echo "<table class='tab_cadre'>";
+	
 	if(isset($_POST["item"])) 
+		plugin_order_showReceptionForm($_SERVER["PHP_SELF"],$_POST);
+	else
 	{
-		echo "<form method='post' name='order_deviceGeneration' id='order_deviceGeneration'  action=".$_SERVER["PHP_SELF"].">";
-		echo "<tr><th colspan='4'>".$LANG['plugin_order']['delivery'][3]."</tr></th>";
-		echo "<tr><th>".$LANG['plugin_order']['reference'][1]."</th>";
-		echo "<th>".$LANG['plugin_order']['delivery'][6]."</th>";
-		echo "<th>".$LANG['plugin_order']['delivery'][7]."</th>";
-		echo "<th>".$LANG['plugin_order']['delivery'][8]."</th></tr>";
-		echo "<input type='hidden' name='orderID' value=".$_POST["orderID"].">";
-		$i=0;
-		foreach ($_POST["item"] as $key => $val)
-		{
-			if ($val==1) 
-			{
-				echo "<tr class='tab_bg_1'><td align='center'><a href=".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.reference.form.php?ID=".$key.">".$_POST["name"][$key]."</a></td>";
-				echo "<td><input type='text' size='20' name='serial[$i]'></td>";
-				echo "<td><input type='text' size='20' name='otherserial[$i]'></td>";
-				echo "<td><input type='text' size='20' name='name[$i]'></td></tr>";
-				echo "<input type='hidden' name='type[$i]' value=".$_POST['type'][$key].">";
-				echo "<input type='hidden' name='ID[$i]' value=".$_POST['ID'][$key].">";
-				$i++;
-			}
-		}
-		echo "<tr><td align='center' colspan='4' class='tab_bg_2'><input type='submit' name='generate' class='submit' value=".$LANG['plugin_order']['delivery'][9]."></td></tr>";
-	} else 
+		addMessageAfterRedirect($LANG['plugin_order']['detail'][29],false,ERROR);
 		glpi_header($_SERVER["HTTP_REFERER"]);
-	echo "</table>";
-	echo "</div>";
-	commonFooter();
+	}
 } 
 /* g�n�re le mat�riel */
 if(isset($_POST["generate"])) 
 {
-	$i=0;
-	while(isset($_POST["serial"][$i])) 
-	{
-		$DB=new DB;
-		$query="SELECT glpi_plugin_order_references.template AS templateID
-							FROM glpi_plugin_order_detail, glpi_plugin_order_references
-							WHERE glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID
-							AND glpi_plugin_order_detail.ID=".$_POST["ID"][$i]."";
-		if($result=$DB->query($query)) {
-			if($DB->numrows($result)>0)
-				$templateID=$DB->result($result,0,'templateID');
-		}
-		$commonItem=new CommonItem();
-		$commonItem->getFromDB($_POST["type"][$i], $templateID);
-		$ci=new CommonItem();
-		$ci->setType($_POST["type"][$i],true);
-		$newID=$ci->obj->add(array(	'serial'=>$_POST["serial"][$i],
-										'otherserial'=>$_POST["otherserial"][$i],
-										'name'=>$_POST["name"][$i],
-										'FK_entities'=>$_SESSION["glpiactive_entity"],
-										'contact'=>$commonItem->obj->fields["contact"],
-										'contact_num'=>$commonItem->obj->fields["contact_num"],
-										'tech_num'=>$commonItem->obj->fields["tech_num"],
-										'comments'=>$commonItem->obj->fields["comments"],
-										'os'=>$commonItem->obj->fields["os"],
-										'os_version'=>$commonItem->obj->fields["os_version"],
-										'os_sp'=>$commonItem->obj->fields["os_sp"],
-										'os_license_number'=>$commonItem->obj->fields["os_license_number"],
-										'os_license_id'=>$commonItem->obj->fields["os_license_id"],
-										'auto_update'=>$commonItem->obj->fields["auto_update"],
-										'location'=>$commonItem->obj->fields["location"],
-										'domain'=>$commonItem->obj->fields["domain"],
-										'network'=>$commonItem->obj->fields["network"],
-										'model'=>$commonItem->obj->fields["model"],
-										'type'=>$commonItem->obj->fields["type"],
-										'FK_glpi_enterprise'=>$commonItem->obj->fields["FK_glpi_enterprise"],
-										'notes'=>$commonItem->obj->fields["notes"],
-										'ocs_import'=>$commonItem->obj->fields["ocs_import"],
-										'FK_users'=>$commonItem->obj->fields["FK_users"],
-										'FK_groups'=>$commonItem->obj->fields["FK_groups"],
-										'state'=>$commonItem->obj->fields["state"],
-										'ticket_tco'=>$commonItem->obj->fields["ticket_tco"]));
-		plugin_order_createLinkWithDevice($_POST["ID"][$i], $newID, $_POST["type"][$i], $_POST["orderID"]);
-		$i++;
-	}
-	glpi_header("".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
+	plugin_order_generateNewDevice($_POST,$_SESSION["glpiactive_entity"]);
+	glpi_header($CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
 }
 /* supprime un lien d'une ligne d�tail vers un mat�riel */
 if(isset($_POST["deleteLinkWithDevice"])) 
@@ -156,7 +75,7 @@ if(isset($_POST["deleteLinkWithDevice"]))
 		if ($val==1) 
 			plugin_order_deleteLinkWithDevice($key);
 	}
-	glpi_header("".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
+	glpi_header($CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
 }
 /* cr�e un lien d'une ligne d�tail vers un mat�riel */
 if(isset($_POST["createLinkWithDevice"])) 

@@ -32,7 +32,7 @@ $NEEDED_ITEMS=array("computer","printer","networking","monitor","software","peri
 define('GLPI_ROOT', '../..'); 
 include (GLPI_ROOT."/inc/includes.php");
 
-commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order","order");
+commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order");
 
 if(plugin_order_haveRight("order","r") && plugin_order_haveRight("reference","r"))
 {

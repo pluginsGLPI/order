@@ -313,4 +313,11 @@ class plugin_order extends CommonDBTM {
 		return true;
 	}
 }
+
+class plugin_order_device extends CommonDBTM {
+	function __construct()
+	{
+		$this->table = "glpi_plugin_order_device";
+	}
+}
 ?>
