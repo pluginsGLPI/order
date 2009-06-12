@@ -154,6 +154,9 @@ $LANG['plugin_order']['setup'][28] = "Editeur ";
 
 $LANG['plugin_order']['infocom'][1]="Certains champs ne peuvent-être modifiés : ils proviennent d'une commande";
 
+$LANG['plugin_order']['history'][1]="Matériel généré depuis la commande";
+
+
 $LANG['plugin_order']['menu'][1] = "Gérer les commandes";
 $LANG['plugin_order']['menu'][2] = "Gérer le catalogue de références produits";
 ?>

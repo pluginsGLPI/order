@@ -220,12 +220,14 @@ class plugin_order extends CommonDBTM {
 			echo "</td></tr>";
 
 			/* status */
-			if ($this->fields["status"] == NULL && $canedit) {
+			/*
+			if ($this->fields["status"] == null && $canedit) {
 				echo "<tr><td valign='top'>" . $LANG['plugin_order']['status'][0] . ": </td>";
 				echo "<td valign='top'>";
-				$config = new plugin_order_config();
-				$config->getFromDB(1);
-				dropdownValue("glpi_dropdown_plugin_order_status", "status", $config->fields["status_creation"], 1, $this->fields["FK_entities"]);
+				//$config = new plugin_order_config();
+				//$config->getFromDB(1);
+				plugin_order_dropdownStatus("status",$this->fields["status"]);
+				//dropdownValue("glpi_dropdown_plugin_order_status", "status", $config->fields["status_creation"], 1, $this->fields["FK_entities"]);
 				echo "</td></tr>";
 			}
 			elseif ($this->fields["status"] != NULL && $canedit) {
@@ -233,7 +235,12 @@ class plugin_order extends CommonDBTM {
 				echo "<td valign='top'>";
 				dropdownValue("glpi_dropdown_plugin_order_status", "status", $this->fields["status"], 1, $this->fields["FK_entities"]);
 				echo "</td></tr>";
-			}
+			}*/
+			
+			echo "<tr><td valign='top'>" . $LANG['plugin_order']['status'][0] . ": </td>";
+			echo "<td valign='top'>";
+			plugin_order_dropdownStatus("status",(!$ID?0:$this->fields["status"]));
+			echo "</td></tr>";
 
 			/* location */
 			echo "<tr><td>" . $LANG['plugin_order'][40] . ": </td>";

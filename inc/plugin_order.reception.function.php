@@ -438,6 +438,13 @@ function plugin_order_generateNewDevice($params, $entity) {
 		plugin_order_generateInfoComRelatedToOrder($entity,$params["ID"][$i],$params["type"][$i],$newID,$templateID);
 		plugin_order_createLinkWithDevice($params["ID"][$i], $newID, $params["type"][$i], $params["orderID"]);
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][30]);
+
+		/*
+		$changes[0] = 0;
+		$changes[1] = $LANG['plugin_order']['history'][1];
+		$changes[2] = 0;
+		historyLog($params["ID"][$i],$params['type'][$i],$changes,HISTORY_LOG_SIMPLE_MESSAGE);
+		*/
 		$i++;
 	}
 }

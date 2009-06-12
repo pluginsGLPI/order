@@ -139,9 +139,9 @@ function plugin_order_getSearchOption(){
 			$sopt[PLUGIN_ORDER_TYPE][4]['linkfield']='location';
 			$sopt[PLUGIN_ORDER_TYPE][4]['name']=$LANG['plugin_order'][40];
 			/* status */
-			$sopt[PLUGIN_ORDER_TYPE][5]['table']='glpi_dropdown_plugin_order_status';
-			$sopt[PLUGIN_ORDER_TYPE][5]['field']='name';
-			$sopt[PLUGIN_ORDER_TYPE][5]['linkfield']='status';
+			$sopt[PLUGIN_ORDER_TYPE][5]['table']='glpi_plugin_order';
+			$sopt[PLUGIN_ORDER_TYPE][5]['field']='status';
+			$sopt[PLUGIN_ORDER_TYPE][5]['linkfield']='';
 			$sopt[PLUGIN_ORDER_TYPE][5]['name']=$LANG['plugin_order']['status'][0];
 			/* supplier */
 			$sopt[PLUGIN_ORDER_TYPE][6]['table']='glpi_enterprises';
@@ -266,6 +266,10 @@ function plugin_order_giveItem($type,$ID,$data,$num){
 	$field=$SEARCH_OPTION[$type][$ID]["field"];
 	switch ($table.'.'.$field){
 		/* display associated items with order */
+		case "glpi_plugin_order.status":
+			return plugin_order_getDropdownStatus($data["ITEM_".$num]);
+		break;	
+		/*
 		case "glpi_plugin_order_device.FK_device" :
 			$query_device = "SELECT DISTINCT device_type 
 							FROM glpi_plugin_order_device 
@@ -314,6 +318,7 @@ function plugin_order_giveItem($type,$ID,$data,$num){
 			}
 		return $out;
 		break;
+		*/
 	}
 	return "";
 }

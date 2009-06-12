@@ -51,31 +51,38 @@ if($action=="createorder") {
 
 commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order","order");
 echo "<div class='center'>";
+//echo "<table class='tab_cadre_fixe'>";
+//echo "<tr><th>".$LANG['plugin_order'][4]."</th></tr>";
+//echo "<tr><td><table class='tab_cadre_fixe'>";
 echo "<table class='tab_cadre'>";
-echo "<tr><th>".$LANG['plugin_order'][4]."</th></tr>";
-echo "<tr><td><table class='tab_cadre'>";
 echo "<tr><th>".$LANG['plugin_order'][37]."</th></tr>";
 echo "<tr class='tab_bg_1' align='center'><td><a href=".$_SERVER["PHP_SELF"]."?action=createorder>".$LANG['plugin_order'][34]."</a></td></tr>";
 echo "<tr class='tab_bg_1' align='center'><td><a href=".$_SERVER["PHP_SELF"]."?action=deleteorder>".$LANG['plugin_order'][35]."</a></td></tr>";
-echo "</table></td></tr>";
-echo "<tr><td><table class='tab_cadre'>";
+//echo "</table></td></tr>";
+echo "</table>";
+echo "<br>";
+echo "<table class='tab_cadre'>";
 echo "<tr><th colspan='3'>".$LANG['plugin_order'][38]."</th></tr>";
 echo "<form method='post' name=form action=''>";
+
 $config= new plugin_order_config();
 $config->getFromDB(1);
+
 /* default status order creation */
-echo "<tr class='tab_bg_1'><td><b>".$LANG['plugin_order']['status'][4]."</b></td><td>";
-dropdownValue("glpi_dropdown_plugin_order_status", "status_creation", $config->fields["status_creation"],1);
+echo "<tr class='tab_bg_1' align='center'><td><b>".$LANG['plugin_order']['status'][4]."</b></td><td>";
+plugin_order_dropdownStatus("status_creation", $config->fields["status_creation"]);
+//dropdownValue("glpi_dropdown_plugin_order_status", "status_creation", $config->fields["status_creation"],1);
 echo "</td>";
 /* default status delivered order */
-echo "<tr class='tab_bg_1'><td><b>".$LANG['plugin_order']['status'][5]."</b></td><td>";
-dropdownValue("glpi_dropdown_plugin_order_status", "status_delivered", $config->fields["status_delivered"],1);
+echo "<tr class='tab_bg_1' align='center'><td><b>".$LANG['plugin_order']['status'][5]."</b></td><td>";
+plugin_order_dropdownStatus("status_delivered", $config->fields["status_delivered"]);
+//dropdownValue("glpi_dropdown_plugin_order_status", "status_delivered", $config->fields["status_delivered"],1);
 echo "</td>";
 /* default status no delivered order */
-echo "<tr class='tab_bg_1'><td><b>".$LANG['plugin_order']['status'][6]."</b></td><td>";
-dropdownValue("glpi_dropdown_plugin_order_status", "status_nodelivered", $config->fields["status_nodelivered"],1);
-echo "</td></tr><tr  class='tab_bg_1'><td colspan='2' align='center'><input type='submit' name='update_status' value=\"".$LANG['buttons'][7]."\" class='submit' ></td>";
-echo "</table></td></tr>";
+echo "<tr class='tab_bg_1' align='center'><td><b>".$LANG['plugin_order']['status'][6]."</b></td><td>";
+plugin_order_dropdownStatus("status_nodelivered", $config->fields["status_nodelivered"]);
+//dropdownValue("glpi_dropdown_plugin_order_status", "status_nodelivered", $config->fields["status_nodelivered"],1);
+echo "</td></tr><tr  class='tab_bg_1' align='center'><td colspan='2' align='center'><input type='submit' name='update_status' value=\"".$LANG['buttons'][7]."\" class='submit' ></td>";
 echo "</table>";
 echo "</div>";
 commonFooter();
