@@ -107,7 +107,8 @@ function plugin_order_dropdownAllItems($myname,$ajax=false,$value=0,$orderID=0,$
 function plugin_order_dropdownTemplate($name,$entity,$table,$value=0)
 {
 	global $DB;
-	$result = $DB->query("SELECT tplname, ID FROM ".$table." WHERE FK_entities=".$entity." AND tplname <> '' GROUP BY tplname ORDER BY tplname");
+	$result = $DB->query("SELECT tplname, ID FROM ".$table.
+	" WHERE FK_entities=".$entity." AND is_template=1 AND tplname <> '' GROUP BY tplname ORDER BY tplname");
 	
 	$option[0] = '-------------';
 	while ($data = $DB->fetch_array($result))
