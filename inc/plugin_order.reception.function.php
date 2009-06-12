@@ -358,7 +358,7 @@ function plugin_order_updateReceptionStatus($params) {
 						$input["status"] = 1;
 						$input["date"] = $params["date"];
 						$detail->update($input);
-						addMessageAfterRedirect($LANG['plugin_order']['detail'][31]);
+						addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
 					}
 					else 
 						addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);

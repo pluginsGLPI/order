@@ -415,7 +415,7 @@ function plugin_pre_item_update_order($input){
 							unset($input[$field]);
 						}
 					if ($field_set)
-						addMessageAfterRedirect($LANG['plugin_order']['infocom'][1]);								
+						addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);								
 				}
 				break;
 		}
