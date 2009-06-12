@@ -77,10 +77,11 @@ class plugin_order extends CommonDBTM {
 			/* item */
 			$ong[2] = $LANG['plugin_order']['item'][0];
 
+/*
 			if (haveRight("show_all_ticket", "1")) {
 				$ong[6] = $LANG['title'][28];
 			}
-
+*/
 			/* documents */
 			if (haveRight("document", "r"))
 				$ong[3] = $LANG['Menu'][27];
