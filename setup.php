@@ -39,7 +39,7 @@ define ("ORDER_STATUS_COMPLETLY_DELIVERED",3);
 define ("ORDER_STATUS_CANCELED",4);
 
 
-include_once ("inc/plugin_order.functions_auth.php");
+include_once ("inc/plugin_order.auth.function.php");
 include_once ("inc/plugin_order.profile.class.php");
  
 /* init the hooks of the plugins -needed- */
