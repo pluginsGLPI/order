@@ -54,7 +54,7 @@ $LANG['plugin_order'][35] = "Supprimer les entêtes des commandes générées à
 $LANG['plugin_order'][36] = "Quantité reçue éronnée";
 $LANG['plugin_order'][37] = "Commandes générées à partir des informations financières:";
 $LANG['plugin_order'][38] = "Statuts par défaut:";
-$LANG['plugin_order'][39] = "Titre de la commande";
+$LANG['plugin_order'][39] = "Nom de la commande";
 $LANG['plugin_order'][40] = "Lieu de livraison de la commande";
 $LANG['plugin_order'][41] = "Opération réalisée avec succès.";
 $LANG['plugin_order'][42] = "Impossible de lier le même matériel à plusieurs lignes détail";
@@ -62,6 +62,7 @@ $LANG['plugin_order'][43] = "Retour à la page menu";
 $LANG['plugin_order'][44] = "Un numéro de commande est obligatoire !";
 $LANG['plugin_order'][45] = "Impossible de générer du matériel non réceptionné";
 $LANG['plugin_order'][46] = "Impossible de lier du matériel non réceptionné";
+$LANG['plugin_order'][47] = "Informations sur la commande";
 
 
 
@@ -104,7 +105,7 @@ $LANG['plugin_order']['detail'][17]="Ligne(s) détail";
 $LANG['plugin_order']['detail'][18]="Prix unitaire remisé (HT)";
 $LANG['plugin_order']['detail'][19]="Statut matériel";
 $LANG['plugin_order']['detail'][20]="Pas de matériel à réceptionner";
-$LANG['plugin_order']['detail'][21]="Date réception";
+$LANG['plugin_order']['detail'][21]="Date de livraison";
 $LANG['plugin_order']['detail'][22]="Matériel associé";
 $LANG['plugin_order']['detail'][23]="Matériel non réceptionné";
 $LANG['plugin_order']['detail'][24]="Utilisateur";

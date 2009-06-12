@@ -49,4 +49,27 @@ function plugin_order_canUpdateOrder($orderID)
 	$order->getFromDB($orderID);
 	if ($order->fields["status"] == $config->fields["status_not"]);		
 }
+
+function plugin_order_showOrderInfoByDeviceID($device_type,$deviceID)
+{
+	global $LANG,$INFOFORM_PAGES,$CFG_GLPI;
+	$device =  new plugin_order_device;
+	$infos = $device->getOrderInfosByDeviceID($device_type,$deviceID);
+	if ($infos)
+	{
+		echo "<div class='center'>";
+		echo "<table class='tab_cadre_fixe'>";
+		echo "<tr align='center'><th colspan='2'>" . $LANG['plugin_order'][47] . ": </th></tr>";
+		echo "<tr align='center'><td class='tab_bg_2'>".$LANG['plugin_order'][39]."</td>";
+		echo "<td class='tab_bg_2'>"; 
+		if (plugin_order_haveRight("order","r"))
+			echo "<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[PLUGIN_ORDER_TYPE]."?ID=".$infos["ID"]."'>".$infos["name"]."</a>";
+		else
+			echo $infos["name"];	 
+		echo "</td></tr>";
+		echo "<tr align='center'><td class='tab_bg_2'>".$LANG['plugin_order']['detail'][21]."</td>";
+		echo "<td class='tab_bg_2'>".convDate($infos["date"])."</td></tr>";
+		echo "</table></div>";
+	}
+}
 ?>

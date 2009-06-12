@@ -454,9 +454,12 @@ function plugin_item_purge_order($parm){
 
 /* define headings added by the plugin */
 function plugin_get_headings_order($type,$withtemplate=''){
-	global $LANG;
+	global $LANG,$ORDER_AVAILABLE_TYPES;
 	
-	if (in_array($type,array(ENTERPRISE_TYPE,PROFILE_TYPE))){
+	$types = $ORDER_AVAILABLE_TYPES;
+	$types[] = ENTERPRISE_TYPE;
+	$types[] = PROFILE_TYPE;
+	if (in_array($type,$types)){
 		/* template case */
 		if ($withtemplate='')
 			return array();
@@ -471,8 +474,11 @@ function plugin_get_headings_order($type,$withtemplate=''){
 
 /* define headings actions added by the plugin */
 function plugin_headings_actions_order($type){	
-
-	if (in_array($type,array(ENTERPRISE_TYPE, PROFILE_TYPE))){
+	global $ORDER_AVAILABLE_TYPES;
+	$types = $ORDER_AVAILABLE_TYPES;
+	$types[] = ENTERPRISE_TYPE;
+	$types[] = PROFILE_TYPE;
+	if (in_array($type,$types)){
 		return array(
 					1 => "plugin_headings_order",
 					);
@@ -482,8 +488,8 @@ function plugin_headings_actions_order($type){
 
 /* action heading */
 function plugin_headings_order($type,$ID,$withtemplate=0){
-	global $CFG_GLPI,$LANG;
-	
+	global $CFG_GLPI,$LANG,$ORDER_AVAILABLE_TYPES;
+
 		switch ($type){
 			case ENTERPRISE_TYPE :
 				echo "<div align='center'>";
@@ -505,6 +511,8 @@ function plugin_headings_order($type,$ID,$withtemplate=0){
 				}
 			break;
 			default :
+				if (in_array($type,$ORDER_AVAILABLE_TYPES) && !$withtemplate)
+					plugin_order_showOrderInfoByDeviceID($type,$ID);
 			break;
 		}
 }
