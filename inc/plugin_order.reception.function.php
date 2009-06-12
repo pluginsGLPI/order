@@ -163,7 +163,7 @@ function getReceptionMaterialInfo($deviceType, $deviceID) {
 			if (isset ($ci->obj->fields["otherserial"]) && $ci->obj->fields["otherserial"] != '')
 				$comments .= "<br><strong>" . $LANG['plugin_order']['delivery'][7] . ":</strong> " . $ci->obj->fields["otherserial"];
 			if (isset ($ci->obj->fields["location"]) && $ci->obj->fields["location"] != 0)
-				$comments .= "<br><strong>" . $LANG['plugin_order']['detail'][26] . ":</strong> " . getDropdownName('glpi_dropdown_location', $ci->obj->fields["location"]);
+				$comments .= "<br><strong>" . $LANG['plugin_order']['detail'][26] . ":</strong> " . getDropdownName('glpi_dropdown_locations', $ci->obj->fields["location"]);
 			if (isset ($ci->obj->fields["FK_users"]) && $ci->obj->fields["FK_users"] != 0)
 				$comments .= "<br><strong>" . $LANG['plugin_order']['detail'][24] . ":</strong> " . getDropdownName('glpi_users', $ci->obj->fields["FK_users"]);
 			break;
@@ -321,14 +321,23 @@ function plugin_order_createLinkWithDevice($detailID, $deviceID, $deviceType, $o
 	$device->add($input);
 }
 
-function plugin_order_deleteLinkWithDevice($detailID) {
+function plugin_order_deleteLinkWithDevice($detailID, $deviceType) {
+	global $DB;
 	$detail = new plugin_order_detail;
 	$detail->getFromDB($detailID);
 
+	$query=" SELECT ID FROM `glpi_plugin_order_device`
+							WHERE FK_device=".$detail->fields["FK_device"]."
+							AND device_type=".$deviceType."";
+	if($result=$DB->query($query))
+	{
+		if($DB->numrows($result)>0)
+			$deviceID=$DB->result($result,0,'ID');
+	}
 	$device = new plugin_order_device;
 	$device->delete(array (
-		"ID" => $detail->fields["FK_device"]
-	));
+ 	        "ID" => $deviceID
+ 	    ));
 
 	$input = $detail->fields;
 	$input["FK_device"] = 0;
@@ -349,10 +358,12 @@ function plugin_order_updateReceptionStatus($params) {
 						$input["status"] = 1;
 						$input["date"] = $params["date"];
 						$detail->update($input);
+						addMessageAfterRedirect($LANG['plugin_order']['detail'][31]);
 					}
+					else 
+						addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);
 				}
 			}
-		addMessageAfterRedirect($LANG['plugin_order']['detail'][31]);
 	}
 	else
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][29],false,ERROR);

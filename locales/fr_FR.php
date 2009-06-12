@@ -115,6 +115,7 @@ $LANG['plugin_order']['detail'][28]="Cette référence est déjà utilisée dans
 $LANG['plugin_order']['detail'][29]="Aucun matériel sélectionné";
 $LANG['plugin_order']['detail'][30]="Matériel(s) généré(s) avec succès";
 $LANG['plugin_order']['detail'][31]="Matériel(s) réceptionné(s) avec succès";
+$LANG['plugin_order']['detail'][32]="Matériel(s) déjà réceptionné(s)";
 
 
 $LANG['plugin_order']['delivery'][1]="Réception matériel(s)";

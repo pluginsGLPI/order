@@ -73,7 +73,7 @@ if(isset($_POST["deleteLinkWithDevice"]))
 	foreach ($_POST["item"] as $key => $val)
 	{
 		if ($val==1) 
-			plugin_order_deleteLinkWithDevice($key);
+			plugin_order_deleteLinkWithDevice($key, $_POST["type"][$key]);
 	}
 	glpi_header($CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
 }
