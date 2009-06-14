@@ -36,7 +36,7 @@
 // Direct access to file
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
-include (GLPI_ROOT."/plugins/order/inc/plugin_order.functions_dropdown.php");
+include (GLPI_ROOT."/plugins/order/inc/plugin_order.dropdown.function.php");
 include (GLPI_ROOT."/plugins/order/inc/plugin_order.reception.function.php");
 $AJAX_INCLUDE=1;
 
