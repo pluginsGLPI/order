@@ -38,7 +38,7 @@ class PluginOrderConfig extends CommonDBTM {
 		$this->getFromDB(1);
 		echo "<div class='center'>";
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='2'>".$LANG['plugin_order'][38]."</th></tr>";
+		echo "<tr><th colspan='2'>".$LANG['plugin_order']['setup'][0]."</th></tr>";
 		echo "<form method='post' name=form action='$target'>";
 		
 		echo "<input type='hidden' name='ID' value='1'>";

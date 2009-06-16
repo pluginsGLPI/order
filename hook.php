@@ -336,7 +336,7 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_TYPE][6]['table'] = 'glpi_enterprises';
 		$sopt[PLUGIN_ORDER_TYPE][6]['field'] = 'name';
 		$sopt[PLUGIN_ORDER_TYPE][6]['linkfield'] = 'FK_enterprise';
-		$sopt[PLUGIN_ORDER_TYPE][6]['name'] = $LANG['plugin_order']['setup'][14];
+		$sopt[PLUGIN_ORDER_TYPE][6]['name'] = $LANG['financial'][26];
 		/* payment */
 		$sopt[PLUGIN_ORDER_TYPE][7]['table'] = 'glpi_dropdown_plugin_order_payment';
 		$sopt[PLUGIN_ORDER_TYPE][7]['field'] = 'name';
@@ -473,22 +473,6 @@ function plugin_order_MassiveActions($type) {
 				
 			);
 			break;
-	}
-	/* adding order from items lists */
-	if (in_array($type, array (
-			COMPUTER_TYPE,
-			MONITOR_TYPE,
-			NETWORKING_TYPE,
-			PERIPHERAL_TYPE,
-			PHONE_TYPE,
-			PRINTER_TYPE,
-			SOFTWARE_TYPE,
-			TRACKING_TYPE,
-			CONTRACT_TYPE
-		))) {
-		return array (
-			"plugin_order_add_item" => $LANG['plugin_order']['setup'][25]
-		);
 	}
 	return array ();
 }

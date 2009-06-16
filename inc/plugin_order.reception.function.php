@@ -87,7 +87,7 @@ function showReceptionForm($orderID) {
 			echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][21] . "</th>";
-			echo "<th>" . $LANG['plugin_order']['detail'][22] . "</th></tr>";
+			echo "<th>" . $LANG['plugin_order']['item'][0] . "</th></tr>";
 			$i = 0;
 			while ($i < $num) {
 				$random = mt_rand();
@@ -161,15 +161,15 @@ function getReceptionMaterialInfo($deviceType, $deviceID) {
 			$ci = new CommonItem();
 			$ci->getFromDB($deviceType, $deviceID);
 			if (isset ($ci->obj->fields["name"]))
-				$comments = "<strong>" . $LANG['plugin_order']['delivery'][8] . ":</strong> " . $ci->obj->fields["name"];
+				$comments = "<strong>" . $LANG['common'][16] . ":</strong> " . $ci->obj->fields["name"];
 			if (isset ($ci->obj->fields["serial"]) && $ci->obj->fields["serial"] != '')
-				$comments .= "<br><strong>" . $LANG['plugin_order']['delivery'][6] . ":</strong> " . $ci->obj->fields["serial"];
+				$comments .= "<br><strong>" . $LANG['common'][19] . ":</strong> " . $ci->obj->fields["serial"];
 			if (isset ($ci->obj->fields["otherserial"]) && $ci->obj->fields["otherserial"] != '')
-				$comments .= "<br><strong>" . $LANG['plugin_order']['delivery'][7] . ":</strong> " . $ci->obj->fields["otherserial"];
+				$comments .= "<br><strong>" . $LANG['common'][10] . ":</strong> " . $ci->obj->fields["otherserial"];
 			if (isset ($ci->obj->fields["location"]) && $ci->obj->fields["location"] != 0)
-				$comments .= "<br><strong>" . $LANG['plugin_order']['detail'][26] . ":</strong> " . getDropdownName('glpi_dropdown_locations', $ci->obj->fields["location"]);
+				$comments .= "<br><strong>" . $LANG['consumables'][36] . ":</strong> " . getDropdownName('glpi_dropdown_locations', $ci->obj->fields["location"]);
 			if (isset ($ci->obj->fields["FK_users"]) && $ci->obj->fields["FK_users"] != 0)
-				$comments .= "<br><strong>" . $LANG['plugin_order']['detail'][24] . ":</strong> " . getDropdownName('glpi_users', $ci->obj->fields["FK_users"]);
+				$comments .= "<br><strong>" . $LANG['common'][34] . ":</strong> " . getDropdownName('glpi_users', $ci->obj->fields["FK_users"]);
 			break;
 		case CONSUMABLE_ITEM_TYPE :
 			$ci = new CommonItem();

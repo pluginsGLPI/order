@@ -132,7 +132,7 @@ class PluginOrderDetail extends CommonDBTM {
 				if($canedit)
 					echo "<th></th>";
 				echo "<th>".$LANG['plugin_order']['detail'][1]."</th>";
-				echo "<th>".$LANG['plugin_order']['detail'][11]."</th>";
+				echo "<th>".$LANG['common'][5]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][7]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][3]."</th>";

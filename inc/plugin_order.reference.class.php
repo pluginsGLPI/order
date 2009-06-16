@@ -102,7 +102,7 @@ class PluginOrderReference extends CommonDBTM {
 			$commonitem = new CommonItem;
 			$commonitem->setType($this->fields["type"], true);
 
-			echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['reference'][4] . ": </td>";
+			echo "<tr class='tab_bg_2'><td>" . $LANG['state'][6] . ": </td>";
 			echo "<td>";
 			if ($ID > 0)
 				echo $commonitem->getType();

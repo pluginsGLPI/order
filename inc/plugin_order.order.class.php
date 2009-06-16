@@ -195,7 +195,7 @@ class PluginOrder extends CommonDBTM {
 				echo $this->fields["deliverynum"];
 			echo "</td>";
 			/* supplier of order */
-			echo "<td>" . $LANG['plugin_order']['setup'][14] . ": </td>";
+			echo "<td>" . $LANG['financial'][26] . ": </td>";
 			echo "<td>";
 			if ($canedit)
 				dropdownValue("glpi_enterprises", "FK_enterprise", $this->fields["FK_enterprise"], 1, $this->fields["FK_entities"]);

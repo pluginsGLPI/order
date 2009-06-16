@@ -1,4 +1,5 @@
 <?php
+
 /*----------------------------------------------------------------------
    GLPI - Gestionnaire Libre de Parc Informatique
    Copyright (C) 2003-2008 by the INDEPNET Development Team.
@@ -28,47 +29,112 @@
     Purpose of file:
     ----------------------------------------------------------------------*/
 
-$title = "Orders";
+$title = "Orders management";
 
 $LANG['plugin_order'][0] = "Order number";
-$LANG['plugin_order'][1] = "Order date";
-$LANG['plugin_order'][2] = "Comments";
+$LANG['plugin_order'][1] = "Date of order";
+$LANG['plugin_order'][2] = "Description";
 $LANG['plugin_order'][3] = "Budget";
-$LANG['plugin_order'][4] = "".$title."";
+$LANG['plugin_order'][4] = $title;
 $LANG['plugin_order'][11] = "No order found";
-$LANG['plugin_order'][12] = "Delivery number";
-$LANG['plugin_order'][13] = "Total price";
-$LANG['plugin_order'][14] = "Prix Total (TTC)";
-$LANG['plugin_order'][21] = "";
-$LANG['plugin_order'][26] = "Total HT";
-$LANG['plugin_order'][27] = "Total TTC";
-$LANG['plugin_order'][28] = "N° Facture";
+$LANG['plugin_order'][12] = "Delivery form";
+$LANG['plugin_order'][13] = "Price tax free";
+$LANG['plugin_order'][14] = "Price ATI";
+$LANG['plugin_order'][25] = "VAT";
+$LANG['plugin_order'][28] = "Invoce number";
+$LANG['plugin_order'][31] = "Supplier invoice number";
+$LANG['plugin_order'][32] = "Payment conditions";
+$LANG['plugin_order'][34] = "Generate orders based on financial informations";
+$LANG['plugin_order'][35] = "Delete orders based on financial informations";
+$LANG['plugin_order'][37] = "Orders generated based on financial informations:";
+$LANG['plugin_order'][39] = "Order name";
+$LANG['plugin_order'][40] = "Delivry location";
+$LANG['plugin_order'][42] = "Cannot link several items to one detail line";
+$LANG['plugin_order'][43] = "Back to menu";
+$LANG['plugin_order'][44] = "An order number is mandatory !";
+$LANG['plugin_order'][45] = "Cannot generate items not delivered";
+$LANG['plugin_order'][46] = "Cannot link items not delivered";
+$LANG['plugin_order'][47] = "Order informations";
 
-$LANG['plugin_order']['status'][0]="Status";
-$LANG['plugin_order']['status'][1]="In progress";
-$LANG['plugin_order']['status'][2]="Finished";
-$LANG['plugin_order']['status'][3]="Partialy delivred";
+$LANG['plugin_order']['status'][0] = "Order status";
+$LANG['plugin_order']['status'][1] = "Being delivered";
+$LANG['plugin_order']['status'][2] = "Delivered";
+$LANG['plugin_order']['status'][7] = "Waiting for approval";
+$LANG['plugin_order']['status'][8] = "Taken delivrery";
+$LANG['plugin_order']['status'][9] = "Draft";
+$LANG['plugin_order']['status'][10] = "Canceled";
+$LANG['plugin_order']['status'][11] = "Waiting for delivery";
+$LANG['plugin_order']['status'][12] = "Validate";
 
-$LANG['plugin_order']['item'][0]="Dependant material";
+$LANG['plugin_order']['item'][0] = "Associated items";
+$LANG['plugin_order']['item'][2] = "No associated item";
+$LANG['plugin_order']['item'][3] = "No items for this order";
 
-$LANG['plugin_order']['detail'][0]="Detail(s)";
-$LANG['plugin_order']['detail'][1]="Type";
-$LANG['plugin_order']['detail'][2]="Model";
-$LANG['plugin_order']['detail'][3]="Ordered quantity";
-$LANG['plugin_order']['detail'][4]="Delivred quantity";
-$LANG['plugin_order']['detail'][5]="Unit price";	
+$LANG['plugin_order']['detail'][0] = "Detail(s)";
+$LANG['plugin_order']['detail'][1] = "Type";
+$LANG['plugin_order']['detail'][2] = "Reference";
+$LANG['plugin_order']['detail'][3] = "Delivered quantity";
+$LANG['plugin_order']['detail'][4] = "Unit price tax free";
+$LANG['plugin_order']['detail'][5] = "Add to the order";
+$LANG['plugin_order']['detail'][7] = "Ordered quantity";
+$LANG['plugin_order']['detail'][8] = "Price AIT";
+$LANG['plugin_order']['detail'][9] = "Total price tax free";
+$LANG['plugin_order']['detail'][10] = "Total price ATI";
+$LANG['plugin_order']['detail'][17] = "Detail line(s)";
+$LANG['plugin_order']['detail'][18] = "Discounted unit price tax free";
+$LANG['plugin_order']['detail'][19] = "Item status";
+$LANG['plugin_order']['detail'][20] = "No item to take delivery of";
+$LANG['plugin_order']['detail'][21] = "Delivry date";
+$LANG['plugin_order']['detail'][23] = "Item not taken delivery";
+$LANG['plugin_order']['detail'][25] = "Discount (%)";
+$LANG['plugin_order']['detail'][27] = "Please select a supplier";
+$LANG['plugin_order']['detail'][28] = "Reference is already used in this order";
+$LANG['plugin_order']['detail'][29] = "No item selected";
+$LANG['plugin_order']['detail'][30] = "Item successfully selected";
+$LANG['plugin_order']['detail'][31] = "Item successfully taken delivery";
+$LANG['plugin_order']['detail'][32] = "Item already taken delivery";
 
-$LANG['plugin_order']['profile'][0] = "Rights management"; 
-$LANG['plugin_order']['profile'][1] = "$title"; 
+$LANG['plugin_order']['delivery'][1] = "Item delivered";
+$LANG['plugin_order']['delivery'][2] = "Take item delivery";
+$LANG['plugin_order']['delivery'][3] = "Generate item";
+$LANG['plugin_order']['delivery'][5] = "Delivered items";
+$LANG['plugin_order']['delivery'][9] = "Generate";
+$LANG['plugin_order']['delivery'][11] = "Link to an existing item";
+$LANG['plugin_order']['delivery'][12] = "Delete item link";
 
-$LANG['plugin_order']['setup'][1] = "Category";
-$LANG['plugin_order']['setup'][2] = "You cannot use this plugin on helpdesk";
-$LANG['plugin_order']['setup'][11] = "Server";
-$LANG['plugin_order']['setup'][12] = "Language";
-$LANG['plugin_order']['setup'][14] = "Supplier";
-$LANG['plugin_order']['setup'][15] = "Associated item(s)";
-$LANG['plugin_order']['setup'][23] = "Associate";
-$LANG['plugin_order']['setup'][24] = "Dissociate";
-$LANG['plugin_order']['setup'][25] = "Associate to web application";
-$LANG['plugin_order']['setup'][28] = "Editor";
+$LANG['plugin_order']['profile'][0] = "Rights management";
+$LANG['plugin_order']['profile'][1] = "$title";
+
+$LANG['plugin_order']['reference'][1] = "Product reference";
+$LANG['plugin_order']['reference'][2] = "Add a reference";
+$LANG['plugin_order']['reference'][3] = "List references";
+$LANG['plugin_order']['reference'][4] = "Type de matÃ©riel";
+$LANG['plugin_order']['reference'][5] = "Supplier for the reference";
+
+$LANG['plugin_order']['setup'][2] = "Plugin not usable from the helpdesk interface";
+
+$LANG['plugin_order']['config'][0] = "Plugin configuration";
+$LANG['plugin_order']['config'][1] = "Default VAT";
+$LANG['plugin_order']['config'][2] = "Use validation process";
+
+
+$LANG['plugin_order']['infocom'][1] = "Some fields cannont be modified because they belong to an order";
+
+$LANG['plugin_order']['history'][1] = "Item generated from an order";
+
+$LANG['plugin_order']['validation'][1] = "Request order validation";
+$LANG['plugin_order']['validation'][2] = "Order validated";
+$LANG['plugin_order']['validation'][3] = "Order being taken delivery";
+$LANG['plugin_order']['validation'][4] = "Order delivered";
+$LANG['plugin_order']['validation'][5] = "Order canceled";
+$LANG['plugin_order']['validation'][6] = "Validation process";
+$LANG['plugin_order']['validation'][9] = "Validate order";
+$LANG['plugin_order']['validation'][10] = "Order is validated";
+$LANG['plugin_order']['validation'][11] = "Ask for order validation";
+$LANG['plugin_order']['validation'][13] = "Cancel ask for validation";
+$LANG['plugin_order']['validation'][14] = "Ask for validation is now canceled";
+$LANG['plugin_order']['validation'][15] = "Order is in draft state";
+
+$LANG['plugin_order']['menu'][1] = "Manage orders";
+$LANG['plugin_order']['menu'][2] = "Manage products references";
 ?>

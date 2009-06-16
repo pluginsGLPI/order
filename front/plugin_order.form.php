@@ -110,7 +110,7 @@ else
 		if (plugin_order_HaveRight("order", "w"))
 		{
 			plugin_order_updateOrderStatus($_POST["ID"],ORDER_STATUS_WAITING_APPROVAL,$_POST["comments"]);
-			addMessageAfterRedirect($LANG['plugin_order']['validation'][12]);
+			addMessageAfterRedirect($LANG['plugin_order']['validation'][11]);
 		}
 		
 		glpi_header($_SERVER['HTTP_REFERER']);
