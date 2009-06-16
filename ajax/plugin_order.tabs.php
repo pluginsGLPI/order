@@ -45,7 +45,8 @@ $NEEDED_ITEMS = array (
 	"infocom",
 	"group",
 	"cartridge",
-	"consumable"
+	"consumable",
+	"entity"
 );
 
 define('GLPI_ROOT', '../../..');
@@ -79,6 +80,7 @@ if (empty ($_POST["ID"])) {
 			showItem($_POST["ID"]);
 			showReceptionForm($_POST["ID"]);
 			showDocumentAssociated(PLUGIN_ORDER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
+			showNotesForm($_POST['target'], PLUGIN_ORDER_TYPE, $_POST["ID"]);
 			break;
 			case 1 : 
 				plugin_order_showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);

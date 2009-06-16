@@ -38,9 +38,13 @@ if(plugin_order_haveRight("order","r") && plugin_order_haveRight("reference","r"
 {
 	echo "<div class='center'>";
 	echo "<table class='tab_cadre'>";
-	echo "<tr><th>".$LANG['plugin_order'][4]."</th></tr>";
-	echo "<tr class='tab_bg_1' align='center'><td><a href='./front/plugin_order.order.php'>".$LANG['plugin_order']['menu'][1]."</a></td></tr>";
-	echo "<tr class='tab_bg_1' align='center'><td><a href='./front/plugin_order.reference.php'>".$LANG['plugin_order']['menu'][2]."</a></td></tr>";
+	echo "<tr><th colspan='2'>".$LANG['plugin_order'][4]."</th></tr>";
+	echo "<tr class='tab_bg_1' align='center'>"; 
+	echo "<td><img src='./pics/order.png'></td>";
+	echo "<td><a href='./front/plugin_order.order.php'>".$LANG['plugin_order']['menu'][1]."</a></td></tr>";
+	echo "<tr class='tab_bg_1' align='center'>"; 
+	echo "<td><img src='./pics/reference.png'></td>";
+	echo"<td><a href='./front/plugin_order.reference.php'>".$LANG['plugin_order']['menu'][2]."</a></td></tr>";
 	echo "</table></div>";
 } 
 elseif (plugin_order_haveRight("order","r"))

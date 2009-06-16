@@ -38,6 +38,10 @@ commonHeader($LANG['plugin_order']['reference'][1], $_SERVER["PHP_SELF"], "plugi
 
 plugin_order_checkRight("reference", "r");
 
+$ref = new PluginOrderReference;
+$ref->title();
+echo "<br>";
+
 manageGetValuesInSearch(PLUGIN_ORDER_REFERENCE_TYPE);
 searchForm(PLUGIN_ORDER_REFERENCE_TYPE, $_GET);
 showList(PLUGIN_ORDER_REFERENCE_TYPE, $_GET);

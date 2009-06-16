@@ -87,7 +87,10 @@ function plugin_order_addSupplierToReference($target,$referenceID)
 	global $LANG,$DB;
 
 	$suppliers = array();
+	$reference = new PluginOrderReference;
+	$reference->getFromDB($referenceID);
 	
+	if (!$reference->fields["deleted"]){
 	$query = "SELECT FK_enterprise FROM `glpi_plugin_order_references_manufacturers` WHERE FK_reference='$referenceID'";
 	$result = $DB->query($query);
 	while ($data = $DB->fetch_array($result))
@@ -114,6 +117,9 @@ function plugin_order_addSupplierToReference($target,$referenceID)
 	echo "</tr>";
 	echo "</table></form>";	
 	echo "</div>";
+		
+	}
+	
 	
 }
 function plugin_order_showReferencesBySupplierID($ID)

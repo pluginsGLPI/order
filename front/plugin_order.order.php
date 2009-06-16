@@ -35,6 +35,10 @@ include (GLPI_ROOT."/inc/includes.php");
 commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order","order");
 
 if(plugin_order_haveRight("order","r") || haveRight("config","w")){
+	
+	$order = new PluginOrder;
+	$order->title();
+	echo "<br>";
 	manageGetValuesInSearch(PLUGIN_ORDER_TYPE);
 	searchForm(PLUGIN_ORDER_TYPE,$_GET);
 	showList(PLUGIN_ORDER_TYPE,$_GET);	

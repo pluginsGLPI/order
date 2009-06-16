@@ -16,7 +16,7 @@ CREATE TABLE `glpi_plugin_order` (
     `FK_contact` int(11) NOT NULL default 0,
 	`recursive` INT(1) NOT NULL default 1,
 	`deleted` INT(1) NOT NULL default 0,
-	`notes` LONGTEXT,
+	`notes` TEXT,
 	`comment` varchar(255) collate utf8_unicode_ci NOT NULL default '',
 	PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references` (
   `deleted` int(11) NOT NULL DEFAULT 0,
   `comments` text character set latin1 NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_manufacturers` (
   `ID` int(11) NOT NULL auto_increment,
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_manufacturers` (
   `FK_enterprise` int(11) NOT NULL DEFAULT 0,
   `price_taxfree` float NOT NULL DEFAULT 0,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3150','1','1','0');
 INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3150','2','2','0');

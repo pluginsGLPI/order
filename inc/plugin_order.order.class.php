@@ -1,5 +1,6 @@
 <?php
 
+
 /*----------------------------------------------------------------------
    GLPI - Gestionnaire Libre de Parc Informatique
    Copyright (C) 2003-2008 by the INDEPNET Development Team.
@@ -42,14 +43,14 @@ class PluginOrder extends CommonDBTM {
 		global $DB;
 
 		$query = "	DELETE FROM `glpi_plugin_order_device` 
-									WHERE FK_order = '$ID'";
+											WHERE FK_order = '$ID'";
 		$DB->query($query);
 		$query = "	DELETE FROM `glpi_doc_device` 
-									WHERE FK_device = '$ID' 
-									AND device_type= '" . PLUGIN_ORDER_TYPE . "' ";
+											WHERE FK_device = '$ID' 
+											AND device_type= '" . PLUGIN_ORDER_TYPE . "' ";
 		$DB->query($query);
 		$query = "	DELETE FROM `glpi_plugin_order_detail`
-									WHERE FK_order='$ID'";
+											WHERE FK_order='$ID'";
 		$DB->query($query);
 	}
 
@@ -58,8 +59,8 @@ class PluginOrder extends CommonDBTM {
 		global $DB;
 
 		$query = " DELETE FROM `glpi_plugin_order_device`
-									WHERE FK_device = '$ID' 
-									AND device_type= '$type'";
+											WHERE FK_device = '$ID' 
+											AND device_type= '$type'";
 		$DB->query($query);
 	}
 
@@ -77,11 +78,11 @@ class PluginOrder extends CommonDBTM {
 			/* item */
 			$ong[2] = $LANG['plugin_order']['item'][0];
 
-/*
-			if (haveRight("show_all_ticket", "1")) {
-				$ong[6] = $LANG['title'][28];
-			}
-*/
+			/*
+						if (haveRight("show_all_ticket", "1")) {
+							$ong[6] = $LANG['title'][28];
+						}
+			*/
 			/* documents */
 			if (haveRight("document", "r"))
 				$ong[3] = $LANG['Menu'][27];
@@ -120,7 +121,7 @@ class PluginOrder extends CommonDBTM {
 				$this->getEmpty();
 			}
 		}
-		
+
 		if ($spotted) {
 			$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
 			$canedit = (plugin_order_canUpdateOrder($ID) && $this->can($ID, 'w'));
@@ -154,8 +155,7 @@ class PluginOrder extends CommonDBTM {
 			else
 				echo convDate($this->fields["date"]);
 			echo "</td></tr>";
-			
-	
+
 			/* num order */
 			echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][0] . "*: </td>";
 			echo "<td>";
@@ -170,7 +170,6 @@ class PluginOrder extends CommonDBTM {
 			else
 				echo getdropdownname("glpi_dropdown_budget", $this->fields["budget"]);
 			echo "</td></tr>";
-
 
 			/* num order supplier */
 			echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][31] . ": </td><td>";
@@ -213,8 +212,8 @@ class PluginOrder extends CommonDBTM {
 			echo "</td>";
 			echo "<td>" . $LANG['plugin_order']['status'][0] . ": </td>";
 			echo "<td>";
-			echo "<input type='hidden' name='status' value=".ORDER_STATUS_DRAFT.">";
-			echo plugin_order_getDropdownStatus($this->fields["status"]);	
+			echo "<input type='hidden' name='status' value=" . ORDER_STATUS_DRAFT . ">";
+			echo plugin_order_getDropdownStatus($this->fields["status"]);
 			echo "</td></tr>";
 
 			/* location */
@@ -230,7 +229,7 @@ class PluginOrder extends CommonDBTM {
 			echo "<tr class='tab_bg_1'><td>";
 			//comments of order
 			echo $LANG['plugin_order'][2] . ":	</td>";
-			echo "<td>"; 
+			echo "<td>";
 			if ($canedit)
 				echo "<textarea cols='40' rows='4' name='comment'>" . $this->fields["comment"] . "</textarea>";
 			else
@@ -242,14 +241,13 @@ class PluginOrder extends CommonDBTM {
 			if ($ID > 0) {
 				$prices = getPrices($ID);
 
-				echo "<td colspan='2'>" . $LANG['plugin_order'][13] . ": ";
+				echo "<td colspan='2'>" . $LANG['plugin_order'][13] . " : ";
 				echo plugin_order_displayPrice($prices["priceHT"]) . "<br>";
 
 				/* total price (with taxes) */
-				echo $LANG['plugin_order'][14] . ":";
+				echo $LANG['plugin_order'][14] . " : ";
 				echo plugin_order_displayPrice($prices["priceTTC"]) . "</td></tr>";
-			}
-			else
+			} else
 				echo "<td colspan='2'></td>";
 
 			echo "</tr>";
@@ -263,7 +261,7 @@ class PluginOrder extends CommonDBTM {
 				} else {
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 					echo "<input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit'>";
-					
+
 					if (!$this->fields["deleted"]) {
 						echo "&nbsp<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 					} else {
@@ -285,11 +283,21 @@ class PluginOrder extends CommonDBTM {
 		return true;
 	}
 
-	function needValidation($ID)
-	{
+	/**
+	 * Print a good title for user pages
+	 *
+	 *@return nothing (display)
+	 **/
+	function title() {
+		global $LANG, $CFG_GLPI;
+		displayTitle($CFG_GLPI["root_doc"] . "/plugins/order/pics/order-icon.png", $LANG['plugin_order'][4], $LANG['plugin_order'][4]);
+	}
+
+
+	function needValidation($ID) {
 		global $ORDER_VALIDATION_STATUS;
 		if ($ID > 0 && $this->getFromDB($ID))
-			return (in_array($this->fields["status"],$ORDER_VALIDATION_STATUS));
+			return (in_array($this->fields["status"], $ORDER_VALIDATION_STATUS));
 		else
 			return false;
 	}

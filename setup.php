@@ -53,7 +53,7 @@ function plugin_init_order() {
 	
 	/* params : plugin name - string type - number - class - table - form page */
 	registerPluginType('order', 'PLUGIN_ORDER_TYPE', 3150, array(
-		'classname'  => 'plugin_order',
+		'classname'  => 'PluginOrder',
 		'tablename'  => 'glpi_plugin_order',
 		'formpage'   => 'front/plugin_order.form.php',
 		'searchpage' => 'front/plugin_order.order.php',
@@ -64,7 +64,7 @@ function plugin_init_order() {
 		));
 
 	registerPluginType('order', 'PLUGIN_ORDER_REFERENCE_TYPE', 3151, array(
-		'classname'  => 'plugin_order_reference',
+		'classname'  => 'PluginOrderReference',
 		'tablename'  => 'glpi_plugin_order_references',
 		'formpage'   => 'front/plugin_order.reference.form.php',
 		'searchpage' => 'front/plugin_order.reference.php',

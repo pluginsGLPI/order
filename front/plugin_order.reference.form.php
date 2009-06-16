@@ -67,7 +67,7 @@ else if (isset($_POST["purge"]))
 {
 	if(plugin_order_HaveRight("reference","w"))
 		$plugin_order_ref->delete($_POST,1);
-	glpi_header($_SERVER['HTTP_REFERER']);
+	glpi_header($CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.reference.php");
 }
 /* update order */
 else if (isset($_POST["update"]))
@@ -123,8 +123,7 @@ else
 	}
 	
 	commonHeader($LANG['plugin_order']['reference'][1],$_SERVER["PHP_SELF"],"plugins","order","reference");
-	
-	/* load order form */
+	$plugin_order_ref->title();
 	$plugin_order_ref->showForm($_SERVER["PHP_SELF"],$_GET["ID"]);
 
 	commonFooter();

@@ -1,5 +1,6 @@
 <?php
 
+
 /*----------------------------------------------------------------------
    GLPI - Gestionnaire Libre de Parc Informatique
    Copyright (C) 2003-2008 by the INDEPNET Development Team.
@@ -43,12 +44,12 @@ function plugin_order_dropdownorder($myname, $entity_restrict = '', $used = arra
 		$where .= ")";
 	}
 	$query = "SELECT * 
-				FROM glpi_dropdown_plugin_order_taxes 
-				WHERE ID IN (
-					SELECT DISTINCT taxes 
-					FROM glpi_plugin_order 
-					$where) 
-				GROUP BY name ORDER BY name";
+					FROM glpi_dropdown_plugin_order_taxes 
+					WHERE ID IN (
+						SELECT DISTINCT taxes 
+						FROM glpi_plugin_order 
+						$where) 
+					GROUP BY name ORDER BY name";
 	$result = $DB->query($query);
 
 	echo "<select name='_taxes' id='taxes_order'>\n";
@@ -100,6 +101,7 @@ function plugin_order_dropdownAllItems($myname, $ajax = false, $value = 0, $orde
 			'FK_enterprise' => $supplier,
 			'entity_restrict' => $entity,
 			'orderID' => $orderID,
+
 			
 		);
 
@@ -116,6 +118,12 @@ function plugin_order_dropdownTemplate($name, $entity, $table, $value = 0) {
 	while ($data = $DB->fetch_array($result))
 		$option[$data["ID"]] = $data["tplname"];
 	return dropdownArrayValues($name, $option, $value);
+}
+
+function plugin_order_getTemplateName($type, $ID) {
+	$commonitem = new CommonItem;
+	$commonitem->getFromDB($type, $ID);
+	return $commonitem->getField("tplname");
 }
 
 function plugin_order_dropdownReferencesByEnterprise($name, $type, $enterpriseID) {
@@ -167,7 +175,7 @@ function plugin_order_getDropdownStatus($value) {
 	switch ($value) {
 		case ORDER_STATUS_DRAFT :
 			return $LANG['plugin_order']['status'][9];
-		case ORDER_STATUS_APPROVED:
+		case ORDER_STATUS_APPROVED :
 			return $LANG['plugin_order']['status'][12];
 		case ORDER_STATUS_WAITING_APPROVAL :
 			return $LANG['plugin_order']['status'][7];
