@@ -1,4 +1,5 @@
 <?php
+
 /*----------------------------------------------------------------------
    GLPI - Gestionnaire Libre de Parc Informatique
    Copyright (C) 2003-2008 by the INDEPNET Development Team.
@@ -28,49 +29,56 @@
     Purpose of file:
     ----------------------------------------------------------------------*/
 class plugin_order_Profile extends CommonDBTM {
-	function __construct () {
-		$this->table="glpi_plugin_order_profiles";
-		$this->type=-1;
+	function __construct() {
+		$this->table = "glpi_plugin_order_profiles";
+		$this->type = -1;
 	}
 	/* if profile deleted */
 	function cleanProfiles($ID) {
 		global $DB;
-		
+
 		$query = "DELETE 
-					FROM glpi_plugin_order_profiles 
-					WHERE ID='$ID' ";
+							FROM glpi_plugin_order_profiles 
+							WHERE ID='$ID' ";
 		$DB->query($query);
 	}
-	
+
 	/* profiles modification */
-	function showForm($target,$ID){
+	function showForm($target, $ID) {
 		global $LANG;
 
-		if (!haveRight("profile","r")) return false;
-		$canedit=haveRight("profile","w");
-		if ($ID){
+		if (!haveRight("profile", "r"))
+			return false;
+		$canedit = haveRight("profile", "w");
+		if ($ID) {
 			$this->getFromDB($ID);
 		}
-		echo "<form action='".$target."' method='post'>";
+		echo "<form action='" . $target . "' method='post'>";
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='2' align='center'><strong>".$LANG['plugin_order']['profile'][0]." ".$this->fields["name"]."</strong></th></tr>";
+		echo "<tr><th colspan='2' align='center'><strong>" . $LANG['plugin_order']['profile'][0] . " " . $this->fields["name"] . "</strong></th></tr>";
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>".$LANG['plugin_order']['profile'][1].":</td><td>";
-		dropdownNoneReadWrite("order",$this->fields["order"],1,1,1);
+		echo "<td>" . $LANG['plugin_order']['profile'][1] . ":</td><td>";
+		dropdownNoneReadWrite("order", $this->fields["order"], 1, 1, 1);
 		echo "</td>";
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>".$LANG['plugin_order']['detail'][2].":</td><td>";
-		dropdownNoneReadWrite("reference",$this->fields["reference"],1,1,1);
+		echo "<td>" . $LANG['plugin_order']['detail'][2] . ":</td><td>";
+		dropdownNoneReadWrite("reference", $this->fields["reference"], 1, 1, 1);
 		echo "</td>";
 		echo "</tr>";
 
-		if ($canedit){
+		echo "<tr class='tab_bg_2'>";
+		echo "<td>" . $LANG['plugin_order']['detail'][8] . ":</td><td>";
+		dropdownNoneReadWrite("validation", $this->fields["validation"], 1, 0, 1);
+		echo "</td>";
+		echo "</tr>";
+
+		if ($canedit) {
 			echo "<tr class='tab_bg_1'>";
 			echo "<td align='center' colspan='2'>";
 			echo "<input type='hidden' name='ID' value=$ID>";
-			echo "<input type='submit' name='update_user_profile' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+			echo "<input type='submit' name='update_user_profile' value=\"" . $LANG['buttons'][7] . "\" class='submit'>";
 			echo "</td></tr>";
 		}
 		echo "</table></form>";

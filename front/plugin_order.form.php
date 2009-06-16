@@ -93,6 +93,41 @@ else
 			$plugin_order->update($_POST);
 		glpi_header($_SERVER['HTTP_REFERER']);
 	} 
+
+//Status update & order workflow
+/* validate order */
+else
+	if (isset ($_POST["validate"])) {
+		if (plugin_order_HaveRight("order", "w") && plugin_order_HaveRight("validation", "w"))
+		{
+			plugin_order_updateOrderStatus($_POST["ID"],ORDER_STATUS_APPROVED,$_POST["comments"]);
+			addMessageAfterRedirect($LANG['plugin_order']['validation'][10]);
+		}
+		glpi_header($_SERVER['HTTP_REFERER']);
+	}
+else
+	if (isset ($_POST["waiting_for_approval"])) {
+		if (plugin_order_HaveRight("order", "w"))
+		{
+			plugin_order_updateOrderStatus($_POST["ID"],ORDER_STATUS_WAITING_APPROVAL,$_POST["comments"]);
+			addMessageAfterRedirect($LANG['plugin_order']['validation'][12]);
+		}
+		
+		glpi_header($_SERVER['HTTP_REFERER']);
+	}
+if (isset ($_POST["cancel_waiting_for_approval"])) {
+		if (plugin_order_HaveRight("order", "w"))
+		{
+			plugin_order_updateOrderStatus($_POST["ID"],ORDER_STATUS_DRAFT,$_POST["comments"]);
+			addMessageAfterRedirect($LANG['plugin_order']['validation'][14]);
+		}
+		
+		glpi_header($_SERVER['HTTP_REFERER']);
+	}
+
+
+
+//Details management
 else
 	if (isset ($_POST["add_detail"])) {
 			addDetails($_POST["FK_reference"], $_POST["FK_order"], $_POST["quantity"], $_POST["price"], $_POST["reductedprice"], $_POST["taxes"]);

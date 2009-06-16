@@ -33,8 +33,11 @@ function showReceptionForm($orderID) {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE, $INFOFORM_PAGES;
 
 	$plugin_order = new plugin_order();
-	$canedit = $plugin_order->can($orderID, 'w');
-	$query_ref = "SELECT glpi_plugin_order_detail.ID, glpi_plugin_order_detail.FK_reference AS ref, name, type FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` WHERE FK_order=$orderID AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID  GROUP BY glpi_plugin_order_detail.FK_reference ORDER BY glpi_plugin_order_detail.ID";
+	$canedit = $plugin_order->can($orderID, 'w') && plugin_order_canUpdateOrder($orderID);
+	$query_ref = "SELECT glpi_plugin_order_detail.ID, glpi_plugin_order_detail.FK_reference AS ref, name, type " .
+	"FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` " .
+	"WHERE FK_order=$orderID AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID  GROUP BY glpi_plugin_order_detail.FK_reference " .
+	"ORDER BY glpi_plugin_order_detail.ID";
 	$result_ref = $DB->query($query_ref);
 	$numref = $DB->numrows($result_ref);
 	$j = 0;
@@ -42,12 +45,13 @@ function showReceptionForm($orderID) {
 		if ($numref != 0) {
 			$refID = $DB->result($result_ref, $j, 'ref');
 			$typeRef = $DB->result($result_ref, $j, 'type');
-			$query = "	SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, status, date, price_taxfree, price_ati, price_discounted,  FK_manufacturer, name, type, FK_device
-																	FROM glpi_plugin_order_detail, glpi_plugin_order_references
-																	WHERE FK_order=$orderID
-																	AND glpi_plugin_order_detail.FK_reference=$refID
-																	AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID
-																	ORDER BY glpi_plugin_order_detail.ID";
+			$query = "SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, status, date, price_taxfree,
+								  price_ati, price_discounted,  FK_manufacturer, name, type, FK_device
+								  FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
+								  WHERE FK_order=$orderID
+								  AND glpi_plugin_order_detail.FK_reference=$refID
+								  AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID
+								  ORDER BY glpi_plugin_order_detail.ID";
 			$result = $DB->query($query);
 			$num = $DB->numrows($result);
 		}
@@ -133,9 +137,9 @@ function showReceptionForm($orderID) {
 function getNumberOfLinkedMaterial($orderID, $refID) {
 	global $DB;
 	$query = "SELECT count(*) AS result FROM `glpi_plugin_order_detail`
-										WHERE FK_order = " . $orderID . "
-										AND FK_reference = " . $refID . "
-										AND FK_device != '0' ";
+											WHERE FK_order = " . $orderID . "
+											AND FK_reference = " . $refID . "
+											AND FK_device != '0' ";
 	if ($result = $DB->query($query)) {
 		if ($DB->result($result, 0, 'result') != 0) {
 			return ($DB->result($result, 0, 'result'));
@@ -208,9 +212,9 @@ function getReceptionStatus($ID) {
 function getReceptionManufacturer($ID) {
 	global $DB;
 	$query = " SELECT glpi_plugin_order_detail.ID, FK_manufacturer
-								FROM glpi_plugin_order_detail, glpi_plugin_order_references
-								WHERE glpi_plugin_order_detail.ID=$ID
-								AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID";
+									FROM glpi_plugin_order_detail, glpi_plugin_order_references
+									WHERE glpi_plugin_order_detail.ID=$ID
+									AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID";
 	$result = $DB->query($query);
 	if ($DB->result($result, 0, 'FK_manufacturer') != NULL) {
 		return (getDropdownName("glpi_dropdown_manufacturer", $DB->result($result, 0, 'FK_manufacturer')));
@@ -221,8 +225,8 @@ function getReceptionManufacturer($ID) {
 function getReceptionDate($ID) {
 	global $DB, $LANG;
 	$query = " SELECT date, status
-							FROM glpi_plugin_order_detail
-							WHERE ID=$ID";
+								FROM glpi_plugin_order_detail
+								WHERE ID=$ID";
 	$result = $DB->query($query);
 	if (getReceptionStatus($ID) != $LANG['plugin_order']['status'][11]) {
 		return (convDate($DB->result($result, 0, 'date')));
@@ -233,9 +237,9 @@ function getReceptionDate($ID) {
 function getReceptionType($ID) {
 	global $DB, $LINK_ID_TABLE;
 	$query = " SELECT glpi_plugin_order_detail.ID, type 
-								FROM glpi_plugin_order_detail, glpi_plugin_order_references
-								WHERE glpi_plugin_order_detail.ID=$ID
-								AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID";
+									FROM glpi_plugin_order_detail, glpi_plugin_order_references
+									WHERE glpi_plugin_order_detail.ID=$ID
+									AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID";
 	$result = $DB->query($query);
 	if ($DB->result($result, 0, 'type') != NULL) {
 		$ci = new CommonItem();
@@ -284,19 +288,19 @@ function getAllItemsByType($type, $entity) {
 		case PERIPHERAL_TYPE :
 		case PHONE_TYPE :
 		case PRINTER_TYPE :
-			$query = "SELECT ID, name FROM " . $LINK_ID_TABLE[$type] . " 
-																					WHERE FK_entities=" . $entity . " 
-																					AND is_template=0
-																					AND deleted=0
-																					AND ID NOT IN (SELECT FK_device FROM glpi_plugin_order_detail)";
+			$query = "SELECT ID, name FROM `" . $LINK_ID_TABLE[$type] . "` 
+								 WHERE FK_entities=" . $entity . " 
+								 AND is_template=0
+								 AND deleted=0
+								 AND ID NOT IN (SELECT FK_device FROM glpi_plugin_order_detail)";
 			break;
 		case CONSUMABLE_ITEM_TYPE :
-			$query = "SELECT ID, name FROM glpi_consumables_type 
-																					WHERE FK_entities=" . $entity . "";
+			$query = "SELECT ID, name FROM `glpi_consumables_type` 
+								  WHERE FK_entities=" . $entity . "";
 			break;
 		case CARTRIDGE_ITEM_TYPE :
-			$query = "SELECT ID, name FROM glpi_cartridges_type 
-																					WHERE FK_entities=" . $entity . "";
+			$query = "SELECT ID, name FROM `glpi_cartridges_type` 
+								  WHERE FK_entities=" . $entity . "";
 			break;
 	}
 	$result = $DB->query($query);
@@ -326,18 +330,17 @@ function plugin_order_deleteLinkWithDevice($detailID, $deviceType) {
 	$detail = new plugin_order_detail;
 	$detail->getFromDB($detailID);
 
-	$query=" SELECT ID FROM `glpi_plugin_order_device`
-							WHERE FK_device=".$detail->fields["FK_device"]."
-							AND device_type=".$deviceType."";
-	if($result=$DB->query($query))
-	{
-		if($DB->numrows($result)>0)
-			$deviceID=$DB->result($result,0,'ID');
+	$query = " SELECT ID FROM `glpi_plugin_order_device`
+								WHERE FK_device=" . $detail->fields["FK_device"] . "
+								AND device_type=" . $deviceType . "";
+	if ($result = $DB->query($query)) {
+		if ($DB->numrows($result) > 0)
+			$deviceID = $DB->result($result, 0, 'ID');
 	}
 	$device = new plugin_order_device;
 	$device->delete(array (
- 	        "ID" => $deviceID
- 	    ));
+		"ID" => $deviceID
+	));
 
 	$input = $detail->fields;
 	$input["FK_device"] = 0;
@@ -347,28 +350,32 @@ function plugin_order_deleteLinkWithDevice($detailID, $deviceType) {
 function plugin_order_updateReceptionStatus($params) {
 	global $LANG;
 	$detail = new plugin_order_detail;
-	if (isset($params["item"])) {
+	$orderID = 0;
+	if (isset ($params["item"])) {
 		foreach ($params["item"] as $key => $val)
 			if ($val == 1) {
-				if ($detail->getFromDB($key))
-				{
-					if (!$detail->fields["status"])
-					{
+				if ($detail->getFromDB($key)) {
+					if (!$orderID)
+						$orderID = $detail->fields["FK_order"];
+
+					if ($detail->fields["status"] == ORDER_DEVICE_NOT_DELIVRED) {
 						$input["ID"] = $key;
-						$input["status"] = 1;
 						$input["date"] = $params["date"];
+						$input["status"] = ORDER_DEVICE_DELIVRED;
+
 						$detail->update($input);
 						addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
-					}
-					else 
+					} else
 						addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);
 				}
 			}
-	}
-	else
-		addMessageAfterRedirect($LANG['plugin_order']['detail'][29],false,ERROR);
+
+		plugin_order_updateDelivryStatus($orderID);
+	} else
+		addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
 }
 
+//TODO : change name : not explicit enough
 function plugin_order_showReceptionForm($target, $params) {
 	global $LANG, $CFG_GLPI;
 	commonHeader($LANG['plugin_order'][4], $_SERVER["PHP_SELF"], "plugins", "order", "order");
@@ -435,7 +442,7 @@ function plugin_order_generateNewDevice($params, $entity) {
 		$fields["ID"] = $newID;
 		$commonitem->obj->update($fields);
 
-		plugin_order_generateInfoComRelatedToOrder($entity,$params["ID"][$i],$params["type"][$i],$newID,$templateID);
+		plugin_order_generateInfoComRelatedToOrder($entity, $params["ID"][$i], $params["type"][$i], $newID, $templateID);
 		plugin_order_createLinkWithDevice($params["ID"][$i], $newID, $params["type"][$i], $params["orderID"]);
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][30]);
 
@@ -449,45 +456,42 @@ function plugin_order_generateNewDevice($params, $entity) {
 	}
 }
 
-function plugin_order_generateInfoComRelatedToOrder($entity,$detailID,$device_type,$deviceID,$templateID)
-{
-		global $LANG;
-		
-		$detail = new plugin_order_detail;	
-		$detail->getFromDB($detailID);
-		$order = new plugin_order;
-		$order->getFromDB($detail->fields["FK_order"]);
-			
-		// ADD Infocoms
-			$ic= new Infocom();
-			$fields = array();
-			if ($templateID)
-			{
-				if ($ic->getFromDBforDevice($device_type,$templateID)){
-					$fields = $ic->fields;
-					unset ($fields["ID"]);
-					if (isset($fields["num_immo"])) {
-						$fields["num_immo"] = autoName($fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$entity);
-					}
-					if (empty($fields['use_date'])){
-						unset($fields['use_date']);
-					}
-					if (empty($fields['buy_date'])){
-						unset($fields['buy_date']);
-					}
-				}
+function plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_type, $deviceID, $templateID) {
+	global $LANG;
+
+	$detail = new plugin_order_detail;
+	$detail->getFromDB($detailID);
+	$order = new plugin_order;
+	$order->getFromDB($detail->fields["FK_order"]);
+
+	// ADD Infocoms
+	$ic = new Infocom();
+	$fields = array ();
+	if ($templateID) {
+		if ($ic->getFromDBforDevice($device_type, $templateID)) {
+			$fields = $ic->fields;
+			unset ($fields["ID"]);
+			if (isset ($fields["num_immo"])) {
+				$fields["num_immo"] = autoName($fields["num_immo"], "num_immo", 1, INFOCOM_TYPE, $entity);
 			}
+			if (empty ($fields['use_date'])) {
+				unset ($fields['use_date']);
+			}
+			if (empty ($fields['buy_date'])) {
+				unset ($fields['buy_date']);
+			}
+		}
+	}
 
-			$fields["device_type"]=$device_type;
-			$fields["FK_device"]=$deviceID;
-			$fields["num_commande"] = $order->fields["numorder"];
-			$fields["bon_livraison"] = $order->fields["deliverynum"];
-			$fields["budget"] = $order->fields["budget"];
-			$fields["FK_enterprise"] = $order->fields["FK_enterprise"];
-			$fields["facture"] = $order->fields["numbill"];
-			$fields["value"] = $detail->fields["price_discounted"];
-			$fields["buy_date"] = $order->fields["date"];
-			$ic->add($fields);
+	$fields["device_type"] = $device_type;
+	$fields["FK_device"] = $deviceID;
+	$fields["num_commande"] = $order->fields["numorder"];
+	$fields["bon_livraison"] = $order->fields["deliverynum"];
+	$fields["budget"] = $order->fields["budget"];
+	$fields["FK_enterprise"] = $order->fields["FK_enterprise"];
+	$fields["facture"] = $order->fields["numbill"];
+	$fields["value"] = $detail->fields["price_discounted"];
+	$fields["buy_date"] = $order->fields["date"];
+	$ic->add($fields);
 }
-
 ?>

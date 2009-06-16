@@ -41,14 +41,14 @@ class plugin_order extends CommonDBTM {
 	function cleanDBonPurge($ID) {
 		global $DB;
 
-		$query = "	DELETE FROM glpi_plugin_order_device 
+		$query = "	DELETE FROM `glpi_plugin_order_device` 
 									WHERE FK_order = '$ID'";
 		$DB->query($query);
-		$query = "	DELETE FROM glpi_doc_device 
+		$query = "	DELETE FROM `glpi_doc_device` 
 									WHERE FK_device = '$ID' 
 									AND device_type= '" . PLUGIN_ORDER_TYPE . "' ";
 		$DB->query($query);
-		$query = "	DELETE FROM glpi_plugin_order_detail
+		$query = "	DELETE FROM `glpi_plugin_order_detail`
 									WHERE FK_order='$ID'";
 		$DB->query($query);
 	}
@@ -57,7 +57,7 @@ class plugin_order extends CommonDBTM {
 	function cleanItems($ID, $type) {
 		global $DB;
 
-		$query = " DELETE FROM glpi_plugin_order_device
+		$query = " DELETE FROM `glpi_plugin_order_device`
 									WHERE FK_device = '$ID' 
 									AND device_type= '$type'";
 		$DB->query($query);
@@ -70,6 +70,10 @@ class plugin_order extends CommonDBTM {
 		$ong[1] = $LANG['title'][26];
 		if ($ID > 0) {
 			$plugin = new Plugin();
+			/* Validation */
+			if ($this->needValidation($ID))
+				$ong[6] = $LANG['plugin_order']['validation'][7];
+
 			/* detail */
 			$ong[4] = $LANG['plugin_order']['detail'][0];
 			/* delivery */
@@ -120,99 +124,83 @@ class plugin_order extends CommonDBTM {
 				$this->getEmpty();
 			}
 		}
+		
 		if ($spotted) {
 			$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
-			$canedit = $this->can($ID, 'w');
+			$canedit = (plugin_order_canUpdateOrder($ID) && $this->can($ID, 'w'));
 			$canrecu = $this->can($ID, 'recursive');
-			echo "<form method='post' name=form action=\"$target\">";
+			echo "<form method='post' name='form' action=\"$target\">";
 			if (empty ($ID) || $ID < 0) {
 				echo "<input type='hidden' name='FK_entities' value='" . $_SESSION["glpiactive_entity"] . "'>";
 			}
+
 			echo "<div class='center' id='tabsbody'>";
 			echo "<table class='tab_cadre_fixe'>";
-			$this->showFormHeader($ID, '', 1);
-			echo "<tr><td class='tab_bg_1' valign='top'>";
+			$this->showFormHeader($ID, '', 2);
 
-			echo "<table cellpadding='2' cellspacing='2' border='0'>\n";
-
+			//Display without inside table
 			/* title */
-			echo "<tr><td>" . $LANG['plugin_order'][39] . ": </td>";
+			echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][39] . ": </td>";
 			echo "<td>";
 			if ($canedit)
 				autocompletionTextField("name", "glpi_plugin_order", "name", $this->fields["name"], 30, $this->fields["FK_entities"]);
 			else
-				echo "" . $this->fields["name"] . "";
-			echo "</td></tr>";
-
-			/* num order */
-			echo "<tr><td>" . $LANG['plugin_order'][0] . "*: </td>";
-			echo "<td>";
-			if ($canedit)
-				autocompletionTextField("numorder", "glpi_plugin_order", "numorder", $this->fields["numorder"], 30, $this->fields["FK_entities"]);
-			else
-				echo "" . $this->fields["numorder"] . "";
-			echo "</td></tr>";
-
-			/* num order supplier */
-			echo "<tr><td>" . $LANG['plugin_order'][31] . ": </td><td>";
-			if ($canedit)
-				autocompletionTextField("numordersupplier", "glpi_plugin_order", "numordersupplier", $this->fields["numordersupplier"], 30, $this->fields["FK_entities"]);
-			else
-				echo "" . $this->fields["numordersupplier"] . "";
-			echo "</td></tr>";
-
-			/* number of bill */
-			echo "<tr><td>" . $LANG['plugin_order'][28] . ": </td><td>";
-			if ($canedit)
-				autocompletionTextField("numbill", "glpi_plugin_order", "numbill", $this->fields["numbill"], 30, $this->fields["FK_entities"]);
-			else
-				echo "" . $this->fields["numbill"] . "";
-			echo "</td></tr>";
-
-			/* delivery number */
-			echo "<tr><td>" . $LANG['plugin_order'][12] . ": </td>";
-			echo "<td>";
-			if ($canedit)
-				autocompletionTextField("deliverynum", "glpi_plugin_order", "deliverynum", $this->fields["deliverynum"], 30, $this->fields["FK_entities"]);
-			else
-				echo "" . $this->fields["deliverynum"] . "";
-			echo "</td></tr>";
-
-			echo "</table>";
+				echo $this->fields["name"];
 			echo "</td>";
-			echo "<td class='tab_bg_1' valign='top'>";
-			echo "<table cellpadding='2' cellspacing='2' border='0'>";
-
 			/* date of order */
 			$editcalendar = ($withtemplate != 2);
-			echo "<tr><td>" . $LANG['plugin_order'][1] . "*:	</td><td>";
+			echo "<td>" . $LANG['plugin_order'][1] . "*:</td><td>";
 			if ($canedit)
 				if ($this->fields["date"] == NULL)
 					showDateFormItem("date", date("Y-m-d"), true, $editcalendar);
 				else
 					showDateFormItem("date", $this->fields["date"], true, $editcalendar);
 			else
-				echo "" . convDate($this->fields["date"]) . "";
+				echo convDate($this->fields["date"]);
 			echo "</td></tr>";
-
-			/* budget */
-			echo "<tr><td>" . $LANG['plugin_order'][3] . ": </td><td>";
+			
+	
+			/* num order */
+			echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][0] . "*: </td>";
+			echo "<td>";
+			if ($canedit)
+				autocompletionTextField("numorder", "glpi_plugin_order", "numorder", $this->fields["numorder"], 30, $this->fields["FK_entities"]);
+			else
+				echo $this->fields["numorder"];
+			echo "</td>";
+			echo "<td>" . $LANG['plugin_order'][3] . ": </td><td>";
 			if ($canedit)
 				dropdownValue("glpi_dropdown_budget", "budget", $this->fields["budget"], 1, $this->fields["FK_entities"]);
 			else
 				echo getdropdownname("glpi_dropdown_budget", $this->fields["budget"]);
 			echo "</td></tr>";
 
+
+			/* num order supplier */
+			echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][31] . ": </td><td>";
+			if ($canedit)
+				autocompletionTextField("numordersupplier", "glpi_plugin_order", "numordersupplier", $this->fields["numordersupplier"], 30, $this->fields["FK_entities"]);
+			else
+				echo $this->fields["numordersupplier"];
+			echo "</td>";
 			/* payment */
-			echo "<tr><td>" . $LANG['plugin_order'][32] . ": </td><td>";
+			echo "<td>" . $LANG['plugin_order'][32] . ": </td><td>";
 			if ($canedit)
 				dropdownValue("glpi_dropdown_plugin_order_payment", "payment", $this->fields["payment"], 1, $this->fields["FK_entities"]);
 			else
-				echo getdropdownname("glpi_dropdown_plugin_order_payment", $this->fields["payment"]);
+				echo getDropdownname("glpi_dropdown_plugin_order_payment", $this->fields["payment"]);
 			echo "</td></tr>";
 
+			/* delivery number */
+			echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][12] . ": </td>";
+			echo "<td>";
+			if ($canedit)
+				autocompletionTextField("deliverynum", "glpi_plugin_order", "deliverynum", $this->fields["deliverynum"], 30, $this->fields["FK_entities"]);
+			else
+				echo $this->fields["deliverynum"];
+			echo "</td>";
 			/* supplier of order */
-			echo "<tr><td>" . $LANG['plugin_order']['setup'][14] . ": </td>";
+			echo "<td>" . $LANG['plugin_order']['setup'][14] . ": </td>";
 			echo "<td>";
 			if ($canedit)
 				dropdownValue("glpi_enterprises", "FK_enterprise", $this->fields["FK_enterprise"], 1, $this->fields["FK_entities"]);
@@ -220,91 +208,73 @@ class plugin_order extends CommonDBTM {
 				echo getDropdownName("glpi_enterprises", $this->fields["FK_enterprise"]);
 			echo "</td></tr>";
 
-			/* status */
-			/*
-			if ($this->fields["status"] == null && $canedit) {
-				echo "<tr><td valign='top'>" . $LANG['plugin_order']['status'][0] . ": </td>";
-				echo "<td valign='top'>";
-				//$config = new plugin_order_config();
-				//$config->getFromDB(1);
-				plugin_order_dropdownStatus("status",$this->fields["status"]);
-				//dropdownValue("glpi_dropdown_plugin_order_status", "status", $config->fields["status_creation"], 1, $this->fields["FK_entities"]);
-				echo "</td></tr>";
-			}
-			elseif ($this->fields["status"] != NULL && $canedit) {
-				echo "<tr><td valign='top'>" . $LANG['plugin_order']['status'][0] . ": </td>";
-				echo "<td valign='top'>";
-				dropdownValue("glpi_dropdown_plugin_order_status", "status", $this->fields["status"], 1, $this->fields["FK_entities"]);
-				echo "</td></tr>";
-			}*/
-			
-			echo "<tr><td valign='top'>" . $LANG['plugin_order']['status'][0] . ": </td>";
-			echo "<td valign='top'>";
-			plugin_order_dropdownStatus("status",(!$ID?0:$this->fields["status"]));
+			/* number of bill */
+			echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][28] . ": </td><td>";
+			if ($canedit)
+				autocompletionTextField("numbill", "glpi_plugin_order", "numbill", $this->fields["numbill"], 30, $this->fields["FK_entities"]);
+			else
+				echo $this->fields["numbill"];
+			echo "</td>";
+			echo "<td>" . $LANG['plugin_order']['status'][0] . ": </td>";
+			echo "<td>";
+			echo "<input type='hidden' name='status' value=".ORDER_STATUS_DRAFT.">";
+			echo plugin_order_getDropdownStatus($this->fields["status"]);	
 			echo "</td></tr>";
 
 			/* location */
-			echo "<tr><td>" . $LANG['plugin_order'][40] . ": </td>";
+			echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][40] . ": </td>";
 			echo "<td>";
 			if ($canedit)
 				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"], 1, $this->fields["FK_entities"]);
 			else
 				echo getDropdownName("glpi_dropdown_locations", $this->fields["FK_enterprise"]);
-			echo "</td></tr>";
+			echo "</td><td colspan='2'></td></tr>";
+			//End
 
-			echo "</table>";
+			echo "<tr class='tab_bg_1'><td>";
+			//comments of order
+			echo $LANG['plugin_order'][2] . ":	</td>";
+			echo "<td><textarea cols='40' rows='4' name='comment'>" . $this->fields["comment"] . "</textarea>";
 			echo "</td>";
 
-			echo "</td></tr>";
-
-			echo "<tr><td class='tab_bg_1' align='left'>";
-			//comments of order
-			echo "<table cellpadding='2' cellspacing='2' border='0'><tr><td>";
-			echo $LANG['plugin_order'][2] . ":	</td>";
-			echo "<td><textarea cols='45' rows='4' name='comment' >" . $this->fields["comment"] . "</textarea>";
-			echo "</td></tr>";
-			echo "</table>";
-			echo "<td class='tab_bg_1' align='left'>";
-			echo "<table cellpadding='2' cellspacing='2' border='0'><tr><td>";
 			/* total price (without taxes) */
 
 			if ($ID > 0) {
 				$prices = getPrices($ID);
 
-				echo "" . $LANG['plugin_order'][13] . ": </td>";
-				echo "<td>" . sprintf("%01.2f", $prices["priceHT"]) . "</td></tr>";
+				echo "<td colspan='2'>" . $LANG['plugin_order'][13] . ": ";
+				echo plugin_order_displayPrice($prices["priceHT"]) . "<br>";
 
 				/* total price (with taxes) */
-				echo "<tr><td>" . $LANG['plugin_order'][14] . ": </td>";
-				echo "<td>" . sprintf("%01.2f", $prices["priceTTC"]) . "</td></tr>";
+				echo $LANG['plugin_order'][14] . ":";
+				echo plugin_order_displayPrice($prices["priceTTC"]) . "</td></tr>";
 			}
+			else
+				echo "<td colspan='2'></td>";
 
-			echo "</table>";
-			echo "</td>";
 			echo "</tr>";
 
 			if ($canedit) {
+				echo "<tr>";
+				echo "<td class='tab_bg_2' colspan='4' align='center'>";
+
 				if (empty ($ID) || $ID < 0) {
-					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top' colspan='3'>";
-					echo "<div align='center'><input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'></div>";
-					echo "</td>";
-					echo "</tr>";
+					echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 				} else {
-					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top' colspan='3'><div align='center'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit' >";
-					if ($this->fields["deleted"] == '0') {
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'></div>";
+					echo "<input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit'>";
+					
+					if (!$this->fields["deleted"]) {
+						echo "&nbsp<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 					} else {
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='restore' value=\"" . $LANG['buttons'][21] . "\" class='submit'>";
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"" . $LANG['buttons'][22] . "\" class='submit'></div>";
+						echo "&nbsp<input type='submit' name='restore' value=\"" . $LANG['buttons'][21] . "\" class='submit'>";
+						echo "&nbsp<input type='submit' name='purge' value=\"" . $LANG['buttons'][22] . "\" class='submit'>";
 					}
-					echo "</td>";
-					echo "</tr>";
 				}
+				echo "</td>";
+				echo "</tr>";
 			}
+
 			echo "</table></div></form>";
 			echo "<div id='tabcontent'></div>";
 			echo "<script type='text/javascript'>loadDefaultTab();</script>";
@@ -314,30 +284,12 @@ class plugin_order extends CommonDBTM {
 		}
 		return true;
 	}
-}
 
-class plugin_order_device extends CommonDBTM {
-	function __construct() {
-		$this->table = "glpi_plugin_order_device";
-	}
-
-	function isDeviceLinkedToOrder($device_type, $deviceID) {
-		global $DB;
-		$query = "SELECT ID FROM " . $this->table . " WHERE device_type=$device_type AND FK_device=$deviceID";
-		$result = $DB->query($query);
-		if ($DB->numrows($result))
-			return true;
-		else
-			return false;
-	}
-
-	function getOrderInfosByDeviceID($device_type, $deviceID) {
-		global $DB;
-		$query = "SELECT go.* FROM `glpi_plugin_order` AS go, `" . $this->table . "` AS god " .
-		"WHERE go.ID=god.FK_order AND god.device_type=$device_type AND god.FK_device=$deviceID";
-		$result = $DB->query($query);
-		if ($DB->numrows($result))
-			return $DB->fetch_array($result);
+	function needValidation($ID)
+	{
+		global $ORDER_VALIDATION_STATUS;
+		if ($ID > 0 && $this->getFromDB($ID))
+			return (in_array($this->fields["status"],$ORDER_VALIDATION_STATUS));
 		else
 			return false;
 	}

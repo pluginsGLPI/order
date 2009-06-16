@@ -167,6 +167,8 @@ function plugin_order_getDropdownStatus($value) {
 	switch ($value) {
 		case ORDER_STATUS_DRAFT :
 			return $LANG['plugin_order']['status'][9];
+		case ORDER_STATUS_APPROVED:
+			return $LANG['plugin_order']['status'][12];
 		case ORDER_STATUS_WAITING_APPROVAL :
 			return $LANG['plugin_order']['status'][7];
 		case ORDER_STATUS_PARTIALLY_DELIVRED :

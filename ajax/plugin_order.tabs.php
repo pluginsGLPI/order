@@ -96,10 +96,15 @@ if (empty ($_POST["ID"])) {
 			showReceptionForm($_POST["ID"]);
 			break;
 		case 6 :
+			plugin_order_showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
+			break;
+/*
+		case 6 :
 			showJobListForItem(PLUGIN_ORDER_TYPE, $_POST["ID"]);
 			//plugin_applicatifs_showTickets($_POST["ID"]);
 			break;
-		case 11 :
+*/
+				case 11 :
 			showNotesForm($_POST['target'], PLUGIN_ORDER_TYPE, $_POST["ID"]);
 			break;
 		case 12 :

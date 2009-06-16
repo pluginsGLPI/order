@@ -81,6 +81,8 @@ CREATE TABLE `glpi_plugin_order_profiles` (
 	`name` varchar(255) collate utf8_unicode_ci default NULL,
 	`order` char(1) default NULL,
     `reference` char(1) default NULL,
+    `validation` char(1) default NULL,
+    `cancel` char(1) default NULL,
 	PRIMARY KEY  (`ID`),
 	KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

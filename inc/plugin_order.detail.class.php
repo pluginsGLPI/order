@@ -60,66 +60,68 @@ class plugin_order_detail extends CommonDBTM {
 	{
        global  $CFG_GLPI, $LANG,$DB;
 
-		$order=new plugin_order();
-		$canedit=$order->can($orderID,'w');
-
-		if ($canedit)
+		if (plugin_order_canUpdateOrder($orderID))
 		{
-			echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\"$target\">";
-			echo "<input type='hidden' name='FK_order' value=\"$orderID\">";
-			echo "<div class='center'>"; 
-			echo"<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='7'>".$LANG['plugin_order']['detail'][5]."</th></tr>";
+			$order=new plugin_order();
+			$canedit=$order->can($orderID,'w');
 	
-			if ($order->fields["FK_enterprise"])
+			if ($canedit)
 			{
-				echo "<tr>"; 
-				echo "<th align='center'>".$LANG['common'][17]."</th>"; 
-				echo "<th align='center'>".$LANG['plugin_order']['reference'][1]."</th>";
-				echo "<th align='center'>".$LANG['plugin_order']['detail'][7]."</th>";
-				echo "<th align='center'>".$LANG['plugin_order']['detail'][4]."</th>";
-				echo "<th align='center'>".$LANG['plugin_order']['detail'][25]."</th>";
-				echo "<th align='center'>".$LANG['plugin_order'][25]."</th>";
-				echo "<th></th>";
-				echo"</tr>";
-				echo "<tr>";
-				echo "<td class='tab_bg_1' align='center'>";
-				plugin_order_dropdownAllItems("type", true, 0, $order->fields["ID"], $order->fields["FK_enterprise"], $order->fields["FK_entities"], $CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php");	
-				echo "</td>";
-				echo "<td class='tab_bg_1' align='center'><span id='show_reference'>&nbsp;</span></td>";
-				echo "<td class='tab_bg_1' align='center'><span id='show_quantity'>&nbsp;</span></td>";
-				echo "<td class='tab_bg_1' align='center'><span id='show_priceht'>&nbsp;</span></td>";
-				echo "<td class='tab_bg_1' align='center'><span id='show_pricediscounted'>&nbsp;</span></td>";
-				echo "<td  class='tab_bg_1' align='center'><span id='show_taxes'>&nbsp;</span></td>";
-				echo "<td class='tab_bg_1' align='center'><span id='show_validate'>&nbsp;</span></td>";
-				echo "</tr>";
+				echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\"$target\">";
+				echo "<input type='hidden' name='FK_order' value=\"$orderID\">";
+				echo "<div class='center'>"; 
+				echo"<table class='tab_cadre_fixe'>";
+				echo "<tr><th colspan='7'>".$LANG['plugin_order']['detail'][5]."</th></tr>";
+		
+				if ($order->fields["FK_enterprise"])
+				{
+					echo "<tr>"; 
+					echo "<th align='center'>".$LANG['common'][17]."</th>"; 
+					echo "<th align='center'>".$LANG['plugin_order']['reference'][1]."</th>";
+					echo "<th align='center'>".$LANG['plugin_order']['detail'][7]."</th>";
+					echo "<th align='center'>".$LANG['plugin_order']['detail'][4]."</th>";
+					echo "<th align='center'>".$LANG['plugin_order']['detail'][25]."</th>";
+					echo "<th align='center'>".$LANG['plugin_order'][25]."</th>";
+					echo "<th></th>";
+					echo"</tr>";
+					echo "<tr>";
+					echo "<td class='tab_bg_1' align='center'>";
+					plugin_order_dropdownAllItems("type", true, 0, $order->fields["ID"], $order->fields["FK_enterprise"], $order->fields["FK_entities"], $CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php");	
+					echo "</td>";
+					echo "<td class='tab_bg_1' align='center'><span id='show_reference'>&nbsp;</span></td>";
+					echo "<td class='tab_bg_1' align='center'><span id='show_quantity'>&nbsp;</span></td>";
+					echo "<td class='tab_bg_1' align='center'><span id='show_priceht'>&nbsp;</span></td>";
+					echo "<td class='tab_bg_1' align='center'><span id='show_pricediscounted'>&nbsp;</span></td>";
+					echo "<td  class='tab_bg_1' align='center'><span id='show_taxes'>&nbsp;</span></td>";
+					echo "<td class='tab_bg_1' align='center'><span id='show_validate'>&nbsp;</span></td>";
+					echo "</tr>";
+				}
+				else
+					echo "<tr><td align='center'>".$LANG['plugin_order']['detail'][27]."</td></tr>";
+		
+				echo "</table></div></form>";
 			}
-			else
-				echo "<tr><td align='center'>".$LANG['plugin_order']['detail'][27]."</td></tr>";
-	
-			echo "</table></div></form>";
 		}
-			
 	}
 	
    function showFormDetail ($target,$FK_order) {
       global  $CFG_GLPI, $LANG,$DB,$INFOFORM_PAGES;
 		
-			$query="	SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, 
-								glpi_plugin_order_references.type, glpi_plugin_order_references.FK_manufacturer, glpi_plugin_order_references.name, 
-								glpi_plugin_order_detail.price_taxfree, glpi_plugin_order_detail.price_ati, glpi_plugin_order_detail.price_discounted, 
-								SUM(glpi_plugin_order_detail.price_discounted) AS totalpriceHT, 
-								SUM(glpi_plugin_order_detail.price_ati) AS totalpriceTTC 
-								FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
-								WHERE glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID
-								AND glpi_plugin_order_detail.FK_order=$FK_order
-								GROUP BY glpi_plugin_order_detail.FK_reference
-								ORDER BY glpi_plugin_order_detail.ID";
+			$query="SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, 
+					glpi_plugin_order_references.type, glpi_plugin_order_references.FK_manufacturer, glpi_plugin_order_references.name, 
+					glpi_plugin_order_detail.price_taxfree, glpi_plugin_order_detail.price_ati, glpi_plugin_order_detail.price_discounted, 
+					SUM(glpi_plugin_order_detail.price_discounted) AS totalpriceHT, 
+					SUM(glpi_plugin_order_detail.price_ati) AS totalpriceTTC 
+					FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
+					WHERE glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID
+					AND glpi_plugin_order_detail.FK_order=$FK_order
+					GROUP BY glpi_plugin_order_detail.FK_reference
+					ORDER BY glpi_plugin_order_detail.ID";
 			$result=$DB->query($query);
 			$num=$DB->numrows($result);
 			$rand=mt_rand();
 			$plugin_order=new plugin_order();
-			$canedit=$plugin_order->can($FK_order,'w');
+			$canedit=$plugin_order->can($FK_order,'w') && plugin_order_canUpdateOrder($FK_order);
 			echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  action=\"$target\">";
 			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
 			if ($num>0)
@@ -167,15 +169,15 @@ class plugin_order_detail extends CommonDBTM {
 					/* delivered quantity */
 					echo "<td align='center'>".getDelivredQuantity($FK_order, $IDR)."</td>";	
 					/*price */
-					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"price_taxfree"))."</td>";
+					echo "<td align='center'>".plugin_order_displayPrice($DB->result($result,$i,"price_taxfree"))."</td>";
 					/* price with reduction */
-					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"price_discounted"))."</td>";
+					echo "<td align='center'>".plugin_order_displayPrice($DB->result($result,$i,"price_discounted"))."</td>";
 					/* price with taxes */
-					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"price_ati"))."</td>";
+					echo "<td align='center'>".plugin_order_displayPrice($DB->result($result,$i,"price_ati"))."</td>";
 					/* total price */
-					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"totalpriceHT"))."</td>";
+					echo "<td align='center'>".plugin_order_displayPrice($DB->result($result,$i,"totalpriceHT"))."</td>";
 					/* total price with taxes  */
-					echo "<td align='center'>".sprintf("%01.2f", $DB->result($result,$i,"totalpriceTTC"))."</td>";
+					echo "<td align='center'>".plugin_order_displayPrice($DB->result($result,$i,"totalpriceTTC"))."</td>";
 					$i++;
 				}
 				echo "</table>";
