@@ -34,7 +34,7 @@ include (GLPI_ROOT."/inc/includes.php");
 
 checkRight("profile","r");
 
-$prof=new plugin_order_Profile();
+$prof=new PluginOrderProfile();
 /* save profile */
 if (isset ($_POST['update_user_profile'])) {
 	$prof->update($_POST);

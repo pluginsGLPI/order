@@ -31,7 +31,7 @@
 function plugin_order_showReferenceManufacturers($target, $ID) {
 	global $LANG, $DB, $CFG_GLPI,$INFOFORM_PAGES;
 	
-	$ref = new plugin_order_reference;
+	$ref = new PluginOrderReference;
 	$ref->getFromDB($ID);
 			
 	initNavigateListItems(PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE,$LANG['plugin_order']['reference'][1] ." = ". $ref->fields["name"]);

@@ -28,14 +28,14 @@
     Original Author of file: Benjamin Fontan
     Purpose of file:
     ----------------------------------------------------------------------*/
-class plugin_order_device extends CommonDBTM {
+class PluginOrderDevice extends CommonDBTM {
 	function __construct() {
 		$this->table = "glpi_plugin_order_device";
 	}
 
 	function isDeviceLinkedToOrder($device_type, $deviceID) {
 		global $DB;
-		$query = "SELECT ID FROM " . $this->table . " WHERE device_type=$device_type AND FK_device=$deviceID";
+		$query = "SELECT ID FROM `" . $this->table . "` WHERE device_type=$device_type AND FK_device=$deviceID";
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			return true;

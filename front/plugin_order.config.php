@@ -45,13 +45,13 @@ if($action=="createorder") {
 	glpi_header($_SERVER['HTTP_REFERER']);
 /* update config */
 } elseif(isset($_POST["update"])) {
-	$config = new plugin_order_config;
+	$config = new PluginOrderConfig;
 	$config->update($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"config","plugins");
-$config= new plugin_order_config();
+$config= new PluginOrderConfig();
 $config->showForm($_SERVER["PHP_SELF"]);
 $config->showOrderGenerationForm($_SERVER["PHP_SELF"]);
 

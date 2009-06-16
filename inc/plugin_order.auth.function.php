@@ -30,7 +30,7 @@
 
 function plugin_order_createfirstaccess($ID){
 
-	$plugin_order_Profile=new plugin_order_Profile();
+	$plugin_order_Profile=new PluginOrderProfile();
 	if (!$plugin_order_Profile->getFromDB($ID)){
 		
 		$Profile=new Profile();
@@ -48,7 +48,7 @@ function plugin_order_createfirstaccess($ID){
 
 function plugin_order_createaccess($ID){
 
-	$plugin_order_Profile=new plugin_order_Profile();
+	$plugin_order_Profile=new PluginOrderProfile();
 	$Profile=new Profile();
 	$Profile->GetfromDB($ID);
 	$name=$Profile->fields["name"];
@@ -60,7 +60,7 @@ function plugin_order_createaccess($ID){
 
 function plugin_order_changeprofile()
 {
-	$prof=new plugin_order_Profile();
+	$prof=new PluginOrderProfile();
 	if($prof->getFromDB($_SESSION['glpiactiveprofile']['ID']))
 		$_SESSION["glpi_plugin_order_profile"]=$prof->fields;
 	else

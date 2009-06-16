@@ -74,8 +74,10 @@ if (empty ($_POST["ID"])) {
 	switch ($_POST['glpi_tab']) {
 		case -1 :
 			/* show items linking form from all */
+			plugin_order_showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			showItem($_POST["ID"]);
+			showReceptionForm($_POST["ID"]);
 			showDocumentAssociated(PLUGIN_ORDER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
 			break;
 			case 1 : 
@@ -93,9 +95,6 @@ if (empty ($_POST["ID"])) {
 			break;
 		case 5 :
 			showReceptionForm($_POST["ID"]);
-			break;
-		case 6 :
-			plugin_order_showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			break;
 /*
 		case 6 :

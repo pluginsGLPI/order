@@ -27,7 +27,7 @@
     Original Author of file: Benjamin Fontan
     Purpose of file:
     ----------------------------------------------------------------------*/
-class plugin_order_reference extends CommonDBTM {
+class PluginOrderReference extends CommonDBTM {
 	function __construct () {
 		$this->table="glpi_plugin_order_references";
 		$this->type=PLUGIN_ORDER_REFERENCE_TYPE;

@@ -27,7 +27,7 @@
     Original Author of file: Benjamin Fontan
     Purpose of file:
     ----------------------------------------------------------------------*/
-class plugin_order_detail extends CommonDBTM {
+class PluginOrderDetail extends CommonDBTM {
    function __construct () 
    {
       $this->table="glpi_plugin_order_detail";                
@@ -62,7 +62,7 @@ class plugin_order_detail extends CommonDBTM {
 
 		if (plugin_order_canUpdateOrder($orderID))
 		{
-			$order=new plugin_order();
+			$order=new PluginOrder();
 			$canedit=$order->can($orderID,'w');
 	
 			if ($canedit)
@@ -120,7 +120,7 @@ class plugin_order_detail extends CommonDBTM {
 			$result=$DB->query($query);
 			$num=$DB->numrows($result);
 			$rand=mt_rand();
-			$plugin_order=new plugin_order();
+			$plugin_order=new PluginOrder();
 			$canedit=$plugin_order->can($FK_order,'w') && plugin_order_canUpdateOrder($FK_order);
 			echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  action=\"$target\">";
 			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";

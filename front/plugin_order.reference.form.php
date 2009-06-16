@@ -37,7 +37,7 @@ useplugin('order',true);
 if(!isset($_GET["ID"])) $_GET["ID"] = "";
 if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 
-$plugin_order_ref=new plugin_order_reference();
+$plugin_order_ref=new PluginOrderReference();
 
 /* add order */
 if (isset($_POST["add"]))

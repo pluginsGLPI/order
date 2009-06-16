@@ -57,7 +57,7 @@ if (!isset ($_GET["ID"]))
 if (!isset ($_GET["withtemplate"]))
 	$_GET["withtemplate"] = "";
 
-$plugin_order = new plugin_order();
+$plugin_order = new PluginOrder();
 
 /* add order */
 if (isset ($_POST["add"])) {

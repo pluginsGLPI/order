@@ -375,7 +375,7 @@ function plugin_order_MassiveActionsProcess($data){
 		if ($data['device_type']==PLUGIN_ORDER_TYPE){
 			foreach ($data["item"] as $key => $val){
 				if ($val==1){
-					$plugin_order=new plugin_order;
+					$plugin_order=new PluginOrder;
 					$plugin_order->getFromDB($key);
 					$query="UPDATE `glpi_plugin_order` 
 							SET `FK_entities` = '".$data['FK_entities']."' 
@@ -394,7 +394,7 @@ function plugin_pre_item_delete_order($input){
 		switch ($input["_item_type_"]){
 			case PROFILE_TYPE :
 				/* manipulate data if needed */
-				$plugin_order_Profile=new plugin_order_Profile;
+				$plugin_order_Profile=new PluginOrderProfile;
 				$plugin_order_Profile->cleanProfiles($input["ID"]);
 				break;
 		}
@@ -409,7 +409,7 @@ function plugin_pre_item_update_order($input){
 				$infocom = new InfoCom;
 				$infocom->getFromDB($input["ID"]);
 				
-				$device = new plugin_order_device;
+				$device = new PluginOrderDevice;
 				if ($device->isDeviceLinkedToOrder($infocom->fields["device_type"],$infocom->fields["FK_device"]))
 				{
 					$field_set = false;
@@ -433,7 +433,7 @@ function plugin_item_delete_order($parm){
 		if (isset($parm["type"]))
 			switch ($parm["type"]){
 				case TRACKING_TYPE :
-					$plugin_order=new plugin_order;
+					$plugin_order=new PluginOrder;
 					$plugin_order->cleanItems($parm['ID'], $parm['type']);
 					return true;
 					break;
@@ -445,13 +445,13 @@ function plugin_item_delete_order($parm){
 function plugin_item_purge_order($parm){
 	if (in_array($parm["type"],array(COMPUTER_TYPE,
 			MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE,CONTRACT_TYPE,PROFILE_TYPE))){
-		$plugin_order=new plugin_order;
+		$plugin_order=new PluginOrder;
 		$plugin_order->cleanItems($parm["ID"],$parm["type"]);
-		$detail=new plugin_order_detail;
+		$detail=new PluginOrderDetail;
 		$detail->cleanItems($parm["ID"],$parm["type"]);
 		return true;
 	}elseif (in_array($parm["type"],array(DOCUMENT_TYPE))){
-		$plugin_order=new plugin_order;
+		$plugin_order=new PluginOrder;
 		$plugin_order->cleanDocuments($parm["ID"]);
 		return true;
 	}else
@@ -506,7 +506,7 @@ function plugin_headings_order($type,$ID,$withtemplate=0){
 				$profile=new profile;
 				$profile->GetfromDB($ID);
 				if ($profile->fields["interface"]!="helpdesk"){
-					$prof=new plugin_order_Profile();	
+					$prof=new PluginOrderProfile();	
 					if (!$prof->GetfromDB($ID))
 						plugin_order_createaccess($ID);				
 					$prof->showForm($CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.profile.php",$ID);

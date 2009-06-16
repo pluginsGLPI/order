@@ -30,7 +30,7 @@
 function plugin_order_showOrderInfoByDeviceID($device_type,$deviceID)
 {
 	global $LANG,$INFOFORM_PAGES,$CFG_GLPI;
-	$device =  new plugin_order_device;
+	$device =  new PluginOrderDevice;
 	$infos = $device->getOrderInfosByDeviceID($device_type,$deviceID);
 	if ($infos)
 	{
@@ -90,7 +90,7 @@ function plugin_order_canUpdateOrder($orderID)
 	global $ORDER_VALIDATION_STATUS;
 	if ($orderID > 0)
 	{
-		$order = new plugin_order;
+		$order = new PluginOrder;
 		$order->getFromDB($orderID);
 		return (in_array($order->fields["status"],$ORDER_VALIDATION_STATUS));
 	}
@@ -102,7 +102,7 @@ function plugin_order_updateOrderStatus($orderID,$status,$comments='')
 {
 	$input["status"] = $status;
 	$input["ID"] = $orderID;
-	$plugin_order = new plugin_order;
+	$plugin_order = new PluginOrder;
 	$plugin_order->dohistory=false;
 	$plugin_order->update($input);
 	plugin_order_addStatusLog($orderID, $status,$comments);
@@ -113,7 +113,7 @@ function plugin_order_updateDelivryStatus($orderID)
 {
 	global $DB;
 	
-	$order = new plugin_order;
+	$order = new PluginOrder;
 	$order->getFromDB($orderID);
 
 	$query = "SELECT status FROM `glpi_plugin_order_detail` WHERE FK_order=$orderID";
@@ -133,7 +133,7 @@ function plugin_order_updateDelivryStatus($orderID)
 function plugin_order_showValidationForm($target,$orderID)
 {
 		global $LANG,$ORDER_VALIDATION_STATUS;
-		$order = new plugin_order;
+		$order = new PluginOrder;
 		$order->getFromDB($orderID);
 				
 				if ($orderID>0 && in_array($order->fields["status"],$ORDER_VALIDATION_STATUS))

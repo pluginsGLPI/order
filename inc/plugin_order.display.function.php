@@ -33,7 +33,7 @@ function showItem($instID,$search='') {
 	global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
 		if (!plugin_order_haveRight("order","r"))	return false;
 		$rand=mt_rand();
-		$plugin_order=new plugin_order();
+		$plugin_order=new PluginOrder();
 		if ($plugin_order->getFromDB($instID)){
 			$canedit=$plugin_order->can($instID,'w'); 
 			$query = "SELECT DISTINCT device_type 
@@ -165,7 +165,7 @@ function showItem($instID,$search='') {
 /* show details of orders */
 function showDetail($target,$ID)
 {
-	$plugin_order_detail = new plugin_order_detail();
+	$plugin_order_detail = new PluginOrderDetail();
 	$plugin_order_detail->showFormDetail($target, $ID);
 	$plugin_order_detail->showAddForm($target, $ID);
 }

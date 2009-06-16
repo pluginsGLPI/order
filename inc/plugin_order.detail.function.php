@@ -69,7 +69,7 @@ function addDetails($referenceID, $orderID, $quantity, $price, $discounted_price
 	else 
 	{
 		if ($quantity > 0) {
-			$detail = new plugin_order_detail;
+			$detail = new PluginOrderDetail;
 			for ($i = 0; $i < $quantity; $i++) {
 				$input["FK_order"] = $orderID;
 				$input["FK_reference"] = $referenceID;

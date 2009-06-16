@@ -32,7 +32,7 @@
 function showReceptionForm($orderID) {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE, $INFOFORM_PAGES;
 
-	$plugin_order = new plugin_order();
+	$plugin_order = new PluginOrder();
 	$canedit = $plugin_order->can($orderID, 'w') && !plugin_order_canUpdateOrder($orderID);
 	$query_ref = "SELECT glpi_plugin_order_detail.ID, glpi_plugin_order_detail.FK_reference AS ref, name, type " .
 	"FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` " .
@@ -196,7 +196,7 @@ function getReceptionReferenceLink($ID, $name) {
 function getReceptionStatus($ID) {
 	global $DB, $LANG;
 
-	$detail = new plugin_order_detail;
+	$detail = new PluginOrderDetail;
 	$detail->getFromDB($ID);
 
 	switch ($detail->fields["status"]) {
@@ -312,12 +312,12 @@ function getAllItemsByType($type, $entity) {
 }
 
 function plugin_order_createLinkWithDevice($detailID, $deviceID, $deviceType, $orderID) {
-	$detail = new plugin_order_detail;
+	$detail = new PluginOrderDetail;
 	$input["ID"] = $detailID;
 	$input["FK_device"] = $deviceID;
 	$detail->update($input);
 
-	$device = new plugin_order_device;
+	$device = new PluginOrderDevice;
 	$input = array ();
 	$input["FK_order"] = $orderID;
 	$input["FK_device"] = $deviceID;
@@ -327,7 +327,7 @@ function plugin_order_createLinkWithDevice($detailID, $deviceID, $deviceType, $o
 
 function plugin_order_deleteLinkWithDevice($detailID, $deviceType) {
 	global $DB;
-	$detail = new plugin_order_detail;
+	$detail = new PluginOrderDetail;
 	$detail->getFromDB($detailID);
 
 	$query = " SELECT ID FROM `glpi_plugin_order_device`
@@ -337,7 +337,7 @@ function plugin_order_deleteLinkWithDevice($detailID, $deviceType) {
 		if ($DB->numrows($result) > 0)
 			$deviceID = $DB->result($result, 0, 'ID');
 	}
-	$device = new plugin_order_device;
+	$device = new PluginOrderDevice;
 	$device->delete(array (
 		"ID" => $deviceID
 	));
@@ -349,7 +349,7 @@ function plugin_order_deleteLinkWithDevice($detailID, $deviceType) {
 
 function plugin_order_updateReceptionStatus($params) {
 	global $LANG;
-	$detail = new plugin_order_detail;
+	$detail = new PluginOrderDetail;
 	$orderID = 0;
 	if (isset ($params["item"])) {
 		foreach ($params["item"] as $key => $val)
@@ -459,9 +459,9 @@ function plugin_order_generateNewDevice($params, $entity) {
 function plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_type, $deviceID, $templateID) {
 	global $LANG;
 
-	$detail = new plugin_order_detail;
+	$detail = new PluginOrderDetail;
 	$detail->getFromDB($detailID);
-	$order = new plugin_order;
+	$order = new PluginOrder;
 	$order->getFromDB($detail->fields["FK_order"]);
 
 	// ADD Infocoms

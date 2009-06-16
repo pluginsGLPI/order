@@ -82,7 +82,7 @@ function plugin_order_config_default_status() {
 
 function plugin_order_getConfig()
 {
-	$config = new plugin_order_config;
+	$config = new PluginOrderConfig;
 	$config->getFromDB(1);
 	return $config->fields; 
 }

@@ -28,7 +28,7 @@
     Original Author of file: 
     Purpose of file:
     ----------------------------------------------------------------------*/
-class plugin_order_Profile extends CommonDBTM {
+class PluginOrderProfile extends CommonDBTM {
 	function __construct() {
 		$this->table = "glpi_plugin_order_profiles";
 		$this->type = -1;
