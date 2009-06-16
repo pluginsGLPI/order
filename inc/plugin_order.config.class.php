@@ -31,4 +31,44 @@ class plugin_order_config extends CommonDBTM {
 	function __construct () {
 		$this->table="glpi_plugin_order_config";
 	}
+
+	function showForm($target)
+	{
+		global $LANG;
+		$this->getFromDB(1);
+		echo "<div class='center'>";
+		echo "<table class='tab_cadre_fixe'>";
+		echo "<tr><th colspan='2'>".$LANG['plugin_order'][38]."</th></tr>";
+		echo "<form method='post' name=form action='$target'>";
+		
+		echo "<input type='hidden' name='ID' value='1'>";
+		echo "<tr class='tab_bg_1' align='center'><td>".$LANG['plugin_order']['config'][1]."</td><td>";
+		dropdownValue("glpi_dropdown_plugin_order_taxes","default_taxes",$this->fields["default_taxes"]);
+		echo "</td>";
+		echo "</tr>";
+		
+		echo "<tr class='tab_bg_1' align='center'><td>".$LANG['plugin_order']['config'][2]."</td><td>";
+		dropdownYesNo("use_validation",$this->fields["use_validation"]);
+		echo "</td>";
+		echo "</tr>";
+		
+		echo "<tr class='tab_bg_1' align='center'>"; 
+		echo "<td colspan='2' align='center'>"; 
+		echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >"; 
+		echo"</td>";
+		echo "</tr>";
+		
+		echo "</table></form></div>";
+	}
+	
+	function showOrderGenerationForm($target)
+	{
+		global $LANG;
+		echo "<br><table class='tab_cadre_fixe'>";
+		echo "<tr><th>".$LANG['plugin_order'][37]."</th></tr>";
+		echo "<tr class='tab_bg_1' align='center'><td><a href='$target?action=createorder'>".$LANG['plugin_order'][34]."</a></td></tr>";
+		echo "<tr class='tab_bg_1' align='center'><td><a href='$target?action=deleteorder'>".$LANG['plugin_order'][35]."</a></td></tr>";
+		echo "</table>";
+	}
+
 }

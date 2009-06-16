@@ -70,10 +70,6 @@ class plugin_order extends CommonDBTM {
 		$ong[1] = $LANG['title'][26];
 		if ($ID > 0) {
 			$plugin = new Plugin();
-			/* Validation */
-			if ($this->needValidation($ID))
-				$ong[6] = $LANG['plugin_order']['validation'][7];
-
 			/* detail */
 			$ong[4] = $LANG['plugin_order']['detail'][0];
 			/* delivery */
@@ -234,7 +230,11 @@ class plugin_order extends CommonDBTM {
 			echo "<tr class='tab_bg_1'><td>";
 			//comments of order
 			echo $LANG['plugin_order'][2] . ":	</td>";
-			echo "<td><textarea cols='40' rows='4' name='comment'>" . $this->fields["comment"] . "</textarea>";
+			echo "<td>"; 
+			if ($canedit)
+				echo "<textarea cols='40' rows='4' name='comment'>" . $this->fields["comment"] . "</textarea>";
+			else
+				echo $this->fields["comment"];
 			echo "</td>";
 
 			/* total price (without taxes) */

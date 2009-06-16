@@ -141,16 +141,15 @@ function plugin_order_showValidationForm($target,$orderID)
 					echo "<form method='post' name='form' action=\"$target\">";
 					echo "<table class='tab_cadre_fixe'>";
 					
-					echo "<tr class='tab_bg_2'><th>".$LANG['plugin_order']['validation'][6]."</th></tr>";
+					echo "<tr class='tab_bg_2'><th colspan='2'>".$LANG['plugin_order']['validation'][6]."</th></tr>";
 
 					echo "<tr class='tab_bg_1'>";
-					echo "<td align='center'>";
+					echo "<td align='center' valign='top'>";
 					echo $LANG['common'][25] . ":&nbsp;";
-					echo "<textarea cols='40' rows='1' name='comments'></textarea>";
-					echo "</td></tr>";
+					echo "<textarea cols='40' rows='4' name='comments'></textarea>";
+					echo "</td>";
 
-					echo "<tr class='tab_bg_2'>";
-					echo "<td align='center'>";
+					echo "<td align='left'>";
 					echo "<input type='hidden' name='ID' value=\"$orderID\">\n";
 					
 					switch ($order->fields["status"])
@@ -158,12 +157,12 @@ function plugin_order_showValidationForm($target,$orderID)
 						case ORDER_STATUS_DRAFT:
 							echo "<input type='submit' name='waiting_for_approval' value=\"" . $LANG['plugin_order']['validation'][11] . "\" class='submit'>";
 							if (plugin_order_haveRight("validation","w"))
-								echo "&nbsp;<input type='submit' name='validate' value=\"" . $LANG['plugin_order']['validation'][9] . "\" class='submit'>";							
+								echo "<br><br><input type='submit' name='validate' value=\"" . $LANG['plugin_order']['validation'][9] . "\" class='submit'>";							
 						break;
 						case ORDER_STATUS_WAITING_APPROVAL:
 							echo "<input type='submit' name='cancel_waiting_for_approval' value=\"" . $LANG['plugin_order']['validation'][13] . "\" class='submit'>";
 							if (plugin_order_haveRight("validation","w"))
-								echo "&nbsp;<input type='submit' name='validate' value=\"" . $LANG['plugin_order']['validation'][9] . "\" class='submit'>";							
+								echo "<br><br><input type='submit' name='validate' value=\"" . $LANG['plugin_order']['validation'][9] . "\" class='submit'>";							
 						break;
 						default:
 						break;

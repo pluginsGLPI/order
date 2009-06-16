@@ -36,7 +36,9 @@
 // Direct access to file
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
-include (GLPI_ROOT."/plugins/order/inc/plugin_order.functions_dropdown.php");
+include (GLPI_ROOT."/plugins/order/inc/plugin_order.config.class.php");
+include (GLPI_ROOT."/plugins/order/inc/plugin_order.config.function.php");
+include (GLPI_ROOT."/plugins/order/inc/plugin_order.dropdown.function.php");
 include (GLPI_ROOT."/plugins/order/inc/plugin_order.reference.function.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
@@ -63,7 +65,7 @@ if ($_POST["FK_reference"] > 0)
 			autocompletionTextField("reductedprice","glpi_plugin_order_detail","reductedprice",0,5);
 		break;
 		case 'taxes':
-			dropdownValue("glpi_dropdown_plugin_order_taxes","taxes",0);
+			dropdownValue("glpi_dropdown_plugin_order_taxes","taxes",plugin_order_getDefaultTaxes());
 		break;
 		case 'validate':
 			echo "<input type='hidden' name='FK_reference' value='".$_POST["FK_reference"]."' class='submit' >";

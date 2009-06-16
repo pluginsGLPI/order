@@ -86,4 +86,10 @@ function plugin_order_getConfig()
 	$config->getFromDB(1);
 	return $config->fields; 
 }
+
+function plugin_order_getDefaultTaxes()
+{
+	$config = plugin_order_getConfig();
+	return $config["default_taxes"];
+}
 ?>

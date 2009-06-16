@@ -78,9 +78,8 @@ if (empty ($_POST["ID"])) {
 			showItem($_POST["ID"]);
 			showDocumentAssociated(PLUGIN_ORDER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
 			break;
-			/*			case 1 : 
-							plugin_order_showdetail($_POST["ID"], 0);
-			*/
+			case 1 : 
+				plugin_order_showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			break;
 		case 2 :
 			showItem($_POST["ID"]);

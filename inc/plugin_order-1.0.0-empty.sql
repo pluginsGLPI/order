@@ -90,13 +90,12 @@ CREATE TABLE `glpi_plugin_order_profiles` (
 DROP TABLE IF EXISTS `glpi_plugin_order_config`;
 CREATE TABLE `glpi_plugin_order_config` (
 	`ID` int(11) NOT NULL auto_increment,
-	`status_creation` int(11) NOT NULL,
-	`status_delivered` int(11) NOT NULL,
-	`status_nodelivered` int(11) NOT NULL,
+	`use_validation` int(11) NOT NULL default 0,
+	`default_taxes` int(11) NOT NULL default 0,
 	PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_plugin_order_config`(ID,status_creation, status_delivered, status_nodelivered) VALUES (1,0,0,0);
+INSERT INTO `glpi_plugin_order_config`(ID,use_validation,default_taxes) VALUES (1,0,0);
 	
 CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references` (
   `ID` int(11) NOT NULL auto_increment,
@@ -121,7 +120,6 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_manufacturers` (
   `price_taxfree` float NOT NULL DEFAULT 0,
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
 
 INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3150','1','1','0');
 INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3150','2','2','0');

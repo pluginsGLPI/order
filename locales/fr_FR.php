@@ -151,6 +151,10 @@ $LANG['plugin_order']['setup'][24] = "Dissocier";
 $LANG['plugin_order']['setup'][25] = "Associer à l'application Web";
 $LANG['plugin_order']['setup'][28] = "Editeur ";
 
+$LANG['plugin_order']['config'][1] = "TVA par défaut";
+$LANG['plugin_order']['config'][2] = "Utiliser le circuit de validation";
+
+
 $LANG['plugin_order']['infocom'][1] = "Certains champs ne peuvent-être modifiés : ils proviennent d'une commande";
 
 $LANG['plugin_order']['history'][1] = "Matériel généré depuis la commande";
