@@ -118,6 +118,7 @@ $LANG['plugin_order']['config'][1] = "Default VAT";
 $LANG['plugin_order']['config'][2] = "Use validation process";
 
 $LANG['plugin_order']['mailing'][0] = "Order validation query";
+$LANG['plugin_order']['mailing'][1] = "See order details";
 
 $LANG['plugin_order']['infocom'][1] = "Some fields cannont be modified because they belong to an order";
 
@@ -129,6 +130,7 @@ $LANG['plugin_order']['validation'][3] = "Order being taken delivery";
 $LANG['plugin_order']['validation'][4] = "Order delivered";
 $LANG['plugin_order']['validation'][5] = "Order canceled";
 $LANG['plugin_order']['validation'][6] = "Validation process";
+$LANG['plugin_order']['validation'][7] = "Order validation successfully requested";
 $LANG['plugin_order']['validation'][9] = "Validate order";
 $LANG['plugin_order']['validation'][10] = "Order is validated";
 $LANG['plugin_order']['validation'][11] = "Ask for validation";

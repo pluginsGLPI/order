@@ -101,6 +101,8 @@ else
 		if (plugin_order_HaveRight("order", "w") && plugin_order_HaveRight("validation", "w"))
 		{
 			plugin_order_updateOrderStatus($_POST["ID"],ORDER_STATUS_APPROVED,$_POST["comments"]);
+			$plugin_order->getFromDB($_POST["ID"]);
+			plugin_order_sendNotification("validation",$_POST["ID"],$plugin_order->fields["FK_entities"]);
 			addMessageAfterRedirect($LANG['plugin_order']['validation'][10]);
 		}
 		glpi_header($_SERVER['HTTP_REFERER']);
@@ -110,7 +112,9 @@ else
 		if (plugin_order_HaveRight("order", "w"))
 		{
 			plugin_order_updateOrderStatus($_POST["ID"],ORDER_STATUS_WAITING_APPROVAL,$_POST["comments"]);
-			addMessageAfterRedirect($LANG['plugin_order']['validation'][11]);
+			$plugin_order->getFromDB($_POST["ID"]);
+			plugin_order_sendNotification("ask",$_POST["ID"],$plugin_order->fields["FK_entities"]);
+			addMessageAfterRedirect($LANG['plugin_order']['validation'][7]);
 		}
 		
 		glpi_header($_SERVER['HTTP_REFERER']);

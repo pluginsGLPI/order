@@ -96,6 +96,7 @@ function plugin_init_order() {
 		
 		if(plugin_order_haveRight("order","r") || plugin_order_haveRight("reference","r"))
 		{
+			$PLUGIN_HOOKS['redirect_page']['order'] = "front/plugin_order.form.php";
 			$PLUGIN_HOOKS['submenu_entry']['order']["<img  src='".$CFG_GLPI["root_doc"]."/pics/menu_show.png' title='".$LANG['plugin_order'][43]."' alt='".$LANG['plugin_order'][43]."'>"] = 'index.php';
 			$PLUGIN_HOOKS['menu_entry']['order'] = true;
 			$PLUGIN_HOOKS['use_massive_action']['order']=1;

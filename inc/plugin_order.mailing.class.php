@@ -69,7 +69,7 @@ class PluginOrderMailing extends CommonDBTM {
 
 	//! mailing type (contract,infocom,cartridge,consumable)
 	var $orderID = 0;
-	var $message = "";
+	var $action = "";
 	var $entity = "";
 
 	/**
@@ -79,9 +79,10 @@ class PluginOrderMailing extends CommonDBTM {
 	 * @return nothing 
 	 */
 
-	function __construct($orderID, $event, $entity = -1) {
+	function __construct($orderID, $action, $entity = -1) {
 		$this->orderID = $orderID;
 		$this->entity = $entity;
+		$this->action = $action;
 	}
 
 	/**
@@ -89,27 +90,38 @@ class PluginOrderMailing extends CommonDBTM {
 	 * @return mail body string
 	 */
 	function get_mail_body($format = "text") {
-		global $CFG_GLPI, $LANG;
+		global $CFG_GLPI, $LANG,$INFOFORM_PAGES;
 
 		// Create message body from Job and type
 		$body = "";
-
+		$order = new PluginOrder;
+		$order->getFromDB($this->orderID);
+		
 		if ($format == "html") {
 			$body .= "<html><head><style  type='text/css'>body {font-family: Verdana;font-size: 11px;text-align: left;} td {font-family: Verdana;font-size: 11px;text-align: left;}</style></head><body>";
-			$body .= "<table class='tab_cadre' border='1' cellspacing='2' cellpadding='3'>";
-			$body .= "<tr>";
-			$body .= "<td bgcolor='#CCCCCC'>" . $LANG['common'][57] . "</th>";
-			$body .= "<td bgcolor='#CCCCCC'>" . $LANG['search'][8] . "</td>";
-			$body .= "<td bgcolor='#CCCCCC'>" . $LANG['common'][37] . "</td>";
-			$body .= "<td bgcolor='#CCCCCC'>" . $LANG['joblist'][0] . "</th>";
-			$body .= "<td bgcolor='#CCCCCC'>" . $LANG['reminder'][9] . "</td></tr>";
-			$body .= $this->event;
+			$body .= "<table class='tab_cadre_fixe' border='1' cellspacing='2' cellpadding='3'>";
+			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['common'][16] . "</td><td>".$order->fields["name"]."</td></tr>";
+			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['financial'][18] . "</td><td>".$order->fields["numorder"]."</td></tr>";
+			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order'][1] . "</td><td>".convDate($order->fields["date"])."</td></tr>";
+			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['joblist'][0] . "</td><td>".plugin_order_getDropdownStatus($order->fields["status"])."</td></tr>";
+
+			if ($CFG_GLPI["url_in_mail"]&&!empty($CFG_GLPI["url_base"])){
+					$body.="<tr><td bgcolor='#CCCCCC' colspan='2'>URL :<a href=\"".$CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_".$this->orderID."\">".$CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_".$this->orderID." </a></td></tr>";
+			}
+
 			$body .= "</table>";
 			$body .= "</body></html>";
 
 		} else { // text format
+			$body .= $LANG['common'][16] . " : ".$order->fields["name"]."\n";
+			$body .= $LANG['financial'][18] . " : ".$order->fields["numorder"]."\n";
+			$body .= $LANG['plugin_order'][1] . " : ".convDate($order->fields["date"])."\n";
+			$body .= $LANG['joblist'][0] . " : ".plugin_order_getDropdownStatus($order->fields["status"])."\n";
 
-			$body .= $this->event;
+			if ($CFG_GLPI["url_in_mail"]&&!empty($CFG_GLPI["url_base"])){
+					$body.="URL :<a href=\"".$CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_".$this->orderID."\">".$CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_ID=".$this->orderID." </a>\n";
+			}
+
 			$body = str_replace("<br />", "\n", $body);
 			$body = str_replace("<br>", "\n", $body);
 		}
@@ -127,9 +139,7 @@ class PluginOrderMailing extends CommonDBTM {
 
 		$emails = array ();
 
-		$query = "SELECT * 
-						FROM glpi_plugin_order_mailing 
-						WHERE type='" . $this->type . "'";
+		$query = "SELECT * FROM `glpi_plugin_order_mailing` WHERE type='" . $this->action . "'";
 		$result = $DB->query($query);
 		if ($DB->numrows($result)) {
 			while ($data = $DB->fetch_assoc($result)) {
@@ -141,26 +151,15 @@ class PluginOrderMailing extends CommonDBTM {
 								if (isValidEmail($CFG_GLPI["admin_email"]) && !in_array($CFG_GLPI["admin_email"], $emails))
 									$emails[] = $CFG_GLPI["admin_email"];
 								break;
-								/*case TECH_MAILING :
-									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL FROM glpi_users WHERE (glpi_users.ID = '".$this->job->fields["manager"]."')";
-										if ($result2 = $DB->query($query2)) {
-											if ($DB->numrows($result2)==1){
-												$row = $DB->fetch_array($result2);
-												if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
-													$emails[]=$row['EMAIL'];
-												}
-											}
-										}
-									break;	*/
 						}
 						break;
 					case PROFILE_MAILING_TYPE :
 
 						$query = "SELECT glpi_users.email as EMAIL 
-														FROM glpi_users_profiles 
-														INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) 
-														WHERE glpi_users_profiles.FK_profiles='" . $data["FK_item"] . "' 
-														" . getEntitiesRestrictRequest("AND", "glpi_users_profiles", "FK_entities", $this->entity, true);
+								  FROM `glpi_users_profiles` 
+								  INNER JOIN `glpi_users` ON (glpi_users_profiles.FK_users = glpi_users.ID) 
+								  WHERE glpi_users_profiles.FK_profiles='" . $data["FK_item"] . "' 
+								  " . getEntitiesRestrictRequest("AND", "glpi_users_profiles", "FK_entities", $this->entity, true);
 
 						if ($result2 = $DB->query($query)) {
 							if ($DB->numrows($result2))
@@ -173,9 +172,9 @@ class PluginOrderMailing extends CommonDBTM {
 						break;
 					case GROUP_MAILING_TYPE :
 						$query = "SELECT glpi_users.email as EMAIL 
-														FROM glpi_users_groups 
-														INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) 
-														WHERE glpi_users_groups.FK_groups='" . $data["FK_item"] . "'";
+   								  FROM `glpi_users_groups` 
+								  INNER JOIN `glpi_users` ON (glpi_users_groups.FK_users = glpi_users.ID) 
+								  WHERE glpi_users_groups.FK_groups='" . $data["FK_item"] . "'";
 
 						if ($result2 = $DB->query($query)) {
 							if ($DB->numrows($result2))
@@ -215,7 +214,20 @@ class PluginOrderMailing extends CommonDBTM {
 					$mail->From = $CFG_GLPI["admin_email"];
 					$mail->FromName = $CFG_GLPI["admin_email"];
 					$mail->AddAddress($users[$i], "");
-					$mail->Subject = $entity . $LANG['plugin_alerting']['alert'][0] . " " . $delay_tickets . " " . $LANG['plugin_alerting']['setup'][15];
+					
+					switch ($this->action)
+					{
+						case "ask":
+							$mail->Subject = $LANG['plugin_order']['mailing'][0]." : ".$order->fields["name"];
+						break;
+						case "validation":
+							$mail->Subject = $LANG['plugin_order']['validation'][2]." : ".$order->fields["name"];
+						break;
+						default :
+							$mail->Subject = $order->fields["name"];
+						break;	
+					}
+					
 					$mail->Body = $this->get_mail_body("html");
 					$mail->isHTML(true);
 					$mail->AltBody = $this->get_mail_body("text");

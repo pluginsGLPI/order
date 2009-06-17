@@ -117,6 +117,7 @@ $LANG['plugin_order']['config'][1] = "TVA par défaut";
 $LANG['plugin_order']['config'][2] = "Utiliser le circuit de validation";
 
 $LANG['plugin_order']['mailing'][0] = "Demande de validation d'une commande";
+$LANG['plugin_order']['mailing'][1] = "Voir le détail de la commande";
 
 
 $LANG['plugin_order']['infocom'][1] = "Certains champs ne peuvent-être modifiés : ils proviennent d'une commande";
@@ -129,12 +130,14 @@ $LANG['plugin_order']['validation'][3] = "Commande en cours de livraison";
 $LANG['plugin_order']['validation'][4] = "Commande totalement livrée";
 $LANG['plugin_order']['validation'][5] = "Commande annulée";
 $LANG['plugin_order']['validation'][6] = "Circuit de validation d'une commande";
+$LANG['plugin_order']['validation'][7] = "Demande de validation de la commande effectuée";
 $LANG['plugin_order']['validation'][9] = "Valider la commande";
 $LANG['plugin_order']['validation'][10] = "La commande est validée";
 $LANG['plugin_order']['validation'][11] = "Faire valider la commande";
 $LANG['plugin_order']['validation'][13] = "Annuler la demande la validation";
 $LANG['plugin_order']['validation'][14] = "Annulation la demande la validation effectuée";
 $LANG['plugin_order']['validation'][15] = "Commande en édition";
+
 
 $LANG['plugin_order']['menu'][1] = "Gérer les commandes";
 $LANG['plugin_order']['menu'][2] = "Gérer le catalogue de références produits";
