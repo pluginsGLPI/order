@@ -117,6 +117,7 @@ $LANG['plugin_order']['config'][0] = "Plugin configuration";
 $LANG['plugin_order']['config'][1] = "Default VAT";
 $LANG['plugin_order']['config'][2] = "Use validation process";
 
+$LANG['plugin_order']['mailing'][0] = "Order validation query";
 
 $LANG['plugin_order']['infocom'][1] = "Some fields cannont be modified because they belong to an order";
 

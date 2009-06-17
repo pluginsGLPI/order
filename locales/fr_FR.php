@@ -116,6 +116,8 @@ $LANG['plugin_order']['config'][0] = "Configuration du plugin";
 $LANG['plugin_order']['config'][1] = "TVA par défaut";
 $LANG['plugin_order']['config'][2] = "Utiliser le circuit de validation";
 
+$LANG['plugin_order']['mailing'][0] = "Demande de validation d'une commande";
+
 
 $LANG['plugin_order']['infocom'][1] = "Certains champs ne peuvent-être modifiés : ils proviennent d'une commande";
 

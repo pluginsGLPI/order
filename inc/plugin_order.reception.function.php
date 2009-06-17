@@ -46,12 +46,12 @@ function showReceptionForm($orderID) {
 			$refID = $DB->result($result_ref, $j, 'ref');
 			$typeRef = $DB->result($result_ref, $j, 'type');
 			$query = "SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, status, date, price_taxfree,
-								  price_ati, price_discounted,  FK_manufacturer, name, type, FK_device
-								  FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
-								  WHERE FK_order=$orderID
-								  AND glpi_plugin_order_detail.FK_reference=$refID
-								  AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID
-								  ORDER BY glpi_plugin_order_detail.ID";
+					  price_ati, price_discounted,  FK_manufacturer, name, type, FK_device
+					  FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
+					  WHERE FK_order=$orderID
+					  AND glpi_plugin_order_detail.FK_reference=$refID
+					  AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID
+					  ORDER BY glpi_plugin_order_detail.ID";
 			$result = $DB->query($query);
 			$num = $DB->numrows($result);
 		}
