@@ -83,7 +83,7 @@ function showReceptionForm($orderID) {
 			if ($canedit)
 				echo "<th width='15'></th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][1] . "</th>";
-			echo "<th>" . $LANG['plugin_order']['detail'][11] . "</th>";
+			echo "<th>" . $LANG['common'][5] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][21] . "</th>";

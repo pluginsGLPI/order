@@ -57,20 +57,27 @@ class PluginOrderProfile extends CommonDBTM {
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='2' align='center'><strong>" . $LANG['plugin_order']['profile'][0] . " " . $this->fields["name"] . "</strong></th></tr>";
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>" . $LANG['plugin_order']['profile'][1] . ":</td><td>";
+		echo "<td>" . $LANG['plugin_order']['menu'][1] . ":</td><td>";
 		dropdownNoneReadWrite("order", $this->fields["order"], 1, 1, 1);
 		echo "</td>";
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>" . $LANG['plugin_order']['detail'][2] . ":</td><td>";
+		echo "<td>" . $LANG['plugin_order']['menu'][2] . ":</td><td>";
 		dropdownNoneReadWrite("reference", $this->fields["reference"], 1, 1, 1);
 		echo "</td>";
 		echo "</tr>";
 
+		echo "<tr align='center'><th colspan='2' >".$LANG['plugin_order']['validation'][6]."</th></tr>";
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>" . $LANG['plugin_order']['detail'][8] . ":</td><td>";
+		echo "<td>" . $LANG['plugin_order']['config'][2] . ":</td><td>";
 		dropdownNoneReadWrite("validation", $this->fields["validation"], 1, 0, 1);
+		echo "</td>";
+		echo "</tr>";
+
+		echo "<tr class='tab_bg_2'>";
+		echo "<td>" . $LANG['plugin_order']['profile'][2] . ":</td><td>";
+		dropdownNoneReadWrite("cancel", $this->fields["cancel"], 1, 0, 1);
 		echo "</td>";
 		echo "</tr>";
 

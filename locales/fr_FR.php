@@ -59,7 +59,7 @@ $LANG['plugin_order'][47] = "Informations sur la commande";
 $LANG['plugin_order']['status'][0] = "Statut commande";
 $LANG['plugin_order']['status'][1] = "En cours de livraison";
 $LANG['plugin_order']['status'][2] = "Livrée";
-$LANG['plugin_order']['status'][7] = "En attente d'approuvation";
+$LANG['plugin_order']['status'][7] = "En attente d'approbation";
 $LANG['plugin_order']['status'][8] = "Réceptionné";
 $LANG['plugin_order']['status'][9] = "En cours d'édition";
 $LANG['plugin_order']['status'][10] = "Annulée";
@@ -103,7 +103,7 @@ $LANG['plugin_order']['delivery'][11] = "Lier à un matériel existant";
 $LANG['plugin_order']['delivery'][12] = "Supprimer le lien avec le matériel";
 
 $LANG['plugin_order']['profile'][0] = "Gestion des droits";
-$LANG['plugin_order']['profile'][1] = "$title";
+$LANG['plugin_order']['profile'][2] = "Annuler une commande";
 
 $LANG['plugin_order']['reference'][1] = "Référence produit";
 $LANG['plugin_order']['reference'][2] = "Ajouter une référence produit";
@@ -130,7 +130,7 @@ $LANG['plugin_order']['validation'][6] = "Circuit de validation d'une commande";
 $LANG['plugin_order']['validation'][9] = "Valider la commande";
 $LANG['plugin_order']['validation'][10] = "La commande est validée";
 $LANG['plugin_order']['validation'][11] = "Faire valider la commande";
-$LANG['plugin_order']['validation'][13] = "Annule la demande la validation";
+$LANG['plugin_order']['validation'][13] = "Annuler la demande la validation";
 $LANG['plugin_order']['validation'][14] = "Annulation la demande la validation effectuée";
 $LANG['plugin_order']['validation'][15] = "Commande en édition";
 

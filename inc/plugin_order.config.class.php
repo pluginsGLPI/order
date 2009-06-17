@@ -38,7 +38,7 @@ class PluginOrderConfig extends CommonDBTM {
 		$this->getFromDB(1);
 		echo "<div class='center'>";
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='2'>".$LANG['plugin_order']['setup'][0]."</th></tr>";
+		echo "<tr><th colspan='2'>".$LANG['plugin_order']['config'][0]."</th></tr>";
 		echo "<form method='post' name=form action='$target'>";
 		
 		echo "<input type='hidden' name='ID' value='1'>";
@@ -51,7 +51,7 @@ class PluginOrderConfig extends CommonDBTM {
 		dropdownYesNo("use_validation",$this->fields["use_validation"]);
 		echo "</td>";
 		echo "</tr>";
-		
+
 		echo "<tr class='tab_bg_1' align='center'>"; 
 		echo "<td colspan='2' align='center'>"; 
 		echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >"; 
