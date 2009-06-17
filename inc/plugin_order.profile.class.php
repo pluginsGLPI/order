@@ -68,7 +68,7 @@ class PluginOrderProfile extends CommonDBTM {
 		echo "</td>";
 		echo "</tr>";
 
-		echo "<tr align='center'><th colspan='2' >".$LANG['plugin_order']['validation'][6]."</th></tr>";
+		echo "<tr align='center'><th colspan='2' >".$LANG['plugin_order']['profile'][1]."</th></tr>";
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>" . $LANG['plugin_order']['config'][2] . ":</td><td>";
 		dropdownNoneReadWrite("validation", $this->fields["validation"], 1, 0, 1);

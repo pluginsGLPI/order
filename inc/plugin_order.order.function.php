@@ -136,7 +136,8 @@ function plugin_order_showValidationForm($target,$orderID)
 		$order = new PluginOrder;
 		$order->getFromDB($orderID);
 				
-				if ($orderID>0 && in_array($order->fields["status"],$ORDER_VALIDATION_STATUS))
+				if ( ($orderID>0 && $order->fields["status"] != ORDER_STATUS_CANCELED) &&  
+					(in_array($order->fields["status"],$ORDER_VALIDATION_STATUS) || plugin_order_haveRight("cancel","w")))
 				{ 
 					echo "<form method='post' name='form' action=\"$target\">";
 					echo "<table class='tab_cadre_fixe'>";
@@ -149,24 +150,36 @@ function plugin_order_showValidationForm($target,$orderID)
 					echo "<textarea cols='40' rows='4' name='comments'></textarea>";
 					echo "</td>";
 
-					echo "<td align='left'>";
+					echo "<td align='center'>";
 					echo "<input type='hidden' name='ID' value=\"$orderID\">\n";
 					
-					switch ($order->fields["status"])
+					if (plugin_order_haveRight("cancel","w"))
 					{
-						case ORDER_STATUS_DRAFT:
-							echo "<input type='submit' name='waiting_for_approval' value=\"" . $LANG['plugin_order']['validation'][11] . "\" class='submit'>";
-							if (plugin_order_haveRight("validation","w"))
-								echo "<br><br><input type='submit' name='validate' value=\"" . $LANG['plugin_order']['validation'][9] . "\" class='submit'>";							
-						break;
-						case ORDER_STATUS_WAITING_APPROVAL:
-							echo "<input type='submit' name='cancel_waiting_for_approval' value=\"" . $LANG['plugin_order']['validation'][13] . "\" class='submit'>";
-							if (plugin_order_haveRight("validation","w"))
-								echo "<br><br><input type='submit' name='validate' value=\"" . $LANG['plugin_order']['validation'][9] . "\" class='submit'>";							
-						break;
-						default:
-						break;
+						echo "<input type='submit' name='cancel_order' value=\"" . $LANG['plugin_order']['validation'][12] . "\" class='submit'>";
+						$link = "<br><br>";
 					}
+					else $link="";
+					$config = plugin_order_getConfig();
+					if ($config["use_validation"])
+					{
+						switch ($order->fields["status"])
+						{
+							case ORDER_STATUS_DRAFT:
+								echo $link."<input type='submit' name='waiting_for_approval' value=\"" . $LANG['plugin_order']['validation'][11] . "\" class='submit'>";
+								if (plugin_order_haveRight("validation","w"))
+									echo "<br><br><input type='submit' name='validate' value=\"" . $LANG['plugin_order']['validation'][9] . "\" class='submit'>";							
+							break;
+							case ORDER_STATUS_WAITING_APPROVAL:
+								echo $link."<input type='submit' name='cancel_waiting_for_approval' value=\"" . $LANG['plugin_order']['validation'][13] . "\" class='submit'>";
+								if (plugin_order_haveRight("validation","w"))
+									echo $link."<input type='submit' name='validate' value=\"" . $LANG['plugin_order']['validation'][9] . "\" class='submit'>";							
+							break;
+							default:
+							break;
+						}
+					}
+					else
+						echo $link."<input type='submit' name='validate' value=\"" . $LANG['plugin_order']['validation'][9] . "\" class='submit'>";							
 					
 					echo "</td>";
 					echo "</tr>";

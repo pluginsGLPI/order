@@ -98,7 +98,8 @@ else
 /* validate order */
 else
 	if (isset ($_POST["validate"])) {
-		if (plugin_order_HaveRight("order", "w") && plugin_order_HaveRight("validation", "w"))
+		$config = plugin_order_getConfig();
+		if (plugin_order_HaveRight("order", "w") && ( plugin_order_HaveRight("validation", "w") || !$config["use_validation"]))
 		{
 			plugin_order_updateOrderStatus($_POST["ID"],ORDER_STATUS_APPROVED,$_POST["comments"]);
 			$plugin_order->getFromDB($_POST["ID"]);
@@ -120,10 +121,19 @@ else
 		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 if (isset ($_POST["cancel_waiting_for_approval"])) {
-		if (plugin_order_HaveRight("order", "w"))
+		if (plugin_order_HaveRight("order", "w") && plugin_order_HaveRight("cancel", "w"))
 		{
 			plugin_order_updateOrderStatus($_POST["ID"],ORDER_STATUS_DRAFT,$_POST["comments"]);
 			addMessageAfterRedirect($LANG['plugin_order']['validation'][14]);
+		}
+		
+		glpi_header($_SERVER['HTTP_REFERER']);
+	}
+if (isset ($_POST["cancel_order"])) {
+		if (plugin_order_HaveRight("order", "w") && plugin_order_HaveRight("cancel", "w"))
+		{
+			plugin_order_updateOrderStatus($_POST["ID"],ORDER_STATUS_CANCELED,$_POST["comments"]);
+			addMessageAfterRedirect($LANG['plugin_order']['validation'][5]);
 		}
 		
 		glpi_header($_SERVER['HTTP_REFERER']);

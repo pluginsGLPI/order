@@ -78,6 +78,8 @@ class PluginOrderReference extends CommonDBTM {
 				$this->getEmpty();
 			}
 		}
+		
+		$canedit = plugin_order_haveRight("reference", "w");
 		if ($spotted) {
 			$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
 			$canedit = $this->can($ID, 'w');
@@ -91,12 +93,17 @@ class PluginOrderReference extends CommonDBTM {
 			$this->showFormHeader($ID, '', 1);
 			echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['reference'][1] . ": </td>";
 			echo "<td>";
-			autocompletionTextField("name", "glpi_plugin_order_references", "name", $this->fields["name"], 70, $this->fields["FK_entities"]);
+			if ($canedit)
+				autocompletionTextField("name", "glpi_plugin_order_references", "name", $this->fields["name"], 70, $this->fields["FK_entities"]);
+			echo $this->fields["name"];	
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][5] . ": </td>";
 			echo "<td>";
-			dropdownValue("glpi_dropdown_manufacturer", "FK_manufacturer", $this->fields["FK_manufacturer"]);
+			if ($canedit)
+				dropdownValue("glpi_dropdown_manufacturer", "FK_manufacturer", $this->fields["FK_manufacturer"]);
+			else
+				echo getDropdownName("glpi_dropdown_manufacturer",$this->fields["FK_manufacturer"]);	
 			echo "</td></tr>";
 
 			$commonitem = new CommonItem;
@@ -148,7 +155,12 @@ class PluginOrderReference extends CommonDBTM {
 			echo "</span></td></tr>";
 
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][25] . ": </td>";
-			echo "<td colspan='3'><textarea cols='50' rows='4' name='comments' >" . $this->fields["comments"] . "</textarea>";
+			
+			echo "<td colspan='3'>";
+			if ($canedit)
+				echo "<textarea cols='50' rows='4' name='comments' >" . $this->fields["comments"] . "</textarea>";
+			else
+				echo $this->fields["comments"];
 			echo "</td></tr>";
 
 			if ($canedit) {

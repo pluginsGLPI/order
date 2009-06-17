@@ -65,13 +65,20 @@ class PluginOrderReferenceManufacturer extends CommonDBTM {
 			echo "<tr><th>" . $LANG['financial'][26] . "</th><th>" . $LANG['plugin_order']['detail'][4] . "</th></tr>";
 			echo "<td class='tab_bg_1' align='center'><a href=\"" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[ENTERPRISE_TYPE] . "?ID=" . $this->fields["FK_enterprise"] . "\">" . getDropdownName("glpi_enterprises", $this->fields["FK_enterprise"]) . "</a></td>";
 			echo "<td class='tab_bg_1' align='center'>";
-			autocompletionTextField("price_taxfree", "glpi_plugin_order_references_manufacturers", "price_taxfree", $this->fields["price_taxfree"], 7);
+			if (haveRight("reference","w"))
+				autocompletionTextField("price_taxfree", "glpi_plugin_order_references_manufacturers", "price_taxfree", $this->fields["price_taxfree"], 7);
+			else 
+				echo $this->fields["price_taxfree"];
+
 			echo "</td></tr>";
-			echo "</tr>";
-			echo "<td class='tab_bg_1'align='center' colspan='2'>";
-			echo "<input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit' >";
-			echo "</td>";
-			echo "</tr>";
+			if (haveRight("reference","w"))
+			{
+				echo "<tr>";
+				echo "<td class='tab_bg_1'align='center' colspan='2'>";
+				echo "<input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit' >";
+				echo "</td>";
+				echo "</tr>";
+			}
 			echo "</table></div></form>";
 			echo "<div id='tabcontent'></div>";
 			echo "<script type='text/javascript'>loadDefaultTab();</script>";

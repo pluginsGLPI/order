@@ -33,7 +33,7 @@ function showReceptionForm($orderID) {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE, $INFOFORM_PAGES;
 
 	$plugin_order = new PluginOrder();
-	$canedit = $plugin_order->can($orderID, 'w') && !plugin_order_canUpdateOrder($orderID);
+	$canedit = $plugin_order->can($orderID, 'w') && !plugin_order_canUpdateOrder($orderID) && $plugin_order->fields["status"] != ORDER_STATUS_CANCELED;
 	$query_ref = "SELECT glpi_plugin_order_detail.ID, glpi_plugin_order_detail.FK_reference AS ref, name, type " .
 	"FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` " .
 	"WHERE FK_order=$orderID AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID  GROUP BY glpi_plugin_order_detail.FK_reference " .
@@ -347,6 +347,16 @@ function plugin_order_deleteLinkWithDevice($detailID, $deviceType) {
 	$detail->update($input);
 }
 
+function plugin_order_deleteAllLinkWithDevice($orderID)
+{
+	global $DB;
+	$devices = getAllDatasFromTable("glpi_plugin_order_device","FK_order=$orderID");
+
+	$device = new PluginOrderDevice;
+
+	foreach ($devices as $deviceID => $device)
+		$device->delete(array ("ID" => $deviceID));
+}
 function plugin_order_updateReceptionStatus($params) {
 	global $LANG;
 	$detail = new PluginOrderDetail;

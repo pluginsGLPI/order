@@ -103,6 +103,7 @@ $LANG['plugin_order']['delivery'][11] = "Link to an existing item";
 $LANG['plugin_order']['delivery'][12] = "Delete item link";
 
 $LANG['plugin_order']['profile'][0] = "Rights management";
+$LANG['plugin_order']['profile'][1] = "Order validation";
 $LANG['plugin_order']['profile'][2] = "Cancel order";
 
 $LANG['plugin_order']['reference'][1] = "Product reference";

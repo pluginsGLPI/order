@@ -1,5 +1,6 @@
 <?php
 
+
 /*----------------------------------------------------------------------
    GLPI - Gestionnaire Libre de Parc Informatique
    Copyright (C) 2003-2008 by the INDEPNET Development Team.
@@ -82,8 +83,8 @@ if (empty ($_POST["ID"])) {
 			showDocumentAssociated(PLUGIN_ORDER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
 			showNotesForm($_POST['target'], PLUGIN_ORDER_TYPE, $_POST["ID"]);
 			break;
-			case 1 : 
-				plugin_order_showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
+		case 1 :
+			plugin_order_showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			break;
 		case 2 :
 			showItem($_POST["ID"]);
@@ -98,13 +99,7 @@ if (empty ($_POST["ID"])) {
 		case 5 :
 			showReceptionForm($_POST["ID"]);
 			break;
-/*
-		case 6 :
-			showJobListForItem(PLUGIN_ORDER_TYPE, $_POST["ID"]);
-			//plugin_applicatifs_showTickets($_POST["ID"]);
-			break;
-*/
-				case 11 :
+		case 11 :
 			showNotesForm($_POST['target'], PLUGIN_ORDER_TYPE, $_POST["ID"]);
 			break;
 		case 12 :

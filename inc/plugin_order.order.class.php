@@ -124,7 +124,7 @@ class PluginOrder extends CommonDBTM {
 
 		if ($spotted) {
 			$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
-			$canedit = (plugin_order_canUpdateOrder($ID) && $this->can($ID, 'w'));
+			$canedit = (plugin_order_canUpdateOrder($ID) && $this->can($ID, 'w') && $this->fields["status"] != ORDER_STATUS_CANCELED);
 			$canrecu = $this->can($ID, 'recursive');
 			echo "<form method='post' name='form' action=\"$target\">";
 			if (empty ($ID) || $ID < 0) {
@@ -292,7 +292,6 @@ class PluginOrder extends CommonDBTM {
 		global $LANG, $CFG_GLPI;
 		displayTitle($CFG_GLPI["root_doc"] . "/plugins/order/pics/order-icon.png", $LANG['plugin_order'][4], $LANG['plugin_order'][4]);
 	}
-
 
 	function needValidation($ID) {
 		global $ORDER_VALIDATION_STATUS;
