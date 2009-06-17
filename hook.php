@@ -325,13 +325,13 @@ function plugin_order_getSearchOption() {
 		/* order number */
 		$sopt[PLUGIN_ORDER_TYPE][1]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][1]['field'] = 'numorder';
-		$sopt[PLUGIN_ORDER_TYPE][1]['linkfield'] = 'numorder';
+		$sopt[PLUGIN_ORDER_TYPE][1]['linkfield'] = '';
 		$sopt[PLUGIN_ORDER_TYPE][1]['name'] = $LANG['plugin_order'][0];
 		$sopt[PLUGIN_ORDER_TYPE][1]['datatype'] = 'itemlink';
 		/* date */
 		$sopt[PLUGIN_ORDER_TYPE][2]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][2]['field'] = 'date';
-		$sopt[PLUGIN_ORDER_TYPE][2]['linkfield'] = 'date';
+		$sopt[PLUGIN_ORDER_TYPE][2]['linkfield'] = '';
 		$sopt[PLUGIN_ORDER_TYPE][2]['name'] = $LANG['plugin_order'][1];
 		/* budget */
 		$sopt[PLUGIN_ORDER_TYPE][3]['table'] = 'glpi_dropdown_budget';
@@ -352,7 +352,7 @@ function plugin_order_getSearchOption() {
 		/* supplier */
 		$sopt[PLUGIN_ORDER_TYPE][6]['table'] = 'glpi_enterprises';
 		$sopt[PLUGIN_ORDER_TYPE][6]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_TYPE][6]['linkfield'] = 'FK_enterprise';
+		$sopt[PLUGIN_ORDER_TYPE][6]['linkfield'] = '';
 		$sopt[PLUGIN_ORDER_TYPE][6]['name'] = $LANG['financial'][26];
 		/* payment */
 		$sopt[PLUGIN_ORDER_TYPE][7]['table'] = 'glpi_dropdown_plugin_order_payment';
@@ -362,28 +362,23 @@ function plugin_order_getSearchOption() {
 		/* delivery num */
 		$sopt[PLUGIN_ORDER_TYPE][8]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][8]['field'] = 'deliverynum';
-		$sopt[PLUGIN_ORDER_TYPE][8]['linkfield'] = 'deliverynum';
+		$sopt[PLUGIN_ORDER_TYPE][8]['linkfield'] = '';
 		$sopt[PLUGIN_ORDER_TYPE][8]['name'] = $LANG['plugin_order'][12];
 		/* bill number */
 		$sopt[PLUGIN_ORDER_TYPE][9]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][9]['field'] = 'numbill';
-		$sopt[PLUGIN_ORDER_TYPE][9]['linkfield'] = 'numbill';
+		$sopt[PLUGIN_ORDER_TYPE][9]['linkfield'] = '';
 		$sopt[PLUGIN_ORDER_TYPE][9]['name'] = $LANG['plugin_order'][28];
 		/* title */
 		$sopt[PLUGIN_ORDER_TYPE][10]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][10]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_TYPE][10]['linkfield'] = 'name';
+		$sopt[PLUGIN_ORDER_TYPE][10]['linkfield'] = '';
 		$sopt[PLUGIN_ORDER_TYPE][10]['name'] = $LANG['plugin_order'][39];
-
-		$sopt[PLUGIN_ORDER_TYPE][11]['table'] = 'glpi_dropdown_budget';
-		$sopt[PLUGIN_ORDER_TYPE][11]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_TYPE][11]['linkfield'] = 'budget';
-		$sopt[PLUGIN_ORDER_TYPE][11]['name'] = $LANG['financial'][87];
 
 		/* comments */
 		$sopt[PLUGIN_ORDER_TYPE][16]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][16]['field'] = 'comment';
-		$sopt[PLUGIN_ORDER_TYPE][16]['linkfield'] = 'comment';
+		$sopt[PLUGIN_ORDER_TYPE][16]['linkfield'] = '';
 		$sopt[PLUGIN_ORDER_TYPE][16]['name'] = $LANG['plugin_order'][2];
 		$sopt[PLUGIN_ORDER_TYPE][16]['datatype'] = 'text';
 		/* ID */
@@ -401,19 +396,19 @@ function plugin_order_getSearchOption() {
 
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['table'] = 'glpi_plugin_order_references';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['linkfield'] = 'name';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['linkfield'] = '';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['name'] = $LANG['plugin_order']['detail'][2];
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['datatype'] = 'itemlink';
 
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['table'] = 'glpi_plugin_order_references';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['field'] = 'ID';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['linkfield'] = 'ID';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['linkfield'] = '';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['name'] = "ID";
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['datatype'] = 'itemlink';
 
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['table'] = 'glpi_plugin_order_references';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['field'] = 'comments';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['linkfield'] = 'comments';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['linkfield'] = '';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['name'] = $LANG['common'][25];
 
 		/* entity */

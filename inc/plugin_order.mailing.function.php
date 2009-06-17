@@ -163,9 +163,9 @@ function plugin_order_updateMailNotifications($input) {
 	
 	}
 
-function plugin_order_sendNotification($action,$orderID,$entity)
+function plugin_order_sendNotification($action,$orderID,$entity,$userID)
 {
-	$mailing = new PluginOrderMailing($orderID,$action,$entity);
+	$mailing = new PluginOrderMailing($orderID,$action,$entity,$userID);
 	$mailing->mailing();
 }
 ?>

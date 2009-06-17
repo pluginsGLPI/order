@@ -71,6 +71,7 @@ class PluginOrderMailing extends CommonDBTM {
 	var $orderID = 0;
 	var $action = "";
 	var $entity = "";
+	var $userID = 0;
 
 	/**
 	 * Constructor
@@ -79,10 +80,11 @@ class PluginOrderMailing extends CommonDBTM {
 	 * @return nothing 
 	 */
 
-	function __construct($orderID, $action, $entity = -1) {
+	function __construct($orderID, $action, $entity = -1, $userID = 0) {
 		$this->orderID = $orderID;
 		$this->entity = $entity;
 		$this->action = $action;
+		$this->userID = $userID;
 	}
 
 	/**
@@ -100,10 +102,20 @@ class PluginOrderMailing extends CommonDBTM {
 		if ($format == "html") {
 			$body .= "<html><head><style  type='text/css'>body {font-family: Verdana;font-size: 11px;text-align: left;} td {font-family: Verdana;font-size: 11px;text-align: left;}</style></head><body>";
 			$body .= "<table class='tab_cadre_fixe' border='1' cellspacing='2' cellpadding='3'>";
-			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['common'][16] . "</td><td>".$order->fields["name"]."</td></tr>";
-			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['financial'][18] . "</td><td>".$order->fields["numorder"]."</td></tr>";
-			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order'][1] . "</td><td>".convDate($order->fields["date"])."</td></tr>";
-			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['joblist'][0] . "</td><td>".plugin_order_getDropdownStatus($order->fields["status"])."</td></tr>";
+			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['common'][16] . "</td><td bgcolor='#CCCCCC'>".$order->fields["name"]."</td></tr>";
+			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['financial'][18] . "</td><td bgcolor='#CCCCCC'>".$order->fields["numorder"]."</td></tr>";
+			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order'][1] . "</td><td bgcolor='#CCCCCC'>".convDate($order->fields["date"])."</td></tr>";
+			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['joblist'][0] . "</td><td bgcolor='#CCCCCC'>".plugin_order_getDropdownStatus($order->fields["status"])."</td></tr>";
+			
+			switch ($this->action)
+			{
+				case "ask":
+					$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order']['validation'][1]." ".$LANG['plugin_order']['mailing'][2]. "</td><td bgcolor='#CCCCCC'>".getUserName($this->userID)."</td></tr>";
+				break;
+				case "validation":
+					$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order']['validation'][10]." ".$LANG['plugin_order']['mailing'][2]. "</td><td bgcolor='#CCCCCC'>".getUserName($this->userID)."</td></tr>";
+				break;
+			}
 
 			if ($CFG_GLPI["url_in_mail"]&&!empty($CFG_GLPI["url_base"])){
 					$body.="<tr><td bgcolor='#CCCCCC' colspan='2'>URL :<a href=\"".$CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_".$this->orderID."\">".$CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_".$this->orderID." </a></td></tr>";

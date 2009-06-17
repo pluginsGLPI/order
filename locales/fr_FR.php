@@ -118,6 +118,7 @@ $LANG['plugin_order']['config'][2] = "Utiliser le circuit de validation";
 
 $LANG['plugin_order']['mailing'][0] = "Demande de validation d'une commande";
 $LANG['plugin_order']['mailing'][1] = "Voir le détail de la commande";
+$LANG['plugin_order']['mailing'][2] = "par";
 
 
 $LANG['plugin_order']['infocom'][1] = "Certains champs ne peuvent-être modifiés : ils proviennent d'une commande";

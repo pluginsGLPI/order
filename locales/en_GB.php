@@ -119,6 +119,7 @@ $LANG['plugin_order']['config'][2] = "Use validation process";
 
 $LANG['plugin_order']['mailing'][0] = "Order validation query";
 $LANG['plugin_order']['mailing'][1] = "See order details";
+$LANG['plugin_order']['mailing'][2] = "by";
 
 $LANG['plugin_order']['infocom'][1] = "Some fields cannont be modified because they belong to an order";
 
