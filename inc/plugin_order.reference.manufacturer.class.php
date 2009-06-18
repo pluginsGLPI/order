@@ -52,6 +52,7 @@ class PluginOrderReferenceManufacturer extends CommonDBTM {
 	function showForm($target, $ID) {
 		global $LANG, $DB, $CFG_GLPI, $INFOFORM_PAGES;
 
+			$canedit = plugin_order_haveRight("reference","w");
 			$this->getFromDB($ID);
 			$this->showTabs($ID, false, $_SESSION['glpi_tab'], array (), "FK_reference=".$this->fields["FK_reference"]);
 			echo "<form method='post' name='show_ref_manu' id='show_ref_manu' action=\"$target\">";
@@ -65,13 +66,13 @@ class PluginOrderReferenceManufacturer extends CommonDBTM {
 			echo "<tr><th>" . $LANG['financial'][26] . "</th><th>" . $LANG['plugin_order']['detail'][4] . "</th></tr>";
 			echo "<td class='tab_bg_1' align='center'><a href=\"" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[ENTERPRISE_TYPE] . "?ID=" . $this->fields["FK_enterprise"] . "\">" . getDropdownName("glpi_enterprises", $this->fields["FK_enterprise"]) . "</a></td>";
 			echo "<td class='tab_bg_1' align='center'>";
-			if (haveRight("reference","w"))
+			if ($canedit)
 				autocompletionTextField("price_taxfree", "glpi_plugin_order_references_manufacturers", "price_taxfree", $this->fields["price_taxfree"], 7);
 			else 
 				echo $this->fields["price_taxfree"];
 
 			echo "</td></tr>";
-			if (haveRight("reference","w"))
+			if ($canedit)
 			{
 				echo "<tr>";
 				echo "<td class='tab_bg_1'align='center' colspan='2'>";
