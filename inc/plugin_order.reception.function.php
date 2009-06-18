@@ -36,7 +36,9 @@ function showReceptionForm($orderID) {
 	$canedit = $plugin_order->can($orderID, 'w') && !plugin_order_canUpdateOrder($orderID) && $plugin_order->fields["status"] != ORDER_STATUS_CANCELED;
 	$query_ref = "SELECT glpi_plugin_order_detail.ID, glpi_plugin_order_detail.FK_reference AS ref, name, type " .
 	"FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` " .
-	"WHERE FK_order=$orderID AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID  GROUP BY glpi_plugin_order_detail.FK_reference " .
+	"WHERE FK_order=$orderID " .
+	"AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID  " .
+	"GROUP BY glpi_plugin_order_detail.FK_reference " .
 	"ORDER BY glpi_plugin_order_detail.ID";
 	$result_ref = $DB->query($query_ref);
 	$numref = $DB->numrows($result_ref);

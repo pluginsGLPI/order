@@ -133,6 +133,7 @@ if (isset ($_POST["cancel_order"])) {
 		if (plugin_order_HaveRight("order", "w") && plugin_order_HaveRight("cancel", "w"))
 		{
 			plugin_order_updateOrderStatus($_POST["ID"],ORDER_STATUS_CANCELED,$_POST["comments"]);
+			plugin_order_deleteAllLinkWithDevice($_POST["ID"]);
 			addMessageAfterRedirect($LANG['plugin_order']['validation'][5]);
 		}
 		

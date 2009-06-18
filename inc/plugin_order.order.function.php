@@ -178,7 +178,7 @@ function plugin_order_showValidationForm($target,$orderID)
 							break;
 						}
 					}
-					else
+					elseif ($order->fields["status"] > ORDER_STATUS_APPROVED)
 						echo $link."<input type='submit' name='validate' value=\"" . $LANG['plugin_order']['validation'][9] . "\" class='submit'>";							
 					
 					echo "</td>";

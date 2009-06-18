@@ -90,7 +90,7 @@ function plugin_order_addSupplierToReference($target,$referenceID)
 {
 	global $LANG,$DB;
 
-		if (haveRight("reference","w"))
+		if (plugin_order_haveRight("reference","w"))
 		{
 
 			$suppliers = array();
@@ -119,7 +119,7 @@ function plugin_order_addSupplierToReference($target,$referenceID)
 			echo "</tr>";
 			echo "<tr>";
 			echo "<td class='tab_bg_1' align='center' colspan='3'>";
-			echo "<input type='submit' name='add_reference_manufacturer' value=\"" . $LANG['buttons'][7] . "\" class='submit' >";
+			echo "<input type='submit' name='add_reference_manufacturer' value=\"" . $LANG['buttons'][8] . "\" class='submit' >";
 			echo "</td>";
 			echo "</tr>";
 			echo "</table></form>";	
@@ -132,7 +132,8 @@ function plugin_order_addSupplierToReference($target,$referenceID)
 function plugin_order_showReferencesBySupplierID($ID)
 {
 	global $LANG, $DB, $CFG_GLPI,$INFOFORM_PAGES;
-	$query = "SELECT gr.ID, gr.FK_manufacturer, gr.FK_entities, gr.type, gr.name, grm.price FROM `glpi_plugin_order_references_manufacturers` as grm, `glpi_plugin_order_references` as gr " .
+	$query = "SELECT gr.ID, gr.FK_manufacturer, gr.FK_entities, gr.type, gr.name, grm.price " .
+			"FROM `glpi_plugin_order_references_manufacturers` as grm, `glpi_plugin_order_references` as gr " .
 			"WHERE grm.FK_enterprise='$ID' AND grm.FK_reference=gr.ID";
 	$result = $DB->query($query);
 
@@ -181,7 +182,7 @@ function plugin_order_showReferencesBySupplierID($ID)
 function plugin_order_getAllReferencesByEnterpriseAndType($type,$enterpriseID)
 {
 	global $DB;
-	$query = "SELECT gr.name, gr.ID FROM glpi_plugin_order_references as gr, glpi_plugin_order_references_manufacturers as grm" .
+	$query = "SELECT gr.name, gr.ID FROM `glpi_plugin_order_references` as gr, `glpi_plugin_order_references_manufacturers` as grm" .
 			" WHERE gr.type=$type AND grm.FK_enterprise=$enterpriseID AND grm.FK_reference=gr.ID";
 
 	$result = $DB->query($query);
@@ -195,7 +196,8 @@ function plugin_order_getAllReferencesByEnterpriseAndType($type,$enterpriseID)
 function plugin_order_getPriceByReferenceAndSupplier($referenceID,$supplierID)
 {
 	global $DB;
-	$query = "SELECT price_taxfree FROM `glpi_plugin_order_references_manufacturers` WHERE FK_reference=$referenceID AND FK_enterprise=$supplierID";
+	$query = "SELECT price_taxfree FROM `glpi_plugin_order_references_manufacturers` " .
+			"WHERE FK_reference=$referenceID AND FK_enterprise=$supplierID";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0)
 		return $DB->result($result,0,"price_taxfree");
@@ -222,7 +224,7 @@ function plugin_order_getModelTable($type)
 		case PERIPHERAL_TYPE:
 			return $prefix."_peripherals";	
 		case PHONE_TYPE:
-			return $prefix."_printers";				
+			return $prefix."_phones";				
 		default :
 			return "";
 			break;	
@@ -249,7 +251,7 @@ function plugin_order_getTypeTable($type)
 		case PERIPHERAL_TYPE:
 			return $prefix."_peripherals";	
 		case PHONE_TYPE:
-			return $prefix."_printers";	
+			return $prefix."_phones";	
 		default :
 			return "";
 			break;	
