@@ -38,6 +38,7 @@ define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
 include (GLPI_ROOT."/plugins/order/inc/plugin_order.dropdown.function.php");
 include (GLPI_ROOT."/plugins/order/inc/plugin_order.reception.function.php");
+include (GLPI_ROOT."/plugins/order/inc/plugin_order.reference.class.php");
 $AJAX_INCLUDE=1;
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -64,7 +65,9 @@ if (isset($_POST["action"])){
 		case "createLink":
 			echo "</td><td valign='bottom'>";
 			echo "<input type='hidden' name='FK_type' value='$type'>";
-			plugin_order_dropdownAllItemsByType("device", $type, $_SESSION["glpiactive_entity"]);
+			$reference = new PluginOrderReference;
+			$reference->getFromDB($_POST["referenceID"]);
+			plugin_order_dropdownAllItemsByType("device", $type, $_SESSION["glpiactive_entity"],$reference->fields["FK_type"],$reference->fields["FK_model"]);
 			echo "</td><td valign='bottom'><input type='submit' name='createLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'></td>";
 		break;
 		case "deleteLink":

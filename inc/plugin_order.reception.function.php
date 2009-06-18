@@ -43,8 +43,9 @@ function showReceptionForm($orderID) {
 	$result_ref = $DB->query($query_ref);
 	$numref = $DB->numrows($result_ref);
 	$j = 0;
+	
 	while ($j < $numref || $j == 0) {
-		if ($numref != 0) {
+		if ($numref) {
 			$refID = $DB->result($result_ref, $j, 'ref');
 			$typeRef = $DB->result($result_ref, $j, 'type');
 			$query = "SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, status, date, price_taxfree,
@@ -58,7 +59,7 @@ function showReceptionForm($orderID) {
 			$num = $DB->numrows($result);
 		}
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
-		if ($numref == 0)
+		if (!$numref)
 			echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
 		else {
 			$rand = mt_rand();
@@ -109,6 +110,7 @@ function showReceptionForm($orderID) {
 					echo "<input type='checkbox' name='item[" . $detailID . "]' value='1' $sel>";
 					echo "</td>";
 				}
+
 				echo "<td align='center'>" . getReceptionType($detailID) . "</td>";
 				echo "<td align='center'>" . getReceptionManufacturer($detailID) . "</td>";
 				echo "<td align='center'>" . getReceptionReferenceLink($DB->result($result, $i, 'IDR'), $DB->result($result, $i, 'name')) . "</td>";
@@ -133,7 +135,7 @@ function showReceptionForm($orderID) {
 				echo "<td width='1%'>/</td><td class='center' width='5%'><a onclick= \"if ( unMarkCheckboxes('order_reception_form$rand') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$orderID&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
 				echo "</td>";
 				echo "<input type='hidden' name='orderID' value='$orderID'>";
-				plugin_order_dropdownReceptionActions($typeRef);
+				plugin_order_dropdownReceptionActions($typeRef,$refID);
 				echo "</td></tr>";
 				echo "</table>";
 			}
@@ -147,15 +149,11 @@ function showReceptionForm($orderID) {
 function getNumberOfLinkedMaterial($orderID, $refID) {
 	global $DB;
 	$query = "SELECT count(*) AS result FROM `glpi_plugin_order_detail`
-											WHERE FK_order = " . $orderID . "
-											AND FK_reference = " . $refID . "
-											AND FK_device != '0' ";
-	if ($result = $DB->query($query)) {
-		if ($DB->result($result, 0, 'result') != 0) {
-			return ($DB->result($result, 0, 'result'));
-		} else
-			return 0;
-	}
+			  WHERE FK_order = " . $orderID . "
+			  AND FK_reference = " . $refID . "
+			  AND FK_device != '0' ";
+	$result = $DB->query($query);
+	return ($DB->result($result, 0, 'result'));
 }
 
 function getReceptionMaterialInfo($deviceType, $deviceID) {
@@ -223,35 +221,34 @@ function getReceptionStatus($ID) {
 
 function getReceptionManufacturer($ID) {
 	global $DB;
-	$query = " SELECT glpi_plugin_order_detail.ID, FK_manufacturer
-									FROM glpi_plugin_order_detail, glpi_plugin_order_references
-									WHERE glpi_plugin_order_detail.ID=$ID
-									AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID";
+	$query = "SELECT glpi_plugin_order_detail.ID, FK_manufacturer
+			  FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
+			  WHERE glpi_plugin_order_detail.ID=$ID
+			  AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID";
 	$result = $DB->query($query);
-	if ($DB->result($result, 0, 'FK_manufacturer') != NULL) {
+	if ($DB->result($result, 0, 'FK_manufacturer') != null) {
 		return (getDropdownName("glpi_dropdown_manufacturer", $DB->result($result, 0, 'FK_manufacturer')));
 	} else
-		return (-1);
+		return -1;
 }
 
 function getReceptionDate($ID) {
 	global $DB, $LANG;
-	$query = " SELECT date, status
-								FROM glpi_plugin_order_detail
-								WHERE ID=$ID";
-	$result = $DB->query($query);
-	if (getReceptionStatus($ID) != $LANG['plugin_order']['status'][11]) {
-		return (convDate($DB->result($result, 0, 'date')));
-	} else
-		return ($LANG['plugin_order']['detail'][23]);
+	
+	$detail = new PluginOrderDetail;
+	$detail->getFromDB($ID);
+	if ($detail->fields["status"] == ORDER_DEVICE_NOT_DELIVRED)
+		return $LANG['plugin_order']['detail'][23];
+	else
+		return convDate($detail->fields["date"]);
 }
 
 function getReceptionType($ID) {
 	global $DB, $LINK_ID_TABLE;
-	$query = " SELECT glpi_plugin_order_detail.ID, type 
-									FROM glpi_plugin_order_detail, glpi_plugin_order_references
-									WHERE glpi_plugin_order_detail.ID=$ID
-									AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID";
+	$query = "SELECT glpi_plugin_order_detail.ID, type 
+			  FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
+			  WHERE glpi_plugin_order_detail.ID=$ID
+			  AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID";
 	$result = $DB->query($query);
 	if ($DB->result($result, 0, 'type') != NULL) {
 		$ci = new CommonItem();
@@ -291,7 +288,7 @@ function getReceptionDeviceName($deviceID, $deviceType) {
 	}
 }
 
-function getAllItemsByType($type, $entity) {
+function getAllItemsByType($type, $entity, $item_type=0,$item_model=0) {
 	global $DB, $LINK_ID_TABLE;
 	switch ($type) {
 		case COMPUTER_TYPE :
@@ -300,11 +297,12 @@ function getAllItemsByType($type, $entity) {
 		case PERIPHERAL_TYPE :
 		case PHONE_TYPE :
 		case PRINTER_TYPE :
+			$and = " AND is_template=0 AND deleted=0 ";
+			$and.= ($item_type!=0?" AND type=$item_type":"");
+			$and.= ($item_model!=0?" AND model=$item_model":"");
 			$query = "SELECT ID, name FROM `" . $LINK_ID_TABLE[$type] . "` 
-								 WHERE FK_entities=" . $entity . " 
-								 AND is_template=0
-								 AND deleted=0
-								 AND ID NOT IN (SELECT FK_device FROM glpi_plugin_order_detail)";
+					 WHERE FK_entities=" . $entity . $and." 
+					 AND ID NOT IN (SELECT FK_device FROM glpi_plugin_order_detail)";
 			break;
 		case CONSUMABLE_ITEM_TYPE :
 			$query = "SELECT ID, name FROM `glpi_consumables_type` 

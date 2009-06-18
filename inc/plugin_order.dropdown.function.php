@@ -132,13 +132,13 @@ function plugin_order_dropdownReferencesByEnterprise($name, $type, $enterpriseID
 	return dropdownArrayValues($name, $references, 0);
 }
 
-function plugin_order_dropdownAllItemsByType($name, $type, $entity) {
-	$items = getAllItemsByType($type, $entity);
+function plugin_order_dropdownAllItemsByType($name, $type, $entity=0,$item_type=0,$item_model=0) {
+	$items = getAllItemsByType($type, $entity,$item_type,$item_model);
 	$items[0] = '-----';
 	return dropdownArrayValues($name, $items, 0);
 }
 
-function plugin_order_dropdownReceptionActions($type) {
+function plugin_order_dropdownReceptionActions($type,$referenceID) {
 	global $LANG, $CFG_GLPI;
 	$rand = mt_rand();
 	echo "<td width='5%'>";
@@ -152,7 +152,8 @@ function plugin_order_dropdownReceptionActions($type) {
 	echo "</select>";
 	$params = array (
 		'action' => '__VALUE__',
-		'type' => $type
+		'type' => $type,
+		'referenceID'=>$referenceID
 	);
 	ajaxUpdateItemOnSelectEvent("receptionActions$rand", "show_receptionActions$rand", $CFG_GLPI["root_doc"] . "/plugins/order/ajax/receptionactions.php", $params);
 	echo "</td>";
@@ -191,7 +192,10 @@ function plugin_order_getDropdownStatus($value) {
 }
 function plugin_order_templateExistsInEntity($detailID, $type, $entity) {
 	global $DB;
-	$query = "SELECT glpi_plugin_order_references.template AS templateID FROM glpi_plugin_order_detail, glpi_plugin_order_references WHERE glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID AND glpi_plugin_order_detail.ID=" . $detailID;
+	$query = "SELECT glpi_plugin_order_references.template AS templateID " .
+			"FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` " .
+			"WHERE glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID " .
+			"AND glpi_plugin_order_detail.ID=" . $detailID;
 	$result = $DB->query($query);
 	if (!$DB->numrows($result))
 		return 0;
