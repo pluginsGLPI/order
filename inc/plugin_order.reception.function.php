@@ -58,6 +58,7 @@ function showReceptionForm($orderID) {
 			$result = $DB->query($query);
 			$num = $DB->numrows($result);
 		}
+		
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
 		if (!$numref)
 			echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
