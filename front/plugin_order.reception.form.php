@@ -77,7 +77,7 @@ if (isset ($_POST["generation"])) {
 }
 /* g�n�re le mat�riel */
 if (isset ($_POST["generate"])) {
-	plugin_order_generateNewDevice($_POST, $_SESSION["glpiactive_entity"]);
+	plugin_order_generateNewDevice($_POST);
 	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=" . $_POST["orderID"] . "");
 }
 /* supprime un lien d'une ligne d�tail vers un mat�riel */

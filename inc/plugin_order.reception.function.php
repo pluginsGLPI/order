@@ -75,9 +75,9 @@ function showReceptionForm($orderID) {
 			echo "<tr><td class='tab_bg_1' width='15'></td><td align='center' class='tab_bg_1'>" . getReceptionReferenceLink($refID, $DB->result($result_ref, $j, 'name')) . "</td>";
 			echo "<td align='center' class='tab_bg_1'>" . getDelivredQuantity($orderID, $refID) . " / " . getQuantity($orderID, $refID) . "</td>";
 			echo "<td align='center' class='tab_bg_1'>" . getNumberOfLinkedMaterial($orderID, $refID) . " / " . getQuantity($orderID, $refID) . "</td>";
-			echo "<td align='center' class='tab_bg_1'>" . sprintf("%01.2f", $DB->result($result, $j, "price_taxfree")) . "</td>";
-			echo "<td align='center' class='tab_bg_1'>" . sprintf("%01.2f", $DB->result($result, $j, "price_ati")) . "</td>";
-			echo "<td align='center' class='tab_bg_1'>" . sprintf("%01.2f", $DB->result($result, $j, "price_discounted")) . "</td></tr></table>";
+			echo "<td align='center' class='tab_bg_1'>" . plugin_order_displayPrice($DB->result($result, $j, "price_taxfree")) . "</td>";
+			echo "<td align='center' class='tab_bg_1'>" . plugin_order_displayPrice($DB->result($result, $j, "price_ati")) . "</td>";
+			echo "<td align='center' class='tab_bg_1'>" . plugin_order_displayPrice($DB->result($result, $j, "price_discounted")) . "</td></tr></table>";
 			
 			echo "<div class='center' id='reception$rand' style='display:none'>";
 			echo "<form method='post' name='order_reception_form$rand' id='order_reception_form$rand'  action=\"" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.reception.form.php\">";
@@ -172,6 +172,8 @@ function getReceptionMaterialInfo($deviceType, $deviceID) {
 			$ci->getFromDB($deviceType, $deviceID);
 			if (isset ($ci->obj->fields["name"]))
 				$comments = "<strong>" . $LANG['common'][16] . ":</strong> " . $ci->obj->fields["name"];
+			if (isset ($ci->obj->fields["FK_entities"]))
+				$comments = "<strong>" . $LANG['entity'][0] . ":</strong> " . getDropdownName("glpi_entities",$ci->obj->fields["FK_entities"]);
 			if (isset ($ci->obj->fields["serial"]) && $ci->obj->fields["serial"] != '')
 				$comments .= "<br><strong>" . $LANG['common'][19] . ":</strong> " . $ci->obj->fields["serial"];
 			if (isset ($ci->obj->fields["otherserial"]) && $ci->obj->fields["otherserial"] != '')
@@ -405,35 +407,45 @@ function plugin_order_showReceptionForm($target, $params) {
 	echo "<table class='tab_cadre'>";
 
 	echo "<form method='post' name='order_deviceGeneration' id='order_deviceGeneration'  action=" . $_SERVER["PHP_SELF"] . ">";
-	echo "<tr><th colspan='4'>" . $LANG['plugin_order']['delivery'][3] . "</tr></th>";
+	echo "<tr><th colspan='5'>" . $LANG['plugin_order']['delivery'][3] . "</tr></th>";
 	echo "<tr><th>" . $LANG['plugin_order']['reference'][1] . "</th>";
-	echo "<th>" . $LANG['plugin_order']['delivery'][6] . "</th>";
-	echo "<th>" . $LANG['plugin_order']['delivery'][7] . "</th>";
-	echo "<th>" . $LANG['plugin_order']['delivery'][8] . "</th></tr>";
+	echo "<th>" . $LANG['common'][19] . "</th>";
+	echo "<th>" . $LANG['common'][20] . "</th>";
+	echo "<th>" . $LANG['common'][16] . "</th>"; 
+    echo "<th>". $LANG['entity'][0] ."</th>";
+    echo "</tr>";
 	echo "<input type='hidden' name='orderID' value=" . $params["orderID"] . ">";
+	
+	$order = new PluginOrder;
+	$order->getFromDB($params["orderID"]);
+	
 	$i = 0;
 	foreach ($params["item"] as $key => $val)
 		if ($val == 1) {
-			echo "<tr class='tab_bg_1'><td align='center'><a href=" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.reference.form.php?ID=" . $key . ">" . $_POST["name"][$key] . "</a></td>";
+			echo "<tr class='tab_bg_1'><td align='center'>" . $_POST["name"][$key] . "</td>";
 			echo "<td><input type='text' size='20' name='serial[$i]'></td>";
 			echo "<td><input type='text' size='20' name='otherserial[$i]'></td>";
-			echo "<td><input type='text' size='20' name='name[$i]'></td></tr>";
+			echo "<td><input type='text' size='20' name='name[$i]'></td>";
+			echo "<td>";
+			$entity_restrict = ($order->fields["recursive"]?getEntitySons($order->fields["FK_entities"]):$order->fields["FK_entities"]);
+			dropdownValue("glpi_entities","FK_entities",$order->fields["FK_entities"],1,$entity_restrict);
+			echo "</td></tr>";
 			echo "<input type='hidden' name='type[$i]' value=" . $params['type'][$key] . ">";
 			echo "<input type='hidden' name='ID[$i]' value=" . $params["ID"][$key] . ">";
 			$i++;
 		}
 
-	echo "<tr><td align='center' colspan='4' class='tab_bg_2'><input type='submit' name='generate' class='submit' value=" . $LANG['plugin_order']['delivery'][9] . "></td></tr>";
+	echo "<tr><td align='center' colspan='5' class='tab_bg_2'><input type='submit' name='generate' class='submit' value=" . $LANG['plugin_order']['delivery'][9] . "></td></tr>";
 
 	echo "</table>";
 	echo "</div>";
 	commonFooter();
 }
 
-function plugin_order_generateNewDevice($params, $entity) {
+function plugin_order_generateNewDevice($params) {
 	global $DB, $LANG;
 	$i = 0;
-
+	$entity= $params["FK_entities"];
 	while (isset ($params["serial"][$i])) {
 		//Look for a template in the entity
 		$templateID = plugin_order_templateExistsInEntity($params["ID"][$i], $params["type"][$i], $entity);
@@ -508,7 +520,7 @@ function plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_
 	$fields["device_type"] = $device_type;
 	$fields["FK_device"] = $deviceID;
 	$fields["num_commande"] = $order->fields["numorder"];
-	$fields["bon_livraison"] = $order->fields["deliverynum"];
+	$fields["bon_livraison"] = $detail->fields["deliverynum"];
 	$fields["budget"] = $order->fields["budget"];
 	$fields["FK_enterprise"] = $order->fields["FK_enterprise"];
 	$fields["facture"] = $order->fields["numbill"];
