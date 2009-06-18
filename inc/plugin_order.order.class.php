@@ -43,14 +43,14 @@ class PluginOrder extends CommonDBTM {
 		global $DB;
 
 		$query = "	DELETE FROM `glpi_plugin_order_device` 
-											WHERE FK_order = '$ID'";
+													WHERE FK_order = '$ID'";
 		$DB->query($query);
 		$query = "	DELETE FROM `glpi_doc_device` 
-											WHERE FK_device = '$ID' 
-											AND device_type= '" . PLUGIN_ORDER_TYPE . "' ";
+													WHERE FK_device = '$ID' 
+													AND device_type= '" . PLUGIN_ORDER_TYPE . "' ";
 		$DB->query($query);
 		$query = "	DELETE FROM `glpi_plugin_order_detail`
-											WHERE FK_order='$ID'";
+													WHERE FK_order='$ID'";
 		$DB->query($query);
 	}
 
@@ -59,8 +59,8 @@ class PluginOrder extends CommonDBTM {
 		global $DB;
 
 		$query = " DELETE FROM `glpi_plugin_order_device`
-											WHERE FK_device = '$ID' 
-											AND device_type= '$type'";
+													WHERE FK_device = '$ID' 
+													AND device_type= '$type'";
 		$DB->query($query);
 	}
 
@@ -193,7 +193,7 @@ class PluginOrder extends CommonDBTM {
 			else
 				echo $this->fields["numbill"];
 			echo "</td>";
-	
+
 			/* supplier of order */
 			echo "<td>" . $LANG['financial'][26] . ": </td>";
 			echo "<td>";
@@ -211,7 +211,6 @@ class PluginOrder extends CommonDBTM {
 			else
 				echo getDropdownName("glpi_dropdown_locations", $this->fields["FK_enterprise"]);
 			echo "</td>";
-
 
 			echo "<td>" . $LANG['plugin_order']['status'][0] . ": </td>";
 			echo "<td>";
@@ -293,6 +292,67 @@ class PluginOrder extends CommonDBTM {
 			return (in_array($this->fields["status"], $ORDER_VALIDATION_STATUS));
 		else
 			return false;
+	}
+
+	function canValidate() {
+		global $ORDER_VALIDATION_STATUS;
+		$config = plugin_order_getConfig();
+
+		//If no validation process -> can validate if order is in draft state
+		if (!$config["use_validation"])
+			return ($this->fields["status"] == ORDER_STATUS_DRAFT);
+		else {
+			//Validation process is used
+
+			//If order is canceled, cannot validate !
+			if ($this->fields["status"] == ORDER_STATUS_CANCELED)
+				return false;
+
+			//If no right to validate
+			if (!plugin_order_haveRight("validation", "w"))
+				return false;
+			else
+				return (in_array($this->fields["status"], $ORDER_VALIDATION_STATUS));
+		}
+	}
+
+	function canCancelOrder() {
+		//If order is canceled, cannot validate !
+		if ($this->fields["status"] == ORDER_STATUS_CANCELED)
+			return false;
+
+		//If no right to cancel
+		if (!plugin_order_haveRight("cancel", "w"))
+			return false;
+
+		return true;
+	}
+
+	function canDoValidationRequest() {
+		$config = plugin_order_getConfig();
+		if (!$config["use_validation"])
+			return false;
+		else
+			return ($this->fields["status"] == ORDER_STATUS_DRAFT);
+	}
+
+	function canCancelValidationRequest() {
+		return ($this->fields["status"] == ORDER_STATUS_WAITING_APPROVAL);
+	}
+
+	function canUndoValidation() {
+		global $ORDER_VALIDATION_STATUS;
+		
+		//If order is canceled, cannot validate !
+		if ($this->fields["status"] == ORDER_STATUS_CANCELED)
+			return false;
+
+		//If order is not validate, cannot undo validation !
+		if (in_array($this->fields["status"], $ORDER_VALIDATION_STATUS))
+			return false;
+
+		//If no right to cancel
+		return (plugin_order_haveRight("undo_validation", "w"));
 	}
 }
 ?>

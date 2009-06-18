@@ -70,7 +70,7 @@ class PluginOrderProfile extends CommonDBTM {
 
 		echo "<tr align='center'><th colspan='2' >".$LANG['plugin_order']['profile'][1]."</th></tr>";
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>" . $LANG['plugin_order']['config'][2] . ":</td><td>";
+		echo "<td>" . $LANG['plugin_order']['profile'][1] . ":</td><td>";
 		dropdownNoneReadWrite("validation", $this->fields["validation"], 1, 0, 1);
 		echo "</td>";
 		echo "</tr>";
@@ -78,6 +78,12 @@ class PluginOrderProfile extends CommonDBTM {
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>" . $LANG['plugin_order']['profile'][2] . ":</td><td>";
 		dropdownNoneReadWrite("cancel", $this->fields["cancel"], 1, 0, 1);
+		echo "</td>";
+		echo "</tr>";
+
+		echo "<tr class='tab_bg_2'>";
+		echo "<td>" . $LANG['plugin_order']['profile'][3] . ":</td><td>";
+		dropdownNoneReadWrite("undo_validation", $this->fields["undo_validation"], 1, 0, 1);
 		echo "</td>";
 		echo "</tr>";
 

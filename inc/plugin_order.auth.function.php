@@ -41,7 +41,10 @@ function plugin_order_createfirstaccess($ID){
 			'ID' => $ID,
 			'name' => $name,
 			'order' => 'w',
-			'reference'=>'w'));
+			'reference'=>'w',
+			'validation'=>'w',
+			'cancel'=>'w',
+			'undo_validation'=>'w'));
 	}
 	
 }

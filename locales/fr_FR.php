@@ -105,6 +105,7 @@ $LANG['plugin_order']['delivery'][12] = "Supprimer le lien avec le matériel";
 $LANG['plugin_order']['profile'][0] = "Gestion des droits";
 $LANG['plugin_order']['profile'][1] = "Valider une commande";
 $LANG['plugin_order']['profile'][2] = "Annuler une commande";
+$LANG['plugin_order']['profile'][3] = "Modifier une commande validée";
 
 $LANG['plugin_order']['reference'][1] = "Référence produit";
 $LANG['plugin_order']['reference'][2] = "Ajouter une référence produit";
@@ -140,6 +141,8 @@ $LANG['plugin_order']['validation'][12] = "Annuler la commande";
 $LANG['plugin_order']['validation'][13] = "Annuler la demande la validation";
 $LANG['plugin_order']['validation'][14] = "Annulation la demande la validation effectuée";
 $LANG['plugin_order']['validation'][15] = "Commande en édition";
+$LANG['plugin_order']['validation'][16] = "Annulation de la validation effectuée";
+$LANG['plugin_order']['validation'][17] = "Modifier la commande";
 
 
 

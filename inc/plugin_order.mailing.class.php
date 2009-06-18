@@ -1,5 +1,6 @@
 <?php
 
+
 /*----------------------------------------------------------------------
    GLPI - Gestionnaire Libre de Parc Informatique
    Copyright (C) 2003-2008 by the INDEPNET Development Team.
@@ -46,21 +47,22 @@ class PluginOrderConfigMailing extends CommonDBTM {
 		echo "<div align='center'>";
 		echo "<input type='hidden' name='update_notifications' value='1'>";
 		// ADMIN
+
+		$alerts = array (
+			"ask" => $LANG['plugin_order']['validation'][1],
+			"validation" => $LANG['plugin_order']['validation'][2],
+			"cancel" => $LANG['plugin_order']['profile'][2],
+			"undovalidation" => $LANG['plugin_order']['profile'][3]
+		);
+
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='3'>" . $LANG['plugin_order']['validation'][1] . "</th></tr>";
-		echo "<tr class='tab_bg_2'>";
-		plugin_order_showFormMailingType("ask", $profiles);
-		echo "</tr>";
 
-		echo "<tr><th colspan='3'>" . $LANG['plugin_order']['validation'][2] . "</th></tr>";
-		echo "<tr class='tab_bg_2'>";
-		plugin_order_showFormMailingType("validation", $profiles);
-		echo "</tr>";
-
-		echo "<tr><th colspan='3'>" . $LANG['plugin_order']['profile'][2] . "</th></tr>";
-		echo "<tr class='tab_bg_2'>";
-		plugin_order_showFormMailingType("cancel", $profiles);
-		echo "</tr>";
+		foreach ($alerts as $value => $label) {
+			echo "<tr><th colspan='3'>" . $label . "</th></tr>";
+			echo "<tr class='tab_bg_2'>";
+			plugin_order_showFormMailingType($value, $profiles);
+			echo "</tr>";
+		}
 
 		echo "</table>";
 		echo "</div>";
@@ -99,66 +101,70 @@ class PluginOrderMailing extends CommonDBTM {
 	 * @return mail body string
 	 */
 	function get_mail_body($format = "text") {
-		global $CFG_GLPI, $LANG,$INFOFORM_PAGES;
+		global $CFG_GLPI, $LANG, $INFOFORM_PAGES;
 
 		// Create message body from Job and type
 		$body = "";
 		$order = new PluginOrder;
 		$order->getFromDB($this->orderID);
-		
+
 		if ($format == "html") {
 			$body .= "<html><head><style  type='text/css'>body {font-family: Verdana;font-size: 11px;text-align: left;} td {font-family: Verdana;font-size: 11px;text-align: left;}</style></head><body>";
 			$body .= "<table class='tab_cadre_fixe' border='1' cellspacing='2' cellpadding='3'>";
-			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['common'][16] . "</td><td bgcolor='#CCCCCC'>".$order->fields["name"]."</td></tr>";
-			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['financial'][18] . "</td><td bgcolor='#CCCCCC'>".$order->fields["numorder"]."</td></tr>";
-			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order'][1] . "</td><td bgcolor='#CCCCCC'>".convDate($order->fields["date"])."</td></tr>";
-			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['joblist'][0] . "</td><td bgcolor='#CCCCCC'>".plugin_order_getDropdownStatus($order->fields["status"])."</td></tr>";
+			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['common'][16] . "</td><td bgcolor='#CCCCCC'>" . $order->fields["name"] . "</td></tr>";
+			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['financial'][18] . "</td><td bgcolor='#CCCCCC'>" . $order->fields["numorder"] . "</td></tr>";
+			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order'][1] . "</td><td bgcolor='#CCCCCC'>" . convDate($order->fields["date"]) . "</td></tr>";
+			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['joblist'][0] . "</td><td bgcolor='#CCCCCC'>" . plugin_order_getDropdownStatus($order->fields["status"]) . "</td></tr>";
 			if ($this->message != '')
-				$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['common'][25] . "</td><td bgcolor='#CCCCCC'>".$this->message."</td></tr>";
-			
-			switch ($this->action)
-			{
-				case "ask":
-					$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order']['validation'][1]." ".$LANG['plugin_order']['mailing'][2]. "</td><td bgcolor='#CCCCCC'>".getUserName($this->userID)."</td></tr>";
-				break;
-				case "validation":
-					$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order']['validation'][10]." ".$LANG['plugin_order']['mailing'][2]. "</td><td bgcolor='#CCCCCC'>".getUserName($this->userID)."</td></tr>";
-				break;
-				case "cancel":
-					$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order']['validation'][5]." ".$LANG['plugin_order']['mailing'][2]. "</td><td bgcolor='#CCCCCC'>".getUserName($this->userID)."</td></tr>";
-				break;
+				$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['common'][25] . "</td><td bgcolor='#CCCCCC'>" . $this->message . "</td></tr>";
+
+			switch ($this->action) {
+				case "ask" :
+					$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order']['validation'][1] . " " . $LANG['plugin_order']['mailing'][2] . "</td><td bgcolor='#CCCCCC'>" . getUserName($this->userID) . "</td></tr>";
+					break;
+				case "validation" :
+					$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order']['validation'][10] . " " . $LANG['plugin_order']['mailing'][2] . "</td><td bgcolor='#CCCCCC'>" . getUserName($this->userID) . "</td></tr>";
+					break;
+				case "cancel" :
+					$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order']['validation'][5] . " " . $LANG['plugin_order']['mailing'][2] . "</td><td bgcolor='#CCCCCC'>" . getUserName($this->userID) . "</td></tr>";
+					break;
+				case "undovalidation" :
+					$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order']['validation'][16] . " " . $LANG['plugin_order']['mailing'][2] . "</td><td bgcolor='#CCCCCC'>" . getUserName($this->userID) . "</td></tr>";
+					break;
 			}
 
-			if ($CFG_GLPI["url_in_mail"]&&!empty($CFG_GLPI["url_base"])){
-					$body.="<tr><td bgcolor='#CCCCCC' colspan='2'>URL :<a href=\"".$CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_".$this->orderID."\">".$CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_".$this->orderID." </a></td></tr>";
+			if ($CFG_GLPI["url_in_mail"] && !empty ($CFG_GLPI["url_base"])) {
+				$body .= "<tr><td bgcolor='#CCCCCC' colspan='2'>URL :<a href=\"" . $CFG_GLPI["url_base"] . "/index.php?redirect=plugin_order_" . $this->orderID . "\">" . $CFG_GLPI["url_base"] . "/index.php?redirect=plugin_order_" . $this->orderID . " </a></td></tr>";
 			}
 
 			$body .= "</table>";
 			$body .= "</body></html>";
 
 		} else { // text format
-			$body .= $LANG['common'][16] . " : ".$order->fields["name"]."\n";
-			$body .= $LANG['financial'][18] . " : ".$order->fields["numorder"]."\n";
-			$body .= $LANG['plugin_order'][1] . " : ".convDate($order->fields["date"])."\n";
-			$body .= $LANG['joblist'][0] . " : ".plugin_order_getDropdownStatus($order->fields["status"])."\n";
+			$body .= $LANG['common'][16] . " : " . $order->fields["name"] . "\n";
+			$body .= $LANG['financial'][18] . " : " . $order->fields["numorder"] . "\n";
+			$body .= $LANG['plugin_order'][1] . " : " . convDate($order->fields["date"]) . "\n";
+			$body .= $LANG['joblist'][0] . " : " . plugin_order_getDropdownStatus($order->fields["status"]) . "\n";
 			if ($this->message != '')
-				$body .= $LANG['common'][25] . " : ".$this->message."\n";
+				$body .= $LANG['common'][25] . " : " . $this->message . "\n";
 
-			switch ($this->action)
-			{
-				case "ask":
-					$body .= $LANG['plugin_order']['validation'][1]." ".$LANG['plugin_order']['mailing'][2]. "</td><td bgcolor='#CCCCCC'>".getUserName($this->userID)."\n";
-				break;
-				case "validation":
-					$body .= $LANG['plugin_order']['validation'][10]." ".$LANG['plugin_order']['mailing'][2]. "</td><td bgcolor='#CCCCCC'>".getUserName($this->userID)."\n";
-				break;
-				case "cancel":
-					$body .= $LANG['plugin_order']['validation'][5]." ".$LANG['plugin_order']['mailing'][2]. "</td><td bgcolor='#CCCCCC'>".getUserName($this->userID)."\n";
-				break;
+			switch ($this->action) {
+				case "ask" :
+					$body .= $LANG['plugin_order']['validation'][1] . " " . $LANG['plugin_order']['mailing'][2] . "</td><td bgcolor='#CCCCCC'>" . getUserName($this->userID) . "\n";
+					break;
+				case "validation" :
+					$body .= $LANG['plugin_order']['validation'][10] . " " . $LANG['plugin_order']['mailing'][2] . "</td><td bgcolor='#CCCCCC'>" . getUserName($this->userID) . "\n";
+					break;
+				case "cancel" :
+					$body .= $LANG['plugin_order']['validation'][5] . " " . $LANG['plugin_order']['mailing'][2] . "</td><td bgcolor='#CCCCCC'>" . getUserName($this->userID) . "\n";
+					break;
+				case "undovalidation" :
+					$body .= $LANG['plugin_order']['validation'][16] . " " . $LANG['plugin_order']['mailing'][2] . "</td><td bgcolor='#CCCCCC'>" . getUserName($this->userID) . "\n";
+					break;
 			}
 
-			if ($CFG_GLPI["url_in_mail"]&&!empty($CFG_GLPI["url_base"])){
-					$body.="URL :<a href=\"".$CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_".$this->orderID."\">".$CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_ID=".$this->orderID." </a>\n";
+			if ($CFG_GLPI["url_in_mail"] && !empty ($CFG_GLPI["url_base"])) {
+				$body .= "URL :<a href=\"" . $CFG_GLPI["url_base"] . "/index.php?redirect=plugin_order_" . $this->orderID . "\">" . $CFG_GLPI["url_base"] . "/index.php?redirect=plugin_order_ID=" . $this->orderID . " </a>\n";
 			}
 
 			$body = str_replace("<br />", "\n", $body);
@@ -195,10 +201,10 @@ class PluginOrderMailing extends CommonDBTM {
 					case PROFILE_MAILING_TYPE :
 
 						$query = "SELECT glpi_users.email as EMAIL 
-								  FROM `glpi_users_profiles` 
-								  INNER JOIN `glpi_users` ON (glpi_users_profiles.FK_users = glpi_users.ID) 
-								  WHERE glpi_users_profiles.FK_profiles='" . $data["FK_item"] . "' 
-								  " . getEntitiesRestrictRequest("AND", "glpi_users_profiles", "FK_entities", $this->entity, true);
+														  FROM `glpi_users_profiles` 
+														  INNER JOIN `glpi_users` ON (glpi_users_profiles.FK_users = glpi_users.ID) 
+														  WHERE glpi_users_profiles.FK_profiles='" . $data["FK_item"] . "' 
+														  " . getEntitiesRestrictRequest("AND", "glpi_users_profiles", "FK_entities", $this->entity, true);
 
 						if ($result2 = $DB->query($query)) {
 							if ($DB->numrows($result2))
@@ -211,9 +217,9 @@ class PluginOrderMailing extends CommonDBTM {
 						break;
 					case GROUP_MAILING_TYPE :
 						$query = "SELECT glpi_users.email as EMAIL 
-   								  FROM `glpi_users_groups` 
-								  INNER JOIN `glpi_users` ON (glpi_users_groups.FK_users = glpi_users.ID) 
-								  WHERE glpi_users_groups.FK_groups='" . $data["FK_item"] . "'";
+						   								  FROM `glpi_users_groups` 
+														  INNER JOIN `glpi_users` ON (glpi_users_groups.FK_users = glpi_users.ID) 
+														  WHERE glpi_users_groups.FK_groups='" . $data["FK_item"] . "'";
 
 						if ($result2 = $DB->query($query)) {
 							if ($DB->numrows($result2))
@@ -240,47 +246,49 @@ class PluginOrderMailing extends CommonDBTM {
 
 			$order = new PluginOrder;
 			$order->getFromDB($this->orderID);
-			
+
 			if (isMultiEntitiesMode())
 				$entity = getdropdownname("glpi_entities", $this->entity) .
 				" | ";
 			else
 				$entity = "";
 
-				for ($i = 0; $i < count($users); $i++) {
+			for ($i = 0; $i < count($users); $i++) {
 
-					$mail = new glpi_phpmailer();
-					$mail->From = $CFG_GLPI["admin_email"];
-					$mail->FromName = $CFG_GLPI["admin_email"];
-					$mail->AddAddress($users[$i], "");
-					
-					switch ($this->action)
-					{
-						case "ask":
-							$mail->Subject = $LANG['plugin_order']['mailing'][0]." ".$LANG['plugin_order']['mailing'][2]." ".$order->fields["name"];
-						break;
-						case "validation":
-							$mail->Subject = $LANG['plugin_order']['validation'][2]." ".$LANG['plugin_order']['mailing'][2]." ".$order->fields["name"];
-						break;
-						case "cancel":
-							$mail->Subject = $LANG['plugin_order']['validation'][5]." ".$LANG['plugin_order']['mailing'][2]." ".$order->fields["name"];
-						break;
-						default :
-							$mail->Subject = $order->fields["name"];
-						break;	
-					}
-					
-					$mail->Body = $this->get_mail_body("html");
-					$mail->isHTML(true);
-					$mail->AltBody = $this->get_mail_body("text");
+				$mail = new glpi_phpmailer();
+				$mail->From = $CFG_GLPI["admin_email"];
+				$mail->FromName = $CFG_GLPI["admin_email"];
+				$mail->AddAddress($users[$i], "");
 
-					if (!$mail->Send()) {
-						addMessageAfterRedirect($LANG['mailing'][47], false, ERROR);
-						return false;
-					}
-					$mail->ClearAddresses();
+				switch ($this->action) {
+					case "ask" :
+						$mail->Subject = $LANG['plugin_order']['mailing'][0] . " \"" . $order->fields["name"] . "\" " . $LANG['plugin_order']['mailing'][2] . " " . getUserName($this->userID);
+						break;
+					case "validation" :
+						$mail->Subject = $LANG['plugin_order']['validation'][2] . " \"" . $order->fields["name"] . "\" " . $LANG['plugin_order']['mailing'][2] . " " . getUserName($this->userID);
+						break;
+					case "cancel" :
+						$mail->Subject = $LANG['plugin_order']['validation'][5] . " \"" . $order->fields["name"] . "\" " . $LANG['plugin_order']['mailing'][2] . " " . getUserName($this->userID);
+						break;
+					case "undovalidation" :
+						$mail->Subject = $LANG['plugin_order']['validation'][16] . " \"" . $order->fields["name"] . "\" " . $LANG['plugin_order']['mailing'][2] . " " . getUserName($this->userID);
+						break;
+					default :
+						$mail->Subject = $order->fields["name"];
+						break;
 				}
-			
+
+				$mail->Body = $this->get_mail_body("html");
+				$mail->isHTML(true);
+				$mail->AltBody = $this->get_mail_body("text");
+
+				if (!$mail->Send()) {
+					addMessageAfterRedirect($LANG['mailing'][47], false, ERROR);
+					return false;
+				}
+				$mail->ClearAddresses();
+			}
+
 		}
 	}
 }

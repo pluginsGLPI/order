@@ -141,6 +141,17 @@ if (isset ($_POST["cancel_order"])) {
 		
 		glpi_header($_SERVER['HTTP_REFERER']);
 	}
+if (isset ($_POST["undovalidation"])) {
+		if (plugin_order_HaveRight("order", "w") && plugin_order_HaveRight("undo_validation", "w"))
+		{
+			plugin_order_updateOrderStatus($_POST["ID"],ORDER_STATUS_DRAFT,$_POST["comments"]);
+			$plugin_order->getFromDB($_POST["ID"]);
+			plugin_order_sendNotification("undovalidation",$_POST["ID"],$plugin_order->fields["FK_entities"],$_SESSION["glpiID"],$_POST["comments"]);
+			addMessageAfterRedirect($LANG['plugin_order']['validation'][16]);
+		}
+		
+		glpi_header($_SERVER['HTTP_REFERER']);
+	}
 
 
 
