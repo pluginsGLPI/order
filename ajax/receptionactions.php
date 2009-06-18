@@ -52,6 +52,10 @@ if (isset($_POST["action"])){
 		case "reception":
 			echo "</td><td valign='bottom'>";
 			showDateFormItem("date",date("Y-m-d"),true,1);
+			echo "</td><td valign='bottom'>";
+			echo $LANG['financial'][19]."&nbsp;";
+			autocompletionTextField("deliverynum","glpi_plugin_order_detail","deliverynum",'',20,$_SESSION["glpiactive_entity"]);
+			
 			echo "</td><td valign='bottom'><input type='submit' name='reception' class='submit' value='".$LANG['buttons'][2]."'></td>";
 		break;
 		case "generation":

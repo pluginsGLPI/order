@@ -91,11 +91,15 @@ function showReceptionForm($orderID) {
 			echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][21] . "</th>";
+			echo "<th>" . $LANG['financial'][19] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['item'][0] . "</th></tr>";
 			$i = 0;
 			while ($i < $num) {
 				$random = mt_rand();
 				$detailID = $DB->result($result, $i, 'IDD');
+				$mydetail = new PluginOrderDetail;
+				$mydetail->getFromDB($detailID);
+				
 				echo "<tr class='tab_bg_2'>";
 				if ($canedit) {
 					echo "<td width='15' align='left'>";
@@ -109,7 +113,8 @@ function showReceptionForm($orderID) {
 				echo "<td align='center'>" . getReceptionManufacturer($detailID) . "</td>";
 				echo "<td align='center'>" . getReceptionReferenceLink($DB->result($result, $i, 'IDR'), $DB->result($result, $i, 'name')) . "</td>";
 				echo "<td align='center'>" . getReceptionStatus($detailID) . "</td>";
-				echo "<td align='center'>" . getReceptionDate($detailID) . "</td>";
+				echo "<td align='center'>" . convDate($mydetail->fields["date"]) . "</td>";
+				echo "<td align='center'>" . $mydetail->fields["deliverynum"] . "</td>";
 				echo "<td align='center'>" . getReceptionDeviceName($DB->result($result, $i, 'FK_device'), $DB->result($result, $i, 'type'));
 				if ($DB->result($result, $i, 'FK_device') != 0) {
 					echo "<img alt='' src='" . $CFG_GLPI["root_doc"] . "/pics/aide.png' onmouseout=\"cleanhide('comments_$random')\" onmouseover=\"cleandisplay('comments_$random')\" ";
@@ -362,6 +367,7 @@ function plugin_order_deleteAllLinkWithDevice($orderID)
 	foreach ($devices as $deviceID => $device)
 		$device->delete(array ("ID" => $deviceID));
 }
+
 function plugin_order_updateReceptionStatus($params) {
 	global $LANG;
 	$detail = new PluginOrderDetail;
@@ -377,7 +383,8 @@ function plugin_order_updateReceptionStatus($params) {
 						$input["ID"] = $key;
 						$input["date"] = $params["date"];
 						$input["status"] = ORDER_DEVICE_DELIVRED;
-
+						$input["deliverynum"] = $params["deliverynum"];
+						
 						$detail->update($input);
 						addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
 					} else

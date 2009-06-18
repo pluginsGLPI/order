@@ -186,14 +186,14 @@ class PluginOrder extends CommonDBTM {
 				echo getDropdownname("glpi_dropdown_plugin_order_payment", $this->fields["payment"]);
 			echo "</td></tr>";
 
-			/* delivery number */
-			echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][12] . ": </td>";
-			echo "<td>";
+			/* number of bill */
+			echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][28] . ": </td><td>";
 			if ($canedit)
-				autocompletionTextField("deliverynum", "glpi_plugin_order", "deliverynum", $this->fields["deliverynum"], 30, $this->fields["FK_entities"]);
+				autocompletionTextField("numbill", "glpi_plugin_order", "numbill", $this->fields["numbill"], 30, $this->fields["FK_entities"]);
 			else
-				echo $this->fields["deliverynum"];
+				echo $this->fields["numbill"];
 			echo "</td>";
+	
 			/* supplier of order */
 			echo "<td>" . $LANG['financial'][26] . ": </td>";
 			echo "<td>";
@@ -203,19 +203,6 @@ class PluginOrder extends CommonDBTM {
 				echo getDropdownName("glpi_enterprises", $this->fields["FK_enterprise"]);
 			echo "</td></tr>";
 
-			/* number of bill */
-			echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][28] . ": </td><td>";
-			if ($canedit)
-				autocompletionTextField("numbill", "glpi_plugin_order", "numbill", $this->fields["numbill"], 30, $this->fields["FK_entities"]);
-			else
-				echo $this->fields["numbill"];
-			echo "</td>";
-			echo "<td>" . $LANG['plugin_order']['status'][0] . ": </td>";
-			echo "<td>";
-			echo "<input type='hidden' name='status' value=" . ORDER_STATUS_DRAFT . ">";
-			echo plugin_order_getDropdownStatus($this->fields["status"]);
-			echo "</td></tr>";
-
 			/* location */
 			echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][40] . ": </td>";
 			echo "<td>";
@@ -223,7 +210,14 @@ class PluginOrder extends CommonDBTM {
 				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"], 1, $this->fields["FK_entities"]);
 			else
 				echo getDropdownName("glpi_dropdown_locations", $this->fields["FK_enterprise"]);
-			echo "</td><td colspan='2'></td></tr>";
+			echo "</td>";
+
+
+			echo "<td>" . $LANG['plugin_order']['status'][0] . ": </td>";
+			echo "<td>";
+			echo "<input type='hidden' name='status' value=" . ORDER_STATUS_DRAFT . ">";
+			echo plugin_order_getDropdownStatus($this->fields["status"]);
+			echo "</td></tr>";
 			//End
 
 			echo "<tr class='tab_bg_1'><td>";

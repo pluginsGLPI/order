@@ -44,7 +44,6 @@ function plugin_order_install() {
 						`ID` int(11) NOT NULL auto_increment,
 						`name` varchar(255) UNIQUE collate utf8_unicode_ci NOT NULL default '',
 						`numordersupplier` varchar(255) NOT NULL collate utf8_unicode_ci default '',
-						`deliverynum` varchar(255) NOT NULL collate utf8_unicode_ci default '',
 						`numbill`varchar(255) NOT NULL collate utf8_unicode_ci default '',
 						`numorder`varchar(255) NOT NULL collate utf8_unicode_ci default '',
 						`budget` int (11) NOT NULL default 0,
@@ -107,6 +106,7 @@ function plugin_order_install() {
 							  `FK_order` int(11) NOT NULL default 0,
 							  `FK_device` int(11) NOT NULL default 0,
 							  `FK_reference` int(11) NOT NULL default 0,
+		  					  `deliverynum` varchar(255) NOT NULL collate utf8_unicode_ci default '',
 							  `price_taxfree` FLOAT NOT NULL default 0,
 							  `price_discounted` FLOAT NOT NULL default 0,
 							  `price_ati` FLOAT NOT NULL default 0,
@@ -359,11 +359,7 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_TYPE][7]['field'] = 'name';
 		$sopt[PLUGIN_ORDER_TYPE][7]['linkfield'] = 'payment';
 		$sopt[PLUGIN_ORDER_TYPE][7]['name'] = $LANG['plugin_order'][32];
-		/* delivery num */
-		$sopt[PLUGIN_ORDER_TYPE][8]['table'] = 'glpi_plugin_order';
-		$sopt[PLUGIN_ORDER_TYPE][8]['field'] = 'deliverynum';
-		$sopt[PLUGIN_ORDER_TYPE][8]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_TYPE][8]['name'] = $LANG['plugin_order'][12];
+
 		/* bill number */
 		$sopt[PLUGIN_ORDER_TYPE][9]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][9]['field'] = 'numbill';
@@ -532,8 +528,8 @@ function plugin_order_MassiveActionsProcess($data) {
 						$plugin_order = new PluginOrder;
 						$plugin_order->getFromDB($key);
 						$query = "UPDATE `glpi_plugin_order` 
-																			SET `FK_entities` = '" . $data['FK_entities'] . "' 
-																			WHERE `ID` ='$key'";
+								  SET `FK_entities` = '" . $data['FK_entities'] . "' 
+								  WHERE `ID` ='$key'";
 						$DB->query($query);
 					}
 				}

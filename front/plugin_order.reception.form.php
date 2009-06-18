@@ -1,4 +1,5 @@
 <?php
+
 /*----------------------------------------------------------------------
    GLPI - Gestionnaire Libre de Parc Informatique
    Copyright (C) 2003-2008 by the INDEPNET Development Team.
@@ -27,72 +28,79 @@
     Original Author of file:
     Purpose of file:
     ----------------------------------------------------------------------*/
-$NEEDED_ITEMS=array("ocsng","computer","printer","networking","monitor","software","peripheral","phone","tracking","document","user","enterprise","contract","infocom","group");
+$NEEDED_ITEMS = array (
+	"ocsng",
+	"computer",
+	"printer",
+	"networking",
+	"monitor",
+	"software",
+	"peripheral",
+	"phone",
+	"tracking",
+	"document",
+	"user",
+	"enterprise",
+	"contract",
+	"infocom",
+	"group"
+);
 define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT."/inc/includes.php");
+include (GLPI_ROOT . "/inc/includes.php");
 
-useplugin('order',true);
+useplugin('order', true);
 
 /* reception d'une ligne d�tail */
-if(isset($_POST["reception"])) 
-{
+if (isset ($_POST["reception"])) {
 	plugin_order_updateReceptionStatus($_POST);
 	glpi_header($_SERVER["HTTP_REFERER"]);
-} 
+}
 /* affiche le tableau permettant la g�n�ration de mat�riel */
-if(isset($_POST["generation"])) 
-{
-	if(isset($_POST["item"])) {
+if (isset ($_POST["generation"])) {
+	if (isset ($_POST["item"])) {
 		foreach ($_POST["item"] as $key => $val) {
-			if ($val==1) {
-				if(getReceptionStatus($_POST["ID"][$key]) == $LANG['plugin_order']['status'][11]) {
-					addMessageAfterRedirect($LANG['plugin_order'][45],true,ERROR);
+			if ($val == 1) {
+				if (getReceptionStatus($_POST["ID"][$key]) == $LANG['plugin_order']['status'][11]) {
+					addMessageAfterRedirect($LANG['plugin_order'][45], true, ERROR);
 					glpi_header($_SERVER["HTTP_REFERER"]);
 				}
 			}
 		}
 	}
-	
-	if(isset($_POST["item"])) 
-		plugin_order_showReceptionForm($_SERVER["PHP_SELF"],$_POST);
-	else
-	{
-		addMessageAfterRedirect($LANG['plugin_order']['detail'][29],false,ERROR);
+
+	if (isset ($_POST["item"]))
+		plugin_order_showReceptionForm($_SERVER["PHP_SELF"], $_POST);
+	else {
+		addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
 		glpi_header($_SERVER["HTTP_REFERER"]);
 	}
-} 
+}
 /* g�n�re le mat�riel */
-if(isset($_POST["generate"])) 
-{
-	plugin_order_generateNewDevice($_POST,$_SESSION["glpiactive_entity"]);
-	glpi_header($CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
+if (isset ($_POST["generate"])) {
+	plugin_order_generateNewDevice($_POST, $_SESSION["glpiactive_entity"]);
+	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=" . $_POST["orderID"] . "");
 }
 /* supprime un lien d'une ligne d�tail vers un mat�riel */
-if(isset($_POST["deleteLinkWithDevice"])) 
-{
-	foreach ($_POST["item"] as $key => $val)
-	{
-		if ($val==1) 
+if (isset ($_POST["deleteLinkWithDevice"])) {
+	foreach ($_POST["item"] as $key => $val) {
+		if ($val == 1)
 			plugin_order_deleteLinkWithDevice($key, $_POST["type"][$key]);
 	}
-	glpi_header($CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
+	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=" . $_POST["orderID"] . "");
 }
 /* cr�e un lien d'une ligne d�tail vers un mat�riel */
-if(isset($_POST["createLinkWithDevice"])) 
-{
-	$i=0;
-	if(count($_POST["item"])<=1 || in_array($_POST["FK_type"], $ORDER_RESTRICTED_TYPES))
-	{
+if (isset ($_POST["createLinkWithDevice"])) {
+	$i = 0;
+	if (count($_POST["item"]) <= 1 || in_array($_POST["FK_type"], $ORDER_RESTRICTED_TYPES)) {
 		foreach ($_POST["item"] as $key => $val)
-			if ($val==1) 
-				if(getReceptionStatus($_POST["ID"][$key]) == $LANG['plugin_order']['status'][11]) {
-					addMessageAfterRedirect($LANG['plugin_order'][46],true,ERROR);
+			if ($val == 1)
+				if (getReceptionStatus($_POST["ID"][$key]) == $LANG['plugin_order']['status'][11]) {
+					addMessageAfterRedirect($LANG['plugin_order'][46], true, ERROR);
 					glpi_header($_SERVER["HTTP_REFERER"]);
 				} else
 					plugin_order_createLinkWithDevice($key, $_POST["device"], $_POST["type"][$key], $_POST["orderID"]);
-	}
-	else
-		addMessageAfterRedirect($LANG['plugin_order'][42],true,ERROR);
-	glpi_header("".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.form.php?ID=".$_POST["orderID"]."");
+	} else
+		addMessageAfterRedirect($LANG['plugin_order'][42], true, ERROR);
+	glpi_header("" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=" . $_POST["orderID"] . "");
 }
- ?>
+?>
