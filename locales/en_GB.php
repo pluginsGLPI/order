@@ -105,12 +105,15 @@ $LANG['plugin_order']['delivery'][12] = "Delete item link";
 $LANG['plugin_order']['profile'][0] = "Rights management";
 $LANG['plugin_order']['profile'][1] = "Order validation";
 $LANG['plugin_order']['profile'][2] = "Cancel order";
+$LANG['plugin_order']['profile'][3] = "Edit a validated order";
 
 $LANG['plugin_order']['reference'][1] = "Product reference";
 $LANG['plugin_order']['reference'][2] = "Add a reference";
 $LANG['plugin_order']['reference'][3] = "List references";
 $LANG['plugin_order']['reference'][4] = "Type de matériel";
 $LANG['plugin_order']['reference'][5] = "Supplier for the reference";
+$LANG['plugin_order']['reference'][6] = "A reference with the same name still exists";
+$LANG['plugin_order']['reference'][7] = "Reference(s) in use";
 
 $LANG['plugin_order']['setup'][2] = "Plugin not usable from the helpdesk interface";
 
@@ -139,6 +142,8 @@ $LANG['plugin_order']['validation'][11] = "Ask for validation";
 $LANG['plugin_order']['validation'][13] = "Cancel ask for validation";
 $LANG['plugin_order']['validation'][14] = "Validation query is now canceled";
 $LANG['plugin_order']['validation'][15] = "Order is in draft state";
+$LANG['plugin_order']['validation'][16] = "Validation canceled successfully";
+$LANG['plugin_order']['validation'][17] = "Edit order";
 
 $LANG['plugin_order']['menu'][1] = "Manage orders";
 $LANG['plugin_order']['menu'][2] = "Manage products references";

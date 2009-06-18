@@ -158,11 +158,10 @@ function plugin_order_haveTypeRight($type,$right){
 	switch ($type){
 		case PLUGIN_ORDER_TYPE :
 			return plugin_order_haveRight("order",$right);
-			break;
 		case PLUGIN_ORDER_REFERENCE_TYPE:
+			return plugin_order_haveRight("reference",$right);
 		case PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE:
 			return plugin_order_haveRight("reference",$right);
-			break;
 	}
 }
 ?>

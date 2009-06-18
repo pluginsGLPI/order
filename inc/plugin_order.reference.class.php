@@ -52,6 +52,45 @@ class PluginOrderReference extends CommonDBTM {
 		return $ong;
 	}
 
+	function prepareInputForAdd($params)
+	{
+		global $DB,$LANG;
+		$query = "SELECT COUNT(*) as cpt FROM `".$this->table."` " .
+				 "WHERE name='".$params["name"]."' AND FK_entities=".$params["FK_entities"];
+		$result = $DB->query($query);
+		if ($DB->result($result,0,"cpt") > 0)
+		{
+			addMessageAfterRedirect($LANG['plugin_order']['reference'][6],false,ERROR);
+			return false;
+		}
+		else
+			return $params;		
+	}
+	
+	function pre_deleteItem($params)
+	{
+		global $LANG;
+		if (!$this->referenceInUse())
+			return $params;
+		else
+		{
+			addMessageAfterRedirect($LANG['plugin_order']['reference'][7],true,ERROR);
+			return false;	
+		}
+			
+	}
+	
+	function referenceInUse()
+	{
+		global $DB;
+		$query = "SELECT COUNT(*) as cpt FROM `glpi_plugin_order_detail` WHERE FK_reference=".$this->fields["ID"];
+		$result = $DB->query($query);
+		if ($DB->result($result,0,"cpt") > 0)
+			return true;
+		else
+			return false;	
+	}
+	
 	/**
 	 * Print a good title for user pages
 	 *
@@ -176,11 +215,14 @@ class PluginOrderReference extends CommonDBTM {
 					echo "<td class='tab_bg_2' valign='top' colspan='2'><div align='center'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 					echo "<input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit' >";
-					if ($this->fields["deleted"] == '0') {
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'></div>";
-					} else {
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='restore' value=\"" . $LANG['buttons'][21] . "\" class='submit'>";
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"" . $LANG['buttons'][22] . "\" class='submit'></div>";
+					if (!$this->referenceInUse())
+					{
+						if ($this->fields["deleted"] == '0') {
+							echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'></div>";
+						} else {
+							echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='restore' value=\"" . $LANG['buttons'][21] . "\" class='submit'>";
+							echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"" . $LANG['buttons'][22] . "\" class='submit'></div>";
+						}
 					}
 					echo "</td>";
 					echo "</tr>";

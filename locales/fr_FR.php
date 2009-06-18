@@ -111,6 +111,8 @@ $LANG['plugin_order']['reference'][1] = "Référence produit";
 $LANG['plugin_order']['reference'][2] = "Ajouter une référence produit";
 $LANG['plugin_order']['reference'][3] = "Liste des références";
 $LANG['plugin_order']['reference'][5] = "Fournisseur pour une référence";
+$LANG['plugin_order']['reference'][6] = "Une référence du même nom existe déjà";
+$LANG['plugin_order']['reference'][7] = "Référence(s) actuellement utilisée(s)";
 
 $LANG['plugin_order']['setup'][2] = "Plugin non utilisable depuis le helpdesk";
 
@@ -121,7 +123,6 @@ $LANG['plugin_order']['config'][2] = "Utiliser le circuit de validation";
 $LANG['plugin_order']['mailing'][0] = "Demande de validation d'une commande";
 $LANG['plugin_order']['mailing'][1] = "Voir le détail de la commande";
 $LANG['plugin_order']['mailing'][2] = "par";
-
 
 $LANG['plugin_order']['infocom'][1] = "Certains champs ne peuvent-être modifiés : ils proviennent d'une commande";
 
@@ -143,8 +144,6 @@ $LANG['plugin_order']['validation'][14] = "Annulation la demande la validation e
 $LANG['plugin_order']['validation'][15] = "Commande en édition";
 $LANG['plugin_order']['validation'][16] = "Annulation de la validation effectuée";
 $LANG['plugin_order']['validation'][17] = "Modifier la commande";
-
-
 
 $LANG['plugin_order']['menu'][1] = "Gérer les commandes";
 $LANG['plugin_order']['menu'][2] = "Gérer le catalogue de références produits";
