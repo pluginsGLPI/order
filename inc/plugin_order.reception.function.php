@@ -78,9 +78,11 @@ function showReceptionForm($orderID) {
 			echo "<td align='center' class='tab_bg_1'>" . sprintf("%01.2f", $DB->result($result, $j, "price_taxfree")) . "</td>";
 			echo "<td align='center' class='tab_bg_1'>" . sprintf("%01.2f", $DB->result($result, $j, "price_ati")) . "</td>";
 			echo "<td align='center' class='tab_bg_1'>" . sprintf("%01.2f", $DB->result($result, $j, "price_discounted")) . "</td></tr></table>";
+			
 			echo "<div class='center' id='reception$rand' style='display:none'>";
 			echo "<form method='post' name='order_reception_form$rand' id='order_reception_form$rand'  action=\"" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.reception.form.php\">";
 			echo "<table class='tab_cadre_fixe'>";
+			
 			echo "<tr>";
 			if ($canedit)
 				echo "<th width='15'></th>";
@@ -128,8 +130,9 @@ function showReceptionForm($orderID) {
 				echo "<input type='hidden' name='orderID' value='$orderID'>";
 				plugin_order_dropdownReceptionActions($typeRef);
 				echo "</td></tr>";
-				echo "</table></form></div>";
+				echo "</table>";
 			}
+			echo "</form></div>";
 		}
 		echo "<br>";
 		$j++;
