@@ -77,6 +77,7 @@ function addDetails($referenceID, $orderID, $quantity, $price, $discounted_price
 				$input["price_discounted"] = $price - ($price * ($discounted_price / 100));
 				$input["status"] = ORDER_STATUS_DRAFT;
 				$input["price_ati"] = getPriceTaxIncluded($input["price_discounted"], getDropdownName("glpi_dropdown_plugin_order_taxes", $taxes));
+				$input["deliverynum"] = "";
 				$detail->add($input);
 			}
 		}

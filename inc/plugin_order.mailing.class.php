@@ -57,6 +57,11 @@ class PluginOrderConfigMailing extends CommonDBTM {
 		plugin_order_showFormMailingType("validation", $profiles);
 		echo "</tr>";
 
+		echo "<tr><th colspan='3'>" . $LANG['plugin_order']['profile'][2] . "</th></tr>";
+		echo "<tr class='tab_bg_2'>";
+		plugin_order_showFormMailingType("cancel", $profiles);
+		echo "</tr>";
+
 		echo "</table>";
 		echo "</div>";
 
@@ -72,6 +77,7 @@ class PluginOrderMailing extends CommonDBTM {
 	var $action = "";
 	var $entity = "";
 	var $userID = 0;
+	var $message = "";
 
 	/**
 	 * Constructor
@@ -80,11 +86,12 @@ class PluginOrderMailing extends CommonDBTM {
 	 * @return nothing 
 	 */
 
-	function __construct($orderID, $action, $entity = -1, $userID = 0) {
+	function __construct($orderID, $action, $entity = -1, $userID = 0, $message = '') {
 		$this->orderID = $orderID;
 		$this->entity = $entity;
 		$this->action = $action;
 		$this->userID = $userID;
+		$this->message = $message;
 	}
 
 	/**
@@ -106,6 +113,8 @@ class PluginOrderMailing extends CommonDBTM {
 			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['financial'][18] . "</td><td bgcolor='#CCCCCC'>".$order->fields["numorder"]."</td></tr>";
 			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order'][1] . "</td><td bgcolor='#CCCCCC'>".convDate($order->fields["date"])."</td></tr>";
 			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['joblist'][0] . "</td><td bgcolor='#CCCCCC'>".plugin_order_getDropdownStatus($order->fields["status"])."</td></tr>";
+			if ($this->message != '')
+				$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['common'][25] . "</td><td bgcolor='#CCCCCC'>".$this->message."</td></tr>";
 			
 			switch ($this->action)
 			{
@@ -114,6 +123,9 @@ class PluginOrderMailing extends CommonDBTM {
 				break;
 				case "validation":
 					$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order']['validation'][10]." ".$LANG['plugin_order']['mailing'][2]. "</td><td bgcolor='#CCCCCC'>".getUserName($this->userID)."</td></tr>";
+				break;
+				case "cancel":
+					$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order']['validation'][5]." ".$LANG['plugin_order']['mailing'][2]. "</td><td bgcolor='#CCCCCC'>".getUserName($this->userID)."</td></tr>";
 				break;
 			}
 
@@ -129,6 +141,21 @@ class PluginOrderMailing extends CommonDBTM {
 			$body .= $LANG['financial'][18] . " : ".$order->fields["numorder"]."\n";
 			$body .= $LANG['plugin_order'][1] . " : ".convDate($order->fields["date"])."\n";
 			$body .= $LANG['joblist'][0] . " : ".plugin_order_getDropdownStatus($order->fields["status"])."\n";
+			if ($this->message != '')
+				$body .= $LANG['common'][25] . " : ".$this->message."\n";
+
+			switch ($this->action)
+			{
+				case "ask":
+					$body .= $LANG['plugin_order']['validation'][1]." ".$LANG['plugin_order']['mailing'][2]. "</td><td bgcolor='#CCCCCC'>".getUserName($this->userID)."\n";
+				break;
+				case "validation":
+					$body .= $LANG['plugin_order']['validation'][10]." ".$LANG['plugin_order']['mailing'][2]. "</td><td bgcolor='#CCCCCC'>".getUserName($this->userID)."\n";
+				break;
+				case "cancel":
+					$body .= $LANG['plugin_order']['validation'][5]." ".$LANG['plugin_order']['mailing'][2]. "</td><td bgcolor='#CCCCCC'>".getUserName($this->userID)."\n";
+				break;
+			}
 
 			if ($CFG_GLPI["url_in_mail"]&&!empty($CFG_GLPI["url_base"])){
 					$body.="URL :<a href=\"".$CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_".$this->orderID."\">".$CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_ID=".$this->orderID." </a>\n";
@@ -230,10 +257,13 @@ class PluginOrderMailing extends CommonDBTM {
 					switch ($this->action)
 					{
 						case "ask":
-							$mail->Subject = $LANG['plugin_order']['mailing'][0]." : ".$order->fields["name"];
+							$mail->Subject = $LANG['plugin_order']['mailing'][0]." ".$LANG['plugin_order']['mailing'][2]." ".$order->fields["name"];
 						break;
 						case "validation":
-							$mail->Subject = $LANG['plugin_order']['validation'][2]." : ".$order->fields["name"];
+							$mail->Subject = $LANG['plugin_order']['validation'][2]." ".$LANG['plugin_order']['mailing'][2]." ".$order->fields["name"];
+						break;
+						case "cancel":
+							$mail->Subject = $LANG['plugin_order']['validation'][5]." ".$LANG['plugin_order']['mailing'][2]." ".$order->fields["name"];
 						break;
 						default :
 							$mail->Subject = $order->fields["name"];

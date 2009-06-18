@@ -365,9 +365,13 @@ function plugin_order_deleteAllLinkWithDevice($orderID)
 	$devices = getAllDatasFromTable("glpi_plugin_order_device","FK_order=$orderID");
 
 	$device = new PluginOrderDevice;
-
+	$detail = new PluginOrderDetail;
 	foreach ($devices as $deviceID => $device)
+	{
 		$device->delete(array ("ID" => $deviceID));
+		$detail->delete(array ("ID" => $deviceID));
+	}
+		
 }
 
 function plugin_order_updateReceptionStatus($params) {

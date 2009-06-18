@@ -95,7 +95,8 @@ class PluginOrderReference extends CommonDBTM {
 			echo "<td>";
 			if ($canedit)
 				autocompletionTextField("name", "glpi_plugin_order_references", "name", $this->fields["name"], 70, $this->fields["FK_entities"]);
-			echo $this->fields["name"];	
+			else
+				echo $this->fields["name"];	
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][5] . ": </td>";
