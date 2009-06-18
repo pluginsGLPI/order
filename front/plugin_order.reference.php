@@ -29,7 +29,14 @@
     Purpose of file:
     ----------------------------------------------------------------------*/
 $NEEDED_ITEMS = array (
-	"search"
+	"search",
+	"computer",
+	"printer",
+	"monitor",
+	"phone",
+	"networking",
+	"consumable",
+	"cartridge"
 );
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");

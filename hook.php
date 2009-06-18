@@ -216,9 +216,13 @@ function plugin_order_install() {
 	$DB->query($query) or die($DB->error());
 
 	$query = "INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )
-					VALUES (NULL,'3151','1','1','0'),
-					(NULL,'3151','2','2','0'),
-					(NULL,'3151','3','3','0');";
+					VALUES (NULL, 3151, 1, 1, 0),
+						   (NULL, 3151, 2, 4, 0),
+						   (NULL, 3151, 6, 6, 0),
+						   (NULL, 3151, 4, 5, 0),
+						   (NULL, 3151, 7, 7, 0),
+						   (NULL, 3151, 8, 8, 0),
+						   (NULL, 3151, 5, 9, 0);";
 	$DB->query($query) or die($DB->error());
 
 	plugin_order_createfirstaccess($_SESSION['glpiactiveprofile']['ID']);
@@ -392,21 +396,47 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE]['common'] = $LANG['plugin_order']['reference'][1];
 
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['field'] = 'name';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['field'] = 'ID';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['name'] = $LANG['plugin_order']['detail'][2];
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['name'] = "ID";
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['datatype'] = 'itemlink';
 
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['field'] = 'ID';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['field'] = 'name';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['name'] = "ID";
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['name'] = $LANG['plugin_order']['detail'][2];
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['datatype'] = 'itemlink';
-
+		
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['table'] = 'glpi_plugin_order_references';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['field'] = 'comments';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['linkfield'] = '';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['name'] = $LANG['common'][25];
+
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['table'] = 'glpi_plugin_order_references';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['field'] = 'FK_type';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['name'] = $LANG['state'][6];
+
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['table'] = 'glpi_plugin_order_references';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['field'] = 'template';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['name'] = $LANG['common'][13];
+
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][6]['table'] = 'glpi_plugin_order_references';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][6]['field'] = 'FK_manufacturer';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][6]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][6]['name'] = $LANG['common'][5];
+
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['table'] = 'glpi_plugin_order_references';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['field'] = 'type';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['name'] = $LANG['common'][17];
+
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][8]['table'] = 'glpi_plugin_order_references';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][8]['field'] = 'FK_model';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][8]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][8]['name'] = $LANG['common'][22];
+
 
 		/* entity */
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['table'] = 'glpi_entities';
@@ -423,35 +453,21 @@ function plugin_order_getSearchOption() {
 	return $sopt;
 }
 
-/* for search */
-function plugin_order_addLeftJoin($type, $ref_table, $new_table, $linkfield, & $already_link_tables) {
-	switch ($new_table) {
-		case "glpi_plugin_order_device" : /* from order list */
-			return " LEFT JOIN $new_table ON ($ref_table.ID = $new_table.FK_order) ";
-			break;
-		case "glpi_plugin_order" : /* from items */
-			$out = " LEFT JOIN glpi_plugin_order_detail ON ($ref_table.ID = glpi_plugin_order_detail.FK_device) ";
-			$out .= " LEFT JOIN glpi_plugin_order ON (glpi_plugin_order.ID = glpi_plugin_order_device.FK_order AND glpi_plugin_order_device.device_type=$type) ";
-			return $out;
-			break;
-		case "glpi_dropdown_plugin_order_type" : /* from items */
-			$out = addLeftJoin($type, $ref_table, $already_link_tables, "glpi_plugin_order", $linkfield);
-			$out .= " LEFT JOIN glpi_dropdown_plugin_order_type ON (glpi_dropdown_plugin_order_type.ID = glpi_plugin_order.type) ";
-			return $out;
-			break;
-	}
-	return "";
-}
+function plugin_order_addSelect($type,$ID,$num){
+	global $SEARCH_OPTION;
 
-/* force groupby for multible links to items */
-function plugin_order_forceGroupBy($type) {
-	return true;
-	switch ($type) {
-		case PLUGIN_ORDER_TYPE :
-			return true;
-			break;
-	}
-	return false;
+	$table=$SEARCH_OPTION[$type][$ID]["table"];
+	$field=$SEARCH_OPTION[$type][$ID]["field"];
+	
+	if ($table == "glpi_plugin_order_references" && !$num)
+		return $table.".FK_manufacturer as manufacturer, ".
+		$table.".type AS device_type, ".
+		$table.".FK_type AS type, ".
+		$table.".FK_model AS model, ".
+		$table.".template AS template, ".
+		$table.".$field as ITEM_$num, ";
+	else
+		return "";	
 }
 
 /* display custom fields in the search */
@@ -459,11 +475,26 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 	global $CFG_GLPI, $INFOFORM_PAGES, $LANG, $SEARCH_OPTION, $LINK_ID_TABLE, $DB;
 	$table = $SEARCH_OPTION[$type][$ID]["table"];
 	$field = $SEARCH_OPTION[$type][$ID]["field"];
+
 	switch ($table . '.' . $field) {
 		/* display associated items with order */
 		case "glpi_plugin_order.status" :
 			return plugin_order_getDropdownStatus($data["ITEM_" . $num]);
-			break;
+		case "glpi_plugin_order_references.FK_type":
+			$commonitem = new CommonItem;
+			$commonitem->setType($data["device_type"]);
+			return $commonitem->getType();
+		case "glpi_plugin_order_references.manufacturer":
+			return getDropdownName("glpi_dropdown_manufacturers",$data["manufacturer"]);
+		case "glpi_plugin_order_references.type":
+			return getDropdownName(plugin_order_getTypeTable($data["device_type"]),$data["type"]);
+		case "glpi_plugin_order_references.FK_model":
+			return getDropdownName(plugin_order_getModelTable($data["device_type"]),$data["model"]);
+		case "glpi_plugin_order_references.template":
+			if (!$data["template"])
+				return " ";
+			else	
+				return plugin_order_getTemplateName($data["device_type"],$data["template"]); 
 	}
 	return "";
 }
