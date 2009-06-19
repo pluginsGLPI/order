@@ -83,7 +83,9 @@ function plugin_init_order() {
 		));
 
 	$PLUGIN_HOOKS['pre_item_update']['order'] = 'plugin_pre_item_update_order';
-
+	
+	array_push($CFG_GLPI["massiveaction_noupdate_types"],PLUGIN_ORDER_REFERENCE_TYPE);
+	
 	/* link to the config page in plugins menu */
 	if (plugin_order_haveRight("order", "w") || haveRight("config", "w"))
 		$PLUGIN_HOOKS['config_page']['order'] = 'front/plugin_order.config.php';
