@@ -58,9 +58,12 @@ if (isset ($_POST["reception"])) {
 /* affiche le tableau permettant la g�n�ration de mat�riel */
 if (isset ($_POST["generation"])) {
 	if (isset ($_POST["item"])) {
+		$detail = new PluginOrderDetail;
+		
 		foreach ($_POST["item"] as $key => $val) {
 			if ($val == 1) {
-				if (getReceptionStatus($_POST["ID"][$key]) == $LANG['plugin_order']['status'][11]) {
+				$detail->getFromDB($_POST["ID"][$key]);
+				if ($detail->fields["status"] == ORDER_DEVICE_DELIVRED) {
 					addMessageAfterRedirect($LANG['plugin_order'][45], true, ERROR);
 					glpi_header($_SERVER["HTTP_REFERER"]);
 				}
@@ -92,13 +95,19 @@ if (isset ($_POST["deleteLinkWithDevice"])) {
 if (isset ($_POST["createLinkWithDevice"])) {
 	$i = 0;
 	if (count($_POST["item"]) <= 1 || in_array($_POST["FK_type"], $ORDER_RESTRICTED_TYPES)) {
+		$detail = new PluginOrderDetail;
+
 		foreach ($_POST["item"] as $key => $val)
 			if ($val == 1)
-				if (getReceptionStatus($_POST["ID"][$key]) == $LANG['plugin_order']['status'][11]) {
+				$detail->getFromDB($_POST["ID"][$key]);
+				if ($detail->fields["status"] == ORDER_DEVICE_NOT_DELIVRED) {
 					addMessageAfterRedirect($LANG['plugin_order'][46], true, ERROR);
 					glpi_header($_SERVER["HTTP_REFERER"]);
 				} else
+				{
 					plugin_order_createLinkWithDevice($key, $_POST["device"], $_POST["type"][$key], $_POST["orderID"]);
+					addMessageAfterRedirect($LANG['plugin_order']['delivery'][14]);
+				}
 	} else
 		addMessageAfterRedirect($LANG['plugin_order'][42], true, ERROR);
 	glpi_header("" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=" . $_POST["orderID"] . "");

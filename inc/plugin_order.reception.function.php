@@ -351,29 +351,40 @@ function plugin_order_createLinkWithDevice($detailID=0, $deviceID=0, $device_typ
 }
 
 function plugin_order_deleteLinkWithDevice($detailID, $device_type) {
-	global $DB;
+	global $DB,$LANG;
 	$detail = new PluginOrderDetail;
 	$detail->getFromDB($detailID);
-
-	$query = " SELECT ID FROM `glpi_plugin_order_device`
-								WHERE FK_device=" . $detail->fields["FK_device"] . "
-								AND device_type=" . $device_type . "";
+	$deviceID = $detail->fields["FK_device"];
+	
+	$query = "SELECT ID, FK_order FROM `glpi_plugin_order_device` " .
+			" WHERE FK_device=" . $deviceID . 
+			" AND device_type=" . $device_type;
+	
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result) > 0)
 		{
-			$deviceID = $DB->result($result, 0, 'ID');
+			$orderDeviceID = $DB->result($result, 0, 'ID');
 
-		$device = new PluginOrderDevice;
-		$device->delete(array (
-			"ID" => $deviceID
-		));
-
-		plugin_order_removeInfoComRelatedToOrder($device_type,$deviceID);	
+			$device = new PluginOrderDevice;
+			$device->delete(array (
+				"ID" => $orderDeviceID
+			));
 	
-		$input = $detail->fields;
-		$input["FK_device"] = 0;
-		$detail->update($input);
-		
+			$input = $detail->fields;
+			$input["FK_device"] = 0;
+			$detail->update($input);
+
+			$order = new PluginOrder;
+			$order->getFromDB($DB->result($result,0,"FK_order"));
+			$new_value = $LANG['plugin_order']['delivery'][15].' : '.$order->fields["name"];
+			plugin_order_addHistory($device_type, '',$new_value,$deviceID);	
+
+			$commonitem = new CommonItem;
+			$commonitem->getFromDB($device_type,$deviceID);
+			$new_value = $LANG['plugin_order']['delivery'][15].' : '.$commonitem->getField("name");
+			plugin_order_addHistory(PLUGIN_ORDER_TYPE, '',$new_value,$order->fields["ID"]);	
+
+			plugin_order_removeInfoComRelatedToOrder($device_type,$deviceID);	
 		}
 	}
 }
@@ -390,7 +401,6 @@ function plugin_order_deleteAllLinkWithDevice($orderID)
 		$device->delete(array ("ID" => $deviceID));
 		$detail->delete(array ("ID" => $deviceID));
 	}
-		
 }
 
 function plugin_order_updateReceptionStatus($params) {
@@ -570,8 +580,12 @@ function plugin_order_removeInfoComRelatedToOrder($device_type,$deviceID)
 	$input["budget"] = 0;
 	$input["FK_enterprise"] = 0;
 	$input["facture"] = "";
-	$input["value"] = "";
+	$input["value"] = 0;
 	$input["buy_date"] = "";
+	
+	//DO not check infocom modifications
+	$input["_delete_from_order"] = 1;
+	
 	$infocom->update($input);
 }
 ?>
