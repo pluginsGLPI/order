@@ -484,8 +484,8 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 			$commonitem = new CommonItem;
 			$commonitem->setType($data["device_type"]);
 			return $commonitem->getType();
-		case "glpi_plugin_order_references.manufacturer":
-			return getDropdownName("glpi_dropdown_manufacturers",$data["manufacturer"]);
+		case "glpi_plugin_order_references.FK_manufacturer":
+			return getDropdownName("glpi_dropdown_manufacturer",$data["manufacturer"]);
 		case "glpi_plugin_order_references.type":
 			return getDropdownName(plugin_order_getTypeTable($data["device_type"]),$data["type"]);
 		case "glpi_plugin_order_references.FK_model":
