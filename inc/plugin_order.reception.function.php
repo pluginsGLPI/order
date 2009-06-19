@@ -201,7 +201,10 @@ function getReceptionMaterialInfo($deviceType, $deviceID) {
 
 function getReceptionReferenceLink($ID, $name) {
 	global $CFG_GLPI, $INFOFORM_PAGES;
-	return ("<a href=" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[PLUGIN_ORDER_REFERENCE_TYPE] . "?ID=" . $ID . "'>" . $name . "</a>");
+	if (plugin_order_haveRight("reference","r"))
+		return "<a href=" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[PLUGIN_ORDER_REFERENCE_TYPE] . "?ID=" . $ID . "'>" . $name . "</a>";
+	else
+		return $name;
 }
 
 function getReceptionStatus($ID) {
@@ -347,26 +350,32 @@ function plugin_order_createLinkWithDevice($detailID=0, $deviceID=0, $device_typ
 	plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_type, $deviceID, $templateID);
 }
 
-function plugin_order_deleteLinkWithDevice($detailID, $deviceType) {
+function plugin_order_deleteLinkWithDevice($detailID, $device_type) {
 	global $DB;
 	$detail = new PluginOrderDetail;
 	$detail->getFromDB($detailID);
 
 	$query = " SELECT ID FROM `glpi_plugin_order_device`
 								WHERE FK_device=" . $detail->fields["FK_device"] . "
-								AND device_type=" . $deviceType . "";
+								AND device_type=" . $device_type . "";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result) > 0)
+		{
 			$deviceID = $DB->result($result, 0, 'ID');
-	}
-	$device = new PluginOrderDevice;
-	$device->delete(array (
-		"ID" => $deviceID
-	));
 
-	$input = $detail->fields;
-	$input["FK_device"] = 0;
-	$detail->update($input);
+		$device = new PluginOrderDevice;
+		$device->delete(array (
+			"ID" => $deviceID
+		));
+
+		plugin_order_removeInfoComRelatedToOrder($device_type,$deviceID);	
+	
+		$input = $detail->fields;
+		$input["FK_device"] = 0;
+		$detail->update($input);
+		
+		}
+	}
 }
 
 function plugin_order_deleteAllLinkWithDevice($orderID)
@@ -494,9 +503,19 @@ function plugin_order_generateNewDevice($params) {
 		$order = new PluginOrder;
 		$order->getFromDB($params["orderID"]);
 		
+	
 		plugin_order_createLinkWithDevice($params["ID"][$i], $newID, $params["type"][$i], $params["orderID"],$entity, $templateID,false);
+		
+		//Add item's history
 		$new_value = $LANG['plugin_order']['delivery'][13].' : '.$order->fields["name"];
 		plugin_order_addHistory($params["type"][$i], '',$new_value,$newID);
+		
+		//Add order's history
+		$new_value = $LANG['plugin_order']['delivery'][13].' : ';
+		$new_value.= $commonitem->getType()." -> ".$commonitem->getField("name");
+		plugin_order_addHistory(PLUGIN_ORDER_TYPE, '',$new_value,$params["orderID"]);
+
+		
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][30]);
 		$i++;
 	}
@@ -539,5 +558,20 @@ function plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_
 	$fields["value"] = $detail->fields["price_discounted"];
 	$fields["buy_date"] = $order->fields["date"];
 	$ic->add($fields);
+}
+
+function plugin_order_removeInfoComRelatedToOrder($device_type,$deviceID)
+{
+	$infocom = new InfoCom;
+	$infocom->getFromDBforDevice($device_type,$deviceID);
+	$input["ID"] = $infocom->fields["ID"];
+	$input["num_commande"] = "";
+	$input["bon_livraison"] = "";
+	$input["budget"] = 0;
+	$input["FK_enterprise"] = 0;
+	$input["facture"] = "";
+	$input["value"] = "";
+	$input["buy_date"] = "";
+	$infocom->update($input);
 }
 ?>

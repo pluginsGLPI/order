@@ -163,7 +163,10 @@ class PluginOrderDetail extends CommonDBTM {
 					/* manufacturer */
 					echo "<td align='center'>".getDropdownName("glpi_dropdown_manufacturer",$DB->result($result,$i,"FK_manufacturer"))."</td>";
 					/* reference */
-					echo "<td align='center'><a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[PLUGIN_ORDER_REFERENCE_TYPE]."?ID=".$DB->result($result,$i,"IDR")."'>".$DB->result($result,$i,"name")."</a></td>";
+					echo "<td align='center'>";
+					echo getReceptionReferenceLink($DB->result($result,$i,"IDR"), $DB->result($result,$i,"name"));
+					echo "</td>";
+					
 					/* quantity */
 					echo "<td align='center'>".getQuantity($FK_order, $IDR)."</td>";	
 					/* delivered quantity */

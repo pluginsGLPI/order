@@ -135,11 +135,13 @@ function plugin_order_showValidationForm($target, $orderID) {
 		echo "<form method='post' name='form' action=\"$target\">";
 		echo "<table class='tab_cadre_fixe'>";
 
-		echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG['plugin_order']['validation'][6] . "</th></tr>";
+		echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG['plugin_order']['validation'][6] . "</th></tr>";
 
 		echo "<tr class='tab_bg_1'>";
-		echo "<td align='center' valign='top'>";
+		echo "<td valign='top' align='right'>";
 		echo $LANG['common'][25] . ":&nbsp;";
+		echo "</td>";
+		echo "<td valign='top' align='left'>";
 		echo "<textarea cols='40' rows='4' name='comments'></textarea>";
 		echo "</td>";
 
