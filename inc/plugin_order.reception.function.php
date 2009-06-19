@@ -426,7 +426,7 @@ function plugin_order_updateReceptionStatus($params) {
 
 function plugin_order_showItemGenerationForm($target, $params) {
 	global $LANG, $CFG_GLPI;
-	commonHeader($LANG['plugin_order'][4], $_SERVER["PHP_SELF"], "plugins", "order", "order");
+	commonHeader($LANG['plugin_order']['title'][1], $_SERVER["PHP_SELF"], "plugins", "order", "order");
 	echo "<div class='center'>";
 	echo "<table class='tab_cadre'>";
 

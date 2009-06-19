@@ -321,12 +321,12 @@ function plugin_order_getDropdown() {
 /* ------ SEARCH FUNCTIONS ------ (){ */
 /* define search option for types of the plugins */
 function plugin_order_getSearchOption() {
-	global $LANG;
+	global $LANG,$ORDER_AVAILABLE_TYPES;
 
 	$sopt = array ();
 	if (plugin_order_haveRight("order", "r")) {
 		/* part header */
-		$sopt[PLUGIN_ORDER_TYPE]['common'] = $LANG['plugin_order'][4];
+		$sopt[PLUGIN_ORDER_TYPE]['common'] = $LANG['plugin_order']['title'][1];
 		/* order number */
 		$sopt[PLUGIN_ORDER_TYPE][1]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][1]['field'] = 'numorder';
@@ -392,6 +392,27 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_TYPE][80]['field'] = 'completename';
 		$sopt[PLUGIN_ORDER_TYPE][80]['linkfield'] = 'FK_entities';
 		$sopt[PLUGIN_ORDER_TYPE][80]['name'] = $LANG['entity'][0];
+
+		
+		foreach ($ORDER_AVAILABLE_TYPES as $type)
+		{
+			$sopt[$type][3050]['table']='glpi_plugin_order';
+			$sopt[$type][3050]['field']='name';
+			$sopt[$type][3050]['linkfield']='';
+			$sopt[$type][3050]['name']=$LANG['plugin_order']['title'][1]." - ".$LANG['plugin_order'][39];
+			$sopt[$type][3050]['forcegroupby']='1';
+			$sopt[$type][3050]['datatype']='itemlink';
+			$sopt[$type][3050]['itemlink_type']=PLUGIN_ORDER_TYPE;
+
+			$sopt[$type][3051]['table']='glpi_plugin_order';
+			$sopt[$type][3051]['field']='numorder';
+			$sopt[$type][3051]['linkfield']='';
+			$sopt[$type][3051]['name']=$LANG['plugin_order']['title'][1]." - ".$LANG['plugin_order'][0];
+			$sopt[$type][3051]['forcegroupby']='1';
+			$sopt[$type][3051]['datatype']='itemlink';
+			$sopt[$type][3051]['itemlink_type']=PLUGIN_ORDER_TYPE;
+		}
+
 	}
 
 	if (plugin_order_haveRight("reference", "r")) {
@@ -455,6 +476,18 @@ function plugin_order_getSearchOption() {
 	return $sopt;
 }
 
+function plugin_order_forceGroupBy($type){
+
+	return true;
+	switch ($type){
+		case PLUGIN_ORDER_TYPE:
+			return true;
+			break;
+		
+	}
+	return false;
+}
+
 function plugin_order_addSelect($type, $ID, $num) {
 	global $SEARCH_OPTION;
 
@@ -472,6 +505,19 @@ function plugin_order_addSelect($type, $ID, $num) {
 		return "";
 }
 
+function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,&$already_link_tables){
+	switch ($new_table){
+
+		case "glpi_plugin_order" : // From items
+			$out= " LEFT JOIN glpi_plugin_order_detail ON ($ref_table.ID = glpi_plugin_order_detail.FK_device) ";
+			$out.= " LEFT JOIN glpi_plugin_order ON (glpi_plugin_order.ID = glpi_plugin_order_detail.FK_order) ";
+			$out.= " LEFT JOIN glpi_plugin_order_references ON (glpi_plugin_order_detail.FK_reference = glpi_plugin_order_references.ID AND glpi_plugin_order_references.FK_type=$type) ";
+			return $out;
+			break;
+	}
+	
+	return "";
+}
 /* display custom fields in the search */
 function plugin_order_giveItem($type, $ID, $data, $num) {
 	global $CFG_GLPI, $INFOFORM_PAGES, $LANG, $SEARCH_OPTION, $LINK_ID_TABLE, $DB;
@@ -594,7 +640,7 @@ function plugin_get_headings_order($type, $withtemplate = '') {
 		/* non template case */
 		else
 			return array (
-				1 => $LANG['plugin_order'][4],
+				1 => $LANG['plugin_order']['title'][1],
 
 				
 			);

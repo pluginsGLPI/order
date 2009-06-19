@@ -50,7 +50,7 @@ if($action=="createorder") {
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"config","plugins");
+commonHeader($LANG['plugin_order']['title'][1],$_SERVER["PHP_SELF"],"config","plugins");
 $config= new PluginOrderConfig();
 $config->showForm($_SERVER["PHP_SELF"]);
 $config->showOrderGenerationForm($_SERVER["PHP_SELF"]);

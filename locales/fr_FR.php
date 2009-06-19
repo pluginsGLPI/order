@@ -30,12 +30,12 @@
     ----------------------------------------------------------------------*/
 
 $title = "Gestion des commandes";
+$LANG['plugin_order']['title'][1] = "Gestion des commandes";
 
 $LANG['plugin_order'][0] = "N° commande";
 $LANG['plugin_order'][1] = "Date commande";
 $LANG['plugin_order'][2] = "Description";
 $LANG['plugin_order'][3] = "Budget";
-$LANG['plugin_order'][4] = $title;
 $LANG['plugin_order'][11] = "Aucune commande trouvée";
 $LANG['plugin_order'][12] = "Bon livraison";
 $LANG['plugin_order'][13] = "Prix Total (HT)";

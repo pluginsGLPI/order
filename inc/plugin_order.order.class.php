@@ -283,7 +283,7 @@ class PluginOrder extends CommonDBTM {
 	 **/
 	function title() {
 		global $LANG, $CFG_GLPI;
-		displayTitle($CFG_GLPI["root_doc"] . "/plugins/order/pics/order-icon.png", $LANG['plugin_order'][4], $LANG['plugin_order'][4]);
+		displayTitle($CFG_GLPI["root_doc"] . "/plugins/order/pics/order-icon.png", $LANG['plugin_order']['title'][1], $LANG['plugin_order']['title'][1]);
 	}
 
 	function needValidation($ID) {

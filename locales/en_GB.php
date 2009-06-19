@@ -35,7 +35,6 @@ $LANG['plugin_order'][0] = "Order number";
 $LANG['plugin_order'][1] = "Date of order";
 $LANG['plugin_order'][2] = "Description";
 $LANG['plugin_order'][3] = "Budget";
-$LANG['plugin_order'][4] = $title;
 $LANG['plugin_order'][11] = "No order found";
 $LANG['plugin_order'][12] = "Delivery form";
 $LANG['plugin_order'][13] = "Price tax free";

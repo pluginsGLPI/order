@@ -32,13 +32,13 @@ $NEEDED_ITEMS=array("computer","printer","networking","monitor","software","peri
 define('GLPI_ROOT', '../..'); 
 include (GLPI_ROOT."/inc/includes.php");
 
-commonHeader($LANG['plugin_order'][4],$_SERVER["PHP_SELF"],"plugins","order");
+commonHeader($LANG['plugin_order']['title'][1],$_SERVER["PHP_SELF"],"plugins","order");
 
 if(plugin_order_haveRight("order","r") && plugin_order_haveRight("reference","r"))
 {
 	echo "<div class='center'>";
 	echo "<table class='tab_cadre'>";
-	echo "<tr><th colspan='2'>".$LANG['plugin_order'][4]."</th></tr>";
+	echo "<tr><th colspan='2'>".$LANG['plugin_order']['title'][1]."</th></tr>";
 	echo "<tr class='tab_bg_1' align='center'>"; 
 	echo "<td><img src='./pics/order.png'></td>";
 	echo "<td><a href='./front/plugin_order.order.php'>".$LANG['plugin_order']['menu'][1]."</a></td></tr>";

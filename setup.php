@@ -57,7 +57,7 @@ function plugin_init_order() {
 		'tablename'  => 'glpi_plugin_order',
 		'formpage'   => 'front/plugin_order.form.php',
 		'searchpage' => 'front/plugin_order.order.php',
-		'typename'   => $LANG['plugin_order'][4],
+		'typename'   => $LANG['plugin_order']['title'][1],
 		'deleted_tables' => true,
 		'specif_entities_tables' => true,
 		'recursive_type' => true
@@ -134,7 +134,7 @@ function plugin_version_order(){
 	global $LANG;
 	
 	return array (
-		'name' => $LANG['plugin_order'][4],
+		'name' => $LANG['plugin_order']['title'][1],
 		'version' => '1.0.0',
 		'author'=>'',
 		'homepage'=>'http://glpi-project.org/wiki/doku.php?id='.substr($_SESSION["glpilanguage"],0,2).':plugins:pluginslist',
