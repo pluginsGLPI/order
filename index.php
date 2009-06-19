@@ -50,7 +50,12 @@ if(plugin_order_haveRight("order","r") && plugin_order_haveRight("reference","r"
 elseif (plugin_order_haveRight("order","r"))
 {
 	glpi_header("./front/plugin_order.order.php");	
-}else{
+}
+elseif (plugin_order_haveRight("reference","r"))
+{
+	glpi_header("./front/plugin_order.reference.php");	
+}
+else{
 	echo "<div align='center'><br><br><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 	echo "<b>".$LANG['login'][5]."</b></div>";
 }

@@ -42,7 +42,7 @@ if(!isset($_POST["sort"])) $_POST["sort"] = "";
 if(!isset($_POST["order"])) $_POST["order"] = "";
 if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
-	plugin_order_checkRight("order","r");
+	plugin_order_checkRight("reference","r");
 
 	if (empty($_POST["ID"])){
 		switch($_POST['glpi_tab']){

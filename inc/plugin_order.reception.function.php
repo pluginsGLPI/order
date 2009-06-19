@@ -298,7 +298,7 @@ function getAllItemsByType($type, $entity, $item_type=0,$item_model=0) {
 			$and.= ($item_model!=0?" AND model=$item_model":"");
 			$query = "SELECT ID, name FROM `" . $LINK_ID_TABLE[$type] . "` 
 					 WHERE FK_entities=" . $entity . $and." 
-					 AND ID NOT IN (SELECT FK_device FROM glpi_plugin_order_detail)";
+					 AND ID NOT IN (SELECT FK_device FROM glpi_plugin_order_detail GROUP BY FK_device)";
 			break;
 		case CONSUMABLE_ITEM_TYPE :
 			$query = "SELECT ID, name FROM `glpi_consumables_type` 
@@ -519,7 +519,7 @@ function plugin_order_generateNewDevice($params) {
 		plugin_order_addHistory(PLUGIN_ORDER_TYPE, '',$new_value,$params["orderID"]);
 
 		
-		addMessageAfterRedirect($LANG['plugin_order']['detail'][30]);
+		addMessageAfterRedirect($LANG['plugin_order']['detail'][30],true);
 		$i++;
 	}
 }

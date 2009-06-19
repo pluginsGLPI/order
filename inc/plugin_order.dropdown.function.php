@@ -135,6 +135,7 @@ function plugin_order_dropdownReferencesByEnterprise($name, $type, $enterpriseID
 function plugin_order_dropdownAllItemsByType($name, $type, $entity=0,$item_type=0,$item_model=0) {
 	$items = getAllItemsByType($type, $entity,$item_type,$item_model);
 	$items[0] = '-----';
+	asort($items);
 	return dropdownArrayValues($name, $items, 0);
 }
 

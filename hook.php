@@ -41,58 +41,58 @@ function plugin_order_install() {
 
 	if (!TableExists("glpi_plugin_order")) {
 		$query = "CREATE TABLE `glpi_plugin_order` (
-						`ID` int(11) NOT NULL auto_increment,
-						`name` varchar(255) UNIQUE collate utf8_unicode_ci NOT NULL default '',
-						`numordersupplier` varchar(255) NOT NULL collate utf8_unicode_ci default '',
-						`numbill`varchar(255) NOT NULL collate utf8_unicode_ci default '',
-						`numorder`varchar(255) NOT NULL collate utf8_unicode_ci default '',
-						`budget` int (11) NOT NULL default 0,
-						`payment` int (11) NOT NULL default 0,
-						`status` int(11) NOT NULL default 1,
-						`FK_entities` int(11) NOT NULL default 0,
-						`date` date,
-						`FK_enterprise` INT(11) NOT NULL DEFAULT 0,
-					    `location` int(11) NOT NULL default 0,
-					    `FK_contact` int(11) NOT NULL default 0,
-						`recursive` INT(1) NOT NULL default 1,
-						`deleted` INT(1) NOT NULL default 0,
-						`notes` TEXT,
-						`comment` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-						PRIMARY KEY  (`ID`)
-					) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+								`ID` int(11) NOT NULL auto_increment,
+								`name` varchar(255) UNIQUE collate utf8_unicode_ci NOT NULL default '',
+								`numordersupplier` varchar(255) NOT NULL collate utf8_unicode_ci default '',
+								`numbill`varchar(255) NOT NULL collate utf8_unicode_ci default '',
+								`numorder`varchar(255) NOT NULL collate utf8_unicode_ci default '',
+								`budget` int (11) NOT NULL default 0,
+								`payment` int (11) NOT NULL default 0,
+								`status` int(11) NOT NULL default 1,
+								`FK_entities` int(11) NOT NULL default 0,
+								`date` date,
+								`FK_enterprise` INT(11) NOT NULL DEFAULT 0,
+							    `location` int(11) NOT NULL default 0,
+							    `FK_contact` int(11) NOT NULL default 0,
+								`recursive` INT(1) NOT NULL default 1,
+								`deleted` INT(1) NOT NULL default 0,
+								`notes` TEXT,
+								`comment` varchar(255) collate utf8_unicode_ci NOT NULL default '',
+								PRIMARY KEY  (`ID`)
+							) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die($DB->error());
 	}
 
 	if (!TableExists("glpi_dropdown_plugin_order_status")) {
 		$query = "CREATE TABLE `glpi_dropdown_plugin_order_status` (
-							`ID` int(11) NOT NULL auto_increment,
-							`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-							`comments` text,
-							PRIMARY KEY  (`ID`),
-							KEY `name` (`name`)
-						) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+									`ID` int(11) NOT NULL auto_increment,
+									`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
+									`comments` text,
+									PRIMARY KEY  (`ID`),
+									KEY `name` (`name`)
+								) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die($DB->error());
 	}
 
 	if (!TableExists("glpi_dropdown_plugin_order_payment")) {
 		$query = "CREATE TABLE `glpi_dropdown_plugin_order_payment` (
-						`ID` int(11) NOT NULL auto_increment,
-						`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-						`comments` text,
-						PRIMARY KEY  (`ID`),
-						KEY `name` (`name`)
-					) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+								`ID` int(11) NOT NULL auto_increment,
+								`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
+								`comments` text,
+								PRIMARY KEY  (`ID`),
+								KEY `name` (`name`)
+							) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die($DB->error());
 	}
 
 	if (!TableExists("glpi_dropdown_plugin_order_taxes")) {
 		$query = "CREATE TABLE `glpi_dropdown_plugin_order_taxes` (
-							`ID` int(11) NOT NULL auto_increment,
-							`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-							`comments` text,
-							PRIMARY KEY  (`ID`),
-							KEY `name` (`name`)
-						) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+									`ID` int(11) NOT NULL auto_increment,
+									`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
+									`comments` text,
+									PRIMARY KEY  (`ID`),
+									KEY `name` (`name`)
+								) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query);
 
 		$query = "INSERT INTO `glpi_dropdown_plugin_order_taxes`(ID,name) VALUES (1,'5,5'), " .
@@ -102,55 +102,55 @@ function plugin_order_install() {
 
 	if (!TableExists("glpi_plugin_order_detail")) {
 		$query = "CREATE TABLE `glpi_plugin_order_detail` (
-							  `ID` int(11) NOT NULL auto_increment,
-							  `FK_order` int(11) NOT NULL default 0,
-							  `FK_device` int(11) NOT NULL default 0,
-							  `FK_reference` int(11) NOT NULL default 0,
-		  					  `deliverynum` varchar(255) NOT NULL collate utf8_unicode_ci default '',
-							  `price_taxfree` FLOAT NOT NULL default 0,
-							  `price_discounted` FLOAT NOT NULL default 0,
-							  `price_ati` FLOAT NOT NULL default 0,
-							  `status` int(1) NOT NULL default 0,
-							  `date`date NOT NULL default 0,
-							  PRIMARY KEY  (`ID`)
-							) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+									  `ID` int(11) NOT NULL auto_increment,
+									  `FK_order` int(11) NOT NULL default 0,
+									  `FK_device` int(11) NOT NULL default 0,
+									  `FK_reference` int(11) NOT NULL default 0,
+				  					  `deliverynum` varchar(255) NOT NULL collate utf8_unicode_ci default '',
+									  `price_taxfree` FLOAT NOT NULL default 0,
+									  `price_discounted` FLOAT NOT NULL default 0,
+									  `price_ati` FLOAT NOT NULL default 0,
+									  `status` int(1) NOT NULL default 0,
+									  `date`date NOT NULL default 0,
+									  PRIMARY KEY  (`ID`)
+									) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die($DB->error());
 	}
 
 	if (!TableExists("glpi_plugin_order_device")) {
 		$query = "CREATE TABLE `glpi_plugin_order_device` (
-								`ID` int(11) NOT NULL auto_increment,
-								`FK_order` int(11)  NOT NULL default 0,
-								`FK_device` int(11) NOT NULL default 0,
-								`device_type` int(11) NOT NULL default 0,
-								PRIMARY KEY  (`ID`),
-								KEY `FK_device` (`FK_device`,`device_type`)
-							) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+										`ID` int(11) NOT NULL auto_increment,
+										`FK_order` int(11)  NOT NULL default 0,
+										`FK_device` int(11) NOT NULL default 0,
+										`device_type` int(11) NOT NULL default 0,
+										PRIMARY KEY  (`ID`),
+										KEY `FK_device` (`FK_device`,`device_type`)
+									) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die($DB->error());
 	}
 
 	if (!TableExists("glpi_plugin_order_profiles")) {
 		$query = "CREATE TABLE `glpi_plugin_order_profiles` (
-								`ID` int(11) NOT NULL auto_increment,
-								`name` varchar(255) collate utf8_unicode_ci default NULL,
-								`order` char(1) default NULL,
-							    `reference` char(1) default NULL,
-							    `validation` char(1) default NULL,
-							    `cancel` char(1) default NULL,
-							    `undo_validation` char(1) default NULL,
-								PRIMARY KEY  (`ID`),
-								KEY `name` (`name`)
-							) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+										`ID` int(11) NOT NULL auto_increment,
+										`name` varchar(255) collate utf8_unicode_ci default NULL,
+										`order` char(1) default NULL,
+									    `reference` char(1) default NULL,
+									    `validation` char(1) default NULL,
+									    `cancel` char(1) default NULL,
+									    `undo_validation` char(1) default NULL,
+										PRIMARY KEY  (`ID`),
+										KEY `name` (`name`)
+									) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die($DB->error());
 	}
 
 	if (!TableExists("glpi_plugin_order_config")) {
 		$query = "CREATE TABLE `glpi_plugin_order_config` (
-								`ID` int(11) NOT NULL auto_increment,
-								`use_validation` int(11) NOT NULL default 0,
-								`default_taxes` int(11) NOT NULL default 0,
-								PRIMARY KEY  (`ID`)
-							) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+										`ID` int(11) NOT NULL auto_increment,
+										`use_validation` int(11) NOT NULL default 0,
+										`default_taxes` int(11) NOT NULL default 0,
+										PRIMARY KEY  (`ID`)
+									) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die($DB->error());
 
 		$query = "INSERT INTO `glpi_plugin_order_config`(ID,use_validation,default_taxes) VALUES (1,0,0);";
@@ -159,70 +159,70 @@ function plugin_order_install() {
 
 	if (!TableExists("glpi_plugin_order_references")) {
 		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references` (
-						  `ID` int(11) NOT NULL auto_increment,
-						  `FK_entities` int(11) NOT NULL DEFAULT 0,
-						  `FK_manufacturer` int(11) NOT NULL DEFAULT 0,
-						  `FK_type` INT(11) NOT NULL DEFAULT 0,
-						  `FK_model` INT(11) NOT NULL DEFAULT 0,
-						  `name` varchar(255) character set latin1 NOT NULL,
-						  `type` int(11) NOT NULL DEFAULT 0,
-						  `template` int(11) NOT NULL DEFAULT 0,
-						  `recursive` int(11) NOT NULL DEFAULT 0,
-						  `deleted` int(11) NOT NULL DEFAULT 0,
-						  `comments` text character set latin1 NULL,
-						  PRIMARY KEY  (`ID`)
-						) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+								  `ID` int(11) NOT NULL auto_increment,
+								  `FK_entities` int(11) NOT NULL DEFAULT 0,
+								  `FK_manufacturer` int(11) NOT NULL DEFAULT 0,
+								  `FK_type` INT(11) NOT NULL DEFAULT 0,
+								  `FK_model` INT(11) NOT NULL DEFAULT 0,
+								  `name` varchar(255) character set latin1 NOT NULL,
+								  `type` int(11) NOT NULL DEFAULT 0,
+								  `template` int(11) NOT NULL DEFAULT 0,
+								  `recursive` int(11) NOT NULL DEFAULT 0,
+								  `deleted` int(11) NOT NULL DEFAULT 0,
+								  `comments` text character set latin1 NULL,
+								  PRIMARY KEY  (`ID`)
+								) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 		$DB->query($query) or die($DB->error());
 	}
 
 	if (!TableExists("glpi_plugin_order_references_manufacturers")) {
 		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_manufacturers` (
-						  `ID` int(11) NOT NULL auto_increment,
-						  `FK_entities` int(11) NOT NULL DEFAULT 0,
-						  `FK_reference` int(11) NOT NULL DEFAULT 0,
-						  `FK_enterprise` int(11) NOT NULL DEFAULT 0,
-						  `price_taxfree` float NOT NULL DEFAULT 0,
-						  PRIMARY KEY  (`ID`)
-						) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+								  `ID` int(11) NOT NULL auto_increment,
+								  `FK_entities` int(11) NOT NULL DEFAULT 0,
+								  `FK_reference` int(11) NOT NULL DEFAULT 0,
+								  `FK_enterprise` int(11) NOT NULL DEFAULT 0,
+								  `price_taxfree` float NOT NULL DEFAULT 0,
+								  PRIMARY KEY  (`ID`)
+								) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 		$DB->query($query) or die($DB->error());
 	}
 
 	if (!TableExists("glpi_plugin_order_mailing")) {
 		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_mailing` (
-				  `ID` int(11) NOT NULL auto_increment,
-				  `type` varchar(255) collate utf8_unicode_ci default NULL,
-				  `FK_item` int(11) NOT NULL default '0',
-				  `item_type` int(11) NOT NULL default '0',
-				  PRIMARY KEY  (`ID`),
-				  UNIQUE KEY `mailings` (`type`,`FK_item`,`item_type`),
-				  KEY `type` (`type`),
-				  KEY `FK_item` (`FK_item`),
-				  KEY `item_type` (`item_type`),
-				  KEY `items` (`item_type`,`FK_item`)
-				) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+						  `ID` int(11) NOT NULL auto_increment,
+						  `type` varchar(255) collate utf8_unicode_ci default NULL,
+						  `FK_item` int(11) NOT NULL default '0',
+						  `item_type` int(11) NOT NULL default '0',
+						  PRIMARY KEY  (`ID`),
+						  UNIQUE KEY `mailings` (`type`,`FK_item`,`item_type`),
+						  KEY `type` (`type`),
+						  KEY `FK_item` (`FK_item`),
+						  KEY `item_type` (`item_type`),
+						  KEY `items` (`item_type`,`FK_item`)
+						) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die($DB->error());
 
 	}
 	$query = "INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3150','1','1','0'),
-					(NULL,'3150','2','2','0'),
-					(NULL,'3150','3','3','0'),
-					(NULL,'3150','4','4','0'),
-					(NULL,'3150','5','5','0'),
-					(NULL,'3150','6','6','0'),
-					(NULL,'3150','7','7','0'),
-					(NULL,'3150','8','8','0'),
-					(NULL,'3150','9','9','0'),
-					(NULL,'3150','10','10','0');";
+						(NULL,'3150','2','2','0'),
+						(NULL,'3150','3','3','0'),
+						(NULL,'3150','4','4','0'),
+						(NULL,'3150','5','5','0'),
+						(NULL,'3150','6','6','0'),
+						(NULL,'3150','7','7','0'),
+						(NULL,'3150','8','8','0'),
+						(NULL,'3150','9','9','0'),
+						(NULL,'3150','10','10','0');";
 	$DB->query($query) or die($DB->error());
 
 	$query = "INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )
-					VALUES (NULL, 3151, 1, 1, 0),
-						   (NULL, 3151, 2, 4, 0),
-						   (NULL, 3151, 6, 6, 0),
-						   (NULL, 3151, 4, 5, 0),
-						   (NULL, 3151, 7, 7, 0),
-						   (NULL, 3151, 8, 8, 0),
-						   (NULL, 3151, 5, 9, 0);";
+						VALUES (NULL, 3151, 1, 1, 0),
+							   (NULL, 3151, 2, 4, 0),
+							   (NULL, 3151, 6, 6, 0),
+							   (NULL, 3151, 4, 5, 0),
+							   (NULL, 3151, 7, 7, 0),
+							   (NULL, 3151, 8, 8, 0),
+							   (NULL, 3151, 5, 9, 0);";
 	$DB->query($query) or die($DB->error());
 
 	plugin_order_createfirstaccess($_SESSION['glpiactiveprofile']['ID']);
@@ -271,10 +271,10 @@ function plugin_order_uninstall() {
 
 	if (TableExists("glpi_plugin_data_injection_models"))
 		$DB->query("DELETE FROM `glpi_plugin_data_injection_models`, `glpi_plugin_data_injection_mappings`, `glpi_plugin_data_injection_infos` USING `glpi_plugin_data_injection_models`, `glpi_plugin_data_injection_mappings`, `glpi_plugin_data_injection_infos`
-							WHERE glpi_plugin_data_injection_models.device_type=" .
+									WHERE glpi_plugin_data_injection_models.device_type=" .
 		PLUGIN_ORDER_TYPE . "
-							AND glpi_plugin_data_injection_mappings.model_id=glpi_plugin_data_injection_models.ID
-							AND glpi_plugin_data_injection_infos.model_id=glpi_plugin_data_injection_models.ID");
+									AND glpi_plugin_data_injection_mappings.model_id=glpi_plugin_data_injection_models.ID
+									AND glpi_plugin_data_injection_infos.model_id=glpi_plugin_data_injection_models.ID");
 	plugin_init_order();
 	cleanCache("GLPI_HEADER_" . $_SESSION["glpiID"]);
 	return true;
@@ -392,6 +392,9 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_TYPE][80]['field'] = 'completename';
 		$sopt[PLUGIN_ORDER_TYPE][80]['linkfield'] = 'FK_entities';
 		$sopt[PLUGIN_ORDER_TYPE][80]['name'] = $LANG['entity'][0];
+	}
+
+	if (plugin_order_haveRight("reference", "r")) {
 
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE]['common'] = $LANG['plugin_order']['reference'][1];
 
@@ -406,7 +409,7 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['linkfield'] = '';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['name'] = $LANG['plugin_order']['detail'][2];
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['datatype'] = 'itemlink';
-		
+
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['table'] = 'glpi_plugin_order_references';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['field'] = 'comments';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['linkfield'] = '';
@@ -437,7 +440,6 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][8]['linkfield'] = '';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][8]['name'] = $LANG['common'][22];
 
-
 		/* entity */
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['table'] = 'glpi_entities';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['field'] = 'completename';
@@ -453,21 +455,21 @@ function plugin_order_getSearchOption() {
 	return $sopt;
 }
 
-function plugin_order_addSelect($type,$ID,$num){
+function plugin_order_addSelect($type, $ID, $num) {
 	global $SEARCH_OPTION;
 
-	$table=$SEARCH_OPTION[$type][$ID]["table"];
-	$field=$SEARCH_OPTION[$type][$ID]["field"];
-	
+	$table = $SEARCH_OPTION[$type][$ID]["table"];
+	$field = $SEARCH_OPTION[$type][$ID]["field"];
+
 	if ($table == "glpi_plugin_order_references" && !$num)
-		return $table.".FK_manufacturer as manufacturer, ".
-		$table.".type AS device_type, ".
-		$table.".FK_type AS type, ".
-		$table.".FK_model AS model, ".
-		$table.".template AS template, ".
-		$table.".$field as ITEM_$num, ";
+		return $table . ".FK_manufacturer as manufacturer, " .
+		$table . ".type AS device_type, " .
+		$table . ".FK_type AS type, " .
+		$table . ".FK_model AS model, " .
+		$table . ".template AS template, " .
+		$table . ".$field as ITEM_$num, ";
 	else
-		return "";	
+		return "";
 }
 
 /* display custom fields in the search */
@@ -480,21 +482,21 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 		/* display associated items with order */
 		case "glpi_plugin_order.status" :
 			return plugin_order_getDropdownStatus($data["ITEM_" . $num]);
-		case "glpi_plugin_order_references.FK_type":
+		case "glpi_plugin_order_references.FK_type" :
 			$commonitem = new CommonItem;
 			$commonitem->setType($data["device_type"]);
 			return $commonitem->getType();
-		case "glpi_plugin_order_references.FK_manufacturer":
-			return getDropdownName("glpi_dropdown_manufacturer",$data["manufacturer"]);
-		case "glpi_plugin_order_references.type":
-			return getDropdownName(plugin_order_getTypeTable($data["device_type"]),$data["type"]);
-		case "glpi_plugin_order_references.FK_model":
-			return getDropdownName(plugin_order_getModelTable($data["device_type"]),$data["model"]);
-		case "glpi_plugin_order_references.template":
+		case "glpi_plugin_order_references.FK_manufacturer" :
+			return getDropdownName("glpi_dropdown_manufacturer", $data["manufacturer"]);
+		case "glpi_plugin_order_references.type" :
+			return getDropdownName(plugin_order_getTypeTable($data["device_type"]), $data["type"]);
+		case "glpi_plugin_order_references.FK_model" :
+			return getDropdownName(plugin_order_getModelTable($data["device_type"]), $data["model"]);
+		case "glpi_plugin_order_references.template" :
 			if (!$data["template"])
 				return " ";
-			else	
-				return plugin_order_getTemplateName($data["device_type"],$data["template"]); 
+			else
+				return plugin_order_getTemplateName($data["device_type"], $data["template"]);
 	}
 	return "";
 }
@@ -518,11 +520,10 @@ function plugin_pre_item_update_order($input) {
 		switch ($input["_item_type_"]) {
 			case INFOCOM_TYPE :
 				//If infocom modifications doesn't come from order plugin himself
-				if (!isset($input["_delete_from_order"]))
-				{
+				if (!isset ($input["_delete_from_order"])) {
 					$infocom = new InfoCom;
 					$infocom->getFromDB($input["ID"]);
-	
+
 					$device = new PluginOrderDevice;
 					if ($device->isDeviceLinkedToOrder($infocom->fields["device_type"], $infocom->fields["FK_device"])) {
 						$field_set = false;
