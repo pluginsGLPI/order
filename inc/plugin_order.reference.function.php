@@ -130,10 +130,11 @@ function plugin_order_addSupplierToReference($target,$referenceID)
 	}
 	
 }
+
 function plugin_order_showReferencesBySupplierID($ID)
 {
 	global $LANG, $DB, $CFG_GLPI,$INFOFORM_PAGES;
-	$query = "SELECT gr.ID, gr.FK_manufacturer, gr.FK_entities, gr.type, gr.name, grm.price " .
+	$query = "SELECT gr.ID, gr.FK_manufacturer, gr.FK_entities, gr.type, gr.name, grm.price_taxfree " .
 			"FROM `glpi_plugin_order_references_manufacturers` as grm, `glpi_plugin_order_references` as gr " .
 			"WHERE grm.FK_enterprise='$ID' AND grm.FK_reference=gr.ID";
 	$result = $DB->query($query);
@@ -170,7 +171,7 @@ function plugin_order_showReferencesBySupplierID($ID)
 			echo $commonitem->getType();
 			echo "</td>";
 			echo "<td class='tab_bg_1'>";
-			echo $data["price"];
+			echo $data["price_taxfree"];
 			echo "</td>";
 			echo "</tr>";	
 		}
@@ -257,5 +258,22 @@ function plugin_order_getTypeTable($type)
 			return false;
 			break;	
 	}
+}
+
+function plugin_order_isSupplierInReferenceInUse($referenceID,$supplierID)
+{
+	global $DB;
+	$query = "SELECT COUNT(*) as cpt FROM `glpi_plugin_order_detail` as detail," .
+			" `glpi_plugin_order_references` as ref, ".	
+			" `glpi_plugin_order` as gorder".
+			" WHERE gorder.FK_enterprise=$supplierID " .
+			" AND gorder.ID=detail.FK_order" .
+			" AND ref.ID=detail.FK_reference" .
+			" AND ref.ID=$referenceID";
+	$result = $DB->query($query);
+	if ($DB->result($result,0,"cpt") > 0)
+		return true;
+	else
+		return false;			
 }
 ?>
