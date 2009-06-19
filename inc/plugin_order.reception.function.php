@@ -199,14 +199,6 @@ function getReceptionMaterialInfo($deviceType, $deviceID) {
 	return ($comments);
 }
 
-function getReceptionReferenceLink($ID, $name) {
-	global $CFG_GLPI, $INFOFORM_PAGES;
-	if (plugin_order_haveRight("reference","r"))
-		return "<a href=" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[PLUGIN_ORDER_REFERENCE_TYPE] . "?ID=" . $ID . "'>" . $name . "</a>";
-	else
-		return $name;
-}
-
 function getReceptionStatus($ID) {
 	global $DB, $LANG;
 
@@ -432,13 +424,14 @@ function plugin_order_updateReceptionStatus($params) {
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
 }
 
-//TODO : change name : not explicit enough
-function plugin_order_showReceptionForm($target, $params) {
+function plugin_order_showItemGenerationForm($target, $params) {
 	global $LANG, $CFG_GLPI;
 	commonHeader($LANG['plugin_order'][4], $_SERVER["PHP_SELF"], "plugins", "order", "order");
 	echo "<div class='center'>";
 	echo "<table class='tab_cadre'>";
 
+	echo "<a href='".$_SERVER["HTTP_REFERER"]."'>".$LANG['buttons'][13]."</a></br><br>";
+	
 	echo "<form method='post' name='order_deviceGeneration' id='order_deviceGeneration'  action=" . $_SERVER["PHP_SELF"] . ">";
 	echo "<tr><th colspan='5'>" . $LANG['plugin_order']['delivery'][3] . "</tr></th>";
 	echo "<tr><th>" . $LANG['plugin_order']['reference'][1] . "</th>";

@@ -63,7 +63,7 @@ if (isset ($_POST["generation"])) {
 		foreach ($_POST["item"] as $key => $val) {
 			if ($val == 1) {
 				$detail->getFromDB($_POST["ID"][$key]);
-				if ($detail->fields["status"] == ORDER_DEVICE_DELIVRED) {
+				if ($detail->fields["status"] == ORDER_DEVICE_NOT_DELIVRED) {
 					addMessageAfterRedirect($LANG['plugin_order'][45], true, ERROR);
 					glpi_header($_SERVER["HTTP_REFERER"]);
 				}
@@ -72,7 +72,7 @@ if (isset ($_POST["generation"])) {
 	}
 
 	if (isset ($_POST["item"]))
-		plugin_order_showReceptionForm($_SERVER["PHP_SELF"], $_POST);
+		plugin_order_showItemGenerationForm($_SERVER["PHP_SELF"], $_POST);
 	else {
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
 		glpi_header($_SERVER["HTTP_REFERER"]);

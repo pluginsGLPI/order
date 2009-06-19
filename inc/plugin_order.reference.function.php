@@ -154,23 +154,23 @@ function plugin_order_showReferencesBySupplierID($ID)
 		$commonitem = new CommonItem;
 		while ($data = $DB->fetch_array($result))
 		{
-			echo "<tr>";
-			echo "<td class='tab_bg_1'>";
+			echo "<tr class='tab_bg_1' align='center'>";
+			echo "<td>";
 			echo getDropdownName("glpi_entities",$data["FK_entities"]);
 			echo "</td>";
 
-			echo "<td class='tab_bg_1'>";
+			echo "<td>";
 			echo getDropdownName("glpi_dropdown_manufacturer",$data["FK_manufacturer"]);
 			echo "</td>";
 
-			echo "<td class='tab_bg_1'>";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[PLUGIN_ORDER_REFERENCE_TYPE]."?ID=".$data["ID"]."\">".$data["name"]."</a>";
+			echo "<td>";
+			echo getReceptionReferenceLink($data["ID"], $data["name"]);
 			echo "</td>";
-			echo "<td class='tab_bg_1'>"; 
+			echo "<td>"; 
 			$commonitem->setType($data["type"]);
 			echo $commonitem->getType();
 			echo "</td>";
-			echo "<td class='tab_bg_1'>";
+			echo "<td>";
 			echo $data["price_taxfree"];
 			echo "</td>";
 			echo "</tr>";	
@@ -275,5 +275,13 @@ function plugin_order_isSupplierInReferenceInUse($referenceID,$supplierID)
 		return true;
 	else
 		return false;			
+}
+
+function getReceptionReferenceLink($ID, $name) {
+	global $CFG_GLPI, $INFOFORM_PAGES;
+	if (plugin_order_haveRight("reference","r"))
+		return "<a href=" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[PLUGIN_ORDER_REFERENCE_TYPE] . "?ID=" . $ID . "'>" . $name . "</a>";
+	else
+		return $name;
 }
 ?>
