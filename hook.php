@@ -520,7 +520,7 @@ function plugin_pre_item_update_order($input) {
 		switch ($input["_item_type_"]) {
 			case INFOCOM_TYPE :
 				//If infocom modifications doesn't come from order plugin himself
-				if (!isset ($input["_delete_from_order"])) {
+				if (!isset ($input["_manage_by_order"])) {
 					$infocom = new InfoCom;
 					$infocom->getFromDB($input["ID"]);
 

@@ -579,6 +579,9 @@ function plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_
 	$fields["facture"] = $order->fields["numbill"];
 	$fields["value"] = $detail->fields["price_discounted"];
 	$fields["buy_date"] = $order->fields["date"];
+
+	//DO not check infocom modifications
+	$input["_manage_by_order"] = 1;
 	$ic->add($fields);
 }
 
@@ -596,7 +599,7 @@ function plugin_order_removeInfoComRelatedToOrder($device_type,$deviceID)
 	$input["buy_date"] = "";
 	
 	//DO not check infocom modifications
-	$input["_delete_from_order"] = 1;
+	$input["_manage_by_order"] = 1;
 	
 	$infocom->update($input);
 }
