@@ -52,37 +52,41 @@ function plugin_order_showOrderInfoByDeviceID($device_type, $deviceID) {
 function plugin_order_addStatusLog($orderID, $status, $comments = '') {
 	global $LANG;
 
-	$changes[0] = 0;
-	$changes[1] = "";
-
 	switch ($status) {
 		case ORDER_STATUS_DRAFT :
-			$changes[2] = $LANG['plugin_order']['validation'][15];
+			$changes = $LANG['plugin_order']['validation'][15];
 			break;
 		case ORDER_STATUS_WAITING_APPROVAL :
-			$changes[2] = $LANG['plugin_order']['validation'][1];
+			$changes = $LANG['plugin_order']['validation'][1];
 			break;
 		case ORDER_STATUS_APPROVED :
-			$changes[2] = $LANG['plugin_order']['validation'][2];
+			$changes = $LANG['plugin_order']['validation'][2];
 			break;
 		case ORDER_STATUS_PARTIALLY_DELIVRED :
-			$changes[2] = $LANG['plugin_order']['validation'][3];
+			$changes = $LANG['plugin_order']['validation'][3];
 			break;
 		case ORDER_STATUS_COMPLETLY_DELIVERED :
-			$changes[2] = $LANG['plugin_order']['validation'][4];
+			$changes = $LANG['plugin_order']['validation'][4];
 			break;
 		case ORDER_STATUS_CANCELED :
-			$changes[2] = $LANG['plugin_order']['validation'][5];
+			$changes = $LANG['plugin_order']['validation'][5];
 			break;
 	}
 
 	if ($comments != '')
-		$changes[2] .= " : " .
-		$comments;
+		$changes .= " : ".$comments;
 
-	historyLog($orderID, PLUGIN_ORDER_TYPE, $changes, 0, HISTORY_LOG_SIMPLE_MESSAGE);
+	plugin_order_addHistory(PLUGIN_ORDER_TYPE, '',$changes,$orderID);
+//	historyLog($orderID, PLUGIN_ORDER_TYPE, $changes, 0, HISTORY_LOG_SIMPLE_MESSAGE);
 }
 
+function plugin_order_addHistory($type, $old_value='',$new_value='',$ID)
+{
+	$changes[0] = 0;
+	$changes[1] = $old_value;
+	$changes[2] = $new_value;
+	historyLog($ID, $type, $changes, 0, HISTORY_LOG_SIMPLE_MESSAGE);
+}
 function plugin_order_canUpdateOrder($orderID) {
 	global $ORDER_VALIDATION_STATUS;
 	if ($orderID > 0) {

@@ -322,18 +322,29 @@ function getAllItemsByType($type, $entity, $item_type=0,$item_model=0) {
 	return $device;
 }
 
-function plugin_order_createLinkWithDevice($detailID, $deviceID, $deviceType, $orderID) {
+function plugin_order_createLinkWithDevice($detailID=0, $deviceID=0, $device_type=0, $orderID=0, $entity=0, $templateID=0,$history=true) {
+	global$LANG;
 	$detail = new PluginOrderDetail;
 	$input["ID"] = $detailID;
 	$input["FK_device"] = $deviceID;
 	$detail->update($input);
-
+	$detail->getFromDB($detailID);
+	
 	$device = new PluginOrderDevice;
 	$input = array ();
 	$input["FK_order"] = $orderID;
 	$input["FK_device"] = $deviceID;
-	$input["device_type"] = $deviceType;
+	$input["device_type"] = $device_type;
 	$device->add($input);
+
+	if ($history)
+	{
+		$order = new PluginOrder;
+		$order->getFromDB($detail->fields["FK_order"]);
+		$new_value = $LANG['plugin_order']['delivery'][14].' : '.$order->fields["name"];
+		plugin_order_addHistory($device_type, '',$new_value,$deviceID);	
+	}
+	plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_type, $deviceID, $templateID);
 }
 
 function plugin_order_deleteLinkWithDevice($detailID, $deviceType) {
@@ -435,6 +446,7 @@ function plugin_order_showReceptionForm($target, $params) {
 			echo "</td></tr>";
 			echo "<input type='hidden' name='type[$i]' value=" . $params['type'][$key] . ">";
 			echo "<input type='hidden' name='ID[$i]' value=" . $params["ID"][$key] . ">";
+			echo "<input type='hidden' name='orderID' value=" . $params["orderID"] . ">";
 			$i++;
 		}
 
@@ -479,16 +491,13 @@ function plugin_order_generateNewDevice($params) {
 		$fields["ID"] = $newID;
 		$commonitem->obj->update($fields);
 
-		plugin_order_generateInfoComRelatedToOrder($entity, $params["ID"][$i], $params["type"][$i], $newID, $templateID);
-		plugin_order_createLinkWithDevice($params["ID"][$i], $newID, $params["type"][$i], $params["orderID"]);
+		$order = new PluginOrder;
+		$order->getFromDB($params["orderID"]);
+		
+		plugin_order_createLinkWithDevice($params["ID"][$i], $newID, $params["type"][$i], $params["orderID"],$entity, $templateID,false);
+		$new_value = $LANG['plugin_order']['delivery'][13].' : '.$order->fields["name"];
+		plugin_order_addHistory($params["type"][$i], '',$new_value,$newID);
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][30]);
-
-		/*
-		$changes[0] = 0;
-		$changes[1] = $LANG['plugin_order']['history'][1];
-		$changes[2] = 0;
-		historyLog($params["ID"][$i],$params['type'][$i],$changes,HISTORY_LOG_SIMPLE_MESSAGE);
-		*/
 		$i++;
 	}
 }

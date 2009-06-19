@@ -101,6 +101,9 @@ $LANG['plugin_order']['delivery'][5] = "Matériel(s) réceptionné(s)";
 $LANG['plugin_order']['delivery'][9] = "Générer";
 $LANG['plugin_order']['delivery'][11] = "Lier à un matériel existant";
 $LANG['plugin_order']['delivery'][12] = "Supprimer le lien avec le matériel";
+$LANG['plugin_order']['delivery'][13] = "Matériel généré à partir de la commande";
+$LANG['plugin_order']['delivery'][14] = "Matériel lié à la commande";
+
 
 $LANG['plugin_order']['profile'][0] = "Gestion des droits";
 $LANG['plugin_order']['profile'][1] = "Valider une commande";
