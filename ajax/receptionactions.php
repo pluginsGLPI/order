@@ -60,7 +60,10 @@ if (isset($_POST["action"])){
 			echo "</td><td valign='bottom'><input type='submit' name='reception' class='submit' value='".$LANG['buttons'][2]."'></td>";
 		break;
 		case "generation":
-			echo "</td><td valign='bottom'><input type='submit' name='generation' class='submit' value='".$LANG['buttons'][2]."'></td>";
+			echo "</td><td valign='bottom'>";
+			echo "<input type='hidden' name='referenceID' value='".$_POST["referenceID"]."'>"; 
+			echo"<input type='submit' name='generation' class='submit' value='".$LANG['buttons'][2]."'>"; 
+			echo "</td>";
 		break;
 		case "createLink":
 			echo "</td><td valign='bottom'>";

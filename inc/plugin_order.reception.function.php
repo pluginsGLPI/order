@@ -29,7 +29,7 @@
     Original Author of file:
     Purpose of file:
     ----------------------------------------------------------------------*/
-function showReceptionForm($orderID) {
+function plugin_order_showDetailReceptionForm($orderID) {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE, $INFOFORM_PAGES;
 
 	$plugin_order = new PluginOrder();
@@ -136,7 +136,7 @@ function showReceptionForm($orderID) {
 				echo "<td width='1%'>/</td><td class='center' width='5%'><a onclick= \"if ( unMarkCheckboxes('order_reception_form$rand') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$orderID&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
 				echo "</td>";
 				echo "<input type='hidden' name='orderID' value='$orderID'>";
-				plugin_order_dropdownReceptionActions($typeRef,$refID);
+				plugin_order_dropdownReceptionActions($typeRef,$refID,$mydetail->fields["FK_order"]);
 				echo "</td></tr>";
 				echo "</table>";
 			}
@@ -298,7 +298,7 @@ function getAllItemsByType($type, $entity, $item_type=0,$item_model=0) {
 			$and.= ($item_model!=0?" AND model=$item_model":"");
 			$query = "SELECT ID, name FROM `" . $LINK_ID_TABLE[$type] . "` 
 					 WHERE FK_entities=" . $entity . $and." 
-					 AND ID NOT IN (SELECT FK_device FROM glpi_plugin_order_detail GROUP BY FK_device)";
+					 AND ID NOT IN (SELECT FK_device FROM glpi_plugin_order_detail)";
 			break;
 		case CONSUMABLE_ITEM_TYPE :
 			$query = "SELECT ID, name FROM `glpi_consumables_type` 
@@ -441,6 +441,7 @@ function plugin_order_showItemGenerationForm($target, $params) {
     echo "<th>". $LANG['entity'][0] ."</th>";
     echo "</tr>";
 	echo "<input type='hidden' name='orderID' value=" . $params["orderID"] . ">";
+	echo "<input type='hidden' name='referenceID' value=" . $params["referenceID"] . ">";
 	
 	$order = new PluginOrder;
 	$order->getFromDB($params["orderID"]);
@@ -482,6 +483,16 @@ function plugin_order_generateNewDevice($params) {
 		$input["otherserial"] = $params["otherserial"][$i];
 		$input["name"] = $params["name"][$i];
 
+		$order = new PluginOrder;
+		$order->getFromDB($params["orderID"]);
+
+		$reference = new PluginOrderReference;
+		$reference->getFromDB($params["referenceID"]);
+		$input["type"] = $reference->fields["FK_type"];
+		$input["model"] = $reference->fields["FK_model"];
+		if ($entity == $reference->fields["FK_entities"])
+			$input["location"] = $order->fields["location"];
+		
 		$commonitem = new CommonItem;
 		$commonitem->setType($params["type"][$i], true);
 		$newID = $commonitem->obj->add($input);
@@ -503,9 +514,6 @@ function plugin_order_generateNewDevice($params) {
 		$fields["ID"] = $newID;
 		$commonitem->obj->update($fields);
 
-		$order = new PluginOrder;
-		$order->getFromDB($params["orderID"]);
-		
 	
 		plugin_order_createLinkWithDevice($params["ID"][$i], $newID, $params["type"][$i], $params["orderID"],$entity, $templateID,false);
 		
@@ -524,6 +532,17 @@ function plugin_order_generateNewDevice($params) {
 	}
 }
 
+function plugin_order_allItemsAlreadyDelivered($orderID, $referenceID)
+{
+	global $DB;
+	$query = "SELECT COUNT(*)  as cpt FROM `glpi_plugin_order_detail` " .
+			"WHERE FK_order=$orderID AND FK_reference=$referenceID AND status=".ORDER_DEVICE_NOT_DELIVRED;
+	$result = $DB->query($query);
+	if ($DB->result($result,0,"cpt") > 0)
+		return false;
+	else
+		return true;	
+}
 function plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_type, $deviceID, $templateID) {
 	global $LANG;
 

@@ -168,7 +168,7 @@ class PluginOrder extends CommonDBTM {
 			if ($canedit)
 				dropdownValue("glpi_dropdown_budget", "budget", $this->fields["budget"], 1, $this->fields["FK_entities"]);
 			else
-				echo getdropdownname("glpi_dropdown_budget", $this->fields["budget"]);
+				echo getDropdownName("glpi_dropdown_budget", $this->fields["budget"]);
 			echo "</td></tr>";
 
 			/* num order supplier */
@@ -209,7 +209,7 @@ class PluginOrder extends CommonDBTM {
 			if ($canedit)
 				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"], 1, $this->fields["FK_entities"]);
 			else
-				echo getDropdownName("glpi_dropdown_locations", $this->fields["FK_enterprise"]);
+				echo getDropdownName("glpi_dropdown_locations", $this->fields["location"]);
 			echo "</td>";
 
 			echo "<td>" . $LANG['plugin_order']['status'][0] . ": </td>";
