@@ -36,6 +36,7 @@ function plugin_order_showReferenceManufacturers($target, $ID) {
 			
 	initNavigateListItems(PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE,$LANG['plugin_order']['reference'][1] ." = ". $ref->fields["name"]);
 	
+	$candelete = plugin_order_haveRight("reference","w");
 	$query = "SELECT * FROM `glpi_plugin_order_references_manufacturers` WHERE FK_reference='$ID'";
 	$result = $DB->query($query);
 	$rand=mt_rand();
@@ -55,7 +56,7 @@ function plugin_order_showReferenceManufacturers($target, $ID) {
 			echo "<input type='hidden' name='item[" . $data["ID"] . "]' value='" . $ID . "'>";
 			echo "<tr>";
 			echo "<td class='tab_bg_1'>";
-			if (haveRight("reference","w"))
+			if ($candelete)
 				echo "<input type='checkbox' name='check[" . $data["ID"] . "]'>";
 			echo "</td>";
 			echo "<td class='tab_bg_1' align='center'><a href=\"".GLPI_ROOT."/".$INFOFORM_PAGES[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE]."?ID=".$data["ID"]."&referenceID=".$data["FK_enterprise"]."\">" . getDropdownName("glpi_enterprises", $data["FK_enterprise"]) . "</a></td>";
@@ -66,7 +67,7 @@ function plugin_order_showReferenceManufacturers($target, $ID) {
 		}
 		echo "</table>";
 
-		if (haveRight("reference","w"))
+		if ($candelete)
 		{
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr>"; 
