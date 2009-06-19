@@ -83,12 +83,24 @@ class PluginOrderReference extends CommonDBTM {
 	function referenceInUse()
 	{
 		global $DB;
-		$query = "SELECT COUNT(*) as cpt FROM `glpi_plugin_order_detail` WHERE FK_reference=".$this->fields["ID"];
+		$query = "SELECT COUNT(*) as cpt FROM `glpi_plugin_order_detail` " .
+				"WHERE FK_reference=".$this->fields["ID"];
 		$result = $DB->query($query);
 		if ($DB->result($result,0,"cpt") > 0)
 			return true;
 		else
 			return false;	
+	}
+	
+	function canDelete()
+	{
+		return (!$this->referenceInUse());
+	}
+	
+	function isRestrictedType()
+	{
+		global $ORDER_RESTRICTED_TYPES;
+		return (in_array($this->fields["type"],$ORDER_RESTRICTED_TYPES));
 	}
 	
 	/**
@@ -119,6 +131,8 @@ class PluginOrderReference extends CommonDBTM {
 		}
 		
 		$canedit = plugin_order_haveRight("reference", "w");
+		$reference_in_use = (!$ID?false:$this->referenceInUse());
+		
 		if ($spotted) {
 			$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
 			$canedit = $this->can($ID, 'w');
@@ -132,7 +146,7 @@ class PluginOrderReference extends CommonDBTM {
 			$this->showFormHeader($ID, '', 1);
 			echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['reference'][1] . ": </td>";
 			echo "<td>";
-			if ($canedit)
+			if ($canedit && !$reference_in_use)
 				autocompletionTextField("name", "glpi_plugin_order_references", "name", $this->fields["name"], 70, $this->fields["FK_entities"]);
 			else
 				echo $this->fields["name"];	
@@ -140,7 +154,7 @@ class PluginOrderReference extends CommonDBTM {
 
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][5] . ": </td>";
 			echo "<td>";
-			if ($canedit)
+			if ($canedit && !$reference_in_use)
 				dropdownValue("glpi_dropdown_manufacturer", "FK_manufacturer", $this->fields["FK_manufacturer"]);
 			else
 				echo getDropdownName("glpi_dropdown_manufacturer",$this->fields["FK_manufacturer"]);	
@@ -159,39 +173,32 @@ class PluginOrderReference extends CommonDBTM {
 				echo "<span id='show_reference'></span></td></tr>";
 			}
 
-			$exclusion_types = array (
-				0,
-				CONSUMABLE_ITEM_TYPE,
-				CARTRIDGE_ITEM_TYPE
-			);
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][17] . ": </td>";
 			echo "<td><span id='show_type'>";
-			if (!in_array($this->fields["type"], $exclusion_types)) {
-				if (!$ID)
+			if ($canedit && !$this->isRestrictedType() && !$reference_in_use )
 					dropdownValue(plugin_order_getTypeTable($this->fields["type"]), "FK_type", $this->fields["FK_type"]);
 				else
 					echo getDropdownName(plugin_order_getTypeTable($this->fields["type"]), $this->fields["FK_type"]);
-			}
+			
 
 			echo "</span></td></tr>";
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][22] . ": </td>";
 			echo "<td><span id='show_model'>";
-			if (!in_array($this->fields["type"], $exclusion_types)) {
-				if (!$ID)
+			if ($canedit && !$this->isRestrictedType() && !$reference_in_use ) 
 					dropdownValue(plugin_order_getModelTable($this->fields["type"]), "FK_model", $this->fields["FK_model"]);
 				else
 					echo getDropdownName(plugin_order_getModelTable($this->fields["type"]), $this->fields["FK_model"]);
-			}
+			
 
 			echo "</span></td></tr>";
 
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][13] . ": </td>";
 			echo "<td><span id='show_template'>";
-			if (!in_array($this->fields["type"], $exclusion_types))
-				if (!$ID)
+			if ($canedit && !$this->isRestrictedType() && !$reference_in_use )
 					plugin_order_dropdownTemplate("template", $this->fields["FK_entities"], $commonitem->obj->table, $this->fields["template"]);
 				else
 					echo plugin_order_getTemplateName($this->fields["type"], $this->fields["template"]);
+
 			echo "</span></td></tr>";
 
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][25] . ": </td>";

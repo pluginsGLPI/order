@@ -226,7 +226,7 @@ function plugin_order_getModelTable($type)
 		case PHONE_TYPE:
 			return $prefix."_phones";				
 		default :
-			return "";
+			return false;
 			break;	
 
 	}
@@ -253,7 +253,7 @@ function plugin_order_getTypeTable($type)
 		case PHONE_TYPE:
 			return $prefix."_phones";	
 		default :
-			return "";
+			return false;
 			break;	
 	}
 }
