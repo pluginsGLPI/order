@@ -161,8 +161,8 @@ function showItem($instID, $search = '') {
 						$column = "question";
 
 					$query = "SELECT " . $LINK_ID_TABLE[$type] . ".*, glpi_plugin_order_device.ID AS IDD, glpi_entities.ID AS entity " .
-					" FROM glpi_plugin_order_device, " . $LINK_ID_TABLE[$type] .
-					" LEFT JOIN glpi_entities ON (glpi_entities.ID=" . $LINK_ID_TABLE[$type] . ".FK_entities) " .
+					" FROM `glpi_plugin_order_device`, `" . $LINK_ID_TABLE[$type] .
+					"` LEFT JOIN glpi_entities ON (glpi_entities.ID=" . $LINK_ID_TABLE[$type] . ".FK_entities) " .
 					" WHERE " . $LINK_ID_TABLE[$type] . ".ID = glpi_plugin_order_device.FK_device 
 											AND glpi_plugin_order_device.device_type='$type' 
 											AND glpi_plugin_order_device.FK_order = '$instID' " . getEntitiesRestrictRequest(" AND ", $LINK_ID_TABLE[$type], '', '', isset ($CFG_GLPI["recursive_type"][$type]));

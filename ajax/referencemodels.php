@@ -37,7 +37,7 @@
 // Direct access to file
 $NEEDED_ITEMS = array("computer","monitor","printer","networking","software","peripheral","phone","consumable","cartridge");
 define('GLPI_ROOT', '../../..');
-$AJAX_INCLUDE = 1;
+
 include (GLPI_ROOT . "/inc/includes.php");
 include (GLPI_ROOT . "/plugins/order/inc/plugin_order.dropdown.function.php");
 include (GLPI_ROOT . "/plugins/order/inc/plugin_order.reference.function.php");
@@ -51,8 +51,7 @@ checkCentralAccess();
 
 if ($_POST["type"])
 {
-$exclusion_types = array(CONSUMABLE_ITEM_TYPE, CARTRIDGE_ITEM_TYPE);
-if (!in_array($_POST["type"], $exclusion_types) )
+if (!in_array($_POST["type"], $ORDER_RESTRICTED_TYPES) )
 {
 	switch ($_POST["field"])
 	{

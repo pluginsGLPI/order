@@ -92,6 +92,9 @@ $LANG['plugin_order']['detail'][29] = "No item selected";
 $LANG['plugin_order']['detail'][30] = "Item successfully selected";
 $LANG['plugin_order']['detail'][31] = "Item successfully taken delivery";
 $LANG['plugin_order']['detail'][32] = "Item already taken delivery";
+$LANG['plugin_order']['detail'][33] = "The discount pourcentage must be between 0 and 100";
+$LANG['plugin_order']['detail'][34] = "Add reference";
+$LANG['plugin_order']['detail'][35] = "Remove reference";
 
 $LANG['plugin_order']['delivery'][1] = "Item delivered";
 $LANG['plugin_order']['delivery'][2] = "Take item delivery";

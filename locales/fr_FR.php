@@ -86,13 +86,16 @@ $LANG['plugin_order']['detail'][19] = "Statut matériel";
 $LANG['plugin_order']['detail'][20] = "Pas de matériel à réceptionner";
 $LANG['plugin_order']['detail'][21] = "Date de livraison";
 $LANG['plugin_order']['detail'][23] = "Matériel non réceptionné";
-$LANG['plugin_order']['detail'][25] = "Remise (%)";
+$LANG['plugin_order']['detail'][25] = "Remise en %";
 $LANG['plugin_order']['detail'][27] = "Veuillez sélectionner un fournisseur";
 $LANG['plugin_order']['detail'][28] = "Cette référence est déjà utilisée dans la commande";
 $LANG['plugin_order']['detail'][29] = "Aucun matériel sélectionné";
 $LANG['plugin_order']['detail'][30] = "Matériel(s) généré(s) avec succès";
 $LANG['plugin_order']['detail'][31] = "Matériel(s) réceptionné(s) avec succès";
 $LANG['plugin_order']['detail'][32] = "Matériel(s) déjà réceptionné(s)";
+$LANG['plugin_order']['detail'][33] = "Le pourcentage de remise doit-être compris entre 0 et 100";
+$LANG['plugin_order']['detail'][34] = "Ajout référence";
+$LANG['plugin_order']['detail'][35] = "Suppression référence";
 
 $LANG['plugin_order']['delivery'][1] = "Réception matériel(s)";
 $LANG['plugin_order']['delivery'][2] = "Réceptionner matériel";

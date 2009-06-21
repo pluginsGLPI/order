@@ -69,7 +69,7 @@ if ($_POST["FK_reference"] > 0)
 		break;
 		case 'validate':
 			echo "<input type='hidden' name='FK_reference' value='".$_POST["FK_reference"]."' class='submit' >";
-			echo "<input type='submit' name='add_detail' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+			echo "<input type='submit' name='add_detail' value=\"".$LANG['buttons'][8]."\" class='submit' >";
 		break;					
 	}	
 }

@@ -158,16 +158,29 @@ if (isset ($_POST["undovalidation"])) {
 //Details management
 else
 	if (isset ($_POST["add_detail"])) {
-			addDetails($_POST["FK_reference"], $_POST["FK_order"], $_POST["quantity"], $_POST["price"], $_POST["reductedprice"], $_POST["taxes"]);
-			//updateOrderStatus($_POST["FK_order"]);
+			if ($_POST["reductedprice"] < 0 || $_POST["reductedprice"] > 100)
+				addMessageAfterRedirect($LANG['plugin_order']['detail'][33],false,ERROR);
+			else
+			{
+				$new_value = $LANG['plugin_order']['detail'][34]." ".getDropdownName("glpi_plugin_order_references",$_POST["FK_reference"]);
+				$new_value.= " (".$LANG['plugin_order']['detail'][7]." : ".$_POST["quantity"];
+				$new_value.= " ".$LANG['plugin_order']['detail'][25]." : ".$_POST["reductedprice"].")";
+				plugin_order_addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
+				addDetails($_POST["FK_reference"], $_POST["FK_order"], $_POST["quantity"], $_POST["price"], $_POST["reductedprice"], $_POST["taxes"]);
+			}
+				
 			glpi_header($_SERVER['HTTP_REFERER']);
 	} 
 else
 	if (isset ($_POST["delete_detail"])) {
 		plugin_order_checkRight("order", "w");
 		foreach ($_POST["detail"] as $FK_reference => $value)
+		{
+			$new_value = $LANG['plugin_order']['detail'][35]." ".getDropdownName("glpi_plugin_order_references",$FK_reference);
+			plugin_order_addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
 			deleteDetails($FK_reference, $_POST["FK_order"]);
-		//updateOrderStatus($_POST["FK_order"]);
+		}
+			
 		glpi_header($_SERVER['HTTP_REFERER']);
 	} 
 else 

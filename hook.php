@@ -295,7 +295,8 @@ function plugin_order_getDatabaseRelations() {
 				"glpi_plugin_order" => "taxes"
 			),
 			"glpi_entities" => array (
-				"glpi_plugin_order" => "FK_entities"
+				"glpi_plugin_order" => "FK_entities",
+				"glpi_plugin_order_references" => "FK_entities"
 			)
 		);
 	else
@@ -495,12 +496,7 @@ function plugin_order_addSelect($type, $ID, $num) {
 	$field = $SEARCH_OPTION[$type][$ID]["field"];
 
 	if ($table == "glpi_plugin_order_references" && !$num)
-		return $table . ".FK_manufacturer as manufacturer, " .
-		$table . ".type AS device_type, " .
-		$table . ".FK_type AS type, " .
-		$table . ".FK_model AS model, " .
-		$table . ".template AS template, " .
-		$table . ".$field as ITEM_$num, ";
+		return "$table.type AS device_type, $table.$field as ITEM_$num, ";
 	else
 		return "";
 }
@@ -533,16 +529,16 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 			$commonitem->setType($data["device_type"]);
 			return $commonitem->getType();
 		case "glpi_plugin_order_references.FK_manufacturer" :
-			return getDropdownName("glpi_dropdown_manufacturer", $data["manufacturer"]);
+			return getDropdownName("glpi_dropdown_manufacturer", $data["ITEM_" . $num]);
 		case "glpi_plugin_order_references.type" :
-			return getDropdownName(plugin_order_getTypeTable($data["device_type"]), $data["type"]);
+			return getDropdownName(plugin_order_getTypeTable($data["device_type"]), $data["ITEM_" . $num]);
 		case "glpi_plugin_order_references.FK_model" :
-			return getDropdownName(plugin_order_getModelTable($data["device_type"]), $data["model"]);
+			return getDropdownName(plugin_order_getModelTable($data["device_type"]), $data["ITEM_" . $num]);
 		case "glpi_plugin_order_references.template" :
-			if (!$data["template"])
+			if (!$data["ITEM_" . $num])
 				return " ";
 			else
-				return plugin_order_getTemplateName($data["device_type"], $data["template"]);
+				return plugin_order_getTemplateName($data["device_type"], $data["ITEM_" . $num]);
 	}
 	return "";
 }

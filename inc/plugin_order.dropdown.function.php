@@ -145,7 +145,7 @@ function plugin_order_dropdownReceptionActions($type,$referenceID,$orderID) {
 	echo "<td width='5%'>";
 	echo "<select name='receptionActions$rand' id='receptionActions$rand'>";
 	echo "<option value='0' selected>-----</option>";
-	if (!plugin_order_allItemsAlreadyDelivered($orderID, $referenceID))
+	if ($type != SOFTWARELICENSE_TYPE && !plugin_order_allItemsAlreadyDelivered($orderID, $referenceID))
 		echo "<option value='reception'>" . $LANG['plugin_order']['delivery'][2] . "</option>";
 		
 	if ($type != CONSUMABLE_ITEM_TYPE && $type != CARTRIDGE_ITEM_TYPE)
