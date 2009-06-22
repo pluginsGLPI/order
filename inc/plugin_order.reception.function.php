@@ -339,8 +339,8 @@ function plugin_order_createLinkWithDevice($detailID = 0, $deviceID = 0, $device
 					$input["FK_glpi_printers "] = 0;
 					$input["date_in "] = $detail->fields["date"];
 					$input["pages "] = 0;
-					$newID = $cartridge->add($input);
-					plugin_order_generateInfoComRelatedToOrder($entity, $detailID, CARTRIDGE_ITEM_TYPE, $newID);
+					$newID = $cartridge->addToDB($input);
+					plugin_order_generateInfoComRelatedToOrder($entity, $detailID, CARTRIDGE_ITEM_TYPE, $newID,0);
 				break;
 				case CONSUMABLE_ITEM_TYPE:
 				break;
@@ -460,17 +460,23 @@ function plugin_order_showItemGenerationForm($target, $params) {
 	$i = 0;
 	foreach ($params["item"] as $key => $val)
 		if ($val == 1) {
-			echo "<tr class='tab_bg_1'><td align='center'>" . $_POST["name"][$key] . "</td>";
-			echo "<td><input type='text' size='20' name='serial[$i]'></td>";
-			echo "<td><input type='text' size='20' name='otherserial[$i]'></td>";
-			echo "<td><input type='text' size='20' name='name[$i]'></td>";
-			echo "<td>";
-			$entity_restrict = ($order->fields["recursive"] ? getEntitySons($order->fields["FK_entities"]) : $order->fields["FK_entities"]);
-			dropdownValue("glpi_entities", "FK_entities", $order->fields["FK_entities"], 1, $entity_restrict);
-			echo "</td></tr>";
-			echo "<input type='hidden' name='type[$i]' value=" . $params['type'][$key] . ">";
-			echo "<input type='hidden' name='ID[$i]' value=" . $params["ID"][$key] . ">";
-			echo "<input type='hidden' name='orderID' value=" . $params["orderID"] . ">";
+			$detail = new PluginOrderDetail;
+			$detail->getFromDB($key);
+			
+			if (!$detail->fields["FK_device"])
+			{
+				echo "<tr class='tab_bg_1'><td align='center'>" . $_POST["name"][$key] . "</td>";
+				echo "<td><input type='text' size='20' name='serial[$i]'></td>";
+				echo "<td><input type='text' size='20' name='otherserial[$i]'></td>";
+				echo "<td><input type='text' size='20' name='name[$i]'></td>";
+				echo "<td>";
+				$entity_restrict = ($order->fields["recursive"] ? getEntitySons($order->fields["FK_entities"]) : $order->fields["FK_entities"]);
+				dropdownValue("glpi_entities", "FK_entities", $order->fields["FK_entities"], 1, $entity_restrict);
+				echo "</td></tr>";
+				echo "<input type='hidden' name='type[$i]' value=" . $params['type'][$key] . ">";
+				echo "<input type='hidden' name='ID[$i]' value=" . $params["ID"][$key] . ">";
+				echo "<input type='hidden' name='orderID' value=" . $params["orderID"] . ">";
+			}
 			$i++;
 		}
 
@@ -486,78 +492,77 @@ function plugin_order_generateNewDevice($params) {
 	$i = 0;
 	$entity = $params["FK_entities"];
 	while (isset ($params["serial"][$i])) {
-		
-		if (!in_array($params["type"][$i],$ORDER_RESTRICTED_TYPES))
-		{
-			
+			//Look for a template in the entity
+			$templateID = plugin_order_templateExistsInEntity($params["ID"][$i], $params["type"][$i], $entity);
+	
+			$input["FK_entities"] = $entity;
+			$input["serial"] = $params["serial"][$i];
+			$input["otherserial"] = $params["otherserial"][$i];
+			$input["name"] = $params["name"][$i];
+	
+			$order = new PluginOrder;
+			$order->getFromDB($params["orderID"]);
+	
+			$reference = new PluginOrderReference;
+			$reference->getFromDB($params["referenceID"]);
+			$input["type"] = $reference->fields["FK_type"];
+			$input["model"] = $reference->fields["FK_model"];
+			if ($entity == $reference->fields["FK_entities"])
+				$input["location"] = $order->fields["location"];
+	
+			$commonitem = new CommonItem;
+			$commonitem->setType($params["type"][$i], true);
+			$newID = $commonitem->obj->add($input);
+	
+			$commonitem_template = new CommonItem;
+			$commonitem_template->getFromDB($params["type"][$i], $templateID);
+	
+			//Unset fields from template
+			unset ($commonitem_template->obj->fields["ID"]);
+			unset ($commonitem_template->obj->fields["date_mod"]);
+			unset ($commonitem_template->obj->fields["is_template"]);
+			unset ($commonitem_template->obj->fields["FK_entities"]);
+	
+			$fields = array ();
+			foreach ($commonitem_template->obj->fields as $key => $value) {
+				if ($value != '' && (!isset ($fields[$key]) || $fields[$key] == '' || $fields[$key] == 0))
+					$fields[$key] = $value;
+			}
+			$fields["ID"] = $newID;
+			$commonitem->obj->update($fields);
+	
+			plugin_order_createLinkWithDevice($params["ID"][$i], $newID, $params["type"][$i], $params["orderID"], $entity, $templateID, false, false);
+	
+			//Add item's history
+			$new_value = $LANG['plugin_order']['delivery'][13] . ' : ' . $order->fields["name"];
+			plugin_order_addHistory($params["type"][$i], '', $new_value, $newID);
+	
+			//Add order's history
+			$new_value = $LANG['plugin_order']['delivery'][13] . ' : ';
+			$new_value .= $commonitem->getType() . " -> " . $commonitem->getField("name");
+			plugin_order_addHistory(PLUGIN_ORDER_TYPE, '', $new_value, $params["orderID"]);
+	
+			addMessageAfterRedirect($LANG['plugin_order']['detail'][30], true);
+			$i++;
 		}
-		//Look for a template in the entity
-		$templateID = plugin_order_templateExistsInEntity($params["ID"][$i], $params["type"][$i], $entity);
-
-		$input["FK_entities"] = $entity;
-		$input["serial"] = $params["serial"][$i];
-		$input["otherserial"] = $params["otherserial"][$i];
-		$input["name"] = $params["name"][$i];
-
-		$order = new PluginOrder;
-		$order->getFromDB($params["orderID"]);
-
-		$reference = new PluginOrderReference;
-		$reference->getFromDB($params["referenceID"]);
-		$input["type"] = $reference->fields["FK_type"];
-		$input["model"] = $reference->fields["FK_model"];
-		if ($entity == $reference->fields["FK_entities"])
-			$input["location"] = $order->fields["location"];
-
-		$commonitem = new CommonItem;
-		$commonitem->setType($params["type"][$i], true);
-		$newID = $commonitem->obj->add($input);
-
-		$commonitem_template = new CommonItem;
-		$commonitem_template->getFromDB($params["type"][$i], $templateID);
-
-		//Unset fields from template
-		unset ($commonitem_template->obj->fields["ID"]);
-		unset ($commonitem_template->obj->fields["date_mod"]);
-		unset ($commonitem_template->obj->fields["is_template"]);
-		unset ($commonitem_template->obj->fields["FK_entities"]);
-
-		$fields = array ();
-		foreach ($commonitem_template->obj->fields as $key => $value) {
-			if ($value != '' && (!isset ($fields[$key]) || $fields[$key] == '' || $fields[$key] == 0))
-				$fields[$key] = $value;
-		}
-		$fields["ID"] = $newID;
-		$commonitem->obj->update($fields);
-
-		plugin_order_createLinkWithDevice($params["ID"][$i], $newID, $params["type"][$i], $params["orderID"], $entity, $templateID, false, false);
-
-		//Add item's history
-		$new_value = $LANG['plugin_order']['delivery'][13] . ' : ' . $order->fields["name"];
-		plugin_order_addHistory($params["type"][$i], '', $new_value, $newID);
-
-		//Add order's history
-		$new_value = $LANG['plugin_order']['delivery'][13] . ' : ';
-		$new_value .= $commonitem->getType() . " -> " . $commonitem->getField("name");
-		plugin_order_addHistory(PLUGIN_ORDER_TYPE, '', $new_value, $params["orderID"]);
-
-		addMessageAfterRedirect($LANG['plugin_order']['detail'][30], true);
-		$i++;
-	}
 }
 
 function plugin_order_itemAlreadyLinkedToAnOrder($device_type, $deviceID, $orderID) {
-	global $DB;
-	$query = "SELECT COUNT(*) as cpt FROM `glpi_plugin_order_detail`" .
-	" WHERE FK_order=$orderID " .
-	" AND FK_device>0 " .
-	" AND device_type=$device_type";
-	$result = $DB->query($query);
-	if ($DB->result($result, 0, "cpt") > 0)
-		return true;
+	global $DB,$ORDER_RESTRICTED_TYPES;
+	if (!in_array($device_type,$ORDER_RESTRICTED_TYPES))
+	{
+		$query = "SELECT COUNT(*) as cpt FROM `glpi_plugin_order_detail`" .
+		" WHERE FK_order=$orderID " .
+		" AND FK_device>0 " .
+		" AND device_type=$device_type";
+		$result = $DB->query($query);
+		if ($DB->result($result, 0, "cpt") > 0)
+			return true;
+		else
+			return false;
+	}
 	else
 		return false;
-
 }
 
 function plugin_order_allItemsAlreadyDelivered($orderID, $referenceID) {
@@ -571,7 +576,7 @@ function plugin_order_allItemsAlreadyDelivered($orderID, $referenceID) {
 		return true;
 }
 
-function plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_type, $deviceID, $templateID) {
+function plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_type, $deviceID, $templateID=0) {
 	global $LANG;
 
 	$detail = new PluginOrderDetail;
@@ -635,7 +640,7 @@ function plugin_order_removeInfoComRelatedToOrder($device_type, $deviceID) {
 	$input["FK_enterprise"] = 0;
 	$input["facture"] = "";
 	$input["value"] = 0;
-	$input["buy_date"] = null;
+	$input["buy_date"] = "0000:00:00";
 
 	//DO not check infocom modifications
 	$input["_manage_by_order"] = 1;

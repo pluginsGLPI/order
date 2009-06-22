@@ -43,7 +43,9 @@ $NEEDED_ITEMS = array (
 	"enterprise",
 	"contract",
 	"infocom",
-	"group"
+	"group",
+	"cartridge",
+	"consumable"
 );
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
