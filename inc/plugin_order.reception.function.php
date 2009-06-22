@@ -328,13 +328,13 @@ function plugin_order_createLinkWithDevice($detailID = 0, $deviceID = 0, $device
 		$detail->update($input);
 		$detail->getFromDB($detailID);
 
+		plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_type, $deviceID, $templateID);
 		if ($history) {
 			$order = new PluginOrder;
 			$order->getFromDB($detail->fields["FK_order"]);
 			$new_value = $LANG['plugin_order']['delivery'][14] . ' : ' . $order->fields["name"];
 			plugin_order_addHistory($device_type, '', $new_value, $deviceID);
 		}
-		plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_type, $deviceID, $templateID);
 
 	} else
 		addMessageAfterRedirect($LANG['plugin_order']['delivery'][16], true, ERROR);
@@ -355,6 +355,8 @@ function plugin_order_deleteLinkWithDevice($detailID, $device_type) {
 		if ($DB->numrows($result) > 0) {
 			$orderDeviceID = $DB->result($result, 0, 'ID');
 
+			plugin_order_removeInfoComRelatedToOrder($device_type, $deviceID);
+
 			$input = $detail->fields;
 			$input["FK_device"] = 0;
 			$detail->update($input);
@@ -368,8 +370,6 @@ function plugin_order_deleteLinkWithDevice($detailID, $device_type) {
 			$commonitem->getFromDB($device_type, $deviceID);
 			$new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $commonitem->getField("name");
 			plugin_order_addHistory(PLUGIN_ORDER_TYPE, '', $new_value, $order->fields["ID"]);
-
-			plugin_order_removeInfoComRelatedToOrder($device_type, $deviceID);
 		}
 	}
 }
@@ -556,6 +556,9 @@ function plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_
 	// ADD Infocoms
 	$ic = new Infocom();
 	$fields = array ();
+
+	$exists = false;
+	
 	if ($templateID) {
 		if ($ic->getFromDBforDevice($device_type, $templateID)) {
 			$fields = $ic->fields;
@@ -572,6 +575,11 @@ function plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_
 		}
 	}
 
+	if ($ic->getFromDBforDevice($device_type, $deviceID)) {
+		$exists = true;
+		$fields["ID"] = $ic->fields["ID"];
+	}
+
 	$fields["device_type"] = $device_type;
 	$fields["FK_device"] = $deviceID;
 	$fields["num_commande"] = $order->fields["numorder"];
@@ -583,8 +591,12 @@ function plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_
 	$fields["buy_date"] = $order->fields["date"];
 
 	//DO not check infocom modifications
-	$input["_manage_by_order"] = 1;
-	$ic->add($fields);
+	$fields["_manage_by_order"] = 1;
+	
+	if (!$exists)
+		$ic->add($fields);
+	else
+		$ic->update($fields);	
 }
 
 function plugin_order_removeInfoComRelatedToOrder($device_type, $deviceID) {
@@ -597,11 +609,12 @@ function plugin_order_removeInfoComRelatedToOrder($device_type, $deviceID) {
 	$input["FK_enterprise"] = 0;
 	$input["facture"] = "";
 	$input["value"] = 0;
-	$input["buy_date"] = "";
+	$input["buy_date"] = null;
 
 	//DO not check infocom modifications
 	$input["_manage_by_order"] = 1;
 
 	$infocom->update($input);
 }
+
 ?>
