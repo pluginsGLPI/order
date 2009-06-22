@@ -428,9 +428,10 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['name'] = $LANG['common'][25];
 
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['field'] = 'FK_type';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['field'] = 'type';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['linkfield'] = '';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['name'] = $LANG['state'][6];
+
 
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['table'] = 'glpi_plugin_order_references';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['field'] = 'template';
@@ -443,7 +444,7 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][6]['name'] = $LANG['common'][5];
 
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['field'] = 'type';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['field'] = 'FK_type';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['linkfield'] = '';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['name'] = $LANG['common'][17];
 
@@ -513,13 +514,13 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 		/* display associated items with order */
 		case "glpi_plugin_order.status" :
 			return plugin_order_getDropdownStatus($data["ITEM_" . $num]);
-		case "glpi_plugin_order_references.FK_type" :
+		case "glpi_plugin_order_references.type" :
 			$commonitem = new CommonItem;
 			$commonitem->setType($data["device_type"]);
 			return $commonitem->getType();
 		case "glpi_plugin_order_references.FK_manufacturer" :
 			return getDropdownName("glpi_dropdown_manufacturer", $data["ITEM_" . $num]);
-		case "glpi_plugin_order_references.type" :
+		case "glpi_plugin_order_references.FK_type" :
 			return getDropdownName(plugin_order_getTypeTable($data["device_type"]), $data["ITEM_" . $num]);
 		case "glpi_plugin_order_references.FK_model" :
 			return getDropdownName(plugin_order_getModelTable($data["device_type"]), $data["ITEM_" . $num]);

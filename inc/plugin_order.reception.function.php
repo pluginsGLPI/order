@@ -186,13 +186,13 @@ function getReceptionMaterialInfo($deviceType, $deviceID) {
 			$ci = new CommonItem();
 			$ci->getFromDB(CONSUMABLE_TYPE, $deviceID);
 			if (isset ($ci->obj->fields["name"]))
-				$comments = "<strong>" . $LANG['plugin_order']['delivery'][8] . ":</strong> " . $ci->obj->fields["name"];
+				$comments = $ci->obj->fields["name"];
 			break;
 		case CARTRIDGE_ITEM_TYPE :
 			$ci = new CommonItem();
 			$ci->getFromDB(CARTRIDGE_TYPE, $deviceID);
 			if (isset ($ci->obj->fields["name"]))
-				$comments = "<strong>" . $LANG['plugin_order']['delivery'][8] . ":</strong> " . $ci->obj->fields["name"];
+				$comments = $ci->obj->fields["name"];
 			break;
 	}
 
@@ -306,10 +306,11 @@ function getAllItemsByType($type, $entity, $item_type = 0, $item_model = 0) {
 			break;
 		case CARTRIDGE_ITEM_TYPE :
 			$query = "SELECT ID, name FROM `glpi_cartridges_type` 
-											  WHERE FK_entities=" . $entity . "";
+											WHERE FK_entities=" . $entity . " AND type=$item_type";
 			break;
 	}
 	$result = $DB->query($query);
+	echo $query;
 	$device = array ();
 	while ($data = $DB->fetch_array($result))
 		$device[$data["ID"]] = $data["name"];

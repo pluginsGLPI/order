@@ -49,27 +49,49 @@ if (!defined('GLPI_ROOT')) {
 }
 checkCentralAccess();
 
-if ($_POST["type"])
-{
-if (!in_array($_POST["type"], $ORDER_RESTRICTED_TYPES) )
+if ($_POST["device_type"])
 {
 	switch ($_POST["field"])
 	{
 		case "type":
-			dropdownValue(plugin_order_getTypeTable($_POST["type"]), "FK_type");
+			dropdownValue(plugin_order_getTypeTable($_POST["device_type"]), "FK_type");
 		break;
 		case "model":
-			dropdownValue(plugin_order_getModelTable($_POST["type"]), "FK_model");
+			if (!in_array($_POST["device_type"], $ORDER_RESTRICTED_TYPES) )
+				dropdownValue(plugin_order_getModelTable($_POST["device_type"]), "FK_model");
+			else
+				return "";	
+				
+		break;
+		case "template":
+			if (!in_array($_POST["device_type"], $ORDER_RESTRICTED_TYPES) )
+			{
+				$commonitem = new CommonItem;
+				$commonitem->setType($_POST["device_type"],true);
+				plugin_order_dropdownTemplate("template", $_POST["entity_restrict"], $commonitem->obj->table);
+			}
+			else
+				return "";	
+		break;				
+	}	
+	/*
+if (!in_array($_POST["device_type"], $ORDER_RESTRICTED_TYPES) )
+{
+	switch ($_POST["field"])
+	{
+		case "type":
+			dropdownValue(plugin_order_getTypeTable($_POST["device_type"]), "FK_type");
+		break;
+		case "model":
+			dropdownValue(plugin_order_getModelTable($_POST["device_type"]), "FK_model");
 		break;
 		case "template":
 			$commonitem = new CommonItem;
-			$commonitem->setType($_POST["type"],true);
+			$commonitem->setType($_POST["device_type"],true);
 			plugin_order_dropdownTemplate("template", $_POST["entity_restrict"], $commonitem->obj->table);
 		break;				
 	}	
-}
-else
-	return "";	
+}*/
 }
 else
 	return "";
