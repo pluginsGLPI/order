@@ -97,7 +97,7 @@ function plugin_order_dropdownAllItems($myname, $ajax = false, $value = 0, $orde
 
 	if ($ajax) {
 		$params = array (
-			'type' => '__VALUE__',
+			'device_type' => '__VALUE__',
 			'FK_enterprise' => $supplier,
 			'entity_restrict' => $entity,
 			'orderID' => $orderID,

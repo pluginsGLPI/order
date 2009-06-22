@@ -104,6 +104,7 @@ function plugin_order_install() {
 		$query = "CREATE TABLE `glpi_plugin_order_detail` (
 									  `ID` int(11) NOT NULL auto_increment,
 									  `FK_order` int(11) NOT NULL default 0,
+	  								  `device_type` int(11) NOT NULL default 0,
 									  `FK_device` int(11) NOT NULL default 0,
 									  `FK_reference` int(11) NOT NULL default 0,
 				  					  `deliverynum` varchar(255) NOT NULL collate utf8_unicode_ci default '',
@@ -117,17 +118,6 @@ function plugin_order_install() {
 		$DB->query($query) or die($DB->error());
 	}
 
-	if (!TableExists("glpi_plugin_order_device")) {
-		$query = "CREATE TABLE `glpi_plugin_order_device` (
-										`ID` int(11) NOT NULL auto_increment,
-										`FK_order` int(11)  NOT NULL default 0,
-										`FK_device` int(11) NOT NULL default 0,
-										`device_type` int(11) NOT NULL default 0,
-										PRIMARY KEY  (`ID`),
-										KEY `FK_device` (`FK_device`,`device_type`)
-									) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-		$DB->query($query) or die($DB->error());
-	}
 
 	if (!TableExists("glpi_plugin_order_profiles")) {
 		$query = "CREATE TABLE `glpi_plugin_order_profiles` (
@@ -505,9 +495,8 @@ function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,&$alrea
 	switch ($new_table){
 
 		case "glpi_plugin_order" : // From items
-			$out= " LEFT JOIN glpi_plugin_order_detail ON ($ref_table.ID = glpi_plugin_order_detail.FK_device) ";
+			$out= " LEFT JOIN glpi_plugin_order_detail ON ($ref_table.ID = glpi_plugin_order_detail.FK_device AND glpi_plugin_order_detail.device_type=$type) ";
 			$out.= " LEFT JOIN glpi_plugin_order ON (glpi_plugin_order.ID = glpi_plugin_order_detail.FK_order) ";
-			$out.= " LEFT JOIN glpi_plugin_order_references ON (glpi_plugin_order_detail.FK_reference = glpi_plugin_order_references.ID AND glpi_plugin_order_references.FK_type=$type) ";
 			return $out;
 			break;
 	}
@@ -566,7 +555,7 @@ function plugin_pre_item_update_order($input) {
 					$infocom = new InfoCom;
 					$infocom->getFromDB($input["ID"]);
 
-					$device = new PluginOrderDevice;
+					$device = new PluginOrderDetail;
 					if ($device->isDeviceLinkedToOrder($infocom->fields["device_type"], $infocom->fields["FK_device"])) {
 						$field_set = false;
 						$unset_fields = array (

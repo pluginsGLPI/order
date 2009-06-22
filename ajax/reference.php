@@ -49,7 +49,7 @@ if (!defined('GLPI_ROOT')) {
 }
 checkCentralAccess();
 
-$params = array ("type"=>$_POST["type"],"entity_restrict"=>$_POST["entity_restrict"]);
+$params = array ("device_type"=>$_POST["device_type"],"entity_restrict"=>$_POST["entity_restrict"]);
 
 
 foreach (array("type","model","template") as $field)

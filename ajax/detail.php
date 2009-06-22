@@ -47,11 +47,12 @@ if (!defined('GLPI_ROOT')){
 	}
 
 checkCentralAccess();
-$rand = plugin_order_dropdownReferencesByEnterprise("reference",$_POST["type"],$_POST["FK_enterprise"]);
+$rand = plugin_order_dropdownReferencesByEnterprise("reference",$_POST["device_type"],$_POST["FK_enterprise"]);
 $paramsaction=array('FK_reference'=>'__VALUE__',
 		   	  'entity_restrict'=>$_POST["entity_restrict"],
 		   	  'FK_enterprise'=>$_POST["FK_enterprise"],		   	  
 		   	  'orderID'=>$_POST["orderID"],
+		   	  'device_type'=>$_POST["device_type"]
 		);
 
 $fields = array ("quantity","priceht","pricediscounted", "taxes", "validate");

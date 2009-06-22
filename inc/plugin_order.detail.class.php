@@ -86,7 +86,7 @@ class PluginOrderDetail extends CommonDBTM {
 					echo"</tr>";
 					echo "<tr>";
 					echo "<td class='tab_bg_1' align='center'>";
-					plugin_order_dropdownAllItems("type", true, 0, $order->fields["ID"], $order->fields["FK_enterprise"], $order->fields["FK_entities"], $CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php");	
+					plugin_order_dropdownAllItems("device_type", true, 0, $order->fields["ID"], $order->fields["FK_enterprise"], $order->fields["FK_entities"], $CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php");	
 					echo "</td>";
 					echo "<td class='tab_bg_1' align='center'><span id='show_reference'>&nbsp;</span></td>";
 					echo "<td class='tab_bg_1' align='center'><span id='show_quantity'>&nbsp;</span></td>";
@@ -197,6 +197,27 @@ class PluginOrderDetail extends CommonDBTM {
 					echo "</div>";
 				}	
 			}
+	}
+
+	function isDeviceLinkedToOrder($device_type, $deviceID) {
+		global $DB;
+		$query = "SELECT ID FROM `" . $this->table . "` WHERE device_type=$device_type AND FK_device=$deviceID";
+		$result = $DB->query($query);
+		if ($DB->numrows($result))
+			return true;
+		else
+			return false;
+	}
+
+	function getOrderInfosByDeviceID($device_type, $deviceID) {
+		global $DB;
+		$query = "SELECT go.* FROM `glpi_plugin_order` AS go, `" . $this->table . "` AS god " .
+		"WHERE go.ID=god.FK_order AND god.device_type=$device_type AND god.FK_device=$deviceID";
+		$result = $DB->query($query);
+		if ($DB->numrows($result))
+			return $DB->fetch_array($result);
+		else
+			return false;
 	}
 
 }

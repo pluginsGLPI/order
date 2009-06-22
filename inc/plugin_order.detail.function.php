@@ -63,7 +63,7 @@ function getPriceTaxIncluded($priceHT, $taxes) {
 		return $priceHT + (($priceHT * $taxes) / 100);
 }
 
-function addDetails($referenceID, $orderID, $quantity, $price, $discounted_price, $taxes) {
+function addDetails($referenceID, $device_type, $orderID, $quantity, $price, $discounted_price, $taxes) {
 	global $LANG;
 	if (referenceExistsInOrder($orderID, $referenceID))
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][28], false, ERROR);
@@ -73,6 +73,7 @@ function addDetails($referenceID, $orderID, $quantity, $price, $discounted_price
 			for ($i = 0; $i < $quantity; $i++) {
 				$input["FK_order"] = $orderID;
 				$input["FK_reference"] = $referenceID;
+				$input["device_type"] = $device_type;
 				$input["price_taxfree"] = $price;
 				$input["price_discounted"] = $price - ($price * ($discounted_price / 100));
 				$input["status"] = ORDER_STATUS_DRAFT;
@@ -101,7 +102,7 @@ function deleteDetails($referenceID, $orderID) {
 					AND FK_reference=$referenceID";
 	$DB->query($query);
 
-	$query = " DELETE FROM `glpi_plugin_order_device`
+	$query = " DELETE FROM `glpi_plugin_order_detail`
 					WHERE FK_order=$orderID ";
 	$DB->query($query);
 
@@ -124,7 +125,7 @@ function showItem($instID, $search = '') {
 	if ($plugin_order->getFromDB($instID)) {
 		$canedit = $plugin_order->can($instID, 'w');
 		$query = "SELECT DISTINCT device_type 
-								FROM `glpi_plugin_order_device` 
+								FROM `glpi_plugin_order_detail` 
 								WHERE FK_order = '$instID' 
 								ORDER BY device_type";
 		$result = $DB->query($query);
@@ -160,12 +161,12 @@ function showItem($instID, $search = '') {
 					if ($type == KNOWBASE_TYPE)
 						$column = "question";
 
-					$query = "SELECT " . $LINK_ID_TABLE[$type] . ".*, glpi_plugin_order_device.ID AS IDD, glpi_entities.ID AS entity " .
-					" FROM `glpi_plugin_order_device`, `" . $LINK_ID_TABLE[$type] .
+					$query = "SELECT " . $LINK_ID_TABLE[$type] . ".*, glpi_plugin_order_detail.ID AS IDD, glpi_entities.ID AS entity " .
+					" FROM `glpi_plugin_order_detail`, `" . $LINK_ID_TABLE[$type] .
 					"` LEFT JOIN glpi_entities ON (glpi_entities.ID=" . $LINK_ID_TABLE[$type] . ".FK_entities) " .
-					" WHERE " . $LINK_ID_TABLE[$type] . ".ID = glpi_plugin_order_device.FK_device 
-											AND glpi_plugin_order_device.device_type='$type' 
-											AND glpi_plugin_order_device.FK_order = '$instID' " . getEntitiesRestrictRequest(" AND ", $LINK_ID_TABLE[$type], '', '', isset ($CFG_GLPI["recursive_type"][$type]));
+					" WHERE " . $LINK_ID_TABLE[$type] . ".ID = glpi_plugin_order_detail.FK_device 
+											AND glpi_plugin_order_detail.device_type='$type' 
+											AND glpi_plugin_order_detail.FK_order = '$instID' " . getEntitiesRestrictRequest(" AND ", $LINK_ID_TABLE[$type], '', '', isset ($CFG_GLPI["recursive_type"][$type]));
 
 					if (in_array($LINK_ID_TABLE[$type], $CFG_GLPI["template_tables"])) {
 						$query .= " AND " . $LINK_ID_TABLE[$type] . ".is_template='0'";

@@ -42,26 +42,18 @@ class PluginOrder extends CommonDBTM {
 	function cleanDBonPurge($ID) {
 		global $DB;
 
-		$query = "	DELETE FROM `glpi_plugin_order_device` 
-													WHERE FK_order = '$ID'";
+		$query = "DELETE FROM `glpi_doc_device` 
+				  WHERE FK_device = '$ID' 
+				  AND device_type= '" . PLUGIN_ORDER_TYPE . "' ";
 		$DB->query($query);
-		$query = "	DELETE FROM `glpi_doc_device` 
-													WHERE FK_device = '$ID' 
-													AND device_type= '" . PLUGIN_ORDER_TYPE . "' ";
-		$DB->query($query);
-		$query = "	DELETE FROM `glpi_plugin_order_detail`
-													WHERE FK_order='$ID'";
+		$query = "DELETE FROM `glpi_plugin_order_detail`
+				  WHERE FK_order='$ID'";
 		$DB->query($query);
 	}
 
 	/*clean order if items are deleted */
 	function cleanItems($ID, $type) {
 		global $DB;
-
-		$query = " DELETE FROM `glpi_plugin_order_device`
-													WHERE FK_device = '$ID' 
-													AND device_type= '$type'";
-		$DB->query($query);
 	}
 
 	/*define header form */

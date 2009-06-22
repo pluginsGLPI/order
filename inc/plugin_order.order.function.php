@@ -30,7 +30,7 @@
     ----------------------------------------------------------------------*/
 function plugin_order_showOrderInfoByDeviceID($device_type, $deviceID) {
 	global $LANG, $INFOFORM_PAGES, $CFG_GLPI;
-	$device = new PluginOrderDevice;
+	$device = new PluginOrderDetail;
 	$infos = $device->getOrderInfosByDeviceID($device_type, $deviceID);
 	if ($infos) {
 		echo "<div class='center'>";
