@@ -331,22 +331,13 @@ function plugin_order_createLinkWithDevice($detailID = 0, $deviceID = 0, $device
 
 		if (in_array($device_type,$ORDER_RESTRICTED_TYPES))
 		{
-			switch ($device_type)
-			{
-				case CARTRIDGE_ITEM_TYPE:
-					$cartridge = new Cartridge;
-					$input["FK_glpi_cartridges_type "] = $deviceID;
-					$input["FK_glpi_printers "] = 0;
-					$input["date_in "] = $detail->fields["date"];
-					$input["pages "] = 0;
-					$newID = $cartridge->addToDB($input);
-					plugin_order_generateInfoComRelatedToOrder($entity, $detailID, CARTRIDGE_ITEM_TYPE, $newID,0);
-				break;
-				case CONSUMABLE_ITEM_TYPE:
-				break;
-				default:
-				break;
-			}
+			$commonitem = new CommonItem;
+			$commonitem->setType($device_type,true);
+
+			$input["tID"] = $deviceID;
+			$input["date_in "] = $detail->fields["date"];
+			$newID = $commonitem->obj->add($input);
+			plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_type, $newID,0);
 		}
 		else
 			plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_type, $deviceID, $templateID);

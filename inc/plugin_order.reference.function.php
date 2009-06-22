@@ -256,7 +256,7 @@ function plugin_order_getTypeTable($type)
 			return $prefix."_phones";	
 		case CARTRIDGE_ITEM_TYPE:
 			return "glpi_dropdown_cartridge_type";
-		case CARTRIDGE_ITEM_TYPE:
+		case CONSUMABLE_ITEM_TYPE:
 			return "glpi_dropdown_consumable_type";
 		default :
 			return false;

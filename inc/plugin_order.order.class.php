@@ -346,10 +346,5 @@ class PluginOrder extends CommonDBTM {
 		//If no right to cancel
 		return (plugin_order_haveRight("undo_validation", "w"));
 	}
-
-	function isOrderDelivered()
-	{
-		
-	}
 }
 ?>

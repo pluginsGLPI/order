@@ -100,7 +100,9 @@ if (isset ($_POST["createLinkWithDevice"])) {
 		$detail = new PluginOrderDetail;
 
 		foreach ($_POST["item"] as $key => $val)
+		{
 			if ($val == 1)
+			{
 				$detail->getFromDB($_POST["ID"][$key]);
 				if ($detail->fields["status"] == ORDER_DEVICE_NOT_DELIVRED) {
 					addMessageAfterRedirect($LANG['plugin_order'][46], true, ERROR);
@@ -108,8 +110,10 @@ if (isset ($_POST["createLinkWithDevice"])) {
 				} else
 				{
 					plugin_order_createLinkWithDevice($key, $_POST["device"], $_POST["type"][$key], $_POST["orderID"]);
-					addMessageAfterRedirect($LANG['plugin_order']['delivery'][14]);
+					addMessageAfterRedirect($LANG['plugin_order']['delivery'][14],true);
 				}
+			}
+		}
 	} else
 		addMessageAfterRedirect($LANG['plugin_order'][42], true, ERROR);
 	glpi_header("" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=" . $_POST["orderID"] . "");
