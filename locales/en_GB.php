@@ -28,8 +28,7 @@
     Original Author of file: 
     Purpose of file:
     ----------------------------------------------------------------------*/
-
-$title = "Orders management";
+$LANG['plugin_order']['title'][1] = "Orders management";
 
 $LANG['plugin_order'][0] = "Order number";
 $LANG['plugin_order'][1] = "Date of order";
