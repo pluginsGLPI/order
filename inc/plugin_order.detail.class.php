@@ -191,6 +191,7 @@ class PluginOrderDetail extends CommonDBTM {
 					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=none'>".$LANG['buttons'][19]."</a>";
 					echo "</td><td align='left' width='75%'>";
+					echo "<input type='hidden' name='FK_reference' value=\"".$DB->result($result,0,"IDR")."\">";
 					echo "<input type='submit' name='delete_detail' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 					echo "</td>";
 					echo "</table>";

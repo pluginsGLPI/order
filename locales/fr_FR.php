@@ -106,6 +106,7 @@ $LANG['plugin_order']['delivery'][13] = "Matériel généré à partir de la com
 $LANG['plugin_order']['delivery'][14] = "Matériel lié à la commande";
 $LANG['plugin_order']['delivery'][15] = "Matériel délié de la commande";
 $LANG['plugin_order']['delivery'][16] = "Matériel déjà lié à un objet d'inventaire";
+$LANG['plugin_order']['delivery'][17] = "Aucun matériel à générer";
 
 
 $LANG['plugin_order']['profile'][0] = "Gestion des droits";

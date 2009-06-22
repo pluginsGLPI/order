@@ -101,11 +101,6 @@ function deleteDetails($referenceID, $orderID) {
 					WHERE FK_order=$orderID 
 					AND FK_reference=$referenceID";
 	$DB->query($query);
-
-	$query = " DELETE FROM `glpi_plugin_order_detail`
-					WHERE FK_order=$orderID ";
-	$DB->query($query);
-
 }
 
 /* show details of orders */
@@ -117,7 +112,7 @@ function showDetail($target, $ID) {
 
 /* show form of linking order to glpi items */
 function showItem($instID, $search = '') {
-	global $DB, $CFG_GLPI, $LANG, $INFOFORM_PAGES, $LINK_ID_TABLE;
+	global $DB, $CFG_GLPI, $LANG, $INFOFORM_PAGES, $LINK_ID_TABLE,$ORDER_RESTRICTED_TYPES;
 	if (!plugin_order_haveRight("order", "r"))
 		return false;
 	$rand = mt_rand();
@@ -161,18 +156,24 @@ function showItem($instID, $search = '') {
 					if ($type == KNOWBASE_TYPE)
 						$column = "question";
 
-					$query = "SELECT " . $LINK_ID_TABLE[$type] . ".*, glpi_plugin_order_detail.ID AS IDD, glpi_entities.ID AS entity " .
-					" FROM `glpi_plugin_order_detail`, `" . $LINK_ID_TABLE[$type] .
-					"` LEFT JOIN glpi_entities ON (glpi_entities.ID=" . $LINK_ID_TABLE[$type] . ".FK_entities) " .
-					" WHERE " . $LINK_ID_TABLE[$type] . ".ID = glpi_plugin_order_detail.FK_device 
-											AND glpi_plugin_order_detail.device_type='$type' 
-											AND glpi_plugin_order_detail.FK_order = '$instID' " . getEntitiesRestrictRequest(" AND ", $LINK_ID_TABLE[$type], '', '', isset ($CFG_GLPI["recursive_type"][$type]));
+					$entity_restrict = (!in_array($type,$ORDER_RESTRICTED_TYPES)?true:false);
 
-					if (in_array($LINK_ID_TABLE[$type], $CFG_GLPI["template_tables"])) {
-						$query .= " AND " . $LINK_ID_TABLE[$type] . ".is_template='0'";
-					}
-					$query .= " ORDER BY glpi_entities.completename, " . $LINK_ID_TABLE[$type] . ".$column";
-
+					if($entity_restrict)
+					{
+						$query = "SELECT " . $LINK_ID_TABLE[$type] . ".*, " .
+								"glpi_plugin_order_detail.ID AS IDD, " .
+								"glpi_entities.ID AS entity " .
+						" FROM `glpi_plugin_order_detail`, `" . $LINK_ID_TABLE[$type] .
+						"` LEFT JOIN glpi_entities ON (glpi_entities.ID=" . $LINK_ID_TABLE[$type] . ".FK_entities) " .
+						" WHERE " . $LINK_ID_TABLE[$type] . ".ID = glpi_plugin_order_detail.FK_device 
+												AND glpi_plugin_order_detail.device_type='$type' 
+												AND glpi_plugin_order_detail.FK_order = '$instID' " . getEntitiesRestrictRequest(" AND ", $LINK_ID_TABLE[$type], '', '', isset ($CFG_GLPI["recursive_type"][$type]));
+	
+						if (in_array($LINK_ID_TABLE[$type], $CFG_GLPI["template_tables"])) {
+							$query .= " AND " . $LINK_ID_TABLE[$type] . ".is_template='0'";
+						}
+						$query .= " ORDER BY glpi_entities.completename, " . $LINK_ID_TABLE[$type] . ".$column";
+							
 					if ($result_linked = $DB->query($query))
 						if ($DB->numrows($result_linked)) {
 							$ci->setType($type);
@@ -199,6 +200,7 @@ function showItem($instID, $search = '') {
 								echo "</tr>";
 							}
 						}
+					}
 				}
 				$i++;
 			}

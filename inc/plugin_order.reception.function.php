@@ -449,6 +449,7 @@ function plugin_order_showItemGenerationForm($target, $params) {
 	$order->getFromDB($params["orderID"]);
 
 	$i = 0;
+	$found = false;
 	foreach ($params["item"] as $key => $val)
 		if ($val == 1) {
 			$detail = new PluginOrderDetail;
@@ -467,11 +468,15 @@ function plugin_order_showItemGenerationForm($target, $params) {
 				echo "<input type='hidden' name='type[$i]' value=" . $params['type'][$key] . ">";
 				echo "<input type='hidden' name='ID[$i]' value=" . $params["ID"][$key] . ">";
 				echo "<input type='hidden' name='orderID' value=" . $params["orderID"] . ">";
+				$found = true;
 			}
 			$i++;
 		}
 
-	echo "<tr><td align='center' colspan='5' class='tab_bg_2'><input type='submit' name='generate' class='submit' value=" . $LANG['plugin_order']['delivery'][9] . "></td></tr>";
+	if ($found)
+		echo "<tr><td align='center' colspan='5' class='tab_bg_2'><input type='submit' name='generate' class='submit' value=" . $LANG['plugin_order']['delivery'][9] . "></td></tr>";
+	else
+		echo "<tr><td align='center' colspan='5' class='tab_bg_2'>".$LANG['plugin_order']['delivery'][17]."</td></tr>";	
 
 	echo "</table>";
 	echo "</div>";
