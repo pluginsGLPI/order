@@ -310,7 +310,7 @@ function getAllItemsByType($type, $entity, $item_type = 0, $item_model = 0) {
 			break;
 	}
 	$result = $DB->query($query);
-	echo $query;
+	
 	$device = array ();
 	while ($data = $DB->fetch_array($result))
 		$device[$data["ID"]] = $data["name"];
@@ -319,7 +319,7 @@ function getAllItemsByType($type, $entity, $item_type = 0, $item_model = 0) {
 }
 
 function plugin_order_createLinkWithDevice($detailID = 0, $deviceID = 0, $device_type = 0, $orderID = 0, $entity = 0, $templateID = 0, $history = true, $check_link = true) {
-	global $LANG;
+	global $LANG,$ORDER_RESTRICTED_TYPES;
 
 	if (!$check_link || !plugin_order_itemAlreadyLinkedToAnOrder($device_type, $deviceID, $orderID)) {
 		$detail = new PluginOrderDetail;
@@ -329,7 +329,27 @@ function plugin_order_createLinkWithDevice($detailID = 0, $deviceID = 0, $device
 		$detail->update($input);
 		$detail->getFromDB($detailID);
 
-		plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_type, $deviceID, $templateID);
+		if (in_array($device_type,$ORDER_RESTRICTED_TYPES))
+		{
+			switch ($device_type)
+			{
+				case CARTRIDGE_ITEM_TYPE:
+					$cartridge = new Cartridge;
+					$input["FK_glpi_cartridges_type "] = $deviceID;
+					$input["FK_glpi_printers "] = 0;
+					$input["date_in "] = $detail->fields["date"];
+					$input["pages "] = 0;
+					$newID = $cartridge->add($input);
+					plugin_order_generateInfoComRelatedToOrder($entity, $detailID, CARTRIDGE_ITEM_TYPE, $newID);
+				break;
+				case CONSUMABLE_ITEM_TYPE:
+				break;
+				default:
+				break;
+			}
+		}
+		else
+			plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_type, $deviceID, $templateID);
 		if ($history) {
 			$order = new PluginOrder;
 			$order->getFromDB($detail->fields["FK_order"]);
@@ -466,6 +486,11 @@ function plugin_order_generateNewDevice($params) {
 	$i = 0;
 	$entity = $params["FK_entities"];
 	while (isset ($params["serial"][$i])) {
+		
+		if (!in_array($params["type"][$i],$ORDER_RESTRICTED_TYPES))
+		{
+			
+		}
 		//Look for a template in the entity
 		$templateID = plugin_order_templateExistsInEntity($params["ID"][$i], $params["type"][$i], $entity);
 
