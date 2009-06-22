@@ -102,6 +102,7 @@ else
 		if (plugin_order_HaveRight("order", "w") && ( plugin_order_HaveRight("validation", "w") || !$config["use_validation"]))
 		{
 			plugin_order_updateOrderStatus($_POST["ID"],ORDER_STATUS_APPROVED,$_POST["comments"]);
+			plugin_order_updateDelivryStatus($_POST["ID"]);
 			$plugin_order->getFromDB($_POST["ID"]);
 			plugin_order_sendNotification("validation",$_POST["ID"],$plugin_order->fields["FK_entities"],$_SESSION["glpiID"],$_POST["comments"]);
 			addMessageAfterRedirect($LANG['plugin_order']['validation'][10]);
