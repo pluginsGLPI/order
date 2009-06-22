@@ -136,7 +136,7 @@ function plugin_version_order(){
 	return array (
 		'name' => $LANG['plugin_order']['title'][1],
 		'version' => '1.0.0',
-		'author'=>'',
+		'author'=>'Benjamin Fontan & Walid Nouh',
 		'homepage'=>'http://glpi-project.org/wiki/doku.php?id='.substr($_SESSION["glpilanguage"],0,2).':plugins:pluginslist',
 		'minGlpiVersion' => '0.72',
 	);	
