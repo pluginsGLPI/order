@@ -601,13 +601,7 @@ function plugin_item_purge_order($parm) {
 		$detail->cleanItems($parm["ID"], $parm["type"]);
 		return true;
 	}
-	elseif (in_array($parm["type"], array (
-		DOCUMENT_TYPE
-	))) {
-		$plugin_order = new PluginOrder;
-		$plugin_order->cleanDocuments($parm["ID"]);
-		return true;
-	} else
+	 else
 		return false;
 }
 
