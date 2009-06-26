@@ -120,6 +120,8 @@ $LANG['plugin_order']['reference'][3] = "Liste des références";
 $LANG['plugin_order']['reference'][5] = "Fournisseur pour une référence";
 $LANG['plugin_order']['reference'][6] = "Une référence du même nom existe déjà";
 $LANG['plugin_order']['reference'][7] = "Référence(s) actuellement utilisée(s)";
+$LANG['plugin_order']['reference'][8] = "Impossible de créer une référence sans nom";
+$LANG['plugin_order']['reference'][9] = "Impossible de créer une référence sans type";
 
 $LANG['plugin_order']['setup'][2] = "Plugin non utilisable depuis le helpdesk";
 

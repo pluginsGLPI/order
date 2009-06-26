@@ -55,6 +55,19 @@ class PluginOrderReference extends CommonDBTM {
 	function prepareInputForAdd($params)
 	{
 		global $DB,$LANG;
+
+		if (!isset($params["name"]) || $params["name"] == '')
+		{
+			addMessageAfterRedirect($LANG['plugin_order']['reference'][8], false, ERROR);
+			return false;
+		}
+		
+		if (!$params["type"])
+		{
+			addMessageAfterRedirect($LANG['plugin_order']['reference'][9], false, ERROR);
+			return false;
+		}
+		
 		$query = "SELECT COUNT(*) as cpt FROM `".$this->table."` " .
 				 "WHERE name='".$params["name"]."' AND FK_entities=".$params["FK_entities"];
 		$result = $DB->query($query);

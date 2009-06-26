@@ -175,11 +175,15 @@ else
 else
 	if (isset ($_POST["delete_detail"])) {
 		plugin_order_checkRight("order", "w");
-		if (isset($_POST["FK_order"]) && $_POST["FK_order"] > 0 && $_POST["FK_reference"] && $_POST["FK_reference"] > 0)
+		if (isset($_POST["FK_order"]) && $_POST["FK_order"] > 0)
 		{
-			$new_value = $LANG['plugin_order']['detail'][35]." ".getDropdownName("glpi_plugin_order_references",$_POST["FK_reference"]);
-			plugin_order_addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
-			deleteDetails($_POST["FK_reference"], $_POST["FK_order"]);
+			foreach ($_POST["detail"] as $ID => $val)
+				if ($val==1)
+				{
+					$new_value = $LANG['plugin_order']['detail'][35]." ".getDropdownName("glpi_plugin_order_references",$ID);
+					plugin_order_addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
+					deleteDetails($ID, $_POST["FK_order"]);
+				}
 		}
 			
 		glpi_header($_SERVER['HTTP_REFERER']);
