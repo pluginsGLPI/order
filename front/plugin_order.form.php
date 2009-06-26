@@ -175,7 +175,7 @@ else
 else
 	if (isset ($_POST["delete_detail"])) {
 		plugin_order_checkRight("order", "w");
-		if (isset($_POST["FK_order"]) && $_POST["FK_order"] > 0)
+		if (isset($_POST["FK_order"]) && $_POST["FK_order"] > 0 && isset($_POST["detail"]))
 		{
 			foreach ($_POST["detail"] as $ID => $val)
 				if ($val==1)
@@ -184,7 +184,8 @@ else
 					plugin_order_addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
 					deleteDetails($ID, $_POST["FK_order"]);
 				}
-		}
+		}elseif(!isset($_POST["detail"]))
+			addMessageAfterRedirect($LANG['plugin_order']['detail'][29],false,ERROR);
 			
 		glpi_header($_SERVER['HTTP_REFERER']);
 	} 

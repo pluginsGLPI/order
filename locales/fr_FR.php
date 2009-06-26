@@ -94,6 +94,8 @@ $LANG['plugin_order']['detail'][32] = "Matériel(s) déjà réceptionné(s)";
 $LANG['plugin_order']['detail'][33] = "Le pourcentage de remise doit-être compris entre 0 et 100";
 $LANG['plugin_order']['detail'][34] = "Ajout référence";
 $LANG['plugin_order']['detail'][35] = "Suppression référence";
+$LANG['plugin_order']['detail'][36] = "Voulez vous vraiment supprimer ce(s) détail(s) ? Les matériels livrés seront alors supprimés !";
+
 
 $LANG['plugin_order']['delivery'][1] = "Réception matériel(s)";
 $LANG['plugin_order']['delivery'][2] = "Réceptionner matériel";
