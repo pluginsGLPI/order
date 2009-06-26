@@ -369,9 +369,13 @@ function plugin_order_deleteLinkWithDevice($detailID, $device_type) {
 
 			plugin_order_removeInfoComRelatedToOrder($device_type, $deviceID);
 
+			if($detail->fields["FK_device"]!=0) 
+			{
 			$input = $detail->fields;
 			$input["FK_device"] = 0;
 			$detail->update($input);
+			} else
+				addMessageAfterRedirect($LANG['plugin_order'][48],TRUE, ERROR);
 
 			$order = new PluginOrder;
 			$order->getFromDB($DB->result($result, 0, "FK_order"));

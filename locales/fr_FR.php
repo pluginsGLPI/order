@@ -53,6 +53,7 @@ $LANG['plugin_order'][44] = "Un numéro de commande est obligatoire !";
 $LANG['plugin_order'][45] = "Impossible de générer du matériel non réceptionné";
 $LANG['plugin_order'][46] = "Impossible de lier du matériel non réceptionné";
 $LANG['plugin_order'][47] = "Informations sur la commande";
+$LANG['plugin_order'][48] = "Une ou plusieurs lignes sélectionnées n'ont pas de matériel associé";
 
 $LANG['plugin_order']['status'][0] = "Statut commande";
 $LANG['plugin_order']['status'][1] = "En cours de livraison";
