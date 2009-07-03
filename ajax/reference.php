@@ -51,7 +51,6 @@ checkCentralAccess();
 
 $params = array ("device_type"=>$_POST["device_type"],"entity_restrict"=>$_POST["entity_restrict"]);
 
-
 foreach (array("type","model","template") as $field)
 {
 		$params["field"]=$field;

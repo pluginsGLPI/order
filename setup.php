@@ -45,11 +45,34 @@ include_once ("inc/plugin_order.profile.class.php");
  
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
-	global $PLUGIN_HOOKS,$CFG_GLPI,$LANG,$ORDER_AVAILABLE_TYPES,$ORDER_RESTRICTED_TYPES,$ORDER_VALIDATION_STATUS;
+	global $PLUGIN_HOOKS,$CFG_GLPI,$LANG,$ORDER_AVAILABLE_TYPES,$ORDER_RESTRICTED_TYPES,$ORDER_VALIDATION_STATUS,$ORDER_TYPE_TABLES,$ORDER_MODEL_TABLES,$ORDER_TEMPLATE_TABLES;
 
-	$ORDER_AVAILABLE_TYPES = array (COMPUTER_TYPE, MONITOR_TYPE, NETWORKING_TYPE, PHONE_TYPE, PRINTER_TYPE, PERIPHERAL_TYPE, CONSUMABLE_ITEM_TYPE, CARTRIDGE_ITEM_TYPE);
+	$ORDER_AVAILABLE_TYPES = array (SOFTWARELICENSE_TYPE, COMPUTER_TYPE, MONITOR_TYPE, NETWORKING_TYPE, PHONE_TYPE, PRINTER_TYPE, PERIPHERAL_TYPE, CONSUMABLE_ITEM_TYPE, CARTRIDGE_ITEM_TYPE);
 	$ORDER_RESTRICTED_TYPES = array(0, SOFTWARELICENSE_TYPE, CONSUMABLE_ITEM_TYPE,CARTRIDGE_ITEM_TYPE);
 	$ORDER_VALIDATION_STATUS = array(ORDER_STATUS_DRAFT,ORDER_STATUS_WAITING_APPROVAL);
+
+	$ORDER_TYPE_TABLES = array(COMPUTER_TYPE=>"glpi_type_computers",
+								MONITOR_TYPE=>"glpi_type_monitors",
+								PRINTER_TYPE=>"glpi_type_printers",
+								NETWORKING_TYPE=>"glpi_type_printers",
+								SOFTWARE_TYPE=>"glpi_type_softwares",
+								PERIPHERAL_TYPE=>"glpi_type_peripherals",
+								PHONE_TYPE=>"glpi_type_phones",
+								CARTRIDGE_ITEM_TYPE=>"glpi_dropdown_cartridge_type",
+								CONSUMABLE_ITEM_TYPE=>"glpi_dropdown_consumable_type");
+	$ORDER_MODEL_TABLES = array(COMPUTER_TYPE=>"glpi_dropdown_model",
+								MONITOR_TYPE=>"glpi_dropdown_model_monitors",
+								PRINTER_TYPE=>"glpi_dropdown_model_printers",
+								NETWORKING_TYPE=>"glpi_dropdown_model_printers",
+								SOFTWARE_TYPE=>"glpi_dropdown_model_softwares",
+								PERIPHERAL_TYPE=>"glpi_dropdown_model_peripherals",
+								PHONE_TYPE=>"glpi_dropdown_model_phones");
+	$ORDER_TEMPLATE_TABLES = array(COMPUTER_TYPE,
+								MONITOR_TYPE,
+								PRINTER_TYPE,
+								NETWORKING_TYPE,
+								PERIPHERAL_TYPE,
+								PHONE_TYPE);
 	
 	/* params : plugin name - string type - number - class - table - form page */
 	registerPluginType('order', 'PLUGIN_ORDER_TYPE', 3150, array(

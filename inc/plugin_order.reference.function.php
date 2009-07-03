@@ -207,61 +207,23 @@ function plugin_order_getPriceByReferenceAndSupplier($referenceID,$supplierID)
 		return 0;	
 }
 
-function plugin_order_getModelTable($type)
+function plugin_order_getModelTable($device_type)
 {
-	$prefix = "glpi_dropdown_model";
-	
-	switch ($type)
-	{
-		case COMPUTER_TYPE:
-			return $prefix;
-		case MONITOR_TYPE:
-			return $prefix."_monitors";
-		case PRINTER_TYPE:
-			return $prefix."_printers";
-		case NETWORKING_TYPE:
-			return $prefix."_networkings";	
-		case SOFTWARE_TYPE:
-			return $prefix."_softwares";
-		case PERIPHERAL_TYPE:
-			return $prefix."_peripherals";	
-		case PHONE_TYPE:
-			return $prefix."_phones";				
-		default :
-			return false;
-			break;	
-
-	}
+	global $ORDER_MODEL_TABLES;
+	if(isset($ORDER_MODEL_TABLES[$device_type]))
+		return $ORDER_MODEL_TABLES[$device_type];
+	else
+		return false;	
 }
 
-function plugin_order_getTypeTable($type)
+function plugin_order_getTypeTable($device_type)
 {
-	$prefix = "glpi_type";
+	global $ORDER_TYPE_TABLES;
 	
-	switch ($type)
-	{
-		case COMPUTER_TYPE:
-				return $prefix."_computers";
-		case MONITOR_TYPE:
-			return $prefix."_monitors";
-		case PRINTER_TYPE:
-			return $prefix."_printers";
-		case NETWORKING_TYPE:
-			return $prefix."_networking";	
-		case SOFTWARE_TYPE:
-			return $prefix."_softwares";
-		case PERIPHERAL_TYPE:
-			return $prefix."_peripherals";	
-		case PHONE_TYPE:
-			return $prefix."_phones";	
-		case CARTRIDGE_ITEM_TYPE:
-			return "glpi_dropdown_cartridge_type";
-		case CONSUMABLE_ITEM_TYPE:
-			return "glpi_dropdown_consumable_type";
-		default :
-			return false;
-			break;	
-	}
+	if(isset($ORDER_TYPE_TABLES[$device_type]))
+		return $ORDER_TYPE_TABLES[$device_type];
+	else
+		return false;	
 }
 
 function plugin_order_isSupplierInReferenceInUse($referenceID,$supplierID)

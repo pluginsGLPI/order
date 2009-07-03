@@ -285,17 +285,18 @@ function getReceptionDeviceName($deviceID, $deviceType) {
 }
 
 function getAllItemsByType($type, $entity, $item_type = 0, $item_model = 0) {
-	global $DB, $LINK_ID_TABLE;
+	global $DB, $LINK_ID_TABLE, $ORDER_TYPE_TABLES, $ORDER_MODEL_TABLES, $ORDER_TEMPLATE_TABLES;
+	
+	$and = "";
+	if (isset($ORDER_TYPE_TABLES[$type]))
+		$and .= ($item_type != 0 ? " AND type=$item_type" : "");
+	if (isset($ORDER_MODEL_TABLES[$type]))
+		$and .= ($item_model != 0 ? " AND model=$item_model" : "");
+	if (in_array($type,$ORDER_TEMPLATE_TABLES))	
+		$and = " AND is_template=0 AND deleted=0 ";
+	
 	switch ($type) {
-		case COMPUTER_TYPE :
-		case MONITOR_TYPE :
-		case NETWORKING_TYPE :
-		case PERIPHERAL_TYPE :
-		case PHONE_TYPE :
-		case PRINTER_TYPE :
-			$and = " AND is_template=0 AND deleted=0 ";
-			$and .= ($item_type != 0 ? " AND type=$item_type" : "");
-			$and .= ($item_model != 0 ? " AND model=$item_model" : "");
+			default:
 			$query = "SELECT ID, name FROM `" . $LINK_ID_TABLE[$type] . "` 
 								 WHERE FK_entities=" . $entity . $and . " 
 								 AND ID NOT IN (SELECT FK_device FROM glpi_plugin_order_detail)";
