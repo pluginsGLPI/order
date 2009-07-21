@@ -125,6 +125,7 @@ function plugin_order_install() {
 										`name` varchar(255) collate utf8_unicode_ci default NULL,
 										`order` char(1) default NULL,
 									    `reference` char(1) default NULL,
+									    `budget` char(1) default NULL,
 									    `validation` char(1) default NULL,
 									    `cancel` char(1) default NULL,
 									    `undo_validation` char(1) default NULL,
@@ -154,14 +155,14 @@ function plugin_order_install() {
 								  `FK_manufacturer` int(11) NOT NULL DEFAULT 0,
 								  `FK_type` INT(11) NOT NULL DEFAULT 0,
 								  `FK_model` INT(11) NOT NULL DEFAULT 0,
-								  `name` varchar(255) character set latin1 NOT NULL,
+								  `name` varchar(255) collate utf8_unicode_ci NOT NULL,
 								  `type` int(11) NOT NULL DEFAULT 0,
 								  `template` int(11) NOT NULL DEFAULT 0,
 								  `recursive` int(11) NOT NULL DEFAULT 0,
 								  `deleted` int(11) NOT NULL DEFAULT 0,
-								  `comments` text character set latin1 NULL,
+								  `comments` text  collate utf8_unicode_ci NULL,
 								  PRIMARY KEY  (`ID`)
-								) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+								  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die($DB->error());
 	}
 
@@ -215,6 +216,26 @@ function plugin_order_install() {
 							   (NULL, 3151, 5, 9, 0);";
 	$DB->query($query) or die($DB->error());
 
+	$query = "CREATE TABLE `glpi_plugin_order_budgets` (
+			`ID` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+			`name` VARCHAR( 255 ) collate utf8_unicode_ci NULL,
+   		    `FK_entities` int(11) NOT NULL DEFAULT 0,
+			`FK_budget` INT( 11 ) NOT NULL ,
+		    `deleted` int(11) NOT NULL DEFAULT 0,
+			`comments` text  collate utf8_unicode_ci NULL,
+			`startdate` DATE NULL ,
+			`enddate` DATE NULL ,
+			`value` FLOAT( 11 ) NOT NULL ,
+			PRIMARY KEY ( `ID` )
+			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+	$DB->query($query) or die($DB->error());
+
+	$query = "INSERT INTO `glpi_display` (`ID`, `type`, `num`, `rank`, `FK_users`) VALUES
+			(NULL, 3153, 2, 1, 0),
+			(NULL, 3153, 4, 2, 0),
+			(NULL, 3153, 5, 3, 0),
+			(NULL, 3153, 6, 4, 0);";
+	$DB->query($query) or die($DB->error());			
 	plugin_order_createfirstaccess($_SESSION['glpiactiveprofile']['ID']);
 	return true;
 }
@@ -233,7 +254,8 @@ function plugin_order_uninstall() {
 		"glpi_dropdown_plugin_order_payment",
 		"glpi_plugin_order_references",
 		"glpi_plugin_order_references_manufacturers",
-		"glpi_plugin_order_config"
+		"glpi_plugin_order_config",
+		"glpi_plugin_order_budgets"
 	);
 
 	foreach ($tables as $table)
@@ -242,7 +264,8 @@ function plugin_order_uninstall() {
 	$in = "IN (" . implode(',', array (
 		PLUGIN_ORDER_TYPE,
 		PLUGIN_ORDER_REFERENCE_TYPE,
-		PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE
+		PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE,
+		PLUGIN_ORDER_BUDGET_TYPE
 	)) . ")";
 	/* clean glpi_display */
 	$query = "DELETE FROM `glpi_display` WHERE type " . $in;
@@ -464,6 +487,48 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['linkfield'] = 'price_taxfree';
 		$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['name'] = $LANG['plugin_order']['detail'][4];
 
+	}
+	
+	if (plugin_order_haveRight("budget", "r")) {
+
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE]['common'] = $LANG['financial'][87];
+
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['table'] = 'glpi_plugin_order_budgets';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['field'] = 'ID';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['name'] = "ID";
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['datatype'] = 'itemlink';
+
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['table'] = 'glpi_plugin_order_budgets';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['field'] = 'name';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['name'] = $LANG['common'][16];
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['datatype'] = 'itemlink';
+
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['table'] = 'glpi_plugin_order_budgets';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['field'] = 'comments';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['name'] = $LANG['common'][25];
+
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['table'] = 'glpi_plugin_order_budgets';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['field'] = 'startdate';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['name'] = $LANG['search'][8];
+
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['table'] = 'glpi_plugin_order_budgets';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['field'] = 'startdate';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['name'] = $LANG['search'][9];
+
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][6]['table'] = 'glpi_plugin_order_budgets';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][6]['field'] = 'value';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][6]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][6]['name'] = $LANG['financial'][21];
+
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][7]['table'] = 'glpi_dropdown_budget';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][7]['field'] = 'name';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][7]['linkfield'] = 'FK_budget';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][7]['name'] = $LANG['financial'][87]." GLPI";
 	}
 	return $sopt;
 }

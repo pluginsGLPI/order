@@ -28,25 +28,40 @@
     Purpose of file:
     ----------------------------------------------------------------------*/
    
-$NEEDED_ITEMS=array("computer","printer","networking","monitor","software","peripheral","phone","user","search","tracking");
 define('GLPI_ROOT', '../..'); 
 include (GLPI_ROOT."/inc/includes.php");
 
 commonHeader($LANG['plugin_order']['title'][1],$_SERVER["PHP_SELF"],"plugins","order");
 
-if(plugin_order_haveRight("order","r") && plugin_order_haveRight("reference","r"))
+if(plugin_order_haveRight("order","r") || plugin_order_haveRight("reference","r") || plugin_order_haveRight("budget","r"))
 {
 	echo "<div class='center'>";
 	echo "<table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$LANG['plugin_order']['title'][1]."</th></tr>";
-	echo "<tr class='tab_bg_1' align='center'>"; 
-	echo "<td><img src='./pics/order.png'></td>";
-	echo "<td><a href='./front/plugin_order.order.php'>".$LANG['plugin_order']['menu'][1]."</a></td></tr>";
-	echo "<tr class='tab_bg_1' align='center'>"; 
-	echo "<td><img src='./pics/reference.png'></td>";
-	echo"<td><a href='./front/plugin_order.reference.php'>".$LANG['plugin_order']['menu'][2]."</a></td></tr>";
+	
+	if (plugin_order_haveRight("order","r"))
+	{
+		echo "<tr class='tab_bg_1' align='center'>"; 
+		echo "<td><img src='./pics/order.png'></td>";
+		echo "<td><a href='./front/plugin_order.order.php'>".$LANG['plugin_order']['menu'][1]."</a></td></tr>";
+	}
+
+	if (plugin_order_haveRight("reference","r"))
+	{
+		echo "<tr class='tab_bg_1' align='center'>"; 
+		echo "<td><img src='./pics/reference.png'></td>";
+		echo"<td><a href='./front/plugin_order.reference.php'>".$LANG['plugin_order']['menu'][2]."</a></td></tr>";
+	}
+
+	if (plugin_order_haveRight("budget","r"))
+	{
+		echo "<tr class='tab_bg_1' align='center'>"; 
+		echo "<td><img src='./pics/budget.png'></td>";
+		echo"<td><a href='./front/plugin_order.budget.php'>".$LANG['plugin_order']['menu'][3]."</a></td></tr>";
+	}
 	echo "</table></div>";
 } 
+/*
 elseif (plugin_order_haveRight("order","r"))
 {
 	glpi_header("./front/plugin_order.order.php");	
@@ -55,6 +70,7 @@ elseif (plugin_order_haveRight("reference","r"))
 {
 	glpi_header("./front/plugin_order.reference.php");	
 }
+*/
 else{
 	echo "<div align='center'><br><br><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 	echo "<b>".$LANG['login'][5]."</b></div>";
