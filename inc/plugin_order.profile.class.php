@@ -68,6 +68,12 @@ class PluginOrderProfile extends CommonDBTM {
 		echo "</td>";
 		echo "</tr>";
 
+		echo "<tr class='tab_bg_2'>";
+		echo "<td>" . $LANG['plugin_order']['menu'][3] . ":</td><td>";
+		dropdownNoneReadWrite("budget", $this->fields["budget"], 1, 1, 1);
+		echo "</td>";
+		echo "</tr>";
+
 		echo "<tr align='center'><th colspan='2' >".$LANG['plugin_order']['profile'][1]."</th></tr>";
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>" . $LANG['plugin_order']['profile'][1] . ":</td><td>";

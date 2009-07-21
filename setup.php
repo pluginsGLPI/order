@@ -98,8 +98,6 @@ function plugin_init_order() {
 		PHONE_TYPE
 	);
 	$plugin = new Plugin;
-	if ($plugin->isActivated("order"))
-	{
 		/* params : plugin name - string type - number - class - table - form page */
 		registerPluginType('order', 'PLUGIN_ORDER_TYPE', 3150, array (
 			'classname' => 'PluginOrder',
@@ -141,7 +139,10 @@ function plugin_init_order() {
 			'deleted_tables' => true,
 			
 		));
-	
+
+	if ($plugin->isActivated("order"))
+	{
+
 		$PLUGIN_HOOKS['pre_item_update']['order'] = 'plugin_pre_item_update_order';
 	
 		array_push($CFG_GLPI["massiveaction_noupdate_types"], PLUGIN_ORDER_REFERENCE_TYPE);

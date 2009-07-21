@@ -110,12 +110,6 @@ class PluginOrderReference extends CommonDBTM {
 		return (!$this->referenceInUse());
 	}
 	
-	function isRestrictedType()
-	{
-		global $ORDER_RESTRICTED_TYPES;
-		return (in_array($this->fields["type"],$ORDER_RESTRICTED_TYPES));
-	}
-	
 	/**
 	 * Print a good title for user pages
 	 *
@@ -127,7 +121,7 @@ class PluginOrderReference extends CommonDBTM {
 	}
 
 	function showForm($target, $ID, $withtemplate = '') {
-		global $CFG_GLPI, $LANG, $DB;
+		global $CFG_GLPI, $LANG, $DB,$ORDER_TEMPLATE_TABLES;
 
 		if (!plugin_order_haveRight("reference", "r"))
 			return false;
@@ -188,7 +182,7 @@ class PluginOrderReference extends CommonDBTM {
 
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][17] . ": </td>";
 			echo "<td><span id='show_type'>";
-			if ($canedit && !$this->isRestrictedType() && !$reference_in_use )
+			if ($canedit && (plugin_order_getTypeTable($this->type) !== false) && !$reference_in_use )
 					dropdownValue(plugin_order_getTypeTable($this->fields["type"]), "FK_type", $this->fields["FK_type"]);
 				else
 					echo getDropdownName(plugin_order_getTypeTable($this->fields["type"]), $this->fields["FK_type"]);
@@ -197,7 +191,7 @@ class PluginOrderReference extends CommonDBTM {
 			echo "</span></td></tr>";
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][22] . ": </td>";
 			echo "<td><span id='show_model'>";
-			if ($canedit && !$this->isRestrictedType() && !$reference_in_use ) 
+			if ($canedit && (plugin_order_getModelTable($this->type) !== false) && !$reference_in_use ) 
 					dropdownValue(plugin_order_getModelTable($this->fields["type"]), "FK_model", $this->fields["FK_model"]);
 				else
 					echo getDropdownName(plugin_order_getModelTable($this->fields["type"]), $this->fields["FK_model"]);
@@ -207,7 +201,8 @@ class PluginOrderReference extends CommonDBTM {
 
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][13] . ": </td>";
 			echo "<td><span id='show_template'>";
-			if ($canedit && !$this->isRestrictedType() && !$reference_in_use )
+			
+			if ($canedit && in_array($this->type,$ORDER_TEMPLATE_TABLES) && !$reference_in_use )
 					plugin_order_dropdownTemplate("template", $this->fields["FK_entities"], $commonitem->obj->table, $this->fields["template"]);
 				else
 					echo plugin_order_getTemplateName($this->fields["type"], $this->fields["template"]);

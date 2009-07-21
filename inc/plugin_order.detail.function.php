@@ -30,7 +30,7 @@
     Purpose of file:
     ----------------------------------------------------------------------*/
 
-function getQuantity($FK_order, $FK_reference) {
+function plugin_order_getQuantity($FK_order, $FK_reference) {
 	global $CFG_GLPI, $DB;
 	$query = "	SELECT count(*) AS quantity FROM glpi_plugin_order_detail
 									WHERE FK_order=$FK_order
@@ -39,7 +39,7 @@ function getQuantity($FK_order, $FK_reference) {
 	return ($DB->result($result, 0, 'quantity'));
 }
 
-function getDelivredQuantity($FK_order, $FK_reference) {
+function plugin_order_getDelivredQuantity($FK_order, $FK_reference) {
 	global $CFG_GLPI, $DB;
 	$query = "	SELECT count(*) AS delivredquantity FROM glpi_plugin_order_detail
 									WHERE FK_order=$FK_order
@@ -56,16 +56,16 @@ function getPrices($FK_order) {
 	return $DB->fetch_array($result);
 }
 
-function getPriceTaxIncluded($priceHT, $taxes) {
+function plugin_order_plugin_order_getPrices($priceHT, $taxes) {
 	if (!$priceHT)
 		return 0;
 	else
 		return $priceHT + (($priceHT * $taxes) / 100);
 }
 
-function addDetails($referenceID, $device_type, $orderID, $quantity, $price, $discounted_price, $taxes) {
+function plugin_order_addDetails($referenceID, $device_type, $orderID, $quantity, $price, $discounted_price, $taxes) {
 	global $LANG;
-	if (referenceExistsInOrder($orderID, $referenceID))
+	if (plugin_order_referenceExistsInOrder($orderID, $referenceID))
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][28], false, ERROR);
 	else {
 		if ($quantity > 0) {
@@ -77,7 +77,7 @@ function addDetails($referenceID, $device_type, $orderID, $quantity, $price, $di
 				$input["price_taxfree"] = $price;
 				$input["price_discounted"] = $price - ($price * ($discounted_price / 100));
 				$input["status"] = ORDER_STATUS_DRAFT;
-				$input["price_ati"] = getPriceTaxIncluded($input["price_discounted"], getDropdownName("glpi_dropdown_plugin_order_taxes", $taxes));
+				$input["price_ati"] = plugin_order_plugin_order_getPrices($input["price_discounted"], getDropdownName("glpi_dropdown_plugin_order_taxes", $taxes));
 				$input["deliverynum"] = "";
 				$detail->add($input);
 			}
@@ -85,7 +85,7 @@ function addDetails($referenceID, $device_type, $orderID, $quantity, $price, $di
 	}
 }
 
-function referenceExistsInOrder($orderID, $referenceID) {
+function plugin_order_referenceExistsInOrder($orderID, $referenceID) {
 	global $DB;
 	$query = "SELECT ID FROM `glpi_plugin_order_detail` WHERE FK_order=$orderID AND FK_reference=$referenceID";
 	$result = $DB->query($query);
@@ -94,7 +94,7 @@ function referenceExistsInOrder($orderID, $referenceID) {
 	else
 		return false;
 }
-function deleteDetails($referenceID, $orderID) {
+function plugin_order_deleteDetails($referenceID, $orderID) {
 	global $DB;
 
 	$query = " DELETE FROM `glpi_plugin_order_detail`
@@ -104,14 +104,14 @@ function deleteDetails($referenceID, $orderID) {
 }
 
 /* show details of orders */
-function showDetail($target, $ID) {
+function plugin_order_showDetail($target, $ID) {
 	$plugin_order_detail = new PluginOrderDetail();
 	$plugin_order_detail->showFormDetail($target, $ID);
 	$plugin_order_detail->showAddForm($target, $ID);
 }
 
 /* show form of linking order to glpi items */
-function showItem($instID, $search = '') {
+function plugin_order_showItem($instID, $search = '') {
 	global $DB, $CFG_GLPI, $LANG, $INFOFORM_PAGES, $LINK_ID_TABLE,$ORDER_RESTRICTED_TYPES;
 	if (!plugin_order_haveRight("order", "r"))
 		return false;
@@ -120,9 +120,9 @@ function showItem($instID, $search = '') {
 	if ($plugin_order->getFromDB($instID)) {
 		$canedit = $plugin_order->can($instID, 'w');
 		$query = "SELECT DISTINCT device_type 
-								FROM `glpi_plugin_order_detail` 
-								WHERE FK_order = '$instID' 
-								ORDER BY device_type";
+				  FROM `glpi_plugin_order_detail` 
+				  WHERE FK_order = '$instID' 
+				  ORDER BY device_type";
 		$result = $DB->query($query);
 		$number = $DB->numrows($result);
 		$i = 0;
@@ -158,21 +158,45 @@ function showItem($instID, $search = '') {
 
 					$entity_restrict = (!in_array($type,$ORDER_RESTRICTED_TYPES)?true:false);
 
-					if($entity_restrict)
-					{
-						$query = "SELECT " . $LINK_ID_TABLE[$type] . ".*, " .
-								"glpi_plugin_order_detail.ID AS IDD, " .
-								"glpi_entities.ID AS entity " .
-						" FROM `glpi_plugin_order_detail`, `" . $LINK_ID_TABLE[$type] .
-						"` LEFT JOIN glpi_entities ON (glpi_entities.ID=" . $LINK_ID_TABLE[$type] . ".FK_entities) " .
-						" WHERE " . $LINK_ID_TABLE[$type] . ".ID = glpi_plugin_order_detail.FK_device 
-												AND glpi_plugin_order_detail.device_type='$type' 
-												AND glpi_plugin_order_detail.FK_order = '$instID' " . getEntitiesRestrictRequest(" AND ", $LINK_ID_TABLE[$type], '', '', isset ($CFG_GLPI["recursive_type"][$type]));
-	
-						if (in_array($LINK_ID_TABLE[$type], $CFG_GLPI["template_tables"])) {
-							$query .= " AND " . $LINK_ID_TABLE[$type] . ".is_template='0'";
+						switch ($type)
+						{
+							default :
+								$query = "SELECT " . $LINK_ID_TABLE[$type] . ".*, " .
+										"glpi_plugin_order_detail.ID AS IDD, " .
+										"glpi_entities.ID AS entity " .
+								" FROM `glpi_plugin_order_detail`, `" . $LINK_ID_TABLE[$type] .
+								"` LEFT JOIN glpi_entities ON (glpi_entities.ID=" . $LINK_ID_TABLE[$type] . ".FK_entities) " .
+								" WHERE " . $LINK_ID_TABLE[$type] . ".ID = glpi_plugin_order_detail.FK_device 
+														AND glpi_plugin_order_detail.device_type='$type' 
+														AND glpi_plugin_order_detail.FK_order = '$instID' " . getEntitiesRestrictRequest(" AND ", $LINK_ID_TABLE[$type], '', '', isset ($CFG_GLPI["recursive_type"][$type]));
+			
+								if (in_array($LINK_ID_TABLE[$type], $CFG_GLPI["template_tables"])) {
+									$query .= " AND " . $LINK_ID_TABLE[$type] . ".is_template='0'";
+								}
+								$query .= " ORDER BY glpi_entities.completename, " . $LINK_ID_TABLE[$type] . ".$column";
+							break;
+							case CARTRIDGE_ITEM_TYPE:
+								$query = "SELECT gct.ID as ID, gpo.FK_entities AS entity, gct.name as name
+										  FROM `glpi_plugin_order_detail` as gpd, `glpi_plugin_order` as gpo, `glpi_cartridges` as gc, `glpi_cartridges_type` as gct 
+										  LEFT JOIN glpi_entities ON (glpi_entities.ID = gct.FK_entities)
+											WHERE gpd.device_type='$type' AND gpd.FK_order = '$instID' AND" .
+													" gpd.FK_order=gpo.ID AND" .
+													" gc.ID=gpd.FK_order AND" .
+													" gc.FK_glpi_cartridges_type=gct.ID" .
+													" GROUP BY gpd.FK_device";
+							break;
+							case CONSUMABLE_ITEM_TYPE:
+								$query = "SELECT gct.ID as ID, gpo.FK_entities AS entity, gct.name as name
+										  FROM `glpi_plugin_order_detail` as gpd, `glpi_plugin_order` as gpo, `glpi_consumables` as gc, `glpi_consumables_type` as gct 
+										  LEFT JOIN glpi_entities ON (glpi_entities.ID = gct.FK_entities)
+											WHERE gpd.device_type='$type' AND gpd.FK_order = '$instID' AND" .
+													" gpd.FK_order=gpo.ID AND" .
+													" gc.ID=gpd.FK_order AND" .
+													" gc.FK_glpi_consumables_type=gct.ID" .
+													" GROUP BY gpd.FK_device";
+							break;
 						}
-						$query .= " ORDER BY glpi_entities.completename, " . $LINK_ID_TABLE[$type] . ".$column";
+						
 							
 					if ($result_linked = $DB->query($query))
 						if ($DB->numrows($result_linked)) {
@@ -186,8 +210,24 @@ function showItem($instID, $search = '') {
 
 								if ($_SESSION["glpiview_ID"] || empty ($data["name"]))
 									$ID = " (" . $data["ID"] . ")";
-								$name = "<a href=\"" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[$type] . "?ID=" . $data["ID"] . "\">" .
-								$data["name"] . "$ID</a>";
+								
+								switch ($type)
+								{
+									default :
+										$formpage = $INFOFORM_PAGES[$type];
+									break;
+									case CARTRIDGE_ITEM_TYPE:
+										$formpage = $INFOFORM_PAGES[CARTRIDGE_TYPE];
+									break;
+									case CONSUMABLE_ITEM_TYPE:
+										$formpage = $INFOFORM_PAGES[CONSUMABLE_TYPE];
+									break;	 	
+								}
+								
+								if (haveTypeRight($type,'r'))
+									$name = "<a href=\"" . $CFG_GLPI["root_doc"] . "/" . $formpage . "?ID=" . $data["ID"] . "\">".$data["name"] . "$ID</a>";
+								else
+									echo $data["name"];								
 
 								echo "<tr class='tab_bg_1'>";
 								echo "<td class='center'>" . $ci->getType() . "</td>";
@@ -195,12 +235,20 @@ function showItem($instID, $search = '') {
 								echo "<td class='center' " . (isset ($data['deleted']) && $data['deleted'] ? "class='tab_bg_2_2'" : "") . ">" . $name . "</td>";
 								if (isMultiEntitiesMode())
 									echo "<td class='center'>" . getDropdownName("glpi_entities", $data['entity']) . "</td>";
-								echo "<td class='center'>" . (isset ($data["serial"]) ? "" . $data["serial"] . "" : "-") . "</td>";
-								echo "<td class='center'>" . (isset ($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
+								if (!in_array($type,$ORDER_RESTRICTED_TYPES))
+								{
+									echo "<td class='center'>" . (isset ($data["serial"]) ? "" . $data["serial"] . "" : "-") . "</td>";
+									echo "<td class='center'>" . (isset ($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
+								}
+								else
+								{
+									echo "<td class='center'</td>";
+									echo "<td class='center'></td>";
+								}									
 								echo "</tr>";
 							}
 						}
-					}
+
 				}
 				$i++;
 			}

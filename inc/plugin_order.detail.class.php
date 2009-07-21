@@ -145,7 +145,7 @@ class PluginOrderDetail extends CommonDBTM {
 				while ($i<$num){
 					$ID=$DB->result($result,$i,"IDD");
 					$IDR=$DB->result($result,$i,"IDR");
-					if(getDelivredQuantity($FK_order, $IDR)==getQuantity($FK_order, $IDR))
+					if(plugin_order_getDelivredQuantity($FK_order, $IDR)==plugin_order_getQuantity($FK_order, $IDR))
 						echo "<tr class='tab_bg_2'>";
 					else
 						echo "<tr class='tab_bg_1'>";
@@ -168,9 +168,9 @@ class PluginOrderDetail extends CommonDBTM {
 					echo "</td>";
 					
 					/* quantity */
-					echo "<td align='center'>".getQuantity($FK_order, $IDR)."</td>";	
+					echo "<td align='center'>".plugin_order_getQuantity($FK_order, $IDR)."</td>";	
 					/* delivered quantity */
-					echo "<td align='center'>".getDelivredQuantity($FK_order, $IDR)."</td>";	
+					echo "<td align='center'>".plugin_order_getDelivredQuantity($FK_order, $IDR)."</td>";	
 					/*price */
 					echo "<td align='center'>".plugin_order_displayPrice($DB->result($result,$i,"price_taxfree"))."</td>";
 					/* price with reduction */

@@ -29,7 +29,7 @@
     Original Author of file:
     Purpose of file:
     ----------------------------------------------------------------------*/
-function plugin_order_showDetailReceptionForm($orderID) {
+function plugin_order_plugin_order_showDetailReceptionForm($orderID) {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE, $INFOFORM_PAGES;
 
 	$plugin_order = new PluginOrder();
@@ -75,8 +75,8 @@ function plugin_order_showDetailReceptionForm($orderID) {
 			echo "<th>" . $LANG['plugin_order']['detail'][8] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][18] . "</th></tr>";
 			echo "<tr><td class='tab_bg_1' width='15'></td><td align='center' class='tab_bg_1'>" . getReceptionReferenceLink($refID, $DB->result($result_ref, $j, 'name')) . "</td>";
-			echo "<td align='center' class='tab_bg_1'>" . getDelivredQuantity($orderID, $refID) . " / " . getQuantity($orderID, $refID) . "</td>";
-			echo "<td align='center' class='tab_bg_1'>" . getNumberOfLinkedMaterial($orderID, $refID) . " / " . getQuantity($orderID, $refID) . "</td>";
+			echo "<td align='center' class='tab_bg_1'>" . plugin_order_getDelivredQuantity($orderID, $refID) . " / " . plugin_order_getQuantity($orderID, $refID) . "</td>";
+			echo "<td align='center' class='tab_bg_1'>" . getNumberOfLinkedMaterial($orderID, $refID) . " / " . plugin_order_getQuantity($orderID, $refID) . "</td>";
 			echo "<td align='center' class='tab_bg_1'>" . plugin_order_displayPrice($DB->result($result, $j, "price_taxfree")) . "</td>";
 			echo "<td align='center' class='tab_bg_1'>" . plugin_order_displayPrice($DB->result($result, $j, "price_ati")) . "</td>";
 			echo "<td align='center' class='tab_bg_1'>" . plugin_order_displayPrice($DB->result($result, $j, "price_discounted")) . "</td></tr></table>";
@@ -367,7 +367,7 @@ function plugin_order_deleteLinkWithDevice($detailID, $device_type) {
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result) > 0) {
 			$orderDeviceID = $DB->result($result, 0, 'ID');
-
+			
 			plugin_order_removeInfoComRelatedToOrder($device_type, $deviceID);
 
 			if($detail->fields["FK_device"]!=0) 
@@ -431,7 +431,7 @@ function plugin_order_updateReceptionStatus($params) {
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
 }
 
-function plugin_order_showItemGenerationForm($target, $params) {
+function plugin_order_plugin_order_showItemGenerationForm($target, $params) {
 	global $LANG, $CFG_GLPI;
 	commonHeader($LANG['plugin_order']['title'][1], $_SERVER["PHP_SELF"], "plugins", "order", "order");
 	echo "<div class='center'>";
@@ -642,7 +642,7 @@ function plugin_order_removeInfoComRelatedToOrder($device_type, $deviceID) {
 	$input["facture"] = "";
 	$input["value"] = 0;
 	$input["buy_date"] = "0000:00:00";
-
+	
 	//DO not check infocom modifications
 	$input["_manage_by_order"] = 1;
 

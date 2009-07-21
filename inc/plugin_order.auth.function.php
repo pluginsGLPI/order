@@ -41,6 +41,7 @@ function plugin_order_createfirstaccess($ID){
 			'ID' => $ID,
 			'name' => $name,
 			'order' => 'w',
+			'budget' => 'w',
 			'reference'=>'w',
 			'validation'=>'w',
 			'cancel'=>'w',
