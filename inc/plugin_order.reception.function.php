@@ -402,6 +402,23 @@ function plugin_order_deleteAllLinkWithDevice($orderID) {
 		));
 }
 
+function plugin_order_updateBulkReceptionStatus($params) {
+   global $LANG,$DB;
+   $query = "SELECT ID FROM `glpi_plugin_order_detail` WHERE FK_order=".$params["orderID"].
+               " AND FK_reference=".$params["referenceID"].
+               " AND status=0";
+   $result = $DB->query($query);
+   $nb = $DB->numrows($result);
+   if ($nb < $params['number_reception'])
+      addMessageAfterRedirect($LANG['plugin_order']['detail'][37], true, ERROR);
+   else {
+      for ($i=0;$i < $params['number_reception']; $i++) {
+         plugin_order_receptionOneItem($DB->result($result,$i,0),$params['orderID'],$params["date"],$params["deliverynum"]);
+      }
+  		plugin_order_updateDelivryStatus($params['orderID']);
+   }
+}
+
 function plugin_order_updateReceptionStatus($params) {
 	global $LANG;
 	$detail = new PluginOrderDetail;
@@ -414,13 +431,17 @@ function plugin_order_updateReceptionStatus($params) {
 						$orderID = $detail->fields["FK_order"];
 
 					if ($detail->fields["status"] == ORDER_DEVICE_NOT_DELIVRED) {
-						$input["ID"] = $key;
+						plugin_order_receptionOneItem($key,$orderID,$params["date"],$params["deliverynum"]);
+                 /*
+                 $input["ID"] = $key;
 						$input["date"] = $params["date"];
 						$input["status"] = ORDER_DEVICE_DELIVRED;
 						$input["deliverynum"] = $params["deliverynum"];
 
 						$detail->update($input);
 						addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
+                  
+                  */
 					} else
 						addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);
 				}
@@ -429,6 +450,18 @@ function plugin_order_updateReceptionStatus($params) {
 		plugin_order_updateDelivryStatus($orderID);
 	} else
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
+}
+
+function plugin_order_receptionOneItem($detailID,$orderID,$date,$deliverynum)
+{
+	global $LANG;
+   $detail = new PluginOrderDetail;
+   $input["ID"] = $detailID;
+	$input["date"] = $date;
+	$input["status"] = ORDER_DEVICE_DELIVRED;
+	$input["deliverynum"] = $deliverynum;
+	$detail->update($input);
+	addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
 }
 
 function plugin_order_plugin_order_showItemGenerationForm($target, $params) {

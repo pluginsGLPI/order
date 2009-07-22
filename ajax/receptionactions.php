@@ -59,13 +59,28 @@ if (isset($_POST["action"])){
 			
 			echo "</td><td valign='bottom'><input type='submit' name='reception' class='submit' value='".$LANG['buttons'][2]."'></td>";
 		break;
+
+   case "bulk_reception":
+			echo "</td><td valign='bottom'>";
+			showDateFormItem("date",date("Y-m-d"),true,1);
+			echo "</td><td valign='bottom'>";
+			echo $LANG['financial'][19]."&nbsp;";
+			autocompletionTextField("deliverynum","glpi_plugin_order_detail","deliverynum",'',20,$_SESSION["glpiactive_entity"]);
+         echo "</td><td valign='bottom'>";
+         echo "<input type='hidden' name='referenceID' value='".$_POST['referenceID']."'>";
+         echo "<input type='hidden' name='orderID' value='".$_POST['orderID']."'>";
+			echo $LANG['plugin_order']['delivery'][6]."&nbsp;<input type='text' name='number_reception' size='2' value='0'>";
+			echo "</td><td valign='bottom'><input type='submit' name='bulk_reception' class='submit' value='".$LANG['buttons'][2]."'></td>";
+		break;
+
 		case "generation":
 			echo "</td><td valign='bottom'>";
 			echo "<input type='hidden' name='referenceID' value='".$_POST["referenceID"]."'>"; 
 			echo"<input type='submit' name='generation' class='submit' value='".$LANG['buttons'][2]."'>"; 
 			echo "</td>";
 		break;
-		case "createLink":
+
+   	case "createLink":
 			echo "</td><td valign='bottom'>";
 			echo "<input type='hidden' name='FK_type' value='$type'>";
 			$reference = new PluginOrderReference;
@@ -73,7 +88,8 @@ if (isset($_POST["action"])){
 			plugin_order_dropdownAllItemsByType("device", $type, $_SESSION["glpiactive_entity"],$reference->fields["FK_type"],$reference->fields["FK_model"]);
 			echo "</td><td valign='bottom'><input type='submit' name='createLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'></td>";
 		break;
-		case "deleteLink":
+
+   	case "deleteLink":
 			echo "</td><td valign='bottom'><input type='submit' name='deleteLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'></td>";
 		break;
 	}

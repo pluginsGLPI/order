@@ -95,11 +95,14 @@ $LANG['plugin_order']['detail'][33] = "The discount pourcentage must be between 
 $LANG['plugin_order']['detail'][34] = "Add reference";
 $LANG['plugin_order']['detail'][35] = "Remove reference";
 $LANG['plugin_order']['detail'][36] = "Do you really want to delete these details ? Delivred items will be deleted !";
+$LANG['plugin_order']['detail'][37] = "Not enough items to deliver";
 
 $LANG['plugin_order']['delivery'][1] = "Item delivered";
 $LANG['plugin_order']['delivery'][2] = "Take item delivery";
 $LANG['plugin_order']['delivery'][3] = "Generate item";
+$LANG['plugin_order']['delivery'][4] = "Take item delivery (bulk)";
 $LANG['plugin_order']['delivery'][5] = "Delivered items";
+$LANG['plugin_order']['delivery'][6] = "Number to deliver";
 $LANG['plugin_order']['delivery'][9] = "Generate";
 $LANG['plugin_order']['delivery'][11] = "Link to an existing item";
 $LANG['plugin_order']['delivery'][12] = "Delete item link";
@@ -108,6 +111,7 @@ $LANG['plugin_order']['delivery'][14] = "Item linked to order";
 $LANG['plugin_order']['delivery'][15] = "Item unlink form order";
 $LANG['plugin_order']['delivery'][16] = "Item already linked to another one";
 $LANG['plugin_order']['delivery'][17] = "No item to generate";
+$LANG['plugin_order']['delivery'][18] = "Bulk item delivery";
 
 $LANG['plugin_order']['profile'][0] = "Rights management";
 $LANG['plugin_order']['profile'][1] = "Order validation";
@@ -156,4 +160,10 @@ $LANG['plugin_order']['validation'][17] = "Edit order";
 
 $LANG['plugin_order']['menu'][1] = "Manage orders";
 $LANG['plugin_order']['menu'][2] = "Manage products references";
+
+$LANG['plugin_order']['menu'][3] = "Manage budgets";
+
+$LANG['plugin_order']['budget'][1] = "Orders";
+$LANG['plugin_order']['budget'][2] = "Budget already used";
+
 ?>

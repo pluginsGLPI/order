@@ -58,7 +58,6 @@ if ($_POST["device_type"])
 				dropdownValue(plugin_order_getTypeTable($_POST["device_type"]), "FK_type");
 		break;
 		case "model":
-			//if (!in_array($_POST["device_type"], $ORDER_RESTRICTED_TYPES) )
 			if (plugin_order_getModelTable($_POST["device_type"]) !== false)
 				dropdownValue(plugin_order_getModelTable($_POST["device_type"]), "FK_model");
 			else

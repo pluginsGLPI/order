@@ -1,6 +1,5 @@
 <?php
 
-
 /*----------------------------------------------------------------------
    GLPI - Gestionnaire Libre de Parc Informatique
    Copyright (C) 2003-2008 by the INDEPNET Development Team.
@@ -46,69 +45,63 @@ $NEEDED_ITEMS = array (
 	"infocom",
 	"group",
 	"cartridge",
-	"consumable",
-	"entity"
+	"consumable"
 );
-
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 useplugin('order', true);
 
-if (!isset ($_POST["ID"])) {
-	exit ();
-}
-if (!isset ($_POST["sort"]))
-	$_POST["sort"] = "";
-if (!isset ($_POST["order"]))
-	$_POST["order"] = "";
-if (!isset ($_POST["withtemplate"]))
-	$_POST["withtemplate"] = "";
+if (!isset ($_GET["ID"]))
+	$_GET["ID"] = "";
+if (!isset ($_GET["withtemplate"]))
+	$_GET["withtemplate"] = "";
 
-plugin_order_checkRight("order", "r");
+$plugin_order = new PluginOrderBudget();
 
-if (empty ($_POST["ID"])) {
-	switch ($_POST['glpi_tab']) {
-		default :
-			break;
-	}
-} else {
-	switch ($_POST['glpi_tab']) {
-		case -1 :
-			/* show items linking form from all */
-			plugin_order_showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
-			plugin_order_showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"]);
-			plugin_order_showItem($_POST["ID"]);
-			plugin_order_plugin_order_showDetailReceptionForm($_POST["ID"]);
-			showDocumentAssociated(PLUGIN_ORDER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
-			showNotesForm($_POST['target'], PLUGIN_ORDER_TYPE, $_POST["ID"]);
-			break;
-		case 1 :
-			plugin_order_showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
-			break;
-		case 2 :
-			plugin_order_showItem($_POST["ID"]);
-			break;
-		case 3 :
-			/* show documents linking form */
-			showDocumentAssociated(PLUGIN_ORDER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
-			break;
-		case 4 :
-			plugin_order_showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"], 1);
-			break;
-		case 5 :
-			plugin_order_plugin_order_showDetailReceptionForm($_POST["ID"]);
-			break;
-		case 11 :
-			showNotesForm($_POST['target'], PLUGIN_ORDER_TYPE, $_POST["ID"]);
-			break;
-		case 12 :
-			/* show history form */
-			showHistory(PLUGIN_ORDER_TYPE, $_POST["ID"]);
-			break;
-		default :
-			break;
-	}
-	ajaxFooter();
+/* add order */
+if (isset ($_POST["add"])) {
+	if (plugin_order_HaveRight("budget", "w"))
+			$newID = $plugin_order->add($_POST);
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
+/* delete order */
+else
+	if (isset ($_POST["delete"])) {
+		if (plugin_order_HaveRight("budget", "w"))
+			$plugin_order->delete($_POST);
+		glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_genericobject.budget.php");
+	}
+/* restore order */
+elseif (isset ($_POST["restore"])) {
+		if (plugin_order_HaveRight("budget", "w"))
+			$plugin_order->restore($_POST);
+	glpi_header($_SERVER['HTTP_REFERER']);
+	}
+/* purge order */
+elseif (isset ($_POST["purge"])) {
+		if (plugin_order_HaveRight("budget", "w"))
+			$plugin_order->delete($_POST, 1);
+		glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_genericobject.budget.php");
+	}
+/* update order */
+elseif (isset ($_POST["update"])) {
+		if (plugin_order_HaveRight("budget", "w"))
+			$plugin_order->update($_POST);
+		glpi_header($_SERVER['HTTP_REFERER']);
+	} 
+
+
+	plugin_order_checkRight("budget", "r");
+
+	if (!isset ($_SESSION['glpi_tab']))
+		$_SESSION['glpi_tab'] = 1;
+	if (isset ($_GET['onglet'])) 
+		$_SESSION['glpi_tab'] = $_GET['onglet'];
+
+	commonHeader($LANG['financial'][87], $_SERVER["PHP_SELF"], "plugins", "order", "budget");
+	$plugin_order->title();
+	echo "<br>";
+	$plugin_order->showForm($_SERVER["PHP_SELF"], $_GET["ID"]);
+	commonFooter();
 ?>

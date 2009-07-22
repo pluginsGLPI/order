@@ -30,26 +30,6 @@
     Purpose of file:
     ----------------------------------------------------------------------*/
 
-$NEEDED_ITEMS = array (
-	"computer",
-	"printer",
-	"networking",
-	"monitor",
-	"software",
-	"peripheral",
-	"phone",
-	"tracking",
-	"document",
-	"user",
-	"enterprise",
-	"contract",
-	"infocom",
-	"group",
-	"cartridge",
-	"consumable",
-	"entity"
-);
-
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -65,7 +45,7 @@ if (!isset ($_POST["order"]))
 if (!isset ($_POST["withtemplate"]))
 	$_POST["withtemplate"] = "";
 
-plugin_order_checkRight("order", "r");
+plugin_order_checkRight("budget", "r");
 
 if (empty ($_POST["ID"])) {
 	switch ($_POST['glpi_tab']) {
@@ -74,37 +54,8 @@ if (empty ($_POST["ID"])) {
 	}
 } else {
 	switch ($_POST['glpi_tab']) {
-		case -1 :
-			/* show items linking form from all */
-			plugin_order_showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
-			plugin_order_showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"]);
-			plugin_order_showItem($_POST["ID"]);
-			plugin_order_plugin_order_showDetailReceptionForm($_POST["ID"]);
-			showDocumentAssociated(PLUGIN_ORDER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
-			showNotesForm($_POST['target'], PLUGIN_ORDER_TYPE, $_POST["ID"]);
-			break;
 		case 1 :
-			plugin_order_showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
-			break;
-		case 2 :
-			plugin_order_showItem($_POST["ID"]);
-			break;
-		case 3 :
-			/* show documents linking form */
-			showDocumentAssociated(PLUGIN_ORDER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
-			break;
-		case 4 :
-			plugin_order_showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"], 1);
-			break;
-		case 5 :
-			plugin_order_plugin_order_showDetailReceptionForm($_POST["ID"]);
-			break;
-		case 11 :
-			showNotesForm($_POST['target'], PLUGIN_ORDER_TYPE, $_POST["ID"]);
-			break;
-		case 12 :
-			/* show history form */
-			showHistory(PLUGIN_ORDER_TYPE, $_POST["ID"]);
+			plugin_order_getAllOrdersByBudget ($_POST["ID"]);
 			break;
 		default :
 			break;

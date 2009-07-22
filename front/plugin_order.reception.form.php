@@ -50,14 +50,25 @@ $NEEDED_ITEMS = array (
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-useplugin('order', true);
+usePlugin('order', true);
+$plugin = new Plugin;
+if ($plugin->isActivated("genericobject"))
+	usePlugin('genericobject');
 
 /* reception d'une ligne d�tail */
 if (isset ($_POST["reception"])) {
 	plugin_order_updateReceptionStatus($_POST);
 	glpi_header($_SERVER["HTTP_REFERER"]);
 }
-/* affiche le tableau permettant la g�n�ration de mat�riel */
+
+if (isset ($_POST["bulk_reception"])) {
+	plugin_order_updateBulkReceptionStatus($_POST);
+	glpi_header($_SERVER["HTTP_REFERER"]);
+}
+
+
+/*
+ *  affiche le tableau permettant la g�n�ration de mat�riel */
 if (isset ($_POST["generation"])) {
 	if (isset ($_POST["item"])) {
 		$detail = new PluginOrderDetail;
@@ -74,7 +85,7 @@ if (isset ($_POST["generation"])) {
 	}
 
 	if (isset ($_POST["item"]))
-		plugin_order_showItemGenerationForm($_SERVER["PHP_SELF"], $_POST);
+		plugin_order_plugin_order_showItemGenerationForm($_SERVER["PHP_SELF"], $_POST);
 	else {
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
 		glpi_header($_SERVER["HTTP_REFERER"]);

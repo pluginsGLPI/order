@@ -96,12 +96,15 @@ $LANG['plugin_order']['detail'][33] = "Le pourcentage de remise doit-être compr
 $LANG['plugin_order']['detail'][34] = "Ajout référence";
 $LANG['plugin_order']['detail'][35] = "Suppression référence";
 $LANG['plugin_order']['detail'][36] = "Voulez vous vraiment supprimer ce(s) détail(s) ? Les matériels livrés seront alors supprimés !";
+$LANG['plugin_order']['detail'][37] = "Il n'y a pas assez de matériels à réceptionner";
 
 
 $LANG['plugin_order']['delivery'][1] = "Réception matériel(s)";
 $LANG['plugin_order']['delivery'][2] = "Réceptionner matériel";
 $LANG['plugin_order']['delivery'][3] = "Générer matériel associé";
+$LANG['plugin_order']['delivery'][4] = "Réception en masse matériels";
 $LANG['plugin_order']['delivery'][5] = "Matériel(s) réceptionné(s)";
+$LANG['plugin_order']['delivery'][6] = "Nombre à réceptionner";
 $LANG['plugin_order']['delivery'][9] = "Générer";
 $LANG['plugin_order']['delivery'][11] = "Lier à un matériel existant";
 $LANG['plugin_order']['delivery'][12] = "Supprimer le lien avec le matériel";
@@ -110,6 +113,7 @@ $LANG['plugin_order']['delivery'][14] = "Matériel lié à la commande";
 $LANG['plugin_order']['delivery'][15] = "Matériel délié de la commande";
 $LANG['plugin_order']['delivery'][16] = "Matériel déjà lié à un objet d'inventaire";
 $LANG['plugin_order']['delivery'][17] = "Aucun matériel à générer";
+$LANG['plugin_order']['delivery'][18] = "Réceptionner matériel en masse";
 
 
 $LANG['plugin_order']['profile'][0] = "Gestion des droits";
@@ -125,6 +129,7 @@ $LANG['plugin_order']['reference'][6] = "Une référence du même nom existe dé
 $LANG['plugin_order']['reference'][7] = "Référence(s) actuellement utilisée(s)";
 $LANG['plugin_order']['reference'][8] = "Impossible de créer une référence sans nom";
 $LANG['plugin_order']['reference'][9] = "Impossible de créer une référence sans type";
+
 
 $LANG['plugin_order']['setup'][2] = "Plugin non utilisable depuis le helpdesk";
 
@@ -159,4 +164,8 @@ $LANG['plugin_order']['validation'][17] = "Modifier la commande";
 
 $LANG['plugin_order']['menu'][1] = "Gérer les commandes";
 $LANG['plugin_order']['menu'][2] = "Gérer le catalogue de références produits";
+$LANG['plugin_order']['menu'][3] = "Gérer les budgets";
+
+$LANG['plugin_order']['budget'][1] = "Commandes";
+$LANG['plugin_order']['budget'][2] = "Budget consommé";
 ?>

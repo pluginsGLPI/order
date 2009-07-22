@@ -145,18 +145,23 @@ function plugin_order_dropdownReceptionActions($type,$referenceID,$orderID) {
 	echo "<td width='5%'>";
 	echo "<select name='receptionActions$rand' id='receptionActions$rand'>";
 	echo "<option value='0' selected>-----</option>";
-	if ($type != SOFTWARELICENSE_TYPE && !plugin_order_allItemsAlreadyDelivered($orderID, $referenceID))
-		echo "<option value='reception'>" . $LANG['plugin_order']['delivery'][2] . "</option>";
+	if ($type != SOFTWARELICENSE_TYPE && !plugin_order_allItemsAlreadyDelivered($orderID, $referenceID)) {
+      echo "<option value='reception'>" . $LANG['plugin_order']['delivery'][2] . "</option>";
+      echo "<option value='bulk_reception'>" . $LANG['plugin_order']['delivery'][4] . "</option>";
+   }
+		
 		
 	if ($type != CONSUMABLE_ITEM_TYPE && $type != CARTRIDGE_ITEM_TYPE)
 		echo "<option value='generation'>" . $LANG['plugin_order']['delivery'][3] . "</option>";
-	echo "<option value='createLink'>" . $LANG['plugin_order']['delivery'][11] . "</option>";
+
+   echo "<option value='createLink'>" . $LANG['plugin_order']['delivery'][11] . "</option>";
 	echo "<option value='deleteLink'>" . $LANG['plugin_order']['delivery'][12] . "</option>";
 	echo "</select>";
 	$params = array (
 		'action' => '__VALUE__',
 		'type' => $type,
-		'referenceID'=>$referenceID
+		'referenceID'=>$referenceID,
+      'orderID'=>$orderID
 	);
 	ajaxUpdateItemOnSelectEvent("receptionActions$rand", "show_receptionActions$rand", $CFG_GLPI["root_doc"] . "/plugins/order/ajax/receptionactions.php", $params);
 	echo "</td>";

@@ -167,7 +167,7 @@ else
 				$new_value.= " (".$LANG['plugin_order']['detail'][7]." : ".$_POST["quantity"];
 				$new_value.= " ".$LANG['plugin_order']['detail'][25]." : ".$_POST["reductedprice"].")";
 				plugin_order_addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
-				addDetails($_POST["FK_reference"], $_POST["device_type"], $_POST["FK_order"], $_POST["quantity"], $_POST["price"], $_POST["reductedprice"], $_POST["taxes"]);
+				plugin_order_addDetails($_POST["FK_reference"], $_POST["device_type"], $_POST["FK_order"], $_POST["quantity"], $_POST["price"], $_POST["reductedprice"], $_POST["taxes"]);
 			}
 				
 			glpi_header($_SERVER['HTTP_REFERER']);
@@ -182,7 +182,7 @@ else
 				{
 					$new_value = $LANG['plugin_order']['detail'][35]." ".getDropdownName("glpi_plugin_order_references",$ID);
 					plugin_order_addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
-					deleteDetails($ID, $_POST["FK_order"]);
+					plugin_order_deleteDetails($ID, $_POST["FK_order"]);
 				}
 		}elseif(!isset($_POST["detail"]))
 			addMessageAfterRedirect($LANG['plugin_order']['detail'][29],false,ERROR);
