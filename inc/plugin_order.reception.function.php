@@ -526,7 +526,9 @@ function plugin_order_generateNewDevice($params) {
 	$i = 0;
 	$entity = $params["FK_entities"];
 	while (isset ($params["serial"][$i])) {
-			//Look for a template in the entity
+
+         //------------- Template management -----------------------//
+         //Look for a template in the entity
 			$templateID = plugin_order_templateExistsInEntity($params["ID"][$i], $params["type"][$i], $entity);
 	
 			$input["FK_entities"] = $entity;
@@ -564,7 +566,60 @@ function plugin_order_generateNewDevice($params) {
 			}
 			$fields["ID"] = $newID;
 			$commonitem->obj->update($fields);
-	
+
+   			// ADD Contract
+			$query="SELECT FK_contract
+				FROM glpi_contract_device
+				WHERE FK_device='".$templateID."' AND device_type='".$params["type"][$i]."';";
+			$result=$DB->query($query);
+			if ($DB->numrows($result)>0){
+				while ($data=$DB->fetch_array($result))
+					addDeviceContract($data["FK_contract"],$params["type"][$i],$newID);
+			}
+
+			// ADD Documents
+			$query="SELECT FK_doc
+				FROM glpi_doc_device
+				WHERE FK_device='".$templateID."' AND device_type='".$params["type"][$i]."';";
+			$result=$DB->query($query);
+			if ($DB->numrows($result)>0){
+				while ($data=$DB->fetch_array($result))
+					addDeviceDocument($data["FK_doc"],$params["type"][$i],$newID);
+			}
+
+			// ADD Ports
+			$query="SELECT ID
+				FROM glpi_networking_ports
+				WHERE on_device='".$templateID."' AND device_type='".$params["type"][$i]."';";
+			$result=$DB->query($query);
+			if ($DB->numrows($result)>0){
+				while ($data=$DB->fetch_array($result)){
+					$np= new Netport();
+					$np->getFromDB($data["ID"]);
+					unset($np->fields["ID"]);
+					unset($np->fields["ifaddr"]);
+					unset($np->fields["ifmac"]);
+					unset($np->fields["netpoint"]);
+					$np->fields["on_device"]=$newID;
+					$np->addToDB();
+				}
+			}
+
+			// Add connected devices
+			$query="SELECT *
+				FROM glpi_connect_wire
+				WHERE end2='".$templateID."';";
+
+			$result=$DB->query($query);
+			if ($DB->numrows($result)>0){
+				while ($data=$DB->fetch_array($result)){
+					Connect($data["end1"],$newID,$data["type"]);
+				}
+			}
+		
+
+
+         //-------------- End template management ---------------------------------//
 			plugin_order_createLinkWithDevice($params["ID"][$i], $newID, $params["type"][$i], $params["orderID"], $entity, $templateID, false, false);
 	
 			//Add item's history

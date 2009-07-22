@@ -98,7 +98,6 @@ $LANG['plugin_order']['detail'][35] = "Suppression référence";
 $LANG['plugin_order']['detail'][36] = "Voulez vous vraiment supprimer ce(s) détail(s) ? Les matériels livrés seront alors supprimés !";
 $LANG['plugin_order']['detail'][37] = "Il n'y a pas assez de matériels à réceptionner";
 
-
 $LANG['plugin_order']['delivery'][1] = "Réception matériel(s)";
 $LANG['plugin_order']['delivery'][2] = "Réceptionner matériel";
 $LANG['plugin_order']['delivery'][3] = "Générer matériel associé";
