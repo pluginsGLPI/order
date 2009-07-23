@@ -155,7 +155,9 @@ function plugin_order_dropdownReceptionActions($type,$referenceID,$orderID) {
 		echo "<option value='generation'>" . $LANG['plugin_order']['delivery'][3] . "</option>";
 
    echo "<option value='createLink'>" . $LANG['plugin_order']['delivery'][11] . "</option>";
-	echo "<option value='deleteLink'>" . $LANG['plugin_order']['delivery'][12] . "</option>";
+
+   if (getNumberOfLinkedMaterial($orderID, $referenceID))
+      echo "<option value='deleteLink'>" . $LANG['plugin_order']['delivery'][12] . "</option>";
 	echo "</select>";
 	$params = array (
 		'action' => '__VALUE__',

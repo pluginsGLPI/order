@@ -107,7 +107,7 @@ if (isset ($_POST["deleteLinkWithDevice"])) {
 /* cr�e un lien d'une ligne d�tail vers un mat�riel */
 if (isset ($_POST["createLinkWithDevice"])) {
 	$i = 0;
-	if (count($_POST["item"]) <= 1 || in_array($_POST["FK_type"], $ORDER_RESTRICTED_TYPES)) {
+	if (count($_POST["item"]) <= 1 || in_array($_POST["FK_type"],$ORDER_RESTRICTED_TYPES)) {
 		$detail = new PluginOrderDetail;
 
 		foreach ($_POST["item"] as $key => $val)
@@ -121,7 +121,7 @@ if (isset ($_POST["createLinkWithDevice"])) {
 				} else
 				{
 					plugin_order_createLinkWithDevice($key, $_POST["device"], $_POST["type"][$key], $_POST["orderID"]);
-					addMessageAfterRedirect($LANG['plugin_order']['delivery'][14],true);
+					
 				}
 			}
 		}
