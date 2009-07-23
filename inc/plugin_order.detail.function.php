@@ -175,25 +175,21 @@ function plugin_order_showItem($instID, $search = '') {
 								}
 								$query .= " ORDER BY glpi_entities.completename, " . $LINK_ID_TABLE[$type] . ".$column";
 							break;
-							case CARTRIDGE_ITEM_TYPE:
-								$query = "SELECT gct.ID as ID, gpo.FK_entities AS entity, gct.name as name
-										  FROM `glpi_plugin_order_detail` as gpd, `glpi_plugin_order` as gpo, `glpi_cartridges` as gc, `glpi_cartridges_type` as gct 
-										  LEFT JOIN glpi_entities ON (glpi_entities.ID = gct.FK_entities)
-											WHERE gpd.device_type='$type' AND gpd.FK_order = '$instID' AND" .
-													" gpd.FK_order=gpo.ID AND" .
-													" gc.ID=gpd.FK_order AND" .
-													" gc.FK_glpi_cartridges_type=gct.ID" .
-													" GROUP BY gpd.FK_device";
-							break;
 							case CONSUMABLE_ITEM_TYPE:
-								$query = "SELECT gct.ID as ID, gpo.FK_entities AS entity, gct.name as name
-										  FROM `glpi_plugin_order_detail` as gpd, `glpi_plugin_order` as gpo, `glpi_consumables` as gc, `glpi_consumables_type` as gct 
-										  LEFT JOIN glpi_entities ON (glpi_entities.ID = gct.FK_entities)
-											WHERE gpd.device_type='$type' AND gpd.FK_order = '$instID' AND" .
-													" gpd.FK_order=gpo.ID AND" .
-													" gc.ID=gpd.FK_order AND" .
-													" gc.FK_glpi_consumables_type=gct.ID" .
-													" GROUP BY gpd.FK_device";
+								$query = "SELECT gpr.ID, gct.name, gpr.FK_entities as entity
+                                  FROM `glpi_plugin_order_detail` as gpd, `glpi_plugin_order_references` as gpr,
+                                       `glpi_consumables` as gc, `glpi_consumables_type` as gct
+                                  WHERE gpd.FK_order='$instID' AND gpd.device_type='$type'
+                                  AND gpd.FK_reference=gpr.ID
+                                  AND gpd.FK_device=gc.ID AND gc.FK_glpi_consumables_type=gct.ID GROUP BY gct.ID ORDER BY gct.name";
+							break;
+							case CARTRIDGE_ITEM_TYPE:
+								$query = "SELECT gpr.ID, gct.name, gpr.FK_entities as entity
+                                  FROM `glpi_plugin_order_detail` as gpd, `glpi_plugin_order_references` as gpr,
+                                       `glpi_cartridges` as gc, `glpi_cartridges_type` as gct
+                                  WHERE gpd.FK_order='$instID' AND gpd.device_type='$type'
+                                  AND gpd.FK_reference=gpr.ID
+                                  AND gpd.FK_device=gc.ID AND gc.FK_glpi_cartridges_type=gct.ID GROUP BY gct.ID ORDER BY gct.name";
 							break;
 						}
 						
