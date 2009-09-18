@@ -718,8 +718,9 @@ function plugin_order_itemAlreadyLinkedToAnOrder($device_type, $deviceID, $order
 		if (!in_array($device_type,$ORDER_RESTRICTED_TYPES)) {
          $query = "SELECT COUNT(*) as cpt FROM `glpi_plugin_order_detail`" .
                   " WHERE FK_order=$orderID " .
-                  " AND FK_device>0 " .
+                  " AND FK_device=$deviceID " .
                   " AND device_type=$device_type";
+
          $result = $DB->query($query);
          if ($DB->result($result, 0, "cpt") > 0)
             return true;
