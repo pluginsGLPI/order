@@ -159,15 +159,15 @@ if (isset ($_POST["undovalidation"])) {
 //Details management
 else
 	if (isset ($_POST["add_detail"])) {
-			if ($_POST["reductedprice"] < 0 || $_POST["reductedprice"] > 100)
+			if ($_POST["discount"] < 0 || $_POST["discount"] > 100)
 				addMessageAfterRedirect($LANG['plugin_order']['detail'][33],false,ERROR);
 			else
 			{
 				$new_value = $LANG['plugin_order']['detail'][34]." ".getDropdownName("glpi_plugin_order_references",$_POST["FK_reference"]);
 				$new_value.= " (".$LANG['plugin_order']['detail'][7]." : ".$_POST["quantity"];
-				$new_value.= " ".$LANG['plugin_order']['detail'][25]." : ".$_POST["reductedprice"].")";
+				$new_value.= " ".$LANG['plugin_order']['detail'][25]." : ".$_POST["discount"].")";
 				plugin_order_addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
-				plugin_order_addDetails($_POST["FK_reference"], $_POST["device_type"], $_POST["FK_order"], $_POST["quantity"], $_POST["price"], $_POST["reductedprice"], $_POST["taxes"]);
+				plugin_order_addDetails($_POST["FK_reference"], $_POST["device_type"], $_POST["FK_order"], $_POST["quantity"], $_POST["price"], $_POST["discount"], $_POST["taxes"],$_POST["discount"]);
 			}
 				
 			glpi_header($_SERVER['HTTP_REFERER']);

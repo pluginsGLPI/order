@@ -97,6 +97,10 @@ $LANG['plugin_order']['detail'][34] = "Ajout référence";
 $LANG['plugin_order']['detail'][35] = "Suppression référence";
 $LANG['plugin_order']['detail'][36] = "Voulez vous vraiment supprimer ce(s) détail(s) ? Les matériels livrés seront alors supprimés !";
 $LANG['plugin_order']['detail'][37] = "Il n'y a pas assez de matériels à réceptionner";
+$LANG['plugin_order']['detail'][38] = "Voulez vous vraiment annuler cette commande ? Cette option est irréversible!";
+$LANG['plugin_order']['detail'][39] = "Voulez vous vraiment annuler la demande de validation ?";
+$LANG['plugin_order']['detail'][40] = "Voulez vous passer modifier le contenu de la commande ? ";
+
 
 $LANG['plugin_order']['delivery'][1] = "Réception matériel(s)";
 $LANG['plugin_order']['delivery'][2] = "Réceptionner matériel";

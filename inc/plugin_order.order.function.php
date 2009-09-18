@@ -149,7 +149,7 @@ function plugin_order_showValidationForm($target, $orderID) {
 		echo "<input type='hidden' name='ID' value=\"$orderID\">\n";
 
 		if ($order->canCancelOrder()) {
-			echo "<input type='submit' name='cancel_order' value=\"" . $LANG['plugin_order']['validation'][12] . "\" class='submit'>";
+			echo "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][38] . "')\" name='cancel_order' value=\"" . $LANG['plugin_order']['validation'][12] . "\" class='submit'>";
 			$link = "<br><br>";
 		}
 
@@ -161,7 +161,7 @@ function plugin_order_showValidationForm($target, $orderID) {
 		}
 
 		if ($order->canCancelValidationRequest()) {
-			echo $link . "<input type='submit' name='cancel_waiting_for_approval' value=\"" . $LANG['plugin_order']['validation'][13] . "\" class='submit'>";
+			echo $link . "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][39] . "')\" name='cancel_waiting_for_approval' value=\"" . $LANG['plugin_order']['validation'][13] . "\" class='submit'>";
 			$link = "<br><br>";
 		}
 
@@ -171,7 +171,7 @@ function plugin_order_showValidationForm($target, $orderID) {
 		}
 
 		if ($order->canUndoValidation()) {
-			echo $link . "<input type='submit' name='undovalidation' value=\"" . $LANG['plugin_order']['validation'][17] . "\" class='submit'>";
+			echo $link . "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][40] . "')\" name='undovalidation' value=\"" . $LANG['plugin_order']['validation'][17] . "\" class='submit'>";
 			$link = "<br><br>";
 		}
 

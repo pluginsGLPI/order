@@ -96,6 +96,9 @@ $LANG['plugin_order']['detail'][34] = "Add reference";
 $LANG['plugin_order']['detail'][35] = "Remove reference";
 $LANG['plugin_order']['detail'][36] = "Do you really want to delete these details ? Delivred items will be deleted !";
 $LANG['plugin_order']['detail'][37] = "Not enough items to deliver";
+$LANG['plugin_order']['detail'][38] = "Do you really want to cancel this order ? This option is irreversible !";
+$LANG['plugin_order']['detail'][39] = "Do you want to cancel the validation approval ?";
+$LANG['plugin_order']['detail'][40] = "Do you really want to edit the order ? ";
 
 $LANG['plugin_order']['delivery'][1] = "Item delivered";
 $LANG['plugin_order']['delivery'][2] = "Take item delivery";
@@ -152,6 +155,7 @@ $LANG['plugin_order']['validation'][7] = "Order validation successfully requeste
 $LANG['plugin_order']['validation'][9] = "Validate order";
 $LANG['plugin_order']['validation'][10] = "Order is validated";
 $LANG['plugin_order']['validation'][11] = "Ask for validation";
+$LANG['plugin_order']['validation'][12] = "Cancel order";
 $LANG['plugin_order']['validation'][13] = "Cancel ask for validation";
 $LANG['plugin_order']['validation'][14] = "Validation query is now canceled";
 $LANG['plugin_order']['validation'][15] = "Order is in draft state";

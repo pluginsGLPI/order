@@ -56,14 +56,16 @@ function plugin_init_order() {
 		PRINTER_TYPE,
 		PERIPHERAL_TYPE,
 		CONSUMABLE_ITEM_TYPE,
-		CARTRIDGE_ITEM_TYPE
-	);
+		CARTRIDGE_ITEM_TYPE,
+      SOFTWARELICENSE_TYPE
+ 	);
 	$ORDER_RESTRICTED_TYPES = array (
 		0,
 		SOFTWARELICENSE_TYPE,
 		CONSUMABLE_ITEM_TYPE,
-		CARTRIDGE_ITEM_TYPE
-	);
+		CARTRIDGE_ITEM_TYPE,
+      SOFTWARELICENSE_TYPE
+ 	);
 	$ORDER_VALIDATION_STATUS = array (
 		ORDER_STATUS_DRAFT,
 		ORDER_STATUS_WAITING_APPROVAL
@@ -204,9 +206,9 @@ function plugin_version_order() {
 
 	return array (
 		'name' => $LANG['plugin_order']['title'][1],
-		'version' => '1.0.0',
+		'version' => '1.1.0',
 		'author' => 'Benjamin Fontan & Walid Nouh',
-		'homepage' => 'http://glpi-project.org/wiki/doku.php?id=' . substr($_SESSION["glpilanguage"], 0, 2) . ':plugins:pluginslist',
+		'homepage' => 'https://forge.indepnet.net/projects/show/order',
 		'minGlpiVersion' => '0.72',
 		
 	);

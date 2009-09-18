@@ -110,6 +110,7 @@ class PluginOrderDetail extends CommonDBTM {
 			$query="SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, 
 					glpi_plugin_order_references.type, glpi_plugin_order_references.FK_manufacturer, glpi_plugin_order_references.name, 
 					glpi_plugin_order_detail.price_taxfree, glpi_plugin_order_detail.price_ati, glpi_plugin_order_detail.price_discounted, 
+               glpi_plugin_order_detail.discount,
 					SUM(glpi_plugin_order_detail.price_discounted) AS totalpriceHT, 
 					SUM(glpi_plugin_order_detail.price_ati) AS totalpriceTTC 
 					FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
@@ -138,7 +139,7 @@ class PluginOrderDetail extends CommonDBTM {
 				echo "<th>".$LANG['plugin_order']['detail'][3]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][4]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][18]."</th>";
-				echo "<th>".$LANG['plugin_order']['detail'][8]."</th>";
+				echo "<th>".$LANG['plugin_order']['detail'][25]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][9]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][10]."</th></tr>";
 				$i=0;
@@ -176,7 +177,7 @@ class PluginOrderDetail extends CommonDBTM {
 					/* price with reduction */
 					echo "<td align='center'>".plugin_order_displayPrice($DB->result($result,$i,"price_discounted"))."</td>";
 					/* price with taxes */
-					echo "<td align='center'>".plugin_order_displayPrice($DB->result($result,$i,"price_ati"))."</td>";
+					echo "<td align='center'>".formatNumber($DB->result($result,$i,"discount"))."</td>";
 					/* total price */
 					echo "<td align='center'>".plugin_order_displayPrice($DB->result($result,$i,"totalpriceHT"))."</td>";
 					/* total price with taxes  */

@@ -79,6 +79,8 @@ function plugin_order_addDetails($referenceID, $device_type, $orderID, $quantity
 				$input["status"] = ORDER_STATUS_DRAFT;
 				$input["price_ati"] = plugin_order_plugin_order_getPrices($input["price_discounted"], getDropdownName("glpi_dropdown_plugin_order_taxes", $taxes));
 				$input["deliverynum"] = "";
+            $input["discount"] = $discounted_price;
+            
 				$detail->add($input);
 			}
 		}

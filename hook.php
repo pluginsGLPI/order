@@ -40,7 +40,7 @@ function plugin_order_install() {
 	global $DB;
 
 	if (!TableExists("glpi_plugin_order")) {
-		$query = "CREATE TABLE `glpi_plugin_order` (
+		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order` (
 								`ID` int(11) NOT NULL auto_increment,
 								`name` varchar(255) UNIQUE collate utf8_unicode_ci NOT NULL default '',
 								`numordersupplier` varchar(255) NOT NULL collate utf8_unicode_ci default '',
@@ -64,7 +64,7 @@ function plugin_order_install() {
 	}
 
 	if (!TableExists("glpi_dropdown_plugin_order_status")) {
-		$query = "CREATE TABLE `glpi_dropdown_plugin_order_status` (
+		$query = "CREATE TABLE IF EXISTS  `glpi_dropdown_plugin_order_status` (
 									`ID` int(11) NOT NULL auto_increment,
 									`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
 									`comments` text,
@@ -75,7 +75,7 @@ function plugin_order_install() {
 	}
 
 	if (!TableExists("glpi_dropdown_plugin_order_payment")) {
-		$query = "CREATE TABLE `glpi_dropdown_plugin_order_payment` (
+		$query = "CREATE TABLE IF EXISTS  `glpi_dropdown_plugin_order_payment` (
 								`ID` int(11) NOT NULL auto_increment,
 								`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
 								`comments` text,
@@ -86,7 +86,7 @@ function plugin_order_install() {
 	}
 
 	if (!TableExists("glpi_dropdown_plugin_order_taxes")) {
-		$query = "CREATE TABLE `glpi_dropdown_plugin_order_taxes` (
+		$query = "CREATE TABLE IF EXISTS  `glpi_dropdown_plugin_order_taxes` (
 									`ID` int(11) NOT NULL auto_increment,
 									`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
 									`comments` text,
@@ -101,7 +101,7 @@ function plugin_order_install() {
 	}
 
 	if (!TableExists("glpi_plugin_order_detail")) {
-		$query = "CREATE TABLE `glpi_plugin_order_detail` (
+		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_detail` (
 									  `ID` int(11) NOT NULL auto_increment,
 									  `FK_order` int(11) NOT NULL default 0,
 	  								  `device_type` int(11) NOT NULL default 0,
@@ -110,6 +110,7 @@ function plugin_order_install() {
 				  					  `deliverynum` varchar(255) NOT NULL collate utf8_unicode_ci default '',
 									  `price_taxfree` FLOAT NOT NULL default 0,
 									  `price_discounted` FLOAT NOT NULL default 0,
+                             `discount` FLOAT NOT NULL default 0,
 									  `price_ati` FLOAT NOT NULL default 0,
 									  `status` int(1) NOT NULL default 0,
 									  `date`date NOT NULL default 0,
@@ -120,7 +121,7 @@ function plugin_order_install() {
 
 
 	if (!TableExists("glpi_plugin_order_profiles")) {
-		$query = "CREATE TABLE `glpi_plugin_order_profiles` (
+		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_profiles` (
 										`ID` int(11) NOT NULL auto_increment,
 										`name` varchar(255) collate utf8_unicode_ci default NULL,
 										`order` char(1) default NULL,
@@ -136,7 +137,7 @@ function plugin_order_install() {
 	}
 
 	if (!TableExists("glpi_plugin_order_config")) {
-		$query = "CREATE TABLE `glpi_plugin_order_config` (
+		$query = "CREATE TABLE IF NOT EXISTS  `glpi_plugin_order_config` (
 										`ID` int(11) NOT NULL auto_increment,
 										`use_validation` int(11) NOT NULL default 0,
 										`default_taxes` int(11) NOT NULL default 0,
@@ -194,49 +195,74 @@ function plugin_order_install() {
 		$DB->query($query) or die($DB->error());
 
 	}
-	$query = "INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  VALUES (NULL,'3150','1','1','0'),
-						(NULL,'3150','2','2','0'),
-						(NULL,'3150','3','3','0'),
-						(NULL,'3150','4','4','0'),
-						(NULL,'3150','5','5','0'),
-						(NULL,'3150','6','6','0'),
-						(NULL,'3150','7','7','0'),
-						(NULL,'3150','8','8','0'),
-						(NULL,'3150','9','9','0'),
-						(NULL,'3150','10','10','0');";
-	$DB->query($query) or die($DB->error());
+   
+   $query = "SELECT COUNT(ID) as cpt FROM `glpi_display` WHERE `type`='3150'";
+   $result = $DB->query($query);
+   if (!$DB->result($result,0,'cpt')) {
+      $query = "INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  " .
+            "        VALUES (NULL,'3150','1','1','0'),
+                     (NULL,'3150','2','2','0'),
+                     (NULL,'3150','3','3','0'),
+                     (NULL,'3150','4','4','0'),
+                     (NULL,'3150','5','5','0'),
+                     (NULL,'3150','6','6','0'),
+                     (NULL,'3150','7','7','0'),
+                     (NULL,'3150','8','8','0'),
+                     (NULL,'3150','9','9','0'),
+                     (NULL,'3150','10','10','0');";
+      $DB->query($query) or die($DB->error());
+   }
 
-	$query = "INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )
-						VALUES (NULL, 3151, 1, 1, 0),
-							   (NULL, 3151, 2, 4, 0),
-							   (NULL, 3151, 6, 6, 0),
-							   (NULL, 3151, 4, 5, 0),
-							   (NULL, 3151, 7, 7, 0),
-							   (NULL, 3151, 8, 8, 0),
-							   (NULL, 3151, 5, 9, 0);";
-	$DB->query($query) or die($DB->error());
+   $query = "SELECT COUNT(ID) as cpt FROM `glpi_display` WHERE `type`='3151'";
+   $result = $DB->query($query);
+   if (!$DB->result($result,0,'cpt')) {
+      $query = "INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )
+                     VALUES (NULL, 3151, 1, 1, 0),
+                     (NULL, 3151, 2, 4, 0),
+                     (NULL, 3151, 6, 6, 0),
+                     (NULL, 3151, 4, 5, 0),
+                     (NULL, 3151, 7, 7, 0),
+                     (NULL, 3151, 8, 8, 0),
+                     (NULL, 3151, 5, 9, 0);";
+      $DB->query($query) or die($DB->error());
+   }
 
-	$query = "CREATE TABLE `glpi_plugin_order_budgets` (
-			`ID` INT( 11 ) NOT NULL AUTO_INCREMENT ,
-			`name` VARCHAR( 255 ) collate utf8_unicode_ci NULL,
-   		    `FK_entities` int(11) NOT NULL DEFAULT 0,
-			`FK_budget` INT( 11 ) NOT NULL ,
-		    `deleted` int(11) NOT NULL DEFAULT 0,
-			`comments` text  collate utf8_unicode_ci NULL,
-			`startdate` DATE NULL ,
-			`enddate` DATE NULL ,
-			`value` FLOAT( 11 ) NOT NULL ,
-			PRIMARY KEY ( `ID` )
-			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-	$DB->query($query) or die($DB->error());
+   $query = "SELECT COUNT(ID) as cpt FROM `glpi_display` WHERE `type`='3153'";
+   $result = $DB->query($query);
+   if (!$DB->result($result,0,'cpt')) {
+      $query = "INSERT INTO `glpi_display` (`ID`, `type`, `num`, `rank`, `FK_users`) VALUES
+            (NULL, 3153, 2, 1, 0),
+            (NULL, 3153, 4, 2, 0),
+            (NULL, 3153, 5, 3, 0),
+            (NULL, 3153, 6, 4, 0);";
+      $DB->query($query) or die($DB->error());        
+   }
+   
+   if (!TableExists("glpi_plugin_order_budgets")) {
+      $query = "CREATE TABLE `glpi_plugin_order_budgets` (
+            `ID` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+            `name` VARCHAR( 255 ) collate utf8_unicode_ci NULL,
+                `FK_entities` int(11) NOT NULL DEFAULT 0,
+            `FK_budget` INT( 11 ) NOT NULL ,
+             `deleted` int(11) NOT NULL DEFAULT 0,
+            `comments` text  collate utf8_unicode_ci NULL,
+            `startdate` DATE NULL ,
+            `enddate` DATE NULL ,
+            `value` FLOAT( 11 ) NOT NULL ,
+            PRIMARY KEY ( `ID` )
+            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->query($query) or die($DB->error());
+   	
+   }
 
-	$query = "INSERT INTO `glpi_display` (`ID`, `type`, `num`, `rank`, `FK_users`) VALUES
-			(NULL, 3153, 2, 1, 0),
-			(NULL, 3153, 4, 2, 0),
-			(NULL, 3153, 5, 3, 0),
-			(NULL, 3153, 6, 4, 0);";
-	$DB->query($query) or die($DB->error());			
+   if (!FieldExists("glpi_plugin_order_detail","discount")) {
+   	$query = "ALTER TABLE `glpi_plugin_order_detail` ADD `discount` FLOAT( 11 ) NOT NULL DEFAULT '0'";
+   $DB->query($query) or die($DB->error());
+      
+   }
 	plugin_order_createfirstaccess($_SESSION['glpiactiveprofile']['ID']);
+   
+   plugin_order_changeprofile();
 	return true;
 }
 
