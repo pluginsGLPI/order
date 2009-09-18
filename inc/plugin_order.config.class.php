@@ -64,11 +64,13 @@ class PluginOrderConfig extends CommonDBTM {
 	function showOrderGenerationForm($target)
 	{
 		global $LANG;
+      /*
 		echo "<br><table class='tab_cadre_fixe'>";
 		echo "<tr><th>".$LANG['plugin_order'][37]."</th></tr>";
 		echo "<tr class='tab_bg_1' align='center'><td><a href='$target?action=createorder'>".$LANG['plugin_order'][34]."</a></td></tr>";
 		echo "<tr class='tab_bg_1' align='center'><td><a href='$target?action=deleteorder'>".$LANG['plugin_order'][35]."</a></td></tr>";
 		echo "</table>";
+      */
 	}
 
 }
