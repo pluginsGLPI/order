@@ -56,8 +56,12 @@ function plugin_order_showReferenceManufacturers($target, $ID) {
 			echo "<input type='hidden' name='item[" . $data["ID"] . "]' value='" . $ID . "'>";
 			echo "<tr>";
 			echo "<td class='tab_bg_1'>";
-			if ($candelete)
-				echo "<input type='checkbox' name='check[" . $data["ID"] . "]'>";
+			if ($candelete) {
+            echo "<input type='checkbox' name='check[" . $data["ID"] . "]'"; 
+            if (isset($_POST['check']) && $_POST['check'] == 'all')
+               echo " checked ";
+            echo ">";
+			}
 			echo "</td>";
 			echo "<td class='tab_bg_1' align='center'><a href=\"".GLPI_ROOT."/".$INFOFORM_PAGES[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE]."?ID=".$data["ID"]."&referenceID=".$data["FK_enterprise"]."\">" . getDropdownName("glpi_enterprises", $data["FK_enterprise"]) . "</a></td>";
 			echo "<td class='tab_bg_1' align='center'>";
@@ -71,8 +75,8 @@ function plugin_order_showReferenceManufacturers($target, $ID) {
 		{
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr>"; 
-			echo "<td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markAllRows('show_ref_manu$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;check=all'>".$LANG["buttons"][18]."</a></td>";
-			echo "<td>/</td><td align='center'><a onclick= \"if ( unMarkAllRows('show_ref_manu$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;check=none'>".$LANG["buttons"][19]."</a>";
+			echo "<td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markAllRows('show_ref_manu$rand') ) return false;\" href='".$_SERVER['HTTP_REFERER']."?ID=$ID&amp;check=all'>".$LANG["buttons"][18]."</a></td>";
+			echo "<td>/</td><td align='center'><a onclick= \"if ( unMarkAllRows('show_ref_manu$rand') ) return false;\" href='".$_SERVER['HTTP_REFERER']."?ID=$ID&amp;check=none'>".$LANG["buttons"][19]."</a>";
 			echo "</td><td align='left' width='75%'>"; 
 			echo "<input type='submit' name='delete_reference_manufacturer' value=\"" . $LANG['buttons'][6] . "\" class='submit' >";
 			echo "</td>";

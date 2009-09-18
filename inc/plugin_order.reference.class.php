@@ -141,7 +141,7 @@ class PluginOrderReference extends CommonDBTM {
 		$reference_in_use = (!$ID?false:$this->referenceInUse());
 		
 		if ($spotted) {
-			$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
+			$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab'],$_GET);
 			$canedit = $this->can($ID, 'w');
 			$canrecu = $this->can($ID, 'recursive');
 			echo "<form method='post' name=form action=\"$target\">";
