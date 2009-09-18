@@ -64,7 +64,7 @@ function plugin_order_install() {
 	}
 
 	if (!TableExists("glpi_dropdown_plugin_order_status")) {
-		$query = "CREATE TABLE IF EXISTS  `glpi_dropdown_plugin_order_status` (
+		$query = "CREATE TABLE IF NOT EXISTS  `glpi_dropdown_plugin_order_status` (
 									`ID` int(11) NOT NULL auto_increment,
 									`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
 									`comments` text,
@@ -75,7 +75,7 @@ function plugin_order_install() {
 	}
 
 	if (!TableExists("glpi_dropdown_plugin_order_payment")) {
-		$query = "CREATE TABLE IF EXISTS  `glpi_dropdown_plugin_order_payment` (
+		$query = "CREATE TABLE IF NOT EXISTS  `glpi_dropdown_plugin_order_payment` (
 								`ID` int(11) NOT NULL auto_increment,
 								`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
 								`comments` text,
@@ -86,7 +86,7 @@ function plugin_order_install() {
 	}
 
 	if (!TableExists("glpi_dropdown_plugin_order_taxes")) {
-		$query = "CREATE TABLE IF EXISTS  `glpi_dropdown_plugin_order_taxes` (
+		$query = "CREATE TABLE IF NOT EXISTS  `glpi_dropdown_plugin_order_taxes` (
 									`ID` int(11) NOT NULL auto_increment,
 									`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
 									`comments` text,
