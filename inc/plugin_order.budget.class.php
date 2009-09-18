@@ -110,7 +110,7 @@ class PluginOrderBudget extends CommonDBTM {
 			echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][21] . ": </td>";
 			echo "<td>";
 			if ($canedit)
-				autocompletionTextField("value","glpi_plugin_order_budgets","value",$this->fields["value"]);
+				autocompletionTextField("value","glpi_plugin_order_budgets","value",$this->fields["value"],20);
 			else
 				echo $this->fields["value"];	
 			echo "</td></tr>";
@@ -124,7 +124,7 @@ class PluginOrderBudget extends CommonDBTM {
             echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['budget'][2] . ": </td>";
             echo "<td>";
             if ($DB->numrows($result))
-               echo $DB->result($result,0,0);
+               echo formatNumber($DB->result($result,0,0),false,2);
             else
                echo "0";
             echo "</td></tr>";
