@@ -167,20 +167,31 @@ function getReceptionMaterialInfo($deviceType, $deviceID) {
 		case PERIPHERAL_TYPE :
 		case PHONE_TYPE :
 		case PRINTER_TYPE :
+      default:
 			$ci = new CommonItem();
 			$ci->getFromDB($deviceType, $deviceID);
-			if (isset ($ci->obj->fields["name"]))
-				$comments = "<strong>" . $LANG['common'][16] . ":</strong> " . $ci->obj->fields["name"];
-			if (isset ($ci->obj->fields["FK_entities"]))
-				$comments = "<strong>" . $LANG['entity'][0] . ":</strong> " . getDropdownName("glpi_entities", $ci->obj->fields["FK_entities"]);
-			if (isset ($ci->obj->fields["serial"]) && $ci->obj->fields["serial"] != '')
-				$comments .= "<br><strong>" . $LANG['common'][19] . ":</strong> " . $ci->obj->fields["serial"];
-			if (isset ($ci->obj->fields["otherserial"]) && $ci->obj->fields["otherserial"] != '')
-				$comments .= "<br><strong>" . $LANG['common'][10] . ":</strong> " . $ci->obj->fields["otherserial"];
-			if (isset ($ci->obj->fields["location"]) && $ci->obj->fields["location"] != 0)
-				$comments .= "<br><strong>" . $LANG['consumables'][36] . ":</strong> " . getDropdownName('glpi_dropdown_locations', $ci->obj->fields["location"]);
-			if (isset ($ci->obj->fields["FK_users"]) && $ci->obj->fields["FK_users"] != 0)
-				$comments .= "<br><strong>" . $LANG['common'][34] . ":</strong> " . getDropdownName('glpi_users', $ci->obj->fields["FK_users"]);
+			if ($ci->getField("name")) {
+				$comments = "<strong>" . $LANG['common'][16] . ":</strong> " . $ci->getField("name");
+			}
+				
+			if ($ci->getField("FK_entities")) {
+            $comments = "<strong>" . $LANG['entity'][0] . ":</strong> " . getDropdownName("glpi_entities", $ci->getField("FK_entities"));
+			}
+         
+			if ($ci->getField("serial") != '') {
+            $comments .= "<br><strong>" . $LANG['common'][19] . ":</strong> " . $ci->getField("serial");
+			}
+
+			if ($ci->getField("otherserial") != '') {
+            $comments .= "<br><strong>" . $LANG['common'][10] . ":</strong> " . $ci->obj->fields["otherserial"];
+			}
+			if ($ci->getField("location")) {
+            $comments .= "<br><strong>" . $LANG['consumables'][36] . ":</strong> " . getDropdownName('glpi_dropdown_locations', $ci->getField("location"));
+			}
+
+			if ($ci->getField("FK_users")) {
+            $comments .= "<br><strong>" . $LANG['common'][34] . ":</strong> " . getDropdownName('glpi_users', $ci->getField("FK_users"));
+			}
 			break;
 		case CONSUMABLE_ITEM_TYPE :
 			$ci = new Consumable();
@@ -266,21 +277,22 @@ function getReceptionType($ID) {
 		return (-1);
 }
 
-function getReceptionDeviceName($deviceID, $deviceType) {
+function getReceptionDeviceName($deviceID, $device_type) {
 	global $DB, $LINK_ID_TABLE, $INFOFORM_PAGES, $CFG_GLPI, $LANG;
 	if ($deviceID == 0)
 		return ($LANG['plugin_order']['item'][2]);
 	else {
-		switch ($deviceType) {
+		switch ($device_type) {
 			case COMPUTER_TYPE :
 			case MONITOR_TYPE :
 			case NETWORKING_TYPE :
 			case PERIPHERAL_TYPE :
 			case PHONE_TYPE :
 			case PRINTER_TYPE :
+         default:
 				$ci = new CommonItem();
-				$ci->getFromDB($deviceType, $deviceID);
-				return ("<a href=" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[$deviceType] . "?ID=" . $deviceID . ">" . $ci->obj->fields["name"] . "</a>");
+				$ci->getFromDB($device_type, $deviceID);
+				return ("<a href=" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[$device_type] . "?ID=" . $deviceID . "&device_type=".$device_type.">" . $ci->getField("name") . "</a>");
 				break;
 			case CONSUMABLE_ITEM_TYPE :
 				$ci = new Consumable();
@@ -463,16 +475,6 @@ function plugin_order_updateReceptionStatus($params) {
 
 					if ($detail->fields["status"] == ORDER_DEVICE_NOT_DELIVRED) {
 						plugin_order_receptionOneItem($key,$orderID,$params["date"],$params["deliverynum"]);
-                 /*
-                 $input["ID"] = $key;
-						$input["date"] = $params["date"];
-						$input["status"] = ORDER_DEVICE_DELIVRED;
-						$input["deliverynum"] = $params["deliverynum"];
-
-						$detail->update($input);
-						addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
-                  
-                  */
 					} else
 						addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);
 				}
@@ -496,10 +498,29 @@ function plugin_order_receptionOneItem($detailID,$orderID,$date,$deliverynum)
 }
 
 function plugin_order_plugin_order_showItemGenerationForm($target, $params) {
-	global $LANG, $CFG_GLPI;
+	global $LANG, $CFG_GLPI, $GENINVENTORYNUMBER_INVENTORY_TYPES;
 	commonHeader($LANG['plugin_order']['title'][1], $_SERVER["PHP_SELF"], "plugins", "order", "order");
 	echo "<div class='center'>";
 	echo "<table class='tab_cadre'>";
+
+   //If plugin geninventorynumber is installed, activated and version >= 1.1.0
+   $plugin = new Plugin;
+   if ($plugin->isInstalled("geninventorynumber") && $plugin->isActivated("geninventorynumber")) {
+      usePlugin("geninventorynumber",true);
+      $infos = plugin_version_geninventorynumber();
+      if ($infos['version'] >= '1.1.0') {
+         $fields = plugin_geninventorynumber_getFieldInfos("otherserial");
+         $gen_config = plugin_geninventorynumber_getConfig();
+         $use_plugin_geninventorynumber = true;
+      }
+      else {
+      	$use_plugin_geninventorynumber = false;
+      }
+   }
+   else {
+   	      $use_plugin_geninventorynumber = false;
+   }
+
 
 	echo "<a href='" . $_SERVER["HTTP_REFERER"] . "'>" . $LANG['buttons'][13] . "</a></br><br>";
 
@@ -517,8 +538,10 @@ function plugin_order_plugin_order_showItemGenerationForm($target, $params) {
 	$order = new PluginOrder;
 	$order->getFromDB($params["orderID"]);
 
+   
 	$i = 0;
 	$found = false;
+   
 	foreach ($params["item"] as $key => $val)
 		if ($val == 1) {
 			$detail = new PluginOrderDetail;
@@ -526,9 +549,29 @@ function plugin_order_plugin_order_showItemGenerationForm($target, $params) {
 			
 			if (!$detail->fields["FK_device"])
 			{
+
+           if ( $use_plugin_geninventorynumber && $gen_config->fields["active"]
+                  && $fields[$params['type'][$key]]['enabled']
+                     && in_array($params['type'][$key],$GENINVENTORYNUMBER_INVENTORY_TYPES)) {
+            $gen_inventorynumber = false;
+           }
+           else {
+              $gen_inventorynumber = true;
+           }
+           
+ 
 				echo "<tr class='tab_bg_1'><td align='center'>" . $_POST["name"][$key] . "</td>";
 				echo "<td><input type='text' size='20' name='serial[$i]'></td>";
-				echo "<td><input type='text' size='20' name='otherserial[$i]'></td>";
+            
+            //If geninventorynumber plugin is active, and this type is managed by the plugin
+            if (!$gen_inventorynumber) {
+                  echo "<td align='center'>---------</td>";	
+                  //echo "<input type='hidden' name='otherserial' value=''>";
+            }else {
+               echo "<td><input type='text' size='20' name='otherserial[$i]'></td>";	
+            }
+            
+				
 				echo "<td><input type='text' size='20' name='name[$i]'></td>";
 				echo "<td>";
 				$entity_restrict = ($order->fields["recursive"] ? getEntitySons($order->fields["FK_entities"]) : $order->fields["FK_entities"]);
@@ -564,7 +607,10 @@ function plugin_order_generateNewDevice($params) {
 	
 			$input["FK_entities"] = $entity;
 			$input["serial"] = $params["serial"][$i];
-			$input["otherserial"] = $params["otherserial"][$i];
+         if (isset($params["otherserial"][$i])) {
+            $input["otherserial"] = $params["otherserial"][$i];	
+         }
+			
 			$input["name"] = $params["name"][$i];
 	
 			$order = new PluginOrder;

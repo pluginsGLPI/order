@@ -768,4 +768,11 @@ function plugin_headings_order($type, $ID, $withtemplate = 0) {
 			break;
 	}
 }
+
+function plugin_order_loadPluginByType($device_type) {
+	global $PLUGIN_HOOKS;
+   if ($device_type > 1000) {
+	  usePlugin($PLUGIN_HOOKS['plugin_types'][$device_type]);	
+	}
+}
 ?>

@@ -123,8 +123,10 @@ class PluginOrderReference extends CommonDBTM {
 	function showForm($target, $ID, $withtemplate = '') {
 		global $CFG_GLPI, $LANG, $DB,$ORDER_TEMPLATE_TABLES;
 
-		if (!plugin_order_haveRight("reference", "r"))
+		if (!plugin_order_haveRight("reference", "r")) {
 			return false;
+		}
+
 		$spotted = false;
 		if ($ID > 0) {
 			if ($this->can($ID, 'r')) {
@@ -141,6 +143,7 @@ class PluginOrderReference extends CommonDBTM {
 		$reference_in_use = (!$ID?false:$this->referenceInUse());
 		
 		if ($spotted) {
+
 			$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab'],$_GET);
 			$canedit = $this->can($ID, 'w');
 			$canrecu = $this->can($ID, 'recursive');
@@ -191,7 +194,7 @@ class PluginOrderReference extends CommonDBTM {
 			echo "</span></td></tr>";
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][22] . ": </td>";
 			echo "<td><span id='show_model'>";
-			if ($canedit && (plugin_order_getModelTable($this->type) !== false) && !$reference_in_use ) 
+			if ($canedit && (plugin_order_getModelTable($this->fields["type"]) !== false) && !$reference_in_use ) 
 					dropdownValue(plugin_order_getModelTable($this->fields["type"]), "FK_model", $this->fields["FK_model"]);
 				else
 					echo getDropdownName(plugin_order_getModelTable($this->fields["type"]), $this->fields["FK_model"]);
