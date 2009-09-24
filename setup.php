@@ -75,7 +75,7 @@ function plugin_init_order() {
 		COMPUTER_TYPE => "glpi_type_computers",
 		MONITOR_TYPE => "glpi_type_monitors",
 		PRINTER_TYPE => "glpi_type_printers",
-		NETWORKING_TYPE => "glpi_type_printers",
+		NETWORKING_TYPE => "glpi_type_networking",
 		SOFTWARE_TYPE => "glpi_type_softwares",
 		PERIPHERAL_TYPE => "glpi_type_peripherals",
 		PHONE_TYPE => "glpi_type_phones",
@@ -86,7 +86,7 @@ function plugin_init_order() {
 		COMPUTER_TYPE => "glpi_dropdown_model",
 		MONITOR_TYPE => "glpi_dropdown_model_monitors",
 		PRINTER_TYPE => "glpi_dropdown_model_printers",
-		NETWORKING_TYPE => "glpi_dropdown_model_printers",
+		NETWORKING_TYPE => "glpi_dropdown_model_networking",
 		SOFTWARE_TYPE => "glpi_dropdown_model_softwares",
 		PERIPHERAL_TYPE => "glpi_dropdown_model_peripherals",
 		PHONE_TYPE => "glpi_dropdown_model_phones"
