@@ -39,6 +39,7 @@ $LANG['plugin_order'][12] = "Bon livraison";
 $LANG['plugin_order'][13] = "Prix Total (HT)";
 $LANG['plugin_order'][14] = "Prix Total (TTC)";
 $LANG['plugin_order'][25] = "TVA";
+$LANG['plugin_order'][26] = "Prix du port";
 $LANG['plugin_order'][28] = "N° Facture";
 $LANG['plugin_order'][31] = "N° commande fournisseur";
 $LANG['plugin_order'][32] = "Conditions de paiement";

@@ -54,6 +54,7 @@ function plugin_order_install() {
 								`FK_enterprise` INT(11) NOT NULL DEFAULT 0,
 							    `location` int(11) NOT NULL default 0,
 							    `FK_contact` int(11) NOT NULL default 0,
+							    `port_price` FLOAT NOT NULL default 0,
 								`recursive` INT(1) NOT NULL default 1,
 								`deleted` INT(1) NOT NULL default 0,
 								`notes` TEXT,

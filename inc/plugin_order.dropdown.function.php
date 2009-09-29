@@ -219,4 +219,28 @@ function plugin_order_templateExistsInEntity($detailID, $type, $entity) {
 	}
 
 }
+
+function plugin_order_getDropdownContact($value,$FK_enterprise) {
+	global $LANG,$DB;
+  
+  if ($FK_enterprise){
+    echo "<select name='FK_contact'>";
+    echo "<option value='0'>------</option>";
+    $query = "SELECT `glpi_contacts`.* 
+        FROM `glpi_contacts`, `glpi_contact_enterprise` 
+        WHERE `glpi_contact_enterprise`.`FK_contact` = `glpi_contacts`.`ID` 
+        AND `glpi_contact_enterprise`.`FK_enterprise` = '".$FK_enterprise."' 
+        ORDER BY `glpi_contacts`.`name` ";
+    $result = $DB->query($query);
+    $number = $DB->numrows($result);
+
+    if ($number){
+      while ($data=$DB->fetch_array($result)){
+        echo "<option value='".$data["ID"]."' ".($data["ID"]=="".$value.""?" selected ":"").">".$data["name"]." ".$data["firstname"]."</option>";
+      }
+    }
+    echo "</select>";
+ }
+}
+
 ?>

@@ -170,6 +170,7 @@ class PluginOrder extends CommonDBTM {
 			else
 				echo $this->fields["numordersupplier"];
 			echo "</td>";
+			
 			/* payment */
 			echo "<td>" . $LANG['plugin_order'][32] . ": </td><td>";
 			if ($canedit)
@@ -185,25 +186,44 @@ class PluginOrder extends CommonDBTM {
 			else
 				echo $this->fields["numbill"];
 			echo "</td>";
-
-			/* supplier of order */
-			echo "<td>" . $LANG['financial'][26] . ": </td>";
-			echo "<td>";
-			if ($canedit)
-				dropdownValue("glpi_enterprises", "FK_enterprise", $this->fields["FK_enterprise"], 1, $this->fields["FK_entities"]);
-			else
-				echo getDropdownName("glpi_enterprises", $this->fields["FK_enterprise"]);
-			echo "</td></tr>";
-
+			
 			/* location */
-			echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][40] . ": </td>";
+			echo "<td>" . $LANG['plugin_order'][40] . ": </td>";
 			echo "<td>";
 			if ($canedit)
 				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"], 1, $this->fields["FK_entities"]);
 			else
 				echo getDropdownName("glpi_dropdown_locations", $this->fields["location"]);
+			echo "</td></tr>";
+			
+			/* supplier of order */
+			echo "<tr class='tab_bg_1'><td>" . $LANG['financial'][26] . ": </td>";
+			echo "<td>";
+			if ($canedit)
+				dropdownValue("glpi_enterprises", "FK_enterprise", $this->fields["FK_enterprise"], 1, $this->fields["FK_entities"]);
+			else
+				echo getDropdownName("glpi_enterprises", $this->fields["FK_enterprise"]);
 			echo "</td>";
-
+			
+			/* port price */
+			echo "<td>".$LANG['plugin_order'][26].": </td>";
+			echo "<td>";
+			if ($canedit)
+				autocompletionTextField("port_price", "glpi_plugin_order", "port_price", $this->fields["port_price"], 30, $this->fields["FK_entities"]);
+			else
+				echo $this->fields["port_price"];
+			echo "</td></tr>";
+			
+			/* linked contact of the supplier of order */
+			echo "<tr class='tab_bg_1'><td>".$LANG['common'][18].": </td>";
+			echo "<td>";
+			if ($canedit)
+        plugin_order_getDropdownContact($this->fields["FK_contact"],$this->fields["FK_enterprise"]);
+			else
+				echo getDropdownName("glpi_contacts", $this->fields["FK_contact"]);
+			echo "</td>";
+			
+			/* status of bill */
 			echo "<td>" . $LANG['plugin_order']['status'][0] . ": </td>";
 			echo "<td>";
 			echo "<input type='hidden' name='status' value=" . ORDER_STATUS_DRAFT . ">";
