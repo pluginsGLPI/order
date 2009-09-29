@@ -43,7 +43,7 @@ function plugin_order_showReferenceManufacturers($target, $ID) {
 	echo "<div class='center'>";
 	echo "<form method='post' name='show_ref_manu$rand' id='show_ref_manu$rand' action=\"$target\">";
 	echo "<input type='hidden' name='FK_reference' value='" . $ID . "'>";
-	echo "<table class='tab_cadre_fixe'>";
+	echo "<table class='tab_cadrehov'>";
 
 	echo "<tr><th></th><th>" . $LANG['financial'][26] . "</th><th>" . $LANG['plugin_order']['detail'][4] . "</th></tr>";
 
@@ -73,11 +73,11 @@ function plugin_order_showReferenceManufacturers($target, $ID) {
 
 		if ($candelete)
 		{
-			echo "<table class='tab_cadre_fixe'>";
+			echo "<table width='80%' class='tab_glpi'>";
 			echo "<tr>"; 
-			echo "<td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markAllRows('show_ref_manu$rand') ) return false;\" href='".$_SERVER['HTTP_REFERER']."?ID=$ID&amp;check=all'>".$LANG["buttons"][18]."</a></td>";
-			echo "<td>/</td><td align='center'><a onclick= \"if ( unMarkAllRows('show_ref_manu$rand') ) return false;\" href='".$_SERVER['HTTP_REFERER']."?ID=$ID&amp;check=none'>".$LANG["buttons"][19]."</a>";
-			echo "</td><td align='left' width='75%'>"; 
+			echo "<td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markCheckboxes('show_ref_manu$rand') ) return false;\" href='".$_SERVER['HTTP_REFERER']."?ID=$ID&amp;check=all'>".$LANG["buttons"][18]."</a></td>";
+			echo "<td>/</td><td align='center'><a onclick= \"if ( unMarkCheckboxes('show_ref_manu$rand') ) return false;\" href='".$_SERVER['HTTP_REFERER']."?ID=$ID&amp;check=none'>".$LANG["buttons"][19]."</a>";
+			echo "</td><td align='left' width='90%'>"; 
 			echo "<input type='submit' name='delete_reference_manufacturer' value=\"" . $LANG['buttons'][6] . "\" class='submit' >";
 			echo "</td>";
 			echo "</tr>";
@@ -109,7 +109,7 @@ function plugin_order_addSupplierToReference($target,$referenceID)
 				$suppliers["FK_enterprise"] = $data["FK_enterprise"];
 				
 			echo "<form method='post' name='add_ref_manu' action=\"$target\">";
-			echo "<table class='tab_cadre_fixe'>";
+			echo "<table class='tab_cadrehov'>";
 			echo "<input type='hidden' name='FK_reference' value='" . $referenceID . "'>";
 			echo "<tr>";
 			echo "<th colspan='2' align='center'>".$LANG['plugin_order']['reference'][2]."</th></tr>";
