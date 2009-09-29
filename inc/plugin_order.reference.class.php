@@ -144,7 +144,7 @@ class PluginOrderReference extends CommonDBTM {
 		
 		if ($spotted) {
 
-			$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab'],$_GET);
+			$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
 			$canedit = $this->can($ID, 'w');
 			$canrecu = $this->can($ID, 'recursive');
 			echo "<form method='post' name=form action=\"$target\">";
@@ -153,7 +153,7 @@ class PluginOrderReference extends CommonDBTM {
 			}
 			echo "<div class='center' id='tabsbody'>";
 			echo "<table class='tab_cadre_fixe'>";
-			$this->showFormHeader($ID, '', 1);
+			$this->showFormHeader($ID, $withtemplate, 1);
 			echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['reference'][1] . ": </td>";
 			echo "<td>";
 			if ($canedit && !$reference_in_use)
