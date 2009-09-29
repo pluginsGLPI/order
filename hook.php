@@ -96,8 +96,8 @@ function plugin_order_install() {
 								) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query);
 
-		$query = "INSERT INTO `glpi_dropdown_plugin_order_taxes`(ID,name) VALUES (1,'5,5'), " .
-		"(2,'19,6');";
+		$query = "INSERT INTO `glpi_dropdown_plugin_order_taxes`(ID,name) VALUES (1,'5.5'), " .
+		"(2,'19.6');";
 		$DB->query($query) or die($DB->error());
 	}
 
