@@ -371,23 +371,28 @@ function plugin_order_getSearchOption() {
 		/* order number */
 		$sopt[PLUGIN_ORDER_TYPE][1]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][1]['field'] = 'numorder';
-		$sopt[PLUGIN_ORDER_TYPE][1]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_TYPE][1]['linkfield'] = 'numorder';
 		$sopt[PLUGIN_ORDER_TYPE][1]['name'] = $LANG['plugin_order'][0];
 		$sopt[PLUGIN_ORDER_TYPE][1]['datatype'] = 'itemlink';
 		/* date */
 		$sopt[PLUGIN_ORDER_TYPE][2]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][2]['field'] = 'date';
-		$sopt[PLUGIN_ORDER_TYPE][2]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_TYPE][2]['linkfield'] = 'date';
 		$sopt[PLUGIN_ORDER_TYPE][2]['name'] = $LANG['plugin_order'][1];
-		/* budget */
+		$sopt[PLUGIN_ORDER_TYPE][2]['datatype']='date';
+		/* budget 
 		$sopt[PLUGIN_ORDER_TYPE][3]['table'] = 'glpi_dropdown_budget';
 		$sopt[PLUGIN_ORDER_TYPE][3]['field'] = 'name';
 		$sopt[PLUGIN_ORDER_TYPE][3]['linkfield'] = 'budget';
-		$sopt[PLUGIN_ORDER_TYPE][3]['name'] = $LANG['plugin_order'][3];
-
+		$sopt[PLUGIN_ORDER_TYPE][3]['name'] = $LANG['plugin_order'][3];*/
+    /* supplier command number */
+    $sopt[PLUGIN_ORDER_TYPE][3]['table'] = 'glpi_plugin_order';
+		$sopt[PLUGIN_ORDER_TYPE][3]['field'] = 'numordersupplier';
+		$sopt[PLUGIN_ORDER_TYPE][3]['linkfield'] = 'numordersupplier';
+		$sopt[PLUGIN_ORDER_TYPE][3]['name'] = $LANG['plugin_order'][31];
 		/* location */
 		$sopt[PLUGIN_ORDER_TYPE][4]['table'] = 'glpi_dropdown_locations';
-		$sopt[PLUGIN_ORDER_TYPE][4]['field'] = 'name';
+		$sopt[PLUGIN_ORDER_TYPE][4]['field'] = 'completename';
 		$sopt[PLUGIN_ORDER_TYPE][4]['linkfield'] = 'location';
 		$sopt[PLUGIN_ORDER_TYPE][4]['name'] = $LANG['plugin_order'][40];
 		/* status */
@@ -398,8 +403,11 @@ function plugin_order_getSearchOption() {
 		/* supplier */
 		$sopt[PLUGIN_ORDER_TYPE][6]['table'] = 'glpi_enterprises';
 		$sopt[PLUGIN_ORDER_TYPE][6]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_TYPE][6]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_TYPE][6]['linkfield'] = 'FK_enterprise';
 		$sopt[PLUGIN_ORDER_TYPE][6]['name'] = $LANG['financial'][26];
+		$sopt[PLUGIN_ORDER_TYPE][6]['datatype']='itemlink';
+		$sopt[PLUGIN_ORDER_TYPE][6]['itemlink_type']=ENTERPRISE_TYPE;
+		$sopt[PLUGIN_ORDER_TYPE][6]['forcegroupby']=true;
 		/* payment */
 		$sopt[PLUGIN_ORDER_TYPE][7]['table'] = 'glpi_dropdown_plugin_order_payment';
 		$sopt[PLUGIN_ORDER_TYPE][7]['field'] = 'name';
@@ -409,18 +417,18 @@ function plugin_order_getSearchOption() {
 		/* bill number */
 		$sopt[PLUGIN_ORDER_TYPE][9]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][9]['field'] = 'numbill';
-		$sopt[PLUGIN_ORDER_TYPE][9]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_TYPE][9]['linkfield'] = 'numbill';
 		$sopt[PLUGIN_ORDER_TYPE][9]['name'] = $LANG['plugin_order'][28];
 		/* title */
 		$sopt[PLUGIN_ORDER_TYPE][10]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][10]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_TYPE][10]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_TYPE][10]['linkfield'] = 'name';
 		$sopt[PLUGIN_ORDER_TYPE][10]['name'] = $LANG['plugin_order'][39];
 
 		/* comments */
 		$sopt[PLUGIN_ORDER_TYPE][16]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][16]['field'] = 'comment';
-		$sopt[PLUGIN_ORDER_TYPE][16]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_TYPE][16]['linkfield'] = 'comment';
 		$sopt[PLUGIN_ORDER_TYPE][16]['name'] = $LANG['plugin_order'][2];
 		$sopt[PLUGIN_ORDER_TYPE][16]['datatype'] = 'text';
 		/* ID */
@@ -461,48 +469,47 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE]['common'] = $LANG['plugin_order']['reference'][1];
 
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['field'] = 'ID';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['name'] = "ID";
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['field'] = 'name';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['linkfield'] = 'name';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['name'] = $LANG['plugin_order']['detail'][2];
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['datatype'] = 'itemlink';
 
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['name'] = $LANG['plugin_order']['detail'][2];
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['datatype'] = 'itemlink';
-
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['field'] = 'comments';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['linkfield'] = 'comments';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['name'] = $LANG['common'][25];
+    $sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['datatype'] = 'text';
+    
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['field'] = 'comments';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['field'] = 'type';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['name'] = $LANG['common'][25];
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['name'] = $LANG['state'][6];
 
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['field'] = 'type';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['field'] = 'template';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['name'] = $LANG['state'][6];
-
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['name'] = $LANG['common'][13];
 
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['field'] = 'template';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['field'] = 'FK_manufacturer';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['name'] = $LANG['common'][13];
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['name'] = $LANG['common'][5];
 
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][6]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][6]['field'] = 'FK_manufacturer';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][6]['field'] = 'FK_type';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][6]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][6]['name'] = $LANG['common'][5];
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][6]['name'] = $LANG['common'][17];
 
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['field'] = 'FK_type';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['field'] = 'FK_model';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['name'] = $LANG['common'][17];
-
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][8]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][8]['field'] = 'FK_model';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][8]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][8]['name'] = $LANG['common'][22];
-
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['name'] = $LANG['common'][22];
+    
+    $sopt[PLUGIN_ORDER_REFERENCE_TYPE][30]['table'] = 'glpi_plugin_order_references';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][30]['field'] = 'ID';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][30]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][30]['name'] = "ID";
+		
 		/* entity */
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['table'] = 'glpi_entities';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['field'] = 'completename';
@@ -521,41 +528,44 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_BUDGET_TYPE]['common'] = $LANG['financial'][87];
 
 		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['table'] = 'glpi_plugin_order_budgets';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['field'] = 'ID';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['name'] = "ID";
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['field'] = 'name';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['linkfield'] = 'name';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['name'] = $LANG['common'][16];
 		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['datatype'] = 'itemlink';
 
 		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['table'] = 'glpi_plugin_order_budgets';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['name'] = $LANG['common'][16];
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['datatype'] = 'itemlink';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['field'] = 'comments';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['linkfield'] = 'comments';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['name'] = $LANG['common'][25];
 
 		$sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['table'] = 'glpi_plugin_order_budgets';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['field'] = 'comments';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['name'] = $LANG['common'][25];
-
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['field'] = 'startdate';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['linkfield'] = 'startdate';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['name'] = $LANG['search'][8];
+    $sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['datatype']='date';
+    
 		$sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['table'] = 'glpi_plugin_order_budgets';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['field'] = 'startdate';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['name'] = $LANG['search'][8];
-
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['field'] = 'enddate';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['linkfield'] = 'enddate';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['name'] = $LANG['search'][9];
+    $sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['datatype']='date';
+    
 		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['table'] = 'glpi_plugin_order_budgets';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['field'] = 'startdate';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['name'] = $LANG['search'][9];
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['field'] = 'value';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['linkfield'] = 'value';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['name'] = $LANG['financial'][21];
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['datatype'] = 'number';
 
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][6]['table'] = 'glpi_plugin_order_budgets';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][6]['field'] = 'value';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][6]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][6]['name'] = $LANG['financial'][21];
-
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][7]['table'] = 'glpi_dropdown_budget';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][7]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][7]['linkfield'] = 'FK_budget';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][7]['name'] = $LANG['financial'][87]." GLPI";
+		/*$sopt[PLUGIN_ORDER_BUDGET_TYPE][6]['table'] = 'glpi_dropdown_budget';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][6]['field'] = 'name';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][6]['linkfield'] = 'FK_budget';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][6]['name'] = $LANG['financial'][87]." GLPI";*/
+		
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][30]['table'] = 'glpi_plugin_order_budgets';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][30]['field'] = 'ID';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][30]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][30]['name'] = "ID";
+		$sopt[PLUGIN_ORDER_BUDGET_TYPE][30]['datatype'] = 'itemlink';
 	}
 	return $sopt;
 }
@@ -578,10 +588,11 @@ function plugin_order_addSelect($type, $ID, $num) {
 	$table = $SEARCH_OPTION[$type][$ID]["table"];
 	$field = $SEARCH_OPTION[$type][$ID]["field"];
 
-	if ($table == "glpi_plugin_order_references" && !$num)
+	if ($table == "glpi_plugin_order_references" && $num!=0)
 		return "$table.type AS device_type, $table.$field as ITEM_$num, ";
 	else
 		return "";
+
 }
 
 function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,&$already_link_tables){
@@ -606,21 +617,27 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 		/* display associated items with order */
 		case "glpi_plugin_order.status" :
 			return plugin_order_getDropdownStatus($data["ITEM_" . $num]);
+		break;
 		case "glpi_plugin_order_references.type" :
 			$commonitem = new CommonItem;
 			$commonitem->setType($data["device_type"]);
 			return $commonitem->getType();
+		break;
 		case "glpi_plugin_order_references.FK_manufacturer" :
 			return getDropdownName("glpi_dropdown_manufacturer", $data["ITEM_" . $num]);
+		break;
 		case "glpi_plugin_order_references.FK_type" :
 			return getDropdownName(plugin_order_getTypeTable($data["device_type"]), $data["ITEM_" . $num]);
+		break;
 		case "glpi_plugin_order_references.FK_model" :
 			return getDropdownName(plugin_order_getModelTable($data["device_type"]), $data["ITEM_" . $num]);
+		break;
 		case "glpi_plugin_order_references.template" :
 			if (!$data["ITEM_" . $num])
 				return " ";
 			else
 				return plugin_order_getTemplateName($data["device_type"], $data["ITEM_" . $num]);
+		break;
 	}
 	return "";
 }
@@ -640,6 +657,7 @@ function plugin_pre_item_delete_order($input) {
 
 function plugin_pre_item_update_order($input) {
 	global $LANG;
+	
 	if (isset ($input["_item_type_"]))
 		switch ($input["_item_type_"]) {
 			case INFOCOM_TYPE :
