@@ -70,7 +70,7 @@ class PluginOrderDetail extends CommonDBTM {
 				echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\"$target\">";
 				echo "<input type='hidden' name='FK_order' value=\"$orderID\">";
 				echo "<div class='center'>"; 
-				echo"<table class='tab_cadre_fixe'>";
+				echo"<table class='tab_cadrehov'>";
 				echo "<tr><th colspan='7'>".$LANG['plugin_order']['detail'][5]."</th></tr>";
 		
 				if ($order->fields["FK_enterprise"])
@@ -108,7 +108,7 @@ class PluginOrderDetail extends CommonDBTM {
       global  $CFG_GLPI, $LANG,$DB,$INFOFORM_PAGES;
 		
 			$query="SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, 
-					glpi_plugin_order_references.type, glpi_plugin_order_references.FK_manufacturer, glpi_plugin_order_references.name, 
+					glpi_plugin_order_references.type,glpi_plugin_order_references.FK_model, glpi_plugin_order_references.FK_manufacturer, glpi_plugin_order_references.name, 
 					glpi_plugin_order_detail.price_taxfree, glpi_plugin_order_detail.price_ati, glpi_plugin_order_detail.price_discounted, 
                glpi_plugin_order_detail.discount,
 					SUM(glpi_plugin_order_detail.price_discounted) AS totalpriceHT, 
@@ -127,14 +127,15 @@ class PluginOrderDetail extends CommonDBTM {
 			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
 			if ($num>0)
 			{
-				echo "<div class='center'><table class='tab_cadre_fixe'>";
-				echo "<tr><th colspan='11'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
+				echo "<div class='center'><table class='tab_cadrehov'>";
+				echo "<tr><th colspan='12'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
 				echo "<tr>";
 				if($canedit)
 					echo "<th></th>";
 				echo "<th>".$LANG['plugin_order']['detail'][1]."</th>";
 				echo "<th>".$LANG['common'][5]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
+				echo "<th>".$LANG['common'][22]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][7]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][3]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][4]."</th>";
@@ -167,7 +168,10 @@ class PluginOrderDetail extends CommonDBTM {
 					echo "<td align='center'>";
 					echo getReceptionReferenceLink($DB->result($result,$i,"IDR"), $DB->result($result,$i,"name"));
 					echo "</td>";
-					
+					/* modele */
+					echo "<td align='center'>";
+					echo getDropdownName(plugin_order_getModelTable($DB->result($result,$i,"type")), $DB->result($result,$i,"FK_model"));
+					echo "</td>";
 					/* quantity */
 					echo "<td align='center'>".plugin_order_getQuantity($FK_order, $IDR)."</td>";	
 					/* delivered quantity */
@@ -188,10 +192,10 @@ class PluginOrderDetail extends CommonDBTM {
 
 				if ($canedit) {
 					echo "<div class='center'>";
-					echo "<table class='tab_cadre_fixe'>";
+					echo "<table width='80%' class='tab_glpi'>";
 					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=none'>".$LANG['buttons'][19]."</a>";
-					echo "</td><td align='left' width='75%'>";
+					echo "</td><td align='left' width='90%'>";
 					echo "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][36] . "')\" name='delete_detail' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 					echo "</td>";
 					echo "</table>";
