@@ -138,7 +138,7 @@ function plugin_order_addSupplierToReference($target,$referenceID)
 function plugin_order_showReferencesBySupplierID($ID)
 {
 	global $LANG, $DB, $CFG_GLPI,$INFOFORM_PAGES;
-	$query = "SELECT gr.ID, gr.FK_manufacturer, gr.FK_entities, gr.type, gr.name, grm.price_taxfree " .
+	$query = "SELECT gr.ID, gr.FK_glpi_enterprise, gr.FK_entities, gr.type, gr.name, grm.price_taxfree " .
 			"FROM `glpi_plugin_order_references_manufacturers` as grm, `glpi_plugin_order_references` as gr " .
 			"WHERE grm.FK_enterprise='$ID' AND grm.FK_reference=gr.ID";
 	$result = $DB->query($query);
@@ -164,7 +164,7 @@ function plugin_order_showReferencesBySupplierID($ID)
 			echo "</td>";
 
 			echo "<td>";
-			echo getDropdownName("glpi_dropdown_manufacturer",$data["FK_manufacturer"]);
+			echo getDropdownName("glpi_dropdown_manufacturer",$data["FK_glpi_enterprise"]);
 			echo "</td>";
 
 			echo "<td>";

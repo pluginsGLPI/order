@@ -49,7 +49,7 @@ function plugin_order_plugin_order_showDetailReceptionForm($orderID) {
 			$refID = $DB->result($result_ref, $j, 'ref');
 			$typeRef = $DB->result($result_ref, $j, 'type');
 			$query = "SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, status, date, price_taxfree,
-								  price_ati, price_discounted,  FK_manufacturer, name, type, FK_device
+								  price_ati, price_discounted,  FK_glpi_enterprise, name, type, FK_device
 								  FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
 								  WHERE FK_order=$orderID
 								  AND glpi_plugin_order_detail.FK_reference=$refID
@@ -240,13 +240,13 @@ function getReceptionStatus($ID) {
 
 function getReceptionManufacturer($ID) {
 	global $DB;
-	$query = "SELECT glpi_plugin_order_detail.ID, FK_manufacturer
+	$query = "SELECT glpi_plugin_order_detail.ID, FK_glpi_enterprise
 				  FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
 				  WHERE glpi_plugin_order_detail.ID=$ID
 				  AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID";
 	$result = $DB->query($query);
-	if ($DB->result($result, 0, 'FK_manufacturer') != null) {
-		return (getDropdownName("glpi_dropdown_manufacturer", $DB->result($result, 0, 'FK_manufacturer')));
+	if ($DB->result($result, 0, 'FK_glpi_enterprise') != null) {
+		return (getDropdownName("glpi_dropdown_manufacturer", $DB->result($result, 0, 'FK_glpi_enterprise')));
 	} else
 		return -1;
 }

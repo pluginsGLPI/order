@@ -38,7 +38,8 @@ function plugin_order_install() {
 	include_once (GLPI_ROOT . "/inc/profile.class.php");
 
 	global $DB;
-
+  
+  
 	if (!TableExists("glpi_plugin_order")) {
 		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order` (
 								`ID` int(11) NOT NULL auto_increment,
@@ -52,9 +53,9 @@ function plugin_order_install() {
 								`FK_entities` int(11) NOT NULL default 0,
 								`date` date,
 								`FK_enterprise` INT(11) NOT NULL DEFAULT 0,
-							    `location` int(11) NOT NULL default 0,
-							    `FK_contact` int(11) NOT NULL default 0,
-							    `port_price` FLOAT NOT NULL default 0,
+							  `location` int(11) NOT NULL default 0,
+							  `FK_contact` int(11) NOT NULL default 0,
+							  `port_price` FLOAT NOT NULL default 0,
 								`recursive` INT(1) NOT NULL default 1,
 								`deleted` INT(1) NOT NULL default 0,
 								`notes` TEXT,
@@ -105,13 +106,13 @@ function plugin_order_install() {
 		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_detail` (
 									  `ID` int(11) NOT NULL auto_increment,
 									  `FK_order` int(11) NOT NULL default 0,
-	  								  `device_type` int(11) NOT NULL default 0,
+	  								`device_type` int(11) NOT NULL default 0,
 									  `FK_device` int(11) NOT NULL default 0,
 									  `FK_reference` int(11) NOT NULL default 0,
-				  					  `deliverynum` varchar(255) NOT NULL collate utf8_unicode_ci default '',
+				  					`deliverynum` varchar(255) NOT NULL collate utf8_unicode_ci default '',
 									  `price_taxfree` FLOAT NOT NULL default 0,
 									  `price_discounted` FLOAT NOT NULL default 0,
-                             `discount` FLOAT NOT NULL default 0,
+                    `discount` FLOAT NOT NULL default 0,
 									  `price_ati` FLOAT NOT NULL default 0,
 									  `status` int(1) NOT NULL default 0,
 									  `date`date NOT NULL default 0,
@@ -126,11 +127,11 @@ function plugin_order_install() {
 										`ID` int(11) NOT NULL auto_increment,
 										`name` varchar(255) collate utf8_unicode_ci default NULL,
 										`order` char(1) default NULL,
-									    `reference` char(1) default NULL,
-									    `budget` char(1) default NULL,
-									    `validation` char(1) default NULL,
-									    `cancel` char(1) default NULL,
-									    `undo_validation` char(1) default NULL,
+									  `reference` char(1) default NULL,
+									  `budget` char(1) default NULL,
+									  `validation` char(1) default NULL,
+									  `cancel` char(1) default NULL,
+									  `undo_validation` char(1) default NULL,
 										PRIMARY KEY  (`ID`),
 										KEY `name` (`name`)
 									) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
@@ -154,7 +155,7 @@ function plugin_order_install() {
 		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references` (
 								  `ID` int(11) NOT NULL auto_increment,
 								  `FK_entities` int(11) NOT NULL DEFAULT 0,
-								  `FK_manufacturer` int(11) NOT NULL DEFAULT 0,
+								  `FK_glpi_enterprise` int(11) NOT NULL DEFAULT 0,
 								  `FK_type` INT(11) NOT NULL DEFAULT 0,
 								  `FK_model` INT(11) NOT NULL DEFAULT 0,
 								  `name` varchar(255) collate utf8_unicode_ci NOT NULL,
@@ -243,7 +244,7 @@ function plugin_order_install() {
       $query = "CREATE TABLE `glpi_plugin_order_budgets` (
             `ID` INT( 11 ) NOT NULL AUTO_INCREMENT ,
             `name` VARCHAR( 255 ) collate utf8_unicode_ci NULL,
-                `FK_entities` int(11) NOT NULL DEFAULT 0,
+            `FK_entities` int(11) NOT NULL DEFAULT 0,
             `FK_budget` INT( 11 ) NOT NULL ,
              `deleted` int(11) NOT NULL DEFAULT 0,
             `comments` text  collate utf8_unicode_ci NULL,
@@ -261,6 +262,19 @@ function plugin_order_install() {
    $DB->query($query) or die($DB->error());
       
    }
+   
+   if (!FieldExists("glpi_plugin_order","port_price")) {
+   	$query = "ALTER TABLE `glpi_plugin_order` ADD `port_price` FLOAT NOT NULL default '0'";
+   $DB->query($query) or die($DB->error());
+      
+   }
+   
+   if (!FieldExists("glpi_plugin_order_references","FK_glpi_enterprise")) {
+   	$query = "ALTER TABLE `glpi_plugin_order_references` CHANGE `FK_manufacturer` `FK_glpi_enterprise` int(11) NOT NULL DEFAULT '0'";
+   $DB->query($query) or die($DB->error());
+      
+   }
+   
 	plugin_order_createfirstaccess($_SESSION['glpiactiveprofile']['ID']);
    
    plugin_order_changeprofile();
@@ -490,9 +504,9 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['linkfield'] = '';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['name'] = $LANG['common'][13];
 
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['field'] = 'FK_manufacturer';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['linkfield'] = '';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['table'] = 'glpi_dropdown_manufacturer';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['field'] = 'name';
+		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['linkfield'] = 'FK_glpi_enterprise';
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['name'] = $LANG['common'][5];
 
 		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][6]['table'] = 'glpi_plugin_order_references';
@@ -622,9 +636,6 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 			$commonitem = new CommonItem;
 			$commonitem->setType($data["device_type"]);
 			return $commonitem->getType();
-		break;
-		case "glpi_plugin_order_references.FK_manufacturer" :
-			return getDropdownName("glpi_dropdown_manufacturer", $data["ITEM_" . $num]);
 		break;
 		case "glpi_plugin_order_references.FK_type" :
 			return getDropdownName(plugin_order_getTypeTable($data["device_type"]), $data["ITEM_" . $num]);

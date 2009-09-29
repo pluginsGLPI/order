@@ -165,9 +165,9 @@ class PluginOrderReference extends CommonDBTM {
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][5] . ": </td>";
 			echo "<td>";
 			if ($canedit && !$reference_in_use)
-				dropdownValue("glpi_dropdown_manufacturer", "FK_manufacturer", $this->fields["FK_manufacturer"]);
+				dropdownValue("glpi_dropdown_manufacturer", "FK_glpi_enterprise", $this->fields["FK_glpi_enterprise"]);
 			else
-				echo getDropdownName("glpi_dropdown_manufacturer",$this->fields["FK_manufacturer"]);	
+				echo getDropdownName("glpi_dropdown_manufacturer",$this->fields["FK_glpi_enterprise"]);	
 			echo "</td></tr>";
 
 			$commonitem = new CommonItem;

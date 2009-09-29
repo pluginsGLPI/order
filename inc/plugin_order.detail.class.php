@@ -108,7 +108,7 @@ class PluginOrderDetail extends CommonDBTM {
       global  $CFG_GLPI, $LANG,$DB,$INFOFORM_PAGES;
 		
 			$query="SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, 
-					glpi_plugin_order_references.type,glpi_plugin_order_references.FK_model, glpi_plugin_order_references.FK_manufacturer, glpi_plugin_order_references.name, 
+					glpi_plugin_order_references.type,glpi_plugin_order_references.FK_model, glpi_plugin_order_references.FK_glpi_enterprise, glpi_plugin_order_references.name, 
 					glpi_plugin_order_detail.price_taxfree, glpi_plugin_order_detail.price_ati, glpi_plugin_order_detail.price_discounted, 
                glpi_plugin_order_detail.discount,
 					SUM(glpi_plugin_order_detail.price_discounted) AS totalpriceHT, 
@@ -163,7 +163,7 @@ class PluginOrderDetail extends CommonDBTM {
 					$ci->setType($DB->result($result,$i,"type"));
 					echo "<td align='center'>".$ci->getType()."</td>";
 					/* manufacturer */
-					echo "<td align='center'>".getDropdownName("glpi_dropdown_manufacturer",$DB->result($result,$i,"FK_manufacturer"))."</td>";
+					echo "<td align='center'>".getDropdownName("glpi_dropdown_manufacturer",$DB->result($result,$i,"FK_glpi_enterprise"))."</td>";
 					/* reference */
 					echo "<td align='center'>";
 					echo getReceptionReferenceLink($DB->result($result,$i,"IDR"), $DB->result($result,$i,"name"));
