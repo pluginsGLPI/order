@@ -123,7 +123,7 @@ $LANG['plugin_order']['profile'][2] = "Cancel order";
 $LANG['plugin_order']['profile'][3] = "Edit a validated order";
 
 $LANG['plugin_order']['reference'][1] = "Product reference";
-$LANG['plugin_order']['reference'][2] = "Add a reference";
+$LANG['plugin_order']['reference'][2] = "Add a supplier";
 $LANG['plugin_order']['reference'][3] = "List references";
 $LANG['plugin_order']['reference'][4] = "Type de matériel";
 $LANG['plugin_order']['reference'][5] = "Supplier for the reference";

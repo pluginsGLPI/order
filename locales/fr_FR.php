@@ -126,7 +126,7 @@ $LANG['plugin_order']['profile'][2] = "Annuler une commande";
 $LANG['plugin_order']['profile'][3] = "Modifier une commande validée";
 
 $LANG['plugin_order']['reference'][1] = "Référence produit";
-$LANG['plugin_order']['reference'][2] = "Ajouter une référence produit";
+$LANG['plugin_order']['reference'][2] = "Ajouter un fournisseur";
 $LANG['plugin_order']['reference'][3] = "Liste des références";
 $LANG['plugin_order']['reference'][5] = "Fournisseur pour une référence";
 $LANG['plugin_order']['reference'][6] = "Une référence du même nom existe déjà";
