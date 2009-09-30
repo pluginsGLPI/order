@@ -108,6 +108,8 @@ function plugin_order_plugin_order_showDetailReceptionForm($orderID) {
 					$sel = "";
 					if (isset ($_GET["select"]) && $_GET["select"] == "all")
 						$sel = "checked";
+					
+					if ($DB->result($result, $i, 'FK_device') == 0)
 					echo "<input type='checkbox' name='item[" . $detailID . "]' value='1' $sel>";
 					echo "</td>";
 				}
