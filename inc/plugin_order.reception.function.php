@@ -318,7 +318,7 @@ function getReceptionDeviceName($deviceID, $device_type) {
 
 function getAllItemsByType($type, $entity, $item_type = 0, $item_model = 0) {
 	global $DB, $LINK_ID_TABLE, $ORDER_TYPE_TABLES, $ORDER_MODEL_TABLES, $ORDER_TEMPLATE_TABLES, $ORDER_RESTRICTED_TYPES, $LANG;
-z
+
 	$and = "";
 	if (isset ($ORDER_TYPE_TABLES[$type]))
 		$and .= ($item_type != 0 ? " AND type=$item_type" : "");
