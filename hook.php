@@ -274,7 +274,24 @@ function plugin_order_install() {
    $DB->query($query) or die($DB->error());
       
    }
-   
+  
+  /* Update en 1.1.0 for taxes */
+  $query = "SELECT name FROM glpi_dropdown_plugin_order_taxes";
+	$result = $DB->query($query);
+	$number = $DB->numrows($result);
+	if ($number){
+    while ($data=$DB->fetch_array($result)){
+      $findme   = ',';
+      if(strpos($data["name"], $findme)){
+        $name= str_replace(',', '.', $data["name"]);
+        $query = "UPDATE `glpi_dropdown_plugin_order_taxes` 
+                  SET `name` = '".$name."' 
+                  WHERE `name`= '".$data["name"]."'";
+        $DB->query($query) or die($DB->error());  
+      }     
+    }
+  }
+  
 	plugin_order_createfirstaccess($_SESSION['glpiactiveprofile']['ID']);
    
    plugin_order_changeprofile();
