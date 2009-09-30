@@ -36,6 +36,25 @@ class PluginOrderReference extends CommonDBTM {
 		$this->may_be_recursive = true;
 		$this->dohistory = true;
 	}
+  
+  function searchTypesInReferences($supplier) {
+  
+    global $DB;
+    
+    $used=array();
+    $query = "SELECT type FROM ".$this->table." 
+              LEFT JOIN glpi_plugin_order_references_manufacturers ON (".$this->table.".ID = glpi_plugin_order_references_manufacturers.FK_reference)
+              WHERE glpi_plugin_order_references_manufacturers.FK_enterprise = ".$supplier." ";
+    $result = $DB->query($query);
+    $number = $DB->numrows($result);
+    if ($number){
+      while ($data=$DB->fetch_array($result)){
+          $used[]=$data["type"];
+      }
+    }
+    
+    return $used;
+  }
 
 	/*define header form */
 	function defineTabs($ID, $withtemplate) {

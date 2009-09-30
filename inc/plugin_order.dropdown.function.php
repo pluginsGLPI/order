@@ -80,7 +80,7 @@ function plugin_order_dropdownorder($myname, $entity_restrict = '', $used = arra
 
 	return $rand;
 }
-
+    
 function plugin_order_dropdownAllItems($myname, $ajax = false, $value = 0, $orderID = 0, $supplier = 0, $entity = 0, $ajax_page = '') {
 	global $LANG, $CFG_GLPI, $ORDER_AVAILABLE_TYPES;
 
@@ -88,10 +88,20 @@ function plugin_order_dropdownAllItems($myname, $ajax = false, $value = 0, $orde
 
 	echo "<select name=\"$myname\" id='$myname'>";
 	echo "<option value='0' selected>------</option>\n";
-
+  
+  $PluginOrderReference = new PluginOrderReference();
+  $used=$PluginOrderReference->searchTypesInReferences($supplier);
+  
+  foreach ($ORDER_AVAILABLE_TYPES as $tmp => $type) {
+      $result=in_array($type, $used);
+      if(!$result) {
+        unset($ORDER_AVAILABLE_TYPES[$tmp]);
+      }
+	}
+	
 	foreach ($ORDER_AVAILABLE_TYPES as $tmp => $type) {
 		$ci->setType($type);
-		echo "<option value='$type' " . ($type == $value ? " selected" : '') . ">" . $ci->getType() . "</option>\n";
+		echo "<option value='$type' " . ($type == $value ? " selected" : '') . ">".$ci->getType(). "</option>\n";
 	}
 	echo "</select>";
 
