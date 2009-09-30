@@ -89,16 +89,17 @@ function plugin_order_dropdownAllItems($myname, $ajax = false, $value = 0, $orde
 	echo "<select name=\"$myname\" id='$myname'>";
 	echo "<option value='0' selected>------</option>\n";
   
-  $PluginOrderReference = new PluginOrderReference();
-  $used=$PluginOrderReference->searchTypesInReferences($supplier);
-  
-  foreach ($ORDER_AVAILABLE_TYPES as $tmp => $type) {
-      $result=in_array($type, $used);
-      if(!$result) {
-        unset($ORDER_AVAILABLE_TYPES[$tmp]);
-      }
+  if (strpos($_SERVER['HTTP_REFERER'],"plugin_order.form.php")){
+    $PluginOrderReference = new PluginOrderReference();
+    $used=$PluginOrderReference->searchTypesInReferences($supplier);
+    
+    foreach ($ORDER_AVAILABLE_TYPES as $tmp => $type) {
+        $result=in_array($type, $used);
+        if(!$result) {
+          unset($ORDER_AVAILABLE_TYPES[$tmp]);
+        }
+    }
 	}
-	
 	foreach ($ORDER_AVAILABLE_TYPES as $tmp => $type) {
 		$ci->setType($type);
 		echo "<option value='$type' " . ($type == $value ? " selected" : '') . ">".$ci->getType(). "</option>\n";
