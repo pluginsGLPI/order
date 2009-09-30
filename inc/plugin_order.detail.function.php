@@ -49,14 +49,14 @@ function plugin_order_getDelivredQuantity($FK_order, $FK_reference) {
 	return ($DB->result($result, 0, 'delivredquantity'));
 }
 
-function getPrices($FK_order) {
+function pugin_order_getAllPrices($FK_order) {
 	global $CFG_GLPI, $DB;
 	$query = "SELECT SUM(price_ati) as priceTTC, SUM(price_discounted) as priceHT FROM `glpi_plugin_order_detail` WHERE FK_order=$FK_order";
 	$result = $DB->query($query);
 	return $DB->fetch_array($result);
 }
 
-function plugin_order_plugin_order_getPrices($priceHT, $taxes) {
+function plugin_order_getPricesATI($priceHT, $taxes) {
 	if (!$priceHT)
 		return 0;
 	else
@@ -77,7 +77,7 @@ function plugin_order_addDetails($referenceID, $device_type, $orderID, $quantity
 				$input["price_taxfree"] = $price;
 				$input["price_discounted"] = $price - ($price * ($discounted_price / 100));
 				$input["status"] = ORDER_STATUS_DRAFT;
-				$input["price_ati"] = plugin_order_plugin_order_getPrices($input["price_discounted"], getDropdownName("glpi_dropdown_plugin_order_taxes", $taxes));
+				$input["price_ati"] = plugin_order_getPricesATI($input["price_discounted"], getDropdownName("glpi_dropdown_plugin_order_taxes", $taxes));
 				$input["deliverynum"] = "";
             $input["discount"] = $discounted_price;
             

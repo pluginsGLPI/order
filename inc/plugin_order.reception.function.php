@@ -29,7 +29,7 @@
     Original Author of file:
     Purpose of file:
     ----------------------------------------------------------------------*/
-function plugin_order_plugin_order_showDetailReceptionForm($orderID) {
+function plugin_order_showDetailReceptionForm($orderID) {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE, $INFOFORM_PAGES;
 
 	$plugin_order = new PluginOrder();
@@ -76,7 +76,7 @@ function plugin_order_plugin_order_showDetailReceptionForm($orderID) {
 			echo "<th>" . $LANG['plugin_order']['detail'][18] . "</th></tr>";
 			echo "<tr><td class='tab_bg_1' width='15'></td><td align='center' class='tab_bg_1'>" . getReceptionReferenceLink($refID, $DB->result($result_ref, $j, 'name')) . "</td>";
 			echo "<td align='center' class='tab_bg_1'>" . plugin_order_getDelivredQuantity($orderID, $refID) . " / " . plugin_order_getQuantity($orderID, $refID) . "</td>";
-			echo "<td align='center' class='tab_bg_1'>" . getNumberOfLinkedMaterial($orderID, $refID) . " / " . plugin_order_getQuantity($orderID, $refID) . "</td>";
+			echo "<td align='center' class='tab_bg_1'>" . plugin_order_getNumberOfLinkedMaterial($orderID, $refID) . " / " . plugin_order_getQuantity($orderID, $refID) . "</td>";
 			echo "<td align='center' class='tab_bg_1'>" . plugin_order_displayPrice($DB->result($result, 0, "price_taxfree")) . "</td>";
 			echo "<td align='center' class='tab_bg_1'>" . plugin_order_displayPrice($DB->result($result, 0, "price_ati")) . "</td>";
 			echo "<td align='center' class='tab_bg_1'>" . plugin_order_displayPrice($DB->result($result, 0, "price_discounted")) . "</td></tr></table>";
@@ -113,16 +113,16 @@ function plugin_order_plugin_order_showDetailReceptionForm($orderID) {
 					echo "</td>";
 				}
 
-				echo "<td align='center'>" . getReceptionType($detailID) . "</td>";
-				echo "<td align='center'>" . getReceptionManufacturer($detailID) . "</td>";
+				echo "<td align='center'>" . plugin_order_getReceptionType($detailID) . "</td>";
+				echo "<td align='center'>" . plugin_order_getReceptionManufacturer($detailID) . "</td>";
 				echo "<td align='center'>" . getReceptionReferenceLink($DB->result($result, $i, 'IDR'), $DB->result($result, $i, 'name')) . "</td>";
-				echo "<td align='center'>" . getReceptionStatus($detailID) . "</td>";
+				echo "<td align='center'>" . plugin_order_getReceptionStatus($detailID) . "</td>";
 				echo "<td align='center'>" . convDate($mydetail->fields["date"]) . "</td>";
 				echo "<td align='center'>" . $mydetail->fields["deliverynum"] . "</td>";
-				echo "<td align='center'>" . getReceptionDeviceName($DB->result($result, $i, 'FK_device'), $DB->result($result, $i, 'type'));
+				echo "<td align='center'>" . plugin_order_getReceptionDeviceName($DB->result($result, $i, 'FK_device'), $DB->result($result, $i, 'type'));
 				if ($DB->result($result, $i, 'FK_device') != 0) {
 					echo "<img alt='' src='" . $CFG_GLPI["root_doc"] . "/pics/aide.png' onmouseout=\"cleanhide('comments_$random')\" onmouseover=\"cleandisplay('comments_$random')\" ";
-					echo "<span class='over_link' id='comments_$random'>" . nl2br(getReceptionMaterialInfo($DB->result($result, $i, 'type'), $DB->result($result, $i, 'FK_device'))) . "</span>";
+					echo "<span class='over_link' id='comments_$random'>" . nl2br(plugin_order_getReceptionMaterialInfo($DB->result($result, $i, 'type'), $DB->result($result, $i, 'FK_device'))) . "</span>";
 				}
 				echo "<input type='hidden' name='ID[$detailID]' value='$detailID'>";
 				echo "<input type='hidden' name='name[$detailID]' value='" . $DB->result($result, $i, 'name') . "'>";
@@ -152,7 +152,7 @@ function plugin_order_plugin_order_showDetailReceptionForm($orderID) {
 	}
 }
 
-function getNumberOfLinkedMaterial($orderID, $refID) {
+function plugin_order_getNumberOfLinkedMaterial($orderID, $refID) {
 	global $DB;
 	$query = "SELECT count(*) AS result FROM `glpi_plugin_order_detail`
 					  WHERE FK_order = " . $orderID . "
@@ -162,7 +162,7 @@ function getNumberOfLinkedMaterial($orderID, $refID) {
 	return ($DB->result($result, 0, 'result'));
 }
 
-function getReceptionMaterialInfo($deviceType, $deviceID) {
+function plugin_order_getReceptionMaterialInfo($deviceType, $deviceID) {
 	global $DB, $LINK_ID_TABLE, $LANG;
 	$comments = "";
 	switch ($deviceType) {
@@ -227,7 +227,7 @@ function getReceptionMaterialInfo($deviceType, $deviceID) {
 	return ($comments);
 }
 
-function getReceptionStatus($ID) {
+function plugin_order_getReceptionStatus($ID) {
 	global $DB, $LANG;
 
 	$detail = new PluginOrderDetail;
@@ -243,7 +243,7 @@ function getReceptionStatus($ID) {
 	}
 }
 
-function getReceptionManufacturer($ID) {
+function plugin_order_getReceptionManufacturer($ID) {
 	global $DB;
 	$query = "SELECT glpi_plugin_order_detail.ID, FK_glpi_enterprise
 					  FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
@@ -256,7 +256,7 @@ function getReceptionManufacturer($ID) {
 		return -1;
 }
 
-function getReceptionDate($ID) {
+function plugin_order_getReceptionDate($ID) {
 	global $DB, $LANG;
 
 	$detail = new PluginOrderDetail;
@@ -267,7 +267,7 @@ function getReceptionDate($ID) {
 		return convDate($detail->fields["date"]);
 }
 
-function getReceptionType($ID) {
+function plugin_order_getReceptionType($ID) {
 	global $DB, $LINK_ID_TABLE;
 	$query = "SELECT glpi_plugin_order_detail.ID, type 
 					  FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
@@ -282,7 +282,7 @@ function getReceptionType($ID) {
 		return (-1);
 }
 
-function getReceptionDeviceName($deviceID, $device_type) {
+function plugin_order_getReceptionDeviceName($deviceID, $device_type) {
 	global $DB, $LINK_ID_TABLE, $INFOFORM_PAGES, $CFG_GLPI, $LANG;
 	if ($deviceID == 0)
 		return ($LANG['plugin_order']['item'][2]);
@@ -319,7 +319,7 @@ function getReceptionDeviceName($deviceID, $device_type) {
 	}
 }
 
-function getAllItemsByType($type, $entity, $item_type = 0, $item_model = 0) {
+function plugin_order_getAllItemsByType($type, $entity, $item_type = 0, $item_model = 0) {
 	global $DB, $LINK_ID_TABLE, $ORDER_TYPE_TABLES, $ORDER_MODEL_TABLES, $ORDER_TEMPLATE_TABLES, $ORDER_RESTRICTED_TYPES, $LANG;
 
 	$and = "";

@@ -79,7 +79,7 @@ if (empty ($_POST["ID"])) {
 			plugin_order_showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			plugin_order_showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			plugin_order_showItem($_POST["ID"]);
-			plugin_order_plugin_order_showDetailReceptionForm($_POST["ID"]);
+			plugin_order_showDetailReceptionForm($_POST["ID"]);
 			showDocumentAssociated(PLUGIN_ORDER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
 			showNotesForm($_POST['target'], PLUGIN_ORDER_TYPE, $_POST["ID"]);
 			break;
@@ -97,7 +97,7 @@ if (empty ($_POST["ID"])) {
 			plugin_order_showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"], 1);
 			break;
 		case 5 :
-			plugin_order_plugin_order_showDetailReceptionForm($_POST["ID"]);
+			plugin_order_showDetailReceptionForm($_POST["ID"]);
 			break;
 		case 11 :
 			showNotesForm($_POST['target'], PLUGIN_ORDER_TYPE, $_POST["ID"]);

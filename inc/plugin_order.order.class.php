@@ -239,7 +239,7 @@ class PluginOrder extends CommonDBTM {
 			/* total price (without taxes) */
 
 			if ($ID > 0) {
-				$prices = getPrices($ID);
+				$prices = pugin_order_getAllPrices($ID);
 
 				echo "<td colspan='2'>" . $LANG['plugin_order'][13] . " : ";
 				echo plugin_order_displayPrice($prices["priceHT"]) . "<br>";
