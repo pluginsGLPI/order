@@ -81,7 +81,7 @@ function plugin_order_dropdownorder($myname, $entity_restrict = '', $used = arra
 	return $rand;
 }
     
-function plugin_order_dropdownAllItems($myname, $ajax = false, $value = 0, $orderID = 0, $supplier = 0, $entity = 0, $ajax_page = '') {
+function plugin_order_dropdownAllItems($myname, $ajax = false, $value = 0, $orderID = 0, $supplier = 0, $entity = 0, $ajax_page = '',$filter=false) {
 	global $LANG, $CFG_GLPI, $ORDER_AVAILABLE_TYPES;
 
 	$ci = new CommonItem();
@@ -89,7 +89,7 @@ function plugin_order_dropdownAllItems($myname, $ajax = false, $value = 0, $orde
 	echo "<select name=\"$myname\" id='$myname'>";
 	echo "<option value='0' selected>------</option>\n";
   
-  if (strpos($_SERVER['HTTP_REFERER'],"plugin_order.form.php")){
+  if ($filter){
     $PluginOrderReference = new PluginOrderReference();
     $used=$PluginOrderReference->searchTypesInReferences($supplier);
     
