@@ -674,9 +674,12 @@ function plugin_pre_item_update_order($input) {
 			case INFOCOM_TYPE :
             //If infocom modifications doesn't come from order plugin himself
 				if (!isset ($input["_manage_by_order"])) {
-
+               
+               $infocom = new InfoCom;
+               $infocom->getFromDB($input["ID"]);
+               
 					$device = new PluginOrderDetail;
-					if ($device->isDeviceLinkedToOrder($input["device_type"], $input["FK_device"])) {
+					if ($device->isDeviceLinkedToOrder($infocom->fields["device_type"],$infocom->fields["FK_device"])) {
 						$field_set = false;
 						$unset_fields = array (
 							"num_commande",

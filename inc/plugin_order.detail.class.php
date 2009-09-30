@@ -207,7 +207,7 @@ class PluginOrderDetail extends CommonDBTM {
 	function isDeviceLinkedToOrder($device_type, $deviceID) {
 		global $DB;
 		$query = "SELECT ID FROM `" . $this->table . "` WHERE `device_type`='$device_type' AND `FK_device`='$deviceID'";
-		$result = $DB->query($query);
+      $result = $DB->query($query);
 		if ($DB->numrows($result))
 			return true;
 		else
