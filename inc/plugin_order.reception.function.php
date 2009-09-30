@@ -318,14 +318,14 @@ function getReceptionDeviceName($deviceID, $device_type) {
 
 function getAllItemsByType($type, $entity, $item_type = 0, $item_model = 0) {
 	global $DB, $LINK_ID_TABLE, $ORDER_TYPE_TABLES, $ORDER_MODEL_TABLES, $ORDER_TEMPLATE_TABLES, $ORDER_RESTRICTED_TYPES, $LANG;
-
+z
 	$and = "";
 	if (isset ($ORDER_TYPE_TABLES[$type]))
 		$and .= ($item_type != 0 ? " AND type=$item_type" : "");
 	if (isset ($ORDER_MODEL_TABLES[$type]))
 		$and .= ($item_model != 0 ? " AND model=$item_model" : "");
 	if (in_array($type, $ORDER_TEMPLATE_TABLES))
-		$and = " AND is_template=0 AND deleted=0 ";
+		$and .= " AND is_template=0 AND deleted=0 ";
 
 	switch ($type) {
 		default :
