@@ -51,11 +51,6 @@ class PluginOrder extends CommonDBTM {
 		$DB->query($query);
 	}
 
-	/*clean order if items are deleted */
-	function cleanItems($ID, $type) {
-		global $DB;
-	}
-
 	/*define header form */
 	function defineTabs($ID, $withtemplate) {
 		global $LANG;

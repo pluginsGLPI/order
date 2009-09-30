@@ -723,19 +723,9 @@ function plugin_pre_item_update_order($input) {
 
 /* hook done on purge item case */
 function plugin_item_purge_order($parm) {
-	if (in_array($parm["type"], array (
-			COMPUTER_TYPE,
-			MONITOR_TYPE,
-			NETWORKING_TYPE,
-			PERIPHERAL_TYPE,
-			PHONE_TYPE,
-			PRINTER_TYPE,
-			SOFTWARE_TYPE,
-			CONTRACT_TYPE,
-			PROFILE_TYPE
-		))) {
-		$plugin_order = new PluginOrder;
-		$plugin_order->cleanItems($parm["ID"], $parm["type"]);
+	global $ORDER_AVAILABLE_TYPES;
+   logInFile("debug",exportArrayToDB($parm));
+   if (in_array($parm["type"], $ORDER_AVAILABLE_TYPES)) {
 		$detail = new PluginOrderDetail;
 		$detail->cleanItems($parm["ID"], $parm["type"]);
 		return true;
