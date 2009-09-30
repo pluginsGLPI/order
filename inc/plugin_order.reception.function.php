@@ -298,7 +298,9 @@ function getReceptionDeviceName($deviceID, $device_type) {
 			default :
 				$ci = new CommonItem();
 				$ci->getFromDB($device_type, $deviceID);
-				return ("<a href=" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[$device_type] . "?ID=" . $deviceID . "&device_type=" . $device_type . ">" . $ci->getField("name") . "</a>");
+				$name = $ci->getField("name");
+				if ($_SESSION["glpiview_ID"] || empty($name)) $name.=" (".$deviceID.")";
+				return ("<a href=" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[$device_type] . "?ID=" . $deviceID . "&device_type=" . $device_type . ">" . $name."</a>");
 				break;
 			case CONSUMABLE_ITEM_TYPE :
 				$ci = new Consumable();
@@ -591,7 +593,7 @@ function plugin_order_generateNewDevice($params) {
 	$entity = $params["FK_entities"];
 	
    foreach ($params["ID"] as $tmp => $values) {
-   print_r($values);
+    //print_r($values);
 		//------------- Template management -----------------------//
 		//Look for a template in the entity
 		$templateID = plugin_order_templateExistsInEntity($values["ID"], $values["type"], $entity);
