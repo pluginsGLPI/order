@@ -153,7 +153,7 @@ function plugin_order_dropdownAllItemsByType($name, $type, $entity=0,$item_type=
 function plugin_order_dropdownReceptionActions($type,$referenceID,$orderID) {
 	global $LANG, $CFG_GLPI;
 	$rand = mt_rand();
-	echo "<td width='5%'>";
+
 	echo "<select name='receptionActions$rand' id='receptionActions$rand'>";
 	echo "<option value='0' selected>-----</option>";
 	if (!plugin_order_allItemsAlreadyDelivered($orderID, $referenceID)) {
@@ -177,8 +177,7 @@ function plugin_order_dropdownReceptionActions($type,$referenceID,$orderID) {
       'orderID'=>$orderID
 	);
 	ajaxUpdateItemOnSelectEvent("receptionActions$rand", "show_receptionActions$rand", $CFG_GLPI["root_doc"] . "/plugins/order/ajax/receptionactions.php", $params);
-	echo "</td>";
-	echo "<td valign=middle><span id='show_receptionActions$rand'>&nbsp;</span></td>";
+	echo "<span id='show_receptionActions$rand'>&nbsp;</span>";
 }
 
 function plugin_order_dropdownStatus($name, $value = 0) {

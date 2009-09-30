@@ -59,7 +59,7 @@ function plugin_order_plugin_order_showDetailReceptionForm($orderID) {
 			$num = $DB->numrows($result);
 		}
 
-		echo "<div class='center'><table class='tab_cadre_fixe'>";
+		echo "<div class='center'><table class='tab_cadrehov'>";
 		if (!$numref)
 			echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
 		else {
@@ -83,7 +83,7 @@ function plugin_order_plugin_order_showDetailReceptionForm($orderID) {
 
 			echo "<div class='center' id='reception$rand' style='display:none'>";
 			echo "<form method='post' name='order_reception_form$rand' id='order_reception_form$rand'  action=\"" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.reception.form.php\">";
-			echo "<table class='tab_cadre_fixe'>";
+			echo "<table class='tab_cadrehov'>";
 
 			echo "<tr>";
 			if ($canedit)
@@ -131,14 +131,18 @@ function plugin_order_plugin_order_showDetailReceptionForm($orderID) {
 			}
 			echo "</table>";
 			if ($canedit) {
-				echo "<table class='tab_cadre_fixe'>";
-				echo "<tr><td width='5%'><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center' width='5%'><a onclick= \"if ( markCheckboxes('order_reception_form$rand') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$orderID&amp;select=all'>" . $LANG['buttons'][18] . "</a></td>";
-				echo "<td width='1%'>/</td><td class='center' width='5%'><a onclick= \"if ( unMarkCheckboxes('order_reception_form$rand') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$orderID&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
-				echo "</td>";
-				echo "<input type='hidden' name='orderID' value='$orderID'>";
+				
+				echo "<div class='center'>";
+        echo "<table width='80%' class='tab_glpi'>";
+        echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+        echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=none'>".$LANG['buttons'][19]."</a>";
+        echo "</td><td align='left' width='90%'>";
+        echo "<input type='hidden' name='orderID' value='$orderID'>";
 				plugin_order_dropdownReceptionActions($typeRef, $refID, $mydetail->fields["FK_order"]);
-				echo "</td></tr>";
-				echo "</table>";
+        echo "</td>";
+        echo "</table>";
+        echo "</div>";
+					
 			}
 			echo "</form></div>";
 		}
