@@ -72,11 +72,12 @@ $LANG['plugin_order']['item'][2] = "Aucun matériel associé";
 $LANG['plugin_order']['item'][3] = "Pas de matériel lié à la commande";
 
 $LANG['plugin_order']['detail'][0] = "Détail(s)";
-$LANG['plugin_order']['detail'][1] = "Type";
+$LANG['plugin_order']['detail'][1] = "Type de matériel";
 $LANG['plugin_order']['detail'][2] = "Référence";
 $LANG['plugin_order']['detail'][3] = "Quantité livrée";
 $LANG['plugin_order']['detail'][4] = "Prix unitaire (HT)";
 $LANG['plugin_order']['detail'][5] = "Ajouter à la commande";
+$LANG['plugin_order']['detail'][6] = "Type";
 $LANG['plugin_order']['detail'][7] = "Quantité commandée";
 $LANG['plugin_order']['detail'][8] = "Prix unitaire (TTC)";
 $LANG['plugin_order']['detail'][9] = "Prix total (HT)";

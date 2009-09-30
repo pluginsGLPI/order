@@ -108,7 +108,7 @@ class PluginOrderDetail extends CommonDBTM {
       global  $CFG_GLPI, $LANG,$DB,$INFOFORM_PAGES;
 		
 			$query="SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, 
-					glpi_plugin_order_references.type,glpi_plugin_order_references.FK_model, glpi_plugin_order_references.FK_glpi_enterprise, glpi_plugin_order_references.name, 
+					glpi_plugin_order_references.type,glpi_plugin_order_references.FK_type,glpi_plugin_order_references.FK_model, glpi_plugin_order_references.FK_glpi_enterprise, glpi_plugin_order_references.name, 
 					glpi_plugin_order_detail.price_taxfree, glpi_plugin_order_detail.price_ati, glpi_plugin_order_detail.price_discounted, 
                glpi_plugin_order_detail.discount,
 					SUM(glpi_plugin_order_detail.price_discounted) AS totalpriceHT, 
@@ -128,13 +128,14 @@ class PluginOrderDetail extends CommonDBTM {
 			if ($num>0)
 			{
 				echo "<div class='center'><table class='tab_cadrehov'>";
-				echo "<tr><th colspan='12'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
+				echo "<tr><th colspan='13'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
 				echo "<tr>";
 				if($canedit)
 					echo "<th></th>";
 				echo "<th>".$LANG['plugin_order']['detail'][1]."</th>";
 				echo "<th>".$LANG['common'][5]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
+				echo "<th>".$LANG['plugin_order']['detail'][6]."</th>";
 				echo "<th>".$LANG['common'][22]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][7]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][3]."</th>";
@@ -167,6 +168,10 @@ class PluginOrderDetail extends CommonDBTM {
 					/* reference */
 					echo "<td align='center'>";
 					echo getReceptionReferenceLink($DB->result($result,$i,"IDR"), $DB->result($result,$i,"name"));
+					echo "</td>";
+					/* type */
+					echo "<td align='center'>";
+					echo getDropdownName(plugin_order_getTypeTable($DB->result($result,$i,"type")), $DB->result($result,$i,"FK_type"));
 					echo "</td>";
 					/* modele */
 					echo "<td align='center'>";

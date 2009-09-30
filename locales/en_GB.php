@@ -71,11 +71,12 @@ $LANG['plugin_order']['item'][2] = "No associated item";
 $LANG['plugin_order']['item'][3] = "No items for this order";
 
 $LANG['plugin_order']['detail'][0] = "Detail(s)";
-$LANG['plugin_order']['detail'][1] = "Type";
+$LANG['plugin_order']['detail'][1] = "Item type";
 $LANG['plugin_order']['detail'][2] = "Reference";
 $LANG['plugin_order']['detail'][3] = "Delivered quantity";
 $LANG['plugin_order']['detail'][4] = "Unit price tax free";
 $LANG['plugin_order']['detail'][5] = "Add to the order";
+$LANG['plugin_order']['detail'][6] = "Type";
 $LANG['plugin_order']['detail'][7] = "Ordered quantity";
 $LANG['plugin_order']['detail'][8] = "Price AIT";
 $LANG['plugin_order']['detail'][9] = "Total price tax free";
