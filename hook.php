@@ -459,21 +459,21 @@ function plugin_order_getSearchOption() {
 		
 		foreach ($ORDER_AVAILABLE_TYPES as $type)
 		{
-			$sopt[$type][3050]['table']='glpi_plugin_order';
-			$sopt[$type][3050]['field']='name';
-			$sopt[$type][3050]['linkfield']='';
-			$sopt[$type][3050]['name']=$LANG['plugin_order']['title'][1]." - ".$LANG['plugin_order'][39];
-			$sopt[$type][3050]['forcegroupby']='1';
-			$sopt[$type][3050]['datatype']='itemlink';
-			$sopt[$type][3050]['itemlink_type']=PLUGIN_ORDER_TYPE;
+			$sopt[$type][3160]['table']='glpi_plugin_order';
+			$sopt[$type][3160]['field']='name';
+			$sopt[$type][3160]['linkfield']='';
+			$sopt[$type][3160]['name']=$LANG['plugin_order']['title'][1]." - ".$LANG['plugin_order'][39];
+			$sopt[$type][3160]['forcegroupby']='1';
+			$sopt[$type][3160]['datatype']='itemlink';
+			$sopt[$type][3160]['itemlink_type']=PLUGIN_ORDER_TYPE;
 
-			$sopt[$type][3051]['table']='glpi_plugin_order';
-			$sopt[$type][3051]['field']='numorder';
-			$sopt[$type][3051]['linkfield']='';
-			$sopt[$type][3051]['name']=$LANG['plugin_order']['title'][1]." - ".$LANG['plugin_order'][0];
-			$sopt[$type][3051]['forcegroupby']='1';
-			$sopt[$type][3051]['datatype']='itemlink';
-			$sopt[$type][3051]['itemlink_type']=PLUGIN_ORDER_TYPE;
+			$sopt[$type][3161]['table']='glpi_plugin_order';
+			$sopt[$type][3161]['field']='numorder';
+			$sopt[$type][3161]['linkfield']='';
+			$sopt[$type][3161]['name']=$LANG['plugin_order']['title'][1]." - ".$LANG['plugin_order'][0];
+			$sopt[$type][3161]['forcegroupby']='1';
+			$sopt[$type][3161]['datatype']='itemlink';
+			$sopt[$type][3161]['itemlink_type']=PLUGIN_ORDER_TYPE;
 		}
 
 	}
