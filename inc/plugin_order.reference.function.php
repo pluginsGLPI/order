@@ -250,7 +250,7 @@ function plugin_order_isSupplierInReferenceInUse($referenceID,$supplierID)
 function getReceptionReferenceLink($ID, $name) {
 	global $CFG_GLPI, $INFOFORM_PAGES;
 	if (plugin_order_haveRight("reference","r"))
-		return "<a href=" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[PLUGIN_ORDER_REFERENCE_TYPE] . "?ID=" . $ID . "'>" . $name . "</a>";
+		return "<a href='" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[PLUGIN_ORDER_REFERENCE_TYPE] . "?ID=" . $ID . "'>" . $name . "</a>";
 	else
 		return $name;
 }
