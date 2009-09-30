@@ -125,7 +125,7 @@ class PluginOrder extends CommonDBTM {
 
 			echo "<div class='center' id='tabsbody'>";
 			echo "<table class='tab_cadre_fixe'>";
-			$this->showFormHeader($ID, '', 2);
+			$this->showFormHeader($ID,$withtemplate, 2);
 
 			//Display without inside table
 			/* title */
@@ -209,7 +209,7 @@ class PluginOrder extends CommonDBTM {
 			echo "<td>".$LANG['plugin_order'][26].": </td>";
 			echo "<td>";
 			if ($canedit)
-				autocompletionTextField("port_price", "glpi_plugin_order", "port_price", $this->fields["port_price"], 5, $this->fields["FK_entities"]);
+				autocompletionTextField("port_price", "glpi_plugin_order", "port_price", (!$this->fields["port_price"]?0:$this->fields["port_price"]), 5, $this->fields["FK_entities"]);
 			else
 				echo $this->fields["port_price"];
 			echo "</td></tr>";
