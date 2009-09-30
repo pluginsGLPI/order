@@ -209,7 +209,7 @@ class PluginOrder extends CommonDBTM {
 			echo "<td>".$LANG['plugin_order'][26].": </td>";
 			echo "<td>";
 			if ($canedit)
-				autocompletionTextField("port_price", "glpi_plugin_order", "port_price", $this->fields["port_price"], 30, $this->fields["FK_entities"]);
+				autocompletionTextField("port_price", "glpi_plugin_order", "port_price", $this->fields["port_price"], 5, $this->fields["FK_entities"]);
 			else
 				echo $this->fields["port_price"];
 			echo "</td></tr>";
@@ -248,7 +248,12 @@ class PluginOrder extends CommonDBTM {
 
 				echo "<td colspan='2'>" . $LANG['plugin_order'][13] . " : ";
 				echo plugin_order_displayPrice($prices["priceHT"]) . "<br>";
-
+        
+        /* total price (with postage) */
+				echo $LANG['plugin_order'][15] . " : ";
+				$priceHTwithpostage=$prices["priceHT"]+$this->fields["port_price"];
+				echo plugin_order_displayPrice($priceHTwithpostage) . "<br>";
+				
 				/* total price (with taxes) */
 				echo $LANG['plugin_order'][14] . " : ";
 				echo plugin_order_displayPrice($prices["priceTTC"]) . "</td></tr>";
