@@ -57,14 +57,13 @@ function plugin_init_order() {
 		PERIPHERAL_TYPE,
 		CONSUMABLE_ITEM_TYPE,
 		CARTRIDGE_ITEM_TYPE,
-      SOFTWARELICENSE_TYPE
+    SOFTWARELICENSE_TYPE
  	);
 	$ORDER_RESTRICTED_TYPES = array (
 		0,
 		SOFTWARELICENSE_TYPE,
 		CONSUMABLE_ITEM_TYPE,
-		CARTRIDGE_ITEM_TYPE,
-      SOFTWARELICENSE_TYPE
+		CARTRIDGE_ITEM_TYPE
  	);
 	$ORDER_VALIDATION_STATUS = array (
 		ORDER_STATUS_DRAFT,
@@ -76,7 +75,7 @@ function plugin_init_order() {
 		MONITOR_TYPE => "glpi_type_monitors",
 		PRINTER_TYPE => "glpi_type_printers",
 		NETWORKING_TYPE => "glpi_type_networking",
-		SOFTWARE_TYPE => "glpi_type_softwares",
+		SOFTWARELICENSE_TYPE => "glpi_dropdown_licensetypes",
 		PERIPHERAL_TYPE => "glpi_type_peripherals",
 		PHONE_TYPE => "glpi_type_phones",
 		CARTRIDGE_ITEM_TYPE => "glpi_dropdown_cartridge_type",
@@ -87,7 +86,6 @@ function plugin_init_order() {
 		MONITOR_TYPE => "glpi_dropdown_model_monitors",
 		PRINTER_TYPE => "glpi_dropdown_model_printers",
 		NETWORKING_TYPE => "glpi_dropdown_model_networking",
-		SOFTWARE_TYPE => "glpi_dropdown_model_softwares",
 		PERIPHERAL_TYPE => "glpi_dropdown_model_peripherals",
 		PHONE_TYPE => "glpi_dropdown_model_phones"
 	);
