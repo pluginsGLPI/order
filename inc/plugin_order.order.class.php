@@ -60,11 +60,12 @@ class PluginOrder extends CommonDBTM {
 			$plugin = new Plugin();
 			/* detail */
 			$ong[4] = $LANG['plugin_order']['detail'][0];
-			/* delivery */
-			$ong[5] = $LANG['plugin_order']['delivery'][1];
-			/* item */
-			$ong[2] = $LANG['plugin_order']['item'][0];
-
+			if(!plugin_order_canUpdateOrder($ID)) {
+            /* delivery */
+            $ong[5] = $LANG['plugin_order']['delivery'][1];
+            /* item */
+            $ong[2] = $LANG['plugin_order']['item'][0];
+         }
 			/*
 						if (haveRight("show_all_ticket", "1")) {
 							$ong[6] = $LANG['title'][28];

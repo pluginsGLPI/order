@@ -87,6 +87,7 @@ function plugin_order_addHistory($type, $old_value='',$new_value='',$ID)
 	$changes[2] = $new_value;
 	historyLog($ID, $type, $changes, 0, HISTORY_LOG_SIMPLE_MESSAGE);
 }
+
 function plugin_order_canUpdateOrder($orderID) {
 	global $ORDER_VALIDATION_STATUS;
 	if ($orderID > 0) {
