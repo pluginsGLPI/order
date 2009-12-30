@@ -600,7 +600,7 @@ function plugin_order_plugin_order_showItemGenerationForm($target, $params) {
             echo "</td>";
 				echo "<td>";
 				$entity_restrict = ($order->fields["recursive"] ? getEntitySons($order->fields["FK_entities"]) : $order->fields["FK_entities"]);
-				dropdownValue("glpi_entities", "FK_entities", $order->fields["FK_entities"], 1, $entity_restrict);
+				dropdownValue("glpi_entities", "ID[$i][FK_entities]", $order->fields["FK_entities"], 1, $entity_restrict);
 				echo "</td></tr>";
 				echo "<input type='hidden' name='ID[$i][type]' value=" . $params['type'][$key] . ">";
 				echo "<input type='hidden' name='ID[$i][ID]' value=" . $params["ID"][$key] . ">";
@@ -623,13 +623,12 @@ function plugin_order_plugin_order_showItemGenerationForm($target, $params) {
 function plugin_order_generateNewDevice($params) {
 	global $DB, $LANG;
 	$i = 0;
-	$entity = $params["FK_entities"];
 	
    foreach ($params["ID"] as $tmp => $values) {
     //print_r($values);
 		//------------- Template management -----------------------//
 		//Look for a template in the entity
-		$templateID = plugin_order_templateExistsInEntity($values["ID"], $values["type"], $entity);
+		$templateID = plugin_order_templateExistsInEntity($values["ID"], $values["type"], $values["FK_entities"]);
       
       $commonitem = new CommonItem;
       $commonitem->setType($values["type"], true);
@@ -658,7 +657,7 @@ function plugin_order_generateNewDevice($params) {
          $input["otherserial"] = autoName($commonitem->obj->fields["otherserial"], "otherserial", $templateID, $values["type"],$entity);
          
       } else {
-         $input["FK_entities"] = $entity;
+         $input["FK_entities"] = $values["FK_entities"];
          $input["serial"] = $values["serial"];
          if (isset ($values["otherserial"])) {
             $input["otherserial"] = $values["otherserial"];
@@ -675,7 +674,7 @@ function plugin_order_generateNewDevice($params) {
       $newID = $commonitem->obj->add($input);
 
 		//-------------- End template management ---------------------------------//
-		plugin_order_createLinkWithDevice($values["ID"], $newID, $values["type"], $values["orderID"], $entity, $templateID, false, false);
+		plugin_order_createLinkWithDevice($values["ID"], $newID, $values["type"], $values["orderID"], $values["FK_entities"], $templateID, false, false);
 
 		//Add item's history
 		$new_value = $LANG['plugin_order']['delivery'][13] . ' : ' . $order->fields["name"];
