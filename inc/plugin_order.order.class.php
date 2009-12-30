@@ -195,7 +195,10 @@ class PluginOrder extends CommonDBTM {
 			echo "<tr class='tab_bg_1'><td>" . $LANG['financial'][26] . ": </td>";
 			echo "<td>";
 			if ($canedit)
-				dropdownValue("glpi_enterprises", "FK_enterprise", $this->fields["FK_enterprise"], 1, $this->fields["FK_entities"]);
+            if (empty ($ID) || $ID < 0)
+               plugin_order_dropdownSuppliers("FK_enterprise", $this->fields["FK_entities"]);
+            else
+               dropdownValue("glpi_enterprises", "FK_enterprise", $this->fields["FK_enterprise"], 1, $this->fields["FK_entities"]);
 			else
 				echo getDropdownName("glpi_enterprises", $this->fields["FK_enterprise"]);
 			echo "</td>";
@@ -211,12 +214,12 @@ class PluginOrder extends CommonDBTM {
 			
 			/* linked contact of the supplier of order */
 			echo "<tr class='tab_bg_1'><td>".$LANG['common'][18].": </td>";
-			echo "<td>";
-			if ($canedit)
-        plugin_order_getDropdownContact($this->fields["FK_contact"],$this->fields["FK_enterprise"]);
+			echo "<td><span id='show_contact'>";
+			if ($canedit && $ID > 0)
+            dropdownValue("glpi_contacts", "FK_contact", $this->fields["FK_contact"], 1, $this->fields["FK_entities"]);
 			else
 				echo getDropdownName("glpi_contacts", $this->fields["FK_contact"]);
-			echo "</td>";
+			echo "</span></td>";
 			
 			/* status of bill */
 			echo "<td>" . $LANG['plugin_order']['status'][0] . ": </td>";

@@ -120,6 +120,56 @@ function plugin_order_dropdownAllItems($myname, $ajax = false, $value = 0, $orde
 	}
 }
 
+function plugin_order_dropdownSuppliers($myname,$entity_restrict='') {
+	global $DB,$LANG,$CFG_GLPI;
+
+	$rand=mt_rand();
+
+	$where=" WHERE glpi_enterprises.deleted='0' ";
+	$where.=getEntitiesRestrictRequest("AND","glpi_enterprises",'',$entity_restrict,true);
+
+	$query="SELECT glpi_enterprises.* FROM glpi_enterprises
+      LEFT JOIN glpi_contact_enterprise ON (glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID)
+		WHERE FK_enterprise IN (SELECT DISTINCT ID 
+				FROM glpi_enterprises $where) 
+		ORDER BY FK_entities, name";
+	//error_log($query);
+	$result=$DB->query($query);
+
+	echo "<select name='FK_enterprise' id='FK_enterprise'>\n";
+	echo "<option value='0'>------</option>\n";
+
+	$prev=-1;
+	while ($data=$DB->fetch_array($result)) {
+		if ($data["FK_entities"]!=$prev) {
+			if ($prev>=0) {
+				echo "</optgroup>";
+			}
+			$prev=$data["FK_entities"];
+			echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+		}
+		$output = $data["name"]." ".$data["firstname"];
+		if($_SESSION["glpiview_ID"]||empty($output)){
+			$output.=" (".$data["ID"].")";
+		}
+		echo "<option value=\"".$data["ID"]."\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
+	}
+	if ($prev>=0) {
+		echo "</optgroup>";
+	}
+	echo "</select>\n";
+
+	$params=array('FK_enterprise'=>'__VALUE__',
+			'entity_restrict'=>$entity_restrict,
+			'rand'=>$rand,
+			'myname'=>$myname
+			);
+
+	ajaxUpdateItemOnSelectEvent("FK_enterprise","show_contact",$CFG_GLPI["root_doc"]."/plugins/order/ajax/dropdownSupplier.php",$params);
+
+	return $rand;
+}
+
 function plugin_order_dropdownTemplate($name, $entity, $table, $value = 0) {
 	global $DB;
 	$result = $DB->query("SELECT tplname, ID FROM " . $table .
