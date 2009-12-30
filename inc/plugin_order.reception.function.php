@@ -382,7 +382,7 @@ function plugin_order_createLinkWithDevice($detailID = 0, $deviceID = 0, $device
 
 			plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_type, $newID, 0);
 		} else {
-			$input["ID"] = $detailID;
+         $input["ID"] = $detailID;
 			$input["FK_device"] = $deviceID;
 			$input["device_type"] = $device_type;
 			$detail->update($input);
