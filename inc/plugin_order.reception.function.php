@@ -323,8 +323,13 @@ function plugin_order_getAllItemsByType($type, $entity, $item_type = 0, $item_mo
 	global $DB, $LINK_ID_TABLE, $ORDER_TYPE_TABLES, $ORDER_MODEL_TABLES, $ORDER_TEMPLATE_TABLES, $ORDER_RESTRICTED_TYPES, $LANG;
 
 	$and = "";
+	
+	if ($type == CONTRACT_TYPE)
+      $field = "contract_type";
+   else 
+      $field = "type";
 	if (isset ($ORDER_TYPE_TABLES[$type]))
-		$and .= ($item_type != 0 ? " AND type=$item_type" : "");
+		$and .= ($item_type != 0 ? " AND $field=$item_type" : "");
 	if (isset ($ORDER_MODEL_TABLES[$type]))
 		$and .= ($item_model != 0 ? " AND model=$item_model" : "");
 	if (in_array($type, $ORDER_TEMPLATE_TABLES))

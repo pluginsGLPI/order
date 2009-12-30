@@ -117,7 +117,7 @@ class PluginOrderDetail extends CommonDBTM {
 					WHERE glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID
 					AND glpi_plugin_order_detail.FK_order=$FK_order
 					GROUP BY glpi_plugin_order_detail.FK_reference
-					ORDER BY glpi_plugin_order_detail.ID";
+					ORDER BY glpi_plugin_order_references.name ";
 			$result=$DB->query($query);
 			$num=$DB->numrows($result);
 			$rand=mt_rand();

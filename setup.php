@@ -57,7 +57,9 @@ function plugin_init_order() {
 		PERIPHERAL_TYPE,
 		CONSUMABLE_ITEM_TYPE,
 		CARTRIDGE_ITEM_TYPE,
-      SOFTWARELICENSE_TYPE
+      SOFTWARELICENSE_TYPE,
+      CONTRACT_TYPE
+      
  	);
 	$ORDER_RESTRICTED_TYPES = array (
 		CONSUMABLE_ITEM_TYPE,
@@ -77,7 +79,8 @@ function plugin_init_order() {
 		PERIPHERAL_TYPE => "glpi_type_peripherals",
 		PHONE_TYPE => "glpi_type_phones",
 		CARTRIDGE_ITEM_TYPE => "glpi_dropdown_cartridge_type",
-		CONSUMABLE_ITEM_TYPE => "glpi_dropdown_consumable_type"
+		CONSUMABLE_ITEM_TYPE => "glpi_dropdown_consumable_type",
+		CONTRACT_TYPE => "glpi_dropdown_contract_type"
 	);
 	$ORDER_MODEL_TABLES = array (
 		COMPUTER_TYPE => "glpi_dropdown_model",
