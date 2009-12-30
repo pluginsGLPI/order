@@ -735,26 +735,26 @@ function plugin_item_purge_order($parm) {
 }
 
 /* define headings added by the plugin */
-function plugin_get_headings_order($type, $withtemplate = '') {
+function plugin_get_headings_order($type, $ID, $withtemplate) {
 	global $LANG, $ORDER_AVAILABLE_TYPES;
 
-	$types = $ORDER_AVAILABLE_TYPES;
+   $types = $ORDER_AVAILABLE_TYPES;
 	$types[] = ENTERPRISE_TYPE;
-	$types[] = PROFILE_TYPE;
-	$types[] = "mailing";
-	if (in_array($type, $types)) {
-		/* template case */
-		if ($withtemplate = '')
-			return array ();
-		/* non template case */
-		else
-			return array (
-				1 => $LANG['plugin_order']['title'][1],
+   if ($type=="mailing") {
+		return array( 
+		1 => $LANG['plugin_order']['title'][1], 
+		); 
 
-				
-			);
-	} else
-		return false;
+	}elseif (in_array($type,$types)||
+		$type==PROFILE_TYPE) {
+		// template case
+		if ($ID>0 && !$withtemplate){
+				return array(
+					1 => $LANG['plugin_order']['title'][1],
+					);
+		}
+	}
+	return false;
 }
 
 /* define headings actions added by the plugin */
@@ -775,7 +775,7 @@ function plugin_headings_actions_order($type) {
 }
 
 /* action heading */
-function plugin_headings_order($type, $ID, $withtemplate = 0) {
+function plugin_headings_order($type, $ID) {
 	global $CFG_GLPI, $LANG, $ORDER_AVAILABLE_TYPES;
 
 	switch ($type) {
