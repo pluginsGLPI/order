@@ -148,7 +148,7 @@ function plugin_order_dropdownSuppliers($myname,$entity_restrict='') {
 			$prev=$data["FK_entities"];
 			echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
 		}
-		$output = $data["name"]." ".$data["firstname"];
+		$output = $data["name"];
 		if($_SESSION["glpiview_ID"]||empty($output)){
 			$output.=" (".$data["ID"].")";
 		}

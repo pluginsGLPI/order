@@ -88,7 +88,7 @@ if ($DB->numrows($result)) {
 			$prev=$data["FK_entities"];
 			echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
 		}
-		$output = $data["name"]." ".$data["firstname"];
+		$output=formatUserName($data["ID"],"",$data["name"],$data["firstname"]);
 		if($_SESSION["glpiview_ID"]||empty($output)){
 			$output.=" (".$data["ID"].")";
 		}
