@@ -43,19 +43,19 @@ function plugin_order_install() {
 	if (!TableExists("glpi_plugin_order")) {
 		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order` (
 								`ID` int(11) NOT NULL auto_increment,
-								`name` varchar(255) UNIQUE collate utf8_unicode_ci NOT NULL default '',
+								`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
 								`numordersupplier` varchar(255) NOT NULL collate utf8_unicode_ci default '',
-								`numbill`varchar(255) NOT NULL collate utf8_unicode_ci default '',
-								`numorder`varchar(255) NOT NULL collate utf8_unicode_ci default '',
+								`numbill` varchar(255) NOT NULL collate utf8_unicode_ci default '',
+								`numorder `varchar(255) NOT NULL collate utf8_unicode_ci default '',
 								`budget` int (11) NOT NULL default 0,
 								`payment` int (11) NOT NULL default 0,
 								`status` int(11) NOT NULL default 1,
 								`FK_entities` int(11) NOT NULL default 0,
 								`date` date,
 								`FK_enterprise` INT(11) NOT NULL DEFAULT 0,
-							  `location` int(11) NOT NULL default 0,
-							  `FK_contact` int(11) NOT NULL default 0,
-							  `port_price` FLOAT NOT NULL default 0,
+                        `location` int(11) NOT NULL default 0,
+                        `FK_contact` int(11) NOT NULL default 0,
+                        `port_price` FLOAT NOT NULL default 0,
 								`recursive` INT(1) NOT NULL default 1,
 								`deleted` INT(1) NOT NULL default 0,
 								`notes` TEXT,
@@ -70,7 +70,7 @@ function plugin_order_install() {
 									`ID` int(11) NOT NULL auto_increment,
 									`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
 									`comments` text,
-									PRIMARY KEY  (`ID`),
+                           PRIMARY KEY  (`ID`),
 									KEY `name` (`name`)
 								) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die($DB->error());
