@@ -201,7 +201,7 @@ function plugin_order_dropdownAllItemsByType($name, $type, $entity=0,$item_type=
 }
 
 function plugin_order_dropdownReceptionActions($type,$referenceID,$orderID) {
-	global $LANG, $CFG_GLPI;
+	global $LANG, $CFG_GLPI,$ORDER_RESTRICTED_TYPES;
 	$rand = mt_rand();
 
 	echo "<select name='receptionActions$rand' id='receptionActions$rand'>";
@@ -211,8 +211,8 @@ function plugin_order_dropdownReceptionActions($type,$referenceID,$orderID) {
       echo "<option value='bulk_reception'>" . $LANG['plugin_order']['delivery'][4] . "</option>";
    }
 		
-		
-	if ($type != CONSUMABLE_ITEM_TYPE && $type != CARTRIDGE_ITEM_TYPE)
+	$ORDER_RESTRICTED_TYPES[]=	SOFTWARELICENSE_TYPE;
+	if (!in_array($type, $ORDER_RESTRICTED_TYPES))
 		echo "<option value='generation'>" . $LANG['plugin_order']['delivery'][3] . "</option>";
 
    echo "<option value='createLink'>" . $LANG['plugin_order']['delivery'][11] . "</option>";
