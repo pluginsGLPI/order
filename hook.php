@@ -37,9 +37,6 @@ function plugin_order_install() {
 	global $DB, $LANG, $CFG_GLPI;
 	include_once (GLPI_ROOT . "/inc/profile.class.php");
 
-	global $DB;
-  
-  
 	if (!TableExists("glpi_plugin_order")) {
 		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order` (
 								`ID` int(11) NOT NULL auto_increment,
@@ -120,7 +117,6 @@ function plugin_order_install() {
 									) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die($DB->error());
 	}
-
 
 	if (!TableExists("glpi_plugin_order_profiles")) {
 		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_profiles` (
@@ -275,23 +271,27 @@ function plugin_order_install() {
       
    }
   
-  /* Update en 1.1.0 for taxes */
-  $query = "SELECT name FROM glpi_dropdown_plugin_order_taxes";
+   /* Update en 1.1.0 for taxes */
+   $query = "SELECT name FROM glpi_dropdown_plugin_order_taxes";
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
-	if ($number){
-    while ($data=$DB->fetch_array($result)){
-      $findme   = ',';
-      if(strpos($data["name"], $findme)){
-        $name= str_replace(',', '.', $data["name"]);
-        $query = "UPDATE `glpi_dropdown_plugin_order_taxes` 
+	if ($number) {
+      while ($data=$DB->fetch_array($result)) {
+         $findme   = ',';
+         if(strpos($data["name"], $findme)) {
+            $name= str_replace(',', '.', $data["name"]);
+            $query = "UPDATE `glpi_dropdown_plugin_order_taxes` 
                   SET `name` = '".$name."' 
                   WHERE `name`= '".$data["name"]."'";
-        $DB->query($query) or die($DB->error());  
-      }     
-    }
-  }
-  
+            $DB->query($query) or die($DB->error());  
+         }     
+      }
+   }
+   
+   if (isIndex('glpi_plugin_order', 'name')) {
+      $query = "ALTER TABLE `glpi_plugin_order` DROP INDEX `name`";
+      $DB->query($query) or die($DB->error());
+   }
 	plugin_order_createfirstaccess($_SESSION['glpiactiveprofile']['ID']);
    
    plugin_order_changeprofile();
