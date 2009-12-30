@@ -212,7 +212,7 @@ function plugin_order_dropdownReceptionActions($type,$referenceID,$orderID) {
    }
 		
 	$ORDER_RESTRICTED_TYPES[]=	SOFTWARELICENSE_TYPE;
-	$ORDER_RESTRICTED_TYPES[]=	SOFTWARE_TYPE;
+	//$ORDER_RESTRICTED_TYPES[]=	SOFTWARE_TYPE;
 	$ORDER_RESTRICTED_TYPES[]=	CONTRACT_TYPE;
 	if (!in_array($type, $ORDER_RESTRICTED_TYPES))
 		echo "<option value='generation'>" . $LANG['plugin_order']['delivery'][3] . "</option>";
