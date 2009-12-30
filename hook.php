@@ -43,7 +43,7 @@ function plugin_order_install() {
 								`name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
 								`numordersupplier` varchar(255) NOT NULL collate utf8_unicode_ci default '',
 								`numbill` varchar(255) NOT NULL collate utf8_unicode_ci default '',
-								`numorder `varchar(255) NOT NULL collate utf8_unicode_ci default '',
+								`numorder` varchar(255) NOT NULL collate utf8_unicode_ci default '',
 								`budget` int (11) NOT NULL default 0,
 								`payment` int (11) NOT NULL default 0,
 								`status` int(11) NOT NULL default 1,
