@@ -42,7 +42,7 @@ $plugin = new Plugin;
 if ($plugin->isActivated("genericobject"))
 	usePlugin('genericobject');
 
-/* reception d'une ligne d�tail */
+/* reception d'une ligne detail */
 if (isset ($_POST["reception"])) {
 	plugin_order_updateReceptionStatus($_POST);
 	glpi_header($_SERVER["HTTP_REFERER"]);
@@ -55,7 +55,7 @@ if (isset ($_POST["bulk_reception"])) {
 
 
 /*
- *  affiche le tableau permettant la g�n�ration de mat�riel */
+ *  affiche le tableau permettant la generation de materiel */
 if (isset ($_POST["generation"])) {
 	if (isset ($_POST["item"])) {
 		$detail = new PluginOrderDetail;
@@ -78,12 +78,12 @@ if (isset ($_POST["generation"])) {
 		glpi_header($_SERVER["HTTP_REFERER"]);
 	}
 }
-/* g�n�re le mat�riel */
+/* genere le materiel */
 if (isset ($_POST["generate"])) {
 	plugin_order_generateNewDevice($_POST);
 	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=" . $_POST["orderID"] . "");
 }
-/* supprime un lien d'une ligne d�tail vers un mat�riel */
+/* supprime un lien d'une ligne detail vers un materiel */
 if (isset ($_POST["deleteLinkWithDevice"])) {
 	foreach ($_POST["item"] as $key => $val) {
 		if ($val == 1)
@@ -91,8 +91,8 @@ if (isset ($_POST["deleteLinkWithDevice"])) {
 	}
 	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=" . $_POST["orderID"] . "");
 }
-/* cr�e un lien d'une ligne d�tail vers un mat�riel */
-if (isset ($_POST["createLinkWithDevice"])) {
+/* cree un lien d'une ligne detail vers un materiel */
+if (isset ($_POST["createLinkWithDevice"]) && $_POST["item"]) {
 	$i = 0;
 	if (count($_POST["item"]) <= 1 || in_array($_POST["FK_type"],$ORDER_RESTRICTED_TYPES)) {
 		$detail = new PluginOrderDetail;

@@ -58,6 +58,7 @@ function plugin_init_order() {
 		CONSUMABLE_ITEM_TYPE,
 		CARTRIDGE_ITEM_TYPE,
       SOFTWARELICENSE_TYPE,
+      SOFTWARE_TYPE,
       CONTRACT_TYPE
       
  	);

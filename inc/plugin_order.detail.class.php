@@ -44,17 +44,19 @@ class PluginOrderDetail extends CommonDBTM {
 		if($DB->query($query))
 		{
 			$result=$DB->query($query);
-			if($DB->result($result,0,'detailID'))
+			if($DB->result($result,0,'detailID')) {
 				$detailID=$DB->result($result,0,'detailID');
+		
+            $query=" UPDATE glpi_plugin_order_detail
+                           SET FK_device=0
+                           WHERE ID=$detailID";
+            $DB->query($query);
+            $query=" DELETE FROM glpi_plugin_order_detail
+                           WHERE FK_device = '$ID' 
+                           AND device_type= '$type'";
+            $DB->query($query);
+         }
 		}
-		$query=" UPDATE glpi_plugin_order_detail
-							SET FK_device=0
-							WHERE ID=$detailID";
-		$DB->query($query);
-		$query=" DELETE FROM glpi_plugin_order_detail
-							WHERE FK_device = '$ID' 
-							AND device_type= '$type'";
-		$DB->query($query);
 	}
 	function showAddForm($target, $orderID)
 	{

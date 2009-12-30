@@ -803,7 +803,7 @@ function plugin_headings_order($type, $ID) {
 			$mailing->showMailingForm($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.setup.mailing.php");
 			break;
 		default :
-			if (in_array($type, $ORDER_AVAILABLE_TYPES) && !$withtemplate)
+			if (in_array($type, $ORDER_AVAILABLE_TYPES))
 				plugin_order_showOrderInfoByDeviceID($type, $ID);
 			break;
 	}
