@@ -215,7 +215,7 @@ function plugin_order_getPriceByReferenceAndSupplier($referenceID,$supplierID){
 	$query = "SELECT `price_taxfree` 
             FROM `glpi_plugin_order_references_manufacturers` " .
 			"WHERE `FK_reference` = '$referenceID' 
-			AND `FK_enterprise` = '$supplierID ";
+			AND `FK_enterprise` = '$supplierID' ";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0)
 		return $DB->result($result,0,"price_taxfree");

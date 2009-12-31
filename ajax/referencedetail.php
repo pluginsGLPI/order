@@ -36,7 +36,6 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
 include (GLPI_ROOT."/plugins/order/inc/plugin_order.config.class.php");
-include (GLPI_ROOT."/plugins/order/inc/plugin_order.config.function.php");
 include (GLPI_ROOT."/plugins/order/inc/plugin_order.dropdown.function.php");
 include (GLPI_ROOT."/plugins/order/inc/plugin_order.reference.function.php");
 header("Content-Type: text/html; charset=UTF-8");
