@@ -343,7 +343,7 @@ function plugin_order_getAllItemsByType($type, $entity, $item_type = 0, $item_mo
 		default :
 			$query = "SELECT `ID`, `name` 
                   FROM `" . $LINK_ID_TABLE[$type] . "` 
-                  WHERE `FK_entities` = " . $entity ."` ". $and . " 
+                  WHERE `FK_entities` = '" . $entity ."' ". $and . " 
                   AND `ID` NOT IN (SELECT `FK_device` FROM `glpi_plugin_order_detail`)";
 			break;
 		case CONSUMABLE_ITEM_TYPE :
