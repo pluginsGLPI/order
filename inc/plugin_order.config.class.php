@@ -1,40 +1,51 @@
 <?php
-/*----------------------------------------------------------------------
-   GLPI - Gestionnaire Libre de Parc Informatique
-   Copyright (C) 2003-2008 by the INDEPNET Development Team.
+/*
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
-   http://indepnet.net/   http://glpi-project.org/
-   ----------------------------------------------------------------------
-   LICENSE
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
 
-   This file is part of GLPI.
+ LICENSE
 
-   GLPI is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+ This file is part of GLPI.
 
-   GLPI is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-   You should have received a copy of the GNU General Public License
-   along with GLPI; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-   ----------------------------------------------------------------------*/
-/*----------------------------------------------------------------------
-    Original Author of file: Benjamin Fontan
-    Purpose of file:
-    ----------------------------------------------------------------------*/
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
+ 
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
+ */
+
+if (!defined('GLPI_ROOT')){
+   die("Sorry. You can't access directly to this file");
+}
+
 class PluginOrderConfig extends CommonDBTM {
+
 	function __construct () {
 		$this->table="glpi_plugin_order_config";
 	}
 
-	function showForm($target)
-	{
+	function showForm($target){
 		global $LANG;
+		
 		$this->getFromDB(1);
 		echo "<div class='center'>";
 		echo "<table class='tab_cadre_fixe'>";
@@ -61,16 +72,15 @@ class PluginOrderConfig extends CommonDBTM {
 		echo "</table></form></div>";
 	}
 	
-	function showOrderGenerationForm($target)
-	{
-		global $LANG;
-      /*
-		echo "<br><table class='tab_cadre_fixe'>";
-		echo "<tr><th>".$LANG['plugin_order'][37]."</th></tr>";
-		echo "<tr class='tab_bg_1' align='center'><td><a href='$target?action=createorder'>".$LANG['plugin_order'][34]."</a></td></tr>";
-		echo "<tr class='tab_bg_1' align='center'><td><a href='$target?action=deleteorder'>".$LANG['plugin_order'][35]."</a></td></tr>";
-		echo "</table>";
-      */
-	}
-
+	function getConfig(){
+	
+      $this->getFromDB(1);
+      return $this->fields; 
+   }
+   
+   function getDefaultTaxes() {
+   
+      $config = $this->getConfig();
+      return $config["default_taxes"];
+   }
 }

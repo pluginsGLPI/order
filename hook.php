@@ -1,34 +1,37 @@
 <?php
+/*
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
 
-/*----------------------------------------------------------------------
-   GLPI - Gestionnaire Libre de Parc Informatique
-   Copyright (C) 2003-2008 by the INDEPNET Development Team.
+ LICENSE
 
-   http://indepnet.net/   http://glpi-project.org/
-   ----------------------------------------------------------------------
-   LICENSE
+ This file is part of GLPI.
 
-   This file is part of GLPI.
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-   GLPI is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-   GLPI is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with GLPI; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-   ----------------------------------------------------------------------
-/*----------------------------------------------------------------------
-    Original Author of file: 
-    Purpose of file:
-    ----------------------------------------------------------------------*/
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
+ 
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
+ */
 
 foreach (glob(GLPI_ROOT . '/plugins/order/inc/*.php') as $file)
 	include_once ($file);
@@ -63,7 +66,7 @@ function plugin_order_install() {
 	}
 
 	if (!TableExists("glpi_dropdown_plugin_order_status")) {
-		$query = "CREATE TABLE IF NOT EXISTS  `glpi_dropdown_plugin_order_status` (
+		$query = "CREATE TABLE IF NOT EXISTS `glpi_dropdown_plugin_order_status` (
                   `ID` int(11) NOT NULL auto_increment,
                   `name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
                   `comments` text,
@@ -74,7 +77,7 @@ function plugin_order_install() {
 	}
 
 	if (!TableExists("glpi_dropdown_plugin_order_payment")) {
-		$query = "CREATE TABLE IF NOT EXISTS  `glpi_dropdown_plugin_order_payment` (
+		$query = "CREATE TABLE IF NOT EXISTS `glpi_dropdown_plugin_order_payment` (
                   `ID` int(11) NOT NULL auto_increment,
                   `name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
                   `comments` text,
@@ -85,7 +88,7 @@ function plugin_order_install() {
 	}
 
 	if (!TableExists("glpi_dropdown_plugin_order_taxes")) {
-		$query = "CREATE TABLE IF NOT EXISTS  `glpi_dropdown_plugin_order_taxes` (
+		$query = "CREATE TABLE IF NOT EXISTS `glpi_dropdown_plugin_order_taxes` (
                   `ID` int(11) NOT NULL auto_increment,
                   `name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
                   `comments` text,
@@ -135,7 +138,7 @@ function plugin_order_install() {
 	}
 
 	if (!TableExists("glpi_plugin_order_config")) {
-		$query = "CREATE TABLE IF NOT EXISTS  `glpi_plugin_order_config` (
+		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_config` (
                   `ID` int(11) NOT NULL auto_increment,
                   `use_validation` int(11) NOT NULL default 0,
                   `default_taxes` int(11) NOT NULL default 0,
@@ -194,7 +197,7 @@ function plugin_order_install() {
 
 	}
    
-   $query = "SELECT COUNT(ID) as cpt FROM `glpi_display` WHERE `type`='3150'";
+   $query = "SELECT COUNT(`ID`) AS cpt FROM `glpi_display` WHERE `type`='3150'";
    $result = $DB->query($query);
    if (!$DB->result($result,0,'cpt')) {
       $query = "INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  " .
@@ -210,7 +213,7 @@ function plugin_order_install() {
       $DB->query($query) or die($DB->error());
    }
 
-   $query = "SELECT COUNT(ID) as cpt FROM `glpi_display` WHERE `type`='3151'";
+   $query = "SELECT COUNT(`ID`) AS cpt FROM `glpi_display` WHERE `type`='3151'";
    $result = $DB->query($query);
    if (!$DB->result($result,0,'cpt')) {
       $query = "INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )
@@ -223,7 +226,7 @@ function plugin_order_install() {
       $DB->query($query) or die($DB->error());
    }
 
-   $query = "SELECT COUNT(ID) as cpt FROM `glpi_display` WHERE `type`='3153'";
+   $query = "SELECT COUNT(`ID`) AS cpt FROM `glpi_display` WHERE `type`='3153'";
    $result = $DB->query($query);
    if (!$DB->result($result,0,'cpt')) {
       $query = "INSERT INTO `glpi_display` (`ID`, `type`, `num`, `rank`, `FK_users`) VALUES
@@ -240,7 +243,7 @@ function plugin_order_install() {
             `name` VARCHAR( 255 ) collate utf8_unicode_ci NULL,
             `FK_entities` int(11) NOT NULL DEFAULT 0,
             `FK_budget` INT( 11 ) NOT NULL ,
-             `deleted` int(11) NOT NULL DEFAULT 0,
+            `deleted` int(11) NOT NULL DEFAULT 0,
             `comments` text  collate utf8_unicode_ci NULL,
             `startdate` DATE NULL ,
             `enddate` DATE NULL ,
@@ -270,7 +273,7 @@ function plugin_order_install() {
    }
   
    /* Update en 1.1.0 for taxes */
-   $query = "SELECT name FROM glpi_dropdown_plugin_order_taxes";
+   $query = "SELECT `name` FROM `glpi_dropdown_plugin_order_taxes` ";
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
 	if ($number) {
@@ -324,7 +327,7 @@ function plugin_order_uninstall() {
 		PLUGIN_ORDER_BUDGET_TYPE
 	)) . ")";
 	/* clean glpi_display */
-	$query = "DELETE FROM `glpi_display` WHERE type " . $in;
+	$query = "DELETE FROM `glpi_display` WHERE `type` " . $in;
 	$DB->query($query);
 
 	$tables = array (
@@ -334,16 +337,16 @@ function plugin_order_uninstall() {
 	);
 
 	foreach ($tables as $table) {
-		$query = "DELETE FROM `$table` WHERE device_type " . $in;
+		$query = "DELETE FROM `$table` WHERE `device_type` " . $in;
 		$DB->query($query);
 	}
 
 	if (TableExists("glpi_plugin_data_injection_models"))
 		$DB->query("DELETE FROM `glpi_plugin_data_injection_models`, `glpi_plugin_data_injection_mappings`, `glpi_plugin_data_injection_infos` USING `glpi_plugin_data_injection_models`, `glpi_plugin_data_injection_mappings`, `glpi_plugin_data_injection_infos`
-									WHERE glpi_plugin_data_injection_models.device_type=" .
+									WHERE `glpi_plugin_data_injection_models`.`device_type` = " .
 		PLUGIN_ORDER_TYPE . "
-									AND glpi_plugin_data_injection_mappings.model_id=glpi_plugin_data_injection_models.ID
-									AND glpi_plugin_data_injection_infos.model_id=glpi_plugin_data_injection_models.ID");
+									AND `glpi_plugin_data_injection_mappings`.`model_id` = `glpi_plugin_data_injection_models`.`ID`
+									AND `glpi_plugin_data_injection_infos`.`model_id` = `glpi_plugin_data_injection_models`.`ID`");
 	plugin_init_order();
 	cleanCache("GLPI_HEADER_" . $_SESSION["glpiID"]);
 	return true;
@@ -625,18 +628,18 @@ function plugin_order_addSelect($type, $ID, $num) {
 	$field = $SEARCH_OPTION[$type][$ID]["field"];
 
 	if ($table == "glpi_plugin_order_references" && $num!=0)
-		return "$table.type AS device_type, $table.$field as ITEM_$num, ";
+		return "`$table`.`type` AS `device_type`, `$table`.`$field` AS `ITEM_$num`, ";
 	else
 		return "";
 
 }
 
 function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,&$already_link_tables){
-	switch ($new_table){
 
+	switch ($new_table){
 		case "glpi_plugin_order" : // From items
-			$out= " LEFT JOIN glpi_plugin_order_detail ON ($ref_table.ID = glpi_plugin_order_detail.FK_device AND glpi_plugin_order_detail.device_type=$type) ";
-			$out.= " LEFT JOIN glpi_plugin_order ON (glpi_plugin_order.ID = glpi_plugin_order_detail.FK_order) ";
+			$out= " LEFT JOIN `glpi_plugin_order_detail` ON (`$ref_table`.`ID` = `glpi_plugin_order_detail`.`FK_device` AND `glpi_plugin_order_detail`.`device_type` = '$type') ";
+			$out.= " LEFT JOIN `glpi_plugin_order` ON (`glpi_plugin_order`.`ID` = `glpi_plugin_order_detail`.`FK_order`) ";
 			return $out;
 			break;
 	}
@@ -646,6 +649,7 @@ function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,&$alrea
 /* display custom fields in the search */
 function plugin_order_giveItem($type, $ID, $data, $num) {
 	global $CFG_GLPI, $INFOFORM_PAGES, $LANG, $SEARCH_OPTION, $LINK_ID_TABLE, $DB;
+	
 	$table = $SEARCH_OPTION[$type][$ID]["table"];
 	$field = $SEARCH_OPTION[$type][$ID]["field"];
 
@@ -731,6 +735,7 @@ function plugin_pre_item_update_order($input) {
 /* hook done on purge item case */
 function plugin_item_purge_order($parm) {
 	global $ORDER_AVAILABLE_TYPES;
+	
    logInFile("debug",exportArrayToDB($parm));
    if (in_array($parm["type"], $ORDER_AVAILABLE_TYPES)) {
 		$detail = new PluginOrderDetail;
@@ -767,6 +772,7 @@ function plugin_get_headings_order($type, $ID, $withtemplate) {
 /* define headings actions added by the plugin */
 function plugin_headings_actions_order($type) {
 	global $ORDER_AVAILABLE_TYPES;
+	
 	$types = $ORDER_AVAILABLE_TYPES;
 	$types[] = ENTERPRISE_TYPE;
 	$types[] = PROFILE_TYPE;
@@ -787,9 +793,7 @@ function plugin_headings_order($type, $ID) {
 
 	switch ($type) {
 		case ENTERPRISE_TYPE :
-			echo "<div align='center'>";
 			plugin_order_showReferencesBySupplierID($ID);
-			echo "</div>";
 			break;
 		case PROFILE_TYPE :
 			$profile = new profile;
@@ -822,4 +826,5 @@ function plugin_order_loadPluginByType($device_type) {
 	  usePlugin($PLUGIN_HOOKS['plugin_types'][$device_type]);	
 	}
 }
+
 ?>

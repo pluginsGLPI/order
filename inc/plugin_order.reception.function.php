@@ -1,46 +1,54 @@
 <?php
+/*
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
 
-/*----------------------------------------------------------------------
-   GLPI - Gestionnaire Libre de Parc Informatique
-   Copyright (C) 2003-2008 by the INDEPNET Development Team.
+ LICENSE
 
-   http://indepnet.net/   http://glpi-project.org/
-   ----------------------------------------------------------------------
-   LICENSE
+ This file is part of GLPI.
 
-   This file is part of GLPI.
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-   GLPI is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-   GLPI is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with GLPI; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-   ----------------------------------------------------------------------*/
-/*----------------------------------------------------------------------
- Original Author of file:
- Purpose of file:
- ----------------------------------------------------------------------*/
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
  
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
+ */
+
+if (!defined('GLPI_ROOT')){
+   die("Sorry. You can't access directly to this file");
+}
+
 function plugin_order_showDetailReceptionForm($orderID) {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE, $INFOFORM_PAGES;
 
 	$plugin_order = new PluginOrder();
 	$canedit = $plugin_order->can($orderID, 'w') && !plugin_order_canUpdateOrder($orderID) && $plugin_order->fields["status"] != ORDER_STATUS_CANCELED;
-	$query_ref = "SELECT glpi_plugin_order_detail.ID, glpi_plugin_order_detail.FK_reference AS ref, name, type " .
+	
+	$query_ref = "SELECT `glpi_plugin_order_detail`.`ID`, `glpi_plugin_order_detail`.`FK_reference` AS ref, `name`, `type` " .
 	"FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` " .
-	"WHERE FK_order=$orderID " .
-	"AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID  " .
-	"GROUP BY glpi_plugin_order_detail.FK_reference " .
-	"ORDER BY glpi_plugin_order_detail.ID";
+	"WHERE `FK_order` = '$orderID' " .
+	"AND `glpi_plugin_order_detail`.`FK_reference` = `glpi_plugin_order_references`.`ID`  " .
+	"GROUP BY `glpi_plugin_order_detail`.`FK_reference` " .
+	"ORDER BY `glpi_plugin_order_detail`.`ID`";
 	$result_ref = $DB->query($query_ref);
 	$numref = $DB->numrows($result_ref);
 	$j = 0;
@@ -49,13 +57,12 @@ function plugin_order_showDetailReceptionForm($orderID) {
 		if ($numref) {
 			$refID = $DB->result($result_ref, $j, 'ref');
 			$typeRef = $DB->result($result_ref, $j, 'type');
-			$query = "SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR,glpi_plugin_order_references.template, status, date, price_taxfree,
-											  price_ati, price_discounted,  FK_glpi_enterprise, name, type, FK_device
-											  FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
-											  WHERE FK_order=$orderID
-											  AND glpi_plugin_order_detail.FK_reference=$refID
-											  AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID
-											  ORDER BY glpi_plugin_order_detail.ID";
+			$query = "SELECT `glpi_plugin_order_detail`.`ID` AS IDD, `glpi_plugin_order_references`.`ID` AS IDR,`glpi_plugin_order_references`.`template`, `status`, `date`, `price_taxfree`, `price_ati`, `price_discounted`, `FK_glpi_enterprise`, `name`, `type`, `FK_device`
+                 FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
+                 WHERE `FK_order` = '$orderID'
+                 AND `glpi_plugin_order_detail`.`FK_reference` = '$refID'
+                 AND `glpi_plugin_order_detail`.`FK_reference` = `glpi_plugin_order_references`.`ID`
+                 ORDER BY `glpi_plugin_order_detail`.`ID`";
 			$result = $DB->query($query);
 			$num = $DB->numrows($result);
 		}
@@ -156,16 +163,18 @@ function plugin_order_showDetailReceptionForm($orderID) {
 
 function plugin_order_getNumberOfLinkedMaterial($orderID, $refID) {
 	global $DB;
-	$query = "SELECT count(*) AS result FROM `glpi_plugin_order_detail`
-					  WHERE FK_order = " . $orderID . "
-					  AND FK_reference = " . $refID . "
-					  AND FK_device != '0' ";
+	
+	$query = "SELECT COUNT(*) AS result FROM `glpi_plugin_order_detail`
+					  WHERE `FK_order` = '" . $orderID . "'
+					  AND `FK_reference` = '" . $refID . "'
+					  AND `FK_device` != '0' ";
 	$result = $DB->query($query);
 	return ($DB->result($result, 0, 'result'));
 }
 
 function plugin_order_getReceptionMaterialInfo($deviceType, $deviceID) {
 	global $DB, $LINK_ID_TABLE, $LANG;
+	
 	$comments = "";
 	switch ($deviceType) {
 		case COMPUTER_TYPE :
@@ -247,10 +256,11 @@ function plugin_order_getReceptionStatus($ID) {
 
 function plugin_order_getReceptionManufacturer($ID) {
 	global $DB;
-	$query = "SELECT glpi_plugin_order_detail.ID, FK_glpi_enterprise
-					  FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
-					  WHERE glpi_plugin_order_detail.ID=$ID
-					  AND glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID";
+	
+	$query = "SELECT `glpi_plugin_order_detail`.`ID`, `FK_glpi_enterprise`
+              FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
+              WHERE `glpi_plugin_order_detail`.`ID` = '$ID'
+              AND `glpi_plugin_order_detail`.`FK_reference` = `glpi_plugin_order_references`.`ID`";
 	$result = $DB->query($query);
 	if ($DB->result($result, 0, 'FK_glpi_enterprise') != null) {
 		return (getDropdownName("glpi_dropdown_manufacturer", $DB->result($result, 0, 'FK_glpi_enterprise')));
@@ -271,6 +281,7 @@ function plugin_order_getReceptionDate($ID) {
 
 function plugin_order_getReceptionType($ID) {
 	global $DB, $LINK_ID_TABLE;
+	
 	$query = "SELECT glpi_plugin_order_detail.ID, type 
 					  FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
 					  WHERE glpi_plugin_order_detail.ID=$ID
@@ -331,29 +342,30 @@ function plugin_order_getAllItemsByType($type, $entity, $item_type = 0, $item_mo
    else 
       $field = "type";
 	if (isset ($ORDER_TYPE_TABLES[$type]))
-		$and .= ($item_type != 0 ? " AND $field=$item_type" : "");
+		$and .= ($item_type != 0 ? " AND `$field` = '$item_type' " : "");
 	if (isset ($ORDER_MODEL_TABLES[$type]))
-		$and .= ($item_model != 0 ? " AND model=$item_model" : "");
+		$and .= ($item_model != 0 ? " AND `model` ='$item_model' " : "");
 	if (in_array($type, $ORDER_TEMPLATE_TABLES))
-		$and .= " AND is_template=0 AND deleted=0 ";
+		$and .= " AND `is_template` = 0 AND `deleted` = 0 ";
 
 	switch ($type) {
 		default :
-			$query = "SELECT ID, name FROM `" . $LINK_ID_TABLE[$type] . "` 
-											 WHERE FK_entities=" . $entity . $and . " 
-											 AND ID NOT IN (SELECT FK_device FROM glpi_plugin_order_detail)";
+			$query = "SELECT `ID`, `name` 
+                  FROM `" . $LINK_ID_TABLE[$type] . "` 
+                  WHERE `FK_entities` = " . $entity ."` ". $and . " 
+                  AND `ID` NOT IN (SELECT `FK_device` FROM `glpi_plugin_order_detail`)";
 			break;
 		case CONSUMABLE_ITEM_TYPE :
-			$query = "SELECT ID, name FROM `glpi_consumables_type`
-														  WHERE FK_entities=" . $entity . "
-			                                     AND type=$item_type 
-			                                     ORDER BY name";
+			$query = "SELECT `ID`, `name` FROM `glpi_consumables_type`
+                  WHERE `FK_entities` = '" . $entity . "'
+                  AND `type` = '$item_type' 
+                  ORDER BY `name`";
 			break;
 		case CARTRIDGE_ITEM_TYPE :
-			$query = "SELECT ID, name FROM `glpi_cartridges_type`
-														  WHERE FK_entities=" . $entity . "
-			                                     AND type=$item_type
-			                                     ORDER BY name ASC";
+			$query = "SELECT `ID`, `name` FROM `glpi_cartridges_type`
+                  WHERE `FK_entities` = '" . $entity . "'
+                  AND `type` = '$item_type'
+                  ORDER BY `name` ASC";
 			break;
 	}
 	$result = $DB->query($query);
@@ -410,13 +422,15 @@ function plugin_order_createLinkWithDevice($detailID = 0, $deviceID = 0, $device
 
 function plugin_order_deleteLinkWithDevice($detailID, $device_type) {
 	global $DB, $LANG;
+	
 	$detail = new PluginOrderDetail;
 	$detail->getFromDB($detailID);
 	$deviceID = $detail->fields["FK_device"];
 
-	$query = "SELECT ID, FK_order FROM `glpi_plugin_order_detail` " .
-	" WHERE FK_device=" . $deviceID .
-	" AND device_type=" . $device_type;
+	$query = "SELECT `ID`, `FK_order` 
+            FROM `glpi_plugin_order_detail` 
+            WHERE `FK_device` = '" . $deviceID ."' 
+            AND `device_type` = '" . $device_type."' ";
 
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result) > 0) {
@@ -457,9 +471,12 @@ function plugin_order_deleteAllLinkWithDevice($orderID) {
 
 function plugin_order_updateBulkReceptionStatus($params) {
 	global $LANG, $DB;
-	$query = "SELECT ID FROM `glpi_plugin_order_detail` WHERE FK_order=" . $params["orderID"] .
-	" AND FK_reference=" . $params["referenceID"] .
-	" AND status=0";
+	
+	$query = "SELECT `ID` 
+            FROM `glpi_plugin_order_detail` 
+            WHERE `FK_order` = '" . $params["orderID"] ."' 
+            AND `FK_reference` = '" . $params["referenceID"] ."' 
+            AND `status` = 0 ";
 	$result = $DB->query($query);
 	$nb = $DB->numrows($result);
 	if ($nb < $params['number_reception'])
@@ -474,6 +491,7 @@ function plugin_order_updateBulkReceptionStatus($params) {
 
 function plugin_order_updateReceptionStatus($params) {
 	global $LANG;
+	
 	$detail = new PluginOrderDetail;
 	$orderID = 0;
 	if (isset ($params["item"])) {
@@ -497,6 +515,7 @@ function plugin_order_updateReceptionStatus($params) {
 
 function plugin_order_receptionOneItem($detailID, $orderID, $date, $deliverynum) {
 	global $LANG;
+	
 	$detail = new PluginOrderDetail;
 	$input["ID"] = $detailID;
 	$input["date"] = $date;
@@ -622,6 +641,7 @@ function plugin_order_plugin_order_showItemGenerationForm($target, $params) {
 
 function plugin_order_generateNewDevice($params) {
 	global $DB, $LANG;
+	
 	$i = 0;
 	
    foreach ($params["ID"] as $tmp => $values) {
@@ -692,11 +712,13 @@ function plugin_order_generateNewDevice($params) {
 
 function plugin_order_itemAlreadyLinkedToAnOrder($device_type, $deviceID, $orderID, $detailID = 0) {
 	global $DB, $ORDER_RESTRICTED_TYPES;
+	
 	if (!in_array($device_type, $ORDER_RESTRICTED_TYPES)) {
-		$query = "SELECT COUNT(*) as cpt FROM `glpi_plugin_order_detail`" .
-		" WHERE FK_order=$orderID " .
-		" AND FK_device=$deviceID " .
-		" AND device_type=$device_type";
+		$query = "SELECT COUNT(*) AS cpt 
+               FROM `glpi_plugin_order_detail` 
+               WHERE `FK_order` = '$orderID' 
+               AND `FK_device` = '$deviceID' 
+               AND `device_type` = '$device_type' ";
 
 		$result = $DB->query($query);
 		if ($DB->result($result, 0, "cpt") > 0)
@@ -716,8 +738,11 @@ function plugin_order_itemAlreadyLinkedToAnOrder($device_type, $deviceID, $order
 
 function plugin_order_allItemsAlreadyDelivered($orderID, $referenceID) {
 	global $DB;
-	$query = "SELECT COUNT(*)  as cpt FROM `glpi_plugin_order_detail` " .
-	"WHERE FK_order=$orderID AND FK_reference=$referenceID AND status=" . ORDER_DEVICE_NOT_DELIVRED;
+	$query = "SELECT COUNT(*) AS cpt 
+            FROM `glpi_plugin_order_detail` 
+            WHERE `FK_order` = '$orderID' 
+            AND `FK_reference` = '$referenceID' 
+            AND `status` = '".ORDER_DEVICE_NOT_DELIVRED."' ";
 	$result = $DB->query($query);
 	if ($DB->result($result, 0, "cpt") > 0)
 		return false;
@@ -780,6 +805,7 @@ function plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_
 }
 
 function plugin_order_removeInfoComRelatedToOrder($device_type, $deviceID) {
+
 	$infocom = new InfoCom;
 	$infocom->getFromDBforDevice($device_type, $deviceID);
 	$input["ID"] = $infocom->fields["ID"];
@@ -796,4 +822,5 @@ function plugin_order_removeInfoComRelatedToOrder($device_type, $deviceID) {
 
 	$infocom->update($input);
 }
+
 ?>

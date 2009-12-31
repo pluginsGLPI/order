@@ -1,33 +1,42 @@
 <?php
+/*
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
-/*----------------------------------------------------------------------
-   GLPI - Gestionnaire Libre de Parc Informatique
-   Copyright (C) 2003-2008 by the INDEPNET Development Team.
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
 
-   http://indepnet.net/   http://glpi-project.org/
-   ----------------------------------------------------------------------
-   LICENSE
+ LICENSE
 
-   This file is part of GLPI.
+ This file is part of GLPI.
 
-   GLPI is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-   GLPI is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with GLPI; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-   ----------------------------------------------------------------------*/
-/*----------------------------------------------------------------------
-    Original Author of file: Walid Nouh
-    Purpose of file:
-    ----------------------------------------------------------------------*/
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
+ 
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
+ */
+
+if (!defined('GLPI_ROOT')){
+   die("Sorry. You can't access directly to this file");
+}
+
 function plugin_order_showReferenceManufacturers($target, $ID) {
 	global $LANG, $DB, $CFG_GLPI,$INFOFORM_PAGES;
 	
@@ -91,58 +100,56 @@ function plugin_order_showReferenceManufacturers($target, $ID) {
 	echo "</div>";
 }
 
-function plugin_order_addSupplierToReference($target,$referenceID)
-{
+function plugin_order_addSupplierToReference($target,$referenceID){
 	global $LANG,$DB;
 
-		if (plugin_order_haveRight("reference","w"))
-		{
+   if (plugin_order_haveRight("reference","w")){
 
-			$suppliers = array();
-			$reference = new PluginOrderReference;
-			$reference->getFromDB($referenceID);
-			
-			if (!$reference->fields["deleted"]){
-			$query = "SELECT FK_enterprise FROM `glpi_plugin_order_references_manufacturers` WHERE FK_reference='$referenceID'";
-			$result = $DB->query($query);
-			while ($data = $DB->fetch_array($result))
-				$suppliers["FK_enterprise"] = $data["FK_enterprise"];
-				
-			echo "<form method='post' name='add_ref_manu' action=\"$target\">";
-			echo "<table class='tab_cadrehov'>";
-			echo "<input type='hidden' name='FK_reference' value='" . $referenceID . "'>";
-			echo "<tr>";
-			echo "<th colspan='2' align='center'>".$LANG['plugin_order']['reference'][2]."</th></tr>";
-			echo "<tr><th>" . $LANG['financial'][26] . "</th><th>" . $LANG['plugin_order']['detail'][4] . "</th></tr>";
-			echo "<tr>";
-			echo "<td class='tab_bg_1' align='center'>"; 
-			dropdownValue("glpi_enterprises","FK_enterprise","",1,$_SESSION["glpiactive_entity"],'',$suppliers); 
-			echo "</td>";
-			echo "<td class='tab_bg_1' align='center'>";
-			autocompletionTextField("price_taxfree", "glpi_plugin_order_references_manufacturers", "price_taxfree", 0, 7);
-			echo "</td>";
-			echo "</tr>";
-			echo "<tr>";
-			echo "<td class='tab_bg_1' align='center' colspan='3'>";
-			echo "<input type='submit' name='add_reference_manufacturer' value=\"" . $LANG['buttons'][8] . "\" class='submit' >";
-			echo "</td>";
-			echo "</tr>";
-			echo "</table></form>";	
-			echo "</div>";
-				
-			}
-	}
-	
+      $suppliers = array();
+      $reference = new PluginOrderReference;
+      $reference->getFromDB($referenceID);
+      
+      if (!$reference->fields["deleted"]){
+         $query = "SELECT `FK_enterprise` 
+                  FROM `glpi_plugin_order_references_manufacturers` 
+                  WHERE `FK_reference` = '$referenceID'";
+         $result = $DB->query($query);
+         while ($data = $DB->fetch_array($result))
+            $suppliers["FK_enterprise"] = $data["FK_enterprise"];
+            
+         echo "<form method='post' name='add_ref_manu' action=\"$target\">";
+         echo "<table class='tab_cadrehov'>";
+         echo "<input type='hidden' name='FK_reference' value='" . $referenceID . "'>";
+         echo "<tr>";
+         echo "<th colspan='2' align='center'>".$LANG['plugin_order']['reference'][2]."</th></tr>";
+         echo "<tr><th>" . $LANG['financial'][26] . "</th><th>" . $LANG['plugin_order']['detail'][4] . "</th></tr>";
+         echo "<tr>";
+         echo "<td class='tab_bg_1' align='center'>"; 
+         dropdownValue("glpi_enterprises","FK_enterprise","",1,$_SESSION["glpiactive_entity"],'',$suppliers); 
+         echo "</td>";
+         echo "<td class='tab_bg_1' align='center'>";
+         autocompletionTextField("price_taxfree", "glpi_plugin_order_references_manufacturers", "price_taxfree", 0, 7);
+         echo "</td>";
+         echo "</tr>";
+         echo "<tr>";
+         echo "<td class='tab_bg_1' align='center' colspan='3'>";
+         echo "<input type='submit' name='add_reference_manufacturer' value=\"" . $LANG['buttons'][8] . "\" class='submit' >";
+         echo "</td>";
+         echo "</tr>";
+         echo "</table></form>";	
+         echo "</div>";
+         
+      }
+   }	
 }
 
-function plugin_order_showReferencesBySupplierID($ID)
-{
+function plugin_order_showReferencesBySupplierID($ID){
 	global $LANG, $DB, $CFG_GLPI,$INFOFORM_PAGES;
-	$query = "SELECT gr.ID, gr.FK_glpi_enterprise, gr.FK_entities, gr.type, gr.name, grm.price_taxfree " .
-			"FROM `glpi_plugin_order_references_manufacturers` as grm, `glpi_plugin_order_references` as gr " .
-			"WHERE grm.FK_enterprise='$ID' AND grm.FK_reference=gr.ID";
+	
+	$query = "SELECT `gr`.`ID`, `gr`.`FK_glpi_enterprise`, `gr`.`FK_entities`, `gr`.`type`, `gr`.`name`, `grm`.`price_taxfree` " .
+			"FROM `glpi_plugin_order_references_manufacturers` AS grm, `glpi_plugin_order_references` AS gr " .
+			"WHERE `grm`.`FK_enterprise` = '$ID' AND `grm`.`FK_reference` = `gr`.`ID`";
 	$result = $DB->query($query);
-
 
 	echo "<div class='center'>";
 	echo "<table class='tab_cadre_fixe'>";
@@ -185,11 +192,14 @@ function plugin_order_showReferencesBySupplierID($ID)
 	
 }
 
-function plugin_order_getAllReferencesByEnterpriseAndType($type,$enterpriseID)
-{
+function plugin_order_getAllReferencesByEnterpriseAndType($type,$enterpriseID){
 	global $DB;
-	$query = "SELECT gr.name, gr.ID FROM `glpi_plugin_order_references` as gr, `glpi_plugin_order_references_manufacturers` as grm" .
-			" WHERE gr.type=$type AND grm.FK_enterprise=$enterpriseID AND grm.FK_reference=gr.ID";
+	
+	$query = "SELECT `gr`.`name`, `gr`.`ID` 
+            FROM `glpi_plugin_order_references` AS gr, `glpi_plugin_order_references_manufacturers` AS grm" .
+			" WHERE `gr`.`type` = '$type' 
+            AND `grm`.`FK_enterprise` = '$enterpriseID' 
+            AND `grm`.`FK_reference` = `gr`.`ID` ";
 
 	$result = $DB->query($query);
 	$references = array();
@@ -199,11 +209,13 @@ function plugin_order_getAllReferencesByEnterpriseAndType($type,$enterpriseID)
 	return $references;		
 }
 
-function plugin_order_getPriceByReferenceAndSupplier($referenceID,$supplierID)
-{
+function plugin_order_getPriceByReferenceAndSupplier($referenceID,$supplierID){
 	global $DB;
-	$query = "SELECT price_taxfree FROM `glpi_plugin_order_references_manufacturers` " .
-			"WHERE FK_reference=$referenceID AND FK_enterprise=$supplierID";
+	
+	$query = "SELECT `price_taxfree` 
+            FROM `glpi_plugin_order_references_manufacturers` " .
+			"WHERE `FK_reference` = '$referenceID' 
+			AND `FK_enterprise` = '$supplierID ";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0)
 		return $DB->result($result,0,"price_taxfree");
@@ -211,17 +223,16 @@ function plugin_order_getPriceByReferenceAndSupplier($referenceID,$supplierID)
 		return 0;	
 }
 
-function plugin_order_getModelTable($device_type)
-{
+function plugin_order_getModelTable($device_type){
 	global $ORDER_MODEL_TABLES;
+	
 	if(isset($ORDER_MODEL_TABLES[$device_type]))
 		return $ORDER_MODEL_TABLES[$device_type];
 	else
 		return false;	
 }
 
-function plugin_order_getTypeTable($device_type)
-{
+function plugin_order_getTypeTable($device_type){
 	global $ORDER_TYPE_TABLES;
 	
 	if(isset($ORDER_TYPE_TABLES[$device_type]))
@@ -230,16 +241,16 @@ function plugin_order_getTypeTable($device_type)
 		return false;	
 }
 
-function plugin_order_isSupplierInReferenceInUse($referenceID,$supplierID)
-{
+function plugin_order_isSupplierInReferenceInUse($referenceID,$supplierID){
 	global $DB;
-	$query = "SELECT COUNT(*) as cpt FROM `glpi_plugin_order_detail` as detail," .
-			" `glpi_plugin_order_references` as ref, ".	
-			" `glpi_plugin_order` as gorder".
-			" WHERE gorder.FK_enterprise=$supplierID " .
-			" AND gorder.ID=detail.FK_order" .
-			" AND ref.ID=detail.FK_reference" .
-			" AND ref.ID=$referenceID";
+	
+	$query = "SELECT COUNT(*) AS cpt FROM `glpi_plugin_order_detail` AS detail," .
+			" `glpi_plugin_order_references` AS ref, ".	
+			" `glpi_plugin_order` AS gorder".
+			" WHERE `gorder`.`FK_enterprise` = '$supplierID' " .
+			" AND `gorder`.`ID` = `detail`.`FK_order`" .
+			" AND `ref`.`ID` = `detail`.`FK_reference` " .
+			" AND `ref`.`ID` = '$referenceID' ";
 	$result = $DB->query($query);
 	if ($DB->result($result,0,"cpt") > 0)
 		return true;
@@ -249,9 +260,11 @@ function plugin_order_isSupplierInReferenceInUse($referenceID,$supplierID)
 
 function getReceptionReferenceLink($ID, $name) {
 	global $CFG_GLPI, $INFOFORM_PAGES;
+	
 	if (plugin_order_haveRight("reference","r"))
 		return "<a href='" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[PLUGIN_ORDER_REFERENCE_TYPE] . "?ID=" . $ID . "'>" . $name . "</a>";
 	else
 		return $name;
 }
+
 ?>

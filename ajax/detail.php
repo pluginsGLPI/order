@@ -1,9 +1,9 @@
 <?php
 /*
- * @version $Id: dropdownDocument.php 4635 2007-03-25 14:21:15Z moyo $
- ------------------------------------------------------------------------- 
- GLPI - Gestionnaire Libre de Parc Informatique 
- Copyright (C) 2003-2008 by the INDEPNET Development Team.
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
@@ -26,14 +26,13 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
+ 
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
  */
-
-// ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
-// Purpose of file:
-// ----------------------------------------------------------------------
-
-// Direct access to file
+ 
 define('GLPI_ROOT', '../../..');
 $AJAX_INCLUDE=1;
 include (GLPI_ROOT."/inc/includes.php");
@@ -43,8 +42,8 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 if (!defined('GLPI_ROOT')){
-	die("Can not acces directly to this file");
-	}
+   die("Can not acces directly to this file");
+}
 
 checkCentralAccess();
 $rand = plugin_order_dropdownReferencesByEnterprise("reference",$_POST["device_type"],$_POST["FK_enterprise"]);
@@ -61,5 +60,6 @@ foreach ($fields as $field)
 	$paramsaction['update'] = $field;
 	ajaxUpdateItem("show_$field",$CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",$paramsaction,false,"dropdown_reference$rand");
 	ajaxUpdateItemOnSelectEvent("dropdown_reference$rand","show_$field",$CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",$paramsaction);
-}	
+}
+
 ?>

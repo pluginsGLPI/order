@@ -1,32 +1,37 @@
 <?php
-/*----------------------------------------------------------------------
-   GLPI - Gestionnaire Libre de Parc Informatique
-   Copyright (C) 2003-2008 by the INDEPNET Development Team.
+/*
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
-   http://indepnet.net/   http://glpi-project.org/
-   ----------------------------------------------------------------------
-   LICENSE
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
 
-   This file is part of GLPI.
+ LICENSE
 
-   GLPI is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+ This file is part of GLPI.
 
-   GLPI is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-   You should have received a copy of the GNU General Public License
-   along with GLPI; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-   ----------------------------------------------------------------------*/
-/*----------------------------------------------------------------------
-    Original Author of file: 
-    Purpose of file:
-    ----------------------------------------------------------------------*/
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
+ 
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
+ */
 
 $NEEDED_ITEMS=array("software","document","user","enterprise","computer","monitor","peripheral","networking","phone","printer","consumable","cartridge","contract");
 define('GLPI_ROOT', '../../..'); 
@@ -90,7 +95,7 @@ else if (isset($_POST["update_reference_manufacturer"]))
 	}	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-if (isset($_POST["add_reference_manufacturer"]))
+else if (isset($_POST["add_reference_manufacturer"]))
 {
 	if(plugin_order_HaveRight("reference","w"))
 	{
@@ -112,7 +117,6 @@ else if (isset($_POST["delete_reference_manufacturer"]))
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-
 else
 {
 	plugin_order_checkRight("reference","r");
@@ -123,6 +127,7 @@ else
 	}
 	
 	commonHeader($LANG['plugin_order']['reference'][1],$_SERVER["PHP_SELF"],"plugins","order","reference");
+	
 	$plugin_order_ref->title();
 	$plugin_order_ref->showForm($_SERVER["PHP_SELF"],$_GET["ID"]);
 

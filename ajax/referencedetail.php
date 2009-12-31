@@ -1,9 +1,9 @@
 <?php
 /*
- * @version $Id: dropdownDocument.php 4635 2007-03-25 14:21:15Z moyo $
- ------------------------------------------------------------------------- 
- GLPI - Gestionnaire Libre de Parc Informatique 
- Copyright (C) 2003-2008 by the INDEPNET Development Team.
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
@@ -26,14 +26,13 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
+ 
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
-// Purpose of file:
-// ----------------------------------------------------------------------
-
-// Direct access to file
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
 include (GLPI_ROOT."/plugins/order/inc/plugin_order.config.class.php");
@@ -44,11 +43,13 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 if (!defined('GLPI_ROOT')){
-	die("Can not acces directly to this file");
-	}
-
+   die("Can not acces directly to this file");
+}
 
 checkCentralAccess();
+
+$PluginOrderConfig = new PluginOrderConfig;
+$default_taxes = $PluginOrderConfig->getDefaultTaxes();
 
 if ($_POST["FK_reference"] > 0)
 {
@@ -57,21 +58,21 @@ if ($_POST["FK_reference"] > 0)
 	{
 		case 'quantity':
 			autocompletionTextField("quantity","glpi_plugin_order_detail","quantity",0,5);
-		break;
+         break;
 		case 'priceht':
 			autocompletionTextField("price","glpi_plugin_order_detail","price",$price,5);
-		break;
+         break;
 		case 'pricediscounted':
 			autocompletionTextField("discount","glpi_plugin_order_detail","discount",0,5);
-		break;
+         break;
 		case 'taxes':
-			dropdownValue("glpi_dropdown_plugin_order_taxes","taxes",plugin_order_getDefaultTaxes());
-		break;
+			dropdownValue("glpi_dropdown_plugin_order_taxes","taxes",$default_taxes);
+         break;
 		case 'validate':
 			echo "<input type='hidden' name='device_type' value='".$_POST["device_type"]."' class='submit' >";
 			echo "<input type='hidden' name='FK_reference' value='".$_POST["FK_reference"]."' class='submit' >";
 			echo "<input type='submit' name='add_detail' value=\"".$LANG['buttons'][8]."\" class='submit' >";
-		break;					
+         break;					
 	}	
 }
 else

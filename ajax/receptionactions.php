@@ -1,9 +1,9 @@
 <?php
 /*
- * @version $Id: dropdownDocument.php 4635 2007-03-25 14:21:15Z moyo $
- ------------------------------------------------------------------------- 
- GLPI - Gestionnaire Libre de Parc Informatique 
- Copyright (C) 2003-2008 by the INDEPNET Development Team.
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
@@ -26,14 +26,13 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
+ 
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
-// Purpose of file:
-// ----------------------------------------------------------------------
-
-// Direct access to file
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
 include (GLPI_ROOT."/plugins/order/inc/plugin_order.dropdown.function.php");
@@ -44,8 +43,9 @@ $AJAX_INCLUDE=1;
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if (!defined('GLPI_ROOT'))
-	die("Can not acces directly to this file");
+if (!defined('GLPI_ROOT')){
+   die("Can not acces directly to this file");
+}
 
 $type=$_POST["type"];
 if (isset($_POST["action"])){
@@ -56,10 +56,8 @@ if (isset($_POST["action"])){
 			echo "</td><td>";
 			echo $LANG['financial'][19]."&nbsp;";
 			autocompletionTextField("deliverynum","glpi_plugin_order_detail","deliverynum",'',20,$_SESSION["glpiactive_entity"]);
-			
 			echo "</td><td><input type='submit' name='reception' class='submit' value='".$LANG['buttons'][2]."'></td>";
-		break;
-
+         break;
    case "bulk_reception":
 			echo "</td><td>";
 			showDateFormItem("date",date("Y-m-d"),true,1);
@@ -71,26 +69,21 @@ if (isset($_POST["action"])){
          echo "<input type='hidden' name='orderID' value='".$_POST['orderID']."'>";
 			echo $LANG['plugin_order']['delivery'][6]."&nbsp;<input type='text' name='number_reception' size='2' value='0'>";
 			echo "</td><td><input type='submit' name='bulk_reception' class='submit' value='".$LANG['buttons'][2]."'></td>";
-		break;
-
+         break;
 		case "generation":
-		
 			echo "<input type='hidden' name='referenceID' value='".$_POST["referenceID"]."'>"; 
 			echo"<input type='submit' name='generation' class='submit' value='".$LANG['buttons'][2]."'>"; 
-		break;
-
+         break;
    	case "createLink":
-			
 			echo "<input type='hidden' name='FK_type' value='$type'>";
 			$reference = new PluginOrderReference;
 			$reference->getFromDB($_POST["referenceID"]);
 			plugin_order_dropdownAllItemsByType("device", $type, $_SESSION["glpiactive_entity"],$reference->fields["FK_type"],$reference->fields["FK_model"]);
 			echo "&nbsp;<input type='submit' name='createLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'>";
-		break;
-
+         break;
    	case "deleteLink":
 			echo "&nbsp;<input type='submit' name='deleteLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'>";
-		break;
+         break;
 	}
 }
 ?>

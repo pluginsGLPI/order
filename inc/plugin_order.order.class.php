@@ -1,35 +1,44 @@
 <?php
+/*
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
 
-/*----------------------------------------------------------------------
-   GLPI - Gestionnaire Libre de Parc Informatique
-   Copyright (C) 2003-2008 by the INDEPNET Development Team.
+ LICENSE
 
-   http://indepnet.net/   http://glpi-project.org/
-   ----------------------------------------------------------------------
-   LICENSE
+ This file is part of GLPI.
 
-   This file is part of GLPI.
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-   GLPI is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-   GLPI is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
+ 
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
+ */
 
-   You should have received a copy of the GNU General Public License
-   along with GLPI; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-   ----------------------------------------------------------------------*/
-/*----------------------------------------------------------------------
-    Original Author of file: Benjamin Fontan
-    Purpose of file:
-    ----------------------------------------------------------------------*/
+if (!defined('GLPI_ROOT')){
+   die("Sorry. You can't access directly to this file");
+}
+
 class PluginOrder extends CommonDBTM {
+
 	function __construct() {
 		$this->table = "glpi_plugin_order";
 		$this->type = PLUGIN_ORDER_TYPE;
@@ -43,17 +52,19 @@ class PluginOrder extends CommonDBTM {
 		global $DB;
 
 		$query = "DELETE FROM `glpi_doc_device` 
-				  WHERE FK_device = '$ID' 
-				  AND device_type= '" . PLUGIN_ORDER_TYPE . "' ";
+				  WHERE `FK_device` = '$ID' 
+				  AND `device_type` = '" .$this->type . "' ";
 		$DB->query($query);
-		$query = "DELETE FROM `glpi_plugin_order_detail`
-				  WHERE FK_order='$ID'";
+		$query = "DELETE 
+               FROM `glpi_plugin_order_detail`
+               WHERE `FK_order` = '$ID'";
 		$DB->query($query);
 	}
 
 	/*define header form */
 	function defineTabs($ID, $withtemplate) {
 		global $LANG;
+		
 		/* principal */
 		$ong[1] = $LANG['title'][26];
 		if ($ID > 0) {
@@ -66,11 +77,6 @@ class PluginOrder extends CommonDBTM {
             /* item */
             $ong[2] = $LANG['plugin_order']['item'][0];
          }
-			/*
-						if (haveRight("show_all_ticket", "1")) {
-							$ong[6] = $LANG['title'][28];
-						}
-			*/
 			/* documents */
 			if (haveRight("document", "r"))
 				$ong[3] = $LANG['Menu'][27];
@@ -84,6 +90,7 @@ class PluginOrder extends CommonDBTM {
 
 	function prepareInputForAdd($input) {
 		global $LANG;
+		
 		if (!isset ($input["numorder"]) || $input["numorder"] == '') {
 			addMessageAfterRedirect($LANG['plugin_order'][44], false, ERROR);
 			return array ();
@@ -299,11 +306,13 @@ class PluginOrder extends CommonDBTM {
 	 **/
 	function title() {
 		global $LANG, $CFG_GLPI;
+		
 		displayTitle($CFG_GLPI["root_doc"] . "/plugins/order/pics/order-icon.png", $LANG['plugin_order']['title'][1], $LANG['plugin_order']['title'][1]);
 	}
 
 	function needValidation($ID) {
 		global $ORDER_VALIDATION_STATUS;
+		
 		if ($ID > 0 && $this->getFromDB($ID))
 			return (in_array($this->fields["status"], $ORDER_VALIDATION_STATUS));
 		else
@@ -312,7 +321,9 @@ class PluginOrder extends CommonDBTM {
 
 	function canValidate() {
 		global $ORDER_VALIDATION_STATUS;
-		$config = plugin_order_getConfig();
+		
+		$PluginOrderConfig = new PluginOrderConfig;
+		$config = $PluginOrderConfig->getConfig();
 
 		//If no validation process -> can validate if order is in draft state
 		if (!$config["use_validation"])
@@ -345,7 +356,10 @@ class PluginOrder extends CommonDBTM {
 	}
 
 	function canDoValidationRequest() {
-		$config = plugin_order_getConfig();
+		
+		$PluginOrderConfig = new PluginOrderConfig;
+		$config = $PluginOrderConfig->getConfig();
+		
 		if (!$config["use_validation"])
 			return false;
 		else
@@ -353,6 +367,7 @@ class PluginOrder extends CommonDBTM {
 	}
 
 	function canCancelValidationRequest() {
+	
 		return ($this->fields["status"] == ORDER_STATUS_WAITING_APPROVAL);
 	}
 
@@ -371,4 +386,5 @@ class PluginOrder extends CommonDBTM {
 		return (plugin_order_haveRight("undo_validation", "w"));
 	}
 }
+
 ?>

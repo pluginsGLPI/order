@@ -1,35 +1,45 @@
 <?php
+/*
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
-/*----------------------------------------------------------------------
-   GLPI - Gestionnaire Libre de Parc Informatique
-   Copyright (C) 2003-2008 by the INDEPNET Development Team.
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
 
-   http://indepnet.net/   http://glpi-project.org/
-   ----------------------------------------------------------------------
-   LICENSE
+ LICENSE
 
-   This file is part of GLPI.
+ This file is part of GLPI.
 
-   GLPI is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-   GLPI is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with GLPI; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-   ----------------------------------------------------------------------*/
-/*----------------------------------------------------------------------
-    Original Author of file:
-    Purpose of file:
-    ----------------------------------------------------------------------*/
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
+ 
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
+ */
+
+if (!defined('GLPI_ROOT')){
+   die("Sorry. You can't access directly to this file");
+}
+
 function plugin_order_showOrderInfoByDeviceID($device_type, $deviceID) {
 	global $LANG, $INFOFORM_PAGES, $CFG_GLPI;
+	
 	$device = new PluginOrderDetail;
 	$infos = $device->getOrderInfosByDeviceID($device_type, $deviceID);
 	if ($infos) {
@@ -90,6 +100,7 @@ function plugin_order_addHistory($type, $old_value='',$new_value='',$ID)
 
 function plugin_order_canUpdateOrder($orderID) {
 	global $ORDER_VALIDATION_STATUS;
+	
 	if ($orderID > 0) {
 		$order = new PluginOrder;
 		$order->getFromDB($orderID);
@@ -99,6 +110,7 @@ function plugin_order_canUpdateOrder($orderID) {
 }
 
 function plugin_order_updateOrderStatus($orderID, $status, $comments = '') {
+
 	$input["status"] = $status;
 	$input["ID"] = $orderID;
 	$plugin_order = new PluginOrder;
@@ -114,7 +126,9 @@ function plugin_order_updateDelivryStatus($orderID) {
 	$order = new PluginOrder;
 	$order->getFromDB($orderID);
 
-	$query = "SELECT status FROM `glpi_plugin_order_detail` WHERE FK_order=$orderID";
+	$query = "SELECT `status` 
+            FROM `glpi_plugin_order_detail` 
+            WHERE `FK_order` = '$orderID'";
 	$result = $DB->query($query);
 	$all_delivered = true;
 
@@ -129,6 +143,7 @@ function plugin_order_updateDelivryStatus($orderID) {
 
 function plugin_order_showValidationForm($target, $orderID) {
 	global $LANG, $ORDER_VALIDATION_STATUS;
+	
 	$order = new PluginOrder;
 	$order->getFromDB($orderID);
 
@@ -153,8 +168,8 @@ function plugin_order_showValidationForm($target, $orderID) {
 			echo "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][38] . "')\" name='cancel_order' value=\"" . $LANG['plugin_order']['validation'][12] . "\" class='submit'>";
 			$link = "<br><br>";
 		}
-
-		$config = plugin_order_getConfig();
+      $PluginOrderConfig = new PluginOrderConfig;
+		$config = $PluginOrderConfig->getConfig();
 
 		if ($order->canValidate()) {
 			echo $link . "<input type='submit' name='validate' value=\"" . $LANG['plugin_order']['validation'][9] . "\" class='submit'>";
@@ -184,6 +199,7 @@ function plugin_order_showValidationForm($target, $orderID) {
 }
 
 function plugin_order_canDisplayValidationForm($orderID) {
+
 	$order = new PluginOrder;
 	$order->getFromDB($orderID);
 
@@ -197,4 +213,5 @@ function plugin_order_canDisplayValidationForm($orderID) {
 function plugin_order_displayPrice($price) {
 	return sprintf("%.2f", $price);
 }
+
 ?>

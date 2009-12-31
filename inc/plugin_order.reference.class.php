@@ -1,34 +1,44 @@
 <?php
+/*
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
-/*----------------------------------------------------------------------
-   GLPI - Gestionnaire Libre de Parc Informatique
-   Copyright (C) 2003-2008 by the INDEPNET Development Team.
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
 
-   http://indepnet.net/   http://glpi-project.org/
-   ----------------------------------------------------------------------
-   LICENSE
+ LICENSE
 
-   This file is part of GLPI.
+ This file is part of GLPI.
 
-   GLPI is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-   GLPI is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with GLPI; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-   ----------------------------------------------------------------------*/
-/*----------------------------------------------------------------------
-    Original Author of file: Benjamin Fontan
-    Purpose of file:
-    ----------------------------------------------------------------------*/
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
+ 
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
+ */
+
+if (!defined('GLPI_ROOT')){
+   die("Sorry. You can't access directly to this file");
+}
+
 class PluginOrderReference extends CommonDBTM {
+
 	function __construct() {
 		$this->table = "glpi_plugin_order_references";
 		$this->type = PLUGIN_ORDER_REFERENCE_TYPE;
@@ -37,24 +47,23 @@ class PluginOrderReference extends CommonDBTM {
 		$this->dohistory = true;
 	}
   
-  function searchTypesInReferences($supplier) {
-  
-    global $DB;
+   function searchTypesInReferences($supplier) {
+      global $DB;
     
-    $used=array();
-    $query = "SELECT type FROM ".$this->table." 
-              LEFT JOIN glpi_plugin_order_references_manufacturers ON (".$this->table.".ID = glpi_plugin_order_references_manufacturers.FK_reference)
-              WHERE glpi_plugin_order_references_manufacturers.FK_enterprise = ".$supplier." ";
-    $result = $DB->query($query);
-    $number = $DB->numrows($result);
-    if ($number){
-      while ($data=$DB->fetch_array($result)){
-          $used[]=$data["type"];
+      $used=array();
+      $query = "SELECT type FROM `".$this->table."` 
+              LEFT JOIN `glpi_plugin_order_references_manufacturers` ON (`".$this->table."`.`ID` = `glpi_plugin_order_references_manufacturers`.`FK_reference`)
+              WHERE `glpi_plugin_order_references_manufacturers`.`FK_enterprise` = '".$supplier."' ";
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      if ($number){
+         while ($data=$DB->fetch_array($result)){
+            $used[]=$data["type"];
+         }
       }
-    }
     
-    return $used;
-  }
+      return $used;
+   }
 
 	/*define header form */
 	function defineTabs($ID, $withtemplate) {
@@ -71,8 +80,7 @@ class PluginOrderReference extends CommonDBTM {
 		return $ong;
 	}
 
-	function prepareInputForAdd($params)
-	{
+	function prepareInputForAdd($params){
 		global $DB,$LANG;
 
 		if (!isset($params["name"]) || $params["name"] == '')
@@ -87,8 +95,8 @@ class PluginOrderReference extends CommonDBTM {
 			return false;
 		}
 		
-		$query = "SELECT COUNT(*) as cpt FROM `".$this->table."` " .
-				 "WHERE name='".$params["name"]."' AND FK_entities=".$params["FK_entities"];
+		$query = "SELECT COUNT(*) AS cpt FROM `".$this->table."` " .
+				 "WHERE `name` = '".$params["name"]."' AND `FK_entities` = '".$params["FK_entities"]."' ";
 		$result = $DB->query($query);
 		if ($DB->result($result,0,"cpt") > 0)
 		{
@@ -99,9 +107,9 @@ class PluginOrderReference extends CommonDBTM {
 			return $params;		
 	}
 	
-	function pre_deleteItem($params)
-	{
+	function pre_deleteItem($params){
 		global $LANG;
+		
 		if (!$this->referenceInUse())
 			return $params;
 		else
@@ -112,11 +120,11 @@ class PluginOrderReference extends CommonDBTM {
 			
 	}
 	
-	function referenceInUse()
-	{
+	function referenceInUse(){
 		global $DB;
-		$query = "SELECT COUNT(*) as cpt FROM `glpi_plugin_order_detail` " .
-				"WHERE FK_reference=".$this->fields["ID"];
+		
+		$query = "SELECT COUNT(*) AS cpt FROM `glpi_plugin_order_detail` " .
+				"WHERE `FK_reference` = '".$this->fields["ID"]."' ";
 		$result = $DB->query($query);
 		if ($DB->result($result,0,"cpt") > 0)
 			return true;
@@ -136,6 +144,7 @@ class PluginOrderReference extends CommonDBTM {
 	 **/
 	function title() {
 		global $LANG, $CFG_GLPI;
+		
 		displayTitle($CFG_GLPI["root_doc"] . "/plugins/order/pics/reference-icon.png", $LANG['plugin_order']['reference'][1], $LANG['plugin_order']['reference'][1]);
 	}
 
@@ -218,7 +227,6 @@ class PluginOrderReference extends CommonDBTM {
 				else
 					echo getDropdownName(plugin_order_getModelTable($this->fields["type"]), $this->fields["FK_model"]);
 			
-
 			echo "</span></td></tr>";
 
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][13] . ": </td>";
@@ -275,4 +283,5 @@ class PluginOrderReference extends CommonDBTM {
 		return true;
 	}
 }
+
 ?>

@@ -1,32 +1,42 @@
 <?php
-/*----------------------------------------------------------------------
-   GLPI - Gestionnaire Libre de Parc Informatique
-   Copyright (C) 2003-2008 by the INDEPNET Development Team.
+/*
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
-   http://indepnet.net/   http://glpi-project.org/
-   ----------------------------------------------------------------------
-   LICENSE
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
 
-   This file is part of GLPI.
+ LICENSE
 
-   GLPI is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+ This file is part of GLPI.
 
-   GLPI is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-   You should have received a copy of the GNU General Public License
-   along with GLPI; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-   ----------------------------------------------------------------------*/
-/*----------------------------------------------------------------------
-    Original Author of file: Benjamin Fontan
-    Purpose of file:
-    ----------------------------------------------------------------------*/
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
+ 
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
+ */
+
+if (!defined('GLPI_ROOT')){
+   die("Sorry. You can't access directly to this file");
+}
+
 function plugin_order_showFormMailingType($type, $profiles) {
 		global $LANG, $DB;
 	
@@ -48,11 +58,11 @@ function plugin_order_showFormMailingType($type, $profiles) {
 
 		$options="";
 		// Get User mailing
-		$query = "SELECT glpi_plugin_order_mailing.FK_item as item, glpi_plugin_order_mailing.ID as ID 
-				FROM glpi_plugin_order_mailing 
-				WHERE glpi_plugin_order_mailing.type='$type' 
-				AND glpi_plugin_order_mailing.item_type='" . USER_MAILING_TYPE . "' 
-				ORDER BY glpi_plugin_order_mailing.FK_item;";
+		$query = "SELECT `glpi_plugin_order_mailing`.`FK_item` AS item, `glpi_plugin_order_mailing`.`ID` AS ID 
+				FROM `glpi_plugin_order_mailing` 
+				WHERE `glpi_plugin_order_mailing`.`type` = '$type' 
+				AND `glpi_plugin_order_mailing`.`item_type` = '" . USER_MAILING_TYPE . "' 
+				ORDER BY `glpi_plugin_order_mailing`.`FK_item`;";
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_assoc($result)) {
@@ -68,12 +78,12 @@ function plugin_order_showFormMailingType($type, $profiles) {
 				$options.= "<option value='" . $data["ID"] . "'>" . $name . "</option>";
 			}
 		// Get Profile mailing
-		$query = "SELECT glpi_plugin_order_mailing.FK_item as item, glpi_plugin_order_mailing.ID as ID, glpi_profiles.name as prof 
-				FROM glpi_plugin_order_mailing 
-				LEFT JOIN glpi_profiles ON (glpi_plugin_order_mailing.FK_item = glpi_profiles.ID) 
-				WHERE glpi_plugin_order_mailing.type='$type' 
-				AND glpi_plugin_order_mailing.item_type='" . PROFILE_MAILING_TYPE . "' 
-				ORDER BY glpi_profiles.name;";
+		$query = "SELECT `glpi_plugin_order_mailing`.`FK_item` AS item, `glpi_plugin_order_mailing`.`ID` AS ID, `glpi_profiles`.`name` AS prof 
+				FROM `glpi_plugin_order_mailing` 
+				LEFT JOIN `glpi_profiles` ON (`glpi_plugin_order_mailing`.`FK_item` = `glpi_profiles`.`ID`) 
+				WHERE `glpi_plugin_order_mailing`.`type` = '$type' 
+				AND `glpi_plugin_order_mailing`.`item_type` = '" . PROFILE_MAILING_TYPE . "' 
+				ORDER BY `glpi_profiles`.`name`;";
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_assoc($result)) {
@@ -81,12 +91,12 @@ function plugin_order_showFormMailingType($type, $profiles) {
 			}
 	
 		// Get Group mailing
-		$query = "SELECT glpi_plugin_order_mailing.FK_item as item, glpi_plugin_order_mailing.ID as ID, glpi_groups.name as name 
-				FROM glpi_plugin_order_mailing 
-				LEFT JOIN glpi_groups ON (glpi_plugin_order_mailing.FK_item = glpi_groups.ID) 
-				WHERE glpi_plugin_order_mailing.type='$type' 
-				AND glpi_plugin_order_mailing.item_type='" . GROUP_MAILING_TYPE . "' 
-				ORDER BY glpi_groups.name;";
+		$query = "SELECT `glpi_plugin_order_mailing`.`FK_item` AS item, `glpi_plugin_order_mailing`.`ID` AS ID, `glpi_groups`.`name` AS name 
+				FROM `glpi_plugin_order_mailing` 
+				LEFT JOIN `glpi_groups` ON (`glpi_plugin_order_mailing`.`FK_item` = `glpi_groups`.`ID`) 
+				WHERE `glpi_plugin_order_mailing`.`type` = '$type' 
+				AND `glpi_plugin_order_mailing`.`item_type` = '" . GROUP_MAILING_TYPE . "' 
+				ORDER BY``.`name`;";
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_assoc($result)) {
@@ -108,17 +118,17 @@ function plugin_order_getMailingSenderList()
 	 global $DB,$LANG;
 	 
 	 $profiles[USER_MAILING_TYPE . "_" . ADMIN_MAILING] = $LANG['setup'][237];
-      $query = "SELECT ID, name 
-            FROM glpi_profiles 
-            ORDER BY name";
+      $query = "SELECT `ID`, `name` 
+            FROM `glpi_profiles` 
+            ORDER BY `name`";
       $result = $DB->query($query);
       while ($data = $DB->fetch_assoc($result))
         $profiles[PROFILE_MAILING_TYPE .
         "_" . $data["ID"]] = $LANG['profiles'][22] . " " . $data["name"];
 
-      $query = "SELECT ID, name 
-            FROM glpi_groups 
-            ORDER BY name";
+      $query = "SELECT `ID`, `name` 
+            FROM `glpi_groups` 
+            ORDER BY `name`";
       $result = $DB->query($query);
       while ($data = $DB->fetch_assoc($result))
         $profiles[GROUP_MAILING_TYPE .
@@ -147,14 +157,14 @@ function plugin_order_updateMailNotifications($input) {
 				switch ($action) {
 					case "add" :
 						list ($item_type, $item) = explode("_", $val);
-						$query = "INSERT INTO glpi_plugin_order_mailing (type,FK_item,item_type) 
+						$query = "INSERT INTO `glpi_plugin_order_mailing` (`type`,`FK_item`,`item_type`) 
 									VALUES ('$type','$item','$item_type')";
 						$DB->query($query);
 						break;
 					case "delete" :
 						$query = "DELETE 
-								FROM glpi_plugin_order_mailing 
-								WHERE ID='$val'";
+								FROM `glpi_plugin_order_mailing` 
+								WHERE `ID` = '$val'";
 						$DB->query($query);
 						break;
 				}

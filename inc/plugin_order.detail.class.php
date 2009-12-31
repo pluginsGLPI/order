@@ -1,33 +1,44 @@
 <?php
-/*----------------------------------------------------------------------
-   GLPI - Gestionnaire Libre de Parc Informatique
-   Copyright (C) 2003-2008 by the INDEPNET Development Team.
+/*
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
-   http://indepnet.net/   http://glpi-project.org/
-   ----------------------------------------------------------------------
-   LICENSE
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
 
-   This file is part of GLPI.
+ LICENSE
 
-   GLPI is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+ This file is part of GLPI.
 
-   GLPI is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-   You should have received a copy of the GNU General Public License
-   along with GLPI; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-   ----------------------------------------------------------------------*/
-/*----------------------------------------------------------------------
-    Original Author of file: Benjamin Fontan
-    Purpose of file:
-    ----------------------------------------------------------------------*/
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
+ 
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
+ */
+
+if (!defined('GLPI_ROOT')){
+   die("Sorry. You can't access directly to this file");
+}
+
 class PluginOrderDetail extends CommonDBTM {
+
    function __construct () 
    {
       $this->table="glpi_plugin_order_detail";                
@@ -36,30 +47,31 @@ class PluginOrderDetail extends CommonDBTM {
 	/*clean order if items are deleted */
 	function cleanItems($ID,$type) {
 		global $DB;
-		$query=" SELECT glpi_plugin_order_detail.ID AS detailID, glpi_plugin_order_references.ID
-							FROM glpi_plugin_order_detail, glpi_plugin_order_references
-							WHERE FK_reference=glpi_plugin_order_references.ID
-							AND glpi_plugin_order_references.type=$type
-							AND glpi_plugin_order_detail.FK_device=$ID";
+		
+		$query=" SELECT `".$this->table."`.`ID` AS detailID, `glpi_plugin_order_references`.`ID`
+							FROM `".$this->table."`, `glpi_plugin_order_references`
+							WHERE `".$this->table."`.`FK_reference` = `glpi_plugin_order_references`.`ID`
+							AND `glpi_plugin_order_references`.`type` = '$type'
+							AND `".$this->table."`.`FK_device` = '$ID' ";
 		if($DB->query($query))
 		{
 			$result=$DB->query($query);
 			if($DB->result($result,0,'detailID')) {
 				$detailID=$DB->result($result,0,'detailID');
 		
-            $query=" UPDATE glpi_plugin_order_detail
-                           SET FK_device=0
-                           WHERE ID=$detailID";
+            $query=" UPDATE `".$this->table."`
+                           SET `FK_device` = 0
+                           WHERE `ID` = '$detailID' ";
             $DB->query($query);
-            $query=" DELETE FROM glpi_plugin_order_detail
-                           WHERE FK_device = '$ID' 
-                           AND device_type= '$type'";
+            $query=" DELETE FROM `".$this->table."`
+                           WHERE `FK_device` = '$ID' 
+                           AND `device_type` = '$type' ";
             $DB->query($query);
          }
 		}
 	}
-	function showAddForm($target, $orderID)
-	{
+	
+	function showAddForm($target, $orderID){
        global  $CFG_GLPI, $LANG,$DB;
 
 		if (plugin_order_canUpdateOrder($orderID))
@@ -109,20 +121,23 @@ class PluginOrderDetail extends CommonDBTM {
    function showFormDetail ($target,$FK_order) {
       global  $CFG_GLPI, $LANG,$DB,$INFOFORM_PAGES;
 		
-			$query="SELECT glpi_plugin_order_detail.ID AS IDD, glpi_plugin_order_references.ID AS IDR, 
-					glpi_plugin_order_references.type,glpi_plugin_order_references.FK_type,glpi_plugin_order_references.FK_model, glpi_plugin_order_references.FK_glpi_enterprise, glpi_plugin_order_references.name, 
-					glpi_plugin_order_detail.price_taxfree, glpi_plugin_order_detail.price_ati, glpi_plugin_order_detail.price_discounted, 
-               glpi_plugin_order_detail.discount,
-					glpi_plugin_order_detail.price_discounted AS totalpriceHT, 
-					glpi_plugin_order_detail.price_ati AS totalpriceTTC 
-					FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
-					WHERE glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID
-					AND glpi_plugin_order_detail.FK_order=$FK_order
-					ORDER BY glpi_plugin_order_references.name ";
+			$query="SELECT `".$this->table."`.`ID` AS IDD, `glpi_plugin_order_references`.`ID` AS IDR, 
+					`glpi_plugin_order_references`.`type`,`glpi_plugin_order_references`.`FK_type`,`glpi_plugin_order_references`.`FK_model`, `glpi_plugin_order_references`.`FK_glpi_enterprise`, `glpi_plugin_order_references`.`name`, 
+					`".$this->table."`.`price_taxfree`, `".$this->table."`.`price_ati`, `".$this->table."`.`price_discounted`, 
+               `".$this->table."`.`discount`,
+					`".$this->table."`.`price_discounted` AS totalpriceHT, 
+					`".$this->table."`.`price_ati` AS totalpriceTTC 
+					FROM `".$this->table."`, `glpi_plugin_order_references`
+					WHERE `".$this->table."`.`FK_reference` = `glpi_plugin_order_references`.`ID`
+					AND `".$this->table."`.`FK_order` = '$FK_order'
+					ORDER BY `glpi_plugin_order_references`.`name` ";
+					
 			$result=$DB->query($query);
 			$num=$DB->numrows($result);
 			$rand=mt_rand();
+			
 			$plugin_order=new PluginOrder();
+			
 			$canedit=$plugin_order->can($FK_order,'w') && plugin_order_canUpdateOrder($FK_order);
 			echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  action=\"$target\">";
 			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
@@ -212,7 +227,10 @@ class PluginOrderDetail extends CommonDBTM {
 
 	function isDeviceLinkedToOrder($device_type, $deviceID) {
 		global $DB;
-		$query = "SELECT ID FROM `" . $this->table . "` WHERE `device_type`='$device_type' AND `FK_device`='$deviceID'";
+		$query = "SELECT `ID` 
+               FROM `" . $this->table . "` 
+               WHERE `device_type` = '$device_type' 
+               AND `FK_device` = '$deviceID' ";
       $result = $DB->query($query);
 		if ($DB->numrows($result))
 			return true;
@@ -222,8 +240,11 @@ class PluginOrderDetail extends CommonDBTM {
 
 	function getOrderInfosByDeviceID($device_type, $deviceID) {
 		global $DB;
-		$query = "SELECT go.* FROM `glpi_plugin_order` AS go, `" . $this->table . "` AS god " .
-		"WHERE go.ID=god.FK_order AND god.device_type=$device_type AND god.FK_device=$deviceID";
+		$query = "SELECT `glpi_plugin_order`.* 
+               FROM `glpi_plugin_order`, `".$this->table."` 
+               WHERE `glpi_plugin_order`.`ID` = `".$this->table."`.`FK_order` 
+               AND `".$this->table."`.`device_type` = '$device_type' 
+               AND `".$this->table."`.`FK_device` = '$deviceID' ";
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			return $DB->fetch_array($result);

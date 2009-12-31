@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: dropdownDocument.php 8875 2009-09-03 05:13:53Z remi $
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -26,14 +26,13 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
+ 
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
  */
 
-// ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
-// Purpose of file:
-// ----------------------------------------------------------------------
-
-// Direct access to file
 if(strpos($_SERVER['PHP_SELF'],"dropdownContact.php")){
 	define('GLPI_ROOT','../../..');
 	$AJAX_INCLUDE=1;
@@ -42,12 +41,12 @@ if(strpos($_SERVER['PHP_SELF'],"dropdownContact.php")){
 	header_nocache();
 }
 if (!defined('GLPI_ROOT')){
-	die("Can not acces directly to this file");
-	}
+   die("Can not acces directly to this file");
+}
 
 checkCentralAccess();
 // Make a select box with all glpi users
-$where=" WHERE glpi_contact_enterprise.FK_contact = glpi_contacts.ID AND (glpi_contact_enterprise.FK_enterprise = '".$_POST['FK_enterprise']."' AND glpi_contacts.deleted='0' ) ";
+$where=" WHERE `glpi_contact_enterprise`.`FK_contact` = `glpi_contacts`.`ID` AND (`glpi_contact_enterprise`.`FK_enterprise` = '".$_POST['FK_enterprise']."' AND `glpi_contacts`.`deleted` = '0' ) ";
 
 
 if (isset($_POST["entity_restrict"])){
@@ -60,17 +59,17 @@ if (isset($_POST["entity_restrict"])){
 }
 
 if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
-	$where.=" AND glpi_contacts.name ".makeTextSearch($_POST['searchText']);
+	$where.=" AND `glpi_contacts`.`name` ".makeTextSearch($_POST['searchText']);
 
 $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 
-$query = "SELECT glpi_contacts.*
-	FROM glpi_contacts,glpi_contact_enterprise
+$query = "SELECT `glpi_contacts`.*
+	FROM `glpi_contacts`,`glpi_contact_enterprise`
 	$where
-	ORDER BY FK_entities, name $LIMIT";
+	ORDER BY `FK_entities`, `name` $LIMIT";
 //error_log($query);
 $result = $DB->query($query);
 

@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: dropdownRubDocument.php 7762 2009-01-06 18:30:32Z moyo $
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
@@ -26,13 +26,12 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
+ 
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
  */
-
-// ----------------------------------------------------------------------
-// Original Author of file: Julien Dombre
-// Purpose of file:
-// ----------------------------------------------------------------------
-
 
 if(strpos($_SERVER['PHP_SELF'],"dropdownSupplier.php")){
 	define('GLPI_ROOT','../../..');
@@ -52,11 +51,10 @@ if (isset($_POST["FK_enterprise"])){
 
 	$use_ajax=false;
 	if ($CFG_GLPI["use_ajax"] && 
-		countElementsInTable('glpi_enterprises',"glpi_enterprises.ID='".$_POST["FK_enterprise"]."' ".getEntitiesRestrictRequest("AND", "glpi_enterprises","",$_POST["entity_restrict"],true) )>$CFG_GLPI["ajax_limit_count"]
+		countElementsInTable('glpi_enterprises',"`glpi_enterprises`.`ID` = '".$_POST["FK_enterprise"]."' ".getEntitiesRestrictRequest("AND", "glpi_enterprises","",$_POST["entity_restrict"],true) )>$CFG_GLPI["ajax_limit_count"]
 	){
 		$use_ajax=true;
 	}
-
 
 	$paramsFK_enterprise=array('searchText'=>'__VALUE__',
 			'FK_enterprise'=>$_POST["FK_enterprise"],

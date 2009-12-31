@@ -1,33 +1,38 @@
 <?php
+/*
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
-/*----------------------------------------------------------------------
-   GLPI - Gestionnaire Libre de Parc Informatique
-   Copyright (C) 2003-2008 by the INDEPNET Development Team.
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
 
-   http://indepnet.net/   http://glpi-project.org/
-   ----------------------------------------------------------------------
-   LICENSE
+ LICENSE
 
-   This file is part of GLPI.
+ This file is part of GLPI.
 
-   GLPI is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-   GLPI is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with GLPI; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-   ----------------------------------------------------------------------*/
-/*----------------------------------------------------------------------
-    Original Author of file:
-    Purpose of file:
-    ----------------------------------------------------------------------*/
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
+ 
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
+ */
+
 $NEEDED_ITEMS = array (
 	"ocsng",	"computer",	"printer",	"networking",	"monitor",
 	"software",	"peripheral",	"phone",	"tracking",	"document",
@@ -46,17 +51,12 @@ if ($plugin->isActivated("genericobject"))
 if (isset ($_POST["reception"])) {
 	plugin_order_updateReceptionStatus($_POST);
 	glpi_header($_SERVER["HTTP_REFERER"]);
-}
-
-if (isset ($_POST["bulk_reception"])) {
+} else if (isset ($_POST["bulk_reception"])) {
 	plugin_order_updateBulkReceptionStatus($_POST);
 	glpi_header($_SERVER["HTTP_REFERER"]);
 }
-
-
-/*
- *  affiche le tableau permettant la generation de materiel */
-if (isset ($_POST["generation"])) {
+/*  affiche le tableau permettant la generation de materiel */
+else if (isset ($_POST["generation"])) {
 	if (isset ($_POST["item"])) {
 		$detail = new PluginOrderDetail;
 		
@@ -79,12 +79,12 @@ if (isset ($_POST["generation"])) {
 	}
 }
 /* genere le materiel */
-if (isset ($_POST["generate"])) {
+else if (isset ($_POST["generate"])) {
 	plugin_order_generateNewDevice($_POST);
 	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=" . $_POST["orderID"] . "");
 }
 /* supprime un lien d'une ligne detail vers un materiel */
-if (isset ($_POST["deleteLinkWithDevice"])) {
+else if (isset ($_POST["deleteLinkWithDevice"])) {
 	foreach ($_POST["item"] as $key => $val) {
 		if ($val == 1)
 			plugin_order_deleteLinkWithDevice($key, $_POST["type"][$key]);
@@ -92,7 +92,7 @@ if (isset ($_POST["deleteLinkWithDevice"])) {
 	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=" . $_POST["orderID"] . "");
 }
 /* cree un lien d'une ligne detail vers un materiel */
-if (isset ($_POST["createLinkWithDevice"]) && $_POST["item"]) {
+else if (isset ($_POST["createLinkWithDevice"]) && $_POST["item"]) {
 	$i = 0;
 	if (count($_POST["item"]) <= 1 || in_array($_POST["FK_type"],$ORDER_RESTRICTED_TYPES)) {
 		$detail = new PluginOrderDetail;
@@ -116,4 +116,5 @@ if (isset ($_POST["createLinkWithDevice"]) && $_POST["item"]) {
 		addMessageAfterRedirect($LANG['plugin_order'][42], true, ERROR);
 	glpi_header("" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=" . $_POST["orderID"] . "");
 }
+
 ?>
