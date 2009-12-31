@@ -65,9 +65,9 @@ function plugin_order_getPricesATI($priceHT, $taxes) {
 
 function plugin_order_addDetails($referenceID, $device_type, $orderID, $quantity, $price, $discounted_price, $taxes) {
 	global $LANG;
-	if (plugin_order_referenceExistsInOrder($orderID, $referenceID))
-		addMessageAfterRedirect($LANG['plugin_order']['detail'][28], false, ERROR);
-	else {
+	//if (plugin_order_referenceExistsInOrder($orderID, $referenceID))
+		//addMessageAfterRedirect($LANG['plugin_order']['detail'][28], false, ERROR);
+	//else {
 		if ($quantity > 0) {
 			$detail = new PluginOrderDetail;
 			for ($i = 0; $i < $quantity; $i++) {
@@ -84,7 +84,7 @@ function plugin_order_addDetails($referenceID, $device_type, $orderID, $quantity
 				$detail->add($input);
 			}
 		}
-	}
+	//}
 }
 
 function plugin_order_referenceExistsInOrder($orderID, $referenceID) {
@@ -96,12 +96,11 @@ function plugin_order_referenceExistsInOrder($orderID, $referenceID) {
 	else
 		return false;
 }
-function plugin_order_deleteDetails($referenceID, $orderID) {
+function plugin_order_deleteDetails($ID) {
 	global $DB;
 
 	$query = " DELETE FROM `glpi_plugin_order_detail`
-					WHERE FK_order=$orderID 
-					AND FK_reference=$referenceID";
+					WHERE ID=$ID ";
 	$DB->query($query);
 }
 

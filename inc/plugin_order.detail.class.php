@@ -113,12 +113,11 @@ class PluginOrderDetail extends CommonDBTM {
 					glpi_plugin_order_references.type,glpi_plugin_order_references.FK_type,glpi_plugin_order_references.FK_model, glpi_plugin_order_references.FK_glpi_enterprise, glpi_plugin_order_references.name, 
 					glpi_plugin_order_detail.price_taxfree, glpi_plugin_order_detail.price_ati, glpi_plugin_order_detail.price_discounted, 
                glpi_plugin_order_detail.discount,
-					SUM(glpi_plugin_order_detail.price_discounted) AS totalpriceHT, 
-					SUM(glpi_plugin_order_detail.price_ati) AS totalpriceTTC 
+					glpi_plugin_order_detail.price_discounted AS totalpriceHT, 
+					glpi_plugin_order_detail.price_ati AS totalpriceTTC 
 					FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
 					WHERE glpi_plugin_order_detail.FK_reference=glpi_plugin_order_references.ID
 					AND glpi_plugin_order_detail.FK_order=$FK_order
-					GROUP BY glpi_plugin_order_detail.FK_reference
 					ORDER BY glpi_plugin_order_references.name ";
 			$result=$DB->query($query);
 			$num=$DB->numrows($result);
@@ -139,8 +138,8 @@ class PluginOrderDetail extends CommonDBTM {
 				echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][6]."</th>";
 				echo "<th>".$LANG['common'][22]."</th>";
-				echo "<th>".$LANG['plugin_order']['detail'][7]."</th>";
-				echo "<th>".$LANG['plugin_order']['detail'][3]."</th>";
+				//echo "<th>".$LANG['plugin_order']['detail'][7]."</th>";
+				//echo "<th>".$LANG['plugin_order']['detail'][3]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][4]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][18]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][25]."</th>";
@@ -158,7 +157,7 @@ class PluginOrderDetail extends CommonDBTM {
 						echo "<td width='10'>";
 						$sel="";
 						if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-						echo "<input type='checkbox' name='detail[".$DB->result($result,$i,"IDR")."]' value='1' $sel>";
+						echo "<input type='checkbox' name='detail[".$DB->result($result,$i,"IDD")."]' value='1' $sel>";
 						echo "</td>";
 					}
 					/* type */
@@ -180,9 +179,9 @@ class PluginOrderDetail extends CommonDBTM {
 					echo getDropdownName(plugin_order_getModelTable($DB->result($result,$i,"type")), $DB->result($result,$i,"FK_model"));
 					echo "</td>";
 					/* quantity */
-					echo "<td align='center'>".plugin_order_getQuantity($FK_order, $IDR)."</td>";	
+					//echo "<td align='center'>".plugin_order_getQuantity($FK_order, $IDR)."</td>";	
 					/* delivered quantity */
-					echo "<td align='center'>".plugin_order_getDelivredQuantity($FK_order, $IDR)."</td>";	
+					//echo "<td align='center'>".plugin_order_getDelivredQuantity($FK_order, $IDR)."</td>";	
 					/*price */
 					echo "<td align='center'>".plugin_order_displayPrice($DB->result($result,$i,"price_taxfree"))."</td>";
 					/* price with reduction */
