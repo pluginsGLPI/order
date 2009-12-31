@@ -129,7 +129,7 @@ class PluginOrderBudget extends CommonDBTM {
       if ($ID > 0) {
          $query = "SELECT SUM(`price_discounted`) as total_price FROM `glpi_plugin_order`, `glpi_plugin_order_detail` " .
                "WHERE `budget` = '".$this->fields["FK_budget"]."' AND `glpi_plugin_order_detail`.`FK_order` = `glpi_plugin_order`.`ID` " .
-               "GROUP BY `glpi_plugin_order.budget`";
+               "GROUP BY `glpi_plugin_order`.`budget`";
          $result = $DB->query($query);
 
          echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['budget'][2] . ": </td>";

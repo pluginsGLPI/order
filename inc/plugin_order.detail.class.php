@@ -371,7 +371,7 @@ class PluginOrderDetail extends CommonDBTM {
                         $query = "SELECT `" . $LINK_ID_TABLE[$type] . "`.*, " .
                               "`".$this->table."`.`ID` AS IDD, " .
                               "`glpi_entities`.`ID` AS entity " .
-                        " FROM`".$this->table."` `" . $LINK_ID_TABLE[$type] .
+                        " FROM`".$this->table."`, `" . $LINK_ID_TABLE[$type] .
                         "` LEFT JOIN `glpi_entities` ON (`glpi_entities`.`ID` = `" . $LINK_ID_TABLE[$type] . "`.`FK_entities`) " .
                         " WHERE `" . $LINK_ID_TABLE[$type] . "`.`ID` = `".$this->table."`.`FK_device` 
                         AND `".$this->table."`.`device_type` = '$type' 

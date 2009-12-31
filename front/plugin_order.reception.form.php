@@ -92,28 +92,31 @@ else if (isset ($_POST["deleteLinkWithDevice"])) {
 	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=" . $_POST["orderID"] . "");
 }
 /* cree un lien d'une ligne detail vers un materiel */
-else if (isset ($_POST["createLinkWithDevice"]) && $_POST["item"]) {
-	$i = 0;
-	if (count($_POST["item"]) <= 1 || in_array($_POST["FK_type"],$ORDER_RESTRICTED_TYPES)) {
-		$detail = new PluginOrderDetail;
+else if (isset ($_POST["createLinkWithDevice"])) {
 
-		foreach ($_POST["item"] as $key => $val)
-		{
-			if ($val == 1)
-			{
-				$detail->getFromDB($_POST["ID"][$key]);
-				if ($detail->fields["status"] == ORDER_DEVICE_NOT_DELIVRED) {
-					addMessageAfterRedirect($LANG['plugin_order'][46], true, ERROR);
-					glpi_header($_SERVER["HTTP_REFERER"]);
-				} else
-				{
-					plugin_order_createLinkWithDevice($key, $_POST["device"], $_POST["type"][$key], $_POST["orderID"]);
-					
-				}
-			}
-		}
-	} else
-		addMessageAfterRedirect($LANG['plugin_order'][42], true, ERROR);
+   if ($_POST["item"]) {
+      $i = 0;
+      if (count($_POST["item"]) <= 1 || in_array($_POST["FK_type"],$ORDER_RESTRICTED_TYPES)) {
+         $detail = new PluginOrderDetail;
+
+         foreach ($_POST["item"] as $key => $val)
+         {
+            if ($val == 1)
+            {
+               $detail->getFromDB($_POST["ID"][$key]);
+               if ($detail->fields["status"] == ORDER_DEVICE_NOT_DELIVRED) {
+                  addMessageAfterRedirect($LANG['plugin_order'][46], true, ERROR);
+                  glpi_header($_SERVER["HTTP_REFERER"]);
+               } else
+               {
+                  plugin_order_createLinkWithDevice($key, $_POST["device"], $_POST["type"][$key], $_POST["orderID"]);
+                  
+               }
+            }
+         }
+      } else
+         addMessageAfterRedirect($LANG['plugin_order'][42], true, ERROR);
+   }
 	glpi_header("" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=" . $_POST["orderID"] . "");
 }
 
