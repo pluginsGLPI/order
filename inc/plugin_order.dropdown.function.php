@@ -36,58 +36,6 @@
 if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
-
-/*order dropdown selection */
-function plugin_order_dropdownorder($myname, $entity_restrict = '', $used = array ()) {
-	global $DB, $CFG_GLPI;
-
-	$rand = mt_rand();
-	$where = " WHERE `glpi_plugin_order`.`deleted` = '0' ";
-	$where .= getEntitiesRestrictRequest("AND", "glpi_plugin_order", '', $entity_restrict, true);
-	if (count($used)) {
-		$where .= " AND `ID` NOT IN (0";
-		foreach ($used as $ID)
-			$where .= ",$ID";
-		$where .= ")";
-	}
-	$query = "SELECT * 
-					FROM `glpi_dropdown_plugin_order_taxes` 
-					WHERE `ID` IN (
-						SELECT `DISTINCT taxes` 
-						FROM `glpi_plugin_order` 
-						$where) 
-					GROUP BY `name` 
-					ORDER BY `name`";
-	$result = $DB->query($query);
-
-	echo "<select name='_taxes' id='taxes_order'>\n";
-	echo "<option value='0'>------</option>\n";
-	while ($data = $DB->fetch_assoc($result)) {
-		echo "<option value='" . $data['ID'] . "'>" . $data['name'] . "</option>\n";
-	}
-	echo "</select>\n";
-
-	$params = array (
-		'taxes_order' => '__VALUE__',
-		'entity_restrict' => $entity_restrict,
-		'rand' => $rand,
-		'myname' => $myname,
-		'used' => $used
-	);
-
-	ajaxUpdateItemOnSelectEvent("taxes_order", "show_$myname$rand", $CFG_GLPI["root_doc"] . "/plugins/order/ajax/dropdownTypeorder.php", $params);
-
-	echo "<span id='show_$myname$rand'>";
-	$_POST["entity_restrict"] = $entity_restrict;
-	$_POST["taxes_order"] = 0;
-	$_POST["myname"] = $myname;
-	$_POST["rand"] = $rand;
-	$_POST["used"] = $used;
-	include (GLPI_ROOT . "/plugins/order/ajax/dropdownTypeorder.php");
-	echo "</span>\n";
-
-	return $rand;
-}
     
 function plugin_order_dropdownAllItems($myname, $ajax = false, $value = 0, $orderID = 0, $supplier = 0, $entity = 0, $ajax_page = '',$filter=false) {
 	global $ORDER_AVAILABLE_TYPES;
@@ -294,29 +242,6 @@ function plugin_order_templateExistsInEntity($detailID, $type, $entity) {
 			return 0;
 	}
 
-}
-
-function plugin_order_getDropdownContact($value,$FK_enterprise) {
-	global $LANG,$DB;
-  
-   if ($FK_enterprise){
-      echo "<select name='FK_contact'>";
-      echo "<option value='0'>------</option>";
-      $query = "SELECT `glpi_contacts`.* 
-        FROM `glpi_contacts`, `glpi_contact_enterprise` 
-        WHERE `glpi_contact_enterprise`.`FK_contact` = `glpi_contacts`.`ID` 
-        AND `glpi_contact_enterprise`.`FK_enterprise` = '".$FK_enterprise."' 
-        ORDER BY `glpi_contacts`.`name` ";
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-
-      if ($number){
-         while ($data=$DB->fetch_array($result)){
-            echo "<option value='".$data["ID"]."' ".($data["ID"]=="".$value.""?" selected ":"").">".$data["name"]." ".$data["firstname"]."</option>";
-         }
-      }
-      echo "</select>";
-   }
 }
 
 ?>

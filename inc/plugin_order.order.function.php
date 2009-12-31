@@ -40,8 +40,8 @@ if (!defined('GLPI_ROOT')){
 function plugin_order_showOrderInfoByDeviceID($device_type, $deviceID) {
 	global $LANG, $INFOFORM_PAGES, $CFG_GLPI;
 	
-	$device = new PluginOrderDetail;
-	$infos = $device->getOrderInfosByDeviceID($device_type, $deviceID);
+	$PluginOrderDetail = new PluginOrderDetail;
+	$infos = $PluginOrderDetail->getOrderInfosByDeviceID($device_type, $deviceID);
 	if ($infos) {
 		echo "<div class='center'>";
 		echo "<table class='tab_cadre_fixe'>";
@@ -208,10 +208,6 @@ function plugin_order_canDisplayValidationForm($orderID) {
 		return false;
 	else
 		return ($order->canValidate() || $order->canUndoValidation() || $order->canCancelOrder());
-}
-
-function plugin_order_displayPrice($price) {
-	return sprintf("%.2f", $price);
 }
 
 ?>

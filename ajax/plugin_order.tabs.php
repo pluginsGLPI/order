@@ -70,6 +70,8 @@ if (!isset ($_POST["withtemplate"]))
 
 plugin_order_checkRight("order", "r");
 
+$PluginOrderDetail = new PluginOrderDetail;
+
 if (empty ($_POST["ID"])) {
 	switch ($_POST['glpi_tab']) {
 		default :
@@ -80,8 +82,8 @@ if (empty ($_POST["ID"])) {
 		case -1 :
 			/* show items linking form from all */
 			plugin_order_showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
-			plugin_order_showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"]);
-			plugin_order_showItem($_POST["ID"]);
+			$PluginOrderDetail->showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"]);
+			$PluginOrderDetail->showItemFromPlugin($_POST["ID"]);
 			plugin_order_showDetailReceptionForm($_POST["ID"]);
 			showDocumentAssociated(PLUGIN_ORDER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
 			showNotesForm($_POST['target'], PLUGIN_ORDER_TYPE, $_POST["ID"]);
@@ -90,14 +92,14 @@ if (empty ($_POST["ID"])) {
 			plugin_order_showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			break;
 		case 2 :
-			plugin_order_showItem($_POST["ID"]);
+			$PluginOrderDetail->showItemFromPlugin($_POST["ID"]);
 			break;
 		case 3 :
 			/* show documents linking form */
 			showDocumentAssociated(PLUGIN_ORDER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
 			break;
 		case 4 :
-			plugin_order_showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"], 1);
+			$PluginOrderDetail->showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"], 1);
 			break;
 		case 5 :
 			plugin_order_showDetailReceptionForm($_POST["ID"]);

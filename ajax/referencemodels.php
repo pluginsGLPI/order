@@ -38,13 +38,14 @@ define('GLPI_ROOT', '../../..');
 
 include (GLPI_ROOT . "/inc/includes.php");
 include (GLPI_ROOT . "/plugins/order/inc/plugin_order.dropdown.function.php");
-include (GLPI_ROOT . "/plugins/order/inc/plugin_order.reference.function.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 if (!defined('GLPI_ROOT')) {
 	die("Can not acces directly to this file");
 }
+
+useplugin('order', true);
 
 checkCentralAccess();
 
@@ -53,12 +54,12 @@ if ($_POST["device_type"])
 	switch ($_POST["field"])
 	{
 		case "type":
-			if (plugin_order_getTypeTable($_POST["device_type"]) !== false)
-				dropdownValue(plugin_order_getTypeTable($_POST["device_type"]), "FK_type");
+			if (isset($ORDER_TYPE_TABLES[$_POST["device_type"]]))
+				dropdownValue($ORDER_TYPE_TABLES[$_POST["device_type"]], "FK_type");
          break;
 		case "model":
-			if (plugin_order_getModelTable($_POST["device_type"]) !== false)
-				dropdownValue(plugin_order_getModelTable($_POST["device_type"]), "FK_model");
+			if (isset($ORDER_MODEL_TABLES[$_POST["device_type"]]))
+				dropdownValue($ORDER_MODEL_TABLES[$_POST["device_type"]], "FK_model");
 			else
 				return "";				
          break;

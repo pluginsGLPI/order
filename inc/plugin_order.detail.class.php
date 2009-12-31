@@ -48,29 +48,73 @@ class PluginOrderDetail extends CommonDBTM {
 	function cleanItems($ID,$type) {
 		global $DB;
 		
-		$query=" SELECT `".$this->table."`.`ID` AS detailID, `glpi_plugin_order_references`.`ID`
-							FROM `".$this->table."`, `glpi_plugin_order_references`
-							WHERE `".$this->table."`.`FK_reference` = `glpi_plugin_order_references`.`ID`
-							AND `glpi_plugin_order_references`.`type` = '$type'
-							AND `".$this->table."`.`FK_device` = '$ID' ";
-		if($DB->query($query))
-		{
-			$result=$DB->query($query);
-			if($DB->result($result,0,'detailID')) {
-				$detailID=$DB->result($result,0,'detailID');
-		
-            $query=" UPDATE `".$this->table."`
-                           SET `FK_device` = 0
-                           WHERE `ID` = '$detailID' ";
-            $DB->query($query);
-            $query=" DELETE FROM `".$this->table."`
-                           WHERE `FK_device` = '$ID' 
-                           AND `device_type` = '$type' ";
-            $DB->query($query);
-         }
-		}
+      $query=" DELETE FROM `".$this->table."`
+               WHERE `FK_device` = '$ID' 
+               AND `device_type` = '$type' ";
+      $DB->query($query);
+ 
 	}
 	
+	function getPricesATI($priceHT, $taxes) {
+      if (!$priceHT)
+         return 0;
+      else
+         return $priceHT + (($priceHT * $taxes) / 100);
+   }
+   
+   function checkIFReferenceExistsInOrder($orderID, $referenceID) {
+      global $DB;
+      
+      $query = "SELECT `ID` 
+               FROM `".$this->table."` 
+               WHERE `FK_order` = '$orderID' 
+               AND `FK_reference` = '$referenceID' ";
+      $result = $DB->query($query);
+      if ($DB->numrows($result))
+         return true;
+      else
+         return false;
+   }
+
+   function addDetails($referenceID, $device_type, $orderID, $quantity, $price, $discounted_price, $taxes) {
+      global $LANG;
+      
+      //if ($this->checkIFReferenceExistsInOrder($orderID, $referenceID))
+         //addMessageAfterRedirect($LANG['plugin_order']['detail'][28], false, ERROR);
+      //else {
+      if ($quantity > 0) {
+         for ($i = 0; $i < $quantity; $i++) {
+            $input["FK_order"] = $orderID;
+            $input["FK_reference"] = $referenceID;
+            $input["device_type"] = $device_type;
+            $input["price_taxfree"] = $price;
+            $input["price_discounted"] = $price - ($price * ($discounted_price / 100));
+            $input["status"] = ORDER_STATUS_DRAFT;
+            $input["price_ati"] = $this->getPricesATI($input["price_discounted"], getDropdownName("glpi_dropdown_plugin_order_taxes", $taxes));
+            $input["deliverynum"] = "";
+            $input["discount"] = $discounted_price;
+            
+            $this->add($input);
+         }
+      }
+      //}
+   }
+   
+   function deleteDetails($ID) {
+      global $DB;
+
+      $query = " DELETE FROM `".$this->table."`
+                  WHERE `ID` = '$ID' ";
+      $DB->query($query);
+   }
+	
+	/* show details of orders */
+   function showDetail($target, $ID) {
+
+      $this->showFormDetail($target, $ID);
+      $this->showAddForm($target, $ID);
+   }
+
 	function showAddForm($target, $orderID){
        global  $CFG_GLPI, $LANG,$DB;
 
@@ -119,7 +163,7 @@ class PluginOrderDetail extends CommonDBTM {
 	}
 	
    function showFormDetail ($target,$FK_order) {
-      global  $CFG_GLPI, $LANG,$DB,$INFOFORM_PAGES;
+      global  $CFG_GLPI, $LANG,$DB,$INFOFORM_PAGES,$ORDER_MODEL_TABLES,$ORDER_TYPE_TABLES;
 		
 			$query="SELECT `".$this->table."`.`ID` AS IDD, `glpi_plugin_order_references`.`ID` AS IDR, 
 					`glpi_plugin_order_references`.`type`,`glpi_plugin_order_references`.`FK_type`,`glpi_plugin_order_references`.`FK_model`, `glpi_plugin_order_references`.`FK_glpi_enterprise`, `glpi_plugin_order_references`.`name`, 
@@ -141,8 +185,7 @@ class PluginOrderDetail extends CommonDBTM {
 			$canedit=$plugin_order->can($FK_order,'w') && plugin_order_canUpdateOrder($FK_order);
 			echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  action=\"$target\">";
 			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
-			if ($num>0)
-			{
+			if ($num>0) {
 				echo "<div class='center'><table class='tab_cadrehov'>";
 				echo "<tr><th colspan='13'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
 				echo "<tr>";
@@ -153,61 +196,52 @@ class PluginOrderDetail extends CommonDBTM {
 				echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][6]."</th>";
 				echo "<th>".$LANG['common'][22]."</th>";
-				//echo "<th>".$LANG['plugin_order']['detail'][7]."</th>";
-				//echo "<th>".$LANG['plugin_order']['detail'][3]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][4]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][18]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][25]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][9]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][10]."</th></tr>";
-				$i=0;
-				while ($i<$num){
-					$ID=$DB->result($result,$i,"IDD");
-					$IDR=$DB->result($result,$i,"IDR");
-					if(plugin_order_getDelivredQuantity($FK_order, $IDR)==plugin_order_getQuantity($FK_order, $IDR))
-						echo "<tr class='tab_bg_2'>";
-					else
-						echo "<tr class='tab_bg_1'>";
+				
+				while ($data=$DB->fetch_array($result)){
+					
+					echo "<tr class='tab_bg_1'>";
 					if ($canedit){
 						echo "<td width='10'>";
 						$sel="";
 						if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-						echo "<input type='checkbox' name='detail[".$DB->result($result,$i,"IDD")."]' value='1' $sel>";
+						echo "<input type='checkbox' name='detail[".$data["IDD"]."]' value='1' $sel>";
 						echo "</td>";
 					}
 					/* type */
 					$ci=new CommonItem();
-					$ci->setType($DB->result($result,$i,"type"));
+					$ci->setType($data["type"]);
 					echo "<td align='center'>".$ci->getType()."</td>";
 					/* manufacturer */
-					echo "<td align='center'>".getDropdownName("glpi_dropdown_manufacturer",$DB->result($result,$i,"FK_glpi_enterprise"))."</td>";
+					echo "<td align='center'>".getDropdownName("glpi_dropdown_manufacturer",$data["FK_glpi_enterprise"])."</td>";
 					/* reference */
 					echo "<td align='center'>";
-					echo getReceptionReferenceLink($DB->result($result,$i,"IDR"), $DB->result($result,$i,"name"));
+					echo plugin_order_getReceptionReferenceLink($data["IDR"], $data["name"]);
 					echo "</td>";
 					/* type */
 					echo "<td align='center'>";
-					echo getDropdownName(plugin_order_getTypeTable($DB->result($result,$i,"type")), $DB->result($result,$i,"FK_type"));
+					if (isset($ORDER_TYPE_TABLES[$data["type"]]))
+                  echo getDropdownName($ORDER_TYPE_TABLES[$data["type"]], $data["FK_type"]);
 					echo "</td>";
 					/* modele */
 					echo "<td align='center'>";
-					echo getDropdownName(plugin_order_getModelTable($DB->result($result,$i,"type")), $DB->result($result,$i,"FK_model"));
+					if (isset($ORDER_MODEL_TABLES[$data["type"]]))
+                  echo getDropdownName($ORDER_MODEL_TABLES[$data["type"]], $data["FK_model"]);
 					echo "</td>";
-					/* quantity */
-					//echo "<td align='center'>".plugin_order_getQuantity($FK_order, $IDR)."</td>";	
-					/* delivered quantity */
-					//echo "<td align='center'>".plugin_order_getDelivredQuantity($FK_order, $IDR)."</td>";	
-					/*price */
-					echo "<td align='center'>".plugin_order_displayPrice($DB->result($result,$i,"price_taxfree"))."</td>";
+					echo "<td align='center'>".formatNumber($data["price_taxfree"])."</td>";
 					/* price with reduction */
-					echo "<td align='center'>".plugin_order_displayPrice($DB->result($result,$i,"price_discounted"))."</td>";
+					echo "<td align='center'>".formatNumber($data["price_discounted"])."</td>";
 					/* price with taxes */
-					echo "<td align='center'>".formatNumber($DB->result($result,$i,"discount"))."</td>";
+					echo "<td align='center'>".formatNumber($data["discount"])."</td>";
 					/* total price */
-					echo "<td align='center'>".plugin_order_displayPrice($DB->result($result,$i,"totalpriceHT"))."</td>";
+					echo "<td align='center'>".formatNumber($data["totalpriceHT"])."</td>";
 					/* total price with taxes  */
-					echo "<td align='center'>".plugin_order_displayPrice($DB->result($result,$i,"totalpriceTTC"))."</td>";
-					$i++;
+					echo "<td align='center'>".formatNumber($data["totalpriceTTC"])."</td>";
+					
 				}
 				echo "</table>";
 
@@ -251,6 +285,185 @@ class PluginOrderDetail extends CommonDBTM {
 		else
 			return false;
 	}
+	
+	function getTotalQuantity($FK_order, $FK_reference) {
+      global $DB;
+      
+      $query = "SELECT COUNT(*) AS quantity 
+               FROM `".$this->table."`
+               WHERE `FK_order` = '$FK_order'
+               AND `FK_reference` = '$FK_reference' ";
+      $result = $DB->query($query);
+      return ($DB->result($result, 0, 'quantity'));
+   }
 
+   function getDeliveredQuantity($FK_order, $FK_reference) {
+      global $DB;
+      
+      $query = "	SELECT COUNT(*) AS deliveredquantity 
+                  FROM `".$this->table."`
+                  WHERE `FK_order` = '$FK_order'
+                  AND `FK_reference` = '$FK_reference'
+                  AND `status` = '".ORDER_STATUS_WAITING_APPROVAL."' ";
+      $result = $DB->query($query);
+      return ($DB->result($result, 0, 'deliveredquantity'));
+   }
+   
+   function getAllPrices($FK_order) {
+      global $DB;
+      
+      $query = "SELECT SUM(`price_ati`) AS priceTTC, SUM(`price_discounted`) AS priceHT 
+               FROM `".$this->table."` 
+               WHERE `FK_order` = '$FK_order' ";
+      $result = $DB->query($query);
+      return $DB->fetch_array($result);
+   }
+   
+   function showItemFromPlugin($instID, $search = '') {
+      global $DB, $CFG_GLPI, $LANG, $INFOFORM_PAGES, $LINK_ID_TABLE,$ORDER_RESTRICTED_TYPES;
+      
+      if (!plugin_order_haveRight("order", "r"))
+         return false;
+      $rand = mt_rand();
+      
+      $PluginOrder = new PluginOrder();
+      if ($PluginOrder->getFromDB($instID)) {
+      
+         $canedit = $PluginOrder->can($instID, 'w');
+         $query = "SELECT DISTINCT `device_type` 
+                 FROM `".$this->table."` 
+                 WHERE `FK_order` = '$instID' 
+                 ORDER BY `device_type`";
+         $result = $DB->query($query);
+         $number = $DB->numrows($result);
+         $i = 0;
+         if (isMultiEntitiesMode()) {
+            $colsup = 1;
+         } else {
+            $colsup = 0;
+         }
+         echo "<form method='post' name='order_form$rand' id='order_form$rand'  action=\"" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php\">";
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         if ($number == 0) {
+            echo "<tr><th colspan='" . ($canedit ? (5 + $colsup) : (4 + $colsup)) . "'>" . $LANG['plugin_order']['item'][3] . "</th></tr></table></div></form>";
+         } else {
+            echo "<tr><th colspan='" . ($canedit ? (5 + $colsup) : (4 + $colsup)) . "'>" . $LANG['plugin_order']['item'][0] . ":</th></tr><tr>";
+
+            echo "<th>" . $LANG['common'][17] . "</th>";
+            echo "<th>" . $LANG['common'][16] . "</th>";
+            if (isMultiEntitiesMode())
+               echo "<th>" . $LANG['entity'][0] . "</th>";
+            echo "<th>" . $LANG['common'][19] . "</th>";
+            echo "<th>" . $LANG['common'][20] . "</th>";
+            echo "</tr>";
+
+            $ci = new CommonItem();
+            while ($i < $number) {
+               $type = $DB->result($result, $i, "device_type");
+               if (haveTypeRight($type, "r")) {
+                  $column = "name";
+
+                  $entity_restrict = (!in_array($type,$ORDER_RESTRICTED_TYPES)?true:false);
+
+                  switch ($type)
+                  {
+                     default :
+                        $query = "SELECT `" . $LINK_ID_TABLE[$type] . "`.*, " .
+                              "`".$this->table."`.`ID` AS IDD, " .
+                              "`glpi_entities`.`ID` AS entity " .
+                        " FROM`".$this->table."` `" . $LINK_ID_TABLE[$type] .
+                        "` LEFT JOIN `glpi_entities` ON (`glpi_entities`.`ID` = `" . $LINK_ID_TABLE[$type] . "`.`FK_entities`) " .
+                        " WHERE `" . $LINK_ID_TABLE[$type] . "`.`ID` = `".$this->table."`.`FK_device` 
+                        AND `".$this->table."`.`device_type` = '$type' 
+                        AND `".$this->table."`.`FK_order` = '$instID' " . getEntitiesRestrictRequest(" AND ", $LINK_ID_TABLE[$type], '', '', isset ($CFG_GLPI["recursive_type"][$type]));
+         
+                        if (in_array($LINK_ID_TABLE[$type], $CFG_GLPI["template_tables"])) {
+                           $query .= " AND `" . $LINK_ID_TABLE[$type] . "`.`is_template` = '0'";
+                        }
+                        $query .= " ORDER BY `glpi_entities`.`completename`, `" . $LINK_ID_TABLE[$type] . "`.`$column` ";
+                        break;
+                     case CONSUMABLE_ITEM_TYPE:
+                        $query = "SELECT `gpr`.`ID`, `gct`.`name`, `gpr`.`FK_entities` AS entity
+                                  FROM `".$this->table."` AS gpd, `glpi_plugin_order_references` AS gpr,
+                                       `glpi_consumables` AS gc, `glpi_consumables_type` AS gct
+                                  WHERE `gpd`.`FK_order` = '$instID' 
+                                  AND `gpd`.`device_type` = '$type'
+                                  AND `gpd`.`FK_reference` = `gpr`.`ID`
+                                  AND `gpd`.`FK_device` = `gc`.`ID` 
+                                  AND `gc`.`FK_glpi_consumables_type` = `gct`.`ID` 
+                                  GROUP BY `gct`.`ID` 
+                                  ORDER BY `gct`.`name`";
+                        break;
+                     case CARTRIDGE_ITEM_TYPE:
+                        $query = "SELECT `gpr`.`ID`, `gct`.`name`, `gpr`.`FK_entities` AS entity
+                                  FROM `".$this->table."` AS gpd, `glpi_plugin_order_references` AS gpr,
+                                       `glpi_cartridges` AS gc, `glpi_cartridges_type` AS gct
+                                  WHERE `gpd`.`FK_order` = '$instID' 
+                                  AND `gpd`.`device_type` = '$type'
+                                  AND `gpd`.`FK_reference` = `gpr`.`ID`
+                                  AND `gpd`.`FK_device` = `gc`.`ID` 
+                                  AND `gc`.`FK_glpi_cartridges_type` = `gct`.`ID` 
+                                  GROUP BY `gct`.`ID` 
+                                  ORDER BY `gct`.`name`";
+                        break;
+                  }
+                       
+                  if ($result_linked = $DB->query($query))
+                     if ($DB->numrows($result_linked)) {
+                        $ci->setType($type);
+                        while ($data = $DB->fetch_assoc($result_linked)) {
+                           $ID = "";
+
+                           if ($_SESSION["glpiview_ID"] || empty ($data["name"]))
+                              $ID = " (" . $data["ID"] . ")";
+                           
+                           switch ($type)
+                           {
+                              default :
+                                 $formpage = $INFOFORM_PAGES[$type];
+                                 break;
+                              case CARTRIDGE_ITEM_TYPE:
+                                 $formpage = $INFOFORM_PAGES[CARTRIDGE_TYPE];
+                                 break;
+                              case CONSUMABLE_ITEM_TYPE:
+                                 $formpage = $INFOFORM_PAGES[CONSUMABLE_TYPE];
+                                 break;	 	
+                           }
+                           
+                           if (haveTypeRight($type,'r'))
+                              $name = "<a href=\"" . $CFG_GLPI["root_doc"] . "/" . $formpage . "?ID=" . $data["ID"] . "\">".$data["name"] . "$ID</a>";
+                           else
+                              echo $data["name"];								
+
+                           echo "<tr class='tab_bg_1'>";
+                           echo "<td class='center'>" . $ci->getType() . "</td>";
+
+                           echo "<td class='center' " . (isset ($data['deleted']) && $data['deleted'] ? "class='tab_bg_2_2'" : "") . ">" . $name . "</td>";
+                           if (isMultiEntitiesMode())
+                              echo "<td class='center'>" . getDropdownName("glpi_entities", $data['entity']) . "</td>";
+                           if (!in_array($type,$ORDER_RESTRICTED_TYPES))
+                           {
+                              echo "<td class='center'>" . (isset ($data["serial"]) ? "" . $data["serial"] . "" : "-") . "</td>";
+                              echo "<td class='center'>" . (isset ($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
+                           }
+                           else
+                           {
+                              echo "<td class='center'</td>";
+                              echo "<td class='center'></td>";
+                           }									
+                           echo "</tr>";
+                        }
+                     }
+
+               }
+               $i++;
+            }
+
+            echo "</table></div>";
+            echo "</form>";
+         }
+      }
+   }
 }
+
 ?>

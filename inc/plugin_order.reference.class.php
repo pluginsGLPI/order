@@ -149,7 +149,7 @@ class PluginOrderReference extends CommonDBTM {
 	}
 
 	function showForm($target, $ID, $withtemplate = '') {
-		global $CFG_GLPI, $LANG, $DB,$ORDER_TEMPLATE_TABLES;
+		global $CFG_GLPI, $LANG, $DB,$ORDER_TEMPLATE_TABLES,$ORDER_TYPE_TABLES,$ORDER_MODEL_TABLES;
 
 		if (!plugin_order_haveRight("reference", "r")) {
 			return false;
@@ -213,20 +213,22 @@ class PluginOrderReference extends CommonDBTM {
 
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][17] . ": </td>";
 			echo "<td><span id='show_type'>";
-			if ($canedit && (plugin_order_getTypeTable($this->fields["type"]) !== false) && !$reference_in_use)
-					dropdownValue(plugin_order_getTypeTable($this->fields["type"]), "FK_type", $this->fields["FK_type"]);
+			if (isset($ORDER_TYPE_TABLES[$this->fields["type"]])) {
+            if ($canedit && !$reference_in_use)
+					dropdownValue($ORDER_TYPE_TABLES[$this->fields["type"]], "FK_type", $this->fields["FK_type"]);
 				else
-					echo getDropdownName(plugin_order_getTypeTable($this->fields["type"]), $this->fields["FK_type"]);
-			
+					echo getDropdownName($ORDER_TYPE_TABLES[$this->fields["type"]], $this->fields["FK_type"]);
+			}
 
 			echo "</span></td></tr>";
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][22] . ": </td>";
 			echo "<td><span id='show_model'>";
-			if ($canedit && (plugin_order_getModelTable($this->fields["type"]) !== false)) 
-					dropdownValue(plugin_order_getModelTable($this->fields["type"]), "FK_model", $this->fields["FK_model"]);
+			if (isset($ORDER_MODEL_TABLES[$this->fields["type"]])) {
+            if ($canedit) 
+					dropdownValue($ORDER_MODEL_TABLES[$this->fields["type"]], "FK_model", $this->fields["FK_model"]);
 				else
-					echo getDropdownName(plugin_order_getModelTable($this->fields["type"]), $this->fields["FK_model"]);
-			
+					echo getDropdownName($ORDER_MODEL_TABLES[$this->fields["type"]], $this->fields["FK_model"]);
+			}
 			echo "</span></td></tr>";
 
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][13] . ": </td>";

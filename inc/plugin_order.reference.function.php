@@ -175,7 +175,7 @@ function plugin_order_showReferencesBySupplierID($ID){
 			echo "</td>";
 
 			echo "<td>";
-			echo getReceptionReferenceLink($data["ID"], $data["name"]);
+			echo plugin_order_getReceptionReferenceLink($data["ID"], $data["name"]);
 			echo "</td>";
 			echo "<td>"; 
 			$commonitem->setType($data["type"]);
@@ -223,24 +223,6 @@ function plugin_order_getPriceByReferenceAndSupplier($referenceID,$supplierID){
 		return 0;	
 }
 
-function plugin_order_getModelTable($device_type){
-	global $ORDER_MODEL_TABLES;
-	
-	if(isset($ORDER_MODEL_TABLES[$device_type]))
-		return $ORDER_MODEL_TABLES[$device_type];
-	else
-		return false;	
-}
-
-function plugin_order_getTypeTable($device_type){
-	global $ORDER_TYPE_TABLES;
-	
-	if(isset($ORDER_TYPE_TABLES[$device_type]))
-		return $ORDER_TYPE_TABLES[$device_type];
-	else
-		return false;	
-}
-
 function plugin_order_isSupplierInReferenceInUse($referenceID,$supplierID){
 	global $DB;
 	
@@ -258,7 +240,7 @@ function plugin_order_isSupplierInReferenceInUse($referenceID,$supplierID){
 		return false;			
 }
 
-function getReceptionReferenceLink($ID, $name) {
+function plugin_order_getReceptionReferenceLink($ID, $name) {
 	global $CFG_GLPI, $INFOFORM_PAGES;
 	
 	if (plugin_order_haveRight("reference","r"))

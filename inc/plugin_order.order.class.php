@@ -250,19 +250,20 @@ class PluginOrder extends CommonDBTM {
 			/* total price (without taxes) */
 
 			if ($ID > 0) {
-				$prices = pugin_order_getAllPrices($ID);
+            $PluginOrderDetail = new PluginOrderDetail();
+				$prices = $PluginOrderDetail->getAllPrices($ID);
 
 				echo "<td colspan='2'>" . $LANG['plugin_order'][13] . " : ";
-				echo plugin_order_displayPrice($prices["priceHT"]) . "<br>";
+				echo formatNumber($prices["priceHT"]) . "<br>";
         
         /* total price (with postage) */
 				echo $LANG['plugin_order'][15] . " : ";
 				$priceHTwithpostage=$prices["priceHT"]+$this->fields["port_price"];
-				echo plugin_order_displayPrice($priceHTwithpostage) . "<br>";
+				echo formatNumber($priceHTwithpostage) . "<br>";
 				
 				/* total price (with taxes) */
 				echo $LANG['plugin_order'][14] . " : ";
-				echo plugin_order_displayPrice($prices["priceTTC"]) . "</td></tr>";
+				echo formatNumber($prices["priceTTC"]) . "</td></tr>";
 			} else
 				echo "<td colspan='2'></td>";
 

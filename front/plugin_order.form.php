@@ -50,6 +50,8 @@ if (!isset ($_GET["withtemplate"]))
 	$_GET["withtemplate"] = "";
 
 $plugin_order = new PluginOrder();
+$PluginOrderConfig = new PluginOrderConfig;
+$PluginOrderDetail = new PluginOrderDetail;
 
 /* add order */
 if (isset ($_POST["add"])) {
@@ -85,7 +87,6 @@ else if (isset ($_POST["update"])) {
 /* validate order */
 else if (isset ($_POST["validate"])) {
    
-   $PluginOrderConfig = new PluginOrderConfig;
    $config = $PluginOrderConfig->getConfig();
 		
    if (plugin_order_HaveRight("order", "w") && ( plugin_order_HaveRight("validation", "w") || !$config["use_validation"]))
@@ -151,7 +152,7 @@ else if (isset ($_POST["add_detail"])) {
       $new_value.= " (".$LANG['plugin_order']['detail'][7]." : ".$_POST["quantity"];
       $new_value.= " ".$LANG['plugin_order']['detail'][25]." : ".$_POST["discount"].")";
       plugin_order_addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
-      plugin_order_addDetails($_POST["FK_reference"], $_POST["device_type"], $_POST["FK_order"], $_POST["quantity"], $_POST["price"], $_POST["discount"], $_POST["taxes"],$_POST["discount"]);
+      $PluginOrderDetail->addDetails($_POST["FK_reference"], $_POST["device_type"], $_POST["FK_order"], $_POST["quantity"], $_POST["price"], $_POST["discount"], $_POST["taxes"],$_POST["discount"]);
    }
       
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -165,7 +166,7 @@ else if (isset ($_POST["delete_detail"])) {
          {
             $new_value = $LANG['plugin_order']['detail'][35]." ".getDropdownName("glpi_plugin_order_references",$ID);
             plugin_order_addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
-            plugin_order_deleteDetails($ID);
+            $PluginOrderDetail->deleteDetails($ID);
          }
    }elseif(!isset($_POST["detail"]))
       addMessageAfterRedirect($LANG['plugin_order']['detail'][29],false,ERROR);

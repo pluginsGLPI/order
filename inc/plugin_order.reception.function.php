@@ -40,8 +40,10 @@ if (!defined('GLPI_ROOT')){
 function plugin_order_showDetailReceptionForm($orderID) {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE, $INFOFORM_PAGES;
 
-	$plugin_order = new PluginOrder();
-	$canedit = $plugin_order->can($orderID, 'w') && !plugin_order_canUpdateOrder($orderID) && $plugin_order->fields["status"] != ORDER_STATUS_CANCELED;
+	$PluginOrder = new PluginOrder();
+	$PluginOrderDetail = new PluginOrderDetail();
+	
+	$canedit = $PluginOrder->can($orderID, 'w') && !plugin_order_canUpdateOrder($orderID) && $PluginOrder->fields["status"] != ORDER_STATUS_CANCELED;
 	
 	$query_ref = "SELECT `glpi_plugin_order_detail`.`ID`, `glpi_plugin_order_detail`.`FK_reference` AS ref, `name`, `type` " .
 	"FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` " .
@@ -82,12 +84,12 @@ function plugin_order_showDetailReceptionForm($orderID) {
 			echo "<th>" . $LANG['plugin_order']['detail'][4] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][8] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][18] . "</th></tr>";
-			echo "<tr><td class='tab_bg_1' width='15'></td><td align='center' class='tab_bg_1'>" . getReceptionReferenceLink($refID, $DB->result($result_ref, $j, 'name')) . "</td>";
-			echo "<td align='center' class='tab_bg_1'>" . plugin_order_getDelivredQuantity($orderID, $refID) . " / " . plugin_order_getQuantity($orderID, $refID) . "</td>";
-			echo "<td align='center' class='tab_bg_1'>" . plugin_order_getNumberOfLinkedMaterial($orderID, $refID) . " / " . plugin_order_getQuantity($orderID, $refID) . "</td>";
-			echo "<td align='center' class='tab_bg_1'>" . plugin_order_displayPrice($DB->result($result, 0, "price_taxfree")) . "</td>";
-			echo "<td align='center' class='tab_bg_1'>" . plugin_order_displayPrice($DB->result($result, 0, "price_ati")) . "</td>";
-			echo "<td align='center' class='tab_bg_1'>" . plugin_order_displayPrice($DB->result($result, 0, "price_discounted")) . "</td></tr></table>";
+			echo "<tr><td class='tab_bg_1' width='15'></td><td align='center' class='tab_bg_1'>" . plugin_order_getReceptionReferenceLink($refID, $DB->result($result_ref, $j, 'name')) . "</td>";
+			echo "<td align='center' class='tab_bg_1'>" . $PluginOrderDetail->getDeliveredQuantity($orderID, $refID) . " / " . $PluginOrderDetail->getTotalQuantity($orderID, $refID) . "</td>";
+			echo "<td align='center' class='tab_bg_1'>" . plugin_order_getNumberOfLinkedMaterial($orderID, $refID) . " / " . $PluginOrderDetail->getTotalQuantity($orderID, $refID) . "</td>";
+			echo "<td align='center' class='tab_bg_1'>" . formatNumber($DB->result($result, 0, "price_taxfree")) . "</td>";
+			echo "<td align='center' class='tab_bg_1'>" . formatNumber($DB->result($result, 0, "price_ati")) . "</td>";
+			echo "<td align='center' class='tab_bg_1'>" . formatNumber($DB->result($result, 0, "price_discounted")) . "</td></tr></table>";
 
 			echo "<div class='center' id='reception$rand' style='display:none'>";
 			echo "<form method='post' name='order_reception_form$rand' id='order_reception_form$rand'  action=\"" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.reception.form.php\">";
@@ -123,7 +125,7 @@ function plugin_order_showDetailReceptionForm($orderID) {
 
 				echo "<td align='center'>" . plugin_order_getReceptionType($detailID) . "</td>";
 				echo "<td align='center'>" . plugin_order_getReceptionManufacturer($detailID) . "</td>";
-				echo "<td align='center'>" . getReceptionReferenceLink($DB->result($result, $i, 'IDR'), $DB->result($result, $i, 'name')) . "</td>";
+				echo "<td align='center'>" . plugin_order_getReceptionReferenceLink($DB->result($result, $i, 'IDR'), $DB->result($result, $i, 'name')) . "</td>";
 				echo "<td align='center'>" . plugin_order_getReceptionStatus($detailID) . "</td>";
 				echo "<td align='center'>" . convDate($mydetail->fields["date"]) . "</td>";
 				echo "<td align='center'>" . $mydetail->fields["deliverynum"] . "</td>";
@@ -266,17 +268,6 @@ function plugin_order_getReceptionManufacturer($ID) {
 		return (getDropdownName("glpi_dropdown_manufacturer", $DB->result($result, 0, 'FK_glpi_enterprise')));
 	} else
 		return -1;
-}
-
-function plugin_order_getReceptionDate($ID) {
-	global $DB, $LANG;
-
-	$detail = new PluginOrderDetail;
-	$detail->getFromDB($ID);
-	if ($detail->fields["status"] == ORDER_DEVICE_NOT_DELIVRED)
-		return $LANG['plugin_order']['detail'][23];
-	else
-		return convDate($detail->fields["date"]);
 }
 
 function plugin_order_getReceptionType($ID) {

@@ -648,7 +648,7 @@ function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,&$alrea
 }
 /* display custom fields in the search */
 function plugin_order_giveItem($type, $ID, $data, $num) {
-	global $CFG_GLPI, $INFOFORM_PAGES, $LANG, $SEARCH_OPTION, $LINK_ID_TABLE, $DB;
+	global $CFG_GLPI, $INFOFORM_PAGES, $LANG, $SEARCH_OPTION, $LINK_ID_TABLE, $DB,$ORDER_TYPE_TABLES,$ORDER_MODEL_TABLES;
 	
 	$table = $SEARCH_OPTION[$type][$ID]["table"];
 	$field = $SEARCH_OPTION[$type][$ID]["field"];
@@ -664,10 +664,16 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 			return $commonitem->getType();
 		break;
 		case "glpi_plugin_order_references.FK_type" :
-			return getDropdownName(plugin_order_getTypeTable($data["device_type"]), $data["ITEM_" . $num]);
+         if (isset($ORDER_TYPE_TABLES[$data["device_type"]]))
+            return getDropdownName($ORDER_TYPE_TABLES[$data["device_type"]], $data["ITEM_" . $num]);
+         else
+            return " ";
 		break;
 		case "glpi_plugin_order_references.FK_model" :
-			return getDropdownName(plugin_order_getModelTable($data["device_type"]), $data["ITEM_" . $num]);
+         if (isset($ORDER_MODEL_TABLES[$data["device_type"]]))
+            return getDropdownName($ORDER_MODEL_TABLES[$data["device_type"]], $data["ITEM_" . $num]);
+         else
+            return " ";
 		break;
 		case "glpi_plugin_order_references.template" :
 			if (!$data["ITEM_" . $num])
