@@ -44,7 +44,7 @@ function plugin_order_showDetailReceptionForm($orderID) {
 	$PluginOrderDetail = new PluginOrderDetail();
 	$PluginOrderReference = new PluginOrderReference();
 	
-	$canedit = $PluginOrder->can($orderID, 'w') && !plugin_order_canUpdateOrder($orderID) && $PluginOrder->fields["status"] != ORDER_STATUS_CANCELED;
+	$canedit = $PluginOrder->can($orderID, 'w') && !$PluginOrder->canUpdateOrder($orderID) && $PluginOrder->fields["status"] != ORDER_STATUS_CANCELED;
 	
 	$query_ref = "SELECT `glpi_plugin_order_detail`.`ID`, `glpi_plugin_order_detail`.`FK_reference` AS ref, `name`, `type` " .
 	"FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` " .
@@ -404,7 +404,7 @@ function plugin_order_createLinkWithDevice($detailID = 0, $deviceID = 0, $device
 			$order = new PluginOrder;
 			$order->getFromDB($detail->fields["FK_order"]);
 			$new_value = $LANG['plugin_order']['delivery'][14] . ' : ' . $order->fields["name"];
-			plugin_order_addHistory($device_type, '', $new_value, $deviceID);
+			$order->addHistory($device_type, '', $new_value, $deviceID);
 		}
 		addMessageAfterRedirect($LANG['plugin_order']['delivery'][14], true);
 	} else
@@ -440,12 +440,12 @@ function plugin_order_deleteLinkWithDevice($detailID, $device_type) {
 			$order = new PluginOrder;
 			$order->getFromDB($DB->result($result, 0, "FK_order"));
 			$new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $order->fields["name"];
-			plugin_order_addHistory($device_type, '', $new_value, $deviceID);
+			$order->addHistory($device_type, '', $new_value, $deviceID);
 
 			$commonitem = new CommonItem;
 			$commonitem->getFromDB($device_type, $deviceID);
 			$new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $commonitem->getField("name");
-			plugin_order_addHistory(PLUGIN_ORDER_TYPE, '', $new_value, $order->fields["ID"]);
+			$order->addHistory(PLUGIN_ORDER_TYPE, '', $new_value, $order->fields["ID"]);
 		}
 	}
 }
@@ -477,7 +477,8 @@ function plugin_order_updateBulkReceptionStatus($params) {
 		for ($i = 0; $i < $params['number_reception']; $i++) {
 			plugin_order_receptionOneItem($DB->result($result, $i, 0), $params['orderID'], $params["date"], $params["deliverynum"]);
 		}
-		plugin_order_updateDelivryStatus($params['orderID']);
+		$detail = new PluginOrderDetail;
+		$detail->updateDelivryStatus($params['orderID']);
 	}
 }
 
@@ -500,7 +501,7 @@ function plugin_order_updateReceptionStatus($params) {
 				}
 			}
 
-		plugin_order_updateDelivryStatus($orderID);
+		$detail->updateDelivryStatus($orderID);
 	} else
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
 }
@@ -690,12 +691,12 @@ function plugin_order_generateNewDevice($params) {
 
 		//Add item's history
 		$new_value = $LANG['plugin_order']['delivery'][13] . ' : ' . $order->fields["name"];
-		plugin_order_addHistory($values["type"], '', $new_value, $newID);
+		$order->addHistory($values["type"], '', $new_value, $newID);
 
 		//Add order's history
 		$new_value = $LANG['plugin_order']['delivery'][13] . ' : ';
 		$new_value .= $commonitem->getType() . " -> " . $commonitem->getField("name");
-		plugin_order_addHistory(PLUGIN_ORDER_TYPE, '', $new_value, $values["orderID"]);
+		$order->addHistory(PLUGIN_ORDER_TYPE, '', $new_value, $values["orderID"]);
 
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][30], true);
 		$i++;

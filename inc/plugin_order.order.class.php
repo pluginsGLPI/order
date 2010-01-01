@@ -60,7 +60,17 @@ class PluginOrder extends CommonDBTM {
                WHERE `FK_order` = '$ID'";
 		$DB->query($query);
 	}
-
+   
+   function canUpdateOrder($orderID) {
+      global $ORDER_VALIDATION_STATUS;
+      
+      if ($orderID > 0) {
+         $this->getFromDB($orderID);
+         return (in_array($this->fields["status"], $ORDER_VALIDATION_STATUS));
+      } else
+         return true;
+   }
+   
 	/*define header form */
 	function defineTabs($ID, $withtemplate) {
 		global $LANG;
@@ -71,7 +81,7 @@ class PluginOrder extends CommonDBTM {
 			$plugin = new Plugin();
 			/* detail */
 			$ong[4] = $LANG['plugin_order']['detail'][0];
-			if(!plugin_order_canUpdateOrder($ID)) {
+			if(!$this->canUpdateOrder($ID)) {
             /* delivery */
             $ong[5] = $LANG['plugin_order']['delivery'][1];
             /* item */
@@ -119,7 +129,7 @@ class PluginOrder extends CommonDBTM {
 
 		if ($spotted) {
 			$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
-			$canedit = (plugin_order_canUpdateOrder($ID) && $this->can($ID, 'w') && $this->fields["status"] != ORDER_STATUS_CANCELED);
+			$canedit = ($this->canUpdateOrder($ID) && $this->can($ID, 'w') && $this->fields["status"] != ORDER_STATUS_CANCELED);
 			$canrecu = $this->can($ID, 'recursive');
 			echo "<form method='post' name='form' action=\"$target\">";
 			if (empty ($ID) || $ID < 0) {
@@ -310,6 +320,54 @@ class PluginOrder extends CommonDBTM {
 		
 		displayTitle($CFG_GLPI["root_doc"] . "/plugins/order/pics/order-icon.png", $LANG['plugin_order']['title'][1], $LANG['plugin_order']['title'][1]);
 	}
+   
+   function addStatusLog($orderID, $status, $comments = '') {
+      global $LANG;
+
+      switch ($status) {
+         case ORDER_STATUS_DRAFT :
+            $changes = $LANG['plugin_order']['validation'][15];
+            break;
+         case ORDER_STATUS_WAITING_APPROVAL :
+            $changes = $LANG['plugin_order']['validation'][1];
+            break;
+         case ORDER_STATUS_APPROVED :
+            $changes = $LANG['plugin_order']['validation'][2];
+            break;
+         case ORDER_STATUS_PARTIALLY_DELIVRED :
+            $changes = $LANG['plugin_order']['validation'][3];
+            break;
+         case ORDER_STATUS_COMPLETLY_DELIVERED :
+            $changes = $LANG['plugin_order']['validation'][4];
+            break;
+         case ORDER_STATUS_CANCELED :
+            $changes = $LANG['plugin_order']['validation'][5];
+            break;
+      }
+
+      if ($comments != '')
+         $changes .= " : ".$comments;
+
+      $this->addHistory($this->type, '',$changes,$orderID);
+   //	historyLog($orderID, PLUGIN_ORDER_TYPE, $changes, 0, HISTORY_LOG_SIMPLE_MESSAGE);
+   }
+   
+   function updateOrderStatus($orderID, $status, $comments = '') {
+
+      $input["status"] = $status;
+      $input["ID"] = $orderID;
+      $this->dohistory = false;
+      $this->update($input);
+      $this->addStatusLog($orderID, $status, $comments);
+      return true;
+   }
+   
+   function addHistory($type, $old_value='',$new_value='',$ID){
+      $changes[0] = 0;
+      $changes[1] = $old_value;
+      $changes[2] = $new_value;
+      historyLog($ID, $type, $changes, 0, HISTORY_LOG_SIMPLE_MESSAGE);
+   }
 
 	function needValidation($ID) {
 		global $ORDER_VALIDATION_STATUS;
@@ -319,6 +377,17 @@ class PluginOrder extends CommonDBTM {
 		else
 			return false;
 	}
+   
+   function canDisplayValidationForm($orderID) {
+
+      $this->getFromDB($orderID);
+
+      //If it's an order creation -> do not display form
+      if (!$orderID)
+         return false;
+      else
+         return ($this->canValidate() || $this->canUndoValidation() || $this->canCancelOrder());
+   }
 
 	function canValidate() {
 		global $ORDER_VALIDATION_STATUS;
@@ -386,6 +455,62 @@ class PluginOrder extends CommonDBTM {
 		//If no right to cancel
 		return (plugin_order_haveRight("undo_validation", "w"));
 	}
+	
+	function showValidationForm($target, $orderID) {
+      global $LANG;
+      
+      $this->getFromDB($orderID);
+
+      if ($this->canDisplayValidationForm($orderID)) {
+         echo "<form method='post' name='form' action=\"$target\">";
+         echo "<table class='tab_cadre_fixe'>";
+
+         echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG['plugin_order']['validation'][6] . "</th></tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td valign='top' align='right'>";
+         echo $LANG['common'][25] . ":&nbsp;";
+         echo "</td>";
+         echo "<td valign='top' align='left'>";
+         echo "<textarea cols='40' rows='4' name='comments'></textarea>";
+         echo "</td>";
+
+         echo "<td align='center'>";
+         echo "<input type='hidden' name='ID' value=\"$orderID\">\n";
+
+         if ($this->canCancelOrder()) {
+            echo "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][38] . "')\" name='cancel_order' value=\"" . $LANG['plugin_order']['validation'][12] . "\" class='submit'>";
+            $link = "<br><br>";
+         }
+         $PluginOrderConfig = new PluginOrderConfig;
+         $config = $PluginOrderConfig->getConfig();
+
+         if ($this->canValidate()) {
+            echo $link . "<input type='submit' name='validate' value=\"" . $LANG['plugin_order']['validation'][9] . "\" class='submit'>";
+            $link = "<br><br>";
+         }
+
+         if ($this->canCancelValidationRequest()) {
+            echo $link . "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][39] . "')\" name='cancel_waiting_for_approval' value=\"" . $LANG['plugin_order']['validation'][13] . "\" class='submit'>";
+            $link = "<br><br>";
+         }
+
+         if ($this->canDoValidationRequest()) {
+            echo $link . "<input type='submit' name='waiting_for_approval' value=\"" . $LANG['plugin_order']['validation'][11] . "\" class='submit'>";
+            $link = "<br><br>";
+         }
+
+         if ($this->canUndoValidation()) {
+            echo $link . "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][40] . "')\" name='undovalidation' value=\"" . $LANG['plugin_order']['validation'][17] . "\" class='submit'>";
+            $link = "<br><br>";
+         }
+
+         echo "</td>";
+         echo "</tr>";
+
+         echo "</table></form>";
+      }
+   }
 }
 
 ?>

@@ -70,7 +70,8 @@ if (!isset ($_POST["withtemplate"]))
 
 plugin_order_checkRight("order", "r");
 
-$PluginOrderDetail = new PluginOrderDetail;
+$PluginOrder = new PluginOrder();
+$PluginOrderDetail = new PluginOrderDetail();
 
 if (empty ($_POST["ID"])) {
 	switch ($_POST['glpi_tab']) {
@@ -81,7 +82,7 @@ if (empty ($_POST["ID"])) {
 	switch ($_POST['glpi_tab']) {
 		case -1 :
 			/* show items linking form from all */
-			plugin_order_showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
+			$PluginOrder->showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			$PluginOrderDetail->showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			$PluginOrderDetail->showItemFromPlugin($_POST["ID"]);
 			plugin_order_showDetailReceptionForm($_POST["ID"]);
@@ -89,7 +90,7 @@ if (empty ($_POST["ID"])) {
 			showNotesForm($_POST['target'], PLUGIN_ORDER_TYPE, $_POST["ID"]);
 			break;
 		case 1 :
-			plugin_order_showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
+			$PluginOrder->showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			break;
 		case 2 :
 			$PluginOrderDetail->showItemFromPlugin($_POST["ID"]);

@@ -116,11 +116,13 @@ class PluginOrderDetail extends CommonDBTM {
    }
 
 	function showAddForm($target, $orderID){
-       global  $CFG_GLPI, $LANG,$DB;
-
-		if (plugin_order_canUpdateOrder($orderID))
+      global  $CFG_GLPI, $LANG,$DB;
+      
+      $order=new PluginOrder();
+      
+		if ($order->canUpdateOrder($orderID))
 		{
-			$order=new PluginOrder();
+			
 			$canedit=$order->can($orderID,'w');
 	
 			if ($canedit)
@@ -183,7 +185,7 @@ class PluginOrderDetail extends CommonDBTM {
 			$PluginOrder=new PluginOrder();
 			$PluginOrderReference = new PluginOrderReference();
 			
-			$canedit=$PluginOrder->can($FK_order,'w') && plugin_order_canUpdateOrder($FK_order);
+			$canedit=$PluginOrder->can($FK_order,'w') && $PluginOrder->canUpdateOrder($FK_order);
 			echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  action=\"$target\">";
 			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
 			if ($num>0) {
@@ -294,6 +296,28 @@ class PluginOrderDetail extends CommonDBTM {
                   AND `status` = '".ORDER_STATUS_WAITING_APPROVAL."' ";
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'deliveredquantity'));
+   }
+   
+   function updateDelivryStatus($orderID) {
+      global $DB;
+
+      $order = new PluginOrder;
+      $order->getFromDB($orderID);
+
+      $query = "SELECT `status` 
+               FROM `".$this->table."` 
+               WHERE `FK_order` = '$orderID'";
+      $result = $DB->query($query);
+      $all_delivered = true;
+
+      while ($data = $DB->fetch_array($result))
+         if (!$data["status"])
+            $all_delivered = false;
+
+      if ($all_delivered && $order->fields["status"] != ORDER_STATUS_COMPLETLY_DELIVERED)
+         $order->updateOrderStatus($orderID, ORDER_STATUS_COMPLETLY_DELIVERED);
+      else if ($order->fields["status"] != ORDER_STATUS_PARTIALLY_DELIVRED) 
+         $order->updateOrderStatus($orderID, ORDER_STATUS_PARTIALLY_DELIVRED);
    }
    
    function getAllPrices($FK_order) {
