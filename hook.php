@@ -771,6 +771,13 @@ function plugin_get_headings_order($type, $ID, $withtemplate) {
 					1 => $LANG['plugin_order']['title'][1],
 					);
 		}
+	}else if ($type = PROFILE_TYPE) {
+      $prof = new Profile();
+		if ($ID>0 && $prof->getFromDB($ID) && $prof->fields['interface']!='helpdesk') {
+			return array(
+				1 => $LANG['plugin_order']['title'][1],
+				);
+		}
 	}
 	return false;
 }
@@ -797,7 +804,6 @@ function plugin_headings_actions_order($type) {
 function plugin_headings_order($type, $ID) {
 	global $CFG_GLPI, $LANG, $ORDER_AVAILABLE_TYPES;
    
-   $profile = new profile();
    $mailing = new PluginOrderConfigMailing();
    $detail = new PluginOrderDetail();
    $reference = new PluginOrderReference();
@@ -807,17 +813,10 @@ function plugin_headings_order($type, $ID) {
 			$reference->showReferencesFromSupplier($ID);
 			break;
 		case PROFILE_TYPE :
-			$profile->GetfromDB($ID);
-			if ($profile->fields["interface"] != "helpdesk") {
-				$prof = new PluginOrderProfile();
-				if (!$prof->GetfromDB($ID))
-					plugin_order_createaccess($ID);
-				$prof->showForm($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.profile.php", $ID);
-			} else {
-				echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'><td align='center'>";
-				echo $LANG['plugin_order']['setup'][2];
-				echo "</td></tr></table>";
-			}
+         $prof = new PluginOrderProfile();
+         if (!$prof->GetfromDB($ID))
+            plugin_order_createaccess($ID);
+         $prof->showForm($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.profile.php", $ID);
 			break;
 		case "mailing" :
 			$mailing->showMailingForm($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.setup.mailing.php");
