@@ -763,15 +763,14 @@ function plugin_get_headings_order($type, $ID, $withtemplate) {
 		1 => $LANG['plugin_order']['title'][1], 
 		); 
 
-	}elseif (in_array($type,$types)||
-		$type==PROFILE_TYPE) {
+	} else if (in_array($type,$types)) {
 		// template case
 		if ($ID>0 && !$withtemplate){
 				return array(
 					1 => $LANG['plugin_order']['title'][1],
 					);
 		}
-	}else if ($type = PROFILE_TYPE) {
+	} else if ($type == PROFILE_TYPE) {
       $prof = new Profile();
 		if ($ID>0 && $prof->getFromDB($ID) && $prof->fields['interface']!='helpdesk') {
 			return array(
