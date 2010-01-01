@@ -143,6 +143,23 @@ function plugin_order_getTemplateName($type, $ID) {
 	return $commonitem->getField("tplname");
 }
 
+function plugin_order_getAllReferencesByEnterpriseAndType($type,$enterpriseID){
+	global $DB;
+	
+	$query = "SELECT `gr`.`name`, `gr`.`ID` 
+            FROM `glpi_plugin_order_references` AS gr, `glpi_plugin_order_references_manufacturers` AS grm" .
+			" WHERE `gr`.`type` = '$type' 
+            AND `grm`.`FK_enterprise` = '$enterpriseID' 
+            AND `grm`.`FK_reference` = `gr`.`ID` ";
+
+	$result = $DB->query($query);
+	$references = array();
+	while ($data = $DB->fetch_array($result))
+		$references[$data["ID"]] = $data["name"];
+
+	return $references;		
+}
+
 function plugin_order_dropdownReferencesByEnterprise($name, $type, $enterpriseID) {
 
 	$references = plugin_order_getAllReferencesByEnterpriseAndType($type, $enterpriseID);

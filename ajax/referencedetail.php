@@ -35,9 +35,8 @@
 
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
+include (GLPI_ROOT."/plugins/order/inc/plugin_order.reference.manufacturer.class.php");
 include (GLPI_ROOT."/plugins/order/inc/plugin_order.config.class.php");
-include (GLPI_ROOT."/plugins/order/inc/plugin_order.dropdown.function.php");
-include (GLPI_ROOT."/plugins/order/inc/plugin_order.reference.function.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -47,12 +46,13 @@ if (!defined('GLPI_ROOT')){
 
 checkCentralAccess();
 
-$PluginOrderConfig = new PluginOrderConfig;
-$default_taxes = $PluginOrderConfig->getDefaultTaxes();
+$PluginOrderReferenceManufacturer = new PluginOrderReferenceManufacturer();
+$PluginOrderConfig = new PluginOrderConfig();
 
 if ($_POST["FK_reference"] > 0)
-{
-	$price = plugin_order_getPriceByReferenceAndSupplier($_POST["FK_reference"],$_POST["FK_enterprise"]);
+{  
+   $default_taxes = $PluginOrderConfig->getDefaultTaxes();
+	$price = $PluginOrderReferenceManufacturer->getPriceByReferenceAndSupplier($_POST["FK_reference"],$_POST["FK_enterprise"]);
 	switch ($_POST["update"])
 	{
 		case 'quantity':

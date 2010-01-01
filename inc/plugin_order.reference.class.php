@@ -132,6 +132,15 @@ class PluginOrderReference extends CommonDBTM {
 			return false;	
 	}
 	
+	function getReceptionReferenceLink($ID, $name) {
+      global $CFG_GLPI, $INFOFORM_PAGES;
+      
+      if (plugin_order_haveRight("reference","r"))
+         return "<a href='" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[$this->type] . "?ID=" . $ID . "'>" . $name . "</a>";
+      else
+         return $name;
+   }
+	
 	function canDelete()
 	{
 		return (!$this->referenceInUse());
@@ -198,7 +207,7 @@ class PluginOrderReference extends CommonDBTM {
 				echo getDropdownName("glpi_dropdown_manufacturer",$this->fields["FK_glpi_enterprise"]);	
 			echo "</td></tr>";
 
-			$commonitem = new CommonItem;
+			$commonitem = new CommonItem();
 			$commonitem->setType($this->fields["type"], true);
 
 			echo "<tr class='tab_bg_2'><td>" . $LANG['state'][6] . ": </td>";
@@ -284,6 +293,56 @@ class PluginOrderReference extends CommonDBTM {
 		}
 		return true;
 	}
+	
+	function showReferencesFromSupplier($ID){
+      global $LANG, $DB, $CFG_GLPI,$INFOFORM_PAGES;
+      
+      $query = "SELECT `gr`.`ID`, `gr`.`FK_glpi_enterprise`, `gr`.`FK_entities`, `gr`.`type`, `gr`.`name`, `grm`.`price_taxfree` " .
+            "FROM `glpi_plugin_order_references_manufacturers` AS grm, `".$this->table."` AS gr " .
+            "WHERE `grm`.`FK_enterprise` = '$ID' AND `grm`.`FK_reference` = `gr`.`ID`";
+      $result = $DB->query($query);
+
+      echo "<div class='center'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='5'>".$LANG['plugin_order']['reference'][3]."</th></tr>";
+      echo "<tr>"; 
+      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".$LANG['common'][5]."</th>";
+      echo "<th>".$LANG['plugin_order']['reference'][1]."</th>";
+      echo "<th>". $LANG['common'][17]."</th><th>".$LANG['plugin_order']['detail'][4]."</th></tr>";
+      
+      if ($DB->numrows($result) > 0)
+      {
+         $commonitem = new CommonItem;
+         while ($data = $DB->fetch_array($result))
+         {
+            echo "<tr class='tab_bg_1' align='center'>";
+            echo "<td>";
+            echo getDropdownName("glpi_entities",$data["FK_entities"]);
+            echo "</td>";
+
+            echo "<td>";
+            echo getDropdownName("glpi_dropdown_manufacturer",$data["FK_glpi_enterprise"]);
+            echo "</td>";
+
+            echo "<td>";
+            $PluginOrderReference = new PluginOrderReference();
+            echo $PluginOrderReference->getReceptionReferenceLink($data["ID"], $data["name"]);
+            echo "</td>";
+            echo "<td>"; 
+            $commonitem->setType($data["type"]);
+            echo $commonitem->getType();
+            echo "</td>";
+            echo "<td>";
+            echo $data["price_taxfree"];
+            echo "</td>";
+            echo "</tr>";	
+         }
+      }
+      echo "</table>";	
+      echo "</div>";
+      
+   }
 }
 
 ?>

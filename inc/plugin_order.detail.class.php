@@ -180,9 +180,10 @@ class PluginOrderDetail extends CommonDBTM {
 			$num=$DB->numrows($result);
 			$rand=mt_rand();
 			
-			$plugin_order=new PluginOrder();
+			$PluginOrder=new PluginOrder();
+			$PluginOrderReference = new PluginOrderReference();
 			
-			$canedit=$plugin_order->can($FK_order,'w') && plugin_order_canUpdateOrder($FK_order);
+			$canedit=$PluginOrder->can($FK_order,'w') && plugin_order_canUpdateOrder($FK_order);
 			echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  action=\"$target\">";
 			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
 			if ($num>0) {
@@ -220,7 +221,7 @@ class PluginOrderDetail extends CommonDBTM {
 					echo "<td align='center'>".getDropdownName("glpi_dropdown_manufacturer",$data["FK_glpi_enterprise"])."</td>";
 					/* reference */
 					echo "<td align='center'>";
-					echo plugin_order_getReceptionReferenceLink($data["IDR"], $data["name"]);
+					echo $PluginOrderReference->getReceptionReferenceLink($data["IDR"], $data["name"]);
 					echo "</td>";
 					/* type */
 					echo "<td align='center'>";
@@ -268,20 +269,6 @@ class PluginOrderDetail extends CommonDBTM {
       $result = $DB->query($query);
 		if ($DB->numrows($result))
 			return true;
-		else
-			return false;
-	}
-
-	function getOrderInfosByDeviceID($device_type, $deviceID) {
-		global $DB;
-		$query = "SELECT `glpi_plugin_order`.* 
-               FROM `glpi_plugin_order`, `".$this->table."` 
-               WHERE `glpi_plugin_order`.`ID` = `".$this->table."`.`FK_order` 
-               AND `".$this->table."`.`device_type` = '$device_type' 
-               AND `".$this->table."`.`FK_device` = '$deviceID' ";
-		$result = $DB->query($query);
-		if ($DB->numrows($result))
-			return $DB->fetch_array($result);
 		else
 			return false;
 	}
@@ -462,6 +449,41 @@ class PluginOrderDetail extends CommonDBTM {
             echo "</table></div>";
             echo "</form>";
          }
+      }
+   }
+   
+   function getOrderInfosByDeviceID($device_type, $deviceID) {
+		global $DB;
+		$query = "SELECT `glpi_plugin_order`.* 
+               FROM `glpi_plugin_order`, `".$this->table."` 
+               WHERE `glpi_plugin_order`.`ID` = `".$this->table."`.`FK_order` 
+               AND `".$this->table."`.`device_type` = '$device_type' 
+               AND `".$this->table."`.`FK_device` = '$deviceID' ";
+		$result = $DB->query($query);
+		if ($DB->numrows($result))
+			return $DB->fetch_array($result);
+		else
+			return false;
+	}
+	
+   function showPluginFromItems($device_type, $ID) {
+      global $LANG, $INFOFORM_PAGES, $CFG_GLPI;
+      
+      $infos = $this->getOrderInfosByDeviceID($device_type, $ID);
+      if ($infos) {
+         echo "<div class='center'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr align='center'><th colspan='2'>" . $LANG['plugin_order'][47] . ": </th></tr>";
+         echo "<tr align='center'><td class='tab_bg_2'>" . $LANG['plugin_order'][39] . "</td>";
+         echo "<td class='tab_bg_2'>";
+         if (plugin_order_haveRight("order", "r"))
+            echo "<a href='" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[PLUGIN_ORDER_TYPE] . "?ID=" . $infos["ID"] . "'>" . $infos["name"] . "</a>";
+         else
+            echo $infos["name"];
+         echo "</td></tr>";
+         echo "<tr align='center'><td class='tab_bg_2'>" . $LANG['plugin_order']['detail'][21] . "</td>";
+         echo "<td class='tab_bg_2'>" . convDate($infos["date"]) . "</td></tr>";
+         echo "</table></div>";
       }
    }
 }

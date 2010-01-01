@@ -796,13 +796,17 @@ function plugin_headings_actions_order($type) {
 /* action heading */
 function plugin_headings_order($type, $ID) {
 	global $CFG_GLPI, $LANG, $ORDER_AVAILABLE_TYPES;
-
+   
+   $profile = new profile();
+   $mailing = new PluginOrderConfigMailing();
+   $detail = new PluginOrderDetail();
+   $reference = new PluginOrderReference();
+   
 	switch ($type) {
 		case ENTERPRISE_TYPE :
-			plugin_order_showReferencesBySupplierID($ID);
+			$reference->showReferencesFromSupplier($ID);
 			break;
 		case PROFILE_TYPE :
-			$profile = new profile;
 			$profile->GetfromDB($ID);
 			if ($profile->fields["interface"] != "helpdesk") {
 				$prof = new PluginOrderProfile();
@@ -816,12 +820,11 @@ function plugin_headings_order($type, $ID) {
 			}
 			break;
 		case "mailing" :
-			$mailing = new PluginOrderConfigMailing;
 			$mailing->showMailingForm($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.setup.mailing.php");
 			break;
 		default :
 			if (in_array($type, $ORDER_AVAILABLE_TYPES))
-				plugin_order_showOrderInfoByDeviceID($type, $ID);
+				$detail->showPluginFromItems($type, $ID);
 			break;
 	}
 }

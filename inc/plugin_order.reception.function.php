@@ -42,6 +42,7 @@ function plugin_order_showDetailReceptionForm($orderID) {
 
 	$PluginOrder = new PluginOrder();
 	$PluginOrderDetail = new PluginOrderDetail();
+	$PluginOrderReference = new PluginOrderReference();
 	
 	$canedit = $PluginOrder->can($orderID, 'w') && !plugin_order_canUpdateOrder($orderID) && $PluginOrder->fields["status"] != ORDER_STATUS_CANCELED;
 	
@@ -84,7 +85,7 @@ function plugin_order_showDetailReceptionForm($orderID) {
 			echo "<th>" . $LANG['plugin_order']['detail'][4] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][8] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][18] . "</th></tr>";
-			echo "<tr><td class='tab_bg_1' width='15'></td><td align='center' class='tab_bg_1'>" . plugin_order_getReceptionReferenceLink($refID, $DB->result($result_ref, $j, 'name')) . "</td>";
+			echo "<tr><td class='tab_bg_1' width='15'></td><td align='center' class='tab_bg_1'>" . $PluginOrderReference->getReceptionReferenceLink($refID, $DB->result($result_ref, $j, 'name')) . "</td>";
 			echo "<td align='center' class='tab_bg_1'>" . $PluginOrderDetail->getDeliveredQuantity($orderID, $refID) . " / " . $PluginOrderDetail->getTotalQuantity($orderID, $refID) . "</td>";
 			echo "<td align='center' class='tab_bg_1'>" . plugin_order_getNumberOfLinkedMaterial($orderID, $refID) . " / " . $PluginOrderDetail->getTotalQuantity($orderID, $refID) . "</td>";
 			echo "<td align='center' class='tab_bg_1'>" . formatNumber($DB->result($result, 0, "price_taxfree")) . "</td>";
@@ -125,7 +126,7 @@ function plugin_order_showDetailReceptionForm($orderID) {
 
 				echo "<td align='center'>" . plugin_order_getReceptionType($detailID) . "</td>";
 				echo "<td align='center'>" . plugin_order_getReceptionManufacturer($detailID) . "</td>";
-				echo "<td align='center'>" . plugin_order_getReceptionReferenceLink($DB->result($result, $i, 'IDR'), $DB->result($result, $i, 'name')) . "</td>";
+				echo "<td align='center'>" . $PluginOrderReference->getReceptionReferenceLink($DB->result($result, $i, 'IDR'), $DB->result($result, $i, 'name')) . "</td>";
 				echo "<td align='center'>" . plugin_order_getReceptionStatus($detailID) . "</td>";
 				echo "<td align='center'>" . convDate($mydetail->fields["date"]) . "</td>";
 				echo "<td align='center'>" . $mydetail->fields["deliverynum"] . "</td>";

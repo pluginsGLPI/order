@@ -49,6 +49,8 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
 plugin_order_checkRight("reference","r");
 
+$PluginOrderReferenceManufacturer = new PluginOrderReferenceManufacturer();
+
 if (empty($_POST["ID"])){
    switch($_POST['glpi_tab']){
       default :
@@ -57,8 +59,8 @@ if (empty($_POST["ID"])){
 }else{
    switch($_POST['glpi_tab']){
       case 1 :
-         plugin_order_showReferenceManufacturers($_SERVER['HTTP_REFERER'],$_POST["ID"]);
-         plugin_order_addSupplierToReference($_SERVER['HTTP_REFERER'],$_POST["ID"]);
+         $PluginOrderReferenceManufacturer->showReferenceManufacturers($_SERVER['HTTP_REFERER'],$_POST["ID"]);
+         $PluginOrderReferenceManufacturer->addSupplierToReference($_SERVER['HTTP_REFERER'],$_POST["ID"]);
          break;
       case 3 :
          showNotesForm($_SERVER['HTTP_REFERER'],PLUGIN_ORDER_REFERENCE_TYPE,$_POST["ID"]);
@@ -73,8 +75,8 @@ if (empty($_POST["ID"])){
          showHistory(PLUGIN_ORDER_REFERENCE_TYPE,$_POST["ID"]);
          break;
       case -1:
-         plugin_order_showReferenceManufacturers($_SERVER['HTTP_REFERER'],$_POST["ID"]);
-         plugin_order_addSupplierToReference($_SERVER['HTTP_REFERER'],$_POST["ID"]);
+         $PluginOrderReferenceManufacturer->showReferenceManufacturers($_SERVER['HTTP_REFERER'],$_POST["ID"]);
+         $PluginOrderReferenceManufacturer->addSupplierToReference($_SERVER['HTTP_REFERER'],$_POST["ID"]);
          showNotesForm($_SERVER['HTTP_REFERER'],PLUGIN_ORDER_REFERENCE_TYPE,$_POST["ID"]);
          showDocumentAssociated(PLUGIN_ORDER_REFERENCE_TYPE,$_POST["ID"],$_POST["withtemplate"]);
          showHistory(PLUGIN_ORDER_REFERENCE_TYPE,$_POST["ID"]);
