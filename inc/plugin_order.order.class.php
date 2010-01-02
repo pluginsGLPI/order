@@ -331,8 +331,7 @@ class PluginOrder extends CommonDBTM {
 
       $query="SELECT `glpi_enterprises`.* FROM `glpi_enterprises`
          LEFT JOIN `glpi_contact_enterprise` ON (`glpi_contact_enterprise`.`FK_enterprise` = `glpi_enterprises`.`ID`)
-         WHERE `FK_enterprise` IN (SELECT DISTINCT `ID` 
-               FROM `glpi_enterprises` $where) 
+         $where
          ORDER BY `FK_entities`, `name`";
       //error_log($query);
       $result=$DB->query($query);
