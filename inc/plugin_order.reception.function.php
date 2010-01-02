@@ -324,52 +324,6 @@ function plugin_order_getReceptionDeviceName($deviceID, $device_type) {
 	}
 }
 
-function plugin_order_getAllItemsByType($type, $entity, $item_type = 0, $item_model = 0) {
-	global $DB, $LINK_ID_TABLE, $ORDER_TYPE_TABLES, $ORDER_MODEL_TABLES, $ORDER_TEMPLATE_TABLES, $ORDER_RESTRICTED_TYPES, $LANG;
-
-	$and = "";
-	
-	if ($type == CONTRACT_TYPE)
-      $field = "contract_type";
-   else 
-      $field = "type";
-	if (isset ($ORDER_TYPE_TABLES[$type]))
-		$and .= ($item_type != 0 ? " AND `$field` = '$item_type' " : "");
-	if (isset ($ORDER_MODEL_TABLES[$type]))
-		$and .= ($item_model != 0 ? " AND `model` ='$item_model' " : "");
-	if (in_array($type, $ORDER_TEMPLATE_TABLES))
-		$and .= " AND `is_template` = 0 AND `deleted` = 0 ";
-
-	switch ($type) {
-		default :
-			$query = "SELECT `ID`, `name` 
-                  FROM `" . $LINK_ID_TABLE[$type] . "` 
-                  WHERE `FK_entities` = '" . $entity ."' ". $and . " 
-                  AND `ID` NOT IN (SELECT `FK_device` FROM `glpi_plugin_order_detail`)";
-			break;
-		case CONSUMABLE_ITEM_TYPE :
-			$query = "SELECT `ID`, `name` FROM `glpi_consumables_type`
-                  WHERE `FK_entities` = '" . $entity . "'
-                  AND `type` = '$item_type' 
-                  ORDER BY `name`";
-			break;
-		case CARTRIDGE_ITEM_TYPE :
-			$query = "SELECT `ID`, `name` FROM `glpi_cartridges_type`
-                  WHERE `FK_entities` = '" . $entity . "'
-                  AND `type` = '$item_type'
-                  ORDER BY `name` ASC";
-			break;
-	}
-	$result = $DB->query($query);
-
-	$device = array ();
-	while ($data = $DB->fetch_array($result)) {
-		$device[$data["ID"]] = $data["name"];
-	}
-
-	return $device;
-}
-
 function plugin_order_createLinkWithDevice($detailID = 0, $deviceID = 0, $device_type = 0, $orderID = 0, $entity = 0, $templateID = 0, $history = true, $check_link = true) {
 	global $LANG, $ORDER_RESTRICTED_TYPES;
 
@@ -520,9 +474,9 @@ function plugin_order_receptionOneItem($detailID, $orderID, $date, $deliverynum)
 
 function plugin_order_plugin_order_showItemGenerationForm($target, $params) {
 	global $LANG, $CFG_GLPI, $GENINVENTORYNUMBER_INVENTORY_TYPES;
+	
 	commonHeader($LANG['plugin_order']['title'][1], $_SERVER["PHP_SELF"], "plugins", "order", "order");
 	echo "<div class='center'>";
-	
 
 	//If plugin geninventorynumber is installed, activated and version >= 1.1.0
 	$plugin = new Plugin;
@@ -558,7 +512,9 @@ function plugin_order_plugin_order_showItemGenerationForm($target, $params) {
 
 	$order = new PluginOrder;
 	$order->getFromDB($params["orderID"]);
-
+   
+   $PluginOrderReference = new PluginOrderReference;
+   
 	$i = 0;
 	$found = false;
 
@@ -576,7 +532,7 @@ function plugin_order_plugin_order_showItemGenerationForm($target, $params) {
 				}
 
 				echo "<tr class='tab_bg_1'><td align='center'>" . $_POST["name"][$key] . "</td>";
-				$templateID = plugin_order_templateExistsInEntity($params["ID"][$key], $params['type'][$key], $order->fields["FK_entities"]);
+				$templateID = $PluginOrderReference->checkIfTemplateExistsInEntity($params["ID"][$key], $params['type'][$key], $order->fields["FK_entities"]);
 				if ($templateID) {
                $commonitem = new CommonItem;
                $commonitem->setType($params['type'][$key], true);
@@ -606,8 +562,8 @@ function plugin_order_plugin_order_showItemGenerationForm($target, $params) {
                echo "<td>".$name."</td>";
             }
             echo "<td align='center'>";
-            if ($templateID) { 
-               echo plugin_order_getTemplateName($params['type'][$key], $params['template'][$key]);
+            if ($templateID) {
+               echo $PluginOrderReference->getTemplateName($params['type'][$key], $params['template'][$key]);
             }   
             echo "</td>";
 				echo "<td>";
@@ -637,11 +593,13 @@ function plugin_order_generateNewDevice($params) {
 	
 	$i = 0;
 	
+	$PluginOrderReference = new PluginOrderReference;
+	
    foreach ($params["ID"] as $tmp => $values) {
     //print_r($values);
 		//------------- Template management -----------------------//
 		//Look for a template in the entity
-		$templateID = plugin_order_templateExistsInEntity($values["ID"], $values["type"], $values["FK_entities"]);
+		$templateID = $PluginOrderReference->checkIfTemplateExistsInEntity($values["ID"], $values["type"], $values["FK_entities"]);
       
       $commonitem = new CommonItem;
       $commonitem->setType($values["type"], true);

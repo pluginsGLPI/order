@@ -122,7 +122,7 @@ class PluginOrderMailing extends CommonDBTM {
 			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['common'][16] . "</td><td bgcolor='#CCCCCC'>" . $order->fields["name"] . "</td></tr>";
 			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['financial'][18] . "</td><td bgcolor='#CCCCCC'>" . $order->fields["numorder"] . "</td></tr>";
 			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['plugin_order'][1] . "</td><td bgcolor='#CCCCCC'>" . convDate($order->fields["date"]) . "</td></tr>";
-			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['joblist'][0] . "</td><td bgcolor='#CCCCCC'>" . plugin_order_getDropdownStatus($order->fields["status"]) . "</td></tr>";
+			$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['joblist'][0] . "</td><td bgcolor='#CCCCCC'>" . $order->getDropdownStatus($order->fields["status"]) . "</td></tr>";
 			if ($this->message != '')
 				$body .= "<tr><td bgcolor='#CCCCCC'>" . $LANG['common'][25] . "</td><td bgcolor='#CCCCCC'>" . $this->message . "</td></tr>";
 
@@ -152,7 +152,7 @@ class PluginOrderMailing extends CommonDBTM {
 			$body .= $LANG['common'][16] . " : " . $order->fields["name"] . "\n";
 			$body .= $LANG['financial'][18] . " : " . $order->fields["numorder"] . "\n";
 			$body .= $LANG['plugin_order'][1] . " : " . convDate($order->fields["date"]) . "\n";
-			$body .= $LANG['joblist'][0] . " : " . plugin_order_getDropdownStatus($order->fields["status"]) . "\n";
+			$body .= $LANG['joblist'][0] . " : " . $order->getDropdownStatus($order->fields["status"]) . "\n";
 			if ($this->message != '')
 				$body .= $LANG['common'][25] . " : " . $this->message . "\n";
 

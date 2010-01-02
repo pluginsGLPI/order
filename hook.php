@@ -652,11 +652,14 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 	
 	$table = $SEARCH_OPTION[$type][$ID]["table"];
 	$field = $SEARCH_OPTION[$type][$ID]["field"];
-
+   
+   $PluginOrderReference = new PluginOrderReference;
+   $PluginOrder = new PluginOrder;
+   
 	switch ($table . '.' . $field) {
 		/* display associated items with order */
 		case "glpi_plugin_order.status" :
-			return plugin_order_getDropdownStatus($data["ITEM_" . $num]);
+			return $PluginOrder->getDropdownStatus($data["ITEM_" . $num]);
 		break;
 		case "glpi_plugin_order_references.type" :
 			$commonitem = new CommonItem;
@@ -679,7 +682,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 			if (!$data["ITEM_" . $num])
 				return " ";
 			else
-				return plugin_order_getTemplateName($data["device_type"], $data["ITEM_" . $num]);
+				return $PluginOrderReference->getTemplateName($data["device_type"], $data["ITEM_" . $num]);
 		break;
 	}
 	return "";

@@ -46,24 +46,6 @@ class PluginOrderReference extends CommonDBTM {
 		$this->may_be_recursive = true;
 		$this->dohistory = true;
 	}
-  
-   function searchTypesInReferences($supplier) {
-      global $DB;
-    
-      $used=array();
-      $query = "SELECT type FROM `".$this->table."` 
-              LEFT JOIN `glpi_plugin_order_references_manufacturers` ON (`".$this->table."`.`ID` = `glpi_plugin_order_references_manufacturers`.`FK_reference`)
-              WHERE `glpi_plugin_order_references_manufacturers`.`FK_enterprise` = '".$supplier."' ";
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-      if ($number){
-         while ($data=$DB->fetch_array($result)){
-            $used[]=$data["type"];
-         }
-      }
-    
-      return $used;
-   }
 
 	/*define header form */
 	function defineTabs($ID, $withtemplate) {
@@ -215,7 +197,7 @@ class PluginOrderReference extends CommonDBTM {
 			if ($ID > 0)
 				echo $commonitem->getType();
 			else {
-				plugin_order_dropdownAllItems("type", true, $this->fields["type"], 0, 0, $_SESSION["glpiactive_entity"], $CFG_GLPI["root_doc"] .
+				$this->dropdownAllItems("type", true, $this->fields["type"], 0, 0, $_SESSION["glpiactive_entity"], $CFG_GLPI["root_doc"] .
 				"/plugins/order/ajax/reference.php");
 				echo "<span id='show_reference'></span></td></tr>";
 			}
@@ -244,9 +226,9 @@ class PluginOrderReference extends CommonDBTM {
 			echo "<td><span id='show_template'>";
 			
 			if ($canedit && in_array($this->fields["type"],$ORDER_TEMPLATE_TABLES))
-					plugin_order_dropdownTemplate("template", $this->fields["FK_entities"], $commonitem->obj->table, $this->fields["template"]);
+					$this->dropdownTemplate("template", $this->fields["FK_entities"], $commonitem->obj->table, $this->fields["template"]);
 				else
-					echo plugin_order_getTemplateName($this->fields["type"], $this->fields["template"]);
+					echo $this->getTemplateName($this->fields["type"], $this->fields["template"]);
 
 			echo "</span></td></tr>";
 
@@ -294,6 +276,116 @@ class PluginOrderReference extends CommonDBTM {
 		return true;
 	}
 	
+	function dropdownTemplate($name, $entity, $table, $value = 0) {
+      global $DB;
+      
+      $result = $DB->query("SELECT `tplname`, `ID` FROM `" . $table .
+      "` WHERE `FK_entities` = '" . $entity . "' AND `is_template` = '1' AND `tplname` <> '' GROUP BY `tplname` ORDER BY `tplname`");
+
+      $option[0] = '-------------';
+      while ($data = $DB->fetch_array($result))
+         $option[$data["ID"]] = $data["tplname"];
+      return dropdownArrayValues($name, $option, $value);
+   }
+	
+	function getTemplateName($type, $ID) {
+
+      $commonitem = new CommonItem;
+      $commonitem->getFromDB($type, $ID);
+      return $commonitem->getField("tplname");
+   }
+   
+   function checkIfTemplateExistsInEntity($detailID, $type, $entity) {
+      global $DB;
+      
+      $query = "SELECT `".$this->table."`.`template` AS templateID " .
+            "FROM `glpi_plugin_order_detail`, `".$this->table."` " .
+            "WHERE `glpi_plugin_order_detail`.`FK_reference` = `".$this->table."`.`ID` " .
+            "AND `glpi_plugin_order_detail`.`ID` = '$detailID' ;";
+      $result = $DB->query($query);
+      if (!$DB->numrows($result))
+         return 0;
+      else {
+         $commonitem = new CommonItem;
+         $commonitem->getFromDB($type, $DB->result($result, 0, "templateID"));
+         if ($commonitem->getField('FK_entities') == $entity)
+            return $commonitem->getField('ID');
+         else
+            return 0;
+      }
+   }
+
+	function dropdownAllItems($myname, $ajax = false, $value = 0, $orderID = 0, $supplier = 0, $entity = 0, $ajax_page = '',$filter=false) {
+      global $ORDER_AVAILABLE_TYPES,$DB;
+
+      $ci = new CommonItem();
+
+      echo "<select name=\"$myname\" id='$myname'>";
+      echo "<option value='0' selected>------</option>\n";
+     
+     if ($filter){
+         
+         $used=array();
+         $query = "SELECT type FROM `".$this->table."` 
+                 LEFT JOIN `glpi_plugin_order_references_manufacturers` ON (`".$this->table."`.`ID` = `glpi_plugin_order_references_manufacturers`.`FK_reference`)
+                 WHERE `glpi_plugin_order_references_manufacturers`.`FK_enterprise` = '".$supplier."' ";
+         $result = $DB->query($query);
+         $number = $DB->numrows($result);
+         if ($number){
+            while ($data=$DB->fetch_array($result)){
+               $used[]=$data["type"];
+            }
+         }
+       
+         foreach ($ORDER_AVAILABLE_TYPES as $tmp => $type) {
+            $result=in_array($type, $used);
+            if(!$result) {
+               unset($ORDER_AVAILABLE_TYPES[$tmp]);
+            }
+         }
+      }
+      foreach ($ORDER_AVAILABLE_TYPES as $tmp => $type) {
+         $ci->setType($type);
+         echo "<option value='$type' " . ($type == $value ? " selected" : '') . ">".$ci->getType(). "</option>\n";
+      }
+      echo "</select>";
+
+      if ($ajax) {
+         $params = array (
+            'device_type' => '__VALUE__',
+            'FK_enterprise' => $supplier,
+            'entity_restrict' => $entity,
+            'orderID' => $orderID,	
+         );
+
+         ajaxUpdateItemOnSelectEvent($myname, "show_reference", $ajax_page, $params);
+      }
+   }
+   
+   function getAllReferencesByEnterpriseAndType($type,$enterpriseID){
+      global $DB;
+      
+      $query = "SELECT `gr`.`name`, `gr`.`ID` 
+               FROM `".$this->table."` AS gr, `glpi_plugin_order_references_manufacturers` AS grm" .
+            " WHERE `gr`.`type` = '$type' 
+               AND `grm`.`FK_enterprise` = '$enterpriseID' 
+               AND `grm`.`FK_reference` = `gr`.`ID` ";
+
+      $result = $DB->query($query);
+      $references = array();
+      while ($data = $DB->fetch_array($result))
+         $references[$data["ID"]] = $data["name"];
+
+      return $references;		
+   }
+
+   function dropdownReferencesByEnterprise($name, $type, $enterpriseID) {
+
+      $references = $this->getAllReferencesByEnterpriseAndType($type, $enterpriseID);
+      $references[0] = '-----';
+      return dropdownArrayValues($name, $references, 0);
+   }
+
 	function showReferencesFromSupplier($ID){
       global $LANG, $DB, $CFG_GLPI,$INFOFORM_PAGES;
       

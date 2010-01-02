@@ -36,135 +36,51 @@
 if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
-    
-function plugin_order_dropdownAllItems($myname, $ajax = false, $value = 0, $orderID = 0, $supplier = 0, $entity = 0, $ajax_page = '',$filter=false) {
-	global $ORDER_AVAILABLE_TYPES;
 
-	$ci = new CommonItem();
+function plugin_order_getAllItemsByType($type, $entity, $item_type = 0, $item_model = 0) {
+	global $DB, $LINK_ID_TABLE, $ORDER_TYPE_TABLES, $ORDER_MODEL_TABLES, $ORDER_TEMPLATE_TABLES, $ORDER_RESTRICTED_TYPES, $LANG;
 
-	echo "<select name=\"$myname\" id='$myname'>";
-	echo "<option value='0' selected>------</option>\n";
-  
-  if ($filter){
-    $PluginOrderReference = new PluginOrderReference();
-    $used=$PluginOrderReference->searchTypesInReferences($supplier);
-    
-    foreach ($ORDER_AVAILABLE_TYPES as $tmp => $type) {
-        $result=in_array($type, $used);
-        if(!$result) {
-          unset($ORDER_AVAILABLE_TYPES[$tmp]);
-        }
-    }
-	}
-	foreach ($ORDER_AVAILABLE_TYPES as $tmp => $type) {
-		$ci->setType($type);
-		echo "<option value='$type' " . ($type == $value ? " selected" : '') . ">".$ci->getType(). "</option>\n";
-	}
-	echo "</select>";
-
-	if ($ajax) {
-		$params = array (
-			'device_type' => '__VALUE__',
-			'FK_enterprise' => $supplier,
-			'entity_restrict' => $entity,
-			'orderID' => $orderID,	
-		);
-
-		ajaxUpdateItemOnSelectEvent($myname, "show_reference", $ajax_page, $params);
-	}
-}
-
-function plugin_order_dropdownSuppliers($myname,$entity_restrict='') {
-	global $DB,$CFG_GLPI;
-
-	$rand=mt_rand();
-
-	$where=" WHERE `glpi_enterprises`.`deleted` = '0' ";
-	$where.=getEntitiesRestrictRequest("AND","glpi_enterprises",'',$entity_restrict,true);
-
-	$query="SELECT `glpi_enterprises`.* FROM `glpi_enterprises`
-      LEFT JOIN `glpi_contact_enterprise` ON (`glpi_contact_enterprise`.`FK_enterprise` = `glpi_enterprises`.`ID`)
-		WHERE `FK_enterprise` IN (SELECT DISTINCT `ID` 
-				FROM `glpi_enterprises` $where) 
-		ORDER BY `FK_entities`, `name`";
-	//error_log($query);
-	$result=$DB->query($query);
-
-	echo "<select name='FK_enterprise' id='FK_enterprise'>\n";
-	echo "<option value='0'>------</option>\n";
-
-	$prev=-1;
-	while ($data=$DB->fetch_array($result)) {
-		if ($data["FK_entities"]!=$prev) {
-			if ($prev>=0) {
-				echo "</optgroup>";
-			}
-			$prev=$data["FK_entities"];
-			echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
-		}
-		$output = $data["name"];
-		if($_SESSION["glpiview_ID"]||empty($output)){
-			$output.=" (".$data["ID"].")";
-		}
-		echo "<option value=\"".$data["ID"]."\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
-	}
-	if ($prev>=0) {
-		echo "</optgroup>";
-	}
-	echo "</select>\n";
-
-	$params=array('FK_enterprise'=>'__VALUE__',
-			'entity_restrict'=>$entity_restrict,
-			'rand'=>$rand,
-			'myname'=>$myname
-			);
-
-	ajaxUpdateItemOnSelectEvent("FK_enterprise","show_contact",$CFG_GLPI["root_doc"]."/plugins/order/ajax/dropdownSupplier.php",$params);
-
-	return $rand;
-}
-
-function plugin_order_dropdownTemplate($name, $entity, $table, $value = 0) {
-	global $DB;
+	$and = "";
 	
-	$result = $DB->query("SELECT `tplname`, `ID` FROM `" . $table .
-	"` WHERE `FK_entities` = '" . $entity . "' AND `is_template` = '1' AND `tplname` <> '' GROUP BY `tplname` ORDER BY `tplname`");
+	if ($type == CONTRACT_TYPE)
+      $field = "contract_type";
+   else 
+      $field = "type";
+	if (isset ($ORDER_TYPE_TABLES[$type]))
+		$and .= ($item_type != 0 ? " AND `$field` = '$item_type' " : "");
+	if (isset ($ORDER_MODEL_TABLES[$type]))
+		$and .= ($item_model != 0 ? " AND `model` ='$item_model' " : "");
+	if (in_array($type, $ORDER_TEMPLATE_TABLES))
+		$and .= " AND `is_template` = 0 AND `deleted` = 0 ";
 
-	$option[0] = '-------------';
-	while ($data = $DB->fetch_array($result))
-		$option[$data["ID"]] = $data["tplname"];
-	return dropdownArrayValues($name, $option, $value);
-}
-
-function plugin_order_getTemplateName($type, $ID) {
-
-	$commonitem = new CommonItem;
-	$commonitem->getFromDB($type, $ID);
-	return $commonitem->getField("tplname");
-}
-
-function plugin_order_getAllReferencesByEnterpriseAndType($type,$enterpriseID){
-	global $DB;
-	
-	$query = "SELECT `gr`.`name`, `gr`.`ID` 
-            FROM `glpi_plugin_order_references` AS gr, `glpi_plugin_order_references_manufacturers` AS grm" .
-			" WHERE `gr`.`type` = '$type' 
-            AND `grm`.`FK_enterprise` = '$enterpriseID' 
-            AND `grm`.`FK_reference` = `gr`.`ID` ";
-
+	switch ($type) {
+		default :
+			$query = "SELECT `ID`, `name` 
+                  FROM `" . $LINK_ID_TABLE[$type] . "` 
+                  WHERE `FK_entities` = '" . $entity ."' ". $and . " 
+                  AND `ID` NOT IN (SELECT `FK_device` FROM `glpi_plugin_order_detail`)";
+			break;
+		case CONSUMABLE_ITEM_TYPE :
+			$query = "SELECT `ID`, `name` FROM `glpi_consumables_type`
+                  WHERE `FK_entities` = '" . $entity . "'
+                  AND `type` = '$item_type' 
+                  ORDER BY `name`";
+			break;
+		case CARTRIDGE_ITEM_TYPE :
+			$query = "SELECT `ID`, `name` FROM `glpi_cartridges_type`
+                  WHERE `FK_entities` = '" . $entity . "'
+                  AND `type` = '$item_type'
+                  ORDER BY `name` ASC";
+			break;
+	}
 	$result = $DB->query($query);
-	$references = array();
-	while ($data = $DB->fetch_array($result))
-		$references[$data["ID"]] = $data["name"];
 
-	return $references;		
-}
+	$device = array ();
+	while ($data = $DB->fetch_array($result)) {
+		$device[$data["ID"]] = $data["name"];
+	}
 
-function plugin_order_dropdownReferencesByEnterprise($name, $type, $enterpriseID) {
-
-	$references = plugin_order_getAllReferencesByEnterpriseAndType($type, $enterpriseID);
-	$references[0] = '-----';
-	return dropdownArrayValues($name, $references, 0);
+	return $device;
 }
 
 function plugin_order_dropdownAllItemsByType($name, $type, $entity=0,$item_type=0,$item_model=0) {
@@ -206,59 +122,6 @@ function plugin_order_dropdownReceptionActions($type,$referenceID,$orderID) {
 	);
 	ajaxUpdateItemOnSelectEvent("receptionActions$rand", "show_receptionActions$rand", $CFG_GLPI["root_doc"] . "/plugins/order/ajax/receptionactions.php", $params);
 	echo "<span id='show_receptionActions$rand'>&nbsp;</span>";
-}
-
-function plugin_order_dropdownStatus($name, $value = 0) {
-	global $LANG;
-	
-	$status[ORDER_STATUS_DRAFT] = $LANG['plugin_order']['status'][9];
-	$status[ORDER_STATUS_WAITING_APPROVAL] = $LANG['plugin_order']['status'][7];
-	$status[ORDER_STATUS_PARTIALLY_DELIVRED] = $LANG['plugin_order']['status'][1];
-	$status[ORDER_STATUS_COMPLETLY_DELIVERED] = $LANG['plugin_order']['status'][2];
-	$status[ORDER_STATUS_CANCELED] = $LANG['plugin_order']['status'][10];
-
-	return dropdownArrayValues($name, $status, $value);
-}
-
-function plugin_order_getDropdownStatus($value) {
-	global $LANG;
-	
-	switch ($value) {
-		case ORDER_STATUS_DRAFT :
-			return $LANG['plugin_order']['status'][9];
-		case ORDER_STATUS_APPROVED :
-			return $LANG['plugin_order']['status'][12];
-		case ORDER_STATUS_WAITING_APPROVAL :
-			return $LANG['plugin_order']['status'][7];
-		case ORDER_STATUS_PARTIALLY_DELIVRED :
-			return $LANG['plugin_order']['status'][1];
-		case ORDER_STATUS_COMPLETLY_DELIVERED :
-			return $LANG['plugin_order']['status'][2];
-		case ORDER_STATUS_CANCELED :
-			return $LANG['plugin_order']['status'][10];
-		default :
-			return "";
-	}
-}
-function plugin_order_templateExistsInEntity($detailID, $type, $entity) {
-	global $DB;
-	
-	$query = "SELECT `glpi_plugin_order_references`.`template` AS templateID " .
-			"FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` " .
-			"WHERE `glpi_plugin_order_detail`.`FK_reference` = `glpi_plugin_order_references`.`ID` " .
-			"AND `glpi_plugin_order_detail`.`ID` = '$detailID' ;";
-	$result = $DB->query($query);
-	if (!$DB->numrows($result))
-		return 0;
-	else {
-		$commonitem = new CommonItem;
-		$commonitem->getFromDB($type, $DB->result($result, 0, "templateID"));
-		if ($commonitem->getField('FK_entities') == $entity)
-			return $commonitem->getField('ID');
-		else
-			return 0;
-	}
-
 }
 
 ?>

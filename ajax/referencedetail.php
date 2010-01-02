@@ -35,14 +35,14 @@
 
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
-include (GLPI_ROOT."/plugins/order/inc/plugin_order.reference.manufacturer.class.php");
-include (GLPI_ROOT."/plugins/order/inc/plugin_order.config.class.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 if (!defined('GLPI_ROOT')){
    die("Can not acces directly to this file");
 }
+
+useplugin('order', true);
 
 checkCentralAccess();
 

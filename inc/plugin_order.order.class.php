@@ -71,6 +71,17 @@ class PluginOrder extends CommonDBTM {
          return true;
    }
    
+   /**
+	 * Print a good title for user pages
+	 *
+	 *@return nothing (display)
+	 **/
+	function title() {
+		global $LANG, $CFG_GLPI;
+		
+		displayTitle($CFG_GLPI["root_doc"] . "/plugins/order/pics/order-icon.png", $LANG['plugin_order']['title'][1], $LANG['plugin_order']['title'][1]);
+	}
+	
 	/*define header form */
 	function defineTabs($ID, $withtemplate) {
 		global $LANG;
@@ -214,7 +225,7 @@ class PluginOrder extends CommonDBTM {
 			echo "<td>";
 			if ($canedit)
             if (empty ($ID) || $ID < 0)
-               plugin_order_dropdownSuppliers("FK_enterprise", $this->fields["FK_entities"]);
+               $this->dropdownSuppliers("FK_enterprise", $this->fields["FK_entities"]);
             else
                dropdownValue("glpi_enterprises", "FK_enterprise", $this->fields["FK_enterprise"], 1, $this->fields["FK_entities"]);
 			else
@@ -243,7 +254,7 @@ class PluginOrder extends CommonDBTM {
 			echo "<td>" . $LANG['plugin_order']['status'][0] . ": </td>";
 			echo "<td>";
 			echo "<input type='hidden' name='status' value=" . ORDER_STATUS_DRAFT . ">";
-			echo plugin_order_getDropdownStatus($this->fields["status"]);
+			echo $this->getDropdownStatus($this->fields["status"]);
 			echo "</td></tr>";
 			//End
 
@@ -310,17 +321,77 @@ class PluginOrder extends CommonDBTM {
 		return true;
 	}
 
-	/**
-	 * Print a good title for user pages
-	 *
-	 *@return nothing (display)
-	 **/
-	function title() {
-		global $LANG, $CFG_GLPI;
-		
-		displayTitle($CFG_GLPI["root_doc"] . "/plugins/order/pics/order-icon.png", $LANG['plugin_order']['title'][1], $LANG['plugin_order']['title'][1]);
-	}
+   function dropdownSuppliers($myname,$entity_restrict='') {
+      global $DB,$CFG_GLPI;
+
+      $rand=mt_rand();
+
+      $where=" WHERE `glpi_enterprises`.`deleted` = '0' ";
+      $where.=getEntitiesRestrictRequest("AND","glpi_enterprises",'',$entity_restrict,true);
+
+      $query="SELECT `glpi_enterprises`.* FROM `glpi_enterprises`
+         LEFT JOIN `glpi_contact_enterprise` ON (`glpi_contact_enterprise`.`FK_enterprise` = `glpi_enterprises`.`ID`)
+         WHERE `FK_enterprise` IN (SELECT DISTINCT `ID` 
+               FROM `glpi_enterprises` $where) 
+         ORDER BY `FK_entities`, `name`";
+      //error_log($query);
+      $result=$DB->query($query);
+
+      echo "<select name='FK_enterprise' id='FK_enterprise'>\n";
+      echo "<option value='0'>------</option>\n";
+
+      $prev=-1;
+      while ($data=$DB->fetch_array($result)) {
+         if ($data["FK_entities"]!=$prev) {
+            if ($prev>=0) {
+               echo "</optgroup>";
+            }
+            $prev=$data["FK_entities"];
+            echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+         }
+         $output = $data["name"];
+         if($_SESSION["glpiview_ID"]||empty($output)){
+            $output.=" (".$data["ID"].")";
+         }
+         echo "<option value=\"".$data["ID"]."\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
+      }
+      if ($prev>=0) {
+         echo "</optgroup>";
+      }
+      echo "</select>\n";
+
+      $params=array('FK_enterprise'=>'__VALUE__',
+            'entity_restrict'=>$entity_restrict,
+            'rand'=>$rand,
+            'myname'=>$myname
+            );
+
+      ajaxUpdateItemOnSelectEvent("FK_enterprise","show_contact",$CFG_GLPI["root_doc"]."/plugins/order/ajax/dropdownSupplier.php",$params);
+
+      return $rand;
+   }
    
+   function getDropdownStatus($value) {
+      global $LANG;
+      
+      switch ($value) {
+         case ORDER_STATUS_DRAFT :
+            return $LANG['plugin_order']['status'][9];
+         case ORDER_STATUS_APPROVED :
+            return $LANG['plugin_order']['status'][12];
+         case ORDER_STATUS_WAITING_APPROVAL :
+            return $LANG['plugin_order']['status'][7];
+         case ORDER_STATUS_PARTIALLY_DELIVRED :
+            return $LANG['plugin_order']['status'][1];
+         case ORDER_STATUS_COMPLETLY_DELIVERED :
+            return $LANG['plugin_order']['status'][2];
+         case ORDER_STATUS_CANCELED :
+            return $LANG['plugin_order']['status'][10];
+         default :
+            return "";
+      }
+   }
+
    function addStatusLog($orderID, $status, $comments = '') {
       global $LANG;
 

@@ -34,10 +34,9 @@
  */
 
 $NEEDED_ITEMS = array("computer","monitor","printer","networking","software","peripheral","phone","consumable","cartridge");
-define('GLPI_ROOT', '../../..');
 
+define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
-include (GLPI_ROOT . "/plugins/order/inc/plugin_order.dropdown.function.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -48,6 +47,8 @@ if (!defined('GLPI_ROOT')) {
 useplugin('order', true);
 
 checkCentralAccess();
+
+$PluginOrderReference = new PluginOrderReference();
 
 if ($_POST["device_type"])
 {
@@ -68,7 +69,7 @@ if ($_POST["device_type"])
 			{
 				$commonitem = new CommonItem;
 				$commonitem->setType($_POST["device_type"],true);
-				plugin_order_dropdownTemplate("template", $_POST["entity_restrict"], $commonitem->obj->table);
+				$PluginOrderReference->dropdownTemplate("template", $_POST["entity_restrict"], $commonitem->obj->table);
 			}
 			else
 				return "";	
