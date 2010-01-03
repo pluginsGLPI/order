@@ -109,7 +109,6 @@ $LANG['plugin_order']['detail'][38] = "Voulez vous vraiment annuler cette comman
 $LANG['plugin_order']['detail'][39] = "Voulez vous vraiment annuler la demande de validation ?";
 $LANG['plugin_order']['detail'][40] = "Voulez vous passer modifier le contenu de la commande ? ";
 
-
 $LANG['plugin_order']['delivery'][1] = "Réception matériel(s)";
 $LANG['plugin_order']['delivery'][2] = "Réceptionner matériel";
 $LANG['plugin_order']['delivery'][3] = "Générer matériel associé";
@@ -125,7 +124,6 @@ $LANG['plugin_order']['delivery'][15] = "Matériel délié de la commande";
 $LANG['plugin_order']['delivery'][16] = "Matériel déjà lié à un objet d'inventaire";
 $LANG['plugin_order']['delivery'][17] = "Aucun matériel à générer";
 $LANG['plugin_order']['delivery'][18] = "Réceptionner matériel en masse";
-
 
 $LANG['plugin_order']['profile'][0] = "Gestion des droits";
 $LANG['plugin_order']['profile'][1] = "Valider une commande";
@@ -179,4 +177,6 @@ $LANG['plugin_order']['menu'][3] = "Gérer les budgets";
 
 $LANG['plugin_order']['budget'][1] = "Commandes";
 $LANG['plugin_order']['budget'][2] = "Budget consommé";
+$LANG['plugin_order']['budget'][3] = "La valeur du budget est nulle. Merci de recommencer";
+
 ?>

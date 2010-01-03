@@ -65,7 +65,9 @@ $plugin_order = new PluginOrderBudget();
 
 /* add order */
 if (isset ($_POST["add"])) {
-	if (plugin_order_HaveRight("budget", "w"))
+   if (empty($_POST["value"]))
+      addMessageAfterRedirect($LANG['plugin_order']['budget'][3],false,ERROR);
+	if (plugin_order_HaveRight("budget", "w")  && !empty($_POST["value"]))
       $newID = $plugin_order->add($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
