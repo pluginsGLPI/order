@@ -45,7 +45,10 @@ if (!defined('GLPI_ROOT')){
 
 useplugin('order', true);
 
+$reference = new PluginOrderReference;
+
 $type=$_POST["type"];
+
 if (isset($_POST["action"])){
 	switch($_POST["action"]){
 		case "reception":
@@ -74,9 +77,8 @@ if (isset($_POST["action"])){
          break;
    	case "createLink":
 			echo "<input type='hidden' name='FK_type' value='$type'>";
-			$reference = new PluginOrderReference;
 			$reference->getFromDB($_POST["referenceID"]);
-			plugin_order_dropdownAllItemsByType("device", $type, $_SESSION["glpiactive_entity"],$reference->fields["FK_type"],$reference->fields["FK_model"]);
+			$reference->dropdownAllItemsByType("device", $type, $_SESSION["glpiactive_entity"],$reference->fields["FK_type"],$reference->fields["FK_model"]);
 			echo "&nbsp;<input type='submit' name='createLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'>";
          break;
    	case "deleteLink":

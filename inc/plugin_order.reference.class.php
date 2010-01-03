@@ -362,6 +362,60 @@ class PluginOrderReference extends CommonDBTM {
       }
    }
    
+   function getAllItemsByType($type, $entity, $item_type = 0, $item_model = 0) {
+      global $DB, $LINK_ID_TABLE, $ORDER_TYPE_TABLES, $ORDER_MODEL_TABLES, $ORDER_TEMPLATE_TABLES;
+
+      $and = "";
+      
+      if ($type == CONTRACT_TYPE)
+         $field = "contract_type";
+      else 
+         $field = "type";
+      if (isset ($ORDER_TYPE_TABLES[$type]))
+         $and .= ($item_type != 0 ? " AND `$field` = '$item_type' " : "");
+      if (isset ($ORDER_MODEL_TABLES[$type]))
+         $and .= ($item_model != 0 ? " AND `model` ='$item_model' " : "");
+      if (in_array($type, $ORDER_TEMPLATE_TABLES))
+         $and .= " AND `is_template` = 0 AND `deleted` = 0 ";
+
+      switch ($type) {
+         default :
+            $query = "SELECT `ID`, `name` 
+                     FROM `" . $LINK_ID_TABLE[$type] . "` 
+                     WHERE `FK_entities` = '" . $entity ."' ". $and . " 
+                     AND `ID` NOT IN (SELECT `FK_device` FROM `glpi_plugin_order_detail`)";
+            break;
+         case CONSUMABLE_ITEM_TYPE :
+            $query = "SELECT `ID`, `name` FROM `glpi_consumables_type`
+                     WHERE `FK_entities` = '" . $entity . "'
+                     AND `type` = '$item_type' 
+                     ORDER BY `name`";
+            break;
+         case CARTRIDGE_ITEM_TYPE :
+            $query = "SELECT `ID`, `name` FROM `glpi_cartridges_type`
+                     WHERE `FK_entities` = '" . $entity . "'
+                     AND `type` = '$item_type'
+                     ORDER BY `name` ASC";
+            break;
+      }
+      $result = $DB->query($query);
+
+      $device = array ();
+      while ($data = $DB->fetch_array($result)) {
+         $device[$data["ID"]] = $data["name"];
+      }
+
+      return $device;
+   }
+
+   function dropdownAllItemsByType($name, $type, $entity=0,$item_type=0,$item_model=0) {
+
+      $items = $this->getAllItemsByType($type,$entity,$item_type,$item_model);
+      $items[0] = '-----';
+      asort($items);
+      return dropdownArrayValues($name, $items, 0);
+   }
+
    function getAllReferencesByEnterpriseAndType($type,$enterpriseID){
       global $DB;
       

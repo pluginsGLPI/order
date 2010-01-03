@@ -405,17 +405,6 @@ function plugin_order_deleteLinkWithDevice($detailID, $device_type) {
 	}
 }
 
-function plugin_order_deleteAllLinkWithDevice($orderID) {
-	global $DB;
-
-	$detail = new PluginOrderDetail;
-	$devices = getAllDatasFromTable("glpi_plugin_order_detail", "FK_order=$orderID");
-	foreach ($devices as $deviceID => $device)
-		$detail->delete(array (
-			"ID" => $deviceID
-		));
-}
-
 function plugin_order_updateBulkReceptionStatus($params) {
 	global $LANG, $DB;
 	

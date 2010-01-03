@@ -494,6 +494,16 @@ class PluginOrder extends CommonDBTM {
 
 		return true;
 	}
+	
+	function deleteAllLinkWithDevice($orderID) {
+
+      $detail = new PluginOrderDetail;
+      $devices = getAllDatasFromTable("glpi_plugin_order_detail", "FK_order=$orderID");
+      foreach ($devices as $deviceID => $device)
+         $detail->delete(array (
+            "ID" => $deviceID
+         ));
+   }
 
 	function canDoValidationRequest() {
 		
