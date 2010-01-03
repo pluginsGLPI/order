@@ -114,11 +114,11 @@ class PluginOrderReference extends CommonDBTM {
 			return false;	
 	}
 	
-	function getReceptionReferenceLink($ID, $name) {
+	function getReceptionReferenceLink($data) {
       global $CFG_GLPI, $INFOFORM_PAGES;
       
       if (plugin_order_haveRight("reference","r"))
-         return "<a href='" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[$this->type] . "?ID=" . $ID . "'>" . $name . "</a>";
+         return "<a href='" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[$this->type] . "?ID=" . $data["ID"] . "'>" . $data["name"] . "</a>";
       else
          return $name;
    }
