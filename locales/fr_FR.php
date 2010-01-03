@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
- 
+
 // ----------------------------------------------------------------------
 // Original Author of file: NOUH Walid & Benjamin Fontan
 // Purpose of file: plugin order v1.1.0 - GLPI 0.72
@@ -138,6 +138,7 @@ $LANG['plugin_order']['reference'][6] = "Une référence du même nom existe dé
 $LANG['plugin_order']['reference'][7] = "Référence(s) actuellement utilisée(s)";
 $LANG['plugin_order']['reference'][8] = "Impossible de créer une référence sans nom";
 $LANG['plugin_order']['reference'][9] = "Impossible de créer une référence sans type";
+$LANG['plugin_order']['reference'][10] = "Référence produit fournisseur";
 
 
 $LANG['plugin_order']['setup'][2] = "Plugin non utilisable depuis le helpdesk";

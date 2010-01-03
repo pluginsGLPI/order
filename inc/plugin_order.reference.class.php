@@ -26,7 +26,7 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
- 
+
 // ----------------------------------------------------------------------
 // Original Author of file: NOUH Walid & Benjamin Fontan
 // Purpose of file: plugin order v1.1.0 - GLPI 0.72
@@ -70,13 +70,13 @@ class PluginOrderReference extends CommonDBTM {
 			addMessageAfterRedirect($LANG['plugin_order']['reference'][8], false, ERROR);
 			return false;
 		}
-		
+
 		if (!$params["type"])
 		{
 			addMessageAfterRedirect($LANG['plugin_order']['reference'][9], false, ERROR);
 			return false;
 		}
-		
+
 		$query = "SELECT COUNT(*) AS cpt FROM `".$this->table."` " .
 				 "WHERE `name` = '".$params["name"]."' AND `FK_entities` = '".$params["FK_entities"]."' ";
 		$result = $DB->query($query);
@@ -86,48 +86,48 @@ class PluginOrderReference extends CommonDBTM {
 			return false;
 		}
 		else
-			return $params;		
+			return $params;
 	}
-	
+
 	function pre_deleteItem($params){
 		global $LANG;
-		
+
 		if (!$this->referenceInUse())
 			return $params;
 		else
 		{
 			addMessageAfterRedirect($LANG['plugin_order']['reference'][7],true,ERROR);
-			return false;	
+			return false;
 		}
-			
+
 	}
-	
+
 	function referenceInUse(){
 		global $DB;
-		
+
 		$query = "SELECT COUNT(*) AS cpt FROM `glpi_plugin_order_detail` " .
 				"WHERE `FK_reference` = '".$this->fields["ID"]."' ";
 		$result = $DB->query($query);
 		if ($DB->result($result,0,"cpt") > 0)
 			return true;
 		else
-			return false;	
+			return false;
 	}
-	
+
 	function getReceptionReferenceLink($data) {
       global $CFG_GLPI, $INFOFORM_PAGES;
-      
+
       if (plugin_order_haveRight("reference","r"))
          return "<a href='" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[$this->type] . "?ID=" . $data["ID"] . "'>" . $data["name"] . "</a>";
       else
          return $name;
    }
-	
+
 	function canDelete()
 	{
 		return (!$this->referenceInUse());
 	}
-	
+
 	/**
 	 * Print a good title for user pages
 	 *
@@ -135,7 +135,7 @@ class PluginOrderReference extends CommonDBTM {
 	 **/
 	function title() {
 		global $LANG, $CFG_GLPI;
-		
+
 		displayTitle($CFG_GLPI["root_doc"] . "/plugins/order/pics/reference-icon.png", $LANG['plugin_order']['reference'][1], $LANG['plugin_order']['reference'][1]);
 	}
 
@@ -157,10 +157,10 @@ class PluginOrderReference extends CommonDBTM {
 				$this->getEmpty();
 			}
 		}
-		
+
 		$canedit = plugin_order_haveRight("reference", "w");
 		$reference_in_use = (!$ID?false:$this->referenceInUse());
-		
+
 		if ($spotted) {
 
 			$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
@@ -178,7 +178,7 @@ class PluginOrderReference extends CommonDBTM {
 			if ($canedit)
 				autocompletionTextField("name", "glpi_plugin_order_references", "name", $this->fields["name"], 70, $this->fields["FK_entities"]);
 			else
-				echo $this->fields["name"];	
+				echo $this->fields["name"];
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][5] . ": </td>";
@@ -186,7 +186,7 @@ class PluginOrderReference extends CommonDBTM {
 			if ($canedit && !$reference_in_use)
 				dropdownValue("glpi_dropdown_manufacturer", "FK_glpi_enterprise", $this->fields["FK_glpi_enterprise"]);
 			else
-				echo getDropdownName("glpi_dropdown_manufacturer",$this->fields["FK_glpi_enterprise"]);	
+				echo getDropdownName("glpi_dropdown_manufacturer",$this->fields["FK_glpi_enterprise"]);
 			echo "</td></tr>";
 
 			$commonitem = new CommonItem();
@@ -215,7 +215,7 @@ class PluginOrderReference extends CommonDBTM {
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][22] . ": </td>";
 			echo "<td><span id='show_model'>";
 			if (isset($ORDER_MODEL_TABLES[$this->fields["type"]])) {
-            if ($canedit) 
+            if ($canedit)
 					dropdownValue($ORDER_MODEL_TABLES[$this->fields["type"]], "FK_model", $this->fields["FK_model"]);
 				else
 					echo getDropdownName($ORDER_MODEL_TABLES[$this->fields["type"]], $this->fields["FK_model"]);
@@ -224,7 +224,7 @@ class PluginOrderReference extends CommonDBTM {
 
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][13] . ": </td>";
 			echo "<td><span id='show_template'>";
-			
+
 			if ($canedit && in_array($this->fields["type"],$ORDER_TEMPLATE_TABLES))
 					$this->dropdownTemplate("template", $this->fields["FK_entities"], $commonitem->obj->table, $this->fields["template"]);
 				else
@@ -233,7 +233,7 @@ class PluginOrderReference extends CommonDBTM {
 			echo "</span></td></tr>";
 
 			echo "<tr class='tab_bg_2'><td>" . $LANG['common'][25] . ": </td>";
-			
+
 			echo "<td colspan='3'>";
 			if ($canedit)
 				echo "<textarea cols='50' rows='4' name='comments' >" . $this->fields["comments"] . "</textarea>";
@@ -275,10 +275,10 @@ class PluginOrderReference extends CommonDBTM {
 		}
 		return true;
 	}
-	
+
 	function dropdownTemplate($name, $entity, $table, $value = 0) {
       global $DB;
-      
+
       $result = $DB->query("SELECT `tplname`, `ID` FROM `" . $table .
       "` WHERE `FK_entities` = '" . $entity . "' AND `is_template` = '1' AND `tplname` <> '' GROUP BY `tplname` ORDER BY `tplname`");
 
@@ -287,17 +287,17 @@ class PluginOrderReference extends CommonDBTM {
          $option[$data["ID"]] = $data["tplname"];
       return dropdownArrayValues($name, $option, $value);
    }
-	
+
 	function getTemplateName($type, $ID) {
 
       $commonitem = new CommonItem;
       $commonitem->getFromDB($type, $ID);
       return $commonitem->getField("tplname");
    }
-   
+
    function checkIfTemplateExistsInEntity($detailID, $type, $entity) {
       global $DB;
-      
+
       $query = "SELECT `".$this->table."`.`template` AS templateID " .
             "FROM `glpi_plugin_order_detail`, `".$this->table."` " .
             "WHERE `glpi_plugin_order_detail`.`FK_reference` = `".$this->table."`.`ID` " .
@@ -322,11 +322,11 @@ class PluginOrderReference extends CommonDBTM {
 
       echo "<select name=\"$myname\" id='$myname'>";
       echo "<option value='0' selected>------</option>\n";
-     
+
      if ($filter){
-         
+
          $used=array();
-         $query = "SELECT type FROM `".$this->table."` 
+         $query = "SELECT type FROM `".$this->table."`
                  LEFT JOIN `glpi_plugin_order_references_manufacturers` ON (`".$this->table."`.`ID` = `glpi_plugin_order_references_manufacturers`.`FK_reference`)
                  WHERE `glpi_plugin_order_references_manufacturers`.`FK_enterprise` = '".$supplier."' ";
          $result = $DB->query($query);
@@ -336,7 +336,7 @@ class PluginOrderReference extends CommonDBTM {
                $used[]=$data["type"];
             }
          }
-       
+
          foreach ($ORDER_AVAILABLE_TYPES as $tmp => $type) {
             $result=in_array($type, $used);
             if(!$result) {
@@ -355,13 +355,13 @@ class PluginOrderReference extends CommonDBTM {
             'device_type' => '__VALUE__',
             'FK_enterprise' => $supplier,
             'entity_restrict' => $entity,
-            'orderID' => $orderID,	
+            'orderID' => $orderID,
          );
 
          ajaxUpdateItemOnSelectEvent($myname, "show_reference", $ajax_page, $params);
       }
    }
-   
+
    function getAllItemsByType($type, $entity, $item_type = 0, $item_model = 0) {
       global $DB, $LINK_ID_TABLE, $ORDER_TYPE_TABLES, $ORDER_MODEL_TABLES, $ORDER_TEMPLATE_TABLES;
 
@@ -418,19 +418,23 @@ class PluginOrderReference extends CommonDBTM {
 
    function getAllReferencesByEnterpriseAndType($type,$enterpriseID){
       global $DB;
-      
-      $query = "SELECT `gr`.`name`, `gr`.`ID` 
+
+      $query = "SELECT `gr`.`name`, `gr`.`ID`, `grm`.`reference_code`
                FROM `".$this->table."` AS gr, `glpi_plugin_order_references_manufacturers` AS grm" .
-            " WHERE `gr`.`type` = '$type' 
-               AND `grm`.`FK_enterprise` = '$enterpriseID' 
+            " WHERE `gr`.`type` = '$type'
+               AND `grm`.`FK_enterprise` = '$enterpriseID'
                AND `grm`.`FK_reference` = `gr`.`ID` ";
 
       $result = $DB->query($query);
       $references = array();
-      while ($data = $DB->fetch_array($result))
+      while ($data = $DB->fetch_array($result)) {
          $references[$data["ID"]] = $data["name"];
+         if ($data['reference_code']) {
+            $references[$data["ID"]] .= ' ('.$data['reference_code'].')';
+         }
+      }
 
-      return $references;		
+      return $references;
    }
 
    function dropdownReferencesByEnterprise($name, $type, $enterpriseID) {
@@ -442,7 +446,7 @@ class PluginOrderReference extends CommonDBTM {
 
 	function showReferencesFromSupplier($ID){
       global $LANG, $DB, $CFG_GLPI,$INFOFORM_PAGES;
-      
+
       $query = "SELECT `gr`.`ID`, `gr`.`FK_glpi_enterprise`, `gr`.`FK_entities`, `gr`.`type`, `gr`.`name`, `grm`.`price_taxfree` " .
             "FROM `glpi_plugin_order_references_manufacturers` AS grm, `".$this->table."` AS gr " .
             "WHERE `grm`.`FK_enterprise` = '$ID' AND `grm`.`FK_reference` = `gr`.`ID`";
@@ -451,12 +455,12 @@ class PluginOrderReference extends CommonDBTM {
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='5'>".$LANG['plugin_order']['reference'][3]."</th></tr>";
-      echo "<tr>"; 
+      echo "<tr>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['common'][5]."</th>";
       echo "<th>".$LANG['plugin_order']['reference'][1]."</th>";
       echo "<th>". $LANG['common'][17]."</th><th>".$LANG['plugin_order']['detail'][4]."</th></tr>";
-      
+
       if ($DB->numrows($result) > 0)
       {
          $commonitem = new CommonItem;
@@ -475,19 +479,19 @@ class PluginOrderReference extends CommonDBTM {
             $PluginOrderReference = new PluginOrderReference();
             echo $PluginOrderReference->getReceptionReferenceLink($data["ID"], $data["name"]);
             echo "</td>";
-            echo "<td>"; 
+            echo "<td>";
             $commonitem->setType($data["type"]);
             echo $commonitem->getType();
             echo "</td>";
             echo "<td>";
             echo $data["price_taxfree"];
             echo "</td>";
-            echo "</tr>";	
+            echo "</tr>";
          }
       }
-      echo "</table>";	
+      echo "</table>";
       echo "</div>";
-      
+
    }
 }
 
