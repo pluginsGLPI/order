@@ -168,7 +168,7 @@ class PluginOrderDetail extends CommonDBTM {
    function showFormDetail ($target,$FK_order) {
       global  $CFG_GLPI, $LANG,$DB,$INFOFORM_PAGES,$ORDER_MODEL_TABLES,$ORDER_TYPE_TABLES;
 		
-			$query="SELECT `".$this->table."`.`ID` AS IDD, `glpi_plugin_order_references`.`ID` AS IDR, 
+			$query="SELECT `".$this->table."`.`ID` AS IDD, `glpi_plugin_order_references`.`ID`, 
 					`glpi_plugin_order_references`.`type`,`glpi_plugin_order_references`.`FK_type`,`glpi_plugin_order_references`.`FK_model`, `glpi_plugin_order_references`.`FK_glpi_enterprise`, `glpi_plugin_order_references`.`name`, 
 					`".$this->table."`.`price_taxfree`, `".$this->table."`.`price_ati`, `".$this->table."`.`price_discounted`, 
                `".$this->table."`.`discount`,
@@ -224,7 +224,7 @@ class PluginOrderDetail extends CommonDBTM {
 					echo "<td align='center'>".getDropdownName("glpi_dropdown_manufacturer",$data["FK_glpi_enterprise"])."</td>";
 					/* reference */
 					echo "<td align='center'>";
-					echo $PluginOrderReference->getReceptionReferenceLink($data["IDR"], $data["name"]);
+					echo $PluginOrderReference->getReceptionReferenceLink($data);
 					echo "</td>";
 					/* type */
 					echo "<td align='center'>";
