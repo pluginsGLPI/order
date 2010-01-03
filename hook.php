@@ -168,7 +168,7 @@ function plugin_order_install() {
 		$DB->query($query) or die($DB->error());
 	}
 
-	if (!TableExists("v")) {
+	if (!TableExists("glpi_plugin_order_references_manufacturers")) {
 		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_manufacturers` (
                   `ID` int(11) NOT NULL auto_increment,
                   `FK_entities` int(11) NOT NULL DEFAULT 0,
@@ -275,7 +275,7 @@ function plugin_order_install() {
 
    if (!FieldExists("glpi_plugin_order_references_manufacturers","glpi_plugin_order_references")) {
       $query = "ALTER TABLE `glpi_plugin_order_references_manufacturers` ADD `reference_code` varchar(255) NOT NULL collate utf8_unicode_ci default ''";
-   $DB->query($query) or die($DB->error());
+      $DB->query($query) or die($DB->error());
 
    }
 
