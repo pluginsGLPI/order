@@ -59,10 +59,10 @@ if ($_POST["FK_reference"] > 0)
 			autocompletionTextField("quantity","glpi_plugin_order_detail","quantity",0,5);
          break;
 		case 'priceht':
-			autocompletionTextField("price","glpi_plugin_order_detail","price",$price,5);
+			echo "<input type='text' name='price' value=\"".formatNumber($price,true)."\" size='5'>";
          break;
 		case 'pricediscounted':
-			autocompletionTextField("discount","glpi_plugin_order_detail","discount",0,5);
+			echo "<input type='text' name='discount' value=\"".formatNumber("discount",true)."\" size='5'>";
          break;
 		case 'taxes':
 			dropdownValue("glpi_dropdown_plugin_order_taxes","taxes",$default_taxes);
