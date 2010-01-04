@@ -151,7 +151,7 @@ function plugin_order_showReceptionForm($orderID) {
 
 			}
 			echo "</table>";
-			if ($canedit) {
+			if ($canedit && !plugin_order_allItemsAlreadyDelivered($orderID, $refID)) {
 				
             echo "<div class='center'>";
             echo "<table width='80%' class='tab_glpi'>";
@@ -434,10 +434,8 @@ function plugin_order_dropdownReceptionActions($type,$referenceID,$orderID) {
 
 	echo "<select name='receptionActions$rand' id='receptionActions$rand'>";
 	echo "<option value='0' selected>-----</option>";
-	if (!plugin_order_allItemsAlreadyDelivered($orderID, $referenceID)) {
-      echo "<option value='reception'>" . $LANG['plugin_order']['delivery'][2] . "</option>";
-      echo "<option value='bulk_reception'>" . $LANG['plugin_order']['delivery'][4] . "</option>";
-   }
+   echo "<option value='reception'>" . $LANG['plugin_order']['delivery'][2] . "</option>";
+   echo "<option value='bulk_reception'>" . $LANG['plugin_order']['delivery'][4] . "</option>";
 	echo "</select>";
 	$params = array (
 		'action' => '__VALUE__',
