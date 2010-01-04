@@ -239,6 +239,8 @@ function plugin_order_haveTypeRight($type, $right) {
 			return plugin_order_haveRight("reference", $right);
 		case PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE :
 			return plugin_order_haveRight("reference", $right);
+		case PLUGIN_ORDER_BUDGET_TYPE :
+			return plugin_order_haveRight("budget", $right);
 	}
 }
 ?>
