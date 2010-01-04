@@ -645,6 +645,7 @@ function plugin_order_generateNewDevice($params) {
          $input["name"] = $values["name"];
          $input["type"] = $reference->fields["FK_type"];
          $input["model"] = $reference->fields["FK_model"];
+         $input["FK_glpi_enterprise"] = $reference->fields["FK_glpi_enterprise"];
          /*if ($entity == $reference->fields["FK_entities"])
             $input["location"] = $order->fields["location"];*/
             
