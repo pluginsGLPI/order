@@ -273,7 +273,7 @@ function plugin_order_install() {
 
    }
 
-   if (!FieldExists("glpi_plugin_order_references_manufacturers","glpi_plugin_order_references")) {
+   if (!FieldExists("glpi_plugin_order_references_manufacturers","reference_code")) {
       $query = "ALTER TABLE `glpi_plugin_order_references_manufacturers` ADD `reference_code` varchar(255) NOT NULL collate utf8_unicode_ci default ''";
       $DB->query($query) or die($DB->error());
 
