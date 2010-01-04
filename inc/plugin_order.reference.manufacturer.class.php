@@ -86,7 +86,7 @@ class PluginOrderReferenceManufacturer extends CommonDBTM {
 
       echo "<td class='tab_bg_1' align='center'>";
       if ($canedit)
-         autocompletionTextField("price_taxfree", "glpi_plugin_order_references_manufacturers", "price_taxfree", $this->fields["price_taxfree"], 7);
+		echo "<input type='text' name='price_taxfree' value=\"".formatNumber($this->fields["price_taxfree"],true)."\" size='7'>";
       else
          echo $this->fields["price_taxfree"];
 
@@ -150,7 +150,7 @@ class PluginOrderReferenceManufacturer extends CommonDBTM {
             echo $data["reference_code"];
             echo "</td>";
             echo "<td class='tab_bg_1' align='center'>";
-            echo $data["price_taxfree"];
+            echo formatNumber($data["price_taxfree"]);
             echo "</td>";
             echo "</tr>";
          }
@@ -210,7 +210,7 @@ class PluginOrderReferenceManufacturer extends CommonDBTM {
             autocompletionTextField("reference_code", $this->table, "reference_code", '', 20);
             echo "</td>";
             echo "<td class='tab_bg_1' align='center'>";
-            autocompletionTextField("price_taxfree", $this->table, "price_taxfree", 0, 7);
+            echo "<input type='text' name='price_taxfree' value=\"".formatNumber("price_taxfree",true)."\" size='7'>";
             echo "</td>";
             echo "</tr>";
             echo "<tr>";
