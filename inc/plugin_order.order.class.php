@@ -238,7 +238,7 @@ class PluginOrder extends CommonDBTM {
 			if ($canedit)
 				echo "<input type='text' name='port_price' value=\"".formatNumber($this->fields["port_price"],true)."\" size='5'>";
 			else
-				echo $this->fields["port_price"];
+				echo formatNumber($this->fields["port_price"]);
 			echo "</td></tr>";
 			
 			/* linked contact of the supplier of order */

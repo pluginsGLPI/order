@@ -88,7 +88,7 @@ class PluginOrderReferenceManufacturer extends CommonDBTM {
       if ($canedit)
 		echo "<input type='text' name='price_taxfree' value=\"".formatNumber($this->fields["price_taxfree"],true)."\" size='7'>";
       else
-         echo $this->fields["price_taxfree"];
+         echo formatNumber($this->fields["price_taxfree"]);
 
       echo "</td></tr>";
       if ($canedit)
