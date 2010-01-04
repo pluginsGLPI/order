@@ -105,6 +105,7 @@ function plugin_order_showDetailReceptionForm($orderID) {
 			echo "<tr>";
 			if ($canedit)
 				echo "<th width='15'></th>";
+			echo "<th>" . $LANG['common'][2] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][21] . "</th>";
@@ -135,7 +136,8 @@ function plugin_order_showDetailReceptionForm($orderID) {
 					echo "<input type='checkbox' name='item[" . $detailID . "]' value='1' $sel>";
 					echo "</td>";
 				}
-
+				
+				echo "<td align='center'>" . $data["IDD"] . "</td>";
 				echo "<td align='center'>" . $PluginOrderReference->getReceptionReferenceLink($data) . "</td>";
 				echo "<td align='center'>" . plugin_order_getReceptionStatus($detailID) . "</td>";
 				echo "<td align='center'>" . convDate($data["date"]) . "</td>";
@@ -155,16 +157,16 @@ function plugin_order_showDetailReceptionForm($orderID) {
 			echo "</table>";
 			if ($canedit) {
 				
-				echo "<div class='center'>";
-        echo "<table width='80%' class='tab_glpi'>";
-        echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
-        echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=none'>".$LANG['buttons'][19]."</a>";
-        echo "</td><td align='left' width='90%'>";
-        echo "<input type='hidden' name='orderID' value='$orderID'>";
-				plugin_order_dropdownReceptionActions($typeRef, $refID, $orderID);
-        echo "</td>";
-        echo "</table>";
-        echo "</div>";
+            echo "<div class='center'>";
+            echo "<table width='80%' class='tab_glpi'>";
+            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+            echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=none'>".$LANG['buttons'][19]."</a>";
+            echo "</td><td align='left' width='90%'>";
+            echo "<input type='hidden' name='orderID' value='$orderID'>";
+            plugin_order_dropdownReceptionActions($typeRef, $refID, $orderID);
+            echo "</td>";
+            echo "</table>";
+            echo "</div>";
 					
 			}
 			echo "</form></div>";
@@ -292,6 +294,20 @@ function plugin_order_getReceptionDeviceName($deviceID, $device_type) {
 	}
 }
 
+function plugin_order_checkifOneIsAlreadyDelivered($orderID, $referenceID) {
+	global $DB;
+	$query = "SELECT COUNT(*) AS cpt 
+            FROM `glpi_plugin_order_detail` 
+            WHERE `FK_order` = '$orderID' 
+            AND `FK_reference` = '$referenceID' 
+            AND `status` = '".ORDER_DEVICE_DELIVRED."' ";
+	$result = $DB->query($query);
+	if ($DB->result($result, 0, "cpt") > 0)
+		return true;
+	else
+		return false;
+}
+
 function plugin_order_dropdownReceptionActions($type,$referenceID,$orderID) {
 	global $LANG,$CFG_GLPI,$ORDER_RESTRICTED_TYPES;
 	
@@ -307,11 +323,13 @@ function plugin_order_dropdownReceptionActions($type,$referenceID,$orderID) {
 	$ORDER_RESTRICTED_TYPES[]=	SOFTWARELICENSE_TYPE;
 	//$ORDER_RESTRICTED_TYPES[]=	SOFTWARE_TYPE;
 	$ORDER_RESTRICTED_TYPES[]=	CONTRACT_TYPE;
-	if (!in_array($type, $ORDER_RESTRICTED_TYPES))
-		echo "<option value='generation'>" . $LANG['plugin_order']['delivery'][3] . "</option>";
+	
+	if (plugin_order_checkifOneIsAlreadyDelivered($orderID, $referenceID)) {
+		if (!in_array($type, $ORDER_RESTRICTED_TYPES))
+			echo "<option value='generation'>" . $LANG['plugin_order']['delivery'][3] . "</option>";
 
-   echo "<option value='createLink'>" . $LANG['plugin_order']['delivery'][11] . "</option>";
-
+			echo "<option value='createLink'>" . $LANG['plugin_order']['delivery'][11] . "</option>";
+	}
    if (plugin_order_getNumberOfLinkedMaterial($orderID, $referenceID))
       echo "<option value='deleteLink'>" . $LANG['plugin_order']['delivery'][12] . "</option>";
 	echo "</select>";

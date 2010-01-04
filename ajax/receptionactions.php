@@ -59,7 +59,7 @@ if (isset($_POST["action"])){
 			autocompletionTextField("deliverynum","glpi_plugin_order_detail","deliverynum",'',20,$_SESSION["glpiactive_entity"]);
 			echo "</td><td><input type='submit' name='reception' class='submit' value='".$LANG['buttons'][2]."'></td>";
          break;
-   case "bulk_reception":
+		case "bulk_reception":
 			echo "</td><td>";
 			showDateFormItem("date",date("Y-m-d"),true,1);
 			echo "</td><td>";

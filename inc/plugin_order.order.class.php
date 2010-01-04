@@ -92,12 +92,12 @@ class PluginOrder extends CommonDBTM {
 			$plugin = new Plugin();
 			/* detail */
 			$ong[4] = $LANG['plugin_order']['detail'][0];
-			if(!$this->canUpdateOrder($ID)) {
-            /* delivery */
-            $ong[5] = $LANG['plugin_order']['delivery'][1];
-            /* item */
-            $ong[2] = $LANG['plugin_order']['item'][0];
-         }
+
+			/* delivery */
+			$ong[5] = $LANG['plugin_order']['delivery'][1];
+			/* item */
+         $ong[2] = $LANG['plugin_order']['item'][0];
+
 			/* documents */
 			if (haveRight("document", "r"))
 				$ong[3] = $LANG['Menu'][27];

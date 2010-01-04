@@ -191,10 +191,11 @@ class PluginOrderDetail extends CommonDBTM {
 			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
 			if ($num>0) {
 				echo "<div class='center'><table class='tab_cadrehov'>";
-				echo "<tr><th colspan='13'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
+				echo "<tr><th colspan='15'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
 				echo "<tr>";
 				if($canedit)
 					echo "<th></th>";
+				echo "<th>".$LANG['common'][2]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][1]."</th>";
 				echo "<th>".$LANG['common'][5]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
@@ -204,7 +205,8 @@ class PluginOrderDetail extends CommonDBTM {
 				echo "<th>".$LANG['plugin_order']['detail'][18]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][25]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][9]."</th>";
-				echo "<th>".$LANG['plugin_order']['detail'][10]."</th></tr>";
+				echo "<th>".$LANG['plugin_order']['detail'][10]."</th>";
+				echo "<th>".$LANG['plugin_order']['detail'][19]."</th></tr>";
 				
 				while ($data=$DB->fetch_array($result)){
 					
@@ -216,6 +218,7 @@ class PluginOrderDetail extends CommonDBTM {
 						echo "<input type='checkbox' name='detail[".$data["IDD"]."]' value='1' $sel>";
 						echo "</td>";
 					}
+					echo "<td align='center'>".$data["IDD"]."</td>";
 					/* type */
 					$ci=new CommonItem();
 					$ci->setType($data["type"]);
@@ -245,6 +248,8 @@ class PluginOrderDetail extends CommonDBTM {
 					echo "<td align='center'>".formatNumber($data["totalpriceHT"])."</td>";
 					/* total price with taxes  */
 					echo "<td align='center'>".formatNumber($data["totalpriceTTC"])."</td>";
+					/* status  */
+					echo "<td align='center'>".plugin_order_getReceptionStatus($data["IDD"])."</td>";
 					
 				}
 				echo "</table>";
