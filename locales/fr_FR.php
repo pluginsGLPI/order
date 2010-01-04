@@ -180,4 +180,9 @@ $LANG['plugin_order']['budget'][1] = "Commandes";
 $LANG['plugin_order']['budget'][2] = "Budget consommé";
 $LANG['plugin_order']['budget'][3] = "La valeur du budget est nulle. Merci de recommencer";
 
+$LANG['plugin_order']['generation'][0] = "Génération";
+$LANG['plugin_order']['generation'][1] = "Génération du bon de commande";
+$LANG['plugin_order']['generation'][2] = "Bon de commande";
+$LANG['plugin_order']['generation'][3] = "Détail de la commande";
+
 ?>

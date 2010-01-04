@@ -180,4 +180,9 @@ $LANG['plugin_order']['budget'][1] = "Orders";
 $LANG['plugin_order']['budget'][2] = "Budget already used";
 $LANG['plugin_order']['budget'][3] = "The value of the budget is null. Thanks to add a value";
 
+$LANG['plugin_order']['generation'][0] = "Generation";
+$LANG['plugin_order']['generation'][1] = "Generation of the order";
+$LANG['plugin_order']['generation'][2] = "Order";
+$LANG['plugin_order']['generation'][3] = "Order details";
+
 ?>

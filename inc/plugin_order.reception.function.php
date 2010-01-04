@@ -48,7 +48,7 @@ function plugin_order_getNumberOfLinkedMaterial($orderID, $refID) {
 	return ($DB->result($result, 0, 'result'));
 }
 
-function plugin_order_showDetailReceptionForm($orderID) {
+function plugin_order_showReceptionForm($orderID) {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE, $INFOFORM_PAGES;
 
 	$PluginOrder = new PluginOrder();
@@ -110,7 +110,7 @@ function plugin_order_showDetailReceptionForm($orderID) {
 			echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][21] . "</th>";
 			echo "<th>" . $LANG['financial'][19] . "</th>";
-			echo "<th>" . $LANG['plugin_order']['item'][0] . "</th></tr>";
+			echo "</tr>";
 			
 			$query = "SELECT `glpi_plugin_order_detail`.`ID` AS IDD, `glpi_plugin_order_references`.`ID` AS ID,`glpi_plugin_order_references`.`template`, `glpi_plugin_order_detail`.`status`, `glpi_plugin_order_detail`.`date`,`glpi_plugin_order_detail`.`deliverynum`, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`type`, `glpi_plugin_order_detail`.`FK_device`
                  FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
@@ -142,11 +142,7 @@ function plugin_order_showDetailReceptionForm($orderID) {
 				echo "<td align='center'>" . plugin_order_getReceptionStatus($detailID) . "</td>";
 				echo "<td align='center'>" . convDate($data["date"]) . "</td>";
 				echo "<td align='center'>" . $data["deliverynum"] . "</td>";
-				echo "<td align='center'>" . plugin_order_getReceptionDeviceName($data["FK_device"], $data["type"]);
-				if ($data["FK_device"] != 0) {
-					echo "<img alt='' src='" . $CFG_GLPI["root_doc"] . "/pics/aide.png' onmouseout=\"cleanhide('comments_$random')\" onmouseover=\"cleandisplay('comments_$random')\" ";
-					echo "<span class='over_link' id='comments_$random'>" . nl2br(plugin_order_getReceptionMaterialInfo($data["type"], $data["FK_device"])) . "</span>";
-				}
+
 				echo "<input type='hidden' name='ID[$detailID]' value='$detailID'>";
 				echo "<input type='hidden' name='name[$detailID]' value='" . $data["name"] . "'>";
 				echo "<input type='hidden' name='type[$detailID]' value='" . $data["type"] . "'>";
@@ -164,6 +160,129 @@ function plugin_order_showDetailReceptionForm($orderID) {
             echo "</td><td align='left' width='90%'>";
             echo "<input type='hidden' name='orderID' value='$orderID'>";
             plugin_order_dropdownReceptionActions($typeRef, $refID, $orderID);
+            echo "</td>";
+            echo "</table>";
+            echo "</div>";
+					
+			}
+			echo "</form></div>";
+		}
+		echo "<br>";
+	}
+}
+
+function plugin_order_showGenerationForm($orderID) {
+	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE, $INFOFORM_PAGES;
+
+	$PluginOrder = new PluginOrder();
+	$PluginOrderDetail = new PluginOrderDetail();
+	$PluginOrderReference = new PluginOrderReference();
+	
+	$canedit = $PluginOrder->can($orderID, 'w') && !$PluginOrder->canUpdateOrder($orderID) && $PluginOrder->fields["status"] != ORDER_STATUS_CANCELED;
+	
+	$query_ref = "SELECT `glpi_plugin_order_detail`.`ID` AS IDD, `glpi_plugin_order_detail`.`FK_reference` AS ID, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`type`, `glpi_plugin_order_references`.`FK_glpi_enterprise` " .
+	"FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references` " .
+	"WHERE `FK_order` = '$orderID' " .
+	"AND `glpi_plugin_order_detail`.`FK_reference` = `glpi_plugin_order_references`.`ID`  " .
+	"AND `glpi_plugin_order_detail`.`status` = '".ORDER_DEVICE_DELIVRED."'   " .
+	"GROUP BY `glpi_plugin_order_detail`.`FK_reference` " .
+	"ORDER BY `glpi_plugin_order_detail`.`ID`";
+	$result_ref = $DB->query($query_ref);
+	$numref = $DB->numrows($result_ref);
+
+	while ($data_ref=$DB->fetch_array($result_ref)){
+
+		echo "<div class='center'><table class='tab_cadrehov'>";
+		if (!$numref)
+			echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
+		else {
+         
+			$refID = $data_ref["ID"];
+			$typeRef = $data_ref["type"];		
+         
+         $ci = new CommonItem();
+         $ci->setType($typeRef);
+			$rand = mt_rand();
+			echo "<tr><th><ul><li>";
+			echo "<a href=\"javascript:showHideDiv('generation$rand','generation$rand','" . $CFG_GLPI["root_doc"] . "/pics/plus.png','" . $CFG_GLPI["root_doc"] . "/pics/moins.png');\">";
+			echo "<img alt='' name='generation$rand' src=\"" . $CFG_GLPI["root_doc"] . "/pics/plus.png\">";
+			echo "</a></li></ul></th>";
+			echo "<th>" . $LANG['plugin_order']['detail'][1] . "</th>";
+			echo "<th>" . $LANG['common'][5] . "</th>";
+			echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
+			echo "</tr>";
+			echo "<tr class='tab_bg_1 center'>";
+			echo "<td></td>";
+			echo "<td align='center'>" . $ci->getType() . "</td>";
+			echo "<td align='center'>" . getDropdownName("glpi_dropdown_manufacturer", $data_ref["FK_glpi_enterprise"]) . "</td>";
+			echo "<td>" . $PluginOrderReference->getReceptionReferenceLink($data_ref) . "</td>";
+			echo "</tr></table>";
+
+			echo "<div class='center' id='generation$rand' style='display:none'>";
+			echo "<form method='post' name='order_generation_form$rand' id='order_generation_form$rand'  action=\"" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.reception.form.php\">";
+			echo "<table class='tab_cadrehov'>";
+
+			echo "<tr>";
+			if ($canedit)
+				echo "<th width='15'></th>";
+			echo "<th>" . $LANG['common'][2] . "</th>";
+			echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
+			echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
+			echo "<th>" . $LANG['plugin_order']['detail'][21] . "</th>";
+			echo "<th>" . $LANG['plugin_order']['item'][0] . "</th></tr>";
+			
+			$query = "SELECT `glpi_plugin_order_detail`.`ID` AS IDD, `glpi_plugin_order_references`.`ID` AS ID,`glpi_plugin_order_references`.`template`, `glpi_plugin_order_detail`.`status`, `glpi_plugin_order_detail`.`date`,`glpi_plugin_order_detail`.`deliverynum`, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`type`, `glpi_plugin_order_detail`.`FK_device`
+                 FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
+                 WHERE `FK_order` = '$orderID'
+                 AND `glpi_plugin_order_detail`.`FK_reference` = '".$refID."'
+                 AND `glpi_plugin_order_detail`.`status` = '".ORDER_DEVICE_DELIVRED."'
+                 AND `glpi_plugin_order_detail`.`FK_reference` = `glpi_plugin_order_references`.`ID`
+                 ORDER BY `glpi_plugin_order_detail`.`ID`";
+			$result = $DB->query($query);
+			$num = $DB->numrows($result);
+			
+			while ($data=$DB->fetch_array($result)){
+				$random = mt_rand();
+				
+				$detailID = $data["IDD"];
+
+				echo "<tr class='tab_bg_2'>";
+				if ($canedit) {
+					echo "<td width='15' align='left'>";
+					$sel = "";
+					if (isset ($_GET["select"]) && $_GET["select"] == "all")
+						$sel = "checked";
+					
+					echo "<input type='checkbox' name='item[" . $detailID . "]' value='1' $sel>";
+					echo "</td>";
+				}
+				
+				echo "<td align='center'>" . $data["IDD"] . "</td>";
+				echo "<td align='center'>" . $PluginOrderReference->getReceptionReferenceLink($data) . "</td>";
+				echo "<td align='center'>" . plugin_order_getReceptionStatus($detailID) . "</td>";
+				echo "<td align='center'>" . convDate($data["date"]) . "</td>";
+				echo "<td align='center'>" . plugin_order_getReceptionDeviceName($data["FK_device"], $data["type"]);
+				if ($data["FK_device"] != 0) {
+					echo "<img alt='' src='" . $CFG_GLPI["root_doc"] . "/pics/aide.png' onmouseout=\"cleanhide('comments_$random')\" onmouseover=\"cleandisplay('comments_$random')\" ";
+					echo "<span class='over_link' id='comments_$random'>" . nl2br(plugin_order_getReceptionMaterialInfo($data["type"], $data["FK_device"])) . "</span>";
+				}
+				echo "<input type='hidden' name='ID[$detailID]' value='$detailID'>";
+				echo "<input type='hidden' name='name[$detailID]' value='" . $data["name"] . "'>";
+				echo "<input type='hidden' name='type[$detailID]' value='" . $data["type"] . "'>";
+				echo "<input type='hidden' name='template[$detailID]' value='" . $data["template"] . "'>";
+				echo "<input type='hidden' name='status[$detailID]' value='" . $data["status"] . "'>";
+
+			}
+			echo "</table>";
+			if ($canedit) {
+				
+            echo "<div class='center'>";
+            echo "<table width='80%' class='tab_glpi'>";
+            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_generation_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+            echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_generation_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=none'>".$LANG['buttons'][19]."</a>";
+            echo "</td><td align='left' width='90%'>";
+            echo "<input type='hidden' name='orderID' value='$orderID'>";
+            plugin_order_dropdownGenerationActions($typeRef, $refID, $orderID);
             echo "</td>";
             echo "</table>";
             echo "</div>";
@@ -319,7 +438,25 @@ function plugin_order_dropdownReceptionActions($type,$referenceID,$orderID) {
       echo "<option value='reception'>" . $LANG['plugin_order']['delivery'][2] . "</option>";
       echo "<option value='bulk_reception'>" . $LANG['plugin_order']['delivery'][4] . "</option>";
    }
-		
+	echo "</select>";
+	$params = array (
+		'action' => '__VALUE__',
+		'type' => $type,
+		'referenceID'=>$referenceID,
+      'orderID'=>$orderID
+	);
+	ajaxUpdateItemOnSelectEvent("receptionActions$rand", "show_receptionActions$rand", $CFG_GLPI["root_doc"] . "/plugins/order/ajax/receptionactions.php", $params);
+	echo "<span id='show_receptionActions$rand'>&nbsp;</span>";
+}
+
+function plugin_order_dropdownGenerationActions($type,$referenceID,$orderID) {
+	global $LANG,$CFG_GLPI,$ORDER_RESTRICTED_TYPES;
+	
+	$rand = mt_rand();
+
+	echo "<select name='generationActions$rand' id='generationActions$rand'>";
+	echo "<option value='0' selected>-----</option>";
+
 	$ORDER_RESTRICTED_TYPES[]=	SOFTWARELICENSE_TYPE;
 	//$ORDER_RESTRICTED_TYPES[]=	SOFTWARE_TYPE;
 	$ORDER_RESTRICTED_TYPES[]=	CONTRACT_TYPE;
@@ -339,8 +476,8 @@ function plugin_order_dropdownReceptionActions($type,$referenceID,$orderID) {
 		'referenceID'=>$referenceID,
       'orderID'=>$orderID
 	);
-	ajaxUpdateItemOnSelectEvent("receptionActions$rand", "show_receptionActions$rand", $CFG_GLPI["root_doc"] . "/plugins/order/ajax/receptionactions.php", $params);
-	echo "<span id='show_receptionActions$rand'>&nbsp;</span>";
+	ajaxUpdateItemOnSelectEvent("generationActions$rand", "show_generationActions$rand", $CFG_GLPI["root_doc"] . "/plugins/order/ajax/generationactions.php", $params);
+	echo "<span id='show_generationActions$rand'>&nbsp;</span>";
 }
 
 function plugin_order_createLinkWithDevice($detailID = 0, $deviceID = 0, $device_type = 0, $orderID = 0, $entity = 0, $templateID = 0, $history = true, $check_link = true) {

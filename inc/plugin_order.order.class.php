@@ -91,18 +91,19 @@ class PluginOrder extends CommonDBTM {
 		if ($ID > 0) {
 			$plugin = new Plugin();
 			/* detail */
-			$ong[4] = $LANG['plugin_order']['detail'][0];
-
+			$ong[2] = $LANG['plugin_order']['detail'][0];
+			/* generation 
+			$ong[3] = $LANG['plugin_order']['generation'][2];*/
 			/* delivery */
-			$ong[5] = $LANG['plugin_order']['delivery'][1];
+			$ong[4] = $LANG['plugin_order']['delivery'][1];
 			/* item */
-         $ong[2] = $LANG['plugin_order']['item'][0];
-
+			$ong[5] = $LANG['plugin_order']['item'][0];
 			/* documents */
 			if (haveRight("document", "r"))
-				$ong[3] = $LANG['Menu'][27];
+				$ong[9] = $LANG['Menu'][27];
+			
 			if (haveRight("notes", "r"))
-				$ong[11] = $LANG['title'][37];
+				$ong[10] = $LANG['title'][37];
 			/* all */
 			$ong[12] = $LANG['title'][38];
 		}
@@ -592,6 +593,76 @@ class PluginOrder extends CommonDBTM {
          echo "</table></form>";
       }
    }
+   
+   function showGenerationForm($ID) {
+      global $LANG,$CFG_GLPI;
+
+      echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/plugin_order.generate.php?ID=".$ID."' method=\"post\">";
+      echo "<div align=\"center\"><table cellspacing=\"2\" cellpadding=\"2\">";
+
+      echo "<tr>";
+      echo "<td class='center'>";
+      echo "<input type='submit' value=\"".$LANG['plugin_order']['generation'][1]."\" class='submit' ></div></td></tr>";
+      echo "</td>";
+      echo "</tr>";
+
+      echo "</table></div></form>";
+   }
+   
+   function generateOrder($ID) {
+		global $LANG,$DB;
+		
+		$odf = new odf("template.odt");
+      
+      $this->getFromDB($ID);
+      $titre = $LANG['plugin_order']['generation'][2]." ".$this->fields["numorder"];
+		$odf->setVars('title',$titre,true,'UTF-8');
+
+      $message = $LANG['plugin_order']['generation'][3];
+
+      $odf->setVars('message', $message,true,'UTF-8');
+      
+      $odf->setVars('titletype',$LANG['plugin_order']['detail'][1],true,'UTF-8');
+      
+      $odf->setVars('titlename',$LANG['plugin_order']['detail'][2],true,'UTF-8');
+      
+      $listeArticles = array();
+      
+      $query="SELECT `glpi_plugin_order_detail`.`ID` AS IDD, `glpi_plugin_order_references`.`ID`, 
+					`glpi_plugin_order_references`.`type`,`glpi_plugin_order_references`.`FK_type`,`glpi_plugin_order_references`.`FK_model`, `glpi_plugin_order_references`.`FK_glpi_enterprise`, `glpi_plugin_order_references`.`name`, 
+					`glpi_plugin_order_detail`.`price_taxfree`, `glpi_plugin_order_detail`.`price_ati`, `glpi_plugin_order_detail`.`price_discounted`, 
+               `glpi_plugin_order_detail`.`discount`,
+					`glpi_plugin_order_detail`.`price_discounted` AS totalpriceHT, 
+					`glpi_plugin_order_detail`.`price_ati` AS totalpriceTTC 
+					FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
+					WHERE `glpi_plugin_order_detail`.`FK_reference` = `glpi_plugin_order_references`.`ID`
+					AND `glpi_plugin_order_detail`.`FK_order` = '$ID'
+					ORDER BY `glpi_plugin_order_references`.`name` ";
+					
+      $result=$DB->query($query);
+      $num=$DB->numrows($result);
+      
+      while ($data=$DB->fetch_array($result)){
+         $ci=new CommonItem();
+         $ci->setType($data["type"]);
+         
+         $listeArticles[]=array('type' => utf8_decode($ci->getType()),
+               'ref' => utf8_decode($data["name"]));
+         
+      }
+      
+      $article = $odf->setSegment('articles');
+      foreach($listeArticles AS $element) {
+         $article->titleArticle($element['type']);
+         $article->texteArticle($element['ref']);
+         $article->merge();
+      }
+
+      $odf->mergeSegment($article);
+      
+      // We export the file
+      $odf->exportAsAttachedFile();
+	}
 }
 
 ?>

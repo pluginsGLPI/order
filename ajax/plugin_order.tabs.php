@@ -93,19 +93,23 @@ if (empty ($_POST["ID"])) {
 			$PluginOrder->showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			break;
 		case 2 :
-			$PluginOrderDetail->showItemFromPlugin($_POST["ID"]);
+			$PluginOrderDetail->showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"], 1);
 			break;
-		case 3 :
+		/*case 3 :
+			$PluginOrder->showGenerationForm($_POST["ID"]);
+			break;*/
+		case 4 :
+			plugin_order_showReceptionForm($_POST["ID"]);
+			break;
+		case 5 :
+         plugin_order_showGenerationForm($_POST["ID"]);
+			//$PluginOrderDetail->showItemFromPlugin($_POST["ID"]);
+			break;
+      case 9 :
 			/* show documents linking form */
 			showDocumentAssociated(PLUGIN_ORDER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
 			break;
-		case 4 :
-			$PluginOrderDetail->showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"], 1);
-			break;
-		case 5 :
-			plugin_order_showDetailReceptionForm($_POST["ID"]);
-			break;
-		case 11 :
+		case 10 :
 			showNotesForm($_POST['target'], PLUGIN_ORDER_TYPE, $_POST["ID"]);
 			break;
 		case 12 :
