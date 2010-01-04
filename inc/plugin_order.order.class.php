@@ -236,7 +236,7 @@ class PluginOrder extends CommonDBTM {
 			echo "<td>".$LANG['plugin_order'][26].": </td>";
 			echo "<td>";
 			if ($canedit)
-				autocompletionTextField("port_price", "glpi_plugin_order", "port_price", (!$this->fields["port_price"]?0:$this->fields["port_price"]), 5, $this->fields["FK_entities"]);
+				echo "<input type='text' name='port_price' value=\"".formatNumber($this->fields["port_price"],true)."\" size='5'>";
 			else
 				echo $this->fields["port_price"];
 			echo "</td></tr>";
@@ -332,6 +332,7 @@ class PluginOrder extends CommonDBTM {
       $query="SELECT `glpi_enterprises`.* FROM `glpi_enterprises`
          LEFT JOIN `glpi_contact_enterprise` ON (`glpi_contact_enterprise`.`FK_enterprise` = `glpi_enterprises`.`ID`)
          $where
+         GROUP BY `glpi_enterprises`.`ID`
          ORDER BY `FK_entities`, `name`";
       //error_log($query);
       $result=$DB->query($query);
