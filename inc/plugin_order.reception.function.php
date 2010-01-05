@@ -103,7 +103,7 @@ function plugin_order_showReceptionForm($orderID) {
 			echo "<table class='tab_cadrehov'>";
 
 			echo "<tr>";
-			if ($canedit)
+			if ($canedit && !plugin_order_allItemsAlreadyDelivered($orderID, $refID))
 				echo "<th width='15'></th>";
 			echo "<th>" . $LANG['common'][2] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
@@ -127,7 +127,7 @@ function plugin_order_showReceptionForm($orderID) {
 				$detailID = $data["IDD"];
 
 				echo "<tr class='tab_bg_2'>";
-				if ($canedit) {
+				if ($canedit && !plugin_order_allItemsAlreadyDelivered($orderID, $refID)) {
 					echo "<td width='15' align='left'>";
 					$sel = "";
 					if (isset ($_GET["select"]) && $_GET["select"] == "all")
