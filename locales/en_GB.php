@@ -139,7 +139,7 @@ $LANG['plugin_order']['reference'][6] = "A reference with the same name still ex
 $LANG['plugin_order']['reference'][7] = "Reference(s) in use";
 $LANG['plugin_order']['reference'][8] = "Cannot create reference without a name";
 $LANG['plugin_order']['reference'][9] = "Cannot create reference without a type";
-$LANG['plugin_order']['reference'][10] = "Manufecturer's product reference";
+$LANG['plugin_order']['reference'][10] = "Manufacturer's product reference";
 
 $LANG['plugin_order']['setup'][2] = "Plugin not usable from the helpdesk interface";
 
