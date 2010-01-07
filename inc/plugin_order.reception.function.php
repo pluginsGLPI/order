@@ -642,13 +642,17 @@ function plugin_order_plugin_order_showItemGenerationForm($target, $params) {
 	echo "<form method='post' name='order_deviceGeneration' id='order_deviceGeneration'  action=" . $_SERVER["PHP_SELF"] . ">";
 	
 	echo "<table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='6'>" . $LANG['plugin_order']['delivery'][3] . "</tr></th>";
+	$colspan = "5";
+	if (isMultiEntitiesMode())
+      $colspan = "6";
+	echo "<tr><th colspan='$colspan'>" . $LANG['plugin_order']['delivery'][3] . "</tr></th>";
 	echo "<tr><th>" . $LANG['plugin_order']['reference'][1] . "</th>";
 	echo "<th>" . $LANG['common'][19] . "</th>";
 	echo "<th>" . $LANG['common'][20] . "</th>";
 	echo "<th>" . $LANG['common'][16] . "</th>";
 	echo "<th>" . $LANG['common'][13] . "</th>";
-	echo "<th>" . $LANG['entity'][0] . "</th>";
+	if (isMultiEntitiesMode())
+      echo "<th>" . $LANG['entity'][0] . "</th>";
 	echo "</tr>";
 	echo "<input type='hidden' name='orderID' value=" . $params["orderID"] . ">";
 	echo "<input type='hidden' name='referenceID' value=" . $params["referenceID"] . ">";
@@ -709,10 +713,16 @@ function plugin_order_plugin_order_showItemGenerationForm($target, $params) {
                echo $PluginOrderReference->getTemplateName($params['type'][$key], $params['template'][$key]);
             }   
             echo "</td>";
-				echo "<td>";
-				$entity_restrict = ($order->fields["recursive"] ? getEntitySons($order->fields["FK_entities"]) : $order->fields["FK_entities"]);
-				dropdownValue("glpi_entities", "ID[$i][FK_entities]", $order->fields["FK_entities"], 1, $entity_restrict);
-				echo "</td></tr>";
+				
+				if (isMultiEntitiesMode()) {
+               echo "<td>";
+               $entity_restrict = ($order->fields["recursive"] ? getEntitySons($order->fields["FK_entities"]) : $order->fields["FK_entities"]);
+               dropdownValue("glpi_entities", "ID[$i][FK_entities]", $order->fields["FK_entities"], 1, $entity_restrict);
+               echo "</td>";
+            } else {
+               echo "<input type='hidden' name='ID[$i][FK_entities]' value=" . $_SESSION["glpiactive_entity"] . ">";
+            }
+				echo "</tr>";
 				echo "<input type='hidden' name='ID[$i][type]' value=" . $params['type'][$key] . ">";
 				echo "<input type='hidden' name='ID[$i][ID]' value=" . $params["ID"][$key] . ">";
 				echo "<input type='hidden' name='ID[$i][orderID]' value=" . $params["orderID"] . ">";
@@ -722,9 +732,9 @@ function plugin_order_plugin_order_showItemGenerationForm($target, $params) {
 		}
 
 	if ($found)
-		echo "<tr><td align='center' colspan='6' class='tab_bg_2'><input type='submit' name='generate' class='submit' value=" . $LANG['plugin_order']['delivery'][9] . "></td></tr>";
+		echo "<tr><td align='center' colspan='$colspan' class='tab_bg_2'><input type='submit' name='generate' class='submit' value=" . $LANG['plugin_order']['delivery'][9] . "></td></tr>";
 	else
-		echo "<tr><td align='center' colspan='6' class='tab_bg_2'>" . $LANG['plugin_order']['delivery'][17] . "</td></tr>";
+		echo "<tr><td align='center' colspan='$colspan' class='tab_bg_2'>" . $LANG['plugin_order']['delivery'][17] . "</td></tr>";
 
 	echo "</table>";
 	echo "</form></div>";
