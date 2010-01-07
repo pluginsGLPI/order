@@ -888,7 +888,7 @@ function plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_
 	$fields["bon_livraison"] = $detail->fields["deliverynum"];
 	$fields["budget"] = $order->fields["budget"];
 	$fields["FK_enterprise"] = $order->fields["FK_enterprise"];
-	if ($PluginOrderSupplier->fields["numbill"])
+	if (isset($PluginOrderSupplier->fields["numbill"]))
       $fields["facture"] = $PluginOrderSupplier->fields["numbill"];
 	$fields["value"] = $detail->fields["price_discounted"];
 	$fields["buy_date"] = $order->fields["date"];
