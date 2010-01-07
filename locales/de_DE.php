@@ -1,39 +1,45 @@
 <?php
+/*
+ * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
-/*----------------------------------------------------------------------
-   GLPI - Gestionnaire Libre de Parc Informatique
-   Copyright (C) 2003-2008 by the INDEPNET Development Team.
+ http://indepnet.net/   http://glpi-project.org
+ -------------------------------------------------------------------------
 
-   http://indepnet.net/   http://glpi-project.org/
-   ----------------------------------------------------------------------
-   LICENSE
+ LICENSE
 
-   This file is part of GLPI.
+ This file is part of GLPI.
 
-   GLPI is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-   GLPI is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with GLPI; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-   ----------------------------------------------------------------------*/
-/*----------------------------------------------------------------------
-    Original Author of file:
-    Purpose of file:
-    ----------------------------------------------------------------------*/
+ You should have received a copy of the GNU General Public License
+ along with GLPI; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ --------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------
+// Original Author of file: NOUH Walid & Benjamin Fontan
+// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// ----------------------------------------------------------------------
+ */
+ 
 $LANG['plugin_order']['title'][1] = "Bestellverwaltung";
 
 $LANG['plugin_order'][0] = "Bestellnummer";
 $LANG['plugin_order'][1] = "Bestelldatum";
 $LANG['plugin_order'][2] = "Beschreibung";
 $LANG['plugin_order'][3] = "Budget";
+$LANG['plugin_order'][4] = "Supplier Detail";
 $LANG['plugin_order'][11] = "Keine Bestellung vorhanden";
 $LANG['plugin_order'][12] = "Lieferschein";
 $LANG['plugin_order'][13] = "Total Netto";
@@ -41,6 +47,7 @@ $LANG['plugin_order'][14] = "Total Brutto";
 $LANG['plugin_order'][15] = "Total Netto + Porto";
 $LANG['plugin_order'][25] = "MwSt";
 $LANG['plugin_order'][25] = "Porto";
+$LANG['plugin_order'][26] = "Postage";
 $LANG['plugin_order'][28] = "Rechnungsnummer";
 $LANG['plugin_order'][31] = "Auftragsbestätigung Lieferant";
 $LANG['plugin_order'][32] = "Zahlungskonditionen";
@@ -120,7 +127,6 @@ $LANG['plugin_order']['delivery'][16] = "Bereits im Inventar aufgenommene Gerät
 $LANG['plugin_order']['delivery'][17] = "Es kann kein Gerät erzeugt werden";
 $LANG['plugin_order']['delivery'][18] = "Geräte in Batch empfangen";
 
-
 $LANG['plugin_order']['profile'][0] = "Berechtigungsverwaltung";
 $LANG['plugin_order']['profile'][1] = "Bestellung freigeben";
 $LANG['plugin_order']['profile'][2] = "Bestellung stornieren";
@@ -129,6 +135,7 @@ $LANG['plugin_order']['profile'][3] = "Freigegebene Bestellung ändern";
 $LANG['plugin_order']['reference'][1] = "Produktreferenz";
 $LANG['plugin_order']['reference'][2] = "Produktreferenz hinzufügen";
 $LANG['plugin_order']['reference'][3] = "Liste der Referenzen";
+$LANG['plugin_order']['reference'][4] = "Item type";
 $LANG['plugin_order']['reference'][5] = "Lieferant für eine Referenz";
 $LANG['plugin_order']['reference'][6] = "Eine Referenz mit gleichem Namen existiert bereits";
 $LANG['plugin_order']['reference'][7] = "Aktuell benutzte Referenzen";
@@ -179,4 +186,5 @@ $LANG['plugin_order']['generation'][0] = "Erzeugen";
 $LANG['plugin_order']['generation'][1] = "Lieferschein erzeugen";
 $LANG['plugin_order']['generation'][2] = "Lieferschein";
 $LANG['plugin_order']['generation'][3] = "Bestellpositionen";
+
 ?>

@@ -44,8 +44,6 @@ function plugin_order_install() {
 		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order` (
                   `ID` int(11) NOT NULL auto_increment,
                   `name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-                  `numordersupplier` varchar(255) NOT NULL collate utf8_unicode_ci default '',
-                  `numbill` varchar(255) NOT NULL collate utf8_unicode_ci default '',
                   `numorder` varchar(255) NOT NULL collate utf8_unicode_ci default '',
                   `budget` int (11) NOT NULL default 0,
                   `payment` int (11) NOT NULL default 0,
@@ -254,6 +252,8 @@ function plugin_order_install() {
       $DB->query($query) or die($DB->error());
 
    }
+   
+   /* Update en 1.1.0 */
 
    if (!FieldExists("glpi_plugin_order_detail","discount")) {
    	$query = "ALTER TABLE `glpi_plugin_order_detail` ADD `discount` FLOAT( 11 ) NOT NULL DEFAULT '0'";
@@ -278,8 +278,7 @@ function plugin_order_install() {
       $DB->query($query) or die($DB->error());
 
    }
-
-   /* Update en 1.1.0 for taxes */
+   
    $query = "SELECT `name` FROM `glpi_dropdown_plugin_order_taxes` ";
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
@@ -300,6 +299,43 @@ function plugin_order_install() {
       $query = "ALTER TABLE `glpi_plugin_order` DROP INDEX `name`";
       $DB->query($query) or die($DB->error());
    }
+   
+   if (!TableExists("glpi_plugin_order_suppliers")) {
+		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_suppliers` (
+                  `ID` int(11) NOT NULL auto_increment,
+                  `FK_order` int(11) NOT NULL default 0,
+                  `numquote` varchar(255) NOT NULL collate utf8_unicode_ci default '',
+                  `numorder` varchar(255) NOT NULL collate utf8_unicode_ci default '',
+                  `numbill` varchar(255) NOT NULL collate utf8_unicode_ci default '',
+                  PRIMARY KEY  (`ID`)
+               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+		$DB->query($query) or die($DB->error());
+	}
+	
+   $query = "SELECT `numordersupplier`,`numbill`,`ID` FROM `glpi_plugin_order` ";
+	$result = $DB->query($query);
+	$number = $DB->numrows($result);
+	if ($number) {
+      while ($data=$DB->fetch_array($result)) {
+         $query = "INSERT INTO  `glpi_plugin_order_suppliers`
+               (`ID`, `FK_order`, `numorder`, `numbill`) VALUES
+            (NULL, '".$data["ID"]."', '".$data["numordersupplier"]."', '".$data["numbill"]."') ";
+         $DB->query($query) or die($DB->error());
+      }
+   }
+   
+	if (FieldExists('glpi_plugin_order', 'numordersupplier')) {
+      $query = "ALTER TABLE `glpi_plugin_order` DROP `numordersupplier`";
+      $DB->query($query) or die($DB->error());
+   }
+   
+   if (FieldExists('glpi_plugin_order', 'numbill')) {
+      $query = "ALTER TABLE `glpi_plugin_order` DROP `numbill`";
+      $DB->query($query) or die($DB->error());
+   }
+   
+   /* End Update en 1.1.0 */
+   
 	plugin_order_createfirstaccess($_SESSION['glpiactiveprofile']['ID']);
 
    plugin_order_changeprofile();
@@ -424,11 +460,11 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_TYPE][3]['field'] = 'name';
 		$sopt[PLUGIN_ORDER_TYPE][3]['linkfield'] = 'budget';
 		$sopt[PLUGIN_ORDER_TYPE][3]['name'] = $LANG['plugin_order'][3];*/
-      /* supplier command number */
+      /* supplier command number 
       $sopt[PLUGIN_ORDER_TYPE][3]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][3]['field'] = 'numordersupplier';
 		$sopt[PLUGIN_ORDER_TYPE][3]['linkfield'] = 'numordersupplier';
-		$sopt[PLUGIN_ORDER_TYPE][3]['name'] = $LANG['plugin_order'][31];
+		$sopt[PLUGIN_ORDER_TYPE][3]['name'] = $LANG['plugin_order'][31];*/
 		/* location */
 		$sopt[PLUGIN_ORDER_TYPE][4]['table'] = 'glpi_dropdown_locations';
 		$sopt[PLUGIN_ORDER_TYPE][4]['field'] = 'completename';
@@ -460,11 +496,11 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_TYPE][8]['datatype']='itemlink';
 		$sopt[PLUGIN_ORDER_TYPE][8]['itemlink_type']=CONTACT_TYPE;
 		$sopt[PLUGIN_ORDER_TYPE][8]['forcegroupby']=true; */
-		/* bill number */
+		/* bill number 
 		$sopt[PLUGIN_ORDER_TYPE][9]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][9]['field'] = 'numbill';
 		$sopt[PLUGIN_ORDER_TYPE][9]['linkfield'] = 'numbill';
-		$sopt[PLUGIN_ORDER_TYPE][9]['name'] = $LANG['plugin_order'][28];
+		$sopt[PLUGIN_ORDER_TYPE][9]['name'] = $LANG['plugin_order'][28];*/
 		/* title */
 		$sopt[PLUGIN_ORDER_TYPE][10]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][10]['field'] = 'name';

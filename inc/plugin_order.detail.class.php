@@ -336,6 +336,7 @@ class PluginOrderDetail extends CommonDBTM {
       return $DB->fetch_array($result);
    }
    
+   /*
    function showItemFromPlugin($instID, $search = '') {
       global $DB, $CFG_GLPI, $LANG, $INFOFORM_PAGES, $LINK_ID_TABLE,$ORDER_RESTRICTED_TYPES;
       
@@ -480,7 +481,7 @@ class PluginOrderDetail extends CommonDBTM {
             echo "</form>";
          }
       }
-   }
+   }*/
    
    function getOrderInfosByDeviceID($device_type, $deviceID) {
 		global $DB;

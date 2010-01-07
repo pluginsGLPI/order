@@ -92,12 +92,14 @@ class PluginOrder extends CommonDBTM {
 			$plugin = new Plugin();
 			/* detail */
 			$ong[2] = $LANG['plugin_order']['detail'][0];
+			/* fournisseur */
+			$ong[3] = $LANG['plugin_order'][4];
 			/* generation 
-			$ong[3] = $LANG['plugin_order']['generation'][2];*/
+			$ong[4] = $LANG['plugin_order']['generation'][2];*/
 			/* delivery */
-			$ong[4] = $LANG['plugin_order']['delivery'][1];
+			$ong[5] = $LANG['plugin_order']['delivery'][1];
 			/* item */
-			$ong[5] = $LANG['plugin_order']['item'][0];
+			$ong[6] = $LANG['plugin_order']['item'][0];
 			/* documents */
 			if (haveRight("document", "r"))
 				$ong[9] = $LANG['Menu'][27];
@@ -188,12 +190,13 @@ class PluginOrder extends CommonDBTM {
 				echo getDropdownName("glpi_dropdown_budget", $this->fields["budget"]);
 			echo "</td></tr>";
 
-			/* num order supplier */
-			echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][31] . ": </td><td>";
+			/* location */
+			echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][40] . ": </td>";
+			echo "<td>";
 			if ($canedit)
-				autocompletionTextField("numordersupplier", "glpi_plugin_order", "numordersupplier", $this->fields["numordersupplier"], 30, $this->fields["FK_entities"]);
+				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"], 1, $this->fields["FK_entities"]);
 			else
-				echo $this->fields["numordersupplier"];
+				echo getDropdownName("glpi_dropdown_locations", $this->fields["location"]);
 			echo "</td>";
 			
 			/* payment */
@@ -202,23 +205,6 @@ class PluginOrder extends CommonDBTM {
 				dropdownValue("glpi_dropdown_plugin_order_payment", "payment", $this->fields["payment"], 1, $this->fields["FK_entities"]);
 			else
 				echo getDropdownname("glpi_dropdown_plugin_order_payment", $this->fields["payment"]);
-			echo "</td></tr>";
-
-			/* number of bill */
-			echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][28] . ": </td><td>";
-			if ($canedit)
-				autocompletionTextField("numbill", "glpi_plugin_order", "numbill", $this->fields["numbill"], 30, $this->fields["FK_entities"]);
-			else
-				echo $this->fields["numbill"];
-			echo "</td>";
-			
-			/* location */
-			echo "<td>" . $LANG['plugin_order'][40] . ": </td>";
-			echo "<td>";
-			if ($canedit)
-				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"], 1, $this->fields["FK_entities"]);
-			else
-				echo getDropdownName("glpi_dropdown_locations", $this->fields["location"]);
 			echo "</td></tr>";
 			
 			/* supplier of order */

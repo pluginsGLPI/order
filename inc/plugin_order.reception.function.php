@@ -852,7 +852,9 @@ function plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_
 	$detail->getFromDB($detailID);
 	$order = new PluginOrder;
 	$order->getFromDB($detail->fields["FK_order"]);
-
+   
+   $PluginOrderSupplier = new PluginOrderSupplier;
+	$PluginOrderSupplier->getFromDBByOrder($detail->fields["FK_order"]);
 	// ADD Infocoms
 	$ic = new Infocom();
 	$fields = array ();
@@ -886,7 +888,8 @@ function plugin_order_generateInfoComRelatedToOrder($entity, $detailID, $device_
 	$fields["bon_livraison"] = $detail->fields["deliverynum"];
 	$fields["budget"] = $order->fields["budget"];
 	$fields["FK_enterprise"] = $order->fields["FK_enterprise"];
-	$fields["facture"] = $order->fields["numbill"];
+	if ($PluginOrderSupplier->fields["numbill"])
+      $fields["facture"] = $PluginOrderSupplier->fields["numbill"];
 	$fields["value"] = $detail->fields["price_discounted"];
 	$fields["buy_date"] = $order->fields["date"];
 

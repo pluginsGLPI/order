@@ -132,7 +132,6 @@ function plugin_init_order() {
 			'formpage' => 'front/plugin_order.referencemanufacturer.form.php',
 			'searchpage' => '',
 			'typename' => $LANG['plugin_order']['reference'][5],
-			
 		));
 	
 		registerPluginType('order', 'PLUGIN_ORDER_BUDGET_TYPE', 3153, array (
@@ -142,7 +141,14 @@ function plugin_init_order() {
 			'searchpage' => 'front/plugin_order.budget.php',
 			'typename' => $LANG['financial'][87],
 			'deleted_tables' => true,
-			
+		));
+		
+		registerPluginType('order', 'PLUGIN_ORDER_SUPPLIER_TYPE', 3154, array (
+			'classname' => 'PluginOrderSupplier',
+			'tablename' => 'glpi_plugin_order_suppliers',
+			'formpage' => 'front/plugin_order.supplier.form.php',
+			'searchpage' => '',
+			'typename' => $LANG['plugin_order'][4],
 		));
 
 	if ($plugin->isActivated("order"))
@@ -241,6 +247,8 @@ function plugin_order_haveTypeRight($type, $right) {
 			return plugin_order_haveRight("reference", $right);
 		case PLUGIN_ORDER_BUDGET_TYPE :
 			return plugin_order_haveRight("budget", $right);
+		case PLUGIN_ORDER_SUPPLIER_TYPE :
+			return plugin_order_haveRight("order", $right);
 	}
 }
 ?>
