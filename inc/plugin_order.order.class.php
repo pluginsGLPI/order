@@ -264,14 +264,19 @@ class PluginOrder extends CommonDBTM {
 				echo "<td colspan='2'>" . $LANG['plugin_order'][13] . " : ";
 				echo formatNumber($prices["priceHT"]) . "<br>";
         
-        /* total price (with postage) */
+            /* total price (with postage) */
 				echo $LANG['plugin_order'][15] . " : ";
 				$priceHTwithpostage=$prices["priceHT"]+$this->fields["port_price"];
 				echo formatNumber($priceHTwithpostage) . "<br>";
 				
 				/* total price (with taxes) */
 				echo $LANG['plugin_order'][14] . " : ";
-				echo formatNumber($prices["priceTTC"]) . "</td></tr>";
+				$PluginOrderConfig = new PluginOrderConfig();
+				$PluginOrderConfig->getFromDB(1);
+				$taxes = $PluginOrderConfig->fields["default_taxes"];
+				$postagewithTVA = $PluginOrderDetail->getPricesATI($this->fields["port_price"], getDropdownName("glpi_dropdown_plugin_order_taxes", $taxes));
+				$total = $prices["priceTTC"] + $postagewithTVA;
+				echo formatNumber($total) . "</td></tr>";
 			} else
 				echo "<td colspan='2'></td>";
 
