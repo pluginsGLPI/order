@@ -788,7 +788,7 @@ function plugin_pre_item_update_order($input) {
 function plugin_item_purge_order($parm) {
 	global $ORDER_AVAILABLE_TYPES;
 
-   logInFile("debug",exportArrayToDB($parm));
+   //logInFile("debug",exportArrayToDB($parm));
    if (in_array($parm["type"], $ORDER_AVAILABLE_TYPES)) {
 		$detail = new PluginOrderDetail;
 		$detail->cleanItems($parm["ID"], $parm["type"]);
