@@ -756,28 +756,31 @@ function plugin_pre_item_update_order($input) {
 				if (!isset ($input["_manage_by_order"])) {
 
                $infocom = new InfoCom;
-               $infocom->getFromDB($input["ID"]);
+               
+               if (isset ($infocom->fields["ID"]) {
+                  $infocom->getFromDB($input["ID"]);
 
-               if (isset ($infocom->fields["device_type"]) & isset ($infocom->fields["FK_device"])) {
-                  $device = new PluginOrderDetail;
-                  if ($device->isDeviceLinkedToOrder($infocom->fields["device_type"],$infocom->fields["FK_device"])) {
-                     $field_set = false;
-                     $unset_fields = array (
-                        "num_commande",
-                        "bon_livraison",
-                        "budget",
-                        "FK_enterprise",
-                        "facture",
-                        "value",
-                        "buy_date"
-                     );
-                     foreach ($unset_fields as $field)
-                        if (isset ($input[$field])) {
-                           $field_set = true;
-                           unset ($input[$field]);
-                        }
-                     if ($field_set)
-                        addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);
+                  if (isset ($infocom->fields["device_type"]) & isset ($infocom->fields["FK_device"])) {
+                     $device = new PluginOrderDetail;
+                     if ($device->isDeviceLinkedToOrder($infocom->fields["device_type"],$infocom->fields["FK_device"])) {
+                        $field_set = false;
+                        $unset_fields = array (
+                           "num_commande",
+                           "bon_livraison",
+                           "budget",
+                           "FK_enterprise",
+                           "facture",
+                           "value",
+                           "buy_date"
+                        );
+                        foreach ($unset_fields as $field)
+                           if (isset ($input[$field])) {
+                              $field_set = true;
+                              unset ($input[$field]);
+                           }
+                        if ($field_set)
+                           addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);
+                     }
                   }
                }
 				}
