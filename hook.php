@@ -310,28 +310,29 @@ function plugin_order_install() {
                   PRIMARY KEY  (`ID`)
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die($DB->error());
-	}
 	
-   $query = "SELECT `numordersupplier`,`numbill`,`ID` FROM `glpi_plugin_order` ";
-	$result = $DB->query($query);
-	$number = $DB->numrows($result);
-	if ($number) {
-      while ($data=$DB->fetch_array($result)) {
-         $query = "INSERT INTO  `glpi_plugin_order_suppliers`
-               (`ID`, `FK_order`, `numorder`, `numbill`) VALUES
-            (NULL, '".$data["ID"]."', '".$data["numordersupplier"]."', '".$data["numbill"]."') ";
+	
+      $query = "SELECT `numordersupplier`,`numbill`,`ID` FROM `glpi_plugin_order` ";
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      if ($number) {
+         while ($data=$DB->fetch_array($result)) {
+            $query = "INSERT INTO  `glpi_plugin_order_suppliers`
+                  (`ID`, `FK_order`, `numorder`, `numbill`) VALUES
+               (NULL, '".$data["ID"]."', '".$data["numordersupplier"]."', '".$data["numbill"]."') ";
+            $DB->query($query) or die($DB->error());
+         }
+      }
+      
+      if (FieldExists('glpi_plugin_order', 'numordersupplier')) {
+         $query = "ALTER TABLE `glpi_plugin_order` DROP `numordersupplier`";
          $DB->query($query) or die($DB->error());
       }
-   }
-   
-	if (FieldExists('glpi_plugin_order', 'numordersupplier')) {
-      $query = "ALTER TABLE `glpi_plugin_order` DROP `numordersupplier`";
-      $DB->query($query) or die($DB->error());
-   }
-   
-   if (FieldExists('glpi_plugin_order', 'numbill')) {
-      $query = "ALTER TABLE `glpi_plugin_order` DROP `numbill`";
-      $DB->query($query) or die($DB->error());
+      
+      if (FieldExists('glpi_plugin_order', 'numbill')) {
+         $query = "ALTER TABLE `glpi_plugin_order` DROP `numbill`";
+         $DB->query($query) or die($DB->error());
+      }
    }
    
    /* End Update en 1.1.0 */
