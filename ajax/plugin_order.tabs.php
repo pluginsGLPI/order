@@ -86,7 +86,7 @@ if (empty ($_POST["ID"])) {
 			$PluginOrder->showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			$PluginOrderDetail->showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			$PluginOrderSupplier->showForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
-			plugin_order_showDetailReceptionForm($_POST["ID"]);
+			plugin_order_showReceptionForm($_POST["ID"]);
 			plugin_order_showGenerationForm($_POST["ID"]);
 			showDocumentAssociated(PLUGIN_ORDER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
 			showNotesForm($_POST['target'], PLUGIN_ORDER_TYPE, $_POST["ID"]);
