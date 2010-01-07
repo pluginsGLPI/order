@@ -757,7 +757,7 @@ function plugin_pre_item_update_order($input) {
 
                $infocom = new InfoCom;
                
-               if (isset ($infocom->fields["ID"]) {
+               if (isset ($infocom->fields["ID"])) {
                   $infocom->getFromDB($input["ID"]);
 
                   if (isset ($infocom->fields["device_type"]) & isset ($infocom->fields["FK_device"])) {
