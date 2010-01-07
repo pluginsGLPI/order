@@ -110,7 +110,7 @@ $LANG['plugin_order']['detail'][38] = "Wollen Sie diese Bestellung wirklich stor
 $LANG['plugin_order']['detail'][39] = "Wollen Sie den Freigabeantrag wirklich rückgängig machen?";
 $LANG['plugin_order']['detail'][40] = "Wollen Sie die Bestellung wirklich Bearbeiten?";
 
-$LANG['plugin_order']['delivery'][1] = "Geräte-Empfang";
+$LANG['plugin_order']['delivery'][1] = "Warenempfang";
 $LANG['plugin_order']['delivery'][2] = "Geräte empfangen";
 $LANG['plugin_order']['delivery'][3] = "Verbundene Geräte erzeugen";
 $LANG['plugin_order']['delivery'][4] = "Geräte Batch-Empfang";
