@@ -310,8 +310,9 @@ function plugin_order_install() {
                   PRIMARY KEY  (`ID`)
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die($DB->error());
+	}
 	
-	
+	if (FieldExists("glpi_plugin_order","numordersupplier")) {
       $query = "SELECT `numordersupplier`,`numbill`,`ID` FROM `glpi_plugin_order` ";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
