@@ -94,12 +94,12 @@ class PluginOrderSupplier extends CommonDBTM {
       }		
       echo "</div></th></tr>";
 
-      /* number of bill */
+      /* number of quote */
       echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][30] . ": </td><td>";
       if ($canedit)
          autocompletionTextField("numquote", "glpi_plugin_order_suppliers", "numquote", $this->fields["numquote"], 30, $_SESSION["glpiactive_entity"]);
       else
-         echo $this->fields["numbill"];
+         echo $this->fields["numquote"];
       echo "</td>";
 		echo "</tr>";
 		
