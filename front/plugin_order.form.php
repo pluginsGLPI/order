@@ -148,11 +148,13 @@ else if (isset ($_POST["add_detail"])) {
       addMessageAfterRedirect($LANG['plugin_order']['detail'][33],false,ERROR);
    else
    {
+      $PluginOrder->getFromDB($_POST["FK_order"]);
+      $taxes = $PluginOrder->fields["taxes"];
       $new_value = $LANG['plugin_order']['detail'][34]." ".getDropdownName("glpi_plugin_order_references",$_POST["FK_reference"]);
       $new_value.= " (".$LANG['plugin_order']['detail'][7]." : ".$_POST["quantity"];
       $new_value.= " ".$LANG['plugin_order']['detail'][25]." : ".$_POST["discount"].")";
       $PluginOrder->addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
-      $PluginOrderDetail->addDetails($_POST["FK_reference"], $_POST["device_type"], $_POST["FK_order"], $_POST["quantity"], $_POST["price"], $_POST["discount"], $_POST["taxes"],$_POST["discount"]);
+      $PluginOrderDetail->addDetails($_POST["FK_reference"], $_POST["device_type"], $_POST["FK_order"], $_POST["quantity"], $_POST["price"], $_POST["discount"], $taxes,$_POST["discount"]);
    }
       
    glpi_header($_SERVER['HTTP_REFERER']);

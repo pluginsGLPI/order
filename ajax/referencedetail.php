@@ -47,14 +47,10 @@ useplugin('order', true);
 checkCentralAccess();
 
 $PluginOrderReferenceManufacturer = new PluginOrderReferenceManufacturer();
-$PluginOrder = new PluginOrder;
-
 
 if ($_POST["FK_reference"] > 0)
 {  
    
-   $PluginOrder->getFromDB($_POST["orderID"]);
-   $taxes = $PluginOrder->fields["taxes"];
 	$price = $PluginOrderReferenceManufacturer->getPriceByReferenceAndSupplier($_POST["FK_reference"],$_POST["FK_enterprise"]);
 	switch ($_POST["update"])
 	{
@@ -66,10 +62,6 @@ if ($_POST["FK_reference"] > 0)
          break;
 		case 'pricediscounted':
 			echo "<input type='text' name='discount' value=\"".formatNumber("discount",true)."\" size='5'>";
-         break;
-		case 'taxes':
-			echo getDropdownname("glpi_dropdown_plugin_order_taxes", $taxes);
-			echo "<input type='hidden' name='taxes' value='".$taxes."'>";
          break;
 		case 'validate':
 			echo "<input type='hidden' name='device_type' value='".$_POST["device_type"]."' class='submit' >";

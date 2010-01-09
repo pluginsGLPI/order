@@ -132,7 +132,7 @@ class PluginOrderDetail extends CommonDBTM {
 				echo "<input type='hidden' name='FK_order' value=\"$orderID\">";
 				echo "<div class='center'>";
 				echo"<table class='tab_cadre_fixe'>";
-				echo "<tr><th colspan='7'>".$LANG['plugin_order']['detail'][5]."</th></tr>";
+				echo "<tr><th colspan='6'>".$LANG['plugin_order']['detail'][5]."</th></tr>";
 
 				if ($order->fields["FK_enterprise"])
 				{
@@ -142,7 +142,6 @@ class PluginOrderDetail extends CommonDBTM {
 					echo "<th align='center'>".$LANG['plugin_order']['detail'][7]."</th>";
 					echo "<th align='center'>".$LANG['plugin_order']['detail'][4]."</th>";
 					echo "<th align='center'>".$LANG['plugin_order']['detail'][25]."</th>";
-					echo "<th align='center'>".$LANG['plugin_order'][25]."</th>";
 					echo "<th></th>";
 					echo"</tr>";
 					echo "<tr>";
@@ -153,7 +152,6 @@ class PluginOrderDetail extends CommonDBTM {
 					echo "<td class='tab_bg_1' align='center'><span id='show_quantity'>&nbsp;</span></td>";
 					echo "<td class='tab_bg_1' align='center'><span id='show_priceht'>&nbsp;</span></td>";
 					echo "<td class='tab_bg_1' align='center'><span id='show_pricediscounted'>&nbsp;</span></td>";
-					echo "<td  class='tab_bg_1' align='center'><span id='show_taxes'>&nbsp;</span></td>";
 					echo "<td class='tab_bg_1' align='center'><span id='show_validate'>&nbsp;</span></td>";
 					echo "</tr>";
 				}
@@ -191,7 +189,7 @@ class PluginOrderDetail extends CommonDBTM {
 			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
 			if ($num>0) {
 				echo "<div class='center'><table class='tab_cadre_fixe'>";
-				echo "<tr><th colspan='15'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
+				echo "<tr><th colspan='14'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
 				echo "<tr>";
 				if($canedit)
 					echo "<th></th>";
@@ -202,10 +200,8 @@ class PluginOrderDetail extends CommonDBTM {
 				echo "<th>".$LANG['plugin_order']['detail'][6]."</th>";
 				echo "<th>".$LANG['common'][22]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][4]."</th>";
-				echo "<th>".$LANG['plugin_order']['detail'][18]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][25]."</th>";
-				echo "<th>".$LANG['plugin_order']['detail'][9]."</th>";
-				echo "<th>".$LANG['plugin_order']['detail'][10]."</th>";
+				echo "<th>".$LANG['plugin_order']['detail'][18]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][19]."</th></tr>";
 
 				while ($data=$DB->fetch_array($result)){
@@ -240,14 +236,10 @@ class PluginOrderDetail extends CommonDBTM {
                   echo getDropdownName($ORDER_MODEL_TABLES[$data["type"]], $data["FK_model"]);
 					echo "</td>";
 					echo "<td align='center'>".formatNumber($data["price_taxfree"])."</td>";
-					/* price with reduction */
-					echo "<td align='center'>".formatNumber($data["price_discounted"])."</td>";
 					/* reduction */
 					echo "<td align='center'>".formatNumber($data["discount"])."</td>";
-					/* total price */
-					echo "<td align='center'>".formatNumber($data["totalpriceHT"])."</td>";
-					/* total price with taxes  */
-					echo "<td align='center'>".formatNumber($data["totalpriceTTC"])."</td>";
+					/* price with reduction */
+					echo "<td align='center'>".formatNumber($data["price_discounted"])."</td>";
 					/* status  */
 					echo "<td align='center'>".plugin_order_getReceptionStatus($data["IDD"])."</td></tr>";
 

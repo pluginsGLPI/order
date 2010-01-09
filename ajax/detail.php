@@ -58,7 +58,7 @@ $paramsaction=array('FK_reference'=>'__VALUE__',
 		   	  'device_type'=>$_POST["device_type"]
 		);
 
-$fields = array ("quantity","priceht","pricediscounted", "taxes", "validate");
+$fields = array ("quantity","priceht","pricediscounted", "validate");
 foreach ($fields as $field)
 {
 	$paramsaction['update'] = $field;
