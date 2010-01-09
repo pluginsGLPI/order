@@ -142,7 +142,7 @@ class PluginOrderSupplier extends CommonDBTM {
    
          }
       }
-      echo "</table></div></form>";
+      echo "</table></form>";
 
 		return true;
 	}

@@ -91,7 +91,7 @@ class PluginOrder extends CommonDBTM {
 		if ($ID > 0) {
 			$plugin = new Plugin();
 			/* detail */
-			$ong[2] = $LANG['plugin_order']['detail'][0];
+			$ong[2] = $LANG['plugin_order'][5];
 			/* fournisseur */
 			$ong[3] = $LANG['plugin_order'][4];
 			/* generation 
@@ -548,7 +548,8 @@ class PluginOrder extends CommonDBTM {
 
       if ($this->canDisplayValidationForm($orderID)) {
          echo "<form method='post' name='form' action=\"$target\">";
-         echo "<table class='tab_cadre_fixe'>";
+         
+         echo "<div align='center'><table class='tab_cadre_fixe'>";
 
          echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG['plugin_order']['validation'][6] . "</th></tr>";
 
@@ -593,7 +594,7 @@ class PluginOrder extends CommonDBTM {
          echo "</td>";
          echo "</tr>";
 
-         echo "</table></form>";
+         echo "</table></div></form>";
       }
    }
    

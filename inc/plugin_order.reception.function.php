@@ -68,7 +68,7 @@ function plugin_order_showReceptionForm($orderID) {
 
 	while ($data_ref=$DB->fetch_array($result_ref)){
 
-		echo "<div class='center'><table class='tab_cadrehov'>";
+		echo "<div class='center'><table class='tab_cadre_fixe'>";
 		if (!$numref)
 			echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
 		else {
@@ -100,7 +100,7 @@ function plugin_order_showReceptionForm($orderID) {
 
 			echo "<div class='center' id='reception$rand' style='display:none'>";
 			echo "<form method='post' name='order_reception_form$rand' id='order_reception_form$rand'  action=\"" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.reception.form.php\">";
-			echo "<table class='tab_cadrehov'>";
+			echo "<table class='tab_cadre_fixe'>";
 
 			echo "<tr>";
 			if ($canedit && !plugin_order_allItemsAlreadyDelivered($orderID, $refID))
@@ -192,7 +192,7 @@ function plugin_order_showGenerationForm($orderID) {
 
 	while ($data_ref=$DB->fetch_array($result_ref)){
 
-		echo "<div class='center'><table class='tab_cadrehov'>";
+		echo "<div class='center'><table class='tab_cadre_fixe'>";
 		if (!$numref)
 			echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
 		else {
@@ -220,7 +220,7 @@ function plugin_order_showGenerationForm($orderID) {
 
 			echo "<div class='center' id='generation$rand' style='display:none'>";
 			echo "<form method='post' name='order_generation_form$rand' id='order_generation_form$rand'  action=\"" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.reception.form.php\">";
-			echo "<table class='tab_cadrehov'>";
+			echo "<table class='tab_cadre_fixe'>";
 
 			echo "<tr>";
 			if ($canedit)

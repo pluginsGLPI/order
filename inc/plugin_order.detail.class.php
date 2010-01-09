@@ -249,10 +249,10 @@ class PluginOrderDetail extends CommonDBTM {
 					/* total price with taxes  */
 					echo "<td align='center'>".formatNumber($data["totalpriceTTC"])."</td>";
 					/* status  */
-					echo "<td align='center'>".plugin_order_getReceptionStatus($data["IDD"])."</td>";
+					echo "<td align='center'>".plugin_order_getReceptionStatus($data["IDD"])."</td></tr>";
 					
 				}
-				echo "</table>";
+				echo "</table></div>";
 
 				if ($canedit) {
 					echo "<div class='center'>";
@@ -266,6 +266,8 @@ class PluginOrderDetail extends CommonDBTM {
 					echo "</div>";
 				}	
 			}
+			
+			echo "</form>";
 	}
 
 	function isDeviceLinkedToOrder($device_type, $deviceID) {
