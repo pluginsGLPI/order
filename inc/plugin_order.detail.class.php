@@ -196,7 +196,7 @@ class PluginOrderDetail extends CommonDBTM {
 					echo "<th></th>";
 				echo "<th>".$LANG['common'][2]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][7]."</th>";
-				echo "<th>".$LANG['plugin_order']['detail'][6]."</th>";
+				echo "<th>".$LANG['plugin_order']['detail'][1]."</th>";
 				echo "<th>".$LANG['common'][5]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][6]."</th>";

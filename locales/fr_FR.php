@@ -74,6 +74,7 @@ $LANG['plugin_order']['status'][12] = "Validé";
 $LANG['plugin_order']['item'][0] = "Matériel(s) lié(s)";
 $LANG['plugin_order']['item'][2] = "Aucun matériel associé";
 
+$LANG['plugin_order']['detail'][1] = "Equipement";
 $LANG['plugin_order']['detail'][2] = "Référence";
 $LANG['plugin_order']['detail'][4] = "Prix unitaire (HT)";
 $LANG['plugin_order']['detail'][5] = "Ajouter à la commande";

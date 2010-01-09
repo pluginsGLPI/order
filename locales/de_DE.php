@@ -74,6 +74,7 @@ $LANG['plugin_order']['status'][12] = "Genehmigt";
 $LANG['plugin_order']['item'][0] = "Verbundene Geräte";
 $LANG['plugin_order']['item'][2] = "Keine verbundene Geräte";
 
+$LANG['plugin_order']['detail'][1] = "Equipment";
 $LANG['plugin_order']['detail'][2] = "Referenz";
 $LANG['plugin_order']['detail'][4] = "Nettostückpreis";
 $LANG['plugin_order']['detail'][5] = "Der Bestellung hinzufügen";

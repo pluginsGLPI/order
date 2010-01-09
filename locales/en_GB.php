@@ -74,6 +74,7 @@ $LANG['plugin_order']['status'][12] = "Validated";
 $LANG['plugin_order']['item'][0] = "Associated items";
 $LANG['plugin_order']['item'][2] = "No associated item";
 
+$LANG['plugin_order']['detail'][1] = "Equipment";
 $LANG['plugin_order']['detail'][2] = "Reference";
 $LANG['plugin_order']['detail'][4] = "Unit price tax free";
 $LANG['plugin_order']['detail'][5] = "Add to the order";
