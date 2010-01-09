@@ -42,7 +42,6 @@ $LANG['plugin_order'][3] = "Budget";
 $LANG['plugin_order'][4] = "Supplier Detail";
 $LANG['plugin_order'][5] = "Validation";
 $LANG['plugin_order'][11] = "No order found";
-$LANG['plugin_order'][12] = "Delivery form";
 $LANG['plugin_order'][13] = "Price tax free";
 $LANG['plugin_order'][14] = "Price ATI";
 $LANG['plugin_order'][15] = "Price tax free with postage";
@@ -52,9 +51,6 @@ $LANG['plugin_order'][28] = "Supplier invoice number";
 $LANG['plugin_order'][30] = "Supplier quote number";
 $LANG['plugin_order'][31] = "Supplier invoice number";
 $LANG['plugin_order'][32] = "Payment conditions";
-$LANG['plugin_order'][34] = "Generate orders based on financial informations";
-$LANG['plugin_order'][35] = "Delete orders based on financial informations";
-$LANG['plugin_order'][37] = "Orders generated based on financial informations:";
 $LANG['plugin_order'][39] = "Order name";
 $LANG['plugin_order'][40] = "Delivery location";
 $LANG['plugin_order'][42] = "Cannot link several items to one detail line";
@@ -77,23 +73,17 @@ $LANG['plugin_order']['status'][12] = "Validated";
 
 $LANG['plugin_order']['item'][0] = "Associated items";
 $LANG['plugin_order']['item'][2] = "No associated item";
-$LANG['plugin_order']['item'][3] = "No items for this order";
 
-$LANG['plugin_order']['detail'][0] = "Detail(s)";
 $LANG['plugin_order']['detail'][2] = "Reference";
 $LANG['plugin_order']['detail'][4] = "Unit price tax free";
 $LANG['plugin_order']['detail'][5] = "Add to the order";
 $LANG['plugin_order']['detail'][6] = "Type";
 $LANG['plugin_order']['detail'][7] = "Quantity";
-$LANG['plugin_order']['detail'][8] = "Price AIT";
-$LANG['plugin_order']['detail'][9] = "Total price tax free";
-$LANG['plugin_order']['detail'][10] = "Total price ATI";
 $LANG['plugin_order']['detail'][17] = "Detail row(s)";
 $LANG['plugin_order']['detail'][18] = "Discounted price tax free";
 $LANG['plugin_order']['detail'][19] = "Status";
 $LANG['plugin_order']['detail'][20] = "No item to take delivery of";
 $LANG['plugin_order']['detail'][21] = "Delivery date";
-$LANG['plugin_order']['detail'][23] = "Item not taken delivery";
 $LANG['plugin_order']['detail'][25] = "Discount (%)";
 $LANG['plugin_order']['detail'][27] = "Please select a supplier";
 $LANG['plugin_order']['detail'][28] = "Reference is already used in this order";
@@ -124,7 +114,6 @@ $LANG['plugin_order']['delivery'][14] = "Item linked to order";
 $LANG['plugin_order']['delivery'][15] = "Item unlink form order";
 $LANG['plugin_order']['delivery'][16] = "Item already linked to another one";
 $LANG['plugin_order']['delivery'][17] = "No item to generate";
-$LANG['plugin_order']['delivery'][18] = "Bulk item delivery";
 
 $LANG['plugin_order']['profile'][0] = "Rights management";
 $LANG['plugin_order']['profile'][1] = "Order validation";
@@ -134,7 +123,6 @@ $LANG['plugin_order']['profile'][3] = "Edit a validated order";
 $LANG['plugin_order']['reference'][1] = "Product reference";
 $LANG['plugin_order']['reference'][2] = "Add a supplier";
 $LANG['plugin_order']['reference'][3] = "List references";
-$LANG['plugin_order']['reference'][4] = "Item type";
 $LANG['plugin_order']['reference'][5] = "Supplier for the reference";
 $LANG['plugin_order']['reference'][6] = "A reference with the same name still exists";
 $LANG['plugin_order']['reference'][7] = "Reference(s) in use";
@@ -142,19 +130,15 @@ $LANG['plugin_order']['reference'][8] = "Cannot create reference without a name"
 $LANG['plugin_order']['reference'][9] = "Cannot create reference without a type";
 $LANG['plugin_order']['reference'][10] = "Manufacturer's product reference";
 
-$LANG['plugin_order']['setup'][2] = "Plugin not usable from the helpdesk interface";
-
 $LANG['plugin_order']['config'][0] = "Plugin configuration";
 $LANG['plugin_order']['config'][1] = "Default VAT";
 $LANG['plugin_order']['config'][2] = "Use validation process";
 
 $LANG['plugin_order']['mailing'][0] = "Order validation query";
-$LANG['plugin_order']['mailing'][1] = "See order details";
 $LANG['plugin_order']['mailing'][2] = "by";
 
 $LANG['plugin_order']['infocom'][1] = "Some fields cannont be modified because they belong to an order";
 
-$LANG['plugin_order']['history'][1] = "Item generated from an order";
 $LANG['plugin_order']['history'][2] = "Add";
 $LANG['plugin_order']['history'][3] = "Update";
 $LANG['plugin_order']['history'][4] = "Delete";

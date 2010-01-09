@@ -42,7 +42,6 @@ $LANG['plugin_order'][3] = "Budget";
 $LANG['plugin_order'][4] = "Infos Fournisseur";
 $LANG['plugin_order'][5] = "Validation";
 $LANG['plugin_order'][11] = "Aucune commande trouvée";
-$LANG['plugin_order'][12] = "Bon livraison";
 $LANG['plugin_order'][13] = "Prix Total (HT)";
 $LANG['plugin_order'][14] = "Prix Total (TTC)";
 $LANG['plugin_order'][15] = "Prix Total (HT) + Frais de port";
@@ -52,9 +51,6 @@ $LANG['plugin_order'][28] = "N° Facture fournisseur";
 $LANG['plugin_order'][30] = "N° devis fournisseur";
 $LANG['plugin_order'][31] = "N° commande fournisseur";
 $LANG['plugin_order'][32] = "Conditions de paiement";
-$LANG['plugin_order'][34] = "Générer les entêtes des commandes à partir des informations financières";
-$LANG['plugin_order'][35] = "Supprimer les entêtes des commandes générées à partir des informations financières";
-$LANG['plugin_order'][37] = "Commandes générées à partir des informations financières:";
 $LANG['plugin_order'][39] = "Nom de la commande";
 $LANG['plugin_order'][40] = "Lieu de livraison de la commande";
 $LANG['plugin_order'][42] = "Impossible de lier le même matériel à plusieurs lignes détail";
@@ -77,23 +73,17 @@ $LANG['plugin_order']['status'][12] = "Validé";
 
 $LANG['plugin_order']['item'][0] = "Matériel(s) lié(s)";
 $LANG['plugin_order']['item'][2] = "Aucun matériel associé";
-$LANG['plugin_order']['item'][3] = "Pas de matériel lié à la commande";
 
-$LANG['plugin_order']['detail'][0] = "Détail(s)";
 $LANG['plugin_order']['detail'][2] = "Référence";
 $LANG['plugin_order']['detail'][4] = "Prix unitaire (HT)";
 $LANG['plugin_order']['detail'][5] = "Ajouter à la commande";
 $LANG['plugin_order']['detail'][6] = "Type";
 $LANG['plugin_order']['detail'][7] = "Quantité";
-$LANG['plugin_order']['detail'][8] = "Prix unitaire (TTC)";
-$LANG['plugin_order']['detail'][9] = "Prix total (HT)";
-$LANG['plugin_order']['detail'][10] = "Prix total (TTC)";
 $LANG['plugin_order']['detail'][17] = "Ligne(s) détail";
 $LANG['plugin_order']['detail'][18] = "Prix remisé (HT)";
 $LANG['plugin_order']['detail'][19] = "Statut";
 $LANG['plugin_order']['detail'][20] = "Pas de matériel à réceptionner";
 $LANG['plugin_order']['detail'][21] = "Date de livraison";
-$LANG['plugin_order']['detail'][23] = "Matériel non réceptionné";
 $LANG['plugin_order']['detail'][25] = "Remise en %";
 $LANG['plugin_order']['detail'][27] = "Veuillez sélectionner un fournisseur";
 $LANG['plugin_order']['detail'][28] = "Cette référence est déjà utilisée dans la commande";
@@ -124,7 +114,6 @@ $LANG['plugin_order']['delivery'][14] = "Matériel lié à la commande";
 $LANG['plugin_order']['delivery'][15] = "Matériel délié de la commande";
 $LANG['plugin_order']['delivery'][16] = "Matériel déjà lié à un objet d'inventaire";
 $LANG['plugin_order']['delivery'][17] = "Aucun matériel à générer";
-$LANG['plugin_order']['delivery'][18] = "Réceptionner matériel en masse";
 
 $LANG['plugin_order']['profile'][0] = "Gestion des droits";
 $LANG['plugin_order']['profile'][1] = "Valider une commande";
@@ -141,19 +130,15 @@ $LANG['plugin_order']['reference'][8] = "Impossible de créer une référence sa
 $LANG['plugin_order']['reference'][9] = "Impossible de créer une référence sans type";
 $LANG['plugin_order']['reference'][10] = "Référence produit fournisseur";
 
-$LANG['plugin_order']['setup'][2] = "Plugin non utilisable depuis le helpdesk";
-
 $LANG['plugin_order']['config'][0] = "Configuration du plugin";
 $LANG['plugin_order']['config'][1] = "TVA par défaut";
 $LANG['plugin_order']['config'][2] = "Utiliser le circuit de validation";
 
 $LANG['plugin_order']['mailing'][0] = "Demande de validation d'une commande";
-$LANG['plugin_order']['mailing'][1] = "Voir le détail de la commande";
 $LANG['plugin_order']['mailing'][2] = "par";
 
 $LANG['plugin_order']['infocom'][1] = "Certains champs ne peuvent-être modifiés : ils proviennent d'une commande";
 
-$LANG['plugin_order']['history'][1] = "Matériel généré depuis la commande";
 $LANG['plugin_order']['history'][2] = "Ajout";
 $LANG['plugin_order']['history'][3] = "Mise à jour";
 $LANG['plugin_order']['history'][4] = "Suppression";

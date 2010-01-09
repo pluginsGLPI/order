@@ -42,7 +42,6 @@ $LANG['plugin_order'][3] = "Budget";
 $LANG['plugin_order'][4] = "Detail Lieferant";
 $LANG['plugin_order'][5] = "Validation";
 $LANG['plugin_order'][11] = "Keine Bestellung vorhanden";
-$LANG['plugin_order'][12] = "Lieferschein";
 $LANG['plugin_order'][13] = "Total Netto";
 $LANG['plugin_order'][14] = "Total Brutto";
 $LANG['plugin_order'][15] = "Total Netto + Porto";
@@ -52,9 +51,6 @@ $LANG['plugin_order'][28] = "Rechnung";
 $LANG['plugin_order'][30] = "Angebot";
 $LANG['plugin_order'][31] = "Auftragsbestätigung";
 $LANG['plugin_order'][32] = "Zahlungskonditionen";
-$LANG['plugin_order'][34] = "Kopfdaten der Bestellungen aus Buchhaltungsdaten erzeugen";
-$LANG['plugin_order'][35] = "Aus Buchhaltungsdaten erzeugte Kopfdaten der Bestellungen löschen";
-$LANG['plugin_order'][37] = "Aus Buchhaltungsdaten erzeugte Bestellungen:";
 $LANG['plugin_order'][39] = "Name der Bestellung";
 $LANG['plugin_order'][40] = "Lieferort";
 $LANG['plugin_order'][42] = "Ein Gerät kann nicht mehreren Positionen zugewiesen werden";
@@ -77,23 +73,17 @@ $LANG['plugin_order']['status'][12] = "Genehmigt";
 
 $LANG['plugin_order']['item'][0] = "Verbundene Geräte";
 $LANG['plugin_order']['item'][2] = "Keine verbundene Geräte";
-$LANG['plugin_order']['item'][3] = "Dieser Bestellung sind keine Geräte zugewiesen";
 
-$LANG['plugin_order']['detail'][0] = "Detail";
 $LANG['plugin_order']['detail'][2] = "Referenz";
 $LANG['plugin_order']['detail'][4] = "Nettostückpreis";
 $LANG['plugin_order']['detail'][5] = "Der Bestellung hinzufügen";
 $LANG['plugin_order']['detail'][6] = "Typ";
 $LANG['plugin_order']['detail'][7] = "Menge";
-$LANG['plugin_order']['detail'][8] = "Bruttostückpreis";
-$LANG['plugin_order']['detail'][9] = "Total Netto";
-$LANG['plugin_order']['detail'][10] = "Total Brutto";
 $LANG['plugin_order']['detail'][17] = "Positionen";
 $LANG['plugin_order']['detail'][18] = "Nettostückpreis mit Rabatt";
 $LANG['plugin_order']['detail'][19] = "Status";
 $LANG['plugin_order']['detail'][20] = "Kein Gerät kann empfangen werden";
 $LANG['plugin_order']['detail'][21] = "Lieferdatum";
-$LANG['plugin_order']['detail'][23] = "Noch nicht empfangene Geräte";
 $LANG['plugin_order']['detail'][25] = "Rabatt in %";
 $LANG['plugin_order']['detail'][27] = "Lieferanten wählen";
 $LANG['plugin_order']['detail'][28] = "Diese Referenz ist in der Bestellung bereits vorhanden";
@@ -124,7 +114,6 @@ $LANG['plugin_order']['delivery'][14] = "Mit Bestellung verbundene Geräte";
 $LANG['plugin_order']['delivery'][15] = "Von Bestellung gelöste Geräte";
 $LANG['plugin_order']['delivery'][16] = "Bereits im Inventar aufgenommene Geräte";
 $LANG['plugin_order']['delivery'][17] = "Es kann kein Gerät erzeugt werden";
-$LANG['plugin_order']['delivery'][18] = "Geräte in Batch empfangen";
 
 $LANG['plugin_order']['profile'][0] = "Berechtigungsverwaltung";
 $LANG['plugin_order']['profile'][1] = "Bestellung freigeben";
@@ -134,7 +123,6 @@ $LANG['plugin_order']['profile'][3] = "Freigegebene Bestellung ändern";
 $LANG['plugin_order']['reference'][1] = "Produktreferenz";
 $LANG['plugin_order']['reference'][2] = "Produktreferenz hinzufügen";
 $LANG['plugin_order']['reference'][3] = "Liste der Referenzen";
-$LANG['plugin_order']['reference'][4] = "Gerätetyp";
 $LANG['plugin_order']['reference'][5] = "Lieferant für eine Referenz";
 $LANG['plugin_order']['reference'][6] = "Eine Referenz mit gleichem Namen existiert bereits";
 $LANG['plugin_order']['reference'][7] = "Aktuell benutzte Referenzen";
@@ -142,19 +130,15 @@ $LANG['plugin_order']['reference'][8] = "Eine Referenz ohne Namen kann nicht erz
 $LANG['plugin_order']['reference'][9] = "Eine Referenz ohne Typ kann nicht erzeugt werden";
 $LANG['plugin_order']['reference'][10] = "Produktreferenz des Lieferanten";
 
-$LANG['plugin_order']['setup'][2] = "Plugin kann nicht aus dem Helpdesk genutzt werden";
-
 $LANG['plugin_order']['config'][0] = "Plugin-Einstellungen";
 $LANG['plugin_order']['config'][1] = "Standard-MwSt";
 $LANG['plugin_order']['config'][2] = "Freigabeprozedur verwenden";
 
 $LANG['plugin_order']['mailing'][0] = "Freigabeantrag einer Bestellung";
-$LANG['plugin_order']['mailing'][1] = "Detail der Bestellung sehen";
 $LANG['plugin_order']['mailing'][2] = "von";
 
 $LANG['plugin_order']['infocom'][1] = "Einige Felder können nicht verändert werden: sie stammen aus einer Bestellung";
 
-$LANG['plugin_order']['history'][1] = "Aus Bestellung erzeugte Geräte";
 $LANG['plugin_order']['history'][2] = "Add";
 $LANG['plugin_order']['history'][3] = "Update";
 $LANG['plugin_order']['history'][4] = "Delete";
