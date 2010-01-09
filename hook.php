@@ -251,7 +251,7 @@ function plugin_order_install() {
       $DB->query($query) or die($DB->error());
 
    }
-   
+
    /* Update en 1.1.0 */
 
    if (!FieldExists("glpi_plugin_order_detail","discount")) {
@@ -265,7 +265,7 @@ function plugin_order_install() {
    $DB->query($query) or die($DB->error());
 
    }
-   
+
    if (!FieldExists("glpi_plugin_order","taxes")) {
    	$query = "ALTER TABLE `glpi_plugin_order` ADD `taxes` FLOAT NOT NULL default '0'";
    $DB->query($query) or die($DB->error());
@@ -283,7 +283,7 @@ function plugin_order_install() {
       $DB->query($query) or die($DB->error());
 
    }
-   
+
    $query = "SELECT `name` FROM `glpi_dropdown_plugin_order_taxes` ";
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
@@ -304,7 +304,7 @@ function plugin_order_install() {
       $query = "ALTER TABLE `glpi_plugin_order` DROP INDEX `name`";
       $DB->query($query) or die($DB->error());
    }
-   
+
    if (!TableExists("glpi_plugin_order_suppliers")) {
 		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_suppliers` (
                   `ID` int(11) NOT NULL auto_increment,
@@ -316,7 +316,7 @@ function plugin_order_install() {
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die($DB->error());
 	}
-	
+
 	if (FieldExists("glpi_plugin_order","numordersupplier")) {
       $query = "SELECT `numordersupplier`,`numbill`,`ID` FROM `glpi_plugin_order` ";
       $result = $DB->query($query);
@@ -329,20 +329,20 @@ function plugin_order_install() {
             $DB->query($query) or die($DB->error());
          }
       }
-      
+
       if (FieldExists('glpi_plugin_order', 'numordersupplier')) {
          $query = "ALTER TABLE `glpi_plugin_order` DROP `numordersupplier`";
          $DB->query($query) or die($DB->error());
       }
-      
+
       if (FieldExists('glpi_plugin_order', 'numbill')) {
          $query = "ALTER TABLE `glpi_plugin_order` DROP `numbill`";
          $DB->query($query) or die($DB->error());
       }
    }
-   
+
    /* End Update en 1.1.0 */
-   
+
 	plugin_order_createfirstaccess($_SESSION['glpiactiveprofile']['ID']);
 
    plugin_order_changeprofile();
@@ -364,7 +364,8 @@ function plugin_order_uninstall() {
 		"glpi_plugin_order_references",
 		"glpi_plugin_order_references_manufacturers",
 		"glpi_plugin_order_config",
-		"glpi_plugin_order_budgets"
+		"glpi_plugin_order_budgets",
+      "glpi_plugin_order_suppliers"
 	);
 
 	foreach ($tables as $table)
@@ -751,7 +752,7 @@ function plugin_pre_item_update_order($input) {
 				if (!isset ($input["_manage_by_order"])) {
 
                $infocom = new InfoCom;
-               
+
                if (isset ($infocom->fields["ID"])) {
                   $infocom->getFromDB($input["ID"]);
 
