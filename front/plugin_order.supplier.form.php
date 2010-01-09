@@ -43,28 +43,54 @@ if(!isset($_GET["ID"])) $_GET["ID"] = "";
 if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 
 $PluginOrderSupplier=new PluginOrderSupplier();
+$PluginOrder=new PluginOrder();
 
-/* add order */
+/* add supplier infos */
 if (isset($_POST["add"]))
 {
-	if(plugin_order_HaveRight("reference","w"))
+	if(plugin_order_HaveRight("order","w"))
 	{
-		$newID=$PluginOrderSupplier->add($_POST);
+		$newID = $PluginOrderSupplier->add($_POST);
+		$new_value = $LANG['plugin_order']['history'][2]. " ";
+		if ($_POST["numquote"])
+         $new_value.= $LANG['plugin_order'][30]." ".$_POST["numquote"];
+		if ($_POST["numorder"])
+         $new_value.= " - ".$LANG['plugin_order'][31]." : ".$_POST["numorder"];
+      if ($_POST["numbill"])
+         $new_value.= " - ".$LANG['plugin_order'][28]." : ".$_POST["numbill"];
+		$PluginOrder->addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-/* delete order */
+/* delete supplier infos */
 else if (isset($_POST["delete"]))
 {
-	if(plugin_order_HaveRight("order","w"))
+   if(plugin_order_HaveRight("order","w")) {
+   
+      $new_value = $LANG['plugin_order']['history'][4]. " ".$LANG['plugin_order'][4]." : ".$_POST["ID"];
+      $PluginOrder->addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
+	
 		$PluginOrderSupplier->delete($_POST);
+   }
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-/* update order */
+/* update supplier infos */
 else if (isset($_POST["update"]))
 {
-	if(plugin_order_HaveRight("reference","w"))
-		$PluginOrderSupplier->update($_POST);
+	if(plugin_order_HaveRight("order","w")) {
+		
+      $new_value = $LANG['plugin_order']['history'][3]. " ";
+      if ($_POST["numquote"])
+         $new_value.= $LANG['plugin_order'][30]." ".$_POST["numquote"];
+      if ($_POST["numorder"])
+         $new_value.= " - ".$LANG['plugin_order'][31]." : ".$_POST["numorder"];
+      if ($_POST["numbill"])
+         $new_value.= " - ".$LANG['plugin_order'][28]." : ".$_POST["numbill"];
+      
+      $PluginOrder->addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
+      
+      $PluginOrderSupplier->update($_POST);
+   }
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 

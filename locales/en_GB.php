@@ -157,6 +157,9 @@ $LANG['plugin_order']['mailing'][2] = "by";
 $LANG['plugin_order']['infocom'][1] = "Some fields cannont be modified because they belong to an order";
 
 $LANG['plugin_order']['history'][1] = "Item generated from an order";
+$LANG['plugin_order']['history'][2] = "Add";
+$LANG['plugin_order']['history'][3] = "Update";
+$LANG['plugin_order']['history'][4] = "Delete";
 
 $LANG['plugin_order']['validation'][1] = "Request order validation";
 $LANG['plugin_order']['validation'][2] = "Order validated";

@@ -42,6 +42,7 @@ class PluginOrderSupplier extends CommonDBTM {
 	function __construct() {
 		$this->table = "glpi_plugin_order_suppliers";
 		$this->type = PLUGIN_ORDER_SUPPLIER_TYPE;
+		$this->dohistory = true;
 	}
    
    function getFromDBByOrder($FK_Order) {

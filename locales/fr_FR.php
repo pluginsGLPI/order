@@ -157,6 +157,9 @@ $LANG['plugin_order']['mailing'][2] = "par";
 $LANG['plugin_order']['infocom'][1] = "Certains champs ne peuvent-être modifiés : ils proviennent d'une commande";
 
 $LANG['plugin_order']['history'][1] = "Matériel généré depuis la commande";
+$LANG['plugin_order']['history'][2] = "Ajout";
+$LANG['plugin_order']['history'][3] = "Mise à jour";
+$LANG['plugin_order']['history'][4] = "Suppression";
 
 $LANG['plugin_order']['validation'][1] = "Demande de validation de la commande";
 $LANG['plugin_order']['validation'][2] = "Commande validée";

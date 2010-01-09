@@ -157,6 +157,9 @@ $LANG['plugin_order']['mailing'][2] = "von";
 $LANG['plugin_order']['infocom'][1] = "Einige Felder können nicht verändert werden: sie stammen aus einer Bestellung";
 
 $LANG['plugin_order']['history'][1] = "Aus Bestellung erzeugte Geräte";
+$LANG['plugin_order']['history'][2] = "Add";
+$LANG['plugin_order']['history'][3] = "Update";
+$LANG['plugin_order']['history'][4] = "Delete";
 
 $LANG['plugin_order']['validation'][1] = "Freigabeantrag der Bestellung";
 $LANG['plugin_order']['validation'][2] = "Freigabe der Bestellung";
