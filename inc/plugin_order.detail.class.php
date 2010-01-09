@@ -131,7 +131,7 @@ class PluginOrderDetail extends CommonDBTM {
 				echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\"$target\">";
 				echo "<input type='hidden' name='FK_order' value=\"$orderID\">";
 				echo "<div class='center'>";
-				echo"<table class='tab_cadrehov'>";
+				echo"<table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='7'>".$LANG['plugin_order']['detail'][5]."</th></tr>";
 
 				if ($order->fields["FK_enterprise"])
@@ -256,7 +256,7 @@ class PluginOrderDetail extends CommonDBTM {
 
 				if ($canedit) {
 					echo "<div class='center'>";
-					echo "<table width='80%' class='tab_glpi'>";
+					echo "<table width='50%' class='tab_glpi'>";
 					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=none'>".$LANG['buttons'][19]."</a>";
 					echo "</td><td align='left' width='90%'>";
