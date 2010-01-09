@@ -154,16 +154,17 @@ function plugin_order_showReceptionForm($orderID) {
 			if ($canedit && !plugin_order_allItemsAlreadyDelivered($orderID, $refID)) {
 				
             echo "<div class='center'>";
-            echo "<table width='50%' class='tab_glpi'>";
+            echo "<table width='950px' class='tab_glpi'>";
             echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+
             echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_reception_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=none'>".$LANG['buttons'][19]."</a>";
-            echo "</td><td align='left' width='90%'>";
+            echo "</td><td align='left' width='80%'>";
             echo "<input type='hidden' name='orderID' value='$orderID'>";
             plugin_order_dropdownReceptionActions($typeRef, $refID, $orderID);
             echo "</td>";
             echo "</table>";
             echo "</div>";
-					
+
 			}
 			echo "</form></div>";
 		}
@@ -275,18 +276,18 @@ function plugin_order_showGenerationForm($orderID) {
 			}
 			echo "</table>";
 			if ($canedit) {
-				
+            
             echo "<div class='center'>";
-            echo "<table width='50%' class='tab_glpi'>";
+            echo "<table width='950px' class='tab_glpi'>";
             echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_generation_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+
             echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_generation_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$orderID&amp;select=none'>".$LANG['buttons'][19]."</a>";
-            echo "</td><td align='left' width='90%'>";
+            echo "</td><td align='left' width='80%'>";
             echo "<input type='hidden' name='orderID' value='$orderID'>";
             plugin_order_dropdownGenerationActions($typeRef, $refID, $orderID);
             echo "</td>";
             echo "</table>";
             echo "</div>";
-					
 			}
 			echo "</form></div>";
 		}
