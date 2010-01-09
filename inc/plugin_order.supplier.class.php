@@ -66,8 +66,9 @@ class PluginOrderSupplier extends CommonDBTM {
 	
 	function showForm($target, $ID) {
 		global $LANG, $DB, $CFG_GLPI, $INFOFORM_PAGES;
-
-      $canedit = plugin_order_haveRight("order","w");
+      
+      $PluginOrder=new PluginOrder();
+      $canedit=$PluginOrder->can($ID,'w') && $PluginOrder->canUpdateOrder($ID);
       
       $supplierid = -1;
       if($this->getFromDBByOrder($ID))

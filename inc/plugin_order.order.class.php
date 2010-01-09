@@ -556,7 +556,7 @@ class PluginOrder extends CommonDBTM {
       
       $this->getFromDB($orderID);
 
-      if ($this->canDisplayValidationForm($orderID)) {
+      if ($this->can($orderID,'w') && $this->canDisplayValidationForm($orderID)) {
          echo "<form method='post' name='form' action=\"$target\">";
          
          echo "<div align='center'><table class='tab_cadre_fixe'>";

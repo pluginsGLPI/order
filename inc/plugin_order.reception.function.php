@@ -87,7 +87,6 @@ function plugin_order_showReceptionForm($orderID) {
 			echo "<th>" . $LANG['common'][5] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['delivery'][5] . "</th>";
-			echo "<th>" . $LANG['plugin_order']['item'][0] . "</th>";
 			echo "</tr>";
 			echo "<tr class='tab_bg_1 center'>";
 			echo "<td></td>";
@@ -95,7 +94,6 @@ function plugin_order_showReceptionForm($orderID) {
 			echo "<td align='center'>" . getDropdownName("glpi_dropdown_manufacturer", $data_ref["FK_glpi_enterprise"]) . "</td>";
 			echo "<td>" . $PluginOrderReference->getReceptionReferenceLink($data_ref) . "</td>";
 			echo "<td>" . $PluginOrderDetail->getDeliveredQuantity($orderID, $refID) . " / " . $PluginOrderDetail->getTotalQuantity($orderID,$refID) . "</td>";
-			echo "<td>" . plugin_order_getNumberOfLinkedMaterial($orderID, $refID) . " / " . $PluginOrderDetail->getTotalQuantity($orderID, $refID) . "</td>";
 			echo "</tr></table>";
 
 			echo "<div class='center' id='reception$rand' style='display:none'>";
