@@ -83,7 +83,7 @@ function plugin_order_showReceptionForm($orderID) {
 			echo "<a href=\"javascript:showHideDiv('reception$rand','reception$rand','" . $CFG_GLPI["root_doc"] . "/pics/plus.png','" . $CFG_GLPI["root_doc"] . "/pics/moins.png');\">";
 			echo "<img alt='' name='reception$rand' src=\"" . $CFG_GLPI["root_doc"] . "/pics/plus.png\">";
 			echo "</a></li></ul></th>";
-			echo "<th>" . $LANG['plugin_order']['detail'][1] . "</th>";
+			echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";
 			echo "<th>" . $LANG['common'][5] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['delivery'][5] . "</th>";
@@ -207,7 +207,7 @@ function plugin_order_showGenerationForm($orderID) {
 			echo "<a href=\"javascript:showHideDiv('generation$rand','generation$rand','" . $CFG_GLPI["root_doc"] . "/pics/plus.png','" . $CFG_GLPI["root_doc"] . "/pics/moins.png');\">";
 			echo "<img alt='' name='generation$rand' src=\"" . $CFG_GLPI["root_doc"] . "/pics/plus.png\">";
 			echo "</a></li></ul></th>";
-			echo "<th>" . $LANG['plugin_order']['detail'][1] . "</th>";
+			echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";
 			echo "<th>" . $LANG['common'][5] . "</th>";
 			echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
 			echo "</tr>";

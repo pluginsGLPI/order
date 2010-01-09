@@ -175,6 +175,7 @@ class PluginOrderDetail extends CommonDBTM {
 					FROM `".$this->table."`, `glpi_plugin_order_references`
 					WHERE `".$this->table."`.`FK_reference` = `glpi_plugin_order_references`.`ID`
 					AND `".$this->table."`.`FK_order` = '$FK_order'
+					GROUP BY `".$this->table."`.`discount`,`glpi_plugin_order_references`.`ID`
 					ORDER BY `glpi_plugin_order_references`.`name` ";
 
 			$result=$DB->query($query);
@@ -189,12 +190,13 @@ class PluginOrderDetail extends CommonDBTM {
 			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
 			if ($num>0) {
 				echo "<div class='center'><table class='tab_cadre_fixe'>";
-				echo "<tr><th colspan='14'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
+				echo "<tr><th colspan='15'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
 				echo "<tr>";
 				if($canedit)
 					echo "<th></th>";
 				echo "<th>".$LANG['common'][2]."</th>";
-				echo "<th>".$LANG['plugin_order']['detail'][1]."</th>";
+				echo "<th>".$LANG['plugin_order']['detail'][7]."</th>";
+				echo "<th>".$LANG['plugin_order']['detail'][6]."</th>";
 				echo "<th>".$LANG['common'][5]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][6]."</th>";
@@ -215,6 +217,9 @@ class PluginOrderDetail extends CommonDBTM {
 						echo "</td>";
 					}
 					echo "<td align='center'>".$data["IDD"]."</td>";
+					/* quantity */
+					$quantity = $this->getTotalQuantityByRefAndDiscount($FK_order,$data["ID"],$data["discount"]);
+					echo "<td align='center'>".$quantity."</td>";
 					/* type */
 					$ci=new CommonItem();
 					$ci->setType($data["type"]);
@@ -239,7 +244,7 @@ class PluginOrderDetail extends CommonDBTM {
 					/* reduction */
 					echo "<td align='center'>".formatNumber($data["discount"])."</td>";
 					/* price with reduction */
-					echo "<td align='center'>".formatNumber($data["price_discounted"])."</td>";
+					echo "<td align='center'>".formatNumber($data["price_discounted"]*$quantity)."</td>";
 					/* status  */
 					echo "<td align='center'>".plugin_order_getReceptionStatus($data["IDD"])."</td></tr>";
 

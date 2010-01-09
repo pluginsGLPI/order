@@ -1,1 +1,0 @@
-le form de détail, grouper autrement (par ref et par remise)
