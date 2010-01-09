@@ -43,7 +43,7 @@ function plugin_order_getNumberOfLinkedMaterial($orderID, $refID) {
 	$query = "SELECT COUNT(*) AS result FROM `glpi_plugin_order_detail`
 					  WHERE `FK_order` = '" . $orderID . "'
 					  AND `FK_reference` = '" . $refID . "'
-					  AND `FK_device` != '0' ";
+					  AND `status` = '" . ORDER_DEVICE_NOT_DELIVRED . "' ";
 	$result = $DB->query($query);
 	return ($DB->result($result, 0, 'result'));
 }
@@ -475,10 +475,10 @@ function plugin_order_dropdownGenerationActions($type,$referenceID,$orderID) {
 		if (!in_array($type, $ORDER_RESTRICTED_TYPES))
 			echo "<option value='generation'>" . $LANG['plugin_order']['delivery'][3] . "</option>";
 
-			echo "<option value='createLink'>" . $LANG['plugin_order']['delivery'][11] . "</option>";
-	}
-   if (plugin_order_getNumberOfLinkedMaterial($orderID, $referenceID))
+      echo "<option value='createLink'>" . $LANG['plugin_order']['delivery'][11] . "</option>";
       echo "<option value='deleteLink'>" . $LANG['plugin_order']['delivery'][12] . "</option>";
+	}
+      
 	echo "</select>";
 	$params = array (
 		'action' => '__VALUE__',

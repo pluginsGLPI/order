@@ -52,7 +52,9 @@ autocompletionTextField("deliverynum","glpi_plugin_order_detail","deliverynum",'
 echo "</td><td>";
 echo "<input type='hidden' name='referenceID' value='".$_POST['referenceID']."'>";
 echo "<input type='hidden' name='orderID' value='".$_POST['orderID']."'>";
-echo $LANG['plugin_order']['delivery'][6]."&nbsp;<input type='text' name='number_reception' size='2' value='0'>";
+echo $LANG['plugin_order']['delivery'][6];
+$nb = plugin_order_getNumberOfLinkedMaterial($_POST['orderID'],$_POST['referenceID']);
+dropdownInteger('number_reception','',1,$nb);
 echo "</td><td><input type='submit' name='bulk_reception' class='submit' value='".$LANG['buttons'][2]."'></td></tr></table>";
 			
 ajaxFooter();
