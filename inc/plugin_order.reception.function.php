@@ -164,8 +164,22 @@ function plugin_order_showReceptionForm($orderID) {
             echo "</td>";
             echo "</table>";
             echo "</div>";
-
-			}
+            
+            $rand = mt_rand();
+            
+            echo "<div id='massreception" . $orderID . "$rand'></div>\n";
+            
+            echo "<script type='text/javascript' >\n";
+            echo "function viewmassreception" . $orderID . "$rand(){\n";
+            $params = array ('orderID' => $orderID,
+                             'referenceID' => $refID);
+            ajaxUpdateItemJsCode("massreception" . $orderID . "$rand",
+                                 $CFG_GLPI["root_doc"]."/plugins/order/ajax/massreception.php", $params, false);
+            echo "};";
+            echo "</script>\n";
+            echo "<p><a href='javascript:viewmassreception".$orderID."$rand();'>";
+            echo $LANG['plugin_order']['delivery'][4]."</a></p><br>\n";
+         }
 			echo "</form></div>";
 		}
 		echo "<br>";
@@ -436,7 +450,6 @@ function plugin_order_dropdownReceptionActions($type,$referenceID,$orderID) {
 	echo "<select name='receptionActions$rand' id='receptionActions$rand'>";
 	echo "<option value='0' selected>-----</option>";
    echo "<option value='reception'>" . $LANG['plugin_order']['delivery'][2] . "</option>";
-   echo "<option value='bulk_reception'>" . $LANG['plugin_order']['delivery'][4] . "</option>";
 	echo "</select>";
 	$params = array (
 		'action' => '__VALUE__',

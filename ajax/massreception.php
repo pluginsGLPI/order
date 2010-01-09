@@ -32,33 +32,29 @@
 // Purpose of file: plugin order v1.1.0 - GLPI 0.72
 // ----------------------------------------------------------------------
  */
-
-define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT."/inc/includes.php");
+ 
 $AJAX_INCLUDE=1;
+define('GLPI_ROOT','../../..');
+include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if (!defined('GLPI_ROOT')){
-   die("Can not acces directly to this file");
-}
+checkLoginUser();
 
 useplugin('order', true);
 
-$reference = new PluginOrderReference;
+echo "<table width='950px' class='tab_cadre' width='50%'>";
+echo "<tr class='tab_bg_2'><td>";
+showDateFormItem("date",date("Y-m-d"),true,1);
+echo "</td><td>";
+echo $LANG['financial'][19]."&nbsp;";
+autocompletionTextField("deliverynum","glpi_plugin_order_detail","deliverynum",'',20,$_SESSION["glpiactive_entity"]);
+echo "</td><td>";
+echo "<input type='hidden' name='referenceID' value='".$_POST['referenceID']."'>";
+echo "<input type='hidden' name='orderID' value='".$_POST['orderID']."'>";
+echo $LANG['plugin_order']['delivery'][6]."&nbsp;<input type='text' name='number_reception' size='2' value='0'>";
+echo "</td><td><input type='submit' name='bulk_reception' class='submit' value='".$LANG['buttons'][2]."'></td></tr></table>";
+			
+ajaxFooter();
 
-$type=$_POST["type"];
-
-if (isset($_POST["action"])){
-	switch($_POST["action"]){
-		case "reception":
-			echo "</td><td>";
-			showDateFormItem("date",date("Y-m-d"),true,1);
-			echo "</td><td>";
-			echo $LANG['financial'][19]."&nbsp;";
-			autocompletionTextField("deliverynum","glpi_plugin_order_detail","deliverynum",'',20,$_SESSION["glpiactive_entity"]);
-			echo "</td><td><input type='submit' name='reception' class='submit' value='".$LANG['buttons'][2]."'></td>";
-         break;
-	}
-}
 ?>
