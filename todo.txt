@@ -1,2 +1,1 @@
-cacher les boutons "valider la commande" et "faire valider la commande" quand il y a aucune ligne de détail
 le form de détail, grouper autrement (par ref et par remise)

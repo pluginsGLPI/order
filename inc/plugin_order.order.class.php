@@ -541,6 +541,16 @@ class PluginOrder extends CommonDBTM {
 		return (plugin_order_haveRight("undo_validation", "w"));
 	}
 	
+	function checkIfDetailExists($orderID) {
+
+      $detail = new PluginOrderDetail;
+      $devices = getAllDatasFromTable("glpi_plugin_order_detail", "FK_order=$orderID");
+      if (!empty($devices))
+         return true;
+      else
+         return false;
+   }
+	
 	function showValidationForm($target, $orderID) {
       global $LANG;
       
@@ -550,50 +560,54 @@ class PluginOrder extends CommonDBTM {
          echo "<form method='post' name='form' action=\"$target\">";
          
          echo "<div align='center'><table class='tab_cadre_fixe'>";
+         
+         if ($this->checkIfDetailExists($orderID)) {
+         
+            echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG['plugin_order']['validation'][6] . "</th></tr>";
 
-         echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG['plugin_order']['validation'][6] . "</th></tr>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td valign='top' align='right'>";
+            echo $LANG['common'][25] . ":&nbsp;";
+            echo "</td>";
+            echo "<td valign='top' align='left'>";
+            echo "<textarea cols='40' rows='4' name='comments'></textarea>";
+            echo "</td>";
 
-         echo "<tr class='tab_bg_1'>";
-         echo "<td valign='top' align='right'>";
-         echo $LANG['common'][25] . ":&nbsp;";
-         echo "</td>";
-         echo "<td valign='top' align='left'>";
-         echo "<textarea cols='40' rows='4' name='comments'></textarea>";
-         echo "</td>";
+            echo "<td align='center'>";
+            echo "<input type='hidden' name='ID' value=\"$orderID\">\n";
+            
+            if ($this->canCancelOrder()) {
+               echo "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][38] . "')\" name='cancel_order' value=\"" . $LANG['plugin_order']['validation'][12] . "\" class='submit'>";
+               $link = "<br><br>";
+            }
+            $PluginOrderConfig = new PluginOrderConfig;
+            $config = $PluginOrderConfig->getConfig();
 
-         echo "<td align='center'>";
-         echo "<input type='hidden' name='ID' value=\"$orderID\">\n";
+            if ($this->canValidate()) {
+               echo $link . "<input type='submit' name='validate' value=\"" . $LANG['plugin_order']['validation'][9] . "\" class='submit'>";
+               $link = "<br><br>";
+            }
 
-         if ($this->canCancelOrder()) {
-            echo "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][38] . "')\" name='cancel_order' value=\"" . $LANG['plugin_order']['validation'][12] . "\" class='submit'>";
-            $link = "<br><br>";
+            if ($this->canCancelValidationRequest()) {
+               echo $link . "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][39] . "')\" name='cancel_waiting_for_approval' value=\"" . $LANG['plugin_order']['validation'][13] . "\" class='submit'>";
+               $link = "<br><br>";
+            }
+
+            if ($this->canDoValidationRequest()) {
+               echo $link . "<input type='submit' name='waiting_for_approval' value=\"" . $LANG['plugin_order']['validation'][11] . "\" class='submit'>";
+               $link = "<br><br>";
+            }
+
+            if ($this->canUndoValidation()) {
+               echo $link . "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][40] . "')\" name='undovalidation' value=\"" . $LANG['plugin_order']['validation'][17] . "\" class='submit'>";
+               $link = "<br><br>";
+            }
+
+            echo "</td>";
+            echo "</tr>";
+         } else {
+            echo "<tr class='tab_bg_2 center'><td>" . $LANG['plugin_order']['validation'][0] . "</td></tr>";
          }
-         $PluginOrderConfig = new PluginOrderConfig;
-         $config = $PluginOrderConfig->getConfig();
-
-         if ($this->canValidate()) {
-            echo $link . "<input type='submit' name='validate' value=\"" . $LANG['plugin_order']['validation'][9] . "\" class='submit'>";
-            $link = "<br><br>";
-         }
-
-         if ($this->canCancelValidationRequest()) {
-            echo $link . "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][39] . "')\" name='cancel_waiting_for_approval' value=\"" . $LANG['plugin_order']['validation'][13] . "\" class='submit'>";
-            $link = "<br><br>";
-         }
-
-         if ($this->canDoValidationRequest()) {
-            echo $link . "<input type='submit' name='waiting_for_approval' value=\"" . $LANG['plugin_order']['validation'][11] . "\" class='submit'>";
-            $link = "<br><br>";
-         }
-
-         if ($this->canUndoValidation()) {
-            echo $link . "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][40] . "')\" name='undovalidation' value=\"" . $LANG['plugin_order']['validation'][17] . "\" class='submit'>";
-            $link = "<br><br>";
-         }
-
-         echo "</td>";
-         echo "</tr>";
-
          echo "</table></div></form>";
       }
    }

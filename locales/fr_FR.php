@@ -143,7 +143,6 @@ $LANG['plugin_order']['reference'][8] = "Impossible de créer une référence sa
 $LANG['plugin_order']['reference'][9] = "Impossible de créer une référence sans type";
 $LANG['plugin_order']['reference'][10] = "Référence produit fournisseur";
 
-
 $LANG['plugin_order']['setup'][2] = "Plugin non utilisable depuis le helpdesk";
 
 $LANG['plugin_order']['config'][0] = "Configuration du plugin";
@@ -161,6 +160,7 @@ $LANG['plugin_order']['history'][2] = "Ajout";
 $LANG['plugin_order']['history'][3] = "Mise à jour";
 $LANG['plugin_order']['history'][4] = "Suppression";
 
+$LANG['plugin_order']['validation'][0] = "Merci d'ajouter au moins un équipement à votre commande.";
 $LANG['plugin_order']['validation'][1] = "Demande de validation de la commande";
 $LANG['plugin_order']['validation'][2] = "Commande validée";
 $LANG['plugin_order']['validation'][3] = "Commande en cours de livraison";

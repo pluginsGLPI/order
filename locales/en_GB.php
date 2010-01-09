@@ -161,6 +161,7 @@ $LANG['plugin_order']['history'][2] = "Add";
 $LANG['plugin_order']['history'][3] = "Update";
 $LANG['plugin_order']['history'][4] = "Delete";
 
+$LANG['plugin_order']['validation'][0] = "Thanks to add at least one equipment on your order.";
 $LANG['plugin_order']['validation'][1] = "Request order validation";
 $LANG['plugin_order']['validation'][2] = "Order validated";
 $LANG['plugin_order']['validation'][3] = "Order being taken delivery";
