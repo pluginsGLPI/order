@@ -46,6 +46,7 @@ function plugin_order_install() {
                   `name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
                   `numorder` varchar(255) NOT NULL collate utf8_unicode_ci default '',
                   `budget` int (11) NOT NULL default 0,
+                  `taxes` FLOAT NOT NULL default 0,
                   `payment` int (11) NOT NULL default 0,
                   `status` int(11) NOT NULL default 1,
                   `FK_entities` int(11) NOT NULL default 0,
@@ -113,7 +114,7 @@ function plugin_order_install() {
                   `discount` FLOAT NOT NULL default 0,
                   `price_ati` FLOAT NOT NULL default 0,
                   `status` int(1) NOT NULL default 0,
-                  `date`date NOT NULL default 0,
+                  `date` date NOT NULL default 0,
                   PRIMARY KEY  (`ID`)
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die($DB->error());
@@ -261,6 +262,12 @@ function plugin_order_install() {
 
    if (!FieldExists("glpi_plugin_order","port_price")) {
    	$query = "ALTER TABLE `glpi_plugin_order` ADD `port_price` FLOAT NOT NULL default '0'";
+   $DB->query($query) or die($DB->error());
+
+   }
+   
+   if (!FieldExists("glpi_plugin_order","taxes")) {
+   	$query = "ALTER TABLE `glpi_plugin_order` ADD `taxes` FLOAT NOT NULL default '0'";
    $DB->query($query) or die($DB->error());
 
    }
@@ -455,16 +462,11 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_TYPE][2]['linkfield'] = 'date';
 		$sopt[PLUGIN_ORDER_TYPE][2]['name'] = $LANG['plugin_order'][1];
 		$sopt[PLUGIN_ORDER_TYPE][2]['datatype']='date';
-		/* budget
-		$sopt[PLUGIN_ORDER_TYPE][3]['table'] = 'glpi_dropdown_budget';
+		/* budget*/
+		$sopt[PLUGIN_ORDER_TYPE][3]['table'] = 'glpi_dropdown_plugin_order_taxes';
 		$sopt[PLUGIN_ORDER_TYPE][3]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_TYPE][3]['linkfield'] = 'budget';
-		$sopt[PLUGIN_ORDER_TYPE][3]['name'] = $LANG['plugin_order'][3];*/
-      /* supplier command number 
-      $sopt[PLUGIN_ORDER_TYPE][3]['table'] = 'glpi_plugin_order';
-		$sopt[PLUGIN_ORDER_TYPE][3]['field'] = 'numordersupplier';
-		$sopt[PLUGIN_ORDER_TYPE][3]['linkfield'] = 'numordersupplier';
-		$sopt[PLUGIN_ORDER_TYPE][3]['name'] = $LANG['plugin_order'][31];*/
+		$sopt[PLUGIN_ORDER_TYPE][3]['linkfield'] = 'taxes';
+		$sopt[PLUGIN_ORDER_TYPE][3]['name'] = $LANG['plugin_order'][25];
 		/* location */
 		$sopt[PLUGIN_ORDER_TYPE][4]['table'] = 'glpi_dropdown_locations';
 		$sopt[PLUGIN_ORDER_TYPE][4]['field'] = 'completename';
@@ -496,11 +498,6 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_TYPE][8]['datatype']='itemlink';
 		$sopt[PLUGIN_ORDER_TYPE][8]['itemlink_type']=CONTACT_TYPE;
 		$sopt[PLUGIN_ORDER_TYPE][8]['forcegroupby']=true; */
-		/* bill number 
-		$sopt[PLUGIN_ORDER_TYPE][9]['table'] = 'glpi_plugin_order';
-		$sopt[PLUGIN_ORDER_TYPE][9]['field'] = 'numbill';
-		$sopt[PLUGIN_ORDER_TYPE][9]['linkfield'] = 'numbill';
-		$sopt[PLUGIN_ORDER_TYPE][9]['name'] = $LANG['plugin_order'][28];*/
 		/* title */
 		$sopt[PLUGIN_ORDER_TYPE][10]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][10]['field'] = 'name';

@@ -242,7 +242,7 @@ class PluginOrderDetail extends CommonDBTM {
 					echo "<td align='center'>".formatNumber($data["price_taxfree"])."</td>";
 					/* price with reduction */
 					echo "<td align='center'>".formatNumber($data["price_discounted"])."</td>";
-					/* price with taxes */
+					/* reduction */
 					echo "<td align='center'>".formatNumber($data["discount"])."</td>";
 					/* total price */
 					echo "<td align='center'>".formatNumber($data["totalpriceHT"])."</td>";
@@ -281,7 +281,19 @@ class PluginOrderDetail extends CommonDBTM {
 			return false;
 	}
 	
-	function getTotalQuantity($FK_order, $FK_reference) {
+	function getTotalQuantityByRefAndDiscount($FK_order, $FK_reference, $discount) {
+      global $DB;
+      
+      $query = "SELECT COUNT(*) AS quantity 
+               FROM `".$this->table."`
+               WHERE  `FK_order` = '$FK_order'
+               AND `FK_reference` = '$FK_reference' 
+               AND `discount` = '$discount'";
+      $result = $DB->query($query);
+      return ($DB->result($result, 0, 'quantity'));
+   }
+   
+   function getTotalQuantity($FK_order, $FK_reference) {
       global $DB;
       
       $query = "SELECT COUNT(*) AS quantity 

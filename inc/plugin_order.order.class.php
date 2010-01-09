@@ -94,8 +94,8 @@ class PluginOrder extends CommonDBTM {
 			$ong[2] = $LANG['plugin_order']['detail'][0];
 			/* fournisseur */
 			$ong[3] = $LANG['plugin_order'][4];
-			/* generation 
-			$ong[4] = $LANG['plugin_order']['generation'][2];*/
+			/* generation */
+			$ong[4] = $LANG['plugin_order']['generation'][2];
 			/* delivery */
 			$ong[5] = $LANG['plugin_order']['delivery'][1];
 			/* item */
@@ -199,13 +199,22 @@ class PluginOrder extends CommonDBTM {
 				echo getDropdownName("glpi_dropdown_locations", $this->fields["location"]);
 			echo "</td>";
 			
-			/* payment */
-			echo "<td>" . $LANG['plugin_order'][32] . ": </td><td>";
-			if ($canedit)
-				dropdownValue("glpi_dropdown_plugin_order_payment", "payment", $this->fields["payment"], 1, $this->fields["FK_entities"]);
-			else
-				echo getDropdownname("glpi_dropdown_plugin_order_payment", $this->fields["payment"]);
-			echo "</td></tr>";
+			/* tva */
+			echo "<td>" . $LANG['plugin_order'][25] . ": </td><td>";
+			$PluginOrderConfig = new PluginOrderConfig();
+			$default_taxes = $PluginOrderConfig->getDefaultTaxes();
+			
+			if (empty ($ID) || $ID < 0) {
+            $taxes = $default_taxes;
+         } else {
+            $taxes = $this->fields["taxes"];
+         }
+         if ($canedit)
+            dropdownValue("glpi_dropdown_plugin_order_taxes","taxes",$taxes);
+         else
+				echo getDropdownname("glpi_dropdown_plugin_order_taxes", $this->fields["taxes"]);
+         echo "</td>";
+         echo "</tr>";
 			
 			/* supplier of order */
 			echo "<tr class='tab_bg_1'><td>" . $LANG['financial'][26] . ": </td>";
@@ -219,13 +228,12 @@ class PluginOrder extends CommonDBTM {
 				echo getDropdownName("glpi_enterprises", $this->fields["FK_enterprise"]);
 			echo "</td>";
 			
-			/* port price */
-			echo "<td>".$LANG['plugin_order'][26].": </td>";
-			echo "<td>";
+			/* payment */
+			echo "<td>" . $LANG['plugin_order'][32] . ": </td><td>";
 			if ($canedit)
-				echo "<input type='text' name='port_price' value=\"".formatNumber($this->fields["port_price"],true)."\" size='5'>";
+				dropdownValue("glpi_dropdown_plugin_order_payment", "payment", $this->fields["payment"], 1, $this->fields["FK_entities"]);
 			else
-				echo formatNumber($this->fields["port_price"]);
+				echo getDropdownname("glpi_dropdown_plugin_order_payment", $this->fields["payment"]);
 			echo "</td></tr>";
 			
 			/* linked contact of the supplier of order */
@@ -237,13 +245,14 @@ class PluginOrder extends CommonDBTM {
 				echo getDropdownName("glpi_contacts", $this->fields["FK_contact"]);
 			echo "</span></td>";
 			
-			/* status of bill */
-			echo "<td>" . $LANG['plugin_order']['status'][0] . ": </td>";
+			/* port price */
+			echo "<td>".$LANG['plugin_order'][26].": </td>";
 			echo "<td>";
-			echo "<input type='hidden' name='status' value=" . ORDER_STATUS_DRAFT . ">";
-			echo $this->getDropdownStatus($this->fields["status"]);
+			if ($canedit)
+				echo "<input type='text' name='port_price' value=\"".formatNumber($this->fields["port_price"],true)."\" size='5'>";
+			else
+				echo formatNumber($this->fields["port_price"]);
 			echo "</td></tr>";
-			//End
 
 			echo "<tr class='tab_bg_1'><td>";
 			//comments of order
@@ -256,29 +265,32 @@ class PluginOrder extends CommonDBTM {
 			echo "</td>";
 
 			/* total price (without taxes) */
+         
+         /* status of bill */
+			echo "<td class='center b'>" . $LANG['plugin_order']['status'][0] . "<br>";
+			echo "<input type='hidden' name='status' value=" . ORDER_STATUS_DRAFT . ">";
+			echo $this->getDropdownStatus($this->fields["status"]);
 
+         echo "</td><td>";
 			if ($ID > 0) {
             $PluginOrderDetail = new PluginOrderDetail();
 				$prices = $PluginOrderDetail->getAllPrices($ID);
 
-				echo "<td colspan='2'>" . $LANG['plugin_order'][13] . " : ";
+				echo $LANG['plugin_order'][13] . " : ";
 				echo formatNumber($prices["priceHT"]) . "<br>";
         
-            /* total price (with postage) */
+            // total price (with postage)
 				echo $LANG['plugin_order'][15] . " : ";
 				$priceHTwithpostage=$prices["priceHT"]+$this->fields["port_price"];
 				echo formatNumber($priceHTwithpostage) . "<br>";
 				
-				/* total price (with taxes) */
+				// total price (with taxes)
 				echo $LANG['plugin_order'][14] . " : ";
-				$PluginOrderConfig = new PluginOrderConfig();
-				$PluginOrderConfig->getFromDB(1);
-				$taxes = $PluginOrderConfig->fields["default_taxes"];
-				$postagewithTVA = $PluginOrderDetail->getPricesATI($this->fields["port_price"], getDropdownName("glpi_dropdown_plugin_order_taxes", $taxes));
+				$postagewithTVA = $PluginOrderDetail->getPricesATI($this->fields["port_price"], getDropdownName("glpi_dropdown_plugin_order_taxes", $this->fields["taxes"]));
 				$total = $prices["priceTTC"] + $postagewithTVA;
-				echo formatNumber($total) . "</td></tr>";
+				echo formatNumber($total) . "</td>";
 			} else
-				echo "<td colspan='2'></td>";
+				echo "</td>";
 
 			echo "</tr>";
 
@@ -599,61 +611,6 @@ class PluginOrder extends CommonDBTM {
 
       echo "</table></div></form>";
    }
-   
-   function generateOrder($ID) {
-		global $LANG,$DB;
-		
-		$odf = new odf("template.odt");
-      
-      $this->getFromDB($ID);
-      $titre = $LANG['plugin_order']['generation'][2]." ".$this->fields["numorder"];
-		$odf->setVars('title',$titre,true,'UTF-8');
-
-      $message = $LANG['plugin_order']['generation'][3];
-
-      $odf->setVars('message', $message,true,'UTF-8');
-      
-      $odf->setVars('titletype',$LANG['plugin_order']['detail'][1],true,'UTF-8');
-      
-      $odf->setVars('titlename',$LANG['plugin_order']['detail'][2],true,'UTF-8');
-      
-      $listeArticles = array();
-      
-      $query="SELECT `glpi_plugin_order_detail`.`ID` AS IDD, `glpi_plugin_order_references`.`ID`, 
-					`glpi_plugin_order_references`.`type`,`glpi_plugin_order_references`.`FK_type`,`glpi_plugin_order_references`.`FK_model`, `glpi_plugin_order_references`.`FK_glpi_enterprise`, `glpi_plugin_order_references`.`name`, 
-					`glpi_plugin_order_detail`.`price_taxfree`, `glpi_plugin_order_detail`.`price_ati`, `glpi_plugin_order_detail`.`price_discounted`, 
-               `glpi_plugin_order_detail`.`discount`,
-					`glpi_plugin_order_detail`.`price_discounted` AS totalpriceHT, 
-					`glpi_plugin_order_detail`.`price_ati` AS totalpriceTTC 
-					FROM `glpi_plugin_order_detail`, `glpi_plugin_order_references`
-					WHERE `glpi_plugin_order_detail`.`FK_reference` = `glpi_plugin_order_references`.`ID`
-					AND `glpi_plugin_order_detail`.`FK_order` = '$ID'
-					ORDER BY `glpi_plugin_order_references`.`name` ";
-					
-      $result=$DB->query($query);
-      $num=$DB->numrows($result);
-      
-      while ($data=$DB->fetch_array($result)){
-         $ci=new CommonItem();
-         $ci->setType($data["type"]);
-         
-         $listeArticles[]=array('type' => utf8_decode($ci->getType()),
-               'ref' => utf8_decode($data["name"]));
-         
-      }
-      
-      $article = $odf->setSegment('articles');
-      foreach($listeArticles AS $element) {
-         $article->titleArticle($element['type']);
-         $article->texteArticle($element['ref']);
-         $article->merge();
-      }
-
-      $odf->mergeSegment($article);
-      
-      // We export the file
-      $odf->exportAsAttachedFile();
-	}
 }
 
 ?>
