@@ -73,6 +73,7 @@ plugin_order_checkRight("order", "r");
 $PluginOrder = new PluginOrder();
 $PluginOrderDetail = new PluginOrderDetail();
 $PluginOrderSupplier = new PluginOrderSupplier();
+$PluginOrderReception = new PluginOrderReception();
 
 if (empty ($_POST["ID"])) {
 	switch ($_POST['glpi_tab']) {
@@ -86,8 +87,8 @@ if (empty ($_POST["ID"])) {
 			$PluginOrderDetail->showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			$PluginOrder->showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			$PluginOrderSupplier->showForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
-			plugin_order_showReceptionForm($_POST["ID"]);
-			plugin_order_showGenerationForm($_POST["ID"]);
+			$PluginOrderReception->showOrderReception($_POST["ID"]);
+			$PluginOrderReception->showOrderGeneration($_POST["ID"]);
 			showDocumentAssociated(PLUGIN_ORDER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
 			break;
 		case 1 :
@@ -103,10 +104,10 @@ if (empty ($_POST["ID"])) {
 			$PluginOrder->showGenerationForm($_POST["ID"]);
 			break;*/
 		case 5 :
-			plugin_order_showReceptionForm($_POST["ID"]);
+			$PluginOrderReception->showOrderReception($_POST["ID"]);
 			break;
 		case 6 :
-         plugin_order_showGenerationForm($_POST["ID"]);
+         $PluginOrderReception->showOrderGeneration($_POST["ID"]);
 			break;
       case 9 :
 			/* show documents linking form */

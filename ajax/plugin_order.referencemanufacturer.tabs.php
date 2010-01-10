@@ -61,13 +61,8 @@ switch ($_POST['glpi_tab']) {
 		/* show documents linking form */
 		showDocumentAssociated(PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE, $_POST["ID"]);
 		break;
-	case 12 :
-		/* show history form */
-		showHistory(PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE, $_POST["ID"]);
-		break;
 	case -1 :
 		showDocumentAssociated(PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE, $_POST["ID"]);
-		showHistory(PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE, $_POST["ID"]);
 	default :
 		break;
 }

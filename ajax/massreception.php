@@ -43,6 +43,8 @@ checkLoginUser();
 
 useplugin('order', true);
 
+$PluginOrderReception = new PluginOrderReception();
+
 echo "<table width='950px' class='tab_cadre' width='50%'>";
 echo "<tr class='tab_bg_2'><td>";
 showDateFormItem("date",date("Y-m-d"),true,1);
@@ -53,7 +55,7 @@ echo "</td><td>";
 echo "<input type='hidden' name='referenceID' value='".$_POST['referenceID']."'>";
 echo "<input type='hidden' name='orderID' value='".$_POST['orderID']."'>";
 echo $LANG['plugin_order']['delivery'][6];
-$nb = plugin_order_getNumberOfLinkedMaterial($_POST['orderID'],$_POST['referenceID']);
+$nb = $PluginOrderReception->checkItemStatus($_POST['orderID'],$_POST['referenceID'], ORDER_DEVICE_NOT_DELIVRED);
 dropdownInteger('number_reception','',1,$nb);
 echo "</td><td><input type='submit' name='bulk_reception' class='submit' value='".$LANG['buttons'][2]."'></td></tr></table>";
 			

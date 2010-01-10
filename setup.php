@@ -150,6 +150,14 @@ function plugin_init_order() {
 			'searchpage' => '',
 			'typename' => $LANG['plugin_order'][4],
 		));
+		
+		registerPluginType('order', 'PLUGIN_ORDER_RECEPTION_TYPE', 3155, array (
+			'classname' => 'PluginOrderReception',
+			'tablename' => 'glpi_plugin_order_detail',
+			'formpage' => 'front/plugin_order.reception.form.php',
+			'searchpage' => '',
+			'typename' => $LANG['plugin_order'][6],
+		));
 
 	if ($plugin->isActivated("order"))
 	{
@@ -249,6 +257,8 @@ function plugin_order_haveTypeRight($type, $right) {
 		case PLUGIN_ORDER_BUDGET_TYPE :
 			return plugin_order_haveRight("budget", $right);
 		case PLUGIN_ORDER_SUPPLIER_TYPE :
+			return plugin_order_haveRight("order", $right);
+		case PLUGIN_ORDER_RECEPTION_TYPE :
 			return plugin_order_haveRight("order", $right);
 	}
 }

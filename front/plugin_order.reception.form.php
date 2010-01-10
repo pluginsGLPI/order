@@ -43,16 +43,23 @@ define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 usePlugin('order', true);
+
+$PluginOrderReception = new PluginOrderReception();
+
 $plugin = new Plugin;
 if ($plugin->isActivated("genericobject"))
 	usePlugin('genericobject');
 
+if (isset ($_POST["update"])) {
+   if (plugin_order_HaveRight("order", "w"))
+      $PluginOrderReception->update($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset ($_POST["reception"])) {
 /* reception d'une ligne detail */
-if (isset ($_POST["reception"])) {
-	plugin_order_updateReceptionStatus($_POST);
+	$PluginOrderReception->updateReceptionStatus($_POST);
 	glpi_header($_SERVER["HTTP_REFERER"]);
 } else if (isset ($_POST["bulk_reception"])) {
-	plugin_order_updateBulkReceptionStatus($_POST);
+	$PluginOrderReception->updateBulkReceptionStatus($_POST);
 	glpi_header($_SERVER["HTTP_REFERER"]);
 }
 /*  affiche le tableau permettant la generation de materiel */
@@ -71,23 +78,29 @@ else if (isset ($_POST["generation"])) {
 		}
 	}
 
-	if (isset ($_POST["item"]))
-		plugin_order_plugin_order_showItemGenerationForm($_SERVER["PHP_SELF"], $_POST);
-	else {
+	if (isset ($_POST["item"])) {
+      
+      commonHeader($LANG['plugin_order']['title'][1], $_SERVER["PHP_SELF"], "plugins", "order", "order");
+      
+		$PluginOrderReception->showItemGenerationForm($_SERVER["PHP_SELF"], $_POST);
+		
+		commonFooter();
+		
+	} else {
 		addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
 		glpi_header($_SERVER["HTTP_REFERER"]);
 	}
 }
 /* genere le materiel */
 else if (isset ($_POST["generate"])) {
-	plugin_order_generateNewDevice($_POST);
+	$PluginOrderReception->generateNewItem($_POST);
 	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=" . $_POST["orderID"] . "");
 }
 /* supprime un lien d'une ligne detail vers un materiel */
 else if (isset ($_POST["deleteLinkWithDevice"])) {
 	foreach ($_POST["item"] as $key => $val) {
 		if ($val == 1)
-			plugin_order_deleteLinkWithDevice($key, $_POST["type"][$key]);
+			$PluginOrderReception->deleteLinkWithDevice($key, $_POST["type"][$key]);
 	}
 	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=" . $_POST["orderID"] . "");
 }
@@ -109,7 +122,7 @@ else if (isset ($_POST["createLinkWithDevice"])) {
                   glpi_header($_SERVER["HTTP_REFERER"]);
                } else
                {
-                  plugin_order_createLinkWithDevice($key, $_POST["device"], $_POST["type"][$key], $_POST["orderID"]);
+                  $PluginOrderReception->createLinkWithDevice($key, $_POST["device"], $_POST["type"][$key], $_POST["orderID"]);
                   
                }
             }
@@ -118,6 +131,14 @@ else if (isset ($_POST["createLinkWithDevice"])) {
          addMessageAfterRedirect($LANG['plugin_order'][42], true, ERROR);
    }
 	glpi_header("" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=" . $_POST["orderID"] . "");
+} else {
+   
+   commonHeader($LANG['plugin_order']['title'][1],$_SERVER["PHP_SELF"],"plugins","order","order");
+	
+	$PluginOrderReception->showForm($_SERVER["PHP_SELF"],$_GET["ID"]);
+
+	commonFooter();
+	
 }
 
 ?>

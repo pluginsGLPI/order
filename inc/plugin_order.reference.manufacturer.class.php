@@ -53,7 +53,6 @@ class PluginOrderReferenceManufacturer extends CommonDBTM {
 		$ong[1] = $LANG['title'][26];
 		if (haveRight("document", "r"))
 			$ong[4] = $LANG['Menu'][27];
-		$ong[12] = $LANG['title'][38];
 
 		return $ong;
 	}

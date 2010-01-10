@@ -184,6 +184,7 @@ class PluginOrderDetail extends CommonDBTM {
 
 			$PluginOrder=new PluginOrder();
 			$PluginOrderReference = new PluginOrderReference();
+			$PluginOrderReception = new PluginOrderReception();
 
 			$canedit=$PluginOrder->can($FK_order,'w') && $PluginOrder->canUpdateOrder($FK_order);
 			echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  action=\"$target\">";
@@ -246,7 +247,7 @@ class PluginOrderDetail extends CommonDBTM {
 					/* price with reduction */
 					echo "<td align='center'>".formatNumber($data["price_discounted"]*$quantity)."</td>";
 					/* status  */
-					echo "<td align='center'>".plugin_order_getReceptionStatus($data["IDD"])."</td></tr>";
+					echo "<td align='center'>".$PluginOrderReception->getReceptionStatus($data["IDD"])."</td></tr>";
 
 				}
 				echo "</table></div>";
