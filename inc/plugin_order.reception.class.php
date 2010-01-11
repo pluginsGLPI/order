@@ -122,28 +122,40 @@ class PluginOrderReception extends CommonDBTM {
          $this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"FK_order=".$this->fields["FK_order"]."");
          echo "<form method='post' name='show_reception' id='show_reception' action=\"$target\">";
          echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+         
          $PluginOrder = new PluginOrder();
          $PluginOrder->getFromDB($this->fields["FK_order"]);
          $this->fields["FK_entities"] = $PluginOrder->fields["FK_entities"];
+         
+         $PluginOrderReference = new PluginOrderReference();
+         $PluginOrderReference->getFromDB($this->fields["FK_reference"]);
+         
          $canedit = $PluginOrder->can($this->fields["FK_order"], 'w') && !$PluginOrder->canUpdateOrder($this->fields["FK_order"]) && $PluginOrder->fields["status"] != ORDER_STATUS_CANCELED;
          echo "<input type='hidden' name='FK_order' value='" . $this->fields["FK_order"] . "'>";
          
          echo "<div class='center' id='tabsbody'>";
          echo "<table class='tab_cadre_fixe'>";
-         $this->showFormHeader($ID,"", 1);
+         $this->showFormHeader($ID,"", 2);
          
          echo "<tr>";
+         echo "<th>" . $LANG['plugin_order']['detail'][6]. "</th>";
          echo "<th>" . $LANG['plugin_order']['detail'][21]. "</th>";
          echo "<th>" . $LANG['financial'][19] . "</th></tr>";
          
          echo "<tr class='tab_bg_1'>";
          echo "<td align='center'>";
+         $data = array();
+         $data["ID"] = $this->fields["FK_reference"];
+         $data["name"]= $PluginOrderReference->fields["name"];
+         echo $PluginOrderReference->getReceptionReferenceLink($data);
+         echo "</td>";
+         echo "<td align='center'>";
          if ($canedit)
             showDateFormItem("date",$this->fields["date"],true,1);
          else
             echo convDate($this->fields["date"]);
-        echo "</td>";
-        echo "<td align='center'>";
+         echo "</td>";
+         echo "<td align='center'>";
          if ($canedit)
             autocompletionTextField("deliverynum", "glpi_plugin_order_detail", "deliverynum", $this->fields["deliverynum"], 20);
          else
@@ -154,7 +166,7 @@ class PluginOrderReception extends CommonDBTM {
          if ($canedit)
          {
             echo "<tr>";
-            echo "<td class='tab_bg_1'align='center' colspan='2'>";
+            echo "<td class='tab_bg_1'align='center' colspan='3'>";
             echo "<input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit' >";
             echo "</td>";
             echo "</tr>";
