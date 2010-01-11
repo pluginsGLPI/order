@@ -220,7 +220,7 @@ class PluginOrder extends CommonDBTM {
 			echo "<tr class='tab_bg_1'><td>" . $LANG['financial'][26] . ": </td>";
 			echo "<td>";
 			if ($canedit && !$this->checkIfDetailExists($ID))
-            $this->dropdownSuppliers("FK_enterprise", $this->fields["FK_entities"]);
+            $this->dropdownSuppliers("FK_enterprise", $this->fields["FK_enterprise"], $this->fields["FK_entities"]);
 			else
 				echo getDropdownName("glpi_enterprises", $this->fields["FK_enterprise"]);
 			echo "</td>";
@@ -322,7 +322,7 @@ class PluginOrder extends CommonDBTM {
 		return true;
 	}
 
-   function dropdownSuppliers($myname,$entity_restrict='') {
+   function dropdownSuppliers($myname,$value=0,$entity_restrict='') {
       global $DB,$CFG_GLPI;
 
       $rand=mt_rand();
@@ -354,7 +354,7 @@ class PluginOrder extends CommonDBTM {
          if($_SESSION["glpiview_ID"]||empty($output)){
             $output.=" (".$data["ID"].")";
          }
-         echo "<option value=\"".$data["ID"]."\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
+         echo "<option value='".$data["ID"]."' ".($value==$data["ID"]?" selected ":"")." title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
       }
       if ($prev>=0) {
          echo "</optgroup>";
