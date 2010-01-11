@@ -191,11 +191,10 @@ class PluginOrderDetail extends CommonDBTM {
 			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
 			if ($num>0) {
 				echo "<div class='center'><table class='tab_cadre_fixe'>";
-				echo "<tr><th colspan='15'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
+				echo "<tr><th colspan='14'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
 				echo "<tr>";
 				if($canedit)
 					echo "<th></th>";
-				echo "<th>".$LANG['common'][2]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][7]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][1]."</th>";
 				echo "<th>".$LANG['common'][5]."</th>";
@@ -217,7 +216,6 @@ class PluginOrderDetail extends CommonDBTM {
 						echo "<input type='checkbox' name='detail[".$data["IDD"]."]' value='1' $sel>";
 						echo "</td>";
 					}
-					echo "<td align='center'>".$data["IDD"]."</td>";
 					/* quantity */
 					$quantity = $this->getTotalQuantityByRefAndDiscount($FK_order,$data["ID"],$data["price_taxfree"],$data["discount"]);
 					echo "<td align='center'>".$quantity."</td>";
