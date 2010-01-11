@@ -219,7 +219,7 @@ class PluginOrderDetail extends CommonDBTM {
 					}
 					echo "<td align='center'>".$data["IDD"]."</td>";
 					/* quantity */
-					$quantity = $this->getTotalQuantityByRefAndDiscount($FK_order,$data["ID"],$data["discount"]);
+					$quantity = $this->getTotalQuantityByRefAndDiscount($FK_order,$data["ID"],$data["price_taxfree"],$data["discount"]);
 					echo "<td align='center'>".$quantity."</td>";
 					/* type */
 					$ci=new CommonItem();
@@ -282,13 +282,14 @@ class PluginOrderDetail extends CommonDBTM {
 			return false;
 	}
 
-	function getTotalQuantityByRefAndDiscount($FK_order, $FK_reference, $discount) {
+	function getTotalQuantityByRefAndDiscount($FK_order, $FK_reference, $price_taxfree, $discount) {
       global $DB;
 
       $query = "SELECT COUNT(*) AS quantity
                FROM `".$this->table."`
                WHERE  `FK_order` = '$FK_order'
                AND `FK_reference` = '$FK_reference'
+               AND `price_taxfree` = '$price_taxfree'
                AND `discount` = '$discount'";
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'quantity'));
