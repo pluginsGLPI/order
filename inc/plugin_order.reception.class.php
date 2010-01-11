@@ -228,7 +228,7 @@ class PluginOrderReception extends CommonDBTM {
             echo "<td align='center'>" . $ci->getType() . "</td>";
             echo "<td align='center'>" . getDropdownName("glpi_dropdown_manufacturer", $data_ref["FK_glpi_enterprise"]) . "</td>";
             echo "<td>" . $PluginOrderReference->getReceptionReferenceLink($data_ref) . "</td>";
-            echo "<td>" . $PluginOrderDetail->getDeliveredQuantity($orderID, $refID) . " / " . $PluginOrderDetail->getTotalQuantity($orderID,$refID) . "</td>";
+            echo "<td>" . $PluginOrderDetail->getDeliveredQuantity($orderID, $refID) . " / " . $PluginOrderDetail->getTotalQuantityByRef($orderID,$refID) . "</td>";
             echo "</tr></table>";
 
             echo "<div class='center' id='reception$rand' style='display:none'>";

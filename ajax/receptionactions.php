@@ -45,10 +45,6 @@ if (!defined('GLPI_ROOT')){
 
 useplugin('order', true);
 
-$reference = new PluginOrderReference;
-
-$type=$_POST["type"];
-
 if (isset($_POST["action"])){
 	switch($_POST["action"]){
 		case "reception":
@@ -61,4 +57,5 @@ if (isset($_POST["action"])){
          break;
 	}
 }
+
 ?>

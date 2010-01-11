@@ -62,12 +62,12 @@ class PluginOrderDetail extends CommonDBTM {
          return $priceHT + (($priceHT * $taxes) / 100);
    }
 
-   function checkIFReferenceExistsInOrder($orderID, $referenceID) {
+   function checkIFReferenceExistsInOrder($FK_order, $referenceID) {
       global $DB;
 
       $query = "SELECT `ID`
                FROM `".$this->table."`
-               WHERE `FK_order` = '$orderID'
+               WHERE `FK_order` = '$FK_order'
                AND `FK_reference` = '$referenceID' ";
       $result = $DB->query($query);
       if ($DB->numrows($result))
@@ -76,15 +76,15 @@ class PluginOrderDetail extends CommonDBTM {
          return false;
    }
 
-   function addDetails($referenceID, $device_type, $orderID, $quantity, $price, $discounted_price, $taxes) {
+   function addDetails($referenceID, $device_type, $FK_order, $quantity, $price, $discounted_price, $taxes) {
       global $LANG;
 
-      //if ($this->checkIFReferenceExistsInOrder($orderID, $referenceID))
+      //if ($this->checkIFReferenceExistsInOrder($FK_order, $referenceID))
          //addMessageAfterRedirect($LANG['plugin_order']['detail'][28], false, ERROR);
       //else {
       if ($quantity > 0) {
          for ($i = 0; $i < $quantity; $i++) {
-            $input["FK_order"] = $orderID;
+            $input["FK_order"] = $FK_order;
             $input["FK_reference"] = $referenceID;
             $input["device_type"] = $device_type;
             $input["price_taxfree"] = $price;
@@ -100,14 +100,6 @@ class PluginOrderDetail extends CommonDBTM {
       //}
    }
 
-   function deleteDetails($ID) {
-      global $DB;
-
-      $query = " DELETE FROM `".$this->table."`
-                  WHERE `ID` = '$ID' ";
-      $DB->query($query);
-   }
-
 	/* show details of orders */
    function showDetail($target, $ID) {
 
@@ -115,21 +107,21 @@ class PluginOrderDetail extends CommonDBTM {
       $this->showAddForm($target, $ID);
    }
 
-	function showAddForm($target, $orderID){
+	function showAddForm($target, $FK_order){
       global  $CFG_GLPI, $LANG,$DB;
 
       $order=new PluginOrder();
       $reference=new PluginOrderReference();
 
-		if ($order->canUpdateOrder($orderID))
+		if ($order->canUpdateOrder($FK_order))
 		{
 
-			$canedit=$order->can($orderID,'w');
+			$canedit=$order->can($FK_order,'w');
 
 			if ($canedit)
 			{
 				echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\"$target\">";
-				echo "<input type='hidden' name='FK_order' value=\"$orderID\">";
+				echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
 				echo "<div class='center'>";
 				echo"<table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='6'>".$LANG['plugin_order']['detail'][5]."</th></tr>";
@@ -169,13 +161,11 @@ class PluginOrderDetail extends CommonDBTM {
       $query="SELECT `".$this->table."`.`ID` AS IDD, `glpi_plugin_order_references`.`ID`,
 					`glpi_plugin_order_references`.`type`,`glpi_plugin_order_references`.`FK_type`,`glpi_plugin_order_references`.`FK_model`, `glpi_plugin_order_references`.`FK_glpi_enterprise`, `glpi_plugin_order_references`.`name`,
 					`".$this->table."`.`price_taxfree`, `".$this->table."`.`price_ati`, `".$this->table."`.`price_discounted`,
-               `".$this->table."`.`discount`,
-					`".$this->table."`.`price_discounted`,
-					`".$this->table."`.`price_ati`
+               `".$this->table."`.`discount`
 					FROM `".$this->table."`, `glpi_plugin_order_references`
 					WHERE `".$this->table."`.`FK_reference` = `glpi_plugin_order_references`.`ID`
 					AND `".$this->table."`.`FK_order` = '$ID'
-					GROUP BY `".$this->table."`.`discount`,`".$this->table."`.`price_taxfree`
+					GROUP BY `glpi_plugin_order_references`.`ID`,`".$this->table."`.`price_taxfree`,`".$this->table."`.`discount`
 					ORDER BY `glpi_plugin_order_references`.`name` ";
 
       $result=$DB->query($query);
@@ -183,28 +173,38 @@ class PluginOrderDetail extends CommonDBTM {
 		return $result;
    }
    
-   function showFormDetail ($target,$FK_order) {
+   function showFormDetail($target,$FK_order) {
       global  $CFG_GLPI, $LANG,$DB,$INFOFORM_PAGES,$ORDER_MODEL_TABLES,$ORDER_TYPE_TABLES;
-         
-         $result=$this->queryDetail($FK_order);
-         $num=$DB->numrows($result);
-         
-			$rand=mt_rand();
 
-			$PluginOrder=new PluginOrder();
-			$PluginOrderReference = new PluginOrderReference();
-			$PluginOrderReception = new PluginOrderReception();
+      $PluginOrder = new PluginOrder();
+      $PluginOrderReference = new PluginOrderReference();
+      $PluginOrderDetail = new PluginOrderDetail();
+      $PluginOrderReception = new PluginOrderReception();
+      
+      $canedit=$PluginOrder->can($FK_order,'w') && $PluginOrder->canUpdateOrder($FK_order);
+      
+      $result_ref=$PluginOrderDetail->queryDetail($FK_order);
+      $numref=$DB->numrows($result_ref);
+         
+		$rand=mt_rand();
 
-			$canedit=$PluginOrder->can($FK_order,'w') && $PluginOrder->canUpdateOrder($FK_order);
-			echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  action=\"$target\">";
-			echo "<input type='hidden' name='FK_order' value=\"$FK_order\">";
-			if ($num>0) {
-				echo "<div class='center'><table class='tab_cadre_fixe'>";
-				echo "<tr><th colspan='14'>".$LANG['plugin_order']['detail'][17].":</th></tr>";
-				echo "<tr>";
-				if($canedit)
-					echo "<th></th>";
-				echo "<th>".$LANG['plugin_order']['detail'][7]."</th>";
+      while ($data_ref=$DB->fetch_array($result_ref)){
+         
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         if (!$numref)
+            echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
+         else {
+            
+            $refID = $data_ref["ID"];
+            $price_taxfree = $data_ref["price_taxfree"];
+            $discount = $data_ref["discount"];
+            
+            $rand = mt_rand();
+            echo "<tr><th><ul><li>";
+            echo "<a href=\"javascript:showHideDiv('detail$rand','detail$rand','" . $CFG_GLPI["root_doc"] . "/pics/plus.png','" . $CFG_GLPI["root_doc"] . "/pics/moins.png');\">";
+            echo "<img alt='' name='detail$rand' src=\"" . $CFG_GLPI["root_doc"] . "/pics/plus.png\">";
+            echo "</a></li></ul></th>";
+            echo "<th>".$LANG['plugin_order']['detail'][7]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][1]."</th>";
 				echo "<th>".$LANG['common'][5]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
@@ -212,12 +212,68 @@ class PluginOrderDetail extends CommonDBTM {
 				echo "<th>".$LANG['common'][22]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][4]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][25]."</th>";
+            echo "</tr>";
+            echo "<tr class='tab_bg_1 center'>";
+            echo "<td></td>";
+            /* quantity */
+            $quantity = $this->getTotalQuantityByPriceAndDiscount($FK_order,$price_taxfree,$discount);
+            echo "<td align='center'>".$quantity."</td>";
+            /* type */
+            $ci=new CommonItem();
+            $ci->setType($data_ref["type"]);
+            echo "<td align='center'>".$ci->getType()."</td>";
+            /* manufacturer */
+            echo "<td align='center'>".getDropdownName("glpi_dropdown_manufacturer",$data_ref["FK_glpi_enterprise"])."</td>";
+            /* reference */
+            echo "<td align='center'>";
+            echo $PluginOrderReference->getReceptionReferenceLink($data_ref);
+            echo "</td>";
+            /* type */
+            echo "<td align='center'>";
+            if (isset($ORDER_TYPE_TABLES[$data_ref["type"]]))
+               echo getDropdownName($ORDER_TYPE_TABLES[$data_ref["type"]], $data_ref["FK_type"]);
+            echo "</td>";
+            /* modele */
+            echo "<td align='center'>";
+            if (isset($ORDER_MODEL_TABLES[$data_ref["type"]]))
+               echo getDropdownName($ORDER_MODEL_TABLES[$data_ref["type"]], $data_ref["FK_model"]);
+            echo "</td>";
+            echo "<td align='center'>".formatNumber($data_ref["price_taxfree"])."</td>";
+            /* reduction */
+            echo "<td align='center'>".formatNumber($data_ref["discount"])."</td>";
+            echo "</tr></table>";
+
+            echo "<div class='center' id='detail$rand' style='display:none'>";
+            echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  action=\"" . $CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php\">";
+            echo "<table class='tab_cadre_fixe'>";
+
+            echo "<tr>";
+            if($canedit)
+					echo "<th></th>";
+				echo "<th>".$LANG['common'][2]."</th>";
+				echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
+				echo "<th>".$LANG['plugin_order']['detail'][4]."</th>";
+				echo "<th>".$LANG['plugin_order']['detail'][25]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][18]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][19]."</th></tr>";
+            
+            $query="SELECT `".$this->table."`.`ID` AS IDD, `glpi_plugin_order_references`.`ID`, `glpi_plugin_order_references`.`name`,
+					`".$this->table."`.`price_taxfree`, `".$this->table."`.`price_discounted`,
+               `".$this->table."`.`discount`
+					FROM `".$this->table."`, `glpi_plugin_order_references`
+					WHERE `".$this->table."`.`FK_reference` = `glpi_plugin_order_references`.`ID`
+					AND `".$this->table."`.`FK_reference` = '".$refID."'
+					AND `".$this->table."`.`price_taxfree` LIKE '".$price_taxfree."'
+					AND `".$this->table."`.`discount` = '".$discount."'
+					AND `".$this->table."`.`FK_order` = '$FK_order'
+					ORDER BY `glpi_plugin_order_references`.`name` ";
 
-				while ($data=$DB->fetch_array($result)){
-
-					echo "<tr class='tab_bg_1'>";
+            $result=$DB->query($query);
+            $num=$DB->numrows($result);
+            
+            while ($data=$DB->fetch_array($result)){
+               
+               echo "<tr class='tab_bg_1'>";
 					if ($canedit){
 						echo "<td width='10'>";
 						$sel="";
@@ -225,28 +281,13 @@ class PluginOrderDetail extends CommonDBTM {
 						echo "<input type='checkbox' name='detail[".$data["IDD"]."]' value='1' $sel>";
 						echo "</td>";
 					}
-					/* quantity */
-					$quantity = $this->getTotalQuantityByRefAndDiscount($FK_order,$data["ID"],$data["price_taxfree"],$data["discount"]);
-					echo "<td align='center'>".$quantity."</td>";
-					/* type */
-					$ci=new CommonItem();
-					$ci->setType($data["type"]);
-					echo "<td align='center'>".$ci->getType()."</td>";
-					/* manufacturer */
-					echo "<td align='center'>".getDropdownName("glpi_dropdown_manufacturer",$data["FK_glpi_enterprise"])."</td>";
+					echo "<td align='center'>";
+					echo $data["IDD"];
+					echo "<input type='hidden' name='FK_order' value='" . $FK_order . "'>";
+					echo "</td>";
 					/* reference */
 					echo "<td align='center'>";
 					echo $PluginOrderReference->getReceptionReferenceLink($data);
-					echo "</td>";
-					/* type */
-					echo "<td align='center'>";
-					if (isset($ORDER_TYPE_TABLES[$data["type"]]))
-                  echo getDropdownName($ORDER_TYPE_TABLES[$data["type"]], $data["FK_type"]);
-					echo "</td>";
-					/* modele */
-					echo "<td align='center'>";
-					if (isset($ORDER_MODEL_TABLES[$data["type"]]))
-                  echo getDropdownName($ORDER_MODEL_TABLES[$data["type"]], $data["FK_model"]);
 					echo "</td>";
 					echo "<td align='center'>".formatNumber($data["price_taxfree"])."</td>";
 					/* reduction */
@@ -256,11 +297,11 @@ class PluginOrderDetail extends CommonDBTM {
 					/* status  */
 					echo "<td align='center'>".$PluginOrderReception->getReceptionStatus($data["IDD"])."</td></tr>";
 
-				}
-				echo "</table></div>";
-
-				if ($canedit) {
-					echo "<div class='center'>";
+            }
+            echo "</table>";
+            if ($canedit) {
+               
+               echo "<div class='center'>";
 					echo "<table width='950px' class='tab_glpi'>";
                echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$FK_order&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 
@@ -270,11 +311,12 @@ class PluginOrderDetail extends CommonDBTM {
                echo "</td>";
                echo "</table>";
 					echo "</div>";
-				}
-			}
-
-			echo "</form>";
-	}
+            }
+            echo "</form></div>";
+         }
+         echo "<br>";
+      }
+   }
 
 	function isDeviceLinkedToOrder($device_type, $deviceID) {
 		global $DB;
@@ -301,8 +343,20 @@ class PluginOrderDetail extends CommonDBTM {
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'quantity'));
    }
+   
+   function getTotalQuantityByPriceAndDiscount($FK_order, $price_taxfree, $discount) {
+      global $DB;
 
-   function getTotalQuantity($FK_order, $FK_reference) {
+      $query = "SELECT COUNT(*) AS quantity
+               FROM `".$this->table."`
+               WHERE  `FK_order` = '$FK_order'
+               AND `price_taxfree` = '$price_taxfree'
+               AND `discount` = '$discount'";
+      $result = $DB->query($query);
+      return ($DB->result($result, 0, 'quantity'));
+   }
+
+   function getTotalQuantityByRef($FK_order, $FK_reference) {
       global $DB;
 
       $query = "SELECT COUNT(*) AS quantity
@@ -325,15 +379,15 @@ class PluginOrderDetail extends CommonDBTM {
       return ($DB->result($result, 0, 'deliveredquantity'));
    }
 
-   function updateDelivryStatus($orderID) {
+   function updateDelivryStatus($FK_order) {
       global $DB;
 
       $order = new PluginOrder;
-      $order->getFromDB($orderID);
+      $order->getFromDB($FK_order);
 
       $query = "SELECT `status`
                FROM `".$this->table."`
-               WHERE `FK_order` = '$orderID'";
+               WHERE `FK_order` = '$FK_order'";
       $result = $DB->query($query);
       $all_delivered = true;
 
@@ -342,9 +396,9 @@ class PluginOrderDetail extends CommonDBTM {
             $all_delivered = false;
 
       if ($all_delivered && $order->fields["status"] != ORDER_STATUS_COMPLETLY_DELIVERED)
-         $order->updateOrderStatus($orderID, ORDER_STATUS_COMPLETLY_DELIVERED);
+         $order->updateOrderStatus($FK_order, ORDER_STATUS_COMPLETLY_DELIVERED);
       else if ($order->fields["status"] != ORDER_STATUS_PARTIALLY_DELIVRED)
-         $order->updateOrderStatus($orderID, ORDER_STATUS_PARTIALLY_DELIVRED);
+         $order->updateOrderStatus($FK_order, ORDER_STATUS_PARTIALLY_DELIVRED);
    }
 
    function getAllPrices($FK_order) {

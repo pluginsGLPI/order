@@ -168,7 +168,7 @@ else if (isset ($_POST["delete_detail"])) {
          {
             $new_value = $LANG['plugin_order']['detail'][35]." ".getDropdownName("glpi_plugin_order_references",$ID);
             $PluginOrder->addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
-            $PluginOrderDetail->deleteDetails($ID);
+            $PluginOrderDetail->delete(array('ID'=>$ID));
          }
    }elseif(!isset($_POST["detail"]))
       addMessageAfterRedirect($LANG['plugin_order']['detail'][29],false,ERROR);
