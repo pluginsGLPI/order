@@ -175,7 +175,7 @@ class PluginOrderDetail extends CommonDBTM {
 					FROM `".$this->table."`, `glpi_plugin_order_references`
 					WHERE `".$this->table."`.`FK_reference` = `glpi_plugin_order_references`.`ID`
 					AND `".$this->table."`.`FK_order` = '$FK_order'
-					GROUP BY `".$this->table."`.`discount`,`glpi_plugin_order_references`.`ID`
+					GROUP BY `".$this->table."`.`discount`,`".$this->table."`.`price_taxfree`
 					ORDER BY `glpi_plugin_order_references`.`name` ";
 
 			$result=$DB->query($query);
