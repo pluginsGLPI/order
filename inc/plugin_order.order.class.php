@@ -219,7 +219,7 @@ class PluginOrder extends CommonDBTM {
 			/* supplier of order */
 			echo "<tr class='tab_bg_1'><td>" . $LANG['financial'][26] . ": </td>";
 			echo "<td>";
-			if ($canedit && (empty ($ID) || $ID < 0))
+			if ($canedit && !$this->checkIfDetailExists($ID))
             $this->dropdownSuppliers("FK_enterprise", $this->fields["FK_entities"]);
 			else
 				echo getDropdownName("glpi_enterprises", $this->fields["FK_enterprise"]);
@@ -237,7 +237,7 @@ class PluginOrder extends CommonDBTM {
 			echo "<tr class='tab_bg_1'><td>".$LANG['common'][18].": </td>";
 			echo "<td><span id='show_contact'>";
 			if ($canedit && $ID > 0)
-            dropdownValue("glpi_contacts", "FK_contact", $this->fields["FK_contact"], 1, $this->fields["FK_entities"]);
+            $this->dropdownContacts($this->fields["FK_enterprise"],$this->fields["FK_contact"],$this->fields["FK_entities"]);
 			else
 				echo getDropdownName("glpi_contacts", $this->fields["FK_contact"]);
 			echo "</span></td>";
@@ -370,6 +370,48 @@ class PluginOrder extends CommonDBTM {
       ajaxUpdateItemOnSelectEvent("FK_enterprise","show_contact",$CFG_GLPI["root_doc"]."/plugins/order/ajax/dropdownSupplier.php",$params);
 
       return $rand;
+   }
+   
+   function dropdownContacts($FK_enterprise,$value=0,$entity_restrict='') {
+      global $DB,$CFG_GLPI;
+
+      $rand=mt_rand();
+
+      $where=" WHERE `glpi_contact_enterprise`.`FK_contact` = `glpi_contacts`.`ID` AND (`glpi_contact_enterprise`.`FK_enterprise` = '".$FK_enterprise."' AND `glpi_contacts`.`deleted` = '0' ) ";
+      $where.=getEntitiesRestrictRequest("AND","glpi_contacts",'',$entity_restrict,true);
+
+      $query = "SELECT `glpi_contacts`.*
+               FROM `glpi_contacts`,`glpi_contact_enterprise`
+               $where
+               ORDER BY `FK_entities`, `name`";
+               
+      $result=$DB->query($query);
+
+      echo "<select name=\"FK_contact\">";
+
+      echo "<option value=\"0\">-----</option>";
+
+      if ($DB->numrows($result)) {
+         $prev=-1;
+         while ($data=$DB->fetch_array($result)) {
+            if ($data["FK_entities"]!=$prev) {
+               if ($prev>=0) {
+                  echo "</optgroup>";
+               }
+               $prev=$data["FK_entities"];
+               echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+            }
+            $output=formatUserName($data["ID"],"",$data["name"],$data["firstname"]);
+            if($_SESSION["glpiview_ID"]||empty($output)){
+               $output.=" (".$data["ID"].")";
+            }
+            echo "<option value='".$data["ID"]."' ".($value==$data["ID"]?" selected ":"")." title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
+         }
+         if ($prev>=0) {
+            echo "</optgroup>";
+         }
+      }
+      echo "</select>";
    }
    
    function getDropdownStatus($value) {
