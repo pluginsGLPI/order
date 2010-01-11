@@ -219,11 +219,8 @@ class PluginOrder extends CommonDBTM {
 			/* supplier of order */
 			echo "<tr class='tab_bg_1'><td>" . $LANG['financial'][26] . ": </td>";
 			echo "<td>";
-			if ($canedit)
-            if (empty ($ID) || $ID < 0)
-               $this->dropdownSuppliers("FK_enterprise", $this->fields["FK_entities"]);
-            else
-               dropdownValue("glpi_enterprises", "FK_enterprise", $this->fields["FK_enterprise"], 1, $this->fields["FK_entities"]);
+			if ($canedit && (empty ($ID) || $ID < 0))
+            $this->dropdownSuppliers("FK_enterprise", $this->fields["FK_entities"]);
 			else
 				echo getDropdownName("glpi_enterprises", $this->fields["FK_enterprise"]);
 			echo "</td>";
