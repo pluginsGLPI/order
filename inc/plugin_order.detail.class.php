@@ -189,20 +189,6 @@ class PluginOrderDetail extends CommonDBTM {
          $result=$this->queryDetail($FK_order);
          $num=$DB->numrows($result);
          
-			$query="SELECT `".$this->table."`.`ID` AS IDD, `glpi_plugin_order_references`.`ID`,
-					`glpi_plugin_order_references`.`type`,`glpi_plugin_order_references`.`FK_type`,`glpi_plugin_order_references`.`FK_model`, `glpi_plugin_order_references`.`FK_glpi_enterprise`, `glpi_plugin_order_references`.`name`,
-					`".$this->table."`.`price_taxfree`, `".$this->table."`.`price_ati`, `".$this->table."`.`price_discounted`,
-               `".$this->table."`.`discount`,
-					`".$this->table."`.`price_discounted`,
-					`".$this->table."`.`price_ati`
-					FROM `".$this->table."`, `glpi_plugin_order_references`
-					WHERE `".$this->table."`.`FK_reference` = `glpi_plugin_order_references`.`ID`
-					AND `".$this->table."`.`FK_order` = '$FK_order'
-					GROUP BY `".$this->table."`.`discount`,`".$this->table."`.`price_taxfree`
-					ORDER BY `glpi_plugin_order_references`.`name` ";
-
-			$result=$DB->query($query);
-			$num=$DB->numrows($result);
 			$rand=mt_rand();
 
 			$PluginOrder=new PluginOrder();
