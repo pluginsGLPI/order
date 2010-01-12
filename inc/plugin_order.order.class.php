@@ -581,13 +581,15 @@ class PluginOrder extends CommonDBTM {
 	}
 	
 	function checkIfDetailExists($orderID) {
-
-      $detail = new PluginOrderDetail;
-      $devices = getAllDatasFromTable("glpi_plugin_order_detail", "FK_order=$orderID");
-      if (!empty($devices))
-         return true;
-      else
-         return false;
+      
+      if ($orderID) {
+         $detail = new PluginOrderDetail;
+         $devices = getAllDatasFromTable("glpi_plugin_order_detail", "FK_order=$orderID");
+         if (!empty($devices))
+            return true;
+         else
+            return false;
+      }
    }
 	
 	function showValidationForm($target, $orderID) {
