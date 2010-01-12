@@ -264,7 +264,7 @@ class PluginOrderDetail extends CommonDBTM {
 					WHERE `".$this->table."`.`FK_reference` = `glpi_plugin_order_references`.`ID`
 					AND `".$this->table."`.`FK_reference` = '".$refID."'
 					AND `".$this->table."`.`price_taxfree` LIKE '".$price_taxfree."'
-					AND `".$this->table."`.`discount` = '".$discount."'
+					AND `".$this->table."`.`discount` LIKE '".$discount."'
 					AND `".$this->table."`.`FK_order` = '$FK_order'
 					ORDER BY `glpi_plugin_order_references`.`name` ";
 
@@ -338,8 +338,8 @@ class PluginOrderDetail extends CommonDBTM {
                FROM `".$this->table."`
                WHERE  `FK_order` = '$FK_order'
                AND `FK_reference` = '$FK_reference'
-               AND `price_taxfree` = '$price_taxfree'
-               AND `discount` = '$discount'";
+               AND `price_taxfree` LIKE '$price_taxfree'
+               AND `discount` LIKE '$discount'";
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'quantity'));
    }
@@ -350,8 +350,8 @@ class PluginOrderDetail extends CommonDBTM {
       $query = "SELECT COUNT(*) AS quantity
                FROM `".$this->table."`
                WHERE  `FK_order` = '$FK_order'
-               AND `price_taxfree` = '$price_taxfree'
-               AND `discount` = '$discount'";
+               AND `price_taxfree` LIKE '$price_taxfree'
+               AND `discount` LIKE '$discount'";
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'quantity'));
    }
