@@ -64,17 +64,6 @@ function plugin_order_install() {
 		$DB->query($query) or die($DB->error());
 	}
 
-	if (!TableExists("glpi_dropdown_plugin_order_status")) {
-		$query = "CREATE TABLE IF NOT EXISTS `glpi_dropdown_plugin_order_status` (
-                  `ID` int(11) NOT NULL auto_increment,
-                  `name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-                  `comments` text,
-                  PRIMARY KEY  (`ID`),
-                  KEY `name` (`name`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-		$DB->query($query) or die($DB->error());
-	}
-
 	if (!TableExists("glpi_dropdown_plugin_order_payment")) {
 		$query = "CREATE TABLE IF NOT EXISTS `glpi_dropdown_plugin_order_payment` (
                   `ID` int(11) NOT NULL auto_increment,
@@ -340,7 +329,11 @@ function plugin_order_install() {
          $DB->query($query) or die($DB->error());
       }
    }
-
+   
+   if (TableExists("glpi_dropdown_plugin_order_status")) {
+      $query = "DROP TABLE `glpi_dropdown_plugin_order_status`";
+      $DB->query($query) or die($DB->error());
+   }
    /* End Update en 1.1.0 */
 
 	plugin_order_createfirstaccess($_SESSION['glpiactiveprofile']['ID']);
@@ -408,9 +401,6 @@ function plugin_order_getDatabaseRelations() {
 	$plugin = new Plugin();
 	if ($plugin->isInstalled("order") && $plugin->isActivated("order"))
 		return array (
-			"glpi_dropdown_plugin_order_status" => array (
-				"glpi_plugin_order" => "status"
-			),
 			"glpi_dropdown_plugin_order_payment" => array (
 				"glpi_plugin_order" => "payment"
 			),
@@ -434,7 +424,6 @@ function plugin_order_getDropdown() {
 	$plugin = new Plugin();
 	if ($plugin->isInstalled("order") && $plugin->isActivated("order"))
 		return array (
-			"glpi_dropdown_plugin_order_status" => $LANG['plugin_order']['status'][0],
 			"glpi_dropdown_plugin_order_taxes" => $LANG['plugin_order'][25],
 			"glpi_dropdown_plugin_order_payment" => $LANG['plugin_order'][32]
 		);
