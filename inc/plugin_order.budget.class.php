@@ -189,9 +189,9 @@ class PluginOrderBudget extends CommonDBTM {
 
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='5'>".$LANG['plugin_order']['reference'][3]."</th></tr>";
+      echo "<tr><th colspan='5'>".$LANG['plugin_order']['budget'][1]."</th></tr>";
       echo "<tr>"; 
-      echo "<th>".$LANG['plugin_order']['budget'][1]."</th>";
+      echo "<th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "</tr>";
 

@@ -168,7 +168,7 @@ $LANG['plugin_order']['menu'][1] = "Bestellungen verwalten";
 $LANG['plugin_order']['menu'][2] = "Liste der Produktreferenzen verwalten";
 $LANG['plugin_order']['menu'][3] = "Budgets verwalten";
 
-$LANG['plugin_order']['budget'][1] = "Bestellungen";
+$LANG['plugin_order']['budget'][1] = "Verbundene Bestellungen";
 $LANG['plugin_order']['budget'][2] = "Verbrauchtes Budget";
 $LANG['plugin_order']['budget'][3] = "Budgetwert ist gleich Null. Bitte versuchen Sie es erneut";
 

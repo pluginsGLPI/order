@@ -168,7 +168,7 @@ $LANG['plugin_order']['menu'][1] = "Gérer les commandes";
 $LANG['plugin_order']['menu'][2] = "Gérer le catalogue de références produits";
 $LANG['plugin_order']['menu'][3] = "Gérer les budgets";
 
-$LANG['plugin_order']['budget'][1] = "Commandes";
+$LANG['plugin_order']['budget'][1] = "Commandes Liées";
 $LANG['plugin_order']['budget'][2] = "Budget consommé";
 $LANG['plugin_order']['budget'][3] = "La valeur du budget est nulle. Merci de recommencer";
 

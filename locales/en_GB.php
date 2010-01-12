@@ -168,7 +168,7 @@ $LANG['plugin_order']['menu'][1] = "Manage orders";
 $LANG['plugin_order']['menu'][2] = "Manage products references";
 $LANG['plugin_order']['menu'][3] = "Manage budgets";
 
-$LANG['plugin_order']['budget'][1] = "Orders";
+$LANG['plugin_order']['budget'][1] = "Linked orders";
 $LANG['plugin_order']['budget'][2] = "Budget already used";
 $LANG['plugin_order']['budget'][3] = "The value of the budget is null. Thanks to add a value";
 
