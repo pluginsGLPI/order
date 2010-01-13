@@ -154,7 +154,7 @@ else if (isset ($_POST["add_detail"])) {
       $new_value.= " (".$LANG['plugin_order']['detail'][7]." : ".$_POST["quantity"];
       $new_value.= " ".$LANG['plugin_order']['detail'][25]." : ".$_POST["discount"].")";
       $PluginOrder->addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
-      $PluginOrderDetail->addDetails($_POST["FK_reference"], $_POST["device_type"], $_POST["FK_order"], $_POST["quantity"], $_POST["price"], $_POST["discount"], $taxes,$_POST["discount"]);
+      $PluginOrderDetail->addDetails($_POST["FK_reference"], $_POST["device_type"], $_POST["FK_order"], $_POST["quantity"], $_POST["price"], $_POST["discount"], $taxes);
    }
       
    glpi_header($_SERVER['HTTP_REFERER']);

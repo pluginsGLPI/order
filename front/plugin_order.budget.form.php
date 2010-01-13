@@ -61,38 +61,38 @@ if (!isset ($_GET["ID"]))
 if (!isset ($_GET["withtemplate"]))
 	$_GET["withtemplate"] = "";
 
-$plugin_order = new PluginOrderBudget();
+$PluginOrderBudget = new PluginOrderBudget();
 
 /* add order */
 if (isset ($_POST["add"])) {
    if (empty($_POST["value"]))
       addMessageAfterRedirect($LANG['plugin_order']['budget'][3],false,ERROR);
 	if (plugin_order_HaveRight("budget", "w")  && !empty($_POST["value"]))
-      $newID = $plugin_order->add($_POST);
+      $newID = $PluginOrderBudget->add($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 /* delete order */
 else if (isset ($_POST["delete"])) {
    if (plugin_order_HaveRight("budget", "w"))
-      $plugin_order->delete($_POST);
-   glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_genericobject.budget.php");
+      $PluginOrderBudget->delete($_POST);
+   glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/index.php");
 }
 /* restore order */
 else if (isset ($_POST["restore"])) {
    if (plugin_order_HaveRight("budget", "w"))
-      $plugin_order->restore($_POST);
+      $PluginOrderBudget->restore($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 /* purge order */
 else if (isset ($_POST["purge"])) {
    if (plugin_order_HaveRight("budget", "w"))
-      $plugin_order->delete($_POST, 1);
-   glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_genericobject.budget.php");
+      $PluginOrderBudget->delete($_POST, 1);
+   glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/index.php");
 }
 /* update order */
 else if (isset ($_POST["update"])) {
    if (plugin_order_HaveRight("budget", "w"))
-      $plugin_order->update($_POST);
+      $PluginOrderBudget->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } 
 
@@ -105,9 +105,9 @@ if (isset ($_GET['onglet']))
 
 commonHeader($LANG['financial'][87], $_SERVER["PHP_SELF"], "plugins", "order", "budget");
 
-$plugin_order->title();
+$PluginOrderBudget->title();
 echo "<br>";
-$plugin_order->showForm($_SERVER["PHP_SELF"], $_GET["ID"]);
+$PluginOrderBudget->showForm($_SERVER["PHP_SELF"], $_GET["ID"]);
 
 commonFooter();
 

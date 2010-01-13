@@ -43,7 +43,6 @@ $prof=new PluginOrderProfile();
 /* save profile */
 if (isset ($_POST['update_user_profile'])) {
 	$prof->update($_POST);
-	plugin_order_changeprofile();
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
