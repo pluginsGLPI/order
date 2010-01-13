@@ -41,7 +41,9 @@ $NEEDED_ITEMS = array (
 	"phone",
 	"networking",
 	"consumable",
-	"cartridge"
+	"cartridge",
+	"software",
+	"peripheral"
 );
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
