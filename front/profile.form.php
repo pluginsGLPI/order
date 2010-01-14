@@ -33,35 +33,17 @@
 // ----------------------------------------------------------------------
  */
 
-define('GLPI_ROOT', '../../..');
+define('GLPI_ROOT', '../../..'); 
 include (GLPI_ROOT."/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
 
-if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
-}
+checkRight("profile","r");
 
-$reference = new PluginOrderReference;
+$prof=new PluginOrderProfile();
 
-$itemtype=$_POST["itemtype"];
-
-if (isset($_POST["action"])) {
-	switch($_POST["action"]) {
-		case "generation":
-			echo "<input type='hidden' name='plugin_order_references_id' value='".$_POST["plugin_order_references_id"]."'>"; 
-			echo"<input type='submit' name='generation' class='submit' value='".$LANG['buttons'][2]."'>"; 
-         break;
-   	case "createLink":
-			echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-			$reference->getFromDB($_POST["plugin_order_references_id"]);
-			$reference->dropdownAllItemsByType("itemtype", $itemtype, $_SESSION["glpiactive_entity"],$reference->fields["types_id"],$reference->fields["models_id"]);
-			echo "&nbsp;<input type='submit' name='createLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'>";
-         break;
-   	case "deleteLink":
-			echo "&nbsp;<input type='submit' name='deleteLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'>";
-         break;
-	}
+//Save profile
+if (isset ($_POST['update_user_profile'])) {
+	$prof->update($_POST);
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 ?>

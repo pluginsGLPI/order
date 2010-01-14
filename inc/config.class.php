@@ -33,35 +33,51 @@
 // ----------------------------------------------------------------------
  */
 
-define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT."/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
-
-if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+if (!defined('GLPI_ROOT')){
+   die("Sorry. You can't access directly to this file");
 }
 
-$reference = new PluginOrderReference;
+class PluginOrderConfig extends CommonDBTM {
 
-$itemtype=$_POST["itemtype"];
 
-if (isset($_POST["action"])) {
-	switch($_POST["action"]) {
-		case "generation":
-			echo "<input type='hidden' name='plugin_order_references_id' value='".$_POST["plugin_order_references_id"]."'>"; 
-			echo"<input type='submit' name='generation' class='submit' value='".$LANG['buttons'][2]."'>"; 
-         break;
-   	case "createLink":
-			echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-			$reference->getFromDB($_POST["plugin_order_references_id"]);
-			$reference->dropdownAllItemsByType("itemtype", $itemtype, $_SESSION["glpiactive_entity"],$reference->fields["types_id"],$reference->fields["models_id"]);
-			echo "&nbsp;<input type='submit' name='createLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'>";
-         break;
-   	case "deleteLink":
-			echo "&nbsp;<input type='submit' name='deleteLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'>";
-         break;
+	function showForm($target){
+		global $LANG;
+		
+		$this->getFromDB(1);
+		echo "<div class='center'>";
+		echo "<table class='tab_cadre_fixe'>";
+		echo "<tr><th colspan='2'>".$LANG['plugin_order']['config'][0]."</th></tr>";
+		echo "<form method='post' name=form action='$target'>";
+		
+		echo "<input type='hidden' name='id' value='1'>";
+		echo "<tr class='tab_bg_1' align='center'><td>".$LANG['plugin_order']['config'][1]."</td><td>";
+		Dropdown::show('PluginOrderOrderTaxe', array('name' => "default_taxes",'value' => $this->fields["default_taxes"]));
+		echo "</td>";
+		echo "</tr>";
+		
+		echo "<tr class='tab_bg_1' align='center'><td>".$LANG['plugin_order']['config'][2]."</td><td>";
+		Dropdown::showYesNo("use_validation",$this->fields["use_validation"]); 
+		echo "</td>";
+		echo "</tr>";
+
+		echo "<tr class='tab_bg_1' align='center'>"; 
+		echo "<td colspan='2' align='center'>"; 
+		echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >"; 
+		echo"</td>";
+		echo "</tr>";
+		
+		echo "</table></form></div>";
 	}
+	
+	function getConfig(){
+	
+      $this->getFromDB(1);
+      return $this->fields; 
+   }
+   
+   function getDefaultTaxes() {
+   
+      $config = $this->getConfig();
+      return $config["default_taxes"];
+   }
 }
-
-?>

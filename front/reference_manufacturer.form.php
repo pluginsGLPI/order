@@ -33,35 +33,35 @@
 // ----------------------------------------------------------------------
  */
 
-define('GLPI_ROOT', '../../..');
+define('GLPI_ROOT', '../../..'); 
 include (GLPI_ROOT."/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
 
-if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+if(!isset($_GET["id"])) $_GET["id"] = "";
+if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
+if(!isset($_GET["plugin_order_references_id"])) $_GET["plugin_order_references_id"] = "";
+
+$PluginOrderReference_Manufacturer = new PluginOrderReference_Manufacturer;
+if (isset($_POST["update"]))
+{
+	if(plugin_order_HaveRight("reference","w"))
+		$PluginOrderReference_Manufacturer->update($_POST);
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
+else
+{
+	PluginOrderProfile::checkRight("reference","r");
 
-$reference = new PluginOrderReference;
-
-$itemtype=$_POST["itemtype"];
-
-if (isset($_POST["action"])) {
-	switch($_POST["action"]) {
-		case "generation":
-			echo "<input type='hidden' name='plugin_order_references_id' value='".$_POST["plugin_order_references_id"]."'>"; 
-			echo"<input type='submit' name='generation' class='submit' value='".$LANG['buttons'][2]."'>"; 
-         break;
-   	case "createLink":
-			echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-			$reference->getFromDB($_POST["plugin_order_references_id"]);
-			$reference->dropdownAllItemsByType("itemtype", $itemtype, $_SESSION["glpiactive_entity"],$reference->fields["types_id"],$reference->fields["models_id"]);
-			echo "&nbsp;<input type='submit' name='createLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'>";
-         break;
-   	case "deleteLink":
-			echo "&nbsp;<input type='submit' name='deleteLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'>";
-         break;
+	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
+	if (isset($_GET['onglet'])) {
+		$_SESSION['glpi_tab']=$_GET['onglet'];
 	}
+	
+	commonHeader($LANG['plugin_order']['reference'][5],$_SERVER["PHP_SELF"],"plugins","order","reference");
+	
+	/* load order form */
+	$PluginOrderReference_Manufacturer->showForm($_SERVER["PHP_SELF"],$_GET["id"],$_GET["plugin_order_references_id"]);
+
+	commonFooter();
 }
 
 ?>

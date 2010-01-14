@@ -34,7 +34,6 @@
  */
  
 define('GLPI_ROOT', '../../..');
-$AJAX_INCLUDE=1;
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
@@ -43,19 +42,16 @@ if (!defined('GLPI_ROOT')){
    die("Can not acces directly to this file");
 }
 
-useplugin('order', true);
-
 checkCentralAccess();
 
 $PluginOrderReference = new PluginOrderReference();
 
-$rand = $PluginOrderReference->dropdownReferencesByEnterprise("reference",$_POST["device_type"],$_POST["FK_enterprise"]);
+$rand = $PluginOrderReference->dropdownReferencesByEnterprise("reference",$_POST["itemtype"],$_POST["suppliers_id"]);
 
-$paramsaction=array('FK_reference'=>'__VALUE__',
+$paramsaction=array('plugin_order_references_id'=>'__VALUE__',
 		   	  'entity_restrict'=>$_POST["entity_restrict"],
-		   	  'FK_enterprise'=>$_POST["FK_enterprise"],		   	  
-		   	  'orderID'=>$_POST["orderID"],
-		   	  'device_type'=>$_POST["device_type"]
+		   	  'suppliers_id'=>$_POST["suppliers_id"],
+		   	  'itemtype'=>$_POST["itemtype"]
 		);
 
 $fields = array ("quantity","priceht","pricediscounted", "validate");

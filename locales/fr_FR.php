@@ -164,9 +164,13 @@ $LANG['plugin_order']['validation'][15] = "Commande en édition";
 $LANG['plugin_order']['validation'][16] = "Annulation de la validation effectuée";
 $LANG['plugin_order']['validation'][17] = "Modifier la commande";
 
+$LANG['plugin_order']['menu'][0] = "Menu principal";
 $LANG['plugin_order']['menu'][1] = "Gérer les commandes";
 $LANG['plugin_order']['menu'][2] = "Gérer le catalogue de références produits";
 $LANG['plugin_order']['menu'][3] = "Gérer les budgets";
+$LANG['plugin_order']['menu'][4] = "Commandes";
+$LANG['plugin_order']['menu'][5] = "Références";
+$LANG['plugin_order']['menu'][6] = "Budgets";
 
 $LANG['plugin_order']['budget'][1] = "Commandes Liées";
 $LANG['plugin_order']['budget'][2] = "Budget consommé";

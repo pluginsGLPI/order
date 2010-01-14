@@ -34,34 +34,39 @@
  */
 
 define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT."/inc/includes.php");
+include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+if (!isset ($_POST["id"])) {
+	exit ();
 }
 
-$reference = new PluginOrderReference;
+if (!isset ($_POST["withtemplate"]))
+	$_POST["withtemplate"] = "";
 
-$itemtype=$_POST["itemtype"];
+$PluginOrderBudget = new PluginOrderBudget;
 
-if (isset($_POST["action"])) {
-	switch($_POST["action"]) {
-		case "generation":
-			echo "<input type='hidden' name='plugin_order_references_id' value='".$_POST["plugin_order_references_id"]."'>"; 
-			echo"<input type='submit' name='generation' class='submit' value='".$LANG['buttons'][2]."'>"; 
-         break;
-   	case "createLink":
-			echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-			$reference->getFromDB($_POST["plugin_order_references_id"]);
-			$reference->dropdownAllItemsByType("itemtype", $itemtype, $_SESSION["glpiactive_entity"],$reference->fields["types_id"],$reference->fields["models_id"]);
-			echo "&nbsp;<input type='submit' name='createLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'>";
-         break;
-   	case "deleteLink":
-			echo "&nbsp;<input type='submit' name='deleteLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'>";
-         break;
-	}
+PluginOrderProfile::checkRight("budget","r");
+
+if ($_POST["id"]>0 && $PluginOrderBudget->can($_POST["id"],'r')) {
+
+   if (!empty($_POST["withtemplate"])) {
+		switch ($_REQUEST['glpi_tab']) {
+			default :
+				break;
+		}
+	} else {
+      switch($_REQUEST['glpi_tab']) {
+         case 1 :
+            $PluginOrderBudget->getAllOrdersByBudget($_POST["id"]);
+            break;
+         default :
+            break;
+      }
+   }
 }
+
+ajaxFooter();
 
 ?>

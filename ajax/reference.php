@@ -33,10 +33,7 @@
 // ----------------------------------------------------------------------
  */
 
-$NEEDED_ITEMS = array("computer","monitor","printer","network","software");
-
 define('GLPI_ROOT', '../../..');
-$AJAX_INCLUDE = 1;
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
@@ -44,11 +41,12 @@ header_nocache();
 if (!defined('GLPI_ROOT')) {
 	die("Can not acces directly to this file");
 }
+
 checkCentralAccess();
 
-$params = array ("device_type"=>$_POST["device_type"],"entity_restrict"=>$_POST["entity_restrict"]);
+$params = array ("itemtype"=>$_POST["itemtype"],"entity_restrict"=>$_POST["entity_restrict"]);
 
-foreach (array("type","model","template") as $field)
+foreach (array("types_id","models_id","templates_id") as $field)
 {
    $params["field"]=$field;
    ajaxUpdateItem("show_$field",GLPI_ROOT.'/plugins/order/ajax/referencemodels.php',$params);

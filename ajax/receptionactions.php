@@ -35,7 +35,6 @@
 
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
-$AJAX_INCLUDE=1;
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
@@ -43,16 +42,14 @@ if (!defined('GLPI_ROOT')){
    die("Can not acces directly to this file");
 }
 
-useplugin('order', true);
-
-if (isset($_POST["action"])){
-	switch($_POST["action"]){
+if (isset($_POST["action"])) {
+	switch ($_POST["action"]) {
 		case "reception":
 			echo "</td><td>";
-			showDateFormItem("date",date("Y-m-d"),true,1);
+			showDateFormItem("delivery_date",date("Y-m-d"),true,1);
 			echo "</td><td>";
 			echo $LANG['financial'][19]."&nbsp;";
-			autocompletionTextField("deliverynum","glpi_plugin_order_detail","deliverynum",'',20,$_SESSION["glpiactive_entity"]);
+			echo "<input type='text' name='delivery_number' size='20'>";
 			echo "</td><td><input type='submit' name='reception' class='submit' value='".$LANG['buttons'][2]."'></td>";
          break;
 	}

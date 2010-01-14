@@ -33,38 +33,17 @@
 // ----------------------------------------------------------------------
  */
 
-if (strpos($_SERVER['PHP_SELF'],"dropdownSupplier.php")) {
-	define('GLPI_ROOT','../../..');
-	include (GLPI_ROOT."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-}
+define('GLPI_ROOT', '../../..');
+include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
+checkRight("config", "w");
 
-// Make a select box
+$PluginOrderMailingSetting=new PluginOrderMailingSetting();
 
-if (isset($_POST["suppliers_id"])) {
+if (!empty ($_POST["update_notifications"])) {
 
-	$rand=$_POST['rand'];
-
-	$use_ajax=false;
-	if ($CFG_GLPI["use_ajax"] && 
-		countElementsInTable('glpi_suppliers',"`glpi_suppliers`.`id` = '".$_POST["suppliers_id"]."' ".getEntitiesRestrictRequest("AND", "glpi_suppliers","",$_POST["entity_restrict"],true)) > $CFG_GLPI["ajax_limit_count"]
-	){
-		$use_ajax=true;
-	}
-
-	$paramssuppliers_id=array('searchText'=>'__VALUE__',
-			'suppliers_id'=>$_POST["suppliers_id"],
-			'entity_restrict'=>$_POST["entity_restrict"],
-			'rand'=>$_POST['rand'],
-			'myname'=>$_POST['myname']
-			);
-	
-	$default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
-	ajaxDropdown($use_ajax,"/plugins/order/ajax/dropdownContact.php",$paramssuppliers_id,$default,$rand);
-
+	$PluginOrderMailingSetting->updateMailNotifications($_POST);
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 ?>

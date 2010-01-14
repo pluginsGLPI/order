@@ -33,8 +33,6 @@
 // ----------------------------------------------------------------------
  */
 
-$NEEDED_ITEMS = array("computer","monitor","printer","networking","software","peripheral","phone","consumable","cartridge");
-
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
@@ -44,32 +42,29 @@ if (!defined('GLPI_ROOT')) {
 	die("Can not acces directly to this file");
 }
 
-useplugin('order', true);
-
 checkCentralAccess();
 
 $PluginOrderReference = new PluginOrderReference();
 
-if ($_POST["device_type"])
+if ($_POST["itemtype"])
 {
 	switch ($_POST["field"])
 	{
-		case "type":
-			if (isset($ORDER_TYPE_TABLES[$_POST["device_type"]]))
-				dropdownValue($ORDER_TYPE_TABLES[$_POST["device_type"]], "FK_type");
+		case "types_id":
+			if (isset($ORDER_TYPE_CLASSES[$_POST["itemtype"]]))
+            Dropdown::show($ORDER_TYPE_CLASSES[$_POST["itemtype"]], array('name' => "types_id"));
          break;
-		case "model":
-			if (isset($ORDER_MODEL_TABLES[$_POST["device_type"]]))
-				dropdownValue($ORDER_MODEL_TABLES[$_POST["device_type"]], "FK_model");
+		case "models_id":
+			if (isset($ORDER_MODEL_CLASSES[$_POST["itemtype"]]))
+				Dropdown::show($ORDER_MODEL_CLASSES[$_POST["itemtype"]], array('name' => "models_id"));
 			else
 				return "";				
          break;
-		case "template":
-			if (in_array($_POST["device_type"],$ORDER_TEMPLATE_TABLES))
+		case "templates_id":
+			if (in_array($_POST["itemtype"],$ORDER_TEMPLATE_TABLES))
 			{
-				$commonitem = new CommonItem;
-				$commonitem->setType($_POST["device_type"],true);
-				$PluginOrderReference->dropdownTemplate("template", $_POST["entity_restrict"], $commonitem->obj->table);
+				$table = getTableForItemType($_POST["itemtype"]);
+				$PluginOrderReference->dropdownTemplate("templates_id", $_POST["entity_restrict"], $table);
 			}
 			else
 				return "";	

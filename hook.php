@@ -33,319 +33,102 @@
 // ----------------------------------------------------------------------
  */
 
-foreach (glob(GLPI_ROOT . '/plugins/order/inc/*.php') as $file)
-	include_once ($file);
-
 function plugin_order_install() {
-	global $DB, $LANG, $CFG_GLPI;
-	include_once (GLPI_ROOT . "/inc/profile.class.php");
+   global $DB;
 
-	if (!TableExists("glpi_plugin_order")) {
-		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order` (
-                  `ID` int(11) NOT NULL auto_increment,
-                  `name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-                  `numorder` varchar(255) NOT NULL collate utf8_unicode_ci default '',
-                  `budget` int (11) NOT NULL default 0,
-                  `taxes` FLOAT NOT NULL default 0,
-                  `payment` int (11) NOT NULL default 0,
-                  `status` int(11) NOT NULL default 1,
-                  `FK_entities` int(11) NOT NULL default 0,
-                  `date` date,
-                  `FK_enterprise` INT(11) NOT NULL DEFAULT 0,
-                  `location` int(11) NOT NULL default 0,
-                  `FK_contact` int(11) NOT NULL default 0,
-                  `port_price` FLOAT NOT NULL default 0,
-                  `recursive` INT(1) NOT NULL default 1,
-                  `deleted` INT(1) NOT NULL default 0,
-                  `notes` TEXT,
-                  `comment` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-                  PRIMARY KEY  (`ID`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-		$DB->query($query) or die($DB->error());
-	}
+   include_once(GLPI_ROOT."/plugins/order/inc/profile.class.php");
 
-	if (!TableExists("glpi_dropdown_plugin_order_payment")) {
-		$query = "CREATE TABLE IF NOT EXISTS `glpi_dropdown_plugin_order_payment` (
-                  `ID` int(11) NOT NULL auto_increment,
-                  `name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-                  `comments` text,
-                  PRIMARY KEY  (`ID`),
-                  KEY `name` (`name`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-		$DB->query($query) or die($DB->error());
-	}
+   if (TableExists("glpi_plugin_order_detail")) {
+      if (!FieldExists("glpi_plugin_order_detail","discount")) { // version 1.1.0
+      
+         $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.1.0.sql");
+         
+         /* Update en 1.1.0 */
 
-	if (!TableExists("glpi_dropdown_plugin_order_taxes")) {
-		$query = "CREATE TABLE IF NOT EXISTS `glpi_dropdown_plugin_order_taxes` (
-                  `ID` int(11) NOT NULL auto_increment,
-                  `name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-                  `comments` text,
-                  PRIMARY KEY  (`ID`),
-                  KEY `name` (`name`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-		$DB->query($query);
+         $query = "SELECT `name` FROM `glpi_dropdown_plugin_order_taxes` ";
+         $result = $DB->query($query);
+         $number = $DB->numrows($result);
+         if ($number) {
+            while ($data=$DB->fetch_array($result)) {
+               $findme   = ',';
+               if(strpos($data["name"], $findme)) {
+                  $name= str_replace(',', '.', $data["name"]);
+                  $query = "UPDATE `glpi_dropdown_plugin_order_taxes`
+                        SET `name` = '".$name."'
+                        WHERE `name`= '".$data["name"]."'";
+                  $DB->query($query) or die($DB->error());
+               }
+            }
+         }
 
-		$query = "INSERT INTO `glpi_dropdown_plugin_order_taxes`(ID,name) VALUES (1,'5.5'), " .
-		"(2,'19.6');";
-		$DB->query($query) or die($DB->error());
-	}
+         if (FieldExists("glpi_plugin_order","numordersupplier")) {
+            $query = "SELECT `numordersupplier`,`numbill`,`ID` FROM `glpi_plugin_order` ";
+            $result = $DB->query($query);
+            $number = $DB->numrows($result);
+            if ($number) {
+               while ($data=$DB->fetch_array($result)) {
+                  $query = "INSERT INTO  `glpi_plugin_order_suppliers`
+                        (`ID`, `FK_order`, `numorder`, `numbill`) VALUES
+                     (NULL, '".$data["ID"]."', '".$data["numordersupplier"]."', '".$data["numbill"]."') ";
+                  $DB->query($query) or die($DB->error());
+               }
+            }
 
-	if (!TableExists("glpi_plugin_order_detail")) {
-		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_detail` (
-                  `ID` int(11) NOT NULL auto_increment,
-                  `FK_order` int(11) NOT NULL default 0,
-                  `device_type` int(11) NOT NULL default 0,
-                  `FK_device` int(11) NOT NULL default 0,
-                  `FK_reference` int(11) NOT NULL default 0,
-                  `deliverynum` varchar(255) NOT NULL collate utf8_unicode_ci default '',
-                  `price_taxfree` FLOAT NOT NULL default 0,
-                  `price_discounted` FLOAT NOT NULL default 0,
-                  `discount` FLOAT NOT NULL default 0,
-                  `price_ati` FLOAT NOT NULL default 0,
-                  `status` int(1) NOT NULL default 0,
-                  `date` date NOT NULL default 0,
-                  PRIMARY KEY  (`ID`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-		$DB->query($query) or die($DB->error());
-	}
+            if (FieldExists('glpi_plugin_order', 'numordersupplier')) {
+               $query = "ALTER TABLE `glpi_plugin_order` DROP `numordersupplier`";
+               $DB->query($query) or die($DB->error());
+            }
 
-	if (!TableExists("glpi_plugin_order_profiles")) {
-		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_profiles` (
-                  `ID` int(11) NOT NULL auto_increment,
-                  `name` varchar(255) collate utf8_unicode_ci default NULL,
-                  `order` char(1) default NULL,
-                  `reference` char(1) default NULL,
-                  `budget` char(1) default NULL,
-                  `validation` char(1) default NULL,
-                  `cancel` char(1) default NULL,
-                  `undo_validation` char(1) default NULL,
-                  PRIMARY KEY  (`ID`),
-                  KEY `name` (`name`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-		$DB->query($query) or die($DB->error());
-	}
-
-	if (!TableExists("glpi_plugin_order_config")) {
-		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_config` (
-                  `ID` int(11) NOT NULL auto_increment,
-                  `use_validation` int(11) NOT NULL default 0,
-                  `default_taxes` int(11) NOT NULL default 0,
-                  PRIMARY KEY  (`ID`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-		$DB->query($query) or die($DB->error());
-
-		$query = "INSERT INTO `glpi_plugin_order_config`(ID,use_validation,default_taxes) VALUES (1,0,0);";
-		$DB->query($query) or die($DB->error());
-	}
-
-	if (!TableExists("glpi_plugin_order_references")) {
-		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references` (
-                  `ID` int(11) NOT NULL auto_increment,
-                  `FK_entities` int(11) NOT NULL DEFAULT 0,
-                  `FK_glpi_enterprise` int(11) NOT NULL DEFAULT 0,
-                  `FK_type` INT(11) NOT NULL DEFAULT 0,
-                  `FK_model` INT(11) NOT NULL DEFAULT 0,
-                  `name` varchar(255) collate utf8_unicode_ci NOT NULL,
-                  `type` int(11) NOT NULL DEFAULT 0,
-                  `template` int(11) NOT NULL DEFAULT 0,
-                  `recursive` int(11) NOT NULL DEFAULT 0,
-                  `deleted` int(11) NOT NULL DEFAULT 0,
-                  `comments` text  collate utf8_unicode_ci NULL,
-                  PRIMARY KEY  (`ID`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-		$DB->query($query) or die($DB->error());
-	}
-
-	if (!TableExists("glpi_plugin_order_references_manufacturers")) {
-		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_manufacturers` (
-                  `ID` int(11) NOT NULL auto_increment,
-                  `FK_entities` int(11) NOT NULL DEFAULT 0,
-                  `FK_reference` int(11) NOT NULL DEFAULT 0,
-                  `FK_enterprise` int(11) NOT NULL DEFAULT 0,
-                  `price_taxfree` float NOT NULL DEFAULT 0,
-                  `reference_code` varchar(255) NOT NULL collate utf8_unicode_ci default '',
-                  PRIMARY KEY  (`ID`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
-		$DB->query($query) or die($DB->error());
-	}
-
-	if (!TableExists("glpi_plugin_order_mailing")) {
-		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_mailing` (
-                  `ID` int(11) NOT NULL auto_increment,
-                  `type` varchar(255) collate utf8_unicode_ci default NULL,
-                  `FK_item` int(11) NOT NULL default '0',
-                  `item_type` int(11) NOT NULL default '0',
-                  PRIMARY KEY  (`ID`),
-                  UNIQUE KEY `mailings` (`type`,`FK_item`,`item_type`),
-                  KEY `type` (`type`),
-                  KEY `FK_item` (`FK_item`),
-                  KEY `item_type` (`item_type`),
-                  KEY `items` (`item_type`,`FK_item`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-		$DB->query($query) or die($DB->error());
-
-	}
-
-   $query = "SELECT COUNT(`ID`) AS cpt FROM `glpi_display` WHERE `type`='3150'";
-   $result = $DB->query($query);
-   if (!$DB->result($result,0,'cpt')) {
-      $query = "INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )  " .
-            "        VALUES (NULL,'3150','1','1','0'),
-                     (NULL,'3150','2','2','0'),
-                     (NULL,'3150','4','4','0'),
-                     (NULL,'3150','5','5','0'),
-                     (NULL,'3150','6','6','0'),
-                     (NULL,'3150','7','7','0'),
-                     (NULL,'3150','10','10','0');";
-      $DB->query($query) or die($DB->error());
-   }
-
-   $query = "SELECT COUNT(`ID`) AS cpt FROM `glpi_display` WHERE `type`='3151'";
-   $result = $DB->query($query);
-   if (!$DB->result($result,0,'cpt')) {
-      $query = "INSERT INTO `glpi_display` ( `ID` , `type` , `num` , `rank` , `FK_users` )
-                     VALUES (NULL, 3151, 1, 1, 0),
-                     (NULL, 3151, 2, 4, 0),
-                     (NULL, 3151, 6, 6, 0),
-                     (NULL, 3151, 4, 5, 0),
-                     (NULL, 3151, 7, 7, 0),
-                     (NULL, 3151, 5, 9, 0);";
-      $DB->query($query) or die($DB->error());
-   }
-
-   $query = "SELECT COUNT(`ID`) AS cpt FROM `glpi_display` WHERE `type`='3153'";
-   $result = $DB->query($query);
-   if (!$DB->result($result,0,'cpt')) {
-      $query = "INSERT INTO `glpi_display` (`ID`, `type`, `num`, `rank`, `FK_users`) VALUES
-            (NULL, 3153, 2, 1, 0),
-            (NULL, 3153, 4, 2, 0),
-            (NULL, 3153, 5, 3, 0),
-            (NULL, 3153, 6, 4, 0);";
-      $DB->query($query) or die($DB->error());
-   }
-
-   if (!TableExists("glpi_plugin_order_budgets")) {
-      $query = "CREATE TABLE `glpi_plugin_order_budgets` (
-            `ID` INT( 11 ) NOT NULL AUTO_INCREMENT ,
-            `name` VARCHAR( 255 ) collate utf8_unicode_ci NULL,
-            `FK_entities` int(11) NOT NULL DEFAULT 0,
-            `FK_budget` INT( 11 ) NOT NULL ,
-            `deleted` int(11) NOT NULL DEFAULT 0,
-            `comments` text  collate utf8_unicode_ci NULL,
-            `startdate` DATE NULL ,
-            `enddate` DATE NULL ,
-            `value` FLOAT( 11 ) NOT NULL ,
-            PRIMARY KEY ( `ID` )
-            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-      $DB->query($query) or die($DB->error());
-
-   }
-
-   /* Update en 1.1.0 */
-
-   if (!FieldExists("glpi_plugin_order_detail","discount")) {
-   	$query = "ALTER TABLE `glpi_plugin_order_detail` ADD `discount` FLOAT( 11 ) NOT NULL DEFAULT '0'";
-   $DB->query($query) or die($DB->error());
-
-   }
-
-   if (!FieldExists("glpi_plugin_order","port_price")) {
-   	$query = "ALTER TABLE `glpi_plugin_order` ADD `port_price` FLOAT NOT NULL default '0'";
-   $DB->query($query) or die($DB->error());
-
-   }
-
-   if (!FieldExists("glpi_plugin_order","taxes")) {
-   	$query = "ALTER TABLE `glpi_plugin_order` ADD `taxes` FLOAT NOT NULL default '0'";
-   $DB->query($query) or die($DB->error());
-
-   }
-
-   if (!FieldExists("glpi_plugin_order_references","FK_glpi_enterprise")) {
-   	$query = "ALTER TABLE `glpi_plugin_order_references` CHANGE `FK_manufacturer` `FK_glpi_enterprise` int(11) NOT NULL DEFAULT '0'";
-   $DB->query($query) or die($DB->error());
-
-   }
-
-   if (!FieldExists("glpi_plugin_order_references_manufacturers","reference_code")) {
-      $query = "ALTER TABLE `glpi_plugin_order_references_manufacturers` ADD `reference_code` varchar(255) NOT NULL collate utf8_unicode_ci default ''";
-      $DB->query($query) or die($DB->error());
-
-   }
-
-   $query = "SELECT `name` FROM `glpi_dropdown_plugin_order_taxes` ";
-	$result = $DB->query($query);
-	$number = $DB->numrows($result);
-	if ($number) {
-      while ($data=$DB->fetch_array($result)) {
-         $findme   = ',';
-         if(strpos($data["name"], $findme)) {
-            $name= str_replace(',', '.', $data["name"]);
-            $query = "UPDATE `glpi_dropdown_plugin_order_taxes`
-                  SET `name` = '".$name."'
-                  WHERE `name`= '".$data["name"]."'";
-            $DB->query($query) or die($DB->error());
+            if (FieldExists('glpi_plugin_order', 'numbill')) {
+               $query = "ALTER TABLE `glpi_plugin_order` DROP `numbill`";
+               $DB->query($query) or die($DB->error());
+            }
          }
       }
+      
+      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.2.0.sql");
+
+      Plugin::migrateItemType(
+         array(3150=>'PluginOrderOrder',
+               3151=>'PluginOrderReference',
+               3152=>'PluginOrderReference_Manufacturer',
+               3153=>'PluginOrderBudget',
+               3154=>'PluginOrderSupplier',
+               3155=>'PluginOrderReception'),
+         array("glpi_bookmarks", "glpi_bookmarks_users", "glpi_displaypreferences",
+               "glpi_documents_items", "glpi_infocoms", "glpi_logs", "glpi_tickets"),
+         array("glpi_plugin_order_orders_items", "glpi_plugin_order_references"));
+
+   }
+   if (!TableExists("glpi_plugin_order_orders")) { // not installed
+      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/empty-1.2.0.sql");
    }
 
-   if (isIndex('glpi_plugin_order', 'name')) {
-      $query = "ALTER TABLE `glpi_plugin_order` DROP INDEX `name`";
-      $DB->query($query) or die($DB->error());
-   }
-
-   if (!TableExists("glpi_plugin_order_suppliers")) {
-		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_suppliers` (
-                  `ID` int(11) NOT NULL auto_increment,
-                  `FK_order` int(11) NOT NULL default 0,
-                  `numquote` varchar(255) NOT NULL collate utf8_unicode_ci default '',
-                  `numorder` varchar(255) NOT NULL collate utf8_unicode_ci default '',
-                  `numbill` varchar(255) NOT NULL collate utf8_unicode_ci default '',
-                  PRIMARY KEY  (`ID`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-		$DB->query($query) or die($DB->error());
-	}
-
-	if (FieldExists("glpi_plugin_order","numordersupplier")) {
-      $query = "SELECT `numordersupplier`,`numbill`,`ID` FROM `glpi_plugin_order` ";
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-      if ($number) {
-         while ($data=$DB->fetch_array($result)) {
-            $query = "INSERT INTO  `glpi_plugin_order_suppliers`
-                  (`ID`, `FK_order`, `numorder`, `numbill`) VALUES
-               (NULL, '".$data["ID"]."', '".$data["numordersupplier"]."', '".$data["numbill"]."') ";
-            $DB->query($query) or die($DB->error());
-         }
-      }
-
-      if (FieldExists('glpi_plugin_order', 'numordersupplier')) {
-         $query = "ALTER TABLE `glpi_plugin_order` DROP `numordersupplier`";
-         $DB->query($query) or die($DB->error());
-      }
-
-      if (FieldExists('glpi_plugin_order', 'numbill')) {
-         $query = "ALTER TABLE `glpi_plugin_order` DROP `numbill`";
-         $DB->query($query) or die($DB->error());
-      }
-   }
-   
-   if (TableExists("glpi_dropdown_plugin_order_status")) {
-      $query = "DROP TABLE `glpi_dropdown_plugin_order_status`";
-      $DB->query($query) or die($DB->error());
-   }
-   /* End Update en 1.1.0 */
-
-	plugin_order_createfirstaccess($_SESSION['glpiactiveprofile']['ID']);
-
-   plugin_order_changeprofile();
-	return true;
+   PluginOrderProfile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
+   return true;
 }
 
 function plugin_order_uninstall() {
 	global $DB;
 
 	/* drop all the plugin tables */
+	$tables = array (
+		"glpi_plugin_order_orders",
+		"glpi_plugin_order_orders_items",
+		"glpi_plugin_order_profiles",
+		"glpi_plugin_order_ordertaxes",
+		"glpi_plugin_order_orderpayments",
+		"glpi_plugin_order_references",
+		"glpi_plugin_order_references_manufacturers",
+		"glpi_plugin_order_configs",
+		"glpi_plugin_order_budgets",
+      "glpi_plugin_order_suppliers"
+	);
+
+	foreach ($tables as $table)
+		$DB->query("DROP TABLE IF EXISTS `$table`;");
+   
+   //old tables
 	$tables = array (
 		"glpi_plugin_order",
 		"glpi_plugin_order_detail",
@@ -363,57 +146,27 @@ function plugin_order_uninstall() {
 
 	foreach ($tables as $table)
 		$DB->query("DROP TABLE IF EXISTS `$table`;");
-
+   
 	$in = "IN (" . implode(',', array (
-		PLUGIN_ORDER_TYPE,
-		PLUGIN_ORDER_REFERENCE_TYPE,
-		PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE,
-		PLUGIN_ORDER_BUDGET_TYPE
+		"'PluginOrderOrder'",
+		"'PluginOrderReference'",
+		"'PluginOrderReference_Manufacturer'",
+		"'PluginOrderBudget'"
 	)) . ")";
-	/* clean glpi_display */
-	$query = "DELETE FROM `glpi_display` WHERE `type` " . $in;
-	$DB->query($query);
 
 	$tables = array (
-		"glpi_doc_device",
-		"glpi_bookmark",
-		"glpi_history"
+      "glpi_displaypreferences",
+		"glpi_documents_items",
+		"glpi_bookmarks",
+		"glpi_logs"
 	);
 
 	foreach ($tables as $table) {
-		$query = "DELETE FROM `$table` WHERE `device_type` " . $in;
+		$query = "DELETE FROM `$table` WHERE (`itemtype` " . $in." ) ";
 		$DB->query($query);
 	}
 
-	if (TableExists("glpi_plugin_data_injection_models"))
-		$DB->query("DELETE FROM `glpi_plugin_data_injection_models`, `glpi_plugin_data_injection_mappings`, `glpi_plugin_data_injection_infos` USING `glpi_plugin_data_injection_models`, `glpi_plugin_data_injection_mappings`, `glpi_plugin_data_injection_infos`
-									WHERE `glpi_plugin_data_injection_models`.`device_type` = " .
-		PLUGIN_ORDER_TYPE . "
-									AND `glpi_plugin_data_injection_mappings`.`model_id` = `glpi_plugin_data_injection_models`.`ID`
-									AND `glpi_plugin_data_injection_infos`.`model_id` = `glpi_plugin_data_injection_models`.`ID`");
-	plugin_init_order();
-	cleanCache("GLPI_HEADER_" . $_SESSION["glpiID"]);
 	return true;
-}
-
-/* define dropdown relations */
-function plugin_order_getDatabaseRelations() {
-	$plugin = new Plugin();
-	if ($plugin->isInstalled("order") && $plugin->isActivated("order"))
-		return array (
-			"glpi_dropdown_plugin_order_payment" => array (
-				"glpi_plugin_order" => "payment"
-			),
-			"glpi_dropdown_plugin_order_taxes" => array (
-				"glpi_plugin_order" => "taxes"
-			),
-			"glpi_entities" => array (
-				"glpi_plugin_order" => "FK_entities",
-				"glpi_plugin_order_references" => "FK_entities"
-			)
-		);
-	else
-		return array ();
 }
 
 /* define dropdown tables to be manage in GLPI : */
@@ -422,221 +175,64 @@ function plugin_order_getDropdown() {
 	global $LANG;
 
 	$plugin = new Plugin();
-	if ($plugin->isInstalled("order") && $plugin->isActivated("order"))
+	if ($plugin->isActivated("order"))
 		return array (
-			"glpi_dropdown_plugin_order_taxes" => $LANG['plugin_order'][25],
-			"glpi_dropdown_plugin_order_payment" => $LANG['plugin_order'][32]
+			'PluginOrderOrderTaxe' => $LANG['plugin_order'][25],
+			'PluginOrderOrderPayment' => $LANG['plugin_order'][32]
 		);
 	else
 		return array ();
 }
 
-/* ------ SEARCH FUNCTIONS ------ (){ */
-/* define search option for types of the plugins */
-function plugin_order_getSearchOption() {
-	global $LANG,$ORDER_AVAILABLE_TYPES;
+/* define dropdown relations */
+function plugin_order_getDatabaseRelations() {
+	$plugin = new Plugin();
+	if ($plugin->isActivated("order"))
+		return array (
+			"glpi_plugin_order_orderpayments" => array (
+				"glpi_plugin_order_orders" => "plugin_order_orderpayments_id"
+			),
+			"glpi_plugin_order_ordertaxes" => array (
+				"glpi_plugin_order_orders" => "plugin_order_ordertaxes_id"
+			),
+			"glpi_entities" => array (
+				"glpi_plugin_order_orders" => "entities_id",
+				"glpi_plugin_order_references" => "entities_id"
+			)
+		);
+	else
+		return array ();
+}
 
-	$sopt = array ();
-	if (plugin_order_haveRight("order", "r")) {
-		/* part header */
-		$sopt[PLUGIN_ORDER_TYPE]['common'] = $LANG['plugin_order']['title'][1];
-		/* order number */
-		$sopt[PLUGIN_ORDER_TYPE][1]['table'] = 'glpi_plugin_order';
-		$sopt[PLUGIN_ORDER_TYPE][1]['field'] = 'numorder';
-		$sopt[PLUGIN_ORDER_TYPE][1]['linkfield'] = 'numorder';
-		$sopt[PLUGIN_ORDER_TYPE][1]['name'] = $LANG['plugin_order'][0];
-		$sopt[PLUGIN_ORDER_TYPE][1]['datatype'] = 'itemlink';
-		/* date */
-		$sopt[PLUGIN_ORDER_TYPE][2]['table'] = 'glpi_plugin_order';
-		$sopt[PLUGIN_ORDER_TYPE][2]['field'] = 'date';
-		$sopt[PLUGIN_ORDER_TYPE][2]['linkfield'] = 'date';
-		$sopt[PLUGIN_ORDER_TYPE][2]['name'] = $LANG['plugin_order'][1];
-		$sopt[PLUGIN_ORDER_TYPE][2]['datatype']='date';
-		/* budget*/
-		$sopt[PLUGIN_ORDER_TYPE][3]['table'] = 'glpi_dropdown_plugin_order_taxes';
-		$sopt[PLUGIN_ORDER_TYPE][3]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_TYPE][3]['linkfield'] = 'taxes';
-		$sopt[PLUGIN_ORDER_TYPE][3]['name'] = $LANG['plugin_order'][25];
-		/* location */
-		$sopt[PLUGIN_ORDER_TYPE][4]['table'] = 'glpi_dropdown_locations';
-		$sopt[PLUGIN_ORDER_TYPE][4]['field'] = 'completename';
-		$sopt[PLUGIN_ORDER_TYPE][4]['linkfield'] = 'location';
-		$sopt[PLUGIN_ORDER_TYPE][4]['name'] = $LANG['plugin_order'][40];
-		/* status */
-		$sopt[PLUGIN_ORDER_TYPE][5]['table'] = 'glpi_plugin_order';
-		$sopt[PLUGIN_ORDER_TYPE][5]['field'] = 'status';
-		$sopt[PLUGIN_ORDER_TYPE][5]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_TYPE][5]['name'] = $LANG['plugin_order']['status'][0];
-		/* supplier */
-		$sopt[PLUGIN_ORDER_TYPE][6]['table'] = 'glpi_enterprises';
-		$sopt[PLUGIN_ORDER_TYPE][6]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_TYPE][6]['linkfield'] = 'FK_enterprise';
-		$sopt[PLUGIN_ORDER_TYPE][6]['name'] = $LANG['financial'][26];
-		$sopt[PLUGIN_ORDER_TYPE][6]['datatype']='itemlink';
-		$sopt[PLUGIN_ORDER_TYPE][6]['itemlink_type']=ENTERPRISE_TYPE;
-		$sopt[PLUGIN_ORDER_TYPE][6]['forcegroupby']=true;
-		/* payment */
-		$sopt[PLUGIN_ORDER_TYPE][7]['table'] = 'glpi_dropdown_plugin_order_payment';
-		$sopt[PLUGIN_ORDER_TYPE][7]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_TYPE][7]['linkfield'] = 'payment';
-		$sopt[PLUGIN_ORDER_TYPE][7]['name'] = $LANG['plugin_order'][32];
-      /* contact
-		$sopt[PLUGIN_ORDER_TYPE][8]['table'] = 'glpi_contacts';
-		$sopt[PLUGIN_ORDER_TYPE][8]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_TYPE][8]['linkfield'] = 'FK_contact';
-		$sopt[PLUGIN_ORDER_TYPE][8]['name'] = $LANG['common'][18];
-		$sopt[PLUGIN_ORDER_TYPE][8]['datatype']='itemlink';
-		$sopt[PLUGIN_ORDER_TYPE][8]['itemlink_type']=CONTACT_TYPE;
-		$sopt[PLUGIN_ORDER_TYPE][8]['forcegroupby']=true; */
-		/* title */
-		$sopt[PLUGIN_ORDER_TYPE][10]['table'] = 'glpi_plugin_order';
-		$sopt[PLUGIN_ORDER_TYPE][10]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_TYPE][10]['linkfield'] = 'name';
-		$sopt[PLUGIN_ORDER_TYPE][10]['name'] = $LANG['plugin_order'][39];
+////// SEARCH FUNCTIONS ///////(){
 
-		/* comments */
-		$sopt[PLUGIN_ORDER_TYPE][16]['table'] = 'glpi_plugin_order';
-		$sopt[PLUGIN_ORDER_TYPE][16]['field'] = 'comment';
-		$sopt[PLUGIN_ORDER_TYPE][16]['linkfield'] = 'comment';
-		$sopt[PLUGIN_ORDER_TYPE][16]['name'] = $LANG['plugin_order'][2];
-		$sopt[PLUGIN_ORDER_TYPE][16]['datatype'] = 'text';
-		/* ID */
-		$sopt[PLUGIN_ORDER_TYPE][30]['table'] = 'glpi_plugin_order';
-		$sopt[PLUGIN_ORDER_TYPE][30]['field'] = 'ID';
-		$sopt[PLUGIN_ORDER_TYPE][30]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_TYPE][30]['name'] = $LANG['common'][2];
-		/* entity */
-		$sopt[PLUGIN_ORDER_TYPE][80]['table'] = 'glpi_entities';
-		$sopt[PLUGIN_ORDER_TYPE][80]['field'] = 'completename';
-		$sopt[PLUGIN_ORDER_TYPE][80]['linkfield'] = 'FK_entities';
-		$sopt[PLUGIN_ORDER_TYPE][80]['name'] = $LANG['entity'][0];
+// Define search option for types of the plugins
+function plugin_order_getAddSearchOptions($itemtype) {
+   global $LANG;
 
+   $sopt = array();
+   if (plugin_order_haveRight("order","r")) {
+      if (in_array($itemtype, PluginOrderOrder_Item::getClasses())) {
+         $sopt[3160]['table']         = 'glpi_plugin_order_orders';
+         $sopt[3160]['field']         = 'name';
+         $sopt[3160]['linkfield']     = '';
+         $sopt[3160]['name']          = $LANG['plugin_order']['title'][1]." - ".
+                                       $LANG['plugin_order'][39];
+         $sopt[3160]['forcegroupby']  = true;
+         $sopt[3160]['datatype']      = 'itemlink';
+         $sopt[3160]['itemlink_type'] = 'PluginOrderOrder';
 
-		foreach ($ORDER_AVAILABLE_TYPES as $type)
-		{
-			$sopt[$type][3160]['table']='glpi_plugin_order';
-			$sopt[$type][3160]['field']='name';
-			$sopt[$type][3160]['linkfield']='';
-			$sopt[$type][3160]['name']=$LANG['plugin_order']['title'][1]." - ".$LANG['plugin_order'][39];
-			$sopt[$type][3160]['forcegroupby']='1';
-			$sopt[$type][3160]['datatype']='itemlink';
-			$sopt[$type][3160]['itemlink_type']=PLUGIN_ORDER_TYPE;
-
-			$sopt[$type][3161]['table']='glpi_plugin_order';
-			$sopt[$type][3161]['field']='numorder';
-			$sopt[$type][3161]['linkfield']='';
-			$sopt[$type][3161]['name']=$LANG['plugin_order']['title'][1]." - ".$LANG['plugin_order'][0];
-			$sopt[$type][3161]['forcegroupby']='1';
-			$sopt[$type][3161]['datatype']='itemlink';
-			$sopt[$type][3161]['itemlink_type']=PLUGIN_ORDER_TYPE;
-		}
-
-	}
-
-	if (plugin_order_haveRight("reference", "r")) {
-
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE]['common'] = $LANG['plugin_order']['reference'][1];
-
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['linkfield'] = 'name';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['name'] = $LANG['plugin_order']['detail'][2];
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][1]['datatype'] = 'itemlink';
-
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['field'] = 'comments';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['linkfield'] = 'comments';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['name'] = $LANG['common'][25];
-      $sopt[PLUGIN_ORDER_REFERENCE_TYPE][2]['datatype'] = 'text';
-
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['field'] = 'type';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][3]['name'] = $LANG['state'][6];
-
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['field'] = 'template';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][4]['name'] = $LANG['common'][13];
-
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['table'] = 'glpi_dropdown_manufacturer';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['linkfield'] = 'FK_glpi_enterprise';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][5]['name'] = $LANG['common'][5];
-
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][6]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][6]['field'] = 'FK_type';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][6]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][6]['name'] = $LANG['common'][17];
-
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['field'] = 'FK_model';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][7]['name'] = $LANG['common'][22];
-
-      $sopt[PLUGIN_ORDER_REFERENCE_TYPE][30]['table'] = 'glpi_plugin_order_references';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][30]['field'] = 'ID';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][30]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][30]['name'] = "ID";
-
-		/* entity */
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['table'] = 'glpi_entities';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['field'] = 'completename';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['linkfield'] = 'FK_entities';
-		$sopt[PLUGIN_ORDER_REFERENCE_TYPE][80]['name'] = $LANG['entity'][0];
-
-		$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['table'] = 'glpi_plugin_order_references_manufacturers';
-		$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['field'] = 'price_taxfree';
-		$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['linkfield'] = 'price_taxfree';
-		$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['name'] = $LANG['plugin_order']['detail'][4];
-
-	}
-
-	if (plugin_order_haveRight("budget", "r")) {
-
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE]['common'] = $LANG['financial'][87];
-
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['table'] = 'glpi_plugin_order_budgets';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['linkfield'] = 'name';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['name'] = $LANG['common'][16];
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][1]['datatype'] = 'itemlink';
-
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['table'] = 'glpi_plugin_order_budgets';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['field'] = 'comments';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['linkfield'] = 'comments';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][2]['name'] = $LANG['common'][25];
-
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['table'] = 'glpi_plugin_order_budgets';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['field'] = 'startdate';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['linkfield'] = 'startdate';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['name'] = $LANG['search'][8];
-      $sopt[PLUGIN_ORDER_BUDGET_TYPE][3]['datatype']='date';
-
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['table'] = 'glpi_plugin_order_budgets';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['field'] = 'enddate';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['linkfield'] = 'enddate';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['name'] = $LANG['search'][9];
-      $sopt[PLUGIN_ORDER_BUDGET_TYPE][4]['datatype']='date';
-
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['table'] = 'glpi_plugin_order_budgets';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['field'] = 'value';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['linkfield'] = 'value';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['name'] = $LANG['financial'][21];
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][5]['datatype'] = 'number';
-
-		/*$sopt[PLUGIN_ORDER_BUDGET_TYPE][6]['table'] = 'glpi_dropdown_budget';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][6]['field'] = 'name';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][6]['linkfield'] = 'FK_budget';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][6]['name'] = $LANG['financial'][87]." GLPI";*/
-
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][30]['table'] = 'glpi_plugin_order_budgets';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][30]['field'] = 'ID';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][30]['linkfield'] = '';
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][30]['name'] = "ID";
-		$sopt[PLUGIN_ORDER_BUDGET_TYPE][30]['datatype'] = 'itemlink';
-	}
-	return $sopt;
+         $sopt[3161]['table']        = 'glpi_plugin_order_orders';
+         $sopt[3161]['field']        = 'num_order';
+         $sopt[3161]['linkfield']    = '';
+         $sopt[3161]['name']         = $LANG['plugin_order']['title'][1]." - ".
+                                       $LANG['plugin_order'][0];
+         $sopt[3161]['forcegroupby'] =  true;
+         $sopt[3161]['datatype']      = 'itemlink';
+         $sopt[3161]['itemlink_type'] = 'PluginOrderOrder';
+      }
+   }
+   return $sopt;
 }
 
 function plugin_order_forceGroupBy($type){
@@ -652,24 +248,25 @@ function plugin_order_forceGroupBy($type){
 }
 
 function plugin_order_addSelect($type, $ID, $num) {
-	global $SEARCH_OPTION;
 
-	$table = $SEARCH_OPTION[$type][$ID]["table"];
-	$field = $SEARCH_OPTION[$type][$ID]["field"];
+	$searchopt = &Search::getOptions($type);
+   $table = $searchopt[$ID]["table"];
+   $field = $searchopt[$ID]["field"];
 
 	if ($table == "glpi_plugin_order_references" && $num!=0)
-		return "`$table`.`type` AS `device_type`, `$table`.`$field` AS `ITEM_$num`, ";
+		return "`$table`.`itemtype`, `$table`.`$field` AS `ITEM_$num`, ";
 	else
 		return "";
 
 }
 
-function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,&$already_link_tables){
+function plugin_order_addLeftJoin_addLeftJoin($type,$ref_table,$new_table,$linkfield,
+                                       &$already_link_tables) {
 
 	switch ($new_table){
-		case "glpi_plugin_order" : // From items
-			$out= " LEFT JOIN `glpi_plugin_order_detail` ON (`$ref_table`.`ID` = `glpi_plugin_order_detail`.`FK_device` AND `glpi_plugin_order_detail`.`device_type` = '$type') ";
-			$out.= " LEFT JOIN `glpi_plugin_order` ON (`glpi_plugin_order`.`ID` = `glpi_plugin_order_detail`.`FK_order`) ";
+		case "glpi_plugin_order_orders" : // From items
+			$out= " LEFT JOIN `glpi_plugin_order_orders_items` ON (`$ref_table`.`id` = `glpi_plugin_order_orders_items`.`items_id` AND `glpi_plugin_order_orders_items`.`itemtype` = '$type') ";
+			$out.= " LEFT JOIN `glpi_plugin_order_orders` ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`) ";
 			return $out;
 			break;
 	}
@@ -678,196 +275,181 @@ function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,&$alrea
 }
 /* display custom fields in the search */
 function plugin_order_giveItem($type, $ID, $data, $num) {
-	global $CFG_GLPI, $INFOFORM_PAGES, $LANG, $SEARCH_OPTION, $LINK_ID_TABLE, $DB,$ORDER_TYPE_TABLES,$ORDER_MODEL_TABLES;
+	global $CFG_GLPI, $LANG,$ORDER_TYPE_TABLES,$ORDER_MODEL_TABLES;
 
-	$table = $SEARCH_OPTION[$type][$ID]["table"];
-	$field = $SEARCH_OPTION[$type][$ID]["field"];
+	$searchopt = &Search::getOptions($type);
+   $table = $searchopt[$ID]["table"];
+   $field = $searchopt[$ID]["field"];
 
    $PluginOrderReference = new PluginOrderReference;
-   $PluginOrder = new PluginOrder;
+   $PluginOrderOrder = new PluginOrderOrder;
 
 	switch ($table . '.' . $field) {
 		/* display associated items with order */
-		case "glpi_plugin_order.status" :
-			return $PluginOrder->getDropdownStatus($data["ITEM_" . $num]);
+		case "glpi_plugin_order_orders.states_id" :
+			return $PluginOrderOrder->getDropdownStatus($data["ITEM_" . $num]);
 		break;
-		case "glpi_plugin_order_references.type" :
-			$commonitem = new CommonItem;
-			$commonitem->setType($data["device_type"]);
-			return $commonitem->getType();
+		case "glpi_plugin_order_references.itemtype" :
+			if (!class_exists($data["itemtype"])) {
+            continue;
+         } 
+         $item = new $data["itemtype"]();
+			return $item->getTypeName();
 		break;
-		case "glpi_plugin_order_references.FK_type" :
-         if (isset($ORDER_TYPE_TABLES[$data["device_type"]]))
-            return getDropdownName($ORDER_TYPE_TABLES[$data["device_type"]], $data["ITEM_" . $num]);
+		case "glpi_plugin_order_references.types_id" :
+         if (isset($ORDER_TYPE_TABLES[$data["itemtype"]]))
+            return Dropdown::getDropdownName($ORDER_TYPE_TABLES[$data["itemtype"]], $data["ITEM_" . $num]);
          else
             return " ";
 		break;
-		case "glpi_plugin_order_references.FK_model" :
-         if (isset($ORDER_MODEL_TABLES[$data["device_type"]]))
-            return getDropdownName($ORDER_MODEL_TABLES[$data["device_type"]], $data["ITEM_" . $num]);
+		case "glpi_plugin_order_references.models_id" :
+         if (isset($ORDER_MODEL_TABLES[$data["itemtype"]]))
+            return Dropdown::getDropdownName($ORDER_MODEL_TABLES[$data["itemtype"]], $data["ITEM_" . $num]);
          else
             return " ";
 		break;
-		case "glpi_plugin_order_references.template" :
+		case "glpi_plugin_order_references.templates_id" :
 			if (!$data["ITEM_" . $num])
 				return " ";
 			else
-				return $PluginOrderReference->getTemplateName($data["device_type"], $data["ITEM_" . $num]);
+				return $PluginOrderReference->getTemplateName($data["itemtype"], $data["ITEM_" . $num]);
 		break;
 	}
 	return "";
 }
 
-/* hook done on delete item case */
-function plugin_pre_item_delete_order($input) {
-	if (isset ($input["_item_type_"]))
-		switch ($input["_item_type_"]) {
-			case PROFILE_TYPE :
-				/* manipulate data if needed */
-				$plugin_order_Profile = new PluginOrderProfile;
-				$plugin_order_Profile->cleanProfiles($input["ID"]);
-				break;
-		}
-	return $input;
-}
-
-function plugin_pre_item_update_order($input) {
+function plugin_pre_item_update_order($item) {
 	global $LANG;
 
-	if (isset ($input["_item_type_"]))
-		switch ($input["_item_type_"]) {
-			case INFOCOM_TYPE :
-            //If infocom modifications doesn't come from order plugin himself
-				if (!isset ($input["_manage_by_order"])) {
+	switch (get_class($item)) {
+      case 'Infocom' :
+         //If infocom modifications doesn't come from order plugin himself
+         if (!isset ($item->input["_manage_by_order"])) {
+         
+            if (isset ($item->fields["id"])) {
+               $item->getFromDB($item->input["id"]);
 
-               $infocom = new InfoCom;
-
-               if (isset ($infocom->fields["ID"])) {
-                  $infocom->getFromDB($input["ID"]);
-
-                  if (isset ($infocom->fields["device_type"]) & isset ($infocom->fields["FK_device"])) {
-                     $device = new PluginOrderDetail;
-                     if ($device->isDeviceLinkedToOrder($infocom->fields["device_type"],$infocom->fields["FK_device"])) {
-                        $field_set = false;
-                        $unset_fields = array (
-                           "num_commande",
-                           "bon_livraison",
-                           "budget",
-                           "FK_enterprise",
-                           "facture",
-                           "value",
-                           "buy_date"
-                        );
-                        foreach ($unset_fields as $field)
-                           if (isset ($input[$field])) {
-                              $field_set = true;
-                              unset ($input[$field]);
-                           }
-                        if ($field_set)
-                           addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);
-                     }
+               if (isset ($item->fields["itemtype"]) & isset ($item->fields["items_id"])) {
+                  $device = new PluginOrderOrder_Item;
+                  if ($device->isDeviceLinkedToOrder($item->fields["itemtype"],$item->fields["items_id"])) {
+                     $field_set = false;
+                     $unset_fields = array (
+                        "num_commande",
+                        "bon_livraison",
+                        "budget",
+                        "suppliers_id",
+                        "facture",
+                        "value",
+                        "buy_date"
+                     );
+                     foreach ($unset_fields as $field)
+                        if (isset ($item->input[$field])) {
+                           $field_set = true;
+                           unset ($item->input[$field]);
+                        }
+                     if ($field_set)
+                        addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);
                   }
                }
-				}
-				break;
-		}
-	return $input;
+            }
+         }
+         break;
+   }
+}
+
+/* hook done on delete item case */
+function plugin_pre_item_purge_order($item) {
+
+	switch (get_class($item)) {
+      case 'Profile' :
+         // Manipulate data if needed
+         $PluginOrderProfile = new PluginOrderProfile;
+         $PluginOrderProfile->cleanProfiles($item->getField("id"));
+         break;
+   }
+   return $item;
 }
 
 /* hook done on purge item case */
-function plugin_item_purge_order($parm) {
-	global $ORDER_AVAILABLE_TYPES;
+function plugin_item_purge_order($item) {
 
-   //logInFile("debug",exportArrayToDB($parm));
-   if (in_array($parm["type"], $ORDER_AVAILABLE_TYPES)) {
-		$detail = new PluginOrderDetail;
-		$detail->cleanItems($parm["ID"], $parm["type"]);
-		return true;
-	}
-	 else
-		return false;
+	$type = get_class($item);
+   if (in_array($type, PluginOrderOrder_Item::getClasses())) {
+
+      $temp = new PluginOrderOrder_Item();
+      $temp->clean(array('itemtype' => $type,
+                         'items_id' => $item->getField('id')));
+
+      return true;
+   }
+   return false;
 }
 
-/* define headings added by the plugin */
-function plugin_get_headings_order($type, $ID, $withtemplate) {
-	global $LANG, $ORDER_AVAILABLE_TYPES;
+// Define headings added by the plugin
+function plugin_get_headings_order($item,$withtemplate) {
+   global $LANG;
 
-   $types = $ORDER_AVAILABLE_TYPES;
-	$types[] = ENTERPRISE_TYPE;
-   if ($type=="mailing") {
+   $type = get_Class($item);
+   if ($type == 'Profile') {
+      if ($item->getField('id') && $item->getField('interface')!='helpdesk') {
+         return array(1 => $LANG['plugin_order']['title'][1]);
+      }
+   } else if (in_array($type, PluginOrderOrder_Item::getClasses()) || $type == 'Supplier' || $type == 'Budget') {
+      if ($item->getField('id') && !$withtemplate) {
+         // Non template case
+         return array(1 => $LANG['plugin_order']['title'][1]);
+      }
+   } else if ($type == 'Notification') {
+      return array(1 => $LANG['plugin_order']['title'][1]);
+   }
+   return false;
+}
+
+// Define headings actions added by the plugin
+function plugin_headings_actions_order($item) {
+
+   if (in_array(get_class($item),PluginOrderOrder_Item::getClasses())||
+		get_class($item)=='Profile' || 
+		get_class($item)=='Supplier' || 
+		get_class($item)=='Budget' || 
+		get_class($item)=='Notification') {
 		return array(
-		1 => $LANG['plugin_order']['title'][1],
+			1 => "plugin_headings_order",
 		);
-
-	} else if (in_array($type,$types)) {
-		// template case
-		if ($ID>0 && !$withtemplate){
-				return array(
-					1 => $LANG['plugin_order']['title'][1],
-					);
-		}
-	} else if ($type == PROFILE_TYPE) {
-      $prof = new Profile();
-		if ($ID>0 && $prof->getFromDB($ID) && $prof->fields['interface']!='helpdesk') {
-			return array(
-				1 => $LANG['plugin_order']['title'][1],
-				);
-		}
 	}
 	return false;
 }
 
-/* define headings actions added by the plugin */
-function plugin_headings_actions_order($type) {
-	global $ORDER_AVAILABLE_TYPES;
-
-	$types = $ORDER_AVAILABLE_TYPES;
-	$types[] = ENTERPRISE_TYPE;
-	$types[] = PROFILE_TYPE;
-	$types[] = "mailing";
-	if (in_array($type, $types)) {
-		return array (
-			1 => "plugin_headings_order",
-
-
-		);
-	} else
-		return false;
-}
-
 /* action heading */
-function plugin_headings_order($type, $ID) {
-	global $CFG_GLPI, $LANG, $ORDER_AVAILABLE_TYPES;
-
-   $mailing = new PluginOrderConfigMailing();
-   $detail = new PluginOrderDetail();
-   $reference = new PluginOrderReference();
-
-	switch ($type) {
-		case ENTERPRISE_TYPE :
-			$reference->showReferencesFromSupplier($ID);
-			break;
-		case PROFILE_TYPE :
-         $prof = new PluginOrderProfile();
-         if (!$prof->GetfromDB($ID))
-            plugin_order_createaccess($ID);
-         $prof->showForm($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.profile.php", $ID);
-			break;
-		case "mailing" :
-			$mailing->showMailingForm($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.setup.mailing.php");
-			break;
-		default :
-			if (in_array($type, $ORDER_AVAILABLE_TYPES))
-				$detail->showPluginFromItems($type, $ID);
-			break;
-	}
-}
-
-function plugin_order_loadPluginByType($device_type) {
-	global $PLUGIN_HOOKS;
-   if ($device_type > 1000) {
-	  usePlugin($PLUGIN_HOOKS['plugin_types'][$device_type]);
-	}
+function plugin_headings_order($item) {
+	global $CFG_GLPI;
+  
+   $PluginOrderProfile=new PluginOrderProfile();
+   $PluginOrderMailingSetting = new PluginOrderMailingSetting();
+   $PluginOrderOrder_Item = new PluginOrderOrder_Item();
+   $PluginOrderSupplier = new PluginOrderSupplier();
+   $PluginOrderBudget = new PluginOrderBudget();
+	switch (get_class($item)) {
+      case 'Profile' :
+         if (!$PluginOrderProfile->GetfromDB($item->getField('id')))
+            $PluginOrderProfile->createAccess($item->getField('id'));
+         $PluginOrderProfile->showForm($CFG_GLPI["root_doc"]."/plugins/order/front/profile.form.php",$item->getField('id'));
+         break;
+      case 'Notification' :
+         $PluginOrderMailingSetting->showFormMailing($CFG_GLPI["root_doc"]."/plugins/order/front/mailing.setting.php");
+         break;
+      case 'Supplier' :
+         $PluginOrderSupplier->showReferencesFromSupplier($item->getField('id'));
+         break;
+      case 'Budget' :
+         $PluginOrderBudget->getAllOrdersByBudget($_POST["id"]);
+         break;
+      default :
+         if (in_array(get_class($item), PluginOrderOrder_Item::getClasses())) {
+            $PluginOrderOrder_Item->showPluginFromItems(get_class($item),$item->getField('id'));
+         }
+         break;
+   }
 }
 
 ?>

@@ -28,43 +28,15 @@
  --------------------------------------------------------------------------
  
 // ----------------------------------------------------------------------
-// Original Author of file: NOUH Walid & Benjamin Fontan
-// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// Original Author of file: CAILLAUD Xavier
+// Purpose of file: plugin racks v1.1.0 - GLPI 0.80
 // ----------------------------------------------------------------------
  */
 
-if (strpos($_SERVER['PHP_SELF'],"dropdownSupplier.php")) {
-	define('GLPI_ROOT','../../..');
-	include (GLPI_ROOT."/inc/includes.php");
-	header("Content-Type: text/html; charset=UTF-8");
-	header_nocache();
-}
+define('GLPI_ROOT', '../../..');
+include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
-
-// Make a select box
-
-if (isset($_POST["suppliers_id"])) {
-
-	$rand=$_POST['rand'];
-
-	$use_ajax=false;
-	if ($CFG_GLPI["use_ajax"] && 
-		countElementsInTable('glpi_suppliers',"`glpi_suppliers`.`id` = '".$_POST["suppliers_id"]."' ".getEntitiesRestrictRequest("AND", "glpi_suppliers","",$_POST["entity_restrict"],true)) > $CFG_GLPI["ajax_limit_count"]
-	){
-		$use_ajax=true;
-	}
-
-	$paramssuppliers_id=array('searchText'=>'__VALUE__',
-			'suppliers_id'=>$_POST["suppliers_id"],
-			'entity_restrict'=>$_POST["entity_restrict"],
-			'rand'=>$_POST['rand'],
-			'myname'=>$_POST['myname']
-			);
-	
-	$default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
-	ajaxDropdown($use_ajax,"/plugins/order/ajax/dropdownContact.php",$paramssuppliers_id,$default,$rand);
-
-}
+$dropdown = new PluginOrderOrderPayment();
+include (GLPI_ROOT . "/front/dropdown.common.form.php");
 
 ?>

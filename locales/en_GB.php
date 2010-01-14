@@ -164,9 +164,13 @@ $LANG['plugin_order']['validation'][15] = "Order is in draft state";
 $LANG['plugin_order']['validation'][16] = "Validation canceled successfully";
 $LANG['plugin_order']['validation'][17] = "Edit order";
 
+$LANG['plugin_order']['menu'][0] = "Menu";
 $LANG['plugin_order']['menu'][1] = "Manage orders";
 $LANG['plugin_order']['menu'][2] = "Manage products references";
 $LANG['plugin_order']['menu'][3] = "Manage budgets";
+$LANG['plugin_order']['menu'][4] = "Orders";
+$LANG['plugin_order']['menu'][5] = "References";
+$LANG['plugin_order']['menu'][6] = "Budgets";
 
 $LANG['plugin_order']['budget'][1] = "Linked orders";
 $LANG['plugin_order']['budget'][2] = "Budget already used";

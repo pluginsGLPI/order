@@ -34,34 +34,19 @@
  */
 
 define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT."/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+include (GLPI_ROOT . "/inc/includes.php");
 
-if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+commonHeader($LANG['plugin_order']['reference'][1], $_SERVER["PHP_SELF"], "plugins", "order", "reference");
+
+if (plugin_order_haveRight("reference", "r")) {
+
+	Search::show("PluginOrderReference");
+	
+} else {
+	echo "<div align='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
+	echo "<b>" . $LANG['login'][5] . "</b></div>";
 }
 
-$reference = new PluginOrderReference;
-
-$itemtype=$_POST["itemtype"];
-
-if (isset($_POST["action"])) {
-	switch($_POST["action"]) {
-		case "generation":
-			echo "<input type='hidden' name='plugin_order_references_id' value='".$_POST["plugin_order_references_id"]."'>"; 
-			echo"<input type='submit' name='generation' class='submit' value='".$LANG['buttons'][2]."'>"; 
-         break;
-   	case "createLink":
-			echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-			$reference->getFromDB($_POST["plugin_order_references_id"]);
-			$reference->dropdownAllItemsByType("itemtype", $itemtype, $_SESSION["glpiactive_entity"],$reference->fields["types_id"],$reference->fields["models_id"]);
-			echo "&nbsp;<input type='submit' name='createLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'>";
-         break;
-   	case "deleteLink":
-			echo "&nbsp;<input type='submit' name='deleteLinkWithDevice' class='submit' value='".$LANG['buttons'][2]."'>";
-         break;
-	}
-}
+commonFooter();
 
 ?>

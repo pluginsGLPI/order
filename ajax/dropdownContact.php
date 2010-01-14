@@ -33,23 +33,23 @@
 // ----------------------------------------------------------------------
  */
 
-if(strpos($_SERVER['PHP_SELF'],"dropdownContact.php")){
+if (strpos($_SERVER['PHP_SELF'],"dropdownContact.php")) {
 	define('GLPI_ROOT','../../..');
-	$AJAX_INCLUDE=1;
 	include (GLPI_ROOT."/inc/includes.php");
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 }
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
 checkCentralAccess();
+
 // Make a select box with all glpi users
-$where=" WHERE `glpi_contact_enterprise`.`FK_contact` = `glpi_contacts`.`ID` AND (`glpi_contact_enterprise`.`FK_enterprise` = '".$_POST['FK_enterprise']."' AND `glpi_contacts`.`deleted` = '0' ) ";
+$where=" WHERE `glpi_contacts_suppliers`.`contacts_id` = `glpi_contacts`.`id` AND (`glpi_contacts_suppliers`.`suppliers_id` = '".$_POST['suppliers_id']."' AND `glpi_contacts`.`is_deleted` = '0' ) ";
 
 
-if (isset($_POST["entity_restrict"])){
+if (isset($_POST["entity_restrict"])) {
    if (!is_numeric($_POST["entity_restrict"]) && !is_array($_POST["entity_restrict"])) {
       $_POST["entity_restrict"] = unserialize(stripslashes($_POST["entity_restrict"]));
    }
@@ -67,36 +67,37 @@ if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 
 $query = "SELECT `glpi_contacts`.*
-	FROM `glpi_contacts`,`glpi_contact_enterprise`
+	FROM `glpi_contacts`,`glpi_contacts_suppliers`
 	$where
-	ORDER BY `FK_entities`, `name` $LIMIT";
+	ORDER BY `entities_id`, `name` $LIMIT";
 //error_log($query);
 $result = $DB->query($query);
 
-echo "<select name=\"FK_contact\">";
+echo "<select name=\"contacts_id\">";
 
 echo "<option value=\"0\">-----</option>";
 
 if ($DB->numrows($result)) {
 	$prev=-1;
 	while ($data=$DB->fetch_array($result)) {
-		if ($data["FK_entities"]!=$prev) {
+		if ($data["entities_id"]!=$prev) {
 			if ($prev>=0) {
 				echo "</optgroup>";
 			}
-			$prev=$data["FK_entities"];
-			echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+			$prev=$data["entities_id"];
+			echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
 		}
-		$output=formatUserName($data["ID"],"",$data["name"],$data["firstname"]);
-		if($_SESSION["glpiview_ID"]||empty($output)){
-			$output.=" (".$data["ID"].")";
+		$output=formatUserName($data["id"],"",$data["name"],$data["firstname"]);
+		if($_SESSION["glpiis_ids_visible"]||empty($output)){
+			$output.=" (".$data["id"].")";
 		}
-		echo "<option value=\"".$data["ID"]."\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
+		echo "<option value=\"".$data["id"]."\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_chars_limit"])."</option>";
 	}
 	if ($prev>=0) {
 		echo "</optgroup>";
 	}
 }
+
 echo "</select>";
 
 ?>

@@ -38,24 +38,23 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-useplugin('order', true);
-
 checkCentralAccess();
 
-$PluginOrderReferenceManufacturer = new PluginOrderReferenceManufacturer();
+$PluginOrderReference_Manufacturer = new PluginOrderReference_Manufacturer();
+$PluginOrderOrder_Item = new PluginOrderOrder_Item();
 
-if ($_POST["FK_reference"] > 0)
+if ($_POST["plugin_order_references_id"] > 0)
 {  
    
-	$price = $PluginOrderReferenceManufacturer->getPriceByReferenceAndSupplier($_POST["FK_reference"],$_POST["FK_enterprise"]);
+	$price = $PluginOrderReference_Manufacturer->getPriceByReferenceAndSupplier($_POST["plugin_order_references_id"],$_POST["suppliers_id"]);
 	switch ($_POST["update"])
 	{
 		case 'quantity':
-			autocompletionTextField("quantity","glpi_plugin_order_detail","quantity",0,5);
+			echo "<input type='text' name='quantity' size='5'>";
          break;
 		case 'priceht':
 			echo "<input type='text' name='price' value=\"".formatNumber($price,true)."\" size='5'>";
@@ -64,12 +63,13 @@ if ($_POST["FK_reference"] > 0)
 			echo "<input type='text' name='discount' value=\"".formatNumber("discount",true)."\" size='5'>";
          break;
 		case 'validate':
-			echo "<input type='hidden' name='device_type' value='".$_POST["device_type"]."' class='submit' >";
-			echo "<input type='hidden' name='FK_reference' value='".$_POST["FK_reference"]."' class='submit' >";
-			echo "<input type='submit' name='add_detail' value=\"".$LANG['buttons'][8]."\" class='submit' >";
+			echo "<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."' class='submit' >";
+			echo "<input type='hidden' name='plugin_order_references_id' value='".$_POST["plugin_order_references_id"]."' class='submit' >";
+			echo "<input type='submit' name='add_item' value=\"".$LANG['buttons'][8]."\" class='submit' >";
          break;					
 	}	
 }
 else
 	return "";
+
 ?>

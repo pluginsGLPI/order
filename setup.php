@@ -44,176 +44,143 @@ define("ORDER_STATUS_PARTIALLY_DELIVRED", 3);
 define("ORDER_STATUS_COMPLETLY_DELIVERED", 4);
 define("ORDER_STATUS_CANCELED", 5);
 
-include_once ("inc/plugin_order.auth.function.php");
-include_once ("inc/plugin_order.profile.class.php");
-
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
-	global $PLUGIN_HOOKS, $CFG_GLPI, $LANG, $ORDER_AVAILABLE_TYPES, $ORDER_RESTRICTED_TYPES, $ORDER_VALIDATION_STATUS, $ORDER_TYPE_TABLES, $ORDER_MODEL_TABLES, $ORDER_TEMPLATE_TABLES;
+	global $PLUGIN_HOOKS, $CFG_GLPI, $LANG, $ORDER_RESTRICTED_TYPES, $ORDER_VALIDATION_STATUS, $ORDER_TYPE_TABLES, $ORDER_TYPE_CLASSES, $ORDER_MODEL_TABLES, $ORDER_MODEL_CLASSES, $ORDER_TEMPLATE_TABLES;
 
-	$ORDER_AVAILABLE_TYPES = array (
-		COMPUTER_TYPE,
-		MONITOR_TYPE,
-		NETWORKING_TYPE,
-		PHONE_TYPE,
-		PRINTER_TYPE,
-		PERIPHERAL_TYPE,
-		CONSUMABLE_ITEM_TYPE,
-		CARTRIDGE_ITEM_TYPE,
-      SOFTWARELICENSE_TYPE,
-      //SOFTWARE_TYPE,
-      CONTRACT_TYPE
-      
- 	);
-	$ORDER_RESTRICTED_TYPES = array (
-		CONSUMABLE_ITEM_TYPE,
-		CARTRIDGE_ITEM_TYPE
- 	);
-	$ORDER_VALIDATION_STATUS = array (
-		ORDER_STATUS_DRAFT,
-		ORDER_STATUS_WAITING_APPROVAL
-	);
-
-	$ORDER_TYPE_TABLES = array (
-		COMPUTER_TYPE => "glpi_type_computers",
-		MONITOR_TYPE => "glpi_type_monitors",
-		PRINTER_TYPE => "glpi_type_printers",
-		NETWORKING_TYPE => "glpi_type_networking",
-		SOFTWARELICENSE_TYPE => "glpi_dropdown_licensetypes",
-		PERIPHERAL_TYPE => "glpi_type_peripherals",
-		PHONE_TYPE => "glpi_type_phones",
-		CARTRIDGE_ITEM_TYPE => "glpi_dropdown_cartridge_type",
-		CONSUMABLE_ITEM_TYPE => "glpi_dropdown_consumable_type",
-		CONTRACT_TYPE => "glpi_dropdown_contract_type"
-	);
-	$ORDER_MODEL_TABLES = array (
-		COMPUTER_TYPE => "glpi_dropdown_model",
-		MONITOR_TYPE => "glpi_dropdown_model_monitors",
-		PRINTER_TYPE => "glpi_dropdown_model_printers",
-		NETWORKING_TYPE => "glpi_dropdown_model_networking",
-		PERIPHERAL_TYPE => "glpi_dropdown_model_peripherals",
-		PHONE_TYPE => "glpi_dropdown_model_phones"
-	);
-	$ORDER_TEMPLATE_TABLES = array (
-		COMPUTER_TYPE,
-		MONITOR_TYPE,
-		PRINTER_TYPE,
-		NETWORKING_TYPE,
-		PERIPHERAL_TYPE,
-		PHONE_TYPE
-	);
-	$plugin = new Plugin;
-		/* params : plugin name - string type - number - class - table - form page */
-		registerPluginType('order', 'PLUGIN_ORDER_TYPE', 3150, array (
-			'classname' => 'PluginOrder',
-			'tablename' => 'glpi_plugin_order',
-			'formpage' => 'front/plugin_order.form.php',
-			'searchpage' => 'front/plugin_order.order.php',
-			'typename' => $LANG['plugin_order']['title'][1],
-			'deleted_tables' => true,
-			'specif_entities_tables' => true,
-			'recursive_type' => true
-		));
-	
-		registerPluginType('order', 'PLUGIN_ORDER_REFERENCE_TYPE', 3151, array (
-			'classname' => 'PluginOrderReference',
-			'tablename' => 'glpi_plugin_order_references',
-			'formpage' => 'front/plugin_order.reference.form.php',
-			'searchpage' => 'front/plugin_order.reference.php',
-			'typename' => $LANG['plugin_order']['reference'][1],
-			'deleted_tables' => true,
-			'specif_entities_tables' => true,
-			'recursive_type' => true
-		));
-	
-		registerPluginType('order', 'PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE', 3152, array (
-			'classname' => 'PluginOrderReferenceManufacturer',
-			'tablename' => 'glpi_plugin_order_references_manufacturers',
-			'formpage' => 'front/plugin_order.referencemanufacturer.form.php',
-			'searchpage' => '',
-			'typename' => $LANG['plugin_order']['reference'][5],
-		));
-	
-		registerPluginType('order', 'PLUGIN_ORDER_BUDGET_TYPE', 3153, array (
-			'classname' => 'PluginOrderBudget',
-			'tablename' => 'glpi_plugin_order_budgets',
-			'formpage' => 'front/plugin_order.budget.form.php',
-			'searchpage' => 'front/plugin_order.budget.php',
-			'typename' => $LANG['financial'][87],
-			'deleted_tables' => true,
-		));
+	$ORDER_RESTRICTED_TYPES = array ('ConsumableItem',
+                                    'CartridgeItem');
+                                    
+	$ORDER_VALIDATION_STATUS = array (ORDER_STATUS_DRAFT,
+                                    ORDER_STATUS_WAITING_APPROVAL);
+   
+   $ORDER_TYPE_CLASSES = array ('Computer'             => "ComputerType",
+                                 'Monitor'            => "MonitorType",
+                                 'Printer'            => "PrinterType",
+                                 'NetworkEquipment'   => "NetworkEquipmentType",
+                                 'Peripheral'         => "PeripheralType",
+                                 'Phone'              => "PhoneType",
+                                 'ConsumableItem'     => "ConsumableItemType",
+                                 'CartridgeItem'      => "CartridgeItemType",
+                                 'Contract'           => "ContractType");
+                                 
+	$ORDER_TYPE_TABLES = array ('Computer'             => "glpi_computertypes",
+                                 'Monitor'            => "glpi_monitortypes",
+                                 'Printer'            => "glpi_printertypes",
+                                 'NetworkEquipment'   => "glpi_networkequipmenttypes",
+                                 'Peripheral'         => "glpi_peripheraltypes",
+                                 'Phone'              => "glpi_phonetypes",
+                                 'ConsumableItem'     => "glpi_consumableitemtypes",
+                                 'CartridgeItem'      => "glpi_cartridgeitemtypes",
+                                 'Contract'           => "glpi_contracttypes");
+   
+   $ORDER_MODEL_CLASSES = array ('Computer'            => "ComputerModel",
+                                 'Monitor'            => "MonitorModel",
+                                 'Printer'            => "PrinterModel",
+                                 'NetworkEquipment'   => "NetworkEquipmentModel",
+                                 'Peripheral'         => "PeripheralModel",
+                                 'Phone'              => "PhoneModel");
+                                 
+	$ORDER_MODEL_TABLES = array ('Computer'            => "glpi_computermodels",
+                                 'Monitor'            => "glpi_monitormodels",
+                                 'Printer'            => "glpi_printermodels",
+                                 'NetworkEquipment'   => "glpi_networkequipmentmodels",
+                                 'Peripheral'         => "glpi_peripheralmodels",
+                                 'Phone'              => "glpi_phonemodels");
 		
-		registerPluginType('order', 'PLUGIN_ORDER_SUPPLIER_TYPE', 3154, array (
-			'classname' => 'PluginOrderSupplier',
-			'tablename' => 'glpi_plugin_order_suppliers',
-			'formpage' => 'front/plugin_order.supplier.form.php',
-			'searchpage' => '',
-			'typename' => $LANG['plugin_order'][4],
-		));
-		
-		registerPluginType('order', 'PLUGIN_ORDER_RECEPTION_TYPE', 3155, array (
-			'classname' => 'PluginOrderReception',
-			'tablename' => 'glpi_plugin_order_detail',
-			'formpage' => 'front/plugin_order.reception.form.php',
-			'searchpage' => '',
-			'typename' => $LANG['plugin_order'][6],
-		));
-
+	$ORDER_TEMPLATE_TABLES = array ('Computer',
+                                    'Monitor',
+                                    'NetworkEquipment',
+                                    'Peripheral',
+                                    'Printer',
+                                    'Phone');
+                                    
+	Plugin::registerClass('PluginOrderOrder', array(
+		'doc_types' => true,
+		'massiveaction_noupdate_types' => true
+	));
+   
+   Plugin::registerClass('PluginOrderReference', array(
+		'doc_types' => true,
+		'massiveaction_noupdate_types' => true
+	));
+	
+	Plugin::registerClass('PluginOrderReference_Manufacturer', array(
+		'doc_types' => true
+	));
+   
+   $plugin = new Plugin;
+   
 	if ($plugin->isActivated("order"))
 	{
 
 		$PLUGIN_HOOKS['pre_item_update']['order'] = 'plugin_pre_item_update_order';
       
-      array_push($CFG_GLPI["massiveaction_noupdate_types"], PLUGIN_ORDER_TYPE);
-		array_push($CFG_GLPI["massiveaction_noupdate_types"], PLUGIN_ORDER_REFERENCE_TYPE);
-	
 		/* link to the config page in plugins menu */
 		if (plugin_order_haveRight("order", "w") || haveRight("config", "w"))
-			$PLUGIN_HOOKS['config_page']['order'] = 'front/plugin_order.config.php';
+			$PLUGIN_HOOKS['config_page']['order'] = 'front/config.form.php';
 	
 		/* load changeprofile function */
-		$PLUGIN_HOOKS['change_profile']['order'] = 'plugin_order_changeprofile';
+		$PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile','changeProfile');
 	
 		/*if glpi is loaded */
 		if (isset ($_SESSION["glpiID"])) {
 	
 			if (plugin_order_haveRight("order", "r") || plugin_order_haveRight("reference", "r")) {
-				$PLUGIN_HOOKS['redirect_page']['order'] = "front/plugin_order.form.php";
-				$PLUGIN_HOOKS['submenu_entry']['order']["<img  src='" . $CFG_GLPI["root_doc"] . "/pics/menu_show.png' title='" . $LANG['plugin_order'][43] . "' alt='" . $LANG['plugin_order'][43] . "'>"] = 'index.php';
-				$PLUGIN_HOOKS['menu_entry']['order'] = true;
-				$PLUGIN_HOOKS['use_massive_action']['order'] = 1;
-	
-				if (haveRight("config", "w"))
-					$PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/plugin_order.config.php';
-			}
-	
-			if (plugin_order_haveRight("order", "r")) {
-				$PLUGIN_HOOKS['submenu_entry']['order']['search']['order'] = 'front/plugin_order.order.php';
-				$PLUGIN_HOOKS['headings']['order'] = 'plugin_get_headings_order';
+            
+				$PLUGIN_HOOKS['redirect_page']['order'] = "front/order.form.php";
+            $PLUGIN_HOOKS['menu_entry']['order'] = 'front/menu.php';
+            $PLUGIN_HOOKS['headings']['order'] = 'plugin_get_headings_order';
 				$PLUGIN_HOOKS['headings_action']['order'] = 'plugin_headings_actions_order';
-			}
-	
-			if (plugin_order_haveRight("reference", "r")) {
-				$PLUGIN_HOOKS['submenu_entry']['order']['search']['reference'] = 'front/plugin_order.reference.php';
-			}
-	
-			if (plugin_order_haveRight("reference", "w")) {
-				$PLUGIN_HOOKS['submenu_entry']['order']['add']['reference'] = 'front/plugin_order.reference.form.php';
-			}
-	
-			if (plugin_order_haveRight("order", "w")) {
-				$PLUGIN_HOOKS['submenu_entry']['order']['add']['order'] = 'front/plugin_order.form.php';
-				$PLUGIN_HOOKS['pre_item_delete']['order'] = 'plugin_pre_item_delete_order';
-				$PLUGIN_HOOKS['item_purge']['order'] = 'plugin_item_purge_order';
-			}
-	
-			if (plugin_order_haveRight("budget", "r")) {
-				$PLUGIN_HOOKS['submenu_entry']['order']['search']['budget'] = 'front/plugin_order.budget.php';
-			}
-	
-			if (plugin_order_haveRight("budget", "w")) {
-				$PLUGIN_HOOKS['submenu_entry']['order']['add']['budget'] = 'front/plugin_order.budget.form.php';
-			}
+            //menu
+            if (plugin_order_haveRight("order","r")) {
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['menu']['title'] = $LANG['plugin_order']['menu'][0];
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['menu']['page']  = '/plugins/order/front/menu.php';
+            }
+            //order
+            if (plugin_order_haveRight("order","r")) {
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['title'] = $LANG['plugin_order']['menu'][4];
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['page']  = '/plugins/order/front/order.php';
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['search'] = '/plugins/order/front/order.php';
+            }
+            //references
+            if (plugin_order_haveRight("reference","r")) {
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['title'] = $LANG['plugin_order']['menu'][5];
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['page']  = '/plugins/order/front/reference.php';
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['search'] = '/plugins/order/front/reference.php';
+            }
+            //budget
+            if (plugin_order_haveRight("budget","r")) {
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['budget']['title'] = $LANG['plugin_order']['menu'][6];
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['budget']['page']  = '/plugins/order/front/budget.php';
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['budget']['links']['search'] = '/plugins/order/front/budget.php';
+            }
+         }
+
+         if (plugin_order_haveRight("order","w")) {
+            //order
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['add']    = '/plugins/order/front/order.form.php';
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['config'] = '/plugins/order/front/config.form.php';
+         }
+         if (plugin_order_haveRight("reference","w")) {
+            //references
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['add']    = '/plugins/order/front/reference.form.php';
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['config'] = '/plugins/order/front/config.form.php';
+         }
+         if (plugin_order_haveRight("budget","w")) {
+            //budget
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['budget']['links']['add']    = '/plugins/order/front/budget.form.php';
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['budget']['links']['config'] = '/plugins/order/front/config.form.php';
+         }
+            if (haveRight("config","w")) {
+               $PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/config.form.php';
+            }
+            $PLUGIN_HOOKS['use_massive_action']['order'] = 1;
+         
+				//$PLUGIN_HOOKS['submenu_entry']['order']["<img  src='" . $CFG_GLPI["root_doc"] . "/pics/menu_show.png' title='" . $LANG['plugin_order'][43] . "' alt='" . $LANG['plugin_order'][43] . "'>"] = 'index.php';
+			
+			$PLUGIN_HOOKS['pre_item_purge']['order'] = 'plugin_pre_item_purge_order';
+         $PLUGIN_HOOKS['item_purge']['order'] = 'plugin_pre_item_purge_order';
 		}
 	}
 }
@@ -224,20 +191,20 @@ function plugin_version_order() {
 
 	return array (
 		'name' => $LANG['plugin_order']['title'][1],
-		'version' => '1.1.0',
-		'author' => 'Benjamin Fontan & Walid Nouh',
+		'version' => '1.2.0',
+		'author' => 'Benjamin Fontan, Walid Nouh, Xavier Caillaud',
 		'homepage' => 'https://forge.indepnet.net/projects/show/order',
-		'minGlpiVersion' => '0.72',
+		'minGlpiVersion' => '0.80',
 		
 	);
 }
 
 /* check prerequisites before install : may print errors or add to message after redirect -optional- */
 function plugin_order_check_prerequisites() {
-	if (GLPI_VERSION >= 0.72) {
+	if (GLPI_VERSION >= 0.80) {
 		return true;
 	} else {
-		echo "GLPI version not compatible need 0.72";
+		echo "GLPI version not compatible need 0.80";
 	}
 }
 
@@ -245,21 +212,17 @@ function plugin_order_check_config() {
 	return true;
 }
 
-/* define rights for the plugin types -needed- */
-function plugin_order_haveTypeRight($type, $right) {
-	switch ($type) {
-		case PLUGIN_ORDER_TYPE :
-			return plugin_order_haveRight("order", $right);
-		case PLUGIN_ORDER_REFERENCE_TYPE :
-			return plugin_order_haveRight("reference", $right);
-		case PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE :
-			return plugin_order_haveRight("reference", $right);
-		case PLUGIN_ORDER_BUDGET_TYPE :
-			return plugin_order_haveRight("budget", $right);
-		case PLUGIN_ORDER_SUPPLIER_TYPE :
-			return plugin_order_haveRight("order", $right);
-		case PLUGIN_ORDER_RECEPTION_TYPE :
-			return plugin_order_haveRight("order", $right);
-	}
+function plugin_order_haveRight($module,$right) {
+	$matches=array(
+			""  => array("","r","w"), // ne doit pas arriver normalement
+			"r" => array("r","w"),
+			"w" => array("w"),
+			"1" => array("1"),
+			"0" => array("0","1"), // ne doit pas arriver non plus
+		      );
+	if (isset($_SESSION["glpi_plugin_order_profile"][$module])&&in_array($_SESSION["glpi_plugin_order_profile"][$module],$matches[$right]))
+		return true;
+	else return false;
 }
+
 ?>

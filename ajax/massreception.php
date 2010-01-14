@@ -33,7 +33,6 @@
 // ----------------------------------------------------------------------
  */
  
-$AJAX_INCLUDE=1;
 define('GLPI_ROOT','../../..');
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
@@ -41,24 +40,22 @@ header_nocache();
 
 checkLoginUser();
 
-useplugin('order', true);
-
 $PluginOrderReception = new PluginOrderReception();
 
 echo "<table width='950px' class='tab_cadre' width='50%'>";
 echo "<tr class='tab_bg_2'><td>";
-showDateFormItem("date",date("Y-m-d"),true,1);
+showDateFormItem("delivery_date",date("Y-m-d"),true,1);
 echo "</td><td>";
 echo $LANG['financial'][19]."&nbsp;";
-autocompletionTextField("deliverynum","glpi_plugin_order_detail","deliverynum",'',20,$_SESSION["glpiactive_entity"]);
+echo "<input type='text' name='delivery_number' size='20'>";
 echo "</td><td>";
-echo "<input type='hidden' name='referenceID' value='".$_POST['referenceID']."'>";
-echo "<input type='hidden' name='orderID' value='".$_POST['orderID']."'>";
+echo "<input type='hidden' name='plugin_order_references_id' value='".$_POST['plugin_order_references_id']."'>";
+echo "<input type='hidden' name='plugin_order_orders_id' value='".$_POST['plugin_order_orders_id']."'>";
 echo $LANG['plugin_order']['delivery'][6];
-$nb = $PluginOrderReception->checkItemStatus($_POST['orderID'],$_POST['referenceID'], ORDER_DEVICE_NOT_DELIVRED);
-dropdownInteger('number_reception','',1,$nb);
+$nb = $PluginOrderReception->checkItemStatus($_POST['plugin_order_orders_id'],$_POST['plugin_order_references_id'], ORDER_DEVICE_NOT_DELIVRED);
+Dropdown::showInteger('number_reception','',1,$nb);
 echo "</td><td><input type='submit' name='bulk_reception' class='submit' value='".$LANG['buttons'][2]."'></td></tr></table>";
-			
+
 ajaxFooter();
 
 ?>
