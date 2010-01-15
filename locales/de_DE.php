@@ -164,12 +164,12 @@ $LANG['plugin_order']['validation'][15] = "Bestellung in Bearbeitung";
 $LANG['plugin_order']['validation'][16] = "Freigabe wurde rückgängig gemacht";
 $LANG['plugin_order']['validation'][17] = "Bestellung bearbeiten";
 
-$LANG['plugin_order']['menu'][0] = "Menu";
+$LANG['plugin_order']['menu'][0] = "Menü";
 $LANG['plugin_order']['menu'][1] = "Bestellungen verwalten";
 $LANG['plugin_order']['menu'][2] = "Liste der Produktreferenzen verwalten";
 $LANG['plugin_order']['menu'][3] = "Budgets verwalten";
-$LANG['plugin_order']['menu'][4] = "Orders";
-$LANG['plugin_order']['menu'][5] = "References";
+$LANG['plugin_order']['menu'][4] = "Bestellungen";
+$LANG['plugin_order']['menu'][5] = "Referenzen";
 $LANG['plugin_order']['menu'][6] = "Budgets";
 
 $LANG['plugin_order']['budget'][1] = "Verbundene Bestellungen";
