@@ -86,6 +86,7 @@ class PluginOrderReference extends CommonDBTM {
 		$tab[3]['field'] = 'itemtype';
 		$tab[3]['linkfield'] = '';
 		$tab[3]['name'] = $LANG['state'][6];
+      $tab[3]['datatype'] = 'itemtypename';
 
 		$tab[4]['table'] = $this->getTable();
 		$tab[4]['field'] = 'models_id';

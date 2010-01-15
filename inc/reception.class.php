@@ -37,10 +37,13 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderReception extends CommonDBTM {
+class PluginOrderReception extends CommonDBChild {
 
 	public $dohistory=true;
 	public $table="glpi_plugin_order_orders_items";
+   
+   public $itemtype = 'PluginOrderOrder';
+   public $items_id = 'plugin_order_orders_id';
    
    static function getTypeName() {
       global $LANG;
@@ -117,67 +120,51 @@ class PluginOrderReception extends CommonDBTM {
       if (!plugin_order_haveRight("order", "r"))
 			return false;
 			
-		$spotted = false;
 		if ($ID > 0) {
-			if ($this->can($ID, 'r')) {
-				$spotted = true;
-			}
-		} else {
-			if ($this->can(-1, 'w')) {
-				$spotted = true;
-				$this->getEmpty();
-			}
-		}
-		
-		if ($spotted) {
-         $this->showTabs($ID);
-         
-         $PluginOrderOrder = new PluginOrderOrder();
-         $PluginOrderOrder->getFromDB($this->fields["plugin_order_orders_id"]);
-         $this->fields["entities_id"] = $PluginOrderOrder->fields["entities_id"];
-         
-         $PluginOrderReference = new PluginOrderReference();
-         $PluginOrderReference->getFromDB($this->fields["plugin_order_references_id"]);
-         
-         $canedit = $PluginOrderOrder->can($this->fields["plugin_order_orders_id"], 'w') && !$PluginOrderOrder->canUpdateOrder($this->fields["plugin_order_orders_id"]) && $PluginOrderOrder->fields["states_id"] != ORDER_STATUS_CANCELED;
-         echo "<input type='hidden' name='plugin_order_orders_id' value='" . $this->fields["plugin_order_orders_id"] . "'>";
-         echo "<input type='hidden' name='id' value='" . $ID . "'>";
-         $this->showFormHeader($target,$ID,"",1);
-         
-         echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['detail'][6] . ": </td>";
-         echo "<td>";
-         $data = array();
-         $data["id"] = $this->fields["plugin_order_references_id"];
-         $data["name"]= $PluginOrderReference->fields["name"];
-         echo $PluginOrderReference->getReceptionReferenceLink($data);
-         echo "</td></tr>";
-      
-         echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['detail'][21] . ": </td>";
-         echo "<td>";
-         if ($canedit)
-            showDateFormItem("delivery_date",$this->fields["delivery_date"],true,1);
-         else
-            echo convDate($this->fields["delivery_date"]);
-         echo "</td></tr>";
-         
-          echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][19] . ": </td>";
-         echo "<td>";
-         if ($canedit)
-            autocompletionTextField($this,"delivery_number");
-         else
-            echo $this->fields["delivery_number"];
-         echo "</td></tr>";
-         
-         if ($canedit)
-         {
-            echo "<tr>";
-            echo "<td class='tab_bg_1'align='center' colspan='3'>";
-            echo "<input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit' >";
-            echo "</td>";
-            echo "</tr>";
-         }
+         $this->check($ID,'r');
+      } else {
+         // Create item
+         $input=array('plugin_order_orders_id'=>$plugin_order_orders_id);
+         $this->check(-1,'w',$input);
       }
-      echo "</table></div></form>";
+      $this->showTabs($ID);
+
+      $this->showFormHeader($target,$ID,'',1);
+      
+      $PluginOrderOrder = new PluginOrderOrder();
+      $PluginOrderOrder->getFromDB($this->fields["plugin_order_orders_id"]);
+
+      $PluginOrderReference = new PluginOrderReference();
+      $PluginOrderReference->getFromDB($this->fields["plugin_order_references_id"]);
+      
+      $canedit = $PluginOrderOrder->can($this->fields["plugin_order_orders_id"], 'w') && !$PluginOrderOrder->canUpdateOrder($this->fields["plugin_order_orders_id"]) && $PluginOrderOrder->fields["states_id"] != ORDER_STATUS_CANCELED;
+      
+      echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['detail'][6] . ": </td>";
+      echo "<td>";
+      $data = array();
+      $data["id"] = $this->fields["plugin_order_references_id"];
+      $data["name"]= $PluginOrderReference->fields["name"];
+      echo $PluginOrderReference->getReceptionReferenceLink($data);
+      echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['detail'][21] . ": </td>";
+      echo "<td>";
+      if ($canedit)
+         showDateFormItem("delivery_date",$this->fields["delivery_date"],true,1);
+      else
+         echo convDate($this->fields["delivery_date"]);
+      echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][19] . ": </td>";
+      echo "<td>";
+      if ($canedit)
+         autocompletionTextField($this,"delivery_number");
+      else
+         echo $this->fields["delivery_number"];
+      echo "</td></tr>";
+         
+      $this->showFormButtons($ID,'',1,false);
+      
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
@@ -188,10 +175,11 @@ class PluginOrderReception extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG;
 
       $PluginOrderOrder = new PluginOrderOrder();
+      $PluginOrderOrder->getFromDB($plugin_order_orders_id);
       $PluginOrderOrder_Item = new PluginOrderOrder_Item();
       $PluginOrderReference = new PluginOrderReference();
       
-      initNavigateListItems($this->getType(),$LANG['plugin_order'][7] ." = ". $plugin_order_orders_id);
+      initNavigateListItems($this->getType(),$LANG['plugin_order'][7] ." = ". $PluginOrderOrder->fields["name"]);
       
       $canedit = $PluginOrderOrder->can($plugin_order_orders_id, 'w') && !$PluginOrderOrder->canUpdateOrder($plugin_order_orders_id) && $PluginOrderOrder->fields["states_id"] != ORDER_STATUS_CANCELED;
       
