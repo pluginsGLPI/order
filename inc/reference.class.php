@@ -89,8 +89,8 @@ class PluginOrderReference extends CommonDBTM {
 
 		$tab[4]['table'] = $this->getTable();
 		$tab[4]['field'] = 'models_id';
-		$tab[4]['linkfield'] = '';
-		$tab[4]['name'] = $LANG['common'][13];
+		$tab[4]['linkfield'] = 'models_id';
+		$tab[4]['name'] = $LANG['common'][22];
 
 		$tab[5]['table'] = 'glpi_manufacturers';
 		$tab[5]['field'] = 'name';
@@ -99,14 +99,14 @@ class PluginOrderReference extends CommonDBTM {
 
 		$tab[6]['table'] = $this->getTable();
 		$tab[6]['field'] = 'types_id';
-		$tab[6]['linkfield'] = '';
+		$tab[6]['linkfield'] = 'types_id';
 		$tab[6]['name'] = $LANG['common'][17];
-
-		$tab[7]['table'] = $this->getTable();
-		$tab[7]['field'] = 'models_id';
-		$tab[7]['linkfield'] = '';
-		$tab[7]['name'] = $LANG['common'][22];
-
+      
+      $tab[7]['table'] = $this->getTable();
+		$tab[7]['field'] = 'templates_id';
+		$tab[7]['linkfield'] = 'templates_id';
+		$tab[7]['name'] = $LANG['common'][13];
+		
       $tab[30]['table'] = $this->getTable();
 		$tab[30]['field'] = 'id';
 		$tab[30]['linkfield'] = '';
@@ -313,7 +313,7 @@ class PluginOrderReference extends CommonDBTM {
       $result = $DB->query("SELECT `template_name`, `id` FROM `" . $table .
       "` WHERE `entities_id` = '" . $entity . "' AND `is_template` = '1' AND `template_name` <> '' GROUP BY `template_name` ORDER BY `template_name`");
 
-      $option[0] = '-------------';
+      $option[0] = '-----';
       while ($data = $DB->fetch_array($result))
          $option[$data["id"]] = $data["template_name"];
       return Dropdown::showFromArray($name, $option, array('value'  => $value));
