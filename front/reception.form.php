@@ -41,10 +41,6 @@ if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 
 $PluginOrderReception = new PluginOrderReception();
 
-$plugin = new Plugin;
-if ($plugin->isActivated("genericobject"))
-	usePlugin('genericobject');
-
 if (isset ($_POST["update"])) {
 
    if (plugin_order_HaveRight("order", "w"))
@@ -61,79 +57,7 @@ if (isset ($_POST["update"])) {
 
 	$PluginOrderReception->updateBulkReceptionStatus($_POST);
 	glpi_header($_SERVER["HTTP_REFERER"]);
-	
-}
-/*  affiche le tableau permettant la generation de materiel */
-else if (isset ($_POST["generation"])) {
 
-	if (isset ($_POST["item"])) {
-		$detail = new PluginOrderOrder_Item;
-		
-		foreach ($_POST["item"] as $key => $val) {
-			if ($val == 1) {
-				$detail->getFromDB($_POST["id"][$key]);
-				if ($detail->fields["states_id"] == ORDER_DEVICE_NOT_DELIVRED) {
-					addMessageAfterRedirect($LANG['plugin_order'][45], true, ERROR);
-					glpi_header($_SERVER["HTTP_REFERER"]);
-				}
-			}
-		}
-	}
-
-	if (isset ($_POST["item"])) {
-      
-      commonHeader($LANG['plugin_order']['title'][1], $_SERVER["PHP_SELF"], "plugins", "order", "order");
-      
-		$PluginOrderReception->showItemGenerationForm($_SERVER["PHP_SELF"], $_POST);
-		
-		commonFooter();
-		
-	} else {
-		addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
-		glpi_header($_SERVER["HTTP_REFERER"]);
-	}
-}
-/* genere le materiel */
-else if (isset ($_POST["generate"])) {
-	$PluginOrderReception->generateNewItem($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/order.form.php?id=" . $_POST["plugin_order_orders_id"] . "");
-}
-/* supprime un lien d'une ligne detail vers un materiel */
-else if (isset ($_POST["deleteLinkWithItem"])) {
-	foreach ($_POST["item"] as $key => $val) {
-		if ($val == 1)
-			$PluginOrderReception->deleteLinkWithItem($key, $_POST["itemtype"][$key],$_POST["plugin_order_orders_id"]);
-	}
-	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/order.form.php?id=" . $_POST["plugin_order_orders_id"] . "");
-}
-/* cree un lien d'une ligne detail vers un materiel */
-else if (isset ($_POST["createLinkWithItem"])) {
-
-   if ($_POST["item"]) {
-      $i = 0;
-      if (count($_POST["item"]) <= 1) {
-         $detail = new PluginOrderOrder_Item;
-
-         foreach ($_POST["item"] as $key => $val)
-         {
-            if ($val == 1)
-            {
-               $detail->getFromDB($_POST["id"][$key]);
-               if ($detail->fields["states_id"] == ORDER_DEVICE_NOT_DELIVRED) {
-                  addMessageAfterRedirect($LANG['plugin_order'][46], true, ERROR);
-                  glpi_header($_SERVER["HTTP_REFERER"]);
-               } else
-               {
-
-                  $PluginOrderReception->createLinkWithItem($key, $_POST["items_id"], $_POST["itemtype"], $_POST["plugin_order_orders_id"]);
-                  
-               }
-            }
-         }
-      } else
-         addMessageAfterRedirect($LANG['plugin_order'][42], true, ERROR);
-   }
-	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/order.form.php?id=" . $_POST["plugin_order_orders_id"] . "");
 } else {
    
    commonHeader($LANG['plugin_order']['title'][1],$_SERVER["PHP_SELF"],"plugins","order","order");

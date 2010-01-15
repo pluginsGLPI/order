@@ -51,6 +51,7 @@ $PluginOrderOrder = new PluginOrderOrder();
 $PluginOrderOrder_Item = new PluginOrderOrder_Item();
 $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
 $PluginOrderReception = new PluginOrderReception();
+$PluginOrderLink = new PluginOrderLink();
 
 if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
    if (!empty($_POST["withtemplate"])) {
@@ -66,7 +67,7 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
             $PluginOrderOrder_Supplier->showOrderSupplierInfos($_SERVER['HTTP_REFERER'],$_POST["id"]);
             $PluginOrderOrder_Supplier->addSupplierInfosToOrder($_SERVER['HTTP_REFERER'],$_POST["id"]);
             $PluginOrderReception->showOrderReception($_POST["id"]);
-            $PluginOrderReception->showOrderGeneration($_POST["id"]);
+            $PluginOrderLink->showOrderGeneration($_POST["id"]);
             Document::showAssociated($PluginOrderOrder);
             Plugin::displayAction($PluginOrderOrder,$_POST['glpi_tab']);
             break;
@@ -84,7 +85,7 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
             $PluginOrderReception->showOrderReception($_POST["id"]);
             break;
          case 6 :
-            $PluginOrderReception->showOrderGeneration($_POST["id"]);
+            $PluginOrderLink->showOrderGeneration($_POST["id"]);
             break;
          case 9 :
             Document::showAssociated($PluginOrderOrder);
