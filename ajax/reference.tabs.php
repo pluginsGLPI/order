@@ -48,7 +48,7 @@ if (!isset ($_POST["withtemplate"]))
 PluginOrderProfile::checkRight("reference","r");
 
 $PluginOrderReference = new PluginOrderReference();
-$PluginOrderReference_Manufacturer = new PluginOrderReference_Manufacturer();
+$PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 
 if ($_POST["id"]>0 && $PluginOrderReference->can($_POST["id"],'r')) {
    if (!empty($_POST["withtemplate"])) {
@@ -59,8 +59,8 @@ if ($_POST["id"]>0 && $PluginOrderReference->can($_POST["id"],'r')) {
 	} else {
 		switch($_REQUEST['glpi_tab']) {
          case -1:
-            $PluginOrderReference_Manufacturer->showReferenceManufacturers($_SERVER['HTTP_REFERER'],$_POST["id"]);
-            $PluginOrderReference_Manufacturer->addSupplierToReference($_SERVER['HTTP_REFERER'],$_POST["id"]);
+            $PluginOrderReference_Supplier->showReferenceManufacturers($_SERVER['HTTP_REFERER'],$_POST["id"]);
+            $PluginOrderReference_Supplier->addSupplierToReference($_SERVER['HTTP_REFERER'],$_POST["id"]);
             Document::showAssociated($PluginOrderReference);
          case 2 :  
             $PluginOrderReference->getAllOrdersByReference($_POST["id"]);
@@ -77,8 +77,8 @@ if ($_POST["id"]>0 && $PluginOrderReference->can($_POST["id"],'r')) {
             Log::showForItem($PluginOrderReference);
             break;
          default :
-            $PluginOrderReference_Manufacturer->showReferenceManufacturers($_SERVER['HTTP_REFERER'],$_POST["id"]);
-            $PluginOrderReference_Manufacturer->addSupplierToReference($_SERVER['HTTP_REFERER'],$_POST["id"]);
+            $PluginOrderReference_Supplier->showReferenceManufacturers($_SERVER['HTTP_REFERER'],$_POST["id"]);
+            $PluginOrderReference_Supplier->addSupplierToReference($_SERVER['HTTP_REFERER'],$_POST["id"]);
             break;
       }
    }

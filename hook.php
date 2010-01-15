@@ -91,9 +91,9 @@ function plugin_order_install() {
       Plugin::migrateItemType(
          array(3150=>'PluginOrderOrder',
                3151=>'PluginOrderReference',
-               3152=>'PluginOrderReference_Manufacturer',
+               3152=>'PluginOrderReference_Supplier',
                3153=>'PluginOrderBudget',
-               3154=>'PluginOrderSupplier',
+               3154=>'PluginOrderOrder_Supplier',
                3155=>'PluginOrderReception'),
          array("glpi_bookmarks", "glpi_bookmarks_users", "glpi_displaypreferences",
                "glpi_documents_items", "glpi_infocoms", "glpi_logs", "glpi_tickets"),
@@ -119,10 +119,10 @@ function plugin_order_uninstall() {
 		"glpi_plugin_order_ordertaxes",
 		"glpi_plugin_order_orderpayments",
 		"glpi_plugin_order_references",
-		"glpi_plugin_order_references_manufacturers",
+		"glpi_plugin_order_references_suppliers",
 		"glpi_plugin_order_configs",
 		"glpi_plugin_order_budgets",
-      "glpi_plugin_order_suppliers"
+      "glpi_plugin_order_orders_suppliers"
 	);
 
 	foreach ($tables as $table)
@@ -150,7 +150,7 @@ function plugin_order_uninstall() {
 	$in = "IN (" . implode(',', array (
 		"'PluginOrderOrder'",
 		"'PluginOrderReference'",
-		"'PluginOrderReference_Manufacturer'",
+		"'PluginOrderReference_Supplier'",
 		"'PluginOrderBudget'"
 	)) . ")";
 
@@ -427,7 +427,7 @@ function plugin_headings_order($item) {
    $PluginOrderProfile=new PluginOrderProfile();
    $PluginOrderMailingSetting = new PluginOrderMailingSetting();
    $PluginOrderOrder_Item = new PluginOrderOrder_Item();
-   $PluginOrderSupplier = new PluginOrderSupplier();
+   $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
    $PluginOrderBudget = new PluginOrderBudget();
 	switch (get_class($item)) {
       case 'Profile' :
@@ -439,7 +439,7 @@ function plugin_headings_order($item) {
          $PluginOrderMailingSetting->showFormMailing($CFG_GLPI["root_doc"]."/plugins/order/front/mailing.setting.php");
          break;
       case 'Supplier' :
-         $PluginOrderSupplier->showReferencesFromSupplier($item->getField('id'));
+         $PluginOrderOrder_Supplier->showReferencesFromSupplier($item->getField('id'));
          break;
       case 'Budget' :
          $PluginOrderBudget->getAllOrdersByBudget($_POST["id"]);

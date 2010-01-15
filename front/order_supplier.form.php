@@ -38,41 +38,12 @@ include (GLPI_ROOT."/inc/includes.php");
 
 if(!isset($_GET["id"])) $_GET["id"] = "";
 if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
+if(!isset($_GET["plugin_order_orders_id"])) $_GET["plugin_order_orders_id"] = "";
 
-$PluginOrderSupplier=new PluginOrderSupplier();
+$PluginOrderOrder_Supplier=new PluginOrderOrder_Supplier();
 $PluginOrderOrder=new PluginOrderOrder();
 
-/* add supplier infos */
-if (isset($_POST["add"]))
-{
-	if(plugin_order_HaveRight("order","w"))
-	{
-		$newID = $PluginOrderSupplier->add($_POST);
-		$new_value = $LANG['plugin_order']['history'][2]. " ";
-		if ($_POST["num_quote"])
-         $new_value.= $LANG['plugin_order'][30]." ".$_POST["num_quote"];
-		if ($_POST["num_order"])
-         $new_value.= " - ".$LANG['plugin_order'][31]." : ".$_POST["num_order"];
-      if ($_POST["num_bill"])
-         $new_value.= " - ".$LANG['plugin_order'][28]." : ".$_POST["num_bill"];
-		$PluginOrderOrder->addHistory('PluginOrderOrder',"",$new_value,$_POST["plugin_order_orders_id"]);
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-/* delete supplier infos */
-else if (isset($_POST["delete"]))
-{
-   if(plugin_order_HaveRight("order","w")) {
-   
-      $new_value = $LANG['plugin_order']['history'][4]. " ".$LANG['plugin_order'][4]." : ".$_POST["id"];
-      $PluginOrderOrder->addHistory('PluginOrderOrder',"",$new_value,$_POST["plugin_order_orders_id"]);
-	
-		$PluginOrderSupplier->delete($_POST);
-   }
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-/* update supplier infos */
-else if (isset($_POST["update"]))
+if (isset($_POST["update"]))
 {
 	if(plugin_order_HaveRight("order","w")) {
 		
@@ -86,9 +57,25 @@ else if (isset($_POST["update"]))
       
       $PluginOrderOrder->addHistory('PluginOrderOrder',"",$new_value,$_POST["plugin_order_orders_id"]);
       
-      $PluginOrderSupplier->update($_POST);
+      $PluginOrderOrder_Supplier->update($_POST,0);
    }
 	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else
+{
+	PluginOrderProfile::checkRight("order","r");
+
+	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
+	if (isset($_GET['onglet'])) {
+		$_SESSION['glpi_tab']=$_GET['onglet'];
+	}
+	
+	commonHeader($LANG['plugin_order']['title'][1],$_SERVER["PHP_SELF"],"plugins","order","order");
+	
+	/* load order form */
+	$PluginOrderOrder_Supplier->showForm($_SERVER["PHP_SELF"],$_GET["id"],$_GET["plugin_order_orders_id"]);
+
+	commonFooter();
 }
 
 ?>

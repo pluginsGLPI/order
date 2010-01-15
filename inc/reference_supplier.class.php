@@ -37,9 +37,10 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderReference_Manufacturer extends CommonDBTM {
-
-	public $dohistory=true;
+class PluginOrderReference_Supplier extends CommonDBChild {
+   
+   public $itemtype = 'PluginOrderReference';
+   public $items_id = 'plugin_order_references_id';
    
    static function getTypeName() {
       global $LANG;
@@ -54,17 +55,14 @@ class PluginOrderReference_Manufacturer extends CommonDBTM {
    function canView() {
       return plugin_order_haveRight('reference', 'r');
    }
-	
-   /*
-   if (plugin_order_haveRight("reference", "r")) {
-
-		$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['table'] = 'glpi_plugin_order_references_manufacturers';
-		$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['field'] = 'price_taxfree';
-		$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['linkfield'] = 'price_taxfree';
-		$sopt[PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE][1]['name'] = $LANG['plugin_order']['detail'][4];
-
-	}
-	*/
+   
+   function prepareInputForAdd($input) {
+      // Not attached to reference -> not added
+      if (!isset($input['plugin_order_references_id']) || $input['plugin_order_references_id'] <= 0) {
+         return false;
+      }
+      return $input;
+   }
 	
 	function defineTabs($ID, $withtemplate) {
 		global $LANG;
@@ -76,68 +74,46 @@ class PluginOrderReference_Manufacturer extends CommonDBTM {
 		return $ong;
 	}
 
-	function showForm($target, $ID, $plugin_order_references_id) {
+	function showForm($target, $ID, $plugin_order_references_id=-1) {
 		global $LANG;
       
-      $PluginOrderReference=new PluginOrderReference();
-      $PluginOrderReference->getFromDB($plugin_order_references_id);
-      
-      if (!plugin_order_haveRight("reference", "r"))
+      if (!plugin_order_haveRight("reference", "w"))
 			return false;
 			
-		$spotted = false;
 		if ($ID > 0) {
-			if ($PluginOrderReference->can($plugin_order_references_id, 'r')) {
-				$spotted = true;
-			}
-		} else {
-			if ($PluginOrderReference->can(-1, 'w')) {
-				$spotted = true;
-				$this->getEmpty();
-			}
-		}
-		
-		if ($spotted) {
-         
-         $this->showTabs($ID, "",array("plugin_order_references_id" => $plugin_order_references_id, "entity" => $PluginOrderReference->fields["entities_id"]));
-
-         $canedit=$PluginOrderReference->can($plugin_order_references_id,'w');
-         $this->showFormHeader($target,$ID,"",1);
-      
-         echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][26] . ": </td>";
-         echo "<td>";
-         $link=getItemTypeFormURL('Supplier');
-         echo "<a href=\"" . $link. "?id=" . $this->fields["suppliers_id"] . "\">" . Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]) . "</a>";
-         echo "</td></tr>";
-
-         echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['reference'][10] . ": </td>";
-         echo "<td>";
-         if ($canedit)
-            autocompletionTextField($this,"reference_code");
-         else
-            echo $this->fields["reference_code"];
-         echo "</td></tr>";
-
-         echo "<input type='hidden' name='plugin_order_references_id' value='" . $this->fields["plugin_order_references_id"] . "'>";
-         
-         echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['detail'][4] . ": </td>";
-         echo "<td>";
-         if ($canedit)
-            echo "<input type='text' name='price_taxfree' value=\"".formatNumber($this->fields["price_taxfree"],true)."\" size='7'>";
-         else
-            echo formatNumber($this->fields["price_taxfree"]);
-         echo "</td></tr>";
-         
-         if ($canedit)
-         {
-            echo "<tr>";
-            echo "<td class='tab_bg_1'align='center' colspan='3'>";
-            echo "<input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit' >";
-            echo "</td>";
-            echo "</tr>";
-         }
+         $this->check($ID,'r');
+      } else {
+         // Create item
+         $input=array('plugin_order_references_id'=>$plugin_order_references_id);
+         $this->check(-1,'w',$input);
       }
-      echo "</table></div></form>";
+
+      $this->showTabs($ID);
+      $this->showFormHeader($target,$ID,'',1);
+
+      if ($ID>0) {
+        $plugin_order_references_id=$this->fields["plugin_order_references_id"];
+      } else {
+         echo "<input type='hidden' name='plugin_order_references_id' value='$plugin_order_references_id'>";
+      }
+      echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][26] . ": </td>";
+      echo "<td>";
+      $link=getItemTypeFormURL('Supplier');
+      echo "<a href=\"" . $link. "?id=" . $this->fields["suppliers_id"] . "\">" . Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]) . "</a>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['reference'][10] . ": </td>";
+      echo "<td>";
+      autocompletionTextField($this,"reference_code");
+      echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['detail'][4] . ": </td>";
+      echo "<td>";
+      echo "<input type='text' name='price_taxfree' value=\"".formatNumber($this->fields["price_taxfree"],true)."\" size='7'>";
+      echo "</td></tr>";
+         
+      $this->showFormButtons($ID,'',1,false);
+
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
@@ -157,13 +133,14 @@ class PluginOrderReference_Manufacturer extends CommonDBTM {
       $result = $DB->query($query);
       $rand=mt_rand();
       echo "<div class='center'>";
-      echo "<form method='post' name='show_ref_manu$rand' id='show_ref_manu$rand' action=\"$target\">";
+      echo "<form method='post' name='show_supplierref$rand' id='show_supplierref$rand' action=\"$target\">";
       echo "<input type='hidden' name='plugin_order_references_id' value='" . $ID . "'>";
-      echo "<table class='tab_cadrehov'>";
-
-      echo "<tr><th></th>";
+      echo "<table class='tab_cadre_fixe'>";
+      
+      echo "<tr><th colspan='5'>".$LANG['plugin_order'][4]."</th></tr>";
+      echo "<tr><th>&nbsp;</th>";
       echo "<th>" . $LANG['financial'][26] . "</th>";
-      echo "<th>" . $LANG['plugin_order']['reference'][10] . "</th>";
+      echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
       echo "<th>" . $LANG['plugin_order']['detail'][4] . "</th>";
       echo "</tr>";
 
@@ -174,8 +151,8 @@ class PluginOrderReference_Manufacturer extends CommonDBTM {
          while ($data = $DB->fetch_array($result)) {
             addToNavigateListItems($this->getType(),$data['id']);
             echo "<input type='hidden' name='item[" . $data["id"] . "]' value='" . $ID . "'>";
-            echo "<tr>";
-            echo "<td class='tab_bg_1'>";
+            echo "<tr class='tab_bg_1 center'>";
+            echo "<td>";
             if ($candelete) {
                echo "<input type='checkbox' name='check[" . $data["id"] . "]'";
                if (isset($_POST['check']) && $_POST['check'] == 'all')
@@ -184,11 +161,11 @@ class PluginOrderReference_Manufacturer extends CommonDBTM {
             }
             echo "</td>";
             $link=getItemTypeFormURL($this->getType());
-            echo "<td class='tab_bg_1' align='center'><a href='".$link."?id=".$data["id"]."&plugin_order_references_id=".$ID."'>" .Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
-            echo "<td class='tab_bg_1' align='center'>";
+            echo "<td><a href='".$link."?id=".$data["id"]."&plugin_order_references_id=".$ID."'>" .Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
+            echo "<td>";
             echo $data["reference_code"];
             echo "</td>";
-            echo "<td class='tab_bg_1' align='center'>";
+            echo "<td>";
             echo formatNumber($data["price_taxfree"]);
             echo "</td>";
             echo "</tr>";
@@ -196,16 +173,17 @@ class PluginOrderReference_Manufacturer extends CommonDBTM {
          echo "</table>";
 
          if ($candelete)
-         {
-            echo "<table width='80%' class='tab_glpi'>";
-            echo "<tr>";
-            echo "<td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td align='center'><a onclick= \"if ( markCheckboxes('show_ref_manu$rand') ) return false;\" href='".$_SERVER['HTTP_REFERER']."?id=$ID&amp;check=all'>".$LANG["buttons"][18]."</a></td>";
-            echo "<td>/</td><td align='center'><a onclick= \"if ( unMarkCheckboxes('show_ref_manu$rand') ) return false;\" href='".$_SERVER['HTTP_REFERER']."?id=$ID&amp;check=none'>".$LANG["buttons"][19]."</a>";
-            echo "</td><td align='left' width='90%'>";
-            echo "<input type='submit' name='delete_reference_manufacturer' value=\"" . $LANG['buttons'][6] . "\" class='submit' >";
+         {     
+            echo "<div class='center'>";
+            echo "<table width='950px' class='tab_glpi'>";
+            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('show_supplierref$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+
+            echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('show_supplierref$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
+            echo "</td><td align='left' width='80%'>";
+            echo "<input type='submit' name='delete_reference_supplier' value=\"" . $LANG['buttons'][6] . "\" class='submit' >";
             echo "</td>";
-            echo "</tr>";
             echo "</table>";
+            echo "</div>";
          }
       }
       else
@@ -233,13 +211,13 @@ class PluginOrderReference_Manufacturer extends CommonDBTM {
                $suppliers["suppliers_id"] = $data["suppliers_id"];
 
             echo "<form method='post' name='add_ref_manu' action=\"$target\">";
-            echo "<table class='tab_cadrehov'>";
+            echo "<table class='tab_cadre_fixe'>";
             echo "<input type='hidden' name='plugin_order_references_id' value='" . $plugin_order_references_id . "'>";
             echo "<tr>";
             echo "<th colspan='3' align='center'>".$LANG['plugin_order']['reference'][2]."</th></tr>";
             echo "<tr>";
             echo "<th>" . $LANG['financial'][26] . "</th>";
-            echo "<th>" . $LANG['plugin_order']['reference'][10]. "</th>";
+            echo "<th>" . $LANG['plugin_order']['reference'][1]. "</th>";
             echo "<th>" . $LANG['plugin_order']['detail'][4] . "</th></tr>";
             echo "<tr>";
             echo "<td class='tab_bg_1' align='center'>";
@@ -254,7 +232,7 @@ class PluginOrderReference_Manufacturer extends CommonDBTM {
             echo "</tr>";
             echo "<tr>";
             echo "<td class='tab_bg_1' align='center' colspan='3'>";
-            echo "<input type='submit' name='add_reference_manufacturer' value=\"" . $LANG['buttons'][8] . "\" class='submit' >";
+            echo "<input type='submit' name='add_reference_supplier' value=\"" . $LANG['buttons'][8] . "\" class='submit' >";
             echo "</td>";
             echo "</tr>";
             echo "</table></form>";

@@ -40,7 +40,7 @@ if(!isset($_GET["id"])) $_GET["id"] = "";
 if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 
 $PluginOrderReference=new PluginOrderReference();
-$PluginOrderReference_Manufacturer = new PluginOrderReference_Manufacturer;
+$PluginOrderReference_Supplier = new PluginOrderReference_Supplier;
 
 /* add order */
 if (isset($_POST["add"]))
@@ -87,28 +87,28 @@ else if (isset($_POST["update_reference_manufacturer"]))
 		{
 			$input["id"] = $ID;
 			$input["price"] = $_POST["price"][$ID]; 
-			$PluginOrderReference_Manufacturer->update($input);
+			$PluginOrderReference_Supplier->update($input);
 		}
 	}	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["add_reference_manufacturer"]))
+else if (isset($_POST["add_reference_supplier"]))
 {
 	if(plugin_order_HaveRight("reference","w"))
 	{
 		if (isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0)
 		{
-			$newID=$PluginOrderReference_Manufacturer->add($_POST);
+			$newID=$PluginOrderReference_Supplier->add($_POST);
 		}
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["delete_reference_manufacturer"]))
+else if (isset($_POST["delete_reference_supplier"]))
 {
 	if(plugin_order_HaveRight("reference","w"))
 	{
 		foreach ($_POST["check"] as $ID => $value)
-			$PluginOrderReference_Manufacturer->delete(array("id"=>$ID));
+			$PluginOrderReference_Supplier->delete(array("id"=>$ID));
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

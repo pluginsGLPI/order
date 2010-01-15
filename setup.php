@@ -105,7 +105,7 @@ function plugin_init_order() {
 		'massiveaction_noupdate_types' => true
 	));
 	
-	Plugin::registerClass('PluginOrderReference_Manufacturer', array(
+	Plugin::registerClass('PluginOrderReference_Supplier', array(
 		'doc_types' => true
 	));
    

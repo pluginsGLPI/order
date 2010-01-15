@@ -49,7 +49,7 @@ PluginOrderProfile::checkRight("order","r");
 
 $PluginOrderOrder = new PluginOrderOrder();
 $PluginOrderOrder_Item = new PluginOrderOrder_Item();
-$PluginOrderSupplier = new PluginOrderSupplier();
+$PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
 $PluginOrderReception = new PluginOrderReception();
 
 if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
@@ -63,7 +63,8 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
          case -1 :
             $PluginOrderOrder_Item->showItem($_SERVER["HTTP_REFERER"], $_POST["id"]);
             $PluginOrderOrder->showValidationForm($_SERVER["HTTP_REFERER"], $_POST["id"]);
-            $PluginOrderSupplier->showForm($_SERVER["HTTP_REFERER"], $_POST["id"]);
+            $PluginOrderOrder_Supplier->showOrderSupplierInfos($_SERVER['HTTP_REFERER'],$_POST["id"]);
+            $PluginOrderOrder_Supplier->addSupplierInfosToOrder($_SERVER['HTTP_REFERER'],$_POST["id"]);
             $PluginOrderReception->showOrderReception($_POST["id"]);
             $PluginOrderReception->showOrderGeneration($_POST["id"]);
             Document::showAssociated($PluginOrderOrder);
@@ -73,7 +74,8 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
             $PluginOrderOrder->showValidationForm($_SERVER["HTTP_REFERER"], $_POST["id"]);
             break;
          case 3 :
-            $PluginOrderSupplier->showForm($CFG_GLPI['root_doc']."/plugins/order/front/supplier.form.php", $_POST["id"]);
+            $PluginOrderOrder_Supplier->showOrderSupplierInfos($_SERVER['HTTP_REFERER'],$_POST["id"]);
+            $PluginOrderOrder_Supplier->addSupplierInfosToOrder($_SERVER['HTTP_REFERER'],$_POST["id"]);
             break;
          case 4 :
             $PluginOrderOrder->showGenerationForm($_POST["id"]);

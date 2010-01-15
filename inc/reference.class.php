@@ -58,7 +58,7 @@ class PluginOrderReference extends CommonDBTM {
    function cleanDBonPurge() {
 		global $DB;
 
-		$temp = new PluginOrderReference_Manufacturer();
+		$temp = new PluginOrderReference_Supplier();
       $temp->clean(array('plugin_order_references_id' => $this->fields['id']));
 
 	}
@@ -368,8 +368,8 @@ class PluginOrderReference extends CommonDBTM {
 
          $used=array();
          $query = "SELECT itemtype FROM `".$this->getTable()."`
-                 LEFT JOIN `glpi_plugin_order_references_manufacturers` ON (`".$this->getTable()."`.`id` = `glpi_plugin_order_references_manufacturers`.`plugin_order_references_id`)
-                 WHERE `glpi_plugin_order_references_manufacturers`.`suppliers_id` = '".$suppliers_id."' ";
+                 LEFT JOIN `glpi_plugin_order_references_suppliers` ON (`".$this->getTable()."`.`id` = `glpi_plugin_order_references_suppliers`.`plugin_order_references_id`)
+                 WHERE `glpi_plugin_order_references_suppliers`.`suppliers_id` = '".$suppliers_id."' ";
          $result = $DB->query($query);
          $number = $DB->numrows($result);
          if ($number){
@@ -464,7 +464,7 @@ class PluginOrderReference extends CommonDBTM {
       global $DB;
 
       $query = "SELECT `gr`.`name`, `gr`.`id`, `grm`.`reference_code`
-               FROM `".$this->getTable()."` AS gr, `glpi_plugin_order_references_manufacturers` AS grm" .
+               FROM `".$this->getTable()."` AS gr, `glpi_plugin_order_references_suppliers` AS grm" .
             " WHERE `gr`.`itemtype` = '$itemtype'
                AND `grm`.`suppliers_id` = '$enterpriseID'
                AND `grm`.`plugin_order_references_id` = `gr`.`id` ";
@@ -492,7 +492,7 @@ class PluginOrderReference extends CommonDBTM {
       global $LANG, $DB, $CFG_GLPI;
 
       $query = "SELECT `gr`.`id`, `gr`.`manufacturers_id`, `gr`.`entities_id`, `gr`.`itemtype`, `gr`.`name`, `grm`.`price_taxfree` " .
-            "FROM `glpi_plugin_order_references_manufacturers` AS grm, `".$this->getTable()."` AS gr " .
+            "FROM `glpi_plugin_order_references_suppliers` AS grm, `".$this->getTable()."` AS gr " .
             "WHERE `grm`.`suppliers_id` = '$ID' AND `grm`.`plugin_order_references_id` = `gr`.`id`";
       $result = $DB->query($query);
 

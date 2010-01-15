@@ -44,13 +44,13 @@ if (!defined('GLPI_ROOT')) {
 
 checkCentralAccess();
 
-$PluginOrderReference_Manufacturer = new PluginOrderReference_Manufacturer();
+$PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 $PluginOrderOrder_Item = new PluginOrderOrder_Item();
 
 if ($_POST["plugin_order_references_id"] > 0)
 {  
    
-	$price = $PluginOrderReference_Manufacturer->getPriceByReferenceAndSupplier($_POST["plugin_order_references_id"],$_POST["suppliers_id"]);
+	$price = $PluginOrderReference_Supplier->getPriceByReferenceAndSupplier($_POST["plugin_order_references_id"],$_POST["suppliers_id"]);
 	switch ($_POST["update"])
 	{
 		case 'quantity':

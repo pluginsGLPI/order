@@ -130,7 +130,7 @@ class PluginOrderReception extends CommonDBTM {
 		}
 		
 		if ($spotted) {
-         $this->showTabs($ID, "",array("plugin_order_orders_id=".$this->fields["plugin_order_orders_id"].""));
+         $this->showTabs($ID);
          
          $PluginOrderOrder = new PluginOrderOrder();
          $PluginOrderOrder->getFromDB($this->fields["plugin_order_orders_id"]);
@@ -655,8 +655,8 @@ class PluginOrderReception extends CommonDBTM {
       $order = new PluginOrderOrder;
       $order->getFromDB($detail->fields["plugin_order_orders_id"]);
       
-      $PluginOrderSupplier = new PluginOrderSupplier;
-      $PluginOrderSupplier->getFromDBByOrder($detail->fields["plugin_order_orders_id"]);
+      $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier;
+      $PluginOrderOrder_Supplier->getFromDBByOrder($detail->fields["plugin_order_orders_id"]);
       // ADD Infocoms
       $ic = new Infocom();
       $fields = array ();
@@ -690,8 +690,8 @@ class PluginOrderReception extends CommonDBTM {
       $fields["bon_livraison"] = $detail->fields["delivery_number"];
       $fields["budgets_id"] = $order->fields["budgets_id"];
       $fields["suppliers_id"] = $order->fields["suppliers_id"];
-      if (isset($PluginOrderSupplier->fields["numbill"]))
-         $fields["facture"] = $PluginOrderSupplier->fields["num_bill"];
+      if (isset($PluginOrderOrder_Supplier->fields["numbill"]))
+         $fields["facture"] = $PluginOrderOrder_Supplier->fields["num_bill"];
       $fields["value"] = $detail->fields["price_discounted"];
       $fields["buy_date"] = $order->fields["order_date"];
 

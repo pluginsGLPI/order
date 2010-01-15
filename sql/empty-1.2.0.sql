@@ -90,13 +90,12 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references` (
 
 -- --------------------------------------------------------
 -- 
--- Structure de la table `glpi_plugin_order_references_manufacturers`
+-- Structure de la table `glpi_plugin_order_references_suppliers`
 -- 
 
-DROP TABLE IF EXISTS `glpi_plugin_order_references_manufacturers`;
-CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_manufacturers` (
+DROP TABLE IF EXISTS `glpi_plugin_order_references_suppliers`;
+CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_suppliers` (
    `id` int(11) NOT NULL auto_increment,
-   `entities_id` int(11) NOT NULL default '0',
    `plugin_order_references_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)',
    `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
    `price_taxfree` float NOT NULL DEFAULT 0,
@@ -131,16 +130,19 @@ CREATE TABLE `glpi_plugin_order_budgets` (
 
 -- --------------------------------------------------------
 -- 
--- Structure de la table `glpi_plugin_order_suppliers`
+-- Structure de la table `glpi_plugin_order_orders_suppliers`
 -- 
 
-CREATE TABLE IF NOT EXISTS `glpi_plugin_order_suppliers` (
+CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders_suppliers` (
    `id` int(11) NOT NULL auto_increment,
    `plugin_order_orders_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
+   `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
    `num_quote` varchar(255) collate utf8_unicode_ci default NULL,
    `num_order` varchar(255) collate utf8_unicode_ci default NULL,
    `num_bill` varchar(255) collate utf8_unicode_ci default NULL,
-   PRIMARY KEY  (`id`)
+   PRIMARY KEY  (`id`),
+   KEY `plugin_order_orders_id` (`plugin_order_orders_id`),
+   KEY `suppliers_id` (`suppliers_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------

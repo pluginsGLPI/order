@@ -43,11 +43,11 @@ if (!isset ($_POST["id"])) {
 if (!isset ($_POST["withtemplate"]))
 	$_POST["withtemplate"] = "";
 
-$PluginOrderReference_Manufacturer = new PluginOrderReference_Manufacturer();
+$PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 
 PluginOrderProfile::checkRight("reference","r");
 
-if ($_POST["id"]>0 && $PluginOrderReference_Manufacturer->can($_POST["id"],'r')) {
+if ($_POST["id"]>0 && $PluginOrderReference_Supplier->can($_POST["id"],'r')) {
 
    if (!empty($_POST["withtemplate"])) {
 		switch($_REQUEST['glpi_tab']) {
@@ -57,10 +57,10 @@ if ($_POST["id"]>0 && $PluginOrderReference_Manufacturer->can($_POST["id"],'r'))
 	} else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
-            Document::showAssociated($PluginOrderReference_Manufacturer);
+            Document::showAssociated($PluginOrderReference_Supplier);
             break;
          case 4 :
-            Document::showAssociated($PluginOrderReference_Manufacturer);
+            Document::showAssociated($PluginOrderReference_Supplier);
             break;
          default :
             break;
