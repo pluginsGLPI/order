@@ -57,7 +57,11 @@ function plugin_init_order() {
                                     'Peripheral',
                                     'Printer',
                                     'Phone');
-                                    
+   
+   	
+   /* load changeprofile function */
+   $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile','changeProfile');
+		                                 
 	Plugin::registerClass('PluginOrderOrder', array(
 		'doc_types' => true,
 		'massiveaction_noupdate_types' => true
@@ -82,9 +86,6 @@ function plugin_init_order() {
 		/* link to the config page in plugins menu */
 		if (plugin_order_haveRight("order", "w") || haveRight("config", "w"))
 			$PLUGIN_HOOKS['config_page']['order'] = 'front/config.form.php';
-	
-		/* load changeprofile function */
-		$PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile','changeProfile');
 	
 		/*if glpi is loaded */
 		if (isset ($_SESSION["glpiID"])) {

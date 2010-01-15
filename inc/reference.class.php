@@ -258,7 +258,7 @@ class PluginOrderReference extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>" . $LANG['common'][17] . ": </td>";
       echo "<td><span id='show_types_id'>";
       if ($this->fields["itemtype"]) {
-         if ($this->fields["itemtype"] == 'PluginOrderOther') $file = 'other'; else $file = $_POST["itemtype"];
+         if ($this->fields["itemtype"] == 'PluginOrderOther') $file = 'other'; else $file = $this->fields["itemtype"];
          if (file_exists(GLPI_ROOT."/inc/".strtolower($file)."type.class.php") 
          || file_exists(GLPI_ROOT."/plugins/order/inc/".strtolower($file)."type.class.php")) {
             if ($canedit && !$reference_in_use)

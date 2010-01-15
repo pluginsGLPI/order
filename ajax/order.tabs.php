@@ -78,9 +78,9 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
             $PluginOrderOrder_Supplier->showOrderSupplierInfos($_SERVER['HTTP_REFERER'],$_POST["id"]);
             $PluginOrderOrder_Supplier->addSupplierInfosToOrder($_SERVER['HTTP_REFERER'],$_POST["id"]);
             break;
-         case 4 :
+         /*case 4 :
             $PluginOrderOrder->showGenerationForm($_POST["id"]);
-            break;
+            break;*/
          case 5 :
             $PluginOrderReception->showOrderReception($_POST["id"]);
             break;

@@ -86,7 +86,20 @@ function plugin_order_install() {
          }
       }
       
+      //Post 1.1.0
       $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.2.0.sql");
+      
+      $query = "SELECT `suppliers_id`,`id` FROM `glpi_plugin_order_orders` ";
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      if ($number) {
+         while ($data=$DB->fetch_array($result)) {
+            $query = "UPDATE `glpi_plugin_order_orders_suppliers`
+                  SET `suppliers_id` = '".$data["suppliers_id"]."'
+                  WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
+            $DB->query($query) or die($DB->error());
+         }
+      }
 
       Plugin::migrateItemType(
          array(3150=>'PluginOrderOrder',
