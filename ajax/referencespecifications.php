@@ -44,12 +44,36 @@ if (!defined('GLPI_ROOT')) {
 
 checkCentralAccess();
 
-$params = array ("itemtype"=>$_POST["itemtype"],"entity_restrict"=>$_POST["entity_restrict"]);
+$PluginOrderReference = new PluginOrderReference();
 
-foreach (array("types_id","models_id","templates_id") as $field)
+if ($_POST["itemtype"])
 {
-   $params["field"]=$field;
-   ajaxUpdateItem("show_$field",GLPI_ROOT.'/plugins/order/ajax/referencespecifications.php',$params);
+	switch ($_POST["field"])
+	{
+		case "types_id":
+         if ($_POST["itemtype"] == 'PluginOrderOther') $file = 'other'; else $file = $_POST["itemtype"];
+         if (file_exists(GLPI_ROOT."/inc/".strtolower($_POST["itemtype"])."type.class.php") 
+         || file_exists(GLPI_ROOT."/plugins/order/inc/".strtolower($file)."type.class.php"))
+            Dropdown::show($_POST["itemtype"]."Type", array('name' => "types_id"));
+         break;
+		case "models_id":
+			if (file_exists(GLPI_ROOT."/inc/".strtolower($_POST["itemtype"])."model.class.php"))
+				Dropdown::show($_POST["itemtype"]."Model", array('name' => "models_id"));
+			else
+				return "";				
+         break;
+		case "templates_id":
+			if (in_array($_POST["itemtype"],$ORDER_TEMPLATE_TABLES))
+			{
+				$table = getTableForItemType($_POST["itemtype"]);
+				$PluginOrderReference->dropdownTemplate("templates_id", $_POST["entity_restrict"], $table);
+			}
+			else
+				return "";	
+         break;				
+	}	
 }
+else
+	return "";
 
 ?>

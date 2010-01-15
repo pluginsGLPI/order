@@ -28,34 +28,47 @@
  --------------------------------------------------------------------------
  
 // ----------------------------------------------------------------------
-// Original Author of file: NOUH Walid & Benjamin Fontan
-// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// Original Author of file: CAILLAUD Xavier
+// Purpose of file: plugin racks v1.1.0 - GLPI 0.80
 // ----------------------------------------------------------------------
  */
- 
-define('GLPI_ROOT','../../..');
-include (GLPI_ROOT."/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
 
-checkLoginUser();
+if (!defined('GLPI_ROOT')) {
+	die("Sorry. You can't access directly to this file");
+}
 
-$PluginOrderReception = new PluginOrderReception();
+class PluginOrderOther extends CommonDBTM {
+	
+   static function getTypeName() {
+      global $LANG;
 
-echo "<table width='950px' class='tab_cadre_fixe'>";
-echo "<tr class='tab_bg_2'><td>".$LANG['plugin_order']['detail'][21]."</td><td>";
-showDateFormItem("delivery_date",date("Y-m-d"),true,1);
-echo "</td><td>";
-echo $LANG['financial'][19]."</td><td>";
-echo "<input type='text' name='delivery_number' size='20'>";
-echo "</td><td>";
-echo "<input type='hidden' name='plugin_order_references_id' value='".$_POST['plugin_order_references_id']."'>";
-echo "<input type='hidden' name='plugin_order_orders_id' value='".$_POST['plugin_order_orders_id']."'>";
-echo $LANG['plugin_order']['delivery'][6]."</td><td>";
-$nb = $PluginOrderReception->checkItemStatus($_POST['plugin_order_orders_id'],$_POST['plugin_order_references_id'], ORDER_DEVICE_NOT_DELIVRED);
-Dropdown::showInteger('number_reception','',1,$nb);
-echo "</td><td><input type='submit' name='bulk_reception' class='submit' value='".$LANG['buttons'][2]."'></td></tr></table>";
+      return $LANG['plugin_order'][8];
+   }
+   
+   function canCreate() {
+      return plugin_order_haveRight('order', 'w');
+   }
 
-ajaxFooter();
+   function canView() {
+      return plugin_order_haveRight('order', 'r');
+   }
+	
+	/*function addOthers($ID) {
+	
+      $values["entities_id"] = $_SESSION["glpiactive_entity"];
+      $values["othertypes_id"] = $ID;
+      $newid=$this->add($values);
+
+      return $newid;
+   }
+  
+  function updateOthers($ID,$name) {
+
+      $values["id"] = $ID;
+      $values["name"] = $name;
+
+      $this->update($values);  
+   }*/
+}
 
 ?>

@@ -130,7 +130,7 @@ else if (isset ($_POST["undovalidation"])) {
       $PluginOrderOrder->updateOrderStatus($_POST["id"],ORDER_STATUS_DRAFT,$_POST["comment"]);
       $PluginOrderOrder->getFromDB($_POST["id"]);
       $PluginOrderOrder->sendNotification("undovalidation",$_POST["id"],$PluginOrderOrder->fields["entities_id"],$_SESSION["glpiID"],$_POST["comment"]);
-      addMessageAfterRedirect($LANG['plugin_order']['validation'][16]);
+      addMessageAfterRedirect($LANG['plugin_order']['validation'][8]);
    }
    
    glpi_header($_SERVER['HTTP_REFERER']);

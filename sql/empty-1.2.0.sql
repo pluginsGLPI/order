@@ -147,6 +147,37 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders_suppliers` (
 
 -- --------------------------------------------------------
 -- 
+-- Structure de la table `glpi_plugin_order_others`
+-- 
+
+DROP TABLE IF EXISTS `glpi_plugin_order_others`;
+CREATE TABLE IF NOT EXISTS `glpi_plugin_order_others` (
+   `id` int(11) NOT NULL auto_increment,
+   `entities_id` int(11) NOT NULL default '0',
+   `name` varchar(255) collate utf8_unicode_ci default NULL,
+   `othertypes_id` int(11) NOT NULL default '0',
+   PRIMARY KEY  (`ID`),
+   KEY `name` (`name`),
+   KEY `entities_id` (`entities_id`),
+   KEY `othertypes_id` (`othertypes_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+-- 
+-- Structure de la table `glpi_plugin_order_othertypes`
+-- 
+
+DROP TABLE IF EXISTS `glpi_plugin_order_othertypes`;
+CREATE TABLE IF NOT EXISTS `glpi_plugin_order_othertypes` (
+   `id` int(11) NOT NULL auto_increment,
+   `name` varchar(255) collate utf8_unicode_ci default NULL,
+   `comment` text collate utf8_unicode_ci,
+   PRIMARY KEY  (`ID`),
+   KEY `name` (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+-- 
 -- Structure de la table `glpi_plugin_order_orderpayments`
 -- 
 

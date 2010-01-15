@@ -122,7 +122,9 @@ function plugin_order_uninstall() {
 		"glpi_plugin_order_references_suppliers",
 		"glpi_plugin_order_configs",
 		"glpi_plugin_order_budgets",
-      "glpi_plugin_order_orders_suppliers"
+      "glpi_plugin_order_orders_suppliers",
+      "glpi_plugin_order_others",
+      "glpi_plugin_order_othertypes"
 	);
 
 	foreach ($tables as $table)
@@ -178,7 +180,8 @@ function plugin_order_getDropdown() {
 	if ($plugin->isActivated("order"))
 		return array (
 			'PluginOrderOrderTaxe' => $LANG['plugin_order'][25],
-			'PluginOrderOrderPayment' => $LANG['plugin_order'][32]
+			'PluginOrderOrderPayment' => $LANG['plugin_order'][32],
+			'PluginOrderOtherType' => $LANG['plugin_order'][9]
 		);
 	else
 		return array ();
@@ -195,9 +198,13 @@ function plugin_order_getDatabaseRelations() {
 			"glpi_plugin_order_ordertaxes" => array (
 				"glpi_plugin_order_orders" => "plugin_order_ordertaxes_id"
 			),
+			"glpi_plugin_order_ordertaxes" => array (
+				"glpi_plugin_order_orders" => "plugin_order_ordertaxes_id"
+			),
 			"glpi_entities" => array (
 				"glpi_plugin_order_orders" => "entities_id",
-				"glpi_plugin_order_references" => "entities_id"
+				"glpi_plugin_order_references" => "entities_id",
+				"glpi_plugin_order_others" => "entities_id"
 			)
 		);
 	else

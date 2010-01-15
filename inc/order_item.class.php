@@ -71,7 +71,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
                               'CartridgeItem',
                               'SoftwareLicense',
                               //'Software',
-                              'Contract');
+                              'Contract',
+                              'PluginOrderOther');
 
       foreach ($types as $key=>$type) {
          if (!class_exists($type)) {

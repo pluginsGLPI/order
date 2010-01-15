@@ -183,7 +183,7 @@ class PluginOrderLink extends CommonDBChild {
       echo "</form></div>";
    }
    
-   function showOrderGeneration($plugin_order_orders_id) {
+   function showOrderLink($plugin_order_orders_id) {
       global $DB, $CFG_GLPI, $LANG;
 
       $PluginOrderOrder = new PluginOrderOrder();
@@ -212,9 +212,9 @@ class PluginOrderLink extends CommonDBChild {
          else {
             
             $plugin_order_references_id = $data_ref["id"];
-            $typeRef = $data_ref["itemtype"];		
-            
-            $item = new $typeRef();
+            $itemtype = $data_ref["itemtype"];		
+            $canuse = ($itemtype != 'PluginOrderOther');
+            $item = new $itemtype();
             $rand = mt_rand();
             echo "<tr><th><ul><li>";
             echo "<a href=\"javascript:showHideDiv('generation$rand','generation$rand','" . $CFG_GLPI["root_doc"] . "/pics/plus.png','" . $CFG_GLPI["root_doc"] . "/pics/moins.png');\">";
@@ -236,7 +236,7 @@ class PluginOrderLink extends CommonDBChild {
             echo "<table class='tab_cadre_fixe'>";
 
             echo "<tr>";
-            if ($canedit)
+            if ($canedit & $canuse)
                echo "<th width='15'></th>";
             echo "<th>" . $LANG['common'][2] . "</th>";
             echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
@@ -260,7 +260,7 @@ class PluginOrderLink extends CommonDBChild {
                $detailID = $data["IDD"];
 
                echo "<tr class='tab_bg_2'>";
-               if ($canedit) {
+               if ($canedit & $canuse) {
                   echo "<td width='15' align='left'>";
                   $sel = "";
                   if (isset ($_GET["select"]) && $_GET["select"] == "all")
@@ -274,10 +274,10 @@ class PluginOrderLink extends CommonDBChild {
                echo "<td align='center'>" . $PluginOrderReference->getReceptionReferenceLink($data) . "</td>";
                echo "<td align='center'>" . $PluginOrderReception->getReceptionStatus($detailID) . "</td>";
                echo "<td align='center'>" . convDate($data["delivery_date"]) . "</td>";
-               echo "<td align='center'>" . $this->getReceptionDeviceName($data["items_id"], $data["itemtype"]);
+               echo "<td align='center'>" . $this->getReceptionItemName($data["items_id"], $data["itemtype"]);
                if ($data["items_id"] != 0) {
                   echo "&nbsp;<img alt='' src='" . $CFG_GLPI["root_doc"] . "/pics/aide.png' onmouseout=\"cleanhide('comments_$random')\" onmouseover=\"cleandisplay('comments_$random')\" ";
-                  echo "<span class='over_link' id='comments_$random'>" . nl2br($this->getReceptionMaterialInfo($data["itemtype"], $data["items_id"])) . "</span>";
+                  echo "<span class='over_link' id='comments_$random'>" . nl2br($this->getLinkedItemDetails($data["itemtype"], $data["items_id"])) . "</span>";
                }
                echo "<input type='hidden' name='id[$detailID]' value='$detailID'>";
                echo "<input type='hidden' name='name[$detailID]' value='" . $data["name"] . "'>";
@@ -287,7 +287,7 @@ class PluginOrderLink extends CommonDBChild {
 
             }
             echo "</table>";
-            if ($canedit) {
+            if ($canedit & $canuse) {
                
                echo "<div class='center'>";
                echo "<table width='950px' class='tab_glpi'>";
@@ -296,7 +296,7 @@ class PluginOrderLink extends CommonDBChild {
                echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_generation_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$plugin_order_orders_id&amp;select=none'>".$LANG['buttons'][19]."</a>";
                echo "</td><td align='left' width='80%'>";
                echo "<input type='hidden' name='plugin_order_orders_id' value='$plugin_order_orders_id'>";
-               $this->dropdownGenerationActions($typeRef, $plugin_order_references_id, $plugin_order_orders_id);
+               $this->dropdownLinkActions($itemtype, $plugin_order_references_id, $plugin_order_orders_id);
                echo "</td>";
                echo "</table>";
                echo "</div>";
@@ -307,7 +307,7 @@ class PluginOrderLink extends CommonDBChild {
       }
    }
    
-   function getReceptionMaterialInfo($itemtype, $items_id) {
+   function getLinkedItemDetails($itemtype, $items_id) {
       global $LANG;
       
       $comments = "";
@@ -375,7 +375,7 @@ class PluginOrderLink extends CommonDBChild {
       return ($comments);
    }
 
-   function getReceptionDeviceName($items_id, $itemtype) {
+   function getReceptionItemName($items_id, $itemtype) {
       global $CFG_GLPI, $LANG;
       
       if ($items_id == 0)
@@ -416,7 +416,7 @@ class PluginOrderLink extends CommonDBChild {
       }
    }
 
-   function dropdownGenerationActions($type,$plugin_order_references_id,$plugin_order_orders_id) {
+   function dropdownLinkActions($itemtype,$plugin_order_references_id,$plugin_order_orders_id) {
       global $LANG,$CFG_GLPI;
       
       $rand = mt_rand();
@@ -432,21 +432,20 @@ class PluginOrderLink extends CommonDBChild {
                            'Contract');
       
       if ($PluginOrderReception->checkItemStatus($plugin_order_orders_id, $plugin_order_references_id, ORDER_DEVICE_DELIVRED)) {
-         if (!in_array($type, $restricted))
+         if (!in_array($itemtype, $restricted))
             echo "<option value='generation'>" . $LANG['plugin_order']['delivery'][3] . "</option>";
 
          echo "<option value='createLink'>" . $LANG['plugin_order']['delivery'][11] . "</option>";
          echo "<option value='deleteLink'>" . $LANG['plugin_order']['delivery'][12] . "</option>";
       }
-         
       echo "</select>";
       $params = array (
          'action' => '__VALUE__',
-         'itemtype' => $type,
+         'itemtype' => $itemtype,
          'plugin_order_references_id'=>$plugin_order_references_id,
          'plugin_order_orders_id'=>$plugin_order_orders_id
       );
-      ajaxUpdateItemOnSelectEvent("generationActions$rand", "show_generationActions$rand", $CFG_GLPI["root_doc"] . "/plugins/order/ajax/generationactions.php", $params);
+      ajaxUpdateItemOnSelectEvent("generationActions$rand", "show_generationActions$rand", $CFG_GLPI["root_doc"] . "/plugins/order/ajax/linkactions.php", $params);
       echo "<span id='show_generationActions$rand'>&nbsp;</span>";
    }
    

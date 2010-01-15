@@ -258,7 +258,9 @@ class PluginOrderReference extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>" . $LANG['common'][17] . ": </td>";
       echo "<td><span id='show_types_id'>";
       if ($this->fields["itemtype"]) {
-         if (file_exists(GLPI_ROOT."/inc/".strtolower($this->fields["itemtype"])."type.class.php")) {
+         if ($this->fields["itemtype"] == 'PluginOrderOther') $file = 'other'; else $file = $_POST["itemtype"];
+         if (file_exists(GLPI_ROOT."/inc/".strtolower($file)."type.class.php") 
+         || file_exists(GLPI_ROOT."/plugins/order/inc/".strtolower($file)."type.class.php")) {
             if ($canedit && !$reference_in_use)
                Dropdown::show($this->fields["itemtype"]."Type", array('name' => "types_id",'value' => $this->fields["types_id"]));
             else
@@ -393,7 +395,7 @@ class PluginOrderReference extends CommonDBTM {
             'itemtype' => '__VALUE__',
             'suppliers_id' => $suppliers_id,
             'entity_restrict' => $entity,
-            'orders_id' => $orders_id,
+            'plugin_order_orders_id' => $orders_id,
          );
 
          ajaxUpdateItemOnSelectEvent($myname, "show_reference", $ajax_page, $params);

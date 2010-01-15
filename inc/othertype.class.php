@@ -28,28 +28,31 @@
  --------------------------------------------------------------------------
  
 // ----------------------------------------------------------------------
-// Original Author of file: NOUH Walid & Benjamin Fontan
-// Purpose of file: plugin order v1.1.0 - GLPI 0.72
+// Original Author of file: CAILLAUD Xavier
+// Purpose of file: plugin racks v1.1.0 - GLPI 0.80
 // ----------------------------------------------------------------------
  */
 
-define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT . "/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
-
 if (!defined('GLPI_ROOT')) {
-	die("Can not acces directly to this file");
+	die("Sorry. You can't access directly to this file");
 }
 
-checkCentralAccess();
+class PluginOrderOtherType extends CommonDropdown {
 
-$params = array ("itemtype"=>$_POST["itemtype"],"entity_restrict"=>$_POST["entity_restrict"]);
+   static function getTypeName() {
+      global $LANG;
 
-foreach (array("types_id","models_id","templates_id") as $field)
-{
-   $params["field"]=$field;
-   ajaxUpdateItem("show_$field",GLPI_ROOT.'/plugins/order/ajax/referencespecifications.php',$params);
+      return $LANG['plugin_order'][9];
+   }
+   
+   function canCreate() {
+      return plugin_order_haveRight('order', 'w');
+   }
+
+   function canView() {
+      return plugin_order_haveRight('order', 'r');
+   } 
+   
 }
 
 ?>
