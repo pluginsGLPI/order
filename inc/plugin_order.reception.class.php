@@ -989,10 +989,11 @@ class PluginOrderReception extends CommonDBTM {
       $PluginOrderReference = new PluginOrderReference;
       
       foreach ($params["ID"] as $tmp => $values) {
-       //print_r($values);
+         
+         $entity = $values["FK_entities"];
          //------------- Template management -----------------------//
          //Look for a template in the entity
-         $templateID = $PluginOrderReference->checkIfTemplateExistsInEntity($values["ID"], $values["type"], $values["FK_entities"]);
+         $templateID = $PluginOrderReference->checkIfTemplateExistsInEntity($values["ID"], $values["type"], $entity);
          
          $commonitem = new CommonItem;
          $commonitem->setType($values["type"], true);
@@ -1008,7 +1009,6 @@ class PluginOrderReception extends CommonDBTM {
             $commonitem->getFromDB($values["type"], $templateID);
             unset ($commonitem->obj->fields["is_template"]);
             unset ($commonitem->obj->fields["date_mod"]);
-            unset ($commonitem->obj->fields["is_template"]);
 
             $fields = array ();
             foreach ($commonitem->obj->fields as $key => $value) {
@@ -1016,12 +1016,14 @@ class PluginOrderReception extends CommonDBTM {
                   $input[$key] = $value;
             }
             
+            $entity
+            
             $input["FK_entities"] = $entity;
             $input["name"] = autoName($commonitem->obj->fields["name"], "name", $templateID, $values["type"],$entity);
             $input["otherserial"] = autoName($commonitem->obj->fields["otherserial"], "otherserial", $templateID, $values["type"],$entity);
             
          } else {
-            $input["FK_entities"] = $values["FK_entities"];
+            $input["FK_entities"] = $entity;
             $input["serial"] = $values["serial"];
             if (isset ($values["otherserial"])) {
                $input["otherserial"] = $values["otherserial"];
@@ -1039,7 +1041,7 @@ class PluginOrderReception extends CommonDBTM {
          $newID = $commonitem->obj->add($input);
 
          //-------------- End template management ---------------------------------//
-         $this->createLinkWithDevice($values["ID"], $newID, $values["type"], $values["orderID"], $values["FK_entities"], $templateID, false, false);
+         $this->createLinkWithDevice($values["ID"], $newID, $values["type"], $values["orderID"], $entity, $templateID, false, false);
 
          //Add item's history
          $new_value = $LANG['plugin_order']['delivery'][13] . ' : ' . $order->fields["name"];
