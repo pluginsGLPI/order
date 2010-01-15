@@ -317,7 +317,7 @@ class PluginOrderReception extends CommonDBChild {
       }
    }
    
-   function dropdownReceptionActions($type,$plugin_order_references_id,$plugin_order_orders_id) {
+   function dropdownReceptionActions($itemtype,$plugin_order_references_id,$plugin_order_orders_id) {
       global $LANG,$CFG_GLPI;
       
       $rand = mt_rand();
@@ -328,7 +328,7 @@ class PluginOrderReception extends CommonDBChild {
       echo "</select>";
       $params = array (
          'action' => '__VALUE__',
-         'type' => $type,
+         'itemtype' => $itemtype,
          'plugin_order_references_id'=>$plugin_order_references_id,
          'plugin_order_orders_id'=>$plugin_order_orders_id
       );
@@ -920,12 +920,12 @@ class PluginOrderReception extends CommonDBChild {
                echo "<tr class='tab_bg_1'><td align='center'>" . $_POST["name"][$key] . "</td>";
                $templateID = $PluginOrderReference->checkIfTemplateExistsInEntity($params["id"][$key], $params['itemtype'][$key], $order->fields["entities_id"]);
                if ($templateID) {
-                  $commonitem = new CommonItem;
-                  $commonitem->setType($params['itemtype'][$key], true);
-                  $commonitem->getFromDB($params['itemtype'][$key], $templateID);
-                  $name = $commonitem->obj->fields["name"];
-                  $serial = $commonitem->obj->fields["serial"];
-                  $otherserial = $commonitem->obj->fields["otherserial"];
+                  $item = new $params['itemtype'][$key]();
+                  $item->getFromDB($templateID);
+                  
+                  $name = $item->fields["name"];
+                  $serial = $item->fields["serial"];
+                  $otherserial = $item->fields["otherserial"];
                }
                if (!$templateID) {
                   echo "<td><input type='text' size='20' name='id[$i][serial]'></td>";
@@ -955,14 +955,14 @@ class PluginOrderReception extends CommonDBChild {
                
                if (isMultiEntitiesMode()) {
                   echo "<td>";
-                  $entity_restrict = ($order->fields["recursive"] ? getEntitySons($order->fields["entities_id"]) : $order->fields["entities_id"]);
-                  dropdownValue("glpi_entities", "id[$i][entities_id]", $order->fields["entities_id"], 1, $entity_restrict);
+                  $entity_restrict = ($order->fields["is_recursive"] ? getEntitySons($order->fields["entities_id"]) : $order->fields["entities_id"]);
+                  Dropdown::show('Entity', array('name' => "id[$i][entities_id]",'value' => $order->fields["entities_id"], 'entity' => $entity_restrict));
                   echo "</td>";
                } else {
                   echo "<input type='hidden' name='id[$i][entities_id]' value=" . $_SESSION["glpiactive_entity"] . ">";
                }
                echo "</tr>";
-               echo "<input type='hidden' name='id[$i][type]' value=" . $params['itemtype'][$key] . ">";
+               echo "<input type='hidden' name='id[$i][itemtype]' value=" . $params['itemtype'][$key] . ">";
                echo "<input type='hidden' name='id[$i][id]' value=" . $params["id"][$key] . ">";
                echo "<input type='hidden' name='id[$i][plugin_order_orders_id]' value=" . $params["plugin_order_orders_id"] . ">";
                $found = true;
@@ -987,65 +987,68 @@ class PluginOrderReception extends CommonDBChild {
       $PluginOrderReference = new PluginOrderReference;
       
       foreach ($params["id"] as $tmp => $values) {
-       //print_r($values);
+         
+         $entity = $values["entities_id"];
          //------------- Template management -----------------------//
          //Look for a template in the entity
-         $templateID = $PluginOrderReference->checkIfTemplateExistsInEntity($values["id"], $values["type"], $values["entities_id"]);
-         
-         $commonitem = new CommonItem;
-         $commonitem->setType($values["type"], true);
+         $templateID = $PluginOrderReference->checkIfTemplateExistsInEntity($values["id"], $values["itemtype"], $entity);
          
          $order = new PluginOrderOrder;
          $order->getFromDB($values["plugin_order_orders_id"]);
 
          $reference = new PluginOrderReference;
          $reference->getFromDB($params["plugin_order_references_id"]);
-            
+         
+         $item = new $values["itemtype"]();
+          
          if ($templateID) {
-            
-            $commonitem->getFromDB($values["type"], $templateID);
-            unset ($commonitem->obj->fields["is_template"]);
-            unset ($commonitem->obj->fields["date_mod"]);
-            unset ($commonitem->obj->fields["is_template"]);
+
+            $item->getFromDB($templateID);
+            unset ($item->fields["is_template"]);
+            unset ($item->fields["date_mod"]);
 
             $fields = array ();
-            foreach ($commonitem->obj->fields as $key => $value) {
+            foreach ($item->fields as $key => $value) {
                if ($value != '' && (!isset ($fields[$key]) || $fields[$key] == '' || $fields[$key] == 0))
                   $input[$key] = $value;
             }
             
             $input["entities_id"] = $entity;
-            $input["name"] = autoName($commonitem->obj->fields["name"], "name", $templateID, $values["type"],$entity);
-            $input["otherserial"] = autoName($commonitem->obj->fields["otherserial"], "otherserial", $templateID, $values["type"],$entity);
+            $input["name"] = autoName($item->fields["name"], "name", $templateID, $values["itemtype"],$entity);
+            $input["otherserial"] = autoName($item->fields["otherserial"], "otherserial", $templateID, $values["itemtype"],$entity);
             
          } else {
-            $input["entities_id"] = $values["entities_id"];
+            $input["entities_id"] = $entity;
             $input["serial"] = $values["serial"];
             if (isset ($values["otherserial"])) {
                $input["otherserial"] = $values["otherserial"];
             }
 
             $input["name"] = $values["name"];
-            $input["type"] = $reference->fields["FK_type"];
-            $input["model"] = $reference->fields["FK_model"];
+
+            $typefield = getForeignKeyFieldForTable(getTableForItemType($values["itemtype"]."Type"));
+            $input[$typefield] = $reference->fields["types_id"];
+            $modelfield = getForeignKeyFieldForTable(getTableForItemType($values["itemtype"]."Model"));
+            $input[$modelfield] = $reference->fields["models_id"];
+
             $input["manufacturers_id"] = $reference->fields["manufacturers_id"];
             /*if ($entity == $reference->fields["entities_id"])
                $input["locations_id"] = $order->fields["locations_id"];*/
                
          }
 
-         $newID = $commonitem->obj->add($input);
+         $newID = $item->add($input);
 
          //-------------- End template management ---------------------------------//
-         $this->createLinkWithItem($values["id"], $newID, $values["type"], $values["plugin_order_orders_id"], $values["entities_id"], $templateID, false, false);
+         $this->createLinkWithItem($values["id"], $newID, $values["itemtype"], $values["plugin_order_orders_id"], $entity, $templateID, false, false);
 
          //Add item's history
          $new_value = $LANG['plugin_order']['delivery'][13] . ' : ' . $order->fields["name"];
-         $order->addHistory($values["type"], '', $new_value, $newID);
+         $order->addHistory($values["itemtype"], '', $new_value, $newID);
 
          //Add order's history
          $new_value = $LANG['plugin_order']['delivery'][13] . ' : ';
-         $new_value .= $commonitem->getType() . " -> " . $commonitem->getField("name");
+         $new_value .= $item->getTypeName() . " -> " . $item->getField("name");
          $order->addHistory('PluginOrderOrder', '', $new_value, $values["plugin_order_orders_id"]);
 
          addMessageAfterRedirect($LANG['plugin_order']['detail'][30], true);
