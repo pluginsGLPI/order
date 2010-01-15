@@ -184,35 +184,37 @@ class PluginOrderBudget extends CommonDBTM {
       
       $budget = new PluginOrderBudget;
       $budget->getFromDB($budget_id);
-      $query = "SELECT * FROM `glpi_plugin_order` WHERE `budget` = '".$budget->fields["FK_budget"]."' ORDER BY `FK_entities`, `name` ";
-      $result = $DB->query($query);
+      if ($budget->fields["FK_budget"]!=0) {
+         $query = "SELECT * FROM `glpi_plugin_order` WHERE `budget` = '".$budget->fields["FK_budget"]."' ORDER BY `FK_entities`, `name` ";
+         $result = $DB->query($query);
 
-      echo "<div class='center'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='5'>".$LANG['plugin_order']['budget'][1]."</th></tr>";
-      echo "<tr>"; 
-      echo "<th>".$LANG['common'][16]."</th>";
-      echo "<th>".$LANG['entity'][0]."</th>";
-      echo "</tr>";
+         echo "<div class='center'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='5'>".$LANG['plugin_order']['budget'][1]."</th></tr>";
+         echo "<tr>"; 
+         echo "<th>".$LANG['common'][16]."</th>";
+         echo "<th>".$LANG['entity'][0]."</th>";
+         echo "</tr>";
 
-      while ($data = $DB->fetch_array($result))
-      {
-         echo "<tr class='tab_bg_1' align='center'>"; 
-         echo "<td>";
-         if (plugin_order_haveRight("order","r"))
-            echo "<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[PLUGIN_ORDER_TYPE]."?ID=".$data["ID"]."'>".$data["name"]."</a>";
-         else
-            echo $data["name"];	
-         echo "</td>";
+         while ($data = $DB->fetch_array($result))
+         {
+            echo "<tr class='tab_bg_1' align='center'>"; 
+            echo "<td>";
+            if (plugin_order_haveRight("order","r"))
+               echo "<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[PLUGIN_ORDER_TYPE]."?ID=".$data["ID"]."'>".$data["name"]."</a>";
+            else
+               echo $data["name"];	
+            echo "</td>";
 
-         echo "<td>";
-         echo getDropdownName("glpi_entities",$data["FK_entities"]);
-         echo "</td>";
+            echo "<td>";
+            echo getDropdownName("glpi_entities",$data["FK_entities"]);
+            echo "</td>";
 
-         echo "</tr>"; 
+            echo "</tr>"; 
+         }
+         
+         echo "</table></div>";
       }
-      
-      echo "</table></div>";
    }
 }
 
