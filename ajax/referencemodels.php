@@ -51,11 +51,11 @@ if ($_POST["itemtype"])
 	switch ($_POST["field"])
 	{
 		case "types_id":
-			if (class_exists($_POST["itemtype"]."Type"))
+			if (file_exists(GLPI_ROOT."/inc/".strtolower($_POST["itemtype"])."type.class.php"))
             Dropdown::show($_POST["itemtype"]."Type", array('name' => "types_id"));
          break;
 		case "models_id":
-			if (class_exists($_POST["itemtype"]."Model"))
+			if (file_exists(GLPI_ROOT."/inc/".strtolower($_POST["itemtype"])."model.class.php"))
 				Dropdown::show($_POST["itemtype"]."Model", array('name' => "models_id"));
 			else
 				return "";				

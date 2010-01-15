@@ -252,12 +252,12 @@ class PluginOrderOrder_Item extends CommonDBTM {
             echo "</td>";
             /* type */
             echo "<td align='center'>";
-            if (class_exists($data_ref["itemtype"]."Type"))
+            if (file_exists(GLPI_ROOT."/inc/".strtolower($data_ref["itemtype"])."type.class.php"))
                echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Type"), $data_ref["types_id"]);
             echo "</td>";
             /* modele */
             echo "<td align='center'>";
-            if (class_exists($data_ref["itemtype"]."Model"))
+            if (file_exists(GLPI_ROOT."/inc/".strtolower($data_ref["itemtype"])."model.class.php"))
                echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Model"), $data_ref["models_id"]);
             echo "</td>";
             echo "<td align='center'>".formatNumber($data_ref["price_taxfree"])."</td>";

@@ -242,20 +242,14 @@ class PluginOrderReference extends CommonDBTM {
          echo Dropdown::getDropdownName("glpi_manufacturers",$this->fields["manufacturers_id"]);
       echo "</td></tr>";
       
-      if ($ID > 0) {
-         $itemtype = $this->fields["itemtype"];
-         
-         if (!class_exists($itemtype)) {
-            continue;
-         } 
-         
-         $item = new $itemtype();
-      }
       echo "<tr class='tab_bg_2'><td>" . $LANG['state'][6] . ": </td>";
       echo "<td>";
-      if ($ID > 0)
+      
+      if ($ID > 0) {
+         $itemtype = $this->fields["itemtype"];
+         $item = new $itemtype();
          echo $item->getTypeName();
-      else {
+      } else {
          $this->dropdownAllItems("itemtype", true, $this->fields["itemtype"], 0, 0, $_SESSION["glpiactive_entity"], $CFG_GLPI["root_doc"] .
          "/plugins/order/ajax/reference.php");
          echo "<span id='show_reference'></span></td></tr>";
@@ -264,7 +258,7 @@ class PluginOrderReference extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>" . $LANG['common'][17] . ": </td>";
       echo "<td><span id='show_types_id'>";
       if ($this->fields["itemtype"]) {
-         if (class_exists($this->fields["itemtype"]."Type")) {
+         if (file_exists(GLPI_ROOT."/inc/".strtolower($this->fields["itemtype"])."type.class.php")) {
             if ($canedit && !$reference_in_use)
                Dropdown::show($this->fields["itemtype"]."Type", array('name' => "types_id",'value' => $this->fields["types_id"]));
             else
@@ -276,7 +270,7 @@ class PluginOrderReference extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>" . $LANG['common'][22] . ": </td>";
       echo "<td><span id='show_models_id'>";
       if ($this->fields["itemtype"]) {
-         if (class_exists($this->fields["itemtype"]."Model")) {
+         if (file_exists(GLPI_ROOT."/inc/".strtolower($this->fields["itemtype"])."model.class.php")) {
             if ($canedit)
                Dropdown::show($this->fields["itemtype"]."Model", array('name' => "models_id",'value' => $this->fields["models_id"]));
             else
@@ -328,12 +322,7 @@ class PluginOrderReference extends CommonDBTM {
 	function getTemplateName($itemtype, $ID) {
       
       if ($ID) {
-         if (!class_exists($itemtype)) {
-               continue;
-            } 
-            
          $item = new $itemtype();
-
          $item->getFromDB($ID);
          return $item->getField("template_name");
       } else {
@@ -416,9 +405,9 @@ class PluginOrderReference extends CommonDBTM {
 
       $and = "";
       
-      if (class_exists($itemtype."Type"))
+      if (file_exists(GLPI_ROOT."/inc/".strtolower($itemtype)."type.class.php"))
          $and .= ($types_id != 0 ? " AND `".getForeignKeyFieldForTable(getTableForItemType($itemtype."Type"))."` = '$types_id' " : "");
-      if (class_exists($itemtype."Model"))
+      if (file_exists(GLPI_ROOT."/inc/".strtolower($itemtype)."model.class.php"))
          $and .= ($models_id != 0 ? " AND `".getForeignKeyFieldForTable(getTableForItemType($itemtype."Model"))."` ='$models_id' " : "");
       if (in_array($itemtype, $ORDER_TEMPLATE_TABLES))
          $and .= " AND `is_template` = 0 AND `is_deleted` = 0 ";

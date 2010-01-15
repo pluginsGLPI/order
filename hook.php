@@ -290,13 +290,13 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 			return $PluginOrderOrder->getDropdownStatus($data["ITEM_" . $num]);
          break;
 		case "glpi_plugin_order_references.types_id" :
-         if (class_exists($data["itemtype"]."Type"))
+         if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."type.class.php"))
             return Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"), $data["ITEM_" . $num]);
          else
             return " ";
          break;
 		case "glpi_plugin_order_references.models_id" :
-         if (class_exists($data["itemtype"]."Model"))
+         if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."model.class.php"))
             return Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"), $data["ITEM_" . $num]);
          else
             return " ";
