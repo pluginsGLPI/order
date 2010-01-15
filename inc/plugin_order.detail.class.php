@@ -293,7 +293,7 @@ class PluginOrderDetail extends CommonDBTM {
 					/* reduction */
 					echo "<td align='center'>".formatNumber($data["discount"])."</td>";
 					/* price with reduction */
-					echo "<td align='center'>".formatNumber($data["price_discounted"]*$quantity)."</td>";
+					echo "<td align='center'>".formatNumber($data["price_discounted"])."</td>";
 					/* status  */
 					echo "<td align='center'>".$PluginOrderReception->getReceptionStatus($data["IDD"])."</td></tr>";
 
