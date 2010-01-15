@@ -260,7 +260,7 @@ function plugin_order_addSelect($type, $ID, $num) {
 
 }
 
-function plugin_order_addLeftJoin_addLeftJoin($type,$ref_table,$new_table,$linkfield,
+function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,
                                        &$already_link_tables) {
 
 	switch ($new_table){

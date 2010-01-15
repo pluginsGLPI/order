@@ -39,8 +39,8 @@ include (GLPI_ROOT."/inc/includes.php");
 if(!isset($_GET["id"])) $_GET["id"] = "";
 if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 if(!isset($_GET["plugin_order_references_id"])) $_GET["plugin_order_references_id"] = "";
+$PluginOrderReference_Manufacturer = new PluginOrderReference_Manufacturer();
 
-$PluginOrderReference_Manufacturer = new PluginOrderReference_Manufacturer;
 if (isset($_POST["update"]))
 {
 	if(plugin_order_HaveRight("reference","w"))

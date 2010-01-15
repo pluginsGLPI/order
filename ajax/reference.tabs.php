@@ -62,6 +62,9 @@ if ($_POST["id"]>0 && $PluginOrderReference->can($_POST["id"],'r')) {
             $PluginOrderReference_Manufacturer->showReferenceManufacturers($_SERVER['HTTP_REFERER'],$_POST["id"]);
             $PluginOrderReference_Manufacturer->addSupplierToReference($_SERVER['HTTP_REFERER'],$_POST["id"]);
             Document::showAssociated($PluginOrderReference);
+         case 2 :  
+            $PluginOrderReference->getAllOrdersByReference($_POST["id"]);
+            break;
          case 3 :
             showNotesForm($_POST['target'],"PluginOrderReference",$_POST["id"]);
             break;

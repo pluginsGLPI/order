@@ -43,7 +43,7 @@ if (!isset ($_POST["id"])) {
 if (!isset ($_POST["withtemplate"]))
 	$_POST["withtemplate"] = "";
 
-$PluginOrderReference_Manufacturer = new PluginOrderReference_Manufacturer;
+$PluginOrderReference_Manufacturer = new PluginOrderReference_Manufacturer();
 
 PluginOrderProfile::checkRight("reference","r");
 

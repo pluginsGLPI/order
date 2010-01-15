@@ -198,7 +198,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
    }
    
    function showFormDetail($target,$plugin_order_orders_id) {
-      global  $CFG_GLPI, $LANG,$DB,$INFOFORM_PAGES,$ORDER_MODEL_TABLES,$ORDER_TYPE_TABLES;
+      global  $CFG_GLPI, $LANG,$DB,$ORDER_MODEL_TABLES,$ORDER_TYPE_TABLES;
 
       $PluginOrderOrder = new PluginOrderOrder();
       $PluginOrderReference = new PluginOrderReference();

@@ -127,6 +127,7 @@ class PluginOrderReference extends CommonDBTM {
 		/* principal */
 		$ong[1] = $LANG['title'][26];
 		if ($ID > 0) {
+         $ong[2] = $LANG['plugin_order']['budget'][1];
 			$ong[3] = $LANG['title'][37];
 			if (haveRight("document", "r"))
 				$ong[4] = $LANG['Menu'][27];
@@ -204,7 +205,7 @@ class PluginOrderReference extends CommonDBTM {
 	}
 
 	function showForm($target, $ID, $withtemplate = '') {
-		global $CFG_GLPI, $LANG, $DB,$ORDER_TEMPLATE_TABLES,$ORDER_TYPE_CLASSES,$ORDER_MODEL_CLASSES;
+		global $CFG_GLPI, $LANG, $DB,$ORDER_TEMPLATE_TABLES,$ORDER_TYPE_CLASSES,$ORDER_TYPE_TABLES,$ORDER_MODEL_CLASSES,$ORDER_MODEL_TABLES;
       
       if (!plugin_order_haveRight("reference","r")) return false;
 		
@@ -265,7 +266,7 @@ class PluginOrderReference extends CommonDBTM {
          if ($canedit && !$reference_in_use)
             Dropdown::show($ORDER_TYPE_CLASSES[$this->fields["itemtype"]], array('name' => "types_id",'value' => $this->fields["types_id"]));
          else
-            echo Dropdown::getDropdownName($ORDER_TYPE_CLASSES[$this->fields["itemtype"]], $this->fields["types_id"]);
+            echo Dropdown::getDropdownName($ORDER_TYPE_TABLES[$this->fields["itemtype"]], $this->fields["types_id"]);
       }
 
       echo "</span></td></tr>";
@@ -275,7 +276,7 @@ class PluginOrderReference extends CommonDBTM {
          if ($canedit)
             Dropdown::show($ORDER_MODEL_CLASSES[$this->fields["itemtype"]], array('name' => "models_id",'value' => $this->fields["models_id"]));
          else
-            echo Dropdown::getDropdownName($ORDER_MODEL_CLASSES[$this->fields["itemtype"]], $this->fields["models_id"]);
+            echo Dropdown::getDropdownName($ORDER_MODEL_TABLES[$this->fields["itemtype"]], $this->fields["models_id"]);
       }
       echo "</span></td></tr>";
 
@@ -406,7 +407,7 @@ class PluginOrderReference extends CommonDBTM {
    }
 
    function getAllItemsByType($itemtype, $entity, $types_id = 0, $models_id = 0) {
-      global $DB, $LINK_ID_TABLE, $ORDER_TYPE_TABLES, $ORDER_MODEL_TABLES, $ORDER_TEMPLATE_TABLES;
+      global $DB, $ORDER_TYPE_TABLES, $ORDER_MODEL_TABLES, $ORDER_TEMPLATE_TABLES;
 
       $and = "";
       
@@ -488,7 +489,7 @@ class PluginOrderReference extends CommonDBTM {
    }
 
 	function showReferencesFromSupplier($ID){
-      global $LANG, $DB, $CFG_GLPI,$INFOFORM_PAGES;
+      global $LANG, $DB, $CFG_GLPI;
 
       $query = "SELECT `gr`.`id`, `gr`.`manufacturers_id`, `gr`.`entities_id`, `gr`.`itemtype`, `gr`.`name`, `grm`.`price_taxfree` " .
             "FROM `glpi_plugin_order_references_manufacturers` AS grm, `".$this->getTable()."` AS gr " .
@@ -535,6 +536,48 @@ class PluginOrderReference extends CommonDBTM {
       echo "</table>";
       echo "</div>";
 
+   }
+   
+   function getAllOrdersByReference($plugin_order_references_id){
+      global $DB,$LANG;
+      
+      //$this->getFromDB($budgets_id);
+      $query = "SELECT `glpi_plugin_order_orders`.* 
+               FROM `glpi_plugin_order_orders_items`
+               LEFT JOIN `glpi_plugin_order_orders` ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`)
+               WHERE `plugin_order_references_id` = '".$plugin_order_references_id."'
+               GROUP BY `glpi_plugin_order_orders`.`id`
+               ORDER BY `entities_id`, `name` ";
+      $result = $DB->query($query);
+
+      echo "<div class='center'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='5'>".$LANG['plugin_order']['budget'][1]."</th></tr>";
+      echo "<tr>"; 
+      echo "<th>".$LANG['common'][16]."</th>";
+      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "</tr>";
+
+      while ($data = $DB->fetch_array($result))
+      {
+         echo "<tr class='tab_bg_1' align='center'>"; 
+         echo "<td>";
+
+         $link=getItemTypeFormURL('PluginOrderOrder');
+         if (plugin_order_haveRight("order","r"))
+            echo "<a href=\"".$link."?id=".$data["id"]."\">".$data["name"]."</a>";
+         else
+            echo $data["name"];	
+         echo "</td>";
+
+         echo "<td>";
+         echo Dropdown::getDropdownName("glpi_entities",$data["entities_id"]);
+         echo "</td>";
+
+         echo "</tr>"; 
+      }
+      
+      echo "</table></div>";
    }
 }
 

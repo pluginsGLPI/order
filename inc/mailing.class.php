@@ -66,7 +66,7 @@ class PluginOrderMailing extends CommonDBTM {
 	 * @return mail body string
 	 */
 	function get_mail_body($format = "text") {
-		global $CFG_GLPI, $LANG, $INFOFORM_PAGES;
+		global $CFG_GLPI, $LANG;
 
 		// Create message body from Job and type
 		$body = "";

@@ -112,7 +112,7 @@ class PluginOrderReception extends CommonDBTM {
 	}
 
 	function showForm($target, $ID) {
-		global $LANG, $DB, $CFG_GLPI, $INFOFORM_PAGES;
+		global $LANG;
       
       if (!plugin_order_haveRight("order", "r"))
 			return false;
@@ -131,9 +131,6 @@ class PluginOrderReception extends CommonDBTM {
 		
 		if ($spotted) {
          $this->showTabs($ID, "",array("plugin_order_orders_id=".$this->fields["plugin_order_orders_id"].""));
-
-         echo "<form method='post' name='show_reception' id='show_reception' action=\"$target\">";
-         echo "<input type='hidden' name='id' value='" . $ID . "'>";
          
          $PluginOrderOrder = new PluginOrderOrder();
          $PluginOrderOrder->getFromDB($this->fields["plugin_order_orders_id"]);
@@ -144,10 +141,7 @@ class PluginOrderReception extends CommonDBTM {
          
          $canedit = $PluginOrderOrder->can($this->fields["plugin_order_orders_id"], 'w') && !$PluginOrderOrder->canUpdateOrder($this->fields["plugin_order_orders_id"]) && $PluginOrderOrder->fields["states_id"] != ORDER_STATUS_CANCELED;
          echo "<input type='hidden' name='plugin_order_orders_id' value='" . $this->fields["plugin_order_orders_id"] . "'>";
-         
-         echo "<div class='center' id='tabsbody'>";
-         echo "<table class='tab_cadre_fixe'>";
-         
+         echo "<input type='hidden' name='id' value='" . $ID . "'>";
          $this->showFormHeader($target,$ID,"",1);
          
          echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['detail'][6] . ": </td>";
@@ -191,7 +185,7 @@ class PluginOrderReception extends CommonDBTM {
 	}
 	
 	function showOrderReception($plugin_order_orders_id) {
-      global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE, $INFOFORM_PAGES;
+      global $DB, $CFG_GLPI, $LANG;
 
       $PluginOrderOrder = new PluginOrderOrder();
       $PluginOrderOrder_Item = new PluginOrderOrder_Item();
@@ -356,7 +350,7 @@ class PluginOrderReception extends CommonDBTM {
    }
    
    function showOrderGeneration($plugin_order_orders_id) {
-      global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE, $INFOFORM_PAGES;
+      global $DB, $CFG_GLPI, $LANG;
 
       $PluginOrderOrder = new PluginOrderOrder();
       $PluginOrderOrder_Item = new PluginOrderOrder_Item();
@@ -478,7 +472,7 @@ class PluginOrderReception extends CommonDBTM {
    }
    
    function getReceptionMaterialInfo($deviceType, $items_id) {
-      global $DB, $LINK_ID_TABLE, $LANG;
+      global $LANG;
       
       $comments = "";
       switch ($deviceType) {
@@ -560,7 +554,7 @@ class PluginOrderReception extends CommonDBTM {
    }
 
    function getReceptionDeviceName($items_id, $itemtype) {
-      global $DB, $LINK_ID_TABLE, $INFOFORM_PAGES, $CFG_GLPI, $LANG;
+      global $CFG_GLPI, $LANG;
       if ($items_id == 0)
          return ($LANG['plugin_order']['item'][2]);
       else {
