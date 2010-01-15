@@ -51,12 +51,12 @@ if ($_POST["itemtype"])
 	switch ($_POST["field"])
 	{
 		case "types_id":
-			if (isset($ORDER_TYPE_CLASSES[$_POST["itemtype"]]))
-            Dropdown::show($ORDER_TYPE_CLASSES[$_POST["itemtype"]], array('name' => "types_id"));
+			if (class_exists($_POST["itemtype"]."Type"))
+            Dropdown::show($_POST["itemtype"]."Type", array('name' => "types_id"));
          break;
 		case "models_id":
-			if (isset($ORDER_MODEL_CLASSES[$_POST["itemtype"]]))
-				Dropdown::show($ORDER_MODEL_CLASSES[$_POST["itemtype"]], array('name' => "models_id"));
+			if (class_exists($_POST["itemtype"]."Model"))
+				Dropdown::show($_POST["itemtype"]."Model", array('name' => "models_id"));
 			else
 				return "";				
          break;

@@ -239,7 +239,7 @@ function plugin_order_forceGroupBy($type){
 
 	return true;
 	switch ($type){
-		case PLUGIN_ORDER_TYPE:
+		case 'PluginOrderOrder':
 			return true;
 			break;
 
@@ -275,7 +275,7 @@ function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,
 }
 /* display custom fields in the search */
 function plugin_order_giveItem($type, $ID, $data, $num) {
-	global $CFG_GLPI, $LANG,$ORDER_TYPE_TABLES,$ORDER_MODEL_TABLES;
+	global $CFG_GLPI, $LANG;
 
 	$searchopt = &Search::getOptions($type);
    $table = $searchopt[$ID]["table"];
@@ -290,14 +290,14 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 			return $PluginOrderOrder->getDropdownStatus($data["ITEM_" . $num]);
          break;
 		case "glpi_plugin_order_references.types_id" :
-         if (isset($ORDER_TYPE_TABLES[$data["itemtype"]]))
-            return Dropdown::getDropdownName($ORDER_TYPE_TABLES[$data["itemtype"]], $data["ITEM_" . $num]);
+         if (class_exists($data["itemtype"]."Type"))
+            return Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"), $data["ITEM_" . $num]);
          else
             return " ";
          break;
 		case "glpi_plugin_order_references.models_id" :
-         if (isset($ORDER_MODEL_TABLES[$data["itemtype"]]))
-            return Dropdown::getDropdownName($ORDER_MODEL_TABLES[$data["itemtype"]], $data["ITEM_" . $num]);
+         if (class_exists($data["itemtype"]."Model"))
+            return Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"), $data["ITEM_" . $num]);
          else
             return " ";
          break;

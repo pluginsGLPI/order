@@ -206,7 +206,7 @@ class PluginOrderReference extends CommonDBTM {
 	}
 
 	function showForm($target, $ID, $withtemplate = '') {
-		global $CFG_GLPI, $LANG, $DB,$ORDER_TEMPLATE_TABLES,$ORDER_TYPE_CLASSES,$ORDER_TYPE_TABLES,$ORDER_MODEL_CLASSES,$ORDER_MODEL_TABLES;
+		global $CFG_GLPI, $LANG, $DB,$ORDER_TEMPLATE_TABLES,$ORDER_TYPE_CLASSES,$ORDER_MODEL_CLASSES;
       
       if (!plugin_order_haveRight("reference","r")) return false;
 		
@@ -263,21 +263,25 @@ class PluginOrderReference extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['common'][17] . ": </td>";
       echo "<td><span id='show_types_id'>";
-      if (isset($ORDER_TYPE_CLASSES[$this->fields["itemtype"]])) {
-         if ($canedit && !$reference_in_use)
-            Dropdown::show($ORDER_TYPE_CLASSES[$this->fields["itemtype"]], array('name' => "types_id",'value' => $this->fields["types_id"]));
-         else
-            echo Dropdown::getDropdownName($ORDER_TYPE_TABLES[$this->fields["itemtype"]], $this->fields["types_id"]);
+      if ($this->fields["itemtype"]) {
+         if (class_exists($this->fields["itemtype"]."Type")) {
+            if ($canedit && !$reference_in_use)
+               Dropdown::show($this->fields["itemtype"]."Type", array('name' => "types_id",'value' => $this->fields["types_id"]));
+            else
+               echo Dropdown::getDropdownName(getTableForItemType($this->fields["itemtype"]."Type"), $this->fields["types_id"]);
+         }
       }
 
       echo "</span></td></tr>";
       echo "<tr class='tab_bg_2'><td>" . $LANG['common'][22] . ": </td>";
       echo "<td><span id='show_models_id'>";
-      if (isset($ORDER_MODEL_CLASSES[$this->fields["itemtype"]])) {
-         if ($canedit)
-            Dropdown::show($ORDER_MODEL_CLASSES[$this->fields["itemtype"]], array('name' => "models_id",'value' => $this->fields["models_id"]));
-         else
-            echo Dropdown::getDropdownName($ORDER_MODEL_TABLES[$this->fields["itemtype"]], $this->fields["models_id"]);
+      if ($this->fields["itemtype"]) {
+         if (class_exists($this->fields["itemtype"]."Model")) {
+            if ($canedit)
+               Dropdown::show($this->fields["itemtype"]."Model", array('name' => "models_id",'value' => $this->fields["models_id"]));
+            else
+               echo Dropdown::getDropdownName(getTableForItemType($this->fields["itemtype"]."Model"), $this->fields["models_id"]);
+         }
       }
       echo "</span></td></tr>";
 
@@ -408,25 +412,21 @@ class PluginOrderReference extends CommonDBTM {
    }
 
    function getAllItemsByType($itemtype, $entity, $types_id = 0, $models_id = 0) {
-      global $DB, $ORDER_TYPE_TABLES, $ORDER_MODEL_TABLES, $ORDER_TEMPLATE_TABLES;
+      global $DB, $ORDER_TEMPLATE_TABLES;
 
       $and = "";
       
-      if ($itemtype == 'Contract')
-         $field = "contract_type";
-      else 
-         $field = "type";
-      if (isset ($ORDER_TYPE_TABLES[$itemtype]))
-         $and .= ($types_id != 0 ? " AND `$field` = '$types_id' " : "");
-      if (isset ($ORDER_MODEL_TABLES[$itemtype]))
-         $and .= ($models_id != 0 ? " AND `model` ='$models_id' " : "");
+      if (class_exists($itemtype."Type"))
+         $and .= ($types_id != 0 ? " AND `".getForeignKeyFieldForTable(getTableForItemType($itemtype."Type"))."` = '$types_id' " : "");
+      if (class_exists($itemtype."Model"))
+         $and .= ($models_id != 0 ? " AND `".getForeignKeyFieldForTable(getTableForItemType($itemtype."Model"))."` ='$models_id' " : "");
       if (in_array($itemtype, $ORDER_TEMPLATE_TABLES))
          $and .= " AND `is_template` = 0 AND `is_deleted` = 0 ";
 
       switch ($itemtype) {
          default :
             $query = "SELECT `id`, `name` 
-                     FROM `" . $LINK_ID_TABLE[$itemtype] . "` 
+                     FROM `" . getTableForItemType($itemtype) . "` 
                      WHERE `entities_id` = '" . $entity ."' ". $and . " 
                      AND `id` NOT IN (SELECT `items_id` FROM `glpi_plugin_order_orders_items`)";
             break;

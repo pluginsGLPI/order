@@ -36,6 +36,9 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+if(!isset($_GET["id"])) $_GET["id"] = "";
+if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
+
 $PluginOrderReception = new PluginOrderReception();
 
 $plugin = new Plugin;
@@ -99,7 +102,7 @@ else if (isset ($_POST["generate"])) {
 else if (isset ($_POST["deleteLinkWithItem"])) {
 	foreach ($_POST["item"] as $key => $val) {
 		if ($val == 1)
-			$PluginOrderReception->deleteLinkWithItem($key, $_POST["type"][$key]);
+			$PluginOrderReception->deleteLinkWithItem($key, $_POST["itemtype"][$key],$_POST["plugin_order_orders_id"]);
 	}
 	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/order.form.php?id=" . $_POST["plugin_order_orders_id"] . "");
 }
@@ -108,7 +111,7 @@ else if (isset ($_POST["createLinkWithItem"])) {
 
    if ($_POST["item"]) {
       $i = 0;
-      if (count($_POST["item"]) <= 1 || in_array($_POST["types_id"],$ORDER_RESTRICTED_TYPES)) {
+      if (count($_POST["item"]) <= 1) {
          $detail = new PluginOrderOrder_Item;
 
          foreach ($_POST["item"] as $key => $val)
@@ -121,7 +124,8 @@ else if (isset ($_POST["createLinkWithItem"])) {
                   glpi_header($_SERVER["HTTP_REFERER"]);
                } else
                {
-                  $PluginOrderReception->createLinkWithItem($key, $_POST["items_id"], $_POST["itemtype"][$key], $_POST["plugin_order_orders_id"]);
+
+                  $PluginOrderReception->createLinkWithItem($key, $_POST["items_id"], $_POST["itemtype"], $_POST["plugin_order_orders_id"]);
                   
                }
             }

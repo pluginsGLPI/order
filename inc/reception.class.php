@@ -124,7 +124,6 @@ class PluginOrderReception extends CommonDBChild {
          $this->check($ID,'r');
       } else {
          // Create item
-         $input=array('plugin_order_orders_id'=>$plugin_order_orders_id);
          $this->check(-1,'w',$input);
       }
       $this->showTabs($ID);
@@ -319,7 +318,7 @@ class PluginOrderReception extends CommonDBChild {
    }
    
    function dropdownReceptionActions($type,$plugin_order_references_id,$plugin_order_orders_id) {
-      global $LANG,$CFG_GLPI,$ORDER_RESTRICTED_TYPES;
+      global $LANG,$CFG_GLPI;
       
       $rand = mt_rand();
 
@@ -428,7 +427,7 @@ class PluginOrderReception extends CommonDBChild {
                echo "<td align='center'>" . convDate($data["delivery_date"]) . "</td>";
                echo "<td align='center'>" . $this->getReceptionDeviceName($data["items_id"], $data["itemtype"]);
                if ($data["items_id"] != 0) {
-                  echo "<img alt='' src='" . $CFG_GLPI["root_doc"] . "/pics/aide.png' onmouseout=\"cleanhide('comments_$random')\" onmouseover=\"cleandisplay('comments_$random')\" ";
+                  echo "&nbsp;<img alt='' src='" . $CFG_GLPI["root_doc"] . "/pics/aide.png' onmouseout=\"cleanhide('comments_$random')\" onmouseover=\"cleandisplay('comments_$random')\" ";
                   echo "<span class='over_link' id='comments_$random'>" . nl2br($this->getReceptionMaterialInfo($data["itemtype"], $data["items_id"])) . "</span>";
                }
                echo "<input type='hidden' name='id[$detailID]' value='$detailID'>";
@@ -459,11 +458,11 @@ class PluginOrderReception extends CommonDBChild {
       }
    }
    
-   function getReceptionMaterialInfo($deviceType, $items_id) {
+   function getReceptionMaterialInfo($itemtype, $items_id) {
       global $LANG;
       
       $comments = "";
-      switch ($deviceType) {
+      switch ($itemtype) {
          case 'Computer' :
          case 'Monitor' :
          case 'NetworkEquipment' :
@@ -471,54 +470,56 @@ class PluginOrderReception extends CommonDBChild {
          case 'Phone' :
          case 'Printer' :
          default :
-            $ci = new CommonItem();
-            $ci->getFromDB($deviceType, $items_id);
-            if ($ci->getField("name")) {
-               $comments = "<strong>" . $LANG['common'][16] . ":</strong> " . $ci->getField("name");
+            
+            $item = new $itemtype();
+            $item->getFromDB($items_id);
+
+            if ($item->getField("name")) {
+               $comments = "<strong>" . $LANG['common'][16] . ":</strong> " . $item->getField("name");
             }
 
-            if ($ci->getField("entities_id")) {
-               $comments = "<strong>" . $LANG['entity'][0] . ":</strong> " . getDropdownName("glpi_entities", $ci->getField("entities_id"));
+            if ($item->getField("entities_id")) {
+               $comments = "<strong>" . $LANG['entity'][0] . ":</strong> " . Dropdown::getDropdownName("glpi_entities", $item->getField("entities_id"));
             }
 
-            if ($ci->getField("serial") != '') {
-               $comments .= "<br><strong>" . $LANG['common'][19] . ":</strong> " . $ci->getField("serial");
+            if ($item->getField("serial") != '') {
+               $comments .= "<br><strong>" . $LANG['common'][19] . ":</strong> " . $item->getField("serial");
             }
 
-            if ($ci->getField("otherserial") != '') {
-               $comments .= "<br><strong>" . $LANG['common'][20] . ":</strong> " . $ci->obj->fields["otherserial"];
+            if ($item->getField("otherserial") != '') {
+               $comments .= "<br><strong>" . $LANG['common'][20] . ":</strong> " . $item->getField("otherserial");
             }
-            if ($ci->getField("locations_id")) {
-               $comments .= "<br><strong>" . $LANG['common'][15] . ":</strong> " . getDropdownName('glpi_locations', $ci->getField("locations_id"));
+            if ($item->getField("locations_id")) {
+               $comments .= "<br><strong>" . $LANG['common'][15] . ":</strong> " . Dropdown::getDropdownName('glpi_locations', $item->getField("locations_id"));
             }
 
-            if ($ci->getField("users_id")) {
-               $comments .= "<br><strong>" . $LANG['common'][34] . ":</strong> " . getDropdownName('glpi_users', $ci->getField("users_id"));
+            if ($item->getField("users_id")) {
+               $comments .= "<br><strong>" . $LANG['common'][34] . ":</strong> " . Dropdown::getDropdownName('glpi_users', $item->getField("users_id"));
             }
             break;
          case 'ConsumableItem' :
             $ci = new Consumable();
             if ($ci->getFromDB($items_id)) {
-               $ct = new ConsumableType;
-               $ct->getFromDB($ci->fields['FK_glpi_consumables_type']);
-               $comments = "<strong>" . $LANG['entity'][0] . ":</strong> " . getDropdownName("glpi_entities", $ct->fields["entities_id"]);
+               $ct = new ConsumableItem;
+               $ct->getFromDB($ci->fields['consumableitems_id']);
+               $comments = "<strong>" . $LANG['entity'][0] . ":</strong> " . Dropdown::getDropdownName("glpi_entities", $ct->fields["entities_id"]);
                $comments .= '<br><strong>' . $LANG['consumables'][0] . ' : </strong> #' . $items_id;
                $comments .= '<br><strong>' . $LANG['consumables'][12] . ' : </strong>' . $ct->fields['name'];
-               $comments .= '<br><strong>' . $LANG['common'][5] . ' : </strong>' . getDropdownName('glpi_dropdown_manufacturer', $ct->fields['manufacturers_id']);
+               $comments .= '<br><strong>' . $LANG['common'][5] . ' : </strong>' . Dropdown::getDropdownName('glpi_manufacturers', $ct->fields['manufacturers_id']);
                $comments .= '<br><strong>' . $LANG['consumables'][23] . ' : </strong>' . (!$ci->fields['id_user'] ? $LANG['consumables'][1] : $LANG['consumables'][15]);
                if ($ci->fields['id_user'])
-                  $comments .= '<br><strong>' . $LANG['common'][34] . ' : </strong>' . getDropdownName('glpi_users', $ci->fields['id_user']);
+                  $comments .= '<br><strong>' . $LANG['common'][34] . ' : </strong>' . Dropdown::getDropdownName('glpi_users', $ci->fields['id_user']);
             }
             break;
          case 'CartridgeItem' :
             $ci = new Cartridge();
             if ($ci->getFromDB($items_id)) {
-               $ct = new CartridgeType;
-               $ct->getFromDB($ci->fields['FK_glpi_cartridges_type']);
-               $comments = "<strong>" . $LANG['entity'][0] . ":</strong> " . getDropdownName("glpi_entities", $ct->fields["entities_id"]);
+               $ct = new CartridgeItem;
+               $ct->getFromDB($ci->fields['cartridgeitems_id']);
+               $comments = "<strong>" . $LANG['entity'][0] . ":</strong> " . Dropdown::getDropdownName("glpi_entities", $ct->fields["entities_id"]);
                $comments .= '<br><strong>' . $LANG['cartridges'][0] . ' : </strong> #' . $items_id;
                $comments .= '<br><strong>' . $LANG['cartridges'][12] . ' : </strong>' . $ct->fields['name'];
-               $comments .= '<br><strong>' . $LANG['common'][5] . ' : </strong>' . getDropdownName('glpi_dropdown_manufacturer', $ct->fields['manufacturers_id']);
+               $comments .= '<br><strong>' . $LANG['common'][5] . ' : </strong>' . Dropdown::getDropdownName('glpi_manufacturers', $ct->fields['manufacturers_id']);
             }
       }
 
@@ -543,6 +544,7 @@ class PluginOrderReception extends CommonDBChild {
 
    function getReceptionDeviceName($items_id, $itemtype) {
       global $CFG_GLPI, $LANG;
+      
       if ($items_id == 0)
          return ($LANG['plugin_order']['item'][2]);
       else {
@@ -554,44 +556,48 @@ class PluginOrderReception extends CommonDBChild {
             case 'Phone' :
             case 'Printer' :
             default :
-               $ci = new CommonItem();
-               $ci->getFromDB($itemtype, $items_id);
-               $name = $ci->getField("name");
-               if ($_SESSION["glpiview_ID"] || empty($name)) $name.=" (".$items_id.")";
-               return ("<a href=" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[$itemtype] . "?id=" . $items_id . "&itemtype=" . $itemtype . ">" . $name."</a>");
+               $item = new $itemtype();
+               $item->getFromDB($items_id);
+               $name = $item->getField("name");
+               $link=getItemTypeFormURL($item->getType());
+               if ($_SESSION["glpiis_ids_visible"] || empty($name)) $name.=" (".$items_id.")";
+               return ("<a href=" . $link . "?id=" . $items_id . "&itemtype=" . $itemtype . ">" . $name."</a>");
                break;
             case 'ConsumableItem' :
                $ci = new Consumable();
                $ci->getFromDB($items_id);
-               $ct = new ConsumableType;
-               $ct->getFromDB($ci->fields['FK_glpi_consumables_type']);
-               return ("<a href=" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[CONSUMABLE_TYPE] . "?id=" . $ct->fields['id'] . ">" . $LANG['consumables'][0] . ': #' . $items_id . ' (' . $ct->fields["name"] . ')' . "</a>");
+               $ct = new ConsumableItem;
+               $link=getItemTypeFormURL($ct->getType());
+               $ct->getFromDB($ci->fields['consumableitems_id']);
+               return ("<a href=" . $link . "?id=" . $ct->fields['id'] . ">" . $LANG['consumables'][0] . ': #' . $items_id . ' (' . $ct->fields["name"] . ')' . "</a>");
                break;
             case 'CartridgeItem' :
                $ci = new Cartridge();
                $ci->getFromDB($items_id);
-               $ct = new CartridgeType;
-               $ct->getFromDB($ci->fields['FK_glpi_cartridges_type']);
-               return ("<a href=" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[CARTRIDGE_TYPE] . "?id=" . $ct->fields['id'] . ">" . $LANG['cartridges'][0] . ': #' . $items_id . ' (' . $ct->fields["name"] . ')' . "</a>");
+               $ct = new CartridgeItem;
+               $link=getItemTypeFormURL($ct->getType());
+               $ct->getFromDB($ci->fields['cartridgeitems_id']);
+               return ("<a href=" . $link . "?id=" . $ct->fields['id'] . ">" . $LANG['cartridges'][0] . ': #' . $items_id . ' (' . $ct->fields["name"] . ')' . "</a>");
                break;
          }
       }
    }
 
    function dropdownGenerationActions($type,$plugin_order_references_id,$plugin_order_orders_id) {
-      global $LANG,$CFG_GLPI,$ORDER_RESTRICTED_TYPES;
+      global $LANG,$CFG_GLPI;
       
       $rand = mt_rand();
 
       echo "<select name='generationActions$rand' id='generationActions$rand'>";
       echo "<option value='0' selected>-----</option>";
-
-      $ORDER_RESTRICTED_TYPES[]=	'SoftwareLicense';
-      //$ORDER_RESTRICTED_TYPES[]=	'Software';
-      $ORDER_RESTRICTED_TYPES[]=	'Contract';
+      
+      $restricted = array('ConsumableItem',
+                           'CartridgeItem',
+                           'SoftwareLicense',
+                           'Contract');
       
       if ($this->checkItemStatus($plugin_order_orders_id, $plugin_order_references_id, ORDER_DEVICE_DELIVRED)) {
-         if (!in_array($type, $ORDER_RESTRICTED_TYPES))
+         if (!in_array($type, $restricted))
             echo "<option value='generation'>" . $LANG['plugin_order']['delivery'][3] . "</option>";
 
          echo "<option value='createLink'>" . $LANG['plugin_order']['delivery'][11] . "</option>";
@@ -610,9 +616,12 @@ class PluginOrderReception extends CommonDBChild {
    }
    
    function itemAlreadyLinkedToAnOrder($itemtype, $items_id, $plugin_order_orders_id, $detailID = 0) {
-      global $DB, $ORDER_RESTRICTED_TYPES;
+      global $DB;
       
-      if (!in_array($itemtype, $ORDER_RESTRICTED_TYPES)) {
+      $restricted = array('ConsumableItem',
+                           'CartridgeItem');
+                           
+      if (!in_array($itemtype, $restricted)) {
          $query = "SELECT COUNT(*) AS cpt 
                   FROM `glpi_plugin_order_orders_items` 
                   WHERE `plugin_order_orders_id` = '$plugin_order_orders_id' 
@@ -656,7 +665,7 @@ class PluginOrderReception extends CommonDBChild {
             $fields = $ic->fields;
             unset ($fields["id"]);
             if (isset ($fields["num_immo"])) {
-               $fields["num_immo"] = autoName($fields["num_immo"], "num_immo", 1, INFOCOM_TYPE, $entity);
+               $fields["num_immo"] = autoName($fields["num_immo"], "num_immo", 1, 'Infocom', $entity);
             }
             if (empty ($fields['use_date'])) {
                unset ($fields['use_date']);
@@ -712,27 +721,34 @@ class PluginOrderReception extends CommonDBChild {
 }
 
    function createLinkWithItem($detailID = 0, $items_id = 0, $itemtype = 0, $plugin_order_orders_id = 0, $entity = 0, $templateID = 0, $history = true, $check_link = true) {
-      global $LANG, $ORDER_RESTRICTED_TYPES;
+      global $LANG;
 
       if (!$check_link || !$this->itemAlreadyLinkedToAnOrder($itemtype, $items_id, $plugin_order_orders_id, $detailID)) {
          $detail = new PluginOrderOrder_Item;
-
-         if (in_array($itemtype, $ORDER_RESTRICTED_TYPES)) {
-            $commonitem = new CommonItem;
-            $commonitem->setType($itemtype, true);
-
+         
+         $restricted = array('ConsumableItem',
+                           'CartridgeItem');
+                       
+         if (in_array($itemtype, $restricted)) {
+         
+            if ($itemtype == 'ConsumableItem') {
+               $item = new Consumable;
+               $type = 'Consumable';
+            } elseif ($itemtype == 'CartridgeItem') {
+               $item = new Cartridge;
+               $type = 'Cartridge';
+            }
             $detail->getFromDB($detailID);
-
             $input["tID"] = $items_id;
-            $input["date_in"] = $detail->fields["date"];
-            $newID = $commonitem->obj->add($input);
+            $input["date_in"] = $detail->fields["delivery_date"];
+            $newID = $item->add($input);
 
             $input["id"] = $detailID;
             $input["items_id"] = $newID;
             $input["itemtype"] = $itemtype;
             $detail->update($input);
 
-            $this->generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $newID, 0);
+            $this->generateInfoComRelatedToOrder($entity, $detailID, $type, $newID, 0);
          } else {
             $input["id"] = $detailID;
             $input["items_id"] = $items_id;
@@ -753,42 +769,33 @@ class PluginOrderReception extends CommonDBChild {
 
    }
    
-   function deleteLinkWithItem($detailID, $itemtype) {
+   function deleteLinkWithItem($detailID, $itemtype, $plugin_order_orders_id) {
       global $DB, $LANG;
       
+      $order = new PluginOrderOrder;
+      $order->getFromDB($plugin_order_orders_id);
+            
       $detail = new PluginOrderOrder_Item;
       $detail->getFromDB($detailID);
       $items_id = $detail->fields["items_id"];
 
-      $query = "SELECT `id`, `plugin_order_orders_id` 
-               FROM `glpi_plugin_order_orders_items` 
-               WHERE `items_id` = '" . $items_id ."' 
-               AND `itemtype` = '" . $itemtype."' ";
+      $this->removeInfoComRelatedToOrder($itemtype, $items_id);
 
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) > 0) {
-            $orderDeviceID = $DB->result($result, 0, 'id');
+      if ($items_id != 0) {
+         $input = $detail->fields;
+         $input["items_id"] = 0;
+         $detail->update($input);
+      } else
+         addMessageAfterRedirect($LANG['plugin_order'][48], TRUE, ERROR);
 
-            $this->removeInfoComRelatedToOrder($itemtype, $items_id);
+      $new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $order->fields["name"];
+      $order->addHistory($itemtype, '', $new_value, $items_id);
+      
+      $item = new $itemtype();
+      $item->getFromDB($items_id);
+      $new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $item->getField("name");
+      $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
 
-            if ($detail->fields["items_id"] != 0) {
-               $input = $detail->fields;
-               $input["items_id"] = 0;
-               $detail->update($input);
-            } else
-               addMessageAfterRedirect($LANG['plugin_order'][48], TRUE, ERROR);
-
-            $order = new PluginOrderOrder;
-            $order->getFromDB($DB->result($result, 0, "plugin_order_orders_id"));
-            $new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $order->fields["name"];
-            $order->addHistory($itemtype, '', $new_value, $items_id);
-
-            $commonitem = new CommonItem;
-            $commonitem->getFromDB($itemtype, $items_id);
-            $new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $commonitem->getField("name");
-            $order->addHistory(PLUGIN_ORDER_TYPE, '', $new_value, $order->fields["id"]);
-         }
-      }
    }
    
    function updateBulkReceptionStatus($params) {
@@ -1039,7 +1046,7 @@ class PluginOrderReception extends CommonDBChild {
          //Add order's history
          $new_value = $LANG['plugin_order']['delivery'][13] . ' : ';
          $new_value .= $commonitem->getType() . " -> " . $commonitem->getField("name");
-         $order->addHistory(PLUGIN_ORDER_TYPE, '', $new_value, $values["plugin_order_orders_id"]);
+         $order->addHistory('PluginOrderOrder', '', $new_value, $values["plugin_order_orders_id"]);
 
          addMessageAfterRedirect($LANG['plugin_order']['detail'][30], true);
          $i++;

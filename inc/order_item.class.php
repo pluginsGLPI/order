@@ -198,7 +198,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
    }
    
    function showFormDetail($target,$plugin_order_orders_id) {
-      global  $CFG_GLPI, $LANG,$DB,$ORDER_MODEL_TABLES,$ORDER_TYPE_TABLES;
+      global  $CFG_GLPI, $LANG,$DB;
 
       $PluginOrderOrder = new PluginOrderOrder();
       $PluginOrderReference = new PluginOrderReference();
@@ -252,13 +252,13 @@ class PluginOrderOrder_Item extends CommonDBTM {
             echo "</td>";
             /* type */
             echo "<td align='center'>";
-            if (isset($ORDER_TYPE_TABLES[$data_ref["itemtype"]]))
-               echo Dropdown::getDropdownName($ORDER_TYPE_TABLES[$data_ref["itemtype"]], $data_ref["types_id"]);
+            if (class_exists($data_ref["itemtype"]."Type"))
+               echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Type"), $data_ref["types_id"]);
             echo "</td>";
             /* modele */
             echo "<td align='center'>";
-            if (isset($ORDER_MODEL_TABLES[$data_ref["itemtype"]]))
-               echo Dropdown::getDropdownName($ORDER_MODEL_TABLES[$data_ref["itemtype"]], $data_ref["models_id"]);
+            if (class_exists($data_ref["itemtype"]."Model"))
+               echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Model"), $data_ref["models_id"]);
             echo "</td>";
             echo "<td align='center'>".formatNumber($data_ref["price_taxfree"])."</td>";
             /* reduction */

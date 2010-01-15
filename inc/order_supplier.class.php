@@ -64,6 +64,25 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       return $input;
    }
 	
+	function getFromDBByOrder($plugin_order_orders_id) {
+		global $DB;
+		
+		$query = "SELECT * FROM `".$this->getTable()."`
+					WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id . "' ";
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result) != 1) {
+				return false;
+			}
+			$this->fields = $DB->fetch_assoc($result);
+			if (is_array($this->fields) && count($this->fields)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
+	
 	function showForm($target, $ID, $plugin_order_orders_id=-1) {
 		global $LANG, $CFG_GLPI;
       

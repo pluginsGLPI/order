@@ -46,47 +46,10 @@ define("ORDER_STATUS_CANCELED", 5);
 
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
-	global $PLUGIN_HOOKS, $CFG_GLPI, $LANG, $ORDER_RESTRICTED_TYPES, $ORDER_VALIDATION_STATUS, $ORDER_TYPE_TABLES, $ORDER_TYPE_CLASSES, $ORDER_MODEL_TABLES, $ORDER_MODEL_CLASSES, $ORDER_TEMPLATE_TABLES;
-
-	$ORDER_RESTRICTED_TYPES = array ('ConsumableItem',
-                                    'CartridgeItem');
+	global $PLUGIN_HOOKS, $CFG_GLPI, $LANG, $ORDER_VALIDATION_STATUS, $ORDER_TEMPLATE_TABLES;
                                     
 	$ORDER_VALIDATION_STATUS = array (ORDER_STATUS_DRAFT,
                                     ORDER_STATUS_WAITING_APPROVAL);
-   
-   $ORDER_TYPE_CLASSES = array ('Computer'             => "ComputerType",
-                                 'Monitor'            => "MonitorType",
-                                 'Printer'            => "PrinterType",
-                                 'NetworkEquipment'   => "NetworkEquipmentType",
-                                 'Peripheral'         => "PeripheralType",
-                                 'Phone'              => "PhoneType",
-                                 'ConsumableItem'     => "ConsumableItemType",
-                                 'CartridgeItem'      => "CartridgeItemType",
-                                 'Contract'           => "ContractType");
-                                 
-	$ORDER_TYPE_TABLES = array ('Computer'             => "glpi_computertypes",
-                                 'Monitor'            => "glpi_monitortypes",
-                                 'Printer'            => "glpi_printertypes",
-                                 'NetworkEquipment'   => "glpi_networkequipmenttypes",
-                                 'Peripheral'         => "glpi_peripheraltypes",
-                                 'Phone'              => "glpi_phonetypes",
-                                 'ConsumableItem'     => "glpi_consumableitemtypes",
-                                 'CartridgeItem'      => "glpi_cartridgeitemtypes",
-                                 'Contract'           => "glpi_contracttypes");
-   
-   $ORDER_MODEL_CLASSES = array ('Computer'            => "ComputerModel",
-                                 'Monitor'            => "MonitorModel",
-                                 'Printer'            => "PrinterModel",
-                                 'NetworkEquipment'   => "NetworkEquipmentModel",
-                                 'Peripheral'         => "PeripheralModel",
-                                 'Phone'              => "PhoneModel");
-                                 
-	$ORDER_MODEL_TABLES = array ('Computer'            => "glpi_computermodels",
-                                 'Monitor'            => "glpi_monitormodels",
-                                 'Printer'            => "glpi_printermodels",
-                                 'NetworkEquipment'   => "glpi_networkequipmentmodels",
-                                 'Peripheral'         => "glpi_peripheralmodels",
-                                 'Phone'              => "glpi_phonemodels");
 		
 	$ORDER_TEMPLATE_TABLES = array ('Computer',
                                     'Monitor',
