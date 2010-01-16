@@ -79,19 +79,19 @@ class PluginOrderOrder extends CommonDBTM {
       $tab = array();
     
       $tab['common'] = $LANG['plugin_order']['title'][1];
-		/* order number */
+		/* order_number */
 		$tab[1]['table'] = $this->getTable();
 		$tab[1]['field'] = 'num_order';
 		$tab[1]['linkfield'] = 'num_order';
 		$tab[1]['name'] = $LANG['plugin_order'][0];
 		$tab[1]['datatype'] = 'itemlink';
-		/* date */
+		/* order_date */
 		$tab[2]['table'] = $this->getTable();
 		$tab[2]['field'] = 'order_date';
 		$tab[2]['linkfield'] = 'order_date';
 		$tab[2]['name'] = $LANG['plugin_order'][1];
 		$tab[2]['datatype']='date';
-		/* budget*/
+		/* taxes*/
 		$tab[3]['table'] = 'glpi_plugin_order_ordertaxes';
 		$tab[3]['field'] = 'name';
 		$tab[3]['linkfield'] = 'plugin_order_ordertaxes_id';
@@ -119,14 +119,22 @@ class PluginOrderOrder extends CommonDBTM {
 		$tab[7]['field'] = 'name';
 		$tab[7]['linkfield'] = 'plugin_order_orderpayments_id';
 		$tab[7]['name'] = $LANG['plugin_order'][32];
-      /* contact */
+      /* contact 
 		$tab[8]['table'] = 'glpi_contacts';
 		$tab[8]['field'] = 'name';
 		$tab[8]['linkfield'] = 'contacts_id';
 		$tab[8]['name'] = $LANG['common'][18];
 		$tab[8]['datatype']='itemlink';
 		$tab[8]['itemlink_type']='Contact';
-		$tab[8]['forcegroupby']=true;
+		$tab[8]['forcegroupby']=true;*/
+		/* budget 
+		$tab[9]['table'] = 'glpi_budgets';
+		$tab[9]['field'] = 'name';
+		$tab[9]['linkfield'] = 'budgets_id';
+		$tab[9]['name'] = $LANG['financial'][87];
+		$tab[9]['datatype']='itemlink';
+		$tab[9]['itemlink_type']='Budget';
+		$tab[9]['forcegroupby']=true;*/
 		/* title */
 		$tab[10]['table'] = $this->getTable();
 		$tab[10]['field'] = 'name';

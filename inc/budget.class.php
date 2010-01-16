@@ -200,7 +200,6 @@ class PluginOrderBudget extends CommonDBTM {
 	function getAllOrdersByBudget($budgets_id){
       global $DB,$LANG,$CFG_GLPI;
       
-      //$this->getFromDB($budgets_id);
       $query = "SELECT * 
                FROM `glpi_plugin_order_orders` 
                WHERE `budgets_id` = '".$budgets_id."' 
@@ -209,12 +208,14 @@ class PluginOrderBudget extends CommonDBTM {
 
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='5'>".$LANG['plugin_order']['budget'][1]."</th></tr>";
+      
+      echo "<tr><th colspan='2'>".$LANG['plugin_order']['budget'][1]."</th></tr>";
       echo "<tr>"; 
       echo "<th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "</tr>";
-
+      
+      $total = 0;
       while ($data = $DB->fetch_array($result))
       {
          echo "<tr class='tab_bg_1' align='center'>"; 
@@ -228,13 +229,25 @@ class PluginOrderBudget extends CommonDBTM {
          echo "</td>";
 
          echo "<td>";
-         //echo Dropdown::getDropdownName("glpi_entities",$this->fields["entities_id"]);
+         echo Dropdown::getDropdownName("glpi_entities",$data["entities_id"]);
          echo "</td>";
 
          echo "</tr>"; 
+         $PluginOrderOrder_Item = new PluginOrderOrder_Item();
+         $prices = $PluginOrderOrder_Item->getAllPrices($data["id"]);
+         $postagewithTVA = $PluginOrderOrder_Item->getPricesATI($data["port_price"], Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $data["plugin_order_ordertaxes_id"]));
+         $total+= $prices["priceTTC"] + $postagewithTVA;
       }
-      
       echo "</table></div>";
+      
+      echo "<br><div class='center'>";
+      echo "<table class='tab_cadre' width='15%'>";
+      echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['budget'][2] . ": </td>";
+      echo "<td>";
+      echo formatNumber($total) . "</td>";
+      echo "</tr>";
+      echo "</table></div>";
+
    }
 }
 

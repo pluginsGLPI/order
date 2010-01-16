@@ -218,6 +218,9 @@ function plugin_order_getDatabaseRelations() {
 				"glpi_plugin_order_orders" => "entities_id",
 				"glpi_plugin_order_references" => "entities_id",
 				"glpi_plugin_order_others" => "entities_id"
+			),
+			"glpi_budgets" => array (
+				"glpi_plugin_order_orders" => "budgets_id"
 			)
 		);
 	else
