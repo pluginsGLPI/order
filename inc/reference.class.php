@@ -206,7 +206,7 @@ class PluginOrderReference extends CommonDBTM {
 	}
 
 	function showForm($target, $ID, $withtemplate = '') {
-		global $CFG_GLPI, $LANG, $DB,$ORDER_TEMPLATE_TABLES,$ORDER_TYPE_CLASSES,$ORDER_MODEL_CLASSES;
+		global $CFG_GLPI, $LANG;
       
       if (!plugin_order_haveRight("reference","r")) return false;
 		
@@ -286,7 +286,7 @@ class PluginOrderReference extends CommonDBTM {
       
       $table = getTableForItemType($this->fields["itemtype"]);
       
-      if ($canedit && in_array($this->fields["itemtype"],$ORDER_TEMPLATE_TABLES))
+      if ($canedit && $this->fields["itemtype"] && $item->maybeTemplate())
             $this->dropdownTemplate("templates_id", $this->fields["entities_id"], $table, $this->fields["templates_id"]);
          else
             echo $this->getTemplateName($this->fields["itemtype"], $this->fields["templates_id"]);
@@ -403,15 +403,16 @@ class PluginOrderReference extends CommonDBTM {
    }
 
    function getAllItemsByType($itemtype, $entity, $types_id = 0, $models_id = 0) {
-      global $DB, $ORDER_TEMPLATE_TABLES;
+      global $DB;
 
       $and = "";
+      $item = new $itemtype;
       
       if (file_exists(GLPI_ROOT."/inc/".strtolower($itemtype)."type.class.php"))
          $and .= ($types_id != 0 ? " AND `".getForeignKeyFieldForTable(getTableForItemType($itemtype."Type"))."` = '$types_id' " : "");
       if (file_exists(GLPI_ROOT."/inc/".strtolower($itemtype)."model.class.php"))
          $and .= ($models_id != 0 ? " AND `".getForeignKeyFieldForTable(getTableForItemType($itemtype."Model"))."` ='$models_id' " : "");
-      if (in_array($itemtype, $ORDER_TEMPLATE_TABLES))
+      if ($item->maybeTemplate())
          $and .= " AND `is_template` = 0 AND `is_deleted` = 0 ";
 
       switch ($itemtype) {

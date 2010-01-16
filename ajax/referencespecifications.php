@@ -63,7 +63,8 @@ if ($_POST["itemtype"])
 				return "";				
          break;
 		case "templates_id":
-			if (in_array($_POST["itemtype"],$ORDER_TEMPLATE_TABLES))
+         $item = new $_POST['itemtype']();
+			if ($item->maybeTemplate())
 			{
 				$table = getTableForItemType($_POST["itemtype"]);
 				$PluginOrderReference->dropdownTemplate("templates_id", $_POST["entity_restrict"], $table);

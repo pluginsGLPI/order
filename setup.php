@@ -46,19 +46,11 @@ define("ORDER_STATUS_CANCELED", 5);
 
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
-	global $PLUGIN_HOOKS, $CFG_GLPI, $LANG, $ORDER_VALIDATION_STATUS, $ORDER_TEMPLATE_TABLES;
+	global $PLUGIN_HOOKS, $CFG_GLPI, $LANG, $ORDER_VALIDATION_STATUS;
                                     
 	$ORDER_VALIDATION_STATUS = array (ORDER_STATUS_DRAFT,
                                     ORDER_STATUS_WAITING_APPROVAL);
-		
-	$ORDER_TEMPLATE_TABLES = array ('Computer',
-                                    'Monitor',
-                                    'NetworkEquipment',
-                                    'Peripheral',
-                                    'Printer',
-                                    'Phone');
-   
-   	
+                                    
    /* load changeprofile function */
    $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile','changeProfile');
 		                                 
