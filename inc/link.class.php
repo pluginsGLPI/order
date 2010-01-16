@@ -487,9 +487,9 @@ class PluginOrderLink extends CommonDBChild {
                AND `items_id` = '$items_id' ";
       $result = $DB->query($query);
 		if ($DB->numrows($result))
-			return true;
+			return ($DB->result($result, 0, 'id'));
 		else
-			return false;
+			return 0;
 	}
 	
    function generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, $templateID = 0) {
