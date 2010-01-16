@@ -345,7 +345,13 @@ function plugin_pre_item_update_order($item) {
 
             if (isset ($item->fields["itemtype"]) & isset ($item->fields["items_id"])) {
                $PluginOrderLink = new PluginOrderLink;
-               if ($PluginOrderLink->isItemLinkedToOrder($item->fields["itemtype"],$item->fields["items_id"])) {
+               $PluginOrderOrder = new PluginOrderOrder;
+               $PluginOrderOrder_Item = new PluginOrderOrder_Item;
+               $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier;
+      
+               $detail_id = $PluginOrderLink->isItemLinkedToOrder($item->fields["itemtype"],$item->fields["items_id"]);
+               if ($detail_id > 0) {
+               
                   $field_set = false;
                   $unset_fields = array (
                      "order_number",
@@ -356,10 +362,24 @@ function plugin_pre_item_update_order($item) {
                      "value",
                      "buy_date"
                   );
+                  
+                  $PluginOrderOrder_Item->getFromDB($detail_id);
+                  $PluginOrderOrder->getFromDB($PluginOrderOrder_Item->fields["plugin_order_orders_id"]);
+                  $PluginOrderOrder_Supplier->getFromDBByOrder($PluginOrderOrder_Item->fields["plugin_order_orders_id"]);
+      
+                  $value["order_number"] = $PluginOrderOrder->fields["num_order"];
+                  $value["delivery_number"] = $PluginOrderOrder_Item->fields["delivery_number"];
+                  $value["budgets_id"] = $PluginOrderOrder->fields["budgets_id"];
+                  $value["suppliers_id"] = $PluginOrderOrder->fields["suppliers_id"];
+                  if (isset($PluginOrderOrder_Supplier->fields["num_bill"]))
+                     $value["bill"] = $PluginOrderOrder_Supplier->fields["num_bill"];
+                  $value["value"] = $PluginOrderOrder_Item->fields["price_discounted"];
+                  $value["buy_date"] = $PluginOrderOrder->fields["order_date"];
+      
                   foreach ($unset_fields as $field)
                      if (isset ($item->input[$field])) {
                         $field_set = true;
-                        unset ($item->input[$field]);
+                        $item->input[$field] = $value[$field];
                      }
                   if ($field_set)
                      addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);
