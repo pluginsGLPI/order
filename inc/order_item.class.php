@@ -460,7 +460,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
          echo "<tr align='center'><td class='tab_bg_2'>" . $LANG['plugin_order'][39] . "</td>";
          echo "<td class='tab_bg_2'>";
          $item = new $itemtype();
-         $link=getItemTypeFormURL($item);
+         $link=getItemTypeFormURL('PluginOrderOrder');
          if (plugin_order_haveRight("order", "r"))
             echo "<a href=\"".$link."?id=".$infos["id"]."\">".$infos["name"]."</a>";
          else
