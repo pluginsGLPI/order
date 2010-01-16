@@ -336,36 +336,33 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 
 function plugin_pre_item_update_order($item) {
 	global $LANG;
-
+   
+   //TO DO : Must do check same values or update infocom
 	switch (get_class($item)) {
       case 'Infocom' :
-         //If infocom modifications doesn't come from order plugin himself
-         if (!isset ($item->input["_manage_by_order"])) {
-         
-            if (isset ($item->fields["id"])) {
-               $item->getFromDB($item->input["id"]);
+         if (isset ($item->fields["id"])) {
+            $item->getFromDB($item->input["id"]);
 
-               if (isset ($item->fields["itemtype"]) & isset ($item->fields["items_id"])) {
-                  $device = new PluginOrderOrder_Item;
-                  if ($device->isDeviceLinkedToOrder($item->fields["itemtype"],$item->fields["items_id"])) {
-                     $field_set = false;
-                     $unset_fields = array (
-                        "num_commande",
-                        "bon_livraison",
-                        "budget",
-                        "suppliers_id",
-                        "facture",
-                        "value",
-                        "buy_date"
-                     );
-                     foreach ($unset_fields as $field)
-                        if (isset ($item->input[$field])) {
-                           $field_set = true;
-                           unset ($item->input[$field]);
-                        }
-                     if ($field_set)
-                        addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);
-                  }
+            if (isset ($item->fields["itemtype"]) & isset ($item->fields["items_id"])) {
+               $PluginOrderLink = new PluginOrderLink;
+               if ($PluginOrderLink->isItemLinkedToOrder($item->fields["itemtype"],$item->fields["items_id"])) {
+                  $field_set = false;
+                  $unset_fields = array (
+                     "order_number",
+                     "delivery_number",
+                     "budgets_id",
+                     "suppliers_id",
+                     "bill",
+                     "value",
+                     "buy_date"
+                  );
+                  foreach ($unset_fields as $field)
+                     if (isset ($item->input[$field])) {
+                        $field_set = true;
+                        unset ($item->input[$field]);
+                     }
+                  if ($field_set)
+                     addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);
                }
             }
          }

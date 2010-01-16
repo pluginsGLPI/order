@@ -341,20 +341,6 @@ class PluginOrderOrder_Item extends CommonDBTM {
       }
    }
 
-	function isDeviceLinkedToOrder($itemtype, $items_id) {
-		global $DB;
-		
-		$query = "SELECT `id`
-               FROM `" . $this->getTable() . "`
-               WHERE `itemtype` = '$itemtype'
-               AND `items_id` = '$items_id' ";
-      $result = $DB->query($query);
-		if ($DB->numrows($result))
-			return true;
-		else
-			return false;
-	}
-
 	function getTotalQuantityByRefAndDiscount($plugin_order_orders_id, $plugin_order_references_id, $price_taxfree, $discount) {
       global $DB;
 

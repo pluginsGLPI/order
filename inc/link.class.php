@@ -478,6 +478,20 @@ class PluginOrderLink extends CommonDBChild {
       }
    }
    
+   function isItemLinkedToOrder($itemtype, $items_id) {
+		global $DB;
+		
+		$query = "SELECT `id`
+               FROM `glpi_plugin_order_orders_items`
+               WHERE `itemtype` = '$itemtype'
+               AND `items_id` = '$items_id' ";
+      $result = $DB->query($query);
+		if ($DB->numrows($result))
+			return true;
+		else
+			return false;
+	}
+	
    function generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, $templateID = 0) {
       global $LANG;
 
@@ -501,9 +515,7 @@ class PluginOrderLink extends CommonDBChild {
             if (isset ($fields["num_immo"])) {
                $fields["num_immo"] = autoName($fields["num_immo"], "num_immo", 1, 'Infocom', $entity);
             }
-            if (empty ($fields['use_date'])) {
-               unset ($fields['use_date']);
-            }
+
             if (empty ($fields['buy_date'])) {
                unset ($fields['buy_date']);
             }
@@ -526,9 +538,6 @@ class PluginOrderLink extends CommonDBChild {
       $fields["value"] = $detail->fields["price_discounted"];
       $fields["buy_date"] = $order->fields["order_date"];
 
-      //DO not check infocom modifications
-      $fields["_manage_by_order"] = 1;
-
       if (!$exists)
          $ic->add($fields);
       else
@@ -546,10 +555,7 @@ class PluginOrderLink extends CommonDBChild {
 	$input["suppliers_id"] = 0;
 	$input["bill"] = "";
 	$input["value"] = 0;
-	$input["buy_date"] = "0000:00:00";
-
-	//DO not check infocom modifications
-	$input["_manage_by_order"] = 1;
+	$input["buy_date"] = NULL;
 
 	$infocom->update($input);
 }
