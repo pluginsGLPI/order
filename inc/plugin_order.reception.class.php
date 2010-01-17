@@ -1016,8 +1016,6 @@ class PluginOrderReception extends CommonDBTM {
                   $input[$key] = $value;
             }
             
-            $entity
-            
             $input["FK_entities"] = $entity;
             $input["name"] = autoName($commonitem->obj->fields["name"], "name", $templateID, $values["type"],$entity);
             $input["otherserial"] = autoName($commonitem->obj->fields["otherserial"], "otherserial", $templateID, $values["type"],$entity);
