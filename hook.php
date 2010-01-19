@@ -480,14 +480,14 @@ function plugin_order_getSearchOption() {
 		$sopt[PLUGIN_ORDER_TYPE][7]['field'] = 'name';
 		$sopt[PLUGIN_ORDER_TYPE][7]['linkfield'] = 'payment';
 		$sopt[PLUGIN_ORDER_TYPE][7]['name'] = $LANG['plugin_order'][32];
-      /* contact
+      /* contact */
 		$sopt[PLUGIN_ORDER_TYPE][8]['table'] = 'glpi_contacts';
 		$sopt[PLUGIN_ORDER_TYPE][8]['field'] = 'name';
 		$sopt[PLUGIN_ORDER_TYPE][8]['linkfield'] = 'FK_contact';
 		$sopt[PLUGIN_ORDER_TYPE][8]['name'] = $LANG['common'][18];
 		$sopt[PLUGIN_ORDER_TYPE][8]['datatype']='itemlink';
 		$sopt[PLUGIN_ORDER_TYPE][8]['itemlink_type']=CONTACT_TYPE;
-		$sopt[PLUGIN_ORDER_TYPE][8]['forcegroupby']=true; */
+		$sopt[PLUGIN_ORDER_TYPE][8]['forcegroupby']=true;
 		/* title */
 		$sopt[PLUGIN_ORDER_TYPE][10]['table'] = 'glpi_plugin_order';
 		$sopt[PLUGIN_ORDER_TYPE][10]['field'] = 'name';
@@ -670,6 +670,10 @@ function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,&$alrea
 		case "glpi_plugin_order" : // From items
 			$out= " LEFT JOIN `glpi_plugin_order_detail` ON (`$ref_table`.`ID` = `glpi_plugin_order_detail`.`FK_device` AND `glpi_plugin_order_detail`.`device_type` = '$type') ";
 			$out.= " LEFT JOIN `glpi_plugin_order` ON (`glpi_plugin_order`.`ID` = `glpi_plugin_order_detail`.`FK_order`) ";
+			return $out;
+			break;
+		case "glpi_contacts" : // From items
+			$out= " LEFT JOIN `glpi_contacts` ON (`glpi_contacts`.`ID` = `glpi_plugin_order`.`FK_contact`) ";
 			return $out;
 			break;
 	}
