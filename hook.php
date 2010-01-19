@@ -284,12 +284,6 @@ function plugin_order_addSelect($type, $ID, $num) {
 function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,
                                        &$already_link_tables) {
    
-   $nt = $new_table;
-   $AS = "";
-   if ($new_table=="glpi_budgets") {
-      $nt .= "_".$linkfield;
-      $AS .= " AS ".$nt;
-   }
 	switch ($new_table){
 		case "glpi_plugin_order_orders" : // From items
 			$out= " LEFT JOIN `glpi_plugin_order_orders_items` ON (`$ref_table`.`id` = `glpi_plugin_order_orders_items`.`items_id` AND `glpi_plugin_order_orders_items`.`itemtype` = '$type') ";
