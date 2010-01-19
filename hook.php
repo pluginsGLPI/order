@@ -239,8 +239,7 @@ function plugin_order_getAddSearchOptions($itemtype) {
          $sopt[3160]['table']         = 'glpi_plugin_order_orders';
          $sopt[3160]['field']         = 'name';
          $sopt[3160]['linkfield']     = '';
-         $sopt[3160]['name']          = $LANG['plugin_order']['title'][1]." - ".
-                                       $LANG['plugin_order'][39];
+         $sopt[3160]['name']          = $LANG['plugin_order'][39];
          $sopt[3160]['forcegroupby']  = true;
          $sopt[3160]['datatype']      = 'itemlink';
          $sopt[3160]['itemlink_type'] = 'PluginOrderOrder';
@@ -248,8 +247,7 @@ function plugin_order_getAddSearchOptions($itemtype) {
          $sopt[3161]['table']        = 'glpi_plugin_order_orders';
          $sopt[3161]['field']        = 'num_order';
          $sopt[3161]['linkfield']    = '';
-         $sopt[3161]['name']         = $LANG['plugin_order']['title'][1]." - ".
-                                       $LANG['plugin_order'][0];
+         $sopt[3161]['name']         = $LANG['plugin_order'][0];
          $sopt[3161]['forcegroupby'] =  true;
          $sopt[3161]['datatype']      = 'itemlink';
          $sopt[3161]['itemlink_type'] = 'PluginOrderOrder';
@@ -285,11 +283,25 @@ function plugin_order_addSelect($type, $ID, $num) {
 
 function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,
                                        &$already_link_tables) {
-
+   
+   $nt = $new_table;
+   $AS = "";
+   if ($new_table=="glpi_budgets") {
+      $nt .= "_".$linkfield;
+      $AS .= " AS ".$nt;
+   }
 	switch ($new_table){
 		case "glpi_plugin_order_orders" : // From items
 			$out= " LEFT JOIN `glpi_plugin_order_orders_items` ON (`$ref_table`.`id` = `glpi_plugin_order_orders_items`.`items_id` AND `glpi_plugin_order_orders_items`.`itemtype` = '$type') ";
 			$out.= " LEFT JOIN `glpi_plugin_order_orders` ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`) ";
+			return $out;
+			break;
+      case "glpi_budgets" : // From order list
+			$out= " LEFT JOIN `glpi_budgets` ON (`glpi_plugin_order_orders`.`budgets_id` = `glpi_budgets`.`id`) ";
+			return $out;
+			break;
+		case "glpi_contacts" : // From order list
+			$out= " LEFT JOIN `glpi_contacts` ON (`glpi_plugin_order_orders`.`contacts_id` = `glpi_contacts`.`id`) ";
 			return $out;
 			break;
 	}
