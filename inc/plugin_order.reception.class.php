@@ -931,26 +931,18 @@ class PluginOrderReception extends CommonDBTM {
                   $serial = $commonitem->obj->fields["serial"];
                   $otherserial = $commonitem->obj->fields["otherserial"];
                }
-               if (!$templateID) {
-                  echo "<td><input type='text' size='20' name='ID[$i][serial]'></td>";
-               } else {
-                  echo "<td>".$serial."</td>";
-               }
+               
+               echo "<td><input type='text' size='20' name='ID[$i][serial]'></td>";
+
                //If geninventorynumber plugin is active, and this type is managed by the plugin
                if ($gen_inventorynumber) {
                   echo "<td align='center'>---------</td>";
                } else {
-                  if (!$templateID) {
-                     echo "<td><input type='text' size='20' name='ID[$i][otherserial]'></td>";
-                  } else {
-                     echo "<td>".$otherserial."</td>";
-                  }
+                  echo "<td><input type='text' size='20' name='ID[$i][otherserial]'></td>";
                }
-               if (!$templateID) {
-                  echo "<td><input type='text' size='20' name='ID[$i][name]'></td>";
-                } else {
-                  echo "<td>".$name."</td>";
-               }
+               
+               echo "<td><input type='text' size='20' name='ID[$i][name]'></td>";
+
                echo "<td align='center'>";
                if ($templateID) {
                   echo $PluginOrderReference->getTemplateName($params['type'][$key], $params['template'][$key]);
@@ -1019,8 +1011,17 @@ class PluginOrderReception extends CommonDBTM {
             }
             
             $input["FK_entities"] = $entity;
-            $input["name"] = autoName($commonitem->obj->fields["name"], "name", $templateID, $values["type"],$entity);
-            $input["otherserial"] = autoName($commonitem->obj->fields["otherserial"], "otherserial", $templateID, $values["type"],$entity);
+            $input["serial"] = $values["serial"];
+            if ($values["name"])
+               $input["name"] = $values["name"];
+            else
+                $input["name"] = autoName($commonitem->obj->fields["name"], "name", $templateID, $values["type"],$entity);
+               
+            if ($values["otherserial"])
+               $input["otherserial"] = $values["otherserial"];
+            else
+               $input["otherserial"] = autoName($commonitem->obj->fields["otherserial"], "otherserial", $templateID, $values["type"],$entity);
+               
             
          } else {
             $input["FK_entities"] = $entity;
