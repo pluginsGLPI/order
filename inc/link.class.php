@@ -217,9 +217,10 @@ class PluginOrderLink extends CommonDBChild {
             $item = new $itemtype();
             $rand = mt_rand();
             echo "<tr><th><ul><li>";
-            echo "<a href=\"javascript:showHideDiv('generation$rand','generation$rand','" . $CFG_GLPI["root_doc"] . "/pics/plus.png','" . $CFG_GLPI["root_doc"] . "/pics/moins.png');\">";
-            echo "<img alt='' name='generation$rand' src=\"" . $CFG_GLPI["root_doc"] . "/pics/plus.png\">";
-            echo "</a></li></ul></th>";
+            echo "<a href=\"javascript:showHideDiv('generation$rand','generation', '".GLPI_ROOT."/pics/plus.png','".GLPI_ROOT."/pics/moins.png');\">";
+            echo "<img alt='' name='generation' src=\"".GLPI_ROOT."/pics/plus.png\">";
+            echo "</a>";
+            echo "</li></ul></th>";
             echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";
             echo "<th>" . $LANG['common'][5] . "</th>";
             echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
@@ -276,8 +277,8 @@ class PluginOrderLink extends CommonDBChild {
                echo "<td align='center'>" . convDate($data["delivery_date"]) . "</td>";
                echo "<td align='center'>" . $this->getReceptionItemName($data["items_id"], $data["itemtype"]);
                if ($data["items_id"] != 0) {
-                  echo "&nbsp;<img alt='' src='" . $CFG_GLPI["root_doc"] . "/pics/aide.png' onmouseout=\"cleanhide('comments_$random')\" onmouseover=\"cleandisplay('comments_$random')\" ";
-                  echo "<span class='over_link' id='comments_$random'>" . nl2br($this->getLinkedItemDetails($data["itemtype"], $data["items_id"])) . "</span>";
+                  echo " <img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' alt=\"\" onmouseout=\"setdisplay(getElementById('comments_$random'),'none')\" onmouseover=\"setdisplay(getElementById('comments_$random'),'block')\">";
+                  echo "<span class='over_link' id='comments_$random'>".nl2br($this->getLinkedItemDetails($data["itemtype"], $data["items_id"])) ."</span>";
                }
                echo "<input type='hidden' name='id[$detailID]' value='$detailID'>";
                echo "<input type='hidden' name='name[$detailID]' value='" . $data["name"] . "'>";

@@ -205,9 +205,10 @@ class PluginOrderReception extends CommonDBChild {
             $item = new $typeRef();
             $rand = mt_rand();
             echo "<tr><th><ul><li>";
-            echo "<a href=\"javascript:showHideDiv('reception$rand','reception$rand','" . $CFG_GLPI["root_doc"] . "/pics/plus.png','" . $CFG_GLPI["root_doc"] . "/pics/moins.png');\">";
-            echo "<img alt='' name='reception$rand' src=\"" . $CFG_GLPI["root_doc"] . "/pics/plus.png\">";
-            echo "</a></li></ul></th>";
+            echo "<a href=\"javascript:showHideDiv('reception$rand','reception', '".GLPI_ROOT."/pics/plus.png','".GLPI_ROOT."/pics/moins.png');\">";
+            echo "<img alt='' name='reception' src=\"".GLPI_ROOT."/pics/plus.png\">";
+            echo "</a>";
+            echo "</li></ul></th>";
             echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";
             echo "<th>" . $LANG['common'][5] . "</th>";
             echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
