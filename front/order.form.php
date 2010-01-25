@@ -163,41 +163,10 @@ else if (isset ($_POST["delete_item"])) {
             $PluginOrderOrder->addHistory("PluginOrderOrder","",$new_value,$_POST["plugin_order_orders_id"]);
             $PluginOrderOrder_Item->delete(array('id'=>$ID));
          }
-   }elseif(!isset($_POST["item"]))
+   } else if (!isset($_POST["item"]))
       addMessageAfterRedirect($LANG['plugin_order']['detail'][29],false,ERROR);
       
    glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["add_supplier_infos"]))
-{
-	if(plugin_order_HaveRight("order","w"))
-	{
-		if (isset($_POST["plugin_order_orders_id"]) && $_POST["plugin_order_orders_id"] > 0)
-		{
-			$newID=$PluginOrderOrder_Supplier->add($_POST);
-			$new_value = $LANG['plugin_order']['history'][2]. " ";
-         if ($_POST["num_quote"])
-            $new_value.= $LANG['plugin_order'][30]." ".$_POST["num_quote"];
-         if ($_POST["num_order"])
-            $new_value.= " - ".$LANG['plugin_order'][31]." : ".$_POST["num_order"];
-         if ($_POST["num_bill"])
-            $new_value.= " - ".$LANG['plugin_order'][28]." : ".$_POST["num_bill"];
-         $PluginOrderOrder->addHistory('PluginOrderOrder',"",$new_value,$_POST["plugin_order_orders_id"]);
-		}
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["delete_supplier_infos"]))
-{
-	if(plugin_order_HaveRight("order","w"))
-	{
-		foreach ($_POST["check"] as $ID => $value) {
-			$PluginOrderOrder_Supplier->delete(array("id"=>$ID),0,0);
-			$new_value = $LANG['plugin_order']['history'][4]. " ".$LANG['plugin_order'][4]." : ".$ID;
-         $PluginOrderOrder->addHistory('PluginOrderOrder',"",$new_value,$_POST["plugin_order_orders_id"]);
-      }
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else 
 {

@@ -79,39 +79,6 @@ else if (isset($_POST["update"]))
 		$PluginOrderReference->update($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["update_reference_manufacturer"]))
-{
-	if(plugin_order_HaveRight("reference","w"))
-	{
-		foreach ($_POST["item"] as $ID => $value)
-		{
-			$input["id"] = $ID;
-			$input["price"] = $_POST["price"][$ID]; 
-			$PluginOrderReference_Supplier->update($input);
-		}
-	}	
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["add_reference_supplier"]))
-{
-	if(plugin_order_HaveRight("reference","w"))
-	{
-		if (isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0)
-		{
-			$newID=$PluginOrderReference_Supplier->add($_POST);
-		}
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["delete_reference_supplier"]))
-{
-	if(plugin_order_HaveRight("reference","w"))
-	{
-		foreach ($_POST["check"] as $ID => $value)
-			$PluginOrderReference_Supplier->delete(array("id"=>$ID));
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
 else
 {
 	PluginOrderProfile::checkRight("reference","r");

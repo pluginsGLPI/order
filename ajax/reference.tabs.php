@@ -60,9 +60,9 @@ if ($_POST["id"]>0 && $PluginOrderReference->can($_POST["id"],'r')) {
 		switch($_REQUEST['glpi_tab']) {
          case -1:
             $PluginOrderReference_Supplier->showReferenceManufacturers($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/reference.form.php",$_POST["id"]);
-            $PluginOrderReference_Supplier->addSupplierToReference($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/reference.form.php",$_POST["id"]);
+         "/plugins/order/front/reference_supplier.form.php",$_POST["id"]);
+            $PluginOrderReference_Supplier->showForm($CFG_GLPI["root_doc"] .
+         "/plugins/order/front/reference_supplier.form.php","",$_POST["id"]);
             Document::showAssociated($PluginOrderReference);
          case 2 :  
             $PluginOrderReference->getAllOrdersByReference($_POST["id"]);
@@ -80,9 +80,9 @@ if ($_POST["id"]>0 && $PluginOrderReference->can($_POST["id"],'r')) {
             break;
          default :
             $PluginOrderReference_Supplier->showReferenceManufacturers($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/reference.form.php",$_POST["id"]);
-            $PluginOrderReference_Supplier->addSupplierToReference($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/reference.form.php",$_POST["id"]);
+         "/plugins/order/front/reference_supplier.form.php",$_POST["id"]);
+            $PluginOrderReference_Supplier->showForm($CFG_GLPI["root_doc"] .
+         "/plugins/order/front/reference_supplier.form.php","",$_POST["id"]);
             break;
       }
    }

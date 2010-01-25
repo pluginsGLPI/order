@@ -43,7 +43,38 @@ if(!isset($_GET["plugin_order_orders_id"])) $_GET["plugin_order_orders_id"] = ""
 $PluginOrderOrder_Supplier=new PluginOrderOrder_Supplier();
 $PluginOrderOrder=new PluginOrderOrder();
 
-if (isset($_POST["update"]))
+if (isset($_POST["add"]))
+{
+	if(plugin_order_HaveRight("order","w"))
+	{
+		if (isset($_POST["plugin_order_orders_id"]) && $_POST["plugin_order_orders_id"] > 0)
+		{
+			$newID=$PluginOrderOrder_Supplier->add($_POST);
+			$new_value = $LANG['plugin_order']['history'][2]. " ";
+         if ($_POST["num_quote"])
+            $new_value.= $LANG['plugin_order'][30]." ".$_POST["num_quote"];
+         if ($_POST["num_order"])
+            $new_value.= " - ".$LANG['plugin_order'][31]." : ".$_POST["num_order"];
+         if ($_POST["num_bill"])
+            $new_value.= " - ".$LANG['plugin_order'][28]." : ".$_POST["num_bill"];
+         $PluginOrderOrder->addHistory('PluginOrderOrder',"",$new_value,$_POST["plugin_order_orders_id"]);
+		}
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_POST["delete"]))
+{
+	if(plugin_order_HaveRight("order","w"))
+	{
+		foreach ($_POST["check"] as $ID => $value) {
+			$PluginOrderOrder_Supplier->delete(array("id"=>$ID),0,0);
+			$new_value = $LANG['plugin_order']['history'][4]. " ".$LANG['plugin_order'][4]." : ".$ID;
+         $PluginOrderOrder->addHistory('PluginOrderOrder',"",$new_value,$_POST["plugin_order_orders_id"]);
+      }
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_POST["update"]))
 {
 	if(plugin_order_HaveRight("order","w")) {
 		

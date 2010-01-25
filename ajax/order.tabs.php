@@ -65,9 +65,9 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
             $PluginOrderOrder_Item->showItem($_SERVER["PHP_SELF"], $_POST["id"]);
             $PluginOrderOrder->showValidationForm($_SERVER["PHP_SELF"], $_POST["id"]);
             $PluginOrderOrder_Supplier->showOrderSupplierInfos($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/order.form.php",$_POST["id"]);
-            $PluginOrderOrder_Supplier->addSupplierInfosToOrder($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/order.form.php",$_POST["id"]);
+         "/plugins/order/front/order_supplier.form.php",$_POST["id"]);
+            $PluginOrderOrder_Supplier->showForm($CFG_GLPI["root_doc"] .
+         "/plugins/order/front/order_supplier.form.php",'',$_POST["id"]);
             $PluginOrderReception->showOrderReception($_POST["id"]);
             $PluginOrderLink->showOrderLink($_POST["id"]);
             Document::showAssociated($PluginOrderOrder);
@@ -78,9 +78,9 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
             break;
          case 3 :
             $PluginOrderOrder_Supplier->showOrderSupplierInfos($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/order.form.php",$_POST["id"]);
-            $PluginOrderOrder_Supplier->addSupplierInfosToOrder($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/order.form.php",$_POST["id"]);
+         "/plugins/order/front/order_supplier.form.php",$_POST["id"]);
+            $PluginOrderOrder_Supplier->showForm($CFG_GLPI["root_doc"] .
+         "/plugins/order/front/order_supplier.form.php",'',$_POST["id"]);
             break;
          case 4 :
             $PluginOrderOrder->showGenerationForm($_POST["id"]);

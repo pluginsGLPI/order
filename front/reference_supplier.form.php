@@ -39,12 +39,33 @@ include (GLPI_ROOT."/inc/includes.php");
 if(!isset($_GET["id"])) $_GET["id"] = "";
 if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 if(!isset($_GET["plugin_order_references_id"])) $_GET["plugin_order_references_id"] = "";
+
 $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 
-if (isset($_POST["update"]))
+if (isset($_POST["add"]))
+{
+	if(plugin_order_HaveRight("reference","w"))
+	{
+		if (isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0)
+		{
+			$newID=$PluginOrderReference_Supplier->add($_POST);
+		}
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_POST["update"]))
 {
 	if(plugin_order_HaveRight("reference","w"))
 		$PluginOrderReference_Supplier->update($_POST);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_POST["delete"]))
+{
+	if(plugin_order_HaveRight("reference","w"))
+	{
+		foreach ($_POST["check"] as $ID => $value)
+			$PluginOrderReference_Supplier->delete(array("id"=>$ID));
+	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else

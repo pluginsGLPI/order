@@ -143,28 +143,33 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 	function showForm($target, $ID, $plugin_order_orders_id=-1) {
 		global $LANG, $CFG_GLPI;
       
-      if (!plugin_order_haveRight("reference", "w"))
+      if (!plugin_order_haveRight("order", "w"))
 			return false;
 			
 		if ($ID > 0) {
          $this->check($ID,'r');
       } else {
          // Create item
-         $input=array('plugin_order_orders_id'=>$plugin_order_orders_id);
          $this->check(-1,'w',$input);
       }
-
-      $this->showTabs($ID);
-      $this->showFormHeader($target,$ID,'',1);
-
-      echo "<input type='hidden' name='plugin_order_orders_id' value='$plugin_order_orders_id'>";
-      echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
-      echo "<input type='hidden' name='is_recursive' value='".$this->fields["is_recursive"]."'>";
       
-      echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][26] . ": </td>";
-      echo "<td>";
-      $link=getItemTypeFormURL('Supplier');
-      echo "<a href=\"" . $link. "?id=" . $this->fields["suppliers_id"] . "\">" . Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]) . "</a>";
+      if (strpos($_SERVER['PHP_SELF'],"order_supplier"))
+         $this->showTabs($ID);
+      $this->showFormHeader($target,$ID,'',1);
+      
+      $PluginOrderOrder = new PluginOrderOrder();
+      $PluginOrderOrder->getFromDB($plugin_order_orders_id);
+      echo "<input type='hidden' name='plugin_order_orders_id' value='$plugin_order_orders_id'>";
+      echo "<input type='hidden' name='entities_id' value='".$PluginOrderOrder->getEntityID()."'>";
+      echo "<input type='hidden' name='is_recursive' value='".$PluginOrderOrder->isRecursive()."'>";
+      
+      if ($ID > 0) {
+         echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][26] . ": </td>";
+         echo "<td>";
+         $link=getItemTypeFormURL('Supplier');
+         echo "<a href=\"" . $link. "?id=" . $this->fields["suppliers_id"] . "\">" . Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]) . "</a>";
+      }
+      echo "<input type='hidden' name='suppliers_id' value='".$PluginOrderOrder->fields["suppliers_id"]."'>";
       echo "</td></tr>";
       
       /* number of quote */
@@ -186,10 +191,11 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 		echo "</tr>";
 		
 		$this->showFormButtons($ID,'',1,false);
-
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
-
+      
+      if (strpos($_SERVER['PHP_SELF'],"order_supplier")) {
+         echo "<div id='tabcontent'></div>";
+         echo "<script type='text/javascript'>loadDefaultTab();</script>";
+      }
 		return true;
 	}
 	
@@ -255,7 +261,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 
             echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('show_supplierinfos$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
             echo "</td><td align='left' width='80%'>";
-            echo "<input type='submit' name='delete_supplier_infos' value=\"" . $LANG['buttons'][6] . "\" class='submit' >";
+            echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit' >";
             echo "</td>";
             echo "</table>";
             echo "</div>";

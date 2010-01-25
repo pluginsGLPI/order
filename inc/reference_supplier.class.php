@@ -119,7 +119,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 	}
 
 	function showForm($target, $ID, $plugin_order_references_id=-1) {
-		global $LANG;
+		global $LANG,$DB;
       
       if (!plugin_order_haveRight("reference", "w"))
 			return false;
@@ -128,24 +128,36 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          $this->check($ID,'r');
       } else {
          // Create item
-         $input=array('plugin_order_references_id'=>$plugin_order_references_id);
          $this->check(-1,'w',$input);
       }
-
-      $this->showTabs($ID);
+      
+      if (strpos($_SERVER['PHP_SELF'],"reference_supplier"))
+         $this->showTabs($ID);
       $this->showFormHeader($target,$ID,'',1);
-
-      if ($ID>0) {
-        $plugin_order_references_id=$this->fields["plugin_order_references_id"];
-      } else {
-         echo "<input type='hidden' name='plugin_order_references_id' value='$plugin_order_references_id'>";
-      }
-      echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
-      echo "<input type='hidden' name='is_recursive' value='".$this->fields["is_recursive"]."'>";
+      
+      $PluginOrderReference = new PluginOrderReference();
+      $PluginOrderReference->getFromDB($plugin_order_references_id);
+      echo "<input type='hidden' name='plugin_order_references_id' value='$plugin_order_references_id'>";
+      echo "<input type='hidden' name='entities_id' value='".$PluginOrderReference->getEntityID()."'>";
+      echo "<input type='hidden' name='is_recursive' value='".$PluginOrderReference->isRecursive()."'>";
+      
       echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][26] . ": </td>";
       echo "<td>";
-      $link=getItemTypeFormURL('Supplier');
-      echo "<a href=\"" . $link. "?id=" . $this->fields["suppliers_id"] . "\">" . Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]) . "</a>";
+
+      if ($ID > 0) {
+         $link=getItemTypeFormURL('Supplier');
+         echo "<a href=\"" . $link. "?id=" . $this->fields["suppliers_id"] . "\">" . Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]) . "</a>";
+         echo "<input type='hidden' name='suppliers_id' value='".$this->fields["suppliers_id"]."'>";
+      } else {
+         $suppliers = array();
+         $query = "SELECT `suppliers_id`
+                     FROM `".$this->getTable()."`
+                     WHERE `plugin_order_references_id` = '$plugin_order_references_id'";
+         $result = $DB->query($query);
+         while ($data = $DB->fetch_array($result))
+            $suppliers["suppliers_id"] = $data["suppliers_id"];
+         Dropdown::show('Supplier', array('name' => "suppliers_id",'used' => $suppliers,'entity' => $_SESSION["glpiactive_entity"]));
+      }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['reference'][10] . ": </td>";
@@ -159,10 +171,11 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       echo "</td></tr>";
          
       $this->showFormButtons($ID,'',1,false);
-
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
-
+      
+      if (strpos($_SERVER['PHP_SELF'],"reference_supplier")) {
+         echo "<div id='tabcontent'></div>";
+         echo "<script type='text/javascript'>loadDefaultTab();</script>";
+      }
 		return true;
 	}
 
@@ -226,7 +239,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
             echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('show_supplierref$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
             echo "</td><td align='left' width='80%'>";
-            echo "<input type='submit' name='delete_reference_supplier' value=\"" . $LANG['buttons'][6] . "\" class='submit' >";
+            echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit' >";
             echo "</td>";
             echo "</table>";
             echo "</div>";
