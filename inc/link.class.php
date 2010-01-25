@@ -131,26 +131,18 @@ class PluginOrderLink extends CommonDBChild {
                   $serial = $item->fields["serial"];
                   $otherserial = $item->fields["otherserial"];
                }
-               if (!$templateID) {
-                  echo "<td><input type='text' size='20' name='id[$i][serial]'></td>";
-               } else {
-                  echo "<td>".$serial."</td>";
-               }
+               
+               echo "<td><input type='text' size='20' name='id[$i][serial]'></td>";
+
                //If geninventorynumber plugin is active, and this type is managed by the plugin
                if ($gen_inventorynumber) {
                   echo "<td align='center'>---------</td>";
                } else {
-                  if (!$templateID) {
-                     echo "<td><input type='text' size='20' name='id[$i][otherserial]'></td>";
-                  } else {
-                     echo "<td>".$otherserial."</td>";
-                  }
+                  echo "<td><input type='text' size='20' name='id[$i][otherserial]'></td>";
                }
-               if (!$templateID) {
-                  echo "<td><input type='text' size='20' name='id[$i][name]'></td>";
-                } else {
-                  echo "<td>".$name."</td>";
-               }
+               
+               echo "<td><input type='text' size='20' name='id[$i][name]'></td>";
+               
                echo "<td align='center'>";
                if ($templateID) {
                   echo $PluginOrderReference->getTemplateName($params['itemtype'][$key], $params['templates_id'][$key]);
@@ -642,8 +634,6 @@ class PluginOrderLink extends CommonDBChild {
    function generateNewItem($params) {
       global $DB, $LANG;
       
-      $i = 0;
-      
       $PluginOrderReference = new PluginOrderReference;
       
       foreach ($params["id"] as $tmp => $values) {
@@ -674,16 +664,22 @@ class PluginOrderLink extends CommonDBChild {
             }
             
             $input["entities_id"] = $entity;
-            $input["name"] = autoName($item->fields["name"], "name", $templateID, $values["itemtype"],$entity);
-            $input["otherserial"] = autoName($item->fields["otherserial"], "otherserial", $templateID, $values["itemtype"],$entity);
+            $input["serial"] = $values["serial"];
+            
+            if ($values["name"])
+               $input["name"] = $values["name"];
+            else
+               $input["name"] = autoName($item->fields["name"], "name", $templateID, $values["itemtype"],$entity);
+            
+            if ($values["otherserial"])
+               $input["otherserial"] = $values["otherserial"];
+            else
+               $input["otherserial"] = autoName($item->fields["otherserial"], "otherserial", $templateID, $values["itemtype"],$entity);
             
          } else {
             $input["entities_id"] = $entity;
             $input["serial"] = $values["serial"];
-            if (isset ($values["otherserial"])) {
-               $input["otherserial"] = $values["otherserial"];
-            }
-
+            $input["otherserial"] = $values["otherserial"];
             $input["name"] = $values["name"];
 
             $typefield = getForeignKeyFieldForTable(getTableForItemType($values["itemtype"]."Type"));
@@ -712,7 +708,7 @@ class PluginOrderLink extends CommonDBChild {
          $order->addHistory('PluginOrderOrder', '', $new_value, $values["plugin_order_orders_id"]);
 
          addMessageAfterRedirect($LANG['plugin_order']['detail'][30], true);
-         $i++;
+
       }
    }
 }

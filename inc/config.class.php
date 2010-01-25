@@ -39,7 +39,13 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderConfig extends CommonDBTM {
 
+   
+   static function getTypeName() {
+      global $LANG;
 
+      return $LANG['plugin_order']['config'][0];
+   }
+   
 	function showForm($target){
 		global $LANG;
 		

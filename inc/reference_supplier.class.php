@@ -41,6 +41,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    
    public $itemtype = 'PluginOrderReference';
    public $items_id = 'plugin_order_references_id';
+   public $dohistory=true;
    
    static function getTypeName() {
       global $LANG;
@@ -56,6 +57,47 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       return plugin_order_haveRight('reference', 'r');
    }
    
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+    
+      $tab['common'] = $LANG['plugin_order']['reference'][5];
+
+		$tab[1]['table'] = $this->getTable();
+		$tab[1]['field'] = 'reference_code';
+		$tab[1]['linkfield'] = 'reference_code';
+		$tab[1]['name'] = $LANG['plugin_order']['reference'][10];
+		$tab[1]['datatype'] = 'text';
+
+		$tab[2]['table'] = $this->getTable();
+		$tab[2]['field'] = 'price_taxfree';
+		$tab[2]['linkfield'] = 'price_taxfree';
+		$tab[2]['name'] = $LANG['plugin_order']['detail'][4];
+      $tab[2]['datatype'] = 'number';
+
+		$tab[3]['table'] = 'glpi_suppliers';
+		$tab[3]['field'] = 'name';
+		$tab[3]['linkfield'] = 'suppliers_id';
+		$tab[3]['name'] = $LANG['financial'][26];
+		$tab[3]['datatype']='itemlink';
+		$tab[3]['itemlink_type']='Supplier';
+		$tab[3]['forcegroupby']=true;
+		
+      $tab[30]['table'] = $this->getTable();
+		$tab[30]['field'] = 'id';
+		$tab[30]['linkfield'] = '';
+		$tab[30]['name']=$LANG['common'][2];
+
+		/* entity */
+		$tab[80]['table'] = 'glpi_entities';
+		$tab[80]['field'] = 'completename';
+		$tab[80]['linkfield'] = 'entities_id';
+		$tab[80]['name'] = $LANG['entity'][0];
+		
+		return $tab;
+   }
+   
    function prepareInputForAdd($input) {
       // Not attached to reference -> not added
       if (!isset($input['plugin_order_references_id']) || $input['plugin_order_references_id'] <= 0) {
@@ -68,9 +110,11 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 		global $LANG;
 		/* principal */
 		$ong[1] = $LANG['title'][26];
-		if (haveRight("document", "r"))
-			$ong[4] = $LANG['Menu'][27];
-
+		if ($ID > 0) {
+         if (haveRight("document", "r"))
+            $ong[4] = $LANG['Menu'][27];
+         $ong[12] = $LANG['title'][38];
+      }
 		return $ong;
 	}
 
@@ -96,6 +140,8 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       } else {
          echo "<input type='hidden' name='plugin_order_references_id' value='$plugin_order_references_id'>";
       }
+      echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
+      echo "<input type='hidden' name='is_recursive' value='".$this->fields["is_recursive"]."'>";
       echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][26] . ": </td>";
       echo "<td>";
       $link=getItemTypeFormURL('Supplier');
@@ -213,6 +259,8 @@ class PluginOrderReference_Supplier extends CommonDBChild {
             echo "<form method='post' name='add_ref_manu' action=\"$target\">";
             echo "<table class='tab_cadre_fixe'>";
             echo "<input type='hidden' name='plugin_order_references_id' value='" . $plugin_order_references_id . "'>";
+            echo "<input type='hidden' name='entities_id' value='".$reference->fields["entities_id"]."'>";
+            echo "<input type='hidden' name='is_recursive' value='".$reference->fields["is_recursive"]."'>";
             echo "<tr>";
             echo "<th colspan='3' align='center'>".$LANG['plugin_order']['reference'][2]."</th></tr>";
             echo "<tr>";
@@ -252,6 +300,20 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0)
          return $DB->result($result,0,"price_taxfree");
+      else
+         return 0;
+   }
+   
+   function getReferenceCodeByReferenceAndSupplier($plugin_order_references_id,$suppliers_id){
+      global $DB;
+
+      $query = "SELECT `reference_code`
+               FROM `".$this->getTable()."` " .
+            "WHERE `plugin_order_references_id` = '$plugin_order_references_id'
+            AND `suppliers_id` = '$suppliers_id' ";
+      $result = $DB->query($query);
+      if ($DB->numrows($result) > 0)
+         return $DB->result($result,0,"reference_code");
       else
          return 0;
    }

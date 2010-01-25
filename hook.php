@@ -100,6 +100,32 @@ function plugin_order_install() {
             $DB->query($query) or die($DB->error());
          }
       }
+      
+      $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_orders` ";
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      if ($number) {
+         while ($data=$DB->fetch_array($result)) {
+            $query = "UPDATE `glpi_plugin_order_orders_suppliers`
+                  SET `entities_id` = '".$data["entities_id"]."'
+                  AND `is_recursive` = '".$data["is_recursive"]."'
+                  WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
+            $DB->query($query) or die($DB->error());
+         }
+      }
+      
+      $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_references` ";
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      if ($number) {
+         while ($data=$DB->fetch_array($result)) {
+            $query = "UPDATE `glpi_plugin_order_references_suppliers`
+                  SET `entities_id` = '".$data["entities_id"]."'
+                  AND `is_recursive` = '".$data["is_recursive"]."'
+                  WHERE `plugin_order_references_id` = '".$data["id"]."' ";
+            $DB->query($query) or die($DB->error());
+         }
+      }
 
       Plugin::migrateItemType(
          array(3150=>'PluginOrderOrder',
@@ -439,7 +465,9 @@ function plugin_get_headings_order($item,$withtemplate) {
          return array(1 => $LANG['plugin_order']['title'][1]);
       }
    } else if ($type == 'Notification') {
-      return array(1 => $LANG['plugin_order']['title'][1]);
+      if ($item->getField('id')) {
+         return array(1 => $LANG['plugin_order']['title'][1]);
+      }
    }
    return false;
 }

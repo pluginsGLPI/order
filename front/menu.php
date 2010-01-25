@@ -58,8 +58,8 @@ if (plugin_order_haveRight("order", "r") || plugin_order_haveRight("reference", 
 	if (plugin_order_haveRight("budget", "r")) {
 		echo "<tr class='tab_bg_1' align='center'>";
 		echo "<td><img src='../pics/budget-icon.png'></td>";
-		echo "<td><a href='budget.php'>" . $LANG['plugin_order']['menu'][3] . "</a></td></tr>";
-		//echo "<td><a href='../../../front/budget.php'>" . $LANG['plugin_order']['menu'][3] . "</a></td></tr>";
+		//echo "<td><a href='budget.php'>" . $LANG['plugin_order']['menu'][3] . "</a></td></tr>";
+		echo "<td><a href='" . $CFG_GLPI["root_doc"] . "/front/budget.php'>" . $LANG['plugin_order']['menu'][3] . "</a></td></tr>";
 	}
 	echo "</table></div>";
 } else {

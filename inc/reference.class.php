@@ -165,11 +165,11 @@ class PluginOrderReference extends CommonDBTM {
 			return $input;
 	}
 
-	function pre_deleteItem($params){
+	function pre_deleteItem(){
 		global $LANG;
 
 		if (!$this->referenceInUse())
-			return $params;
+			return true;
 		else
 		{
 			addMessageAfterRedirect($LANG['plugin_order']['reference'][7],true,ERROR);

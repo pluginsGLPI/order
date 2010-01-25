@@ -41,6 +41,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    
    public $itemtype = 'PluginOrderOrder';
    public $items_id = 'plugin_order_orders_id';
+   public $dohistory=true;
    
    static function getTypeName() {
       global $LANG;
@@ -55,6 +56,62 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    function canView() {
       return plugin_order_haveRight('order', 'r');
    }
+   
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+    
+      $tab['common'] = $LANG['plugin_order'][4];
+
+		$tab[1]['table'] = $this->getTable();
+		$tab[1]['field'] = 'num_quote';
+		$tab[1]['linkfield'] = 'num_quote';
+		$tab[1]['name'] = $LANG['plugin_order'][30];
+		$tab[1]['datatype'] = 'text';
+
+		$tab[2]['table'] = $this->getTable();
+		$tab[2]['field'] = 'num_order';
+		$tab[2]['linkfield'] = 'num_order';
+		$tab[2]['name'] = $LANG['plugin_order'][31];
+      $tab[2]['datatype'] = 'text';
+      
+      $tab[3]['table'] = $this->getTable();
+		$tab[3]['field'] = 'num_bill';
+		$tab[3]['linkfield'] = 'num_bill';
+		$tab[3]['name'] = $LANG['plugin_order'][28];
+      $tab[3]['datatype'] = 'text';
+      
+		$tab[4]['table'] = 'glpi_suppliers';
+		$tab[4]['field'] = 'name';
+		$tab[4]['linkfield'] = 'suppliers_id';
+		$tab[4]['name'] = $LANG['financial'][26];
+		$tab[4]['datatype']='itemlink';
+		$tab[4]['itemlink_type']='Supplier';
+		$tab[4]['forcegroupby']=true;
+		
+      $tab[30]['table'] = $this->getTable();
+		$tab[30]['field'] = 'id';
+		$tab[30]['linkfield'] = '';
+		$tab[30]['name']=$LANG['common'][2];
+
+		/* entity */
+		$tab[80]['table'] = 'glpi_entities';
+		$tab[80]['field'] = 'completename';
+		$tab[80]['linkfield'] = 'entities_id';
+		$tab[80]['name'] = $LANG['entity'][0];
+		
+		return $tab;
+   }
+   
+   function defineTabs($ID, $withtemplate) {
+		global $LANG;
+		/* principal */
+		$ong[1] = $LANG['title'][26];
+      $ong[12] = $LANG['title'][38];
+
+		return $ong;
+	}
    
    function prepareInputForAdd($input) {
       // Not attached to reference -> not added
@@ -101,6 +158,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       $this->showFormHeader($target,$ID,'',1);
 
       echo "<input type='hidden' name='plugin_order_orders_id' value='$plugin_order_orders_id'>";
+      echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
+      echo "<input type='hidden' name='is_recursive' value='".$this->fields["is_recursive"]."'>";
       
       echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][26] . ": </td>";
       echo "<td>";
@@ -227,43 +286,50 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 
          $order = new PluginOrderOrder;
          $order->getFromDB($plugin_order_orders_id);
+         
+         if ($order->fields["suppliers_id"]) {
+            if (!$order->fields["is_deleted"] && !$this->checkIfSupplierInfosExists($plugin_order_orders_id)){
 
-         if (!$order->fields["is_deleted"] && !$this->checkIfSupplierInfosExists($plugin_order_orders_id)){
+               echo "<form method='post' name='add_supplierinfo' action=\"$target\">";
+               echo "<table class='tab_cadre_fixe'>";
+               echo "<input type='hidden' name='plugin_order_orders_id' value='" . $plugin_order_orders_id . "'>";
+               echo "<input type='hidden' name='entities_id' value='".$order->fields["entities_id"]."'>";
+               echo "<input type='hidden' name='is_recursive' value='".$order->fields["is_recursive"]."'>";
+               echo "<tr>";
+               echo "<th colspan='4' align='center'>".$LANG['plugin_order'][4]."</th></tr>";
+               echo "<tr>";
+               echo "<th>" . $LANG['financial'][26] . "</th>";
+               echo "<th>" . $LANG['plugin_order'][30] . "</th>";
+               echo "<th>" . $LANG['plugin_order'][31]. "</th>";
+               echo "<th>" . $LANG['plugin_order'][28] . "</th></tr>";
+               echo "<tr>";
+               echo "<td class='tab_bg_1' align='center'>";
+               echo Dropdown::getDropdownName('glpi_suppliers', $order->fields["suppliers_id"]);
+               echo "<input type='hidden' name='suppliers_id' value='" .$order->fields["suppliers_id"] . "'>";
+               echo "</td>";
+               echo "<td class='tab_bg_1' align='center'>";
+               autocompletionTextField($this,"num_quote");
+               echo "</td>";
+               echo "<td class='tab_bg_1' align='center'>";
+               autocompletionTextField($this,"num_order");
+               echo "</td>";
+               echo "<td class='tab_bg_1' align='center'>";
+               autocompletionTextField($this,"num_bill");
+               echo "</td>";
+               echo "</tr>";
+               echo "<tr>";
+               echo "<td class='tab_bg_1' align='center' colspan='4'>";
+               echo "<input type='submit' name='add_supplier_infos' value=\"" . $LANG['buttons'][8] . "\" class='submit' >";
+               echo "</td>";
+               echo "</tr>";
+               echo "</table></form>";
 
-            echo "<form method='post' name='add_supplierinfo' action=\"$target\">";
+            }
+         } else {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<input type='hidden' name='plugin_order_orders_id' value='" . $plugin_order_orders_id . "'>";
-            echo "<tr>";
-            echo "<th colspan='4' align='center'>".$LANG['plugin_order'][4]."</th></tr>";
-            echo "<tr>";
-            echo "<th>" . $LANG['financial'][26] . "</th>";
-            echo "<th>" . $LANG['plugin_order'][30] . "</th>";
-            echo "<th>" . $LANG['plugin_order'][31]. "</th>";
-            echo "<th>" . $LANG['plugin_order'][28] . "</th></tr>";
-            echo "<tr>";
-            echo "<td class='tab_bg_1' align='center'>";
-            echo Dropdown::getDropdownName('glpi_suppliers', $order->fields["suppliers_id"]);
-            echo "<input type='hidden' name='suppliers_id' value='" .$order->fields["suppliers_id"] . "'>";
-            echo "</td>";
-            echo "<td class='tab_bg_1' align='center'>";
-            autocompletionTextField($this,"num_quote");
-            echo "</td>";
-            echo "<td class='tab_bg_1' align='center'>";
-            autocompletionTextField($this,"num_order");
-            echo "</td>";
-            echo "<td class='tab_bg_1' align='center'>";
-            autocompletionTextField($this,"num_bill");
-            echo "</td>";
-            echo "</tr>";
-            echo "<tr>";
-            echo "<td class='tab_bg_1' align='center' colspan='4'>";
-            echo "<input type='submit' name='add_supplier_infos' value=\"" . $LANG['buttons'][8] . "\" class='submit' >";
-            echo "</td>";
-            echo "</tr>";
-            echo "</table></form>";
-            echo "</div>";
-
-         }
+            echo "<tr><td align='center'>".$LANG['plugin_order']['detail'][27]."</td></tr>";
+            echo "</table>";
+			}
       }
    }
 }

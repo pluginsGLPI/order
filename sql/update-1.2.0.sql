@@ -72,7 +72,8 @@ ALTER TABLE `glpi_plugin_order_references`
 
 ALTER TABLE `glpi_plugin_order_references_suppliers` 
    CHANGE `ID` `id` int(11) NOT NULL auto_increment,
-   DROP `FK_entities`,
+   CHANGE `FK_entities` `entities_id` int(11) NOT NULL default '0',
+	ADD `is_recursive` tinyint(1) NOT NULL default '0',
    CHANGE `FK_reference` `plugin_order_references_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)',
    CHANGE `FK_enterprise` `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
    CHANGE `reference_code` `reference_code` varchar(255) collate utf8_unicode_ci default NULL,
@@ -95,6 +96,8 @@ ALTER TABLE `glpi_plugin_order_budgets`
 
 ALTER TABLE `glpi_plugin_order_orders_suppliers` 
    CHANGE `ID` `id` int(11) NOT NULL auto_increment,
+   ADD `entities_id` int(11) NOT NULL default '0',
+	ADD `is_recursive` tinyint(1) NOT NULL default '0',
    CHANGE `FK_order` `plugin_order_orders_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
    ADD `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
    CHANGE `numquote` `num_quote` varchar(255) collate utf8_unicode_ci default NULL,

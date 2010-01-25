@@ -718,7 +718,8 @@ class PluginOrderOrder extends CommonDBTM {
       $this->getFromDB($ID);
       
       $PluginOrderOrder_Item = new PluginOrderOrder_Item();
-
+      $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
+      
       $odf->setImage('logo', '../logo/logo.jpg');
       
 		$odf->setVars('title_order',$LANG['plugin_order']['generation'][12],true,'UTF-8');
@@ -755,8 +756,11 @@ class PluginOrderOrder extends CommonDBTM {
       }
       
       $odf->setVars('title_delivery_address',$LANG['plugin_order']['generation'][4],true,'UTF-8');
-      $odf->setVars('delivery_address',html_clean(Dropdown::getDropdownName("glpi_locations",$this->fields["locations_id"])),true,'UTF-8');
 
+      $tmpname=Dropdown::getDropdownName("glpi_locations",$this->fields["locations_id"],1);
+      $comment=$tmpname["comment"];
+      $odf->setVars('comment_delivery_address',html_clean($comment),true,'UTF-8');
+      
       if ($town)
          $town = $town. ", ";
       $odf->setVars('title_date_order',$town.$LANG['plugin_order']['generation'][5]." ",true,'UTF-8');
@@ -791,6 +795,7 @@ class PluginOrderOrder extends CommonDBTM {
 
          $listeArticles[]=array('quantity' => $quantity,
                'ref' => utf8_decode($data["name"]),
+               'refnumber' => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier($data["id"],$this->fields["suppliers_id"]),
                'price_taxfree' => formatNumber($data["price_taxfree"]),
                'discount' => formatNumber($data["discount"],false,0),
                'price_discounted' => formatNumber($data["price_discounted"]*$quantity));
@@ -801,6 +806,7 @@ class PluginOrderOrder extends CommonDBTM {
       foreach($listeArticles AS $element) {
          $article->nbA($element['quantity']);
          $article->titleArticle($element['ref']);
+         $article->refArticle($element['refnumber']);
          $article->HTPriceArticle($element['price_taxfree']);
          if ($element['discount'] != 0)
             $article->discount($element['discount']." %");
@@ -820,7 +826,7 @@ class PluginOrderOrder extends CommonDBTM {
       $odf->setVars('title_tva',$LANG['plugin_order'][25],true,'UTF-8');
       $odf->setVars('value_tva',html_clean(Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",$this->fields["plugin_order_ordertaxes_id"]))." %",true,'UTF-8');
       $odf->setVars('title_money',$LANG['plugin_order']['generation'][17],true,'UTF-8');
-      $odf->setVars('sign',$LANG['plugin_order']['generation'][16],true,'UTF-8');
+      $odf->setVars('title_sign',$LANG['plugin_order']['generation'][16],true,'UTF-8');
       
       $prices = $PluginOrderOrder_Item->getAllPrices($ID);
       $priceHTwithpostage=$prices["priceHT"]+$this->fields["port_price"];
@@ -832,6 +838,14 @@ class PluginOrderOrder extends CommonDBTM {
       $odf->setVars('totalht',formatNumber($priceHTwithpostage),true,'UTF-8');
       $odf->setVars('totaltva',formatNumber($tva),true,'UTF-8');
       $odf->setVars('totalttc',formatNumber($total),true,'UTF-8');
+      
+      if (file_exists(GLPI_ROOT."/plugins/order/templates/signature.png"))
+         $odf->setImage('sign', '../templates/signature.png');
+      else
+         $odf->setImage('sign', '../pics/nothing.gif');
+      
+      $odf->setVars('title_conditions',$LANG['plugin_order'][32],true,'UTF-8');
+      $odf->setVars('payment_conditions',Dropdown::getDropdownName("glpi_plugin_order_orderpayments", $this->fields["plugin_order_orderpayments_id"]),true,'UTF-8');
       // We export the file
       $odf->exportAsAttachedFile();
 	}

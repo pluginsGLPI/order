@@ -62,6 +62,9 @@ if ($_POST["id"]>0 && $PluginOrderReference_Supplier->can($_POST["id"],'r')) {
          case 4 :
             Document::showAssociated($PluginOrderReference_Supplier);
             break;
+         case 12 :
+            Log::showForItem($PluginOrderReference_Supplier);
+            break;
          default :
             break;
       }

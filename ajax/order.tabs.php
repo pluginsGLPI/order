@@ -62,25 +62,29 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
 	} else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
-            $PluginOrderOrder_Item->showItem($_SERVER["HTTP_REFERER"], $_POST["id"]);
-            $PluginOrderOrder->showValidationForm($_SERVER["HTTP_REFERER"], $_POST["id"]);
-            $PluginOrderOrder_Supplier->showOrderSupplierInfos($_SERVER['HTTP_REFERER'],$_POST["id"]);
-            $PluginOrderOrder_Supplier->addSupplierInfosToOrder($_SERVER['HTTP_REFERER'],$_POST["id"]);
+            $PluginOrderOrder_Item->showItem($_SERVER["PHP_SELF"], $_POST["id"]);
+            $PluginOrderOrder->showValidationForm($_SERVER["PHP_SELF"], $_POST["id"]);
+            $PluginOrderOrder_Supplier->showOrderSupplierInfos($CFG_GLPI["root_doc"] .
+         "/plugins/order/front/order.form.php",$_POST["id"]);
+            $PluginOrderOrder_Supplier->addSupplierInfosToOrder($CFG_GLPI["root_doc"] .
+         "/plugins/order/front/order.form.php",$_POST["id"]);
             $PluginOrderReception->showOrderReception($_POST["id"]);
             $PluginOrderLink->showOrderLink($_POST["id"]);
             Document::showAssociated($PluginOrderOrder);
             Plugin::displayAction($PluginOrderOrder,$_POST['glpi_tab']);
             break;
          case 2 :
-            $PluginOrderOrder->showValidationForm($_SERVER["HTTP_REFERER"], $_POST["id"]);
+            $PluginOrderOrder->showValidationForm($_SERVER["PHP_SELF"], $_POST["id"]);
             break;
          case 3 :
-            $PluginOrderOrder_Supplier->showOrderSupplierInfos($_SERVER['HTTP_REFERER'],$_POST["id"]);
-            $PluginOrderOrder_Supplier->addSupplierInfosToOrder($_SERVER['HTTP_REFERER'],$_POST["id"]);
+            $PluginOrderOrder_Supplier->showOrderSupplierInfos($CFG_GLPI["root_doc"] .
+         "/plugins/order/front/order.form.php",$_POST["id"]);
+            $PluginOrderOrder_Supplier->addSupplierInfosToOrder($CFG_GLPI["root_doc"] .
+         "/plugins/order/front/order.form.php",$_POST["id"]);
             break;
-         /*case 4 :
+         case 4 :
             $PluginOrderOrder->showGenerationForm($_POST["id"]);
-            break;*/
+            break;
          case 5 :
             $PluginOrderReception->showOrderReception($_POST["id"]);
             break;
@@ -98,7 +102,7 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
             break;
          default :
             if (!Plugin::displayAction($PluginOrderOrder,$_POST['glpi_tab'])) {
-               $PluginOrderOrder_Item->showItem($_SERVER["HTTP_REFERER"], $_POST["id"]);
+               $PluginOrderOrder_Item->showItem($_SERVER["PHP_SELF"], $_POST["id"]);
             }
             break;
       }

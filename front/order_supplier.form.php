@@ -47,17 +47,7 @@ if (isset($_POST["update"]))
 {
 	if(plugin_order_HaveRight("order","w")) {
 		
-      $new_value = $LANG['plugin_order']['history'][3]. " ";
-      if ($_POST["num_quote"])
-         $new_value.= $LANG['plugin_order'][30]." ".$_POST["num_quote"];
-      if ($_POST["num_order"])
-         $new_value.= " - ".$LANG['plugin_order'][31]." : ".$_POST["num_order"];
-      if ($_POST["num_bill"])
-         $new_value.= " - ".$LANG['plugin_order'][28]." : ".$_POST["num_bill"];
-      
-      $PluginOrderOrder->addHistory('PluginOrderOrder',"",$new_value,$_POST["plugin_order_orders_id"]);
-      
-      $PluginOrderOrder_Supplier->update($_POST,0);
+      $PluginOrderOrder_Supplier->update($_POST);
    }
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
