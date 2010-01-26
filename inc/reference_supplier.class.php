@@ -252,7 +252,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       echo "</div>";
    }
 
-   function addSupplierToReference($target,$plugin_order_references_id){
+   /*function addSupplierToReference($target,$plugin_order_references_id){
       global $LANG,$DB;
 
       if (plugin_order_haveRight("reference","w")){
@@ -301,7 +301,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
          }
       }
-   }
+   }*/
 
    function getPriceByReferenceAndSupplier($plugin_order_references_id,$suppliers_id){
       global $DB;

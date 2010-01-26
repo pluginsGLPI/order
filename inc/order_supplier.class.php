@@ -285,6 +285,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       }
    }
    
+   /*
    function addSupplierInfosToOrder($target,$plugin_order_orders_id){
       global $LANG,$DB;
 
@@ -337,7 +338,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
             echo "</table>";
 			}
       }
-   }
+   }*/
 }
 
 ?>
