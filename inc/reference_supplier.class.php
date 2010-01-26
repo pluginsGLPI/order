@@ -155,7 +155,8 @@ class PluginOrderReference_Supplier extends CommonDBChild {
                      WHERE `plugin_order_references_id` = '$plugin_order_references_id'";
          $result = $DB->query($query);
          while ($data = $DB->fetch_array($result))
-            $suppliers["suppliers_id"] = $data["suppliers_id"];
+            $suppliers[] = $data["suppliers_id"];
+ 
          Dropdown::show('Supplier', array('name' => "suppliers_id",'used' => $suppliers,'entity' => $_SESSION["glpiactive_entity"]));
       }
       echo "</td></tr>";
