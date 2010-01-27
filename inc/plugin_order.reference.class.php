@@ -76,17 +76,20 @@ class PluginOrderReference extends CommonDBTM {
 			addMessageAfterRedirect($LANG['plugin_order']['reference'][9], false, ERROR);
 			return false;
 		}
-
-		$query = "SELECT COUNT(*) AS cpt FROM `".$this->table."` " .
-				 "WHERE `name` = '".$params["name"]."' AND `FK_entities` = '".$params["FK_entities"]."' ";
-		$result = $DB->query($query);
-		if ($DB->result($result,0,"cpt") > 0)
+      
+      if (!$params["transfert"])
 		{
-			addMessageAfterRedirect($LANG['plugin_order']['reference'][6],false,ERROR);
-			return false;
-		}
-		else
-			return $params;
+         $query = "SELECT COUNT(*) AS cpt FROM `".$this->table."` " .
+                "WHERE `name` = '".$params["name"]."' AND `FK_entities` = '".$params["FK_entities"]."' ";
+         $result = $DB->query($query);
+         if ($DB->result($result,0,"cpt") > 0)
+         {
+            addMessageAfterRedirect($LANG['plugin_order']['reference'][6],false,ERROR);
+            return false;
+         }  
+      }
+      
+      return $params;
 	}
 
 	function pre_deleteItem($params){
@@ -493,6 +496,36 @@ class PluginOrderReference extends CommonDBTM {
       echo "</table>";
       echo "</div>";
 
+   }
+   
+   function transfer($ID, $entity) {
+      //global $DB;
+
+      if ($ID<=0 || !$this->getFromDB($ID)) {
+         return 0;
+      }
+      /*$query = "SELECT `id`
+                FROM `".$this->table."`
+                WHERE `FK_entities` = '$entity'";
+      foreach ($DB->request($query) as $data) {
+         return $data['ID'];
+      }*/
+      $input = $this->fields;
+      $input['FK_entities'] = $entity;
+      $oldref = $input['ID'];
+      unset($input['ID']);
+      $input['transfert'] = 1;
+      $newid=$this->add($input);
+      
+      $PluginOrderReferenceManufacturer = new PluginOrderReferenceManufacturer();
+      $PluginOrderReferenceManufacturer->getFromDBByReference($oldref);
+      $input = $PluginOrderReferenceManufacturer->fields;
+      $input['FK_entities'] = $entity;
+      $input['FK_reference'] = $newid;
+      unset($input['ID']);
+      $PluginOrderReferenceManufacturer->add($input);
+      
+      return $newid;
    }
 }
 

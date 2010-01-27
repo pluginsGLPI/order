@@ -46,6 +46,25 @@ class PluginOrderReferenceManufacturer extends CommonDBTM {
 		$this->may_be_recursive=false;
 		$this->dohistory=true;
 	}
+	
+	function getFromDBByReference($FK_Order) {
+		global $DB;
+		
+		$query = "SELECT * FROM `".$this->table."`
+					WHERE `FK_reference` = '" . $FK_Order . "' ";
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result) != 1) {
+				return false;
+			}
+			$this->fields = $DB->fetch_assoc($result);
+			if (is_array($this->fields) && count($this->fields)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
 
 	function defineTabs($ID, $withtemplate) {
 		global $LANG;
@@ -234,6 +253,20 @@ class PluginOrderReferenceManufacturer extends CommonDBTM {
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0)
          return $DB->result($result,0,"price_taxfree");
+      else
+         return 0;
+   }
+   
+   function getReferenceCodeByReferenceAndSupplier($referenceID,$supplierID){
+      global $DB;
+
+      $query = "SELECT `reference_code`
+               FROM `".$this->table."` " .
+            "WHERE `FK_reference` = '$referenceID'
+            AND `FK_enterprise` = '$supplierID' ";
+      $result = $DB->query($query);
+      if ($DB->numrows($result) > 0)
+         return $DB->result($result,0,"reference_code");
       else
          return 0;
    }

@@ -410,6 +410,13 @@ function plugin_order_getDatabaseRelations() {
 			"glpi_entities" => array (
 				"glpi_plugin_order" => "FK_entities",
 				"glpi_plugin_order_references" => "FK_entities"
+			),
+			"glpi_entreprises" => array (
+				"glpi_plugin_order" => "FK_enterprise",
+				"glpi_plugin_order_references_manufacturers" => "FK_enterprise"
+			),
+			"glpi_contacts" => array (
+				"glpi_plugin_order" => "FK_contact"
 			)
 		);
 	else
@@ -720,6 +727,78 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 		break;
 	}
 	return "";
+}
+
+////// SPECIFIC MODIF MASSIVE FUNCTIONS ///////
+
+function plugin_order_MassiveActions($type) {
+	global $LANG;
+	switch ($type) {
+		case PLUGIN_ORDER_TYPE :
+			return array (
+				// GLPI core one
+				"plugin_order_transfert" => $LANG['buttons'][48],
+
+				
+			);
+			break;
+	}
+	return array ();
+}
+
+function plugin_order_MassiveActionsDisplay($type, $action) {
+	global $LANG, $CFG_GLPI;
+	switch ($type) {
+		case PLUGIN_ORDER_TYPE :
+			$plugin = new Plugin();
+			switch ($action) {
+				// No case for add_document : use GLPI core one
+				case "plugin_order_transfert" :
+					dropdownValue("glpi_entities", "FK_entities", '');
+					echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" . $LANG['buttons'][2] . "\" >";
+					break;
+			}
+			break;
+	}
+	return "";
+}
+
+function plugin_order_MassiveActionsProcess($data) {
+	global $LANG, $DB;
+
+	switch ($data['action']) {
+		case "plugin_order_transfert" :
+			if ($data['device_type'] == PLUGIN_ORDER_TYPE) {
+				foreach ($data["item"] as $key => $val) {
+					if ($val == 1) {
+						$PluginOrder = new PluginOrder();
+						$PluginOrderReference = new PluginOrderReference();
+						$PluginOrderDetail = new PluginOrderDetail();
+						
+						$query="SELECT * FROM `glpi_plugin_order_detail`
+                           WHERE `FK_order` = '$key' ";
+						
+						$result=$DB->query($query);
+                  $num=$DB->numrows($result);
+                  if ($num) {
+                     while ($detail=$DB->fetch_array($result)) {
+
+                        $ref = $PluginOrderReference->transfer($detail["FK_reference"],
+                                                                        $data['FK_entities']);
+                        $values["ID"] = $detail['ID'];
+                        $values["FK_reference"] = $ref;
+                        $PluginOrderDetail->update($values);
+                     }
+                  }
+                  $PluginOrder->getFromDB($key);
+						$input["ID"] = $key;
+						$input["FK_entities"] = $data['FK_entities'];
+						$PluginOrder->update($input);
+					}
+				}
+			}
+			break;
+	}
 }
 
 /* hook done on delete item case */

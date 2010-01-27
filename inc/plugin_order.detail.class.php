@@ -43,7 +43,7 @@ class PluginOrderDetail extends CommonDBTM {
    {
       $this->table="glpi_plugin_order_detail";
    }
-
+	
 	/*clean order if items are deleted */
 	function cleanItems($ID,$type) {
 		global $DB;
@@ -272,7 +272,7 @@ class PluginOrderDetail extends CommonDBTM {
             $result=$DB->query($query);
             $num=$DB->numrows($result);
             
-            while ($data=$DB->fetch_array($result)){
+            while ($data=$DB->fetch_array($result)) {
                
                echo "<tr class='tab_bg_1'>";
 					if ($canedit){
