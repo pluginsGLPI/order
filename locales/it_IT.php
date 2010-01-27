@@ -78,6 +78,7 @@ $LANG['plugin_order']['item'][2] = "Nessun elemento Associato";
 
 $LANG['plugin_order']['detail'][1] = "Attrezzature";
 $LANG['plugin_order']['detail'][2] = "Riferimento";
+$LANG['plugin_order']['detail'][3] = "No reference found";
 $LANG['plugin_order']['detail'][4] = "Prezzo Unitario senza IVA";
 $LANG['plugin_order']['detail'][5] = "Aggiunto all'ordine";
 $LANG['plugin_order']['detail'][6] = "Tipo";

@@ -270,7 +270,7 @@ class PluginOrderReference extends CommonDBTM {
 			echo "<div id='tabcontent'></div>";
 			echo "<script type='text/javascript'>loadDefaultTab();</script>";
 		} else {
-			echo "<div align='center'><b>" . $LANG['plugin_order'][11] . "</b></div>";
+			echo "<div align='center'><b>" . $LANG['plugin_order']['detail'][3] . "</b></div>";
 			return false;
 		}
 		return true;
@@ -328,7 +328,8 @@ class PluginOrderReference extends CommonDBTM {
          $used=array();
          $query = "SELECT type FROM `".$this->table."`
                  LEFT JOIN `glpi_plugin_order_references_manufacturers` ON (`".$this->table."`.`ID` = `glpi_plugin_order_references_manufacturers`.`FK_reference`)
-                 WHERE `glpi_plugin_order_references_manufacturers`.`FK_enterprise` = '".$supplier."' ";
+                 WHERE `glpi_plugin_order_references_manufacturers`.`FK_enterprise` = '".$supplier."' ".
+                 getEntitiesRestrictRequest("AND",$this->table,'',$entity,true);
          $result = $DB->query($query);
          $number = $DB->numrows($result);
          if ($number){

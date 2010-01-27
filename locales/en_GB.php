@@ -78,6 +78,7 @@ $LANG['plugin_order']['item'][2] = "No associated item";
 
 $LANG['plugin_order']['detail'][1] = "Equipment";
 $LANG['plugin_order']['detail'][2] = "Reference";
+$LANG['plugin_order']['detail'][3] = "No reference found";
 $LANG['plugin_order']['detail'][4] = "Unit price tax free";
 $LANG['plugin_order']['detail'][5] = "Add to the order";
 $LANG['plugin_order']['detail'][6] = "Type";

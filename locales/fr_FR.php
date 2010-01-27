@@ -78,6 +78,7 @@ $LANG['plugin_order']['item'][2] = "Aucun matériel associé";
 
 $LANG['plugin_order']['detail'][1] = "Equipement";
 $LANG['plugin_order']['detail'][2] = "Référence";
+$LANG['plugin_order']['detail'][3] = "Aucune référence trouvée";
 $LANG['plugin_order']['detail'][4] = "Prix unitaire (HT)";
 $LANG['plugin_order']['detail'][5] = "Ajouter à la commande";
 $LANG['plugin_order']['detail'][6] = "Type";

@@ -100,9 +100,9 @@ if (empty ($_POST["ID"])) {
 		case 3 :
 			$PluginOrderSupplier->showForm($CFG_GLPI['root_doc']."/plugins/order/front/plugin_order.supplier.form.php", $_POST["ID"]);
 			break;
-		/*case 4 :
+		/**/case 4 :
 			$PluginOrder->showGenerationForm($_POST["ID"]);
-			break;*/
+			break;
 		case 5 :
 			$PluginOrderReception->showOrderReception($_POST["ID"]);
 			break;

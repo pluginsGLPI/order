@@ -112,7 +112,8 @@ function plugin_init_order() {
 			'typename' => $LANG['plugin_order']['title'][1],
 			'deleted_tables' => true,
 			'specif_entities_tables' => true,
-			'recursive_type' => true
+			'recursive_type' => true,
+			'doc_types' => true
 		));
 	
 		registerPluginType('order', 'PLUGIN_ORDER_REFERENCE_TYPE', 3151, array (
@@ -123,7 +124,8 @@ function plugin_init_order() {
 			'typename' => $LANG['plugin_order']['reference'][1],
 			'deleted_tables' => true,
 			'specif_entities_tables' => true,
-			'recursive_type' => true
+			'recursive_type' => true,
+			'doc_types' => true
 		));
 	
 		registerPluginType('order', 'PLUGIN_ORDER_REFERENCE_MANUFACTURER_TYPE', 3152, array (
@@ -132,6 +134,7 @@ function plugin_init_order() {
 			'formpage' => 'front/plugin_order.referencemanufacturer.form.php',
 			'searchpage' => '',
 			'typename' => $LANG['plugin_order']['reference'][5],
+			'doc_types' => true
 		));
 	
 		registerPluginType('order', 'PLUGIN_ORDER_BUDGET_TYPE', 3153, array (

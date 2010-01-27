@@ -78,6 +78,7 @@ $LANG['plugin_order']['item'][2] = "Keine verbundene Geräte";
 
 $LANG['plugin_order']['detail'][1] = "Gerätetyp";
 $LANG['plugin_order']['detail'][2] = "Referenz";
+$LANG['plugin_order']['detail'][3] = "No reference found";
 $LANG['plugin_order']['detail'][4] = "Nettostückpreis";
 $LANG['plugin_order']['detail'][5] = "Der Bestellung hinzufügen";
 $LANG['plugin_order']['detail'][6] = "Typ";
