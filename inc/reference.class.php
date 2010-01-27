@@ -54,7 +54,7 @@ class PluginOrderReference extends CommonDBTM {
    function canView() {
       return plugin_order_haveRight('reference', 'r');
    }
-   
+	
    function cleanDBonPurge() {
 		global $DB;
 
@@ -152,17 +152,20 @@ class PluginOrderReference extends CommonDBTM {
 			addMessageAfterRedirect($LANG['plugin_order']['reference'][9], false, ERROR);
 			return false;
 		}
-
-		$query = "SELECT COUNT(*) AS cpt FROM `".$this->getTable()."` " .
-				 "WHERE `name` = '".$input["name"]."' AND `entities_id` = '".$input["entities_id"]."' ";
-		$result = $DB->query($query);
-		if ($DB->result($result,0,"cpt") > 0)
+      
+       if (!$input["transfert"])
 		{
-			addMessageAfterRedirect($LANG['plugin_order']['reference'][6],false,ERROR);
-			return false;
-		}
-		else
-			return $input;
+         $query = "SELECT COUNT(*) AS cpt FROM `".$this->getTable()."` " .
+                "WHERE `name` = '".$input["name"]."' AND `entities_id` = '".$input["entities_id"]."' ";
+         $result = $DB->query($query);
+         if ($DB->result($result,0,"cpt") > 0)
+         {
+            addMessageAfterRedirect($LANG['plugin_order']['reference'][6],false,ERROR);
+            return false;
+         }
+      }
+		
+		return $input;
 	}
 
 	function pre_deleteItem(){
@@ -365,7 +368,8 @@ class PluginOrderReference extends CommonDBTM {
          $used=array();
          $query = "SELECT itemtype FROM `".$this->getTable()."`
                  LEFT JOIN `glpi_plugin_order_references_suppliers` ON (`".$this->getTable()."`.`id` = `glpi_plugin_order_references_suppliers`.`plugin_order_references_id`)
-                 WHERE `glpi_plugin_order_references_suppliers`.`suppliers_id` = '".$suppliers_id."' ";
+                 WHERE `glpi_plugin_order_references_suppliers`.`suppliers_id` = '".$suppliers_id."' ".
+                 getEntitiesRestrictRequest("AND",$this->table,'',$entity,true);
          $result = $DB->query($query);
          $number = $DB->numrows($result);
          if ($number){
@@ -571,6 +575,30 @@ class PluginOrderReference extends CommonDBTM {
       }
       
       echo "</table></div>";
+   }
+   
+   function transfer($ID, $entity) {
+
+      if ($ID<=0 || !$this->getFromDB($ID)) {
+         return 0;
+      }
+
+      $input = $this->fields;
+      $input['entities_id'] = $entity;
+      $oldref = $input['id'];
+      unset($input['id']);
+      $input['transfert'] = 1;
+      $newid=$this->add($input);
+      
+      $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
+      $PluginOrderReference_Supplier->getFromDBByReference($oldref);
+      $input = $PluginOrderReference_Supplier->fields;
+      $input['entities_id'] = $entity;
+      $input['plugin_order_references_id'] = $newid;
+      unset($input['id']);
+      $PluginOrderReference_Supplier->add($input);
+      
+      return $newid;
    }
 }
 

@@ -247,6 +247,13 @@ function plugin_order_getDatabaseRelations() {
 			),
 			"glpi_budgets" => array (
 				"glpi_plugin_order_orders" => "budgets_id"
+			),
+			"glpi_suppliers" => array (
+				"glpi_plugin_order_orders" => "suppliers_id",
+				"glpi_plugin_order_references_suppliers" => "suppliers_id"
+			),
+			"glpi_contacts" => array (
+				"glpi_plugin_order_orders" => "contacts_id"
 			)
 		);
 	else
@@ -364,6 +371,79 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
          break;
 	}
 	return "";
+}
+
+////// SPECIFIC MODIF MASSIVE FUNCTIONS ///////
+
+function plugin_order_MassiveActions($type) {
+	global $LANG;
+	
+	switch ($type) {
+		case 'PluginOrderOrder' :
+			return array (
+				// GLPI core one
+				"plugin_order_transfert" => $LANG['buttons'][48],
+
+				
+			);
+			break;
+	}
+	return array ();
+}
+
+function plugin_order_MassiveActionsDisplay($type, $action) {
+	global $LANG;
+	
+	switch ($type) {
+		case 'PluginOrderOrder' :
+			switch ($action) {
+				// No case for add_document : use GLPI core one
+				case "plugin_order_transfert" :
+					Dropdown::show('Entity');
+					echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" . $LANG['buttons'][2] . "\" >";
+					break;
+			}
+			break;
+	}
+	return "";
+}
+
+function plugin_order_MassiveActionsProcess($data) {
+	global $LANG, $DB;
+
+	switch ($data['action']) {
+		case "plugin_order_transfert" :
+			if ($data['device_type'] == 'PluginOrderOrder') {
+				foreach ($data["item"] as $key => $val) {
+					if ($val == 1) {
+						$PluginOrderOrder = new PluginOrderOrder();
+						$PluginOrderReference = new PluginOrderReference();
+						$PluginOrderOrder_Item = new PluginOrderOrder_Item();
+						
+						$query="SELECT * FROM `glpi_plugin_order_orders_items`
+                           WHERE `plugin_order_orders_id` = '$key' ";
+						
+						$result=$DB->query($query);
+                  $num=$DB->numrows($result);
+                  if ($num) {
+                     while ($detail=$DB->fetch_array($result)) {
+
+                        $ref = $PluginOrderReference->transfer($detail["plugin_order_references_id"],
+                                                               $data['entities_id']);
+                        $values["id"] = $detail['id'];
+                        $values["plugin_order_references_id"] = $ref;
+                        $PluginOrderOrder_Item->update($values);
+                     }
+                  }
+                  $PluginOrderOrder->getFromDB($key);
+						$input["id"] = $key;
+						$input["entities_id"] = $data['entities_id'];
+						$PluginOrderOrder->update($input);
+					}
+				}
+			}
+			break;
+	}
 }
 
 function plugin_pre_item_update_order($item) {

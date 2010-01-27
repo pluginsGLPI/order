@@ -57,6 +57,25 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       return plugin_order_haveRight('reference', 'r');
    }
    
+   function getFromDBByReference($plugin_order_references_id) {
+		global $DB;
+		
+		$query = "SELECT * FROM `".$this->getTable()."`
+					WHERE `plugin_order_references_id` = '" . $plugin_order_references_id . "' ";
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result) != 1) {
+				return false;
+			}
+			$this->fields = $DB->fetch_assoc($result);
+			if (is_array($this->fields) && count($this->fields)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
+	
    function getSearchOptions() {
       global $LANG;
 
