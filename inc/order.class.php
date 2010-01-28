@@ -121,7 +121,7 @@ class PluginOrderOrder extends CommonDBTM {
 		$tab[7]['name'] = $LANG['plugin_order'][32];
       /* contact */
 		$tab[8]['table'] = 'glpi_contacts';
-		$tab[8]['field'] = 'name';
+		$tab[8]['field'] = 'completename';
 		$tab[8]['linkfield'] = 'contacts_id';
 		$tab[8]['name'] = $LANG['common'][18];
 		$tab[8]['datatype']='itemlink';
@@ -713,6 +713,51 @@ class PluginOrderOrder extends CommonDBTM {
    function sendNotification($action,$orders_id,$entities_id=0,$users_id=0,$comment=''){
       $mailing = new PluginOrderMailing($orders_id,$action,$entities_id,$users_id,$comment);
       $mailing->mailing();
+   }
+   
+   function transfer($ID,$entity) {
+      global $DB;
+      
+      $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier;
+      $PluginOrderReference = new PluginOrderReference();
+      $PluginOrderOrder_Item = new PluginOrderOrder_Item();
+      
+      $this->getFromDB($ID);
+      $input["id"] = $ID;
+      $input["entities_id"] = $entity;
+      $this->update($input);
+      
+      if($PluginOrderOrder_Supplier->getFromDBByOrder($ID)) {
+         $input["id"] = $PluginOrderOrder_Supplier->fields["id"];
+         $input["entities_id"] = $entity;
+         $PluginOrderOrder_Supplier->update($input);
+      }
+      $query="SELECT `plugin_order_references_id`,`id` FROM `glpi_plugin_order_orders_items`
+               WHERE `plugin_order_orders_id` = '$ID' 
+               GROUP BY plugin_order_references_id";
+      
+      $result=$DB->query($query);
+      $num=$DB->numrows($result);
+      if ($num) {
+         while ($detail=$DB->fetch_array($result)) {
+            $oldref = $detail["plugin_order_references_id"];
+            $ref=$PluginOrderReference->transfer($detail["plugin_order_references_id"],
+                                             $entity);
+         }
+      }
+      
+      $query="SELECT `id` FROM `glpi_plugin_order_orders_items`
+               WHERE `plugin_order_references_id` = '$oldref' ";
+      
+      $result=$DB->query($query);
+      $num=$DB->numrows($result);
+      if ($num) {
+         while ($dataref=$DB->fetch_array($result)) {
+            $values["id"] = $dataref['id'];
+            $values["plugin_order_references_id"] = $ref;
+            $PluginOrderOrder_Item->update($values);
+         }
+      }
    }
 }
 

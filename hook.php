@@ -413,32 +413,11 @@ function plugin_order_MassiveActionsProcess($data) {
 
 	switch ($data['action']) {
 		case "plugin_order_transfert" :
-			if ($data['device_type'] == 'PluginOrderOrder') {
+			if ($data['itemtype'] == 'PluginOrderOrder') {
 				foreach ($data["item"] as $key => $val) {
 					if ($val == 1) {
 						$PluginOrderOrder = new PluginOrderOrder();
-						$PluginOrderReference = new PluginOrderReference();
-						$PluginOrderOrder_Item = new PluginOrderOrder_Item();
-						
-						$query="SELECT * FROM `glpi_plugin_order_orders_items`
-                           WHERE `plugin_order_orders_id` = '$key' ";
-						
-						$result=$DB->query($query);
-                  $num=$DB->numrows($result);
-                  if ($num) {
-                     while ($detail=$DB->fetch_array($result)) {
-
-                        $ref = $PluginOrderReference->transfer($detail["plugin_order_references_id"],
-                                                               $data['entities_id']);
-                        $values["id"] = $detail['id'];
-                        $values["plugin_order_references_id"] = $ref;
-                        $PluginOrderOrder_Item->update($values);
-                     }
-                  }
-                  $PluginOrderOrder->getFromDB($key);
-						$input["id"] = $key;
-						$input["entities_id"] = $data['entities_id'];
-						$PluginOrderOrder->update($input);
+						$PluginOrderOrder->transfer($key,$data['entities_id']); 
 					}
 				}
 			}
