@@ -667,6 +667,46 @@ class PluginOrder extends CommonDBTM {
 
       echo "</table></div></form>";
    }
+   
+   function transfer($ID,$entity) {
+      global $DB;
+      
+      $PluginOrderSupplier = new PluginOrderSupplier;
+      $PluginOrderReference = new PluginOrderReference();
+      $PluginOrderDetail = new PluginOrderDetail();
+      
+      $this->getFromDB($ID);
+      $input["ID"] = $ID;
+      $input["FK_entities"] = $entity;
+      $this->update($input);
+      
+      $query="SELECT `FK_reference`,`ID` FROM `glpi_plugin_order_detail`
+               WHERE `FK_order` = '$ID' 
+               GROUP BY FK_reference";
+      
+      $result=$DB->query($query);
+      $num=$DB->numrows($result);
+      if ($num) {
+         while ($detail=$DB->fetch_array($result)) {
+            $oldref = $detail["FK_reference"];
+            $ref=$PluginOrderReference->transfer($detail["FK_reference"],
+                                             $entity);
+         }
+      }
+      
+      $query="SELECT `ID` FROM `glpi_plugin_order_detail`
+               WHERE `FK_reference` = '$oldref' ";
+      
+      $result=$DB->query($query);
+      $num=$DB->numrows($result);
+      if ($num) {
+         while ($dataref=$DB->fetch_array($result)) {
+            $values["ID"] = $dataref['ID'];
+            $values["FK_reference"] = $ref;
+            $PluginOrderDetail->update($values);
+         }
+      }
+   }
 }
 
 ?>

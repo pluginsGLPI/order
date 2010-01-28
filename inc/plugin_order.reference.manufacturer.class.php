@@ -47,11 +47,11 @@ class PluginOrderReferenceManufacturer extends CommonDBTM {
 		$this->dohistory=true;
 	}
 	
-	function getFromDBByReference($FK_Order) {
+	function getFromDBByReference($FK_reference) {
 		global $DB;
 		
 		$query = "SELECT * FROM `".$this->table."`
-					WHERE `FK_reference` = '" . $FK_Order . "' ";
+					WHERE `FK_reference` = '" . $FK_reference . "' ";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result) != 1) {
 				return false;

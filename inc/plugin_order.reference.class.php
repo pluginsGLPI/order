@@ -499,17 +499,11 @@ class PluginOrderReference extends CommonDBTM {
    }
    
    function transfer($ID, $entity) {
-      //global $DB;
 
       if ($ID<=0 || !$this->getFromDB($ID)) {
          return 0;
       }
-      /*$query = "SELECT `id`
-                FROM `".$this->table."`
-                WHERE `FK_entities` = '$entity'";
-      foreach ($DB->request($query) as $data) {
-         return $data['ID'];
-      }*/
+
       $input = $this->fields;
       $input['FK_entities'] = $entity;
       $oldref = $input['ID'];

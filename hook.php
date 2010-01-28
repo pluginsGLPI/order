@@ -750,7 +750,6 @@ function plugin_order_MassiveActionsDisplay($type, $action) {
 	global $LANG, $CFG_GLPI;
 	switch ($type) {
 		case PLUGIN_ORDER_TYPE :
-			$plugin = new Plugin();
 			switch ($action) {
 				// No case for add_document : use GLPI core one
 				case "plugin_order_transfert" :
@@ -771,29 +770,8 @@ function plugin_order_MassiveActionsProcess($data) {
 			if ($data['device_type'] == PLUGIN_ORDER_TYPE) {
 				foreach ($data["item"] as $key => $val) {
 					if ($val == 1) {
-						$PluginOrder = new PluginOrder();
-						$PluginOrderReference = new PluginOrderReference();
-						$PluginOrderDetail = new PluginOrderDetail();
-						
-						$query="SELECT * FROM `glpi_plugin_order_detail`
-                           WHERE `FK_order` = '$key' ";
-						
-						$result=$DB->query($query);
-                  $num=$DB->numrows($result);
-                  if ($num) {
-                     while ($detail=$DB->fetch_array($result)) {
-
-                        $ref = $PluginOrderReference->transfer($detail["FK_reference"],
-                                                                        $data['FK_entities']);
-                        $values["ID"] = $detail['ID'];
-                        $values["FK_reference"] = $ref;
-                        $PluginOrderDetail->update($values);
-                     }
-                  }
-                  $PluginOrder->getFromDB($key);
-						$input["ID"] = $key;
-						$input["FK_entities"] = $data['FK_entities'];
-						$PluginOrder->update($input);
+                  $PluginOrder = new PluginOrder();
+						$PluginOrder->transfer($key,$data['FK_entities']); 
 					}
 				}
 			}
