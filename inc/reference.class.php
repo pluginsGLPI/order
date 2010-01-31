@@ -153,7 +153,7 @@ class PluginOrderReference extends CommonDBTM {
 			return false;
 		}
       
-       if (!$input["transfert"])
+       if (!isset($input["transfert"]))
 		{
          $query = "SELECT COUNT(*) AS cpt FROM `".$this->getTable()."` " .
                 "WHERE `name` = '".$input["name"]."' AND `entities_id` = '".$input["entities_id"]."' ";
