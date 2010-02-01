@@ -77,7 +77,7 @@ class PluginOrderReference extends CommonDBTM {
 			return false;
 		}
       
-      if (!$params["transfert"])
+      if (!isset($params["transfert"]))
 		{
          $query = "SELECT COUNT(*) AS cpt FROM `".$this->table."` " .
                 "WHERE `name` = '".$params["name"]."' AND `FK_entities` = '".$params["FK_entities"]."' ";
@@ -381,13 +381,16 @@ class PluginOrderReference extends CommonDBTM {
          $and .= ($item_model != 0 ? " AND `model` ='$item_model' " : "");
       if (in_array($type, $ORDER_TEMPLATE_TABLES))
          $and .= " AND `is_template` = 0 AND `deleted` = 0 ";
-
+      
+      $used = "AND `ID` NOT IN (SELECT `FK_device` FROM `glpi_plugin_order_detail`)";
+      if ($type == SOFTWARELICENSE_TYPE)
+         $used = "";
       switch ($type) {
          default :
             $query = "SELECT `ID`, `name` 
                      FROM `" . $LINK_ID_TABLE[$type] . "` 
                      WHERE `FK_entities` = '" . $entity ."' ". $and . " 
-                     AND `ID` NOT IN (SELECT `FK_device` FROM `glpi_plugin_order_detail`)";
+                     $used ";
             break;
          case CONSUMABLE_ITEM_TYPE :
             $query = "SELECT `ID`, `name` FROM `glpi_consumables_type`
@@ -499,7 +502,8 @@ class PluginOrderReference extends CommonDBTM {
    }
    
    function transfer($ID, $entity) {
-
+      global $DB;
+      
       if ($ID<=0 || !$this->getFromDB($ID)) {
          return 0;
       }
@@ -519,7 +523,19 @@ class PluginOrderReference extends CommonDBTM {
       unset($input['ID']);
       $PluginOrderReferenceManufacturer->add($input);
       
-      return $newid;
+      $PluginOrderDetail = new PluginOrderDetail();
+      $query="SELECT `ID` FROM `glpi_plugin_order_detail`
+               WHERE `FK_reference` = '$oldref' ";
+      
+      $result=$DB->query($query);
+      $num=$DB->numrows($result);
+      if ($num) {
+         while ($dataref=$DB->fetch_array($result)) {
+            $values["ID"] = $dataref['ID'];
+            $values["FK_reference"] = $newid;
+            $PluginOrderDetail->update($values);
+         }
+      }
    }
 }
 
