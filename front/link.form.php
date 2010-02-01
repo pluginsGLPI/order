@@ -93,7 +93,11 @@ else if (isset ($_POST["createLinkWithItem"])) {
 
    if ($_POST["item"]) {
       $i = 0;
-      if (count($_POST["item"]) <= 1) {
+      $doit = 1;
+      if ($_POST["itemtype"] != 'SoftwareLicense')
+         if (count($_POST["item"]) > 1)
+            $doit = 0;
+      if ($doit) {
 
          foreach ($_POST["item"] as $key => $val)
          {

@@ -123,11 +123,11 @@ class PluginOrderReference extends CommonDBTM {
    }
    
 	/*define header form */
-	function defineTabs($ID, $withtemplate) {
+	function defineTabs($options=array()) {
 		global $LANG;
 		/* principal */
 		$ong[1] = $LANG['title'][26];
-		if ($ID > 0) {
+		if ($this->fields['id'] > 0) {
          $ong[2] = $LANG['plugin_order']['budget'][1];
 			$ong[3] = $LANG['title'][37];
 			if (haveRight("document", "r"))
@@ -208,7 +208,7 @@ class PluginOrderReference extends CommonDBTM {
 		return (!$this->referenceInUse());
 	}
 
-	function showForm($target, $ID, $withtemplate = '') {
+	function showForm ($ID, $options=array()) {
 		global $CFG_GLPI, $LANG;
       
       if (!plugin_order_haveRight("reference","r")) return false;
@@ -220,12 +220,14 @@ class PluginOrderReference extends CommonDBTM {
          $this->check(-1,'w');
          $this->getEmpty();
       }
+      
+      $options['colspan'] = 1;
 
       $canedit=$this->can($ID,'w');
 		$canrecu = $this->can($ID, 'recursive');
 		
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,1);
+      $this->showTabs($options);
+      $this->showFormHeader($options);
   
 		$reference_in_use = (!$ID?false:$this->referenceInUse());
 
@@ -305,7 +307,7 @@ class PluginOrderReference extends CommonDBTM {
          echo $this->fields["comment"];
       echo "</td></tr>";
 
-      $this->showFormButtons($ID,$withtemplate,1);
+      $this->showFormButtons($options);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
    
@@ -418,13 +420,17 @@ class PluginOrderReference extends CommonDBTM {
          $and .= ($models_id != 0 ? " AND `".getForeignKeyFieldForTable(getTableForItemType($itemtype."Model"))."` ='$models_id' " : "");
       if ($item->maybeTemplate())
          $and .= " AND `is_template` = 0 AND `is_deleted` = 0 ";
+      
+      $used = "AND `id` NOT IN (SELECT `items_id` FROM `glpi_plugin_order_orders_items`)";
+      if ($itemtype == 'SoftwareLicense')
+         $used = "";
 
       switch ($itemtype) {
          default :
             $query = "SELECT `id`, `name` 
                      FROM `" . getTableForItemType($itemtype) . "` 
                      WHERE `entities_id` = '" . $entity ."' ". $and . " 
-                     AND `id` NOT IN (SELECT `items_id` FROM `glpi_plugin_order_orders_items`)";
+                     $used ";
             break;
          case 'ConsumableItemType' :
             $query = "SELECT `id`, `name` FROM `glpi_consumableitems`

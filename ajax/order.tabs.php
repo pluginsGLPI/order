@@ -63,26 +63,28 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
             $PluginOrderOrder_Item->showItem($_SERVER["PHP_SELF"], $_POST["id"]);
-            $PluginOrderOrder->showValidationForm($_SERVER["PHP_SELF"], $_POST["id"]);
+            $PluginOrderOrder->showValidationForm($CFG_GLPI["root_doc"] .
+         "/plugins/order/front/order.form.php", $_POST["id"]);
             $PluginOrderOrder_Supplier->showOrderSupplierInfos($CFG_GLPI["root_doc"] .
          "/plugins/order/front/order_supplier.form.php",$_POST["id"]);
             if (!$PluginOrderOrder_Supplier->checkIfSupplierInfosExists($_POST["id"]))
-               $PluginOrderOrder_Supplier->showForm($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/order_supplier.form.php",'',$_POST["id"]);
+               $PluginOrderOrder_Supplier->showForm("", array('plugin_order_orders_id' => $_POST["id"], 'target' => $CFG_GLPI["root_doc"] .
+         "/plugins/order/front/order_supplier.form.php"));
             $PluginOrderReception->showOrderReception($_POST["id"]);
             $PluginOrderLink->showOrderLink($_POST["id"]);
             Document::showAssociated($PluginOrderOrder);
-            Plugin::displayAction($PluginOrderOrder,$_POST['glpi_tab']);
+            Plugin::displayAction($PluginOrderOrder,$_REQUEST['glpi_tab']);
             break;
          case 2 :
-            $PluginOrderOrder->showValidationForm($_SERVER["PHP_SELF"], $_POST["id"]);
+            $PluginOrderOrder->showValidationForm($CFG_GLPI["root_doc"] .
+         "/plugins/order/front/order.form.php", $_POST["id"]);
             break;
          case 3 :
             $PluginOrderOrder_Supplier->showOrderSupplierInfos($CFG_GLPI["root_doc"] .
          "/plugins/order/front/order_supplier.form.php",$_POST["id"]);
             if (!$PluginOrderOrder_Supplier->checkIfSupplierInfosExists($_POST["id"]))
-               $PluginOrderOrder_Supplier->showForm($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/order_supplier.form.php",'',$_POST["id"]);
+               $PluginOrderOrder_Supplier->showForm("", array('plugin_order_orders_id' => $_POST["id"], 'target' => $CFG_GLPI["root_doc"] .
+         "/plugins/order/front/order_supplier.form.php"));
             break;
          case 4 :
             $PluginOrderOrder->showGenerationForm($_POST["id"]);
@@ -103,7 +105,7 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
             Log::showForItem($PluginOrderOrder);
             break;
          default :
-            if (!Plugin::displayAction($PluginOrderOrder,$_POST['glpi_tab'])) {
+            if (!Plugin::displayAction($PluginOrderOrder,$_REQUEST['glpi_tab'])) {
                $PluginOrderOrder_Item->showItem($_SERVER["PHP_SELF"], $_POST["id"]);
             }
             break;

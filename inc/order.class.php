@@ -161,12 +161,12 @@ class PluginOrderOrder extends CommonDBTM {
    }
    
 	/*define header form */
-	function defineTabs($ID, $withtemplate) {
+	function defineTabs($options=array()) {
 		global $LANG;
 		
 		/* principal */
 		$ong[1] = $LANG['title'][26];
-		if ($ID > 0) {
+		if ($this->fields['id'] > 0) {
 			/* detail */
 			$ong[2] = $LANG['plugin_order'][5];
 			/* fournisseur */
@@ -201,7 +201,7 @@ class PluginOrderOrder extends CommonDBTM {
 		return $input;
 	}
 
-	function showForm($target, $ID, $withtemplate = '') {
+	function showForm ($ID, $options=array()) {
 		global $CFG_GLPI, $LANG;
 
 		if (!plugin_order_haveRight("order","r")) return false;
@@ -217,8 +217,8 @@ class PluginOrderOrder extends CommonDBTM {
       $canedit = ($this->canUpdateOrder($ID) && $this->can($ID, 'w') && $this->fields["states_id"] != ORDER_STATUS_CANCELED);
       $canrecu=$this->can($ID,'recursive');
 
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,2);
+      $this->showTabs($options);
+      $this->showFormHeader($options);
 
       //Display without inside table
       /* title */
@@ -230,13 +230,12 @@ class PluginOrderOrder extends CommonDBTM {
          echo $this->fields["name"];
       echo "</td>";
       /* date of order */
-      $editcalendar = ($withtemplate != 2);
       echo "<td>" . $LANG['plugin_order'][1] . "*:</td><td>";
       if ($canedit)
          if ($this->fields["order_date"] == NULL)
-            showDateFormItem("order_date", date("Y-m-d"), true, $editcalendar);
+            showDateFormItem("order_date", date("Y-m-d"), true, true);
          else
-            showDateFormItem("order_date", $this->fields["order_date"], true, $editcalendar);
+            showDateFormItem("order_date", $this->fields["order_date"], true, true);
       else
          echo convDate($this->fields["order_date"]);
       echo "</td></tr>";
@@ -357,7 +356,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       echo "</tr>";
 
-      $this->showFormButtons($ID,$withtemplate,2);
+      $this->showFormButtons($options);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
       

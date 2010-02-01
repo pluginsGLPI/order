@@ -198,6 +198,23 @@ class PluginOrderOrder_Item extends CommonDBTM {
 		return $result;
    }
    
+   function queryRef($plugin_order_orders_id,$plugin_order_references_id,$price_taxfree,$discount,$states_id=false) {
+      global $DB;
+      
+      $query = "SELECT `id`, `items_id`
+               FROM `glpi_plugin_order_orders_items` 
+               WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id."' 
+               AND `plugin_order_references_id` = '" . $plugin_order_references_id ."' 
+               AND `price_taxfree` LIKE '" . $price_taxfree ."'
+               AND `discount` LIKE '" . $discount ."' ";
+      if ($states_id)
+         $query.= "AND `states_id` = '".$states_id."' ";
+                  
+      $result=$DB->query($query);
+		
+		return $result;
+   }
+   
    function showFormDetail($target,$plugin_order_orders_id) {
       global  $CFG_GLPI, $LANG,$DB;
 
@@ -241,7 +258,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
             echo "<tr class='tab_bg_1 center'>";
             echo "<td></td>";
             /* quantity */
-            $quantity = $this->getTotalQuantityByPriceAndDiscount($plugin_order_orders_id,$price_taxfree,$discount);
+            $quantity = $this->getTotalQuantityByRefAndDiscount($plugin_order_orders_id,$refID,$price_taxfree,$discount);
             echo "<td align='center'>".$quantity."</td>";
             /* type */
             $item = new $data_ref["itemtype"]();
@@ -274,7 +291,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
             echo "<tr>";
             if($canedit)
 					echo "<th></th>";
-				echo "<th>".$LANG['common'][2]."</th>";
+				if ($data_ref["itemtype"] != 'SoftwareLicense')
+               echo "<th>".$LANG['common'][2]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][4]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][25]."</th>";
@@ -289,8 +307,10 @@ class PluginOrderOrder_Item extends CommonDBTM {
 					AND `".$this->getTable()."`.`plugin_order_references_id` = '".$refID."'
 					AND `".$this->getTable()."`.`price_taxfree` LIKE '".$price_taxfree."'
 					AND `".$this->getTable()."`.`discount` LIKE '".$discount."'
-					AND `".$this->getTable()."`.`plugin_order_orders_id` = '$plugin_order_orders_id'
-					ORDER BY `glpi_plugin_order_references`.`name` ";
+					AND `".$this->getTable()."`.`plugin_order_orders_id` = '$plugin_order_orders_id' ";
+				if ($data_ref["itemtype"] == 'SoftwareLicense')
+               $query.=" GROUP BY `glpi_plugin_order_references`.`name` ";	
+            $query.=" ORDER BY `glpi_plugin_order_references`.`name` ";
 
             $result=$DB->query($query);
             $num=$DB->numrows($result);
@@ -303,12 +323,12 @@ class PluginOrderOrder_Item extends CommonDBTM {
 						$sel="";
 						if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
 						echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
+						echo "<input type='hidden' name='plugin_order_orders_id' value='" . $plugin_order_orders_id . "'>";
 						echo "</td>";
 					}
-					echo "<td align='center'>";
-					echo $data["IDD"];
-					echo "<input type='hidden' name='plugin_order_orders_id' value='" . $plugin_order_orders_id . "'>";
-					echo "</td>";
+					if ($data_ref["itemtype"] != 'SoftwareLicense')
+                  echo "<td align='center'>".$data["IDD"]."</td>";
+
 					/* reference */
 					echo "<td align='center'>";
 					echo $PluginOrderReference->getReceptionReferenceLink($data);
@@ -354,18 +374,6 @@ class PluginOrderOrder_Item extends CommonDBTM {
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'quantity'));
    }
-   
-   function getTotalQuantityByPriceAndDiscount($plugin_order_orders_id, $price_taxfree, $discount) {
-      global $DB;
-
-      $query = "SELECT COUNT(*) AS quantity
-               FROM `".$this->getTable()."`
-               WHERE  `plugin_order_orders_id` = '$plugin_order_orders_id'
-               AND `price_taxfree` LIKE '$price_taxfree'
-               AND `discount` LIKE '$discount'";
-      $result = $DB->query($query);
-      return ($DB->result($result, 0, 'quantity'));
-   }
 
    function getTotalQuantityByRef($plugin_order_orders_id, $plugin_order_references_id) {
       global $DB;
@@ -378,13 +386,15 @@ class PluginOrderOrder_Item extends CommonDBTM {
       return ($DB->result($result, 0, 'quantity'));
    }
 
-   function getDeliveredQuantity($plugin_order_orders_id, $plugin_order_references_id) {
+   function getDeliveredQuantity($plugin_order_orders_id, $plugin_order_references_id,$price_taxfree, $discount) {
       global $DB;
 
       $query = "SELECT COUNT(*) AS deliveredquantity
                   FROM `".$this->getTable()."`
                   WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
                   AND `plugin_order_references_id` = '$plugin_order_references_id'
+                  AND `price_taxfree` LIKE '$price_taxfree'
+                  AND `discount` LIKE '$discount'
                   AND `states_id` = '".ORDER_STATUS_WAITING_APPROVAL."' ";
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'deliveredquantity'));

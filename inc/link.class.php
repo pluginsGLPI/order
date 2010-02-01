@@ -186,13 +186,14 @@ class PluginOrderLink extends CommonDBChild {
       $PluginOrderOrder->getFromDB($plugin_order_orders_id);
       $canedit = $PluginOrderOrder->can($plugin_order_orders_id, 'w') && !$PluginOrderOrder->canUpdateOrder($plugin_order_orders_id) && $PluginOrderOrder->fields["states_id"] != ORDER_STATUS_CANCELED;
       
-      $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, `glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`itemtype`, `glpi_plugin_order_references`.`manufacturers_id` " .
+      $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, `glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`itemtype`, `glpi_plugin_order_references`.`manufacturers_id`,`glpi_plugin_order_orders_items`.`price_taxfree`,`glpi_plugin_order_orders_items`.`discount` " .
       "FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references` " .
       "WHERE `plugin_order_orders_id` = '$plugin_order_orders_id' " .
       "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`  " .
       "AND `glpi_plugin_order_orders_items`.`states_id` = '".ORDER_DEVICE_DELIVRED."'   " .
       "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
-      "ORDER BY `glpi_plugin_order_orders_items`.`id`";
+      "ORDER BY `glpi_plugin_order_references`.`name`";
+
       $result_ref = $DB->query($query_ref);
       $numref = $DB->numrows($result_ref);
 
@@ -231,19 +232,23 @@ class PluginOrderLink extends CommonDBChild {
             echo "<tr>";
             if ($canedit & $canuse)
                echo "<th width='15'></th>";
-            echo "<th>" . $LANG['common'][2] . "</th>";
+            if ($itemtype != 'SoftwareLicense')
+               echo "<th>" . $LANG['common'][2] . "</th>";
             echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
             echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
             echo "<th>" . $LANG['plugin_order']['detail'][21] . "</th>";
             echo "<th>" . $LANG['plugin_order']['item'][0] . "</th></tr>";
             
-            $query = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, `glpi_plugin_order_references`.`id` AS id,`glpi_plugin_order_references`.`templates_id`, `glpi_plugin_order_orders_items`.`states_id`, `glpi_plugin_order_orders_items`.`delivery_date`,`glpi_plugin_order_orders_items`.`delivery_number`, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`itemtype`, `glpi_plugin_order_orders_items`.`items_id`
+            $query = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, `glpi_plugin_order_references`.`id` AS id,`glpi_plugin_order_references`.`templates_id`, `glpi_plugin_order_orders_items`.`states_id`, `glpi_plugin_order_orders_items`.`delivery_date`,`glpi_plugin_order_orders_items`.`delivery_number`, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`itemtype`, `glpi_plugin_order_orders_items`.`items_id`,`glpi_plugin_order_orders_items`.`price_taxfree`, `glpi_plugin_order_orders_items`.`discount`
                     FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references`
                     WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
                     AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = '".$plugin_order_references_id."'
                     AND `glpi_plugin_order_orders_items`.`states_id` = '".ORDER_DEVICE_DELIVRED."'
-                    AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`
-                    ORDER BY `glpi_plugin_order_orders_items`.`id`";
+                    AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id` ";
+            if ($itemtype == 'SoftwareLicense')
+               $query.=" GROUP BY `glpi_plugin_order_orders_items`.`price_taxfree`,`glpi_plugin_order_orders_items`.`discount` ";
+            $query.=" ORDER BY `glpi_plugin_order_references`.`name` ";
+
             $result = $DB->query($query);
             $num = $DB->numrows($result);
             
@@ -263,7 +268,10 @@ class PluginOrderLink extends CommonDBChild {
                   echo "</td>";
                }
                
-               echo "<td align='center'>" . $data["IDD"] . "</td>";
+               if ($itemtype != 'SoftwareLicense')
+                  echo "<td align='center'>" . $data["IDD"] . "</td>";
+               else
+                  echo "<td align='center'>" . $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($plugin_order_orders_id,$plugin_order_references_id, $data["price_taxfree"], $data["discount"]) . "</td>";
                echo "<td align='center'>" . $PluginOrderReference->getReceptionReferenceLink($data) . "</td>";
                echo "<td align='center'>" . $PluginOrderReception->getReceptionStatus($detailID) . "</td>";
                echo "<td align='center'>" . convDate($data["delivery_date"]) . "</td>";
@@ -446,7 +454,8 @@ class PluginOrderLink extends CommonDBChild {
       global $DB;
       
       $restricted = array('ConsumableItem',
-                           'CartridgeItem');
+                           'CartridgeItem',
+                           'SoftwareLicense');
                            
       if (!in_array($itemtype, $restricted)) {
          $query = "SELECT COUNT(*) AS cpt 
@@ -554,7 +563,7 @@ class PluginOrderLink extends CommonDBChild {
 }
 
    function createLinkWithItem($detailID = 0, $items_id = 0, $itemtype = 0, $plugin_order_orders_id = 0, $entity = 0, $templateID = 0, $history = true, $check_link = true) {
-      global $LANG;
+      global $LANG,$DB;
 
       if (!$check_link || !$this->itemAlreadyLinkedToAnOrder($itemtype, $items_id, $plugin_order_orders_id, $detailID)) {
          $detail = new PluginOrderOrder_Item;
@@ -562,7 +571,44 @@ class PluginOrderLink extends CommonDBChild {
          $restricted = array('ConsumableItem',
                            'CartridgeItem');
                        
-         if (in_array($itemtype, $restricted)) {
+         if ($itemtype == 'SoftwareLicense') {
+            
+            $detail->getFromDB($detailID);
+            
+            $query = "SELECT `ID` 
+               FROM `glpi_plugin_order_orders_items` 
+               WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id."' 
+               AND `plugin_order_references_id` = '" . $detail->fields["plugin_order_references_id"] ."' 
+               AND `price_taxfree` LIKE '" . $detail->fields["price_taxfree"] ."'
+               AND `discount` LIKE '" . $detail->fields["discount"] ."'
+               AND `states_id` = 1 ";
+            $result = $DB->query($query);
+            $nb = $DB->numrows($result);
+
+            if ($nb) {
+               for ($i = 0; $i < $nb; $i++) {
+                  $ID = $DB->result($result, $i, 'id');
+                  $input["id"] = $ID;
+                  $input["items_id"] = $items_id;
+                  $detail->update($input);
+
+                  $this->generateInfoComRelatedToOrder($entity, $detailID, $type, $newID, 0);
+                  
+                  $lic = new SoftwareLicense;
+                  $lic->getFromDB($items_id);
+                  $values["id"] = $lic->fields["id"];
+                  $values["number"] = $lic->fields["number"]+1;
+                  $lic->update($values);
+                  
+               }
+               
+               if ($history) {
+                  $new_value = $LANG['plugin_order']['delivery'][14] . ' : ' . $lic->getField("name");
+                  $order->addHistory('PluginOrderOrder', '', $new_value, $plugin_order_orders_id);
+               }
+            }
+            
+         } else if (in_array($itemtype, $restricted)) {
          
             if ($itemtype == 'ConsumableItem') {
                $item = new Consumable;
@@ -589,9 +635,15 @@ class PluginOrderLink extends CommonDBChild {
             $detail->update($input);
             $detail->getFromDB($detailID);
             $this->generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, $templateID);
+            if ($history) {
+               $item = new $itemtype();
+               $item->getFromDB($items_id);
+               $new_value = $LANG['plugin_order']['delivery'][14] . ' : ' . $item->getField("name");
+               $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
+            }
          }
          if ($history) {
-            $order = new PluginOrderOrder;
+            $order = new PluginOrderOrder();
             $order->getFromDB($detail->fields["plugin_order_orders_id"]);
             $new_value = $LANG['plugin_order']['delivery'][14] . ' : ' . $order->fields["name"];
             $order->addHistory($itemtype, '', $new_value, $items_id);
@@ -605,30 +657,68 @@ class PluginOrderLink extends CommonDBChild {
    function deleteLinkWithItem($detailID, $itemtype, $plugin_order_orders_id) {
       global $DB, $LANG;
       
-      $order = new PluginOrderOrder;
-      $order->getFromDB($plugin_order_orders_id);
+      if ($itemtype == 'SoftWareLicense') {
             
-      $detail = new PluginOrderOrder_Item;
-      $detail->getFromDB($detailID);
-      $items_id = $detail->fields["items_id"];
+         $detail = new PluginOrderOrder_Item;
+         $detail->getFromDB($detailID);
+         $license = $detail->fields["items_id"];
+         
+         $this->removeInfoComRelatedToOrder($itemtype, $license);
+         
+         $result=$PluginOrderOrder_Item->queryRef($detail->fields["plugin_order_orders_id"],$detail->fields["plugin_order_references_id"],$detail->fields["price_taxfree"],$detail->fields["discount"],ORDER_DEVICE_DELIVRED);
+         
+         $nb = $DB->numrows($result);
 
-      $this->removeInfoComRelatedToOrder($itemtype, $items_id);
+         if ($nb) {
+            for ($i = 0; $i < $nb; $i++) {
+               $ID = $DB->result($result, $i, 'id');
+               $input["id"] = $ID;
+               $input["items_id"] = 0;
+               $detail->update($input);
+               
+               $lic = new SoftwareLicense;
+               $lic->getFromDB($license);
+               $values["id"] = $lic->fields["id"];
+               $values["number"] = $lic->fields["number"]-1;
+               $lic->update($values);
+            }
+            
+            $order = new PluginOrderOrder();
+            $order->getFromDB($detail->fields["plugin_order_orders_id"]);
+            $new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $order->fields["name"];
+            $order->addHistory($itemtype, '', $new_value, $license);
 
-      if ($items_id != 0) {
-         $input = $detail->fields;
-         $input["items_id"] = 0;
-         $detail->update($input);
-      } else
-         addMessageAfterRedirect($LANG['plugin_order'][48], TRUE, ERROR);
-
-      $new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $order->fields["name"];
-      $order->addHistory($itemtype, '', $new_value, $items_id);
+            $item = new $itemtype();
+            $item->getFromDB($license);
+            $new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $item->getField("name");
+            $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
+         }
+      } else {
       
-      $item = new $itemtype();
-      $item->getFromDB($items_id);
-      $new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $item->getField("name");
-      $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
+         $order = new PluginOrderOrder;
+         $order->getFromDB($plugin_order_orders_id);
+               
+         $detail = new PluginOrderOrder_Item;
+         $detail->getFromDB($detailID);
+         $items_id = $detail->fields["items_id"];
 
+         $this->removeInfoComRelatedToOrder($itemtype, $items_id);
+
+         if ($items_id != 0) {
+            $input = $detail->fields;
+            $input["items_id"] = 0;
+            $detail->update($input);
+         } else
+            addMessageAfterRedirect($LANG['plugin_order'][48], TRUE, ERROR);
+
+         $new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $order->fields["name"];
+         $order->addHistory($itemtype, '', $new_value, $items_id);
+         
+         $item = new $itemtype();
+         $item->getFromDB($items_id);
+         $new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $item->getField("name");
+         $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
+      }
    }
    
    function generateNewItem($params) {

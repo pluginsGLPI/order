@@ -85,7 +85,7 @@ if (isset ($_GET['onglet']))
 
 commonHeader($LANG['financial'][87], $_SERVER["PHP_SELF"], "plugins", "order", "budget");
 
-$PluginOrderBudget->showForm($_SERVER["PHP_SELF"], $_GET["id"]);
+$PluginOrderBudget->showForm($_GET["id"]);
 
 commonFooter();
 

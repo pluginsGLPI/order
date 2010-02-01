@@ -40,11 +40,31 @@ if(!isset($_GET["id"])) $_GET["id"] = "";
 if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 
 $PluginOrderReception = new PluginOrderReception();
+$PluginOrderOrder_Item = new PluginOrderOrder_Item();
 
 if (isset ($_POST["update"])) {
 
-   if (plugin_order_HaveRight("order", "w"))
-      $PluginOrderReception->update($_POST);
+   if (plugin_order_HaveRight("order", "w")) {
+      
+      $PluginOrderOrder_Item->getFromDB($_POST["id"]);
+      
+      if ($PluginOrderOrder_Item->fields["itemtype"] == 'SoftwareLicense') {
+         $result=$PluginOrderOrder_Item->queryRef($_POST["plugin_order_orders_id"],$PluginOrderOrder_Item->fields["plugin_order_references_id"],$PluginOrderOrder_Item->fields["price_taxfree"],$PluginOrderOrder_Item->fields["discount"],ORDER_DEVICE_DELIVRED);
+         $nb = $DB->numrows($result);
+
+         if ($nb) {
+            for ($i = 0; $i < $nb; $i++) {
+               $ID = $DB->result($result, $i, 'id');
+               $input["id"] = $ID;
+               $input["delivery_date"] = $_POST["delivery_date"];
+               $input["delivery_number"] = $_POST["delivery_number"];
+               $PluginOrderOrder_Item->update($input);
+            }
+         }
+      } else {
+         $PluginOrderOrder_Item->update($_POST);
+      }
+   }
    glpi_header($_SERVER['HTTP_REFERER']);
    
 } else if (isset ($_POST["reception"])) {
@@ -62,7 +82,7 @@ if (isset ($_POST["update"])) {
    
    commonHeader($LANG['plugin_order']['title'][1],$_SERVER["PHP_SELF"],"plugins","order","order");
 	
-	$PluginOrderReception->showForm($_SERVER["PHP_SELF"],$_GET["id"]);
+	$PluginOrderReception->showForm($_GET["id"]);
 
 	commonFooter();
 	

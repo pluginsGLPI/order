@@ -159,9 +159,37 @@ else if (isset ($_POST["delete_item"])) {
       foreach ($_POST["item"] as $ID => $val)
          if ($val==1)
          {
-            $new_value = $LANG['plugin_order']['detail'][35]." ".Dropdown::getDropdownName("glpi_plugin_order_references",$ID);
-            $PluginOrderOrder->addHistory("PluginOrderOrder","",$new_value,$_POST["plugin_order_orders_id"]);
-            $PluginOrderOrder_Item->delete(array('id'=>$ID));
+            $PluginOrderOrder_Item->getFromDB($ID);
+            
+            if ($PluginOrderOrder_Item->fields["itemtype"] == 'SoftwareLicense') {
+               $result=$PluginOrderOrder_Item->queryRef($_POST["plugin_order_orders_id"],$PluginOrderOrder_Item->fields["plugin_order_references_id"],$PluginOrderOrder_Item->fields["price_taxfree"],$PluginOrderOrder_Item->fields["discount"]);
+               $nb = $DB->numrows($result);
+
+               if ($nb) {
+                  for ($i = 0; $i < $nb; $i++) {
+                     $ID = $DB->result($result, $i, 'id');
+                     $items_id = $DB->result($result, $i, 'items_id');
+                     
+                     if ($items_id) {
+                        $lic = new SoftwareLicense;
+                        $lic->getFromDB($items_id);
+                        $values["id"] = $lic->fields["id"];
+                        $values["number"] = $lic->fields["number"]-1;
+                        $lic->update($values);
+                     }
+                     $input["id"] = $ID;
+                     
+                     $PluginOrderOrder_Item->delete(array('id'=>$input["id"]));
+                  }
+                  $new_value = $LANG['plugin_order']['detail'][35]." ".Dropdown::getDropdownName("glpi_plugin_order_references",$ID);
+                  $PluginOrderOrder->addHistory("PluginOrderOrder","",$new_value,$_POST["plugin_order_orders_id"]);
+               }
+            } else {
+            
+               $new_value = $LANG['plugin_order']['detail'][35]." ".Dropdown::getDropdownName("glpi_plugin_order_references",$ID);
+               $PluginOrderOrder->addHistory("PluginOrderOrder","",$new_value,$_POST["plugin_order_orders_id"]);
+               $PluginOrderOrder_Item->delete(array('id'=>$ID));
+            }
          }
    } else if (!isset($_POST["item"]))
       addMessageAfterRedirect($LANG['plugin_order']['detail'][29],false,ERROR);
@@ -179,7 +207,7 @@ else
 
 	commonHeader($LANG['plugin_order']['title'][1], $_SERVER["PHP_SELF"], "plugins", "order", "order");
 	
-	$PluginOrderOrder->showForm($_SERVER["PHP_SELF"], $_GET["id"]);
+	$PluginOrderOrder->showForm($_GET["id"]);
 	
 	commonFooter();
 }

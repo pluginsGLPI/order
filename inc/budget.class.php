@@ -98,7 +98,7 @@ class PluginOrderBudget extends CommonDBTM {
 		return $tab;
    }
 	/*define header form */
-	function defineTabs($ID, $withtemplate) {
+	function defineTabs($options=array()) {
 		global $LANG;
 		
 		/* principal */
@@ -107,7 +107,7 @@ class PluginOrderBudget extends CommonDBTM {
 		return $ong;
 	}
 
-	function showForm($target, $ID, $withtemplate = '') {
+	function showForm ($ID, $options=array()) {
 		global $CFG_GLPI, $LANG, $DB;
 
 		if (!plugin_order_haveRight("budget","r")) return false;
@@ -122,8 +122,8 @@ class PluginOrderBudget extends CommonDBTM {
 
       $canedit=$this->can($ID,'w');
 		
-      $this->showTabs($ID, $withtemplate);
-      $this->showFormHeader($target,$ID,$withtemplate,1);
+      $this->showTabs($options);
+      $this->showFormHeader($options)
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['common'][16] . ": </td>";
       echo "<td>";
@@ -189,7 +189,7 @@ class PluginOrderBudget extends CommonDBTM {
          echo $this->fields["comment"];
       echo "</td></tr>";
 
-      $this->showFormButtons($ID,$withtemplate,1);
+      $this->showFormButtons($options);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
 

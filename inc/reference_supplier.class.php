@@ -125,11 +125,11 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       return $input;
    }
 	
-	function defineTabs($ID, $withtemplate) {
+	function defineTabs($options=array()) {
 		global $LANG;
 		/* principal */
 		$ong[1] = $LANG['title'][26];
-		if ($ID > 0) {
+		if ($this->fields['id'] > 0) {
          if (haveRight("document", "r"))
             $ong[4] = $LANG['Menu'][27];
          $ong[12] = $LANG['title'][38];
@@ -137,12 +137,19 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 		return $ong;
 	}
 
-	function showForm($target, $ID, $plugin_order_references_id=-1) {
+	function showForm ($ID, $options=array()) {
 		global $LANG,$DB;
       
       if (!plugin_order_haveRight("reference", "w"))
 			return false;
-			
+		
+		$plugin_order_references_id = -1;
+      if (isset($options['plugin_order_references_id'])) {
+         $plugin_order_references_id = $options['plugin_order_references_id'];
+      }
+      
+      $options['colspan'] = 1;
+
 		if ($ID > 0) {
          $this->check($ID,'r');
       } else {
@@ -151,8 +158,8 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       }
       
       if (strpos($_SERVER['PHP_SELF'],"reference_supplier"))
-         $this->showTabs($ID);
-      $this->showFormHeader($target,$ID,'',1);
+         $this->showTabs($options);
+      $this->showFormHeader($options);
       
       $PluginOrderReference = new PluginOrderReference();
       $PluginOrderReference->getFromDB($plugin_order_references_id);
@@ -190,7 +197,8 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       echo "<input type='text' name='price_taxfree' value=\"".formatNumber($this->fields["price_taxfree"],true)."\" size='7'>";
       echo "</td></tr>";
          
-      $this->showFormButtons($ID,'',1,false);
+      $options['candel'] = false;
+      $this->showFormButtons($options);
       
       if (strpos($_SERVER['PHP_SELF'],"reference_supplier")) {
          echo "<div id='tabcontent'></div>";

@@ -104,7 +104,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 		return $tab;
    }
    
-   function defineTabs($ID, $withtemplate) {
+   function defineTabs($options=array()) {
 		global $LANG;
 		/* principal */
 		$ong[1] = $LANG['title'][26];
@@ -140,12 +140,18 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 		return false;
 	}
 	
-	function showForm($target, $ID, $plugin_order_orders_id=-1) {
+	function showForm ($ID, $options=array()) {
 		global $LANG, $CFG_GLPI;
       
       if (!plugin_order_haveRight("order", "w"))
 			return false;
-			
+      
+      $plugin_order_orders_id = -1;
+      if (isset($options['plugin_order_orders_id'])) {
+         $plugin_order_orders_id = $options['plugin_order_orders_id'];
+      }
+      $options['colspan'] = 1;
+      
 		if ($ID > 0) {
          $this->check($ID,'r');
       } else {
@@ -154,8 +160,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       }
       
       if (strpos($_SERVER['PHP_SELF'],"order_supplier"))
-         $this->showTabs($ID);
-      $this->showFormHeader($target,$ID,'',1);
+         $this->showTabs($options);
+      $this->showFormHeader($options);
       
       $PluginOrderOrder = new PluginOrderOrder();
       $PluginOrderOrder->getFromDB($plugin_order_orders_id);
@@ -190,7 +196,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo "</td>";
 		echo "</tr>";
 		
-		$this->showFormButtons($ID,'',1,false);
+		$options['candel'] = false;
+      $this->showFormButtons($options);
       
       if (strpos($_SERVER['PHP_SELF'],"order_supplier")) {
          echo "<div id='tabcontent'></div>";

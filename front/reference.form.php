@@ -90,7 +90,7 @@ else
 	
 	commonHeader($LANG['plugin_order']['reference'][1],$_SERVER["PHP_SELF"],"plugins","order","reference");
 	
-	$PluginOrderReference->showForm($_SERVER["PHP_SELF"],$_GET["id"]);
+	$PluginOrderReference->showForm($_GET["id"]);
 
 	commonFooter();
 }

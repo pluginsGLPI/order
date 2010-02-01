@@ -80,7 +80,7 @@ else
 	commonHeader($LANG['plugin_order']['reference'][5],$_SERVER["PHP_SELF"],"plugins","order","reference");
 	
 	/* load order form */
-	$PluginOrderReference_Supplier->showForm($_SERVER["PHP_SELF"],$_GET["id"],$_GET["plugin_order_references_id"]);
+	$PluginOrderReference_Supplier->showForm($_GET["id"], array('plugin_order_references_id' => $_GET["plugin_order_references_id"]));
 
 	commonFooter();
 }

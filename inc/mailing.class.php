@@ -213,7 +213,7 @@ class PluginOrderMailing extends CommonDBTM {
 			$order->getFromDB($this->orders_id);
 
 			if (isMultiEntitiesMode())
-				$entities_id = Dropdown::getDropdownName("glpi_entities",$this->entity)." | ";
+				$entities_id = Dropdown::getDropdownName("glpi_entities",$this->entities_id)." | ";
 			else
 				$entities_id = "";
 

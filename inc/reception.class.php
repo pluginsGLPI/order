@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderReception extends CommonDBChild {
+class PluginOrderReception extends CommonDBTM {
 
 	public $dohistory=true;
 	public $table="glpi_plugin_order_orders_items";
@@ -106,7 +106,7 @@ class PluginOrderReception extends CommonDBChild {
          return false;
    }
 	
-	function defineTabs($ID, $withtemplate) {
+	function defineTabs($options=array()) {
 		global $LANG;
 
 		$ong[1] = $LANG['title'][26];
@@ -114,7 +114,7 @@ class PluginOrderReception extends CommonDBChild {
 		return $ong;
 	}
 
-	function showForm($target, $ID) {
+	function showForm ($ID, $options=array()) {
 		global $LANG;
       
       if (!plugin_order_haveRight("order", "r"))
@@ -126,9 +126,10 @@ class PluginOrderReception extends CommonDBChild {
          // Create item
          $this->check(-1,'w',$input);
       }
-      $this->showTabs($ID);
-
-      $this->showFormHeader($target,$ID,'',1);
+      $options['colspan'] = 1;
+      
+      $this->showTabs($options);
+      $this->showFormHeader($options);
       
       $PluginOrderOrder = new PluginOrderOrder();
       $PluginOrderOrder->getFromDB($this->fields["plugin_order_orders_id"]);
@@ -162,7 +163,8 @@ class PluginOrderReception extends CommonDBChild {
          echo $this->fields["delivery_number"];
       echo "</td></tr>";
          
-      $this->showFormButtons($ID,'',1,false);
+      $options['candel'] = false;
+      $this->showFormButtons($options);
       
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";
@@ -182,13 +184,7 @@ class PluginOrderReception extends CommonDBChild {
       
       $canedit = $PluginOrderOrder->can($plugin_order_orders_id, 'w') && !$PluginOrderOrder->canUpdateOrder($plugin_order_orders_id) && $PluginOrderOrder->fields["states_id"] != ORDER_STATUS_CANCELED;
       
-      $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, `glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`itemtype`, `glpi_plugin_order_references`.`manufacturers_id` " .
-      "FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references` " .
-      "WHERE `plugin_order_orders_id` = '$plugin_order_orders_id' " .
-      "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`  " .
-      "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
-      "ORDER BY `glpi_plugin_order_orders_items`.`id`";
-      $result_ref = $DB->query($query_ref);
+      $result_ref=$PluginOrderOrder_Item->queryDetail($plugin_order_orders_id);
       $numref = $DB->numrows($result_ref);
 
       while ($data_ref=$DB->fetch_array($result_ref)){
@@ -201,7 +197,10 @@ class PluginOrderReception extends CommonDBChild {
          else {
             
             $plugin_order_references_id = $data_ref["id"];
-            $typeRef = $data_ref["itemtype"];		
+            $typeRef = $data_ref["itemtype"];
+            $price_taxfree = $data_ref["price_taxfree"];
+            $discount = $data_ref["discount"];
+
             $item = new $typeRef();
             $rand = mt_rand();
             echo "<tr><th><ul><li>";
@@ -219,7 +218,8 @@ class PluginOrderReception extends CommonDBChild {
             echo "<td align='center'>" . $item->getTypeName() . "</td>";
             echo "<td align='center'>" . Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]) . "</td>";
             echo "<td>" . $PluginOrderReference->getReceptionReferenceLink($data_ref) . "</td>";
-            echo "<td>" . $PluginOrderOrder_Item->getDeliveredQuantity($plugin_order_orders_id, $plugin_order_references_id) . " / " . $PluginOrderOrder_Item->getTotalQuantityByRef($plugin_order_orders_id,$plugin_order_references_id) . "</td>";
+            echo "<td>" . $PluginOrderOrder_Item->getDeliveredQuantity($plugin_order_orders_id, $plugin_order_references_id, $data_ref["price_taxfree"], $data_ref["discount"]) . " / " . $PluginOrderOrder_Item->getTotalQuantityByRef($plugin_order_orders_id, $plugin_order_references_id, $data_ref["price_taxfree"], $data_ref["discount"]) . "</td>";
+
             echo "</tr></table>";
 
             echo "<div class='center' id='reception$rand' style='display:none'>";
@@ -228,7 +228,8 @@ class PluginOrderReception extends CommonDBChild {
 
             echo "<tr>";
             echo "<th width='15'></th>";
-            echo "<th>" . $LANG['common'][2] . "</th>";
+            if ($typeRef != 'SoftwareLicense')
+               echo "<th>" . $LANG['common'][2] . "</th>";
             echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
             echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
             echo "<th>" . $LANG['plugin_order']['detail'][21] . "</th>";
@@ -240,7 +241,12 @@ class PluginOrderReception extends CommonDBChild {
                     WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
                     AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = '".$plugin_order_references_id."'
                     AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`
-                    ORDER BY `glpi_plugin_order_orders_items`.`id`";
+                    AND `glpi_plugin_order_orders_items`.`discount` LIKE '".$discount."'
+                    AND `glpi_plugin_order_orders_items`.`price_taxfree` LIKE '".$price_taxfree."' ";
+            if ($typeRef == 'SoftwareLicense')
+               $query.=" GROUP BY `glpi_plugin_order_references`.`name` ";	
+            $query.=" ORDER BY `glpi_plugin_order_references`.`name` ";
+
             $result = $DB->query($query);
             $num = $DB->numrows($result);
             
@@ -261,8 +267,8 @@ class PluginOrderReception extends CommonDBChild {
                } else {
                   echo "<td width='15' align='left'></td>";
                }
-               
-               echo "<td align='center'>" . $data["IDD"] . "</td>";
+               if ($typeRef != 'SoftwareLicense')
+                  echo "<td align='center'>" . $data["IDD"] . "</td>";
                echo "<td align='center'>" . $PluginOrderReference->getReceptionReferenceLink($data) . "</td>";
                echo "<td align='center'>";
                $link=getItemTypeFormURL($this->getType());
@@ -277,6 +283,7 @@ class PluginOrderReception extends CommonDBChild {
 
                echo "<input type='hidden' name='id[$detailID]' value='$detailID'>";
                echo "<input type='hidden' name='name[$detailID]' value='" . $data["name"] . "'>";
+               echo "<input type='hidden' name='plugin_order_references_id[$detailID]' value='" . $data["id"] . "'>";
                echo "<input type='hidden' name='itemtype[$detailID]' value='" . $data["itemtype"] . "'>";
                echo "<input type='hidden' name='templates_id[$detailID]' value='" . $data["templates_id"] . "'>";
                echo "<input type='hidden' name='states_id[$detailID]' value='" . $data["states_id"] . "'>";
@@ -299,18 +306,20 @@ class PluginOrderReception extends CommonDBChild {
                
                $rand = mt_rand();
                
-               echo "<div id='massreception" . $plugin_order_orders_id . "$rand'></div>\n";
-               
-               echo "<script type='text/javascript' >\n";
-               echo "function viewmassreception" . $plugin_order_orders_id . "$rand(){\n";
-               $params = array ('plugin_order_orders_id' => $plugin_order_orders_id,
-                                'plugin_order_references_id' => $plugin_order_references_id);
-               ajaxUpdateItemJsCode("massreception" . $plugin_order_orders_id . "$rand",
-                                    $CFG_GLPI["root_doc"]."/plugins/order/ajax/massreception.php", $params, false);
-               echo "};";
-               echo "</script>\n";
-               echo "<p><a href='javascript:viewmassreception".$plugin_order_orders_id."$rand();'>";
-               echo $LANG['plugin_order']['delivery'][4]."</a></p><br>\n";
+               if ($typeRef != 'SoftwareLicense') {
+                  echo "<div id='massreception" . $plugin_order_orders_id . "$rand'></div>\n";
+                  
+                  echo "<script type='text/javascript' >\n";
+                  echo "function viewmassreception" . $plugin_order_orders_id . "$rand(){\n";
+                  $params = array ('plugin_order_orders_id' => $plugin_order_orders_id,
+                                   'plugin_order_references_id' => $plugin_order_references_id);
+                  ajaxUpdateItemJsCode("massreception" . $plugin_order_orders_id . "$rand",
+                                       $CFG_GLPI["root_doc"]."/plugins/order/ajax/massreception.php", $params, false);
+                  echo "};";
+                  echo "</script>\n";
+                  echo "<p><a href='javascript:viewmassreception".$plugin_order_orders_id."$rand();'>";
+                  echo $LANG['plugin_order']['delivery'][4]."</a></p><br>\n";
+               }
             }
             echo "</form></div>";
          }
@@ -386,6 +395,30 @@ class PluginOrderReception extends CommonDBChild {
       addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
    }
    
+   function receptionAllItem($detailID, $plugin_order_references_id, $plugin_order_orders_id, $delivery_date, $delivery_number) {
+      global $LANG, $DB;
+      
+      $detail = new PluginOrderOrder_Item;
+      $detail->getFromDB($detailID);
+      
+      $result=$PluginOrderOrder_Item->queryRef($_POST["plugin_order_orders_id"],$plugin_order_references_id,$detail->fields["price_taxfree"],$detail->fields["discount"],ORDER_DEVICE_NOT_DELIVRED);
+      
+      $nb = $DB->numrows($result);
+
+      if ($nb) {
+         for ($i = 0; $i < $nb; $i++) {
+            $detailID = $DB->result($result, $i, 'id');
+            $detail = new PluginOrderDetail;
+            $input["id"] = $detailID;
+            $input["delivery_date"] = $delivery_date;
+            $input["states_id"] = ORDER_DEVICE_DELIVRED;
+            $input["delivery_number"] = $delivery_number;
+            $detail->update($input);
+         }
+      }
+      addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
+   }
+   
    function updateReceptionStatus($params) {
       global $LANG;
       
@@ -394,14 +427,18 @@ class PluginOrderReception extends CommonDBChild {
       if (isset ($params["item"])) {
          foreach ($params["item"] as $key => $val)
             if ($val == 1) {
-               if ($detail->getFromDB($key)) {
-                  if (!$plugin_order_orders_id)
-                     $plugin_order_orders_id = $detail->fields["plugin_order_orders_id"];
+               if ($params["itemtype"][$key] == 'SoftwareLicense') {
+                  $this->receptionAllItem($key,$params["plugin_order_references_id"][$key], $params["plugin_order_orders_id"], $params["delivery_date"], $params["delivery_number"]);
+               } else {
+                  if ($detail->getFromDB($key)) {
+                     if (!$plugin_order_orders_id)
+                        $plugin_order_orders_id = $detail->fields["plugin_order_orders_id"];
 
-                  if ($detail->fields["states_id"] == ORDER_DEVICE_NOT_DELIVRED) {
-                     $this->receptionOneItem($key, $plugin_order_orders_id, $params["delivery_date"], $params["delivery_number"]);
-                  } else
-                     addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);
+                     if ($detail->fields["states_id"] == ORDER_DEVICE_NOT_DELIVRED) {
+                        $this->receptionOneItem($key, $plugin_order_orders_id, $params["delivery_date"], $params["delivery_number"]);
+                     } else
+                        addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);
+                  }
                }
             }
 

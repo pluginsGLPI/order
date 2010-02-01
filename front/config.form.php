@@ -46,7 +46,7 @@ if (isset($_POST["update"])) {
 
 commonHeader($LANG['plugin_order']['title'][1], $_SERVER["PHP_SELF"], "plugins", "order", "menu");
 
-$config->showForm($_SERVER["PHP_SELF"]);
+$config->showConfigForm($_SERVER["PHP_SELF"]);
 
 commonFooter();
 
