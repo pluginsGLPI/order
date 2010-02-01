@@ -160,17 +160,49 @@ else if (isset ($_POST["add_detail"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset ($_POST["delete_detail"])) {
+
    plugin_order_checkRight("order", "w");
    if (isset($_POST["FK_order"]) && $_POST["FK_order"] > 0 && isset($_POST["detail"]))
    {
+      
       foreach ($_POST["detail"] as $ID => $val)
          if ($val==1)
-         {
-            $new_value = $LANG['plugin_order']['detail'][35]." ".getDropdownName("glpi_plugin_order_references",$ID);
-            $PluginOrder->addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
-            $PluginOrderDetail->delete(array('ID'=>$ID));
+         { 
+            $PluginOrderDetail->getFromDB($ID);
+            
+            if ($PluginOrderDetail->fields["device_type"] == SOFTWARELICENSE_TYPE) {
+               $query = "SELECT `ID`, `FK_device`
+                  FROM `glpi_plugin_order_detail` 
+                  WHERE `FK_order` = '" . $_POST["FK_order"]."' 
+                  AND `FK_reference` = '" . $PluginOrderDetail->fields["FK_reference"] ."' 
+                  AND `price_taxfree` LIKE '" . $PluginOrderDetail->fields["price_taxfree"] ."'
+                  AND `discount` LIKE '" . $PluginOrderDetail->fields["discount"] ."' ";
+               $result = $DB->query($query);
+               $nb = $DB->numrows($result);
+
+               if ($nb) {
+                  for ($i = 0; $i < $nb; $i++) {
+                     $ID = $DB->result($result, $i, 'ID');
+                     $deviceID = $DB->result($result, $i, 'FK_device');
+                     
+                     if ($deviceID) {
+                        $lic = new SoftwareLicense;
+                        $lic->getFromDB($deviceID);
+                        $values["ID"] = $lic->fields["ID"];
+                        $values["number"] = $lic->fields["number"]-1;
+                        $lic->update($values);
+                     }
+                     $input["ID"] = $ID;
+                     $PluginOrderDetail->delete(array('ID'=>$input["ID"]));
+                  }
+               }
+            } else {
+               $new_value = $LANG['plugin_order']['detail'][35]." ".getDropdownName("glpi_plugin_order_references",$ID);
+               $PluginOrder->addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
+               $PluginOrderDetail->delete(array('ID'=>$ID));
+            }
          }
-   }elseif(!isset($_POST["detail"]))
+   }else if (!isset($_POST["detail"]))
       addMessageAfterRedirect($LANG['plugin_order']['detail'][29],false,ERROR);
       
    glpi_header($_SERVER['HTTP_REFERER']);

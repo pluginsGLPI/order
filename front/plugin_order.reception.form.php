@@ -51,8 +51,35 @@ if ($plugin->isActivated("genericobject"))
 	usePlugin('genericobject');
 
 if (isset ($_POST["update"])) {
-   if (plugin_order_HaveRight("order", "w"))
-      $PluginOrderReception->update($_POST);
+   
+   if (plugin_order_HaveRight("order", "w")) {
+      $detail = new PluginOrderDetail;
+      $detail->getFromDB($_POST["ID"]);
+      
+      if ($detail->fields["device_type"] == SOFTWARELICENSE_TYPE) {
+         $query = "SELECT `ID` 
+            FROM `glpi_plugin_order_detail` 
+            WHERE `FK_order` = '" . $_POST["FK_order"]."' 
+            AND `FK_reference` = '" . $detail->fields["FK_reference"] ."' 
+            AND `price_taxfree` LIKE '" . $detail->fields["price_taxfree"] ."'
+            AND `discount` LIKE '" . $detail->fields["discount"] ."'
+            AND `status` = 1 ";
+         $result = $DB->query($query);
+         $nb = $DB->numrows($result);
+
+         if ($nb) {
+            for ($i = 0; $i < $nb; $i++) {
+               $ID = $DB->result($result, $i, 'ID');
+               $input["ID"] = $ID;
+               $input["date"] = $_POST["date"];
+               $input["deliverynum"] = $_POST["deliverynum"];
+               $detail->update($input);
+            }
+         }
+      } else {
+         $PluginOrderReception->update($_POST);
+      }
+   }
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["reception"])) {
 /* reception d'une ligne detail */
@@ -109,7 +136,12 @@ else if (isset ($_POST["createLinkWithDevice"])) {
 
    if ($_POST["item"]) {
       $i = 0;
-      if (count($_POST["item"]) <= 1 || in_array($_POST["FK_type"],$ORDER_RESTRICTED_TYPES)) {
+      
+      $doit = 1;
+      if ($_POST["FK_type"] != SOFTWARELICENSE_TYPE)
+         if (count($_POST["item"]) > 1)
+            $doit = 0;
+      if ($doit) {
          $detail = new PluginOrderDetail;
 
          foreach ($_POST["item"] as $key => $val)

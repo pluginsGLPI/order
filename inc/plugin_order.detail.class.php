@@ -217,7 +217,7 @@ class PluginOrderDetail extends CommonDBTM {
             echo "<tr class='tab_bg_1 center'>";
             echo "<td></td>";
             /* quantity */
-            $quantity = $this->getTotalQuantityByPriceAndDiscount($FK_order,$price_taxfree,$discount);
+            $quantity = $this->getTotalQuantityByRefAndDiscount($FK_order,$refID,$price_taxfree,$discount);
             echo "<td align='center'>".$quantity."</td>";
             /* type */
             $ci=new CommonItem();
@@ -251,7 +251,8 @@ class PluginOrderDetail extends CommonDBTM {
             echo "<tr>";
             if($canedit)
 					echo "<th></th>";
-				echo "<th>".$LANG['common'][2]."</th>";
+            if ($data_ref["type"] != SOFTWARELICENSE_TYPE)
+               echo "<th>".$LANG['common'][2]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][4]."</th>";
 				echo "<th>".$LANG['plugin_order']['detail'][25]."</th>";
@@ -266,8 +267,10 @@ class PluginOrderDetail extends CommonDBTM {
 					AND `".$this->table."`.`FK_reference` = '".$refID."'
 					AND `".$this->table."`.`price_taxfree` LIKE '".$price_taxfree."'
 					AND `".$this->table."`.`discount` LIKE '".$discount."'
-					AND `".$this->table."`.`FK_order` = '$FK_order'
-					ORDER BY `glpi_plugin_order_references`.`name` ";
+					AND `".$this->table."`.`FK_order` = '$FK_order' ";
+				if ($data_ref["type"] == SOFTWARELICENSE_TYPE)
+               $query.=" GROUP BY `glpi_plugin_order_references`.`name` ";	
+				$query.=" ORDER BY `glpi_plugin_order_references`.`name` ";
 
             $result=$DB->query($query);
             $num=$DB->numrows($result);
@@ -280,12 +283,14 @@ class PluginOrderDetail extends CommonDBTM {
 						$sel="";
 						if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
 						echo "<input type='checkbox' name='detail[".$data["IDD"]."]' value='1' $sel>";
+						echo "<input type='hidden' name='FK_order' value='" . $FK_order . "'>";
 						echo "</td>";
 					}
-					echo "<td align='center'>";
-					echo $data["IDD"];
-					echo "<input type='hidden' name='FK_order' value='" . $FK_order . "'>";
-					echo "</td>";
+					if ($data_ref["type"] != SOFTWARELICENSE_TYPE) {
+                  echo "<td align='center'>";
+                  echo $data["IDD"];
+                  echo "</td>";
+               }
 					/* reference */
 					echo "<td align='center'>";
 					echo $PluginOrderReference->getReceptionReferenceLink($data);
@@ -344,18 +349,6 @@ class PluginOrderDetail extends CommonDBTM {
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'quantity'));
    }
-   
-   function getTotalQuantityByPriceAndDiscount($FK_order, $price_taxfree, $discount) {
-      global $DB;
-
-      $query = "SELECT COUNT(*) AS quantity
-               FROM `".$this->table."`
-               WHERE  `FK_order` = '$FK_order'
-               AND `price_taxfree` LIKE '$price_taxfree'
-               AND `discount` LIKE '$discount'";
-      $result = $DB->query($query);
-      return ($DB->result($result, 0, 'quantity'));
-   }
 
    function getTotalQuantityByRef($FK_order, $FK_reference) {
       global $DB;
@@ -363,18 +356,20 @@ class PluginOrderDetail extends CommonDBTM {
       $query = "SELECT COUNT(*) AS quantity
                FROM `".$this->table."`
                WHERE `FK_order` = '$FK_order'
-               AND `FK_reference` = '$FK_reference' ";
+               AND `FK_reference` LIKE '$FK_reference' ";
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'quantity'));
    }
 
-   function getDeliveredQuantity($FK_order, $FK_reference) {
+   function getDeliveredQuantity($FK_order, $FK_reference,$price_taxfree, $discount) {
       global $DB;
 
       $query = "	SELECT COUNT(*) AS deliveredquantity
                   FROM `".$this->table."`
                   WHERE `FK_order` = '$FK_order'
                   AND `FK_reference` = '$FK_reference'
+                  AND `price_taxfree` LIKE '$price_taxfree'
+                  AND `discount` LIKE '$discount'
                   AND `status` = '".ORDER_STATUS_WAITING_APPROVAL."' ";
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'deliveredquantity'));
