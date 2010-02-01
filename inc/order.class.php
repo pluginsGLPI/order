@@ -732,7 +732,7 @@ class PluginOrderOrder extends CommonDBTM {
          $input["entities_id"] = $entity;
          $PluginOrderOrder_Supplier->update($input);
       }
-      $query="SELECT `plugin_order_references_id`,`id` FROM `glpi_plugin_order_orders_items`
+      $query="SELECT `plugin_order_references_id` FROM `glpi_plugin_order_orders_items`
                WHERE `plugin_order_orders_id` = '$ID' 
                GROUP BY plugin_order_references_id";
       
@@ -740,22 +740,9 @@ class PluginOrderOrder extends CommonDBTM {
       $num=$DB->numrows($result);
       if ($num) {
          while ($detail=$DB->fetch_array($result)) {
-            $oldref = $detail["plugin_order_references_id"];
+
             $ref=$PluginOrderReference->transfer($detail["plugin_order_references_id"],
                                              $entity);
-         }
-      }
-      
-      $query="SELECT `id` FROM `glpi_plugin_order_orders_items`
-               WHERE `plugin_order_references_id` = '$oldref' ";
-      
-      $result=$DB->query($query);
-      $num=$DB->numrows($result);
-      if ($num) {
-         while ($dataref=$DB->fetch_array($result)) {
-            $values["id"] = $dataref['id'];
-            $values["plugin_order_references_id"] = $ref;
-            $PluginOrderOrder_Item->update($values);
          }
       }
    }

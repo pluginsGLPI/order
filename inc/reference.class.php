@@ -578,7 +578,8 @@ class PluginOrderReference extends CommonDBTM {
    }
    
    function transfer($ID, $entity) {
-
+      global $DB;
+      
       if ($ID<=0 || !$this->getFromDB($ID)) {
          return 0;
       }
@@ -598,7 +599,20 @@ class PluginOrderReference extends CommonDBTM {
       unset($input['id']);
       $PluginOrderReference_Supplier->add($input);
       
-      return $newid;
+      $PluginOrderOrder_Item = new PluginOrderOrder_Item();
+      
+      $query="SELECT `id` FROM `glpi_plugin_order_orders_items`
+               WHERE `plugin_order_references_id` = '$oldref' ";
+      
+      $result=$DB->query($query);
+      $num=$DB->numrows($result);
+      if ($num) {
+         while ($dataref=$DB->fetch_array($result)) {
+            $values["id"] = $dataref['id'];
+            $values["plugin_order_references_id"] = $newid;
+            $PluginOrderOrder_Item->update($values);
+         }
+      }
    }
 }
 
