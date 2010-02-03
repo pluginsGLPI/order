@@ -182,8 +182,11 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          $result = $DB->query($query);
          while ($data = $DB->fetch_array($result))
             $suppliers[] = $data["suppliers_id"];
- 
-         Dropdown::show('Supplier', array('name' => "suppliers_id",'used' => $suppliers,'entity' => $_SESSION["glpiactive_entity"]));
+
+         Dropdown::show('Supplier',
+                  array('name'   => 'suppliers_id',
+                        'used' => $suppliers,
+                        'entity' => $PluginOrderReference->getEntityID()));
       }
       echo "</td></tr>";
 
@@ -262,7 +265,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          if ($candelete)
          {     
             echo "<div class='center'>";
-            echo "<table width='950px' class='tab_glpi'>";
+            echo "<table width='900px' class='tab_glpi'>";
             echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('show_supplierref$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 
             echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('show_supplierref$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
@@ -277,7 +280,10 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          echo "</table>";
 
       echo "</form>";
+      
+      echo "<a href='".$target."?plugin_order_references_id=".$ID."'>".$LANG['plugin_order']['reference'][2]."</a>";
       echo "</div>";
+      
    }
 
    /*function addSupplierToReference($target,$plugin_order_references_id){
