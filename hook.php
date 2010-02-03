@@ -391,12 +391,12 @@ function plugin_order_MassiveActions($type) {
 	return array ();
 }
 
-function plugin_order_MassiveActionsDisplay($type, $action) {
+function plugin_order_MassiveActionsDisplay($options=array()) {
 	global $LANG;
 	
-	switch ($type) {
+	switch ($options['itemtype']) {
 		case 'PluginOrderOrder' :
-			switch ($action) {
+			switch ($options['action']) {
 				// No case for add_document : use GLPI core one
 				case "plugin_order_transfert" :
 					Dropdown::show('Entity');

@@ -234,6 +234,8 @@ class PluginOrderLink extends CommonDBChild {
                echo "<th width='15'></th>";
             if ($itemtype != 'SoftwareLicense')
                echo "<th>" . $LANG['common'][2] . "</th>";
+            else
+               echo "<th>" . $LANG['plugin_order']['detail'][7] . "</th>";
             echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
             echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
             echo "<th>" . $LANG['plugin_order']['detail'][21] . "</th>";
@@ -592,7 +594,7 @@ class PluginOrderLink extends CommonDBChild {
                   $input["items_id"] = $items_id;
                   $detail->update($input);
 
-                  $this->generateInfoComRelatedToOrder($entity, $detailID, $type, $newID, 0);
+                  $this->generateInfoComRelatedToOrder($entity, $ID, $itemtype, $items_id, 0);
                   
                   $lic = new SoftwareLicense;
                   $lic->getFromDB($items_id);
@@ -603,6 +605,7 @@ class PluginOrderLink extends CommonDBChild {
                }
                
                if ($history) {
+                  $order = new PluginOrderOrder();
                   $new_value = $LANG['plugin_order']['delivery'][14] . ' : ' . $lic->getField("name");
                   $order->addHistory('PluginOrderOrder', '', $new_value, $plugin_order_orders_id);
                }
@@ -636,6 +639,8 @@ class PluginOrderLink extends CommonDBChild {
             $detail->getFromDB($detailID);
             $this->generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, $templateID);
             if ($history) {
+               $order = new PluginOrderOrder();
+               $order->getFromDB($detail->fields["plugin_order_orders_id"]);
                $item = new $itemtype();
                $item->getFromDB($items_id);
                $new_value = $LANG['plugin_order']['delivery'][14] . ' : ' . $item->getField("name");

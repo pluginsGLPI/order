@@ -123,7 +123,7 @@ class PluginOrderBudget extends CommonDBTM {
       $canedit=$this->can($ID,'w');
 		
       $this->showTabs($options);
-      $this->showFormHeader($options)
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['common'][16] . ": </td>";
       echo "<td>";

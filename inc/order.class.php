@@ -171,8 +171,8 @@ class PluginOrderOrder extends CommonDBTM {
 			$ong[2] = $LANG['plugin_order'][5];
 			/* fournisseur */
 			$ong[3] = $LANG['plugin_order'][4];
-			/* generation 
-			$ong[4] = $LANG['plugin_order']['generation'][2];*/
+			/* generation */
+			$ong[4] = $LANG['plugin_order']['generation'][2];
 			/* delivery */
 			$ong[5] = $LANG['plugin_order']['delivery'][1];
 			/* item */
