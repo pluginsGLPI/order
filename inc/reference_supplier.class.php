@@ -280,8 +280,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          echo "</table>";
 
       echo "</form>";
-      
-      echo "<a href='".$target."?plugin_order_references_id=".$ID."'>".$LANG['plugin_order']['reference'][2]."</a>";
+
       echo "</div>";
       
    }
