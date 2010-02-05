@@ -120,8 +120,6 @@ class PluginOrderBudget extends CommonDBTM {
          $this->getEmpty();
       }
 
-      $canedit=$this->can($ID,'w');
-		
       $this->showTabs($options);
       $this->showFormHeader($options);
 
@@ -135,34 +133,22 @@ class PluginOrderBudget extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][87]." GLPI" . ": </td>";
       echo "<td>";
-      if ($canedit)
-         Dropdown::show('Budget', array('name' => "budgets_id",'value' => $this->fields["budgets_id"], 'entity' => $this->fields["entities_id"]));
-      else
-         echo Dropdown::getDropdownName("glpi_budgets",$this->fields["budgets_id"]);
+      Dropdown::show('Budget', array('name' => "budgets_id",'value' => $this->fields["budgets_id"], 'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['search'][8] . ": </td>";
       echo "<td>";
-      if ($canedit)
-         showDateFormItem("start_date",$this->fields["start_date"]);
-      else
-         echo convDate($this->fields["start_date"]);	
+      showDateFormItem("start_date",$this->fields["start_date"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['search'][9] . ": </td>";
       echo "<td>";
-      if ($canedit)
-         showDateFormItem("end_date",$this->fields["end_date"]);
-      else
-         echo convDate($this->fields["end_date"]);	
+      showDateFormItem("end_date",$this->fields["end_date"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][21] . ": </td>";
       echo "<td>";
-      if ($canedit)
-         echo "<input type='text' name='value' value=\"".formatNumber($this->fields["value"],true)."\" size='20'>";
-      else
-         echo $this->fields["value"];	
+      echo "<input type='text' name='value' value=\"".formatNumber($this->fields["value"],true)."\" size='20'>";
       echo "</td></tr>";
 
       if ($ID > 0) {
@@ -183,10 +169,7 @@ class PluginOrderBudget extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>" . $LANG['common'][25] . ": </td>";
       
       echo "<td colspan='3'>";
-      if ($canedit)
-         echo "<textarea cols='50' rows='4' name='comment' >" . $this->fields["comment"] . "</textarea>";
-      else
-         echo $this->fields["comment"];
+      echo "<textarea cols='50' rows='4' name='comment' >" . $this->fields["comment"] . "</textarea>";
       echo "</td></tr>";
 
       $this->showFormButtons($options);

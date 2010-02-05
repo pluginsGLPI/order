@@ -215,7 +215,6 @@ class PluginOrderOrder extends CommonDBTM {
       }
 
       $canedit = ($this->canUpdateOrder($ID) && $this->can($ID, 'w') && $this->fields["states_id"] != ORDER_STATUS_CANCELED);
-      $canrecu=$this->can($ID,'recursive');
 
       $this->showTabs($options);
       $this->showFormHeader($options);
