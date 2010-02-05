@@ -237,8 +237,13 @@ function plugin_order_getDatabaseRelations() {
 			"glpi_plugin_order_ordertaxes" => array (
 				"glpi_plugin_order_orders" => "plugin_order_ordertaxes_id"
 			),
-			"glpi_plugin_order_ordertaxes" => array (
-				"glpi_plugin_order_orders" => "plugin_order_ordertaxes_id"
+			"glpi_plugin_order_orders" => array (
+				"glpi_plugin_order_orders_items" => "plugin_order_orders_id",
+				"glpi_plugin_order_orders_suppliers" => "plugin_order_orders_id"
+			),
+			"glpi_plugin_order_references" => array (
+				"glpi_plugin_order_orders_items" => "plugin_order_references_id",
+				"glpi_plugin_order_references_suppliers" => "plugin_order_references_id"
 			),
 			"glpi_entities" => array (
 				"glpi_plugin_order_orders" => "entities_id",
@@ -248,12 +253,22 @@ function plugin_order_getDatabaseRelations() {
 			"glpi_budgets" => array (
 				"glpi_plugin_order_orders" => "budgets_id"
 			),
+			"glpi_plugin_order_othertypes" => array (
+				"glpi_plugin_order_others" => "othertypes_id"
+			),
 			"glpi_suppliers" => array (
 				"glpi_plugin_order_orders" => "suppliers_id",
+				"glpi_plugin_order_orders_suppliers" => "suppliers_id",
 				"glpi_plugin_order_references_suppliers" => "suppliers_id"
+			),
+			"glpi_manufacturers" => array (
+				"glpi_plugin_order_references" => "manufacturers_id"
 			),
 			"glpi_contacts" => array (
 				"glpi_plugin_order_orders" => "contacts_id"
+			),
+			"glpi_locations" => array (
+				"glpi_plugin_order_orders" => "locations_id"
 			)
 		);
 	else
