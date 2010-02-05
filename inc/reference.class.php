@@ -220,34 +220,31 @@ class PluginOrderReference extends CommonDBTM {
          $this->check(-1,'w');
          $this->getEmpty();
       }
-      
-      $options['colspan'] = 1;
 
-      $canedit=$this->can($ID,'w');
-		$canrecu = $this->can($ID, 'recursive');
-		
       $this->showTabs($options);
       $this->showFormHeader($options);
   
 		$reference_in_use = (!$ID?false:$this->referenceInUse());
-
-      echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['reference'][1] . ": </td>";
+      
+      echo "<tr class='tab_bg_1'>";
+      
+      echo "<td>" . $LANG['plugin_order']['reference'][1] . ": </td>";
       echo "<td>";
-      if ($canedit)
-         autocompletionTextField($this,"name",array('size' => "70"));
-      else
-         echo $this->fields["name"];
-      echo "</td></tr>";
+      autocompletionTextField($this,"name",array('size' => "70"));
+      echo "</td>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['common'][5] . ": </td>";
+      echo "<td>" . $LANG['common'][5] . ": </td>";
       echo "<td>";
-      if ($canedit && !$reference_in_use)
+      if (!$reference_in_use)
          Dropdown::show('Manufacturer', array('name' => "manufacturers_id",'value' => $this->fields["manufacturers_id"]));
       else
          echo Dropdown::getDropdownName("glpi_manufacturers",$this->fields["manufacturers_id"]);
       echo "</td></tr>";
       
-      echo "<tr class='tab_bg_2'><td>" . $LANG['state'][6] . ": </td>";
+      echo "</tr>";
+      echo "<tr class='tab_bg_1'>";
+      
+      echo "<td>" . $LANG['state'][6] . ": </td>";
       echo "<td>";
       
       if ($ID > 0) {
@@ -257,56 +254,62 @@ class PluginOrderReference extends CommonDBTM {
       } else {
          $this->dropdownAllItems("itemtype", true, $this->fields["itemtype"], 0, 0, $_SESSION["glpiactive_entity"], $CFG_GLPI["root_doc"] .
          "/plugins/order/ajax/reference.php");
-         echo "<span id='show_reference'></span></td></tr>";
+         echo "<span id='show_reference'></span></td>";
       }
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['common'][17] . ": </td>";
+      echo "<td>" . $LANG['common'][17] . ": </td>";
       echo "<td><span id='show_types_id'>";
       if ($this->fields["itemtype"]) {
          if ($this->fields["itemtype"] == 'PluginOrderOther') $file = 'other'; else $file = $this->fields["itemtype"];
          if (file_exists(GLPI_ROOT."/inc/".strtolower($file)."type.class.php") 
          || file_exists(GLPI_ROOT."/plugins/order/inc/".strtolower($file)."type.class.php")) {
-            if ($canedit && !$reference_in_use)
+            if (!$reference_in_use)
                Dropdown::show($this->fields["itemtype"]."Type", array('name' => "types_id",'value' => $this->fields["types_id"]));
             else
                echo Dropdown::getDropdownName(getTableForItemType($this->fields["itemtype"]."Type"), $this->fields["types_id"]);
          }
       }
 
-      echo "</span></td></tr>";
-      echo "<tr class='tab_bg_2'><td>" . $LANG['common'][22] . ": </td>";
+      echo "</span></td>";
+      
+      echo "</tr>";
+      echo "<tr class='tab_bg_1'>";
+      
+      echo "<td>" . $LANG['common'][22] . ": </td>";
       echo "<td><span id='show_models_id'>";
       if ($this->fields["itemtype"]) {
          if (file_exists(GLPI_ROOT."/inc/".strtolower($this->fields["itemtype"])."model.class.php")) {
-            if ($canedit)
-               Dropdown::show($this->fields["itemtype"]."Model", array('name' => "models_id",'value' => $this->fields["models_id"]));
-            else
-               echo Dropdown::getDropdownName(getTableForItemType($this->fields["itemtype"]."Model"), $this->fields["models_id"]);
+            Dropdown::show($this->fields["itemtype"]."Model", array('name' => "models_id",'value' => $this->fields["models_id"]));
          }
       }
-      echo "</span></td></tr>";
+      echo "</span></td>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['common'][13] . ": </td>";
+      echo "<td>" . $LANG['common'][13] . ": </td>";
       echo "<td><span id='show_templates_id'>";
       
       $table = getTableForItemType($this->fields["itemtype"]);
       
-      if ($canedit && $this->fields["itemtype"] && $item->maybeTemplate())
+      if ($this->fields["itemtype"] && $item->maybeTemplate())
             $this->dropdownTemplate("templates_id", $this->fields["entities_id"], $table, $this->fields["templates_id"]);
          else
             echo $this->getTemplateName($this->fields["itemtype"], $this->fields["templates_id"]);
 
-      echo "</span></td></tr>";
-
-      echo "<tr class='tab_bg_2'><td>" . $LANG['common'][25] . ": </td>";
-
-      echo "<td colspan='3'>";
-      if ($canedit)
-         echo "<textarea cols='50' rows='4' name='comment' >" . $this->fields["comment"] . "</textarea>";
-      else
-         echo $this->fields["comment"];
-      echo "</td></tr>";
-
+      echo "</span></td>";
+      
+      echo "</tr>";
+      echo "<tr class='tab_bg_1'>";
+      
+      echo "<td></td>";
+      echo "<td></td>";
+      
+      echo "<td>" . $LANG['common'][25] . ": </td>";
+      
+      echo "<td>";
+      echo "<textarea cols='50' rows='4' name='comment' >" . $this->fields["comment"] . "</textarea>";
+      echo "</td>";
+      
+      echo "</tr>";
+      
       $this->showFormButtons($options);
       echo "<div id='tabcontent'></div>";
       echo "<script type='text/javascript'>loadDefaultTab();</script>";

@@ -147,8 +147,6 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       if (isset($options['plugin_order_references_id'])) {
          $plugin_order_references_id = $options['plugin_order_references_id'];
       }
-      
-      $options['colspan'] = 1;
 
 		if ($ID > 0) {
          $this->check($ID,'r');
@@ -167,7 +165,9 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       echo "<input type='hidden' name='entities_id' value='".$PluginOrderReference->getEntityID()."'>";
       echo "<input type='hidden' name='is_recursive' value='".$PluginOrderReference->isRecursive()."'>";
       
-      echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][26] . ": </td>";
+      echo "<tr class='tab_bg_1'>";
+      
+      echo "<td>" . $LANG['financial'][26] . ": </td>";
       echo "<td>";
 
       if ($ID > 0) {
@@ -188,18 +188,27 @@ class PluginOrderReference_Supplier extends CommonDBChild {
                         'used' => $suppliers,
                         'entity' => $PluginOrderReference->getEntityID()));
       }
-      echo "</td></tr>";
+      echo "</td>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['reference'][10] . ": </td>";
+      echo "<td>" . $LANG['plugin_order']['reference'][10] . ": </td>";
       echo "<td>";
       autocompletionTextField($this,"reference_code");
       echo "</td></tr>";
       
-      echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['detail'][4] . ": </td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      
+      echo "<td>" . $LANG['plugin_order']['detail'][4] . ": </td>";
       echo "<td>";
       echo "<input type='text' name='price_taxfree' value=\"".formatNumber($this->fields["price_taxfree"],true)."\" size='7'>";
-      echo "</td></tr>";
-         
+      echo "</td>";
+      
+      echo "<td></td>";
+      echo "<td></td>";
+      
+      echo "</tr>";
+        
       $options['candel'] = false;
       $this->showFormButtons($options);
       

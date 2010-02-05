@@ -126,7 +126,6 @@ class PluginOrderReception extends CommonDBTM {
          // Create item
          $this->check(-1,'w',$input);
       }
-      $options['colspan'] = 1;
       
       $this->showTabs($options);
       $this->showFormHeader($options);
@@ -139,30 +138,40 @@ class PluginOrderReception extends CommonDBTM {
       
       $canedit = $PluginOrderOrder->can($this->fields["plugin_order_orders_id"], 'w') && !$PluginOrderOrder->canUpdateOrder($this->fields["plugin_order_orders_id"]) && $PluginOrderOrder->fields["states_id"] != ORDER_STATUS_CANCELED;
       
-      echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['detail'][6] . ": </td>";
-      echo "<td>";
+      
+      
+      echo "<tr class='tab_bg_1'>";
+      
+      echo "<td>" . $LANG['plugin_order']['detail'][2] . ": </td>";
+      echo "<td colspan='3'>";
       $data = array();
       $data["id"] = $this->fields["plugin_order_references_id"];
       $data["name"]= $PluginOrderReference->fields["name"];
       echo $PluginOrderReference->getReceptionReferenceLink($data);
-      echo "</td></tr>";
+      echo "</td>";
+
+      echo "</tr>";
       
-      echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['detail'][21] . ": </td>";
-      echo "<td>";
-      if ($canedit)
-         showDateFormItem("delivery_date",$this->fields["delivery_date"],true,1);
-      else
-         echo convDate($this->fields["delivery_date"]);
-      echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
       
-      echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][19] . ": </td>";
+      echo "<td>" . $LANG['financial'][19] . ": </td>";
       echo "<td>";
       if ($canedit)
          autocompletionTextField($this,"delivery_number");
       else
          echo $this->fields["delivery_number"];
-      echo "</td></tr>";
-         
+      echo "</td>";
+      
+      echo "<td>" . $LANG['plugin_order']['detail'][21] . ": </td>";
+      echo "<td>";
+      if ($canedit)
+         showDateFormItem("delivery_date",$this->fields["delivery_date"],true,1);
+      else
+         echo convDate($this->fields["delivery_date"]);
+      echo "</td>";
+      
+      echo "</tr>";
+        
       $options['candel'] = false;
       $this->showFormButtons($options);
       

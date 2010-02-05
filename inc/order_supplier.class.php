@@ -150,7 +150,6 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       if (isset($options['plugin_order_orders_id'])) {
          $plugin_order_orders_id = $options['plugin_order_orders_id'];
       }
-      $options['colspan'] = 1;
       
 		if ($ID > 0) {
          $this->check($ID,'r');
@@ -169,31 +168,36 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo "<input type='hidden' name='entities_id' value='".$PluginOrderOrder->getEntityID()."'>";
       echo "<input type='hidden' name='is_recursive' value='".$PluginOrderOrder->isRecursive()."'>";
       
-      if ($ID > 0) {
-         echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][26] . ": </td>";
-         echo "<td>";
-         $link=getItemTypeFormURL('Supplier');
-         echo "<a href=\"" . $link. "?id=" . $this->fields["suppliers_id"] . "\">" . Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]) . "</a>";
-      }
-      echo "<input type='hidden' name='suppliers_id' value='".$PluginOrderOrder->fields["suppliers_id"]."'>";
-      echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . $LANG['financial'][26] . ": </td>";
+      $supplier = $PluginOrderOrder->fields["suppliers_id"];
+      if ($ID > 0)
+         $supplier = $this->fields["suppliers_id"];
+         
+      echo "<td>";
+      $link=getItemTypeFormURL('Supplier');
+      echo "<a href=\"" . $link. "?id=" . $supplier . "\">" . Dropdown::getDropdownName("glpi_suppliers", $supplier) . "</a></td>";
+      echo "<input type='hidden' name='suppliers_id' value='".$supplier."'>";
       
       /* number of quote */
-      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][30] . ": </td><td>";
+      echo "<td>" . $LANG['plugin_order'][30] . ": </td><td>";
       autocompletionTextField($this,"num_quote");
       echo "</td>";
-		echo "</tr>";
-		
-      /* num order supplier */
-      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][31] . ": </td><td>";
-      autocompletionTextField($this,"num_order");
-      echo "</td>";
+      
       echo "</tr>";
       
+      echo "<tr class='tab_bg_1'>";
+      
+      /* num order supplier */
+      echo "<td>" . $LANG['plugin_order'][31] . ": </td><td>";
+      autocompletionTextField($this,"num_order");
+      echo "</td>";
+      
       /* number of bill */
-      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][28] . ": </td><td>";
+      echo "<td>" . $LANG['plugin_order'][28] . ": </td><td>";
       autocompletionTextField($this,"num_bill");
       echo "</td>";
+		
 		echo "</tr>";
 		
 		$options['candel'] = false;
