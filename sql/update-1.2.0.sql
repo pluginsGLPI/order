@@ -118,13 +118,14 @@ ALTER TABLE `glpi_plugin_order_ordertaxes`
 
 ALTER TABLE `glpi_plugin_order_profiles` 
    CHANGE `ID` `id` int(11) NOT NULL auto_increment,
-   CHANGE `name` `name` varchar(255) collate utf8_unicode_ci default NULL,
+   ADD `profiles_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_profiles (id)',
    CHANGE `order` `order` char(1) collate utf8_unicode_ci default NULL,
    CHANGE `reference` `reference` char(1) collate utf8_unicode_ci default NULL,
    CHANGE `budget` `budget` char(1) collate utf8_unicode_ci default NULL,
    CHANGE `validation` `validation` char(1) collate utf8_unicode_ci default NULL,
    CHANGE `cancel` `cancel` char(1) collate utf8_unicode_ci default NULL,
-   CHANGE `undo_validation` `undo_validation` char(1) collate utf8_unicode_ci default NULL;
+   CHANGE `undo_validation` `undo_validation` char(1) collate utf8_unicode_ci default NULL,
+   ADD INDEX (`profiles_id`);
 
 ALTER TABLE `glpi_plugin_order_configs` 
    CHANGE `ID` `id` int(11) NOT NULL auto_increment;

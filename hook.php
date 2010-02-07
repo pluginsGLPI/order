@@ -126,6 +126,24 @@ function plugin_order_install() {
             $DB->query($query) or die($DB->error());
          }
       }
+      
+      $query_="SELECT *
+            FROM `glpi_plugin_order_profiles` ";
+      $result_=$DB->query($query_);
+      if ($DB->numrows($result_)>0) {
+
+         while ($data=$DB->fetch_array($result_)) {
+            $query="UPDATE `glpi_plugin_order_profiles`
+                  SET `profiles_id` = '".$data["id"]."'
+                  WHERE `id` = '".$data["id"]."';";
+            $result=$DB->query($query);
+
+         }
+      }
+      
+      $query="ALTER TABLE `glpi_plugin_order_profiles`
+               DROP `name` ;";
+      $result=$DB->query($query);
 
       Plugin::migrateItemType(
          array(3150=>'PluginOrderOrder',
@@ -269,6 +287,9 @@ function plugin_order_getDatabaseRelations() {
 			),
 			"glpi_locations" => array (
 				"glpi_plugin_order_orders" => "locations_id"
+			),
+			"glpi_profiles" => array (
+				"glpi_plugin_order_profiles" => "profiles_id"
 			)
 		);
 	else
@@ -572,9 +593,9 @@ function plugin_headings_order($item) {
    $PluginOrderBudget = new PluginOrderBudget();
 	switch (get_class($item)) {
       case 'Profile' :
-         if (!$PluginOrderProfile->GetfromDB($item->getField('id')))
+         if (!$PluginOrderProfile->getFromDBByProfile($item->getField('id')))
             $PluginOrderProfile->createAccess($item->getField('id'));
-         $PluginOrderProfile->showForm($CFG_GLPI["root_doc"]."/plugins/order/front/profile.form.php",$item->getField('id'));
+         $PluginOrderProfile->showForm($item->getField('id'), array('target' => $CFG_GLPI["root_doc"]."/plugins/order/front/profile.form.php"));
          break;
       case 'Notification' :
          $PluginOrderMailingSetting->showFormMailing($CFG_GLPI["root_doc"]."/plugins/order/front/mailing.setting.php");

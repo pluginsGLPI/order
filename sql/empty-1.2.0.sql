@@ -220,7 +220,7 @@ INSERT INTO `glpi_plugin_order_ordertaxes` (id,name) VALUES (1,'5.5'), (2,'19.6'
 DROP TABLE IF EXISTS `glpi_plugin_order_profiles`;
 CREATE TABLE `glpi_plugin_order_profiles` (
 	`id` int(11) NOT NULL auto_increment,
-	`name` varchar(255) collate utf8_unicode_ci default NULL,
+	`profiles_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_profiles (id)',
 	`order` char(1) collate utf8_unicode_ci default NULL,
 	`reference` char(1) collate utf8_unicode_ci default NULL,
 	`budget` char(1) collate utf8_unicode_ci default NULL,
@@ -228,7 +228,7 @@ CREATE TABLE `glpi_plugin_order_profiles` (
 	`cancel` char(1) collate utf8_unicode_ci default NULL,
 	`undo_validation` char(1) collate utf8_unicode_ci default NULL,
 	PRIMARY KEY  (`id`),
-	KEY `name` (`name`)
+	KEY `profiles_id` (`profiles_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------

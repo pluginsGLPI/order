@@ -39,48 +39,76 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderProfile extends CommonDBTM {
 	
+	static function getTypeName() {
+      global $LANG;
+
+      return $LANG['plugin_order']['profile'][0];
+   }
+   
+   function canCreate() {
+      return haveRight('profile', 'w');
+   }
+
+   function canView() {
+      return haveRight('profile', 'r');
+   }
+   
 	//if profile deleted
 	function cleanProfiles($ID) {
-	
-		$this->delete(array('id'=>$ID));
+
+		$query = "DELETE 
+				FROM `".$this->getTable()."`
+				WHERE `profiles_id` = '$ID' ";
+		
+		$DB->query($query);
 	}
    
+   function getFromDBByProfile($profiles_id) {
+		global $DB;
+		
+		$query = "SELECT * FROM `".$this->getTable()."`
+					WHERE `profiles_id` = '" . $profiles_id . "' ";
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result) != 1) {
+				return false;
+			}
+			$this->fields = $DB->fetch_assoc($result);
+			if (is_array($this->fields) && count($this->fields)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}
+  
    static function createFirstAccess($ID) {
-
+      
       $myProf = new self();
-      if (!$myProf->GetfromDB($ID)) {
-         
-         $Profile=new Profile();
-         $Profile->getFromDB($ID);
-         $name=$Profile->fields["name"];
+      if (!$myProf->getFromDBByProfile($ID)) {
 
          $myProf->add(array(
-            'id' => $ID,
-            'name' => $name,
+            'profiles_id' => $ID,
             'order' => 'w',
             'budget' => 'w',
             'reference'=>'w',
             'validation'=>'w',
             'cancel'=>'w',
             'undo_validation'=>'w'));
+            
       }
    }
 
-   function plugin_order_createaccess($ID){
+   function createAccess($ID) {
 
-      $Profile=new Profile();
-      $Profile->GetfromDB($ID);
-      $name=$Profile->fields["name"];
-      
       $this->add(array(
-         'id' => $ID,
-         'name' => $name));
+      'profiles_id' => $ID));
    }
    
    static function changeProfile() {
       
       $prof = new self();
-      if ($prof->getFromDB($_SESSION['glpiactiveprofile']['id']))
+      if ($prof->getFromDBByProfile($_SESSION['glpiactiveprofile']['id']))
          $_SESSION["glpi_plugin_order_profile"]=$prof->fields;
       else
          unset($_SESSION["glpi_plugin_order_profile"]);
@@ -101,20 +129,26 @@ class PluginOrderProfile extends CommonDBTM {
    }
 
 	/* profiles modification */
-	function showForm($target, $ID) {
+	function showForm ($ID, $options=array()) {
 		global $LANG;
 
 		if (!haveRight("profile","r")) return false;
-		$canedit=haveRight("profile","w");
+
 		$prof = new Profile();
 		if ($ID) {
-			$this->getFromDB($ID);
+			$this->getFromDBByProfile($ID);
 			$prof->getFromDB($ID);
 		}
-		echo "<form action='" . $target . "' method='post'>";
-		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='2' align='center'><strong>" . $LANG['plugin_order']['profile'][0] . " " . $this->fields["name"] . "</strong></th></tr>";
+
+      $this->showFormHeader($options);
+
 		echo "<tr class='tab_bg_2'>";
+		
+		echo "<th colspan='4' align='center'><strong>" . $LANG['plugin_order']['profile'][0] . " " . $prof->fields["name"] . "</strong></th>";
+		
+		echo "</tr>";	
+		echo "<tr class='tab_bg_2'>";
+		
 		echo "<td>" . $LANG['plugin_order']['menu'][1] . ":</td><td>";
 		if ($prof->fields['interface']!='helpdesk') {
 			Profile::dropdownNoneReadWrite("order",$this->fields["order"],1,1,1);
@@ -122,9 +156,7 @@ class PluginOrderProfile extends CommonDBTM {
 			echo $LANG['profiles'][12]; // No access;
 		}
 		echo "</td>";
-		echo "</tr>";
 
-		echo "<tr class='tab_bg_2'>";
 		echo "<td>" . $LANG['plugin_order']['menu'][2] . ":</td><td>";
 		if ($prof->fields['interface']!='helpdesk') {
 			Profile::dropdownNoneReadWrite("reference",$this->fields["reference"],1,1,1);
@@ -132,9 +164,10 @@ class PluginOrderProfile extends CommonDBTM {
 			echo $LANG['profiles'][12]; // No access;
 		}
 		echo "</td>";
+		
 		echo "</tr>";
-
 		echo "<tr class='tab_bg_2'>";
+		
 		echo "<td>" . $LANG['plugin_order']['menu'][3] . ":</td><td>";
 		if ($prof->fields['interface']!='helpdesk') {
 			Profile::dropdownNoneReadWrite("budget",$this->fields["budget"],1,1,1);
@@ -142,10 +175,16 @@ class PluginOrderProfile extends CommonDBTM {
 			echo $LANG['profiles'][12]; // No access;
 		}
 		echo "</td>";
+      
+      echo "<td></td>";
+		echo "<td></td>";
+		
 		echo "</tr>";
-
-		echo "<tr align='center'><th colspan='2' >".$LANG['plugin_order']['profile'][1]."</th></tr>";
-		echo "<tr class='tab_bg_2'>";
+		
+		echo "<tr align='center'><th colspan='4' >".$LANG['plugin_order'][5]."</th></tr>";
+      
+      echo "<tr class='tab_bg_2'>";
+      
 		echo "<td>" . $LANG['plugin_order']['profile'][1] . ":</td><td>";
 		if ($prof->fields['interface']!='helpdesk') {
 			Profile::dropdownNoneReadWrite("validation",$this->fields["validation"],1,0,1);
@@ -153,9 +192,7 @@ class PluginOrderProfile extends CommonDBTM {
 			echo $LANG['profiles'][12]; // No access;
 		}
 		echo "</td>";
-		echo "</tr>";
-
-		echo "<tr class='tab_bg_2'>";
+		
 		echo "<td>" . $LANG['plugin_order']['profile'][2] . ":</td><td>";
 		if ($prof->fields['interface']!='helpdesk') {
 			Profile::dropdownNoneReadWrite("cancel",$this->fields["cancel"],1,0,1);
@@ -163,9 +200,10 @@ class PluginOrderProfile extends CommonDBTM {
 			echo $LANG['profiles'][12]; // No access;
 		}
 		echo "</td>";
-		echo "</tr>";
-
+      
+      echo "</tr>";
 		echo "<tr class='tab_bg_2'>";
+		
 		echo "<td>" . $LANG['plugin_order']['profile'][3] . ":</td><td>";
 		if ($prof->fields['interface']!='helpdesk') {
 			Profile::dropdownNoneReadWrite("undo_validation",$this->fields["undo_validation"],1,0,1);
@@ -173,16 +211,16 @@ class PluginOrderProfile extends CommonDBTM {
 			echo $LANG['profiles'][12]; // No access;
 		}
 		echo "</td>";
+		
+		echo "<td></td>";
+		echo "<td></td>";
+		
 		echo "</tr>";
 
-		if ($canedit) {
-			echo "<tr class='tab_bg_1'>";
-			echo "<td align='center' colspan='2'>";
-			echo "<input type='hidden' name='id' value=$ID>";
-			echo "<input type='submit' name='update_user_profile' value=\"" . $LANG['buttons'][7] . "\" class='submit'>";
-			echo "</td></tr>";
-		}
-		echo "</table></form>";
+		echo "<input type='hidden' name='id' value=".$this->fields["id"].">";
+      
+		$options['candel'] = false;
+      $this->showFormButtons($options);
 	}
 }
 
