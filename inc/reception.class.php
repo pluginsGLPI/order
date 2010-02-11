@@ -163,7 +163,6 @@ class PluginOrderReception extends CommonDBTM {
          $this->check(-1,'w',$input);
       }
       
-      $options['tab'] = 5;
       $this->showTabs($options);
       $this->showFormHeader($options);
       
@@ -174,6 +173,8 @@ class PluginOrderReception extends CommonDBTM {
       $PluginOrderReference->getFromDB($this->fields["plugin_order_references_id"]);
       
       $canedit = $PluginOrderOrder->can($this->fields["plugin_order_orders_id"], 'w') && !$PluginOrderOrder->canUpdateOrder($this->fields["plugin_order_orders_id"]) && $PluginOrderOrder->fields["states_id"] != ORDER_STATUS_CANCELED;
+      
+      echo "<input type='hidden' name='plugin_order_orders_id' value='" . $this->fields["plugin_order_orders_id"] . "'>";
       
       echo "<tr class='tab_bg_1'>";
       
