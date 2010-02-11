@@ -157,7 +157,7 @@ class PluginOrderReception extends CommonDBTM {
 		}
 		
 		if ($spotted) {
-         $this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"FK_order=".$this->fields["FK_order"]."");
+         $this->showTabs($ID, false, 5);
          echo "<form method='post' name='show_reception' id='show_reception' action=\"$target\">";
          echo "<input type='hidden' name='ID' value='" . $ID . "'>";
          

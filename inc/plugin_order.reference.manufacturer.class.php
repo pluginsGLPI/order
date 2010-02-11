@@ -81,7 +81,7 @@ class PluginOrderReferenceManufacturer extends CommonDBTM {
 
       $canedit = plugin_order_haveRight("reference","w");
       $this->getFromDB($ID);
-      $this->showTabs($ID, false, $_SESSION['glpi_tab'], array (), "FK_reference=".$this->fields["FK_reference"]);
+      $this->showTabs($ID, false, 3);
       echo "<form method='post' name='show_ref_manu' id='show_ref_manu' action=\"$target\">";
       echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
       echo "<input type='hidden' name='ID' value='" . $ID . "'>";
