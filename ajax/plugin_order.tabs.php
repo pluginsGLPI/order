@@ -73,6 +73,7 @@ plugin_order_checkRight("order", "r");
 $PluginOrder = new PluginOrder();
 $PluginOrderDetail = new PluginOrderDetail();
 $PluginOrderSupplier = new PluginOrderSupplier();
+$PluginOrderSupplierSurvey = new PluginOrderSupplierSurvey();
 $PluginOrderReception = new PluginOrderReception();
 
 if (empty ($_POST["ID"])) {
@@ -86,9 +87,10 @@ if (empty ($_POST["ID"])) {
 			/* show items linking form from all */
 			$PluginOrderDetail->showDetail($_SERVER["HTTP_REFERER"], $_POST["ID"]);
 			$PluginOrder->showValidationForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
-			$PluginOrderSupplier->showForm($_SERVER["HTTP_REFERER"], $_POST["ID"]);
+			$PluginOrderSupplier->showForm($CFG_GLPI['root_doc']."/plugins/order/front/plugin_order.supplier.form.php", $_POST["ID"]);
 			$PluginOrderReception->showOrderReception($_POST["ID"]);
 			$PluginOrderReception->showOrderGeneration($_POST["ID"]);
+			$PluginOrderSupplierSurvey->showForm($CFG_GLPI['root_doc']."/plugins/order/front/plugin_order.survey.form.php", $_POST["ID"]);
 			showDocumentAssociated(PLUGIN_ORDER_TYPE, $_POST["ID"], $_POST["withtemplate"]);
 			break;
 		case 1 :
@@ -108,6 +110,9 @@ if (empty ($_POST["ID"])) {
 			break;
 		case 6 :
          $PluginOrderReception->showOrderGeneration($_POST["ID"]);
+			break;
+      case 7 :
+         $PluginOrderSupplierSurvey->showForm($CFG_GLPI['root_doc']."/plugins/order/front/plugin_order.survey.form.php", $_POST["ID"]);
 			break;
       case 9 :
 			/* show documents linking form */

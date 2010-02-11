@@ -42,44 +42,43 @@ useplugin('order',true);
 if(!isset($_GET["ID"])) $_GET["ID"] = "";
 if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 
-$PluginOrderSupplier=new PluginOrderSupplier();
+$PluginOrderSupplierSurvey=new PluginOrderSupplierSurvey();
 $PluginOrder=new PluginOrder();
 
-/* add supplier infos */
 if (isset($_POST["add"]))
 {
 	if(plugin_order_HaveRight("order","w"))
 	{
-		$newID = $PluginOrderSupplier->add($_POST);
-		$new_value = $LANG['plugin_order']['history'][2]. " ";
+		$newID = $PluginOrderSupplierSurvey->add($_POST);
+		/*$new_value = $LANG['plugin_order']['history'][2]. " ";
 		if ($_POST["numquote"])
          $new_value.= $LANG['plugin_order'][30]." ".$_POST["numquote"];
 		if ($_POST["numorder"])
          $new_value.= " - ".$LANG['plugin_order'][31]." : ".$_POST["numorder"];
       if ($_POST["numbill"])
          $new_value.= " - ".$LANG['plugin_order'][28]." : ".$_POST["numbill"];
-		$PluginOrder->addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
+		$PluginOrder->addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);*/
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-/* delete supplier infos */
+
 else if (isset($_POST["delete"]))
 {
    if(plugin_order_HaveRight("order","w")) {
    
-      $new_value = $LANG['plugin_order']['history'][4]. " ".$LANG['plugin_order'][4]." : ".$_POST["ID"];
-      $PluginOrder->addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
+      /*$new_value = $LANG['plugin_order']['history'][4]. " ".$LANG['plugin_order'][4]." : ".$_POST["ID"];
+      $PluginOrder->addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);*/
 	
-		$PluginOrderSupplier->delete($_POST);
+		$PluginOrderSupplierSurvey->delete($_POST);
    }
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-/* update supplier infos */
+
 else if (isset($_POST["update"]))
 {
 	if(plugin_order_HaveRight("order","w")) {
 		
-      $new_value = $LANG['plugin_order']['history'][3]. " ";
+      /*$new_value = $LANG['plugin_order']['history'][3]. " ";
       if ($_POST["numquote"])
          $new_value.= $LANG['plugin_order'][30]." ".$_POST["numquote"];
       if ($_POST["numorder"])
@@ -87,16 +86,16 @@ else if (isset($_POST["update"]))
       if ($_POST["numbill"])
          $new_value.= " - ".$LANG['plugin_order'][28]." : ".$_POST["numbill"];
       
-      $PluginOrder->addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);
+      $PluginOrder->addHistory(PLUGIN_ORDER_TYPE,"",$new_value,$_POST["FK_order"]);*/
       
-      $PluginOrderSupplier->update($_POST);
+      $PluginOrderSupplierSurvey->update($_POST);
    }
 	glpi_header($_SERVER['HTTP_REFERER']);
-}else {
+} else {
    
    commonHeader($LANG['plugin_order']['title'][1], $_SERVER["PHP_SELF"], "plugins", "order", "order");
    
-   $PluginOrderSupplier->showForm($CFG_GLPI['root_doc']."/plugins/order/front/plugin_order.supplier.form.php",0,$_GET["ID"]);
+   $PluginOrderSupplierSurvey->showForm($CFG_GLPI['root_doc']."/plugins/order/front/plugin_order.survey.form.php",0,$_GET["ID"]);
    
    commonFooter();
 }

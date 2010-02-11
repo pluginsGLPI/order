@@ -359,6 +359,22 @@ function plugin_order_install() {
       $query = "DROP TABLE `glpi_dropdown_plugin_order_status`";
       $DB->query($query) or die($DB->error());
    }
+   
+   if (!TableExists("glpi_plugin_order_surveysuppliers")) {
+		$query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_surveysuppliers` (
+                  `ID` int(11) NOT NULL auto_increment,
+                  `FK_order` int(11) NOT NULL default 0,
+                  `FK_enterprise` INT(11) NOT NULL DEFAULT 0,
+                  `answer1` int(11) NOT NULL default 0,
+                  `answer2` int(11) NOT NULL default 0,
+                  `answer3` int(11) NOT NULL default 0,
+                  `answer4` int(11) NOT NULL default 0,
+                  `answer5` int(11) NOT NULL default 0,
+                  `comment` varchar(255) collate utf8_unicode_ci NOT NULL default '',
+                  PRIMARY KEY  (`ID`)
+               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+		$DB->query($query) or die($DB->error());
+	}
    /* End Update en 1.1.0 */
 
 	plugin_order_createfirstaccess($_SESSION['glpiactiveprofile']['ID']);

@@ -37,11 +37,11 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderSupplier extends CommonDBTM {
+class PluginOrderSupplierSurvey extends CommonDBTM {
 
 	function __construct() {
-		$this->table = "glpi_plugin_order_suppliers";
-		$this->type = PLUGIN_ORDER_SUPPLIER_TYPE;
+		$this->table = "glpi_plugin_order_surveysuppliers";
+		$this->type = PLUGIN_ORDER_SURVEY_TYPE;
 		$this->dohistory = true;
 	}
    
@@ -64,74 +64,122 @@ class PluginOrderSupplier extends CommonDBTM {
 		return false;
 	}
 	
-	function showForm($target, $ID,$supplierid = -1) {
+	function addNotation($field,$value) {
+      global $LANG;
+      
+      echo "<font size='1'>".$LANG['plugin_order']['survey'][7]."</font>&nbsp;";
+      
+      for ($i=10 ; $i >= 1 ; $i--) {
+         echo "&nbsp;".$i."&nbsp;<input type='radio' name='".$field."' value='".$i."' ";
+         if ($i == $value)
+         echo " checked ";
+         echo ">";
+      }
+      
+      echo "&nbsp;<font size='1'>".$LANG['plugin_order']['survey'][6]."</font>";
+	}
+	
+	function getTotalNotation($FK_order) {
+      global $DB;
+      
+      $query = "SELECT (`answer1` + `answer2` + `answer3` + `answer4` + `answer5`) AS total FROM `".$this->table."` " .
+				"WHERE `FK_order` = '".$FK_order."' ";
+		$result = $DB->query($query);
+		
+		return $DB->result($result,0,"total");
+
+	}
+	
+	function showForm($target, $ID = -1, $surveyid = -1) {
 		global $LANG, $DB, $CFG_GLPI, $INFOFORM_PAGES;
       
       $PluginOrder=new PluginOrder();
       
-      if ($supplierid > 0) {
-         $this->getFromDB($supplierid);
+      if ($surveyid > 0) {
+         $this->getFromDB($surveyid);
          $ID = $this->fields["FK_order"];
       } else {
          if($this->getFromDBByOrder($ID)) {
-            $supplierid = $this->fields["ID"];
+            $surveyid = $this->fields["ID"];
          }
       }
 
       $canedit=$PluginOrder->can($ID,'w');
       
-		if ($ID > 0 & $supplierid > 0) {
-			$this->check($supplierid,'r');
+		if ($ID > 0 & $surveyid > 0) {
+			$this->check($surveyid,'r');
 		} else {
 			// Create item 
 			$this->check(-1,'w');
 			$this->getEmpty();
-			$supplierid=0;
+			$surveyid=0;
 		}
 
-      echo "<form method='post' name='show_supplier' id='show_supplier' action=\"$target\">";
-      echo "<input type='hidden' name='ID' value='" . $supplierid . "'>";
+      echo "<form method='post' name='show_survey' id='show_survey' action=\"$target\">";
+      echo "<input type='hidden' name='ID' value='" . $surveyid . "'>";
       echo "<input type='hidden' name='FK_order' value='" . $ID . "'>";
+      
+      $PluginOrder->getFromDB($ID);
+      $supplier = $PluginOrder->fields["FK_enterprise"];
+      if ($surveyid > 0)
+         $supplier = $this->fields["FK_enterprise"];
+      echo "<input type='hidden' name='FK_enterprise' value='" . $supplier . "'>";
       
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
-      echo "<th></th>";
+      echo "<th>".$LANG['plugin_order']['survey'][0]."</th>";
       echo "<th><div align='left'>";
-      if ($supplierid>0){
-         echo " ID $supplierid:";
+      if ($surveyid>0) {
+         echo " ID $surveyid:";
       }		
       echo "</div></th></tr>";
-
-      /* number of quote */
-      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][30] . ": </td><td>";
-      if ($canedit)
-         autocompletionTextField("numquote", "glpi_plugin_order_suppliers", "numquote", $this->fields["numquote"], 30, $_SESSION["glpiactive_entity"]);
-      else
-         echo $this->fields["numquote"];
+      
+      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][1] . ": </td><td>";
+      $this->addNotation("answer1",$this->fields["answer1"]);
       echo "</td>";
 		echo "</tr>";
 		
-      /* num order supplier */
-      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][31] . ": </td><td>";
-      if ($canedit)
-         autocompletionTextField("numorder", "glpi_plugin_order_suppliers", "numorder", $this->fields["numorder"], 30, $_SESSION["glpiactive_entity"]);
-      else
-         echo $this->fields["numorder"];
+      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][2] . ": </td><td>";
+      $this->addNotation("answer2",$this->fields["answer2"]);
       echo "</td>";
       echo "</tr>";
       
-      /* number of bill */
-      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][28] . ": </td><td>";
-      if ($canedit)
-         autocompletionTextField("numbill", "glpi_plugin_order_suppliers", "numbill", $this->fields["numbill"], 30, $_SESSION["glpiactive_entity"]);
-      else
-         echo $this->fields["numbill"];
+      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][3] . ": </td><td>";
+      $this->addNotation("answer3",$this->fields["answer3"]);
       echo "</td>";
 		echo "</tr>";
 		
+		echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][4] . ": </td><td>";
+      $this->addNotation("answer4",$this->fields["answer4"]);
+      echo "</td>";
+		echo "</tr>";
+		
+		echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][5] . ": </td><td>";
+      $this->addNotation("answer5",$this->fields["answer5"]);
+      echo "</td>";
+		echo "</tr>";
+		
+		echo "<tr class='tab_bg_1'><td>";
+      //comments of order
+      echo $LANG['common'][25] . ":	</td>";
+      echo "<td>";
+      if ($canedit)
+         echo "<textarea cols='80' rows='4' name='comment'>" . $this->fields["comment"] . "</textarea>";
+      else
+         echo $this->fields["comment"];
+      echo "</td>";
+		echo "</tr>";
+		
+		if ($surveyid>0) {
+         echo "<tr><th><div align='left'>" . $LANG['plugin_order']['survey'][8] . ": </div></th><th><div align='left'>";
+         $total = $this->getTotalNotation($ID)/5;
+         echo $total." / 10";
+         echo "</div></th>";
+         echo "</tr>";
+		}
 		if ($canedit) {
 			
-         if (empty($supplierid)||$supplierid<0){
+         if (empty($surveyid)||$surveyid<0){
 
             echo "<tr>";
             echo "<td class='tab_bg_2' valign='top' colspan='3'>";

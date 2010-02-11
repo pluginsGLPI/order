@@ -161,6 +161,14 @@ function plugin_init_order() {
 			'searchpage' => '',
 			'typename' => $LANG['plugin_order'][6],
 		));
+		
+		registerPluginType('order', 'PLUGIN_ORDER_SURVEY_TYPE', 3156, array (
+			'classname' => 'PluginOrderSupplierSurvey',
+			'tablename' => 'glpi_plugin_order_surveysuppliers',
+			'formpage' => 'front/plugin_order.survey.form.php',
+			'searchpage' => '',
+			'typename' => $LANG['plugin_order']['survey'][0],
+		));
 
 	if ($plugin->isActivated("order"))
 	{
@@ -262,6 +270,8 @@ function plugin_order_haveTypeRight($type, $right) {
 		case PLUGIN_ORDER_SUPPLIER_TYPE :
 			return plugin_order_haveRight("order", $right);
 		case PLUGIN_ORDER_RECEPTION_TYPE :
+			return plugin_order_haveRight("order", $right);
+      case PLUGIN_ORDER_SURVEY_TYPE :
 			return plugin_order_haveRight("order", $right);
 	}
 }

@@ -43,6 +43,7 @@ $LANG['plugin_order'][4] = "Detail Lieferant";
 $LANG['plugin_order'][5] = "Freigabe";
 $LANG['plugin_order'][6] = "Lieferung";
 $LANG['plugin_order'][7] = "Bestellung";
+$LANG['plugin_order'][8] = "Quality";
 $LANG['plugin_order'][11] = "Keine Bestellung vorhanden";
 $LANG['plugin_order'][13] = "Total Netto";
 $LANG['plugin_order'][14] = "Total Brutto";
@@ -63,19 +64,28 @@ $LANG['plugin_order'][46] = "Noch nicht empfangene Geräte können nicht verbund
 $LANG['plugin_order'][47] = "Informationen über die Bestellung";
 $LANG['plugin_order'][48] = "Eine oder mehrere ausgewählte Positionen wurden noch keinem Gerät zugeordnet";
 
-$LANG['plugin_order']['status'][0] = "Status";
-$LANG['plugin_order']['status'][1] = "Wird geliefert";
-$LANG['plugin_order']['status'][2] = "Geliefert";
-$LANG['plugin_order']['status'][3] = "Delivery status";
-$LANG['plugin_order']['status'][7] = "Freigabe pendent";
-$LANG['plugin_order']['status'][8] = "Empfangen";
-$LANG['plugin_order']['status'][9] = "In Bearbeitung";
-$LANG['plugin_order']['status'][10] = "Storniert";
-$LANG['plugin_order']['status'][11] = "Lieferung pendent";
-$LANG['plugin_order']['status'][12] = "Genehmigt";
+$LANG['plugin_order']['budget'][1] = "Verbundene Bestellungen";
+$LANG['plugin_order']['budget'][2] = "Verbrauchtes Budget";
+$LANG['plugin_order']['budget'][3] = "Budgetwert ist gleich Null. Bitte versuchen Sie es erneut";
 
-$LANG['plugin_order']['item'][0] = "Verbundene Geräte";
-$LANG['plugin_order']['item'][2] = "Keine verbundene Geräte";
+$LANG['plugin_order']['config'][0] = "Plugin-Einstellungen";
+$LANG['plugin_order']['config'][1] = "Standard-MwSt";
+$LANG['plugin_order']['config'][2] = "Freigabeprozedur verwenden";
+
+$LANG['plugin_order']['delivery'][1] = "Warenempfang";
+$LANG['plugin_order']['delivery'][2] = "Geräte empfangen";
+$LANG['plugin_order']['delivery'][3] = "Verbundene Geräte erzeugen";
+$LANG['plugin_order']['delivery'][4] = "Geräte Batch-Empfang";
+$LANG['plugin_order']['delivery'][5] = "Empfangene Geräte";
+$LANG['plugin_order']['delivery'][6] = "Zu empfangende Geräte";
+$LANG['plugin_order']['delivery'][9] = "Erzeugen";
+$LANG['plugin_order']['delivery'][11] = "Mit bereits existierendem Gerät verbinden";
+$LANG['plugin_order']['delivery'][12] = "Verbindung mit Gerät entfernen";
+$LANG['plugin_order']['delivery'][13] = "Aus Bestellung erzeugte Geräte";
+$LANG['plugin_order']['delivery'][14] = "Mit Bestellung verbundene Geräte";
+$LANG['plugin_order']['delivery'][15] = "Von Bestellung gelöste Geräte";
+$LANG['plugin_order']['delivery'][16] = "Bereits im Inventar aufgenommene Geräte";
+$LANG['plugin_order']['delivery'][17] = "Es kann kein Gerät erzeugt werden";
 
 $LANG['plugin_order']['detail'][1] = "Gerätetyp";
 $LANG['plugin_order']['detail'][2] = "Referenz";
@@ -105,75 +115,6 @@ $LANG['plugin_order']['detail'][38] = "Wollen Sie diese Bestellung wirklich stor
 $LANG['plugin_order']['detail'][39] = "Wollen Sie den Freigabeantrag wirklich rückgängig machen?";
 $LANG['plugin_order']['detail'][40] = "Wollen Sie die Bestellung wirklich Bearbeiten?";
 
-$LANG['plugin_order']['delivery'][1] = "Warenempfang";
-$LANG['plugin_order']['delivery'][2] = "Geräte empfangen";
-$LANG['plugin_order']['delivery'][3] = "Verbundene Geräte erzeugen";
-$LANG['plugin_order']['delivery'][4] = "Geräte Batch-Empfang";
-$LANG['plugin_order']['delivery'][5] = "Empfangene Geräte";
-$LANG['plugin_order']['delivery'][6] = "Zu empfangende Geräte";
-$LANG['plugin_order']['delivery'][9] = "Erzeugen";
-$LANG['plugin_order']['delivery'][11] = "Mit bereits existierendem Gerät verbinden";
-$LANG['plugin_order']['delivery'][12] = "Verbindung mit Gerät entfernen";
-$LANG['plugin_order']['delivery'][13] = "Aus Bestellung erzeugte Geräte";
-$LANG['plugin_order']['delivery'][14] = "Mit Bestellung verbundene Geräte";
-$LANG['plugin_order']['delivery'][15] = "Von Bestellung gelöste Geräte";
-$LANG['plugin_order']['delivery'][16] = "Bereits im Inventar aufgenommene Geräte";
-$LANG['plugin_order']['delivery'][17] = "Es kann kein Gerät erzeugt werden";
-
-$LANG['plugin_order']['profile'][0] = "Berechtigungsverwaltung";
-$LANG['plugin_order']['profile'][1] = "Bestellung freigeben";
-$LANG['plugin_order']['profile'][2] = "Bestellung stornieren";
-$LANG['plugin_order']['profile'][3] = "Freigegebene Bestellung ändern";
-
-$LANG['plugin_order']['reference'][1] = "Produktreferenz";
-$LANG['plugin_order']['reference'][2] = "Produktreferenz hinzufügen";
-$LANG['plugin_order']['reference'][3] = "Liste der Referenzen";
-$LANG['plugin_order']['reference'][5] = "Lieferant für eine Referenz";
-$LANG['plugin_order']['reference'][6] = "Eine Referenz mit gleichem Namen existiert bereits";
-$LANG['plugin_order']['reference'][7] = "Aktuell benutzte Referenzen";
-$LANG['plugin_order']['reference'][8] = "Eine Referenz ohne Namen kann nicht erzeugt werden";
-$LANG['plugin_order']['reference'][9] = "Eine Referenz ohne Typ kann nicht erzeugt werden";
-$LANG['plugin_order']['reference'][10] = "Produktreferenz des Lieferanten";
-
-$LANG['plugin_order']['config'][0] = "Plugin-Einstellungen";
-$LANG['plugin_order']['config'][1] = "Standard-MwSt";
-$LANG['plugin_order']['config'][2] = "Freigabeprozedur verwenden";
-
-$LANG['plugin_order']['mailing'][0] = "Freigabeantrag einer Bestellung";
-$LANG['plugin_order']['mailing'][2] = "von";
-
-$LANG['plugin_order']['infocom'][1] = "Einige Felder können nicht verändert werden: sie stammen aus einer Bestellung";
-
-$LANG['plugin_order']['history'][2] = "Hinzugefügt";
-$LANG['plugin_order']['history'][3] = "Aktualisiert";
-$LANG['plugin_order']['history'][4] = "Gelöscht";
-
-$LANG['plugin_order']['validation'][0] = "Mindestens eine Bestellposition wird benötigt.";
-$LANG['plugin_order']['validation'][1] = "Freigabeantrag der Bestellung";
-$LANG['plugin_order']['validation'][2] = "Freigabe der Bestellung";
-$LANG['plugin_order']['validation'][3] = "Bestellung wird geliefert";
-$LANG['plugin_order']['validation'][4] = "Bestellung wurde komplett geliefert";
-$LANG['plugin_order']['validation'][5] = "Bestellung wurde storniert";
-$LANG['plugin_order']['validation'][6] = "Freigabeprozedur einer Bestellung";
-$LANG['plugin_order']['validation'][7] = "Freigabeantrag der Bestellung wurde gestellt";
-$LANG['plugin_order']['validation'][9] = "Bestellung freigeben";
-$LANG['plugin_order']['validation'][10] = "Bestellung ist freigegeben worden";
-$LANG['plugin_order']['validation'][11] = "Bestellung freigeben lassen";
-$LANG['plugin_order']['validation'][12] = "Bestellung stornieren";
-$LANG['plugin_order']['validation'][13] = "Freigabeantrag rückgängig machen";
-$LANG['plugin_order']['validation'][14] = "Freigabeantrag wurde rückgängig gemacht";
-$LANG['plugin_order']['validation'][15] = "Bestellung in Bearbeitung";
-$LANG['plugin_order']['validation'][16] = "Freigabe wurde rückgängig gemacht";
-$LANG['plugin_order']['validation'][17] = "Bestellung bearbeiten";
-
-$LANG['plugin_order']['menu'][1] = "Bestellungen verwalten";
-$LANG['plugin_order']['menu'][2] = "Liste der Produktreferenzen verwalten";
-$LANG['plugin_order']['menu'][3] = "Budgets verwalten";
-
-$LANG['plugin_order']['budget'][1] = "Verbundene Bestellungen";
-$LANG['plugin_order']['budget'][2] = "Verbrauchtes Budget";
-$LANG['plugin_order']['budget'][3] = "Budgetwert ist gleich Null. Bitte versuchen Sie es erneut";
-
 $LANG['plugin_order']['generation'][0] = "Erzeugen";
 $LANG['plugin_order']['generation'][1] = "Lieferschein erzeugen";
 $LANG['plugin_order']['generation'][2] = "Lieferschein";
@@ -192,5 +133,75 @@ $LANG['plugin_order']['generation'][14] = "TOTAL netto";
 $LANG['plugin_order']['generation'][15] = "TOTAL brutto";
 $LANG['plugin_order']['generation'][16] = "Unterschrift des Auftraggebers";
 $LANG['plugin_order']['generation'][17] = "€";
+
+$LANG['plugin_order']['history'][2] = "Hinzugefügt";
+$LANG['plugin_order']['history'][3] = "Aktualisiert";
+$LANG['plugin_order']['history'][4] = "Gelöscht";
+
+$LANG['plugin_order']['infocom'][1] = "Einige Felder können nicht verändert werden: sie stammen aus einer Bestellung";
+
+$LANG['plugin_order']['item'][0] = "Verbundene Geräte";
+$LANG['plugin_order']['item'][2] = "Keine verbundene Geräte";
+
+$LANG['plugin_order']['mailing'][0] = "Freigabeantrag einer Bestellung";
+$LANG['plugin_order']['mailing'][2] = "von";
+
+$LANG['plugin_order']['menu'][1] = "Bestellungen verwalten";
+$LANG['plugin_order']['menu'][2] = "Liste der Produktreferenzen verwalten";
+$LANG['plugin_order']['menu'][3] = "Budgets verwalten";
+
+$LANG['plugin_order']['profile'][0] = "Berechtigungsverwaltung";
+$LANG['plugin_order']['profile'][1] = "Bestellung freigeben";
+$LANG['plugin_order']['profile'][2] = "Bestellung stornieren";
+$LANG['plugin_order']['profile'][3] = "Freigegebene Bestellung ändern";
+
+$LANG['plugin_order']['reference'][1] = "Produktreferenz";
+$LANG['plugin_order']['reference'][2] = "Produktreferenz hinzufügen";
+$LANG['plugin_order']['reference'][3] = "Liste der Referenzen";
+$LANG['plugin_order']['reference'][5] = "Lieferant für eine Referenz";
+$LANG['plugin_order']['reference'][6] = "Eine Referenz mit gleichem Namen existiert bereits";
+$LANG['plugin_order']['reference'][7] = "Aktuell benutzte Referenzen";
+$LANG['plugin_order']['reference'][8] = "Eine Referenz ohne Namen kann nicht erzeugt werden";
+$LANG['plugin_order']['reference'][9] = "Eine Referenz ohne Typ kann nicht erzeugt werden";
+$LANG['plugin_order']['reference'][10] = "Produktreferenz des Lieferanten";
+
+$LANG['plugin_order']['status'][0] = "Status";
+$LANG['plugin_order']['status'][1] = "Wird geliefert";
+$LANG['plugin_order']['status'][2] = "Geliefert";
+$LANG['plugin_order']['status'][3] = "Delivery status";
+$LANG['plugin_order']['status'][7] = "Freigabe pendent";
+$LANG['plugin_order']['status'][8] = "Empfangen";
+$LANG['plugin_order']['status'][9] = "In Bearbeitung";
+$LANG['plugin_order']['status'][10] = "Storniert";
+$LANG['plugin_order']['status'][11] = "Lieferung pendent";
+$LANG['plugin_order']['status'][12] = "Genehmigt";
+
+$LANG['plugin_order']['survey'][0] = "Supplier quality";
+$LANG['plugin_order']['survey'][1] = "Quality of administrative monitoring (contract, bills, courier...)";
+$LANG['plugin_order']['survey'][2] = "Quality monitoring commercial frequency of visits, reactivity";
+$LANG['plugin_order']['survey'][3] = "Availability of vendor partners";
+$LANG['plugin_order']['survey'][4] = "Quality of service provider staff";
+$LANG['plugin_order']['survey'][5] = "Reliability on the availability announced";
+$LANG['plugin_order']['survey'][6] = "Very dissatisfied";
+$LANG['plugin_order']['survey'][7] = "Very satisfied";
+$LANG['plugin_order']['survey'][8] = "Rating (X points / 5)";
+
+$LANG['plugin_order']['validation'][0] = "Mindestens eine Bestellposition wird benötigt.";
+$LANG['plugin_order']['validation'][1] = "Freigabeantrag der Bestellung";
+$LANG['plugin_order']['validation'][2] = "Freigabe der Bestellung";
+$LANG['plugin_order']['validation'][3] = "Bestellung wird geliefert";
+$LANG['plugin_order']['validation'][4] = "Bestellung wurde komplett geliefert";
+$LANG['plugin_order']['validation'][5] = "Bestellung wurde storniert";
+$LANG['plugin_order']['validation'][6] = "Freigabeprozedur einer Bestellung";
+$LANG['plugin_order']['validation'][7] = "Freigabeantrag der Bestellung wurde gestellt";
+$LANG['plugin_order']['validation'][9] = "Bestellung freigeben";
+$LANG['plugin_order']['validation'][10] = "Bestellung ist freigegeben worden";
+$LANG['plugin_order']['validation'][11] = "Bestellung freigeben lassen";
+$LANG['plugin_order']['validation'][12] = "Bestellung stornieren";
+$LANG['plugin_order']['validation'][13] = "Freigabeantrag rückgängig machen";
+$LANG['plugin_order']['validation'][14] = "Freigabeantrag wurde rückgängig gemacht";
+$LANG['plugin_order']['validation'][15] = "Bestellung in Bearbeitung";
+$LANG['plugin_order']['validation'][16] = "Freigabe wurde rückgängig gemacht";
+$LANG['plugin_order']['validation'][17] = "Bestellung bearbeiten";
 
 ?>
