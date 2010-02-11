@@ -57,7 +57,11 @@ echo "<input type='hidden' name='orderID' value='".$_POST['orderID']."'>";
 echo $LANG['plugin_order']['delivery'][6];
 $nb = $PluginOrderReception->checkItemStatus($_POST['orderID'],$_POST['referenceID'], ORDER_DEVICE_NOT_DELIVRED);
 dropdownInteger('number_reception','',1,$nb);
-echo "</td><td><input type='submit' name='bulk_reception' class='submit' value='".$LANG['buttons'][2]."'></td></tr></table>";
+echo "</td><td>";
+echo $LANG['plugin_order']['status'][3]."&nbsp;";
+dropdownValue("glpi_dropdown_plugin_order_deliverystate","delivery_status");
+echo "</td>";
+echo "<td><input type='submit' name='bulk_reception' class='submit' value='".$LANG['buttons'][2]."'></td></tr></table>";
 			
 ajaxFooter();
 

@@ -66,6 +66,7 @@ $LANG['plugin_order'][48] = "One or several selected rows haven't linked items";
 $LANG['plugin_order']['status'][0] = "Order status";
 $LANG['plugin_order']['status'][1] = "Being delivered";
 $LANG['plugin_order']['status'][2] = "Delivered";
+$LANG['plugin_order']['status'][3] = "Delivery status";
 $LANG['plugin_order']['status'][7] = "Waiting for approval";
 $LANG['plugin_order']['status'][8] = "Taken delivery";
 $LANG['plugin_order']['status'][9] = "Draft";

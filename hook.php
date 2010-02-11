@@ -103,6 +103,8 @@ function plugin_order_install() {
                   `discount` FLOAT NOT NULL default 0,
                   `price_ati` FLOAT NOT NULL default 0,
                   `status` int(1) NOT NULL default 0,
+                  `delivery_status` int(1) NOT NULL default 0,
+                  `delivery_comments` text,
                   `date` date NOT NULL default 0,
                   PRIMARY KEY  (`ID`)
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
@@ -249,6 +251,29 @@ function plugin_order_install() {
 
    }
 
+   if (!FieldExists("glpi_plugin_order_detail","delivery_status")) {
+   	$query = "ALTER TABLE `glpi_plugin_order_detail` ADD `delivery_status` int(1) NOT NULL default '0'";
+   $DB->query($query) or die($DB->error());
+
+   }
+   
+   if (!FieldExists("glpi_plugin_order_detail","delivery_comments")) {
+   	$query = "ALTER TABLE `glpi_plugin_order_detail` ADD `delivery_comments` text";
+   $DB->query($query) or die($DB->error());
+
+   }
+   
+   if (!TableExists("glpi_dropdown_plugin_order_deliverystate")) {
+		$query = "CREATE TABLE IF NOT EXISTS `glpi_dropdown_plugin_order_deliverystate` (
+                  `ID` int(11) NOT NULL auto_increment,
+                  `name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
+                  `comments` text,
+                  PRIMARY KEY  (`ID`),
+                  KEY `name` (`name`)
+               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+		$DB->query($query) or die($DB->error());
+	}
+
    if (!FieldExists("glpi_plugin_order","port_price")) {
    	$query = "ALTER TABLE `glpi_plugin_order` ADD `port_price` FLOAT NOT NULL default '0'";
    $DB->query($query) or die($DB->error());
@@ -358,7 +383,8 @@ function plugin_order_uninstall() {
 		"glpi_plugin_order_references_manufacturers",
 		"glpi_plugin_order_config",
 		"glpi_plugin_order_budgets",
-      "glpi_plugin_order_suppliers"
+      "glpi_plugin_order_suppliers",
+      "glpi_dropdown_plugin_order_deliverystate"
 	);
 
 	foreach ($tables as $table)
@@ -407,6 +433,9 @@ function plugin_order_getDatabaseRelations() {
 			"glpi_dropdown_plugin_order_taxes" => array (
 				"glpi_plugin_order" => "taxes"
 			),
+			"glpi_dropdown_plugin_order_deliverystate" => array (
+				"glpi_plugin_order" => "delivery_status"
+			),
 			"glpi_entities" => array (
 				"glpi_plugin_order" => "FK_entities",
 				"glpi_plugin_order_references" => "FK_entities"
@@ -432,7 +461,8 @@ function plugin_order_getDropdown() {
 	if ($plugin->isInstalled("order") && $plugin->isActivated("order"))
 		return array (
 			"glpi_dropdown_plugin_order_taxes" => $LANG['plugin_order'][25],
-			"glpi_dropdown_plugin_order_payment" => $LANG['plugin_order'][32]
+			"glpi_dropdown_plugin_order_payment" => $LANG['plugin_order'][32],
+			"glpi_dropdown_plugin_order_deliverystate" => $LANG['plugin_order']['status'][3]
 		);
 	else
 		return array ();

@@ -73,6 +73,8 @@ if (isset ($_POST["update"])) {
                $input["ID"] = $ID;
                $input["date"] = $_POST["date"];
                $input["deliverynum"] = $_POST["deliverynum"];
+               $input["delivery_status"] = $_POST["delivery_status"];
+               $input["delivery_comments"] = $_POST["delivery_comments"];
                $detail->update($input);
             }
          }
@@ -81,11 +83,19 @@ if (isset ($_POST["update"])) {
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset ($_POST["delete"])) {
+
+	$PluginOrderReception->deleteDelivery($_POST["ID"]);
+	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.form.php?ID=".$_POST["FK_order"]);
+	
 } else if (isset ($_POST["reception"])) {
+
 /* reception d'une ligne detail */
 	$PluginOrderReception->updateReceptionStatus($_POST);
 	glpi_header($_SERVER["HTTP_REFERER"]);
+	
 } else if (isset ($_POST["bulk_reception"])) {
+
 	$PluginOrderReception->updateBulkReceptionStatus($_POST);
 	glpi_header($_SERVER["HTTP_REFERER"]);
 }

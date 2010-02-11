@@ -66,6 +66,7 @@ $LANG['plugin_order'][48] = "Uno o più righe selezionate non hanno materiali as
 $LANG['plugin_order']['status'][0] = "Status Ordine";
 $LANG['plugin_order']['status'][1] = "In corso di consegna";
 $LANG['plugin_order']['status'][2] = "Consegnato";
+$LANG['plugin_order']['status'][3] = "Delivery status";
 $LANG['plugin_order']['status'][7] = "In approvazione";
 $LANG['plugin_order']['status'][8] = "Ricevuta";
 $LANG['plugin_order']['status'][9] = "In compilazione";

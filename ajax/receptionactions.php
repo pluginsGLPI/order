@@ -53,6 +53,8 @@ if (isset($_POST["action"])){
 			echo "</td><td>";
 			echo $LANG['financial'][19]."&nbsp;";
 			autocompletionTextField("deliverynum","glpi_plugin_order_detail","deliverynum",'',20,$_SESSION["glpiactive_entity"]);
+			echo $LANG['plugin_order']['status'][3]."&nbsp;";
+			dropdownValue("glpi_dropdown_plugin_order_deliverystate","delivery_status");
 			echo "</td><td><input type='submit' name='reception' class='submit' value='".$LANG['buttons'][2]."'></td>";
          break;
 	}
