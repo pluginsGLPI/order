@@ -158,8 +158,10 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          $this->check(-1,'w',$input);
       }
       
-      if (strpos($_SERVER['PHP_SELF'],"order_supplier"))
+      if (strpos($_SERVER['PHP_SELF'],"order_supplier")) {
+         $options['tab'] = 3;
          $this->showTabs($options);
+      }
       $this->showFormHeader($options);
       
       $PluginOrderOrder = new PluginOrderOrder();

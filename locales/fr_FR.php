@@ -68,6 +68,7 @@ $LANG['plugin_order'][48] = "Une ou plusieurs lignes sélectionnées n'ont pas d
 $LANG['plugin_order']['status'][0] = "Statut commande";
 $LANG['plugin_order']['status'][1] = "En cours de livraison";
 $LANG['plugin_order']['status'][2] = "Livrée";
+$LANG['plugin_order']['status'][3] = "Statut de la livraison";
 $LANG['plugin_order']['status'][7] = "En attente d'approbation";
 $LANG['plugin_order']['status'][8] = "Réceptionné";
 $LANG['plugin_order']['status'][9] = "En cours d'édition";

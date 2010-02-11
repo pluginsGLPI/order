@@ -45,7 +45,9 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders_items` (
    `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file',
    `items_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
    `plugin_order_references_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)',
+   `plugin_order_deliverystates_id` int (11)  NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_deliverystates (id)',
    `delivery_number` varchar(255) collate utf8_unicode_ci default NULL,
+   `delivery_comment` text collate utf8_unicode_ci,
    `price_taxfree` float NOT NULL default 0,
    `price_discounted` float NOT NULL default 0,
    `discount` float NOT NULL default 0,
@@ -56,6 +58,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders_items` (
    KEY `FK_device` (`items_id`,`itemtype`),
    KEY `item` (`itemtype`,`items_id`),
    KEY `plugin_order_references_id` (`plugin_order_references_id`),
+   KEY `plugin_order_deliverystates_id` (`plugin_order_deliverystates_id`),
    KEY `states_id` (`states_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -211,6 +214,21 @@ CREATE TABLE `glpi_plugin_order_ordertaxes` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_plugin_order_ordertaxes` (id,name) VALUES (1,'5.5'), (2,'19.6');
+
+-- --------------------------------------------------------
+
+-- 
+-- Structure de la table `glpi_plugin_order_deliverystates`
+-- 
+
+DROP TABLE IF EXISTS `glpi_plugin_order_deliverystates`;
+CREATE TABLE `glpi_plugin_order_deliverystates` (
+	`id` int(11) NOT NULL auto_increment,
+	`name` varchar(255) collate utf8_unicode_ci default NULL,
+	`comment` text collate utf8_unicode_ci,
+	PRIMARY KEY  (`id`),
+	KEY `name` (`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 -- 

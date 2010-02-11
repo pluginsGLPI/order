@@ -68,6 +68,7 @@ $LANG['plugin_order'][48] = "Eine oder mehrere ausgewählte Positionen wurden no
 $LANG['plugin_order']['status'][0] = "Status";
 $LANG['plugin_order']['status'][1] = "Wird geliefert";
 $LANG['plugin_order']['status'][2] = "Geliefert";
+$LANG['plugin_order']['status'][3] = "Delivery status";
 $LANG['plugin_order']['status'][7] = "Freigabe pendent";
 $LANG['plugin_order']['status'][8] = "Empfangen";
 $LANG['plugin_order']['status'][9] = "In Bearbeitung";

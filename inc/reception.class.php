@@ -105,6 +105,42 @@ class PluginOrderReception extends CommonDBTM {
       else
          return false;
    }
+   
+   function deleteDelivery($detailID) {
+      global $DB;
+      
+      $detail = new PluginOrderOrder_Item;
+      $detail->getFromDB($detailID);
+      
+      if ($detail->fields["itemtype"] == 'SoftwareLicense') {
+      
+         $result=$PluginOrderOrder_Item->queryRef($_POST["plugin_order_orders_id"],$detail->fields["plugin_order_references_id"],$detail->fields["price_taxfree"],$detail->fields["discount"],ORDER_DEVICE_DELIVRED);
+         $nb = $DB->numrows($result);
+         
+         if ($nb) {
+            for ($i = 0; $i < $nb; $i++) {
+               $detailID = $DB->result($result, $i, 'id');
+
+               $input["id"] = $detailID;
+               $input["delivery_date"] = 'NULL';
+               $input["states_id"] = ORDER_DEVICE_NOT_DELIVRED;
+               $input["delivery_number"] = "";
+               $input["plugin_order_deliverystates_id"] = 0;
+               $input["delivery_comment"] = "";
+               $detail->update($input);
+            }
+         }
+      
+      } else {
+         $values["id"] = $detailID;
+         $values["date"] = 0;
+         $values["states_id"] = ORDER_DEVICE_NOT_DELIVRED;
+         $values["delivery_number"] = "";
+         $values["plugin_order_deliverystates_id"] = 0;
+         $values["delivery_comment"] = "";
+         $detail->update($values);
+      }
+   }
 	
 	function defineTabs($options=array()) {
 		global $LANG;
@@ -127,6 +163,7 @@ class PluginOrderReception extends CommonDBTM {
          $this->check(-1,'w',$input);
       }
       
+      $options['tab'] = 5;
       $this->showTabs($options);
       $this->showFormHeader($options);
       
@@ -137,8 +174,6 @@ class PluginOrderReception extends CommonDBTM {
       $PluginOrderReference->getFromDB($this->fields["plugin_order_references_id"]);
       
       $canedit = $PluginOrderOrder->can($this->fields["plugin_order_orders_id"], 'w') && !$PluginOrderOrder->canUpdateOrder($this->fields["plugin_order_orders_id"]) && $PluginOrderOrder->fields["states_id"] != ORDER_STATUS_CANCELED;
-      
-      
       
       echo "<tr class='tab_bg_1'>";
       
@@ -171,8 +206,33 @@ class PluginOrderReception extends CommonDBTM {
       echo "</td>";
       
       echo "</tr>";
-        
-      $options['candel'] = false;
+      
+      echo "<tr class='tab_bg_1'>";
+      
+      echo "<td>" . $LANG['plugin_order']['status'][3] . ": </td>";
+      echo "<td>";
+      if ($canedit)
+         Dropdown::show('PluginOrderDeliveryState', array('name' => "plugin_order_deliverystates_id",'value' => $this->fields["plugin_order_deliverystates_id"]));
+      else
+         echo Dropdown::getDropdownName("glpi_plugin_order_deliverystates",$this->fields["plugin_order_deliverystates_id"]);
+      echo "</td>";
+      
+      echo "<td></td>";
+      echo "<td></td>";
+      
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'><td>";
+      //comments of order
+      echo $LANG['common'][25] . ":	</td>";
+      echo "<td colspan='3'>";
+      if ($canedit)
+         echo "<textarea cols='100' rows='4' name='delivery_comment'>" . $this->fields["delivery_comment"] . "</textarea>";
+      else
+         echo $this->fields["comment"];
+      echo "</td>";
+      echo "</tr>";
+      
       $this->showFormButtons($options);
       
       echo "<div id='tabcontent'></div>";
@@ -243,9 +303,10 @@ class PluginOrderReception extends CommonDBTM {
             echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
             echo "<th>" . $LANG['plugin_order']['detail'][21] . "</th>";
             echo "<th>" . $LANG['financial'][19] . "</th>";
+            echo "<th>" . $LANG['plugin_order']['status'][3] . "</th>";
             echo "</tr>";
             
-            $query = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, `glpi_plugin_order_references`.`id` AS id,`glpi_plugin_order_references`.`templates_id`, `glpi_plugin_order_orders_items`.`states_id`, `glpi_plugin_order_orders_items`.`delivery_date`,`glpi_plugin_order_orders_items`.`delivery_number`, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`itemtype`, `glpi_plugin_order_orders_items`.`items_id`
+            $query = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, `glpi_plugin_order_references`.`id` AS id,`glpi_plugin_order_references`.`templates_id`, `glpi_plugin_order_orders_items`.`states_id`, `glpi_plugin_order_orders_items`.`plugin_order_deliverystates_id`, `glpi_plugin_order_orders_items`.`delivery_date`,`glpi_plugin_order_orders_items`.`delivery_number`, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`itemtype`, `glpi_plugin_order_orders_items`.`items_id`
                     FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references`
                     WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
                     AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = '".$plugin_order_references_id."'
@@ -289,7 +350,7 @@ class PluginOrderReception extends CommonDBTM {
                echo "</td>";
                echo "<td align='center'>" . convDate($data["delivery_date"]) . "</td>";
                echo "<td align='center'>" . $data["delivery_number"] . "</td>";
-
+               echo "<td align='center'>" . Dropdown::getDropdownName("glpi_plugin_order_deliverystates", $data["plugin_order_deliverystates_id"]) . "</td>";
                echo "<input type='hidden' name='id[$detailID]' value='$detailID'>";
                echo "<input type='hidden' name='name[$detailID]' value='" . $data["name"] . "'>";
                echo "<input type='hidden' name='plugin_order_references_id[$detailID]' value='" . $data["id"] . "'>";
@@ -385,14 +446,14 @@ class PluginOrderReception extends CommonDBTM {
          addMessageAfterRedirect($LANG['plugin_order']['detail'][37], true, ERROR);
       else {
          for ($i = 0; $i < $params['number_reception']; $i++) {
-            $this->receptionOneItem($DB->result($result, $i, 0), $params['plugin_order_orders_id'], $params["delivery_date"], $params["delivery_number"]);
+            $this->receptionOneItem($DB->result($result, $i, 0), $params['plugin_order_orders_id'], $params["delivery_date"], $params["delivery_number"], $params["plugin_order_deliverystates_id"]);
          }
          $detail = new PluginOrderOrder_Item;
          $detail->updateDelivryStatus($params['plugin_order_orders_id']);
       }
    }
    
-   function receptionOneItem($detailID, $plugin_order_orders_id, $delivery_date, $delivery_number) {
+   function receptionOneItem($detailID, $plugin_order_orders_id, $delivery_date, $delivery_number,$plugin_order_deliverystates_id) {
       global $LANG;
       
       $detail = new PluginOrderOrder_Item;
@@ -400,11 +461,12 @@ class PluginOrderReception extends CommonDBTM {
       $input["delivery_date"] = $delivery_date;
       $input["states_id"] = ORDER_DEVICE_DELIVRED;
       $input["delivery_number"] = $delivery_number;
+      $input["plugin_order_deliverystates_id"] = $plugin_order_deliverystates_id;
       $detail->update($input);
       addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
    }
    
-   function receptionAllItem($detailID, $plugin_order_references_id, $plugin_order_orders_id, $delivery_date, $delivery_number) {
+   function receptionAllItem($detailID, $plugin_order_references_id, $plugin_order_orders_id, $delivery_date, $delivery_number,$plugin_order_deliverystates_id) {
       global $LANG, $DB;
       
       $detail = new PluginOrderOrder_Item;
@@ -422,6 +484,7 @@ class PluginOrderReception extends CommonDBTM {
             $input["delivery_date"] = $delivery_date;
             $input["states_id"] = ORDER_DEVICE_DELIVRED;
             $input["delivery_number"] = $delivery_number;
+            $input["plugin_order_deliverystates_id"] = $plugin_order_deliverystates_id;
             $detail->update($input);
          }
       }
@@ -437,14 +500,14 @@ class PluginOrderReception extends CommonDBTM {
          foreach ($params["item"] as $key => $val)
             if ($val == 1) {
                if ($params["itemtype"][$key] == 'SoftwareLicense') {
-                  $this->receptionAllItem($key,$params["plugin_order_references_id"][$key], $params["plugin_order_orders_id"], $params["delivery_date"], $params["delivery_number"]);
+                  $this->receptionAllItem($key,$params["plugin_order_references_id"][$key], $params["plugin_order_orders_id"], $params["delivery_date"], $params["delivery_number"], $params["plugin_order_deliverystates_id"]);
                } else {
                   if ($detail->getFromDB($key)) {
                      if (!$plugin_order_orders_id)
                         $plugin_order_orders_id = $detail->fields["plugin_order_orders_id"];
 
                      if ($detail->fields["states_id"] == ORDER_DEVICE_NOT_DELIVRED) {
-                        $this->receptionOneItem($key, $plugin_order_orders_id, $params["delivery_date"], $params["delivery_number"]);
+                        $this->receptionOneItem($key, $plugin_order_orders_id, $params["delivery_date"], $params["delivery_number"], $params["plugin_order_deliverystates_id"]);
                      } else
                         addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);
                   }
