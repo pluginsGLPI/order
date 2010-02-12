@@ -26,13 +26,13 @@
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
- 
+
 // ----------------------------------------------------------------------
 // Original Author of file: NOUH Walid & Benjamin Fontan
 // Purpose of file: plugin order v1.1.0 - GLPI 0.72
 // ----------------------------------------------------------------------
  */
- 
+
 define('GLPI_ROOT','../../..');
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
@@ -56,7 +56,7 @@ $nb = $PluginOrderReception->checkItemStatus($_POST['plugin_order_orders_id'],$_
 Dropdown::showInteger('number_reception','',1,$nb);
 echo "</td><td>";
 echo $LANG['plugin_order']['status'][3]."&nbsp;";
-Dropdown::show('PluginOrderDeliveryState', array('name' => "plugin_order_deliverystates_id");
+Dropdown::show('PluginOrderDeliveryState', array('name' => "plugin_order_deliverystates_id"));
 echo "</td>";
 echo "<td><input type='submit' name='bulk_reception' class='submit' value='".$LANG['buttons'][2]."'></td></tr></table>";
 
