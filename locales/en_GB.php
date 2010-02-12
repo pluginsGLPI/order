@@ -169,12 +169,14 @@ $LANG['plugin_order']['status'][0] = "Order status";
 $LANG['plugin_order']['status'][1] = "Being delivered";
 $LANG['plugin_order']['status'][2] = "Delivered";
 $LANG['plugin_order']['status'][3] = "Delivery status";
+$LANG['plugin_order']['status'][4] = "Unspecified status";
 $LANG['plugin_order']['status'][7] = "Waiting for approval";
 $LANG['plugin_order']['status'][8] = "Taken delivery";
 $LANG['plugin_order']['status'][9] = "Draft";
 $LANG['plugin_order']['status'][10] = "Canceled";
 $LANG['plugin_order']['status'][11] = "Waiting for delivery";
 $LANG['plugin_order']['status'][12] = "Validated";
+$LANG['plugin_order']['status'][13] = "Delivery Statistics";
 
 $LANG['plugin_order']['survey'][0] = "Supplier quality";
 $LANG['plugin_order']['survey'][1] = "Quality of administrative monitoring (contract, bills, courier...)";
@@ -185,6 +187,9 @@ $LANG['plugin_order']['survey'][5] = "Reliability on the availability announced"
 $LANG['plugin_order']['survey'][6] = "Very dissatisfied";
 $LANG['plugin_order']['survey'][7] = "Very satisfied";
 $LANG['plugin_order']['survey'][8] = "Rating (X points / 5)";
+$LANG['plugin_order']['survey'][9] = "Overall rating of the supplier";
+$LANG['plugin_order']['survey'][10] = "Rating";
+$LANG['plugin_order']['survey'][11] = "Survey comment";
 
 $LANG['plugin_order']['validation'][0] = "Thanks to add at least one equipment on your order.";
 $LANG['plugin_order']['validation'][1] = "Request order validation";

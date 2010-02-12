@@ -949,10 +949,15 @@ function plugin_headings_order($type, $ID) {
    $mailing = new PluginOrderConfigMailing();
    $detail = new PluginOrderDetail();
    $reference = new PluginOrderReference();
-
+   $PluginOrderSupplier = new PluginOrderSupplier();
+   $PluginOrderSupplierSurvey = new PluginOrderSupplierSurvey();
+   
 	switch ($type) {
 		case ENTERPRISE_TYPE :
 			$reference->showReferencesFromSupplier($ID);
+			$PluginOrderSupplier->showDeliveries($ID);
+			$PluginOrderSupplierSurvey->showGlobalNotation($ID);
+			
 			break;
 		case PROFILE_TYPE :
          $prof = new PluginOrderProfile();

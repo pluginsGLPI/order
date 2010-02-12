@@ -165,6 +165,19 @@ $LANG['plugin_order']['reference'][8] = "Impossible de créer une référence sa
 $LANG['plugin_order']['reference'][9] = "Impossible de créer une référence sans type";
 $LANG['plugin_order']['reference'][10] = "Référence produit fournisseur";
 
+$LANG['plugin_order']['status'][0] = "Statut commande";
+$LANG['plugin_order']['status'][1] = "En cours de livraison";
+$LANG['plugin_order']['status'][2] = "Livrée";
+$LANG['plugin_order']['status'][3] = "Statut de la livraison";
+$LANG['plugin_order']['status'][4] = "Statut non spécifié";
+$LANG['plugin_order']['status'][7] = "En attente d'approbation";
+$LANG['plugin_order']['status'][8] = "Réceptionné";
+$LANG['plugin_order']['status'][9] = "En cours d'édition";
+$LANG['plugin_order']['status'][10] = "Annulée";
+$LANG['plugin_order']['status'][11] = "En attente de livraison";
+$LANG['plugin_order']['status'][12] = "Validé";
+$LANG['plugin_order']['status'][13] = "Statistique livraison";
+
 $LANG['plugin_order']['survey'][0] = "Qualité fournisseur";
 $LANG['plugin_order']['survey'][1] = "Qualité du suivi administratif (contrat, factures, courrier...)";
 $LANG['plugin_order']['survey'][2] = "Qualité du suivi commercial, fréquence des visites, réactivité";
@@ -174,17 +187,9 @@ $LANG['plugin_order']['survey'][5] = "Fiabilité sur les disponibilités annonc�
 $LANG['plugin_order']['survey'][6] = "Trés insatisfait";
 $LANG['plugin_order']['survey'][7] = "Trés satisfait";
 $LANG['plugin_order']['survey'][8] = "Note moyenne sur 10 (X points / 5)";
-
-$LANG['plugin_order']['status'][0] = "Statut commande";
-$LANG['plugin_order']['status'][1] = "En cours de livraison";
-$LANG['plugin_order']['status'][2] = "Livrée";
-$LANG['plugin_order']['status'][3] = "Statut de la livraison";
-$LANG['plugin_order']['status'][7] = "En attente d'approbation";
-$LANG['plugin_order']['status'][8] = "Réceptionné";
-$LANG['plugin_order']['status'][9] = "En cours d'édition";
-$LANG['plugin_order']['status'][10] = "Annulée";
-$LANG['plugin_order']['status'][11] = "En attente de livraison";
-$LANG['plugin_order']['status'][12] = "Validé";
+$LANG['plugin_order']['survey'][9] = "Note globale du fournisseur";
+$LANG['plugin_order']['survey'][10] = "Note";
+$LANG['plugin_order']['survey'][11] = "Commentaire du Sondage";
 
 $LANG['plugin_order']['validation'][0] = "Merci d'ajouter au moins un équipement à votre commande.";
 $LANG['plugin_order']['validation'][1] = "Demande de validation de la commande";

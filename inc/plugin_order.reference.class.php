@@ -484,7 +484,7 @@ class PluginOrderReference extends CommonDBTM {
 
             echo "<td>";
             $PluginOrderReference = new PluginOrderReference();
-            echo $PluginOrderReference->getReceptionReferenceLink($data["ID"], $data["name"]);
+            echo $PluginOrderReference->getReceptionReferenceLink($data);
             echo "</td>";
             echo "<td>";
             $commonitem->setType($data["type"]);

@@ -85,9 +85,60 @@ class PluginOrderSupplierSurvey extends CommonDBTM {
       $query = "SELECT (`answer1` + `answer2` + `answer3` + `answer4` + `answer5`) AS total FROM `".$this->table."` " .
 				"WHERE `FK_order` = '".$FK_order."' ";
 		$result = $DB->query($query);
+		$nb = $DB->numrows($result);
+		if ($nb)
+         return $DB->result($result,0,"total")/5;
+      else
+         return 0;
+	}
+	
+	function showGlobalNotation($FK_enterprise) {
+      global $LANG,$DB,$CFG_GLPI,$INFOFORM_PAGES;
+      
+      $query = "SELECT `glpi_plugin_order`.`ID`, `glpi_plugin_order`.`name`,`".$this->table."`.`comment` 
+                  FROM `glpi_plugin_order` 
+                  LEFT JOIN `".$this->table."` ON (`".$this->table."`.`FK_enterprise` = `glpi_plugin_order`.`FK_enterprise`)
+                  WHERE `glpi_plugin_order`.`FK_enterprise` = '".$FK_enterprise."' 
+                  GROUP BY `glpi_plugin_order`.`ID`";
+		$result = $DB->query($query);
+		$nb = $DB->numrows($result);
+		$total = 0;
+		$nb_order = 0;
 		
-		return $DB->result($result,0,"total");
-
+		echo "<br><div class='center'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr>";
+      echo "<th colspan='3'>" . $LANG['plugin_order']['survey'][0]. "</th>";
+      echo "</tr>";
+      echo "<tr>";
+      echo "<th>" . $LANG['plugin_order'][39]. "</th>";
+      echo "<th>" . $LANG['plugin_order']['survey'][10]."</th>";
+      echo "<th>" . $LANG['plugin_order']['survey'][11]."</th>";
+      echo "</tr>";
+      
+      if ($nb) {
+         for ($i=0 ; $i <$nb ; $i++) {
+            $name = $DB->result($result,$i,"name");
+            $ID = $DB->result($result,$i,"ID");
+            $comment = $DB->result($result,$i,"comment");
+            $note = $this->getTotalNotation($ID);
+            echo "<tr class='tab_bg_1'>";
+            echo "<td><a href=\"" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[PLUGIN_ORDER_TYPE] . "?ID=" . $ID . "\">" . $name . "</a></td>";
+            echo "<td>" . $note." / 10"."</td>";
+            echo "<td>" . nl2br($comment)."</td>";
+            echo "</tr>";
+            $total+= $this->getTotalNotation($ID);
+            $nb_order++;
+         }
+         
+         echo "<tr class='tab_bg_1'>";
+         echo "<th>&nbsp;</th>";
+         echo "<th><div align='left'>" . $LANG['plugin_order']['survey'][9]. "</div></td>";
+         echo "<th><div align='left'>" . $total/$nb_order."&nbsp;/ 10</div></td>";
+         echo "</tr>";
+      }
+      echo "</table>";
+      echo "</div>";
 	}
 	
 	function showForm($target, $ID = -1, $surveyid = -1) {
@@ -134,6 +185,11 @@ class PluginOrderSupplierSurvey extends CommonDBTM {
       }		
       echo "</div></th></tr>";
       
+      echo "<tr class='tab_bg_1'><td>" . $LANG['financial'][26] . ": </td><td>";
+      echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[ENTERPRISE_TYPE] . "?ID=" . $supplier . "\">" . getDropdownName("glpi_enterprises", $supplier) . "</a>";
+      echo "</td>";
+		echo "</tr>";
+		
       echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][1] . ": </td><td>";
       $this->addNotation("answer1",$this->fields["answer1"]);
       echo "</td>";
@@ -172,7 +228,7 @@ class PluginOrderSupplierSurvey extends CommonDBTM {
 		
 		if ($surveyid>0) {
          echo "<tr><th><div align='left'>" . $LANG['plugin_order']['survey'][8] . ": </div></th><th><div align='left'>";
-         $total = $this->getTotalNotation($ID)/5;
+         $total = $this->getTotalNotation($ID);
          echo $total." / 10";
          echo "</div></th>";
          echo "</tr>";
