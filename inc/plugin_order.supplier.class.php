@@ -158,18 +158,20 @@ class PluginOrderSupplier extends CommonDBTM {
 	function showDeliveries($FK_enterprise) {
       global $LANG,$DB,$CFG_GLPI,$INFOFORM_PAGES;
       
-      $query = "SELECT COUNT(`glpi_plugin_order_detail`.`FK_reference`) AS ref, `glpi_plugin_order_detail`.`delivery_status` 
+      $query = "SELECT COUNT(`glpi_plugin_order_detail`.`FK_reference`) AS ref, `glpi_plugin_order_detail`.`delivery_status`, `glpi_plugin_order`.`FK_entities`
                   FROM `glpi_plugin_order_detail` 
                   LEFT JOIN `glpi_plugin_order` ON (`glpi_plugin_order`.`ID` = `glpi_plugin_order_detail`.`FK_order`)
                   WHERE `glpi_plugin_order`.`FK_enterprise` = '".$FK_enterprise."' 
-                  AND `glpi_plugin_order_detail`.`status` = '".ORDER_DEVICE_DELIVRED."'
-                  GROUP BY `glpi_plugin_order_detail`.`delivery_status`";
+                  AND `glpi_plugin_order_detail`.`status` = '".ORDER_DEVICE_DELIVRED."' "
+                  .getEntitiesRestrictRequest(" AND ","glpi_plugin_order",'','',true);
+      $query.= " GROUP BY `glpi_plugin_order`.`FK_entities`,`glpi_plugin_order_detail`.`delivery_status`";
 		$result = $DB->query($query);
 		$nb = $DB->numrows($result);
 		
 		echo "<br><div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
+      echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>" . $LANG['plugin_order']['status'][13] ."</th>";
       echo "</tr>";
       
@@ -177,7 +179,11 @@ class PluginOrderSupplier extends CommonDBTM {
          for ($i=0 ; $i <$nb ; $i++) {
             $ref = $DB->result($result,$i,"ref");
             $delivery_status = $DB->result($result,$i,"delivery_status");
+            $FK_entities = $DB->result($result,$i,"FK_entities");
             echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo getDropdownName("glpi_entities",$FK_entities);
+            echo "</td>";
             if ($delivery_status > 0)
                $name = getDropdownName("glpi_dropdown_plugin_order_deliverystate",$delivery_status);
             else

@@ -456,7 +456,8 @@ class PluginOrderReference extends CommonDBTM {
 
       $query = "SELECT `gr`.`ID`, `gr`.`FK_glpi_enterprise`, `gr`.`FK_entities`, `gr`.`type`, `gr`.`name`, `grm`.`price_taxfree` " .
             "FROM `glpi_plugin_order_references_manufacturers` AS grm, `".$this->table."` AS gr " .
-            "WHERE `grm`.`FK_enterprise` = '$ID' AND `grm`.`FK_reference` = `gr`.`ID`";
+            "WHERE `grm`.`FK_enterprise` = '$ID' AND `grm`.`FK_reference` = `gr`.`ID`"
+            .getEntitiesRestrictRequest(" AND ","gr",'','',true);
       $result = $DB->query($query);
 
       echo "<div class='center'>";

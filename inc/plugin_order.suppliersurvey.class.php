@@ -95,11 +95,13 @@ class PluginOrderSupplierSurvey extends CommonDBTM {
 	function showGlobalNotation($FK_enterprise) {
       global $LANG,$DB,$CFG_GLPI,$INFOFORM_PAGES;
       
-      $query = "SELECT `glpi_plugin_order`.`ID`, `glpi_plugin_order`.`name`,`".$this->table."`.`comment` 
-                  FROM `glpi_plugin_order` 
-                  LEFT JOIN `".$this->table."` ON (`".$this->table."`.`FK_enterprise` = `glpi_plugin_order`.`FK_enterprise`)
-                  WHERE `glpi_plugin_order`.`FK_enterprise` = '".$FK_enterprise."' 
-                  GROUP BY `glpi_plugin_order`.`ID`";
+      $query = "SELECT `glpi_plugin_order`.`ID`, `glpi_plugin_order`.`name`, `glpi_plugin_order`.`FK_entities`,`".$this->table."`.`comment` 
+                  FROM `glpi_plugin_order`,`".$this->table."`
+                  WHERE `".$this->table."`.`FK_enterprise` = `glpi_plugin_order`.`FK_enterprise`
+                  AND `".$this->table."`.`FK_order` = `glpi_plugin_order`.`ID`
+                  AND `glpi_plugin_order`.`FK_enterprise` = '".$FK_enterprise."' "
+                  .getEntitiesRestrictRequest(" AND ","glpi_plugin_order",'','',true);
+      $query.= " GROUP BY `".$this->table."`.`ID`";
 		$result = $DB->query($query);
 		$nb = $DB->numrows($result);
 		$total = 0;
@@ -108,9 +110,10 @@ class PluginOrderSupplierSurvey extends CommonDBTM {
 		echo "<br><div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
-      echo "<th colspan='3'>" . $LANG['plugin_order']['survey'][0]. "</th>";
+      echo "<th colspan='4'>" . $LANG['plugin_order']['survey'][0]. "</th>";
       echo "</tr>";
       echo "<tr>";
+      echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>" . $LANG['plugin_order'][39]. "</th>";
       echo "<th>" . $LANG['plugin_order']['survey'][10]."</th>";
       echo "<th>" . $LANG['plugin_order']['survey'][11]."</th>";
@@ -121,8 +124,12 @@ class PluginOrderSupplierSurvey extends CommonDBTM {
             $name = $DB->result($result,$i,"name");
             $ID = $DB->result($result,$i,"ID");
             $comment = $DB->result($result,$i,"comment");
+            $FK_entities = $DB->result($result,$i,"FK_entities");
             $note = $this->getTotalNotation($ID);
             echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo getDropdownName("glpi_entities",$FK_entities);
+            echo "</td>";
             echo "<td><a href=\"" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[PLUGIN_ORDER_TYPE] . "?ID=" . $ID . "\">" . $name . "</a></td>";
             echo "<td>" . $note." / 10"."</td>";
             echo "<td>" . nl2br($comment)."</td>";
@@ -132,7 +139,7 @@ class PluginOrderSupplierSurvey extends CommonDBTM {
          }
          
          echo "<tr class='tab_bg_1'>";
-         echo "<th>&nbsp;</th>";
+         echo "<th colspan='2'></th>";
          echo "<th><div align='left'>" . $LANG['plugin_order']['survey'][9]. "</div></td>";
          echo "<th><div align='left'>" . $total/$nb_order."&nbsp;/ 10</div></td>";
          echo "</tr>";
