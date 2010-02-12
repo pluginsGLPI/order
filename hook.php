@@ -107,8 +107,19 @@ function plugin_order_install() {
       if ($number) {
          while ($data=$DB->fetch_array($result)) {
             $query = "UPDATE `glpi_plugin_order_orders_suppliers`
-                  SET `entities_id` = '".$data["entities_id"]."'
-                  AND `is_recursive` = '".$data["is_recursive"]."'
+                  SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
+                  WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
+            $DB->query($query) or die($DB->error());
+         }
+      }
+      
+      $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_orders` ";
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      if ($number) {
+         while ($data=$DB->fetch_array($result)) {
+            $query = "UPDATE `glpi_plugin_order_orders_suppliers`
+                  SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
                   WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
             $DB->query($query) or die($DB->error());
          }
@@ -120,8 +131,7 @@ function plugin_order_install() {
       if ($number) {
          while ($data=$DB->fetch_array($result)) {
             $query = "UPDATE `glpi_plugin_order_references_suppliers`
-                  SET `entities_id` = '".$data["entities_id"]."'
-                  AND `is_recursive` = '".$data["is_recursive"]."'
+                  SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
                   WHERE `plugin_order_references_id` = '".$data["id"]."' ";
             $DB->query($query) or die($DB->error());
          }
@@ -594,8 +604,11 @@ function plugin_headings_order($item) {
    $PluginOrderProfile=new PluginOrderProfile();
    $PluginOrderMailingSetting = new PluginOrderMailingSetting();
    $PluginOrderOrder_Item = new PluginOrderOrder_Item();
-   $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
+   $PluginOrderReference = new PluginOrderReference();
    $PluginOrderBudget = new PluginOrderBudget();
+   $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
+   $PluginOrderSurveySupplier = new PluginOrderSurveySupplier();
+   
 	switch (get_class($item)) {
       case 'Profile' :
          if (!$PluginOrderProfile->getFromDBByProfile($item->getField('id')))
@@ -606,7 +619,9 @@ function plugin_headings_order($item) {
          $PluginOrderMailingSetting->showFormMailing($CFG_GLPI["root_doc"]."/plugins/order/front/mailing.setting.php");
          break;
       case 'Supplier' :
-         $PluginOrderOrder_Supplier->showReferencesFromSupplier($item->getField('id'));
+         $PluginOrderReference->showReferencesFromSupplier($item->getField('id'));
+         $PluginOrderOrder_Supplier->showDeliveries($item->getField('id'));
+         $PluginOrderSurveySupplier->showGlobalNotation($item->getField('id'));
          break;
       case 'Budget' :
          $PluginOrderBudget->getAllOrdersByBudget($_POST["id"]);

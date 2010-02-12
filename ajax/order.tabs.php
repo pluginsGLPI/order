@@ -52,6 +52,7 @@ $PluginOrderOrder_Item = new PluginOrderOrder_Item();
 $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
 $PluginOrderReception = new PluginOrderReception();
 $PluginOrderLink = new PluginOrderLink();
+$PluginOrderSurveySupplier = new PluginOrderSurveySupplier();
 
 if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
    if (!empty($_POST["withtemplate"])) {
@@ -73,6 +74,11 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
          "/plugins/order/front/order_supplier.form.php"));
             $PluginOrderReception->showOrderReception($_POST["id"]);
             $PluginOrderLink->showOrderLink($_POST["id"]);
+            $PluginOrderSurveySupplier->showOrderSupplierSurvey($CFG_GLPI["root_doc"] .
+         "/plugins/order/front/surveysupplier.form.php",$_POST["id"]);
+            if (!$PluginOrderSurveySupplier->checkIfSupplierSurveyExists($_POST["id"]))
+               $PluginOrderSurveySupplier->showForm("", array('plugin_order_orders_id' => $_POST["id"], 'target' => $CFG_GLPI["root_doc"] .
+         "/plugins/order/front/surveysupplier.form.php"));
             Document::showAssociated($PluginOrderOrder);
             Plugin::displayAction($PluginOrderOrder,$_REQUEST['glpi_tab']);
             break;
@@ -95,6 +101,13 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
             break;
          case 6 :
             $PluginOrderLink->showOrderLink($_POST["id"]);
+            break;
+          case 7 :
+            $PluginOrderSurveySupplier->showOrderSupplierSurvey($CFG_GLPI["root_doc"] .
+         "/plugins/order/front/surveysupplier.form.php",$_POST["id"]);
+            if (!$PluginOrderSurveySupplier->checkIfSupplierSurveyExists($_POST["id"]))
+               $PluginOrderSurveySupplier->showForm("", array('plugin_order_orders_id' => $_POST["id"], 'target' => $CFG_GLPI["root_doc"] .
+         "/plugins/order/front/surveysupplier.form.php"));
             break;
          case 9 :
             Document::showAssociated($PluginOrderOrder);

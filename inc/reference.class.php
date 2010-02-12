@@ -497,9 +497,11 @@ class PluginOrderReference extends CommonDBTM {
 	function showReferencesFromSupplier($ID){
       global $LANG, $DB, $CFG_GLPI;
 
-      $query = "SELECT `gr`.`id`, `gr`.`manufacturers_id`, `gr`.`entities_id`, `gr`.`itemtype`, `gr`.`name`, `grm`.`price_taxfree` " .
-            "FROM `glpi_plugin_order_references_suppliers` AS grm, `".$this->getTable()."` AS gr " .
-            "WHERE `grm`.`suppliers_id` = '$ID' AND `grm`.`plugin_order_references_id` = `gr`.`id`";
+      $query = "SELECT `gr`.`id`, `gr`.`manufacturers_id`, `gr`.`entities_id`, `gr`.`itemtype`, `gr`.`name`, `grm`.`price_taxfree` 
+               FROM `glpi_plugin_order_references_suppliers` AS grm, `".$this->getTable()."` AS gr 
+               WHERE `grm`.`suppliers_id` = '$ID' 
+               AND `grm`.`plugin_order_references_id` = `gr`.`id`"
+               .getEntitiesRestrictRequest(" AND ","gr",'','',true);
       $result = $DB->query($query);
 
       echo "<div class='center'>";
@@ -513,16 +515,15 @@ class PluginOrderReference extends CommonDBTM {
 
       if ($DB->numrows($result) > 0)
       {
-         $commonitem = new CommonItem;
          while ($data = $DB->fetch_array($result))
          {
             echo "<tr class='tab_bg_1' align='center'>";
             echo "<td>";
-            echo Dropdown::getDropdownName("glpi_entities",$this->fields["entities_id"]);
+            echo Dropdown::getDropdownName("glpi_entities",$data["entities_id"]);
             echo "</td>";
 
             echo "<td>";
-            echo Dropdown::getDropdownName("glpi_manufacturers",$this->fields["manufacturers_id"]);
+            echo Dropdown::getDropdownName("glpi_manufacturers",$data["manufacturers_id"]);
             echo "</td>";
 
             echo "<td>";
@@ -530,8 +531,8 @@ class PluginOrderReference extends CommonDBTM {
             echo $PluginOrderReference->getReceptionReferenceLink($data);
             echo "</td>";
             echo "<td>";
-            $commonitem->setType($data["itemtype"]);
-            echo $commonitem->getType();
+            $item = new $data["itemtype"]();
+            echo $item->getTypeName();
             echo "</td>";
             echo "<td>";
             echo $data["price_taxfree"];

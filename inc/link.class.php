@@ -151,7 +151,7 @@ class PluginOrderLink extends CommonDBChild {
                
                if (isMultiEntitiesMode()) {
                   echo "<td>";
-                  $entity_restrict = ($order->fields["is_recursive"] ? getEntitySons($order->fields["entities_id"]) : $order->fields["entities_id"]);
+                  $entity_restrict = ($order->fields["is_recursive"] ? getSonsOf('glpi_entities',$order->fields["entities_id"]) : $order->fields["entities_id"]);
                   Dropdown::show('Entity', array('name' => "id[$i][entities_id]",'value' => $order->fields["entities_id"], 'entity' => $entity_restrict));
                   echo "</td>";
                } else {

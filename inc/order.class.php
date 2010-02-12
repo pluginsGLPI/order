@@ -177,6 +177,8 @@ class PluginOrderOrder extends CommonDBTM {
 			$ong[5] = $LANG['plugin_order']['delivery'][1];
 			/* item */
 			$ong[6] = $LANG['plugin_order']['item'][0];
+			/* quality */
+			$ong[7] = $LANG['plugin_order'][10];
 			/* documents */
 			if (haveRight("document", "r"))
 				$ong[9] = $LANG['Menu'][27];

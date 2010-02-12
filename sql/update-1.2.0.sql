@@ -6,6 +6,7 @@ ALTER TABLE `glpi_dropdown_plugin_order_payment` RENAME `glpi_plugin_order_order
 ALTER TABLE `glpi_dropdown_plugin_order_taxes` RENAME `glpi_plugin_order_ordertaxes`;
 ALTER TABLE `glpi_plugin_order_config` RENAME `glpi_plugin_order_configs`;
 ALTER TABLE `glpi_plugin_order_mailing` RENAME `glpi_plugin_order_mailingsettings`;
+ALTER TABLE `glpi_dropdown_plugin_order_deliverystate` RENAME `glpi_plugin_order_deliverystates`;
 
 ALTER TABLE `glpi_plugin_order_orders` 
    CHANGE `ID` `id` int(11) NOT NULL auto_increment,
@@ -41,9 +42,9 @@ ALTER TABLE `glpi_plugin_order_orders_items`
    CHANGE `device_type` `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file',
    CHANGE `FK_device` `items_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
    CHANGE `FK_reference` `plugin_order_references_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)',
-   ADD `plugin_order_deliverystates_id` int (11)  NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_deliverystates (id)',
+   CHANGE `delivery_status` `plugin_order_deliverystates_id` int (11)  NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_deliverystates (id)',
    CHANGE `deliverynum` `delivery_number` varchar(255) collate utf8_unicode_ci default NULL,
-   ADD `delivery_comment` text collate utf8_unicode_ci,
+   CHANGE `delivery_comments` `delivery_comment` text collate utf8_unicode_ci,
    CHANGE `status` `states_id` int(11) NOT NULL default 1,
    CHANGE `date` `delivery_date` date default NULL,
    ADD INDEX `FK_device` (`items_id`,`itemtype`),
@@ -178,17 +179,17 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_othertypes` (
    KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
--- --------------------------------------------------------
+ALTER TABLE `glpi_plugin_order_deliverystates` 
+   CHANGE `ID` `id` int(11) NOT NULL auto_increment,
+   CHANGE `name` `name` varchar(255) collate utf8_unicode_ci default NULL,
+   CHANGE `comments` `comment` text collate utf8_unicode_ci;
 
--- 
--- Structure de la table `glpi_plugin_order_deliverystates`
--- 
-
-DROP TABLE IF EXISTS `glpi_plugin_order_deliverystates`;
-CREATE TABLE `glpi_plugin_order_deliverystates` (
-	`id` int(11) NOT NULL auto_increment,
-	`name` varchar(255) collate utf8_unicode_ci default NULL,
-	`comment` text collate utf8_unicode_ci,
-	PRIMARY KEY  (`id`),
-	KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+ALTER TABLE `glpi_plugin_order_surveysuppliers` 
+   CHANGE `ID` `id` int(11) NOT NULL auto_increment,
+   ADD `entities_id` int(11) NOT NULL default '0',
+	ADD `is_recursive` tinyint(1) NOT NULL default '0',
+   CHANGE `FK_order` `plugin_order_orders_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
+   CHANGE `FK_enterprise` `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
+   CHANGE `comment` `comment` text collate utf8_unicode_ci,
+   ADD INDEX (`plugin_order_orders_id`),
+   ADD INDEX (`suppliers_id`);

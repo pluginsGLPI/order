@@ -268,7 +268,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          if ($candelete)
          {
             echo "<div class='center'>";
-            echo "<table width='950px' class='tab_glpi'>";
+            echo "<table width='900px' class='tab_glpi'>";
             echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('show_supplierinfos$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 
             echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('show_supplierinfos$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
@@ -296,6 +296,47 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
             return false;
       }
    }
+   
+   function showDeliveries($suppliers_id) {
+      global $LANG,$DB,$CFG_GLPI,$INFOFORM_PAGES;
+      
+      $query = "SELECT COUNT(`glpi_plugin_order_orders_items`.`plugin_order_references_id`) AS ref, `glpi_plugin_order_orders_items`.`plugin_order_deliverystates_id`, `glpi_plugin_order_orders`.`entities_id` 
+                  FROM `glpi_plugin_order_orders_items` 
+                  LEFT JOIN `glpi_plugin_order_orders` ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`)
+                  WHERE `glpi_plugin_order_orders`.`suppliers_id` = '".$suppliers_id."' 
+                  AND `glpi_plugin_order_orders_items`.`states_id` = '".ORDER_DEVICE_DELIVRED."' "
+                  .getEntitiesRestrictRequest(" AND ","glpi_plugin_order_orders",'','',true);
+      $query.= "GROUP BY `glpi_plugin_order_orders`.`entities_id`,`glpi_plugin_order_orders_items`.`plugin_order_deliverystates_id`";
+		$result = $DB->query($query);
+		$nb = $DB->numrows($result);
+		
+		echo "<br><div class='center'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr>";
+      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>" . $LANG['plugin_order']['status'][13] ."</th>";
+      echo "</tr>";
+      
+      if ($nb) {
+         for ($i=0 ; $i <$nb ; $i++) {
+            $ref = $DB->result($result,$i,"ref");
+            $entities_id = $DB->result($result,$i,"entities_id");
+            $plugin_order_deliverystates_id = $DB->result($result,$i,"plugin_order_deliverystates_id");
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo Dropdown::getDropdownName("glpi_entities",$entities_id);
+            echo "</td>";
+            if ($plugin_order_deliverystates_id > 0)
+               $name = Dropdown::getDropdownName("glpi_plugin_order_deliverystates",$plugin_order_deliverystates_id);
+            else
+               $name = $LANG['plugin_order']['status'][4];
+            echo "<td>" .$ref. "&nbsp;".$name."</td>";
+            echo "</tr>";
+         }
+      }
+      echo "</table>";
+      echo "</div>";
+	}
 }
 
 ?>

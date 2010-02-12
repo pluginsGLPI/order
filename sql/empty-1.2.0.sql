@@ -155,6 +155,28 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders_suppliers` (
 
 -- --------------------------------------------------------
 -- 
+-- Structure de la table `glpi_plugin_order_surveysuppliers`
+-- 
+CREATE TABLE IF NOT EXISTS `glpi_plugin_order_surveysuppliers` (
+   `id` int(11) NOT NULL auto_increment,
+   `entities_id` int(11) NOT NULL default '0',
+	`is_recursive` tinyint(1) NOT NULL default '0',
+   `plugin_order_orders_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
+   `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
+   `answer1` int(11) NOT NULL default 0,
+   `answer2` int(11) NOT NULL default 0,
+   `answer3` int(11) NOT NULL default 0,
+   `answer4` int(11) NOT NULL default 0,
+   `answer5` int(11) NOT NULL default 0,
+   `comment` text collate utf8_unicode_ci,
+   PRIMARY KEY  (`id`),
+   KEY `plugin_order_orders_id` (`plugin_order_orders_id`),
+   KEY `entities_id` (`entities_id`),
+   KEY `suppliers_id` (`suppliers_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+-- 
 -- Structure de la table `glpi_plugin_order_others`
 -- 
 
