@@ -62,7 +62,8 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
 	} else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
-            $PluginOrderOrder_Item->showItem($_SERVER["PHP_SELF"], $_POST["id"]);
+            $PluginOrderOrder_Item->showItem($CFG_GLPI["root_doc"] .
+         "/plugins/order/front/order.form.php", $_POST["id"]);
             $PluginOrderOrder->showValidationForm($CFG_GLPI["root_doc"] .
          "/plugins/order/front/order.form.php", $_POST["id"]);
             $PluginOrderOrder_Supplier->showOrderSupplierInfos($CFG_GLPI["root_doc"] .
@@ -106,7 +107,8 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
             break;
          default :
             if (!Plugin::displayAction($PluginOrderOrder,$_REQUEST['glpi_tab'])) {
-               $PluginOrderOrder_Item->showItem($_SERVER["PHP_SELF"], $_POST["id"]);
+               $PluginOrderOrder_Item->showItem($CFG_GLPI["root_doc"] .
+         "/plugins/order/front/order.form.php", $_POST["id"]);
             }
             break;
       }
