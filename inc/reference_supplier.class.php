@@ -224,10 +224,10 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
       $ref = new PluginOrderReference;
       $ref->getFromDB($ID);
-
+      
       initNavigateListItems($this->getType(),$LANG['plugin_order']['reference'][1] ." = ". $ref->fields["name"]);
 
-      $candelete = plugin_order_haveRight("reference","w");
+      $candelete =$ref->can($ID,'w');
       $query = "SELECT * FROM `".$this->getTable()."` WHERE `plugin_order_references_id` = '$ID' ";
       $result = $DB->query($query);
       $rand=mt_rand();

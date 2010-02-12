@@ -219,7 +219,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 
       initNavigateListItems($this->getType(),$LANG['plugin_order'][7] ." = ". $order->fields["name"]);
 
-      $candelete = plugin_order_haveRight("order","w");
+      $candelete =$order->can($ID,'w');
       $query = "SELECT * FROM `".$this->getTable()."` WHERE `plugin_order_orders_id` = '$ID' ";
       $result = $DB->query($query);
       $rand=mt_rand();
