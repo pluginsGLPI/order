@@ -92,6 +92,23 @@ class PluginOrderSupplierSurvey extends CommonDBTM {
          return 0;
 	}
 	
+	function getNotation($FK_enterprise,$field) {
+      global $DB;
+      
+      $query = "SELECT SUM(`".$this->table."`.`".$field."`) AS total, COUNT(`".$this->table."`.`ID`) AS nb 
+               FROM `glpi_plugin_order`,`".$this->table."`
+               WHERE `".$this->table."`.`FK_enterprise` = `glpi_plugin_order`.`FK_enterprise` 
+               AND `".$this->table."`.`FK_order` = `glpi_plugin_order`.`ID` 
+               AND `glpi_plugin_order`.`FK_enterprise` = '".$FK_enterprise."'"
+               .getEntitiesRestrictRequest(" AND ","glpi_plugin_order","FK_entities",'',true);
+		$result = $DB->query($query);
+		$nb = $DB->numrows($result);
+		if ($nb)
+         return $DB->result($result,0,"total")/$DB->result($result,0,"nb");
+      else
+         return 0;
+	}
+	
 	function showGlobalNotation($FK_enterprise) {
       global $LANG,$DB,$CFG_GLPI,$INFOFORM_PAGES;
       
@@ -100,7 +117,7 @@ class PluginOrderSupplierSurvey extends CommonDBTM {
                   WHERE `".$this->table."`.`FK_enterprise` = `glpi_plugin_order`.`FK_enterprise`
                   AND `".$this->table."`.`FK_order` = `glpi_plugin_order`.`ID`
                   AND `glpi_plugin_order`.`FK_enterprise` = '".$FK_enterprise."' "
-                  .getEntitiesRestrictRequest(" AND ","glpi_plugin_order",'','',true);
+                  .getEntitiesRestrictRequest(" AND ","glpi_plugin_order","FK_entities",'',true);
       $query.= " GROUP BY `".$this->table."`.`ID`";
 		$result = $DB->query($query);
 		$nb = $DB->numrows($result);
@@ -138,10 +155,26 @@ class PluginOrderSupplierSurvey extends CommonDBTM {
             $nb_order++;
          }
          
-         echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='2'></th>";
-         echo "<th><div align='left'>" . $LANG['plugin_order']['survey'][9]. "</div></td>";
-         echo "<th><div align='left'>" . $total/$nb_order."&nbsp;/ 10</div></td>";
+         echo "<tr>";
+         echo "<th colspan='4'>&nbsp;</th>";
+         echo "</tr>";
+         
+         for ($i=1 ; $i <= 5 ; $i++) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td colspan='2'></td>";
+            echo "<td><div align='left'>" . $LANG['plugin_order']['survey'][$i]. "</div></td>";
+            echo "<td><div align='left'>" . formatNumber($this->getNotation($FK_enterprise,"answer$i"))."&nbsp;/ 10</div></td>";
+            echo "</tr>";
+         }
+         
+         echo "<tr>";
+         echo "<th colspan='4'>&nbsp;</th>";
+         echo "</tr>";
+         
+         echo "<tr class='tab_bg_1 b'>";
+         echo "<td colspan='2'></td>";
+         echo "<td><div align='left'>" . $LANG['plugin_order']['survey'][9]. "</div></td>";
+         echo "<td><div align='left'>" . formatNumber($total/$nb_order)."&nbsp;/ 10</div></td>";
          echo "</tr>";
       }
       echo "</table>";
@@ -197,30 +230,12 @@ class PluginOrderSupplierSurvey extends CommonDBTM {
       echo "</td>";
 		echo "</tr>";
 		
-      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][1] . ": </td><td>";
-      $this->addNotation("answer1",$this->fields["answer1"]);
-      echo "</td>";
-		echo "</tr>";
-		
-      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][2] . ": </td><td>";
-      $this->addNotation("answer2",$this->fields["answer2"]);
-      echo "</td>";
-      echo "</tr>";
-      
-      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][3] . ": </td><td>";
-      $this->addNotation("answer3",$this->fields["answer3"]);
-      echo "</td>";
-		echo "</tr>";
-		
-		echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][4] . ": </td><td>";
-      $this->addNotation("answer4",$this->fields["answer4"]);
-      echo "</td>";
-		echo "</tr>";
-		
-		echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][5] . ": </td><td>";
-      $this->addNotation("answer5",$this->fields["answer5"]);
-      echo "</td>";
-		echo "</tr>";
+		for ($i=1 ; $i <= 5 ; $i++) {
+         echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][$i] . ": </td><td>";
+         $this->addNotation("answer$i",$this->fields["answer$i"]);
+         echo "</td>";
+         echo "</tr>";
+      }
 		
 		echo "<tr class='tab_bg_1'><td>";
       //comments of order
