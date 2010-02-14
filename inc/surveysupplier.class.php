@@ -121,6 +121,23 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          return 0;
 	}
 	
+	function getNotation($suppliers_id,$field) {
+      global $DB;
+      
+      $query = "SELECT SUM(`".$this->getTable()."`.`".$field."`) AS total, COUNT(`".$this->getTable()."`.`id`) AS nb 
+               FROM `glpi_plugin_order_orders`,`".$this->getTable()."`
+               WHERE `".$this->getTable()."`.`suppliers_id` = `glpi_plugin_order_orders`.`suppliers_id` 
+               AND `".$this->getTable()."`.`plugin_order_orders_id` = `glpi_plugin_order_orders`.`id` 
+               AND `glpi_plugin_order_orders`.`suppliers_id` = '".$suppliers_id."'"
+               .getEntitiesRestrictRequest(" AND ","glpi_plugin_order_orders","entities_id",'',true);
+		$result = $DB->query($query);
+		$nb = $DB->numrows($result);
+		if ($nb)
+         return $DB->result($result,0,"total")/$DB->result($result,0,"nb");
+      else
+         return 0;
+	}
+	
 	function showGlobalNotation($suppliers_id) {
       global $LANG,$DB,$CFG_GLPI,$INFOFORM_PAGES;
       
@@ -129,7 +146,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
                   WHERE `".$this->getTable()."`.`suppliers_id` = `glpi_plugin_order_orders`.`suppliers_id` 
                   AND `".$this->getTable()."`.`plugin_order_orders_id` = `glpi_plugin_order_orders`.`id` 
                   AND `glpi_plugin_order_orders`.`suppliers_id` = '".$suppliers_id."'"
-                  .getEntitiesRestrictRequest(" AND ","glpi_plugin_order_orders",'','',true);
+                  .getEntitiesRestrictRequest(" AND ","glpi_plugin_order_orders","entities_id",'',true);
       $query.= " GROUP BY `".$this->table."`.`id`";
 		$result = $DB->query($query);
 		$nb = $DB->numrows($result);
@@ -167,11 +184,26 @@ class PluginOrderSurveySupplier extends CommonDBChild {
             $total+= $this->getTotalNotation($ID);
             $nb_order++;
          }
+         echo "<tr>";
+         echo "<th colspan='4'>&nbsp;</th>";
+         echo "</tr>";
          
-         echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='2'></th>";
-         echo "<th><div align='left'>" . $LANG['plugin_order']['survey'][9]. "</div></td>";
-         echo "<th><div align='left'>" . $total/$nb_order."&nbsp;/ 10</div></td>";
+         for ($i=1 ; $i <= 5 ; $i++) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td colspan='2'></td>";
+            echo "<td><div align='left'>" . $LANG['plugin_order']['survey'][$i]. "</div></td>";
+            echo "<td><div align='left'>" . formatNumber($this->getNotation($suppliers_id,"answer$i"))."&nbsp;/ 10</div></td>";
+            echo "</tr>";
+         }
+         
+         echo "<tr>";
+         echo "<th colspan='4'>&nbsp;</th>";
+         echo "</tr>";
+         
+         echo "<tr class='tab_bg_1 b'>";
+         echo "<td colspan='2'></td>";
+         echo "<td><div align='left'>" . $LANG['plugin_order']['survey'][9]. "</div></td>";
+         echo "<td><div align='left'>" . formatNumber($total/$nb_order)."&nbsp;/ 10</div></td>";
          echo "</tr>";
       }
       echo "</table>";
@@ -223,30 +255,12 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       echo "</td>";
 		echo "</tr>";
 		
-      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][1] . ": </td><td>";
-      $this->addNotation("answer1",$this->fields["answer1"]);
-      echo "</td>";
-		echo "</tr>";
-		
-      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][2] . ": </td><td>";
-      $this->addNotation("answer2",$this->fields["answer2"]);
-      echo "</td>";
-      echo "</tr>";
-      
-      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][3] . ": </td><td>";
-      $this->addNotation("answer3",$this->fields["answer3"]);
-      echo "</td>";
-		echo "</tr>";
-		
-		echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][4] . ": </td><td>";
-      $this->addNotation("answer4",$this->fields["answer4"]);
-      echo "</td>";
-		echo "</tr>";
-		
-		echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][5] . ": </td><td>";
-      $this->addNotation("answer5",$this->fields["answer5"]);
-      echo "</td>";
-		echo "</tr>";
+		for ($i=1 ; $i <= 5 ; $i++) {
+         echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][$i] . ": </td><td>";
+         $this->addNotation("answer$i",$this->fields["answer$i"]);
+         echo "</td>";
+         echo "</tr>";
+      }
 		
 		echo "<tr class='tab_bg_1'><td>";
       //comments of order
@@ -259,7 +273,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
 		if ($ID>0) {
          echo "<tr><th><div align='left'>" . $LANG['plugin_order']['survey'][8] . ": </div></th><th><div align='left'>";
          $total = $this->getTotalNotation($this->fields["plugin_order_orders_id"]);
-         echo $total." / 10";
+         echo formatNumber($total)." / 10";
          echo "</div></th>";
          echo "</tr>";
 		}
