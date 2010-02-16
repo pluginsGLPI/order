@@ -54,11 +54,17 @@ class PluginOrderProfile extends CommonDBTM {
    }
    
 	//if profile deleted
-	function cleanProfiles($ID) {
-
+	static function purgeProfiles(Profile $prof) {
+      $plugprof = new self();
+      $plugprof->cleanProfiles($prof->getField("id"));
+   }
+   
+	function cleanProfiles($id) {
+      global $DB;
+      
 		$query = "DELETE 
 				FROM `".$this->getTable()."`
-				WHERE `profiles_id` = '$ID' ";
+				WHERE `profiles_id` = '".$id."' ";
 		
 		$DB->query($query);
 	}

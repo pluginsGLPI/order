@@ -59,7 +59,63 @@ class PluginOrderOrder_Item extends CommonDBTM {
       }
    }
 	
-	static function getClasses () {
+	static function updateItem($item) {
+      global $LANG;
+      
+      //TO DO : Must do check same values or update infocom
+      
+      if (isset ($item->fields["id"])) {
+      
+         $item->getFromDB($item->input["id"]);
+
+         if (isset ($item->fields["itemtype"]) & isset ($item->fields["items_id"])) {
+            $PluginOrderLink = new PluginOrderLink();
+            $PluginOrderOrder = new PluginOrderOrder();
+            $orderitem = new self();
+            $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
+   
+            $detail_id = $PluginOrderLink->isItemLinkedToOrder($item->fields["itemtype"],$item->fields["items_id"]);
+            if ($detail_id > 0) {
+            
+               $field_set = false;
+               $unset_fields = array (
+                  "order_number",
+                  "delivery_number",
+                  "budgets_id",
+                  "suppliers_id",
+                  "value",
+                  "buy_date"
+               );
+               
+               
+               $orderitem->getFromDB($detail_id);
+               $PluginOrderOrder->getFromDB($orderitem->fields["plugin_order_orders_id"]);
+               $PluginOrderOrder_Supplier->getFromDBByOrder($orderitem->fields["plugin_order_orders_id"]);
+   
+               $value["order_number"] = $PluginOrderOrder->fields["num_order"];
+               $value["delivery_number"] = $orderitem->fields["delivery_number"];
+               $value["budgets_id"] = $PluginOrderOrder->fields["budgets_id"];
+               $value["suppliers_id"] = $PluginOrderOrder->fields["suppliers_id"];
+               if (isset($PluginOrderOrder_Supplier->fields["num_bill"]) && !empty($PluginOrderOrder_Supplier->fields["num_bill"])) {
+                  $unset_fields[] = "bill";
+                  $value["bill"] = $PluginOrderOrder_Supplier->fields["num_bill"];
+               }
+               $value["value"] = $orderitem->fields["price_discounted"];
+               $value["buy_date"] = $PluginOrderOrder->fields["order_date"];
+   
+               foreach ($unset_fields as $field)
+                  if (isset ($item->input[$field])) {
+                     $field_set = true;
+                     $item->input[$field] = $value[$field];
+                  }
+               if ($field_set)
+                  addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);
+            }
+         }
+      }
+   }
+
+	static function getClasses($all=false) {
 	
       static $types = array('Computer',
                               'Monitor',
@@ -73,7 +129,11 @@ class PluginOrderOrder_Item extends CommonDBTM {
                               //'Software',
                               'Contract',
                               'PluginOrderOther');
-
+      
+      if ($all) {
+         return $types;
+      }
+      
       foreach ($types as $key=>$type) {
          if (!class_exists($type)) {
             continue;

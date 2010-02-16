@@ -53,7 +53,16 @@ function plugin_init_order() {
                                     
    /* load changeprofile function */
    $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile','changeProfile');
-		                                 
+   
+   if (class_exists('PluginOrderOrder_Item')) { // only if plugin activated
+      $PLUGIN_HOOKS['pre_item_purge']['order'] = array('Profile'=>array('PluginOrderProfile', 'purgeProfiles'));
+      $PLUGIN_HOOKS['pre_item_update']['order'] = array('Infocom'=>array('PluginOrderOrder_Item', 'updateItem'));
+      $PLUGIN_HOOKS['item_purge']['order'] = array();
+      foreach (PluginOrderOrder_Item::getClasses(true) as $type) {
+         $PLUGIN_HOOKS['item_purge']['order'][$type] = 'plugin_item_purge_order';
+      }
+   }
+   
 	Plugin::registerClass('PluginOrderOrder', array(
 		'doc_types' => true,
 		'massiveaction_noupdate_types' => true
@@ -72,8 +81,6 @@ function plugin_init_order() {
    
 	if ($plugin->isActivated("order"))
 	{
-
-		$PLUGIN_HOOKS['pre_item_update']['order'] = 'plugin_pre_item_update_order';
       
 		/* link to the config page in plugins menu */
 		if (plugin_order_haveRight("order", "w") || haveRight("config", "w"))
@@ -128,15 +135,10 @@ function plugin_init_order() {
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['budget']['links']['add']    = '/plugins/order/front/budget.form.php';
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['budget']['links']['config'] = '/plugins/order/front/config.form.php';
          }
-            if (haveRight("config","w")) {
-               $PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/config.form.php';
-            }
-            $PLUGIN_HOOKS['use_massive_action']['order'] = 1;
-         
-				//$PLUGIN_HOOKS['submenu_entry']['order']["<img  src='" . $CFG_GLPI["root_doc"] . "/pics/menu_show.png' title='" . $LANG['plugin_order'][43] . "' alt='" . $LANG['plugin_order'][43] . "'>"] = 'index.php';
-			
-			$PLUGIN_HOOKS['pre_item_purge']['order'] = 'plugin_pre_item_purge_order';
-         $PLUGIN_HOOKS['item_purge']['order'] = 'plugin_pre_item_purge_order';
+         if (haveRight("config","w")) {
+            $PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/config.form.php';
+         }
+         $PLUGIN_HOOKS['use_massive_action']['order'] = 1;
 		}
 	}
 }

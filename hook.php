@@ -319,7 +319,7 @@ function plugin_order_getAddSearchOptions($itemtype) {
 
    $sopt = array();
    if (plugin_order_haveRight("order","r")) {
-      if (in_array($itemtype, PluginOrderOrder_Item::getClasses())) {
+      if (in_array($itemtype, PluginOrderOrder_Item::getClasses(true))) {
          $sopt[3160]['table']         = 'glpi_plugin_order_orders';
          $sopt[3160]['field']         = 'name';
          $sopt[3160]['linkfield']     = '';
@@ -476,88 +476,14 @@ function plugin_order_MassiveActionsProcess($data) {
 	}
 }
 
-function plugin_pre_item_update_order($item) {
-	global $LANG;
-   
-   //TO DO : Must do check same values or update infocom
-	switch (get_class($item)) {
-      case 'Infocom' :
-         if (isset ($item->fields["id"])) {
-            $item->getFromDB($item->input["id"]);
-
-            if (isset ($item->fields["itemtype"]) & isset ($item->fields["items_id"])) {
-               $PluginOrderLink = new PluginOrderLink;
-               $PluginOrderOrder = new PluginOrderOrder;
-               $PluginOrderOrder_Item = new PluginOrderOrder_Item;
-               $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier;
-      
-               $detail_id = $PluginOrderLink->isItemLinkedToOrder($item->fields["itemtype"],$item->fields["items_id"]);
-               if ($detail_id > 0) {
-               
-                  $field_set = false;
-                  $unset_fields = array (
-                     "order_number",
-                     "delivery_number",
-                     "budgets_id",
-                     "suppliers_id",
-                     "bill",
-                     "value",
-                     "buy_date"
-                  );
-                  
-                  $PluginOrderOrder_Item->getFromDB($detail_id);
-                  $PluginOrderOrder->getFromDB($PluginOrderOrder_Item->fields["plugin_order_orders_id"]);
-                  $PluginOrderOrder_Supplier->getFromDBByOrder($PluginOrderOrder_Item->fields["plugin_order_orders_id"]);
-      
-                  $value["order_number"] = $PluginOrderOrder->fields["num_order"];
-                  $value["delivery_number"] = $PluginOrderOrder_Item->fields["delivery_number"];
-                  $value["budgets_id"] = $PluginOrderOrder->fields["budgets_id"];
-                  $value["suppliers_id"] = $PluginOrderOrder->fields["suppliers_id"];
-                  if (isset($PluginOrderOrder_Supplier->fields["num_bill"]))
-                     $value["bill"] = $PluginOrderOrder_Supplier->fields["num_bill"];
-                  $value["value"] = $PluginOrderOrder_Item->fields["price_discounted"];
-                  $value["buy_date"] = $PluginOrderOrder->fields["order_date"];
-      
-                  foreach ($unset_fields as $field)
-                     if (isset ($item->input[$field])) {
-                        $field_set = true;
-                        $item->input[$field] = $value[$field];
-                     }
-                  if ($field_set)
-                     addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);
-               }
-            }
-         }
-         break;
-   }
-}
-
-/* hook done on delete item case */
-function plugin_pre_item_purge_order($item) {
-
-	switch (get_class($item)) {
-      case 'Profile' :
-         // Manipulate data if needed
-         $PluginOrderProfile = new PluginOrderProfile;
-         $PluginOrderProfile->cleanProfiles($item->getField("id"));
-         break;
-   }
-   return $item;
-}
-
 /* hook done on purge item case */
 function plugin_item_purge_order($item) {
 
-	$type = get_class($item);
-   if (in_array($type, PluginOrderOrder_Item::getClasses())) {
-
-      $temp = new PluginOrderOrder_Item();
-      $temp->clean(array('itemtype' => $type,
+	$temp = new PluginOrderOrder_Item();
+   $temp->clean(array('itemtype' => get_class($item),
                          'items_id' => $item->getField('id')));
-
-      return true;
-   }
-   return false;
+                         
+   return true;
 }
 
 // Define headings added by the plugin
@@ -569,7 +495,7 @@ function plugin_get_headings_order($item,$withtemplate) {
       if ($item->getField('id') && $item->getField('interface')!='helpdesk') {
          return array(1 => $LANG['plugin_order']['title'][1]);
       }
-   } else if (in_array($type, PluginOrderOrder_Item::getClasses()) || $type == 'Supplier' || $type == 'Budget') {
+   } else if (in_array($type, PluginOrderOrder_Item::getClasses(true)) || $type == 'Supplier' || $type == 'Budget') {
       if ($item->getField('id') && !$withtemplate) {
          // Non template case
          return array(1 => $LANG['plugin_order']['title'][1]);
@@ -585,7 +511,7 @@ function plugin_get_headings_order($item,$withtemplate) {
 // Define headings actions added by the plugin
 function plugin_headings_actions_order($item) {
 
-   if (in_array(get_class($item),PluginOrderOrder_Item::getClasses())||
+   if (in_array(get_class($item),PluginOrderOrder_Item::getClasses(true))||
 		get_class($item)=='Profile' || 
 		get_class($item)=='Supplier' || 
 		get_class($item)=='Budget' || 
@@ -627,7 +553,7 @@ function plugin_headings_order($item) {
          $PluginOrderBudget->getAllOrdersByBudget($_POST["id"]);
          break;
       default :
-         if (in_array(get_class($item), PluginOrderOrder_Item::getClasses())) {
+         if (in_array(get_class($item), PluginOrderOrder_Item::getClasses(true))) {
             $PluginOrderOrder_Item->showPluginFromItems(get_class($item),$item->getField('id'));
          }
          break;
