@@ -40,9 +40,9 @@ function plugin_order_install() {
 
    if (TableExists("glpi_plugin_order_detail")) {
       if (!FieldExists("glpi_plugin_order_detail","discount")) { // version 1.1.0
-      
+
          $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.1.0.sql");
-         
+
          /* Update en 1.1.0 */
 
          $query = "SELECT `name` FROM `glpi_dropdown_plugin_order_taxes` ";
@@ -85,10 +85,10 @@ function plugin_order_install() {
             }
          }
       }
-      
+
       //Post 1.1.0
       $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.2.0.sql");
-      
+
       $query = "SELECT `suppliers_id`,`id` FROM `glpi_plugin_order_orders` ";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
@@ -100,7 +100,7 @@ function plugin_order_install() {
             $DB->query($query) or die($DB->error());
          }
       }
-      
+
       $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_orders` ";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
@@ -112,7 +112,7 @@ function plugin_order_install() {
             $DB->query($query) or die($DB->error());
          }
       }
-      
+
       $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_orders` ";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
@@ -124,7 +124,7 @@ function plugin_order_install() {
             $DB->query($query) or die($DB->error());
          }
       }
-      
+
       $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_references` ";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
@@ -136,7 +136,7 @@ function plugin_order_install() {
             $DB->query($query) or die($DB->error());
          }
       }
-      
+
       $query_="SELECT *
             FROM `glpi_plugin_order_profiles` ";
       $result_=$DB->query($query_);
@@ -150,7 +150,7 @@ function plugin_order_install() {
 
          }
       }
-      
+
       $query="ALTER TABLE `glpi_plugin_order_profiles`
                DROP `name` ;";
       $result=$DB->query($query);
@@ -197,7 +197,7 @@ function plugin_order_uninstall() {
 
 	foreach ($tables as $table)
 		$DB->query("DROP TABLE IF EXISTS `$table`;");
-   
+
    //old tables
 	$tables = array (
 		"glpi_plugin_order",
@@ -216,7 +216,7 @@ function plugin_order_uninstall() {
 
 	foreach ($tables as $table)
 		$DB->query("DROP TABLE IF EXISTS `$table`;");
-   
+
 	$in = "IN (" . implode(',', array (
 		"'PluginOrderOrder'",
 		"'PluginOrderReference'",
@@ -367,7 +367,7 @@ function plugin_order_addSelect($type, $ID, $num) {
 
 function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,
                                        &$already_link_tables) {
-   
+
 	switch ($new_table){
 		case "glpi_plugin_order_orders" : // From items
 			$out= " LEFT JOIN `glpi_plugin_order_orders_items` ON (`$ref_table`.`id` = `glpi_plugin_order_orders_items`.`items_id` AND `glpi_plugin_order_orders_items`.`itemtype` = '$type') ";
@@ -428,14 +428,14 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 
 function plugin_order_MassiveActions($type) {
 	global $LANG;
-	
+
 	switch ($type) {
 		case 'PluginOrderOrder' :
 			return array (
 				// GLPI core one
 				"plugin_order_transfert" => $LANG['buttons'][48],
 
-				
+
 			);
 			break;
 	}
@@ -444,7 +444,7 @@ function plugin_order_MassiveActions($type) {
 
 function plugin_order_MassiveActionsDisplay($options=array()) {
 	global $LANG;
-	
+
 	switch ($options['itemtype']) {
 		case 'PluginOrderOrder' :
 			switch ($options['action']) {
@@ -468,7 +468,7 @@ function plugin_order_MassiveActionsProcess($data) {
 				foreach ($data["item"] as $key => $val) {
 					if ($val == 1) {
 						$PluginOrderOrder = new PluginOrderOrder();
-						$PluginOrderOrder->transfer($key,$data['entities_id']); 
+						$PluginOrderOrder->transfer($key,$data['entities_id']);
 					}
 				}
 			}
@@ -482,7 +482,7 @@ function plugin_item_purge_order($item) {
 	$temp = new PluginOrderOrder_Item();
    $temp->clean(array('itemtype' => get_class($item),
                          'items_id' => $item->getField('id')));
-                         
+
    return true;
 }
 
@@ -512,9 +512,9 @@ function plugin_get_headings_order($item,$withtemplate) {
 function plugin_headings_actions_order($item) {
 
    if (in_array(get_class($item),PluginOrderOrder_Item::getClasses(true))||
-		get_class($item)=='Profile' || 
-		get_class($item)=='Supplier' || 
-		get_class($item)=='Budget' || 
+		get_class($item)=='Profile' ||
+		get_class($item)=='Supplier' ||
+		get_class($item)=='Budget' ||
 		get_class($item)=='Notification') {
 		return array(
 			1 => "plugin_headings_order",
@@ -526,7 +526,7 @@ function plugin_headings_actions_order($item) {
 /* action heading */
 function plugin_headings_order($item) {
 	global $CFG_GLPI;
-  
+
    $PluginOrderProfile=new PluginOrderProfile();
    $PluginOrderMailingSetting = new PluginOrderMailingSetting();
    $PluginOrderOrder_Item = new PluginOrderOrder_Item();
@@ -534,16 +534,16 @@ function plugin_headings_order($item) {
    $PluginOrderBudget = new PluginOrderBudget();
    $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
    $PluginOrderSurveySupplier = new PluginOrderSurveySupplier();
-   
+
 	switch (get_class($item)) {
       case 'Profile' :
          if (!$PluginOrderProfile->getFromDBByProfile($item->getField('id')))
             $PluginOrderProfile->createAccess($item->getField('id'));
          $PluginOrderProfile->showForm($item->getField('id'), array('target' => $CFG_GLPI["root_doc"]."/plugins/order/front/profile.form.php"));
          break;
-      case 'Notification' :
-         $PluginOrderMailingSetting->showFormMailing($CFG_GLPI["root_doc"]."/plugins/order/front/mailing.setting.php");
-         break;
+      //case 'Notification' :
+      //   $PluginOrderMailingSetting->showFormMailing($CFG_GLPI["root_doc"]."/plugins/order/front/mailing.setting.php");
+      //   break;
       case 'Supplier' :
          $PluginOrderReference->showReferencesFromSupplier($item->getField('id'));
          $PluginOrderOrder_Supplier->showDeliveries($item->getField('id'));
