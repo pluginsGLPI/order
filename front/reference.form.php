@@ -88,7 +88,7 @@ else
 		$_SESSION['glpi_tab']=$_GET['onglet'];
 	}
 	
-	commonHeader($LANG['plugin_order']['reference'][1],$_SERVER["PHP_SELF"],"plugins","order","reference");
+	commonHeader($LANG['plugin_order']['reference'][1],'',"plugins","order","reference");
 	
 	$PluginOrderReference->showForm($_GET["id"]);
 

@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['plugin_order']['reference'][1], $_SERVER["PHP_SELF"], "plugins", "order", "reference");
+commonHeader($LANG['plugin_order']['reference'][1], '', "plugins", "order", "reference");
 
 if (plugin_order_haveRight("reference", "r")) {
 

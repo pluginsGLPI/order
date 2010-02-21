@@ -59,7 +59,7 @@ class PluginOrderLink extends CommonDBChild {
       return plugin_order_haveRight('order', 'r');
    }
    
-   function showItemGenerationForm($target, $params) {
+   function showItemGenerationForm($params) {
       global $LANG, $CFG_GLPI, $GENINVENTORYNUMBER_INVENTORY_TYPES;
       
       echo "<div class='center'>";
@@ -82,7 +82,7 @@ class PluginOrderLink extends CommonDBChild {
 
       echo "<a href='" . $_SERVER["HTTP_REFERER"] . "'>" . $LANG['buttons'][13] . "</a></br><br>";
 
-      echo "<form method='post' name='order_deviceGeneration' id='order_deviceGeneration'  action=" . $_SERVER["PHP_SELF"] . ">";
+      echo "<form method='post' name='order_deviceGeneration' id='order_deviceGeneration' action=\"" . $CFG_GLPI["root_doc"] . "/plugins/order/front/link.form.php\">";
       
       echo "<table class='tab_cadre_fixe'>";
       $colspan = "5";
@@ -294,9 +294,9 @@ class PluginOrderLink extends CommonDBChild {
                
                echo "<div class='center'>";
                echo "<table width='950px' class='tab_glpi'>";
-               echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_generation_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$plugin_order_orders_id&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+               echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_generation_form$rand') ) return false;\" href='#'>".$LANG['buttons'][18]."</a></td>";
 
-               echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_generation_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$plugin_order_orders_id&amp;select=none'>".$LANG['buttons'][19]."</a>";
+               echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_generation_form$rand') ) return false;\" href='#'>".$LANG['buttons'][19]."</a>";
                echo "</td><td align='left' width='80%'>";
                echo "<input type='hidden' name='plugin_order_orders_id' value='$plugin_order_orders_id'>";
                $this->dropdownLinkActions($itemtype, $plugin_order_references_id, $plugin_order_orders_id);

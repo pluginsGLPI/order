@@ -80,7 +80,7 @@ else
 		$_SESSION['glpi_tab']=$_GET['onglet'];
 	}
 	
-	commonHeader($LANG['plugin_order']['title'][1],$_SERVER["PHP_SELF"],"plugins","order","order");
+	commonHeader($LANG['plugin_order']['title'][1],'',"plugins","order","order");
 	
 	$PluginOrderSurveySupplier->showForm($_GET["id"], array('plugin_order_orders_id' => $_GET["plugin_order_orders_id"]));
 

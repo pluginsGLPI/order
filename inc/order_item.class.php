@@ -407,9 +407,9 @@ class PluginOrderOrder_Item extends CommonDBTM {
                
                echo "<div class='center'>";
 					echo "<table width='950px' class='tab_glpi'>";
-               echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$plugin_order_orders_id&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+               echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='#'>".$LANG['buttons'][18]."</a></td>";
 
-               echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_detail_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?id=$plugin_order_orders_id&amp;select=none'>".$LANG['buttons'][19]."</a>";
+               echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('order_detail_form$rand') ) return false;\" href='#'>".$LANG['buttons'][19]."</a>";
                echo "</td><td align='left' width='80%'>";
                echo "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][36] . "')\" name='delete_item' value=\"".$LANG['buttons'][6]."\" class='submit'>";
                echo "</td>";

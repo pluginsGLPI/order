@@ -40,14 +40,18 @@ include (GLPI_ROOT."/inc/includes.php");
 $config= new PluginOrderConfig();
 
 if (isset($_POST["update"])) {
+
 	$config->update($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
-}
+	
+} else {
 
-commonHeader($LANG['plugin_order']['title'][1], $_SERVER["PHP_SELF"], "plugins", "order", "menu");
+commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "menu");
 
-$config->showConfigForm($_SERVER["PHP_SELF"]);
+$config->showConfigForm();
 
 commonFooter();
+
+}
 
 ?>

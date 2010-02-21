@@ -46,14 +46,14 @@ class PluginOrderConfig extends CommonDBTM {
       return $LANG['plugin_order']['config'][0];
    }
    
-	function showConfigForm($target){
+	function showConfigForm(){
 		global $LANG;
 		
 		$this->getFromDB(1);
 		echo "<div class='center'>";
+		echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='2'>".$LANG['plugin_order']['config'][0]."</th></tr>";
-		echo "<form method='post' name=form action='$target'>";
 		
 		echo "<input type='hidden' name='id' value='1'>";
 		echo "<tr class='tab_bg_1' align='center'><td>".$LANG['plugin_order']['config'][1]."</td><td>";

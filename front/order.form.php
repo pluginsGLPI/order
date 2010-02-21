@@ -205,7 +205,7 @@ else
 	if (isset ($_GET['onglet'])) 
 		$_SESSION['glpi_tab'] = $_GET['onglet'];
 
-	commonHeader($LANG['plugin_order']['title'][1], $_SERVER["PHP_SELF"], "plugins", "order", "order");
+	commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
 	
 	$PluginOrderOrder->showForm($_GET["id"]);
 	

@@ -83,7 +83,7 @@ if (!isset ($_SESSION['glpi_tab']))
 if (isset ($_GET['onglet'])) 
    $_SESSION['glpi_tab'] = $_GET['onglet'];
 
-commonHeader($LANG['financial'][87], $_SERVER["PHP_SELF"], "plugins", "order", "budget");
+commonHeader($LANG['financial'][87], '', "plugins", "order", "budget");
 
 $PluginOrderBudget->showForm($_GET["id"]);
 

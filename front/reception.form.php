@@ -87,7 +87,7 @@ if (isset ($_POST["update"])) {
 
 } else {
    
-   commonHeader($LANG['plugin_order']['title'][1],$_SERVER["PHP_SELF"],"plugins","order","order");
+   commonHeader($LANG['plugin_order']['title'][1],'',"plugins","order","order");
 	
 	$PluginOrderReception->showForm($_GET["id"]);
 

@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['financial'][87], $_SERVER["PHP_SELF"], "plugins", "order", "budget");
+commonHeader($LANG['financial'][87], '', "plugins", "order", "budget");
 
 if (plugin_order_haveRight("budget", "r")) {
 

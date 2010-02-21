@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['plugin_order']['title'][1], $_SERVER["PHP_SELF"], "plugins", "order", "menu");
+commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "menu");
 
 if (plugin_order_haveRight("order", "r") || plugin_order_haveRight("reference", "r") || plugin_order_haveRight("budget", "r")) {
 	echo "<div class='center'>";

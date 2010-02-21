@@ -64,9 +64,9 @@ if (isset ($_POST["generation"])) {
 
 	if (isset ($_POST["item"])) {
       
-      commonHeader($LANG['plugin_order']['title'][1], $_SERVER["PHP_SELF"], "plugins", "order", "order");
+      commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
       
-		$PluginOrderLink->showItemGenerationForm($_SERVER["PHP_SELF"], $_POST);
+		$PluginOrderLink->showItemGenerationForm($_POST);
 		
 		commonFooter();
 		
