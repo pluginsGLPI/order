@@ -72,9 +72,9 @@ function plugin_init_order() {
 		'massiveaction_noupdate_types' => true
 	));
 	
-	Plugin::registerClass('PluginOrderReference_Supplier', array(
+	/*Plugin::registerClass('PluginOrderReference_Supplier', array(
 		'doc_types' => true
-	));
+	));*/
    
    $plugin = new Plugin;
    
@@ -151,17 +151,17 @@ function plugin_version_order() {
 		'version' => '1.2.0',
 		'author' => 'Benjamin Fontan, Walid Nouh, Xavier Caillaud',
 		'homepage' => 'https://forge.indepnet.net/projects/show/order',
-		'minGlpiVersion' => '0.80',
+		'minGlpiVersion' => '0.78',
 		
 	);
 }
 
 /* check prerequisites before install : may print errors or add to message after redirect -optional- */
 function plugin_order_check_prerequisites() {
-	if (GLPI_VERSION >= 0.80) {
+	if (GLPI_VERSION >= 0.78) {
 		return true;
 	} else {
-		echo "GLPI version not compatible need 0.80";
+		echo "GLPI version not compatible need 0.78";
 	}
 }
 

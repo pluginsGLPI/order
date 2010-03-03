@@ -229,7 +229,7 @@ class PluginOrderReference extends CommonDBTM {
       
       echo "<td>" . $LANG['plugin_order']['reference'][1] . ": </td>";
       echo "<td>";
-      autocompletionTextField($this,"name",array('size' => "70"));
+      autocompletionTextField($this,"name",array('size' => "60"));
       echo "</td>";
 
       echo "<td>" . $LANG['common'][5] . ": </td>";
