@@ -77,7 +77,7 @@ if (isset ($_POST["generation"])) {
 /* genere le materiel */
 else if (isset ($_POST["generate"])) {
 	$PluginOrderLink->generateNewItem($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/order.form.php?id=" . $_POST["plugin_order_orders_id"] . "");
+	glpi_header(getItemTypeFormURL('PluginOrderOrder')."?id=" . $_POST["plugin_order_orders_id"] . "");
 }
 /* supprime un lien d'une ligne detail vers un materiel */
 else if (isset ($_POST["deleteLinkWithItem"])) {
@@ -85,7 +85,7 @@ else if (isset ($_POST["deleteLinkWithItem"])) {
 		if ($val == 1)
 			$PluginOrderLink->deleteLinkWithItem($key, $_POST["itemtype"][$key],$_POST["plugin_order_orders_id"]);
 	}
-	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/order.form.php?id=" . $_POST["plugin_order_orders_id"] . "");
+	glpi_header(getItemTypeFormURL('PluginOrderOrder')."?id=" . $_POST["plugin_order_orders_id"] . "");
 }
 /* cree un lien d'une ligne detail vers un materiel */
 else if (isset ($_POST["createLinkWithItem"])) {
@@ -117,7 +117,7 @@ else if (isset ($_POST["createLinkWithItem"])) {
       } else
          addMessageAfterRedirect($LANG['plugin_order'][42], true, ERROR);
    }
-	glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/order.form.php?id=" . $_POST["plugin_order_orders_id"] . "");
+	glpi_header(getItemTypeFormURL('PluginOrderOrder')."?id=" . $_POST["plugin_order_orders_id"] . "");
 	
 }
 

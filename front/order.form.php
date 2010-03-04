@@ -55,19 +55,19 @@ if (isset ($_POST["add"])) {
 else if (isset ($_POST["delete"])) {
    if (plugin_order_HaveRight("order", "w"))
       $PluginOrderOrder->delete($_POST);
-   glpi_header($CFG_GLPI["root_doc"] . "/plugins/front/menu.php");
+   glpi_header(getItemTypeSearchURL('PluginOrderOrder'));
 }
 /* restore order */
 else if (isset ($_POST["restore"])) {
    if (plugin_order_HaveRight("order", "w"))
       $PluginOrderOrder->restore($_POST);
-   glpi_header($CFG_GLPI["root_doc"] . "/plugins/front/menu.php");
+   glpi_header(getItemTypeSearchURL('PluginOrderOrder'));
 }
 /* purge order */
 else if (isset ($_POST["purge"])) {
    if (plugin_order_HaveRight("order", "w"))
       $PluginOrderOrder->delete($_POST, 1);
-   glpi_header($CFG_GLPI["root_doc"] . "/plugins/front/menu.php");
+   glpi_header(getItemTypeSearchURL('PluginOrderOrder'));
 }
 /* update order */
 else if (isset ($_POST["update"])) {
@@ -86,7 +86,7 @@ else if (isset ($_POST["validate"])) {
       $PluginOrderOrder->updateOrderStatus($_POST["id"],ORDER_STATUS_APPROVED,$_POST["comment"]);
       $PluginOrderOrder_Item->updateDelivryStatus($_POST["id"]);
       $PluginOrderOrder->getFromDB($_POST["id"]);
-      $PluginOrderOrder->sendNotification("validation",$_POST["id"],$PluginOrderOrder->fields["entities_id"],$_SESSION["glpiID"],$_POST["comment"]);
+      $PluginOrderOrder->sendNotification("validation",$_POST["id"],$PluginOrderOrder->fields["entities_id"],getLoginUserID(),$_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][10]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -96,7 +96,7 @@ else if (isset ($_POST["waiting_for_approval"])) {
    {
       $PluginOrderOrder->updateOrderStatus($_POST["id"],ORDER_STATUS_WAITING_APPROVAL,$_POST["comment"]);
       $PluginOrderOrder->getFromDB($_POST["id"]);
-      $PluginOrderOrder->sendNotification("ask",$_POST["id"],$PluginOrderOrder->fields["entities_id"],$_SESSION["glpiID"],$_POST["comment"]);
+      $PluginOrderOrder->sendNotification("ask",$_POST["id"],$PluginOrderOrder->fields["entities_id"],getLoginUserID(),$_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][7]);
    }
    
@@ -117,7 +117,7 @@ else if (isset ($_POST["cancel_order"])) {
       $PluginOrderOrder->updateOrderStatus($_POST["id"],ORDER_STATUS_CANCELED,$_POST["comment"]);
       $PluginOrderOrder->deleteAllLinkWithItem($_POST["id"]);
       $PluginOrderOrder->getFromDB($_POST["id"]);
-      $PluginOrderOrder->sendNotification("cancel",$_POST["id"],$PluginOrderOrder->fields["entities_id"],$_SESSION["glpiID"],$_POST["comment"]);
+      $PluginOrderOrder->sendNotification("cancel",$_POST["id"],$PluginOrderOrder->fields["entities_id"],getLoginUserID(),$_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][5]);
    }
    
@@ -128,7 +128,7 @@ else if (isset ($_POST["undovalidation"])) {
    {
       $PluginOrderOrder->updateOrderStatus($_POST["id"],ORDER_STATUS_DRAFT,$_POST["comment"]);
       $PluginOrderOrder->getFromDB($_POST["id"]);
-      $PluginOrderOrder->sendNotification("undovalidation",$_POST["id"],$PluginOrderOrder->fields["entities_id"],$_SESSION["glpiID"],$_POST["comment"]);
+      $PluginOrderOrder->sendNotification("undovalidation",$_POST["id"],$PluginOrderOrder->fields["entities_id"],getLoginUserID(),$_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][8]);
    }
    

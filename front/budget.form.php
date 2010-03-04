@@ -54,19 +54,19 @@ if (isset ($_POST["add"])) {
 else if (isset ($_POST["delete"])) {
    if (plugin_order_HaveRight("budget", "w"))
       $PluginOrderBudget->delete($_POST);
-   glpi_header($CFG_GLPI["root_doc"] . "/plugins/order/front/menu.php");
+   glpi_header(getItemTypeSearchURL('PluginOrderBudget'));
 }
 /* restore order */
 else if (isset ($_POST["restore"])) {
    if (plugin_order_HaveRight("budget", "w"))
       $PluginOrderBudget->restore($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
+	glpi_header(getItemTypeSearchURL('PluginOrderBudget'));
 }
 /* purge order */
 else if (isset ($_POST["purge"])) {
    if (plugin_order_HaveRight("budget", "w"))
       $PluginOrderBudget->delete($_POST, 1);
-   glpi_header($CFG_GLPI["root_doc"] . "/plugins/front/menu.php");
+   glpi_header(getItemTypeSearchURL('PluginOrderBudget'));
 }
 /* update order */
 else if (isset ($_POST["update"])) {

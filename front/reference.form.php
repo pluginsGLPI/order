@@ -55,21 +55,21 @@ else if (isset($_POST["delete"]))
 {
 	if(plugin_order_HaveRight("reference","w"))
 		$PluginOrderReference->delete($_POST);
-	glpi_header($CFG_GLPI["root_doc"]."/plugins/order/front/reference.php");
+	glpi_header(getItemTypeSearchURL('PluginOrderReference'));
 }
 /* restore order */
 else if (isset($_POST["restore"]))
 {
 	if(plugin_order_HaveRight("reference","w"))
 		$PluginOrderReference->restore($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
+	glpi_header(getItemTypeSearchURL('PluginOrderReference'));
 }
 /* purge order */
 else if (isset($_POST["purge"]))
 {
 	if(plugin_order_HaveRight("reference","w"))
 		$PluginOrderReference->delete($_POST,1);
-	glpi_header($CFG_GLPI["root_doc"]."/plugins/order/front/reference.php");
+	glpi_header(getItemTypeSearchURL('PluginOrderReference'));
 }
 /* update order */
 else if (isset($_POST["update"]))
