@@ -220,68 +220,72 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          $plugin_order_orders_id = $options['plugin_order_orders_id'];
       }
       
-      $surveyid = -1;
-      if (isset($options['surveyid'])) {
-         $surveyid = $options['surveyid'];
-      }
-      
-		if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $this->check(-1,'w',$input);
-      }
-      
-      if (strpos($_SERVER['PHP_SELF'],"surveysupplier")) {
-         $this->showTabs($options);
-      }
-      $options['colspan'] = 1;
-      $this->showFormHeader($options);
-      
       $PluginOrderOrder = new PluginOrderOrder();
-      $PluginOrderOrder->getFromDB($plugin_order_orders_id);
-      echo "<input type='hidden' name='plugin_order_orders_id' value='$plugin_order_orders_id'>";
-      echo "<input type='hidden' name='entities_id' value='".$PluginOrderOrder->getEntityID()."'>";
-      echo "<input type='hidden' name='is_recursive' value='".$PluginOrderOrder->isRecursive()."'>";
+      if ($PluginOrderOrder->canUpdateOrder($plugin_order_orders_id))
+		{
       
-      echo "<tr class='tab_bg_1'><td>" . $LANG['financial'][26] . ": </td><td>";
-      $suppliers_id = $PluginOrderOrder->fields["suppliers_id"];
-      if ($ID > 0)
-         $suppliers_id = $this->fields["suppliers_id"];
-      $link=getItemTypeFormURL('Supplier');
-      echo "<a href=\"" . $link . "?id=" . $suppliers_id . "\">" . Dropdown::getDropdownName("glpi_suppliers", $suppliers_id) . "</a>";
-      echo "<input type='hidden' name='suppliers_id' value='".$suppliers_id."'>";
-      echo "</td>";
-		echo "</tr>";
-		
-		for ($i=1 ; $i <= 5 ; $i++) {
-         echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][$i] . ": </td><td>";
-         $this->addNotation("answer$i",$this->fields["answer$i"]);
+         $surveyid = -1;
+         if (isset($options['surveyid'])) {
+            $surveyid = $options['surveyid'];
+         }
+         
+         if ($ID > 0) {
+            $this->check($ID,'r');
+         } else {
+            // Create item
+            $this->check(-1,'w',$input);
+         }
+         
+         if (strpos($_SERVER['PHP_SELF'],"surveysupplier")) {
+            $this->showTabs($options);
+         }
+         $options['colspan'] = 1;
+         $this->showFormHeader($options);
+         
+         $PluginOrderOrder->getFromDB($plugin_order_orders_id);
+         echo "<input type='hidden' name='plugin_order_orders_id' value='$plugin_order_orders_id'>";
+         echo "<input type='hidden' name='entities_id' value='".$PluginOrderOrder->getEntityID()."'>";
+         echo "<input type='hidden' name='is_recursive' value='".$PluginOrderOrder->isRecursive()."'>";
+         
+         echo "<tr class='tab_bg_1'><td>" . $LANG['financial'][26] . ": </td><td>";
+         $suppliers_id = $PluginOrderOrder->fields["suppliers_id"];
+         if ($ID > 0)
+            $suppliers_id = $this->fields["suppliers_id"];
+         $link=getItemTypeFormURL('Supplier');
+         echo "<a href=\"" . $link . "?id=" . $suppliers_id . "\">" . Dropdown::getDropdownName("glpi_suppliers", $suppliers_id) . "</a>";
+         echo "<input type='hidden' name='suppliers_id' value='".$suppliers_id."'>";
          echo "</td>";
          echo "</tr>";
-      }
-		
-		echo "<tr class='tab_bg_1'><td>";
-      //comments of order
-      echo $LANG['common'][25] . ":	</td>";
-      echo "<td>";
-      echo "<textarea cols='80' rows='4' name='comment'>" . $this->fields["comment"] . "</textarea>";
-      echo "</td>";
-		echo "</tr>";
-		
-		if ($ID>0) {
-         echo "<tr><th><div align='left'>" . $LANG['plugin_order']['survey'][8] . ": </div></th><th><div align='left'>";
-         $total = $this->getTotalNotation($this->fields["plugin_order_orders_id"]);
-         echo formatNumber($total)." / 10";
-         echo "</div></th>";
+         
+         for ($i=1 ; $i <= 5 ; $i++) {
+            echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][$i] . ": </td><td>";
+            $this->addNotation("answer$i",$this->fields["answer$i"]);
+            echo "</td>";
+            echo "</tr>";
+         }
+         
+         echo "<tr class='tab_bg_1'><td>";
+         //comments of order
+         echo $LANG['common'][25] . ":	</td>";
+         echo "<td>";
+         echo "<textarea cols='80' rows='4' name='comment'>" . $this->fields["comment"] . "</textarea>";
+         echo "</td>";
          echo "</tr>";
-		}
-		
-		$this->showFormButtons($options);
-      
-      if (strpos($_SERVER['PHP_SELF'],"surveysupplier")) {
-         echo "<div id='tabcontent'></div>";
-         echo "<script type='text/javascript'>loadDefaultTab();</script>";
+         
+         if ($ID>0) {
+            echo "<tr><th><div align='left'>" . $LANG['plugin_order']['survey'][8] . ": </div></th><th><div align='left'>";
+            $total = $this->getTotalNotation($this->fields["plugin_order_orders_id"]);
+            echo formatNumber($total)." / 10";
+            echo "</div></th>";
+            echo "</tr>";
+         }
+         
+         $this->showFormButtons($options);
+         
+         if (strpos($_SERVER['PHP_SELF'],"surveysupplier")) {
+            echo "<div id='tabcontent'></div>";
+            echo "<script type='text/javascript'>loadDefaultTab();</script>";
+         }
       }
 		return true;
 	}

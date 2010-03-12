@@ -717,23 +717,22 @@ class PluginOrderOrder extends CommonDBTM {
    
    function showGenerationForm($ID) {
       global $LANG,$CFG_GLPI;
+      
+      $PluginOrderOrder = new PluginOrderOrder();
+      if ($PluginOrderOrder->canUpdateOrder($ID))
+		{
+         echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/export.php?id=".$ID."' method=\"post\">";
+         echo "<div align=\"center\"><table cellspacing=\"2\" cellpadding=\"2\">";
 
-      echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/export.php?id=".$ID."' method=\"post\">";
-      echo "<div align=\"center\"><table cellspacing=\"2\" cellpadding=\"2\">";
+         echo "<tr>";
+         echo "<td class='center'>";
+         echo "<input type='submit' value=\"".$LANG['plugin_order']['generation'][1]."\" class='submit' ></div></td></tr>";
+         echo "</td>";
+         echo "</tr>";
 
-      echo "<tr>";
-      echo "<td class='center'>";
-      echo "<input type='submit' value=\"".$LANG['plugin_order']['generation'][1]."\" class='submit' ></div></td></tr>";
-      echo "</td>";
-      echo "</tr>";
-
-      echo "</table></div></form>";
+         echo "</table></div></form>";
+      }
    }
-   
-   /*function sendNotification($action,$orders_id,$entities_id=0,$users_id=0,$comment=''){
-      $mailing = new PluginOrderMailing($orders_id,$action,$entities_id,$users_id,$comment);
-      $mailing->mailing();
-   }*/
    
    function transfer($ID,$entity) {
       global $DB;
