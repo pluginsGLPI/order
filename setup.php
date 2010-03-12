@@ -64,7 +64,8 @@ function plugin_init_order() {
    
 	Plugin::registerClass('PluginOrderOrder', array(
 		'doc_types' => true,
-		'massiveaction_noupdate_types' => true
+		'massiveaction_noupdate_types' => true,
+		'notificationtemplates_types' => true
 	));
    
    Plugin::registerClass('PluginOrderReference', array(

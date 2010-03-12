@@ -135,7 +135,50 @@ function plugin_order_install() {
             $DB->query($query) or die($DB->error());
          }
       }
+      
+      
+      //Do One time on 0.80
+      $query_id = "SELECT `id` FROM `glpi_notificationtemplates` WHERE `itemtype`='PluginOrderOrder' AND `name` = 'Order Validation'";
+      $result = $DB->query($query_id) or die ($DB->error());
+      $itemtype = $DB->result($result,0,'id');
+      
+      $query="INSERT INTO `glpi_notificationtemplatetranslations`
+                                 VALUES(NULL, ".$itemtype.", '','##lang.ordervalidation.title##',
+                        '##lang.ordervalidation.url## : ##ordervalidation.url##
+##lang.ordervalidation.entity## : ##ordervalidation.entity##
+##IFordervalidation.name####lang.ordervalidation.name## : ##ordervalidation.name##
+##ENDIFordervalidation.name##
+##IFordervalidation.numorder####lang.ordervalidation.numorder## : ##ordervalidation.numorder##
+##ENDIFordervalidation.numorder##
+##IFordervalidation.orderdate####lang.ordervalidation.orderdate##  : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##
+##IFordervalidation.state####lang.ordervalidation.state## : ##ordervalidation.state####ENDIFordervalidation.state##
+##IFordervalidation.users####lang.ordervalidation.users## : ##ordervalidation.users####ENDIFordervalidation.users##
 
+##IFordervalidation.comment####lang.ordervalidation.comment## : ##ordervalidation.comment####ENDIFordervalidation.comment##',
+                        '&lt;p&gt;&lt;strong&gt;##lang.ordervalidation.url##&lt;/strong&gt; : &lt;a href=\"##ordervalidation.url##\"&gt;##ordervalidation.url##&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;##lang.ordervalidation.entity##&lt;/strong&gt; : ##ordervalidation.entity##&lt;br /&gt; ##IFordervalidation.name##&lt;strong&gt;##lang.ordervalidation.name##&lt;/strong&gt; : ##ordervalidation.name####ENDIFordervalidation.name##&lt;br /&gt;##IFordervalidation.numorder##&lt;strong&gt;##lang.ordervalidation.numorder##&lt;/strong&gt; : ##ordervalidation.numorder####ENDIFordervalidation.numorder##&lt;br /&gt;##IFordervalidation.orderdate##&lt;strong&gt;##lang.ordervalidation.orderdate##&lt;/strong&gt; : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##&lt;br /&gt;##IFordervalidation.state##&lt;strong&gt;##lang.ordervalidation.state##&lt;/strong&gt; : ##ordervalidation.state####ENDIFordervalidation.state##&lt;br /&gt;##IFordervalidation.users##&lt;strong&gt;##lang.ordervalidation.users##&lt;/strong&gt; : ##ordervalidation.users####ENDIFordervalidation.users##&lt;br /&gt;&lt;br /&gt;##IFordervalidation.comment##&lt;strong&gt;##lang.ordervalidation.comment##&lt;/strong&gt; : ##ordervalidation.comment####ENDIFordervalidation.comment##&lt;/p&gt;');";
+      $result=$DB->query($query);
+      
+      $query = "INSERT INTO `glpi_notifications`
+                                   VALUES (NULL, 'Add order validation', 0, 'PluginOrderOrder', 'ask',
+                                          'mail',".$itemtype.",
+                                          '', 1, 1, '2010-02-17 22:36:46');";
+      $result=$DB->query($query);
+      $query = "INSERT INTO `glpi_notifications`
+                                   VALUES (NULL, 'Confirm order validation', 0, 'PluginOrderOrder', 'validation',
+                                          'mail',".$itemtype.",
+                                          '', 1, 1, '2010-02-17 22:36:46');";
+      $result=$DB->query($query);
+      $query = "INSERT INTO `glpi_notifications`
+                                   VALUES (NULL, 'Cancel order validation', 0, 'PluginOrderOrder', 'undovalidation',
+                                          'mail',".$itemtype.",
+                                          '', 1, 1, '2010-02-17 22:36:46');";
+      $result=$DB->query($query);
+      $query = "INSERT INTO `glpi_notifications`
+                                   VALUES (NULL, 'Cancel order', 0, 'PluginOrderOrder', 'cancel',
+                                          'mail',".$itemtype.",
+                                          '', 1, 1, '2010-02-17 22:36:46');";
+      $result=$DB->query($query);
+   
       $query_="SELECT *
             FROM `glpi_plugin_order_profiles` ";
       $result_=$DB->query($query_);
@@ -499,10 +542,6 @@ function plugin_get_headings_order($item,$withtemplate) {
          // Non template case
          return array(1 => $LANG['plugin_order']['title'][1]);
       }
-   } else if ($type == 'Notification') {
-      if ($item->getField('id')) {
-         return array(1 => $LANG['plugin_order']['title'][1]);
-      }
    }
    return false;
 }
@@ -513,8 +552,7 @@ function plugin_headings_actions_order($item) {
    if (in_array(get_class($item),PluginOrderOrder_Item::getClasses(true))||
 		get_class($item)=='Profile' ||
 		get_class($item)=='Supplier' ||
-		get_class($item)=='Budget' ||
-		get_class($item)=='Notification') {
+		get_class($item)=='Budget') {
 		return array(
 			1 => "plugin_headings_order",
 		);
@@ -540,9 +578,6 @@ function plugin_headings_order($item) {
             $PluginOrderProfile->createAccess($item->getField('id'));
          $PluginOrderProfile->showForm($item->getField('id'), array('target' => $CFG_GLPI["root_doc"]."/plugins/order/front/profile.form.php"));
          break;
-      //case 'Notification' :
-      //   $PluginOrderMailingSetting->showFormMailing($CFG_GLPI["root_doc"]."/plugins/order/front/mailing.setting.php");
-      //   break;
       case 'Supplier' :
          $PluginOrderReference->showReferencesFromSupplier($item->getField('id'));
          $PluginOrderOrder_Supplier->showDeliveries($item->getField('id'));

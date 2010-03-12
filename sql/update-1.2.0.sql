@@ -5,7 +5,7 @@ ALTER TABLE `glpi_plugin_order_references_manufacturers` RENAME `glpi_plugin_ord
 ALTER TABLE `glpi_dropdown_plugin_order_payment` RENAME `glpi_plugin_order_orderpayments`;
 ALTER TABLE `glpi_dropdown_plugin_order_taxes` RENAME `glpi_plugin_order_ordertaxes`;
 ALTER TABLE `glpi_plugin_order_config` RENAME `glpi_plugin_order_configs`;
-ALTER TABLE `glpi_plugin_order_mailing` RENAME `glpi_plugin_order_mailingsettings`;
+DROP TABLE IF EXISTS `glpi_plugin_order_mailing`;
 ALTER TABLE `glpi_dropdown_plugin_order_deliverystate` RENAME `glpi_plugin_order_deliverystates`;
 
 ALTER TABLE `glpi_plugin_order_orders` 
@@ -133,20 +133,6 @@ ALTER TABLE `glpi_plugin_order_profiles`
 
 ALTER TABLE `glpi_plugin_order_configs` 
    CHANGE `ID` `id` int(11) NOT NULL auto_increment;
-
-ALTER TABLE `glpi_plugin_order_mailingsettings` 
-   DROP INDEX `item_type`,
-   DROP INDEX `type`,
-   DROP INDEX `mailings`,
-   DROP INDEX `FK_item`,
-   DROP INDEX `items`,
-   CHANGE `ID` `id` int(11) NOT NULL auto_increment,
-   CHANGE `type` `type` varchar(255) collate utf8_unicode_ci default NULL COMMENT 'VALUE in (certificates)',
-   CHANGE `FK_item` `items_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
-   CHANGE `item_type` `itemtype` int(11) NOT NULL default '0'  COMMENT 'see define.php *_MAILING_TYPE constant',
-   ADD UNIQUE `mailings` (`type`,`items_id`,`itemtype`),
-   ADD INDEX `FK_item` (`items_id`),
-   ADD INDEX `items` (`itemtype`,`items_id`);
    
 -- --------------------------------------------------------
 -- 
@@ -193,3 +179,5 @@ ALTER TABLE `glpi_plugin_order_surveysuppliers`
    CHANGE `comment` `comment` text collate utf8_unicode_ci,
    ADD INDEX (`plugin_order_orders_id`),
    ADD INDEX (`suppliers_id`);
+
+INSERT INTO `glpi_notificationtemplates` VALUES(NULL, 'Order Validation', 'PluginOrderOrder', '2010-03-12 22:36:46','');

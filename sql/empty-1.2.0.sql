@@ -286,24 +286,7 @@ CREATE TABLE `glpi_plugin_order_configs` (
 
 INSERT INTO `glpi_plugin_order_configs` (id,use_validation,default_taxes) VALUES (1,0,0);
 
--- --------------------------------------------------------
--- 
--- Structure de la table `glpi_plugin_order_mailingsettings`
--- 
-
-DROP TABLE IF EXISTS `glpi_plugin_order_mailingsettings`;
-CREATE TABLE `glpi_plugin_order_mailingsettings` (
-	`id` int(11) NOT NULL auto_increment,
-	`type` varchar(255) collate utf8_unicode_ci default NULL COMMENT 'VALUE in (order)',
-	`items_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
-	`itemtype` int(11) NOT NULL default '0'  COMMENT 'see define.php *_MAILING_TYPE constant',
-	PRIMARY KEY  (`id`),
-	UNIQUE KEY `mailings` (`type`,`items_id`,`itemtype`),
-	KEY `FK_item` (`items_id`),
-	KEY `items` (`itemtype`,`items_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
+INSERT INTO `glpi_notificationtemplates` VALUES(NULL, 'Order Validation', 'PluginOrderOrder', '2010-03-12 22:36:46','');
 
 INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','1','1','0');
 INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','2','2','0');

@@ -508,12 +508,33 @@ class PluginOrderOrder extends CommonDBTM {
    }
    
    function updateOrderStatus($orders_id, $status, $comments = '') {
-
+      global $CFG_GLPI;
+      
       $input["states_id"] = $status;
       $input["id"] = $orders_id;
       $this->dohistory = false;
       $this->update($input);
       $this->addStatusLog($orders_id, $status, $comments);
+      
+      if ($CFG_GLPI["use_mailing"] && ($status == ORDER_STATUS_APPROVED
+                                          || $status == ORDER_STATUS_WAITING_APPROVAL
+                                          || $status == ORDER_STATUS_CANCELED
+                                          || $status == ORDER_STATUS_DRAFT)) {
+         
+         if ($status == ORDER_STATUS_APPROVED)
+            $notif = "validation";
+         else if ($status == ORDER_STATUS_WAITING_APPROVAL)
+            $notif = "ask";
+         else if ($status == ORDER_STATUS_CANCELED)
+            $notif = "cancel";
+         else if ($status == ORDER_STATUS_DRAFT)
+            $notif = "undovalidation";
+         
+         $options = array();
+         $options['comments'] = $comments;
+         NotificationEvent::raiseEvent($notif,$this,$options);
+      }
+      
       return true;
    }
    
@@ -580,7 +601,7 @@ class PluginOrderOrder extends CommonDBTM {
 		return true;
 	}
 	
-	function deleteAllLinkWithDevice($orders_id) {
+	function deleteAllLinkWithItem($orders_id) {
 
       $detail = new PluginOrderOrder_Item;
       $devices = getAllDatasFromTable("glpi_plugin_order_orders_items", "plugin_order_orders_id=$orders_id");
@@ -709,10 +730,10 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</table></div></form>";
    }
    
-   function sendNotification($action,$orders_id,$entities_id=0,$users_id=0,$comment=''){
+   /*function sendNotification($action,$orders_id,$entities_id=0,$users_id=0,$comment=''){
       $mailing = new PluginOrderMailing($orders_id,$action,$entities_id,$users_id,$comment);
       $mailing->mailing();
-   }
+   }*/
    
    function transfer($ID,$entity) {
       global $DB;

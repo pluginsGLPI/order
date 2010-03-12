@@ -120,14 +120,12 @@ class PluginOrderBudget extends CommonDBTM {
       }
 
       $this->showTabs($options);
+      $options['colspan'] = 1;
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['common'][16] . ": </td>";
       echo "<td>";
-      if ($canedit)
-         autocompletionTextField($this,"name");
-      else
-         echo $this->fields["name"];	
+      autocompletionTextField($this,"name");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][87]." GLPI" . ": </td>";
@@ -152,7 +150,7 @@ class PluginOrderBudget extends CommonDBTM {
 
       if ($ID > 0) {
          $query = "SELECT SUM(`price_discounted`) AS total_price FROM `glpi_plugin_order_orders`, `glpi_plugin_order_orders_items` " .
-               "WHERE `budgets_id` = '".$this->fields["budgets_id"]."' AND `glpi_plugin_order_orders_items`.`plugin_order_orders_id` = `glpi_plugin_order_orders`.`id` " .
+               "WHERE `budgets_id` = '".$this->fields["budgets_id"]."' AND `budgets_id` != 0 AND `glpi_plugin_order_orders_items`.`plugin_order_orders_id` = `glpi_plugin_order_orders`.`id` " .
                "GROUP BY `glpi_plugin_order_orders`.`budgets_id`";
          $result = $DB->query($query);
 
