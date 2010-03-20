@@ -53,7 +53,7 @@ if (isset ($_POST["generation"])) {
 		foreach ($_POST["item"] as $key => $val) {
 			if ($val == 1) {
 				$PluginOrderOrder_Item->getFromDB($_POST["id"][$key]);
-				if ($PluginOrderOrder_Item->fields["states_id"] == ORDER_DEVICE_NOT_DELIVRED) {
+				if ($PluginOrderOrder_Item->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
 					addMessageAfterRedirect($LANG['plugin_order'][45], true, ERROR);
 					glpi_header($_SERVER["HTTP_REFERER"]);
 				}
@@ -103,7 +103,7 @@ else if (isset ($_POST["createLinkWithItem"])) {
             if ($val == 1)
             {
                $PluginOrderOrder_Item->getFromDB($_POST["id"][$key]);
-               if ($PluginOrderOrder_Item->fields["states_id"] == ORDER_DEVICE_NOT_DELIVRED) {
+               if ($PluginOrderOrder_Item->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
                   addMessageAfterRedirect($LANG['plugin_order'][46], true, ERROR);
                   glpi_header($_SERVER["HTTP_REFERER"]);
                } else

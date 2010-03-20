@@ -253,7 +253,8 @@ function plugin_order_uninstall() {
 		"glpi_plugin_order_references_manufacturers",
 		"glpi_plugin_order_config",
 		"glpi_plugin_order_budgets",
-      "glpi_plugin_order_suppliers"
+      "glpi_plugin_order_suppliers",
+      "glpi_plugin_order_mailing"
 	);
 
 	foreach ($tables as $table)
@@ -565,7 +566,6 @@ function plugin_headings_order($item) {
 	global $CFG_GLPI;
 
    $PluginOrderProfile=new PluginOrderProfile();
-   $PluginOrderMailingSetting = new PluginOrderMailingSetting();
    $PluginOrderOrder_Item = new PluginOrderOrder_Item();
    $PluginOrderReference = new PluginOrderReference();
    $PluginOrderBudget = new PluginOrderBudget();

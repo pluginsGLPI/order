@@ -83,7 +83,7 @@ else if (isset ($_POST["validate"])) {
 		
    if (plugin_order_HaveRight("order", "w") && ( plugin_order_HaveRight("validation", "w") || !$config["use_validation"]))
    {
-      $PluginOrderOrder->updateOrderStatus($_POST["id"],ORDER_STATUS_APPROVED,$_POST["comment"]);
+      $PluginOrderOrder->updateOrderStatus($_POST["id"],PluginOrderOrder::ORDER_STATUS_APPROVED,$_POST["comment"]);
       $PluginOrderOrder_Item->updateDelivryStatus($_POST["id"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][10]);
    }
@@ -92,7 +92,7 @@ else if (isset ($_POST["validate"])) {
 else if (isset ($_POST["waiting_for_approval"])) {
    if (plugin_order_HaveRight("order", "w"))
    {
-      $PluginOrderOrder->updateOrderStatus($_POST["id"],ORDER_STATUS_WAITING_APPROVAL,$_POST["comment"]);
+      $PluginOrderOrder->updateOrderStatus($_POST["id"],PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL,$_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][7]);
    }
    
@@ -101,7 +101,7 @@ else if (isset ($_POST["waiting_for_approval"])) {
 else if (isset ($_POST["cancel_waiting_for_approval"])) {
    if (plugin_order_HaveRight("order", "w") && plugin_order_HaveRight("cancel", "w"))
    {
-      $PluginOrderOrder->updateOrderStatus($_POST["id"],ORDER_STATUS_DRAFT,$_POST["comment"]);
+      $PluginOrderOrder->updateOrderStatus($_POST["id"],PluginOrderOrder::ORDER_STATUS_DRAFT,$_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][14]);
    }
    
@@ -110,7 +110,7 @@ else if (isset ($_POST["cancel_waiting_for_approval"])) {
 else if (isset ($_POST["cancel_order"])) {
    if (plugin_order_HaveRight("order", "w") && plugin_order_HaveRight("cancel", "w"))
    {
-      $PluginOrderOrder->updateOrderStatus($_POST["id"],ORDER_STATUS_CANCELED,$_POST["comment"]);
+      $PluginOrderOrder->updateOrderStatus($_POST["id"],PluginOrderOrder::ORDER_STATUS_CANCELED,$_POST["comment"]);
       $PluginOrderOrder->deleteAllLinkWithItem($_POST["id"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][5]);
    }
@@ -120,7 +120,7 @@ else if (isset ($_POST["cancel_order"])) {
 else if (isset ($_POST["undovalidation"])) {
    if (plugin_order_HaveRight("order", "w") && plugin_order_HaveRight("undo_validation", "w"))
    {
-      $PluginOrderOrder->updateOrderStatus($_POST["id"],ORDER_STATUS_DRAFT,$_POST["comment"]);
+      $PluginOrderOrder->updateOrderStatus($_POST["id"],PluginOrderOrder::ORDER_STATUS_DRAFT,$_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][8]);
    }
    

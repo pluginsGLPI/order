@@ -48,7 +48,7 @@ if (isset ($_POST["update"])) {
       $PluginOrderOrder_Item->getFromDB($_POST["id"]);
       
       if ($PluginOrderOrder_Item->fields["itemtype"] == 'SoftwareLicense') {
-         $result=$PluginOrderOrder_Item->queryRef($PluginOrderOrder_Item->fields["plugin_order_orders_id"],$PluginOrderOrder_Item->fields["plugin_order_references_id"],$PluginOrderOrder_Item->fields["price_taxfree"],$PluginOrderOrder_Item->fields["discount"],ORDER_DEVICE_DELIVRED);
+         $result=$PluginOrderOrder_Item->queryRef($PluginOrderOrder_Item->fields["plugin_order_orders_id"],$PluginOrderOrder_Item->fields["plugin_order_references_id"],$PluginOrderOrder_Item->fields["price_taxfree"],$PluginOrderOrder_Item->fields["discount"],PluginOrderOrder::ORDER_DEVICE_DELIVRED);
          $nb = $DB->numrows($result);
 
          if ($nb) {

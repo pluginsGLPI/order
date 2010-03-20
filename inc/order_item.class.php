@@ -175,7 +175,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
             $input["itemtype"] = $itemtype;
             $input["price_taxfree"] = $price;
             $input["price_discounted"] = $price - ($price * ($discounted_price / 100));
-            $input["states_id"] = ORDER_STATUS_DRAFT;
+            $input["states_id"] = PluginOrderOrder::ORDER_STATUS_DRAFT;
             $input["price_ati"] = $this->getPricesATI($input["price_discounted"], Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",$taxes));
             $input["discount"] = $discounted_price;
 
@@ -454,7 +454,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
                   AND `plugin_order_references_id` = '$plugin_order_references_id'
                   AND `price_taxfree` LIKE '$price_taxfree'
                   AND `discount` LIKE '$discount'
-                  AND `states_id` = '".ORDER_STATUS_WAITING_APPROVAL."' ";
+                  AND `states_id` = '".PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL."' ";
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'deliveredquantity'));
    }
@@ -475,10 +475,10 @@ class PluginOrderOrder_Item extends CommonDBTM {
          if (!$data["states_id"])
             $all_delivered = false;
 
-      if ($all_delivered && $order->fields["states_id"] != ORDER_STATUS_COMPLETLY_DELIVERED)
-         $order->updateOrderStatus($plugin_order_orders_id, ORDER_STATUS_COMPLETLY_DELIVERED);
-      else if ($order->fields["states_id"] != ORDER_STATUS_PARTIALLY_DELIVRED)
-         $order->updateOrderStatus($plugin_order_orders_id, ORDER_STATUS_PARTIALLY_DELIVRED);
+      if ($all_delivered && $order->fields["states_id"] != PluginOrderOrder::ORDER_STATUS_COMPLETLY_DELIVERED)
+         $order->updateOrderStatus($plugin_order_orders_id, PluginOrderOrder::ORDER_STATUS_COMPLETLY_DELIVERED);
+      else if ($order->fields["states_id"] != PluginOrderOrder::ORDER_STATUS_PARTIALLY_DELIVRED)
+         $order->updateOrderStatus($plugin_order_orders_id, PluginOrderOrder::ORDER_STATUS_PARTIALLY_DELIVRED);
    }
 
    function getAllPrices($plugin_order_orders_id) {

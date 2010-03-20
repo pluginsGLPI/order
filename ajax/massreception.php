@@ -51,7 +51,7 @@ echo "</td><td>";
 echo "<input type='hidden' name='plugin_order_references_id' value='".$_POST['plugin_order_references_id']."'>";
 echo "<input type='hidden' name='plugin_order_orders_id' value='".$_POST['plugin_order_orders_id']."'>";
 echo $LANG['plugin_order']['delivery'][6]."</td><td>";
-$nb = $PluginOrderReception->checkItemStatus($_POST['plugin_order_orders_id'],$_POST['plugin_order_references_id'], ORDER_DEVICE_NOT_DELIVRED);
+$nb = $PluginOrderReception->checkItemStatus($_POST['plugin_order_orders_id'],$_POST['plugin_order_references_id'], PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED);
 Dropdown::showInteger('number_reception','',1,$nb);
 echo "</td><td>";
 echo $LANG['plugin_order']['status'][3]."&nbsp;";

@@ -183,13 +183,13 @@ class PluginOrderLink extends CommonDBChild {
       $PluginOrderReception = new PluginOrderReception();
       
       $PluginOrderOrder->getFromDB($plugin_order_orders_id);
-      $canedit = $PluginOrderOrder->can($plugin_order_orders_id, 'w') && !$PluginOrderOrder->canUpdateOrder($plugin_order_orders_id) && $PluginOrderOrder->fields["states_id"] != ORDER_STATUS_CANCELED;
+      $canedit = $PluginOrderOrder->can($plugin_order_orders_id, 'w') && !$PluginOrderOrder->canUpdateOrder($plugin_order_orders_id) && $PluginOrderOrder->fields["states_id"] != PluginOrderOrder::ORDER_STATUS_CANCELED;
       
       $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, `glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`itemtype`, `glpi_plugin_order_references`.`manufacturers_id`,`glpi_plugin_order_orders_items`.`price_taxfree`,`glpi_plugin_order_orders_items`.`discount` " .
       "FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references` " .
       "WHERE `plugin_order_orders_id` = '$plugin_order_orders_id' " .
       "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`  " .
-      "AND `glpi_plugin_order_orders_items`.`states_id` = '".ORDER_DEVICE_DELIVRED."'   " .
+      "AND `glpi_plugin_order_orders_items`.`states_id` = '".PluginOrderOrder::ORDER_DEVICE_DELIVRED."'   " .
       "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
       "ORDER BY `glpi_plugin_order_references`.`name`";
 
@@ -244,7 +244,7 @@ class PluginOrderLink extends CommonDBChild {
                     FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references`
                     WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
                     AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = '".$plugin_order_references_id."'
-                    AND `glpi_plugin_order_orders_items`.`states_id` = '".ORDER_DEVICE_DELIVRED."'
+                    AND `glpi_plugin_order_orders_items`.`states_id` = '".PluginOrderOrder::ORDER_DEVICE_DELIVRED."'
                     AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id` ";
             if ($itemtype == 'SoftwareLicense')
                $query.=" GROUP BY `glpi_plugin_order_orders_items`.`price_taxfree`,`glpi_plugin_order_orders_items`.`discount` ";
@@ -433,7 +433,7 @@ class PluginOrderLink extends CommonDBChild {
                            'SoftwareLicense',
                            'Contract');
       
-      if ($PluginOrderReception->checkItemStatus($plugin_order_orders_id, $plugin_order_references_id, ORDER_DEVICE_DELIVRED)) {
+      if ($PluginOrderReception->checkItemStatus($plugin_order_orders_id, $plugin_order_references_id, PluginOrderOrder::ORDER_DEVICE_DELIVRED)) {
          if (!in_array($itemtype, $restricted))
             echo "<option value='generation'>" . $LANG['plugin_order']['delivery'][3] . "</option>";
 
@@ -669,7 +669,7 @@ class PluginOrderLink extends CommonDBChild {
          
          $this->removeInfoComRelatedToOrder($itemtype, $license);
          
-         $result=$PluginOrderOrder_Item->queryRef($detail->fields["plugin_order_orders_id"],$detail->fields["plugin_order_references_id"],$detail->fields["price_taxfree"],$detail->fields["discount"],ORDER_DEVICE_DELIVRED);
+         $result=$PluginOrderOrder_Item->queryRef($detail->fields["plugin_order_orders_id"],$detail->fields["plugin_order_references_id"],$detail->fields["price_taxfree"],$detail->fields["discount"],PluginOrderOrder::ORDER_DEVICE_DELIVRED);
          
          $nb = $DB->numrows($result);
 

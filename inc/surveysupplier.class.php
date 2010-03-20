@@ -221,8 +221,8 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       }
       
       $PluginOrderOrder = new PluginOrderOrder();
-      if ($PluginOrderOrder->canUpdateOrder($plugin_order_orders_id))
-		{
+      /*if ($PluginOrderOrder->canUpdateOrder($plugin_order_orders_id))
+		{*/
       
          $surveyid = -1;
          if (isset($options['surveyid'])) {
@@ -286,7 +286,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
             echo "<div id='tabcontent'></div>";
             echo "<script type='text/javascript'>loadDefaultTab();</script>";
          }
-      }
+      //}
 		return true;
 	}
 	

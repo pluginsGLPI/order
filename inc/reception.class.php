@@ -113,7 +113,7 @@ class PluginOrderReception extends CommonDBTM {
       
       if ($detail->fields["itemtype"] == 'SoftwareLicense') {
       
-         $result=$PluginOrderOrder_Item->queryRef($_POST["plugin_order_orders_id"],$detail->fields["plugin_order_references_id"],$detail->fields["price_taxfree"],$detail->fields["discount"],ORDER_DEVICE_DELIVRED);
+         $result=$PluginOrderOrder_Item->queryRef($_POST["plugin_order_orders_id"],$detail->fields["plugin_order_references_id"],$detail->fields["price_taxfree"],$detail->fields["discount"],PluginOrderOrder::ORDER_DEVICE_DELIVRED);
          $nb = $DB->numrows($result);
          
          if ($nb) {
@@ -122,7 +122,7 @@ class PluginOrderReception extends CommonDBTM {
 
                $input["id"] = $detailID;
                $input["delivery_date"] = 'NULL';
-               $input["states_id"] = ORDER_DEVICE_NOT_DELIVRED;
+               $input["states_id"] = PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED;
                $input["delivery_number"] = "";
                $input["plugin_order_deliverystates_id"] = 0;
                $input["delivery_comment"] = "";
@@ -133,7 +133,7 @@ class PluginOrderReception extends CommonDBTM {
       } else {
          $values["id"] = $detailID;
          $values["date"] = 0;
-         $values["states_id"] = ORDER_DEVICE_NOT_DELIVRED;
+         $values["states_id"] = PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED;
          $values["delivery_number"] = "";
          $values["plugin_order_deliverystates_id"] = 0;
          $values["delivery_comment"] = "";
@@ -171,7 +171,7 @@ class PluginOrderReception extends CommonDBTM {
       $PluginOrderReference = new PluginOrderReference();
       $PluginOrderReference->getFromDB($this->fields["plugin_order_references_id"]);
       
-      $canedit = $PluginOrderOrder->can($this->fields["plugin_order_orders_id"], 'w') && !$PluginOrderOrder->canUpdateOrder($this->fields["plugin_order_orders_id"]) && $PluginOrderOrder->fields["states_id"] != ORDER_STATUS_CANCELED;
+      $canedit = $PluginOrderOrder->can($this->fields["plugin_order_orders_id"], 'w') && !$PluginOrderOrder->canUpdateOrder($this->fields["plugin_order_orders_id"]) && $PluginOrderOrder->fields["states_id"] != PluginOrderOrder::ORDER_STATUS_CANCELED;
       
       echo "<input type='hidden' name='plugin_order_orders_id' value='" . $this->fields["plugin_order_orders_id"] . "'>";
       
@@ -251,7 +251,7 @@ class PluginOrderReception extends CommonDBTM {
       
       initNavigateListItems($this->getType(),$LANG['plugin_order'][7] ." = ". $PluginOrderOrder->fields["name"]);
       
-      $canedit = $PluginOrderOrder->can($plugin_order_orders_id, 'w') && !$PluginOrderOrder->canUpdateOrder($plugin_order_orders_id) && $PluginOrderOrder->fields["states_id"] != ORDER_STATUS_CANCELED;
+      $canedit = $PluginOrderOrder->can($plugin_order_orders_id, 'w') && !$PluginOrderOrder->canUpdateOrder($plugin_order_orders_id) && $PluginOrderOrder->fields["states_id"] != PluginOrderOrder::ORDER_STATUS_CANCELED;
       
       $result_ref=$PluginOrderOrder_Item->queryDetail($plugin_order_orders_id);
       $numref = $DB->numrows($result_ref);
@@ -326,7 +326,7 @@ class PluginOrderReception extends CommonDBTM {
                $detailID = $data["IDD"];
 
                echo "<tr class='tab_bg_2'>";
-               if ($canedit && $this->checkThisItemStatus($detailID, ORDER_DEVICE_NOT_DELIVRED)) {
+               if ($canedit && $this->checkThisItemStatus($detailID, PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED)) {
                   echo "<td width='15' align='left'>";
                   $sel = "";
                   if (isset ($_GET["select"]) && $_GET["select"] == "all")
@@ -342,10 +342,10 @@ class PluginOrderReception extends CommonDBTM {
                echo "<td align='center'>" . $PluginOrderReference->getReceptionReferenceLink($data) . "</td>";
                echo "<td align='center'>";
                $link=getItemTypeFormURL($this->getType());
-               if ($canedit && $data["states_id"]==ORDER_DEVICE_DELIVRED)
+               if ($canedit && $data["states_id"]==PluginOrderOrder::ORDER_DEVICE_DELIVRED)
                   echo "<a href=\"" . $link . "?id=".$data["IDD"]."\">";
                echo $this->getReceptionStatus($detailID);
-               if ($canedit && $data["states_id"]==ORDER_DEVICE_DELIVRED)
+               if ($canedit && $data["states_id"]==PluginOrderOrder::ORDER_DEVICE_DELIVRED)
                   echo "</a>";
                echo "</td>";
                echo "<td align='center'>" . convDate($data["delivery_date"]) . "</td>";
@@ -360,7 +360,7 @@ class PluginOrderReception extends CommonDBTM {
 
             }
             echo "</table>";
-            if ($canedit && $this->checkItemStatus($plugin_order_orders_id, $plugin_order_references_id, ORDER_DEVICE_NOT_DELIVRED)) {
+            if ($canedit && $this->checkItemStatus($plugin_order_orders_id, $plugin_order_references_id, PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED)) {
                
                echo "<div class='center'>";
                echo "<table width='950px' class='tab_glpi'>";
@@ -423,9 +423,9 @@ class PluginOrderReception extends CommonDBTM {
       $detail->getFromDB($ID);
 
       switch ($detail->fields["states_id"]) {
-         case ORDER_DEVICE_NOT_DELIVRED :
+         case PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED :
             return $LANG['plugin_order']['status'][11];
-         case ORDER_DEVICE_DELIVRED :
+         case PluginOrderOrder::ORDER_DEVICE_DELIVRED :
             return $LANG['plugin_order']['status'][8];
          default :
             return "";
@@ -459,7 +459,7 @@ class PluginOrderReception extends CommonDBTM {
       $detail = new PluginOrderOrder_Item;
       $input["id"] = $detailID;
       $input["delivery_date"] = $delivery_date;
-      $input["states_id"] = ORDER_DEVICE_DELIVRED;
+      $input["states_id"] = PluginOrderOrder::ORDER_DEVICE_DELIVRED;
       $input["delivery_number"] = $delivery_number;
       $input["plugin_order_deliverystates_id"] = $plugin_order_deliverystates_id;
       $detail->update($input);
@@ -472,7 +472,7 @@ class PluginOrderReception extends CommonDBTM {
       $detail = new PluginOrderOrder_Item;
       $detail->getFromDB($detailID);
       
-      $result=$PluginOrderOrder_Item->queryRef($_POST["plugin_order_orders_id"],$plugin_order_references_id,$detail->fields["price_taxfree"],$detail->fields["discount"],ORDER_DEVICE_NOT_DELIVRED);
+      $result=$PluginOrderOrder_Item->queryRef($_POST["plugin_order_orders_id"],$plugin_order_references_id,$detail->fields["price_taxfree"],$detail->fields["discount"],PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED);
       
       $nb = $DB->numrows($result);
 
@@ -482,7 +482,7 @@ class PluginOrderReception extends CommonDBTM {
             $detail = new PluginOrderDetail;
             $input["id"] = $detailID;
             $input["delivery_date"] = $delivery_date;
-            $input["states_id"] = ORDER_DEVICE_DELIVRED;
+            $input["states_id"] = PluginOrderOrder::ORDER_DEVICE_DELIVRED;
             $input["delivery_number"] = $delivery_number;
             $input["plugin_order_deliverystates_id"] = $plugin_order_deliverystates_id;
             $detail->update($input);
@@ -506,7 +506,7 @@ class PluginOrderReception extends CommonDBTM {
                      if (!$plugin_order_orders_id)
                         $plugin_order_orders_id = $detail->fields["plugin_order_orders_id"];
 
-                     if ($detail->fields["states_id"] == ORDER_DEVICE_NOT_DELIVRED) {
+                     if ($detail->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
                         $this->receptionOneItem($key, $plugin_order_orders_id, $params["delivery_date"], $params["delivery_number"], $params["plugin_order_deliverystates_id"]);
                      } else
                         addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);

@@ -308,7 +308,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
                   FROM `glpi_plugin_order_orders_items` 
                   LEFT JOIN `glpi_plugin_order_orders` ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`)
                   WHERE `glpi_plugin_order_orders`.`suppliers_id` = '".$suppliers_id."' 
-                  AND `glpi_plugin_order_orders_items`.`states_id` = '".ORDER_DEVICE_DELIVRED."' "
+                  AND `glpi_plugin_order_orders_items`.`states_id` = '".PluginOrderOrder::ORDER_DEVICE_DELIVRED."' "
                   .getEntitiesRestrictRequest(" AND ","glpi_plugin_order_orders",'','',true);
       $query.= "GROUP BY `glpi_plugin_order_orders`.`entities_id`,`glpi_plugin_order_orders_items`.`plugin_order_deliverystates_id`";
 		$result = $DB->query($query);

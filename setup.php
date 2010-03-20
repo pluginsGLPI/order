@@ -32,24 +32,10 @@
 // ----------------------------------------------------------------------
  */
 
-define("ORDER_DEVICE_NOT_DELIVRED", 0);
-define("ORDER_DEVICE_DELIVRED", 1);
-
-// Define order status
-define("ORDER_STATUS_DRAFT", 0);
-define("ORDER_STATUS_WAITING_APPROVAL", 1);
-define("ORDER_STATUS_APPROVED", 2);
-define("ORDER_STATUS_PARTIALLY_DELIVRED", 3);
-define("ORDER_STATUS_COMPLETLY_DELIVERED", 4);
-define("ORDER_STATUS_CANCELED", 5);
-
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
-	global $PLUGIN_HOOKS, $CFG_GLPI, $LANG, $ORDER_VALIDATION_STATUS;
-                                    
-	$ORDER_VALIDATION_STATUS = array (ORDER_STATUS_DRAFT,
-                                    ORDER_STATUS_WAITING_APPROVAL);
-                                    
+	global $PLUGIN_HOOKS, $CFG_GLPI, $LANG;
+
    /* load changeprofile function */
    $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile','changeProfile');
    
