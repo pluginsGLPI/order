@@ -235,7 +235,7 @@ function plugin_version_order() {
 
 	return array (
 		'name' => $LANG['plugin_order']['title'][1],
-		'version' => '1.1.0',
+		'version' => '1.1.1',
 		'author' => 'Benjamin Fontan & Walid Nouh',
 		'homepage' => 'https://forge.indepnet.net/projects/show/order',
 		'minGlpiVersion' => '0.72',
