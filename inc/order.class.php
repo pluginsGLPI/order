@@ -288,9 +288,9 @@ class PluginOrderOrder extends CommonDBTM {
          $taxes = $this->fields["plugin_order_ordertaxes_id"];
       }
       if ($canedit)
-         Dropdown::show('PluginOrderOrderTaxe', array('name' => "plugin_order_ordertaxes_id",'value' => $this->fields["plugin_order_ordertaxes_id"]));
+         Dropdown::show('PluginOrderOrderTaxe', array('name' => "plugin_order_ordertaxes_id",'value' => $taxes));
       else
-         echo Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",$this->fields["plugin_order_ordertaxes_id"]);
+         echo Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",$taxes);
       echo "</td>";
       echo "</tr>";
       
