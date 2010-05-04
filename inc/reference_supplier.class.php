@@ -139,7 +139,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 	function showForm ($ID, $options=array()) {
 		global $LANG,$DB;
       
-      if (!plugin_order_haveRight("reference", "w"))
+      if (!$this->canView())
 			return false;
 		
 		$plugin_order_references_id = -1;
@@ -212,8 +212,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       $this->showFormButtons($options);
       
       if (strpos($_SERVER['PHP_SELF'],"reference_supplier")) {
-         echo "<div id='tabcontent'></div>";
-         echo "<script type='text/javascript'>loadDefaultTab();</script>";
+         $this->addDivForTabs();
       }
 		return true;
 	}
@@ -296,7 +295,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    /*function addSupplierToReference($target,$plugin_order_references_id){
       global $LANG,$DB;
 
-      if (plugin_order_haveRight("reference","w")){
+      if ($this->canView()){
 
          $suppliers = array();
          $reference = new PluginOrderReference;

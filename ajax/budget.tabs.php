@@ -44,9 +44,8 @@ if (!isset ($_POST["id"])) {
 if (!isset ($_POST["withtemplate"]))
 	$_POST["withtemplate"] = "";
 
-$PluginOrderBudget = new PluginOrderBudget;
-
-PluginOrderProfile::checkRight("budget","r");
+$PluginOrderBudget = new PluginOrderBudget();
+$PluginOrderBudget->checkGlobal("r");
 
 if ($_POST["id"]>0 && $PluginOrderBudget->can($_POST["id"],'r')) {
 

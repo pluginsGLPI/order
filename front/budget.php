@@ -37,7 +37,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 commonHeader($LANG['financial'][87], '', "plugins", "order", "budget");
 
-if (plugin_order_haveRight("budget", "r")) {
+$PluginOrderBudget=new PluginOrderBudget();
+if ($PluginOrderBudget->canView() || haveRight("config","w")) {
 
 	Search::show("PluginOrderBudget");
 	

@@ -37,7 +37,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 commonHeader($LANG['plugin_order']['reference'][1], '', "plugins", "order", "reference");
 
-if (plugin_order_haveRight("reference", "r")) {
+$PluginOrderReference=new PluginOrderReference();
+if ($PluginOrderReference->canView() || haveRight("config","w")) {
 
 	Search::show("PluginOrderReference");
 	

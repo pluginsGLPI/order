@@ -43,7 +43,7 @@ $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 
 if (isset($_POST["add"]))
 {
-	if(plugin_order_HaveRight("reference","w"))
+	if ($PluginOrderReference_Supplier->canCreate())
 	{
 		if (isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0)
 		{
@@ -54,13 +54,13 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["update"]))
 {
-	if(plugin_order_HaveRight("reference","w"))
+	if ($PluginOrderReference_Supplier->canCreate())
 		$PluginOrderReference_Supplier->update($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
 {
-	if(plugin_order_HaveRight("reference","w"))
+	if ($PluginOrderReference_Supplier->canCreate())
 	{
 		foreach ($_POST["check"] as $ID => $value)
 			$PluginOrderReference_Supplier->delete(array("id"=>$ID));
@@ -69,7 +69,7 @@ else if (isset($_POST["delete"]))
 }
 else
 {
-	PluginOrderProfile::checkRight("reference","r");
+	$PluginOrderReference_Supplier->checkGlobal("r");
 
 	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 	if (isset($_GET['onglet'])) {

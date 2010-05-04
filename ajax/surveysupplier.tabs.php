@@ -43,8 +43,7 @@ if (!isset ($_POST["withtemplate"]))
 	$_POST["withtemplate"] = "";
 
 $PluginOrderSurveySupplier = new PluginOrderSurveySupplier();
-
-PluginOrderProfile::checkRight("reference","r");
+$PluginOrderSurveySupplier->checkGlobal("r");
 
 if ($_POST["id"]>0 && $PluginOrderSurveySupplier->can($_POST["id"],'r')) {
 

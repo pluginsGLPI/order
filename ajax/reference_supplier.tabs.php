@@ -43,8 +43,7 @@ if (!isset ($_POST["withtemplate"]))
 	$_POST["withtemplate"] = "";
 
 $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
-
-PluginOrderProfile::checkRight("reference","r");
+$PluginOrderReference_Supplier->checkGlobal("r");
 
 if ($_POST["id"]>0 && $PluginOrderReference_Supplier->can($_POST["id"],'r')) {
 

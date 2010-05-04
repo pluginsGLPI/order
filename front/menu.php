@@ -37,24 +37,28 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "menu");
 
-if (plugin_order_haveRight("order", "r") || plugin_order_haveRight("reference", "r") || plugin_order_haveRight("budget", "r")) {
+$PluginOrderOrder = new PluginOrderOrder();
+$PluginOrderReference = new PluginOrderReference();
+$PluginOrderBudget = new PluginOrderBudget();
+
+if ($PluginOrderOrder->canView() || $PluginOrderReference->canView() || $PluginOrderBudget->canView()) {
 	echo "<div class='center'>";
 	echo "<table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>" . $LANG['plugin_order']['title'][1] . "</th></tr>";
 
-	if (plugin_order_haveRight("order", "r")) {
+	if ($PluginOrderOrder->canView()) {
 		echo "<tr class='tab_bg_1' align='center'>";
 		echo "<td><img src='../pics/order-icon.png'></td>";
 		echo "<td><a href='order.php'>" . $LANG['plugin_order']['menu'][1] . "</a></td></tr>";
 	}
 
-	if (plugin_order_haveRight("reference", "r")) {
+	if ($PluginOrderReference->canView()) {
 		echo "<tr class='tab_bg_1' align='center'>";
 		echo "<td><img src='../pics/reference-icon.png'></td>";
 		echo "<td><a href='reference.php'>" . $LANG['plugin_order']['menu'][2] . "</a></td></tr>";
 	}
 
-	if (plugin_order_haveRight("budget", "r")) {
+	if ($PluginOrderBudget->canView()) {
 		echo "<tr class='tab_bg_1' align='center'>";
 		echo "<td><img src='../pics/budget-icon.png'></td>";
 		//echo "<td><a href='budget.php'>" . $LANG['plugin_order']['menu'][3] . "</a></td></tr>";

@@ -212,7 +212,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
 	function showForm ($ID, $options=array()) {
 		global $LANG, $CFG_GLPI;
       
-      if (!plugin_order_haveRight("order", "w"))
+      if (!$this->canView())
 			return false;
       
       $plugin_order_orders_id = -1;
@@ -283,8 +283,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          $this->showFormButtons($options);
          
          if (strpos($_SERVER['PHP_SELF'],"surveysupplier")) {
-            echo "<div id='tabcontent'></div>";
-            echo "<script type='text/javascript'>loadDefaultTab();</script>";
+            $this->addDivForTabs();
          }
       //}
 		return true;

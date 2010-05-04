@@ -159,22 +159,22 @@ function plugin_order_install() {
       $result=$DB->query($query);
       
       $query = "INSERT INTO `glpi_notifications`
-                                   VALUES (NULL, 'Add order validation', 0, 'PluginOrderOrder', 'ask',
+                                   VALUES (NULL, 'New Order Validation', 0, 'PluginOrderOrder', 'ask',
                                           'mail',".$itemtype.",
                                           '', 1, 1, '2010-02-17 22:36:46');";
       $result=$DB->query($query);
       $query = "INSERT INTO `glpi_notifications`
-                                   VALUES (NULL, 'Confirm order validation', 0, 'PluginOrderOrder', 'validation',
+                                   VALUES (NULL, 'Confirm Order Validation', 0, 'PluginOrderOrder', 'validation',
                                           'mail',".$itemtype.",
                                           '', 1, 1, '2010-02-17 22:36:46');";
       $result=$DB->query($query);
       $query = "INSERT INTO `glpi_notifications`
-                                   VALUES (NULL, 'Cancel order validation', 0, 'PluginOrderOrder', 'undovalidation',
+                                   VALUES (NULL, 'Cancel Order Validation', 0, 'PluginOrderOrder', 'undovalidation',
                                           'mail',".$itemtype.",
                                           '', 1, 1, '2010-02-17 22:36:46');";
       $result=$DB->query($query);
       $query = "INSERT INTO `glpi_notifications`
-                                   VALUES (NULL, 'Cancel order', 0, 'PluginOrderOrder', 'cancel',
+                                   VALUES (NULL, 'Cancel Order', 0, 'PluginOrderOrder', 'cancel',
                                           'mail',".$itemtype.",
                                           '', 1, 1, '2010-02-17 22:36:46');";
       $result=$DB->query($query);

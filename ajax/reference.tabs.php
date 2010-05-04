@@ -44,9 +44,8 @@ if(!isset($_POST["id"])) {
 if (!isset ($_POST["withtemplate"]))
 	$_POST["withtemplate"] = "";
 
-PluginOrderProfile::checkRight("reference","r");
-
 $PluginOrderReference = new PluginOrderReference();
+$PluginOrderReference->checkGlobal("r");
 $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 
 if ($_POST["id"]>0 && $PluginOrderReference->can($_POST["id"],'r')) {

@@ -39,48 +39,45 @@ if(!isset($_GET["id"])) $_GET["id"] = "";
 if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 
 $PluginOrderReference=new PluginOrderReference();
-$PluginOrderReference_Supplier = new PluginOrderReference_Supplier;
 
 /* add order */
 if (isset($_POST["add"]))
 {
-	if(plugin_order_HaveRight("reference","w"))
-	{
-		$newID=$PluginOrderReference->add($_POST);
-	}
+	$PluginOrderReference->check(-1,'w',$_POST);
+	$newID=$PluginOrderReference->add($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 /* delete order */
 else if (isset($_POST["delete"]))
 {
-	if(plugin_order_HaveRight("reference","w"))
-		$PluginOrderReference->delete($_POST);
+	$PluginOrderReference->check($_POST['id'],'w');
+   $PluginOrderReference->delete($_POST);
 	glpi_header(getItemTypeSearchURL('PluginOrderReference'));
 }
 /* restore order */
 else if (isset($_POST["restore"]))
 {
-	if(plugin_order_HaveRight("reference","w"))
-		$PluginOrderReference->restore($_POST);
+	$PluginOrderReference->check($_POST['id'],'w');
+   $PluginOrderReference->restore($_POST);
 	glpi_header(getItemTypeSearchURL('PluginOrderReference'));
 }
 /* purge order */
 else if (isset($_POST["purge"]))
 {
-	if(plugin_order_HaveRight("reference","w"))
-		$PluginOrderReference->delete($_POST,1);
+	$PluginOrderReference->check($_POST['id'],'w');
+   $PluginOrderReference->delete($_POST,1);
 	glpi_header(getItemTypeSearchURL('PluginOrderReference'));
 }
 /* update order */
 else if (isset($_POST["update"]))
 {
-	if(plugin_order_HaveRight("reference","w"))
-		$PluginOrderReference->update($_POST);
+	$PluginOrderReference->check($_POST['id'],'w');
+   $PluginOrderReference->update($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
-	PluginOrderProfile::checkRight("reference","r");
+	$PluginOrderReference->checkGlobal("r");
 
 	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 	if (isset($_GET['onglet'])) {

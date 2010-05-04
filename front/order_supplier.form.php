@@ -44,7 +44,7 @@ $PluginOrderOrder=new PluginOrderOrder();
 
 if (isset($_POST["add"]))
 {
-	if(plugin_order_HaveRight("order","w"))
+	if ($PluginOrderOrder_Supplier->canCreate())
 	{
 		if (isset($_POST["plugin_order_orders_id"]) && $_POST["plugin_order_orders_id"] > 0)
 		{
@@ -63,7 +63,7 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["delete"]))
 {
-	if(plugin_order_HaveRight("order","w"))
+	if ($PluginOrderOrder_Supplier->canCreate())
 	{
 		foreach ($_POST["check"] as $ID => $value) {
 			$PluginOrderOrder_Supplier->delete(array("id"=>$ID),0,0);
@@ -75,7 +75,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["update"]))
 {
-	if(plugin_order_HaveRight("order","w")) {
+	if ($PluginOrderOrder_Supplier->canCreate()) {
 		
       $PluginOrderOrder_Supplier->update($_POST);
    }
@@ -83,7 +83,7 @@ else if (isset($_POST["update"]))
 }
 else
 {
-	PluginOrderProfile::checkRight("order","r");
+	$PluginOrderOrder_Supplier->checkGlobal("r");
 
 	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 	if (isset($_GET['onglet'])) {

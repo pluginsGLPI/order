@@ -44,9 +44,8 @@ if (!isset ($_POST["id"])) {
 if (!isset ($_POST["withtemplate"]))
 	$_POST["withtemplate"] = "";
 
-PluginOrderProfile::checkRight("order","r");
-
 $PluginOrderOrder = new PluginOrderOrder();
+$PluginOrderOrder->checkGlobal("r");
 $PluginOrderOrder_Item = new PluginOrderOrder_Item();
 $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
 $PluginOrderReception = new PluginOrderReception();

@@ -37,7 +37,8 @@ include (GLPI_ROOT."/inc/includes.php");
 
 commonHeader($LANG['plugin_order']['title'][1],'',"plugins","order","order");
 
-if (plugin_order_haveRight("order","r")){
+$PluginOrderOrder=new PluginOrderOrder();
+if ($PluginOrderOrder->canView() || haveRight("config","w")) {
 	
 	Search::show("PluginOrderOrder");
 	

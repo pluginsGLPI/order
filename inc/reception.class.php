@@ -152,7 +152,7 @@ class PluginOrderReception extends CommonDBTM {
 	function showForm ($ID, $options=array()) {
 		global $LANG;
       
-      if (!plugin_order_haveRight("order", "r"))
+      if (!$this->canView())
 			return false;
 			
 		if ($ID > 0) {
@@ -234,9 +234,7 @@ class PluginOrderReception extends CommonDBTM {
       echo "</tr>";
       
       $this->showFormButtons($options);
-      
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+      $this->addDivForTabs();
 
 		return true;
 	}

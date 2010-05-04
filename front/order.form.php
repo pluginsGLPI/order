@@ -47,32 +47,32 @@ $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
 
 /* add order */
 if (isset ($_POST["add"])) {
-	if (plugin_order_HaveRight("order", "w"))
-      $newID = $PluginOrderOrder->add($_POST);
+	$PluginOrderOrder->check(-1,'w',$_POST);
+   $newID = $PluginOrderOrder->add($_POST);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 /* delete order */
 else if (isset ($_POST["delete"])) {
-   if (plugin_order_HaveRight("order", "w"))
-      $PluginOrderOrder->delete($_POST);
+   $PluginOrderOrder->check($_POST['id'],'w');
+   $PluginOrderOrder->delete($_POST);
    glpi_header(getItemTypeSearchURL('PluginOrderOrder'));
 }
 /* restore order */
 else if (isset ($_POST["restore"])) {
-   if (plugin_order_HaveRight("order", "w"))
-      $PluginOrderOrder->restore($_POST);
+   $PluginOrderOrder->check($_POST['id'],'w');
+   $PluginOrderOrder->restore($_POST);
    glpi_header(getItemTypeSearchURL('PluginOrderOrder'));
 }
 /* purge order */
 else if (isset ($_POST["purge"])) {
-   if (plugin_order_HaveRight("order", "w"))
-      $PluginOrderOrder->delete($_POST, 1);
+   $PluginOrderOrder->check($_POST['id'],'w');
+   $PluginOrderOrder->delete($_POST, 1);
    glpi_header(getItemTypeSearchURL('PluginOrderOrder'));
 }
 /* update order */
 else if (isset ($_POST["update"])) {
-   if (plugin_order_HaveRight("order", "w"))
-      $PluginOrderOrder->update($_POST);
+   $PluginOrderOrder->check($_POST['id'],'w');
+   $PluginOrderOrder->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } 
 //Status update & order workflow
@@ -81,7 +81,7 @@ else if (isset ($_POST["validate"])) {
    
    $config = $PluginOrderConfig->getConfig();
 		
-   if (plugin_order_HaveRight("order", "w") && ( plugin_order_HaveRight("validation", "w") || !$config["use_validation"]))
+   if ($PluginOrderOrder->canCreate() && ( $PluginOrderOrder->canValidate() || !$config["use_validation"]))
    {
       $PluginOrderOrder->updateOrderStatus($_POST["id"],PluginOrderOrder::ORDER_STATUS_APPROVED,$_POST["comment"]);
       $PluginOrderOrder_Item->updateDelivryStatus($_POST["id"]);
@@ -90,7 +90,7 @@ else if (isset ($_POST["validate"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset ($_POST["waiting_for_approval"])) {
-   if (plugin_order_HaveRight("order", "w"))
+   if ($PluginOrderOrder->canCreate())
    {
       $PluginOrderOrder->updateOrderStatus($_POST["id"],PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL,$_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][7]);
@@ -99,7 +99,7 @@ else if (isset ($_POST["waiting_for_approval"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset ($_POST["cancel_waiting_for_approval"])) {
-   if (plugin_order_HaveRight("order", "w") && plugin_order_HaveRight("cancel", "w"))
+   if ($PluginOrderOrder->canCreate() && $PluginOrderOrder->canCancel())
    {
       $PluginOrderOrder->updateOrderStatus($_POST["id"],PluginOrderOrder::ORDER_STATUS_DRAFT,$_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][14]);
@@ -108,7 +108,7 @@ else if (isset ($_POST["cancel_waiting_for_approval"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset ($_POST["cancel_order"])) {
-   if (plugin_order_HaveRight("order", "w") && plugin_order_HaveRight("cancel", "w"))
+   if ($PluginOrderOrder->canCreate() && $PluginOrderOrder->canCancel())
    {
       $PluginOrderOrder->updateOrderStatus($_POST["id"],PluginOrderOrder::ORDER_STATUS_CANCELED,$_POST["comment"]);
       $PluginOrderOrder->deleteAllLinkWithItem($_POST["id"]);
@@ -118,7 +118,7 @@ else if (isset ($_POST["cancel_order"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset ($_POST["undovalidation"])) {
-   if (plugin_order_HaveRight("order", "w") && plugin_order_HaveRight("undo_validation", "w"))
+   if ($PluginOrderOrder->canCreate() && $PluginOrderOrder->canUndo())
    {
       $PluginOrderOrder->updateOrderStatus($_POST["id"],PluginOrderOrder::ORDER_STATUS_DRAFT,$_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][8]);
@@ -189,7 +189,7 @@ else if (isset ($_POST["delete_item"])) {
 }
 else 
 {
-	PluginOrderProfile::checkRight("order","r");
+	$PluginOrderOrder->checkGlobal("r");
 
 	if (!isset ($_SESSION['glpi_tab']))
 		$_SESSION['glpi_tab'] = 1;

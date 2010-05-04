@@ -43,7 +43,7 @@ $PluginOrderOrder_Item = new PluginOrderOrder_Item();
 
 if (isset ($_POST["update"])) {
 
-   if (plugin_order_HaveRight("order", "w")) {
+   if ($PluginOrderReception->canCreate()) {
       
       $PluginOrderOrder_Item->getFromDB($_POST["id"]);
       

@@ -44,38 +44,41 @@ $PluginOrderBudget = new PluginOrderBudget();
 
 /* add order */
 if (isset ($_POST["add"])) {
-   if (empty($_POST["value"]))
+   
+   $PluginOrderBudget->check(-1,'w',$_POST);
+   if (empty($_POST["value"])) {
       addMessageAfterRedirect($LANG['plugin_order']['budget'][3],false,ERROR);
-	if (plugin_order_HaveRight("budget", "w")  && !empty($_POST["value"]))
+	} else {
       $newID = $PluginOrderBudget->add($_POST);
+   }
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 /* delete order */
 else if (isset ($_POST["delete"])) {
-   if (plugin_order_HaveRight("budget", "w"))
-      $PluginOrderBudget->delete($_POST);
+   $PluginOrderBudget->check($_POST['id'],'w');
+   $PluginOrderBudget->delete($_POST);
    glpi_header(getItemTypeSearchURL('PluginOrderBudget'));
 }
 /* restore order */
 else if (isset ($_POST["restore"])) {
-   if (plugin_order_HaveRight("budget", "w"))
-      $PluginOrderBudget->restore($_POST);
+   $PluginOrderBudget->check($_POST['id'],'w');
+   $PluginOrderBudget->restore($_POST);
 	glpi_header(getItemTypeSearchURL('PluginOrderBudget'));
 }
 /* purge order */
 else if (isset ($_POST["purge"])) {
-   if (plugin_order_HaveRight("budget", "w"))
-      $PluginOrderBudget->delete($_POST, 1);
+   $PluginOrderBudget->check($_POST['id'],'w');
+   $PluginOrderBudget->delete($_POST, 1);
    glpi_header(getItemTypeSearchURL('PluginOrderBudget'));
 }
 /* update order */
 else if (isset ($_POST["update"])) {
-   if (plugin_order_HaveRight("budget", "w"))
-      $PluginOrderBudget->update($_POST);
+   $PluginOrderBudget->check($_POST['id'],'w');
+   $PluginOrderBudget->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } 
 
-PluginOrderProfile::checkRight("budget", "r");
+$PluginOrderBudget->checkGlobal("r");
 
 if (!isset ($_SESSION['glpi_tab']))
    $_SESSION['glpi_tab'] = 1;

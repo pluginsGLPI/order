@@ -65,6 +65,22 @@ class PluginOrderOrder extends CommonDBTM {
       return plugin_order_haveRight('order', 'r');
    }
    
+   function canCancel() {
+      return plugin_order_HaveRight("cancel", "w");
+   }
+   
+   function canCancel() {
+      return plugin_order_HaveRight("cancel", "w");
+   }
+   
+   function canUndo() {
+      return plugin_order_HaveRight("undo_validation", "w");
+   }
+   
+   function canValidate() {
+      return plugin_order_HaveRight("validation", "w");
+   }
+   
 	function cleanDBonPurge() {
 		global $DB;
 
@@ -84,6 +100,88 @@ class PluginOrderOrder extends CommonDBTM {
       } else
          return true;
    }
+   
+      
+   function canDisplayValidationForm($orders_id) {
+
+      $this->getFromDB($orders_id);
+
+      //If it's an order creation -> do not display form
+      if (!$orders_id)
+         return false;
+      else
+         return ($this->canValidateOder() || $this->canUndoValidation() || $this->canCancelOrder());
+   }
+   
+   function canValidateOder() {
+		
+		$PluginOrderConfig = new PluginOrderConfig;
+		$config = $PluginOrderConfig->getConfig();
+      
+      $ORDER_VALIDATION_STATUS = array (PluginOrderOrder::ORDER_STATUS_DRAFT,
+                                    PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
+		//If no validation process -> can validate if order is in draft state
+		if (!$config["use_validation"])
+			return ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_DRAFT);
+		else {
+			//Validation process is used
+
+			//If order is canceled, cannot validate !
+			if ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_CANCELED)
+				return false;
+
+			//If no right to validate
+			if (!$this->canValidate())
+				return false;
+			else
+				return (in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS));
+		}
+	}
+
+	function canCancelOrder() {
+		//If order is canceled, cannot validate !
+		if ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_CANCELED)
+			return false;
+
+		//If no right to cancel
+		if (!$this->canCancel)
+			return false;
+
+		return true;
+	}
+
+	function canDoValidationRequest() {
+		
+		$PluginOrderConfig = new PluginOrderConfig;
+		$config = $PluginOrderConfig->getConfig();
+		
+		if (!$config["use_validation"])
+			return false;
+		else
+			return ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_DRAFT);
+	}
+
+	function canCancelValidationRequest() {
+	
+		return ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
+	}
+
+	function canUndoValidation() {
+		
+		$ORDER_VALIDATION_STATUS = array (PluginOrderOrder::ORDER_STATUS_DRAFT,
+                                    PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
+                                    
+		//If order is canceled, cannot validate !
+		if ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_CANCELED)
+			return false;
+
+		//If order is not validate, cannot undo validation !
+		if (in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS))
+			return false;
+
+		//If no right to cancel
+		return ($this->canUndo());
+	}
 	
 	function getSearchOptions() {
       global $LANG;
@@ -218,7 +316,7 @@ class PluginOrderOrder extends CommonDBTM {
 	function showForm ($ID, $options=array()) {
 		global $CFG_GLPI, $LANG;
 
-		if (!plugin_order_haveRight("order","r")) return false;
+		if (!$this->canView()) return false;
 
 		if ($ID > 0) {
          $this->check($ID,'r');
@@ -370,8 +468,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</tr>";
 
       $this->showFormButtons($options);
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+      $this->addDivForTabs();
       
       return true;
 	}
@@ -568,54 +665,6 @@ class PluginOrderOrder extends CommonDBTM {
 		else
 			return false;
 	}
-   
-   function canDisplayValidationForm($orders_id) {
-
-      $this->getFromDB($orders_id);
-
-      //If it's an order creation -> do not display form
-      if (!$orders_id)
-         return false;
-      else
-         return ($this->canValidate() || $this->canUndoValidation() || $this->canCancelOrder());
-   }
-
-	function canValidate() {
-		
-		$PluginOrderConfig = new PluginOrderConfig;
-		$config = $PluginOrderConfig->getConfig();
-      
-      $ORDER_VALIDATION_STATUS = array (PluginOrderOrder::ORDER_STATUS_DRAFT,
-                                    PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
-		//If no validation process -> can validate if order is in draft state
-		if (!$config["use_validation"])
-			return ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_DRAFT);
-		else {
-			//Validation process is used
-
-			//If order is canceled, cannot validate !
-			if ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_CANCELED)
-				return false;
-
-			//If no right to validate
-			if (!plugin_order_haveRight("validation", "w"))
-				return false;
-			else
-				return (in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS));
-		}
-	}
-
-	function canCancelOrder() {
-		//If order is canceled, cannot validate !
-		if ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_CANCELED)
-			return false;
-
-		//If no right to cancel
-		if (!plugin_order_haveRight("cancel", "w"))
-			return false;
-
-		return true;
-	}
 	
 	function deleteAllLinkWithItem($orders_id) {
 
@@ -626,39 +675,6 @@ class PluginOrderOrder extends CommonDBTM {
             "id" => $deviceID
          ));
    }
-
-	function canDoValidationRequest() {
-		
-		$PluginOrderConfig = new PluginOrderConfig;
-		$config = $PluginOrderConfig->getConfig();
-		
-		if (!$config["use_validation"])
-			return false;
-		else
-			return ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_DRAFT);
-	}
-
-	function canCancelValidationRequest() {
-	
-		return ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
-	}
-
-	function canUndoValidation() {
-		
-		$ORDER_VALIDATION_STATUS = array (PluginOrderOrder::ORDER_STATUS_DRAFT,
-                                    PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
-                                    
-		//If order is canceled, cannot validate !
-		if ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_CANCELED)
-			return false;
-
-		//If order is not validate, cannot undo validation !
-		if (in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS))
-			return false;
-
-		//If no right to cancel
-		return (plugin_order_haveRight("undo_validation", "w"));
-	}
 	
 	function checkIfDetailExists($orders_id) {
       
@@ -704,7 +720,7 @@ class PluginOrderOrder extends CommonDBTM {
             $PluginOrderConfig = new PluginOrderConfig;
             $config = $PluginOrderConfig->getConfig();
 
-            if ($this->canValidate()) {
+            if ($this->canValidateOder()) {
                echo $link . "<input type='submit' name='validate' value=\"" . $LANG['plugin_order']['validation'][9] . "\" class='submit'>";
                $link = "<br><br>";
             }

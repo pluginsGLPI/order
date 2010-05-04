@@ -118,20 +118,6 @@ class PluginOrderProfile extends CommonDBTM {
       else
          unset($_SESSION["glpi_plugin_order_profile"]);
    }
-  
-   static function checkRight($module, $right) {
-      global $CFG_GLPI;
-
-      if (!plugin_order_haveRight($module, $right)) {
-         // Gestion timeout session
-         if (!getLoginUserID()) {
-            glpi_header($CFG_GLPI["root_doc"] . "/index.php");
-            exit ();
-         }
-
-         displayRightError();
-      }
-   }
 
 	/* profiles modification */
 	function showForm ($ID, $options=array()) {

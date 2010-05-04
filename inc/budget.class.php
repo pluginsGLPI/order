@@ -109,7 +109,7 @@ class PluginOrderBudget extends CommonDBTM {
 	function showForm ($ID, $options=array()) {
 		global $CFG_GLPI, $LANG, $DB;
 
-		if (!plugin_order_haveRight("budget","r")) return false;
+		if (!$this->canView()) return false;
 		
 		if ($ID > 0) {
          $this->check($ID,'r');
@@ -170,8 +170,7 @@ class PluginOrderBudget extends CommonDBTM {
       echo "</td></tr>";
 
       $this->showFormButtons($options);
-      echo "<div id='tabcontent'></div>";
-      echo "<script type='text/javascript'>loadDefaultTab();</script>";
+      $this->addDivForTabs();
 
 		return true;
       
@@ -202,7 +201,7 @@ class PluginOrderBudget extends CommonDBTM {
          echo "<td>";
 
          $link=getItemTypeFormURL('PluginOrderOrder');
-         if (plugin_order_haveRight("order","r"))
+         if ($this->canView())
             echo "<a href=\"".$link."?id=".$data["id"]."\">".$data["name"]."</a>";
          else
             echo $data["name"];	

@@ -58,6 +58,14 @@ class PluginOrderOrder_Item extends CommonDBTM {
       }
    }
 	
+	function canCreate() {
+      return plugin_order_haveRight('order', 'w');
+   }
+
+   function canView() {
+      return plugin_order_haveRight('order', 'r');
+   }
+   
 	static function updateItem($item) {
       global $LANG;
       
@@ -519,7 +527,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
          echo "<td class='tab_bg_2'>";
          $item = new $itemtype();
          $link=getItemTypeFormURL('PluginOrderOrder');
-         if (plugin_order_haveRight("order", "r"))
+         if ($this->canView())
             echo "<a href=\"".$link."?id=".$infos["id"]."\">".$infos["name"]."</a>";
          else
             echo $infos["name"];

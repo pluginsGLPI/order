@@ -142,7 +142,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 	function showForm ($ID, $options=array()) {
 		global $LANG, $CFG_GLPI;
       
-      if (!plugin_order_haveRight("order", "w"))
+      if (!$this->canView())
 			return false;
       
       $plugin_order_orders_id = -1;
@@ -207,8 +207,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          $this->showFormButtons($options);
          
          if (strpos($_SERVER['PHP_SELF'],"order_supplier")) {
-            echo "<div id='tabcontent'></div>";
-            echo "<script type='text/javascript'>loadDefaultTab();</script>";
+            $this->addDivForTabs();
          }
          return true;
          
