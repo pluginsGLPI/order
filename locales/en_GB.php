@@ -134,6 +134,8 @@ $LANG['plugin_order']['reference'][7] = "Reference(s) in use";
 $LANG['plugin_order']['reference'][8] = "Cannot create reference without a name";
 $LANG['plugin_order']['reference'][9] = "Cannot create reference without a type";
 $LANG['plugin_order']['reference'][10] = "Manufacturer's product reference";
+$LANG['plugin_order']['reference'][11] = "View by item type";
+$LANG['plugin_order']['reference'][12] = "Select the wanted item type";
 
 $LANG['plugin_order']['config'][0] = "Plugin configuration";
 $LANG['plugin_order']['config'][1] = "Default VAT";

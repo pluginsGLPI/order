@@ -134,6 +134,8 @@ $LANG['plugin_order']['reference'][7] = "Riferimento(i) già utilizzato(i)";
 $LANG['plugin_order']['reference'][8] = "Non posso creare riferimenti senza Nome";
 $LANG['plugin_order']['reference'][9] = "Non posso creare riferimenti senza Tipo";
 $LANG['plugin_order']['reference'][10] = "Riferimento prodotti per Produttore";
+$LANG['plugin_order']['reference'][11] = "View by item type";
+$LANG['plugin_order']['reference'][12] = "Select the wanted item type";
 
 $LANG['plugin_order']['config'][0] = "Configurazione Plugin";
 $LANG['plugin_order']['config'][1] = "Default IVA";

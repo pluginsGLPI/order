@@ -134,6 +134,8 @@ $LANG['plugin_order']['reference'][7] = "Aktuell benutzte Referenzen";
 $LANG['plugin_order']['reference'][8] = "Eine Referenz ohne Namen kann nicht erzeugt werden";
 $LANG['plugin_order']['reference'][9] = "Eine Referenz ohne Typ kann nicht erzeugt werden";
 $LANG['plugin_order']['reference'][10] = "Produktreferenz des Lieferanten";
+$LANG['plugin_order']['reference'][11] = "View by item type";
+$LANG['plugin_order']['reference'][12] = "Select the wanted item type";
 
 $LANG['plugin_order']['config'][0] = "Plugin-Einstellungen";
 $LANG['plugin_order']['config'][1] = "Standard-MwSt";

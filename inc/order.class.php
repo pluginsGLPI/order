@@ -69,10 +69,6 @@ class PluginOrderOrder extends CommonDBTM {
       return plugin_order_HaveRight("cancel", "w");
    }
    
-   function canCancel() {
-      return plugin_order_HaveRight("cancel", "w");
-   }
-   
    function canUndo() {
       return plugin_order_HaveRight("undo_validation", "w");
    }
@@ -144,7 +140,7 @@ class PluginOrderOrder extends CommonDBTM {
 			return false;
 
 		//If no right to cancel
-		if (!$this->canCancel)
+		if (!$this->canCancel())
 			return false;
 
 		return true;

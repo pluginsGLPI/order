@@ -32,39 +32,20 @@
 // ----------------------------------------------------------------------
  */
 
-define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT . "/inc/includes.php");
+$AJAX_INCLUDE=1;
+define('GLPI_ROOT','../../..');
+include (GLPI_ROOT."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-commonHeader($LANG['plugin_order']['reference'][1], '', "plugins", "order", "reference");
+checkLoginUser();
 
-$PluginOrderReference=new PluginOrderReference();
-if ($PluginOrderReference->canView() || haveRight("config","w")) {
-   
-   echo "<script type='text/javascript'>";
-      echo "cleanhide('modal_reference_content');";
-      echo "var order_window=new Ext.Window({
-         layout:'fit',
-         width:800,
-         height:400,
-         closeAction:'hide',
-         modal: true,
-         autoScroll: true,
-         title: \"".$LANG['plugin_order']['reference'][11]."\",
-         autoLoad: '".$CFG_GLPI['root_doc']."/plugins/order/ajax/referencetree.php'
-      });";
-      echo "</script>";
-
-      echo "<a onclick='order_window.show();' href='#modal_reference_content' title='".
-             $LANG['plugin_order']['reference'][11]."'>".
-             $LANG['plugin_order']['reference'][11]."</a>";
-             
-	Search::show("PluginOrderReference");
-	
-} else {
-	echo "<div align='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
-	echo "<b>" . $LANG['login'][5] . "</b></div>";
+if (!isset($_GET['target'])) {
+   $_GET['target']=$CFG_GLPI['root_doc']."/plugins/order/front/reference.php";
 }
 
-commonFooter();
+PluginOrderReference::showSelector($_GET['target']);//
+
+ajaxFooter();
 
 ?>

@@ -168,6 +168,8 @@ $LANG['plugin_order']['reference'][7] = "Référence(s) actuellement utilisée(s
 $LANG['plugin_order']['reference'][8] = "Impossible de créer une référence sans nom";
 $LANG['plugin_order']['reference'][9] = "Impossible de créer une référence sans type";
 $LANG['plugin_order']['reference'][10] = "Référence produit fournisseur";
+$LANG['plugin_order']['reference'][11] = "Vue par type de matériel";
+$LANG['plugin_order']['reference'][12] = "Sélectionnez le type de matériel souhaité";
 
 $LANG['plugin_order']['status'][0] = "Statut commande";
 $LANG['plugin_order']['status'][1] = "En cours de livraison";
