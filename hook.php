@@ -375,6 +375,18 @@ function plugin_order_install() {
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die($DB->error());
 	}
+	
+   if (!TableExists("glpi_plugin_order_preferences")) {
+      $query = "CREATE TABLE `glpi_plugin_order_preferences` (
+                  `ID` int(11) NOT NULL auto_increment,
+                  `user_id` int(11) NOT NULL,
+                  `template` varchar(255) NOT NULL,
+                  `sign` varchar(255) NOT NULL,
+                  PRIMARY KEY  (`ID`)
+               ) ENGINE=MyISAM;";
+
+      $DB->query($query) or die($DB->error());
+	}
    /* End Update en 1.1.0 */
 
 	plugin_order_createfirstaccess($_SESSION['glpiactiveprofile']['ID']);
@@ -400,7 +412,8 @@ function plugin_order_uninstall() {
 		"glpi_plugin_order_config",
 		"glpi_plugin_order_budgets",
       "glpi_plugin_order_suppliers",
-      "glpi_dropdown_plugin_order_deliverystate"
+      "glpi_dropdown_plugin_order_deliverystate",
+      "glpi_plugin_order_preferences"
 	);
 
 	foreach ($tables as $table)
@@ -849,12 +862,22 @@ function plugin_pre_item_update_order($input) {
 
                $infocom = new InfoCom;
 
-               if (isset ($infocom->fields["ID"])) {
+               if (isset ($input["ID"])) {
                   $infocom->getFromDB($input["ID"]);
 
                   if (isset ($infocom->fields["device_type"]) & isset ($infocom->fields["FK_device"])) {
-                     $device = new PluginOrderDetail;
-                     if ($device->isDeviceLinkedToOrder($infocom->fields["device_type"],$infocom->fields["FK_device"])) {
+                     $detail = new PluginOrderDetail;
+                     $detailID = $detail->isDeviceLinkedToOrder($infocom->fields["device_type"],$infocom->fields["FK_device"]);
+                     $detail->getFromDB($detailID);
+                     $orderID = $detail->fields["FK_order"];
+                     if (isset($orderID)) {
+                        
+                        $order = new PluginOrder;
+                        $orderID=$order->getFromDB($orderID);
+      
+                        $PluginOrderSupplier = new PluginOrderSupplier;
+                        $PluginOrderSupplier->getFromDBByOrder($orderID);
+                     
                         $field_set = false;
                         $unset_fields = array (
                            "num_commande",
@@ -863,15 +886,27 @@ function plugin_pre_item_update_order($input) {
                            "FK_enterprise",
                            "facture",
                            "value",
-                           "buy_date"
+                           "buy_date",
                         );
                         foreach ($unset_fields as $field)
                            if (isset ($input[$field])) {
                               $field_set = true;
                               unset ($input[$field]);
                            }
-                        if ($field_set)
-                           addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);
+                           
+                        $value["num_commande"] = $order->fields["numorder"];
+                        $fields["bon_livraison"] = $detail->fields["deliverynum"];
+                        $value["device_type"] = $infocom->fields["device_type"];
+                        $value["FK_device"] = $infocom->fields["FK_device"];
+                        $value["budget"] = $order->fields["budget"];
+                        $value["FK_enterprise"] = $order->fields["FK_enterprise"];
+                        if (isset($PluginOrderSupplier->fields["numbill"]))
+                           $value["facture"] = $PluginOrderSupplier->fields["numbill"];
+                        $fields["value"] = $detail->fields["price_discounted"];
+                        $value["buy_date"] = $order->fields["date"];
+                        $infocom->update($value);
+
+                        addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);
                      }
                   }
                }
@@ -901,7 +936,7 @@ function plugin_get_headings_order($type, $ID, $withtemplate) {
 
    $types = $ORDER_AVAILABLE_TYPES;
 	$types[] = ENTERPRISE_TYPE;
-   if ($type=="mailing") {
+   if ($type=="mailing" || $type=="prefs") {
 		return array(
 		1 => $LANG['plugin_order']['title'][1],
 		);
@@ -932,6 +967,7 @@ function plugin_headings_actions_order($type) {
 	$types[] = ENTERPRISE_TYPE;
 	$types[] = PROFILE_TYPE;
 	$types[] = "mailing";
+	$types[] = "prefs";
 	if (in_array($type, $types)) {
 		return array (
 			1 => "plugin_headings_order",
@@ -957,7 +993,6 @@ function plugin_headings_order($type, $ID) {
 			$reference->showReferencesFromSupplier($ID);
 			$PluginOrderSupplier->showDeliveries($ID);
 			$PluginOrderSupplierSurvey->showGlobalNotation($ID);
-			
 			break;
 		case PROFILE_TYPE :
          $prof = new PluginOrderProfile();
@@ -968,6 +1003,13 @@ function plugin_headings_order($type, $ID) {
 		case "mailing" :
 			$mailing->showMailingForm($CFG_GLPI["root_doc"] . "/plugins/order/front/plugin_order.setup.mailing.php");
 			break;
+      case "prefs" :
+			$pref = new PluginOrderPreference;
+         $pref_ID=$pref->checkIfPreferenceExists($_SESSION['glpiID']);
+         if (!$pref_ID)
+            $pref_ID=$pref->addDefaultPreference($_SESSION['glpiID']);
+         $pref->showForm($CFG_GLPI['root_doc']."/plugins/order/front/plugin_order.preference.form.php",$pref_ID,$_SESSION['glpiID']);
+         break;
 		default :
 			if (in_array($type, $ORDER_AVAILABLE_TYPES))
 				$detail->showPluginFromItems($type, $ID);

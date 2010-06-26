@@ -150,6 +150,12 @@ $LANG['plugin_order']['menu'][1] = "Bestellungen verwalten";
 $LANG['plugin_order']['menu'][2] = "Liste der Produktreferenzen verwalten";
 $LANG['plugin_order']['menu'][3] = "Budgets verwalten";
 
+$LANG['plugin_order']['parser'][0] = "Files";
+$LANG['plugin_order']['parser'][1] = "Use this template";
+$LANG['plugin_order']['parser'][2] = "No file found in this folder";
+$LANG['plugin_order']['parser'][3] = "Use this signature";
+$LANG['plugin_order']['parser'][4] = "Thanks to select a template in your preferences";
+
 $LANG['plugin_order']['profile'][0] = "Berechtigungsverwaltung";
 $LANG['plugin_order']['profile'][1] = "Bestellung freigeben";
 $LANG['plugin_order']['profile'][2] = "Bestellung stornieren";

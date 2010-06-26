@@ -332,7 +332,7 @@ class PluginOrderDetail extends CommonDBTM {
                AND `FK_device` = '$deviceID' ";
       $result = $DB->query($query);
 		if ($DB->numrows($result))
-			return true;
+			return ($DB->result($result, 0, 'ID'));
 		else
 			return false;
 	}
