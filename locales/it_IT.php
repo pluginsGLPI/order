@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
  * @version $Id: HEADER 1 2009-09-21 14:58 Tsmr $
  -------------------------------------------------------------------------
@@ -32,7 +32,7 @@
 // Purpose of file: plugin order v1.1.0 - GLPI 0.72
 // ----------------------------------------------------------------------
  */
-
+ 
 $LANG['plugin_order']['title'][1] = "Gestione Ordini";
 
 $LANG['plugin_order'][0] = "Numero Ordine";
@@ -56,13 +56,13 @@ $LANG['plugin_order'][31] = "Numero Ordine Fornitore";
 $LANG['plugin_order'][32] = "Condizioni di pagamento";
 $LANG['plugin_order'][39] = "Ordine";
 $LANG['plugin_order'][40] = "Indirizzo Spedizione";
-$LANG['plugin_order'][42] = "Non possibile collegare più dettagli articoli in una sola linea";
+$LANG['plugin_order'][42] = "Non possibile collegare piÃ¹ dettagli articoli in una sola linea";
 $LANG['plugin_order'][43] = "Ritorno al menu";
 $LANG['plugin_order'][44] = "Numero di Ordine OBBLIGATORIO!";
 $LANG['plugin_order'][45] = "NON posso INVENTARIARE Articoli non spediti";
 $LANG['plugin_order'][46] = "NON posso ASSOCIARE Articoli non spediti";
 $LANG['plugin_order'][47] = "Informazioni Ordine";
-$LANG['plugin_order'][48] = "Uno o più righe selezionate non hanno materiali associati";
+$LANG['plugin_order'][48] = "Uno o piÃ¹ righe selezionate non hanno materiali associati";
 
 $LANG['plugin_order']['budget'][1] = "Ordini collegati";
 $LANG['plugin_order']['budget'][2] = "Budget gia' utilizzato";
@@ -79,7 +79,7 @@ $LANG['plugin_order']['delivery'][4] = "Ricezione in massa di Articoli";
 $LANG['plugin_order']['delivery'][5] = "Consegna Articoli";
 $LANG['plugin_order']['delivery'][6] = "Numero Consegna";
 $LANG['plugin_order']['delivery'][9] = "Generato";
-$LANG['plugin_order']['delivery'][11] = "Collegamento a Entità esistente";
+$LANG['plugin_order']['delivery'][11] = "Collegamento a EntitÃ  esistente";
 $LANG['plugin_order']['delivery'][12] = "Cancellazione collegamento articolo";
 $LANG['plugin_order']['delivery'][13] = "Articolo generato da ordine";
 $LANG['plugin_order']['delivery'][14] = "Articolo collegato a Ordine";
@@ -93,7 +93,7 @@ $LANG['plugin_order']['detail'][3] = "No reference found";
 $LANG['plugin_order']['detail'][4] = "Prezzo Unitario senza IVA";
 $LANG['plugin_order']['detail'][5] = "Aggiunto all'ordine";
 $LANG['plugin_order']['detail'][6] = "Tipo";
-$LANG['plugin_order']['detail'][7] = "Quantità";
+$LANG['plugin_order']['detail'][7] = "QuantitÃ ";
 $LANG['plugin_order']['detail'][17] = "Dettaglio linea(e)";
 $LANG['plugin_order']['detail'][18] = "Importo scontato unit. senza IVA";
 $LANG['plugin_order']['detail'][19] = "Status";
@@ -109,9 +109,9 @@ $LANG['plugin_order']['detail'][32] = "Articolo GIA ricevuto";
 $LANG['plugin_order']['detail'][33] = "La % sconto deve essere compresa tra 0 e 100";
 $LANG['plugin_order']['detail'][34] = "Aggiungi riferimento";
 $LANG['plugin_order']['detail'][35] = "Rimuovi Riferimento";
-$LANG['plugin_order']['detail'][36] = "Vuoi cancellare questo(i) dettaglio(i)? Articolo(i) in consegna sarà(nno) CANCELLATO(I)! ";
+$LANG['plugin_order']['detail'][36] = "Vuoi cancellare questo(i) dettaglio(i)? Articolo(i) in consegna sarÃ (nno) CANCELLATO(I)! ";
 $LANG['plugin_order']['detail'][37] = "Nessun articolo in consegna";
-$LANG['plugin_order']['detail'][38] = "Vuoi CANCELLARE questo Ordine  ? Questa opzione è IRREVERSIBILE !";
+$LANG['plugin_order']['detail'][38] = "Vuoi CANCELLARE questo Ordine  ? Questa opzione Ã¨ IRREVERSIBILE !";
 $LANG['plugin_order']['detail'][39] = "Vuoi CANCELLARE il processo di Validazione ?";
 $LANG['plugin_order']['detail'][40] = "Vuoi modificare l'ORDINE ? ";
 
@@ -121,18 +121,18 @@ $LANG['plugin_order']['generation'][2] = "Ordine";
 $LANG['plugin_order']['generation'][3] = "Indirizzo Fatturazione";
 $LANG['plugin_order']['generation'][4] = "Indirizzo Spedizione";
 $LANG['plugin_order']['generation'][5] = "il";
-$LANG['plugin_order']['generation'][6] = "Quantità";
+$LANG['plugin_order']['generation'][6] = "QuantitÃ ";
 $LANG['plugin_order']['generation'][7] = "Denominazione";
 $LANG['plugin_order']['generation'][8] = "Importo unitario";
 $LANG['plugin_order']['generation'][9] = "Importo Totale (senza tasse)";
 $LANG['plugin_order']['generation'][10] = "Emissione Ordine";
 $LANG['plugin_order']['generation'][11] = "Destinatario";
-$LANG['plugin_order']['generation'][12] = "N° Ordine";
+$LANG['plugin_order']['generation'][12] = "NÂ° Ordine";
 $LANG['plugin_order']['generation'][13] = "% Sconto";
 $LANG['plugin_order']['generation'][14] = "Totale (no IVA)";
 $LANG['plugin_order']['generation'][15] = "Totale con IVA";
 $LANG['plugin_order']['generation'][16] = "Firma emettitore ordine";
-$LANG['plugin_order']['generation'][17] = "€";
+$LANG['plugin_order']['generation'][17] = "â‚¬";
 
 $LANG['plugin_order']['history'][2] = "Aggiungere";
 $LANG['plugin_order']['history'][3] = "Modificare";
@@ -160,7 +160,7 @@ $LANG['plugin_order']['reference'][2] = "Aggiungi un Fornitore";
 $LANG['plugin_order']['reference'][3] = "Lista dei Riferimenti";
 $LANG['plugin_order']['reference'][5] = "Riferimento Fornitore";
 $LANG['plugin_order']['reference'][6] = "Gia esiste un riferimento con lo stesso nome";
-$LANG['plugin_order']['reference'][7] = "Riferimento(i) già utilizzato(i)";
+$LANG['plugin_order']['reference'][7] = "Riferimento(i) giÃ  utilizzato(i)";
 $LANG['plugin_order']['reference'][8] = "Non posso creare riferimenti senza Nome";
 $LANG['plugin_order']['reference'][9] = "Non posso creare riferimenti senza Tipo";
 $LANG['plugin_order']['reference'][10] = "Riferimento prodotti per Produttore";

@@ -150,6 +150,12 @@ $LANG['plugin_order']['menu'][1] = "Gérer les commandes";
 $LANG['plugin_order']['menu'][2] = "Gérer le catalogue de références produits";
 $LANG['plugin_order']['menu'][3] = "Gérer les budgets";
 
+$LANG['plugin_order']['parser'][0] = "Fichiers";
+$LANG['plugin_order']['parser'][1] = "Utiliser ce modèle";
+$LANG['plugin_order']['parser'][2] = "Aucun fichier trouvé dans le répertoire";
+$LANG['plugin_order']['parser'][3] = "Utiliser cette signature";
+$LANG['plugin_order']['parser'][4] = "Merci de sélectionner un modèle dans vos préférences";
+
 $LANG['plugin_order']['profile'][0] = "Gestion des droits";
 $LANG['plugin_order']['profile'][1] = "Valider une commande";
 $LANG['plugin_order']['profile'][2] = "Annuler une commande";

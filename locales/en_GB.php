@@ -150,6 +150,12 @@ $LANG['plugin_order']['menu'][1] = "Manage orders";
 $LANG['plugin_order']['menu'][2] = "Manage products references";
 $LANG['plugin_order']['menu'][3] = "Manage budgets";
 
+$LANG['plugin_order']['parser'][0] = "Files";
+$LANG['plugin_order']['parser'][1] = "Use this template";
+$LANG['plugin_order']['parser'][2] = "No file found in this folder";
+$LANG['plugin_order']['parser'][3] = "Use this signature";
+$LANG['plugin_order']['parser'][4] = "Thanks to select a template in your preferences";
+
 $LANG['plugin_order']['profile'][0] = "Rights management";
 $LANG['plugin_order']['profile'][1] = "Order validation";
 $LANG['plugin_order']['profile'][2] = "Cancel order";
