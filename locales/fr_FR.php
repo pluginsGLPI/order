@@ -45,7 +45,6 @@ $LANG['plugin_order'][7] = "Commande";
 $LANG['plugin_order'][8] = "Autre équipement";
 $LANG['plugin_order'][9] = "Type d'autre équipement";
 $LANG['plugin_order'][10] = "Qualité";
-$LANG['plugin_order'][11] = "Aucune commande trouvée";
 $LANG['plugin_order'][13] = "Prix Total (HT)";
 $LANG['plugin_order'][14] = "Prix Total (TTC)";
 $LANG['plugin_order'][15] = "Prix Total (HT) + Frais de port";
@@ -58,7 +57,6 @@ $LANG['plugin_order'][32] = "Conditions de paiement";
 $LANG['plugin_order'][39] = "Nom de la commande";
 $LANG['plugin_order'][40] = "Lieu de livraison de la commande";
 $LANG['plugin_order'][42] = "Impossible de lier le même matériel à plusieurs lignes détail";
-$LANG['plugin_order'][43] = "Retour à la page menu";
 $LANG['plugin_order'][44] = "Un numéro de commande est obligatoire !";
 $LANG['plugin_order'][45] = "Impossible de générer du matériel non réceptionné";
 $LANG['plugin_order'][46] = "Impossible de lier du matériel non réceptionné";
@@ -94,14 +92,12 @@ $LANG['plugin_order']['detail'][4] = "Prix unitaire (HT)";
 $LANG['plugin_order']['detail'][5] = "Ajouter à la commande";
 $LANG['plugin_order']['detail'][6] = "Type";
 $LANG['plugin_order']['detail'][7] = "Quantité";
-$LANG['plugin_order']['detail'][17] = "Ligne(s) détail";
 $LANG['plugin_order']['detail'][18] = "Prix remisé (HT)";
 $LANG['plugin_order']['detail'][19] = "Statut";
 $LANG['plugin_order']['detail'][20] = "Pas de matériel à réceptionner";
 $LANG['plugin_order']['detail'][21] = "Date de livraison";
 $LANG['plugin_order']['detail'][25] = "Remise en %";
 $LANG['plugin_order']['detail'][27] = "Veuillez sélectionner un fournisseur";
-$LANG['plugin_order']['detail'][28] = "Cette référence est déjà utilisée dans la commande";
 $LANG['plugin_order']['detail'][29] = "Aucun matériel sélectionné";
 $LANG['plugin_order']['detail'][30] = "Matériel(s) généré(s) avec succès";
 $LANG['plugin_order']['detail'][31] = "Matériel(s) réceptionné(s) avec succès";
@@ -135,13 +131,14 @@ $LANG['plugin_order']['generation'][16] = "Signature de l’émetteur d’ordre"
 $LANG['plugin_order']['generation'][17] = "€";
 
 $LANG['plugin_order']['history'][2] = "Ajout";
-$LANG['plugin_order']['history'][3] = "Mise à jour";
 $LANG['plugin_order']['history'][4] = "Suppression";
 
 $LANG['plugin_order']['infocom'][1] = "Certains champs ne peuvent-être modifiés : ils proviennent d'une commande";
 
 $LANG['plugin_order']['item'][0] = "Matériel(s) lié(s)";
 $LANG['plugin_order']['item'][2] = "Aucun matériel associé";
+
+$LANG['plugin_order']['mailing'][2] = "par";
 
 $LANG['plugin_order']['menu'][0] = "Menu principal";
 $LANG['plugin_order']['menu'][1] = "Gérer les commandes";
@@ -150,9 +147,6 @@ $LANG['plugin_order']['menu'][3] = "Gérer les budgets";
 $LANG['plugin_order']['menu'][4] = "Commandes";
 $LANG['plugin_order']['menu'][5] = "Références";
 $LANG['plugin_order']['menu'][6] = "Budgets";
-
-$LANG['plugin_order']['mailing'][0] = "Demande de validation d'une commande";
-$LANG['plugin_order']['mailing'][2] = "par";
 
 $LANG['plugin_order']['profile'][0] = "Gestion des droits";
 $LANG['plugin_order']['profile'][1] = "Valider une commande";
