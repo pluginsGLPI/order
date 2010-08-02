@@ -59,7 +59,7 @@ class PluginOrderPreference extends CommonDBTM {
    
       $input["user_id"]=$user_id;
       $input["template"]="";
-
+      $input["sign"]="";
       return $this->add($input);
    }
    
