@@ -148,6 +148,12 @@ $LANG['plugin_order']['menu'][4] = "Bestellungen";
 $LANG['plugin_order']['menu'][5] = "Referenzen";
 $LANG['plugin_order']['menu'][6] = "Budgets";
 
+$LANG['plugin_order']['parser'][0] = "Files";
+$LANG['plugin_order']['parser'][1] = "Use this model";
+$LANG['plugin_order']['parser'][2] = "No file found into the folder";
+$LANG['plugin_order']['parser'][3] = "Use this sign";
+$LANG['plugin_order']['parser'][4] = "Thanks to select a model into your preferences";
+
 $LANG['plugin_order']['profile'][0] = "Berechtigungsverwaltung";
 $LANG['plugin_order']['profile'][1] = "Bestellung freigeben";
 $LANG['plugin_order']['profile'][2] = "Bestellung stornieren";
@@ -209,5 +215,7 @@ $LANG['plugin_order']['validation'][14] = "Freigabeantrag wurde rückgängig gem
 $LANG['plugin_order']['validation'][15] = "Bestellung in Bearbeitung";
 $LANG['plugin_order']['validation'][16] = "Freigabe wurde rückgängig gemacht";
 $LANG['plugin_order']['validation'][17] = "Bestellung bearbeiten";
+$LANG['plugin_order']['validation'][18] = "Comment of validation";
+$LANG['plugin_order']['validation'][19] = "Editor of validation";
 
 ?>

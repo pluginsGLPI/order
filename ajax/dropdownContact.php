@@ -74,7 +74,7 @@ $result = $DB->query($query);
 
 echo "<select name=\"contacts_id\">";
 
-echo "<option value=\"0\">-----</option>";
+echo "<option value=\"0\">".DROPDOWN_EMPTY_VALUE."</option>";
 
 if ($DB->numrows($result)) {
 	$prev=-1;

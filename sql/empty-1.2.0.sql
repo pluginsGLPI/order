@@ -286,6 +286,20 @@ CREATE TABLE `glpi_plugin_order_configs` (
 
 INSERT INTO `glpi_plugin_order_configs` (id,use_validation,default_taxes) VALUES (1,0,0);
 
+-- --------------------------------------------------------
+-- 
+-- Structure de la table `glpi_plugin_order_preferences`
+-- 
+
+DROP TABLE IF EXISTS `glpi_plugin_order_preferences`;
+CREATE TABLE `glpi_plugin_order_preferences` (
+	`id` int(11) NOT NULL auto_increment,
+	`user_id` int(11) NOT NULL default 0,
+	`template` varchar(255) collate utf8_unicode_ci default NULL,
+	`sign` varchar(255) collate utf8_unicode_ci default NULL,
+	PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+	
 INSERT INTO `glpi_notificationtemplates` VALUES(NULL, 'Order Validation', 'PluginOrderOrder', '2010-03-12 22:36:46','');
 
 INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','1','1','0');

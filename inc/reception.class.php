@@ -401,7 +401,7 @@ class PluginOrderReception extends CommonDBTM {
       $rand = mt_rand();
 
       echo "<select name='receptionActions$rand' id='receptionActions$rand'>";
-      echo "<option value='0' selected>-----</option>";
+      echo "<option value='0' selected>".DROPDOWN_EMPTY_VALUE."</option>";
       echo "<option value='reception'>" . $LANG['plugin_order']['delivery'][2] . "</option>";
       echo "</select>";
       $params = array (

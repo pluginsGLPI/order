@@ -71,7 +71,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       $this->datas['##lang.ordervalidation.state##'] = $LANG['joblist'][0];
       $this->datas['##ordervalidation.state##'] =  $this->obj->getDropdownStatus($this->obj->getField("states_id"));
       
-      $this->datas['##lang.ordervalidation.comment##'] = "Commentaire de la validation";
+      $this->datas['##lang.ordervalidation.comment##'] = $LANG['plugin_order']['validation'][18];
       $comment = stripslashes(str_replace(array('\r\n', '\n', '\r'), "<br/>", $options['comments']));
       $this->datas['##ordervalidation.comment##'] = nl2br($comment);
       
@@ -99,6 +99,23 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       $this->datas['##ordervalidation.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_".
                                     $this->obj->getField("id"));
 
+   }
+   
+   function getTags() {
+      global $LANG;
+
+      $tags = array('ordervalidation.name'            => $LANG['common'][16],
+                     'ordervalidation.numorder'    => $LANG['financial'][18],
+                     'ordervalidation.orderdate'    => $LANG['plugin_order'][1],
+                     'ordervalidation.state'    => $LANG['joblist'][0],
+                     'ordervalidation.comment'    => $LANG['plugin_order']['validation'][18],
+                     'ordervalidation.users'    => $LANG['plugin_order']['validation'][19]);
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
+                                   'value'=>true));
+      }
+
+      asort($this->tag_descriptions);
    }
 }
 

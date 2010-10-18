@@ -140,7 +140,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 	}
 	
 	function showForm ($ID, $options=array()) {
-		global $LANG, $CFG_GLPI;
+		global $LANG;
       
       if (!$this->canView())
 			return false;
@@ -149,12 +149,11 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       if (isset($options['plugin_order_orders_id'])) {
          $plugin_order_orders_id = $options['plugin_order_orders_id'];
       }
-      $PluginOrderOrder = new PluginOrderOrder();
-      
+        
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
-         // Create item
+         $input=array('plugin_order_orders_id' => $options['plugin_order_orders_id']);
          $this->check(-1,'w',$input);
       }
       
@@ -163,7 +162,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       }
       $this->showFormHeader($options);
       
-      
+      $PluginOrderOrder = new PluginOrderOrder();
       $PluginOrderOrder->getFromDB($plugin_order_orders_id);
       echo "<input type='hidden' name='plugin_order_orders_id' value='$plugin_order_orders_id'>";
       echo "<input type='hidden' name='entities_id' value='".$PluginOrderOrder->getEntityID()."'>";
@@ -297,7 +296,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    }
    
    function showDeliveries($suppliers_id) {
-      global $LANG,$DB,$CFG_GLPI,$INFOFORM_PAGES;
+      global $LANG,$DB;
       
       $query = "SELECT COUNT(`glpi_plugin_order_orders_items`.`plugin_order_references_id`) AS ref, `glpi_plugin_order_orders_items`.`plugin_order_deliverystates_id`, `glpi_plugin_order_orders`.`entities_id` 
                   FROM `glpi_plugin_order_orders_items` 

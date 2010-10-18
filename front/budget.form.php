@@ -80,11 +80,6 @@ else if (isset ($_POST["update"])) {
 
 $PluginOrderBudget->checkGlobal("r");
 
-if (!isset ($_SESSION['glpi_tab']))
-   $_SESSION['glpi_tab'] = 1;
-if (isset ($_GET['onglet'])) 
-   $_SESSION['glpi_tab'] = $_GET['onglet'];
-
 commonHeader($LANG['financial'][87], '', "plugins", "order", "budget");
 
 $PluginOrderBudget->showForm($_GET["id"]);

@@ -117,7 +117,7 @@ function plugin_order_install() {
       $number = $DB->numrows($result);
       if ($number) {
          while ($data=$DB->fetch_array($result)) {
-            $query = "UPDATE `glpi_plugin_order_orders_suppliers`
+            $query = "UPDATE `glpi_plugin_order_surveysuppliers`
                   SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
                   WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
             $DB->query($query) or die($DB->error());
@@ -278,6 +278,48 @@ function plugin_order_uninstall() {
 		$query = "DELETE FROM `$table` WHERE (`itemtype` " . $in." ) ";
 		$DB->query($query);
 	}
+	
+	$notif = new Notification();
+   
+   $options = array('itemtype' => 'PluginOrderOrder',
+                    'event'    => 'ask',
+                    'FIELDS'   => 'id');
+   foreach ($DB->request('glpi_notifications', $options) as $data) {
+      $notif->delete($data);
+   }
+   $options = array('itemtype' => 'PluginOrderOrder',
+                    'event'    => 'validation',
+                    'FIELDS'   => 'id');
+   foreach ($DB->request('glpi_notifications', $options) as $data) {
+      $notif->delete($data);
+   }
+   $options = array('itemtype' => 'PluginOrderOrder',
+                    'event'    => 'cancel',
+                    'FIELDS'   => 'id');
+   foreach ($DB->request('glpi_notifications', $options) as $data) {
+      $notif->delete($data);
+   }
+   $options = array('itemtype' => 'PluginOrderOrder',
+                    'event'    => 'undovalidation',
+                    'FIELDS'   => 'id');
+   foreach ($DB->request('glpi_notifications', $options) as $data) {
+      $notif->delete($data);
+   }
+   
+   //templates
+   $template = new NotificationTemplate();
+   $translation = new NotificationTemplateTranslation();
+   $options = array('itemtype' => 'PluginOrderOrder',
+                    'FIELDS'   => 'id');
+   foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
+      $options_template = array('notificationtemplates_id' => $data['id'],
+                    'FIELDS'   => 'id');
+   
+         foreach ($DB->request('glpi_notificationtemplatetranslations', $options_template) as $data_template) {
+            $translation->delete($data_template);
+         }
+      $template->delete($data);
+   }
 
 	return true;
 }
@@ -522,9 +564,10 @@ function plugin_order_MassiveActionsProcess($data) {
 /* hook done on purge item case */
 function plugin_item_purge_order($item) {
 
-	$temp = new PluginOrderOrder_Item();
-   $temp->clean(array('itemtype' => get_class($item),
-                         'items_id' => $item->getField('id')));
+   $type = get_class($item);
+   $temp = new PluginOrderOrder_Item();
+   $temp->deleteByCriteria(array('itemtype' => $type,
+                                    'items_id' => $item->getField('id')));
 
    return true;
 }
@@ -543,6 +586,9 @@ function plugin_get_headings_order($item,$withtemplate) {
          // Non template case
          return array(1 => $LANG['plugin_order']['title'][1]);
       }
+   } else if ($type == 'Preference') {
+      // Non template case
+      return array(1 => $LANG['plugin_order']['title'][1]);
    }
    return false;
 }
@@ -553,7 +599,8 @@ function plugin_headings_actions_order($item) {
    if (in_array(get_class($item),PluginOrderOrder_Item::getClasses(true))||
 		get_class($item)=='Profile' ||
 		get_class($item)=='Supplier' ||
-		get_class($item)=='Budget') {
+		get_class($item)=='Budget' ||
+		get_class($item)=='Preference') {
 		return array(
 			1 => "plugin_headings_order",
 		);
@@ -585,6 +632,13 @@ function plugin_headings_order($item) {
          break;
       case 'Budget' :
          $PluginOrderBudget->getAllOrdersByBudget($_POST["id"]);
+         break;
+      case "Preference" :
+			$pref = new PluginOrderPreference;
+         $pref_ID=$pref->checkIfPreferenceExists(getLoginUserID());
+         if (!$pref_ID)
+            $pref_ID=$pref->addDefaultPreference(getLoginUserID());
+         $pref->showForm($CFG_GLPI['root_doc']."/plugins/order/front/preference.form.php",$pref_ID,getLoginUserID());
          break;
       default :
          if (in_array(get_class($item), PluginOrderOrder_Item::getClasses(true))) {

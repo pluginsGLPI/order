@@ -78,10 +78,9 @@ class PluginOrderOrder extends CommonDBTM {
    }
    
 	function cleanDBonPurge() {
-		global $DB;
 
 		$temp = new PluginOrderOrder_Item();
-      $temp->clean(array('plugin_order_orders_id' => $this->fields['id']));
+		$temp->deleteByCriteria(array('plugin_order_orders_id' => $this->fields['id']));
 
 	}
    
@@ -277,8 +276,8 @@ class PluginOrderOrder extends CommonDBTM {
 			$ong[2] = $LANG['plugin_order'][5];
 			/* fournisseur */
 			$ong[3] = $LANG['plugin_order'][4];
-			/* generation
-			$ong[4] = $LANG['plugin_order']['generation'][2];*/
+			/* generation*/
+			$ong[4] = $LANG['plugin_order']['generation'][2];
 			/* delivery */
 			$ong[5] = $LANG['plugin_order']['delivery'][1];
 			/* item */
@@ -406,7 +405,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</td></tr>";
       
       /* linked contact of the supplier of order */
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][18].": </td>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][92].": </td>";
       echo "<td><span id='show_contacts_id'>";
       if ($canedit && $ID > 0)
          $this->dropdownContacts($this->fields["suppliers_id"],$this->fields["contacts_id"],$this->fields["entities_id"]);
@@ -486,7 +485,7 @@ class PluginOrderOrder extends CommonDBTM {
       $result=$DB->query($query);
 
       echo "<select name='suppliers_id' id='suppliers_id'>\n";
-      echo "<option value='0'>------</option>\n";
+      echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>\n";
 
       $prev=-1;
      while ($data=$DB->fetch_array($result)) {
@@ -536,7 +535,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       echo "<select name=\"contacts_id\">";
 
-      echo "<option value=\"0\">-----</option>";
+      echo "<option value=\"0\">".DROPDOWN_EMPTY_VALUE."</option>";
 
       if ($DB->numrows($result)) {
          $prev=-1;
@@ -748,21 +747,171 @@ class PluginOrderOrder extends CommonDBTM {
    function showGenerationForm($ID) {
       global $LANG,$CFG_GLPI;
       
-      /*$PluginOrderOrder = new PluginOrderOrder();
-      if ($PluginOrderOrder->canUpdateOrder($ID))
-		{
-         echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/export.php?id=".$ID."' method=\"post\">";
-         echo "<div align=\"center\"><table cellspacing=\"2\" cellpadding=\"2\">";
+      $pref = new PluginOrderPreference;
+      $template=$pref->checkPreferenceTemplateValue(getLoginUserID());
+      if ($template) {
+         if ($this->canUpdateOrder($ID))
+         {
+            echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/export.php?id=".$ID."' method=\"post\">";
+            echo "<div align=\"center\"><table cellspacing=\"2\" cellpadding=\"2\">";
 
-         echo "<tr>";
-         echo "<td class='center'>";
-         echo "<input type='submit' value=\"".$LANG['plugin_order']['generation'][1]."\" class='submit' ></div></td></tr>";
-         echo "</td>";
-         echo "</tr>";
+            echo "<tr>";
+            echo "<td class='center'>";
+            echo "<input type='submit' value=\"".$LANG['plugin_order']['generation'][1]."\" class='submit' ></div></td></tr>";
+            echo "</td>";
+            echo "</tr>";
 
-         echo "</table></div></form>";
-      }*/
+            echo "</table></div></form>";
+         }
+      } else {
+         echo "<div align='center'>".$LANG['plugin_order']['parser'][4]."</div>";
+      }
    }
+   
+   function generateOrder($ID) {
+		global $LANG,$DB;
+		
+		$pref = new PluginOrderPreference;
+      $template=$pref->checkPreferenceTemplateValue(getLoginUserID());
+      if ($template) {
+         $odf = new odf("../templates/$template");
+      
+         $this->getFromDB($ID);
+         
+         $PluginOrderOrder_Item = new PluginOrderOrder_Item();
+         $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
+         
+         $odf->setImage('logo', '../logo/logo.jpg');
+         
+         $odf->setVars('title_order',$LANG['plugin_order']['generation'][12],true,'UTF-8');
+         $odf->setVars('num_order',$this->fields["num_order"],true,'UTF-8');
+         
+         $odf->setVars('title_invoice_address',$LANG['plugin_order']['generation'][3],true,'UTF-8');
+         
+         $entity = new Entity();
+         $entity->getFromDB($this->fields["entities_id"]);
+         $entdata=new EntityData();
+         $town = '';
+            
+         if ($this->fields["entities_id"]!=0)
+            $name_entity = $entity->fields["name"];
+         else
+            $name_entity = $LANG['entity'][2];
+            
+         $odf->setVars('entity_name', $name_entity,true,'UTF-8');
+         if ($entdata->getFromDB($this->fields["entities_id"])) {
+            $odf->setVars('entity_address', $entdata->fields["address"],true,'UTF-8');
+            $odf->setVars('entity_postcode', $entdata->fields["postcode"],true,'UTF-8');
+            $town = $entdata->fields["town"];
+            $odf->setVars('entity_town', $town,true,'UTF-8');
+            $odf->setVars('entity_country', $entdata->fields["country"],true,'UTF-8');
+         }
+         
+         $supplier = new Supplier();
+         if ($supplier->getFromDB($this->fields["suppliers_id"])) {
+            $odf->setVars('supplier_name', $supplier->fields["name"],true,'UTF-8');
+            $odf->setVars('supplier_address', $supplier->fields["address"],true,'UTF-8');
+            $odf->setVars('supplier_postcode', $supplier->fields["postcode"],true,'UTF-8');
+            $odf->setVars('supplier_town', $supplier->fields["town"],true,'UTF-8');
+            $odf->setVars('supplier_country', $supplier->fields["country"],true,'UTF-8');
+         }
+         
+         $odf->setVars('title_delivery_address',$LANG['plugin_order']['generation'][4],true,'UTF-8');
+
+         $tmpname=Dropdown::getDropdownName("glpi_locations",$this->fields["locations_id"],1);
+         $comment=$tmpname["comment"];
+         $odf->setVars('comment_delivery_address',html_clean($comment),true,'UTF-8');
+         
+         if ($town)
+            $town = $town. ", ";
+         $odf->setVars('title_date_order',$town.$LANG['plugin_order']['generation'][5]." ",true,'UTF-8');
+         $odf->setVars('date_order',convDate($this->fields["order_date"]),true,'UTF-8');
+         
+         $odf->setVars('title_sender',$LANG['plugin_order']['generation'][10],true,'UTF-8');
+         $odf->setVars('sender',html_clean(getUserName(getLoginUserID())),true,'UTF-8');
+         
+         $output='';
+         $contact = new Contact();
+         if ($contact->getFromDB($this->fields["contacts_id"])) {
+            $output=formatUserName($contact->fields["id"],"",$contact->fields["name"],$contact->fields["firstname"]);
+         }
+         $odf->setVars('title_recipient',$LANG['plugin_order']['generation'][11],true,'UTF-8');
+         $odf->setVars('recipient',html_clean($output),true,'UTF-8');
+         
+         $odf->setVars('nb',$LANG['plugin_order']['generation'][6],true,'UTF-8');
+         $odf->setVars('title_item',$LANG['plugin_order']['generation'][7],true,'UTF-8');
+         $odf->setVars('title_ref',$LANG['plugin_order']['detail'][2],true,'UTF-8');
+         $odf->setVars('HTPrice_item',$LANG['plugin_order']['generation'][8],true,'UTF-8');
+         $odf->setVars('title_discount',$LANG['plugin_order']['generation'][13],true,'UTF-8');
+         $odf->setVars('HTPriceTotal_item',$LANG['plugin_order']['generation'][9],true,'UTF-8');
+         
+         $listeArticles = array();
+         
+         $result=$PluginOrderOrder_Item->queryDetail($ID);
+         $num=$DB->numrows($result);
+         
+         while ($data=$DB->fetch_array($result)){
+
+            $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID,$data["id"],$data["price_taxfree"],$data["discount"]);
+
+            $listeArticles[]=array('quantity' => $quantity,
+                  'ref' => utf8_decode($data["name"]),
+                  'refnumber' => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier($data["id"],$this->fields["suppliers_id"]),
+                  'price_taxfree' => html_clean(formatNumber($data["price_taxfree"])),
+                  'discount' => html_clean(formatNumber($data["discount"],false,0)),
+                  'price_discounted' => html_clean(formatNumber($data["price_discounted"]*$quantity)));
+            
+         }
+         
+         $article = $odf->setSegment('articles');
+         foreach($listeArticles AS $element) {
+            $article->nbA($element['quantity']);
+            $article->titleArticle($element['ref']);
+            $article->refArticle($element['refnumber']);
+            $article->HTPriceArticle($element['price_taxfree']);
+            if ($element['discount'] != 0)
+               $article->discount($element['discount']." %");
+            else
+               $article->discount("");
+            $article->HTPriceTotalArticle($element['price_discounted']);
+            $article->merge();
+         }
+
+         $odf->mergeSegment($article);
+         
+         $odf->setVars('title_port',$LANG['plugin_order'][26],true,'UTF-8');
+         $odf->setVars('port_price',formatNumber($this->fields["port_price"]),true,'UTF-8');
+         
+         $odf->setVars('title_totalht',$LANG['plugin_order']['generation'][14],true,'UTF-8');
+         $odf->setVars('title_totalttc',$LANG['plugin_order']['generation'][15],true,'UTF-8');
+         $odf->setVars('title_tva',$LANG['plugin_order'][25],true,'UTF-8');
+         $odf->setVars('value_tva',html_clean(Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",$this->fields["plugin_order_ordertaxes_id"]))." %",true,'UTF-8');
+         $odf->setVars('title_money',$LANG['plugin_order']['generation'][17],true,'UTF-8');
+         $odf->setVars('title_sign',$LANG['plugin_order']['generation'][16],true,'UTF-8');
+         
+         $prices = $PluginOrderOrder_Item->getAllPrices($ID);
+         $priceHTwithpostage=$prices["priceHT"]+$this->fields["port_price"];
+         $tva = ($prices["priceHT"]*Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",$this->fields["plugin_order_ordertaxes_id"]))/100;
+         $postagewithTVA = $PluginOrderOrder_Item->getPricesATI($this->fields["port_price"], 
+                           Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",$this->fields["plugin_order_ordertaxes_id"]));
+         $total = $prices["priceTTC"] + $postagewithTVA;
+         
+         $odf->setVars('totalht',html_clean(formatNumber($priceHTwithpostage)),true,'UTF-8');
+         $odf->setVars('totaltva',html_clean(formatNumber($tva)),true,'UTF-8');
+         $odf->setVars('totalttc',html_clean(formatNumber($total)),true,'UTF-8');
+         
+         $sign=$pref->checkPreferenceSignatureValue(getLoginUserID());
+         if ($sign)
+            $odf->setImage('sign', '../signatures/'.$sign);
+         else
+            $odf->setImage('sign', '../pics/nothing.gif');
+         
+         $odf->setVars('title_conditions',$LANG['plugin_order'][32],true,'UTF-8');
+         $odf->setVars('payment_conditions',Dropdown::getDropdownName("glpi_plugin_order_orderpayments", $this->fields["plugin_order_orderpayments_id"]),true,'UTF-8');
+         // We export the file
+         $odf->exportAsAttachedFile();
+      }
+	}
    
    function transfer($ID,$entity) {
       global $DB;

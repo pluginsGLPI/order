@@ -55,10 +55,9 @@ class PluginOrderReference extends CommonDBTM {
    }
 	
    function cleanDBonPurge() {
-		global $DB;
 
 		$temp = new PluginOrderReference_Supplier();
-      $temp->clean(array('plugin_order_references_id' => $this->fields['id']));
+		$temp->deleteByCriteria(array('plugin_order_references_id' => $this->fields['id']));
 
 	}
 	
@@ -321,7 +320,7 @@ class PluginOrderReference extends CommonDBTM {
       $result = $DB->query("SELECT `template_name`, `id` FROM `" . $table .
       "` WHERE `entities_id` = '" . $entity . "' AND `is_template` = '1' AND `template_name` <> '' GROUP BY `template_name` ORDER BY `template_name`");
 
-      $option[0] = '-----';
+      $option[0] = DROPDOWN_EMPTY_VALUE;
       while ($data = $DB->fetch_array($result))
          $option[$data["id"]] = $data["template_name"];
       return Dropdown::showFromArray($name, $option, array('value'  => $value));
@@ -364,7 +363,7 @@ class PluginOrderReference extends CommonDBTM {
       $types=PluginOrderOrder_Item::getClasses();
 
       echo "<select name=\"$myname\" id='$myname'>";
-      echo "<option value='0' selected>------</option>\n";
+      echo "<option value='0' selected>".DROPDOWN_EMPTY_VALUE."</option>\n";
 
       if ($filter){
 
@@ -413,7 +412,7 @@ class PluginOrderReference extends CommonDBTM {
       global $DB;
 
       $and = "";
-      $item = new $itemtype;
+      $item = new $itemtype();
       
       if (file_exists(GLPI_ROOT."/inc/".strtolower($itemtype)."type.class.php"))
          $and .= ($types_id != 0 ? " AND `".getForeignKeyFieldForTable(getTableForItemType($itemtype."Type"))."` = '$types_id' " : "");
@@ -459,7 +458,7 @@ class PluginOrderReference extends CommonDBTM {
    function dropdownAllItemsByType($name, $itemtype, $entity=0,$types_id=0,$models_id=0) {
 
       $items = $this->getAllItemsByType($itemtype,$entity,$types_id,$models_id);
-      $items[0] = '-----';
+      $items[0] = DROPDOWN_EMPTY_VALUE;
       asort($items);
       return Dropdown::showFromArray($name, $items);
    }

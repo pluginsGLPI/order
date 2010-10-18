@@ -191,11 +191,6 @@ else
 {
 	$PluginOrderOrder->checkGlobal("r");
 
-	if (!isset ($_SESSION['glpi_tab']))
-		$_SESSION['glpi_tab'] = 1;
-	if (isset ($_GET['onglet'])) 
-		$_SESSION['glpi_tab'] = $_GET['onglet'];
-
 	commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
 	
 	$PluginOrderOrder->showForm($_GET["id"]);

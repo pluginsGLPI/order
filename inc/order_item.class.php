@@ -44,19 +44,6 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
    public $itemtype_2 = 'itemtype';
    public $items_id_2 = 'items_id';
-   
-   /**
-    * Clean object veryfing criteria (when a relation is deleted)
-    *
-    * @param $crit array of criteria (should be an index)
-    */
-   public function clean ($crit) {
-      global $DB;
-      
-      foreach ($DB->request($this->getTable(), $crit) as $data) {
-         $this->delete($data);
-      }
-   }
 	
 	function canCreate() {
       return plugin_order_haveRight('order', 'w');

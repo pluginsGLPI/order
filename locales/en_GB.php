@@ -148,6 +148,12 @@ $LANG['plugin_order']['menu'][4] = "Orders";
 $LANG['plugin_order']['menu'][5] = "References";
 $LANG['plugin_order']['menu'][6] = "Budgets";
 
+$LANG['plugin_order']['parser'][0] = "Files";
+$LANG['plugin_order']['parser'][1] = "Use this model";
+$LANG['plugin_order']['parser'][2] = "No file found into the folder";
+$LANG['plugin_order']['parser'][3] = "Use this sign";
+$LANG['plugin_order']['parser'][4] = "Thanks to select a model into your preferences";
+
 $LANG['plugin_order']['profile'][0] = "Rights management";
 $LANG['plugin_order']['profile'][1] = "Order validation";
 $LANG['plugin_order']['profile'][2] = "Cancel order";
@@ -209,5 +215,7 @@ $LANG['plugin_order']['validation'][14] = "Validation query is now canceled";
 $LANG['plugin_order']['validation'][15] = "Order is in draft state";
 $LANG['plugin_order']['validation'][16] = "Validation canceled successfully";
 $LANG['plugin_order']['validation'][17] = "Edit order";
+$LANG['plugin_order']['validation'][18] = "Comment of validation";
+$LANG['plugin_order']['validation'][19] = "Editor of validation";
 
 ?>

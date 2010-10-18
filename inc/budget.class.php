@@ -188,15 +188,22 @@ class PluginOrderBudget extends CommonDBTM {
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       
-      echo "<tr><th colspan='2'>".$LANG['plugin_order']['budget'][1]."</th></tr>";
+      echo "<tr><th colspan='3'>".$LANG['plugin_order']['budget'][1]."</th></tr>";
       echo "<tr>"; 
       echo "<th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".$LANG['plugin_order'][14]."</th>";
       echo "</tr>";
       
       $total = 0;
       while ($data = $DB->fetch_array($result))
       {
+         
+         $PluginOrderOrder_Item = new PluginOrderOrder_Item();
+         $prices = $PluginOrderOrder_Item->getAllPrices($data["id"]);
+         $postagewithTVA = $PluginOrderOrder_Item->getPricesATI($data["port_price"], Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $data["plugin_order_ordertaxes_id"]));
+         $total+= $prices["priceTTC"] + $postagewithTVA;
+         
          echo "<tr class='tab_bg_1' align='center'>"; 
          echo "<td>";
 
@@ -210,12 +217,13 @@ class PluginOrderBudget extends CommonDBTM {
          echo "<td>";
          echo Dropdown::getDropdownName("glpi_entities",$data["entities_id"]);
          echo "</td>";
-
+         
+         echo "<td>";
+         echo formatnumber($prices["priceTTC"] + $postagewithTVA);
+         echo "</td>";
+         
          echo "</tr>"; 
-         $PluginOrderOrder_Item = new PluginOrderOrder_Item();
-         $prices = $PluginOrderOrder_Item->getAllPrices($data["id"]);
-         $postagewithTVA = $PluginOrderOrder_Item->getPricesATI($data["port_price"], Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $data["plugin_order_ordertaxes_id"]));
-         $total+= $prices["priceTTC"] + $postagewithTVA;
+         
       }
       echo "</table></div>";
       

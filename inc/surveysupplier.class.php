@@ -138,7 +138,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
 	}
 	
 	function showGlobalNotation($suppliers_id) {
-      global $LANG,$DB,$CFG_GLPI,$INFOFORM_PAGES;
+      global $LANG,$DB;
       
       $query = "SELECT `glpi_plugin_order_orders`.`id`, `glpi_plugin_order_orders`.`entities_id`, `glpi_plugin_order_orders`.`name`,`".$this->getTable()."`.`comment` 
                   FROM `glpi_plugin_order_orders`,`".$this->getTable()."`
@@ -210,7 +210,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
 	}
 	
 	function showForm ($ID, $options=array()) {
-		global $LANG, $CFG_GLPI;
+		global $LANG;
       
       if (!$this->canView())
 			return false;
@@ -220,17 +220,11 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          $plugin_order_orders_id = $options['plugin_order_orders_id'];
       }
       
-      $PluginOrderOrder = new PluginOrderOrder();
-      
-      $surveyid = -1;
-      if (isset($options['surveyid'])) {
-         $surveyid = $options['surveyid'];
-      }
-      
       if ($ID > 0) {
          $this->check($ID,'r');
       } else {
          // Create item
+         $input=array('plugin_order_orders_id' => $options['plugin_order_orders_id']);
          $this->check(-1,'w',$input);
       }
       
@@ -240,6 +234,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       $options['colspan'] = 1;
       $this->showFormHeader($options);
       
+      $PluginOrderOrder = new PluginOrderOrder();
       $PluginOrderOrder->getFromDB($plugin_order_orders_id);
       echo "<input type='hidden' name='plugin_order_orders_id' value='$plugin_order_orders_id'>";
       echo "<input type='hidden' name='entities_id' value='".$PluginOrderOrder->getEntityID()."'>";

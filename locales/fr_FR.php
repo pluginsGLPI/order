@@ -148,6 +148,12 @@ $LANG['plugin_order']['menu'][4] = "Commandes";
 $LANG['plugin_order']['menu'][5] = "Références";
 $LANG['plugin_order']['menu'][6] = "Budgets";
 
+$LANG['plugin_order']['parser'][0] = "Fichiers";
+$LANG['plugin_order']['parser'][1] = "Utiliser ce modèle";
+$LANG['plugin_order']['parser'][2] = "Aucun fichier trouvé dans le répertoire";
+$LANG['plugin_order']['parser'][3] = "Utiliser cette signature";
+$LANG['plugin_order']['parser'][4] = "Merci de sélectionner un modèle dans vos préférences";
+
 $LANG['plugin_order']['profile'][0] = "Gestion des droits";
 $LANG['plugin_order']['profile'][1] = "Valider une commande";
 $LANG['plugin_order']['profile'][2] = "Annuler une commande";
@@ -209,5 +215,7 @@ $LANG['plugin_order']['validation'][14] = "Annulation la demande de validation e
 $LANG['plugin_order']['validation'][15] = "Commande en édition";
 $LANG['plugin_order']['validation'][16] = "Annulation de la validation effectuée";
 $LANG['plugin_order']['validation'][17] = "Modifier la commande";
+$LANG['plugin_order']['validation'][18] = "Commentaire de la validation";
+$LANG['plugin_order']['validation'][19] = "Editeur de la validation";
 
 ?>

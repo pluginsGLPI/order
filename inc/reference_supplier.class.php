@@ -137,7 +137,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 	}
 
 	function showForm ($ID, $options=array()) {
-		global $LANG,$DB;
+		global $LANG, $DB;
       
       if (!$this->canView())
 			return false;
@@ -151,6 +151,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          $this->check($ID,'r');
       } else {
          // Create item
+         $input=array('plugin_order_references_id' => $options['plugin_order_references_id']);
          $this->check(-1,'w',$input);
       }
       

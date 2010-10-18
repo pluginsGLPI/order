@@ -6,6 +6,7 @@ ALTER TABLE `glpi_dropdown_plugin_order_payment` RENAME `glpi_plugin_order_order
 ALTER TABLE `glpi_dropdown_plugin_order_taxes` RENAME `glpi_plugin_order_ordertaxes`;
 ALTER TABLE `glpi_plugin_order_config` RENAME `glpi_plugin_order_configs`;
 DROP TABLE IF EXISTS `glpi_plugin_order_mailing`;
+DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_status`;
 ALTER TABLE `glpi_dropdown_plugin_order_deliverystate` RENAME `glpi_plugin_order_deliverystates`;
 
 ALTER TABLE `glpi_plugin_order_orders` 
@@ -179,5 +180,19 @@ ALTER TABLE `glpi_plugin_order_surveysuppliers`
    CHANGE `comment` `comment` text collate utf8_unicode_ci,
    ADD INDEX (`plugin_order_orders_id`),
    ADD INDEX (`suppliers_id`);
+
+-- --------------------------------------------------------
+-- 
+-- Structure de la table `glpi_plugin_order_preferences`
+-- 
+
+DROP TABLE IF EXISTS `glpi_plugin_order_preferences`;
+CREATE TABLE `glpi_plugin_order_preferences` (
+	`id` int(11) NOT NULL auto_increment,
+	`user_id` int(11) NOT NULL default 0,
+	`template` varchar(255) collate utf8_unicode_ci default NULL,
+	`sign` varchar(255) collate utf8_unicode_ci default NULL,
+	PRIMARY KEY  (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_notificationtemplates` VALUES(NULL, 'Order Validation', 'PluginOrderOrder', '2010-03-12 22:36:46','');

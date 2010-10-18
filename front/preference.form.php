@@ -35,55 +35,24 @@
 define('GLPI_ROOT', '../../..'); 
 include (GLPI_ROOT."/inc/includes.php");
 
-if(!isset($_GET["id"])) $_GET["id"] = "";
-if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
-
-$PluginOrderReference=new PluginOrderReference();
-
-/* add order */
-if (isset($_POST["add"]))
-{
-	$PluginOrderReference->check(-1,'w',$_POST);
-	$newID=$PluginOrderReference->add($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-/* delete order */
-else if (isset($_POST["delete"]))
-{
-	$PluginOrderReference->check($_POST['id'],'w');
-   $PluginOrderReference->delete($_POST);
-	glpi_header(getItemTypeSearchURL('PluginOrderReference'));
-}
-/* restore order */
-else if (isset($_POST["restore"]))
-{
-	$PluginOrderReference->check($_POST['id'],'w');
-   $PluginOrderReference->restore($_POST);
-	glpi_header(getItemTypeSearchURL('PluginOrderReference'));
-}
-/* purge order */
-else if (isset($_POST["purge"]))
-{
-	$PluginOrderReference->check($_POST['id'],'w');
-   $PluginOrderReference->delete($_POST,1);
-	glpi_header(getItemTypeSearchURL('PluginOrderReference'));
-}
-/* update order */
-else if (isset($_POST["update"]))
-{
-	$PluginOrderReference->check($_POST['id'],'w');
-   $PluginOrderReference->update($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else
-{
-	$PluginOrderReference->checkGlobal("r");
-
-	commonHeader($LANG['plugin_order']['reference'][1],'',"plugins","order","reference");
+if (!isset ($_GET["id"]))
+	$_GET["id"] = "";
 	
-	$PluginOrderReference->showForm($_GET["id"]);
+$PluginOrderPreference= new PluginOrderPreference();
 
-	commonFooter();
+if (isset($_POST["update"])) {
+	
+	$PluginOrderPreference->update($_POST);
+	glpi_header($_SERVER['HTTP_REFERER']);
+
+} else {
+
+   commonHeader($LANG['plugin_order']['title'][1],'',"plugins","order","order");
+   
+	$PluginOrderPreference->showForm("./preference.form.php",$_GET["id"]);
+   
+   commonFooter();
+
 }
 
 ?>

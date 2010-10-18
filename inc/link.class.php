@@ -135,7 +135,7 @@ class PluginOrderLink extends CommonDBChild {
 
                //If geninventorynumber plugin is active, and this type is managed by the plugin
                if ($gen_inventorynumber) {
-                  echo "<td align='center'>---------</td>";
+                  echo "<td align='center'>".DROPDOWN_EMPTY_VALUE."</td>";
                } else {
                   echo "<td><input type='text' size='20' name='id[$i][otherserial]'></td>";
                }
@@ -278,8 +278,8 @@ class PluginOrderLink extends CommonDBChild {
                echo "<td align='center'>" . convDate($data["delivery_date"]) . "</td>";
                echo "<td align='center'>" . $this->getReceptionItemName($data["items_id"], $data["itemtype"]);
                if ($data["items_id"] != 0) {
-                  echo " <img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' alt=\"\" onmouseout=\"setdisplay(getElementById('comments_$random'),'none')\" onmouseover=\"setdisplay(getElementById('comments_$random'),'block')\">";
-                  echo "<span class='over_link' id='comments_$random'>".nl2br($this->getLinkedItemDetails($data["itemtype"], $data["items_id"])) ."</span>";
+                  echo "&nbsp;";
+                  showToolTip(nl2br($this->getLinkedItemDetails($data["itemtype"], $data["items_id"])));
                }
                echo "<input type='hidden' name='id[$detailID]' value='$detailID'>";
                echo "<input type='hidden' name='name[$detailID]' value='" . $data["name"] . "'>";
@@ -426,7 +426,7 @@ class PluginOrderLink extends CommonDBChild {
       $PluginOrderReception = new PluginOrderReception;
       
       echo "<select name='generationActions$rand' id='generationActions$rand'>";
-      echo "<option value='0' selected>-----</option>";
+      echo "<option value='0' selected>".DROPDOWN_EMPTY_VALUE."</option>";
       
       $restricted = array('ConsumableItem',
                            'CartridgeItem',
