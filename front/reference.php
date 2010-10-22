@@ -40,24 +40,24 @@ commonHeader($LANG['plugin_order']['reference'][1], '', "plugins", "order", "ref
 $PluginOrderReference=new PluginOrderReference();
 if ($PluginOrderReference->canView() || haveRight("config","w")) {
    
-   echo "<script type='text/javascript'>";
-      echo "cleanhide('modal_reference_content');";
-      echo "var order_window=new Ext.Window({
-         layout:'fit',
-         width:800,
-         height:400,
-         closeAction:'hide',
-         modal: true,
-         autoScroll: true,
-         title: \"".$LANG['plugin_order']['reference'][11]."\",
-         autoLoad: '".$CFG_GLPI['root_doc']."/plugins/order/ajax/referencetree.php'
-      });";
-      echo "</script>";
+   echo "<div align='center'><script type='text/javascript'>";
+   echo "cleanhide('modal_reference_content');";
+   echo "var order_window=new Ext.Window({
+      layout:'fit',
+      width:800,
+      height:400,
+      closeAction:'hide',
+      modal: true,
+      autoScroll: true,
+      title: \"".$LANG['plugin_order']['reference'][11]."\",
+      autoLoad: '".$CFG_GLPI['root_doc']."/plugins/order/ajax/referencetree.php'
+   });";
+   echo "</script>";
 
-      echo "<a onclick='order_window.show();' href='#modal_reference_content' title='".
-             $LANG['plugin_order']['reference'][11]."'>".
-             $LANG['plugin_order']['reference'][11]."</a>";
-             
+   echo "<a onclick='order_window.show();' href='#modal_reference_content' title='".
+          $LANG['plugin_order']['reference'][11]."'>".
+          $LANG['plugin_order']['reference'][11]."</a>";
+   echo "</div>";        
 	Search::show("PluginOrderReference");
 	
 } else {
