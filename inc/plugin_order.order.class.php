@@ -684,7 +684,7 @@ class PluginOrder extends CommonDBTM {
       if ($template) {
       
          $config = array(
-             'PATH_TO_TMP' => GLPI_DOC_DIR . '/tmp' 
+             'PATH_TO_TMP' => GLPI_DOC_DIR . '/_tmp' 
          );
 
          $odf = new odf("../templates/$template", $config);
