@@ -682,7 +682,12 @@ class PluginOrder extends CommonDBTM {
 		$pref = new PluginOrderPreference;
       $template=$pref->checkPreferenceTemplateValue($_SESSION['glpiID']);
       if ($template) {
-         $odf = new odf("../templates/$template");
+      
+         $config = array(
+             'PATH_TO_TMP' => GLPI_DOC_DIR . '/tmp' 
+         );
+
+         $odf = new odf("../templates/$template", $config);
          
          $this->getFromDB($ID);
          
