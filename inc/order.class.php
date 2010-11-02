@@ -50,7 +50,7 @@ class PluginOrderOrder extends CommonDBTM {
    const ORDER_STATUS_PARTIALLY_DELIVRED = 3;
    const ORDER_STATUS_COMPLETLY_DELIVERED = 4;
    const ORDER_STATUS_CANCELED = 5;
-
+   
    static function getTypeName() {
       global $LANG;
 
@@ -776,7 +776,8 @@ class PluginOrderOrder extends CommonDBTM {
       if ($template) {
 
          $config = array(
-             'PATH_TO_TMP' => GLPI_DOC_DIR . '/_tmp' 
+            'ZIP_PROXY' => 'PhpZipProxy',
+            'PATH_TO_TMP' => GLPI_DOC_DIR . '/_tmp'
          );
 
          $odf = new odf("../templates/$template", $config);
