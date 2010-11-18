@@ -185,3 +185,5 @@ class PluginOrderPreference extends CommonDBTM {
       return $array_file;
    }
 }
+
+?>

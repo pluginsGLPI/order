@@ -86,3 +86,5 @@ class PluginOrderConfig extends CommonDBTM {
       return $config["default_taxes"];
    }
 }
+
+?>

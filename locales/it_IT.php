@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
  * @version $Id: HEADER 1 2010-03-03 21:49 Tsmr $
  -------------------------------------------------------------------------
@@ -31,7 +31,7 @@
 // Purpose of file: plugin order v1.2.0 - GLPI 0.78
 // ----------------------------------------------------------------------
  */
-
+ 
 $LANG['plugin_order']['title'][1] = "Gestione Ordini";
 
 $LANG['plugin_order'][0] = "Numero Ordine";
