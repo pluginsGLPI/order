@@ -43,8 +43,8 @@ $PluginOrderLink = new PluginOrderLink();
 $PluginOrderOrder_Item = new PluginOrderOrder_Item;
 
 $plugin = new Plugin;
-if ($plugin->isActivated("genericobject"))
-	usePlugin('genericobject');
+//if ($plugin->isActivated("genericobject"))
+//	usePlugin('genericobject');
 
 if (isset ($_POST["generation"])) {
 
