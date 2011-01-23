@@ -36,11 +36,11 @@ define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 if (!isset ($_POST["id"])) {
-	exit ();
+   exit ();
 }
 
 if (!isset ($_POST["withtemplate"]))
-	$_POST["withtemplate"] = "";
+   $_POST["withtemplate"] = "";
 
 $PluginOrderSurveySupplier = new PluginOrderSurveySupplier();
 $PluginOrderSurveySupplier->checkGlobal("r");
@@ -48,11 +48,11 @@ $PluginOrderSurveySupplier->checkGlobal("r");
 if ($_POST["id"]>0 && $PluginOrderSurveySupplier->can($_POST["id"],'r')) {
 
    if (!empty($_POST["withtemplate"])) {
-		switch($_REQUEST['glpi_tab']) {
-			default :
-				break;
-		}
-	} else {
+      switch($_REQUEST['glpi_tab']) {
+         default :
+            break;
+      }
+   } else {
       switch($_REQUEST['glpi_tab']) {
          default :
             break;

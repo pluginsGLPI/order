@@ -49,27 +49,30 @@ $PluginOrderOrder_Item = new PluginOrderOrder_Item();
 if ($_POST["plugin_order_references_id"] > 0)
 {  
    
-	$price = $PluginOrderReference_Supplier->getPriceByReferenceAndSupplier($_POST["plugin_order_references_id"],$_POST["suppliers_id"]);
-	switch ($_POST["update"])
-	{
-		case 'quantity':
-			echo "<input type='text' name='quantity' size='5'>";
+   $price = $PluginOrderReference_Supplier->getPriceByReferenceAndSupplier($_POST["plugin_order_references_id"],
+                                                                           $_POST["suppliers_id"]);
+   switch ($_POST["update"])
+   {
+      case 'quantity':
+         echo "<input type='text' name='quantity' size='5'>";
          break;
-		case 'priceht':
-			echo "<input type='text' name='price' value=\"".formatNumber($price,true)."\" size='5'>";
+      case 'priceht':
+         echo "<input type='text' name='price' value=\"".formatNumber($price,true)."\" size='5'>";
          break;
-		case 'pricediscounted':
-			//echo "<input type='text' name='discount' value=\"".formatNumber("discount",true)."\" size='5'>";
+      case 'pricediscounted':
          echo "<input type='text' name='discount' size='5'>";
          break;
-		case 'validate':
-			echo "<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."' class='submit' >";
-			echo "<input type='hidden' name='plugin_order_references_id' value='".$_POST["plugin_order_references_id"]."' class='submit' >";
-			echo "<input type='submit' name='add_item' value=\"".$LANG['buttons'][8]."\" class='submit' >";
-         break;					
-	}	
+      case 'validate':
+         echo "<input type='hidden' name='itemtype' value='".
+            $_POST["itemtype"]."' class='submit' >";
+         echo "<input type='hidden' name='plugin_order_references_id' value='".
+               $_POST["plugin_order_references_id"]."' class='submit' >";
+         echo "<input type='submit' name='add_item' value=\"".
+            $LANG['buttons'][8]."\" class='submit' >";
+         break;
+   }  
 }
 else
-	return "";
+   return "";
 
 ?>

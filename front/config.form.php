@@ -33,16 +33,16 @@
  */
 
 if (!defined('GLPI_ROOT'))
-	define('GLPI_ROOT', '../../..'); 
+   define('GLPI_ROOT', '../../..'); 
 include (GLPI_ROOT."/inc/includes.php");
 
 $config= new PluginOrderConfig();
 
 if (isset($_POST["update"])) {
 
-	$config->update($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
-	
+   $config->update($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
+   
 } else {
 
 commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "menu");

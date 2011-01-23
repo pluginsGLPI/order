@@ -38,7 +38,7 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 if (!defined('GLPI_ROOT')) {
-	die("Can not acces directly to this file");
+   die("Can not acces directly to this file");
 }
 
 checkCentralAccess();
@@ -47,33 +47,40 @@ $PluginOrderReference = new PluginOrderReference();
 
 if ($_POST["itemtype"])
 {
-	switch ($_POST["field"])
-	{
-		case "types_id":
-         if ($_POST["itemtype"] == 'PluginOrderOther') $file = 'other'; else $file = $_POST["itemtype"];
+   switch ($_POST["field"])
+   {
+      case "types_id":
+         if ($_POST["itemtype"] == 'PluginOrderOther') {
+            $file = 'other';
+         } else {
+            $file = $_POST["itemtype"];
+         }
          if (file_exists(GLPI_ROOT."/inc/".strtolower($_POST["itemtype"])."type.class.php") 
-         || file_exists(GLPI_ROOT."/plugins/order/inc/".strtolower($file)."type.class.php"))
+               || file_exists(GLPI_ROOT."/plugins/order/inc/".strtolower($file)."type.class.php")) {
             Dropdown::show($_POST["itemtype"]."Type", array('name' => "types_id"));
+         }
          break;
-		case "models_id":
-			if (file_exists(GLPI_ROOT."/inc/".strtolower($_POST["itemtype"])."model.class.php"))
-				Dropdown::show($_POST["itemtype"]."Model", array('name' => "models_id"));
-			else
-				return "";				
+      case "models_id":
+         if (file_exists(GLPI_ROOT."/inc/".strtolower($_POST["itemtype"])."model.class.php")) {
+            Dropdown::show($_POST["itemtype"]."Model", array('name' => "models_id"));
+         } else {
+            return "";
+         }
          break;
-		case "templates_id":
+      case "templates_id":
          $item = new $_POST['itemtype']();
-			if ($item->maybeTemplate())
-			{
-				$table = getTableForItemType($_POST["itemtype"]);
-				$PluginOrderReference->dropdownTemplate("templates_id", $_POST["entity_restrict"], $table);
-			}
-			else
-				return "";	
-         break;				
-	}	
+         if ($item->maybeTemplate())
+         {
+            $table = getTableForItemType($_POST["itemtype"]);
+            $PluginOrderReference->dropdownTemplate("templates_id", $_POST["entity_restrict"], 
+                                                    $table);
+         } else {
+            return ""; 
+         }
+         break;
+   }  
 }
-else
-	return "";
-
+else {
+   return '';
+}
 ?>

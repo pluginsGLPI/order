@@ -40,11 +40,12 @@ commonHeader($LANG['financial'][87], '', "plugins", "order", "budget");
 $PluginOrderBudget=new PluginOrderBudget();
 if ($PluginOrderBudget->canView() || haveRight("config","w")) {
 
-	Search::show("PluginOrderBudget");
-	
+   Search::show("PluginOrderBudget");
+   
 } else {
-	echo "<div align='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
-	echo "<b>" . $LANG['login'][5] . "</b></div>";
+   echo "<div align='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] .
+       "/pics/warning.png\" alt=\"warning\"><br><br>";
+   echo "<b>" . $LANG['login'][5] . "</b></div>";
 }
 
 commonFooter();

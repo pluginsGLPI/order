@@ -41,33 +41,37 @@ $PluginOrderOrder = new PluginOrderOrder();
 $PluginOrderReference = new PluginOrderReference();
 $PluginOrderBudget = new PluginOrderBudget();
 
-if ($PluginOrderOrder->canView() || $PluginOrderReference->canView() || $PluginOrderBudget->canView()) {
-	echo "<div class='center'>";
-	echo "<table class='tab_cadre'>";
-	echo "<tr><th colspan='2'>" . $LANG['plugin_order']['title'][1] . "</th></tr>";
+if ($PluginOrderOrder->canView() 
+      || $PluginOrderReference->canView() 
+         || $PluginOrderBudget->canView()) {
+   echo "<div class='center'>";
+   echo "<table class='tab_cadre'>";
+   echo "<tr><th colspan='2'>" . $LANG['plugin_order']['title'][1] . "</th></tr>";
 
-	if ($PluginOrderOrder->canView()) {
-		echo "<tr class='tab_bg_1' align='center'>";
-		echo "<td><img src='../pics/order-icon.png'></td>";
-		echo "<td><a href='order.php'>" . $LANG['plugin_order']['menu'][1] . "</a></td></tr>";
-	}
+   if ($PluginOrderOrder->canView()) {
+      echo "<tr class='tab_bg_1' align='center'>";
+      echo "<td><img src='../pics/order-icon.png'></td>";
+      echo "<td><a href='order.php'>" . $LANG['plugin_order']['menu'][1] . "</a></td></tr>";
+   }
 
-	if ($PluginOrderReference->canView()) {
-		echo "<tr class='tab_bg_1' align='center'>";
-		echo "<td><img src='../pics/reference-icon.png'></td>";
-		echo "<td><a href='reference.php'>" . $LANG['plugin_order']['menu'][2] . "</a></td></tr>";
-	}
+   if ($PluginOrderReference->canView()) {
+      echo "<tr class='tab_bg_1' align='center'>";
+      echo "<td><img src='../pics/reference-icon.png'></td>";
+      echo "<td><a href='reference.php'>" . $LANG['plugin_order']['menu'][2] . "</a></td></tr>";
+   }
 
-	if ($PluginOrderBudget->canView()) {
-		echo "<tr class='tab_bg_1' align='center'>";
-		echo "<td><img src='../pics/budget-icon.png'></td>";
-		//echo "<td><a href='budget.php'>" . $LANG['plugin_order']['menu'][3] . "</a></td></tr>";
-		echo "<td><a href='" . $CFG_GLPI["root_doc"] . "/front/budget.php'>" . $LANG['plugin_order']['menu'][3] . "</a></td></tr>";
-	}
-	echo "</table></div>";
+   if ($PluginOrderBudget->canView()) {
+      echo "<tr class='tab_bg_1' align='center'>";
+      echo "<td><img src='../pics/budget-icon.png'></td>";
+      //echo "<td><a href='budget.php'>" . $LANG['plugin_order']['menu'][3] . "</a></td></tr>";
+      echo "<td><a href='" . $CFG_GLPI["root_doc"] . "/front/budget.php'>" . 
+         $LANG['plugin_order']['menu'][3] . "</a></td></tr>";
+   }
+   echo "</table></div>";
 } else {
-	echo "<div align='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
-	echo "<b>" . $LANG['login'][5] . "</b></div>";
+   echo "<div align='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . 
+         "/pics/warning.png\" alt=\"warning\"><br><br>";
+   echo "<b>" . $LANG['login'][5] . "</b></div>";
 }
 
 commonFooter();
