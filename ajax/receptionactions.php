@@ -42,18 +42,20 @@ if (!defined('GLPI_ROOT')){
 }
 
 if (isset($_POST["action"])) {
-	switch ($_POST["action"]) {
-		case "reception":
-			echo "</td><td>";
-			showDateFormItem("delivery_date",date("Y-m-d"),true,1);
-			echo "</td><td>";
-			echo $LANG['financial'][19]."&nbsp;";
-			echo "<input type='text' name='delivery_number' size='20'>";
-			echo $LANG['plugin_order']['status'][3]."&nbsp;";
-			Dropdown::show('PluginOrderDeliveryState', array('name' => "plugin_order_deliverystates_id"));
-			echo "</td><td><input type='submit' name='reception' class='submit' value='".$LANG['buttons'][2]."'></td>";
+   switch ($_POST["action"]) {
+      case "reception":
+         echo "</td><td>";
+         showDateFormItem("delivery_date",date("Y-m-d"),true,1);
+         echo "</td><td>";
+         echo $LANG['financial'][19]."&nbsp;";
+         echo "<input type='text' name='delivery_number' size='20'>";
+         echo $LANG['plugin_order']['status'][3]."&nbsp;";
+         Dropdown::show('PluginOrderDeliveryState', 
+                        array('name' => "plugin_order_deliverystates_id"));
+         echo "</td><td><input type='submit' name='reception' class='submit' value='".
+            $LANG['buttons'][2]."'></td>";
          break;
-	}
+   }
 }
 
 ?>

@@ -44,21 +44,28 @@ if (!defined('GLPI_ROOT')) {
 $reference = new PluginOrderReference;
 
 if (isset($_POST["action"])) {
-	switch($_POST["action"]) {
-		case "generation":
-			echo "&nbsp;<input type='hidden' name='plugin_order_references_id' value='".$_POST["plugin_order_references_id"]."'>"; 
-			echo"<input type='submit' name='generation' class='submit' value='".$LANG['buttons'][2]."'>"; 
+   switch($_POST["action"]) {
+      case "generation":
+         echo "&nbsp;<input type='hidden' name='plugin_order_references_id' " .
+               "  value='".$_POST["plugin_order_references_id"]."'>"; 
+         echo"<input type='submit' name='generation' class='submit' " .
+             "   value='".$LANG['buttons'][2]."'>"; 
          break;
-   	case "createLink":
-			echo "&nbsp;<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>";
-			$reference->getFromDB($_POST["plugin_order_references_id"]);
-			$reference->dropdownAllItemsByType("items_id", $_POST["itemtype"], $_SESSION["glpiactive_entity"],$reference->fields["types_id"],$reference->fields["models_id"]);
-			echo "&nbsp;<input type='submit' name='createLinkWithItem' class='submit' value='".$LANG['buttons'][2]."'>";
+      case "createLink":
+         echo "&nbsp;<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>";
+         $reference->getFromDB($_POST["plugin_order_references_id"]);
+         $reference->dropdownAllItemsByType("items_id", $_POST["itemtype"], 
+                                            $_SESSION["glpiactive_entity"],
+                                            $reference->fields["types_id"],
+                                            $reference->fields["models_id"]);
+         echo "&nbsp;<input type='submit' name='createLinkWithItem' " .
+               "  class='submit' value='".$LANG['buttons'][2]."'>";
          break;
-   	case "deleteLink":
-			echo "&nbsp;<input type='submit' name='deleteLinkWithItem' class='submit' value='".$LANG['buttons'][2]."'>";
+      case "deleteLink":
+         echo "&nbsp;<input type='submit' name='deleteLinkWithItem' " .
+               "  class='submit' value='".$LANG['buttons'][2]."'>";
          break;
-	}
+   }
 }
 
 ?>

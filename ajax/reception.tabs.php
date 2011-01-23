@@ -38,11 +38,11 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 if (!isset ($_POST["id"])) {
-	exit ();
+   exit ();
 }
 
 if (!isset ($_POST["withtemplate"]))
-	$_POST["withtemplate"] = "";
+   $_POST["withtemplate"] = "";
 
 $PluginOrderReception = new PluginOrderReception();
 $PluginOrderReception->checkGlobal("r");
@@ -50,11 +50,11 @@ $PluginOrderReception->checkGlobal("r");
 if ($_POST["id"]>0 && $PluginOrderReception->can($_POST["id"],'r')) {
 
    if (!empty($_POST["withtemplate"])) {
-		switch($_REQUEST['glpi_tab']) {
-			default :
-				break;
-		}
-	} else {
+      switch($_REQUEST['glpi_tab']) {
+         default :
+            break;
+      }
+   } else {
       switch($_REQUEST['glpi_tab']) {
          default :
             break;

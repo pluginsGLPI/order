@@ -38,11 +38,11 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 if (!isset ($_POST["id"])) {
-	exit ();
+   exit ();
 }
 
 if (!isset ($_POST["withtemplate"]))
-	$_POST["withtemplate"] = "";
+   $_POST["withtemplate"] = "";
 
 $PluginOrderOrder = new PluginOrderOrder();
 $PluginOrderOrder->checkGlobal("r");
@@ -54,11 +54,11 @@ $PluginOrderSurveySupplier = new PluginOrderSurveySupplier();
 
 if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
    if (!empty($_POST["withtemplate"])) {
-		switch($_REQUEST['glpi_tab']) {
-			default :
-				break;
-		}
-	} else {
+      switch($_REQUEST['glpi_tab']) {
+         default :
+            break;
+      }
+   } else {
       switch($_REQUEST['glpi_tab']) {
          case -1 :
             $PluginOrderOrder_Item->showItem($CFG_GLPI["root_doc"] .
@@ -67,15 +67,21 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
          "/plugins/order/front/order.form.php", $_POST["id"]);
             $PluginOrderOrder_Supplier->showOrderSupplierInfos($CFG_GLPI["root_doc"] .
          "/plugins/order/front/order_supplier.form.php",$_POST["id"]);
-            if (!$PluginOrderOrder_Supplier->checkIfSupplierInfosExists($_POST["id"]) && $PluginOrderOrder->can($_POST["id"],'w'))
-               $PluginOrderOrder_Supplier->showForm("", array('plugin_order_orders_id' => $_POST["id"], 'target' => $CFG_GLPI["root_doc"] .
+            if (!$PluginOrderOrder_Supplier->checkIfSupplierInfosExists($_POST["id"]) 
+                                                                          && $PluginOrderOrder->can($_POST["id"],'w'))
+               $PluginOrderOrder_Supplier->showForm("", 
+                                                    array('plugin_order_orders_id' => $_POST["id"],
+                                                          'target' => $CFG_GLPI["root_doc"] .
          "/plugins/order/front/order_supplier.form.php"));
             $PluginOrderReception->showOrderReception($_POST["id"]);
             $PluginOrderLink->showOrderLink($_POST["id"]);
             $PluginOrderSurveySupplier->showOrderSupplierSurvey($CFG_GLPI["root_doc"] .
          "/plugins/order/front/surveysupplier.form.php",$_POST["id"]);
-            if (!$PluginOrderSurveySupplier->checkIfSupplierSurveyExists($_POST["id"]) && $PluginOrderOrder->can($_POST["id"],'w'))
-               $PluginOrderSurveySupplier->showForm("", array('plugin_order_orders_id' => $_POST["id"], 'target' => $CFG_GLPI["root_doc"] .
+            if (!$PluginOrderSurveySupplier->checkIfSupplierSurveyExists($_POST["id"]) 
+                                                                           && $PluginOrderOrder->can($_POST["id"],'w'))
+               $PluginOrderSurveySupplier->showForm("", 
+                                                    array('plugin_order_orders_id' => $_POST["id"],
+                                                          'target' => $CFG_GLPI["root_doc"] .
          "/plugins/order/front/surveysupplier.form.php"));
             Document::showAssociated($PluginOrderOrder);
             Plugin::displayAction($PluginOrderOrder,$_REQUEST['glpi_tab']);
@@ -87,8 +93,11 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
          case 3 :
             $PluginOrderOrder_Supplier->showOrderSupplierInfos($CFG_GLPI["root_doc"] .
          "/plugins/order/front/order_supplier.form.php",$_POST["id"]);
-            if (!$PluginOrderOrder_Supplier->checkIfSupplierInfosExists($_POST["id"]) && $PluginOrderOrder->can($_POST["id"],'w'))
-               $PluginOrderOrder_Supplier->showForm("", array('plugin_order_orders_id' => $_POST["id"], 'target' => $CFG_GLPI["root_doc"] .
+            if (!$PluginOrderOrder_Supplier->checkIfSupplierInfosExists($_POST["id"]) 
+                                                                         && $PluginOrderOrder->can($_POST["id"],'w'))
+               $PluginOrderOrder_Supplier->showForm("", 
+                                                    array('plugin_order_orders_id' => $_POST["id"],
+                                                          'target' => $CFG_GLPI["root_doc"] .
          "/plugins/order/front/order_supplier.form.php"));
             break;
          case 4 :
@@ -104,8 +113,11 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
           case 7 :
             $PluginOrderSurveySupplier->showOrderSupplierSurvey($CFG_GLPI["root_doc"] .
          "/plugins/order/front/surveysupplier.form.php",$_POST["id"]);
-            if (!$PluginOrderSurveySupplier->checkIfSupplierSurveyExists($_POST["id"]) && $PluginOrderOrder->can($_POST["id"],'w'))
-               $PluginOrderSurveySupplier->showForm("", array('plugin_order_orders_id' => $_POST["id"], 'target' => $CFG_GLPI["root_doc"] .
+            if (!$PluginOrderSurveySupplier->checkIfSupplierSurveyExists($_POST["id"]) 
+                                                                           && $PluginOrderOrder->can($_POST["id"],'w'))
+               $PluginOrderSurveySupplier->showForm("", 
+                                                    array('plugin_order_orders_id' => $_POST["id"],
+                                                          'target' => $CFG_GLPI["root_doc"] .
          "/plugins/order/front/surveysupplier.form.php"));
             break;
          case 9 :
@@ -120,7 +132,8 @@ if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
          default :
             if (!Plugin::displayAction($PluginOrderOrder,$_REQUEST['glpi_tab'])) {
                $PluginOrderOrder_Item->showItem($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/order.form.php", $_POST["id"]);
+                                                  "/plugins/order/front/order.form.php",
+                                                $_POST["id"]);
             }
             break;
       }

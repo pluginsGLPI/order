@@ -48,16 +48,21 @@ echo "</td><td>";
 echo $LANG['financial'][19]."</td><td>";
 echo "<input type='text' name='delivery_number' size='20'>";
 echo "</td><td>";
-echo "<input type='hidden' name='plugin_order_references_id' value='".$_POST['plugin_order_references_id']."'>";
-echo "<input type='hidden' name='plugin_order_orders_id' value='".$_POST['plugin_order_orders_id']."'>";
+echo "<input type='hidden' name='plugin_order_references_id' value='".
+   $_POST['plugin_order_references_id']."'>";
+echo "<input type='hidden' name='plugin_order_orders_id' value='".
+   $_POST['plugin_order_orders_id']."'>";
 echo $LANG['plugin_order']['delivery'][6]."</td><td>";
-$nb = $PluginOrderReception->checkItemStatus($_POST['plugin_order_orders_id'],$_POST['plugin_order_references_id'], PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED);
+$nb = $PluginOrderReception->checkItemStatus($_POST['plugin_order_orders_id'],
+                                             $_POST['plugin_order_references_id'], 
+                                             PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED);
 Dropdown::showInteger('number_reception','',1,$nb);
 echo "</td><td>";
 echo $LANG['plugin_order']['status'][3]."&nbsp;";
 Dropdown::show('PluginOrderDeliveryState', array('name' => "plugin_order_deliverystates_id"));
 echo "</td>";
-echo "<td><input type='submit' name='bulk_reception' class='submit' value='".$LANG['buttons'][2]."'></td></tr></table>";
+echo "<td><input type='submit' name='bulk_reception' class='submit' value='".
+   $LANG['buttons'][2]."'></td></tr></table>";
 
 ajaxFooter();
 

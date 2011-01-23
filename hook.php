@@ -218,68 +218,68 @@ function plugin_order_install() {
 }
 
 function plugin_order_uninstall() {
-	global $DB;
+   global $DB;
 
-	/* drop all the plugin tables */
-	$tables = array (
-		"glpi_plugin_order_orders",
-		"glpi_plugin_order_orders_items",
-		"glpi_plugin_order_profiles",
-		"glpi_plugin_order_ordertaxes",
-		"glpi_plugin_order_orderpayments",
-		"glpi_plugin_order_references",
-		"glpi_plugin_order_references_suppliers",
-		"glpi_plugin_order_configs",
-		"glpi_plugin_order_budgets",
+   /* drop all the plugin tables */
+   $tables = array (
+      "glpi_plugin_order_orders",
+      "glpi_plugin_order_orders_items",
+      "glpi_plugin_order_profiles",
+      "glpi_plugin_order_ordertaxes",
+      "glpi_plugin_order_orderpayments",
+      "glpi_plugin_order_references",
+      "glpi_plugin_order_references_suppliers",
+      "glpi_plugin_order_configs",
+      "glpi_plugin_order_budgets",
       "glpi_plugin_order_orders_suppliers",
       "glpi_plugin_order_others",
       "glpi_plugin_order_othertypes",
       "glpi_plugin_order_deliverystates"
-	);
+   );
 
-	foreach ($tables as $table)
-		$DB->query("DROP TABLE IF EXISTS `$table`;");
+   foreach ($tables as $table)
+      $DB->query("DROP TABLE IF EXISTS `$table`;");
 
    //old tables
-	$tables = array (
-		"glpi_plugin_order",
-		"glpi_plugin_order_detail",
-		"glpi_plugin_order_device",
-		"glpi_plugin_order_profiles",
-		"glpi_dropdown_plugin_order_status",
-		"glpi_dropdown_plugin_order_taxes",
-		"glpi_dropdown_plugin_order_payment",
-		"glpi_plugin_order_references",
-		"glpi_plugin_order_references_manufacturers",
-		"glpi_plugin_order_config",
-		"glpi_plugin_order_budgets",
+   $tables = array (
+      "glpi_plugin_order",
+      "glpi_plugin_order_detail",
+      "glpi_plugin_order_device",
+      "glpi_plugin_order_profiles",
+      "glpi_dropdown_plugin_order_status",
+      "glpi_dropdown_plugin_order_taxes",
+      "glpi_dropdown_plugin_order_payment",
+      "glpi_plugin_order_references",
+      "glpi_plugin_order_references_manufacturers",
+      "glpi_plugin_order_config",
+      "glpi_plugin_order_budgets",
       "glpi_plugin_order_suppliers",
       "glpi_plugin_order_mailing"
-	);
+   );
 
-	foreach ($tables as $table)
-		$DB->query("DROP TABLE IF EXISTS `$table`;");
+   foreach ($tables as $table)
+      $DB->query("DROP TABLE IF EXISTS `$table`;");
 
-	$in = "IN (" . implode(',', array (
-		"'PluginOrderOrder'",
-		"'PluginOrderReference'",
-		"'PluginOrderReference_Supplier'",
-		"'PluginOrderBudget'"
-	)) . ")";
+   $in = "IN (" . implode(',', array (
+      "'PluginOrderOrder'",
+      "'PluginOrderReference'",
+      "'PluginOrderReference_Supplier'",
+      "'PluginOrderBudget'"
+   )) . ")";
 
-	$tables = array (
+   $tables = array (
       "glpi_displaypreferences",
-		"glpi_documents_items",
-		"glpi_bookmarks",
-		"glpi_logs"
-	);
+      "glpi_documents_items",
+      "glpi_bookmarks",
+      "glpi_logs"
+   );
 
-	foreach ($tables as $table) {
-		$query = "DELETE FROM `$table` WHERE (`itemtype` " . $in." ) ";
-		$DB->query($query);
-	}
-	
-	$notif = new Notification();
+   foreach ($tables as $table) {
+      $query = "DELETE FROM `$table` WHERE (`itemtype` " . $in." ) ";
+      $DB->query($query);
+   }
+   
+   $notif = new Notification();
    
    $options = array('itemtype' => 'PluginOrderOrder',
                     'event'    => 'ask',
@@ -321,79 +321,79 @@ function plugin_order_uninstall() {
       $template->delete($data);
    }
 
-	return true;
+   return true;
 }
 
 /* define dropdown tables to be manage in GLPI : */
 function plugin_order_getDropdown() {
-	/* table => name */
-	global $LANG;
+   /* table => name */
+   global $LANG;
 
-	$plugin = new Plugin();
-	if ($plugin->isActivated("order"))
-		return array (
-			'PluginOrderOrderTaxe' => $LANG['plugin_order'][25],
-			'PluginOrderOrderPayment' => $LANG['plugin_order'][32],
-			'PluginOrderOtherType' => $LANG['plugin_order'][9],
-			'PluginOrderDeliveryState' => $LANG['plugin_order']['status'][3]
-		);
-	else
-		return array ();
+   $plugin = new Plugin();
+   if ($plugin->isActivated("order"))
+      return array (
+         'PluginOrderOrderTaxe' => $LANG['plugin_order'][25],
+         'PluginOrderOrderPayment' => $LANG['plugin_order'][32],
+         'PluginOrderOtherType' => $LANG['plugin_order'][9],
+         'PluginOrderDeliveryState' => $LANG['plugin_order']['status'][3]
+      );
+   else
+      return array ();
 }
 
 /* define dropdown relations */
 function plugin_order_getDatabaseRelations() {
-	$plugin = new Plugin();
-	if ($plugin->isActivated("order"))
-		return array (
-			"glpi_plugin_order_orderpayments" => array (
-				"glpi_plugin_order_orders" => "plugin_order_orderpayments_id"
-			),
-			"glpi_plugin_order_ordertaxes" => array (
-				"glpi_plugin_order_orders" => "plugin_order_ordertaxes_id"
-			),
-			"glpi_plugin_order_deliverystates" => array (
-				"glpi_plugin_order_orders_items" => "plugin_order_deliverystates_id"
-			),
-			"glpi_plugin_order_orders" => array (
-				"glpi_plugin_order_orders_items" => "plugin_order_orders_id",
-				"glpi_plugin_order_orders_suppliers" => "plugin_order_orders_id"
-			),
-			"glpi_plugin_order_references" => array (
-				"glpi_plugin_order_orders_items" => "plugin_order_references_id",
-				"glpi_plugin_order_references_suppliers" => "plugin_order_references_id"
-			),
-			"glpi_entities" => array (
-				"glpi_plugin_order_orders" => "entities_id",
-				"glpi_plugin_order_references" => "entities_id",
-				"glpi_plugin_order_others" => "entities_id"
-			),
-			"glpi_budgets" => array (
-				"glpi_plugin_order_orders" => "budgets_id"
-			),
-			"glpi_plugin_order_othertypes" => array (
-				"glpi_plugin_order_others" => "othertypes_id"
-			),
-			"glpi_suppliers" => array (
-				"glpi_plugin_order_orders" => "suppliers_id",
-				"glpi_plugin_order_orders_suppliers" => "suppliers_id",
-				"glpi_plugin_order_references_suppliers" => "suppliers_id"
-			),
-			"glpi_manufacturers" => array (
-				"glpi_plugin_order_references" => "manufacturers_id"
-			),
-			"glpi_contacts" => array (
-				"glpi_plugin_order_orders" => "contacts_id"
-			),
-			"glpi_locations" => array (
-				"glpi_plugin_order_orders" => "locations_id"
-			),
-			"glpi_profiles" => array (
-				"glpi_plugin_order_profiles" => "profiles_id"
-			)
-		);
-	else
-		return array ();
+   $plugin = new Plugin();
+   if ($plugin->isActivated("order"))
+      return array (
+         "glpi_plugin_order_orderpayments" => array (
+            "glpi_plugin_order_orders" => "plugin_order_orderpayments_id"
+         ),
+         "glpi_plugin_order_ordertaxes" => array (
+            "glpi_plugin_order_orders" => "plugin_order_ordertaxes_id"
+         ),
+         "glpi_plugin_order_deliverystates" => array (
+            "glpi_plugin_order_orders_items" => "plugin_order_deliverystates_id"
+         ),
+         "glpi_plugin_order_orders" => array (
+            "glpi_plugin_order_orders_items" => "plugin_order_orders_id",
+            "glpi_plugin_order_orders_suppliers" => "plugin_order_orders_id"
+         ),
+         "glpi_plugin_order_references" => array (
+            "glpi_plugin_order_orders_items" => "plugin_order_references_id",
+            "glpi_plugin_order_references_suppliers" => "plugin_order_references_id"
+         ),
+         "glpi_entities" => array (
+            "glpi_plugin_order_orders" => "entities_id",
+            "glpi_plugin_order_references" => "entities_id",
+            "glpi_plugin_order_others" => "entities_id"
+         ),
+         "glpi_budgets" => array (
+            "glpi_plugin_order_orders" => "budgets_id"
+         ),
+         "glpi_plugin_order_othertypes" => array (
+            "glpi_plugin_order_others" => "othertypes_id"
+         ),
+         "glpi_suppliers" => array (
+            "glpi_plugin_order_orders" => "suppliers_id",
+            "glpi_plugin_order_orders_suppliers" => "suppliers_id",
+            "glpi_plugin_order_references_suppliers" => "suppliers_id"
+         ),
+         "glpi_manufacturers" => array (
+            "glpi_plugin_order_references" => "manufacturers_id"
+         ),
+         "glpi_contacts" => array (
+            "glpi_plugin_order_orders" => "contacts_id"
+         ),
+         "glpi_locations" => array (
+            "glpi_plugin_order_orders" => "locations_id"
+         ),
+         "glpi_profiles" => array (
+            "glpi_plugin_order_profiles" => "profiles_id"
+         )
+      );
+   else
+      return array ();
 }
 
 ////// SEARCH FUNCTIONS ///////(){
@@ -427,138 +427,138 @@ function plugin_order_getAddSearchOptions($itemtype) {
 
 function plugin_order_forceGroupBy($type){
 
-	return true;
-	switch ($type){
-		case 'PluginOrderOrder':
-			return true;
-			break;
+   return true;
+   switch ($type){
+      case 'PluginOrderOrder':
+         return true;
+         break;
 
-	}
-	return false;
+   }
+   return false;
 }
 
 function plugin_order_addSelect($type, $ID, $num) {
 
-	$searchopt = &Search::getOptions($type);
+   $searchopt = &Search::getOptions($type);
    $table = $searchopt[$ID]["table"];
    $field = $searchopt[$ID]["field"];
 
-	if ($table == "glpi_plugin_order_references" && $num!=0)
-		return "`$table`.`itemtype`, `$table`.`$field` AS `ITEM_$num`, ";
-	else
-		return "";
+   if ($table == "glpi_plugin_order_references" && $num!=0)
+      return "`$table`.`itemtype`, `$table`.`$field` AS `ITEM_$num`, ";
+   else
+      return "";
 
 }
 
 function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,
                                        &$already_link_tables) {
 
-	switch ($new_table){
-		case "glpi_plugin_order_orders" : // From items
-			$out= " LEFT JOIN `glpi_plugin_order_orders_items` ON (`$ref_table`.`id` = `glpi_plugin_order_orders_items`.`items_id` AND `glpi_plugin_order_orders_items`.`itemtype` = '$type') ";
-			$out.= " LEFT JOIN `glpi_plugin_order_orders` ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`) ";
-			return $out;
-			break;
+   switch ($new_table){
+      case "glpi_plugin_order_orders" : // From items
+         $out= " LEFT JOIN `glpi_plugin_order_orders_items` ON (`$ref_table`.`id` = `glpi_plugin_order_orders_items`.`items_id` AND `glpi_plugin_order_orders_items`.`itemtype` = '$type') ";
+         $out.= " LEFT JOIN `glpi_plugin_order_orders` ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`) ";
+         return $out;
+         break;
       case "glpi_budgets" : // From order list
-			$out= " LEFT JOIN `glpi_budgets` ON (`glpi_plugin_order_orders`.`budgets_id` = `glpi_budgets`.`id`) ";
-			return $out;
-			break;
-		case "glpi_contacts" : // From order list
-			$out= " LEFT JOIN `glpi_contacts` ON (`glpi_plugin_order_orders`.`contacts_id` = `glpi_contacts`.`id`) ";
-			return $out;
-			break;
-	}
+         $out= " LEFT JOIN `glpi_budgets` ON (`glpi_plugin_order_orders`.`budgets_id` = `glpi_budgets`.`id`) ";
+         return $out;
+         break;
+      case "glpi_contacts" : // From order list
+         $out= " LEFT JOIN `glpi_contacts` ON (`glpi_plugin_order_orders`.`contacts_id` = `glpi_contacts`.`id`) ";
+         return $out;
+         break;
+   }
 
-	return "";
+   return "";
 }
 /* display custom fields in the search */
 function plugin_order_giveItem($type, $ID, $data, $num) {
-	global $CFG_GLPI, $LANG;
+   global $CFG_GLPI, $LANG;
 
-	$searchopt = &Search::getOptions($type);
+   $searchopt = &Search::getOptions($type);
    $table = $searchopt[$ID]["table"];
    $field = $searchopt[$ID]["field"];
 
    $PluginOrderReference = new PluginOrderReference;
    $PluginOrderOrder = new PluginOrderOrder;
 
-	switch ($table . '.' . $field) {
-		/* display associated items with order */
-		case "glpi_plugin_order_orders.states_id" :
-			return $PluginOrderOrder->getDropdownStatus($data["ITEM_" . $num]);
+   switch ($table . '.' . $field) {
+      /* display associated items with order */
+      case "glpi_plugin_order_orders.states_id" :
+         return $PluginOrderOrder->getDropdownStatus($data["ITEM_" . $num]);
          break;
-		case "glpi_plugin_order_references.types_id" :
+      case "glpi_plugin_order_references.types_id" :
          if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."type.class.php"))
             return Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"), $data["ITEM_" . $num]);
          else
             return " ";
          break;
-		case "glpi_plugin_order_references.models_id" :
+      case "glpi_plugin_order_references.models_id" :
          if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."model.class.php"))
             return Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"), $data["ITEM_" . $num]);
          else
             return " ";
          break;
-		case "glpi_plugin_order_references.templates_id" :
-			if (!$data["ITEM_" . $num])
-				return " ";
-			else
-				return $PluginOrderReference->getTemplateName($data["itemtype"], $data["ITEM_" . $num]);
+      case "glpi_plugin_order_references.templates_id" :
+         if (!$data["ITEM_" . $num])
+            return " ";
+         else
+            return $PluginOrderReference->getTemplateName($data["itemtype"], $data["ITEM_" . $num]);
          break;
-	}
-	return "";
+   }
+   return "";
 }
 
 ////// SPECIFIC MODIF MASSIVE FUNCTIONS ///////
 
 function plugin_order_MassiveActions($type) {
-	global $LANG;
+   global $LANG;
 
-	switch ($type) {
-		case 'PluginOrderOrder' :
-			return array (
-				// GLPI core one
-				"plugin_order_transfert" => $LANG['buttons'][48],
+   switch ($type) {
+      case 'PluginOrderOrder' :
+         return array (
+            // GLPI core one
+            "plugin_order_transfert" => $LANG['buttons'][48],
 
 
-			);
-			break;
-	}
-	return array ();
+         );
+         break;
+   }
+   return array ();
 }
 
 function plugin_order_MassiveActionsDisplay($options=array()) {
-	global $LANG;
+   global $LANG;
 
-	switch ($options['itemtype']) {
-		case 'PluginOrderOrder' :
-			switch ($options['action']) {
-				// No case for add_document : use GLPI core one
-				case "plugin_order_transfert" :
-					Dropdown::show('Entity');
-					echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" . $LANG['buttons'][2] . "\" >";
-					break;
-			}
-			break;
-	}
-	return "";
+   switch ($options['itemtype']) {
+      case 'PluginOrderOrder' :
+         switch ($options['action']) {
+            // No case for add_document : use GLPI core one
+            case "plugin_order_transfert" :
+               Dropdown::show('Entity');
+               echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" . $LANG['buttons'][2] . "\" >";
+               break;
+         }
+         break;
+   }
+   return "";
 }
 
 function plugin_order_MassiveActionsProcess($data) {
-	global $LANG, $DB;
+   global $LANG, $DB;
 
-	switch ($data['action']) {
-		case "plugin_order_transfert" :
-			if ($data['itemtype'] == 'PluginOrderOrder') {
-				foreach ($data["item"] as $key => $val) {
-					if ($val == 1) {
-						$PluginOrderOrder = new PluginOrderOrder();
-						$PluginOrderOrder->transfer($key,$data['entities_id']);
-					}
-				}
-			}
-			break;
-	}
+   switch ($data['action']) {
+      case "plugin_order_transfert" :
+         if ($data['itemtype'] == 'PluginOrderOrder') {
+            foreach ($data["item"] as $key => $val) {
+               if ($val == 1) {
+                  $PluginOrderOrder = new PluginOrderOrder();
+                  $PluginOrderOrder->transfer($key,$data['entities_id']);
+               }
+            }
+         }
+         break;
+   }
 }
 
 /* hook done on purge item case */
@@ -597,20 +597,20 @@ function plugin_get_headings_order($item,$withtemplate) {
 function plugin_headings_actions_order($item) {
 
    if (in_array(get_class($item),PluginOrderOrder_Item::getClasses(true))||
-		get_class($item)=='Profile' ||
-		get_class($item)=='Supplier' ||
-		get_class($item)=='Budget' ||
-		get_class($item)=='Preference') {
-		return array(
-			1 => "plugin_headings_order",
-		);
-	}
-	return false;
+      get_class($item)=='Profile' ||
+      get_class($item)=='Supplier' ||
+      get_class($item)=='Budget' ||
+      get_class($item)=='Preference') {
+      return array(
+         1 => "plugin_headings_order",
+      );
+   }
+   return false;
 }
 
 /* action heading */
 function plugin_headings_order($item) {
-	global $CFG_GLPI;
+   global $CFG_GLPI;
 
    $PluginOrderProfile=new PluginOrderProfile();
    $PluginOrderOrder_Item = new PluginOrderOrder_Item();
@@ -619,7 +619,7 @@ function plugin_headings_order($item) {
    $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
    $PluginOrderSurveySupplier = new PluginOrderSurveySupplier();
 
-	switch (get_class($item)) {
+   switch (get_class($item)) {
       case 'Profile' :
          if (!$PluginOrderProfile->getFromDBByProfile($item->getField('id')))
             $PluginOrderProfile->createAccess($item->getField('id'));
@@ -634,7 +634,7 @@ function plugin_headings_order($item) {
          $PluginOrderBudget->getAllOrdersByBudget($_POST["id"]);
          break;
       case "Preference" :
-			$pref = new PluginOrderPreference;
+         $pref = new PluginOrderPreference;
          $pref_ID=$pref->checkIfPreferenceExists(getLoginUserID());
          if (!$pref_ID)
             $pref_ID=$pref->addDefaultPreference(getLoginUserID());
