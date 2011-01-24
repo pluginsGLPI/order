@@ -33,11 +33,11 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-	die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access directly to this file");
 }
 
 class PluginOrderOther extends CommonDBTM {
-	
+   
    static function getTypeName() {
       global $LANG;
 
@@ -51,23 +51,6 @@ class PluginOrderOther extends CommonDBTM {
    function canView() {
       return plugin_order_haveRight('order', 'r');
    }
-	
-	/*function addOthers($ID) {
-	
-      $values["entities_id"] = $_SESSION["glpiactive_entity"];
-      $values["othertypes_id"] = $ID;
-      $newid=$this->add($values);
-
-      return $newid;
-   }
-  
-  function updateOthers($ID,$name) {
-
-      $values["id"] = $ID;
-      $values["name"] = $name;
-
-      $this->update($values);  
-   }*/
 }
 
 ?>

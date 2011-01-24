@@ -35,22 +35,20 @@
 define('GLPI_ROOT', '../../..'); 
 include (GLPI_ROOT."/inc/includes.php");
 
-if (!isset ($_GET["id"]))
-	$_GET["id"] = "";
-	
+if (!isset ($_GET["id"])) {
+   $_GET["id"] = "";
+}
+   
 $PluginOrderPreference= new PluginOrderPreference();
 
 if (isset($_POST["update"])) {
-	
-	$PluginOrderPreference->update($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
+   
+   $PluginOrderPreference->update($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
 
 } else {
-
    commonHeader($LANG['plugin_order']['title'][1],'',"plugins","order","order");
-   
-	$PluginOrderPreference->showForm("./preference.form.php",$_GET["id"]);
-   
+   $PluginOrderPreference->showForm("./preference.form.php",$_GET["id"]);
    commonFooter();
 
 }

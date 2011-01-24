@@ -41,10 +41,10 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
    function getEvents() {
       global $LANG;
-      return array ('ask' => $LANG['plugin_order']['validation'][1],
-			'validation' => $LANG['plugin_order']['validation'][2],
-			'cancel' => $LANG['plugin_order']['validation'][5],
-			'undovalidation' => $LANG['plugin_order']['validation'][8]);
+      return array ('ask'            => $LANG['plugin_order']['validation'][1],
+                    'validation'     => $LANG['plugin_order']['validation'][2],
+                    'cancel'         => $LANG['plugin_order']['validation'][5],
+                    'undovalidation' => $LANG['plugin_order']['validation'][8]);
    }
 
    function getDatasForTemplate($event,$options=array()) {
@@ -69,7 +69,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       $this->datas['##ordervalidation.orderdate##'] = convDate($this->obj->getField("order_date"));
       
       $this->datas['##lang.ordervalidation.state##'] = $LANG['joblist'][0];
-      $this->datas['##ordervalidation.state##'] =  $this->obj->getDropdownStatus($this->obj->getField("states_id"));
+      $this->datas['##ordervalidation.state##'] =  
+         $this->obj->getDropdownStatus($this->obj->getField("states_id"));
       
       $this->datas['##lang.ordervalidation.comment##'] = $LANG['plugin_order']['validation'][18];
       $comment = stripslashes(str_replace(array('\r\n', '\n', '\r'), "<br/>", $options['comments']));
@@ -96,23 +97,22 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       $this->datas['##ordervalidation.users##'] =  html_clean(getUserName(getLoginUserID()));
       
       $this->datas['##lang.ordervalidation.url##'] = "URL";
-      $this->datas['##ordervalidation.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_".
-                                    $this->obj->getField("id"));
+      $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_".$this->obj->getField("id");
+      $this->datas['##ordervalidation.url##'] = urldecode($url);
 
    }
    
    function getTags() {
       global $LANG;
 
-      $tags = array('ordervalidation.name'            => $LANG['common'][16],
-                     'ordervalidation.numorder'    => $LANG['financial'][18],
-                     'ordervalidation.orderdate'    => $LANG['plugin_order'][1],
-                     'ordervalidation.state'    => $LANG['joblist'][0],
-                     'ordervalidation.comment'    => $LANG['plugin_order']['validation'][18],
-                     'ordervalidation.users'    => $LANG['plugin_order']['validation'][19]);
+      $tags = array('ordervalidation.name'       => $LANG['common'][16],
+                     'ordervalidation.numorder'  => $LANG['financial'][18],
+                     'ordervalidation.orderdate' => $LANG['plugin_order'][1],
+                     'ordervalidation.state'     => $LANG['joblist'][0],
+                     'ordervalidation.comment'   => $LANG['plugin_order']['validation'][18],
+                     'ordervalidation.users'     => $LANG['plugin_order']['validation'][19]);
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'=>$tag,'label'=>$label,
-                                   'value'=>true));
+         $this->addTagToList(array('tag'=>$tag, 'label'=>$label, 'value'=>true));
       }
 
       asort($this->tag_descriptions);

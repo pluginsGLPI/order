@@ -58,11 +58,12 @@ if ($PluginOrderReference->canView() || haveRight("config","w")) {
           $LANG['plugin_order']['reference'][11]."'>".
           $LANG['plugin_order']['reference'][11]."</a>";
    echo "</div>";        
-	Search::show("PluginOrderReference");
-	
+   Search::show("PluginOrderReference");
+   
 } else {
-	echo "<div align='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
-	echo "<b>" . $LANG['login'][5] . "</b></div>";
+   echo "<div align='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . 
+      "/pics/warning.png\" alt=\"warning\"><br><br>";
+   echo "<b>" . $LANG['login'][5] . "</b></div>";
 }
 
 commonFooter();

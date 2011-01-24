@@ -57,24 +57,24 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    }
    
    function getFromDBByReference($plugin_order_references_id) {
-		global $DB;
-		
-		$query = "SELECT * FROM `".$this->getTable()."`
-					WHERE `plugin_order_references_id` = '" . $plugin_order_references_id . "' ";
-		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result) != 1) {
-				return false;
-			}
-			$this->fields = $DB->fetch_assoc($result);
-			if (is_array($this->fields) && count($this->fields)) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		return false;
-	}
-	
+      global $DB;
+      
+      $query = "SELECT * FROM `".$this->getTable()."`
+               WHERE `plugin_order_references_id` = '" . $plugin_order_references_id . "' ";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) != 1) {
+            return false;
+         }
+         $this->fields = $DB->fetch_assoc($result);
+         if (is_array($this->fields) && count($this->fields)) {
+            return true;
+         } else {
+            return false;
+         }
+      }
+      return false;
+   }
+   
    function getSearchOptions() {
       global $LANG;
 
@@ -82,38 +82,38 @@ class PluginOrderReference_Supplier extends CommonDBChild {
     
       $tab['common'] = $LANG['plugin_order']['reference'][5];
 
-		$tab[1]['table'] = $this->getTable();
-		$tab[1]['field'] = 'reference_code';
-		$tab[1]['linkfield'] = 'reference_code';
-		$tab[1]['name'] = $LANG['plugin_order']['reference'][10];
-		$tab[1]['datatype'] = 'text';
+      $tab[1]['table'] = $this->getTable();
+      $tab[1]['field'] = 'reference_code';
+      $tab[1]['linkfield'] = 'reference_code';
+      $tab[1]['name'] = $LANG['plugin_order']['reference'][10];
+      $tab[1]['datatype'] = 'text';
 
-		$tab[2]['table'] = $this->getTable();
-		$tab[2]['field'] = 'price_taxfree';
-		$tab[2]['linkfield'] = 'price_taxfree';
-		$tab[2]['name'] = $LANG['plugin_order']['detail'][4];
+      $tab[2]['table'] = $this->getTable();
+      $tab[2]['field'] = 'price_taxfree';
+      $tab[2]['linkfield'] = 'price_taxfree';
+      $tab[2]['name'] = $LANG['plugin_order']['detail'][4];
       $tab[2]['datatype'] = 'number';
 
-		$tab[3]['table'] = 'glpi_suppliers';
-		$tab[3]['field'] = 'name';
-		$tab[3]['linkfield'] = 'suppliers_id';
-		$tab[3]['name'] = $LANG['financial'][26];
-		$tab[3]['datatype']='itemlink';
-		$tab[3]['itemlink_type']='Supplier';
-		$tab[3]['forcegroupby']=true;
-		
+      $tab[3]['table'] = 'glpi_suppliers';
+      $tab[3]['field'] = 'name';
+      $tab[3]['linkfield'] = 'suppliers_id';
+      $tab[3]['name'] = $LANG['financial'][26];
+      $tab[3]['datatype']='itemlink';
+      $tab[3]['itemlink_type']='Supplier';
+      $tab[3]['forcegroupby']=true;
+      
       $tab[30]['table'] = $this->getTable();
-		$tab[30]['field'] = 'id';
-		$tab[30]['linkfield'] = '';
-		$tab[30]['name']=$LANG['common'][2];
+      $tab[30]['field'] = 'id';
+      $tab[30]['linkfield'] = '';
+      $tab[30]['name']=$LANG['common'][2];
 
-		/* entity */
-		$tab[80]['table'] = 'glpi_entities';
-		$tab[80]['field'] = 'completename';
-		$tab[80]['linkfield'] = 'entities_id';
-		$tab[80]['name'] = $LANG['entity'][0];
-		
-		return $tab;
+      /* entity */
+      $tab[80]['table'] = 'glpi_entities';
+      $tab[80]['field'] = 'completename';
+      $tab[80]['linkfield'] = 'entities_id';
+      $tab[80]['name'] = $LANG['entity'][0];
+      
+      return $tab;
    }
    
    function prepareInputForAdd($input) {
@@ -123,31 +123,31 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       }
       return $input;
    }
-	
-	function defineTabs($options=array()) {
-		global $LANG;
-		/* principal */
-		$ong[1] = $LANG['title'][26];
-		if ($this->fields['id'] > 0) {
+   
+   function defineTabs($options=array()) {
+      global $LANG;
+      /* principal */
+      $ong[1] = $LANG['title'][26];
+      if ($this->fields['id'] > 0) {
          if (haveRight("document", "r"))
             $ong[4] = $LANG['Menu'][27];
          $ong[12] = $LANG['title'][38];
       }
-		return $ong;
-	}
+      return $ong;
+   }
 
-	function showForm ($ID, $options=array()) {
-		global $LANG, $DB;
+   function showForm ($ID, $options=array()) {
+      global $LANG, $DB;
       
       if (!$this->canView())
-			return false;
-		
-		$plugin_order_references_id = -1;
+         return false;
+      
+      $plugin_order_references_id = -1;
       if (isset($options['plugin_order_references_id'])) {
          $plugin_order_references_id = $options['plugin_order_references_id'];
       }
 
-		if ($ID > 0) {
+      if ($ID > 0) {
          $this->check($ID,'r');
       } else {
          // Create item
@@ -215,10 +215,10 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       if (strpos($_SERVER['PHP_SELF'],"reference_supplier")) {
          $this->addDivForTabs();
       }
-		return true;
-	}
+      return true;
+   }
 
-	function showReferenceManufacturers($target, $ID) {
+   function showReferenceManufacturers($target, $ID) {
       global $LANG, $DB, $CFG_GLPI;
 
       $ref = new PluginOrderReference;

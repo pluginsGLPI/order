@@ -59,59 +59,59 @@ class PluginOrderBudget extends CommonDBTM {
     
       $tab['common'] = $LANG['financial'][87];
 
-		$tab[1]['table'] = $this->getTable();
-		$tab[1]['field'] = 'name';
-		$tab[1]['linkfield'] = 'name';
-		$tab[1]['name'] = $LANG['common'][16];
-		$tab[1]['datatype'] = 'itemlink';
+      $tab[1]['table'] = $this->getTable();
+      $tab[1]['field'] = 'name';
+      $tab[1]['linkfield'] = 'name';
+      $tab[1]['name'] = $LANG['common'][16];
+      $tab[1]['datatype'] = 'itemlink';
 
-		$tab[2]['table'] = $this->getTable();
-		$tab[2]['field'] = 'comment';
-		$tab[2]['linkfield'] = 'comment';
-		$tab[2]['name'] = $LANG['common'][25];
+      $tab[2]['table'] = $this->getTable();
+      $tab[2]['field'] = 'comment';
+      $tab[2]['linkfield'] = 'comment';
+      $tab[2]['name'] = $LANG['common'][25];
       $tab[2]['datatype']='text';
       
-		$tab[3]['table'] = $this->getTable();
-		$tab[3]['field'] = 'start_date';
-		$tab[3]['linkfield'] = 'start_date';
-		$tab[3]['name'] = $LANG['search'][8];
+      $tab[3]['table'] = $this->getTable();
+      $tab[3]['field'] = 'start_date';
+      $tab[3]['linkfield'] = 'start_date';
+      $tab[3]['name'] = $LANG['search'][8];
       $tab[3]['datatype']='date';
 
-		$tab[4]['table'] = $this->getTable();
-		$tab[4]['field'] = 'end_date';
-		$tab[4]['linkfield'] = 'end_date';
-		$tab[4]['name'] = $LANG['search'][9];
+      $tab[4]['table'] = $this->getTable();
+      $tab[4]['field'] = 'end_date';
+      $tab[4]['linkfield'] = 'end_date';
+      $tab[4]['name'] = $LANG['search'][9];
       $tab[4]['datatype']='date';
 
-		$tab[5]['table'] = $this->getTable();
-		$tab[5]['field'] = 'value';
-		$tab[5]['linkfield'] = 'value';
-		$tab[5]['name'] = $LANG['financial'][21];
-		$tab[5]['datatype'] = 'number';
+      $tab[5]['table'] = $this->getTable();
+      $tab[5]['field'] = 'value';
+      $tab[5]['linkfield'] = 'value';
+      $tab[5]['name'] = $LANG['financial'][21];
+      $tab[5]['datatype'] = 'number';
 
-		$tab[30]['table']=$this->getTable();
+      $tab[30]['table']=$this->getTable();
       $tab[30]['field']='id';
       $tab[30]['linkfield']='';
       $tab[30]['name']=$LANG['common'][2];
-		
-		return $tab;
+      
+      return $tab;
    }
-	/*define header form */
-	function defineTabs($options=array()) {
-		global $LANG;
-		
-		/* principal */
-		$ong[1] = $LANG['title'][26];
+   /*define header form */
+   function defineTabs($options=array()) {
+      global $LANG;
+      
+      /* principal */
+      $ong[1] = $LANG['title'][26];
 
-		return $ong;
-	}
+      return $ong;
+   }
 
-	function showForm ($ID, $options=array()) {
-		global $CFG_GLPI, $LANG, $DB;
+   function showForm ($ID, $options=array()) {
+      global $CFG_GLPI, $LANG, $DB;
 
-		if (!$this->canView()) return false;
-		
-		if ($ID > 0) {
+      if (!$this->canView()) return false;
+      
+      if ($ID > 0) {
          $this->check($ID,'r');
       } else {
          // Create item
@@ -130,7 +130,9 @@ class PluginOrderBudget extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][87]." GLPI" . ": </td>";
       echo "<td>";
-      Dropdown::show('Budget', array('name' => "budgets_id",'value' => $this->fields["budgets_id"], 'entity' => $this->fields["entities_id"]));
+      Dropdown::show('Budget', array('name' => "budgets_id",
+                                     'value' => $this->fields["budgets_id"],
+                                     'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['search'][8] . ": </td>";
@@ -145,38 +147,44 @@ class PluginOrderBudget extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['financial'][21] . ": </td>";
       echo "<td>";
-      echo "<input type='text' name='value' value=\"".formatNumber($this->fields["value"],true)."\" size='20'>";
+      echo "<input type='text' name='value' value=\"".formatNumber($this->fields["value"],true).
+               "\" size='20'>";
       echo "</td></tr>";
 
       if ($ID > 0) {
-         $query = "SELECT SUM(`price_discounted`) AS total_price FROM `glpi_plugin_order_orders`, `glpi_plugin_order_orders_items` " .
-               "WHERE `budgets_id` = '".$this->fields["budgets_id"]."' AND `budgets_id` != 0 AND `glpi_plugin_order_orders_items`.`plugin_order_orders_id` = `glpi_plugin_order_orders`.`id` " .
+         $query = "SELECT SUM(`price_discounted`) AS total_price FROM `glpi_plugin_order_orders`, 
+                          `glpi_plugin_order_orders_items` " .
+               "WHERE `budgets_id` = '".$this->fields["budgets_id"]."' AND `budgets_id` != 0 
+                   AND `glpi_plugin_order_orders_items`.`plugin_order_orders_id` = `glpi_plugin_order_orders`.`id` " .
                "GROUP BY `glpi_plugin_order_orders`.`budgets_id`";
          $result = $DB->query($query);
 
          echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order']['budget'][2] . ": </td>";
          echo "<td>";
-         if ($DB->numrows($result))
+         if ($DB->numrows($result)) {
             echo formatNumber($DB->result($result,0,0),false,2);
-         else
+         }
+         else {
             echo "0";
+         }
          echo "</td></tr>";
       }
 
       echo "<tr class='tab_bg_2'><td>" . $LANG['common'][25] . ": </td>";
       
       echo "<td colspan='3'>";
-      echo "<textarea cols='50' rows='4' name='comment' >" . $this->fields["comment"] . "</textarea>";
+      echo "<textarea cols='50' rows='4' name='comment' >" . $this->fields["comment"] . 
+               "</textarea>";
       echo "</td></tr>";
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
 
-		return true;
+      return true;
       
-	}
-	
-	function getAllOrdersByBudget($budgets_id){
+   }
+   
+   function getAllOrdersByBudget($budgets_id) {
       global $DB,$LANG,$CFG_GLPI;
       
       $query = "SELECT * 
@@ -196,22 +204,25 @@ class PluginOrderBudget extends CommonDBTM {
       echo "</tr>";
       
       $total = 0;
-      while ($data = $DB->fetch_array($result))
-      {
+      while ($data = $DB->fetch_array($result)) {
          
          $PluginOrderOrder_Item = new PluginOrderOrder_Item();
          $prices = $PluginOrderOrder_Item->getAllPrices($data["id"]);
-         $postagewithTVA = $PluginOrderOrder_Item->getPricesATI($data["port_price"], Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $data["plugin_order_ordertaxes_id"]));
+         $postagewithTVA = 
+            $PluginOrderOrder_Item->getPricesATI($data["port_price"], 
+                                                 Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
+                                                                           $data["plugin_order_ordertaxes_id"]));
          $total+= $prices["priceTTC"] + $postagewithTVA;
          
          echo "<tr class='tab_bg_1' align='center'>"; 
          echo "<td>";
 
          $link=getItemTypeFormURL('PluginOrderOrder');
-         if ($this->canView())
+         if ($this->canView()) {
             echo "<a href=\"".$link."?id=".$data["id"]."\">".$data["name"]."</a>";
-         else
-            echo $data["name"];	
+         } else {
+            echo $data["name"];  
+         }
          echo "</td>";
 
          echo "<td>";

@@ -41,44 +41,34 @@ if(!isset($_GET["plugin_order_orders_id"])) $_GET["plugin_order_orders_id"] = ""
 
 $PluginOrderSurveySupplier=new PluginOrderSurveySupplier();
 
-if (isset($_POST["add"]))
-{
-	if ($PluginOrderSurveySupplier->canCreate())
-	{
-		if (isset($_POST["plugin_order_orders_id"]) && $_POST["plugin_order_orders_id"] > 0)
-		{
-			$newID=$PluginOrderSurveySupplier->add($_POST);
+if (isset($_POST["add"])) {
+   if ($PluginOrderSurveySupplier->canCreate()) {
+      if (isset($_POST["plugin_order_orders_id"]) && $_POST["plugin_order_orders_id"] > 0) {
+         $newID=$PluginOrderSurveySupplier->add($_POST);
       }
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["delete"]))
-{
-	if ($PluginOrderSurveySupplier->canCreate())
-	{
-		foreach ($_POST["check"] as $ID => $value) {
-			$PluginOrderSurveySupplier->delete(array("id"=>$ID),0,0);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["delete"])) {
+   if ($PluginOrderSurveySupplier->canCreate()) {
+      foreach ($_POST["check"] as $ID => $value) {
+         $PluginOrderSurveySupplier->delete(array("id"=>$ID),0,0);
       }
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["update"]))
-{
-	if ($PluginOrderSurveySupplier->canCreate()) {
-		
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["update"])) {
+   if ($PluginOrderSurveySupplier->canCreate()) {
+      
       $PluginOrderSurveySupplier->update($_POST);
    }
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else
-{
-	$PluginOrderSurveySupplier->checkGlobal("r");
-	
-	commonHeader($LANG['plugin_order']['title'][1],'',"plugins","order","order");
-	
-	$PluginOrderSurveySupplier->showForm($_GET["id"], array('plugin_order_orders_id' => $_GET["plugin_order_orders_id"]));
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else {
+   $PluginOrderSurveySupplier->checkGlobal("r");
+   commonHeader($LANG['plugin_order']['title'][1],'',"plugins","order","order");
+   $PluginOrderSurveySupplier->showForm($_GET["id"], 
+                                        array('plugin_order_orders_id' => 
+                                                $_GET["plugin_order_orders_id"]));
 
-	commonFooter();
+   commonFooter();
 }
 
 ?>

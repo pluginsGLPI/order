@@ -43,40 +43,42 @@ $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 
 if (isset($_POST["add"]))
 {
-	if ($PluginOrderReference_Supplier->canCreate())
-	{
-		if (isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0)
-		{
-			$newID=$PluginOrderReference_Supplier->add($_POST);
-		}
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
+   if ($PluginOrderReference_Supplier->canCreate())
+   {
+      if (isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0)
+      {
+         $newID=$PluginOrderReference_Supplier->add($_POST);
+      }
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
 {
-	if ($PluginOrderReference_Supplier->canCreate())
-		$PluginOrderReference_Supplier->update($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
+   if ($PluginOrderReference_Supplier->canCreate())
+      $PluginOrderReference_Supplier->update($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
 {
-	if ($PluginOrderReference_Supplier->canCreate())
-	{
-		foreach ($_POST["check"] as $ID => $value)
-			$PluginOrderReference_Supplier->delete(array("id"=>$ID));
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
+   if ($PluginOrderReference_Supplier->canCreate())
+   {
+      foreach ($_POST["check"] as $ID => $value)
+         $PluginOrderReference_Supplier->delete(array("id"=>$ID));
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
-	$PluginOrderReference_Supplier->checkGlobal("r");
-	
-	commonHeader($LANG['plugin_order']['reference'][5],'',"plugins","order","reference");
-	
-	/* load order form */
-	$PluginOrderReference_Supplier->showForm($_GET["id"], array('plugin_order_references_id' => $_GET["plugin_order_references_id"]));
+   $PluginOrderReference_Supplier->checkGlobal("r");
+   
+   commonHeader($LANG['plugin_order']['reference'][5],'',"plugins","order","reference");
+   
+   /* load order form */
+   $PluginOrderReference_Supplier->showForm($_GET["id"], 
+                                            array('plugin_order_references_id' => 
+                                               $_GET["plugin_order_references_id"]));
 
-	commonFooter();
+   commonFooter();
 }
 
 ?>

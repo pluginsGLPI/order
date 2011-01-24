@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderPreference extends CommonDBTM {
 
-	function checkIfPreferenceExists($user_id) {
+   function checkIfPreferenceExists($user_id) {
       global $DB;
       
       $result = $DB->query("SELECT `id` 
@@ -47,7 +47,7 @@ class PluginOrderPreference extends CommonDBTM {
       if ($DB->numrows($result) > 0)
          return $DB->result($result,0,"id");
       else
-         return 0;	
+         return 0;   
    }
    
    function addDefaultPreference($user_id) {
@@ -67,7 +67,7 @@ class PluginOrderPreference extends CommonDBTM {
       if ($DB->numrows($result) > 0)
          return $DB->result($result,0,"sign");
       else
-         return 0;	
+         return 0;   
    }
    
    function checkPreferenceTemplateValue($user_id) {
@@ -79,16 +79,16 @@ class PluginOrderPreference extends CommonDBTM {
       if ($DB->numrows($result) > 0)
          return $DB->result($result,0,"template");
       else
-         return 0;	
+         return 0;   
    }
 
-	function showForm($target,$ID){
-		global $LANG,$CFG_GLPI;
-		
-		$data=plugin_version_order();
-		$this->getFromDB($ID);
-		
-		$dir_template = GLPI_ROOT."/plugins/order/templates/";
+   function showForm($target,$ID){
+      global $LANG,$CFG_GLPI;
+      
+      $data=plugin_version_order();
+      $this->getFromDB($ID);
+      
+      $dir_template = GLPI_ROOT."/plugins/order/templates/";
       $array_template = $this->getFiles($dir_template,"odt",$this->fields["template"]);
       
       $dir_sign = GLPI_ROOT."/plugins/order/signatures/";
@@ -133,7 +133,7 @@ class PluginOrderPreference extends CommonDBTM {
          echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
          echo "<b>".$LANG['plugin_order']['parser'][2]."</b></div>";
       }
-	}
+   }
    
    function getFiles($dir,$ext,$select=-1) {
       

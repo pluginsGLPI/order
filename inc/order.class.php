@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderOrder extends CommonDBTM {
 
-	public $dohistory=true;
+   public $dohistory=true;
    
    const ORDER_DEVICE_NOT_DELIVRED = 0;
    const ORDER_DEVICE_DELIVRED = 1;
@@ -77,12 +77,12 @@ class PluginOrderOrder extends CommonDBTM {
       return plugin_order_HaveRight("validation", "w");
    }
    
-	function cleanDBonPurge() {
+   function cleanDBonPurge() {
 
-		$temp = new PluginOrderOrder_Item();
-		$temp->deleteByCriteria(array('plugin_order_orders_id' => $this->fields['id']));
+      $temp = new PluginOrderOrder_Item();
+      $temp->deleteByCriteria(array('plugin_order_orders_id' => $this->fields['id']));
 
-	}
+   }
    
    function canUpdateOrder($orders_id) {
       
@@ -109,211 +109,211 @@ class PluginOrderOrder extends CommonDBTM {
    }
    
    function canValidateOder() {
-		
-		$PluginOrderConfig = new PluginOrderConfig;
-		$config = $PluginOrderConfig->getConfig();
+      
+      $PluginOrderConfig = new PluginOrderConfig;
+      $config = $PluginOrderConfig->getConfig();
       
       $ORDER_VALIDATION_STATUS = array (PluginOrderOrder::ORDER_STATUS_DRAFT,
                                     PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
-		//If no validation process -> can validate if order is in draft state
-		if (!$config["use_validation"])
-			return ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_DRAFT);
-		else {
-			//Validation process is used
+      //If no validation process -> can validate if order is in draft state
+      if (!$config["use_validation"])
+         return ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_DRAFT);
+      else {
+         //Validation process is used
 
-			//If order is canceled, cannot validate !
-			if ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_CANCELED)
-				return false;
+         //If order is canceled, cannot validate !
+         if ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_CANCELED)
+            return false;
 
-			//If no right to validate
-			if (!$this->canValidate())
-				return false;
-			else
-				return (in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS));
-		}
-	}
+         //If no right to validate
+         if (!$this->canValidate())
+            return false;
+         else
+            return (in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS));
+      }
+   }
 
-	function canCancelOrder() {
-		//If order is canceled, cannot validate !
-		if ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_CANCELED)
-			return false;
+   function canCancelOrder() {
+      //If order is canceled, cannot validate !
+      if ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_CANCELED)
+         return false;
 
-		//If no right to cancel
-		if (!$this->canCancel())
-			return false;
+      //If no right to cancel
+      if (!$this->canCancel())
+         return false;
 
-		return true;
-	}
+      return true;
+   }
 
-	function canDoValidationRequest() {
-		
-		$PluginOrderConfig = new PluginOrderConfig;
-		$config = $PluginOrderConfig->getConfig();
-		
-		if (!$config["use_validation"])
-			return false;
-		else
-			return ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_DRAFT);
-	}
+   function canDoValidationRequest() {
+      
+      $PluginOrderConfig = new PluginOrderConfig;
+      $config = $PluginOrderConfig->getConfig();
+      
+      if (!$config["use_validation"])
+         return false;
+      else
+         return ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_DRAFT);
+   }
 
-	function canCancelValidationRequest() {
-	
-		return ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
-	}
+   function canCancelValidationRequest() {
+   
+      return ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
+   }
 
-	function canUndoValidation() {
-		
-		$ORDER_VALIDATION_STATUS = array (PluginOrderOrder::ORDER_STATUS_DRAFT,
+   function canUndoValidation() {
+      
+      $ORDER_VALIDATION_STATUS = array (PluginOrderOrder::ORDER_STATUS_DRAFT,
                                     PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
                                     
-		//If order is canceled, cannot validate !
-		if ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_CANCELED)
-			return false;
+      //If order is canceled, cannot validate !
+      if ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_CANCELED)
+         return false;
 
-		//If order is not validate, cannot undo validation !
-		if (in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS))
-			return false;
+      //If order is not validate, cannot undo validation !
+      if (in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS))
+         return false;
 
-		//If no right to cancel
-		return ($this->canUndo());
-	}
-	
-	function getSearchOptions() {
+      //If no right to cancel
+      return ($this->canUndo());
+   }
+   
+   function getSearchOptions() {
       global $LANG;
 
       $tab = array();
     
       $tab['common'] = $LANG['plugin_order']['title'][1];
-		/* order_number */
-		$tab[1]['table'] = $this->getTable();
-		$tab[1]['field'] = 'num_order';
-		$tab[1]['linkfield'] = 'num_order';
-		$tab[1]['name'] = $LANG['plugin_order'][0];
-		$tab[1]['datatype'] = 'itemlink';
-		/* order_date */
-		$tab[2]['table'] = $this->getTable();
-		$tab[2]['field'] = 'order_date';
-		$tab[2]['linkfield'] = 'order_date';
-		$tab[2]['name'] = $LANG['plugin_order'][1];
-		$tab[2]['datatype']='date';
-		/* taxes*/
-		$tab[3]['table'] = 'glpi_plugin_order_ordertaxes';
-		$tab[3]['field'] = 'name';
-		$tab[3]['linkfield'] = 'plugin_order_ordertaxes_id';
-		$tab[3]['name'] = $LANG['plugin_order'][25];
-		/* location */
-		$tab[4]['table'] = 'glpi_locations';
-		$tab[4]['field'] = 'completename';
-		$tab[4]['linkfield'] = 'locations_id';
-		$tab[4]['name'] = $LANG['plugin_order'][40];
-		/* status */
-		$tab[5]['table'] = $this->getTable();
-		$tab[5]['field'] = 'states_id';
-		$tab[5]['linkfield'] = '';
-		$tab[5]['name'] = $LANG['plugin_order']['status'][0];
-		/* supplier */
-		$tab[6]['table'] = 'glpi_suppliers';
-		$tab[6]['field'] = 'name';
-		$tab[6]['linkfield'] = 'suppliers_id';
-		$tab[6]['name'] = $LANG['financial'][26];
-		$tab[6]['datatype']='itemlink';
-		$tab[6]['itemlink_type']='Supplier';
-		$tab[6]['forcegroupby']=true;
-		/* payment */
-		$tab[7]['table'] = 'glpi_plugin_order_orderpayments';
-		$tab[7]['field'] = 'name';
-		$tab[7]['linkfield'] = 'plugin_order_orderpayments_id';
-		$tab[7]['name'] = $LANG['plugin_order'][32];
+      /* order_number */
+      $tab[1]['table'] = $this->getTable();
+      $tab[1]['field'] = 'num_order';
+      $tab[1]['linkfield'] = 'num_order';
+      $tab[1]['name'] = $LANG['plugin_order'][0];
+      $tab[1]['datatype'] = 'itemlink';
+      /* order_date */
+      $tab[2]['table'] = $this->getTable();
+      $tab[2]['field'] = 'order_date';
+      $tab[2]['linkfield'] = 'order_date';
+      $tab[2]['name'] = $LANG['plugin_order'][1];
+      $tab[2]['datatype']='date';
+      /* taxes*/
+      $tab[3]['table'] = 'glpi_plugin_order_ordertaxes';
+      $tab[3]['field'] = 'name';
+      $tab[3]['linkfield'] = 'plugin_order_ordertaxes_id';
+      $tab[3]['name'] = $LANG['plugin_order'][25];
+      /* location */
+      $tab[4]['table'] = 'glpi_locations';
+      $tab[4]['field'] = 'completename';
+      $tab[4]['linkfield'] = 'locations_id';
+      $tab[4]['name'] = $LANG['plugin_order'][40];
+      /* status */
+      $tab[5]['table'] = $this->getTable();
+      $tab[5]['field'] = 'states_id';
+      $tab[5]['linkfield'] = '';
+      $tab[5]['name'] = $LANG['plugin_order']['status'][0];
+      /* supplier */
+      $tab[6]['table'] = 'glpi_suppliers';
+      $tab[6]['field'] = 'name';
+      $tab[6]['linkfield'] = 'suppliers_id';
+      $tab[6]['name'] = $LANG['financial'][26];
+      $tab[6]['datatype']='itemlink';
+      $tab[6]['itemlink_type']='Supplier';
+      $tab[6]['forcegroupby']=true;
+      /* payment */
+      $tab[7]['table'] = 'glpi_plugin_order_orderpayments';
+      $tab[7]['field'] = 'name';
+      $tab[7]['linkfield'] = 'plugin_order_orderpayments_id';
+      $tab[7]['name'] = $LANG['plugin_order'][32];
       /* contact */
-		$tab[8]['table'] = 'glpi_contacts';
-		$tab[8]['field'] = 'completename';
-		$tab[8]['linkfield'] = 'contacts_id';
-		$tab[8]['name'] = $LANG['common'][18];
-		$tab[8]['datatype']='itemlink';
-		$tab[8]['itemlink_type']='Contact';
-		$tab[8]['forcegroupby']=true;
-		/* budget */
-		$tab[9]['table'] = 'glpi_budgets';
-		$tab[9]['field'] = 'name';
-		$tab[9]['linkfield'] = 'budgets_id';
-		$tab[9]['name'] = $LANG['financial'][87];
-		$tab[9]['datatype']='itemlink';
-		$tab[9]['itemlink_type']='Budget';
-		$tab[9]['forcegroupby']=true;
-		/* title */
-		$tab[10]['table'] = $this->getTable();
-		$tab[10]['field'] = 'name';
-		$tab[10]['linkfield'] = 'name';
-		$tab[10]['name'] = $LANG['plugin_order'][39];
-		/* comments */
-		$tab[16]['table'] = $this->getTable();
-		$tab[16]['field'] = 'comment';
-		$tab[16]['linkfield'] = 'comment';
-		$tab[16]['name'] = $LANG['plugin_order'][2];
-		$tab[16]['datatype'] = 'text';
-		/* ID */
-		$tab[30]['table'] = $this->getTable();
-		$tab[30]['field'] = 'id';
-		$tab[30]['linkfield'] = '';
-		$tab[30]['name'] = $LANG['common'][2];
-		/* entity */
-		$tab[80]['table'] = 'glpi_entities';
-		$tab[80]['field'] = 'completename';
-		$tab[80]['linkfield'] = 'entities_id';
-		$tab[80]['name'] = $LANG['entity'][0];
-		
-		return $tab;
+      $tab[8]['table'] = 'glpi_contacts';
+      $tab[8]['field'] = 'completename';
+      $tab[8]['linkfield'] = 'contacts_id';
+      $tab[8]['name'] = $LANG['common'][18];
+      $tab[8]['datatype']='itemlink';
+      $tab[8]['itemlink_type']='Contact';
+      $tab[8]['forcegroupby']=true;
+      /* budget */
+      $tab[9]['table'] = 'glpi_budgets';
+      $tab[9]['field'] = 'name';
+      $tab[9]['linkfield'] = 'budgets_id';
+      $tab[9]['name'] = $LANG['financial'][87];
+      $tab[9]['datatype']='itemlink';
+      $tab[9]['itemlink_type']='Budget';
+      $tab[9]['forcegroupby']=true;
+      /* title */
+      $tab[10]['table'] = $this->getTable();
+      $tab[10]['field'] = 'name';
+      $tab[10]['linkfield'] = 'name';
+      $tab[10]['name'] = $LANG['plugin_order'][39];
+      /* comments */
+      $tab[16]['table'] = $this->getTable();
+      $tab[16]['field'] = 'comment';
+      $tab[16]['linkfield'] = 'comment';
+      $tab[16]['name'] = $LANG['plugin_order'][2];
+      $tab[16]['datatype'] = 'text';
+      /* ID */
+      $tab[30]['table'] = $this->getTable();
+      $tab[30]['field'] = 'id';
+      $tab[30]['linkfield'] = '';
+      $tab[30]['name'] = $LANG['common'][2];
+      /* entity */
+      $tab[80]['table'] = 'glpi_entities';
+      $tab[80]['field'] = 'completename';
+      $tab[80]['linkfield'] = 'entities_id';
+      $tab[80]['name'] = $LANG['entity'][0];
+      
+      return $tab;
    }
    
-	/*define header form */
-	function defineTabs($options=array()) {
-		global $LANG;
-		
-		/* principal */
-		$ong[1] = $LANG['title'][26];
-		if ($this->fields['id'] > 0) {
-			/* detail */
-			$ong[2] = $LANG['plugin_order'][5];
-			/* fournisseur */
-			$ong[3] = $LANG['plugin_order'][4];
-			/* generation*/
-			$ong[4] = $LANG['plugin_order']['generation'][2];
-			/* delivery */
-			$ong[5] = $LANG['plugin_order']['delivery'][1];
-			/* item */
-			$ong[6] = $LANG['plugin_order']['item'][0];
-			/* quality */
-			$ong[7] = $LANG['plugin_order'][10];
-			/* documents */
-			if (haveRight("document", "r"))
-				$ong[9] = $LANG['Menu'][27];
-			
-			if (haveRight("notes", "r"))
-				$ong[10] = $LANG['title'][37];
-			/* all */
-			$ong[12] = $LANG['title'][38];
-		}
-		return $ong;
-	}
+   /*define header form */
+   function defineTabs($options=array()) {
+      global $LANG;
+      
+      /* principal */
+      $ong[1] = $LANG['title'][26];
+      if ($this->fields['id'] > 0) {
+         /* detail */
+         $ong[2] = $LANG['plugin_order'][5];
+         /* fournisseur */
+         $ong[3] = $LANG['plugin_order'][4];
+         /* generation*/
+         $ong[4] = $LANG['plugin_order']['generation'][2];
+         /* delivery */
+         $ong[5] = $LANG['plugin_order']['delivery'][1];
+         /* item */
+         $ong[6] = $LANG['plugin_order']['item'][0];
+         /* quality */
+         $ong[7] = $LANG['plugin_order'][10];
+         /* documents */
+         if (haveRight("document", "r"))
+            $ong[9] = $LANG['Menu'][27];
+         
+         if (haveRight("notes", "r"))
+            $ong[10] = $LANG['title'][37];
+         /* all */
+         $ong[12] = $LANG['title'][38];
+      }
+      return $ong;
+   }
 
-	function prepareInputForAdd($input) {
-		global $LANG;
-		
-		if (!isset ($input["num_order"]) || $input["num_order"] == '') {
-			addMessageAfterRedirect($LANG['plugin_order'][44], false, ERROR);
-			return array ();
-		}
-		elseif (!isset ($input["name"]) || $input["name"] == '') $input["name"] = $input["num_order"];
+   function prepareInputForAdd($input) {
+      global $LANG;
+      
+      if (!isset ($input["num_order"]) || $input["num_order"] == '') {
+         addMessageAfterRedirect($LANG['plugin_order'][44], false, ERROR);
+         return array ();
+      }
+      elseif (!isset ($input["name"]) || $input["name"] == '') $input["name"] = $input["num_order"];
 
-		return $input;
-	}
+      return $input;
+   }
 
-	function showForm ($ID, $options=array()) {
-		global $CFG_GLPI, $LANG;
+   function showForm ($ID, $options=array()) {
+      global $CFG_GLPI, $LANG;
 
-		if (!$this->canView()) return false;
+      if (!$this->canView()) return false;
 
-		if ($ID > 0) {
+      if ($ID > 0) {
          $this->check($ID,'r');
       } else {
          // Create item
@@ -424,7 +424,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>";
       //comments of order
-      echo $LANG['plugin_order'][2] . ":	</td>";
+      echo $LANG['plugin_order'][2] . ":  </td>";
       echo "<td>";
       if ($canedit)
          echo "<textarea cols='40' rows='4' name='comment'>" . $this->fields["comment"] . "</textarea>";
@@ -466,7 +466,7 @@ class PluginOrderOrder extends CommonDBTM {
       $this->addDivForTabs();
       
       return true;
-	}
+   }
 
    function dropdownSuppliers($myname,$value=0,$entity_restrict='') {
       global $DB,$CFG_GLPI;
@@ -650,18 +650,18 @@ class PluginOrderOrder extends CommonDBTM {
       Log::history($ID, $type, $changes, 0, HISTORY_LOG_SIMPLE_MESSAGE);
    }
 
-	function needValidation($ID) {
+   function needValidation($ID) {
       
       $ORDER_VALIDATION_STATUS = array (PluginOrderOrder::ORDER_STATUS_DRAFT,
                                     PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
-		
-		if ($ID > 0 && $this->getFromDB($ID))
-			return (in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS));
-		else
-			return false;
-	}
-	
-	function deleteAllLinkWithItem($orders_id) {
+      
+      if ($ID > 0 && $this->getFromDB($ID))
+         return (in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS));
+      else
+         return false;
+   }
+   
+   function deleteAllLinkWithItem($orders_id) {
 
       $detail = new PluginOrderOrder_Item;
       $devices = getAllDatasFromTable("glpi_plugin_order_orders_items", "plugin_order_orders_id=$orders_id");
@@ -670,8 +670,8 @@ class PluginOrderOrder extends CommonDBTM {
             "id" => $deviceID
          ));
    }
-	
-	function checkIfDetailExists($orders_id) {
+   
+   function checkIfDetailExists($orders_id) {
       
       if ($orders_id) {
          $detail = new PluginOrderOrder_Item;
@@ -682,8 +682,8 @@ class PluginOrderOrder extends CommonDBTM {
             return false;
       }
    }
-	
-	function showValidationForm($target, $orders_id) {
+   
+   function showValidationForm($target, $orders_id) {
       global $LANG;
       
       $this->getFromDB($orders_id);
@@ -769,9 +769,9 @@ class PluginOrderOrder extends CommonDBTM {
    }
    
    function generateOrder($ID) {
-		global $LANG,$DB;
-		
-		$pref = new PluginOrderPreference;
+      global $LANG,$DB;
+      
+      $pref = new PluginOrderPreference;
       $template=$pref->checkPreferenceTemplateValue(getLoginUserID());
       if ($template) {
 
@@ -891,15 +891,18 @@ class PluginOrderOrder extends CommonDBTM {
          $odf->setVars('title_totalht',$LANG['plugin_order']['generation'][14],true,'UTF-8');
          $odf->setVars('title_totalttc',$LANG['plugin_order']['generation'][15],true,'UTF-8');
          $odf->setVars('title_tva',$LANG['plugin_order'][25],true,'UTF-8');
-         $odf->setVars('value_tva',html_clean(Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",$this->fields["plugin_order_ordertaxes_id"]))." %",true,'UTF-8');
+         $odf->setVars('value_tva',html_clean(Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
+                                                                        $this->fields["plugin_order_ordertaxes_id"]))." %",true,'UTF-8');
          $odf->setVars('title_money',$LANG['plugin_order']['generation'][17],true,'UTF-8');
          $odf->setVars('title_sign',$LANG['plugin_order']['generation'][16],true,'UTF-8');
          
          $prices = $PluginOrderOrder_Item->getAllPrices($ID);
          $priceHTwithpostage=$prices["priceHT"]+$this->fields["port_price"];
-         $tva = ($prices["priceHT"]*Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",$this->fields["plugin_order_ordertaxes_id"]))/100;
+         $tva = ($prices["priceHT"]*Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
+                                                              $this->fields["plugin_order_ordertaxes_id"]))/100;
          $postagewithTVA = $PluginOrderOrder_Item->getPricesATI($this->fields["port_price"], 
-                           Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",$this->fields["plugin_order_ordertaxes_id"]));
+                           Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
+                                                     $this->fields["plugin_order_ordertaxes_id"]));
          $total = $prices["priceTTC"] + $postagewithTVA;
          
          $odf->setVars('totalht',html_clean(formatNumber($priceHTwithpostage)),true,'UTF-8');
@@ -913,11 +916,14 @@ class PluginOrderOrder extends CommonDBTM {
             $odf->setImage('sign', '../pics/nothing.gif');
          
          $odf->setVars('title_conditions',$LANG['plugin_order'][32],true,'UTF-8');
-         $odf->setVars('payment_conditions',Dropdown::getDropdownName("glpi_plugin_order_orderpayments", $this->fields["plugin_order_orderpayments_id"]),true,'UTF-8');
+         $odf->setVars('payment_conditions',
+                       Dropdown::getDropdownName("glpi_plugin_order_orderpayments", 
+                                                 $this->fields["plugin_order_orderpayments_id"]),
+                                                 true,'UTF-8');
          // We export the file
          $odf->exportAsAttachedFile();
       }
-	}
+   }
    
    function transfer($ID,$entity) {
       global $DB;

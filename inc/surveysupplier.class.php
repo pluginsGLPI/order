@@ -58,41 +58,41 @@ class PluginOrderSurveySupplier extends CommonDBChild {
    //function getSearchOptions()  ?
    
    function defineTabs($options=array()) {
-		global $LANG;
-		/* principal */
-		$ong[1] = $LANG['title'][26];
+      global $LANG;
+      /* principal */
+      $ong[1] = $LANG['title'][26];
 
-		return $ong;
-	}
-	
-	function prepareInputForAdd($input) {
+      return $ong;
+   }
+   
+   function prepareInputForAdd($input) {
       // Not attached to reference -> not added
       if (!isset($input['plugin_order_orders_id']) || $input['plugin_order_orders_id'] <= 0) {
          return false;
       }
       return $input;
    }
-	
+   
    function getFromDBByOrder($plugin_order_orders_id) {
-		global $DB;
-		
-		$query = "SELECT * FROM `".$this->getTable()."`
-					WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id . "' ";
-		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result) != 1) {
-				return false;
-			}
-			$this->fields = $DB->fetch_assoc($result);
-			if (is_array($this->fields) && count($this->fields)) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		return false;
-	}
-	
-	function addNotation($field,$value) {
+      global $DB;
+      
+      $query = "SELECT * FROM `".$this->getTable()."`
+               WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id . "' ";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) != 1) {
+            return false;
+         }
+         $this->fields = $DB->fetch_assoc($result);
+         if (is_array($this->fields) && count($this->fields)) {
+            return true;
+         } else {
+            return false;
+         }
+      }
+      return false;
+   }
+   
+   function addNotation($field,$value) {
       global $LANG;
       
       echo "<font size='1'>".$LANG['plugin_order']['survey'][7]."</font>&nbsp;";
@@ -105,22 +105,23 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       }
       
       echo "&nbsp;<font size='1'>".$LANG['plugin_order']['survey'][6]."</font>";
-	}
-	
-	function getTotalNotation($plugin_order_orders_id) {
+   }
+   
+   function getTotalNotation($plugin_order_orders_id) {
       global $DB;
       
-      $query = "SELECT (`answer1` + `answer2` + `answer3` + `answer4` + `answer5`) AS total FROM `".$this->getTable()."` " .
-				"WHERE `plugin_order_orders_id` = '".$plugin_order_orders_id."' ";
-		$result = $DB->query($query);
-		$nb = $DB->numrows($result);
-		if ($nb)
+      $query = "SELECT (`answer1` + `answer2` + `answer3` + `answer4` + `answer5`) AS total FROM `".
+                  $this->getTable()."` " .
+            "WHERE `plugin_order_orders_id` = '".$plugin_order_orders_id."' ";
+      $result = $DB->query($query);
+      $nb = $DB->numrows($result);
+      if ($nb)
          return $DB->result($result,0,"total")/5;
       else
          return 0;
-	}
-	
-	function getNotation($suppliers_id,$field) {
+   }
+   
+   function getNotation($suppliers_id,$field) {
       global $DB;
       
       $query = "SELECT SUM(`".$this->getTable()."`.`".$field."`) AS total, COUNT(`".$this->getTable()."`.`id`) AS nb 
@@ -129,15 +130,15 @@ class PluginOrderSurveySupplier extends CommonDBChild {
                AND `".$this->getTable()."`.`plugin_order_orders_id` = `glpi_plugin_order_orders`.`id` 
                AND `glpi_plugin_order_orders`.`suppliers_id` = '".$suppliers_id."'"
                .getEntitiesRestrictRequest(" AND ","glpi_plugin_order_orders","entities_id",'',true);
-		$result = $DB->query($query);
-		$nb = $DB->numrows($result);
-		if ($nb)
+      $result = $DB->query($query);
+      $nb = $DB->numrows($result);
+      if ($nb)
          return $DB->result($result,0,"total")/$DB->result($result,0,"nb");
       else
          return 0;
-	}
-	
-	function showGlobalNotation($suppliers_id) {
+   }
+   
+   function showGlobalNotation($suppliers_id) {
       global $LANG,$DB;
       
       $query = "SELECT `glpi_plugin_order_orders`.`id`, `glpi_plugin_order_orders`.`entities_id`, `glpi_plugin_order_orders`.`name`,`".$this->getTable()."`.`comment` 
@@ -147,12 +148,12 @@ class PluginOrderSurveySupplier extends CommonDBChild {
                   AND `glpi_plugin_order_orders`.`suppliers_id` = '".$suppliers_id."'"
                   .getEntitiesRestrictRequest(" AND ","glpi_plugin_order_orders","entities_id",'',true);
       $query.= " GROUP BY `".$this->table."`.`id`";
-		$result = $DB->query($query);
-		$nb = $DB->numrows($result);
-		$total = 0;
-		$nb_order = 0;
-		
-		echo "<br><div class='center'>";
+      $result = $DB->query($query);
+      $nb = $DB->numrows($result);
+      $total = 0;
+      $nb_order = 0;
+      
+      echo "<br><div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
       echo "<th colspan='4'>" . $LANG['plugin_order']['survey'][0]. "</th>";
@@ -191,7 +192,8 @@ class PluginOrderSurveySupplier extends CommonDBChild {
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='2'></td>";
             echo "<td><div align='left'>" . $LANG['plugin_order']['survey'][$i]. "</div></td>";
-            echo "<td><div align='left'>" . formatNumber($this->getNotation($suppliers_id,"answer$i"))."&nbsp;/ 10</div></td>";
+            echo "<td><div align='left'>" . 
+               formatNumber($this->getNotation($suppliers_id,"answer$i"))."&nbsp;/ 10</div></td>";
             echo "</tr>";
          }
          
@@ -207,13 +209,13 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       }
       echo "</table>";
       echo "</div>";
-	}
-	
-	function showForm ($ID, $options=array()) {
-		global $LANG;
+   }
+   
+   function showForm ($ID, $options=array()) {
+      global $LANG;
       
       if (!$this->canView())
-			return false;
+         return false;
       
       $plugin_order_orders_id = -1;
       if (isset($options['plugin_order_orders_id'])) {
@@ -245,7 +247,8 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       if ($ID > 0)
          $suppliers_id = $this->fields["suppliers_id"];
       $link=getItemTypeFormURL('Supplier');
-      echo "<a href=\"" . $link . "?id=" . $suppliers_id . "\">" . Dropdown::getDropdownName("glpi_suppliers", $suppliers_id) . "</a>";
+      echo "<a href=\"" . $link . "?id=" . $suppliers_id . "\">" . 
+         Dropdown::getDropdownName("glpi_suppliers", $suppliers_id) . "</a>";
       echo "<input type='hidden' name='suppliers_id' value='".$suppliers_id."'>";
       echo "</td>";
       echo "</tr>";
@@ -259,14 +262,15 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       
       echo "<tr class='tab_bg_1'><td>";
       //comments of order
-      echo $LANG['common'][25] . ":	</td>";
+      echo $LANG['common'][25] . ": </td>";
       echo "<td>";
       echo "<textarea cols='80' rows='4' name='comment'>" . $this->fields["comment"] . "</textarea>";
       echo "</td>";
       echo "</tr>";
       
       if ($ID>0) {
-         echo "<tr><th><div align='left'>" . $LANG['plugin_order']['survey'][8] . ": </div></th><th><div align='left'>";
+         echo "<tr><th><div align='left'>" . $LANG['plugin_order']['survey'][8] . 
+               ": </div></th><th><div align='left'>";
          $total = $this->getTotalNotation($this->fields["plugin_order_orders_id"]);
          echo formatNumber($total)." / 10";
          echo "</div></th>";
@@ -278,10 +282,10 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       if (strpos($_SERVER['PHP_SELF'],"surveysupplier")) {
          $this->addDivForTabs();
       }  
-		return true;
-	}
-	
-	function showOrderSupplierSurvey($target, $ID) {
+      return true;
+   }
+   
+   function showOrderSupplierSurvey($target, $ID) {
       global $LANG, $DB, $CFG_GLPI;
 
       $order = new PluginOrderOrder;
@@ -294,7 +298,8 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       $result = $DB->query($query);
       $rand=mt_rand();
       echo "<div class='center'>";
-      echo "<form method='post' name='show_suppliersurvey$rand' id='show_suppliersurvey$rand' action=\"$target\">";
+      echo "<form method='post' name='show_suppliersurvey$rand' id='show_suppliersurvey$rand' " .
+            " action=\"$target\">";
       echo "<input type='hidden' name='plugin_order_orders_id' value='" . $ID . "'>";
       echo "<table class='tab_cadre_fixe'>";
       
@@ -320,7 +325,8 @@ class PluginOrderSurveySupplier extends CommonDBChild {
             }
             echo "</td>";
             $link=getItemTypeFormURL($this->getType());
-            echo "<td><a href='".$link."?id=".$data["id"]."&plugin_order_orders_id=".$ID."'>" .Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
+            echo "<td><a href='".$link."?id=".$data["id"]."&plugin_order_orders_id=".$ID."'>" .
+               Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
             echo "<td>";
             $total = $this->getTotalNotation($ID);
             echo $total." / 10";
@@ -356,7 +362,8 @@ class PluginOrderSurveySupplier extends CommonDBChild {
    function checkIfSupplierSurveyExists($plugin_order_orders_id) {
       
       if ($plugin_order_orders_id) {
-         $devices = getAllDatasFromTable($this->getTable(), "`plugin_order_orders_id` = '$plugin_order_orders_id' ");
+         $devices = getAllDatasFromTable($this->getTable(), 
+                                         "`plugin_order_orders_id` = '$plugin_order_orders_id' ");
          if (!empty($devices))
             return true;
          else

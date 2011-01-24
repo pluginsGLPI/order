@@ -63,54 +63,54 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
     
       $tab['common'] = $LANG['plugin_order'][4];
 
-		$tab[1]['table'] = $this->getTable();
-		$tab[1]['field'] = 'num_quote';
-		$tab[1]['linkfield'] = 'num_quote';
-		$tab[1]['name'] = $LANG['plugin_order'][30];
-		$tab[1]['datatype'] = 'text';
+      $tab[1]['table'] = $this->getTable();
+      $tab[1]['field'] = 'num_quote';
+      $tab[1]['linkfield'] = 'num_quote';
+      $tab[1]['name'] = $LANG['plugin_order'][30];
+      $tab[1]['datatype'] = 'text';
 
-		$tab[2]['table'] = $this->getTable();
-		$tab[2]['field'] = 'num_order';
-		$tab[2]['linkfield'] = 'num_order';
-		$tab[2]['name'] = $LANG['plugin_order'][31];
+      $tab[2]['table'] = $this->getTable();
+      $tab[2]['field'] = 'num_order';
+      $tab[2]['linkfield'] = 'num_order';
+      $tab[2]['name'] = $LANG['plugin_order'][31];
       $tab[2]['datatype'] = 'text';
       
       $tab[3]['table'] = $this->getTable();
-		$tab[3]['field'] = 'num_bill';
-		$tab[3]['linkfield'] = 'num_bill';
-		$tab[3]['name'] = $LANG['plugin_order'][28];
+      $tab[3]['field'] = 'num_bill';
+      $tab[3]['linkfield'] = 'num_bill';
+      $tab[3]['name'] = $LANG['plugin_order'][28];
       $tab[3]['datatype'] = 'text';
       
-		$tab[4]['table'] = 'glpi_suppliers';
-		$tab[4]['field'] = 'name';
-		$tab[4]['linkfield'] = 'suppliers_id';
-		$tab[4]['name'] = $LANG['financial'][26];
-		$tab[4]['datatype']='itemlink';
-		$tab[4]['itemlink_type']='Supplier';
-		$tab[4]['forcegroupby']=true;
-		
+      $tab[4]['table'] = 'glpi_suppliers';
+      $tab[4]['field'] = 'name';
+      $tab[4]['linkfield'] = 'suppliers_id';
+      $tab[4]['name'] = $LANG['financial'][26];
+      $tab[4]['datatype']='itemlink';
+      $tab[4]['itemlink_type']='Supplier';
+      $tab[4]['forcegroupby']=true;
+      
       $tab[30]['table'] = $this->getTable();
-		$tab[30]['field'] = 'id';
-		$tab[30]['linkfield'] = '';
-		$tab[30]['name']=$LANG['common'][2];
+      $tab[30]['field'] = 'id';
+      $tab[30]['linkfield'] = '';
+      $tab[30]['name']=$LANG['common'][2];
 
-		/* entity */
-		$tab[80]['table'] = 'glpi_entities';
-		$tab[80]['field'] = 'completename';
-		$tab[80]['linkfield'] = 'entities_id';
-		$tab[80]['name'] = $LANG['entity'][0];
-		
-		return $tab;
+      /* entity */
+      $tab[80]['table'] = 'glpi_entities';
+      $tab[80]['field'] = 'completename';
+      $tab[80]['linkfield'] = 'entities_id';
+      $tab[80]['name'] = $LANG['entity'][0];
+      
+      return $tab;
    }
    
    function defineTabs($options=array()) {
-		global $LANG;
-		/* principal */
-		$ong[1] = $LANG['title'][26];
+      global $LANG;
+      /* principal */
+      $ong[1] = $LANG['title'][26];
       $ong[12] = $LANG['title'][38];
 
-		return $ong;
-	}
+      return $ong;
+   }
    
    function prepareInputForAdd($input) {
       // Not attached to reference -> not added
@@ -119,31 +119,31 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       }
       return $input;
    }
-	
-	function getFromDBByOrder($plugin_order_orders_id) {
-		global $DB;
-		
-		$query = "SELECT * FROM `".$this->getTable()."`
-					WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id . "' ";
-		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result) != 1) {
-				return false;
-			}
-			$this->fields = $DB->fetch_assoc($result);
-			if (is_array($this->fields) && count($this->fields)) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		return false;
-	}
-	
-	function showForm ($ID, $options=array()) {
-		global $LANG;
+   
+   function getFromDBByOrder($plugin_order_orders_id) {
+      global $DB;
+      
+      $query = "SELECT * FROM `".$this->getTable()."`
+               WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id . "' ";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) != 1) {
+            return false;
+         }
+         $this->fields = $DB->fetch_assoc($result);
+         if (is_array($this->fields) && count($this->fields)) {
+            return true;
+         } else {
+            return false;
+         }
+      }
+      return false;
+   }
+   
+   function showForm ($ID, $options=array()) {
+      global $LANG;
       
       if (!$this->canView())
-			return false;
+         return false;
       
       $plugin_order_orders_id = -1;
       if (isset($options['plugin_order_orders_id'])) {
@@ -207,9 +207,9 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          $this->addDivForTabs();
       }
       return true;
-	}
-	
-	function showOrderSupplierInfos($target, $ID) {
+   }
+   
+   function showOrderSupplierInfos($target, $ID) {
       global $LANG, $DB, $CFG_GLPI;
 
       $order = new PluginOrderOrder;
@@ -305,10 +305,10 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
                   AND `glpi_plugin_order_orders_items`.`states_id` = '".PluginOrderOrder::ORDER_DEVICE_DELIVRED."' "
                   .getEntitiesRestrictRequest(" AND ","glpi_plugin_order_orders",'','',true);
       $query.= "GROUP BY `glpi_plugin_order_orders`.`entities_id`,`glpi_plugin_order_orders_items`.`plugin_order_deliverystates_id`";
-		$result = $DB->query($query);
-		$nb = $DB->numrows($result);
-		
-		echo "<br><div class='center'>";
+      $result = $DB->query($query);
+      $nb = $DB->numrows($result);
+      
+      echo "<br><div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
       echo "<th>".$LANG['entity'][0]."</th>";
@@ -334,7 +334,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       }
       echo "</table>";
       echo "</div>";
-	}
+   }
 }
 
 ?>

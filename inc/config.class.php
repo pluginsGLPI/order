@@ -45,37 +45,39 @@ class PluginOrderConfig extends CommonDBTM {
       return $LANG['plugin_order']['config'][0];
    }
    
-	function showConfigForm(){
-		global $LANG;
-		
-		$this->getFromDB(1);
-		echo "<div class='center'>";
-		echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
-		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='2'>".$LANG['plugin_order']['config'][0]."</th></tr>";
-		
-		echo "<input type='hidden' name='id' value='1'>";
-		echo "<tr class='tab_bg_1' align='center'><td>".$LANG['plugin_order']['config'][1]."</td><td>";
-		Dropdown::show('PluginOrderOrderTaxe', array('name' => "default_taxes",'value' => $this->fields["default_taxes"]));
-		echo "</td>";
-		echo "</tr>";
-		
-		echo "<tr class='tab_bg_1' align='center'><td>".$LANG['plugin_order']['config'][2]."</td><td>";
-		Dropdown::showYesNo("use_validation",$this->fields["use_validation"]); 
-		echo "</td>";
-		echo "</tr>";
+   function showConfigForm(){
+      global $LANG;
+      
+      $this->getFromDB(1);
+      echo "<div class='center'>";
+      echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='2'>".$LANG['plugin_order']['config'][0]."</th></tr>";
+      
+      echo "<input type='hidden' name='id' value='1'>";
+      echo "<tr class='tab_bg_1' align='center'><td>".$LANG['plugin_order']['config'][1].
+            "</td><td>";
+      Dropdown::show('PluginOrderOrderTaxe', array('name' => "default_taxes",
+                                                   'value' => $this->fields["default_taxes"]));
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1' align='center'><td>".$LANG['plugin_order']['config'][2]."</td><td>";
+      Dropdown::showYesNo("use_validation",$this->fields["use_validation"]); 
+      echo "</td>";
+      echo "</tr>";
 
-		echo "<tr class='tab_bg_1' align='center'>"; 
-		echo "<td colspan='2' align='center'>"; 
-		echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >"; 
-		echo"</td>";
-		echo "</tr>";
-		
-		echo "</table></form></div>";
-	}
-	
-	function getConfig(){
-	
+      echo "<tr class='tab_bg_1' align='center'>"; 
+      echo "<td colspan='2' align='center'>"; 
+      echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >"; 
+      echo"</td>";
+      echo "</tr>";
+      
+      echo "</table></form></div>";
+   }
+   
+   function getConfig(){
+   
       $this->getFromDB(1);
       return $this->fields; 
    }

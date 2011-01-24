@@ -39,12 +39,13 @@ commonHeader($LANG['plugin_order']['title'][1],'',"plugins","order","order");
 
 $PluginOrderOrder=new PluginOrderOrder();
 if ($PluginOrderOrder->canView() || haveRight("config","w")) {
-	
-	Search::show("PluginOrderOrder");
-	
+   
+   Search::show("PluginOrderOrder");
+   
 } else {
-	echo "<div align='center'><br><br><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
-	echo "<b>".$LANG['login'][5]."</b></div>";
+   echo "<div align='center'><br><br><img src=\"".
+      $CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
+   echo "<b>".$LANG['login'][5]."</b></div>";
 }
 
 commonFooter();

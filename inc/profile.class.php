@@ -37,8 +37,8 @@ if (!defined('GLPI_ROOT')){
 }
 
 class PluginOrderProfile extends CommonDBTM {
-	
-	static function getTypeName() {
+   
+   static function getTypeName() {
       global $LANG;
 
       return $LANG['plugin_order']['profile'][0];
@@ -52,30 +52,30 @@ class PluginOrderProfile extends CommonDBTM {
       return haveRight('profile', 'r');
    }
    
-	//if profile deleted
-	static function purgeProfiles(Profile $prof) {
+   //if profile deleted
+   static function purgeProfiles(Profile $prof) {
       $plugprof = new self();
       $plugprof->deleteByCriteria(array('profiles_id' => $prof->getField("id")));
    }
    
    function getFromDBByProfile($profiles_id) {
-		global $DB;
-		
-		$query = "SELECT * FROM `".$this->getTable()."`
-					WHERE `profiles_id` = '" . $profiles_id . "' ";
-		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result) != 1) {
-				return false;
-			}
-			$this->fields = $DB->fetch_assoc($result);
-			if (is_array($this->fields) && count($this->fields)) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		return false;
-	}
+      global $DB;
+      
+      $query = "SELECT * FROM `".$this->getTable()."`
+               WHERE `profiles_id` = '" . $profiles_id . "' ";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) != 1) {
+            return false;
+         }
+         $this->fields = $DB->fetch_assoc($result);
+         if (is_array($this->fields) && count($this->fields)) {
+            return true;
+         } else {
+            return false;
+         }
+      }
+      return false;
+   }
   
    static function createFirstAccess($ID) {
       
@@ -109,100 +109,100 @@ class PluginOrderProfile extends CommonDBTM {
          unset($_SESSION["glpi_plugin_order_profile"]);
    }
 
-	/* profiles modification */
-	function showForm ($ID, $options=array()) {
-		global $LANG;
+   /* profiles modification */
+   function showForm ($ID, $options=array()) {
+      global $LANG;
 
-		if (!haveRight("profile","r")) return false;
+      if (!haveRight("profile","r")) return false;
 
-		$prof = new Profile();
-		if ($ID) {
-			$this->getFromDBByProfile($ID);
-			$prof->getFromDB($ID);
-		}
+      $prof = new Profile();
+      if ($ID) {
+         $this->getFromDBByProfile($ID);
+         $prof->getFromDB($ID);
+      }
 
       $this->showFormHeader($options);
 
-		echo "<tr class='tab_bg_2'>";
-		
-		echo "<th colspan='4' align='center'><strong>" . $LANG['plugin_order']['profile'][0] . " " . $prof->fields["name"] . "</strong></th>";
-		
-		echo "</tr>";	
-		echo "<tr class='tab_bg_2'>";
-		
-		echo "<td>" . $LANG['plugin_order']['menu'][1] . ":</td><td>";
-		if ($prof->fields['interface']!='helpdesk') {
-			Profile::dropdownNoneReadWrite("order",$this->fields["order"],1,1,1);
-		} else {
-			echo $LANG['profiles'][12]; // No access;
-		}
-		echo "</td>";
+      echo "<tr class='tab_bg_2'>";
+      
+      echo "<th colspan='4' align='center'><strong>" . $LANG['plugin_order']['profile'][0] . " " . $prof->fields["name"] . "</strong></th>";
+      
+      echo "</tr>";  
+      echo "<tr class='tab_bg_2'>";
+      
+      echo "<td>" . $LANG['plugin_order']['menu'][1] . ":</td><td>";
+      if ($prof->fields['interface']!='helpdesk') {
+         Profile::dropdownNoneReadWrite("order",$this->fields["order"],1,1,1);
+      } else {
+         echo $LANG['profiles'][12]; // No access;
+      }
+      echo "</td>";
 
-		echo "<td>" . $LANG['plugin_order']['menu'][2] . ":</td><td>";
-		if ($prof->fields['interface']!='helpdesk') {
-			Profile::dropdownNoneReadWrite("reference",$this->fields["reference"],1,1,1);
-		} else {
-			echo $LANG['profiles'][12]; // No access;
-		}
-		echo "</td>";
-		
-		echo "</tr>";
-		echo "<tr class='tab_bg_2'>";
-		
-		echo "<td>" . $LANG['plugin_order']['menu'][3] . ":</td><td>";
-		if ($prof->fields['interface']!='helpdesk') {
-			Profile::dropdownNoneReadWrite("budget",$this->fields["budget"],1,1,1);
-		} else {
-			echo $LANG['profiles'][12]; // No access;
-		}
-		echo "</td>";
+      echo "<td>" . $LANG['plugin_order']['menu'][2] . ":</td><td>";
+      if ($prof->fields['interface']!='helpdesk') {
+         Profile::dropdownNoneReadWrite("reference",$this->fields["reference"],1,1,1);
+      } else {
+         echo $LANG['profiles'][12]; // No access;
+      }
+      echo "</td>";
+      
+      echo "</tr>";
+      echo "<tr class='tab_bg_2'>";
+      
+      echo "<td>" . $LANG['plugin_order']['menu'][3] . ":</td><td>";
+      if ($prof->fields['interface']!='helpdesk') {
+         Profile::dropdownNoneReadWrite("budget",$this->fields["budget"],1,1,1);
+      } else {
+         echo $LANG['profiles'][12]; // No access;
+      }
+      echo "</td>";
       
       echo "<td></td>";
-		echo "<td></td>";
-		
-		echo "</tr>";
-		
-		echo "<tr align='center'><th colspan='4' >".$LANG['plugin_order'][5]."</th></tr>";
+      echo "<td></td>";
+      
+      echo "</tr>";
+      
+      echo "<tr align='center'><th colspan='4' >".$LANG['plugin_order'][5]."</th></tr>";
       
       echo "<tr class='tab_bg_2'>";
       
-		echo "<td>" . $LANG['plugin_order']['profile'][1] . ":</td><td>";
-		if ($prof->fields['interface']!='helpdesk') {
-			Profile::dropdownNoneReadWrite("validation",$this->fields["validation"],1,0,1);
-		} else {
-			echo $LANG['profiles'][12]; // No access;
-		}
-		echo "</td>";
-		
-		echo "<td>" . $LANG['plugin_order']['profile'][2] . ":</td><td>";
-		if ($prof->fields['interface']!='helpdesk') {
-			Profile::dropdownNoneReadWrite("cancel",$this->fields["cancel"],1,0,1);
-		} else {
-			echo $LANG['profiles'][12]; // No access;
-		}
-		echo "</td>";
+      echo "<td>" . $LANG['plugin_order']['profile'][1] . ":</td><td>";
+      if ($prof->fields['interface']!='helpdesk') {
+         Profile::dropdownNoneReadWrite("validation",$this->fields["validation"],1,0,1);
+      } else {
+         echo $LANG['profiles'][12]; // No access;
+      }
+      echo "</td>";
+      
+      echo "<td>" . $LANG['plugin_order']['profile'][2] . ":</td><td>";
+      if ($prof->fields['interface']!='helpdesk') {
+         Profile::dropdownNoneReadWrite("cancel",$this->fields["cancel"],1,0,1);
+      } else {
+         echo $LANG['profiles'][12]; // No access;
+      }
+      echo "</td>";
       
       echo "</tr>";
-		echo "<tr class='tab_bg_2'>";
-		
-		echo "<td>" . $LANG['plugin_order']['profile'][3] . ":</td><td>";
-		if ($prof->fields['interface']!='helpdesk') {
-			Profile::dropdownNoneReadWrite("undo_validation",$this->fields["undo_validation"],1,0,1);
-		} else {
-			echo $LANG['profiles'][12]; // No access;
-		}
-		echo "</td>";
-		
-		echo "<td></td>";
-		echo "<td></td>";
-		
-		echo "</tr>";
-
-		echo "<input type='hidden' name='id' value=".$this->fields["id"].">";
+      echo "<tr class='tab_bg_2'>";
       
-		$options['candel'] = false;
+      echo "<td>" . $LANG['plugin_order']['profile'][3] . ":</td><td>";
+      if ($prof->fields['interface']!='helpdesk') {
+         Profile::dropdownNoneReadWrite("undo_validation",$this->fields["undo_validation"],1,0,1);
+      } else {
+         echo $LANG['profiles'][12]; // No access;
+      }
+      echo "</td>";
+      
+      echo "<td></td>";
+      echo "<td></td>";
+      
+      echo "</tr>";
+
+      echo "<input type='hidden' name='id' value=".$this->fields["id"].">";
+      
+      $options['candel'] = false;
       $this->showFormButtons($options);
-	}
+   }
 }
 
 ?>
