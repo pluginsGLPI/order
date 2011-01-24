@@ -494,14 +494,13 @@ class PluginOrderReception extends CommonDBTM {
       } else {
 
          for ($i = 0; $i < $params['number_reception']; $i++) {
-            $data = $DB->fetch_assoc($result);
-            $this->receptionOneItem($data[$i]['id'], $params['plugin_order_orders_id'],
+            $this->receptionOneItem($DB->result($result, $i, 0), $params['plugin_order_orders_id'],
                                     $params["delivery_date"], $params["delivery_number"],
                                     $params["plugin_order_deliverystates_id"]);
-                                    
+
             // Automatic generate asset
-            $options = array( "itemtype" => $data[$i]['itemtype'],
-                              "items_id" => $data[$i]['id'],
+            $options = array( "itemtype" => $DB->result($result, $i, 1),
+                              "items_id" => $DB->result($result, $i, 0),
                               "plugin_order_orders_id" 
                                  => $params['plugin_order_orders_id'],
                               "plugin_order_references_id" 
