@@ -586,7 +586,7 @@ class PluginOrderReception extends CommonDBTM {
 
                // Automatic generate asset
                $options = array( "itemtype" => $params["itemtype"][$key],
-                                 "items_id" => $id,
+                                 "items_id" => $key,
                                  "plugin_order_orders_id"
                                     => $detail->fields["plugin_order_orders_id"],
                                  "plugin_order_references_id"
