@@ -62,10 +62,90 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
       
-      echo "<tr class='tab_bg_1' align='center'><td>".$LANG['plugin_order']['config'][2]."</td><td>";
-      Dropdown::showYesNo("use_validation",$this->fields["use_validation"]); 
+      echo "<tr class='tab_bg_1' align='center'>
+                  <td>".$LANG['plugin_order']['config'][2]."</td><td>";
+                  Dropdown::showYesNo("use_validation",$this->fields["use_validation"]); 
       echo "</td>";
       echo "</tr>";
+      
+		
+		// Automatic actions
+		echo "<tr class='tab_bg_1' align='center'>
+		         <th colspan='2'>".$LANG['plugin_order']['config'][3]."</th>
+		      </tr>";
+		
+		// ASSETS
+		echo "<tr class='tab_bg_1' align='center'>
+		         <th colspan='2'>".$LANG['common'][1]."</th>
+		      </tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>
+                  <td>".$LANG['plugin_order']['config'][4]."</td><td>";
+                  Dropdown::showYesNo("generate_assets",$this->fields["generate_assets"]);
+		echo "</td></tr>";
+		
+      echo "<tr class='tab_bg_1' align='center'>
+            <td>".$LANG['plugin_order']['config'][5]."</td><td>";
+		         autocompletionTextField($this, "generated_name");
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1' align='center'>
+		         <td>".$LANG['plugin_order']['config'][6]."</td><td>";
+		         autocompletionTextField($this, "generated_serial");
+		echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_1' align='center'>
+               <td>".$LANG['plugin_order']['config'][7]."</td><td>";
+   		      autocompletionTextField($this, "generated_otherserial");
+      echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_1' align='center'>";
+      echo "<td>".$LANG['plugin_order']['config'][8]."</td><td>";
+      if (isMultiEntitiesMode()) {
+         Dropdown::show('Entity', array(  'name'   => "default_asset_entities_id",
+                                          'value'  => $this->fields["default_asset_entities_id"],
+                                          'entity' => $_SESSION["glpiactiveentities"]));
+      } else {
+         echo $_SESSION["glpiactive_entity"];
+      }
+		echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_1' align='center'>
+               <td>".$LANG['plugin_order']['config'][12]."</td><td>";
+               Dropdown::show('State', 
+                              array('name'   => 'default_asset_states_id',
+                                    'value'  => $this->fields["default_asset_states_id"],
+                                    'entity' => $_SESSION["glpiactiveentities"]));
+      echo "</td></tr>";
+		
+      // TICKETS
+		echo "<tr class='tab_bg_1' align='center'>
+		         <th colspan='2'>".$LANG['job'][38]."</th>
+		      </tr>";
+	
+      echo "<tr class='tab_bg_1' align='center'>
+            <td>".$LANG['plugin_order']['config'][4]."</td><td>";
+                  Dropdown::showYesNo("generate_ticket",$this->fields["generate_ticket"]);
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1' align='center'>
+               <td>".$LANG['plugin_order']['config'][10]."</td><td>";
+		         autocompletionTextField($this, "generated_title");
+		echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_1' align='center'>
+		         <td>".$LANG['plugin_order']['config'][11]."</td><td>";
+      echo "<textarea cols='60' rows='4' name='generated_content'>" .
+                  $this->fields["generated_content"] . "</textarea>";
+		echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_1' align='center'>
+               <td>".$LANG['plugin_order']['config'][9]."</td><td>";
+               Dropdown::show('TicketCategory', 
+                              array('name'   => 'default_ticketcategories_id',
+                                    'value'  => $this->fields["default_ticketcategories_id"],
+                                    'entity' => $_SESSION["glpiactiveentities"]));
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>"; 
       echo "<td colspan='2' align='center'>"; 

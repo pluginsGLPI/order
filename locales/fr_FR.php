@@ -70,6 +70,16 @@ $LANG['plugin_order']['budget'][3] = "La valeur du budget est nulle. Merci de re
 $LANG['plugin_order']['config'][0] = "Configuration du plugin";
 $LANG['plugin_order']['config'][1] = "TVA par défaut";
 $LANG['plugin_order']['config'][2] = "Utiliser le circuit de validation";
+$LANG['plugin_order']['config'][3] = "Actions automatiques lors de la réception";
+$LANG['plugin_order']['config'][4] = "Activer la génération automatique";
+$LANG['plugin_order']['config'][5] = "Nom par défaut";
+$LANG['plugin_order']['config'][6] = "Numéro de série par défaut";
+$LANG['plugin_order']['config'][7] = "Numéro d'inventaire par défaut";
+$LANG['plugin_order']['config'][8] = "Entité par défaut";
+$LANG['plugin_order']['config'][9] = "Catégorie par défaut";
+$LANG['plugin_order']['config'][10] = "Titre par défaut";
+$LANG['plugin_order']['config'][11] = "Description par défaut";
+$LANG['plugin_order']['config'][12] = "Statut par défaut";
 
 $LANG['plugin_order']['delivery'][1] = "Réception matériel(s)";
 $LANG['plugin_order']['delivery'][2] = "Réceptionner matériel";

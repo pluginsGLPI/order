@@ -757,6 +757,7 @@ class PluginOrderLink extends CommonDBChild {
                   $input[$key] = $value;
             }
             
+            $input["states_id"] = $values["states_id"];
             $input["entities_id"] = $entity;
             $input["serial"] = $values["serial"];
             
@@ -771,6 +772,7 @@ class PluginOrderLink extends CommonDBChild {
                $input["otherserial"] = autoName($item->fields["otherserial"], "otherserial", $templateID, $values["itemtype"],$entity);
             
          } else {
+            $input["states_id"] = $values["states_id"];
             $input["entities_id"] = $entity;
             $input["serial"] = $values["serial"];
             $input["otherserial"] = $values["otherserial"];
@@ -788,6 +790,21 @@ class PluginOrderLink extends CommonDBChild {
          }
 
          $newID = $item->add($input);
+
+         // Attach new ticket if option is on
+   		if(isset($params['generate_ticket'])) {
+   		   $input = array();
+   		   $input['entities_id']         = $entity;
+   		   $input['title']               = $params['generate_ticket']['title'];
+   		   $input['content']             = $params['generate_ticket']['content'];
+   		   $input['ticketcategories_id'] = $params['generate_ticket']['ticketcategories_id'];
+            $input['items_id']            = $newID;
+            $input['itemtype']            = $values["itemtype"];
+            $input['urgency']             = 3;
+            
+            $ticket = new Ticket();
+            $ticketID = $ticket->add($input);
+   		}
 
          //-------------- End template management ---------------------------------//
          $this->createLinkWithItem($values["id"], $newID, $values["itemtype"], $values["plugin_order_orders_id"], $entity, $templateID, false, false);

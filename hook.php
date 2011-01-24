@@ -209,8 +209,13 @@ function plugin_order_install() {
          array("glpi_plugin_order_orders_items", "glpi_plugin_order_references"));
 
    }
+   
+   if (!FieldExists("glpi_plugin_order_configs","generate_assets")) { // version 1.3.0
+      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.3.0.sql");
+   }
+   
    if (!TableExists("glpi_plugin_order_orders")) { // not installed
-      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/empty-1.2.0.sql");
+      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/empty-1.3.0.sql");
    }
 
    PluginOrderProfile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);

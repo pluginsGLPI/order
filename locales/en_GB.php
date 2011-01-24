@@ -70,6 +70,16 @@ $LANG['plugin_order']['budget'][3] = "The value of the budget is null. Thanks to
 $LANG['plugin_order']['config'][0] = "Plugin configuration";
 $LANG['plugin_order']['config'][1] = "Default VAT";
 $LANG['plugin_order']['config'][2] = "Use validation process";
+$LANG['plugin_order']['config'][3] = "Automatic actions when delivery";
+$LANG['plugin_order']['config'][4] = "Enable automatic generation";
+$LANG['plugin_order']['config'][5] = "Default name";
+$LANG['plugin_order']['config'][6] = "Default serial number";
+$LANG['plugin_order']['config'][7] = "Default inventory number";
+$LANG['plugin_order']['config'][8] = "Default entity";
+$LANG['plugin_order']['config'][9] = "Default category";
+$LANG['plugin_order']['config'][10] = "Default title";
+$LANG['plugin_order']['config'][11] = "Default description";
+$LANG['plugin_order']['config'][12] = "Default state";
 
 $LANG['plugin_order']['delivery'][1] = "Item delivered";
 $LANG['plugin_order']['delivery'][2] = "Take item delivery";

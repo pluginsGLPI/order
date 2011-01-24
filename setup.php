@@ -129,7 +129,7 @@ function plugin_version_order() {
 
 	return array (
 		'name' => $LANG['plugin_order']['title'][1],
-		'version' => '1.2.0',
+		'version' => '1.3.0',
 		'author' => 'Benjamin Fontan, Walid Nouh, Xavier Caillaud',
 		'homepage' => 'https://forge.indepnet.net/projects/show/order',
 		'minGlpiVersion' => '0.78',
@@ -158,9 +158,13 @@ function plugin_order_haveRight($module,$right) {
 			"1" => array("1"),
 			"0" => array("0","1"), // ne doit pas arriver non plus
 		      );
-	if (isset($_SESSION["glpi_plugin_order_profile"][$module])&&in_array($_SESSION["glpi_plugin_order_profile"][$module],$matches[$right]))
+
+	if (isset($_SESSION["glpi_plugin_order_profile"][$module])
+	      && in_array($_SESSION["glpi_plugin_order_profile"][$module],$matches[$right])) {
 		return true;
-	else return false;
+	} else {
+	   return false;
+	}
 }
 
 ?>

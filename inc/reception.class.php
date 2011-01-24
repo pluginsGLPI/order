@@ -545,6 +545,10 @@ class PluginOrderReception extends CommonDBTM {
    function updateReceptionStatus($params) {
       global $LANG;
       
+      // Retrieve configuration
+		$PluginOrderConfig = new PluginOrderConfig;
+		$config = $PluginOrderConfig->getConfig();
+		
       $detail = new PluginOrderOrder_Item;
       $plugin_order_orders_id = 0;
       if (isset ($params["item"])) {
@@ -568,11 +572,41 @@ class PluginOrderReception extends CommonDBTM {
                         addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);
                   }
                }
-            }
+
+               // Automatic generate assets on delivery
+         		if ($config["generate_assets"]) {
+         		   $item = array( "name"=>$config["generated_name"],
+         		                  "serial"=>$config["generated_serial"],
+                                 "otherserial"=>$config["generated_otherserial"],
+                                 "entities_id"=>$config["default_asset_entities_id"],
+                                 "states_id"=>$config["default_asset_states_id"],                                 
+                                 "itemtype"=>$params["itemtype"][$key],
+                                 "id"=>$key,
+                                 "plugin_order_orders_id"=>$detail->fields["plugin_order_orders_id"]);
+
+         		   $options = array( "plugin_order_orders_id"
+         		                        => $detail->fields["plugin_order_orders_id"],
+         		                     "plugin_order_references_id"
+         		                        => $params["plugin_order_references_id"][$key],
+         		                     "id" => array($item));
+                  
+                  if($config["generate_ticket"]) {
+                     $options["generate_ticket"] = 
+                           array("title"                 => $config["generated_title"],
+                                 "content"               => $config["generated_content"],
+                                 "ticketcategories_id"   => $config["default_ticketcategories_id"]);
+                  }
+
+                  $PluginOrderLink = new PluginOrderLink();
+                  $PluginOrderLink->generateNewItem($options);
+         		}
+
+            }// $val == 1
 
          $detail->updateDelivryStatus($plugin_order_orders_id);
-      } else
+      } else {
          addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
+      }
    }
 }
 
