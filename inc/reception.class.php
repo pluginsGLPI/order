@@ -478,20 +478,36 @@ class PluginOrderReception extends CommonDBTM {
    function updateBulkReceptionStatus($params) {
       global $LANG, $DB;
       
-      $query = "SELECT `id` 
+      $query = "SELECT `id`, `itemtype`
                FROM `glpi_plugin_order_orders_items` 
                WHERE `plugin_order_orders_id` = '" . $params["plugin_order_orders_id"] ."' 
                AND `plugin_order_references_id` = '" . $params["plugin_order_references_id"] ."' 
                AND `states_id` = 0 ";
-      $result = $DB->query($query);
-      $nb = $DB->numrows($result);
-      if ($nb < $params['number_reception'])
+               
+      $result  = $DB->query($query);
+      $nb      = $DB->numrows($result);
+      
+      if ($nb < $params['number_reception']) {
+
          addMessageAfterRedirect($LANG['plugin_order']['detail'][37], true, ERROR);
-      else {
+
+      } else {
+
          for ($i = 0; $i < $params['number_reception']; $i++) {
-            $this->receptionOneItem($DB->result($result, $i, 0), $params['plugin_order_orders_id'],
+            $data = $DB->fetch_assoc($result);
+            $this->receptionOneItem($data[$i]['id'], $params['plugin_order_orders_id'],
                                     $params["delivery_date"], $params["delivery_number"],
                                     $params["plugin_order_deliverystates_id"]);
+                                    
+            // Automatic generate asset
+            $options = array( "itemtype" => $data[$i]['itemtype'],
+                              "items_id" => $data[$i]['id'],
+                              "plugin_order_orders_id" 
+                                 => $params['plugin_order_orders_id'],
+                              "plugin_order_references_id" 
+                                 => $params["plugin_order_references_id"]);
+
+            self::generateAsset($options);
          }
          $detail = new PluginOrderOrder_Item;
          $detail->updateDelivryStatus($params['plugin_order_orders_id']);
@@ -544,11 +560,7 @@ class PluginOrderReception extends CommonDBTM {
    
    function updateReceptionStatus($params) {
       global $LANG;
-      
-      // Retrieve configuration
-		$PluginOrderConfig = new PluginOrderConfig;
-		$config = $PluginOrderConfig->getConfig();
-		
+
       $detail = new PluginOrderOrder_Item;
       $plugin_order_orders_id = 0;
       if (isset ($params["item"])) {
@@ -573,33 +585,15 @@ class PluginOrderReception extends CommonDBTM {
                   }
                }
 
-               // Automatic generate assets on delivery
-         		if ($config["generate_assets"]) {
-         		   $item = array( "name"=>$config["generated_name"],
-         		                  "serial"=>$config["generated_serial"],
-                                 "otherserial"=>$config["generated_otherserial"],
-                                 "entities_id"=>$config["default_asset_entities_id"],
-                                 "states_id"=>$config["default_asset_states_id"],                                 
-                                 "itemtype"=>$params["itemtype"][$key],
-                                 "id"=>$key,
-                                 "plugin_order_orders_id"=>$detail->fields["plugin_order_orders_id"]);
+               // Automatic generate asset
+               $options = array( "itemtype" => $params["itemtype"][$key],
+                                 "items_id" => $id,
+                                 "plugin_order_orders_id"
+                                    => $detail->fields["plugin_order_orders_id"],
+                                 "plugin_order_references_id"
+                                    => $params["plugin_order_references_id"][$key]);
 
-         		   $options = array( "plugin_order_orders_id"
-         		                        => $detail->fields["plugin_order_orders_id"],
-         		                     "plugin_order_references_id"
-         		                        => $params["plugin_order_references_id"][$key],
-         		                     "id" => array($item));
-                  
-                  if($config["generate_ticket"]) {
-                     $options["generate_ticket"] = 
-                           array("title"                 => $config["generated_title"],
-                                 "content"               => $config["generated_content"],
-                                 "ticketcategories_id"   => $config["default_ticketcategories_id"]);
-                  }
-
-                  $PluginOrderLink = new PluginOrderLink();
-                  $PluginOrderLink->generateNewItem($options);
-         		}
+               self::generateAsset($options);
 
             }// $val == 1
 
@@ -607,6 +601,46 @@ class PluginOrderReception extends CommonDBTM {
       } else {
          addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
       }
+   }
+   
+   /**
+   *
+   * @param $options
+   *
+   * return nothing
+   */
+   static function generateAsset($options) {
+      // Retrieve configuration for generate assets feature
+		$PluginOrderConfig = new PluginOrderConfig;
+		$config = $PluginOrderConfig->getConfig();
+
+		if ($config["generate_assets"]) {
+		   // Automatic generate assets on delivery
+		   $item = array( "name"                     =>$config["generated_name"],
+		                  "serial"                   =>$config["generated_serial"],
+                        "otherserial"              =>$config["generated_otherserial"],
+                        "entities_id"              =>$config["default_asset_entities_id"],
+                        "states_id"                =>$config["default_asset_states_id"],                                 
+                        "itemtype"                 =>$options["itemtype"],
+                        "id"                       =>$options["items_id"],
+                        "plugin_order_orders_id"   =>$options["plugin_order_orders_id"]);
+
+		   $options_gen = array(   "plugin_order_orders_id"
+		                              => $options["plugin_order_orders_id"],
+		                           "plugin_order_references_id"
+		                              => $options["plugin_order_references_id"],
+		                           "id" => array($item));
+         
+         if($config["generate_ticket"]) {
+            $options_gen["generate_ticket"] = 
+                  array("title"                 => $config["generated_title"],
+                        "content"               => $config["generated_content"],
+                        "ticketcategories_id"   => $config["default_ticketcategories_id"]);
+         }
+
+         $PluginOrderLink = new PluginOrderLink();
+         $PluginOrderLink->generateNewItem($options_gen);
+		}
    }
 }
 
