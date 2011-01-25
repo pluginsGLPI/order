@@ -294,7 +294,7 @@ CREATE TABLE `glpi_plugin_order_configs` (
 	PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_plugin_order_configs` (id,use_validation,default_taxes,generate_assets) VALUES (1,0,0,0,'TOBEFILLED','TOBEFILLED','TOBEFILLED',0,0,0,'TICKET_TOBEFILLED','TOBEFILLED',0);
+INSERT INTO `glpi_plugin_order_configs` (id,use_validation,default_taxes,generate_assets,generated_name,generated_serial,generated_otherserial,default_asset_entities_id,default_asset_states_id,generate_ticket,generated_title,generated_content,default_ticketcategories_id) VALUES (1,0,0,0,'TOBEFILLED','TOBEFILLED','TOBEFILLED',0,0,0,'TOBEFILLED','TOBEFILLED',0);
 
 -- --------------------------------------------------------
 -- 

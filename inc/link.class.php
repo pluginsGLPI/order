@@ -727,7 +727,11 @@ class PluginOrderLink extends CommonDBChild {
    
    function generateNewItem($params) {
       global $DB, $LANG;
-      
+
+      // Retrieve plugin configuration
+      $PluginOrderConfig = new PluginOrderConfig;
+		$config = $PluginOrderConfig->getConfig();
+
       $PluginOrderReference = new PluginOrderReference;
       
       foreach ($params["id"] as $tmp => $values) {
@@ -757,7 +761,10 @@ class PluginOrderLink extends CommonDBChild {
                   $input[$key] = $value;
             }
             
-            $input["states_id"] = $values["states_id"];
+            if(!empty($config["default_asset_states_id"])) {
+               $input["states_id"] = $config["default_asset_states_id"];  
+            }
+
             $input["entities_id"] = $entity;
             $input["serial"] = $values["serial"];
             
@@ -772,7 +779,11 @@ class PluginOrderLink extends CommonDBChild {
                $input["otherserial"] = autoName($item->fields["otherserial"], "otherserial", $templateID, $values["itemtype"],$entity);
             
          } else {
-            $input["states_id"] = $values["states_id"];
+
+            if(!empty($config["default_asset_states_id"])) {
+               $input["states_id"] = $config["default_asset_states_id"];  
+            }
+
             $input["entities_id"] = $entity;
             $input["serial"] = $values["serial"];
             $input["otherserial"] = $values["otherserial"];

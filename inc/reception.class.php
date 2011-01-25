@@ -618,8 +618,7 @@ class PluginOrderReception extends CommonDBTM {
 		   $item = array( "name"                     =>$config["generated_name"],
 		                  "serial"                   =>$config["generated_serial"],
                         "otherserial"              =>$config["generated_otherserial"],
-                        "entities_id"              =>$config["default_asset_entities_id"],
-                        "states_id"                =>$config["default_asset_states_id"],                                 
+                        "entities_id"              =>$config["default_asset_entities_id"],                              
                         "itemtype"                 =>$options["itemtype"],
                         "id"                       =>$options["items_id"],
                         "plugin_order_orders_id"   =>$options["plugin_order_orders_id"]);

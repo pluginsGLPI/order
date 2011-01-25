@@ -68,6 +68,13 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
       
+      echo "<tr class='tab_bg_1' align='center'>
+               <td>".$LANG['plugin_order']['config'][12]."</td><td>";
+               Dropdown::show('State', 
+                              array('name'   => 'default_asset_states_id',
+                                    'value'  => $this->fields["default_asset_states_id"],
+                                    'entity' => $_SESSION["glpiactiveentities"]));
+      echo "</td></tr>";
 		
 		// Automatic actions
 		echo "<tr class='tab_bg_1' align='center'>
@@ -109,14 +116,6 @@ class PluginOrderConfig extends CommonDBTM {
          echo $_SESSION["glpiactive_entity"];
       }
 		echo "</td></tr>";
-		
-		echo "<tr class='tab_bg_1' align='center'>
-               <td>".$LANG['plugin_order']['config'][12]."</td><td>";
-               Dropdown::show('State', 
-                              array('name'   => 'default_asset_states_id',
-                                    'value'  => $this->fields["default_asset_states_id"],
-                                    'entity' => $_SESSION["glpiactiveentities"]));
-      echo "</td></tr>";
 		
       // TICKETS
 		echo "<tr class='tab_bg_1' align='center'>
