@@ -84,10 +84,73 @@ function plugin_order_install() {
             }
          }
       }
+      
+      /* Update en 1.1.2 */
+      
+      if (!FieldExists("glpi_plugin_order_detail","delivery_status")) {
+         $query = "ALTER TABLE `glpi_plugin_order_detail` ADD `delivery_status` int(1) NOT NULL default '0'";
+      $DB->query($query) or die($DB->error());
+
+      }
+      
+      if (!FieldExists("glpi_plugin_order_detail","delivery_comments")) {
+         $query = "ALTER TABLE `glpi_plugin_order_detail` ADD `delivery_comments` text";
+      $DB->query($query) or die($DB->error());
+
+      }
+      
+      if (!TableExists("glpi_dropdown_plugin_order_deliverystate")) {
+         $query = "CREATE TABLE IF NOT EXISTS `glpi_dropdown_plugin_order_deliverystate` (
+                     `ID` int(11) NOT NULL auto_increment,
+                     `name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
+                     `comments` text,
+                     PRIMARY KEY  (`ID`),
+                     KEY `name` (`name`)
+                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->query($query) or die($DB->error());
+      }
+      
+      if (TableExists("glpi_dropdown_plugin_order_status")) {
+         $query = "DROP TABLE `glpi_dropdown_plugin_order_status`";
+         $DB->query($query) or die($DB->error());
+      }
+      
+      if (!TableExists("glpi_plugin_order_surveysuppliers")) {
+         $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_surveysuppliers` (
+                     `ID` int(11) NOT NULL auto_increment,
+                     `FK_order` int(11) NOT NULL default 0,
+                     `FK_enterprise` INT(11) NOT NULL DEFAULT 0,
+                     `answer1` int(11) NOT NULL default 0,
+                     `answer2` int(11) NOT NULL default 0,
+                     `answer3` int(11) NOT NULL default 0,
+                     `answer4` int(11) NOT NULL default 0,
+                     `answer5` int(11) NOT NULL default 0,
+                     `comment` varchar(255) collate utf8_unicode_ci NOT NULL default '',
+                     PRIMARY KEY  (`ID`)
+                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->query($query) or die($DB->error());
+      }
+      
+      if (!TableExists("glpi_plugin_order_preferences")) {
+         $query = "CREATE TABLE `glpi_plugin_order_preferences` (
+                     `ID` int(11) NOT NULL auto_increment,
+                     `user_id` int(11) NOT NULL,
+                     `template` varchar(255) NOT NULL,
+                     `sign` varchar(255) NOT NULL,
+                     PRIMARY KEY  (`ID`)
+                  ) ENGINE=MyISAM;";
+
+         $DB->query($query) or die($DB->error());
+      }
 
       //Post 1.1.0
       $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.2.0.sql");
-
+      
+      if (countElementsInTable("glpi_plugin_order_configs")==0) {
+         $query = "INSERT INTO `glpi_plugin_order_configs`(id,use_validation,default_taxes) VALUES (1,0,0);";
+         $DB->query($query) or die($DB->error());
+      }
+      
       $query = "SELECT `suppliers_id`,`id` FROM `glpi_plugin_order_orders` ";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
