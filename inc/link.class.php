@@ -806,13 +806,15 @@ class PluginOrderLink extends CommonDBChild {
    		if(isset($params['generate_ticket'])) {
    		   $input = array();
    		   $input['entities_id']         = $entity;
-   		   $input['title']               = $params['generate_ticket']['title'];
+   		   $input['name']               = $params['generate_ticket']['title'];
    		   $input['content']             = $params['generate_ticket']['content'];
    		   $input['ticketcategories_id'] = $params['generate_ticket']['ticketcategories_id'];
             $input['items_id']            = $newID;
             $input['itemtype']            = $values["itemtype"];
             $input['urgency']             = 3;
-            
+            //For 0.80 - Uncomment
+            //$input['_users_id_assign']  = 0;
+            //$input['_groups_id_assign'] = 0;
             $ticket = new Ticket();
             $ticketID = $ticket->add($input);
    		}
