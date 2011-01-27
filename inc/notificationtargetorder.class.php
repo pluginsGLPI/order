@@ -70,7 +70,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       
       $this->datas['##lang.ordervalidation.state##'] = $LANG['joblist'][0];
       $this->datas['##ordervalidation.state##'] =  
-         $this->obj->getDropdownStatus($this->obj->getField("states_id"));
+         PluginOrderOrder::getState($this->obj->getField("states_id"));
       
       $this->datas['##lang.ordervalidation.comment##'] = $LANG['plugin_order']['validation'][18];
       $comment = stripslashes(str_replace(array('\r\n', '\n', '\r'), "<br/>", $options['comments']));

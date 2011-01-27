@@ -777,6 +777,42 @@ function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,
 
    return "";
 }
+
+function plugin_order_addWhere($link,$nott,$type,$ID,$val) {
+
+   $searchopt = &Search::getOptions($type);
+   $table = $searchopt[$ID]["table"];
+   $field = $searchopt[$ID]["field"];
+
+   $SEARCH = makeTextSearch($val,$nott);
+
+   // Example of standard Where clause but use it ONLY for specific Where
+   // No need of the function if you do not have specific cases
+   switch ($table.".".$field) {
+      case 'glpi_plugin_order_orders.states_id':
+            return $link." `$table`.`$field` = '$val' ";
+
+   }
+   return "";
+}
+
+function plugin_order_searchOptionsValues($params = array()) {
+   global $LANG;
+   
+   $table = $params['searchoption']['table'];
+   $field = $params['searchoption']['field'];
+
+    // Table fields
+   switch ($table.".".$field) {
+      
+      case 'glpi_plugin_order_orders.states_id':
+         PluginOrderOrder::dropdownState($params['name'],$params['value']);
+         return true;
+         break;
+   }
+   return false;
+}
+
 /* display custom fields in the search */
 function plugin_order_giveItem($type, $ID, $data, $num) {
    global $CFG_GLPI, $LANG;
@@ -785,13 +821,12 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
    $table = $searchopt[$ID]["table"];
    $field = $searchopt[$ID]["field"];
 
-   $PluginOrderReference = new PluginOrderReference;
-   $PluginOrderOrder = new PluginOrderOrder;
+   $PluginOrderReference = new PluginOrderReference();
 
    switch ($table . '.' . $field) {
       /* display associated items with order */
       case "glpi_plugin_order_orders.states_id" :
-         return $PluginOrderOrder->getDropdownStatus($data["ITEM_" . $num]);
+         return PluginOrderOrder::getState($data["ITEM_" . $num]);
          break;
       case "glpi_plugin_order_references.types_id" :
          if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."type.class.php"))

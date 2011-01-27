@@ -211,6 +211,7 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[5]['field'] = 'states_id';
       $tab[5]['linkfield'] = '';
       $tab[5]['name'] = $LANG['plugin_order']['status'][0];
+      $tab[5]['searchtype'] = 'equals';
       /* supplier */
       $tab[6]['table'] = 'glpi_suppliers';
       $tab[6]['field'] = 'name';
@@ -437,7 +438,7 @@ class PluginOrderOrder extends CommonDBTM {
       /* status of bill */
       echo "<td class='center b'>" . $LANG['plugin_order']['status'][0] . "<br>";
       echo "<input type='hidden' name='states_id' value=" . PluginOrderOrder::ORDER_STATUS_DRAFT . ">";
-      echo $this->getDropdownStatus($this->fields["states_id"]);
+      echo self::getState($this->fields["states_id"]);
 
       echo "</td><td>";
       if ($ID > 0) {
@@ -560,27 +561,57 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</select>";
    }
    
-   function getDropdownStatus($value) {
+   /**
+    * get the order status list
+    *
+    * @param $withmetaforsearch boolean
+    * @return an array
+    */
+   static function getAllStateArray() {
       global $LANG;
-      
-      switch ($value) {
-         case PluginOrderOrder::ORDER_STATUS_DRAFT :
-            return $LANG['plugin_order']['status'][9];
-         case PluginOrderOrder::ORDER_STATUS_APPROVED :
-            return $LANG['plugin_order']['status'][12];
-         case PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL :
-            return $LANG['plugin_order']['status'][7];
-         case PluginOrderOrder::ORDER_STATUS_PARTIALLY_DELIVRED :
-            return $LANG['plugin_order']['status'][1];
-         case PluginOrderOrder::ORDER_STATUS_COMPLETLY_DELIVERED :
-            return $LANG['plugin_order']['status'][2];
-         case PluginOrderOrder::ORDER_STATUS_CANCELED :
-            return $LANG['plugin_order']['status'][10];
-         default :
-            return "";
-      }
-   }
 
+      $tab = array(self::ORDER_STATUS_DRAFT   => $LANG['plugin_order']['status'][9],
+                   self::ORDER_STATUS_APPROVED   => $LANG['plugin_order']['status'][12],
+                   self::ORDER_STATUS_WAITING_APPROVAL   => $LANG['plugin_order']['status'][7],
+                   self::ORDER_STATUS_PARTIALLY_DELIVRED   => $LANG['plugin_order']['status'][1],
+                   self::ORDER_STATUS_COMPLETLY_DELIVERED   => $LANG['plugin_order']['status'][2],
+                   self::ORDER_STATUS_CANCELED   => $LANG['plugin_order']['status'][10]);
+
+      return $tab;
+   }
+   
+   /**
+   * Dropdown of order state
+   *
+   * @param $name select name
+   * @param $value default value
+   *
+   * @return string id of the select
+   */
+   static function dropdownState($name, $value=0) {
+      global $LANG;
+
+      $id = "select_$name".mt_rand();
+      echo "<select id='$id' name='$name'>";
+      echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
+      $tab = self::getAllStateArray();
+      foreach($tab as $key=>$val)
+         echo "<option value='".$key."' ".($value==$key?" selected ":"").">".$val."</option>";
+      echo "</select>";
+
+      return $id;
+   }
+   
+   static function getState($value) {
+      global $LANG;
+
+      $tab = self::getAllStateArray();
+      if ($value > -1)
+         return (isset($tab[$value]) ? $tab[$value] : '');
+      else
+         return " ";
+   }
+   
    function addStatusLog($orders_id, $status, $comments = '') {
       global $LANG;
 
@@ -776,7 +807,6 @@ class PluginOrderOrder extends CommonDBTM {
       if ($template) {
 
          $config = array(
-            'ZIP_PROXY' => 'PhpZipProxy',
             'PATH_TO_TMP' => GLPI_DOC_DIR . '/_tmp'
          );
 
