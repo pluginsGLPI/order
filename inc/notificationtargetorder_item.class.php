@@ -118,7 +118,7 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
       // orderstate
       $this->datas['##lang.reception.orderstate##'] = $LANG['joblist'][0];
       $this->datas['##reception.orderstate##'] =  
-               $order->getDropdownStatus($order->getField("states_id"));
+               $order->getState($order->getField("states_id"));
 
       // orderport
       $this->datas['##lang.reception.orderport##'] = $LANG['plugin_order'][26];
