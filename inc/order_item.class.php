@@ -52,7 +52,13 @@ class PluginOrderOrder_Item extends CommonDBTM {
    function canView() {
       return plugin_order_haveRight('order', 'r');
    }
-   
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['plugin_order']['title'][1]." - ".$LANG['plugin_order']['menu'][5];
+   }
+
    static function updateItem($item) {
       global $LANG;
       

@@ -67,7 +67,7 @@ class PluginOrderConfig extends CommonDBTM {
                   Dropdown::showYesNo("use_validation",$this->fields["use_validation"]); 
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1' align='center'>
                <td>".$LANG['plugin_order']['config'][12]."</td><td>";
                Dropdown::show('State', 
@@ -75,7 +75,7 @@ class PluginOrderConfig extends CommonDBTM {
                                     'value'  => $this->fields["default_asset_states_id"],
                                     'entity' => $_SESSION["glpiactiveentities"]));
       echo "</td></tr>";
-		
+
 		// Automatic actions
 		echo "<tr class='tab_bg_1' align='center'>
 		         <th colspan='2'>".$LANG['plugin_order']['config'][3]."</th>

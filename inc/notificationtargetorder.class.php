@@ -41,10 +41,10 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
    function getEvents() {
       global $LANG;
-      return array ('ask'            => $LANG['plugin_order']['validation'][1],
-                    'validation'     => $LANG['plugin_order']['validation'][2],
-                    'cancel'         => $LANG['plugin_order']['validation'][5],
-                    'undovalidation' => $LANG['plugin_order']['validation'][8]);
+      return array ('ask'              => $LANG['plugin_order']['validation'][1],
+                    'validation'       => $LANG['plugin_order']['validation'][2],
+                    'cancel'           => $LANG['plugin_order']['validation'][5],
+                    'undovalidation'   => $LANG['plugin_order']['validation'][8]);
    }
 
    function getDatasForTemplate($event,$options=array()) {
@@ -105,12 +105,13 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      $tags = array('ordervalidation.name'       => $LANG['common'][16],
-                     'ordervalidation.numorder'  => $LANG['financial'][18],
-                     'ordervalidation.orderdate' => $LANG['plugin_order'][1],
-                     'ordervalidation.state'     => $LANG['joblist'][0],
-                     'ordervalidation.comment'   => $LANG['plugin_order']['validation'][18],
-                     'ordervalidation.users'     => $LANG['plugin_order']['validation'][19]);
+      $tags = array('ordervalidation.name'         => $LANG['common'][16],
+                     'ordervalidation.numorder'    => $LANG['financial'][18],
+                     'ordervalidation.orderdate'   => $LANG['plugin_order'][1],
+                     'ordervalidation.state'       => $LANG['joblist'][0],
+                     'ordervalidation.comment'     => $LANG['plugin_order']['validation'][18],
+                     'ordervalidation.users'       => $LANG['plugin_order']['validation'][19]);
+
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'=>$tag, 'label'=>$label, 'value'=>true));
       }

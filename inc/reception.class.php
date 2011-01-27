@@ -494,10 +494,6 @@ class PluginOrderReception extends CommonDBTM {
       } else {
 
          for ($i = 0; $i < $params['number_reception']; $i++) {
-            $this->receptionOneItem($DB->result($result, $i, 0), $params['plugin_order_orders_id'],
-                                    $params["delivery_date"], $params["delivery_number"],
-                                    $params["plugin_order_deliverystates_id"]);
-
             // Automatic generate asset
             $options = array( "itemtype" => $DB->result($result, $i, 1),
                               "items_id" => $DB->result($result, $i, 0),
@@ -505,8 +501,11 @@ class PluginOrderReception extends CommonDBTM {
                                  => $params['plugin_order_orders_id'],
                               "plugin_order_references_id" 
                                  => $params["plugin_order_references_id"]);
-
             self::generateAsset($options);
+            
+            $this->receptionOneItem($DB->result($result, $i, 0), $params['plugin_order_orders_id'],
+                                    $params["delivery_date"], $params["delivery_number"],
+                                    $params["plugin_order_deliverystates_id"]);
          }
          $detail = new PluginOrderOrder_Item;
          $detail->updateDelivryStatus($params['plugin_order_orders_id']);
@@ -515,7 +514,7 @@ class PluginOrderReception extends CommonDBTM {
    
    function receptionOneItem($detailID, $plugin_order_orders_id, $delivery_date, 
                              $delivery_number,$plugin_order_deliverystates_id) {
-      global $LANG;
+      global $LANG,$CFG_GLPI;
       
       $detail = new PluginOrderOrder_Item;
       $input["id"] = $detailID;
@@ -524,6 +523,12 @@ class PluginOrderReception extends CommonDBTM {
       $input["delivery_number"] = $delivery_number;
       $input["plugin_order_deliverystates_id"] = $plugin_order_deliverystates_id;
       $detail->update($input);
+
+      if ($CFG_GLPI["use_mailing"]) {
+         $detail->getFromDB($detailID);
+         NotificationEvent::raiseEvent('delivered',$detail,array());
+      }
+
       addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
    }
    
@@ -572,6 +577,17 @@ class PluginOrderReception extends CommonDBTM {
                                           $params["plugin_order_deliverystates_id"]);
                } else {
                   if ($detail->getFromDB($key)) {
+
+                     // Automatic generate asset
+                     $options = array( "itemtype" => $params["itemtype"][$key],
+                                       "items_id" => $key,
+                                       "plugin_order_orders_id"
+                                          => $detail->fields["plugin_order_orders_id"],
+                                       "plugin_order_references_id"
+                                          => $params["plugin_order_references_id"][$key]);
+
+                     self::generateAsset($options);
+                     
                      if (!$plugin_order_orders_id)
                         $plugin_order_orders_id = $detail->fields["plugin_order_orders_id"];
 
@@ -583,17 +599,6 @@ class PluginOrderReception extends CommonDBTM {
                         addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);
                   }
                }
-
-               // Automatic generate asset
-               $options = array( "itemtype" => $params["itemtype"][$key],
-                                 "items_id" => $key,
-                                 "plugin_order_orders_id"
-                                    => $detail->fields["plugin_order_orders_id"],
-                                 "plugin_order_references_id"
-                                    => $params["plugin_order_references_id"][$key]);
-
-               self::generateAsset($options);
-
             }// $val == 1
 
          $detail->updateDelivryStatus($plugin_order_orders_id);
@@ -618,7 +623,7 @@ class PluginOrderReception extends CommonDBTM {
 		   $item = array( "name"                     =>$config["generated_name"],
 		                  "serial"                   =>$config["generated_serial"],
                         "otherserial"              =>$config["generated_otherserial"],
-                        "entities_id"              =>$config["default_asset_entities_id"],                              
+                        "entities_id"              =>$config["default_asset_entities_id"],                               
                         "itemtype"                 =>$options["itemtype"],
                         "id"                       =>$options["items_id"],
                         "plugin_order_orders_id"   =>$options["plugin_order_orders_id"]);
