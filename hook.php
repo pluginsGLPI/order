@@ -279,12 +279,13 @@ function plugin_order_install() {
                "glpi_documents_items", "glpi_infocoms", "glpi_logs", "glpi_tickets"),
          array("glpi_plugin_order_orders_items", "glpi_plugin_order_references"));
 
-      if (!FieldExists("glpi_plugin_order_configs","generate_assets")) { // version 1.3.0
-         $update130=true;
-         $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.3.0.sql");
-      }
    }
-   
+
+   if (!FieldExists("glpi_plugin_order_configs","generate_assets")) { // version 1.3.0
+      $update130=true;
+      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.3.0.sql");
+   }
+      
    if (!TableExists("glpi_plugin_order_orders")) { // not installed
       $install=true;
       $DB->runFile(GLPI_ROOT ."/plugins/order/sql/empty-1.3.0.sql");
@@ -368,6 +369,7 @@ Informations sur la r&#233;ception
 ##lang.reception.deliverystate## : ##reception.deliverystate## 
 ##lang.reception.deliverynumber## : ##reception.deliverynumber## 
 
+##IFreception.associateditems_url##
 Informations sur le mat&#233;riel associ&#233; 
 
 ##reception.associateditems_url## 
@@ -375,7 +377,8 @@ Informations sur le mat&#233;riel associ&#233;
 ##lang.reception.associateditems_name## : ##reception.associateditems_name## 
 ##lang.reception.associateditems_serial## : ##reception.associateditems_serial## 
 ##lang.reception.associateditems_otherserial## : ##reception.associateditems_otherserial## 
-##lang.reception.associateditems_state## : ##reception.associateditems_state##','&lt;table style=\"border: 1px solid black; border-collapse: collapse;\"&gt;
+##lang.reception.associateditems_state## : ##reception.associateditems_state##
+##ENDIFreception.associateditems_url##','&lt;table style=\"border: 1px solid black; border-collapse: collapse;\"&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
 &lt;th style=\"background-color: #f2f2f2;\" colspan=\"4\"&gt;Informations sur la commande&lt;/th&gt;
@@ -474,6 +477,7 @@ Informations sur le mat&#233;riel associ&#233;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+##IFreception.associateditems_url##
 &lt;hr /&gt;
 &lt;table style=\"border: 1px solid black; border-collapse: collapse;\"&gt;
 &lt;tbody&gt;
@@ -487,7 +491,8 @@ Informations sur le mat&#233;riel associ&#233;
 &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.associateditems_name## : &lt;/strong&gt;##reception.associateditems_name##             &lt;br /&gt;&lt;strong&gt;##lang.reception.associateditems_serial## : &lt;/strong&gt;##reception.associateditems_serial##             &lt;br /&gt;&lt;strong&gt;##lang.reception.associateditems_otherserial## : &lt;/strong&gt;##reception.associateditems_otherserial##             &lt;br /&gt;&lt;strong&gt;##lang.reception.associateditems_state## : &lt;/strong&gt;##reception.associateditems_state##&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
-&lt;/table&gt;')";
+&lt;/table&gt;
+##ENDIFreception.associateditems_url##')";
             
       $result=$DB->query($query);
 
