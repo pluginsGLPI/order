@@ -139,8 +139,8 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
       // orderurl
       $this->datas['##lang.reception.orderurl##'] = "URL " . 
                $LANG['plugin_order']['detail'][2];
-      $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_" . 
-               $order->getField("id")."&forcetab=5";
+      $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_order_" . 
+               $order->getField("id")."_5";
       $this->datas['##reception.orderurl##'] = urldecode($url);
       
       //--------------------------------------------------//
@@ -171,7 +171,7 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
 
       // deliveryurl
       $this->datas['##lang.reception.deliveryurl##'] = "URL ".$LANG['plugin_order'][6];
-      $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order-reception_" .
+      $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_reception_" .
                $this->obj->getField("id");
       $this->datas['##reception.deliveryurl##'] = urldecode($url);
 
@@ -227,7 +227,7 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
       // deliveryreference_url
       $this->datas['##lang.reception.deliveryreference_url##'] = "URL " . 
                $LANG['plugin_order']['detail'][2];
-      $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order-reference_" . 
+      $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_reference_" . 
                $reference->getField("id");
       $this->datas['##reception.deliveryreference_url##'] = urldecode($url);
       

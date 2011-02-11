@@ -97,7 +97,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       $this->datas['##ordervalidation.users##'] =  html_clean(getUserName(getLoginUserID()));
       
       $this->datas['##lang.ordervalidation.url##'] = "URL";
-      $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_".$this->obj->getField("id");
+      $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_order_".$this->obj->getField("id");
       $this->datas['##ordervalidation.url##'] = urldecode($url);
 
    }
