@@ -60,7 +60,7 @@ if ($_POST["plugin_order_references_id"] > 0)
          echo "<input type='text' name='price' value=\"".formatNumber($price,true)."\" size='5'>";
          break;
       case 'pricediscounted':
-         echo "<input type='text' name='discount' size='5'>";
+         echo "<input type='text' name='discount' size='5' value='0'>";
          break;
       case 'validate':
          echo "<input type='hidden' name='itemtype' value='".
