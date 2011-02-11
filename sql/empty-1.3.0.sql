@@ -239,6 +239,22 @@ INSERT INTO `glpi_plugin_order_ordertaxes` (id,name) VALUES (1,'5.5'), (2,'19.6'
 
 -- --------------------------------------------------------
 
+-- --------------------------------------------------------
+-- 
+-- Structure de la table `glpi_plugin_order_ordertypes`
+-- 
+
+DROP TABLE IF EXISTS `glpi_plugin_order_ordertypes`;
+CREATE TABLE `glpi_plugin_order_ordertypes` (
+	`id` int(11) NOT NULL auto_increment,
+	`name` varchar(255) collate utf8_unicode_ci default NULL,
+	`comment` text collate utf8_unicode_ci,
+	PRIMARY KEY  (`id`),
+	KEY `name` (`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
 -- 
 -- Structure de la table `glpi_plugin_order_deliverystates`
 -- 

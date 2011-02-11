@@ -246,6 +246,11 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[10]['field'] = 'name';
       $tab[10]['linkfield'] = 'name';
       $tab[10]['name'] = $LANG['plugin_order'][39];
+      /* type */
+      $tab[11]['table'] = 'glpi_plugin_order_ordertypes';
+      $tab[11]['field'] = 'name';
+      $tab[11]['linkfield'] = 'plugin_order_ordertypes_id';
+      $tab[11]['name'] = $LANG['common'][17];
       /* comments */
       $tab[16]['table'] = $this->getTable();
       $tab[16]['field'] = 'comment';
@@ -355,11 +360,14 @@ class PluginOrderOrder extends CommonDBTM {
       else
          echo $this->fields["num_order"];
       echo "</td>";
-      echo "<td>" . $LANG['plugin_order'][3] . ": </td><td>";
-      if ($canedit)
-         Dropdown::show('Budget', array('name' => "budgets_id",'value' => $this->fields["budgets_id"], 'entity' => $this->fields["entities_id"]));
-      else
-         echo Dropdown::getDropdownName("glpi_budgets",$this->fields["budgets_id"]);
+      /* type order */
+      echo "<td>" . $LANG['common'][17] . ": </td><td>";
+      if ($canedit){
+         Dropdown::show('PluginOrderOrderType', array('name' => "plugin_order_ordertypes_id",
+                                                      'value' => $this->fields["plugin_order_ordertypes_id"]));
+      } else {
+         echo Dropdown::getDropdownName("glpi_plugin_order_ordertypes",$this->fields["plugin_order_ordertypes_id"]);
+      }
       echo "</td></tr>";
 
       /* location */
@@ -369,6 +377,23 @@ class PluginOrderOrder extends CommonDBTM {
          Dropdown::show('Location', array('name' => "locations_id",'value' => $this->fields["locations_id"], 'entity' => $this->fields["entities_id"]));
       else
          echo Dropdown::getDropdownName("glpi_locations",$this->fields["locations_id"]);
+      echo "</td>";
+      
+      /* budget */
+      echo "<td>" . $LANG['plugin_order'][3] . ": </td><td>";
+      if ($canedit)
+         Dropdown::show('Budget', array('name' => "budgets_id",'value' => $this->fields["budgets_id"], 'entity' => $this->fields["entities_id"]));
+      else
+         echo Dropdown::getDropdownName("glpi_budgets",$this->fields["budgets_id"]);
+      echo "</td></tr>";
+      
+      /* supplier of order */
+      echo "<tr class='tab_bg_1'><td>" . $LANG['financial'][26] . ": </td>";
+      echo "<td>";
+      if ($canedit && !$this->checkIfDetailExists($ID))
+         $this->dropdownSuppliers("suppliers_id", $this->fields["suppliers_id"], $this->fields["entities_id"]);
+      else
+         echo Dropdown::getDropdownName("glpi_suppliers",$this->fields["suppliers_id"]);
       echo "</td>";
       
       /* tva */
@@ -388,23 +413,6 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
       
-      /* supplier of order */
-      echo "<tr class='tab_bg_1'><td>" . $LANG['financial'][26] . ": </td>";
-      echo "<td>";
-      if ($canedit && !$this->checkIfDetailExists($ID))
-         $this->dropdownSuppliers("suppliers_id", $this->fields["suppliers_id"], $this->fields["entities_id"]);
-      else
-         echo Dropdown::getDropdownName("glpi_suppliers",$this->fields["suppliers_id"]);
-      echo "</td>";
-      
-      /* payment */
-      echo "<td>" . $LANG['plugin_order'][32] . ": </td><td>";
-      if ($canedit)
-         Dropdown::show('PluginOrderOrderPayment', array('name' => "plugin_order_orderpayments_id",'value' => $this->fields["plugin_order_orderpayments_id"]));
-      else
-         echo Dropdown::getDropdownName("glpi_plugin_order_orderpayments",$this->fields["plugin_order_orderpayments_id"]);
-      echo "</td></tr>";
-      
       /* linked contact of the supplier of order */
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][92].": </td>";
       echo "<td><span id='show_contacts_id'>";
@@ -414,7 +422,16 @@ class PluginOrderOrder extends CommonDBTM {
          echo Dropdown::getDropdownName("glpi_contacts",$this->fields["contacts_id"]);
       echo "</span></td>";
       
+      /* payment */
+      echo "<td>" . $LANG['plugin_order'][32] . ": </td><td>";
+      if ($canedit)
+         Dropdown::show('PluginOrderOrderPayment', array('name' => "plugin_order_orderpayments_id",'value' => $this->fields["plugin_order_orderpayments_id"]));
+      else
+         echo Dropdown::getDropdownName("glpi_plugin_order_orderpayments",$this->fields["plugin_order_orderpayments_id"]);
+      echo "</td></tr>";
+      
       /* port price */
+      echo "<tr class='tab_bg_1'><td colspan=\"2\"></td>";
       echo "<td>".$LANG['plugin_order'][26].": </td>";
       echo "<td>";
       if ($canedit)
