@@ -281,7 +281,7 @@ function plugin_order_install() {
 
    }
 
-   if (!TableExists("glpi_plugin_order_configs") && !FieldExists("glpi_plugin_order_configs","generate_assets")) { // version 1.3.0
+   if (TableExists("glpi_plugin_order_configs") && !FieldExists("glpi_plugin_order_configs","generate_assets")) { // version 1.3.0
       $update130=true;
       $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.3.0.sql");
    }
