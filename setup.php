@@ -141,7 +141,7 @@ function plugin_version_order() {
 		'version' => '1.3.0',
 		'author' => 'Benjamin Fontan, Walid Nouh, Xavier Caillaud, François Legastelois',
 		'homepage' => 'https://forge.indepnet.net/projects/show/order',
-		'minGlpiVersion' => '0.78.2',
+		'minGlpiVersion' => '0.78.3',
 		
 	);
 }
@@ -156,10 +156,10 @@ function plugin_order_check_prerequisites(){
 		if ($splitted[2]<10) $splitted[2].="0";
 		$cur_version+=$splitted[2];
 	}
-	if ($cur_version>=7820){
+	if ($cur_version=7830){
 		return true;
 	} else {
-		echo "GLPI version not compatible need 0.78.2";
+		echo "GLPI version not compatible need 0.78.3";
 	}
 }
 
