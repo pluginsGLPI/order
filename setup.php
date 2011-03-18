@@ -156,7 +156,7 @@ function plugin_order_check_prerequisites(){
 		if ($splitted[2]<10) $splitted[2].="0";
 		$cur_version+=$splitted[2];
 	}
-	if ($cur_version>=7830){
+	if ($cur_version==7830){
 		return true;
 	} else {
 		echo "GLPI version not compatible need 0.78.3";
