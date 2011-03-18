@@ -27,10 +27,10 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
 // ----------------------------------------------------------------------
-// Original Author of file: NOUH Walid & FONTAN Benjamin & CAILLAUD Xavier
-// Purpose of file: plugin order v1.2.0 - GLPI 0.78
-// ----------------------------------------------------------------------
- */
+// Original Authors of file: 
+// NOUH Walid & FONTAN Benjamin & CAILLAUD Xavier & François Legastelois
+// Purpose of file: plugin order v1.3.0 - GLPI 0.78.3
+// ---------------------------------------------------------------------- */
 
 $AJAX_INCLUDE=1;
 

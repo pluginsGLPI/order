@@ -27,10 +27,10 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
 // ----------------------------------------------------------------------
-// Original Author of file: NOUH Walid & FONTAN Benjamin & CAILLAUD Xavier
-// Purpose of file: plugin order v1.2.0 - GLPI 0.78
-// ----------------------------------------------------------------------
- */
+// Original Authors of file: 
+// NOUH Walid & FONTAN Benjamin & CAILLAUD Xavier & François Legastelois
+// Purpose of file: plugin order v1.3.0 - GLPI 0.78.3
+// ---------------------------------------------------------------------- */
 
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
@@ -139,7 +139,7 @@ function plugin_version_order() {
 	return array (
 		'name' => $LANG['plugin_order']['title'][1],
 		'version' => '1.3.0',
-		'author' => 'Benjamin Fontan, Walid Nouh, Xavier Caillaud',
+		'author' => 'Benjamin Fontan, Walid Nouh, Xavier Caillaud, François Legastelois',
 		'homepage' => 'https://forge.indepnet.net/projects/show/order',
 		'minGlpiVersion' => '0.78.2',
 		

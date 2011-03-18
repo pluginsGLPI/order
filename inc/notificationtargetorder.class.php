@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: HEADER 1 2010-02-24 00:12 Tsmr $
+ * @version $Id: HEADER 1 2010-03-03 21:49 Tsmr $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
@@ -27,10 +27,10 @@
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  --------------------------------------------------------------------------
 // ----------------------------------------------------------------------
-// Original Author of file: CAILLAUD Xavier
-// Purpose of file: plugin accounts v1.6.0 - GLPI 0.78
-// ----------------------------------------------------------------------
- */
+// Original Authors of file: 
+// NOUH Walid & FONTAN Benjamin & CAILLAUD Xavier & François Legastelois
+// Purpose of file: plugin order v1.3.0 - GLPI 0.78.3
+// ---------------------------------------------------------------------- */
 
 if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
