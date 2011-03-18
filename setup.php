@@ -29,7 +29,7 @@
 // ----------------------------------------------------------------------
 // Original Authors of file: 
 // NOUH Walid & FONTAN Benjamin & CAILLAUD Xavier & François Legastelois
-// Purpose of file: plugin order v1.3.0 - GLPI 0.78.3
+// Purpose of file: plugin order v1.4.0 - GLPI 0.80
 // ---------------------------------------------------------------------- */
 
 /* init the hooks of the plugins -needed- */
@@ -49,13 +49,14 @@ function plugin_init_order() {
    }
    
 	Plugin::registerClass('PluginOrderOrder', array(
-		'doc_types' => true,
+		'document_types' => true,
+		'unicity_types' => true,
 		'massiveaction_noupdate_types' => true,
 		'notificationtemplates_types' => true
 	));
    
    Plugin::registerClass('PluginOrderReference', array(
-		'doc_types' => true,
+		'document_types' => true,
 		'massiveaction_noupdate_types' => true
 	));
 	
@@ -138,28 +139,20 @@ function plugin_version_order() {
 
 	return array (
 		'name' => $LANG['plugin_order']['title'][1],
-		'version' => '1.3.0',
+		'version' => '1.4.0',
 		'author' => 'Benjamin Fontan, Walid Nouh, Xavier Caillaud, François Legastelois',
 		'homepage' => 'https://forge.indepnet.net/projects/show/order',
-		'minGlpiVersion' => '0.78.3',
+		'minGlpiVersion' => '0.80',
 		
 	);
 }
 
 /* check prerequisites before install : may print errors or add to message after redirect -optional- */
 function plugin_order_check_prerequisites(){
-	$splitted=explode(".",trim(GLPI_VERSION));
-	if ($splitted[0]<10) $splitted[0].="0";
-	if ($splitted[1]<10) $splitted[1].="0";
-	$cur_version = $splitted[0]*10000+$splitted[1]*100;
-	if (isset($splitted[2])) {
-		if ($splitted[2]<10) $splitted[2].="0";
-		$cur_version+=$splitted[2];
-	}
-	if ($cur_version==7830){
+	if (GLPI_VERSION>=0.80) {
 		return true;
 	} else {
-		echo "GLPI version not compatible need 0.78.3";
+		echo "GLPI version not compatible need 0.80";
 	}
 }
 
