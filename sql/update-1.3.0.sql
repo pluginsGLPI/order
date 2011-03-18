@@ -27,3 +27,13 @@ CREATE TABLE `glpi_plugin_order_ordertypes` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
+
+-- --------------------------------------------------------
+-- 
+-- Structure de la table `glpi_plugin_order_ordertypes`
+--
+
+ALTER TABLE `glpi_plugin_order_orders`
+	ADD `plugin_order_ordertypes_id` int (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)';
+
+-- --------------------------------------------------------

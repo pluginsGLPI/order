@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders` (
    `comment` text collate utf8_unicode_ci,
    `notepad` longtext collate utf8_unicode_ci,
    `is_deleted` tinyint(1) NOT NULL default '0',
+   `plugin_order_ordertypes_id` int (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)',
    PRIMARY KEY  (`id`),
 	KEY `name` (`name`),
    KEY `entities_id` (`entities_id`),
