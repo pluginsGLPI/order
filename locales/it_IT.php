@@ -45,6 +45,8 @@ $LANG['plugin_order'][7] = "Ordine";
 $LANG['plugin_order'][8] = "Altre attrezzature";
 $LANG['plugin_order'][9] = "Tipo altre attrezzature";
 $LANG['plugin_order'][10] = "Quality";
+$LANG['plugin_order'][11] = "Ordini collegati";
+$LANG['plugin_order'][12] = "Budget gia' utilizzato";
 $LANG['plugin_order'][13] = "Importo senza IVA";
 $LANG['plugin_order'][14] = "Importo (iva + sconto)";
 $LANG['plugin_order'][15] = "Importo Totale + Spedizione";
@@ -62,10 +64,6 @@ $LANG['plugin_order'][45] = "NON posso INVENTARIARE Articoli non spediti";
 $LANG['plugin_order'][46] = "NON posso ASSOCIARE Articoli non spediti";
 $LANG['plugin_order'][47] = "Informazioni Ordine";
 $LANG['plugin_order'][48] = "Uno o più righe selezionate non hanno materiali associati";
-
-$LANG['plugin_order']['budget'][1] = "Ordini collegati";
-$LANG['plugin_order']['budget'][2] = "Budget gia' utilizzato";
-$LANG['plugin_order']['budget'][3] = "Importo budget nullo, Aggiungere un valore";
 
 $LANG['plugin_order']['config'][0] = "Configurazione Plugin";
 $LANG['plugin_order']['config'][1] = "Default IVA";

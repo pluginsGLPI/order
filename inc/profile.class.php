@@ -85,7 +85,6 @@ class PluginOrderProfile extends CommonDBTM {
          $myProf->add(array(
             'profiles_id' => $ID,
             'order' => 'w',
-            'budget' => 'w',
             'reference'=>'w',
             'validation'=>'w',
             'cancel'=>'w',
@@ -149,12 +148,7 @@ class PluginOrderProfile extends CommonDBTM {
       echo "</tr>";
       echo "<tr class='tab_bg_2'>";
       
-      echo "<td>" . $LANG['plugin_order']['menu'][3] . ":</td><td>";
-      if ($prof->fields['interface']!='helpdesk') {
-         Profile::dropdownNoneReadWrite("budget",$this->fields["budget"],1,1,1);
-      } else {
-         echo $LANG['profiles'][12]; // No access;
-      }
+      echo "<td></td><td>";
       echo "</td>";
       
       echo "<td></td>";

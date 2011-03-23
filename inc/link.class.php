@@ -558,7 +558,8 @@ class PluginOrderLink extends CommonDBChild {
 	$input["suppliers_id"] = 0;
 	$input["bill"] = "";
 	$input["value"] = 0;
-	$input["buy_date"] = NULL;
+	$input["order_date"] = NULL;
+	$input["delivery_date"] = NULL;
 
 	$infocom->update($input);
 }

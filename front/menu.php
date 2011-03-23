@@ -39,11 +39,9 @@ commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "menu");
 
 $PluginOrderOrder = new PluginOrderOrder();
 $PluginOrderReference = new PluginOrderReference();
-$PluginOrderBudget = new PluginOrderBudget();
 
 if ($PluginOrderOrder->canView() 
-      || $PluginOrderReference->canView() 
-         || $PluginOrderBudget->canView()) {
+      || $PluginOrderReference->canView()) {
    echo "<div class='center'>";
    echo "<table class='tab_cadre'>";
    echo "<tr><th colspan='2'>" . $LANG['plugin_order']['title'][1] . "</th></tr>";
@@ -60,10 +58,9 @@ if ($PluginOrderOrder->canView()
       echo "<td><a href='reference.php'>" . $LANG['plugin_order']['menu'][2] . "</a></td></tr>";
    }
 
-   if ($PluginOrderBudget->canView()) {
+   if (haveRight('budget', 'r')) {
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td><img src='../pics/budget-icon.png'></td>";
-      //echo "<td><a href='budget.php'>" . $LANG['plugin_order']['menu'][3] . "</a></td></tr>";
       echo "<td><a href='" . $CFG_GLPI["root_doc"] . "/front/budget.php'>" . 
          $LANG['plugin_order']['menu'][3] . "</a></td></tr>";
    }

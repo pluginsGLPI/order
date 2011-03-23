@@ -45,6 +45,8 @@ $LANG['plugin_order'][7] = "Order";
 $LANG['plugin_order'][8] = "Autre équipement";
 $LANG['plugin_order'][9] = "Type d'autre équipement";
 $LANG['plugin_order'][10] = "Quality";
+$LANG['plugin_order'][11] = "Linked orders";
+$LANG['plugin_order'][12] = "Budget already used";
 $LANG['plugin_order'][13] = "Price tax free";
 $LANG['plugin_order'][14] = "Price ATI";
 $LANG['plugin_order'][15] = "Price tax free with postage";
@@ -62,10 +64,6 @@ $LANG['plugin_order'][45] = "Cannot generate items not delivered";
 $LANG['plugin_order'][46] = "Cannot link items not delivered";
 $LANG['plugin_order'][47] = "Order informations";
 $LANG['plugin_order'][48] = "One or several selected rows haven't linked items";
-
-$LANG['plugin_order']['budget'][1] = "Linked orders";
-$LANG['plugin_order']['budget'][2] = "Budget already used";
-$LANG['plugin_order']['budget'][3] = "The value of the budget is null. Thanks to add a value";
 
 $LANG['plugin_order']['config'][0] = "Plugin configuration";
 $LANG['plugin_order']['config'][1] = "Default VAT";

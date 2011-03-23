@@ -41,7 +41,8 @@ function plugin_order_install() {
    $update110=false;
    $update120=false;
    $update130=false;
-
+   $update140=false;
+   
    if (TableExists("glpi_plugin_order_detail")) {
       if (!FieldExists("glpi_plugin_order_detail","discount")) { // version 1.1.0
 
@@ -285,10 +286,15 @@ function plugin_order_install() {
       $update130=true;
       $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.3.0.sql");
    }
+   
+   if (TableExists("glpi_plugin_order_budgets")) { // version 1.4.0
+      $update140=true;
+      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.4.0.sql");
+   }
       
    if (!TableExists("glpi_plugin_order_orders")) { // not installed
       $install=true;
-      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/empty-1.3.0.sql");
+      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/empty-1.4.0.sql");
    }
 
    if($install || $update130) {
@@ -521,7 +527,6 @@ function plugin_order_uninstall() {
       "glpi_plugin_order_references",
       "glpi_plugin_order_references_suppliers",
       "glpi_plugin_order_configs",
-      "glpi_plugin_order_budgets",
       "glpi_plugin_order_orders_suppliers",
       "glpi_plugin_order_others",
       "glpi_plugin_order_othertypes",
@@ -554,8 +559,7 @@ function plugin_order_uninstall() {
    $in = "IN (" . implode(',', array (
       "'PluginOrderOrder'",
       "'PluginOrderReference'",
-      "'PluginOrderReference_Supplier'",
-      "'PluginOrderBudget'"
+      "'PluginOrderReference_Supplier'"
    )) . ")";
 
    $tables = array (
@@ -965,8 +969,8 @@ function plugin_headings_order($item) {
 
    $PluginOrderProfile=new PluginOrderProfile();
    $PluginOrderOrder_Item = new PluginOrderOrder_Item();
+   $PluginOrderOrder = new PluginOrderOrder();
    $PluginOrderReference = new PluginOrderReference();
-   $PluginOrderBudget = new PluginOrderBudget();
    $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
    $PluginOrderSurveySupplier = new PluginOrderSurveySupplier();
 
@@ -982,10 +986,10 @@ function plugin_headings_order($item) {
          $PluginOrderSurveySupplier->showGlobalNotation($item->getField('id'));
          break;
       case 'Budget' :
-         $PluginOrderBudget->getAllOrdersByBudget($_POST["id"]);
+         $PluginOrderOrder->getAllOrdersByBudget($_POST["id"]);
          break;
       case "Preference" :
-         $pref = new PluginOrderPreference;
+         $pref = new PluginOrderPreference();
          $pref_ID=$pref->checkIfPreferenceExists(getLoginUserID());
          if (!$pref_ID)
             $pref_ID=$pref->addDefaultPreference(getLoginUserID());

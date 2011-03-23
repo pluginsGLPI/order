@@ -45,6 +45,8 @@ $LANG['plugin_order'][7] = "Bestellung";
 $LANG['plugin_order'][8] = "Autre équipement";
 $LANG['plugin_order'][9] = "Type d'autre équipement";
 $LANG['plugin_order'][10] = "Quality";
+$LANG['plugin_order'][11] = "Verbundene Bestellungen";
+$LANG['plugin_order'][12] = "Verbrauchtes Budget";
 $LANG['plugin_order'][13] = "Total Netto";
 $LANG['plugin_order'][14] = "Total Brutto";
 $LANG['plugin_order'][15] = "Total Netto + Porto";
@@ -62,10 +64,6 @@ $LANG['plugin_order'][45] = "Noch nicht empfangene Geräte können nicht erzeugt
 $LANG['plugin_order'][46] = "Noch nicht empfangene Geräte können nicht verbunden werden";
 $LANG['plugin_order'][47] = "Informationen über die Bestellung";
 $LANG['plugin_order'][48] = "Eine oder mehrere ausgewählte Positionen wurden noch keinem Gerät zugeordnet";
-
-$LANG['plugin_order']['budget'][1] = "Verbundene Bestellungen";
-$LANG['plugin_order']['budget'][2] = "Verbrauchtes Budget";
-$LANG['plugin_order']['budget'][3] = "Budgetwert ist gleich Null. Bitte versuchen Sie es erneut";
 
 $LANG['plugin_order']['config'][0] = "Plugin-Einstellungen";
 $LANG['plugin_order']['config'][1] = "Standard-MwSt";

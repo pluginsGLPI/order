@@ -103,12 +103,6 @@ function plugin_init_order() {
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['page']  = '/plugins/order/front/reference.php';
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['search'] = '/plugins/order/front/reference.php';
          }
-         //budget
-         if (plugin_order_haveRight("budget","r")) {
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['budget']['title'] = $LANG['plugin_order']['menu'][6];
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['budget']['page']  = '/plugins/order/front/budget.php';
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['budget']['links']['search'] = '/plugins/order/front/budget.php';
-         }
       }
 
       if (plugin_order_haveRight("order","w")) {
@@ -120,11 +114,6 @@ function plugin_init_order() {
          //references
          $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['add']    = '/plugins/order/front/reference.form.php';
          $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['config'] = '/plugins/order/front/config.form.php';
-      }
-      if (plugin_order_haveRight("budget","w")) {
-         //budget
-         $PLUGIN_HOOKS['submenu_entry']['order']['options']['budget']['links']['add']    = '/plugins/order/front/budget.form.php';
-         $PLUGIN_HOOKS['submenu_entry']['order']['options']['budget']['links']['config'] = '/plugins/order/front/config.form.php';
       }
       if (haveRight("config","w")) {
          $PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/config.form.php';

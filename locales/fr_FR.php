@@ -45,6 +45,8 @@ $LANG['plugin_order'][7] = "Commande";
 $LANG['plugin_order'][8] = "Autre équipement";
 $LANG['plugin_order'][9] = "Type d'autre équipement";
 $LANG['plugin_order'][10] = "Qualité";
+$LANG['plugin_order'][11] = "Commandes liées";
+$LANG['plugin_order'][12] = "Budget consommé";
 $LANG['plugin_order'][13] = "Prix Total (HT)";
 $LANG['plugin_order'][14] = "Prix Total (TTC)";
 $LANG['plugin_order'][15] = "Prix Total (HT) + Frais de port";
@@ -62,10 +64,6 @@ $LANG['plugin_order'][45] = "Impossible de générer du matériel non réception
 $LANG['plugin_order'][46] = "Impossible de lier du matériel non réceptionné";
 $LANG['plugin_order'][47] = "Informations sur la commande";
 $LANG['plugin_order'][48] = "Une ou plusieurs lignes sélectionnées n'ont pas de matériel associé";
-
-$LANG['plugin_order']['budget'][1] = "Commandes Liées";
-$LANG['plugin_order']['budget'][2] = "Budget consommé";
-$LANG['plugin_order']['budget'][3] = "La valeur du budget est nulle. Merci de recommencer";
 
 $LANG['plugin_order']['config'][0] = "Configuration du plugin";
 $LANG['plugin_order']['config'][1] = "TVA par défaut";
