@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: HEADER 1 2010-03-03 21:49 Tsmr $
+ * @version $Id: HEADER 2011-03-23 15:41:26 tsmr $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
@@ -29,7 +29,8 @@
 // ----------------------------------------------------------------------
 // Original Authors of file: 
 // NOUH Walid & FONTAN Benjamin & CAILLAUD Xavier & François Legastelois
-// Purpose of file: plugin order v1.3.0 - GLPI 0.78.3
+// Purpose of file: plugin order v1.4.0 - GLPI 0.80
+// ----------------------------------------------------------------------
 // ---------------------------------------------------------------------- */
 
 $LANG['plugin_order']['title'][1] = "Gestion des commandes";
@@ -151,12 +152,9 @@ $LANG['plugin_order']['mailing'][2] = "par";
 $LANG['plugin_order']['menu'][0] = "Menu principal";
 $LANG['plugin_order']['menu'][1] = "Gérer les commandes";
 $LANG['plugin_order']['menu'][2] = "Gérer le catalogue de références produits";
-$LANG['plugin_order']['menu'][3] = "Gérer les budgets";
 $LANG['plugin_order']['menu'][4] = "Commandes";
 $LANG['plugin_order']['menu'][5] = "Références";
-$LANG['plugin_order']['menu'][6] = "Budgets";
 
-$LANG['plugin_order']['parser'][0] = "Fichiers";
 $LANG['plugin_order']['parser'][1] = "Utiliser ce modèle";
 $LANG['plugin_order']['parser'][2] = "Aucun fichier trouvé dans le répertoire";
 $LANG['plugin_order']['parser'][3] = "Utiliser cette signature";

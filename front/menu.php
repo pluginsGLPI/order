@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: HEADER 1 2010-03-03 21:49 Tsmr $
+ * @version $Id: HEADER 2011-03-23 15:41:26 tsmr $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
@@ -29,7 +29,8 @@
 // ----------------------------------------------------------------------
 // Original Authors of file: 
 // NOUH Walid & FONTAN Benjamin & CAILLAUD Xavier & François Legastelois
-// Purpose of file: plugin order v1.3.0 - GLPI 0.78.3
+// Purpose of file: plugin order v1.4.0 - GLPI 0.80
+// ----------------------------------------------------------------------
 // ---------------------------------------------------------------------- */
 
 define('GLPI_ROOT', '../../..');
@@ -56,13 +57,6 @@ if ($PluginOrderOrder->canView()
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td><img src='../pics/reference-icon.png'></td>";
       echo "<td><a href='reference.php'>" . $LANG['plugin_order']['menu'][2] . "</a></td></tr>";
-   }
-
-   if (haveRight('budget', 'r')) {
-      echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td><img src='../pics/budget-icon.png'></td>";
-      echo "<td><a href='" . $CFG_GLPI["root_doc"] . "/front/budget.php'>" . 
-         $LANG['plugin_order']['menu'][3] . "</a></td></tr>";
    }
    echo "</table></div>";
 } else {
