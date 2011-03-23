@@ -70,51 +70,42 @@ class PluginOrderReference extends CommonDBTM {
 
       $tab[1]['table'] = $this->getTable();
       $tab[1]['field'] = 'name';
-      $tab[1]['linkfield'] = 'name';
       $tab[1]['name'] = $LANG['plugin_order']['detail'][2];
       $tab[1]['datatype'] = 'itemlink';
 
       $tab[2]['table'] = $this->getTable();
       $tab[2]['field'] = 'comment';
-      $tab[2]['linkfield'] = 'comment';
       $tab[2]['name'] = $LANG['common'][25];
       $tab[2]['datatype'] = 'text';
 
       $tab[3]['table'] = $this->getTable();
       $tab[3]['field'] = 'itemtype';
-      $tab[3]['linkfield'] = '';
       $tab[3]['name'] = $LANG['state'][6];
       $tab[3]['datatype'] = 'itemtypename';
 
       $tab[4]['table'] = $this->getTable();
       $tab[4]['field'] = 'models_id';
-      $tab[4]['linkfield'] = 'models_id';
       $tab[4]['name'] = $LANG['common'][22];
 
       $tab[5]['table'] = 'glpi_manufacturers';
       $tab[5]['field'] = 'name';
-      $tab[5]['linkfield'] = 'manufacturers_id';
       $tab[5]['name'] = $LANG['common'][5];
 
       $tab[6]['table'] = $this->getTable();
       $tab[6]['field'] = 'types_id';
-      $tab[6]['linkfield'] = 'types_id';
       $tab[6]['name'] = $LANG['common'][17];
       
       $tab[7]['table'] = $this->getTable();
       $tab[7]['field'] = 'templates_id';
-      $tab[7]['linkfield'] = 'templates_id';
       $tab[7]['name'] = $LANG['common'][13];
       
       $tab[30]['table'] = $this->getTable();
       $tab[30]['field'] = 'id';
-      $tab[30]['linkfield'] = '';
       $tab[30]['name']=$LANG['common'][2];
 
       /* entity */
       $tab[80]['table'] = 'glpi_entities';
       $tab[80]['field'] = 'completename';
-      $tab[80]['linkfield'] = 'entities_id';
       $tab[80]['name'] = $LANG['entity'][0];
       
       return $tab;

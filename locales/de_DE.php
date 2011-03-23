@@ -183,6 +183,7 @@ $LANG['plugin_order']['status'][10] = "Storniert";
 $LANG['plugin_order']['status'][11] = "Lieferung pendent";
 $LANG['plugin_order']['status'][12] = "Genehmigt";
 $LANG['plugin_order']['status'][13] = "Delivery statistics";
+$LANG['plugin_order']['status'][14] = "the order is validated, any update is forbidden";
 
 $LANG['plugin_order']['survey'][0] = "Qualité fournisseur";
 $LANG['plugin_order']['survey'][1] = "Qualité du suivi administratif (contrat, factures, courrier...)";

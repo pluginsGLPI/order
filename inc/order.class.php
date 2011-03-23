@@ -86,8 +86,8 @@ class PluginOrderOrder extends CommonDBTM {
    
    function canUpdateOrder($orders_id) {
       
-      $ORDER_VALIDATION_STATUS = array (PluginOrderOrder::ORDER_STATUS_DRAFT,
-                                    PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
+      $ORDER_VALIDATION_STATUS = array (self::ORDER_STATUS_DRAFT,
+                                    self::ORDER_STATUS_WAITING_APPROVAL);
                                     
       if ($orders_id > 0) {
          $this->getFromDB($orders_id);
@@ -113,16 +113,16 @@ class PluginOrderOrder extends CommonDBTM {
       $PluginOrderConfig = new PluginOrderConfig;
       $config = $PluginOrderConfig->getConfig();
       
-      $ORDER_VALIDATION_STATUS = array (PluginOrderOrder::ORDER_STATUS_DRAFT,
-                                    PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
+      $ORDER_VALIDATION_STATUS = array (self::ORDER_STATUS_DRAFT,
+                                    self::ORDER_STATUS_WAITING_APPROVAL);
       //If no validation process -> can validate if order is in draft state
       if (!$config["use_validation"])
-         return ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_DRAFT);
+         return ($this->fields["states_id"] == self::ORDER_STATUS_DRAFT);
       else {
          //Validation process is used
 
          //If order is canceled, cannot validate !
-         if ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_CANCELED)
+         if ($this->fields["states_id"] == self::ORDER_STATUS_CANCELED)
             return false;
 
          //If no right to validate
@@ -135,7 +135,7 @@ class PluginOrderOrder extends CommonDBTM {
 
    function canCancelOrder() {
       //If order is canceled, cannot validate !
-      if ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_CANCELED)
+      if ($this->fields["states_id"] == self::ORDER_STATUS_CANCELED)
          return false;
 
       //If no right to cancel
@@ -153,21 +153,21 @@ class PluginOrderOrder extends CommonDBTM {
       if (!$config["use_validation"])
          return false;
       else
-         return ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_DRAFT);
+         return ($this->fields["states_id"] == self::ORDER_STATUS_DRAFT);
    }
 
    function canCancelValidationRequest() {
    
-      return ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
+      return ($this->fields["states_id"] == self::ORDER_STATUS_WAITING_APPROVAL);
    }
 
    function canUndoValidation() {
       
-      $ORDER_VALIDATION_STATUS = array (PluginOrderOrder::ORDER_STATUS_DRAFT,
-                                    PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
+      $ORDER_VALIDATION_STATUS = array (self::ORDER_STATUS_DRAFT,
+                                    self::ORDER_STATUS_WAITING_APPROVAL);
                                     
       //If order is canceled, cannot validate !
-      if ($this->fields["states_id"] == PluginOrderOrder::ORDER_STATUS_CANCELED)
+      if ($this->fields["states_id"] == self::ORDER_STATUS_CANCELED)
          return false;
 
       //If order is not validate, cannot undo validation !
@@ -187,35 +187,29 @@ class PluginOrderOrder extends CommonDBTM {
       /* order_number */
       $tab[1]['table'] = $this->getTable();
       $tab[1]['field'] = 'num_order';
-      $tab[1]['linkfield'] = 'num_order';
       $tab[1]['name'] = $LANG['plugin_order'][0];
       $tab[1]['datatype'] = 'itemlink';
       /* order_date */
       $tab[2]['table'] = $this->getTable();
       $tab[2]['field'] = 'order_date';
-      $tab[2]['linkfield'] = 'order_date';
       $tab[2]['name'] = $LANG['plugin_order'][1];
       $tab[2]['datatype']='date';
       /* taxes*/
       $tab[3]['table'] = 'glpi_plugin_order_ordertaxes';
       $tab[3]['field'] = 'name';
-      $tab[3]['linkfield'] = 'plugin_order_ordertaxes_id';
       $tab[3]['name'] = $LANG['plugin_order'][25];
       /* location */
       $tab[4]['table'] = 'glpi_locations';
       $tab[4]['field'] = 'completename';
-      $tab[4]['linkfield'] = 'locations_id';
       $tab[4]['name'] = $LANG['plugin_order'][40];
       /* status */
       $tab[5]['table'] = $this->getTable();
       $tab[5]['field'] = 'states_id';
-      $tab[5]['linkfield'] = '';
       $tab[5]['name'] = $LANG['plugin_order']['status'][0];
       $tab[5]['searchtype'] = 'equals';
       /* supplier */
       $tab[6]['table'] = 'glpi_suppliers';
       $tab[6]['field'] = 'name';
-      $tab[6]['linkfield'] = 'suppliers_id';
       $tab[6]['name'] = $LANG['financial'][26];
       $tab[6]['datatype']='itemlink';
       $tab[6]['itemlink_type']='Supplier';
@@ -223,12 +217,10 @@ class PluginOrderOrder extends CommonDBTM {
       /* payment */
       $tab[7]['table'] = 'glpi_plugin_order_orderpayments';
       $tab[7]['field'] = 'name';
-      $tab[7]['linkfield'] = 'plugin_order_orderpayments_id';
       $tab[7]['name'] = $LANG['plugin_order'][32];
       /* contact */
       $tab[8]['table'] = 'glpi_contacts';
       $tab[8]['field'] = 'completename';
-      $tab[8]['linkfield'] = 'contacts_id';
       $tab[8]['name'] = $LANG['common'][18];
       $tab[8]['datatype']='itemlink';
       $tab[8]['itemlink_type']='Contact';
@@ -236,7 +228,6 @@ class PluginOrderOrder extends CommonDBTM {
       /* budget */
       $tab[9]['table'] = 'glpi_budgets';
       $tab[9]['field'] = 'name';
-      $tab[9]['linkfield'] = 'budgets_id';
       $tab[9]['name'] = $LANG['financial'][87];
       $tab[9]['datatype']='itemlink';
       $tab[9]['itemlink_type']='Budget';
@@ -244,28 +235,23 @@ class PluginOrderOrder extends CommonDBTM {
       /* title */
       $tab[10]['table'] = $this->getTable();
       $tab[10]['field'] = 'name';
-      $tab[10]['linkfield'] = 'name';
       $tab[10]['name'] = $LANG['plugin_order'][39];
       /* type */
       $tab[11]['table'] = 'glpi_plugin_order_ordertypes';
       $tab[11]['field'] = 'name';
-      $tab[11]['linkfield'] = 'plugin_order_ordertypes_id';
       $tab[11]['name'] = $LANG['common'][17];
       /* comments */
       $tab[16]['table'] = $this->getTable();
       $tab[16]['field'] = 'comment';
-      $tab[16]['linkfield'] = 'comment';
       $tab[16]['name'] = $LANG['plugin_order'][2];
       $tab[16]['datatype'] = 'text';
       /* ID */
       $tab[30]['table'] = $this->getTable();
       $tab[30]['field'] = 'id';
-      $tab[30]['linkfield'] = '';
       $tab[30]['name'] = $LANG['common'][2];
       /* entity */
       $tab[80]['table'] = 'glpi_entities';
       $tab[80]['field'] = 'completename';
-      $tab[80]['linkfield'] = 'entities_id';
       $tab[80]['name'] = $LANG['entity'][0];
       
       return $tab;
@@ -313,6 +299,19 @@ class PluginOrderOrder extends CommonDBTM {
 
       return $input;
    }
+   
+   function prepareInputForUpdate($input) {
+		global $LANG;
+      
+      $ORDER_VALIDATION_STATUS = array (self::ORDER_STATUS_DRAFT,
+                                    self::ORDER_STATUS_WAITING_APPROVAL);
+                                    
+		if (isset ($this->fields["states_id"]) && !in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS)) {
+         addMessageAfterRedirect($LANG['plugin_order']['status'][14], false, ERROR);
+         return array ();
+      }
+		return $input;
+	}
 
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
@@ -327,7 +326,7 @@ class PluginOrderOrder extends CommonDBTM {
          $this->getEmpty();
       }
 
-      $canedit = ($this->canUpdateOrder($ID) && $this->can($ID, 'w') && $this->fields["states_id"] != PluginOrderOrder::ORDER_STATUS_CANCELED);
+      $canedit = ($this->canUpdateOrder($ID) && $this->can($ID, 'w') && $this->fields["states_id"] != self::ORDER_STATUS_CANCELED);
 
       $this->showTabs($options);
       $this->showFormHeader($options);
@@ -633,22 +632,22 @@ class PluginOrderOrder extends CommonDBTM {
       global $LANG;
 
       switch ($status) {
-         case PluginOrderOrder::ORDER_STATUS_DRAFT :
+         case self::ORDER_STATUS_DRAFT :
             $changes = $LANG['plugin_order']['validation'][15];
             break;
-         case PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL :
+         case self::ORDER_STATUS_WAITING_APPROVAL :
             $changes = $LANG['plugin_order']['validation'][1];
             break;
-         case PluginOrderOrder::ORDER_STATUS_APPROVED :
+         case self::ORDER_STATUS_APPROVED :
             $changes = $LANG['plugin_order']['validation'][2];
             break;
-         case PluginOrderOrder::ORDER_STATUS_PARTIALLY_DELIVRED :
+         case self::ORDER_STATUS_PARTIALLY_DELIVRED :
             $changes = $LANG['plugin_order']['validation'][3];
             break;
-         case PluginOrderOrder::ORDER_STATUS_COMPLETLY_DELIVERED :
+         case self::ORDER_STATUS_COMPLETLY_DELIVERED :
             $changes = $LANG['plugin_order']['validation'][4];
             break;
-         case PluginOrderOrder::ORDER_STATUS_CANCELED :
+         case self::ORDER_STATUS_CANCELED :
             $changes = $LANG['plugin_order']['validation'][5];
             break;
       }
@@ -669,18 +668,18 @@ class PluginOrderOrder extends CommonDBTM {
       $this->update($input);
       $this->addStatusLog($orders_id, $status, $comments);
       
-      if ($CFG_GLPI["use_mailing"] && ($status == PluginOrderOrder::ORDER_STATUS_APPROVED
-                                          || $status == PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL
-                                          || $status == PluginOrderOrder::ORDER_STATUS_CANCELED
-                                          || $status == PluginOrderOrder::ORDER_STATUS_DRAFT)) {
+      if ($CFG_GLPI["use_mailing"] && ($status == self::ORDER_STATUS_APPROVED
+                                          || $status == self::ORDER_STATUS_WAITING_APPROVAL
+                                          || $status == self::ORDER_STATUS_CANCELED
+                                          || $status == self::ORDER_STATUS_DRAFT)) {
          
-         if ($status == PluginOrderOrder::ORDER_STATUS_APPROVED)
+         if ($status == self::ORDER_STATUS_APPROVED)
             $notif = "validation";
-         else if ($status == PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL)
+         else if ($status == self::ORDER_STATUS_WAITING_APPROVAL)
             $notif = "ask";
-         else if ($status == PluginOrderOrder::ORDER_STATUS_CANCELED)
+         else if ($status == self::ORDER_STATUS_CANCELED)
             $notif = "cancel";
-         else if ($status == PluginOrderOrder::ORDER_STATUS_DRAFT)
+         else if ($status == self::ORDER_STATUS_DRAFT)
             $notif = "undovalidation";
          
          $options = array();
