@@ -503,7 +503,7 @@ class PluginOrderLink extends CommonDBChild {
       $order = new PluginOrderOrder;
       $order->getFromDB($detail->fields["plugin_order_orders_id"]);
       
-      $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier;
+      $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
       $PluginOrderOrder_Supplier->getFromDBByOrder($detail->fields["plugin_order_orders_id"]);
       // ADD Infocoms
       $ic = new Infocom();
@@ -539,8 +539,8 @@ class PluginOrderLink extends CommonDBChild {
       if (isset($PluginOrderOrder_Supplier->fields["num_bill"]))
          $fields["bill"] = $PluginOrderOrder_Supplier->fields["num_bill"];
       $fields["value"] = $detail->fields["price_discounted"];
-      $fields["buy_date"] = $order->fields["order_date"];
-
+      $fields["order_date"] = $order->fields["order_date"];
+      $fields["delivery_date"] = $detail->fields["delivery_date"];
       if (!$exists)
          $ic->add($fields);
       else
@@ -812,9 +812,8 @@ class PluginOrderLink extends CommonDBChild {
             $input['items_id']            = $newID;
             $input['itemtype']            = $values["itemtype"];
             $input['urgency']             = 3;
-            //For 0.80 - Uncomment
-            //$input['_users_id_assign']  = 0;
-            //$input['_groups_id_assign'] = 0;
+            $input['_users_id_assign']  = 0;
+            $input['_groups_id_assign'] = 0;
             $ticket = new Ticket();
             $ticketID = $ticket->add($input);
    		}
