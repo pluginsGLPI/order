@@ -305,7 +305,7 @@ CREATE TABLE `glpi_plugin_order_preferences` (
 	PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 	
-INSERT INTO `glpi_notificationtemplates` VALUES (NULL, 'Order Validation', 'PluginOrderOrder', '2010-03-12 22:36:46',''),(NULL, 'Order Reception', 'PluginOrderOrder_Item', '2011-01-25 15:00:00','',NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES (NULL, 'Order Validation', 'PluginOrderOrder', '2010-03-12 22:36:46','',NULL),(NULL, 'Order Reception', 'PluginOrderOrder_Item', '2011-01-25 15:00:00','',NULL);
 
 INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','1','1','0');
 INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','2','2','0');
