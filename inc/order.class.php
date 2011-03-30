@@ -819,7 +819,7 @@ class PluginOrderOrder extends CommonDBTM {
    function generateOrder($ID) {
       global $LANG,$DB;
       
-      $pref = new PluginOrderPreference;
+      $pref = new PluginOrderPreference();
       $template=$pref->checkPreferenceTemplateValue(getLoginUserID());
       if ($template) {
 

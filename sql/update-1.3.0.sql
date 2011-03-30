@@ -37,3 +37,6 @@ ALTER TABLE `glpi_plugin_order_orders`
 	ADD `plugin_order_ordertypes_id` int (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)';
 
 -- --------------------------------------------------------
+
+UPDATE `glpi_plugin_order_references` SET `itemtype`='ConsumableItem' WHERE `itemtype` ='Consumable';
+UPDATE `glpi_plugin_order_references` SET `itemtype`='CartridgeItem' WHERE `itemtype` ='Cartridge';

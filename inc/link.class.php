@@ -358,9 +358,9 @@ class PluginOrderLink extends CommonDBChild {
                $comments .= '<br><strong>' . $LANG['consumables'][0] . ' : </strong> #' . $items_id;
                $comments .= '<br><strong>' . $LANG['consumables'][12] . ' : </strong>' . $ct->fields['name'];
                $comments .= '<br><strong>' . $LANG['common'][5] . ' : </strong>' . Dropdown::getDropdownName('glpi_manufacturers', $ct->fields['manufacturers_id']);
-               $comments .= '<br><strong>' . $LANG['consumables'][23] . ' : </strong>' . (!$ci->fields['id_user'] ? $LANG['consumables'][1] : $LANG['consumables'][15]);
-               if ($ci->fields['id_user'])
-                  $comments .= '<br><strong>' . $LANG['common'][34] . ' : </strong>' . Dropdown::getDropdownName('glpi_users', $ci->fields['id_user']);
+               $comments .= '<br><strong>' . $LANG['consumables'][23] . ' : </strong>' . (!$ci->fields['users_id'] ? $LANG['consumables'][1] : $LANG['consumables'][15]);
+               if ($ci->fields['users_id'])
+                  $comments .= '<br><strong>' . $LANG['common'][34] . ' : </strong>' . Dropdown::getDropdownName('glpi_users', $ci->fields['users_id']);
             }
             break;
          case 'CartridgeItem' :
