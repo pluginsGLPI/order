@@ -118,7 +118,7 @@ class PluginOrderReference extends CommonDBTM {
       /* principal */
       $ong[1] = $LANG['title'][26];
       if ($this->fields['id'] > 0) {
-         $ong[2] = $LANG['plugin_order']['budget'][1];
+         $ong[2] = $LANG['plugin_order'][11];
          $ong[3] = $LANG['title'][37];
          if (haveRight("document", "r"))
             $ong[4] = $LANG['Menu'][27];
@@ -434,7 +434,9 @@ class PluginOrderReference extends CommonDBTM {
          $and .= " AND `is_template` = 0 AND `is_deleted` = 0 ";
       
       $used = "AND `id` NOT IN (SELECT `items_id` FROM `glpi_plugin_order_orders_items`)";
-      if ($itemtype == 'SoftwareLicense')
+      if ($itemtype == 'SoftwareLicense'
+            || $itemtype == 'ConsumableItem'
+               || $itemtype == 'CartridgeItem')
          $used = "";
 
       switch ($itemtype) {
@@ -444,19 +446,20 @@ class PluginOrderReference extends CommonDBTM {
                      WHERE `entities_id` = '" . $entity ."' ". $and . " 
                      $used ";
             break;
-         case 'ConsumableItemType' :
+         case 'ConsumableItem' :
             $query = "SELECT `id`, `name` FROM `glpi_consumableitems`
                      WHERE `entities_id` = '" . $entity . "'
                      AND `consumableitemtypes_id` = '$types_id' 
                      ORDER BY `name`";
             break;
-         case 'CartridgeItemType' :
+         case 'CartridgeItem' :
             $query = "SELECT `id`, `name` FROM `glpi_cartridgeitems`
                      WHERE `entities_id` = '" . $entity . "'
                      AND `cartridgeitemtypes_id` = '$types_id'
                      ORDER BY `name` ASC";
             break;
       }
+
       $result = $DB->query($query);
 
       $device = array ();
@@ -570,7 +573,7 @@ class PluginOrderReference extends CommonDBTM {
 
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='5'>".$LANG['plugin_order']['budget'][1]."</th></tr>";
+      echo "<tr><th colspan='5'>".$LANG['plugin_order'][11]."</th></tr>";
       echo "<tr>"; 
       echo "<th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";

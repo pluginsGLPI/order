@@ -66,25 +66,21 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 
       $tab[1]['table'] = $this->getTable();
       $tab[1]['field'] = 'num_quote';
-      $tab[1]['linkfield'] = 'num_quote';
       $tab[1]['name'] = $LANG['plugin_order'][30];
       $tab[1]['datatype'] = 'text';
 
       $tab[2]['table'] = $this->getTable();
       $tab[2]['field'] = 'num_order';
-      $tab[2]['linkfield'] = 'num_order';
       $tab[2]['name'] = $LANG['plugin_order'][31];
       $tab[2]['datatype'] = 'text';
       
       $tab[3]['table'] = $this->getTable();
       $tab[3]['field'] = 'num_bill';
-      $tab[3]['linkfield'] = 'num_bill';
       $tab[3]['name'] = $LANG['plugin_order'][28];
       $tab[3]['datatype'] = 'text';
       
       $tab[4]['table'] = 'glpi_suppliers';
       $tab[4]['field'] = 'name';
-      $tab[4]['linkfield'] = 'suppliers_id';
       $tab[4]['name'] = $LANG['financial'][26];
       $tab[4]['datatype']='itemlink';
       $tab[4]['itemlink_type']='Supplier';
@@ -92,13 +88,11 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       
       $tab[30]['table'] = $this->getTable();
       $tab[30]['field'] = 'id';
-      $tab[30]['linkfield'] = '';
       $tab[30]['name']=$LANG['common'][2];
 
       /* entity */
       $tab[80]['table'] = 'glpi_entities';
       $tab[80]['field'] = 'completename';
-      $tab[80]['linkfield'] = 'entities_id';
       $tab[80]['name'] = $LANG['entity'][0];
       
       return $tab;

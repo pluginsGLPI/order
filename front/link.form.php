@@ -98,7 +98,9 @@ else if (isset ($_POST["createLinkWithItem"])) {
    if ($_POST["item"]) {
       $i = 0;
       $doit = 1;
-      if ($_POST["itemtype"] != 'SoftwareLicense')
+      if ($_POST["itemtype"] != 'SoftwareLicense'
+         && $_POST["itemtype"] != 'ConsumableItem'
+             && $_POST["itemtype"] != 'CartridgeItem')
          if (count($_POST["item"]) > 1)
             $doit = 0;
       if ($doit) {

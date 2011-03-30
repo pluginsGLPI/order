@@ -85,19 +85,16 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
       $tab[1]['table'] = $this->getTable();
       $tab[1]['field'] = 'reference_code';
-      $tab[1]['linkfield'] = 'reference_code';
       $tab[1]['name'] = $LANG['plugin_order']['reference'][10];
       $tab[1]['datatype'] = 'text';
 
       $tab[2]['table'] = $this->getTable();
       $tab[2]['field'] = 'price_taxfree';
-      $tab[2]['linkfield'] = 'price_taxfree';
       $tab[2]['name'] = $LANG['plugin_order']['detail'][4];
-      $tab[2]['datatype'] = 'number';
+      $tab[2]['datatype'] = 'decimal';
 
       $tab[3]['table'] = 'glpi_suppliers';
       $tab[3]['field'] = 'name';
-      $tab[3]['linkfield'] = 'suppliers_id';
       $tab[3]['name'] = $LANG['financial'][26];
       $tab[3]['datatype']='itemlink';
       $tab[3]['itemlink_type']='Supplier';
@@ -105,13 +102,11 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       
       $tab[30]['table'] = $this->getTable();
       $tab[30]['field'] = 'id';
-      $tab[30]['linkfield'] = '';
       $tab[30]['name']=$LANG['common'][2];
 
       /* entity */
       $tab[80]['table'] = 'glpi_entities';
       $tab[80]['field'] = 'completename';
-      $tab[80]['linkfield'] = 'entities_id';
       $tab[80]['name'] = $LANG['entity'][0];
       
       return $tab;

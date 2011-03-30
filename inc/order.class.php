@@ -111,7 +111,7 @@ class PluginOrderOrder extends CommonDBTM {
    
    function canValidateOder() {
       
-      $PluginOrderConfig = new PluginOrderConfig;
+      $PluginOrderConfig = new PluginOrderConfig();
       $config = $PluginOrderConfig->getConfig();
       
       $ORDER_VALIDATION_STATUS = array (self::ORDER_STATUS_DRAFT,
@@ -304,10 +304,7 @@ class PluginOrderOrder extends CommonDBTM {
    function prepareInputForUpdate($input) {
 		global $LANG;
       
-      $ORDER_VALIDATION_STATUS = array (self::ORDER_STATUS_DRAFT,
-                                    self::ORDER_STATUS_WAITING_APPROVAL);
-                                    
-		if (isset ($this->fields["states_id"]) && !in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS)) {
+		if (isset ($input["states_id"]) && $input["states_id"] == 0) {
          addMessageAfterRedirect($LANG['plugin_order']['status'][14], false, ERROR);
          return array ();
       }
