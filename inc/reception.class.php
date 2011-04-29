@@ -508,7 +508,7 @@ class PluginOrderReception extends CommonDBTM {
                                     $params["delivery_date"], $params["delivery_number"],
                                     $params["plugin_order_deliverystates_id"]);
          }
-         $detail = new PluginOrderOrder_Item;
+         $detail = new PluginOrderOrder_Item();
          $detail->updateDelivryStatus($params['plugin_order_orders_id']);
       }
    }
@@ -517,7 +517,7 @@ class PluginOrderReception extends CommonDBTM {
                              $delivery_number,$plugin_order_deliverystates_id) {
       global $LANG,$CFG_GLPI;
       
-      $detail = new PluginOrderOrder_Item;
+      $detail = new PluginOrderOrder_Item();
       $input["id"] = $detailID;
       $input["delivery_date"] = $delivery_date;
       $input["states_id"] = PluginOrderOrder::ORDER_DEVICE_DELIVRED;
@@ -538,11 +538,9 @@ class PluginOrderReception extends CommonDBTM {
       global $LANG, $DB;
       
       
-      $detail = new PluginOrderDetail();
+      $detail = new PluginOrderOrder_Item();
       $detail->getFromDB($detailID);
-      
-      $PluginOrderOrder_Item = new PluginOrderOrder_Item();
-      $result=$PluginOrderOrder_Item->queryRef($_POST["plugin_order_orders_id"],
+      $result=$detail->queryRef($_POST["plugin_order_orders_id"],
                                                $plugin_order_references_id,
                                                $detail->fields["price_taxfree"],
                                                $detail->fields["discount"],
@@ -568,7 +566,7 @@ class PluginOrderReception extends CommonDBTM {
    function updateReceptionStatus($params) {
       global $LANG;
 
-      $detail = new PluginOrderOrder_Item;
+      $detail = new PluginOrderOrder_Item();
       $plugin_order_orders_id = 0;
       if (isset ($params["item"])) {
          foreach ($params["item"] as $key => $val)
