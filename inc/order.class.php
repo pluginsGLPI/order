@@ -41,16 +41,16 @@ class PluginOrderOrder extends CommonDBTM {
 
    public $dohistory=true;
    
-   const ORDER_DEVICE_NOT_DELIVRED = 0;
-   const ORDER_DEVICE_DELIVRED = 1;
+   const ORDER_DEVICE_NOT_DELIVRED        = 0;
+   const ORDER_DEVICE_DELIVRED            = 1;
 
    // Define order status //PluginOrderOrder::
-   const ORDER_STATUS_DRAFT = 0;
-   const ORDER_STATUS_WAITING_APPROVAL = 1;
-   const ORDER_STATUS_APPROVED = 2;
-   const ORDER_STATUS_PARTIALLY_DELIVRED = 3;
+   const ORDER_STATUS_DRAFT               = 0;
+   const ORDER_STATUS_WAITING_APPROVAL    = 1;
+   const ORDER_STATUS_APPROVED            = 2;
+   const ORDER_STATUS_PARTIALLY_DELIVRED  = 3;
    const ORDER_STATUS_COMPLETLY_DELIVERED = 4;
-   const ORDER_STATUS_CANCELED = 5;
+   const ORDER_STATUS_CANCELED            = 5;
    
    static function getTypeName() {
       global $LANG;
@@ -88,7 +88,7 @@ class PluginOrderOrder extends CommonDBTM {
    function canUpdateOrder($orders_id) {
       
       $ORDER_VALIDATION_STATUS = array (self::ORDER_STATUS_DRAFT,
-                                    self::ORDER_STATUS_WAITING_APPROVAL);
+                                        self::ORDER_STATUS_WAITING_APPROVAL);
                                     
       if ($orders_id > 0) {
          $this->getFromDB($orders_id);
@@ -165,7 +165,7 @@ class PluginOrderOrder extends CommonDBTM {
    function canUndoValidation() {
       
       $ORDER_VALIDATION_STATUS = array (self::ORDER_STATUS_DRAFT,
-                                    self::ORDER_STATUS_WAITING_APPROVAL);
+                                        self::ORDER_STATUS_WAITING_APPROVAL);
                                     
       //If order is canceled, cannot validate !
       if ($this->fields["states_id"] == self::ORDER_STATUS_CANCELED)
@@ -295,21 +295,22 @@ class PluginOrderOrder extends CommonDBTM {
       if (!isset ($input["num_order"]) || $input["num_order"] == '') {
          addMessageAfterRedirect($LANG['plugin_order'][44], false, ERROR);
          return array ();
+      } elseif (!isset ($input["name"]) || $input["name"] == '') {
+         $input["name"] = $input["num_order"];
       }
-      elseif (!isset ($input["name"]) || $input["name"] == '') $input["name"] = $input["num_order"];
 
       return $input;
    }
    
    function prepareInputForUpdate($input) {
-		global $LANG;
+      global $LANG;
       
-		if (isset ($input["states_id"]) && $input["states_id"] == 0) {
+      if (isset ($input["states_id"]) && $input["states_id"] == 0) {
          addMessageAfterRedirect($LANG['plugin_order']['status'][14], false, ERROR);
          return array ();
       }
-		return $input;
-	}
+      return $input;
+   }
 
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
@@ -335,14 +336,15 @@ class PluginOrderOrder extends CommonDBTM {
       /* title */
       echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][39] . ": </td>";
       echo "<td>";
-      if ($canedit)
+      if ($canedit) {
          autocompletionTextField($this,"name");
-      else
+      } else {
          echo $this->fields["name"];
+      }
       echo "</td>";
       /* date of order */
       echo "<td>" . $LANG['plugin_order'][1] . "*:</td><td>";
-      if ($canedit)
+      if ($canedit) 
          if ($this->fields["order_date"] == NULL)
             showDateFormItem("order_date", date("Y-m-d"), true, true);
          else
@@ -354,10 +356,11 @@ class PluginOrderOrder extends CommonDBTM {
       /* num order */
       echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][0] . "*: </td>";
       echo "<td>";
-      if ($canedit)
+      if ($canedit) {
          autocompletionTextField($this,"num_order");
-      else
+      } else {
          echo $this->fields["num_order"];
+      }
       echo "</td>";
       /* type order */
       echo "<td>" . $LANG['common'][17] . ": </td><td>";
@@ -365,17 +368,22 @@ class PluginOrderOrder extends CommonDBTM {
          Dropdown::show('PluginOrderOrderType', array('name' => "plugin_order_ordertypes_id",
                                                       'value' => $this->fields["plugin_order_ordertypes_id"]));
       } else {
-         echo Dropdown::getDropdownName("glpi_plugin_order_ordertypes",$this->fields["plugin_order_ordertypes_id"]);
+         echo Dropdown::getDropdownName("glpi_plugin_order_ordertypes", 
+                                        $this->fields["plugin_order_ordertypes_id"]);
       }
       echo "</td></tr>";
 
       /* location */
       echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][40] . ": </td>";
       echo "<td>";
-      if ($canedit)
-         Dropdown::show('Location', array('name' => "locations_id",'value' => $this->fields["locations_id"], 'entity' => $this->fields["entities_id"]));
-      else
-         echo Dropdown::getDropdownName("glpi_locations",$this->fields["locations_id"]);
+      if ($canedit) {
+         Dropdown::show('Location', 
+                        array('name'   => "locations_id",
+                              'value'  => $this->fields["locations_id"], 
+                              'entity' => $this->fields["entities_id"]));
+      } else {
+         echo Dropdown::getDropdownName("glpi_locations", $this->fields["locations_id"]);
+      }
       echo "</td>";
       
       /* budget */
@@ -392,10 +400,12 @@ class PluginOrderOrder extends CommonDBTM {
       /* supplier of order */
       echo "<tr class='tab_bg_1'><td>" . $LANG['financial'][26] . ": </td>";
       echo "<td>";
-      if ($canedit && !$this->checkIfDetailExists($ID))
-         $this->dropdownSuppliers("suppliers_id", $this->fields["suppliers_id"], $this->fields["entities_id"]);
-      else
+      if ($canedit && !$this->checkIfDetailExists($ID)) {
+         $this->dropdownSuppliers("suppliers_id", $this->fields["suppliers_id"], 
+                                  $this->fields["entities_id"]);
+      } else {
          echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]);
+      }
       echo "</td>";
       
       /* tva */
@@ -408,49 +418,60 @@ class PluginOrderOrder extends CommonDBTM {
       } else {
          $taxes = $this->fields["plugin_order_ordertaxes_id"];
       }
-      if ($canedit)
+      if ($canedit) {
          Dropdown::show('PluginOrderOrderTaxe', 
                         array('name' => "plugin_order_ordertaxes_id", 'value' => $taxes));
-      else
+      } else {
          echo Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $taxes);
+      }
       echo "</td>";
       echo "</tr>";
       
       /* linked contact of the supplier of order */
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][92].": </td>";
       echo "<td><span id='show_contacts_id'>";
-      if ($canedit && $ID > 0)
-         $this->dropdownContacts($this->fields["suppliers_id"],$this->fields["contacts_id"],$this->fields["entities_id"]);
-      else
-         echo Dropdown::getDropdownName("glpi_contacts",$this->fields["contacts_id"]);
+      if ($canedit && $ID > 0) {
+         $this->dropdownContacts($this->fields["suppliers_id"],
+                                 $this->fields["contacts_id"], $this->fields["entities_id"]);
+      } else {
+         echo Dropdown::getDropdownName("glpi_contacts", $this->fields["contacts_id"]);
+      }
       echo "</span></td>";
       
       /* payment */
       echo "<td>" . $LANG['plugin_order'][32] . ": </td><td>";
-      if ($canedit)
-         Dropdown::show('PluginOrderOrderPayment', array('name' => "plugin_order_orderpayments_id",'value' => $this->fields["plugin_order_orderpayments_id"]));
-      else
-         echo Dropdown::getDropdownName("glpi_plugin_order_orderpayments",$this->fields["plugin_order_orderpayments_id"]);
+      if ($canedit) {
+         Dropdown::show('PluginOrderOrderPayment', 
+                        array('name'  => "plugin_order_orderpayments_id",
+                              'value' => $this->fields["plugin_order_orderpayments_id"]));
+      } else {
+         echo Dropdown::getDropdownName("glpi_plugin_order_orderpayments", 
+                                        $this->fields["plugin_order_orderpayments_id"]);
+      }
       echo "</td></tr>";
       
       /* port price */
       echo "<tr class='tab_bg_1'><td colspan=\"2\"></td>";
       echo "<td>".$LANG['plugin_order'][26].": </td>";
       echo "<td>";
-      if ($canedit)
-         echo "<input type='text' name='port_price' value=\"".formatNumber($this->fields["port_price"],true)."\" size='5'>";
-      else
+      if ($canedit) {
+         echo "<input type='text' name='port_price' value=\"".
+            formatNumber($this->fields["port_price"],true)."\" size='5'>";
+      } else {
          echo formatNumber($this->fields["port_price"]);
+      }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>";
       //comments of order
       echo $LANG['plugin_order'][2] . ":  </td>";
       echo "<td>";
-      if ($canedit)
-         echo "<textarea cols='40' rows='4' name='comment'>" . $this->fields["comment"] . "</textarea>";
-      else
+      if ($canedit) {
+         echo "<textarea cols='40' rows='4' name='comment'>" . $this->fields["comment"] . 
+            "</textarea>";
+      } else {
          echo $this->fields["comment"];
+      }
       echo "</td>";
 
       /* total price (without taxes) */
@@ -475,7 +496,10 @@ class PluginOrderOrder extends CommonDBTM {
          
          // total price (with taxes)
          echo $LANG['plugin_order'][14] . " : ";
-         $postagewithTVA = $PluginOrderOrder_Item->getPricesATI($this->fields["port_price"], Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $this->fields["plugin_order_ordertaxes_id"]));
+         $postagewithTVA = 
+            $PluginOrderOrder_Item->getPricesATI($this->fields["port_price"], 
+                                                 Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", 
+                                                                           $this->fields["plugin_order_ordertaxes_id"]));
          $total = $prices["priceTTC"] + $postagewithTVA;
          echo formatNumber($total) . "</td>";
       } else
@@ -498,10 +522,11 @@ class PluginOrderOrder extends CommonDBTM {
       $where.=getEntitiesRestrictRequest("AND","glpi_suppliers",'',$entity_restrict,true);
 
       $query="SELECT `glpi_suppliers`.* FROM `glpi_suppliers`
-         LEFT JOIN `glpi_contacts_suppliers` ON (`glpi_contacts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id`)
-         $where
-         GROUP BY `glpi_suppliers`.`id`
-         ORDER BY `entities_id`, `name`";
+              LEFT JOIN `glpi_contacts_suppliers` 
+                 ON (`glpi_contacts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id`)
+              $where
+              GROUP BY `glpi_suppliers`.`id`
+              ORDER BY `entities_id`, `name`";
 
       $result=$DB->query($query);
 
@@ -521,7 +546,9 @@ class PluginOrderOrder extends CommonDBTM {
          if($_SESSION["glpiis_ids_visible"]||empty($output)){
             $output.=" (".$data["id"].")";
          }
-         echo "<option value='".$data["id"]."' ".($value==$data["id"]?" selected ":"")." title=\"".cleanInputText($output)."\">".substr($output,0,$CFG_GLPI["dropdown_chars_limit"])."</option>";
+         echo "<option value='".$data["id"]."' ".($value==$data["id"]?" selected ":"").
+            " title=\"".cleanInputText($output)."\">".
+               substr($output, 0, $CFG_GLPI["dropdown_chars_limit"])."</option>";
       }
       if ($prev>=0) {
          echo "</optgroup>";
@@ -534,7 +561,9 @@ class PluginOrderOrder extends CommonDBTM {
                      'myname'=>$myname
                      );
 
-      ajaxUpdateItemOnSelectEvent("suppliers_id","show_contacts_id",$CFG_GLPI["root_doc"]."/plugins/order/ajax/dropdownSupplier.php",$params);
+      ajaxUpdateItemOnSelectEvent("suppliers_id", "show_contacts_id", 
+                                  $CFG_GLPI["root_doc"]."/plugins/order/ajax/dropdownSupplier.php", 
+                                  $params);
 
       return $rand;
    }
@@ -544,7 +573,9 @@ class PluginOrderOrder extends CommonDBTM {
 
       $rand=mt_rand();
 
-      $where=" WHERE `glpi_contacts_suppliers`.`contacts_id` = `glpi_contacts`.`id` AND (`glpi_contacts_suppliers`.`suppliers_id` = '".$suppliers_id."' AND `glpi_contacts`.`is_deleted` = '0' ) ";
+      $where=" WHERE `glpi_contacts_suppliers`.`contacts_id` = `glpi_contacts`.`id` 
+                 AND (`glpi_contacts_suppliers`.`suppliers_id` = '".$suppliers_id."' 
+                    AND `glpi_contacts`.`is_deleted` = '0' ) ";
       $where.=getEntitiesRestrictRequest("AND","glpi_contacts",'',$entity_restrict,true);
 
       $query = "SELECT `glpi_contacts`.*
@@ -572,7 +603,9 @@ class PluginOrderOrder extends CommonDBTM {
             if($_SESSION["glpiis_ids_visible"]||empty($output)){
                $output.=" (".$data["id"].")";
             }
-            echo "<option value='".$data["id"]."' ".($value==$data["id"]?" selected ":"")." title=\"".cleanInputText($output)."\">".substr($output,0,$CFG_GLPI["dropdown_chars_limit"])."</option>";
+            echo "<option value='".$data["id"]."' ".($value==$data["id"]?" selected ":"").
+               " title=\"".cleanInputText($output)."\">".
+                  substr($output, 0, $CFG_GLPI["dropdown_chars_limit"])."</option>";
          }
          if ($prev>=0) {
             echo "</optgroup>";
@@ -590,12 +623,12 @@ class PluginOrderOrder extends CommonDBTM {
    static function getAllStateArray() {
       global $LANG;
 
-      $tab = array(self::ORDER_STATUS_DRAFT   => $LANG['plugin_order']['status'][9],
-                   self::ORDER_STATUS_APPROVED   => $LANG['plugin_order']['status'][12],
-                   self::ORDER_STATUS_WAITING_APPROVAL   => $LANG['plugin_order']['status'][7],
-                   self::ORDER_STATUS_PARTIALLY_DELIVRED   => $LANG['plugin_order']['status'][1],
-                   self::ORDER_STATUS_COMPLETLY_DELIVERED   => $LANG['plugin_order']['status'][2],
-                   self::ORDER_STATUS_CANCELED   => $LANG['plugin_order']['status'][10]);
+      $tab = array(self::ORDER_STATUS_DRAFT               => $LANG['plugin_order']['status'][9],
+                   self::ORDER_STATUS_APPROVED            => $LANG['plugin_order']['status'][12],
+                   self::ORDER_STATUS_WAITING_APPROVAL    => $LANG['plugin_order']['status'][7],
+                   self::ORDER_STATUS_PARTIALLY_DELIVRED  => $LANG['plugin_order']['status'][1],
+                   self::ORDER_STATUS_COMPLETLY_DELIVERED => $LANG['plugin_order']['status'][2],
+                   self::ORDER_STATUS_CANCELED            => $LANG['plugin_order']['status'][10]);
 
       return $tab;
    }
@@ -615,8 +648,9 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<select id='$id' name='$name'>";
       echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
       $tab = self::getAllStateArray();
-      foreach($tab as $key=>$val)
+      foreach($tab as $key=>$val) {
          echo "<option value='".$key."' ".($value==$key?" selected ":"").">".$val."</option>";
+      }
       echo "</select>";
 
       return $id;
@@ -626,10 +660,12 @@ class PluginOrderOrder extends CommonDBTM {
       global $LANG;
 
       $tab = self::getAllStateArray();
-      if ($value > -1)
+      if ($value > -1) {
          return (isset($tab[$value]) ? $tab[$value] : '');
-      else
+      }
+      else {
          return " ";
+      }
    }
    
    function addStatusLog($orders_id, $status, $comments = '') {
@@ -656,10 +692,11 @@ class PluginOrderOrder extends CommonDBTM {
             break;
       }
 
-      if ($comments != '')
+      if ($comments != '') {
          $changes .= " : ".$comments;
+      }
 
-      $this->addHistory($this->getType(), '',$changes,$orders_id);
+      $this->addHistory($this->getType(), '', $changes, $orders_id);
 
    }
    
@@ -672,10 +709,11 @@ class PluginOrderOrder extends CommonDBTM {
       $this->update($input);
       $this->addStatusLog($orders_id, $status, $comments);
       
-      if ($CFG_GLPI["use_mailing"] && ($status == self::ORDER_STATUS_APPROVED
-                                          || $status == self::ORDER_STATUS_WAITING_APPROVAL
-                                          || $status == self::ORDER_STATUS_CANCELED
-                                          || $status == self::ORDER_STATUS_DRAFT)) {
+      if ($CFG_GLPI["use_mailing"] 
+         && ($status == self::ORDER_STATUS_APPROVED
+            || $status == self::ORDER_STATUS_WAITING_APPROVAL
+               || $status == self::ORDER_STATUS_CANCELED
+                  || $status == self::ORDER_STATUS_DRAFT)) {
          
          if ($status == self::ORDER_STATUS_APPROVED)
             $notif = "validation";
@@ -704,7 +742,7 @@ class PluginOrderOrder extends CommonDBTM {
    function needValidation($ID) {
       
       $ORDER_VALIDATION_STATUS = array (PluginOrderOrder::ORDER_STATUS_DRAFT,
-                                    PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
+                                        PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL);
       
       if ($ID > 0 && $this->getFromDB($ID))
          return (in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS));
@@ -715,18 +753,18 @@ class PluginOrderOrder extends CommonDBTM {
    function deleteAllLinkWithItem($orders_id) {
 
       $detail = new PluginOrderOrder_Item;
-      $devices = getAllDatasFromTable("glpi_plugin_order_orders_items", "plugin_order_orders_id=$orders_id");
+      $devices = getAllDatasFromTable("glpi_plugin_order_orders_items", 
+                                      "plugin_order_orders_id=$orders_id");
       foreach ($devices as $deviceID => $device)
-         $detail->delete(array (
-            "id" => $deviceID
-         ));
+         $detail->delete(array ("id" => $deviceID));
    }
    
    function checkIfDetailExists($orders_id) {
       
       if ($orders_id) {
          $detail = new PluginOrderOrder_Item;
-         $devices = getAllDatasFromTable("glpi_plugin_order_orders_items", "plugin_order_orders_id=$orders_id");
+         $devices = getAllDatasFromTable("glpi_plugin_order_orders_items", 
+                                         "plugin_order_orders_id=$orders_id");
          if (!empty($devices))
             return true;
          else
@@ -746,7 +784,8 @@ class PluginOrderOrder extends CommonDBTM {
          
          if ($this->checkIfDetailExists($orders_id)) {
          
-            echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG['plugin_order']['validation'][6] . "</th></tr>";
+            echo "<tr class='tab_bg_2'><th colspan='3'>" . 
+               $LANG['plugin_order']['validation'][6] . "</th></tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td valign='top' align='right'>";
@@ -760,29 +799,37 @@ class PluginOrderOrder extends CommonDBTM {
             echo "<input type='hidden' name='id' value=\"$orders_id\">\n";
             
             if ($this->canCancelOrder()) {
-               echo "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][38] . "')\" name='cancel_order' value=\"" . $LANG['plugin_order']['validation'][12] . "\" class='submit'>";
+               echo "<input type='submit' onclick=\"return confirm('" . 
+                  $LANG['plugin_order']['detail'][38] . "')\" name='cancel_order' value=\"" . 
+                     $LANG['plugin_order']['validation'][12] . "\" class='submit'>";
                $link = "<br><br>";
             }
             $PluginOrderConfig = new PluginOrderConfig;
             $config = $PluginOrderConfig->getConfig();
 
             if ($this->canValidateOder()) {
-               echo $link . "<input type='submit' name='validate' value=\"" . $LANG['plugin_order']['validation'][9] . "\" class='submit'>";
+               echo $link . "<input type='submit' name='validate' value=\"" . 
+                  $LANG['plugin_order']['validation'][9] . "\" class='submit'>";
                $link = "<br><br>";
             }
 
             if ($this->canCancelValidationRequest()) {
-               echo $link . "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][39] . "')\" name='cancel_waiting_for_approval' value=\"" . $LANG['plugin_order']['validation'][13] . "\" class='submit'>";
+               echo $link . "<input type='submit' onclick=\"return confirm('" . 
+                  $LANG['plugin_order']['detail'][39] . "')\" name='cancel_waiting_for_approval' value=\"" .
+                     $LANG['plugin_order']['validation'][13] . "\" class='submit'>";
                $link = "<br><br>";
             }
 
             if ($this->canDoValidationRequest()) {
-               echo $link . "<input type='submit' name='waiting_for_approval' value=\"" . $LANG['plugin_order']['validation'][11] . "\" class='submit'>";
+               echo $link . "<input type='submit' name='waiting_for_approval' value=\"" . 
+                  $LANG['plugin_order']['validation'][11] . "\" class='submit'>";
                $link = "<br><br>";
             }
 
             if ($this->canUndoValidation()) {
-               echo $link . "<input type='submit' onclick=\"return confirm('" . $LANG['plugin_order']['detail'][40] . "')\" name='undovalidation' value=\"" . $LANG['plugin_order']['validation'][17] . "\" class='submit'>";
+               echo $link . "<input type='submit' onclick=\"return confirm('" . 
+                  $LANG['plugin_order']['detail'][40] . "')\" name='undovalidation' value=\"" . 
+                     $LANG['plugin_order']['validation'][17] . "\" class='submit'>";
                $link = "<br><br>";
             }
 
@@ -803,12 +850,14 @@ class PluginOrderOrder extends CommonDBTM {
       if ($template) {
          if ($this->canUpdateOrder($ID))
          {
-            echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/export.php?id=".$ID."' method=\"post\">";
+            echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/export.php?id=".$ID.
+               "' method=\"post\">";
             echo "<div align=\"center\"><table cellspacing=\"2\" cellpadding=\"2\">";
 
             echo "<tr>";
             echo "<td class='center'>";
-            echo "<input type='submit' value=\"".$LANG['plugin_order']['generation'][1]."\" class='submit' ></div></td></tr>";
+            echo "<input type='submit' value=\"".$LANG['plugin_order']['generation'][1].
+               "\" class='submit' ></div></td></tr>";
             echo "</td>";
             echo "</tr>";
 
@@ -889,7 +938,8 @@ class PluginOrderOrder extends CommonDBTM {
          $output='';
          $contact = new Contact();
          if ($contact->getFromDB($this->fields["contacts_id"])) {
-            $output=formatUserName($contact->fields["id"],"",$contact->fields["name"],$contact->fields["firstname"]);
+            $output=formatUserName($contact->fields["id"], "", $contact->fields["name"], 
+                                   $contact->fields["firstname"]);
          }
          $odf->setVars('title_recipient',$LANG['plugin_order']['generation'][11],true,'UTF-8');
          $odf->setVars('recipient',html_clean($output),true,'UTF-8');
@@ -908,14 +958,17 @@ class PluginOrderOrder extends CommonDBTM {
          
          while ($data=$DB->fetch_array($result)){
 
-            $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID,$data["id"],$data["price_taxfree"],$data["discount"]);
+            $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID, $data["id"], 
+                                                                                $data["price_taxfree"],
+                                                                                $data["discount"]);
 
-            $listeArticles[]=array('quantity' => $quantity,
-                  'ref' => utf8_decode($data["name"]),
-                  'refnumber' => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier($data["id"],$this->fields["suppliers_id"]),
-                  'price_taxfree' => html_clean(formatNumber($data["price_taxfree"])),
-                  'discount' => html_clean(formatNumber($data["discount"],false,0)),
-                  'price_discounted' => html_clean(formatNumber($data["price_discounted"]*$quantity)));
+            $listeArticles[]=array('quantity'         => $quantity,
+                                   'ref'              => utf8_decode($data["name"]),
+                                   'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier($data["id"],
+                                                                                                                                $this->fields["suppliers_id"]),
+                                   'price_taxfree'    => html_clean(formatNumber($data["price_taxfree"])),
+                                   'discount'         => html_clean(formatNumber($data["discount"], false, 0)),
+                                   'price_discounted' => html_clean(formatNumber($data["price_discounted"]*$quantity)));
             
          }
          
@@ -941,8 +994,10 @@ class PluginOrderOrder extends CommonDBTM {
          $odf->setVars('title_totalht',$LANG['plugin_order']['generation'][14],true,'UTF-8');
          $odf->setVars('title_totalttc',$LANG['plugin_order']['generation'][15],true,'UTF-8');
          $odf->setVars('title_tva',$LANG['plugin_order'][25],true,'UTF-8');
-         $odf->setVars('value_tva',html_clean(Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
-                                                                        $this->fields["plugin_order_ordertaxes_id"]))." %",true,'UTF-8');
+         $odf->setVars('value_tva',
+                       html_clean(Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
+                                                            $this->fields["plugin_order_ordertaxes_id"])).
+                                                               " %",true,'UTF-8');
          $odf->setVars('title_money',$LANG['plugin_order']['generation'][17],true,'UTF-8');
          $odf->setVars('title_sign',$LANG['plugin_order']['generation'][16],true,'UTF-8');
          
@@ -1071,5 +1126,4 @@ class PluginOrderOrder extends CommonDBTM {
 
    }
 }
-
 ?>
