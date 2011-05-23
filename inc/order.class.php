@@ -324,7 +324,9 @@ class PluginOrderOrder extends CommonDBTM {
          $this->getEmpty();
       }
 
-      $canedit = ($this->canUpdateOrder($ID) && $this->can($ID, 'w') && $this->fields["states_id"] != self::ORDER_STATUS_CANCELED);
+      $canedit = ($this->canUpdateOrder($ID) 
+                  && $this->can($ID, 'w') 
+                     && $this->fields["states_id"] != self::ORDER_STATUS_CANCELED);
 
       $this->showTabs($options);
       $this->showFormHeader($options);
@@ -379,7 +381,10 @@ class PluginOrderOrder extends CommonDBTM {
       /* budget */
       echo "<td>" . $LANG['plugin_order'][3] . ": </td><td>";
       if ($canedit)
-         Dropdown::show('Budget', array('name' => "budgets_id",'value' => $this->fields["budgets_id"], 'entity' => $this->fields["entities_id"]));
+         Dropdown::show('Budget', array('name'     => "budgets_id", 
+                                        'value'    => $this->fields["budgets_id"], 
+                                        'entity'   => $this->fields["entities_id"],
+                                        'comments' => true));
       else
          echo Dropdown::getDropdownName("glpi_budgets",$this->fields["budgets_id"]);
       echo "</td></tr>";
@@ -390,7 +395,7 @@ class PluginOrderOrder extends CommonDBTM {
       if ($canedit && !$this->checkIfDetailExists($ID))
          $this->dropdownSuppliers("suppliers_id", $this->fields["suppliers_id"], $this->fields["entities_id"]);
       else
-         echo Dropdown::getDropdownName("glpi_suppliers",$this->fields["suppliers_id"]);
+         echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]);
       echo "</td>";
       
       /* tva */
@@ -404,9 +409,10 @@ class PluginOrderOrder extends CommonDBTM {
          $taxes = $this->fields["plugin_order_ordertaxes_id"];
       }
       if ($canedit)
-         Dropdown::show('PluginOrderOrderTaxe', array('name' => "plugin_order_ordertaxes_id",'value' => $taxes));
+         Dropdown::show('PluginOrderOrderTaxe', 
+                        array('name' => "plugin_order_ordertaxes_id", 'value' => $taxes));
       else
-         echo Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",$taxes);
+         echo Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $taxes);
       echo "</td>";
       echo "</tr>";
       

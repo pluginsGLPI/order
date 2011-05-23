@@ -37,20 +37,20 @@ define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 if (!isset ($_GET["id"]))
-	$_GET["id"] = "";
+   $_GET["id"] = "";
 if (!isset ($_GET["withtemplate"]))
-	$_GET["withtemplate"] = "";
+   $_GET["withtemplate"] = "";
 
-$PluginOrderOrder = new PluginOrderOrder();
-$PluginOrderConfig = new PluginOrderConfig();
-$PluginOrderOrder_Item = new PluginOrderOrder_Item();
+$PluginOrderOrder          = new PluginOrderOrder();
+$PluginOrderConfig         = new PluginOrderConfig();
+$PluginOrderOrder_Item     = new PluginOrderOrder_Item();
 $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
 
 /* add order */
 if (isset ($_POST["add"])) {
-	$PluginOrderOrder->check(-1,'w',$_POST);
+   $PluginOrderOrder->check(-1,'w',$_POST);
    $newID = $PluginOrderOrder->add($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
+   glpi_header($_SERVER['HTTP_REFERER']."?id=$newID");
 }
 /* delete order */
 else if (isset ($_POST["delete"])) {
@@ -81,7 +81,7 @@ else if (isset ($_POST["update"])) {
 else if (isset ($_POST["validate"])) {
    
    $config = $PluginOrderConfig->getConfig();
-		
+      
    if ($PluginOrderOrder->canCreate() && ( $PluginOrderOrder->canValidate() || !$config["use_validation"]))
    {
       $PluginOrderOrder->updateOrderStatus($_POST["id"],PluginOrderOrder::ORDER_STATUS_APPROVED,$_POST["comment"]);
@@ -190,13 +190,13 @@ else if (isset ($_POST["delete_item"])) {
 }
 else 
 {
-	$PluginOrderOrder->checkGlobal("r");
+   $PluginOrderOrder->checkGlobal("r");
 
-	commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
-	
-	$PluginOrderOrder->showForm($_GET["id"]);
-	
-	commonFooter();
+   commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
+   
+   $PluginOrderOrder->showForm($_GET["id"]);
+   
+   commonFooter();
 }
 
 ?>
