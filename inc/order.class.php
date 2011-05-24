@@ -67,15 +67,15 @@ class PluginOrderOrder extends CommonDBTM {
    }
    
    function canCancel() {
-      return plugin_order_HaveRight("cancel", "w");
+      return plugin_order_haveRight("cancel", "w");
    }
    
    function canUndo() {
-      return plugin_order_HaveRight("undo_validation", "w");
+      return plugin_order_haveRight("undo_validation", "w");
    }
    
    function canValidate() {
-      return plugin_order_HaveRight("validation", "w");
+      return plugin_order_haveRight("validation", "w");
    }
    
    function cleanDBonPurge() {
@@ -93,8 +93,9 @@ class PluginOrderOrder extends CommonDBTM {
       if ($orders_id > 0) {
          $this->getFromDB($orders_id);
          return (in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS));
-      } else
+      } else {
          return true;
+      }
    }
    
       
@@ -103,10 +104,13 @@ class PluginOrderOrder extends CommonDBTM {
       $this->getFromDB($orders_id);
 
       //If it's an order creation -> do not display form
-      if (!$orders_id)
+      if (!$orders_id) {
          return false;
-      else
-         return ($this->canValidateOrrder() || $this->canUndoValidation() || $this->canCancelOrder());
+      } else {
+         return ($this->canValidateOrrder() 
+                  || $this->canUndoValidation() 
+                     || $this->canCancelOrder());
+      }
    }
    
    function canValidateOrrder() {
@@ -115,33 +119,37 @@ class PluginOrderOrder extends CommonDBTM {
       $config = $PluginOrderConfig->getConfig();
       
       $ORDER_VALIDATION_STATUS = array (self::ORDER_STATUS_DRAFT,
-                                    self::ORDER_STATUS_WAITING_APPROVAL);
+                                        self::ORDER_STATUS_WAITING_APPROVAL);
       //If no validation process -> can validate if order is in draft state
-      if (!$config["use_validation"])
+      if (!$config["use_validation"]) {
          return ($this->fields["states_id"] == self::ORDER_STATUS_DRAFT);
-      else {
+      } else {
          //Validation process is used
 
          //If order is canceled, cannot validate !
-         if ($this->fields["states_id"] == self::ORDER_STATUS_CANCELED)
+         if ($this->fields["states_id"] == self::ORDER_STATUS_CANCELED) {
             return false;
+         }
 
          //If no right to validate
-         if (!$this->canValidate())
+         if (!$this->canValidate()) {
             return false;
-         else
+         } else {
             return (in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS));
+         }
       }
    }
 
    function canCancelOrder() {
       //If order is canceled, cannot validate !
-      if ($this->fields["states_id"] == self::ORDER_STATUS_CANCELED)
+      if ($this->fields["states_id"] == self::ORDER_STATUS_CANCELED) {
          return false;
+      }
 
       //If no right to cancel
-      if (!$this->canCancel())
+      if (!$this->canCancel()) {
          return false;
+      }
 
       return true;
    }
@@ -151,10 +159,11 @@ class PluginOrderOrder extends CommonDBTM {
       $PluginOrderConfig = new PluginOrderConfig;
       $config = $PluginOrderConfig->getConfig();
       
-      if (!$config["use_validation"])
+      if (!$config["use_validation"]) {
          return false;
-      else
+      } else {
          return ($this->fields["states_id"] == self::ORDER_STATUS_DRAFT);
+      }
    }
 
    function canCancelValidationRequest() {
@@ -306,8 +315,8 @@ class PluginOrderOrder extends CommonDBTM {
    
    function prepareInputForUpdate($input) {
       global $LANG;
-      
-      if (isset ($input["states_id"]) && $input["states_id"] == 0) {
+
+      if (isset ($input["states_id"]) && $input["states_id"] > 0) {
          addMessageAfterRedirect($LANG['plugin_order']['status'][14], false, ERROR);
          return array ();
       }
@@ -664,8 +673,7 @@ class PluginOrderOrder extends CommonDBTM {
       $tab = self::getAllStateArray();
       if ($value > -1) {
          return (isset($tab[$value]) ? $tab[$value] : '');
-      }
-      else {
+      } else {
          return " ";
       }
    }
@@ -706,8 +714,8 @@ class PluginOrderOrder extends CommonDBTM {
       global $CFG_GLPI;
       
       $input["states_id"] = $status;
-      $input["id"] = $orders_id;
-      $this->dohistory = false;
+      $input["id"]        = $orders_id;
+      $this->dohistory    = false;
       $this->update($input);
       $this->addStatusLog($orders_id, $status, $comments);
       
@@ -726,7 +734,7 @@ class PluginOrderOrder extends CommonDBTM {
          else if ($status == self::ORDER_STATUS_DRAFT)
             $notif = "undovalidation";
          
-         $options = array();
+         $options             = array();
          $options['comments'] = $comments;
          NotificationEvent::raiseEvent($notif,$this,$options);
       }
@@ -1038,11 +1046,11 @@ class PluginOrderOrder extends CommonDBTM {
       global $DB;
       
       $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier;
-      $PluginOrderReference = new PluginOrderReference();
-      $PluginOrderOrder_Item = new PluginOrderOrder_Item();
+      $PluginOrderReference      = new PluginOrderReference();
+      $PluginOrderOrder_Item     = new PluginOrderOrder_Item();
       
       $this->getFromDB($ID);
-      $input["id"] = $ID;
+      $input["id"]          = $ID;
       $input["entities_id"] = $entity;
       $this->update($input);
       
@@ -1055,13 +1063,13 @@ class PluginOrderOrder extends CommonDBTM {
                WHERE `plugin_order_orders_id` = '$ID' 
                GROUP BY plugin_order_references_id";
       
-      $result=$DB->query($query);
-      $num=$DB->numrows($result);
+      $result = $DB->query($query);
+      $num    = $DB->numrows($result);
       if ($num) {
          while ($detail=$DB->fetch_array($result)) {
 
-            $ref=$PluginOrderReference->transfer($detail["plugin_order_references_id"],
-                                             $entity);
+            $ref = $PluginOrderReference->transfer($detail["plugin_order_references_id"],
+                                                   $entity);
          }
       }
    }
@@ -1094,12 +1102,12 @@ class PluginOrderOrder extends CommonDBTM {
             $PluginOrderOrder_Item->getPricesATI($data["port_price"], 
                                                  Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
                                                                            $data["plugin_order_ordertaxes_id"]));
-         $total+= $prices["priceTTC"] + $postagewithTVA;
+         $total +=  $prices["priceTTC"] + $postagewithTVA;
          
          echo "<tr class='tab_bg_1' align='center'>"; 
          echo "<td>";
 
-         $link=getItemTypeFormURL($this->getType());
+         $link = getItemTypeFormURL($this->getType());
          if ($this->canView()) {
             echo "<a href=\"".$link."?id=".$data["id"]."\">".$data["name"]."</a>";
          } else {
