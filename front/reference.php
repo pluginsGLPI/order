@@ -38,27 +38,10 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 commonHeader($LANG['plugin_order']['reference'][1], '', "plugins", "order", "reference");
 
-$PluginOrderReference=new PluginOrderReference();
-if ($PluginOrderReference->canView() || haveRight("config","w")) {
+$reference=new PluginOrderReference();
+if ($reference->canView() || haveRight("config","w")) {
    
-   echo "<div align='center'><script type='text/javascript'>";
-   echo "cleanhide('modal_reference_content');";
-   echo "var order_window=new Ext.Window({
-      layout:'fit',
-      width:800,
-      height:400,
-      closeAction:'hide',
-      modal: true,
-      autoScroll: true,
-      title: \"".$LANG['plugin_order']['reference'][11]."\",
-      autoLoad: '".$CFG_GLPI['root_doc']."/plugins/order/ajax/referencetree.php'
-   });";
-   echo "</script>";
-
-   echo "<a onclick='order_window.show();' href='#modal_reference_content' title='".
-          $LANG['plugin_order']['reference'][11]."'>".
-          $LANG['plugin_order']['reference'][11]."</a>";
-   echo "</div>";        
+   $reference->title();
    Search::show("PluginOrderReference");
    
 } else {

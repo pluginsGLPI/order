@@ -43,42 +43,42 @@ if(!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
 }
 
-$PluginOrderReference=new PluginOrderReference();
+$reference=new PluginOrderReference();
 
 /* add order */
 if (isset($_POST["add"])) {
-   $PluginOrderReference->check(-1,'w',$_POST);
-   $newID=$PluginOrderReference->add($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   $reference->check(-1,'w',$_POST);
+   $newID = $reference->add($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']."?id=$newID");
 }
 /* delete order */
 else if (isset($_POST["delete"])) {
-   $PluginOrderReference->check($_POST['id'],'w');
-   $PluginOrderReference->delete($_POST);
-   glpi_header(getItemTypeSearchURL('PluginOrderReference'));
+   $reference->check($_POST['id'],'w');
+   $reference->delete($_POST);
+   $reference->redirectToList();
 }
 /* restore order */
 else if (isset($_POST["restore"])) {
-   $PluginOrderReference->check($_POST['id'],'w');
-   $PluginOrderReference->restore($_POST);
-   glpi_header(getItemTypeSearchURL('PluginOrderReference'));
+   $reference->check($_POST['id'],'w');
+   $reference->restore($_POST);
+   $reference->redirectToList();
 }
 /* purge order */
 else if (isset($_POST["purge"])) {
-   $PluginOrderReference->check($_POST['id'],'w');
-   $PluginOrderReference->delete($_POST,1);
-   glpi_header(getItemTypeSearchURL('PluginOrderReference'));
+   $reference->check($_POST['id'],'w');
+   $reference->delete($_POST,1);
+   $reference->redirectToList();
 }
 /* update order */
 else if (isset($_POST["update"])) {
-   $PluginOrderReference->check($_POST['id'],'w');
-   $PluginOrderReference->update($_POST);
+   $reference->check($_POST['id'],'w');
+   $reference->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 else {
-   $PluginOrderReference->checkGlobal("r");
-   commonHeader($LANG['plugin_order']['reference'][1],'',"plugins","order","reference");
-   $PluginOrderReference->showForm($_GET["id"]);
+   $reference->checkGlobal("r");
+   commonHeader($LANG['plugin_order']['reference'][1],'',"plugins", "order", "reference");
+   $reference->showForm($_GET["id"]);
 
    commonFooter();
 }

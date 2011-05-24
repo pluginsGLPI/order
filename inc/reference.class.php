@@ -131,26 +131,22 @@ class PluginOrderReference extends CommonDBTM {
    function prepareInputForAdd($input){
       global $DB,$LANG;
 
-      if (!isset($input["name"]) || $input["name"] == '')
-      {
+      if (!isset($input["name"]) || $input["name"] == '') {
          addMessageAfterRedirect($LANG['plugin_order']['reference'][8], false, ERROR);
          return false;
       }
 
-      if (!$input["itemtype"])
-      {
+      if (!$input["itemtype"]) {
          addMessageAfterRedirect($LANG['plugin_order']['reference'][9], false, ERROR);
          return false;
       }
       
-       if (!isset($input["transfert"]))
-      {
+       if (!isset($input["transfert"])) {
          $query = "SELECT COUNT(*) AS cpt FROM `".$this->getTable()."` " .
                 "WHERE `name` = '".$input["name"]."' 
                     AND `entities_id` = '".$input["entities_id"]."' ";
          $result = $DB->query($query);
-         if ($DB->result($result,0,"cpt") > 0)
-         {
+         if ($DB->result($result,0,"cpt") > 0) {
             addMessageAfterRedirect($LANG['plugin_order']['reference'][6],false,ERROR);
             return false;
          }
@@ -162,10 +158,9 @@ class PluginOrderReference extends CommonDBTM {
    function pre_deleteItem(){
       global $LANG;
 
-      if (!$this->referenceInUse())
+      if (!$this->referenceInUse()) {
          return true;
-      else
-      {
+      } else {
          addMessageAfterRedirect($LANG['plugin_order']['reference'][7],true,ERROR);
          return false;
       }
@@ -178,31 +173,34 @@ class PluginOrderReference extends CommonDBTM {
       $query = "SELECT COUNT(*) AS cpt FROM `glpi_plugin_order_orders_items` " .
             "WHERE `plugin_order_references_id` = '".$this->fields["id"]."' ";
       $result = $DB->query($query);
-      if ($DB->result($result,0,"cpt") > 0)
+      if ($DB->result($result,0,"cpt") > 0) {
          return true;
-      else
+      } else {
          return false;
+      }
    }
 
    function getReceptionReferenceLink($data) {
       
       $link=getItemTypeFormURL($this->getType());
       
-      if ($this->canView())
+      if ($this->canView()) {
          return "<a href=\"".$link."?id=".$data["id"]."\">" . $data["name"] . "</a>";
-      else
+      } else {
          return $data['name'];
+      }
    }
 
-   function canDelete()
-   {
+   function canDelete() {
       return (!$this->referenceInUse());
    }
 
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
       
-      if (!$this->canView()) return false;
+      if (!$this->canView()) {
+         return false;
+      }
       
       if ($ID > 0) {
          $this->check($ID,'r');
@@ -226,12 +224,14 @@ class PluginOrderReference extends CommonDBTM {
 
       echo "<td>" . $LANG['common'][5] . ": </td>";
       echo "<td>";
-      if (!$reference_in_use)
+      if (!$reference_in_use) {
          Dropdown::show('Manufacturer', array('name'  => "manufacturers_id",
                                               'value' => $this->fields["manufacturers_id"]));
-      else
+      }
+      else {
          echo Dropdown::getDropdownName("glpi_manufacturers",
                                         $this->fields["manufacturers_id"]);
+      }
       echo "</td></tr>";
       
       echo "</tr>";
@@ -263,7 +263,7 @@ class PluginOrderReference extends CommonDBTM {
                || file_exists(GLPI_ROOT."/plugins/order/inc/".strtolower($file)."type.class.php")) {
             if (!$reference_in_use)
                Dropdown::show($this->fields["itemtype"]."Type", 
-                              array('name' => "types_id",'value' => $this->fields["types_id"]));
+                              array('name' => "types_id", 'value' => $this->fields["types_id"]));
             else
                echo Dropdown::getDropdownName(getTableForItemType($this->fields["itemtype"]."Type"),
                                                                   $this->fields["types_id"]);
@@ -291,11 +291,12 @@ class PluginOrderReference extends CommonDBTM {
       
       $table = getTableForItemType($this->fields["itemtype"]);
       
-      if ($this->fields["itemtype"] && $item->maybeTemplate())
-            $this->dropdownTemplate("templates_id", $this->fields["entities_id"],
-                                     $table, $this->fields["templates_id"]);
-         else
+      if ($this->fields["itemtype"] && $item->maybeTemplate()) {
+            $this->dropdownTemplate("templates_id", $this->fields["entities_id"], $table, 
+                                    $this->fields["templates_id"]);
+      } else {
             echo $this->getTemplateName($this->fields["itemtype"], $this->fields["templates_id"]);
+      }
 
       echo "</span></td>";
       
@@ -308,7 +309,8 @@ class PluginOrderReference extends CommonDBTM {
       echo "<td>" . $LANG['common'][25] . ": </td>";
       
       echo "<td>";
-      echo "<textarea cols='50' rows='4' name='comment' >" . $this->fields["comment"] . "</textarea>";
+      echo "<textarea cols='50' rows='4' name='comment' >" . $this->fields["comment"] . 
+         "</textarea>";
       echo "</td>";
       
       echo "</tr>";
@@ -328,8 +330,9 @@ class PluginOrderReference extends CommonDBTM {
                AND `template_name` <> '' GROUP BY `template_name` ORDER BY `template_name`");
 
       $option[0] = DROPDOWN_EMPTY_VALUE;
-      while ($data = $DB->fetch_array($result))
+      while ($data = $DB->fetch_array($result)) {
          $option[$data["id"]] = $data["template_name"];
+      }
       return Dropdown::showFromArray($name, $option, array('value'  => $value));
    }
 
@@ -353,15 +356,16 @@ class PluginOrderReference extends CommonDBTM {
                $this->getTable()."`.`id` " .
             "AND `glpi_plugin_order_orders_items`.`id` = '$detailID' ;";
       $result = $DB->query($query);
-      if (!$DB->numrows($result))
+      if (!$DB->numrows($result)) {
          return 0;
-      else {
+      } else {
          $item = new $itemtype();
          $item->getFromDB($DB->result($result, 0, "templates_id"));
-         if ($item->getField('entities_id') == $entity)
+         if ($item->getField('entities_id') == $entity) {
             return $item->getField('id');
-         else
+         } else {
             return 0;
+         }
       }
    }
 
@@ -407,12 +411,8 @@ class PluginOrderReference extends CommonDBTM {
       echo "</select>";
 
       if ($ajax) {
-         $params = array (
-            'itemtype' => '__VALUE__',
-            'suppliers_id' => $suppliers_id,
-            'entity_restrict' => $entity,
-            'plugin_order_orders_id' => $orders_id,
-         );
+         $params = array ('itemtype' => '__VALUE__', 'suppliers_id' => $suppliers_id,
+                          'entity_restrict' => $entity, 'plugin_order_orders_id' => $orders_id);
 
          ajaxUpdateItemOnSelectEvent($myname, "show_reference", $ajax_page, $params);
       }
@@ -424,14 +424,17 @@ class PluginOrderReference extends CommonDBTM {
       $and = "";
       $item = new $itemtype();
       
-      if (file_exists(GLPI_ROOT."/inc/".strtolower($itemtype)."type.class.php"))
+      if (file_exists(GLPI_ROOT."/inc/".strtolower($itemtype)."type.class.php")) {
          $and .= ($types_id != 0 ? " AND `".
             getForeignKeyFieldForTable(getTableForItemType($itemtype."Type"))."` = '$types_id' ":"");
-      if (file_exists(GLPI_ROOT."/inc/".strtolower($itemtype)."model.class.php"))
+      }
+      if (file_exists(GLPI_ROOT."/inc/".strtolower($itemtype)."model.class.php")) {
          $and .= ($models_id != 0 ? " AND `".
             getForeignKeyFieldForTable(getTableForItemType($itemtype."Model"))."` ='$models_id' ":"");
-      if ($item->maybeTemplate())
+      }
+      if ($item->maybeTemplate()) {
          $and .= " AND `is_template` = 0 AND `is_deleted` = 0 ";
+      }
       
       $used = "AND `id` NOT IN (SELECT `items_id` FROM `glpi_plugin_order_orders_items`)";
       if ($itemtype == 'SoftwareLicense'
@@ -472,7 +475,7 @@ class PluginOrderReference extends CommonDBTM {
 
    function dropdownAllItemsByType($name, $itemtype, $entity=0,$types_id=0,$models_id=0) {
 
-      $items = $this->getAllItemsByType($itemtype,$entity,$types_id,$models_id);
+      $items    = $this->getAllItemsByType($itemtype,$entity,$types_id,$models_id);
       $items[0] = DROPDOWN_EMPTY_VALUE;
       asort($items);
       return Dropdown::showFromArray($name, $items);
@@ -482,10 +485,10 @@ class PluginOrderReference extends CommonDBTM {
       global $DB;
 
       $query = "SELECT `gr`.`name`, `gr`.`id`, `grm`.`reference_code`
-               FROM `".$this->getTable()."` AS gr, `glpi_plugin_order_references_suppliers` AS grm" .
-            " WHERE `gr`.`itemtype` = '$itemtype'
-               AND `grm`.`suppliers_id` = '$enterpriseID'
-               AND `grm`.`plugin_order_references_id` = `gr`.`id` ";
+                FROM `".$this->getTable()."` AS gr, `glpi_plugin_order_references_suppliers` AS grm 
+                WHERE `gr`.`itemtype` = '$itemtype'
+                   AND `grm`.`suppliers_id` = '$enterpriseID'
+                     AND `grm`.`plugin_order_references_id` = `gr`.`id` ";
 
       $result = $DB->query($query);
       $references = array();
@@ -513,7 +516,7 @@ class PluginOrderReference extends CommonDBTM {
                        `gr`.`name`, `grm`.`price_taxfree` 
                FROM `glpi_plugin_order_references_suppliers` AS grm, `".$this->getTable()."` AS gr 
                WHERE `grm`.`suppliers_id` = '$ID' 
-               AND `grm`.`plugin_order_references_id` = `gr`.`id`"
+                  AND `grm`.`plugin_order_references_id` = `gr`.`id`"
                .getEntitiesRestrictRequest(" AND ","gr",'','',true);
       $result = $DB->query($query);
 
@@ -526,10 +529,8 @@ class PluginOrderReference extends CommonDBTM {
       echo "<th>".$LANG['plugin_order']['reference'][1]."</th>";
       echo "<th>". $LANG['common'][17]."</th><th>".$LANG['plugin_order']['detail'][4]."</th></tr>";
 
-      if ($DB->numrows($result) > 0)
-      {
-         while ($data = $DB->fetch_array($result))
-         {
+      if ($DB->numrows($result) > 0) {
+         while ($data = $DB->fetch_array($result)) {
             echo "<tr class='tab_bg_1' align='center'>";
             echo "<td>";
             echo Dropdown::getDropdownName("glpi_entities",$data["entities_id"]);
@@ -561,7 +562,6 @@ class PluginOrderReference extends CommonDBTM {
    function getAllOrdersByReference($plugin_order_references_id){
       global $DB,$LANG;
       
-      //$this->getFromDB($budgets_id);
       $query = "SELECT `glpi_plugin_order_orders`.* 
                FROM `glpi_plugin_order_orders_items`
                LEFT JOIN `glpi_plugin_order_orders` 
@@ -578,17 +578,17 @@ class PluginOrderReference extends CommonDBTM {
       echo "<th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "</tr>";
-
-      while ($data = $DB->fetch_array($result))
-      {
+ 
+      while ($data = $DB->fetch_array($result)) {
          echo "<tr class='tab_bg_1' align='center'>"; 
          echo "<td>";
 
          $link=getItemTypeFormURL('PluginOrderOrder');
-         if ($this->canView())
+         if ($this->canView()) {
             echo "<a href=\"".$link."?id=".$data["id"]."\">".$data["name"]."</a>";
-         else
+         } else {
             echo $data["name"];  
+         }
          echo "</td>";
 
          echo "<td>";
@@ -608,17 +608,17 @@ class PluginOrderReference extends CommonDBTM {
          return 0;
       }
 
-      $input = $this->fields;
+      $input                = $this->fields;
       $input['entities_id'] = $entity;
-      $oldref = $input['id'];
+      $oldref               = $input['id'];
       unset($input['id']);
-      $input['transfert'] = 1;
+      $input['transfert']   = 1;
       $newid=$this->add($input);
       
-      $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
+      $PluginOrderReference_Supplier       = new PluginOrderReference_Supplier();
       $PluginOrderReference_Supplier->getFromDBByReference($oldref);
       $input = $PluginOrderReference_Supplier->fields;
-      $input['entities_id'] = $entity;
+      $input['entities_id']                = $entity;
       $input['plugin_order_references_id'] = $newid;
       unset($input['id']);
       $PluginOrderReference_Supplier->add($input);
@@ -694,6 +694,30 @@ class PluginOrderReference extends CommonDBTM {
 
       echo "<div id='tree_projectcategory$rand' ></div>";
       echo "</div>";
+   }
+
+   function title() {
+      global $LANG, $CFG_GLPI;
+
+      echo "<div align='center'><script type='text/javascript'>";
+      echo "cleanhide('modal_reference_content');";
+      echo "var order_window=new Ext.Window({
+         layout:'fit',
+         width:800,
+         height:400,
+         closeAction:'hide',
+         modal: true,
+         autoScroll: true,
+         title: \"".$LANG['plugin_order']['reference'][11]."\",
+         autoLoad: '".$CFG_GLPI['root_doc']."/plugins/order/ajax/referencetree.php'
+      });";
+      echo "</script>";
+
+      echo "<a onclick='order_window.show();' href='#modal_reference_content' title='".
+             $LANG['plugin_order']['reference'][11]."'>".
+             $LANG['plugin_order']['reference'][11]."</a>";
+      echo "</div>";
+
    }
 }
 

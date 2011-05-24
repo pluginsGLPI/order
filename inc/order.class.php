@@ -106,10 +106,10 @@ class PluginOrderOrder extends CommonDBTM {
       if (!$orders_id)
          return false;
       else
-         return ($this->canValidateOder() || $this->canUndoValidation() || $this->canCancelOrder());
+         return ($this->canValidateOrrder() || $this->canUndoValidation() || $this->canCancelOrder());
    }
    
-   function canValidateOder() {
+   function canValidateOrrder() {
       
       $PluginOrderConfig = new PluginOrderConfig();
       $config = $PluginOrderConfig->getConfig();
@@ -168,12 +168,14 @@ class PluginOrderOrder extends CommonDBTM {
                                         self::ORDER_STATUS_WAITING_APPROVAL);
                                     
       //If order is canceled, cannot validate !
-      if ($this->fields["states_id"] == self::ORDER_STATUS_CANCELED)
+      if ($this->fields["states_id"] == self::ORDER_STATUS_CANCELED) {
          return false;
+      }
 
       //If order is not validate, cannot undo validation !
-      if (in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS))
+      if (in_array($this->fields["states_id"], $ORDER_VALIDATION_STATUS)) {
          return false;
+      }
 
       //If no right to cancel
       return ($this->canUndo());
@@ -344,13 +346,15 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</td>";
       /* date of order */
       echo "<td>" . $LANG['plugin_order'][1] . "*:</td><td>";
-      if ($canedit) 
-         if ($this->fields["order_date"] == NULL)
+      if ($canedit)  {
+         if ($this->fields["order_date"] == NULL) {
             showDateFormItem("order_date", date("Y-m-d"), true, true);
-         else
+         } else {
             showDateFormItem("order_date", $this->fields["order_date"], true, true);
-      else
+         }
+      } else {
          echo convDate($this->fields["order_date"]);
+      }
       echo "</td></tr>";
 
       /* num order */
@@ -388,13 +392,14 @@ class PluginOrderOrder extends CommonDBTM {
       
       /* budget */
       echo "<td>" . $LANG['plugin_order'][3] . ": </td><td>";
-      if ($canedit)
+      if ($canedit) {
          Dropdown::show('Budget', array('name'     => "budgets_id", 
                                         'value'    => $this->fields["budgets_id"], 
                                         'entity'   => $this->fields["entities_id"],
                                         'comments' => true));
-      else
+      } else {
          echo Dropdown::getDropdownName("glpi_budgets",$this->fields["budgets_id"]);
+      }
       echo "</td></tr>";
       
       /* supplier of order */
@@ -555,11 +560,8 @@ class PluginOrderOrder extends CommonDBTM {
       }
       echo "</select>\n";
 
-      $params=array('suppliers_id'=>'__VALUE__',
-                     'entity_restrict'=>$entity_restrict,
-                     'rand'=>$rand,
-                     'myname'=>$myname
-                     );
+      $params=array('suppliers_id'=>'__VALUE__', 'entity_restrict'=>$entity_restrict,
+                    'rand'=>$rand, 'myname'=>$myname);
 
       ajaxUpdateItemOnSelectEvent("suppliers_id", "show_contacts_id", 
                                   $CFG_GLPI["root_doc"]."/plugins/order/ajax/dropdownSupplier.php", 
@@ -765,10 +767,11 @@ class PluginOrderOrder extends CommonDBTM {
          $detail = new PluginOrderOrder_Item;
          $devices = getAllDatasFromTable("glpi_plugin_order_orders_items", 
                                          "plugin_order_orders_id=$orders_id");
-         if (!empty($devices))
+         if (!empty($devices)) {
             return true;
-         else
+         } else {
             return false;
+         }
       }
    }
    
@@ -807,7 +810,7 @@ class PluginOrderOrder extends CommonDBTM {
             $PluginOrderConfig = new PluginOrderConfig;
             $config = $PluginOrderConfig->getConfig();
 
-            if ($this->canValidateOder()) {
+            if ($this->canValidateOrrder()) {
                echo $link . "<input type='submit' name='validate' value=\"" . 
                   $LANG['plugin_order']['validation'][9] . "\" class='submit'>";
                $link = "<br><br>";
@@ -848,8 +851,7 @@ class PluginOrderOrder extends CommonDBTM {
       $pref = new PluginOrderPreference;
       $template=$pref->checkPreferenceTemplateValue(getLoginUserID());
       if ($template) {
-         if ($this->canUpdateOrder($ID))
-         {
+         if ($this->canUpdateOrder($ID)) {
             echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/export.php?id=".$ID.
                "' method=\"post\">";
             echo "<div align=\"center\"><table cellspacing=\"2\" cellpadding=\"2\">";
@@ -875,23 +877,22 @@ class PluginOrderOrder extends CommonDBTM {
       $template=$pref->checkPreferenceTemplateValue(getLoginUserID());
       if ($template) {
 
-         $config = array(
-            'PATH_TO_TMP' => GLPI_DOC_DIR . '/_tmp'
-         );
+         $config = array('PATH_TO_TMP' => GLPI_DOC_DIR . '/_tmp');
 
          $odf = new odf("../templates/$template", $config);
       
          $this->getFromDB($ID);
          
-         $PluginOrderOrder_Item = new PluginOrderOrder_Item();
+         $PluginOrderOrder_Item         = new PluginOrderOrder_Item();
          $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
          
          $odf->setImage('logo', '../logo/logo.jpg');
          
-         $odf->setVars('title_order',$LANG['plugin_order']['generation'][12],true,'UTF-8');
-         $odf->setVars('num_order',$this->fields["num_order"],true,'UTF-8');
+         $odf->setVars('title_order', $LANG['plugin_order']['generation'][12], true, 'UTF-8');
+         $odf->setVars('num_order', $this->fields["num_order"], true, 'UTF-8');
          
-         $odf->setVars('title_invoice_address',$LANG['plugin_order']['generation'][3],true,'UTF-8');
+         $odf->setVars('title_invoice_address', $LANG['plugin_order']['generation'][3], true, 
+                       'UTF-8');
          
          $entity = new Entity();
          $entity->getFromDB($this->fields["entities_id"]);
@@ -903,13 +904,13 @@ class PluginOrderOrder extends CommonDBTM {
          else
             $name_entity = $LANG['entity'][2];
             
-         $odf->setVars('entity_name', $name_entity,true,'UTF-8');
+         $odf->setVars('entity_name', $name_entity, true, 'UTF-8');
          if ($entdata->getFromDB($this->fields["entities_id"])) {
-            $odf->setVars('entity_address', $entdata->fields["address"],true,'UTF-8');
-            $odf->setVars('entity_postcode', $entdata->fields["postcode"],true,'UTF-8');
+            $odf->setVars('entity_address', $entdata->fields["address"], true, 'UTF-8');
+            $odf->setVars('entity_postcode', $entdata->fields["postcode"],true, 'UTF-8');
             $town = $entdata->fields["town"];
             $odf->setVars('entity_town', $town,true,'UTF-8');
-            $odf->setVars('entity_country', $entdata->fields["country"],true,'UTF-8');
+            $odf->setVars('entity_country', $entdata->fields["country"], true, 'UTF-8');
          }
          
          $supplier = new Supplier();
@@ -927,13 +928,14 @@ class PluginOrderOrder extends CommonDBTM {
          $comment=$tmpname["comment"];
          $odf->setVars('comment_delivery_address',html_clean($comment),true,'UTF-8');
          
-         if ($town)
+         if ($town) {
             $town = $town. ", ";
-         $odf->setVars('title_date_order',$town.$LANG['plugin_order']['generation'][5]." ",true,'UTF-8');
-         $odf->setVars('date_order',convDate($this->fields["order_date"]),true,'UTF-8');
+         }
+         $odf->setVars('title_date_order', $town.$LANG['plugin_order']['generation'][5]." ",true,'UTF-8');
+         $odf->setVars('date_order', convDate($this->fields["order_date"]),true,'UTF-8');
          
-         $odf->setVars('title_sender',$LANG['plugin_order']['generation'][10],true,'UTF-8');
-         $odf->setVars('sender',html_clean(getUserName(getLoginUserID())),true,'UTF-8');
+         $odf->setVars('title_sender', $LANG['plugin_order']['generation'][10],true,'UTF-8');
+         $odf->setVars('sender', html_clean(getUserName(getLoginUserID())),true,'UTF-8');
          
          $output='';
          $contact = new Contact();
@@ -978,10 +980,11 @@ class PluginOrderOrder extends CommonDBTM {
             $article->titleArticle($element['ref']);
             $article->refArticle($element['refnumber']);
             $article->HTPriceArticle($element['price_taxfree']);
-            if ($element['discount'] != 0)
+            if ($element['discount'] != 0) {
                $article->discount($element['discount']." %");
-            else
+            } else {
                $article->discount("");
+            }
             $article->HTPriceTotalArticle($element['price_discounted']);
             $article->merge();
          }
@@ -1015,10 +1018,11 @@ class PluginOrderOrder extends CommonDBTM {
          $odf->setVars('totalttc',html_clean(formatNumber($total)),true,'UTF-8');
          
          $sign=$pref->checkPreferenceSignatureValue(getLoginUserID());
-         if ($sign)
+         if ($sign) {
             $odf->setImage('sign', '../signatures/'.$sign);
-         else
+         } else {
             $odf->setImage('sign', '../pics/nothing.gif');
+         }
          
          $odf->setVars('title_conditions',$LANG['plugin_order'][32],true,'UTF-8');
          $odf->setVars('payment_conditions',

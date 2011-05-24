@@ -56,19 +56,19 @@ if (isset ($_POST["add"])) {
 else if (isset ($_POST["delete"])) {
    $pluginOrderOrder->check($_POST['id'],'w');
    $pluginOrderOrder->delete($_POST);
-   glpi_header(getItemTypeSearchURL('PluginOrderOrder'));
+   $pluginOrderOrder->redirectToList();
 }
 /* restore order */
 else if (isset ($_POST["restore"])) {
    $pluginOrderOrder->check($_POST['id'],'w');
    $pluginOrderOrder->restore($_POST);
-   glpi_header(getItemTypeSearchURL('PluginOrderOrder'));
+   $pluginOrderOrder->redirectToList();
 }
 /* purge order */
 else if (isset ($_POST["purge"])) {
    $pluginOrderOrder->check($_POST['id'],'w');
    $pluginOrderOrder->delete($_POST, 1);
-   glpi_header(getItemTypeSearchURL('PluginOrderOrder'));
+   $pluginOrderOrder->redirectToList();
 }
 /* update order */
 else if (isset ($_POST["update"])) {
