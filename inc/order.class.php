@@ -209,7 +209,7 @@ class PluginOrderOrder extends CommonDBTM {
       /* taxes*/
       $tab[3]['table'] = 'glpi_plugin_order_ordertaxes';
       $tab[3]['field'] = 'name';
-      $tab[3]['name'] = $LANG['plugin_order'][25];
+      $tab[3]['name'] = $LANG['plugin_order'][25] . " " . $LANG['plugin_order'][26];
       /* location */
       $tab[4]['table'] = 'glpi_locations';
       $tab[4]['field'] = 'completename';
@@ -257,6 +257,10 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[16]['field'] = 'comment';
       $tab[16]['name'] = $LANG['plugin_order'][2];
       $tab[16]['datatype'] = 'text';
+      /* port price */
+      $tab[17]['table'] = $this->getTable();
+      $tab[17]['field'] = 'port_price';
+      $tab[17]['name'] = $LANG['plugin_order'][26];
       /* ID */
       $tab[30]['table'] = $this->getTable();
       $tab[30]['field'] = 'id';
@@ -421,22 +425,15 @@ class PluginOrderOrder extends CommonDBTM {
          echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]);
       }
       echo "</td>";
-      
-      /* tva */
-      echo "<td>" . $LANG['plugin_order'][25] . ": </td><td>";
-      $PluginOrderConfig = new PluginOrderConfig();
-      $default_taxes = $PluginOrderConfig->getDefaultTaxes();
-      
-      if (empty ($ID) || $ID < 0) {
-         $taxes = $default_taxes;
-      } else {
-         $taxes = $this->fields["plugin_order_ordertaxes_id"];
-      }
+      /* payment */
+      echo "<td>" . $LANG['plugin_order'][32] . ": </td><td>";
       if ($canedit) {
-         Dropdown::show('PluginOrderOrderTaxe', 
-                        array('name' => "plugin_order_ordertaxes_id", 'value' => $taxes));
+         Dropdown::show('PluginOrderOrderPayment', 
+                        array('name'  => "plugin_order_orderpayments_id",
+                              'value' => $this->fields["plugin_order_orderpayments_id"]));
       } else {
-         echo Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $taxes);
+         echo Dropdown::getDropdownName("glpi_plugin_order_orderpayments", 
+                                        $this->fields["plugin_order_orderpayments_id"]);
       }
       echo "</td>";
       echo "</tr>";
@@ -451,21 +448,8 @@ class PluginOrderOrder extends CommonDBTM {
          echo Dropdown::getDropdownName("glpi_contacts", $this->fields["contacts_id"]);
       }
       echo "</span></td>";
-      
-      /* payment */
-      echo "<td>" . $LANG['plugin_order'][32] . ": </td><td>";
-      if ($canedit) {
-         Dropdown::show('PluginOrderOrderPayment', 
-                        array('name'  => "plugin_order_orderpayments_id",
-                              'value' => $this->fields["plugin_order_orderpayments_id"]));
-      } else {
-         echo Dropdown::getDropdownName("glpi_plugin_order_orderpayments", 
-                                        $this->fields["plugin_order_orderpayments_id"]);
-      }
-      echo "</td></tr>";
-      
+
       /* port price */
-      echo "<tr class='tab_bg_1'><td colspan=\"2\"></td>";
       echo "<td>".$LANG['plugin_order'][26].": </td>";
       echo "<td>";
       if ($canedit) {
@@ -474,7 +458,28 @@ class PluginOrderOrder extends CommonDBTM {
       } else {
          echo formatNumber($this->fields["port_price"]);
       }
-      echo "</td></tr>";
+      echo "</td>";
+      echo "</tr>";
+      
+      /* tva port price */
+      echo "<tr class='tab_bg_1'><td colspan=\"2\"></td>";
+      echo "<td>" . $LANG['plugin_order'][25] . " " . $LANG['plugin_order'][26] . ": </td><td>";
+      $PluginOrderConfig = new PluginOrderConfig();
+      $default_taxes = $PluginOrderConfig->getDefaultTaxes();
+
+      if (empty ($ID) || $ID < 0) {
+         $taxes = $default_taxes;
+      } else {
+         $taxes = $this->fields["plugin_order_ordertaxes_id"];
+      }
+      if ($canedit) {
+         Dropdown::show('PluginOrderOrderTaxe', 
+                        array('name' => "plugin_order_ordertaxes_id", 'value' => $taxes));
+      } else {
+         echo Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $taxes);
+      }
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>";
       //comments of order
@@ -491,7 +496,7 @@ class PluginOrderOrder extends CommonDBTM {
       /* total price (without taxes) */
       
       /* status of bill */
-      echo "<td class='center b'>" . $LANG['plugin_order']['status'][0] . "<br>";
+      echo "<td class='center b'>" . $LANG['plugin_order']['status'][0] . "<br />";
       echo "<input type='hidden' name='states_id' value=" . PluginOrderOrder::ORDER_STATUS_DRAFT . ">";
       echo self::getState($this->fields["states_id"]);
 
@@ -501,21 +506,27 @@ class PluginOrderOrder extends CommonDBTM {
          $prices = $PluginOrderOrder_Item->getAllPrices($ID);
 
          echo $LANG['plugin_order'][13] . " : ";
-         echo formatNumber($prices["priceHT"]) . "<br>";
+         echo formatNumber($prices["priceHT"]) . "<br />";
      
          // total price (with postage)
-         echo $LANG['plugin_order'][15] . " : ";
-         $priceHTwithpostage=$prices["priceHT"]+$this->fields["port_price"];
-         echo formatNumber($priceHTwithpostage) . "<br>";
-         
-         // total price (with taxes)
-         echo $LANG['plugin_order'][14] . " : ";
          $postagewithTVA = 
             $PluginOrderOrder_Item->getPricesATI($this->fields["port_price"], 
                                                  Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", 
                                                                            $this->fields["plugin_order_ordertaxes_id"]));
+
+         echo $LANG['plugin_order'][15] . " : ";
+         $priceHTwithpostage=$prices["priceHT"]+$this->fields["port_price"];
+         echo formatNumber($priceHTwithpostage) . "<br />";
+         
+         // total price (with taxes)
+         echo $LANG['plugin_order'][14] . " : ";
          $total = $prices["priceTTC"] + $postagewithTVA;
-         echo formatNumber($total) . "</td>";
+         echo formatNumber($total) . "<br />";
+         
+         // total TVA
+         echo "(" . $LANG['plugin_order'][25] . " : ";
+         $total_tva = $prices["priceTVA"] + ($postagewithTVA- $this->fields["port_price"]);
+         echo formatNumber($total_tva) . ")</td>";
       } else
          echo "</td>";
 
@@ -958,8 +969,10 @@ class PluginOrderOrder extends CommonDBTM {
          $odf->setVars('title_item',$LANG['plugin_order']['generation'][7],true,'UTF-8');
          $odf->setVars('title_ref',$LANG['plugin_order']['detail'][2],true,'UTF-8');
          $odf->setVars('HTPrice_item',$LANG['plugin_order']['generation'][8],true,'UTF-8');
+         $odf->setVars('TVA_item',$LANG['plugin_order'][25],true,'UTF-8');
          $odf->setVars('title_discount',$LANG['plugin_order']['generation'][13],true,'UTF-8');
          $odf->setVars('HTPriceTotal_item',$LANG['plugin_order']['generation'][9],true,'UTF-8');
+         $odf->setVars('ATIPriceTotal_item',$LANG['plugin_order'][14],true,'UTF-8');
          
          $listeArticles = array();
          
@@ -974,12 +987,14 @@ class PluginOrderOrder extends CommonDBTM {
 
             $listeArticles[]=array('quantity'         => $quantity,
                                    'ref'              => utf8_decode($data["name"]),
+                                   'taxe'             => Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTaxe"), 
+                                                                                      $data["plugin_order_ordertaxes_id"]), 
                                    'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier($data["id"],
                                                                                                                                 $this->fields["suppliers_id"]),
-                                   'price_taxfree'    => html_clean(formatNumber($data["price_taxfree"])),
-                                   'discount'         => html_clean(formatNumber($data["discount"], false, 0)),
-                                   'price_discounted' => html_clean(formatNumber($data["price_discounted"]*$quantity)));
-            
+                                   'price_taxfree'    => $data["price_taxfree"],
+                                   'discount'         => $data["discount"], false, 0,
+                                   'price_discounted' => $data["price_discounted"]*$quantity,
+                                   'price_ati'        => $data["price_ati"]);
          }
          
          $article = $odf->setSegment('articles');
@@ -987,43 +1002,53 @@ class PluginOrderOrder extends CommonDBTM {
             $article->nbA($element['quantity']);
             $article->titleArticle($element['ref']);
             $article->refArticle($element['refnumber']);
-            $article->HTPriceArticle($element['price_taxfree']);
+            $article->TVAArticle($element['taxe']);
+            $article->HTPriceArticle(html_clean(formatNumber($element['price_taxfree'])));
             if ($element['discount'] != 0) {
-               $article->discount($element['discount']." %");
+               $article->discount(html_clean(formatNumber($element['discount']))." %");
             } else {
                $article->discount("");
             }
-            $article->HTPriceTotalArticle($element['price_discounted']);
+            $article->HTPriceTotalArticle(html_clean(formatNumber($element['price_discounted'])));
+
+            $total_TTC_Article = $element['price_discounted']*(1+($element['taxe']/100));
+            $article->ATIPriceTotalArticle(html_clean(formatNumber($total_TTC_Article)));
             $article->merge();
          }
 
          $odf->mergeSegment($article);
          
-         $odf->setVars('title_port',$LANG['plugin_order'][26],true,'UTF-8');
-         $odf->setVars('port_price',formatNumber($this->fields["port_price"]),true,'UTF-8');
+         $prices = $PluginOrderOrder_Item->getAllPrices($ID);
+
+         // total price (with postage)
+         $postagewithTVA = 
+            $PluginOrderOrder_Item->getPricesATI($this->fields["port_price"], 
+                                                 Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", 
+                                                                           $this->fields["plugin_order_ordertaxes_id"]));
+
+         $total_HT   = $prices["priceHT"]    + $this->fields["port_price"];
+         $total_TVA  = $prices["priceTVA"]   + $postagewithTVA - $this->fields["port_price"];
+         $total_TTC  = $prices["priceTTC"]   + $postagewithTVA;
+
+         $odf->setVars('title_totalht',$LANG['plugin_order'][13],true,'UTF-8');
+         $odf->setVars('totalht',html_clean(formatNumber($prices['priceHT'])),true,'UTF-8');
          
-         $odf->setVars('title_totalht',$LANG['plugin_order']['generation'][14],true,'UTF-8');
-         $odf->setVars('title_totalttc',$LANG['plugin_order']['generation'][15],true,'UTF-8');
+         $odf->setVars('title_port',$LANG['plugin_order'][15],true,'UTF-8');
+         $odf->setVars('totalht_port_price',html_clean(formatNumber($total_HT)),true,'UTF-8');
+
+         $odf->setVars('title_price_port',$LANG['plugin_order'][26],true,'UTF-8');
+         $odf->setVars('price_port_tva'," (".Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", 
+                                    $this->fields["plugin_order_ordertaxes_id"])."%)",true,'UTF-8');
+         $odf->setVars('port_price',html_clean(formatNumber($postagewithTVA)),true,'UTF-8');
+
          $odf->setVars('title_tva',$LANG['plugin_order'][25],true,'UTF-8');
-         $odf->setVars('value_tva',
-                       html_clean(Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
-                                                            $this->fields["plugin_order_ordertaxes_id"])).
-                                                               " %",true,'UTF-8');
+         $odf->setVars('totaltva',html_clean(formatNumber($total_TVA)),true,'UTF-8');
+
+         $odf->setVars('title_totalttc',$LANG['plugin_order'][14],true,'UTF-8');
+         $odf->setVars('totalttc',html_clean(formatNumber($total_TTC)),true,'UTF-8');
+
          $odf->setVars('title_money',$LANG['plugin_order']['generation'][17],true,'UTF-8');
          $odf->setVars('title_sign',$LANG['plugin_order']['generation'][16],true,'UTF-8');
-         
-         $prices = $PluginOrderOrder_Item->getAllPrices($ID);
-         $priceHTwithpostage=$prices["priceHT"]+$this->fields["port_price"];
-         $tva = ($prices["priceHT"]*Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
-                                                              $this->fields["plugin_order_ordertaxes_id"]))/100;
-         $postagewithTVA = $PluginOrderOrder_Item->getPricesATI($this->fields["port_price"], 
-                           Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
-                                                     $this->fields["plugin_order_ordertaxes_id"]));
-         $total = $prices["priceTTC"] + $postagewithTVA;
-         
-         $odf->setVars('totalht',html_clean(formatNumber($priceHTwithpostage)),true,'UTF-8');
-         $odf->setVars('totaltva',html_clean(formatNumber($tva)),true,'UTF-8');
-         $odf->setVars('totalttc',html_clean(formatNumber($total)),true,'UTF-8');
          
          $sign=$pref->checkPreferenceSignatureValue(getLoginUserID());
          if ($sign) {

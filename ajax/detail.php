@@ -55,7 +55,7 @@ $paramsaction=array('plugin_order_references_id'=>'__VALUE__',
               'itemtype'=>$_POST["itemtype"]
       );
 
-$fields = array ("quantity","priceht","pricediscounted", "validate");
+$fields = array ("quantity","priceht","pricediscounted","taxe","validate");
 foreach ($fields as $field)
 {
    $paramsaction['update'] = $field;

@@ -7,3 +7,6 @@ DELETE FROM `glpi_displaypreferences` WHERE `itemtype` = 'PluginOrderBudget';
 DELETE FROM `glpi_documents_items` WHERE `itemtype` = 'PluginOrderBudget';
 DELETE FROM `glpi_bookmarks` WHERE `itemtype` = 'PluginOrderBudget';
 DELETE FROM `glpi_logs` WHERE `itemtype` = 'PluginOrderBudget';
+
+ALTER TABLE  `glpi_plugin_order_orders_items` 
+	ADD  `plugin_order_ordertaxes_id` FLOAT NULL

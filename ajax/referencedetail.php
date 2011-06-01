@@ -63,6 +63,9 @@ if ($_POST["plugin_order_references_id"] > 0)
       case 'pricediscounted':
          echo "<input type='text' name='discount' size='5' value='0'>";
          break;
+      case 'taxe':
+         Dropdown::show('PluginOrderOrderTaxe', array('name' => "plugin_order_ordertaxes_id"));
+         break;
       case 'validate':
          echo "<input type='hidden' name='itemtype' value='".
             $_POST["itemtype"]."' class='submit' >";

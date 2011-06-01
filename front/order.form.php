@@ -135,7 +135,6 @@ else if (isset ($_POST["undovalidation"])) {
       addMessageAfterRedirect($LANG['plugin_order']['detail'][33],false,ERROR);
    } else {
       $pluginOrderOrder->getFromDB($_POST["plugin_order_orders_id"]);
-      $taxes = $pluginOrderOrder->fields["plugin_order_ordertaxes_id"];
       $new_value = $LANG['plugin_order']['detail'][34]." ";
       $new_value.= Dropdown::getDropdownName("glpi_plugin_order_references",
                                              $_POST["plugin_order_references_id"]);
@@ -145,7 +144,8 @@ else if (isset ($_POST["undovalidation"])) {
                                     $new_value,$_POST["plugin_order_orders_id"]);
       $pluginOrderOrder_Item->addDetails($_POST["plugin_order_references_id"], $_POST["itemtype"], 
                                           $_POST["plugin_order_orders_id"], $_POST["quantity"], 
-                                          $_POST["price"], $_POST["discount"], $taxes);
+                                          $_POST["price"], $_POST["discount"], 
+                                          $_POST["plugin_order_ordertaxes_id"]);
    }
       
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -192,7 +192,7 @@ else if (isset ($_POST["delete_item"])) {
                $new_value = $LANG['plugin_order']['detail'][35]." ";
                $new_value.= Dropdown::getDropdownName("glpi_plugin_order_references",$ID);
                $pluginOrderOrder->addHistory("PluginOrderOrder", "", 
-                                             $new_value,$_POST["plugin_order_orders_id"]);
+                                                $new_value,$_POST["plugin_order_orders_id"]);
                $pluginOrderOrder_Item->delete(array('id' => $ID));
             }
          }
