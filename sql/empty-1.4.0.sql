@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders_items` (
    `items_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
    `plugin_order_references_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)',
    `plugin_order_deliverystates_id` int (11)  NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_deliverystates (id)',
+   `plugin_order_ordertaxes_id` float NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)',
    `delivery_number` varchar(255) collate utf8_unicode_ci default NULL,
    `delivery_comment` text collate utf8_unicode_ci,
    `price_taxfree` float NOT NULL default 0,

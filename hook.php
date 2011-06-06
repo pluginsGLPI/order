@@ -510,6 +510,22 @@ Informations sur le mat&#233;riel associ&#233;
       $result=$DB->query($query);
    }
    
+   if($update140) {
+      $query_ = "SELECT *
+                 FROM `glpi_plugin_order_orders`";
+      $result_ = $DB->query($query_);
+
+      if ($DB->numrows($result_)>0) {
+
+         while ($data = $DB->fetch_array($result_)) {
+            $query = "UPDATE `glpi_plugin_order_orders_items`
+                      SET `plugin_order_ordertaxes_id` = '" . $data["plugin_order_ordertaxes_id"] . "'
+                      WHERE `plugin_order_orders_id` = '" . $data["id"] . "'";
+            $result = $DB->query($query);
+         }
+      }
+   }
+   
    PluginOrderProfile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
    return true;
 }

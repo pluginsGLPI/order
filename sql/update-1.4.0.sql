@@ -9,4 +9,4 @@ DELETE FROM `glpi_bookmarks` WHERE `itemtype` = 'PluginOrderBudget';
 DELETE FROM `glpi_logs` WHERE `itemtype` = 'PluginOrderBudget';
 
 ALTER TABLE  `glpi_plugin_order_orders_items` 
-	ADD  `plugin_order_ordertaxes_id` FLOAT NULL
+	ADD  `plugin_order_ordertaxes_id` FLOAT NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)';
