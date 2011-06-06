@@ -203,7 +203,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
             echo "<input type='hidden' name='plugin_order_orders_id' value=\"$plugin_order_orders_id\">";
             echo "<div class='center'>";
             echo"<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='6'>".$LANG['plugin_order']['detail'][5]."</th></tr>";
+            echo "<tr><th colspan='7'>".$LANG['plugin_order']['detail'][5]."</th></tr>";
 
             if ($order->fields["suppliers_id"])
             {
