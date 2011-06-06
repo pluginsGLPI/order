@@ -100,17 +100,17 @@ class PluginOrderLink extends CommonDBChild {
       echo "<input type='hidden' name='plugin_order_orders_id' value=" . $params["plugin_order_orders_id"] . ">";
       echo "<input type='hidden' name='plugin_order_references_id' value=" . $params["plugin_order_references_id"] . ">";
 
-      $order = new PluginOrderOrder;
+      $order = new PluginOrderOrder();
       $order->getFromDB($params["plugin_order_orders_id"]);
       
-      $PluginOrderReference = new PluginOrderReference;
+      $PluginOrderReference = new PluginOrderReference();
       
       $i = 0;
       $found = false;
 
       foreach ($params["item"] as $key => $val)
          if ($val == 1) {
-            $detail = new PluginOrderOrder_Item;
+            $detail = new PluginOrderOrder_Item();
             $detail->getFromDB($key);
 
             if (!$detail->fields["items_id"]) {
@@ -352,7 +352,7 @@ class PluginOrderLink extends CommonDBChild {
          case 'ConsumableItem' :
             $ci = new Consumable();
             if ($ci->getFromDB($items_id)) {
-               $ct = new ConsumableItem;
+               $ct = new ConsumableItem();
                $ct->getFromDB($ci->fields['consumableitems_id']);
                $comments = "<strong>" . $LANG['entity'][0] . ":</strong> " . Dropdown::getDropdownName("glpi_entities", $ct->fields["entities_id"]);
                $comments .= '<br><strong>' . $LANG['consumables'][0] . ' : </strong> #' . $items_id;
@@ -366,7 +366,7 @@ class PluginOrderLink extends CommonDBChild {
          case 'CartridgeItem' :
             $ci = new Cartridge();
             if ($ci->getFromDB($items_id)) {
-               $ct = new CartridgeItem;
+               $ct = new CartridgeItem();
                $ct->getFromDB($ci->fields['cartridgeitems_id']);
                $comments = "<strong>" . $LANG['entity'][0] . ":</strong> " . Dropdown::getDropdownName("glpi_entities", $ct->fields["entities_id"]);
                $comments .= '<br><strong>' . $LANG['cartridges'][0] . ' : </strong> #' . $items_id;
@@ -402,7 +402,7 @@ class PluginOrderLink extends CommonDBChild {
             case 'ConsumableItem' :
                $ci = new Consumable();
                $ci->getFromDB($items_id);
-               $ct = new ConsumableItem;
+               $ct = new ConsumableItem();
                $link=getItemTypeFormURL($ct->getType());
                $ct->getFromDB($ci->fields['consumableitems_id']);
                return ("<a href=" . $link . "?id=" . $ct->fields['id'] . ">" . $LANG['consumables'][0] . ': #' . $items_id . ' (' . $ct->fields["name"] . ')' . "</a>");
@@ -410,7 +410,7 @@ class PluginOrderLink extends CommonDBChild {
             case 'CartridgeItem' :
                $ci = new Cartridge();
                $ci->getFromDB($items_id);
-               $ct = new CartridgeItem;
+               $ct = new CartridgeItem();
                $link=getItemTypeFormURL($ct->getType());
                $ct->getFromDB($ci->fields['cartridgeitems_id']);
                return ("<a href=" . $link . "?id=" . $ct->fields['id'] . ">" . $LANG['cartridges'][0] . ': #' . $items_id . ' (' . $ct->fields["name"] . ')' . "</a>");
@@ -424,7 +424,7 @@ class PluginOrderLink extends CommonDBChild {
       
       $rand = mt_rand();
       
-      $PluginOrderReception = new PluginOrderReception;
+      $PluginOrderReception = new PluginOrderReception();
       
       echo "<select name='generationActions$rand' id='generationActions$rand'>";
       echo "<option value='0' selected>".DROPDOWN_EMPTY_VALUE."</option>";
@@ -472,7 +472,7 @@ class PluginOrderLink extends CommonDBChild {
          else
             return false;
       } else {
-         $detail = new PluginOrderOrder_Item;
+         $detail = new PluginOrderOrder_Item();
          $detail->getFromDB($detailID);
          if (!$detail->fields['items_id']) {
             return false;
@@ -499,9 +499,9 @@ class PluginOrderLink extends CommonDBChild {
    function generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, $templateID = 0) {
       global $LANG;
 
-      $detail = new PluginOrderOrder_Item;
+      $detail = new PluginOrderOrder_Item();
       $detail->getFromDB($detailID);
-      $order = new PluginOrderOrder;
+      $order = new PluginOrderOrder();
       $order->getFromDB($detail->fields["plugin_order_orders_id"]);
       
       $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
@@ -550,7 +550,7 @@ class PluginOrderLink extends CommonDBChild {
    
    function removeInfoComRelatedToOrder($itemtype, $items_id) {
 
-	$infocom = new InfoCom;
+	$infocom = new InfoCom();
 	$infocom->getFromDBforDevice($itemtype, $items_id);
 	$input["id"] = $infocom->fields["id"];
 	$input["order_number"] = "";
@@ -569,7 +569,7 @@ class PluginOrderLink extends CommonDBChild {
       global $LANG,$DB;
 
       if (!$check_link || !$this->itemAlreadyLinkedToAnOrder($itemtype, $items_id, $plugin_order_orders_id, $detailID)) {
-         $detail = new PluginOrderOrder_Item;
+         $detail = new PluginOrderOrder_Item();
          
          $restricted = array('ConsumableItem',
                            'CartridgeItem');
@@ -597,7 +597,7 @@ class PluginOrderLink extends CommonDBChild {
 
                   $this->generateInfoComRelatedToOrder($entity, $ID, $itemtype, $items_id, 0);
                   
-                  $lic = new SoftwareLicense;
+                  $lic = new SoftwareLicense();
                   $lic->getFromDB($items_id);
                   $values["id"] = $lic->fields["id"];
                   $values["number"] = $lic->fields["number"]+1;
@@ -615,10 +615,10 @@ class PluginOrderLink extends CommonDBChild {
          } else if (in_array($itemtype, $restricted)) {
          
             if ($itemtype == 'ConsumableItem') {
-               $item = new Consumable;
+               $item = new Consumable();
                $type = 'Consumable';
             } elseif ($itemtype == 'CartridgeItem') {
-               $item = new Cartridge;
+               $item = new Cartridge();
                $type = 'Cartridge';
             }
             $detail->getFromDB($detailID);
@@ -665,7 +665,7 @@ class PluginOrderLink extends CommonDBChild {
       
       if ($itemtype == 'SoftWareLicense') {
             
-         $detail = new PluginOrderOrder_Item;
+         $detail = new PluginOrderOrder_Item();
          $detail->getFromDB($detailID);
          $license = $detail->fields["items_id"];
          
@@ -682,7 +682,7 @@ class PluginOrderLink extends CommonDBChild {
                $input["items_id"] = 0;
                $detail->update($input);
                
-               $lic = new SoftwareLicense;
+               $lic = new SoftwareLicense();
                $lic->getFromDB($license);
                $values["id"] = $lic->fields["id"];
                $values["number"] = $lic->fields["number"]-1;
@@ -701,10 +701,10 @@ class PluginOrderLink extends CommonDBChild {
          }
       } else {
       
-         $order = new PluginOrderOrder;
+         $order = new PluginOrderOrder();
          $order->getFromDB($plugin_order_orders_id);
                
-         $detail = new PluginOrderOrder_Item;
+         $detail = new PluginOrderOrder_Item();
          $detail->getFromDB($detailID);
          $items_id = $detail->fields["items_id"];
 
@@ -731,10 +731,10 @@ class PluginOrderLink extends CommonDBChild {
       global $DB, $LANG;
 
       // Retrieve plugin configuration
-      $PluginOrderConfig = new PluginOrderConfig;
+      $PluginOrderConfig = new PluginOrderConfig();
 		$config = $PluginOrderConfig->getConfig();
 
-      $PluginOrderReference = new PluginOrderReference;
+      $PluginOrderReference = new PluginOrderReference();
       
       foreach ($params["id"] as $tmp => $values) {
          
@@ -743,10 +743,10 @@ class PluginOrderLink extends CommonDBChild {
          //Look for a template in the entity
          $templateID = $PluginOrderReference->checkIfTemplateExistsInEntity($values["id"], $values["itemtype"], $entity);
          
-         $order = new PluginOrderOrder;
+         $order = new PluginOrderOrder();
          $order->getFromDB($values["plugin_order_orders_id"]);
 
-         $reference = new PluginOrderReference;
+         $reference = new PluginOrderReference();
          $reference->getFromDB($params["plugin_order_references_id"]);
          
          $item = new $values["itemtype"]();

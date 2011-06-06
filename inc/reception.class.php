@@ -109,7 +109,7 @@ class PluginOrderReception extends CommonDBTM {
    function deleteDelivery($detailID) {
       global $DB;
       
-      $detail = new PluginOrderOrder_Item;
+      $detail = new PluginOrderOrder_Item();
       $detail->getFromDB($detailID);
       
       if ($detail->fields["itemtype"] == 'SoftwareLicense') {
@@ -463,7 +463,7 @@ class PluginOrderReception extends CommonDBTM {
    function getReceptionStatus($ID) {
       global $DB, $LANG;
 
-      $detail = new PluginOrderOrder_Item;
+      $detail = new PluginOrderOrder_Item();
       $detail->getFromDB($ID);
 
       switch ($detail->fields["states_id"]) {
@@ -616,7 +616,7 @@ class PluginOrderReception extends CommonDBTM {
    */
    static function generateAsset($options) {
       // Retrieve configuration for generate assets feature
-		$PluginOrderConfig = new PluginOrderConfig;
+		$PluginOrderConfig = new PluginOrderConfig();
 		$config = $PluginOrderConfig->getConfig();
 
 		if ($config["generate_assets"]) {
