@@ -317,7 +317,7 @@ class PluginOrderOrder extends CommonDBTM {
       return $input;
    }
    
-   function prepareInputForUpdate($input) {
+   /*function prepareInputForUpdate($input) {
       global $LANG;
 
       if (isset ($input["states_id"]) && $input["states_id"] > 0) {
@@ -325,7 +325,7 @@ class PluginOrderOrder extends CommonDBTM {
          return array ();
       }
       return $input;
-   }
+   }*/
 
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;

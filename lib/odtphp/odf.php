@@ -22,7 +22,7 @@ class OdfException extends Exception
 class Odf
 {
     protected $config = array(
-    	'ZIP_PROXY' => 'PhpZipProxy',
+    	'ZIP_PROXY' => 'PclZipProxy',
     	'DELIMITER_LEFT' => '{',
     	'DELIMITER_RIGHT' => '}',
 		'PATH_TO_TMP' => null
