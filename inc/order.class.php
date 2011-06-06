@@ -316,16 +316,6 @@ class PluginOrderOrder extends CommonDBTM {
 
       return $input;
    }
-   
-   /*function prepareInputForUpdate($input) {
-      global $LANG;
-
-      if (isset ($input["states_id"]) && $input["states_id"] > 0) {
-         addMessageAfterRedirect($LANG['plugin_order']['status'][14], false, ERROR);
-         return array ();
-      }
-      return $input;
-   }*/
 
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
@@ -531,8 +521,12 @@ class PluginOrderOrder extends CommonDBTM {
          echo "</td>";
 
       echo "</tr>";
-
-      $this->showFormButtons($options);
+      
+      if ($canedit) {
+         $this->showFormButtons($options);
+      } else {
+         echo "</table></div></form>";
+      }
       $this->addDivForTabs();
       
       return true;
