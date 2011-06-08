@@ -116,7 +116,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
    
       static $types = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Printer',
                             'Phone', 'ConsumableItem', 'CartridgeItem', 'Contract',
-                            'PluginOrderOther');
+                            'PluginOrderOther','SoftwareLicense');
       
       if ($all) {
          return $types;
