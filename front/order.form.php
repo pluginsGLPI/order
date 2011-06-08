@@ -46,9 +46,15 @@ $pluginOrderConfig         = new PluginOrderConfig();
 $pluginOrderOrder_Item     = new PluginOrderOrder_Item();
 $pluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
 
+$config = $pluginOrderConfig->getConfig();
+   
 /* add order */
 if (isset ($_POST["add"])) {
    $pluginOrderOrder->check(-1,'w',$_POST);
+
+   /* FORCE Status */
+   $_POST['plugin_order_orderstates_id'] = $config['order_status_draft'];
+
    $newID = $pluginOrderOrder->add($_POST);
    glpi_header($_SERVER['HTTP_REFERER']."?id=$newID");
 }
@@ -79,41 +85,42 @@ else if (isset ($_POST["update"])) {
 //Status update & order workflow
 /* validate order */
 else if (isset ($_POST["validate"])) {
-   
-   $config = $pluginOrderConfig->getConfig();
       
    if ($pluginOrderOrder->canCreate() 
       && ( $pluginOrderOrder->canValidate() 
          || !$config["use_validation"])) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"], 
-                                           PluginOrderOrder::ORDER_STATUS_APPROVED,
+                                           $config['order_status_approved'],
                                            $_POST["comment"]);
       $pluginOrderOrder_Item->updateDelivryStatus($_POST["id"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][10]);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["waiting_for_approval"])) {
+
    if ($pluginOrderOrder->canCreate()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
-                                           PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL,
+                                           $config['order_status_waiting_approval'],
                                            $_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][7]);
    }
    
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["cancel_waiting_for_approval"])) {
+
    if ($pluginOrderOrder->canCreate() && $pluginOrderOrder->canCancel()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
-                                           PluginOrderOrder::ORDER_STATUS_DRAFT,
+                                           $config['order_status_draft'],
                                            $_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][14]);
    }
    
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["cancel_order"])) {
+
    if ($pluginOrderOrder->canCreate() && $pluginOrderOrder->canCancel()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
-                                           PluginOrderOrder::ORDER_STATUS_CANCELED,
+                                           $config['order_status_canceled'],
                                            $_POST["comment"]);
       $pluginOrderOrder->deleteAllLinkWithItem($_POST["id"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][5]);
@@ -122,14 +129,17 @@ else if (isset ($_POST["validate"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset ($_POST["undovalidation"])) {
+
    if ($pluginOrderOrder->canCreate() && $pluginOrderOrder->canUndo()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
-                                           PluginOrderOrder::ORDER_STATUS_DRAFT,$_POST["comment"]);
+                                           $config['order_status_draft'],
+                                           $_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][8]);
    }
    
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["add_item"])) {
+
    //Details management
    if ($_POST["discount"] < 0 || $_POST["discount"] > 100) {
       addMessageAfterRedirect($LANG['plugin_order']['detail'][33],false,ERROR);

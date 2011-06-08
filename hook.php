@@ -34,7 +34,7 @@
 // ---------------------------------------------------------------------- */
 
 function plugin_order_install() {
-   global $DB;
+   global $DB,$LANG;
 
    include_once(GLPI_ROOT."/plugins/order/inc/profile.class.php");
 
@@ -43,6 +43,7 @@ function plugin_order_install() {
    $update120=false;
    $update130=false;
    $update140=false;
+   $update150=false;
    
    if (TableExists("glpi_plugin_order_detail")) {
       if (!FieldExists("glpi_plugin_order_detail","discount")) { // version 1.1.0
@@ -292,10 +293,16 @@ function plugin_order_install() {
       $update140=true;
       $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.4.0.sql");
    }
+   
+   if (FieldExists("glpi_plugin_order_orders_items","plugin_order_ordertaxes_id")
+         && !TableExists("glpi_plugin_order_orderstates")) { // version 1.5.0
+      $update150=true;
+      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.5.0.sql");
+   }
       
    if (!TableExists("glpi_plugin_order_orders")) { // not installed
       $install=true;
-      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/empty-1.4.0.sql");
+      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/empty-1.5.0.sql");
    }
 
    if($install || $update130) {
@@ -511,6 +518,7 @@ Informations sur le mat&#233;riel associ&#233;
    }
    
    if($update140) {
+      /* Migrate TVA */
       $query_ = "SELECT *
                  FROM `glpi_plugin_order_orders`";
       $result_ = $DB->query($query_);
@@ -524,6 +532,52 @@ Informations sur le mat&#233;riel associ&#233;
             $result = $DB->query($query);
          }
       }
+   }
+
+   /* Insert Status */
+   if($update150 || $install) {
+      $query = "INSERT INTO `glpi_plugin_order_orderstates` 
+                  VALUES   (1, '".addslashes_deep($LANG['plugin_order']['status'][9])."', ''),
+                           (2, '".addslashes_deep($LANG['plugin_order']['status'][7])."', ''),
+                           (3, '".addslashes_deep($LANG['plugin_order']['status'][12])."', ''),
+                           (4, '".addslashes_deep($LANG['plugin_order']['status'][1])."', ''),
+                           (5, '".addslashes_deep($LANG['plugin_order']['status'][2])."', ''),
+                           (6, '".addslashes_deep($LANG['plugin_order']['status'][10])."', '')";
+      $result = $DB->query($query);
+      
+      $query = "UPDATE `glpi_plugin_order_configs` 
+                  SET   `order_status_draft` = 1,
+                        `order_status_waiting_approval` = 2,
+                        `order_status_approved` = 3,
+                        `order_status_partially_delivred` = 4,
+                        `order_status_completly_delivered` = 5,
+                        `order_status_canceled`= 6 
+                  WHERE `id` = 1";
+      $result = $DB->query($query);
+      
+      $query = "UPDATE `glpi_plugin_order_orders` 
+                  SET `plugin_order_orderstates_id` = 6 WHERE  `plugin_order_orderstates_id` = 5";
+      $result = $DB->query($query);
+      
+      $query = "UPDATE `glpi_plugin_order_orders` 
+                  SET `plugin_order_orderstates_id` = 5 WHERE  `plugin_order_orderstates_id` = 4";
+      $result = $DB->query($query);
+      
+      $query = "UPDATE `glpi_plugin_order_orders` 
+                  SET `plugin_order_orderstates_id` = 4 WHERE  `plugin_order_orderstates_id` = 3";
+      $result = $DB->query($query);
+      
+      $query = "UPDATE `glpi_plugin_order_orders` 
+                  SET `plugin_order_orderstates_id` = 3 WHERE  `plugin_order_orderstates_id` = 2";
+      $result = $DB->query($query);
+      
+      $query = "UPDATE `glpi_plugin_order_orders` 
+                  SET `plugin_order_orderstates_id` = 2 WHERE  `plugin_order_orderstates_id` = 1";
+      $result = $DB->query($query);
+      
+      $query = "UPDATE `glpi_plugin_order_orders` 
+                  SET `plugin_order_orderstates_id` = 1 WHERE  `plugin_order_orderstates_id` = 0";
+      $result = $DB->query($query);
    }
    
    PluginOrderProfile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
@@ -541,6 +595,7 @@ function plugin_order_uninstall() {
       "glpi_plugin_order_ordertaxes",
       "glpi_plugin_order_orderpayments",
       "glpi_plugin_order_ordertypes",
+      "glpi_plugin_order_orderstates",
       "glpi_plugin_order_references",
       "glpi_plugin_order_references_suppliers",
       "glpi_plugin_order_configs",
@@ -668,6 +723,7 @@ function plugin_order_getDropdown() {
          'PluginOrderOrderTaxe' => $LANG['plugin_order'][25],
          'PluginOrderOrderPayment' => $LANG['plugin_order'][32],
          'PluginOrderOrderType' => $LANG['common'][17],
+         'PluginOrderOrderState' => $LANG['plugin_order']['status'][0],
          'PluginOrderOtherType' => $LANG['plugin_order'][9],
          'PluginOrderDeliveryState' => $LANG['plugin_order']['status'][3]
       );
@@ -688,6 +744,9 @@ function plugin_order_getDatabaseRelations() {
          ),
          "glpi_plugin_order_ordertypes" => array (
             "glpi_plugin_order_orders" => "plugin_order_ordertypes_id"
+         ),
+         "glpi_plugin_order_orderstates" => array (
+            "glpi_plugin_order_orders" => "plugin_order_orderstates_id"
          ),
          "glpi_plugin_order_deliverystates" => array (
             "glpi_plugin_order_orders_items" => "plugin_order_deliverystates_id"
@@ -809,41 +868,6 @@ function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,
    return "";
 }
 
-function plugin_order_addWhere($link,$nott,$type,$ID,$val) {
-
-   $searchopt = &Search::getOptions($type);
-   $table = $searchopt[$ID]["table"];
-   $field = $searchopt[$ID]["field"];
-
-   $SEARCH = makeTextSearch($val,$nott);
-
-   // Example of standard Where clause but use it ONLY for specific Where
-   // No need of the function if you do not have specific cases
-   switch ($table.".".$field) {
-      case 'glpi_plugin_order_orders.states_id':
-            return $link." `$table`.`$field` = '$val' ";
-
-   }
-   return "";
-}
-
-function plugin_order_searchOptionsValues($params = array()) {
-   global $LANG;
-   
-   $table = $params['searchoption']['table'];
-   $field = $params['searchoption']['field'];
-
-    // Table fields
-   switch ($table.".".$field) {
-      
-      case 'glpi_plugin_order_orders.states_id':
-         PluginOrderOrder::dropdownState($params['name'],$params['value']);
-         return true;
-         break;
-   }
-   return false;
-}
-
 /* display custom fields in the search */
 function plugin_order_giveItem($type, $ID, $data, $num) {
    global $CFG_GLPI, $LANG;
@@ -856,9 +880,6 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 
    switch ($table . '.' . $field) {
       /* display associated items with order */
-      case "glpi_plugin_order_orders.states_id" :
-         return PluginOrderOrder::getState($data["ITEM_" . $num]);
-         break;
       case "glpi_plugin_order_references.types_id" :
          if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."type.class.php"))
             return Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"), $data["ITEM_" . $num]);

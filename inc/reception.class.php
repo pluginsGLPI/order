@@ -176,9 +176,12 @@ class PluginOrderReception extends CommonDBTM {
       $PluginOrderReference = new PluginOrderReference();
       $PluginOrderReference->getFromDB($this->fields["plugin_order_references_id"]);
       
+      $PluginOrderConfig = new PluginOrderConfig;
+      $config = $PluginOrderConfig->getConfig();
+      
       $canedit = $PluginOrderOrder->can($this->fields["plugin_order_orders_id"], 'w') 
          && !$PluginOrderOrder->canUpdateOrder($this->fields["plugin_order_orders_id"]) 
-            && $PluginOrderOrder->fields["states_id"] != PluginOrderOrder::ORDER_STATUS_CANCELED;
+            && $PluginOrderOrder->fields["plugin_order_orderstates_id"] != $config['order_status_canceled'];
       
       echo "<input type='hidden' name='plugin_order_orders_id' value='" . 
          $this->fields["plugin_order_orders_id"] . "'>";
@@ -259,12 +262,15 @@ class PluginOrderReception extends CommonDBTM {
       $PluginOrderOrder_Item = new PluginOrderOrder_Item();
       $PluginOrderReference = new PluginOrderReference();
       
+      $PluginOrderConfig = new PluginOrderConfig;
+      $config = $PluginOrderConfig->getConfig();
+
       initNavigateListItems($this->getType(),
                             $LANG['plugin_order'][7] ." = ". $PluginOrderOrder->fields["name"]);
       
       $canedit = $PluginOrderOrder->can($plugin_order_orders_id, 'w') 
          && !$PluginOrderOrder->canUpdateOrder($plugin_order_orders_id) 
-            && $PluginOrderOrder->fields["states_id"] != PluginOrderOrder::ORDER_STATUS_CANCELED;
+            && $PluginOrderOrder->fields["plugin_order_orderstates_id"] != $config['order_status_canceled'];
       
       $result_ref=$PluginOrderOrder_Item->queryDetail($plugin_order_orders_id);
       $numref = $DB->numrows($result_ref);

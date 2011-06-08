@@ -183,8 +183,11 @@ class PluginOrderLink extends CommonDBChild {
       $PluginOrderReference = new PluginOrderReference();
       $PluginOrderReception = new PluginOrderReception();
       
+      $PluginOrderConfig = new PluginOrderConfig;
+      $config = $PluginOrderConfig->getConfig();
+      
       $PluginOrderOrder->getFromDB($plugin_order_orders_id);
-      $canedit = $PluginOrderOrder->can($plugin_order_orders_id, 'w') && !$PluginOrderOrder->canUpdateOrder($plugin_order_orders_id) && $PluginOrderOrder->fields["states_id"] != PluginOrderOrder::ORDER_STATUS_CANCELED;
+      $canedit = $PluginOrderOrder->can($plugin_order_orders_id, 'w') && !$PluginOrderOrder->canUpdateOrder($plugin_order_orders_id) && $PluginOrderOrder->fields["plugin_order_orderstates_id"] != $config['order_status_canceled'];
       
       $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, `glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`itemtype`, `glpi_plugin_order_references`.`manufacturers_id`,`glpi_plugin_order_orders_items`.`price_taxfree`,`glpi_plugin_order_orders_items`.`discount` " .
       "FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references` " .

@@ -119,7 +119,8 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
       // orderstate
       $this->datas['##lang.reception.orderstate##'] = $LANG['joblist'][0];
       $this->datas['##reception.orderstate##'] =  
-               $order->getState($order->getField("states_id"));
+               Dropdown::getDropdownName("glpi_plugin_order_orderstates", 
+                                          $order->getField('plugin_order_orderstates_id'));
 
       // orderport
       $this->datas['##lang.reception.orderport##'] = $LANG['plugin_order'][26];

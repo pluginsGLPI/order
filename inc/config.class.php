@@ -147,6 +147,54 @@ class PluginOrderConfig extends CommonDBTM {
                                     'entity' => $_SESSION["glpiactiveentities"]));
       echo "</td></tr>";
 
+      /* Workflow */
+		echo "<tr class='tab_bg_1' align='center'>
+		         <th colspan='2'>".$LANG['plugin_order']['config'][13]."</th>
+		      </tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>
+            <td>".$LANG['plugin_order']['config'][14]."</td><td>";
+            Dropdown::show('PluginOrderOrderState', 
+                           array('name'   => 'order_status_draft',
+                                 'value'  => $this->fields["order_status_draft"]));
+		echo "</td></tr>";
+		
+      echo "<tr class='tab_bg_1' align='center'>
+            <td>".$LANG['plugin_order']['config'][15]."</td><td>";
+            Dropdown::show('PluginOrderOrderState', 
+                           array('name'   => 'order_status_waiting_approval',
+                                 'value'  => $this->fields["order_status_waiting_approval"]));
+		echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>
+            <td>".$LANG['plugin_order']['config'][16]."</td><td>";
+            Dropdown::show('PluginOrderOrderState', 
+                           array('name'   => 'order_status_approved',
+                                 'value'  => $this->fields["order_status_approved"]));
+		echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>
+            <td>".$LANG['plugin_order']['config'][17]."</td><td>";
+            Dropdown::show('PluginOrderOrderState', 
+                           array('name'   => 'order_status_partially_delivred',
+                                 'value'  => $this->fields["order_status_partially_delivred"]));
+		echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>
+            <td>".$LANG['plugin_order']['config'][18]."</td><td>";
+            Dropdown::show('PluginOrderOrderState', 
+                           array('name'   => 'order_status_completly_delivered',
+                                 'value'  => $this->fields["order_status_completly_delivered"]));
+		echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>
+            <td>".$LANG['plugin_order']['config'][19]."</td><td>";
+            Dropdown::show('PluginOrderOrderState', 
+                           array('name'   => 'order_status_canceled',
+                                 'value'  => $this->fields["order_status_canceled"]));
+		echo "</td></tr>";
+
+
       echo "<tr class='tab_bg_1' align='center'>"; 
       echo "<td colspan='2' align='center'>"; 
       echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >"; 

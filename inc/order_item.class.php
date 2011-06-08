@@ -158,6 +158,9 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
    function addDetails($plugin_order_references_id, $itemtype, $plugin_order_orders_id, $quantity, 
                        $price, $discounted_price, $plugin_order_ordertaxes_id) {
+                          
+      $pluginOrderConfig         = new PluginOrderConfig();
+      $config = $pluginOrderConfig->getConfig();
 
       if ($quantity > 0) {
          for ($i = 0; $i < $quantity; $i++) {
@@ -167,7 +170,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
             $input["itemtype"]                   = $itemtype;
             $input["price_taxfree"]              = $price;
             $input["price_discounted"]           = $price - ($price * ($discounted_price / 100));
-            $input["states_id"]                  = PluginOrderOrder::ORDER_STATUS_DRAFT;
+            $input["states_id"]                  = 0;
 
             $input["price_ati"]                  = $this->getPricesATI($input["price_discounted"], 
                                                                        Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
@@ -486,19 +489,25 @@ class PluginOrderOrder_Item extends CommonDBTM {
                                  $price_taxfree, $discount) {
       global $DB;
 
+      $PluginOrderConfig = new PluginOrderConfig;
+      $config = $PluginOrderConfig->getConfig();
+
       $query = "SELECT COUNT(*) AS deliveredquantity
                 FROM `".$this->getTable()."`
                 WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
                    AND `plugin_order_references_id` = '$plugin_order_references_id'
                       AND `price_taxfree` LIKE '$price_taxfree'
                          AND `discount` LIKE '$discount'
-                            AND `states_id` = '".PluginOrderOrder::ORDER_STATUS_WAITING_APPROVAL."' ";
+                            AND `states_id` != '0' ";
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'deliveredquantity'));
    }
 
    function updateDelivryStatus($plugin_order_orders_id) {
       global $DB;
+
+      $PluginOrderConfig = new PluginOrderConfig;
+      $config = $PluginOrderConfig->getConfig();
 
       $order = new PluginOrderOrder;
       $order->getFromDB($plugin_order_orders_id);
@@ -514,12 +523,12 @@ class PluginOrderOrder_Item extends CommonDBTM {
             $all_delivered = false;
 
       if ($all_delivered 
-            && $order->fields["states_id"] != PluginOrderOrder::ORDER_STATUS_COMPLETLY_DELIVERED)
+            && $order->fields["plugin_order_orderstates_id"] != $config['order_status_completly_delivered'])
          $order->updateOrderStatus($plugin_order_orders_id, 
-                                   PluginOrderOrder::ORDER_STATUS_COMPLETLY_DELIVERED);
-      else if ($order->fields["states_id"] != PluginOrderOrder::ORDER_STATUS_PARTIALLY_DELIVRED)
+                                   $config['order_status_completly_delivered']);
+      else if ($order->fields["plugin_order_orderstates_id"] != $config['order_status_partially_delivred'])
          $order->updateOrderStatus($plugin_order_orders_id, 
-                                   PluginOrderOrder::ORDER_STATUS_PARTIALLY_DELIVRED);
+                                   $config['order_status_partially_delivred']);
    }
 
    function getAllPrices($plugin_order_orders_id) {

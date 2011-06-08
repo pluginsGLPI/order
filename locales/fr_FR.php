@@ -79,6 +79,13 @@ $LANG['plugin_order']['config'][9] = "Catégorie par défaut";
 $LANG['plugin_order']['config'][10] = "Titre par défaut";
 $LANG['plugin_order']['config'][11] = "Description par défaut";
 $LANG['plugin_order']['config'][12] = "Statut par défaut";
+$LANG['plugin_order']['config'][13] = "Workflow des statuts de commande";
+$LANG['plugin_order']['config'][14] = "Statut avant la validation";
+$LANG['plugin_order']['config'][15] = "Statut en attente de validation";
+$LANG['plugin_order']['config'][16] = "Statut lorsque la commande est validée";
+$LANG['plugin_order']['config'][17] = "Statut lorsqu'au moins un matériel est livré";
+$LANG['plugin_order']['config'][18] = "Statut lorsque tous les matériels sont livrés";
+$LANG['plugin_order']['config'][19] = "Statut lorsque la commande est annulée";
 
 $LANG['plugin_order']['delivery'][1] = "Réception matériel(s)";
 $LANG['plugin_order']['delivery'][2] = "Réceptionner matériel";
@@ -187,7 +194,7 @@ $LANG['plugin_order']['status'][8] = "Réceptionné";
 $LANG['plugin_order']['status'][9] = "En cours d'édition";
 $LANG['plugin_order']['status'][10] = "Annulée";
 $LANG['plugin_order']['status'][11] = "En attente de livraison";
-$LANG['plugin_order']['status'][12] = "Validé";
+$LANG['plugin_order']['status'][12] = "Validée";
 $LANG['plugin_order']['status'][13] = "Statistique livraison";
 $LANG['plugin_order']['status'][14] = "La commande est validée, toute modification est interdite";
 
