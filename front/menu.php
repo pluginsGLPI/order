@@ -64,7 +64,7 @@ if ($PluginOrderOrder->canView()
 
    if ($PluginOrderBill->canView()) {
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td><img src='../pics/reference-icon.png'></td>";
+      echo "<td><img src='../pics/bill-icon.png'></td>";
       echo "<td><a href='".getItemTypeSearchURL('PluginOrderBill')."'>" . 
          $LANG['plugin_order']['menu'][6] . "</a></td></tr>";
    }
