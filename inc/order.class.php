@@ -748,13 +748,11 @@ class PluginOrderOrder extends CommonDBTM {
 
       if ($this->can($orders_id,'w') && $this->canDisplayValidationForm($orders_id)) {
          echo "<form method='post' name='form' action=\"$target\">";
-         
          echo "<div align='center'><table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_2'><th colspan='3'>" . 
+            $LANG['plugin_order']['validation'][6] . "</th></tr>";
          
          if ($this->checkIfDetailExists($orders_id)) {
-         
-            echo "<tr class='tab_bg_2'><th colspan='3'>" . 
-               $LANG['plugin_order']['validation'][6] . "</th></tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td valign='top' align='right'>";
