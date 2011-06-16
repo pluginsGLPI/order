@@ -66,6 +66,10 @@ $LANG['plugin_order'][46] = "Noch nicht empfangene Geräte können nicht verbund
 $LANG['plugin_order'][47] = "Informationen über die Bestellung";
 $LANG['plugin_order'][48] = "Eine oder mehrere ausgewählte Positionen wurden noch keinem Gerät zugeordnet";
 
+$LANG['plugin_order']['bill'][0] = "Bill";
+$LANG['plugin_order']['bill'][1] = "Bill type";
+$LANG['plugin_order']['bill'][2] = "Bill status";
+
 $LANG['plugin_order']['config'][0] = "Plugin-Einstellungen";
 $LANG['plugin_order']['config'][1] = "Standard-MwSt";
 $LANG['plugin_order']['config'][2] = "Freigabeprozedur verwenden";
@@ -144,6 +148,7 @@ $LANG['plugin_order']['menu'][1] = "Bestellungen verwalten";
 $LANG['plugin_order']['menu'][2] = "Liste der Produktreferenzen verwalten";
 $LANG['plugin_order']['menu'][4] = "Bestellungen";
 $LANG['plugin_order']['menu'][5] = "Referenzen";
+$LANG['plugin_order']['menu'][6] = "Manage bills";
 
 $LANG['plugin_order']['parser'][1] = "Use this model";
 $LANG['plugin_order']['parser'][2] = "No file found into the folder";

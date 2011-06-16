@@ -66,6 +66,10 @@ $LANG['plugin_order'][46] = "NON posso ASSOCIARE Articoli non spediti";
 $LANG['plugin_order'][47] = "Informazioni Ordine";
 $LANG['plugin_order'][48] = "Uno o più righe selezionate non hanno materiali associati";
 
+$LANG['plugin_order']['bill'][0] = "Bill";
+$LANG['plugin_order']['bill'][1] = "Bill type";
+$LANG['plugin_order']['bill'][2] = "Bill status";
+
 $LANG['plugin_order']['config'][0] = "Configurazione Plugin";
 $LANG['plugin_order']['config'][1] = "Default IVA";
 $LANG['plugin_order']['config'][2] = "Usare Processo Verifica";
@@ -144,6 +148,7 @@ $LANG['plugin_order']['menu'][1] = "Gestione Ordini";
 $LANG['plugin_order']['menu'][2] = "Gestione Riferimenti Prodotti";
 $LANG['plugin_order']['menu'][4] = "Ordini";
 $LANG['plugin_order']['menu'][5] = "Riferimenti";
+$LANG['plugin_order']['menu'][6] = "Manage bills";
 
 $LANG['plugin_order']['parser'][1] = "Usa questo modello";
 $LANG['plugin_order']['parser'][2] = "Nessun file nel folder";

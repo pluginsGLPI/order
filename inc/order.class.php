@@ -457,7 +457,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<td>";
       if ($canedit) {
          echo "<input type='text' name='port_price' value=\"".
-            formatNumber($this->fields["port_price"],true)."\" size='5'>";
+            formatNumber($this->fields["port_price"], true)."\" size='5'>";
       } else {
          echo formatNumber($this->fields["port_price"]);
       }

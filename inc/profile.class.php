@@ -83,21 +83,24 @@ class PluginOrderProfile extends CommonDBTM {
       $myProf = new self();
       if (!$myProf->getFromDBByProfile($ID)) {
 
-         $myProf->add(array(
-            'profiles_id' => $ID,
-            'order' => 'w',
-            'reference'=>'w',
-            'validation'=>'w',
-            'cancel'=>'w',
-            'undo_validation'=>'w'));
+         $myProf->add(array('profiles_id' => $ID, 'order' => 'w', 'reference'=>'w',
+                            'validation'=>'w', 'cancel'=>'w', 'undo_validation'=>'w', 'bill' => 'w'));
             
       }
    }
 
+   static function addRightToProfile($profiles_id, $right , $value = '') {
+      $myProf = new self();
+      if ($myProf->getFromDBByProfile($profiles_id)) {
+         $tmp = $myProf->fields;
+         $tmp[$right] = $value;
+         $myProf->update($tmp);
+      }   
+   }
+   
    function createAccess($ID) {
 
-      $this->add(array(
-      'profiles_id' => $ID));
+      $this->add(array('profiles_id' => $ID));
    }
    
    static function changeProfile() {
@@ -125,14 +128,15 @@ class PluginOrderProfile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       
-      echo "<th colspan='4' align='center'><strong>" . $LANG['plugin_order']['profile'][0] . " " . $prof->fields["name"] . "</strong></th>";
+      echo "<th colspan='4' align='center'><strong>" . 
+         $LANG['plugin_order']['profile'][0] . " " . $prof->fields["name"] . "</strong></th>";
       
       echo "</tr>";  
       echo "<tr class='tab_bg_2'>";
       
       echo "<td>" . $LANG['plugin_order']['menu'][1] . ":</td><td>";
       if ($prof->fields['interface']!='helpdesk') {
-         Profile::dropdownNoneReadWrite("order",$this->fields["order"],1,1,1);
+         Profile::dropdownNoneReadWrite("order",$this->fields["order"], 1, 1, 1);
       } else {
          echo $LANG['profiles'][12]; // No access;
       }
@@ -140,7 +144,7 @@ class PluginOrderProfile extends CommonDBTM {
 
       echo "<td>" . $LANG['plugin_order']['menu'][2] . ":</td><td>";
       if ($prof->fields['interface']!='helpdesk') {
-         Profile::dropdownNoneReadWrite("reference",$this->fields["reference"],1,1,1);
+         Profile::dropdownNoneReadWrite("reference",$this->fields["reference"], 1, 1, 1);
       } else {
          echo $LANG['profiles'][12]; // No access;
       }
@@ -148,12 +152,15 @@ class PluginOrderProfile extends CommonDBTM {
       
       echo "</tr>";
       echo "<tr class='tab_bg_2'>";
-      
-      echo "<td></td><td>";
+
+      echo "<td>" . $LANG['plugin_order']['menu'][6] . ":</td><td>";
+      if ($prof->fields['interface']!='helpdesk') {
+         Profile::dropdownNoneReadWrite("bill",$this->fields["bill"], 1, 1, 1);
+      } else {
+         echo $LANG['profiles'][12]; // No access;
+      }
       echo "</td>";
-      
-      echo "<td></td>";
-      echo "<td></td>";
+      echo "<td colspan='2'></td>";
       
       echo "</tr>";
       
@@ -188,8 +195,7 @@ class PluginOrderProfile extends CommonDBTM {
       }
       echo "</td>";
       
-      echo "<td></td>";
-      echo "<td></td>";
+      echo "<td colspan='2'></td>";
       
       echo "</tr>";
 

@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: HEADER 2011-03-23 15:41:26 tsmr $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2010 by the INDEPNET Development Team.
@@ -32,38 +32,25 @@
 // Purpose of file: plugin order v1.4.0 - GLPI 0.80
 // ----------------------------------------------------------------------
 // ---------------------------------------------------------------------- */
- 
-define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT."/inc/includes.php");
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
 
 if (!defined('GLPI_ROOT')){
-   die("Can not acces directly to this file");
+   die("Sorry. You can't access directly to this file");
 }
 
-checkCentralAccess();
+class PluginOrderBillType extends CommonDropdown {
 
-$PluginOrderReference = new PluginOrderReference();
+   static function getTypeName() {
+      global $LANG;
+      return $LANG['plugin_order']['bill'][1];
+   }
 
-$rand = $PluginOrderReference->dropdownReferencesByEnterprise("reference",$_POST["itemtype"],
-                                                              $_POST["suppliers_id"]);
+   function canCreate() {
+      return plugin_order_haveRight('bill', 'w');
+   }
 
-$paramsaction=array('plugin_order_references_id'=>'__VALUE__',
-              'entity_restrict'=>$_POST["entity_restrict"],
-              'suppliers_id'=>$_POST["suppliers_id"],
-              'itemtype'=>$_POST["itemtype"]
-      );
+   function canView() {
+      return plugin_order_haveRight('bill', 'r');
+   } 
 
-$fields = array ("quantity","priceht","pricediscounted","taxe","validate");
-foreach ($fields as $field)
-{
-   $paramsaction['update'] = $field;
-   ajaxUpdateItem("show_$field",$CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",
-                  $paramsaction, false, "dropdown_reference$rand");
-   ajaxUpdateItemOnSelectEvent("dropdown_reference$rand", "show_$field",
-                               $CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",
-                               $paramsaction);
 }
-
 ?>

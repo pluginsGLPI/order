@@ -63,6 +63,10 @@ $LANG['plugin_order'][46] = "No se pueden asociar ítems no entregados";
 $LANG['plugin_order'][47] = "Información del pedido";
 $LANG['plugin_order'][48] = "Una o varias filas seleccionadas no tienen ítems asociados";
 
+$LANG['plugin_order']['bill'][0] = "Bill";
+$LANG['plugin_order']['bill'][1] = "Bill type";
+$LANG['plugin_order']['bill'][2] = "Bill status";
+
 $LANG['plugin_order']['budget'][1] = "Pedidos asociados";
 $LANG['plugin_order']['budget'][2] = "Presupuesto ya utilizado";
 $LANG['plugin_order']['budget'][3] = "El presupuesto tiene valor nulo. Por favor, añada un valor";
@@ -156,7 +160,7 @@ $LANG['plugin_order']['menu'][2] = "Gestionar referencias de productos";
 $LANG['plugin_order']['menu'][3] = "Gestionar presupuestos";
 $LANG['plugin_order']['menu'][4] = "Pedidos";
 $LANG['plugin_order']['menu'][5] = "Referencias";
-$LANG['plugin_order']['menu'][6] = "Presupuestos";
+$LANG['plugin_order']['menu'][6] = "Manage bills";
 
 $LANG['plugin_order']['parser'][0] = "Ficheros";
 $LANG['plugin_order']['parser'][1] = "Usar este modelo";

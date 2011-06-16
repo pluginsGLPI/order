@@ -66,6 +66,10 @@ $LANG['plugin_order'][46] = "Impossible de lier du matériel non réceptionné";
 $LANG['plugin_order'][47] = "Informations sur la commande";
 $LANG['plugin_order'][48] = "Une ou plusieurs lignes sélectionnées n'ont pas de matériel associé";
 
+$LANG['plugin_order']['bill'][0] = "Facture";
+$LANG['plugin_order']['bill'][1] = "Type de facture";
+$LANG['plugin_order']['bill'][2] = "Statut de la facture";
+
 $LANG['plugin_order']['config'][0] = "Configuration du plugin";
 $LANG['plugin_order']['config'][1] = "TVA par défaut";
 $LANG['plugin_order']['config'][2] = "Utiliser le circuit de validation";
@@ -161,6 +165,7 @@ $LANG['plugin_order']['menu'][1] = "Gérer les commandes";
 $LANG['plugin_order']['menu'][2] = "Gérer le catalogue de références produits";
 $LANG['plugin_order']['menu'][4] = "Commandes";
 $LANG['plugin_order']['menu'][5] = "Références";
+$LANG['plugin_order']['menu'][6] = "Gérer les factures";
 
 $LANG['plugin_order']['parser'][1] = "Utiliser ce modèle";
 $LANG['plugin_order']['parser'][2] = "Aucun fichier trouvé dans le répertoire";

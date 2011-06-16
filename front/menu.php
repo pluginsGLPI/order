@@ -38,8 +38,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "menu");
 
-$PluginOrderOrder = new PluginOrderOrder();
+$PluginOrderOrder     = new PluginOrderOrder();
 $PluginOrderReference = new PluginOrderReference();
+$PluginOrderBill      = new PluginOrderBill();
 
 if ($PluginOrderOrder->canView() 
       || $PluginOrderReference->canView()) {
@@ -50,14 +51,24 @@ if ($PluginOrderOrder->canView()
    if ($PluginOrderOrder->canView()) {
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td><img src='../pics/order-icon.png'></td>";
-      echo "<td><a href='order.php'>" . $LANG['plugin_order']['menu'][1] . "</a></td></tr>";
+      echo "<td><a href='".getItemTypeSearchURL('PluginOrderOrder')."'>" . 
+         $LANG['plugin_order']['menu'][1] . "</a></td></tr>";
    }
 
    if ($PluginOrderReference->canView()) {
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td><img src='../pics/reference-icon.png'></td>";
-      echo "<td><a href='reference.php'>" . $LANG['plugin_order']['menu'][2] . "</a></td></tr>";
+      echo "<td><a href='".getItemTypeSearchURL('PluginOrderReference')."'>" . 
+         $LANG['plugin_order']['menu'][2] . "</a></td></tr>";
    }
+
+   if ($PluginOrderBill->canView()) {
+      echo "<tr class='tab_bg_1' align='center'>";
+      echo "<td><img src='../pics/reference-icon.png'></td>";
+      echo "<td><a href='".getItemTypeSearchURL('PluginOrderBill')."'>" . 
+         $LANG['plugin_order']['menu'][6] . "</a></td></tr>";
+   }
+
    echo "</table></div>";
 } else {
    echo "<div align='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . 

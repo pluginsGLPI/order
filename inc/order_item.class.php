@@ -192,24 +192,21 @@ class PluginOrderOrder_Item extends CommonDBTM {
    function showAddForm($target, $plugin_order_orders_id){
       global  $CFG_GLPI, $LANG,$DB;
 
-      $order=new PluginOrderOrder();
-      $reference=new PluginOrderReference();
+      $order     = new PluginOrderOrder();
+      $reference = new PluginOrderReference();
 
-      if ($order->canUpdateOrder($plugin_order_orders_id))
-      {
+      if ($order->canUpdateOrder($plugin_order_orders_id)) {
 
          $canedit=$order->can($plugin_order_orders_id,'w');
 
-         if ($canedit)
-         {
+         if ($canedit) {
             echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\"$target\">";
             echo "<input type='hidden' name='plugin_order_orders_id' value=\"$plugin_order_orders_id\">";
             echo "<div class='center'>";
             echo"<table class='tab_cadre_fixe'>";
             echo "<tr><th colspan='7'>".$LANG['plugin_order']['detail'][5]."</th></tr>";
 
-            if ($order->fields["suppliers_id"])
-            {
+            if ($order->fields["suppliers_id"]) {
                echo "<tr>";
                echo "<th align='center'>".$LANG['common'][17]."</th>";
                echo "<th align='center'>".$LANG['plugin_order']['reference'][1]."</th>";
@@ -302,13 +299,13 @@ class PluginOrderOrder_Item extends CommonDBTM {
       while ($data_ref=$DB->fetch_array($result_ref)){
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
-         if (!$numref)
+         if (!$numref) {
             echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
-         else {
-            
-            $refID = $data_ref["id"];
+
+         } else {
+            $refID         = $data_ref["id"];
             $price_taxfree = $data_ref["price_taxfree"];
-            $discount = $data_ref["discount"];
+            $discount      = $data_ref["discount"];
             
             $rand = mt_rand();
             echo "<tr><th><ul><li>";
@@ -367,10 +364,12 @@ class PluginOrderOrder_Item extends CommonDBTM {
             echo "<table class='tab_cadre_fixe'>";
 
             echo "<tr>";
-            if($canedit)
+            if($canedit) {
                echo "<th></th>";
-            if ($data_ref["itemtype"] != 'SoftwareLicense')
+            }
+            if ($data_ref["itemtype"] != 'SoftwareLicense') {
                echo "<th>".$LANG['common'][2]."</th>";
+            }
             echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
             echo "<th>".$LANG['plugin_order']['detail'][4]."</th>";
             echo "<th>".$LANG['plugin_order'][25]."</th>";
@@ -390,12 +389,15 @@ class PluginOrderOrder_Item extends CommonDBTM {
                      AND `".$this->getTable()."`.`price_taxfree` LIKE '".$price_taxfree."'
                      AND `".$this->getTable()."`.`discount` LIKE '".$discount."'
                      AND `".$this->getTable()."`.`plugin_order_orders_id` = '$plugin_order_orders_id'";
-            if ($data_ref["itemtype"] == 'SoftwareLicense')
-               $query.=" GROUP BY `glpi_plugin_order_references`.`name` "; 
-            $query.=" ORDER BY `glpi_plugin_order_references`.`name` ";
 
-            $result=$DB->query($query);
-            $num=$DB->numrows($result);
+            if ($data_ref["itemtype"] == 'SoftwareLicense') {
+               $query.=" GROUP BY `glpi_plugin_order_references`.`name` "; 
+
+            }
+            $query .= " ORDER BY `glpi_plugin_order_references`.`name` ";
+
+            $result = $DB->query($query);
+            $num    = $DB->numrows($result);
             
             while ($data=$DB->fetch_array($result)){
                
@@ -409,8 +411,9 @@ class PluginOrderOrder_Item extends CommonDBTM {
                      $plugin_order_orders_id . "'>";
                   echo "</td>";
                }
-               if ($data_ref["itemtype"] != 'SoftwareLicense')
+               if ($data_ref["itemtype"] != 'SoftwareLicense') {
                   echo "<td align='center'>".$data["IDD"]."</td>";
+               }
 
                /* reference */
                echo "<td align='center'>";

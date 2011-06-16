@@ -44,21 +44,17 @@ if (!defined('GLPI_ROOT')) {
 
 checkCentralAccess();
 
-$PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
-$PluginOrderOrder_Item = new PluginOrderOrder_Item();
 
-if ($_POST["plugin_order_references_id"] > 0)
-{  
-   
-   $price = $PluginOrderReference_Supplier->getPriceByReferenceAndSupplier($_POST["plugin_order_references_id"],
-                                                                           $_POST["suppliers_id"]);
-   switch ($_POST["update"])
-   {
+if ($_POST["plugin_order_references_id"] > 0) { 
+   $reference_supplier = new PluginOrderReference_Supplier();
+   $price = $reference_supplier->getPriceByReferenceAndSupplier($_POST["plugin_order_references_id"],
+                                                                $_POST["suppliers_id"]);
+   switch ($_POST["update"]) {
       case 'quantity':
          echo "<input type='text' name='quantity' size='5'>";
          break;
       case 'priceht':
-         echo "<input type='text' name='price' value=\"".formatNumber($price,true)."\" size='5'>";
+         echo "<input type='text' name='price' value=\"".formatNumber($price, true)."\" size='5'>";
          break;
       case 'pricediscounted':
          echo "<input type='text' name='discount' size='5' value='0'>";
@@ -75,8 +71,8 @@ if ($_POST["plugin_order_references_id"] > 0)
             $LANG['buttons'][8]."\" class='submit' >";
          break;
    }  
-}
-else
+} else {
    return "";
+}
 
 ?>
