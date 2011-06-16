@@ -813,14 +813,16 @@ class PluginOrderOrder extends CommonDBTM {
    
    function showGenerationForm($ID) {
       global $LANG,$CFG_GLPI;
+
+      echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/export.php?id=".$ID.
+          "' method=\"post\">";
+      echo "<div align=\"center\"><table class='tab_cadre_fixe'>";
+      echo "<tr><th>".$LANG['plugin_order']['generation'][1]."</th></tr>";
       
       $pref = new PluginOrderPreference;
       $template=$pref->checkPreferenceTemplateValue(getLoginUserID());
       if ($template) {
          if ($this->canUpdateOrder($ID)) {
-            echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/export.php?id=".$ID.
-               "' method=\"post\">";
-            echo "<div align=\"center\"><table cellspacing=\"2\" cellpadding=\"2\">";
 
             echo "<tr>";
             echo "<td class='center'>";
@@ -829,11 +831,15 @@ class PluginOrderOrder extends CommonDBTM {
             echo "</td>";
             echo "</tr>";
 
-            echo "</table></div></form>";
          }
       } else {
-         echo "<div align='center'>".$LANG['plugin_order']['parser'][4]."</div>";
+         echo "<tr>";
+         echo "<td class='center'>"; 
+         echo "<a href='".$CFG_GLPI['root_doc']."/front/preference.php?forcetab=order_1'>";
+         echo $LANG['plugin_order']['parser'][4]."</a></td></tr>";
       }
+ 
+      echo "</table></div></form>";
    }
    
    function generateOrder($ID) {
