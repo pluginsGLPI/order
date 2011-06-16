@@ -69,45 +69,37 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
+      // Automatic actions
       echo "<tr class='tab_bg_1' align='center'>
-               <td>".$LANG['plugin_order']['config'][12]."</td><td>";
-               Dropdown::show('State', 
-                              array('name'   => 'default_asset_states_id',
-                                    'value'  => $this->fields["default_asset_states_id"],
-                                    'entity' => $_SESSION["glpiactiveentities"]));
-      echo "</td></tr>";
-
-		// Automatic actions
-		echo "<tr class='tab_bg_1' align='center'>
-		         <th colspan='2'>".$LANG['plugin_order']['config'][3]."</th>
-		      </tr>";
-		
-		// ASSETS
-		echo "<tr class='tab_bg_1' align='center'>
-		         <th colspan='2'>".$LANG['common'][1]."</th>
-		      </tr>";
+               <th colspan='2'>".$LANG['plugin_order']['config'][3]."</th>
+            </tr>";
+      
+      // ASSETS
+      echo "<tr class='tab_bg_1' align='center'>
+               <th colspan='2'>".$LANG['common'][1]."</th>
+            </tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
                   <td>".$LANG['plugin_order']['config'][4]."</td><td>";
                   Dropdown::showYesNo("generate_assets",$this->fields["generate_assets"]);
-		echo "</td></tr>";
-		
+      echo "</td></tr>";
+      
       echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][5]."</td><td>";
-		         autocompletionTextField($this, "generated_name");
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1' align='center'>
-		         <td>".$LANG['plugin_order']['config'][6]."</td><td>";
-		         autocompletionTextField($this, "generated_serial");
-		echo "</td></tr>";
-		
-		echo "<tr class='tab_bg_1' align='center'>
-               <td>".$LANG['plugin_order']['config'][7]."</td><td>";
-   		      autocompletionTextField($this, "generated_otherserial");
+               autocompletionTextField($this, "generated_name");
       echo "</td></tr>";
-		
-		echo "<tr class='tab_bg_1' align='center'>";
+
+      echo "<tr class='tab_bg_1' align='center'>
+               <td>".$LANG['plugin_order']['config'][6]."</td><td>";
+               autocompletionTextField($this, "generated_serial");
+      echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_1' align='center'>
+               <td>".$LANG['plugin_order']['config'][7]."</td><td>";
+               autocompletionTextField($this, "generated_otherserial");
+      echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_1' align='center'>";
       echo "<td>".$LANG['plugin_order']['config'][8]."</td><td>";
       if (isMultiEntitiesMode()) {
          Dropdown::show('Entity', array(  'name'   => "default_asset_entities_id",
@@ -116,30 +108,38 @@ class PluginOrderConfig extends CommonDBTM {
       } else {
          echo $_SESSION["glpiactive_entity"];
       }
-		echo "</td></tr>";
-		
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>
+               <td>".$LANG['plugin_order']['config'][12]."</td><td>";
+               Dropdown::show('State', 
+                              array('name'   => 'default_asset_states_id',
+                                    'value'  => $this->fields["default_asset_states_id"],
+                                    'entity' => $_SESSION["glpiactiveentities"]));
+      echo "</td></tr>";
+      
       // TICKETS
-		echo "<tr class='tab_bg_1' align='center'>
-		         <th colspan='2'>".$LANG['job'][38]."</th>
-		      </tr>";
-	
+      echo "<tr class='tab_bg_1' align='center'>
+               <th colspan='2'>".$LANG['job'][38]."</th>
+            </tr>";
+   
       echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][4]."</td><td>";
                   Dropdown::showYesNo("generate_ticket",$this->fields["generate_ticket"]);
-		echo "</td></tr>";
+      echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1' align='center'>
+      echo "<tr class='tab_bg_1' align='center'>
                <td>".$LANG['plugin_order']['config'][10]."</td><td>";
-		         autocompletionTextField($this, "generated_title");
-		echo "</td></tr>";
-		
-		echo "<tr class='tab_bg_1' align='center'>
-		         <td>".$LANG['plugin_order']['config'][11]."</td><td>";
+               autocompletionTextField($this, "generated_title");
+      echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_1' align='center'>
+               <td>".$LANG['plugin_order']['config'][11]."</td><td>";
       echo "<textarea cols='60' rows='4' name='generated_content'>" .
                   $this->fields["generated_content"] . "</textarea>";
-		echo "</td></tr>";
-		
-		echo "<tr class='tab_bg_1' align='center'>
+      echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_1' align='center'>
                <td>".$LANG['plugin_order']['config'][9]."</td><td>";
                Dropdown::show('TicketCategory', 
                               array('name'   => 'default_ticketcategories_id',
@@ -148,51 +148,51 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</td></tr>";
 
       /* Workflow */
-		echo "<tr class='tab_bg_1' align='center'>
-		         <th colspan='2'>".$LANG['plugin_order']['config'][13]."</th>
-		      </tr>";
+      echo "<tr class='tab_bg_1' align='center'>
+               <th colspan='2'>".$LANG['plugin_order']['config'][13]."</th>
+            </tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][14]."</td><td>";
             Dropdown::show('PluginOrderOrderState', 
                            array('name'   => 'order_status_draft',
                                  'value'  => $this->fields["order_status_draft"]));
-		echo "</td></tr>";
-		
+      echo "</td></tr>";
+      
       echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][15]."</td><td>";
             Dropdown::show('PluginOrderOrderState', 
                            array('name'   => 'order_status_waiting_approval',
                                  'value'  => $this->fields["order_status_waiting_approval"]));
-		echo "</td></tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][16]."</td><td>";
             Dropdown::show('PluginOrderOrderState', 
                            array('name'   => 'order_status_approved',
                                  'value'  => $this->fields["order_status_approved"]));
-		echo "</td></tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][17]."</td><td>";
             Dropdown::show('PluginOrderOrderState', 
                            array('name'   => 'order_status_partially_delivred',
                                  'value'  => $this->fields["order_status_partially_delivred"]));
-		echo "</td></tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][18]."</td><td>";
             Dropdown::show('PluginOrderOrderState', 
                            array('name'   => 'order_status_completly_delivered',
                                  'value'  => $this->fields["order_status_completly_delivered"]));
-		echo "</td></tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][19]."</td><td>";
             Dropdown::show('PluginOrderOrderState', 
                            array('name'   => 'order_status_canceled',
                                  'value'  => $this->fields["order_status_canceled"]));
-		echo "</td></tr>";
+      echo "</td></tr>";
 
 
       echo "<tr class='tab_bg_1' align='center'>"; 
