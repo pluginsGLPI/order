@@ -145,7 +145,7 @@ class PluginOrderLink extends CommonDBChild {
                
                echo "<td align='center'>";
                if ($templateID) {
-                  echo $PluginOrderReference->getTemplateName($params['itemtype'][$key], $params['templates_id'][$key]);
+                  echo $PluginOrderReference->getTemplateName($params['itemtype'][$key], $templateID);
                }   
                echo "</td>";
                
@@ -519,8 +519,8 @@ class PluginOrderLink extends CommonDBChild {
          if ($ic->getFromDBforDevice($itemtype, $templateID)) {
             $fields = $ic->fields;
             unset ($fields["id"]);
-            if (isset ($fields["num_immo"])) {
-               $fields["num_immo"] = autoName($fields["num_immo"], "num_immo", 1, 'Infocom', $entity);
+            if (isset ($fields["immo_number"])) {
+               $fields["immo_number"] = autoName($fields["immo_number"], "immo_number", 1, 'Infocom', $entity);
             }
 
             if (empty ($fields['buy_date'])) {
