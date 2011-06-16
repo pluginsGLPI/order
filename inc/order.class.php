@@ -322,11 +322,8 @@ class PluginOrderOrder extends CommonDBTM {
       }
 
       if( isset($input['budgets_id']) && $input['budgets_id'] > 0) {
-         $budget = new Budget();
-         $budget->getFromDB($input['budgets_id']);
          
-         if( !($input['order_date'] > $budget->getField('begin_date') 
-                  && $input['order_date'] < $budget->getField('end_date'))) {
+         if( !canStillUseBudget($input) ) {
             addMessageAfterRedirect($LANG['plugin_order'][49], false, ERROR);
             return array ();
          }
@@ -340,11 +337,9 @@ class PluginOrderOrder extends CommonDBTM {
       
       if( (isset($input['budgets_id']) && $input['budgets_id'] > 0)
             || (isset($input['budgets_id']) && $this->fields['budgets_id']!=$input['budgets_id']) ) {
-         $budget = new Budget();
-         $budget->getFromDB($input['budgets_id']);
-         
-         if( !($input['order_date'] > $budget->getField('begin_date') 
-                  && $input['order_date'] < $budget->getField('end_date'))) {
+
+         if( !canStillUseBudget($input) ) {
+
             addMessageAfterRedirect($LANG['plugin_order'][49], false, ERROR);
             return array ();
          }
@@ -1147,5 +1142,18 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</table></div>";
 
    }
+   
+   function canStillUseBudget($input){         
+         $budget = new Budget();
+         $budget->getFromDB($input['budgets_id']);
+
+         if( !($input['order_date'] > $budget->getField('begin_date') 
+                  && $input['order_date'] < $budget->getField('end_date'))) {
+            return false;
+         }
+
+      return true;
+   }
+   
 }
 ?>
