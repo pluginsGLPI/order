@@ -321,6 +321,35 @@ class PluginOrderOrder extends CommonDBTM {
          $input["name"] = $input["num_order"];
       }
 
+      if( isset($input['budgets_id']) && $input['budgets_id'] > 0) {
+         $budget = new Budget();
+         $budget->getFromDB($input['budgets_id']);
+         
+         if( !($input['order_date'] > $budget->getField('begin_date') 
+                  && $input['order_date'] < $budget->getField('end_date'))) {
+            addMessageAfterRedirect($LANG['plugin_order'][49], false, ERROR);
+            return array ();
+         }
+      }
+
+      return $input;
+   }
+   
+   function prepareInputForUpdate($input) {
+      global $LANG;
+      
+      if( (isset($input['budgets_id']) && $input['budgets_id'] > 0)
+            || (isset($input['budgets_id']) && $this->fields['budgets_id']!=$input['budgets_id']) ) {
+         $budget = new Budget();
+         $budget->getFromDB($input['budgets_id']);
+         
+         if( !($input['order_date'] > $budget->getField('begin_date') 
+                  && $input['order_date'] < $budget->getField('end_date'))) {
+            addMessageAfterRedirect($LANG['plugin_order'][49], false, ERROR);
+            return array ();
+         }
+      }
+      
       return $input;
    }
 

@@ -65,6 +65,7 @@ $LANG['plugin_order'][45] = "Impossible de générer du matériel non réception
 $LANG['plugin_order'][46] = "Impossible de lier du matériel non réceptionné";
 $LANG['plugin_order'][47] = "Informations sur la commande";
 $LANG['plugin_order'][48] = "Une ou plusieurs lignes sélectionnées n'ont pas de matériel associé";
+$LANG['plugin_order'][49] = "La date de commande doit être comprise dans les dates déclarées pour le budget sélectionné.";
 
 $LANG['plugin_order']['bill'][0] = "Facture";
 $LANG['plugin_order']['bill'][1] = "Type de facture";
