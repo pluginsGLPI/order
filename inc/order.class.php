@@ -422,10 +422,15 @@ class PluginOrderOrder extends CommonDBTM {
       /* state */
       echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['status'][0] . ": </td>";
       echo "<td>";
+      if (!$this->getID()) {
+         $state = PluginOrderOrderState::DRAFT;
+      } else {
+         $state = $this->fields["plugin_order_orderstates_id"];
+      }
       if ($canedit) {
          Dropdown::show('PluginOrderOrderState', 
                         array('name'   => "plugin_order_orderstates_id",
-                              'value'  => $this->fields["plugin_order_orderstates_id"]));
+                              'value'  => $state));
       } else {
          echo Dropdown::getDropdownName("glpi_plugin_order_orderstates", 
                                         $this->fields["plugin_order_orderstates_id"]);

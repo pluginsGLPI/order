@@ -38,12 +38,12 @@ function plugin_order_install() {
 
    include_once(GLPI_ROOT."/plugins/order/inc/profile.class.php");
 
-   $install=false;
-   $update110=false;
-   $update120=false;
-   $update130=false;
-   $update140=false;
-   $update150=false;
+   $install   = false;
+   $update110 = false;
+   $update120 = false;
+   $update130 = false;
+   $update140 = false;
+   $update150 = false;
    
    if (TableExists("glpi_plugin_order_detail")) {
       if (!FieldExists("glpi_plugin_order_detail","discount")) { // version 1.1.0

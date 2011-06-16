@@ -39,7 +39,14 @@ if (!defined('GLPI_ROOT')) {
 
 // Class for a Dropdown
 class PluginOrderOrderState extends CommonDropdown {
-   
+
+   const DRAFT                = 1;
+   const WAITING_FOR_APPROVAL = 2;
+   const VALIDATED            = 3;
+   const BEING_DELIVERING     = 4;
+   const DELIVERED            = 5;
+   const CANCELED             = 6;
+
    static function getTypeName() {
       global $LANG;
 
@@ -53,6 +60,16 @@ class PluginOrderOrderState extends CommonDropdown {
    function canView() {
       return plugin_order_haveRight('order', 'r');
    } 
+   
+   function pre_deleteItem() {
+      global $LANG;
+      if ($this->getID() <= self::CANCELED ) {
+         addMessageAfterRedirect($LANG['plugin_order']['status'][15], true, ERROR);
+         return false;
+      } else {
+         return true;
+      }
+   }
 }
 
 ?>
