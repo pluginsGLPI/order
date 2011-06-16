@@ -197,6 +197,7 @@ $LANG['plugin_order']['status'][10] = "Cancelado";
 $LANG['plugin_order']['status'][11] = "Pendiente de entrega";
 $LANG['plugin_order']['status'][12] = "Validado";
 $LANG['plugin_order']['status'][13] = "Estadísticas de entrega";
+$LANG['plugin_order']['status'][15] = "You cannot remove this status";
 
 $LANG['plugin_order']['survey'][0] = "Calidad del proveedor";
 $LANG['plugin_order']['survey'][1] = "Calidad del servicio administrativo (contrato, facturas, correo...)";
