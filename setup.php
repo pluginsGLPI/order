@@ -75,8 +75,8 @@ function plugin_init_order() {
          || plugin_order_haveRight("reference", "r") 
             || plugin_order_haveRight("bill", "r")) {
 
-         $PLUGIN_HOOKS['menu_entry']['order'] = 'front/menu.php';
-         $PLUGIN_HOOKS['headings']['order'] = 'plugin_get_headings_order';
+         $PLUGIN_HOOKS['menu_entry']['order']      = 'front/menu.php';
+         $PLUGIN_HOOKS['headings']['order']        = 'plugin_get_headings_order';
          $PLUGIN_HOOKS['headings_action']['order'] = 'plugin_headings_actions_order';
          
          // Manage redirects
@@ -102,6 +102,12 @@ function plugin_init_order() {
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['title'] = $LANG['plugin_order']['menu'][5];
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['page']  = '/plugins/order/front/reference.php';
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['search'] = '/plugins/order/front/reference.php';
+            echo PluginOrderReference::getPerTypeJavascriptCode();
+            $url = $CFG_GLPI['root_doc']."/plugins/order/pics/viewpertype.png";
+            $image = "<a onclick='order_window.show();' href='#modal_reference_content' title='".
+                        $LANG['plugin_order']['reference'][11]."'><img src='$url'></a>";
+            
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links'][$image]  = '#';
 
          }
          //bill

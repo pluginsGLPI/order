@@ -696,12 +696,25 @@ class PluginOrderReference extends CommonDBTM {
       echo "</div>";
    }
 
+/*
    function title() {
       global $LANG, $CFG_GLPI;
+      echo "<div align='center'>";
+      echo self::getPerTypeJavascriptCode();
+      echo "<a onclick='order_window.show();' href='#modal_reference_content' title='".
+             $LANG['plugin_order']['reference'][11]."'>".
+             $LANG['plugin_order']['reference'][11]."</a>";
+      echo "</div>";
 
-      echo "<div align='center'><script type='text/javascript'>";
-      echo "cleanhide('modal_reference_content');";
-      echo "var order_window=new Ext.Window({
+   }
+*/
+
+   static function getPerTypeJavascriptCode() {
+      global $LANG, $CFG_GLPI;
+      
+      $out = "<script type='text/javascript'>";
+      $out.= "cleanhide('modal_reference_content');";
+      $out.= "var order_window=new Ext.Window({
          layout:'fit',
          width:800,
          height:400,
@@ -711,13 +724,8 @@ class PluginOrderReference extends CommonDBTM {
          title: \"".$LANG['plugin_order']['reference'][11]."\",
          autoLoad: '".$CFG_GLPI['root_doc']."/plugins/order/ajax/referencetree.php'
       });";
-      echo "</script>";
-
-      echo "<a onclick='order_window.show();' href='#modal_reference_content' title='".
-             $LANG['plugin_order']['reference'][11]."'>".
-             $LANG['plugin_order']['reference'][11]."</a>";
-      echo "</div>";
-
+      $out.= "</script>";
+      return $out;
    }
 }
 
