@@ -102,13 +102,13 @@ class PluginOrderOrder extends CommonDBTM {
       if (!$orders_id) {
          return false;
       } else {
-         return ($this->canValidateOrrder() 
+         return ($this->canValidateOrder() 
                   || $this->canUndoValidation() 
                      || $this->canCancelOrder());
       }
    }
    
-   function canValidateOrrder() {
+   function canValidateOrder() {
       
       $PluginOrderConfig = new PluginOrderConfig();
       $config = $PluginOrderConfig->getConfig();
@@ -770,13 +770,13 @@ class PluginOrderOrder extends CommonDBTM {
       }
    }
    
-   function showValidationForm($target, $orders_id) {
+   function showValidationForm($orders_id) {
       global $LANG;
       
       $this->getFromDB($orders_id);
 
       if ($this->can($orders_id,'w') && $this->canDisplayValidationForm($orders_id)) {
-         echo "<form method='post' name='form' action=\"$target\">";
+         echo "<form method='post' name='form' action=\"".getItemTypeFormURL('PluginOrderOrder')."\">";
          echo "<div align='center'><table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='3'>" . 
             $LANG['plugin_order']['validation'][6] . "</th></tr>";
@@ -803,7 +803,7 @@ class PluginOrderOrder extends CommonDBTM {
             $PluginOrderConfig = new PluginOrderConfig;
             $config = $PluginOrderConfig->getConfig();
 
-            if ($this->canValidateOrrder()) {
+            if ($this->canValidateOrder()) {
                echo $link . "<input type='submit' name='validate' value=\"" . 
                   $LANG['plugin_order']['validation'][9] . "\" class='submit'>";
                $link = "<br><br>";

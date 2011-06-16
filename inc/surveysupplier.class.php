@@ -286,7 +286,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       return true;
    }
    
-   function showOrderSupplierSurvey($target, $ID) {
+   function showOrderSupplierSurvey($ID) {
       global $LANG, $DB, $CFG_GLPI;
 
       $order = new PluginOrderOrder;
@@ -300,7 +300,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       $rand=mt_rand();
       echo "<div class='center'>";
       echo "<form method='post' name='show_suppliersurvey$rand' id='show_suppliersurvey$rand' " .
-            " action=\"$target\">";
+            " action=\"".getItemTypeFormURL(__CLASS__)."\">";
       echo "<input type='hidden' name='plugin_order_orders_id' value='" . $ID . "'>";
       echo "<table class='tab_cadre_fixe'>";
       

@@ -204,7 +204,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       return true;
    }
    
-   function showOrderSupplierInfos($target, $ID) {
+   function showOrderSupplierInfos( $ID) {
       global $LANG, $DB, $CFG_GLPI;
 
       $order = new PluginOrderOrder;
@@ -217,7 +217,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       $result = $DB->query($query);
       $rand=mt_rand();
       echo "<div class='center'>";
-      echo "<form method='post' name='show_supplierinfos$rand' id='show_supplierinfos$rand' action=\"$target\">";
+      echo "<form method='post' name='show_supplierinfos$rand' id='show_supplierinfos$rand' " .
+            "action=\"".getItemTypeFormURL(__CLASS__)."\">";
       echo "<input type='hidden' name='plugin_order_orders_id' value='" . $ID . "'>";
       echo "<table class='tab_cadre_fixe'>";
       
@@ -244,7 +245,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
             }
             echo "</td>";
             $link=getItemTypeFormURL($this->getType());
-            echo "<td><a href='".$link."?id=".$data["id"]."&plugin_order_orders_id=".$ID."'>" .Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
+            echo "<td><a href='".$link."?id=".$data["id"]."&plugin_order_orders_id=".$ID."'>" .
+               Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
             echo "<td>";
             echo $data["num_quote"];
             echo "</td>";
@@ -258,8 +260,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          }
          echo "</table>";
 
-         if ($candelete)
-         {
+         if ($candelete) {
             echo "<div class='center'>";
             echo "<table width='900px' class='tab_glpi'>";
             echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('show_supplierinfos$rand') ) return false;\" href='#'>".$LANG['buttons'][18]."</a></td>";
@@ -282,11 +283,13 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    function checkIfSupplierInfosExists($plugin_order_orders_id) {
       
       if ($plugin_order_orders_id) {
-         $devices = getAllDatasFromTable($this->getTable(), "`plugin_order_orders_id` = '$plugin_order_orders_id' ");
-         if (!empty($devices))
+         $devices = getAllDatasFromTable($this->getTable(), 
+                                         "`plugin_order_orders_id` = '$plugin_order_orders_id' ");
+         if (!empty($devices)) {
             return true;
-         else
+         } else {
             return false;
+         }
       }
    }
    

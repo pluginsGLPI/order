@@ -183,13 +183,13 @@ class PluginOrderOrder_Item extends CommonDBTM {
    }
 
    /* show details of orders */
-   function showItem($target, $ID) {
+   function showItem($ID) {
 
-      $this->showFormDetail($target, $ID);
-      $this->showAddForm($target, $ID);
+      $this->showFormDetail($ID);
+      $this->showAddForm($ID);
    }
 
-   function showAddForm($target, $plugin_order_orders_id){
+   function showAddForm($plugin_order_orders_id){
       global  $CFG_GLPI, $LANG,$DB;
 
       $order     = new PluginOrderOrder();
@@ -200,7 +200,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
          $canedit=$order->can($plugin_order_orders_id,'w');
 
          if ($canedit) {
-            echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\"$target\">";
+            echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\"".getItemTypeFormURL('PluginOrderOrder')."\">";
             echo "<input type='hidden' name='plugin_order_orders_id' value=\"$plugin_order_orders_id\">";
             echo "<div class='center'>";
             echo"<table class='tab_cadre_fixe'>";
@@ -282,7 +282,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
       return $result;
    }
    
-   function showFormDetail($target,$plugin_order_orders_id) {
+   function showFormDetail($plugin_order_orders_id) {
       global  $CFG_GLPI, $LANG,$DB;
 
       $PluginOrderOrder     = new PluginOrderOrder();
@@ -360,7 +360,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
             echo "<div class='center' id='detail$rand' style='display:none'>";
             echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  action=\"" . 
-               $CFG_GLPI["root_doc"] . "/plugins/order/front/order.form.php\">";
+               getItemTypeFormURL('PluginOrderOrder')."\">";
             echo "<table class='tab_cadre_fixe'>";
 
             echo "<tr>";

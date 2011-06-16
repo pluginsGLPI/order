@@ -29,7 +29,7 @@
 // ----------------------------------------------------------------------
 // Original Authors of file: 
 // NOUH Walid & FONTAN Benjamin & CAILLAUD Xavier & François Legastelois
-// Purpose of file: plugin order v1.4.0 - GLPI 0.80
+// Purpose of file: 
 // ----------------------------------------------------------------------
 // ---------------------------------------------------------------------- */
 
@@ -42,103 +42,81 @@ if (!isset ($_POST["id"])) {
    exit ();
 }
 
-if (!isset ($_POST["withtemplate"]))
+if (!isset ($_POST["withtemplate"])) {
    $_POST["withtemplate"] = "";
+}
 
-$PluginOrderOrder = new PluginOrderOrder();
-$PluginOrderOrder->checkGlobal("r");
-$PluginOrderOrder_Item = new PluginOrderOrder_Item();
-$PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
-$PluginOrderReception = new PluginOrderReception();
-$PluginOrderLink = new PluginOrderLink();
-$PluginOrderSurveySupplier = new PluginOrderSurveySupplier();
+$order          = new PluginOrderOrder();
+$order_item     = new PluginOrderOrder_Item();
+$order_supplier = new PluginOrderOrder_Supplier();
+$orderreception = new PluginOrderReception();
+$orderlink      = new PluginOrderLink();
+$surveySupplier = new PluginOrderSurveySupplier();
+$order->checkGlobal("r");
 
-if ($_POST["id"]>0 && $PluginOrderOrder->can($_POST["id"],'r')) {
-   if (!empty($_POST["withtemplate"])) {
-      switch($_REQUEST['glpi_tab']) {
-         default :
-            break;
-      }
-   } else {
-      switch($_REQUEST['glpi_tab']) {
-         case -1 :
-            $PluginOrderOrder_Item->showItem($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/order.form.php", $_POST["id"]);
-            $PluginOrderOrder->showValidationForm($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/order.form.php", $_POST["id"]);
-            $PluginOrderOrder_Supplier->showOrderSupplierInfos($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/order_supplier.form.php",$_POST["id"]);
-            if (!$PluginOrderOrder_Supplier->checkIfSupplierInfosExists($_POST["id"]) 
-                                                                          && $PluginOrderOrder->can($_POST["id"],'w'))
-               $PluginOrderOrder_Supplier->showForm("", 
-                                                    array('plugin_order_orders_id' => $_POST["id"],
-                                                          'target' => $CFG_GLPI["root_doc"] .
-         "/plugins/order/front/order_supplier.form.php"));
-            $PluginOrderReception->showOrderReception($_POST["id"]);
-            $PluginOrderLink->showOrderLink($_POST["id"]);
-            $PluginOrderSurveySupplier->showOrderSupplierSurvey($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/surveysupplier.form.php",$_POST["id"]);
-            if (!$PluginOrderSurveySupplier->checkIfSupplierSurveyExists($_POST["id"]) 
-                                                                           && $PluginOrderOrder->can($_POST["id"],'w'))
-               $PluginOrderSurveySupplier->showForm("", 
-                                                    array('plugin_order_orders_id' => $_POST["id"],
-                                                          'target' => $CFG_GLPI["root_doc"] .
-         "/plugins/order/front/surveysupplier.form.php"));
-            Document::showAssociated($PluginOrderOrder);
-            Plugin::displayAction($PluginOrderOrder,$_REQUEST['glpi_tab']);
-            break;
-         case 2 :
-            $PluginOrderOrder->showValidationForm($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/order.form.php", $_POST["id"]);
-            break;
-         case 3 :
-            $PluginOrderOrder_Supplier->showOrderSupplierInfos($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/order_supplier.form.php",$_POST["id"]);
-            if (!$PluginOrderOrder_Supplier->checkIfSupplierInfosExists($_POST["id"]) 
-                                                                         && $PluginOrderOrder->can($_POST["id"],'w'))
-               $PluginOrderOrder_Supplier->showForm("", 
-                                                    array('plugin_order_orders_id' => $_POST["id"],
-                                                          'target' => $CFG_GLPI["root_doc"] .
-         "/plugins/order/front/order_supplier.form.php"));
-            break;
-         case 4 :
-            if ($PluginOrderOrder->can($_POST["id"],'w'))
-               $PluginOrderOrder->showGenerationForm($_POST["id"]);
-            break;
-         case 5 :
-            $PluginOrderReception->showOrderReception($_POST["id"]);
-            break;
-         case 6 :
-            $PluginOrderLink->showOrderLink($_POST["id"]);
-            break;
-          case 7 :
-            $PluginOrderSurveySupplier->showOrderSupplierSurvey($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/surveysupplier.form.php",$_POST["id"]);
-            if (!$PluginOrderSurveySupplier->checkIfSupplierSurveyExists($_POST["id"]) 
-                                                                           && $PluginOrderOrder->can($_POST["id"],'w'))
-               $PluginOrderSurveySupplier->showForm("", 
-                                                    array('plugin_order_orders_id' => $_POST["id"],
-                                                          'target' => $CFG_GLPI["root_doc"] .
-         "/plugins/order/front/surveysupplier.form.php"));
-            break;
-         case 9 :
-            Document::showAssociated($PluginOrderOrder);
-            break;
-         case 10 :
-            showNotesForm($_POST['target'],"PluginOrderOrder",$_POST["id"]);
-            break;
-         case 12 :
-            Log::showForItem($PluginOrderOrder);
-            break;
-         default :
-            if (!Plugin::displayAction($PluginOrderOrder,$_REQUEST['glpi_tab'])) {
-               $PluginOrderOrder_Item->showItem($CFG_GLPI["root_doc"] .
-                                                  "/plugins/order/front/order.form.php",
-                                                $_POST["id"]);
-            }
-            break;
-      }
-   }
+if ($_POST["id"] > 0 && $order->can($_POST["id"], 'r')) {
+   switch($_REQUEST['glpi_tab']) {
+      case -1 :
+         $order_item->showItem($_POST["id"]);
+         $order->showValidationForm($_POST["id"]);
+         $order_supplier->showOrderSupplierInfos($_POST["id"]);
+         if (!$order_supplier->checkIfSupplierInfosExists($_POST["id"]) 
+                && $order->can($_POST["id"], 'w')) {
+            $order_supplier->showForm("",  array('plugin_order_orders_id' => $_POST["id"]));
+
+         }
+         $orderreception->showOrderReception($_POST["id"]);
+         $orderlink->showOrderLink($_POST["id"]);
+         $surveySupplier->showOrderSupplierSurvey($_POST["id"]);
+         if (!$surveySupplier->checkIfSupplierSurveyExists($_POST["id"]) 
+            && $order->can($_POST["id"], 'w')) {
+            $surveySupplier->showForm("",array('plugin_order_orders_id' => $_POST["id"]));
+         }
+         Document::showAssociated($order);
+         Plugin::displayAction($order,$_REQUEST['glpi_tab']);
+         break;
+      case 2 :
+         $order->showValidationForm($_POST["id"]);
+         break;
+      case 3 :
+         $order_supplier->showOrderSupplierInfos($_POST["id"]);
+         if (!$order_supplier->checkIfSupplierInfosExists($_POST["id"]) 
+                && $order->can($_POST["id"],'w')) {
+            $order_supplier->showForm("", array('plugin_order_orders_id' => $_POST["id"]));
+         }
+         break;
+      case 4 :
+         if ($order->can($_POST["id"],'w'))
+            $order->showGenerationForm($_POST["id"]);
+         break;
+      case 5 :
+         $orderreception->showOrderReception($_POST["id"]);
+         break;
+      case 6 :
+         $orderlink->showOrderLink($_POST["id"]);
+         break;
+       case 7 :
+         $surveySupplier->showOrderSupplierSurvey($_POST["id"]);
+         if (!$surveySupplier->checkIfSupplierSurveyExists($_POST["id"]) 
+                && $order->can($_POST["id"], 'w')) {
+            $surveySupplier->showForm("",  array('plugin_order_orders_id' => $_POST["id"]));
+         }
+         break;
+      case 9 :
+         Document::showAssociated($order);
+         break;
+      case 10 :
+         showNotesForm($_POST['target'],"PluginOrderOrder", $_POST["id"]);
+         break;
+      case 12 :
+         Log::showForItem($order);
+         break;
+      default :
+         if (!Plugin::displayAction($order, $_REQUEST['glpi_tab'])) {
+            $order_item->showItem($_POST["id"]);
+         }
+         break;
+    }
 }
 
 ajaxFooter();
