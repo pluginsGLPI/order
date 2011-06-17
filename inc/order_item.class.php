@@ -60,6 +60,32 @@ class PluginOrderOrder_Item extends CommonDBTM {
       return $LANG['plugin_order']['title'][1]." - ".$LANG['plugin_order']['menu'][5];
    }
 
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+    
+      $tab['common'] = $LANG['plugin_order']['title'][1];
+
+      /* order_number */
+      $tab[1]['table']    = $this->getTable();
+      $tab[1]['field']    = 'price_ati';
+      $tab[1]['name']     = $LANG['plugin_order']['detail'][4];
+      $tab[1]['datatype'] = 'decimal';
+
+      $tab[2]['table']    = $this->getTable();
+      $tab[2]['field']    = 'discount';
+      $tab[2]['name']     = $LANG['plugin_order']['detail'][25];
+      $tab[2]['datatype'] = 'decimal';
+
+      $tab[3]['table']    = $this->getTable();
+      $tab[3]['field']    = 'price_taxfree';
+      $tab[3]['name']     = $LANG['plugin_order']['detail'][25];
+      $tab[3]['datatype'] = 'decimal';
+      
+      return $tab;
+   }
+
    static function updateItem($item) {
       global $LANG;
       
@@ -578,10 +604,11 @@ class PluginOrderOrder_Item extends CommonDBTM {
          echo "<td class='tab_bg_2'>";
          $item = new $itemtype();
          $link = getItemTypeFormURL('PluginOrderOrder');
-         if ($this->canView())
+         if ($this->canView()) {
             echo "<a href=\"".$link."?id=".$infos["id"]."\">".$infos["name"]."</a>";
-         else
+         } else {
             echo $infos["name"];
+         }
          echo "</td></tr>";
          echo "<tr align='center'><td class='tab_bg_2'>" . 
             $LANG['plugin_order']['detail'][21] . "</td>";

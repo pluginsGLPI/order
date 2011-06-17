@@ -145,6 +145,7 @@ class PluginOrderBill extends CommonDropdown {
       $tab = array();
     
       $tab['common'] = $LANG['plugin_order']['bill'][0];
+
       /* order_number */
       $tab[1]['table'] = $this->getTable();
       $tab[1]['field'] = 'number';
@@ -184,6 +185,7 @@ class PluginOrderBill extends CommonDropdown {
       $tab[30]['table'] = $this->getTable();
       $tab[30]['field'] = 'id';
       $tab[30]['name']  = $LANG['common'][2];
+
       /* entity */
       $tab[80]['table'] = 'glpi_entities';
       $tab[80]['field'] = 'completename';
