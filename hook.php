@@ -227,20 +227,20 @@ function plugin_order_install() {
 
       $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.4.0.sql");
    }
-   
-   if (FieldExists("glpi_plugin_order_orders_items", "plugin_order_ordertaxes_id")
-         && !TableExists("glpi_plugin_order_orderstates")) { // version 1.5.0
-      $update150 = true;
-      $migration->displayMessage("Update to version 1.5.0");
-      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.5.0.sql");
-   }
-      
+
    if (!TableExists("glpi_plugin_order_orders")) { // not installed
       $install = true;
       $migration->displayMessage("Install version 1.5.0");
       if (!$DB->runFile(GLPI_ROOT ."/plugins/order/sql/empty-1.5.0.sql")) {
          die ("Install failed !");
       }
+   }
+   
+   if (!FieldExists("glpi_plugin_order_profiles", "bill")
+         && !TableExists("glpi_plugin_order_orderstates")) { // version 1.5.0
+      $update150 = true;
+      $migration->displayMessage("Update to version 1.5.0");
+      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.5.0.sql");
    }
 
    if($install || $update130) {
@@ -504,28 +504,27 @@ function plugin_order_install() {
    
    ##IFordervalidation.comment####lang.ordervalidation.comment## : ##ordervalidation.comment####ENDIFordervalidation.comment##',
                            '&lt;p&gt;&lt;strong&gt;##lang.ordervalidation.url##&lt;/strong&gt; : &lt;a href=\"##ordervalidation.url##\"&gt;##ordervalidation.url##&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;##lang.ordervalidation.entity##&lt;/strong&gt; : ##ordervalidation.entity##&lt;br /&gt; ##IFordervalidation.name##&lt;strong&gt;##lang.ordervalidation.name##&lt;/strong&gt; : ##ordervalidation.name####ENDIFordervalidation.name##&lt;br /&gt;##IFordervalidation.numorder##&lt;strong&gt;##lang.ordervalidation.numorder##&lt;/strong&gt; : ##ordervalidation.numorder####ENDIFordervalidation.numorder##&lt;br /&gt;##IFordervalidation.orderdate##&lt;strong&gt;##lang.ordervalidation.orderdate##&lt;/strong&gt; : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##&lt;br /&gt;##IFordervalidation.state##&lt;strong&gt;##lang.ordervalidation.state##&lt;/strong&gt; : ##ordervalidation.state####ENDIFordervalidation.state##&lt;br /&gt;##IFordervalidation.users##&lt;strong&gt;##lang.ordervalidation.users##&lt;/strong&gt; : ##ordervalidation.users####ENDIFordervalidation.users##&lt;br /&gt;&lt;br /&gt;##IFordervalidation.comment##&lt;strong&gt;##lang.ordervalidation.comment##&lt;/strong&gt; : ##ordervalidation.comment####ENDIFordervalidation.comment##&lt;/p&gt;');";
-         $result=$DB->query($query) or die($DB->error());
+         $result = $DB->query($query) or die($DB->error());
 
          
          $notifs = array('New Order Validation' => 'ask', 'Confirm Order Validation' => 'validation',
                          'Cancel Order Validation' => 'undovalidation', 'Cancel Order' => 'cancel');
          foreach ($notifs as $label => $name) {
             $migration->displayMessage("Add notification: $name");
-            $query = "INSERT INTO `glpi_notifications`
-                                         VALUES (NULL, '$label', 0, 'PluginOrderOrder', '$name',
-                                                'mail',".$notifications_id.",
-                                                '', 1, 1, NOW());";
-            $result=$DB->query($query) or die($DB->error());
+            $query  = "INSERT INTO `glpi_notifications`
+                       VALUES (NULL, '$label', 0, 'PluginOrderOrder', '$name',
+                               'mail',".$notifications_id.", '', 1, 1, NOW());";
+            $result = $DB->query($query) or die($DB->error());
          
          }
 
       }
       if ($update150) {
          if (FieldExists("glpi_plugin_order_orders", "states_id")) {
-            $migration->displayMessage("Replace states_id byplugin_order_orderstates_id in glpi_plugin_order_orders");
-            $query = "ALTER TABLE `glpi_plugin_order_orders` 
-                      CHANGE `states_id` `plugin_order_orderstates_id` INT( 11 ) NOT NULL DEFAULT '1'";
-            $result=$DB->query($query) or die($DB->error());
+            $migration->displayMessage("Replace states_id by plugin_order_orderstates_id in glpi_plugin_order_orders");
+            $query  = "ALTER TABLE `glpi_plugin_order_orders` 
+                       CHANGE `states_id` `plugin_order_orderstates_id` INT( 11 ) NOT NULL DEFAULT '1'";
+            $result = $DB->query($query) or die($DB->error());
 
          }
 
@@ -610,7 +609,7 @@ function plugin_order_uninstall() {
       $DB->query("DROP TABLE IF EXISTS `$table`;");
 
    $in = "IN (" . implode(',', array ("'PluginOrderOrder'", "'PluginOrderReference'",
-                                      "'PluginOrderReference_Supplier'")) . ")";
+                                      "'PluginOrderReference_Supplier'", "'PluginOrderBill'")) . ")";
 
    $tables = array ("glpi_displaypreferences", "glpi_documents_items", "glpi_bookmarks",
                     "glpi_logs");
@@ -654,13 +653,11 @@ function plugin_order_uninstall() {
    }
    
    //templates
-   $template = new NotificationTemplate();
+   $template    = new NotificationTemplate();
    $translation = new NotificationTemplateTranslation();
-   $options = array('itemtype' => 'PluginOrderOrder',
-                    'FIELDS'   => 'id');
+   $options     = array('itemtype' => 'PluginOrderOrder', 'FIELDS'   => 'id');
    foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
-      $options_template = array('notificationtemplates_id' => $data['id'],
-                    'FIELDS'   => 'id');
+      $options_template = array('notificationtemplates_id' => $data['id'], 'FIELDS'   => 'id');
    
          foreach ($DB->request('glpi_notificationtemplatetranslations', 
                                $options_template) as $data_template) {
@@ -670,13 +667,9 @@ function plugin_order_uninstall() {
    }
    
    //templates
-   $template = new NotificationTemplate();
-   $translation = new NotificationTemplateTranslation();
-   $options = array('itemtype' => 'PluginOrderOrder_Item',
-                    'FIELDS'   => 'id');
+   $options = array('itemtype' => 'PluginOrderOrder_Item', 'FIELDS'   => 'id');
    foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
-      $options_template = array('notificationtemplates_id' => $data['id'],
-                    'FIELDS'   => 'id');
+      $options_template = array('notificationtemplates_id' => $data['id'], 'FIELDS'   => 'id');
    
          foreach ($DB->request('glpi_notificationtemplatetranslations', 
                                $options_template) as $data_template) {
