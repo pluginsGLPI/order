@@ -197,6 +197,154 @@ class PluginOrderBill extends CommonDropdown {
 
       return $tab;
    }
-   
+
+   /**
+   * Print the HTML array of Items on a budget
+   *
+   *@return Nothing (display)
+   **/
+   function showItems() {
+      global $DB, $LANG;
+
+      $budgets_id = $this->fields['id'];
+
+      if (!$this->can($budgets_id,'r')) {
+         return false;
+      }
+
+      $query = "SELECT DISTINCT `itemtype`
+                FROM `glpi_infocoms`
+                WHERE `budgets_id` = '$budgets_id'
+                      AND itemtype NOT IN ('ConsumableItem', 'CartridgeItem', 'Software')
+               ORDER BY `itemtype`";
+
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+
+      echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
+      echo "<tr><th colspan='2'>";
+      printPagerForm();
+      echo "</th><th colspan='4'>";
+      if ($DB->numrows($result)==0) {
+         echo $LANG['document'][13];
+      } else {
+         echo $LANG['document'][19];
+      }
+      echo "</th></tr>";
+
+      echo "<tr><th>".$LANG['common'][17]."</th>";
+      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".$LANG['common'][16]."</th>";
+      echo "<th>".$LANG['common'][19]."</th>";
+      echo "<th>".$LANG['common'][20]."</th>";
+      echo "<th>".$LANG['financial'][21]."</th>";
+      echo "</tr>";
+
+      $num = 0;
+      for ($i = 0; $i < $number ; $i++) {
+         $itemtype = $DB->result($result, $i, "itemtype");
+
+         if (!class_exists($itemtype)) {
+            continue;
+         }
+         $item = new $itemtype();
+         if ($item->canView()) {
+            switch ($itemtype) {
+               default :
+                  $query = "SELECT `".$item->getTable()."`.*,
+                                   `glpi_infocoms`.`value`
+                            FROM `glpi_infocoms`
+                            INNER JOIN `".$item->getTable()."`
+                                 ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
+                            WHERE `glpi_infocoms`.`itemtype` = '$itemtype'
+                                  AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
+                                  getEntitiesRestrictRequest(" AND", $item->getTable())."
+                            ORDER BY `entities_id`,
+                                     `".$item->getTable()."`.`name`";
+               break;
+
+               case 'Cartridge':
+                  $query = "SELECT `".$item->getTable()."`.*,
+                                   `glpi_cartridgeitems`.`name`
+                            FROM `glpi_infocoms`
+                            INNER JOIN `".$item->getTable()."`
+                                 ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
+                            INNER JOIN `glpi_cartridgeitems`
+                                 ON (`".$item->getTable()."`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`)
+                            WHERE `glpi_infocoms`.`itemtype`='$itemtype'
+                                  AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
+                                  getEntitiesRestrictRequest(" AND", $item->getTable())."
+                            ORDER BY `entities_id`,
+                                     `glpi_cartridgeitems`.`name`";
+               break;
+
+               case 'Consumable':
+                  $query = "SELECT `".$item->getTable()."`.*,
+                                   `glpi_consumableitems`.`name`
+                            FROM `glpi_infocoms`
+                            INNER JOIN `".$item->getTable()."`
+                                 ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
+                            INNER JOIN `glpi_consumableitems`
+                                 ON (`".$item->getTable()."`.`consumableitems_id` = `glpi_consumableitems`.`id`)
+                            WHERE `glpi_infocoms`.`itemtype` = '$itemtype'
+                                  AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
+                                  getEntitiesRestrictRequest(" AND", $item->getTable())."
+                            ORDER BY `entities_id`,
+                                     `glpi_consumableitems`.`name`";
+               break;
+            }
+
+            if ($result_linked=$DB->query($query)) {
+               $nb = $DB->numrows($result_linked);
+
+               if ($nb>$_SESSION['glpilist_limit']) {
+                  echo "<tr class='tab_bg_1'>";
+                  echo "<td class='center'>".$item->getTypeName($nb)."&nbsp;:&nbsp;$nb</td>";
+                  echo "<td class='center' colspan='2'>";
+                  echo "<a href='". $item->getSearchURL() . "?" .
+                        rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" .
+                        rawurlencode("field[0]") . "=50&sort=80&order=ASC&is_deleted=0&start=0". "'>" .
+                        $LANG['reports'][57]."</a></td>";
+                  echo "<td class='center'>-</td><td class='center'>-</td><td class='center'>-</td></tr>";
+
+               } else if ($nb) {
+                  for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
+                     $ID = "";
+                     if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+                        $ID = " (".$data["id"].")";
+                     }
+                     $name = NOT_AVAILABLE;
+                     if ($item->getFromDB($data["id"])) {
+                        $name = $item->getLink();
+                     }
+                     echo "<tr class='tab_bg_1'>";
+                     if ($prem) {
+                        echo "<td class='center top' rowspan='$nb'>".$item->getTypeName($nb)
+                              .($nb>1?"&nbsp;:&nbsp;$nb</td>":"</td>");
+                     }
+                     echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
+                                                                          $data["entities_id"]);
+                     echo "</td><td class='center";
+                     echo (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
+                     echo ">".$name."</td>";
+                     echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-");
+                     echo "</td>";
+                     echo "<td class='center'>".
+                            (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
+                     echo "<td class='center'>".
+                            (isset($data["value"])? "".formatNumber($data["value"],true)."" :"-");
+
+                     echo "</td></tr>";
+                  }
+               }
+            $num += $nb;
+            }
+         }
+      }
+      if ($num>0) {
+         echo "<tr class='tab_bg_2'><td class='center b'>".$LANG['common'][33]."&nbsp;:&nbsp;$num</td><td colspan='5'>&nbsp;</td></tr> ";
+      }
+      echo "</table></div>";
+   }   
 }
 ?>

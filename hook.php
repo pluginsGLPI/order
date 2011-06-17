@@ -529,6 +529,11 @@ function plugin_order_install() {
 
       }
       
+      $migration->displayMessage("Replace states_id byplugin_order_orderstates_id in glpi_plugin_order_orders");
+      $query = "ALTER TABLE `glpi_plugin_order_orders` 
+                CHANGE `states_id` `plugin_order_orderstates_id` INT( 11 ) NOT NULL DEFAULT '1'";
+      $result=$DB->query($query) or die($DB->error());
+
       $migration->displayMessage("Convert order states as dropdown");
       $query = "INSERT INTO `glpi_plugin_order_orderstates` 
                   VALUES   (1, '".addslashes_deep($LANG['plugin_order']['status'][9])."', ''),

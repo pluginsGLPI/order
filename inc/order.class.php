@@ -291,9 +291,11 @@ class PluginOrderOrder extends CommonDBTM {
          $ong[2] = $LANG['plugin_order'][5];
          /* suppliers */
          $ong[3] = $LANG['plugin_order'][4];
+
+          /* generation*/
+          $ong[4] = $LANG['plugin_order']['generation'][2];
+
          if ($this->fields['plugin_order_orderstates_id'] != PluginOrderOrderState::DRAFT) {
-            /* generation*/
-            $ong[4] = $LANG['plugin_order']['generation'][2];
             /* delivery */
             $ong[5] = $LANG['plugin_order']['delivery'][1];
             /* item */
@@ -854,7 +856,7 @@ class PluginOrderOrder extends CommonDBTM {
       global $LANG,$CFG_GLPI;
 
       echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/export.php?id=".$ID.
-          "' method=\"post\">";
+          "&display_type=".PDF_OUTPUT_LANDSCAPE."' method=\"post\">";
       echo "<div align=\"center\"><table class='tab_cadre_fixe'>";
       echo "<tr><th>".$LANG['plugin_order']['generation'][1]."</th></tr>";
       
