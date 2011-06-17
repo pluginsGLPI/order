@@ -65,6 +65,9 @@ $LANG['plugin_order'][45] = "Noch nicht empfangene Geräte können nicht erzeugt
 $LANG['plugin_order'][46] = "Noch nicht empfangene Geräte können nicht verbunden werden";
 $LANG['plugin_order'][47] = "Informationen über die Bestellung";
 $LANG['plugin_order'][48] = "Eine oder mehrere ausgewählte Positionen wurden noch keinem Gerät zugeordnet";
+$LANG['plugin_order'][49] = "The order date must be within the dates entered for the selected budget.";
+$LANG['plugin_order'][50] = "Estimated due date";
+$LANG['plugin_order'][51] = "Due date overtaken";
 
 $LANG['plugin_order']['bill'][0] = "Bill";
 $LANG['plugin_order']['bill'][1] = "Bill type";

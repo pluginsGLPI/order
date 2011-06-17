@@ -65,6 +65,9 @@ $LANG['plugin_order'][45] = "NON posso INVENTARIARE Articoli non spediti";
 $LANG['plugin_order'][46] = "NON posso ASSOCIARE Articoli non spediti";
 $LANG['plugin_order'][47] = "Informazioni Ordine";
 $LANG['plugin_order'][48] = "Uno o più righe selezionate non hanno materiali associati";
+$LANG['plugin_order'][49] = "The order date must be within the dates entered for the selected budget.";
+$LANG['plugin_order'][50] = "Estimated due date";
+$LANG['plugin_order'][51] = "Due date overtaken";
 
 $LANG['plugin_order']['bill'][0] = "Bill";
 $LANG['plugin_order']['bill'][1] = "Bill type";

@@ -257,12 +257,12 @@ class PluginOrderReception extends CommonDBTM {
    function showOrderReception($plugin_order_orders_id) {
       global $DB, $CFG_GLPI, $LANG;
 
-      $PluginOrderOrder = new PluginOrderOrder();
-      $PluginOrderOrder->getFromDB($plugin_order_orders_id);
+      $PluginOrderOrder      = new PluginOrderOrder();
       $PluginOrderOrder_Item = new PluginOrderOrder_Item();
-      $PluginOrderReference = new PluginOrderReference();
-      
-      $PluginOrderConfig = new PluginOrderConfig;
+      $PluginOrderReference  = new PluginOrderReference();
+      $PluginOrderConfig     = new PluginOrderConfig;
+
+      $PluginOrderOrder->getFromDB($plugin_order_orders_id);
       $config = $PluginOrderConfig->getConfig();
 
       initNavigateListItems($this->getType(),

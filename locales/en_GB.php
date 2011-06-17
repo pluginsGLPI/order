@@ -66,6 +66,8 @@ $LANG['plugin_order'][46] = "Cannot link items not delivered";
 $LANG['plugin_order'][47] = "Order informations";
 $LANG['plugin_order'][48] = "One or several selected rows haven't linked items";
 $LANG['plugin_order'][49] = "The order date must be within the dates entered for the selected budget.";
+$LANG['plugin_order'][50] = "Estimated due date";
+$LANG['plugin_order'][51] = "Due date overtaken";
 
 $LANG['plugin_order']['bill'][0] = "Bill";
 $LANG['plugin_order']['bill'][1] = "Bill type";

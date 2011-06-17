@@ -196,9 +196,11 @@ function plugin_order_install() {
          $DB->query($query) or die($DB->error());
       }
       
-      $query="ALTER TABLE `glpi_plugin_order_profiles`
-               DROP `name` ;";
-      $result=$DB->query($query) or die($DB->error());
+      if (FieldExists("glpi_plugin_order_profiles","name")) {
+         $query="ALTER TABLE `glpi_plugin_order_profiles`
+                  DROP `name` ;";
+         $result=$DB->query($query) or die($DB->error());
+      }
 
       Plugin::migrateItemType(array(3150 => 'PluginOrderOrder', 3151 => 'PluginOrderReference',
                                     3152 => 'PluginOrderReference_Supplier',
@@ -449,7 +451,7 @@ function plugin_order_install() {
                
          $result=$DB->query($query) or die($DB->error());
 
-         $migration->displayMessage("Add order reception notification");
+         $migration->displayMessage("Add notification: Taken delivery");
    
          $query = "INSERT INTO `glpi_notifications`
                     VALUES (NULL, 'Taken delivery', 0, 'PluginOrderOrder_Item', 'delivered',
@@ -457,7 +459,7 @@ function plugin_order_install() {
          $result=$DB->query($query) or die($DB->error());
       }
 
-      }   
+   }
       
    
    if($update140) {
@@ -504,35 +506,28 @@ function plugin_order_install() {
                            '&lt;p&gt;&lt;strong&gt;##lang.ordervalidation.url##&lt;/strong&gt; : &lt;a href=\"##ordervalidation.url##\"&gt;##ordervalidation.url##&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;##lang.ordervalidation.entity##&lt;/strong&gt; : ##ordervalidation.entity##&lt;br /&gt; ##IFordervalidation.name##&lt;strong&gt;##lang.ordervalidation.name##&lt;/strong&gt; : ##ordervalidation.name####ENDIFordervalidation.name##&lt;br /&gt;##IFordervalidation.numorder##&lt;strong&gt;##lang.ordervalidation.numorder##&lt;/strong&gt; : ##ordervalidation.numorder####ENDIFordervalidation.numorder##&lt;br /&gt;##IFordervalidation.orderdate##&lt;strong&gt;##lang.ordervalidation.orderdate##&lt;/strong&gt; : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##&lt;br /&gt;##IFordervalidation.state##&lt;strong&gt;##lang.ordervalidation.state##&lt;/strong&gt; : ##ordervalidation.state####ENDIFordervalidation.state##&lt;br /&gt;##IFordervalidation.users##&lt;strong&gt;##lang.ordervalidation.users##&lt;/strong&gt; : ##ordervalidation.users####ENDIFordervalidation.users##&lt;br /&gt;&lt;br /&gt;##IFordervalidation.comment##&lt;strong&gt;##lang.ordervalidation.comment##&lt;/strong&gt; : ##ordervalidation.comment####ENDIFordervalidation.comment##&lt;/p&gt;');";
          $result=$DB->query($query) or die($DB->error());
 
-         $migration->displayMessage("Add order validation notifications");
          
-         $query = "INSERT INTO `glpi_notifications`
-                                      VALUES (NULL, 'New Order Validation', 0, 'PluginOrderOrder', 'ask',
-                                             'mail',".$notifications_id.",
-                                             '', 1, 1, NOW());";
-         $result=$DB->query($query) or die($DB->error());
-         $query = "INSERT INTO `glpi_notifications`
-                                      VALUES (NULL, 'Confirm Order Validation', 0, 'PluginOrderOrder', 'validation',
-                                             'mail',".$notifications_id.",
-                                             '', 1, 1, NOW());";
-         $result=$DB->query($query) or die($DB->error());
-         $query = "INSERT INTO `glpi_notifications`
-                                      VALUES (NULL, 'Cancel Order Validation', 0, 'PluginOrderOrder', 'undovalidation',
-                                             'mail',".$notifications_id.",
-                                             '', 1, 1, NOW());";
-         $result=$DB->query($query) or die($DB->error());
-         $query = "INSERT INTO `glpi_notifications`
-                                      VALUES (NULL, 'Cancel Order', 0, 'PluginOrderOrder', 'cancel',
-                                             'mail',".$notifications_id.",
-                                             '', 1, 1, NOW());";
-         $result=$DB->query($query) or die($DB->error());
+         $notifs = array('New Order Validation' => 'ask', 'Confirm Order Validation' => 'validation',
+                         'Cancel Order Validation' => 'undovalidation', 'Cancel Order' => 'cancel');
+         foreach ($notifs as $label => $name) {
+            $migration->displayMessage("Add notification: $name");
+            $query = "INSERT INTO `glpi_notifications`
+                                         VALUES (NULL, '$label', 0, 'PluginOrderOrder', '$name',
+                                                'mail',".$notifications_id.",
+                                                '', 1, 1, NOW());";
+            $result=$DB->query($query) or die($DB->error());
+         
+         }
 
       }
       if ($update150) {
-         $migration->displayMessage("Replace states_id byplugin_order_orderstates_id in glpi_plugin_order_orders");
-         $query = "ALTER TABLE `glpi_plugin_order_orders` 
-                   CHANGE `states_id` `plugin_order_orderstates_id` INT( 11 ) NOT NULL DEFAULT '1'";
-         $result=$DB->query($query) or die($DB->error());
+         if (FieldExists("glpi_plugin_order_orders", "states_id")) {
+            $migration->displayMessage("Replace states_id byplugin_order_orderstates_id in glpi_plugin_order_orders");
+            $query = "ALTER TABLE `glpi_plugin_order_orders` 
+                      CHANGE `states_id` `plugin_order_orderstates_id` INT( 11 ) NOT NULL DEFAULT '1'";
+            $result=$DB->query($query) or die($DB->error());
+
+         }
 
       }
 
@@ -555,36 +550,30 @@ function plugin_order_install() {
                         `order_status_completly_delivered` = 5,
                         `order_status_canceled`= 6 
                   WHERE `id` = 1";
-      $result = $DB->query($query);
+      $result = $DB->query($query) or die($DB->error());
       
       $migration->displayMessage("Update orders with new status");
-      $query = "UPDATE `glpi_plugin_order_orders` 
-                  SET `plugin_order_orderstates_id` = 6 WHERE  `plugin_order_orderstates_id` = 5";
-      $result = $DB->query($query);
+      foreach (array(6 => 5, 5 => 4, 4 => 3, 3 => 2, 2 => 1, 1 => 0) as $old => $new) {
+         $query = "UPDATE `glpi_plugin_order_orders` 
+                   SET `plugin_order_orderstates_id` = '$old'
+                   WHERE `plugin_order_orderstates_id` = '$new'";
+         $result = $DB->query($query) or die($DB->error());
+      }
+       
+      if (!FieldExists("glpi_plugin_order_profiles", "bill")) {
+         $migration->displayMessage("Add new right 'bill' to profile");
+         $query = "ALTER TABLE `glpi_plugin_order_profiles` 
+                   ADD `bill` CHAR( 1 ) COLLATE utf8_unicode_ci DEFAULT NULL";
+         $result = $DB->query($query) or die($DB->error());
+
+      } 
       
-      $query = "UPDATE `glpi_plugin_order_orders` 
-                  SET `plugin_order_orderstates_id` = 5 WHERE  `plugin_order_orderstates_id` = 4";
-      $result = $DB->query($query);
-      
-      $query = "UPDATE `glpi_plugin_order_orders` 
-                  SET `plugin_order_orderstates_id` = 4 WHERE  `plugin_order_orderstates_id` = 3";
-      $result = $DB->query($query);
-      
-      $query = "UPDATE `glpi_plugin_order_orders` 
-                  SET `plugin_order_orderstates_id` = 3 WHERE  `plugin_order_orderstates_id` = 2";
-      $result = $DB->query($query);
-      
-      $query = "UPDATE `glpi_plugin_order_orders` 
-                  SET `plugin_order_orderstates_id` = 2 WHERE  `plugin_order_orderstates_id` = 1";
-      $result = $DB->query($query);
-      
-      $query = "UPDATE `glpi_plugin_order_orders` 
-                  SET `plugin_order_orderstates_id` = 1 WHERE  `plugin_order_orderstates_id` = 0";
-      $result = $DB->query($query);
-      
-      $migration->displayMessage("Add new right 'bill' to profile");
-      $query = "ALTER TABLE `glpi_plugin_order_profiles` ADD `bill` CHAR( 1 ) COLLATE utf8_unicode_ci DEFAULT NULL";
-      $result = $DB->query($query);
+      if (!FieldExists("glpi_plugin_order_orders", "duedate")) {
+         $migration->displayMessage("Add duedate to glpi_plugin_order_orders");
+         $query = "ALTER TABLE `glpi_plugin_order_orders` ADD `duedate` DATETIME NULL ";
+         $result = $DB->query($query) or die($DB->error());
+         
+      }
       
       PluginOrderProfile::addRightToProfile($_SESSION['glpiactiveprofile']['id'], 'bill' , 'w');
    }
