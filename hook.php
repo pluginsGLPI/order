@@ -45,67 +45,75 @@ function plugin_order_install() {
    $update140 = false;
    $update150 = false;
    
+   $migration = new Migration("1.5.0");
+   
    if (TableExists("glpi_plugin_order_detail")) {
       if (!FieldExists("glpi_plugin_order_detail","discount")) { // version 1.1.0
 
+         //----------------------------------------------------------------------//
+         //-----------------------Version 1.1.0 migration -----------------------//
+         //----------------------------------------------------------------------//
+         $migration->displayMessage("Update to version 1.1.0");
+
          $update110=true;
 
+         //Running SQL update file
          $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.1.0.sql");
 
-         /* Update en 1.1.0 */
-
+         $migration->displayMessage($LANG['update'][141] . ' - glpi_dropdown_plugin_order_taxes');
          $query = "SELECT `name` FROM `glpi_dropdown_plugin_order_taxes` ";
-         $result = $DB->query($query);
-         $number = $DB->numrows($result);
-         if ($number) {
-            while ($data=$DB->fetch_array($result)) {
-               $findme   = ',';
-               if(strpos($data["name"], $findme)) {
-                  $name= str_replace(',', '.', $data["name"]);
-                  $query = "UPDATE `glpi_dropdown_plugin_order_taxes`
-                        SET `name` = '".$name."'
-                        WHERE `name`= '".$data["name"]."'";
-                  $DB->query($query) or die($DB->error());
-               }
+         foreach ($DB->request($query) as $data) {
+            if(strpos($data["name"], ',')) {
+               $name= str_replace(',', '.', $data["name"]);
+               $query = "UPDATE `glpi_dropdown_plugin_order_taxes`
+                         SET `name` = '".$name."'
+                         WHERE `name`= '".$data["name"]."'";
+               $DB->query($query) or die($DB->error());
             }
          }
 
-         if (FieldExists("glpi_plugin_order","numordersupplier")) {
+         $migration->displayMessage($LANG['update'][141] . ' - glpi_plugin_order');
+         if (FieldExists("glpi_plugin_order", "numordersupplier")) {
             $query = "SELECT `numordersupplier`,`numbill`,`ID` FROM `glpi_plugin_order` ";
-            $result = $DB->query($query);
-            $number = $DB->numrows($result);
-            if ($number) {
-               while ($data=$DB->fetch_array($result)) {
-                  $query = "INSERT INTO  `glpi_plugin_order_suppliers`
-                        (`ID`, `FK_order`, `numorder`, `numbill`) VALUES
-                     (NULL, '".$data["ID"]."', '".$data["numordersupplier"]."', '".$data["numbill"]."') ";
-                  $DB->query($query) or die($DB->error());
-               }
-            }
-
-            if (FieldExists('glpi_plugin_order', 'numordersupplier')) {
-               $query = "ALTER TABLE `glpi_plugin_order` DROP `numordersupplier`";
+            foreach ($DB->request($query) as $data) {
+               $query = "INSERT INTO  `glpi_plugin_order_suppliers`
+                         (`ID`, `FK_order`, `numorder`, `numbill`) VALUES
+                         (NULL, '".$data["ID"]."', '".$data["numordersupplier"]."', '".$data["numbill"]."') ";
                $DB->query($query) or die($DB->error());
+               
             }
+         
+         }
 
-            if (FieldExists('glpi_plugin_order', 'numbill')) {
-               $query = "ALTER TABLE `glpi_plugin_order` DROP `numbill`";
-               $DB->query($query) or die($DB->error());
-            }
+         if (FieldExists('glpi_plugin_order', 'numordersupplier')) {
+            $query = "ALTER TABLE `glpi_plugin_order` DROP `numordersupplier`";
+            $DB->query($query) or die($DB->error());
+               
+         }
+
+         if (FieldExists('glpi_plugin_order', 'numbill')) {
+            $query = "ALTER TABLE `glpi_plugin_order` DROP `numbill`";
+            $DB->query($query) or die($DB->error());
+               
          }
       }
       
-      /* Update en 1.1.2 */
+
+         //----------------------------------------------------------------------//
+         //-----------------------Version 1.1.2 migration -----------------------//
+         //----------------------------------------------------------------------//
+
+      $migration->displayMessage("Update to version 1.1.2");
       
       if (!FieldExists("glpi_plugin_order_detail","delivery_status")) {
          $query = "ALTER TABLE `glpi_plugin_order_detail` ADD `delivery_status` int(1) NOT NULL default '0'";
-      $DB->query($query) or die($DB->error());
+         $DB->query($query) or die($DB->error());
 
       }
       
       if (!FieldExists("glpi_plugin_order_detail","delivery_comments")) {
-         $query = "ALTER TABLE `glpi_plugin_order_detail` ADD `delivery_comments` text";
-      $DB->query($query) or die($DB->error());
+         $query = "ALTER TABLE `glpi_plugin_order_detail` ADD `delivery_comments` TEXT";
+         $DB->query($query) or die($DB->error());
 
       }
       
@@ -157,388 +165,371 @@ function plugin_order_install() {
       $update120=true;
       $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.2.0.sql");
       
-      if (countElementsInTable("glpi_plugin_order_configs")==0) {
+      if (!countElementsInTable("glpi_plugin_order_configs")) {
          $query = "INSERT INTO `glpi_plugin_order_configs`(id,use_validation,default_taxes) VALUES (1,0,0);";
          $DB->query($query) or die($DB->error());
       }
       
-      $query = "SELECT `suppliers_id`,`id` FROM `glpi_plugin_order_orders` ";
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-      if ($number) {
-         while ($data=$DB->fetch_array($result)) {
-            $query = "UPDATE `glpi_plugin_order_orders_suppliers`
-                  SET `suppliers_id` = '".$data["suppliers_id"]."'
-                  WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
-            $DB->query($query) or die($DB->error());
-         }
-      }
+      $query = "SELECT `suppliers_id`, `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_orders` ";
+      foreach ($DB->request($query) as $data) {
+         $query = "UPDATE `glpi_plugin_order_orders_suppliers`
+                   SET `suppliers_id` = '".$data["suppliers_id"]."'
+                   WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
+         $DB->query($query) or die($DB->error());
 
-      $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_orders` ";
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-      if ($number) {
-         while ($data=$DB->fetch_array($result)) {
-            $query = "UPDATE `glpi_plugin_order_orders_suppliers`
-                  SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
-                  WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
-            $DB->query($query) or die($DB->error());
-         }
-      }
+         $query = "UPDATE `glpi_plugin_order_orders_suppliers`
+                   SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
+                   WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
+         $DB->query($query) or die($DB->error());
 
-      $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_orders` ";
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-      if ($number) {
-         while ($data=$DB->fetch_array($result)) {
-            $query = "UPDATE `glpi_plugin_order_surveysuppliers`
-                  SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
-                  WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
-            $DB->query($query) or die($DB->error());
-         }
+         $query = "UPDATE `glpi_plugin_order_surveysuppliers`
+                   SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
+                   WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
+         $DB->query($query) or die($DB->error());
       }
 
       $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_references` ";
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-      if ($number) {
-         while ($data=$DB->fetch_array($result)) {
-            $query = "UPDATE `glpi_plugin_order_references_suppliers`
-                  SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
-                  WHERE `plugin_order_references_id` = '".$data["id"]."' ";
-            $DB->query($query) or die($DB->error());
-         }
+      foreach ($DB->request($query) as $data) {
+         $query = "UPDATE `glpi_plugin_order_references_suppliers`
+                   SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
+                   WHERE `plugin_order_references_id` = '".$data["id"]."' ";
+         $DB->query($query) or die($DB->error());
       }
       
-      
-      //Do One time on 0.80
-      $query_id = "SELECT `id` FROM `glpi_notificationtemplates` WHERE `itemtype`='PluginOrderOrder' AND `name` = 'Order Validation'";
-      $result = $DB->query($query_id) or die ($DB->error());
-      $itemtype = $DB->result($result,0,'id');
-      
-      $query="INSERT INTO `glpi_notificationtemplatetranslations`
-                                 VALUES(NULL, ".$itemtype.", '','##lang.ordervalidation.title##',
-                        '##lang.ordervalidation.url## : ##ordervalidation.url##
-##lang.ordervalidation.entity## : ##ordervalidation.entity##
-##IFordervalidation.name####lang.ordervalidation.name## : ##ordervalidation.name##
-##ENDIFordervalidation.name##
-##IFordervalidation.numorder####lang.ordervalidation.numorder## : ##ordervalidation.numorder##
-##ENDIFordervalidation.numorder##
-##IFordervalidation.orderdate####lang.ordervalidation.orderdate##  : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##
-##IFordervalidation.state####lang.ordervalidation.state## : ##ordervalidation.state####ENDIFordervalidation.state##
-##IFordervalidation.users####lang.ordervalidation.users## : ##ordervalidation.users####ENDIFordervalidation.users##
-
-##IFordervalidation.comment####lang.ordervalidation.comment## : ##ordervalidation.comment####ENDIFordervalidation.comment##',
-                        '&lt;p&gt;&lt;strong&gt;##lang.ordervalidation.url##&lt;/strong&gt; : &lt;a href=\"##ordervalidation.url##\"&gt;##ordervalidation.url##&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;##lang.ordervalidation.entity##&lt;/strong&gt; : ##ordervalidation.entity##&lt;br /&gt; ##IFordervalidation.name##&lt;strong&gt;##lang.ordervalidation.name##&lt;/strong&gt; : ##ordervalidation.name####ENDIFordervalidation.name##&lt;br /&gt;##IFordervalidation.numorder##&lt;strong&gt;##lang.ordervalidation.numorder##&lt;/strong&gt; : ##ordervalidation.numorder####ENDIFordervalidation.numorder##&lt;br /&gt;##IFordervalidation.orderdate##&lt;strong&gt;##lang.ordervalidation.orderdate##&lt;/strong&gt; : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##&lt;br /&gt;##IFordervalidation.state##&lt;strong&gt;##lang.ordervalidation.state##&lt;/strong&gt; : ##ordervalidation.state####ENDIFordervalidation.state##&lt;br /&gt;##IFordervalidation.users##&lt;strong&gt;##lang.ordervalidation.users##&lt;/strong&gt; : ##ordervalidation.users####ENDIFordervalidation.users##&lt;br /&gt;&lt;br /&gt;##IFordervalidation.comment##&lt;strong&gt;##lang.ordervalidation.comment##&lt;/strong&gt; : ##ordervalidation.comment####ENDIFordervalidation.comment##&lt;/p&gt;');";
-      $result=$DB->query($query);
-      
-      $query = "INSERT INTO `glpi_notifications`
-                                   VALUES (NULL, 'New Order Validation', 0, 'PluginOrderOrder', 'ask',
-                                          'mail',".$itemtype.",
-                                          '', 1, 1, '2010-02-17 22:36:46');";
-      $result=$DB->query($query);
-      $query = "INSERT INTO `glpi_notifications`
-                                   VALUES (NULL, 'Confirm Order Validation', 0, 'PluginOrderOrder', 'validation',
-                                          'mail',".$itemtype.",
-                                          '', 1, 1, '2010-02-17 22:36:46');";
-      $result=$DB->query($query);
-      $query = "INSERT INTO `glpi_notifications`
-                                   VALUES (NULL, 'Cancel Order Validation', 0, 'PluginOrderOrder', 'undovalidation',
-                                          'mail',".$itemtype.",
-                                          '', 1, 1, '2010-02-17 22:36:46');";
-      $result=$DB->query($query);
-      $query = "INSERT INTO `glpi_notifications`
-                                   VALUES (NULL, 'Cancel Order', 0, 'PluginOrderOrder', 'cancel',
-                                          'mail',".$itemtype.",
-                                          '', 1, 1, '2010-02-17 22:36:46');";
-      $result=$DB->query($query);
-   
-      $query_="SELECT *
-            FROM `glpi_plugin_order_profiles` ";
-      $result_=$DB->query($query_);
-      if ($DB->numrows($result_)>0) {
-
-         while ($data=$DB->fetch_array($result_)) {
-            $query="UPDATE `glpi_plugin_order_profiles`
-                  SET `profiles_id` = '".$data["id"]."'
-                  WHERE `id` = '".$data["id"]."';";
-            $result=$DB->query($query);
-
-         }
-      }
-
       $query="ALTER TABLE `glpi_plugin_order_profiles`
                DROP `name` ;";
-      $result=$DB->query($query);
+      $result=$DB->query($query) or die($DB->error());
 
-      Plugin::migrateItemType(
-         array(3150=>'PluginOrderOrder',
-               3151=>'PluginOrderReference',
-               3152=>'PluginOrderReference_Supplier',
-               3153=>'PluginOrderBudget',
-               3154=>'PluginOrderOrder_Supplier',
-               3155=>'PluginOrderReception'),
-         array("glpi_bookmarks", "glpi_bookmarks_users", "glpi_displaypreferences",
-               "glpi_documents_items", "glpi_infocoms", "glpi_logs", "glpi_tickets"),
-         array("glpi_plugin_order_orders_items", "glpi_plugin_order_references"));
+      Plugin::migrateItemType(array(3150 => 'PluginOrderOrder', 3151 => 'PluginOrderReference',
+                                    3152 => 'PluginOrderReference_Supplier',
+                                    3153 => 'PluginOrderBudget', 3154 => 'PluginOrderOrder_Supplier',
+                                    3155 => 'PluginOrderReception'),
+                              array("glpi_bookmarks", "glpi_bookmarks_users", 
+                                    "glpi_displaypreferences", "glpi_documents_items", 
+                                    "glpi_infocoms", "glpi_logs", "glpi_tickets"),
+                              array("glpi_plugin_order_orders_items", 
+                                    "glpi_plugin_order_references"));
 
    }
 
    if (TableExists("glpi_plugin_order_configs") 
-      && !FieldExists("glpi_plugin_order_configs","generate_assets")) { // version 1.3.0
+      && !FieldExists("glpi_plugin_order_configs", "generate_assets")) { // version 1.3.0
       $update130 = true;
+      $migration->displayMessage("Update to version 1.3.0");
       $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.3.0.sql");
    }
    
    if (TableExists("glpi_plugin_order_budgets")) { // version 1.4.0
       $update140 = true;
+      $migration->displayMessage("Update to version 1.4.0");
+
       $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.4.0.sql");
    }
    
    if (FieldExists("glpi_plugin_order_orders_items", "plugin_order_ordertaxes_id")
          && !TableExists("glpi_plugin_order_orderstates")) { // version 1.5.0
       $update150 = true;
+      $migration->displayMessage("Update to version 1.5.0");
       $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.5.0.sql");
    }
       
    if (!TableExists("glpi_plugin_order_orders")) { // not installed
       $install = true;
-      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/empty-1.5.0.sql");
-   }
-
-   if($install || $update130) {
-      $query_id = "  SELECT `id` 
-                     FROM `glpi_notificationtemplates` 
-                     WHERE `itemtype`='PluginOrderOrder_Item' 
-                     AND `name` = 'Order Reception'";
-      $result = $DB->query($query_id) or die ($DB->error());
-      $itemtype = $DB->result($result,0,'id');
-   
-      $query="INSERT INTO `glpi_notificationtemplatetranslations`
-               VALUES(NULL, ".$itemtype.",'fr_FR','##lang.reception.title##','Informations sur la commande 
-
-##reception.orderurl## 
-
-##lang.reception.ordername## : 
-##reception.ordername## 
-##lang.reception.orderdate## : 
-##reception.orderdate## 
-
-##lang.reception.orderentity## : 
-##reception.orderentity## 
-##lang.reception.orderstate## : 
-##reception.orderstate## 
-
-##lang.reception.ordernumber## : 
-##reception.ordernumber## 
-##lang.reception.orderbudget## : 
-##reception.orderbudget## 
-
-##lang.reception.orderlocation## : 
-##reception.orderlocation## 
-##lang.reception.ordertaxe## : 
-##reception.ordertaxe## 
-
-##lang.reception.ordersupplier## : 
-##reception.ordersupplier## 
-##lang.reception.orderpayment## : 
-##reception.orderpayment## 
-
-##lang.reception.ordercontact## : 
-##reception.ordercontact## 
-##lang.reception.orderport## : 
-##reception.orderport## 
-
-##lang.reception.ordercomment## : 
-##reception.ordercomment## 
-##lang.reception.ordernote## : 
-##reception.ordernote## 
-
-Informations sur la r&#233;f&#233;rence r&#233;ceptionn&#233;e 
-
-##reception.deliveryreference_url## 
-
-##lang.reception.deliveryreference_name## : 
-##reception.deliveryreference_name## 
-##lang.reception.deliveryreference_itemtype## : 
-##reception.deliveryreference_itemtype## 
-
-##lang.reception.deliveryreference_type## : 
-##reception.deliveryreference_type## 
-##lang.reception.deliveryreference_model## : 
-##reception.deliveryreference_model## 
-
-##lang.reception.deliveryreference_manufacturer## : 
-##reception.deliveryreference_manufacturer## 
-
-##lang.reception.deliveryreference_comment## : 
-##reception.deliveryreference_comment## 
-##lang.reception.deliveryreference_note## : 
-##reception.deliveryreference_note## 
-
-Informations sur la r&#233;ception 
-
-##reception.deliveryurl## 
-
-##lang.reception.deliverydate## : ##reception.deliverydate## 
-##lang.reception.deliverystate## : ##reception.deliverystate## 
-##lang.reception.deliverynumber## : ##reception.deliverynumber## 
-
-##IFreception.associateditems_url##
-Informations sur le mat&#233;riel associ&#233; 
-
-##reception.associateditems_url## 
-
-##lang.reception.associateditems_name## : ##reception.associateditems_name## 
-##lang.reception.associateditems_serial## : ##reception.associateditems_serial## 
-##lang.reception.associateditems_otherserial## : ##reception.associateditems_otherserial## 
-##lang.reception.associateditems_state## : ##reception.associateditems_state##
-##ENDIFreception.associateditems_url##','&lt;table style=\"border: 1px solid black; border-collapse: collapse;\"&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;th style=\"background-color: #f2f2f2;\" colspan=\"4\"&gt;Informations sur la commande&lt;/th&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black; background-color: #f2f2f2;\" colspan=\"4\"&gt;##reception.orderurl##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordername## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.ordername##&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderdate## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.orderdate##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderentity## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.orderentity##&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderstate## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.orderstate##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordernumber## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.ordernumber##&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderbudget## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.orderbudget##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderlocation## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.orderlocation##&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordertaxe## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.ordertaxe##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordersupplier## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.ordersupplier##&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderpayment## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.orderpayment##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordercontact## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.ordercontact##&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderport## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.orderport##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordercomment## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.ordercomment##&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordernote## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.ordernote##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;hr /&gt;
-&lt;table style=\"border: 1px solid black; border-collapse: collapse;\"&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;th style=\"background-color: #f2f2f2;\" colspan=\"4\"&gt;Informations sur la r&#233;f&#233;rence r&#233;ceptionn&#233;e&lt;/th&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black; background-color: #f2f2f2;\" colspan=\"4\"&gt;##reception.deliveryreference_url##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_name## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_name##&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_itemtype## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_itemtype##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_type## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_type##&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_model## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_model##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black;\" colspan=\"2\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_manufacturer## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\" colspan=\"2\"&gt;##reception.deliveryreference_manufacturer##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_comment## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_comment##&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_note## :&lt;/strong&gt;&lt;/td&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_note##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;hr /&gt;
-&lt;table style=\"border: 1px solid black; border-collapse: collapse;\"&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;th style=\"background-color: #f2f2f2;\"&gt;Informations sur la r&#233;ception&lt;/th&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black; background-color: #f2f2f2;\"&gt;##reception.deliveryurl##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliverydate## : &lt;/strong&gt;##reception.deliverydate##             &lt;br /&gt;&lt;strong&gt;##lang.reception.deliverystate## : &lt;/strong&gt;##reception.deliverystate##             &lt;br /&gt;&lt;strong&gt;##lang.reception.deliverynumber## : &lt;/strong&gt;##reception.deliverynumber##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-##IFreception.associateditems_url##
-&lt;hr /&gt;
-&lt;table style=\"border: 1px solid black; border-collapse: collapse;\"&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;th style=\"background-color: #f2f2f2;\"&gt;Informations sur le mat&#233;riel associ&#233;&lt;/th&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black; background-color: #f2f2f2;\"&gt;##reception.associateditems_url##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.associateditems_name## : &lt;/strong&gt;##reception.associateditems_name##             &lt;br /&gt;&lt;strong&gt;##lang.reception.associateditems_serial## : &lt;/strong&gt;##reception.associateditems_serial##             &lt;br /&gt;&lt;strong&gt;##lang.reception.associateditems_otherserial## : &lt;/strong&gt;##reception.associateditems_otherserial##             &lt;br /&gt;&lt;strong&gt;##lang.reception.associateditems_state## : &lt;/strong&gt;##reception.associateditems_state##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-##ENDIFreception.associateditems_url##')";
-            
-      $result=$DB->query($query);
-
-      $query = "INSERT INTO `glpi_notifications`
-                 VALUES (NULL, 'Taken delivery', 0, 'PluginOrderOrder_Item', 'delivered',
-                        'mail',".$itemtype.",
-                        '', 1, 1, '2010-02-17 22:36:46');";
-      $result=$DB->query($query);
-   }
-   
-   if($update140) {
-      /* Migrate TVA */
-      $query_ = "SELECT *
-                 FROM `glpi_plugin_order_orders`";
-      $result_ = $DB->query($query_);
-
-      if ($DB->numrows($result_)>0) {
-
-         while ($data = $DB->fetch_array($result_)) {
-            $query = "UPDATE `glpi_plugin_order_orders_items`
-                      SET `plugin_order_ordertaxes_id` = '" . $data["plugin_order_ordertaxes_id"] . "'
-                      WHERE `plugin_order_orders_id` = '" . $data["id"] . "'";
-            $result = $DB->query($query);
-         }
+      $migration->displayMessage("Install version 1.5.0");
+      if (!$DB->runFile(GLPI_ROOT ."/plugins/order/sql/empty-1.5.0.sql")) {
+         die ("Install failed !");
       }
    }
 
+   if($install || $update130) {
+      $migration->displayMessage("Add order reception notification template");
+
+      $query_id = "SELECT `id` 
+                   FROM `glpi_notificationtemplates` 
+                   WHERE `itemtype`='PluginOrderOrder_Item' 
+                      AND `name` = 'Order Reception'";
+      $result   = $DB->query($query_id) or die ($DB->error());
+      $notifications_id = $DB->result($result, 0, 'id');
+      
+      if ($DB->numrows($result)) {
+         $query="INSERT INTO `glpi_notificationtemplatetranslations`
+                  VALUES(NULL, ".$notifications_id.",'','##lang.reception.title##','##lang.reception.title## 
+   
+   ##reception.orderurl## 
+   
+   ##lang.reception.ordername## : 
+   ##reception.ordername## 
+   ##lang.reception.orderdate## : 
+   ##reception.orderdate## 
+   
+   ##lang.reception.orderentity## : 
+   ##reception.orderentity## 
+   ##lang.reception.orderstate## : 
+   ##reception.orderstate## 
+   
+   ##lang.reception.ordernumber## : 
+   ##reception.ordernumber## 
+   ##lang.reception.orderbudget## : 
+   ##reception.orderbudget## 
+   
+   ##lang.reception.orderlocation## : 
+   ##reception.orderlocation## 
+   ##lang.reception.ordertaxe## : 
+   ##reception.ordertaxe## 
+   
+   ##lang.reception.ordersupplier## : 
+   ##reception.ordersupplier## 
+   ##lang.reception.orderpayment## : 
+   ##reception.orderpayment## 
+   
+   ##lang.reception.ordercontact## : 
+   ##reception.ordercontact## 
+   ##lang.reception.orderport## : 
+   ##reception.orderport## 
+   
+   ##lang.reception.ordercomment## : 
+   ##reception.ordercomment## 
+   ##lang.reception.ordernote## : 
+   ##reception.ordernote## 
+   
+   Informations sur la r&#233;f&#233;rence r&#233;ceptionn&#233;e 
+   
+   ##reception.deliveryreference_url## 
+   
+   ##lang.reception.deliveryreference_name## : 
+   ##reception.deliveryreference_name## 
+   ##lang.reception.deliveryreference_itemtype## : 
+   ##reception.deliveryreference_itemtype## 
+   
+   ##lang.reception.deliveryreference_type## : 
+   ##reception.deliveryreference_type## 
+   ##lang.reception.deliveryreference_model## : 
+   ##reception.deliveryreference_model## 
+   
+   ##lang.reception.deliveryreference_manufacturer## : 
+   ##reception.deliveryreference_manufacturer## 
+   
+   ##lang.reception.deliveryreference_comment## : 
+   ##reception.deliveryreference_comment## 
+   ##lang.reception.deliveryreference_note## : 
+   ##reception.deliveryreference_note## 
+   
+   Informations sur la r&#233;ception 
+   
+   ##reception.deliveryurl## 
+   
+   ##lang.reception.deliverydate## : ##reception.deliverydate## 
+   ##lang.reception.deliverystate## : ##reception.deliverystate## 
+   ##lang.reception.deliverynumber## : ##reception.deliverynumber## 
+   
+   ##IFreception.associateditems_url##
+   Informations sur le mat&#233;riel associ&#233; 
+   
+   ##reception.associateditems_url## 
+   
+   ##lang.reception.associateditems_name## : ##reception.associateditems_name## 
+   ##lang.reception.associateditems_serial## : ##reception.associateditems_serial## 
+   ##lang.reception.associateditems_otherserial## : ##reception.associateditems_otherserial## 
+   ##lang.reception.associateditems_state## : ##reception.associateditems_state##
+   ##ENDIFreception.associateditems_url##','&lt;table style=\"border: 1px solid black; border-collapse: collapse;\"&gt;
+   &lt;tbody&gt;
+   &lt;tr&gt;
+   &lt;th style=\"background-color: #f2f2f2;\" colspan=\"4\"&gt;Informations sur la commande&lt;/th&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black; background-color: #f2f2f2;\" colspan=\"4\"&gt;##reception.orderurl##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordername## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.ordername##&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderdate## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.orderdate##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderentity## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.orderentity##&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderstate## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.orderstate##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordernumber## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.ordernumber##&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderbudget## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.orderbudget##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderlocation## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.orderlocation##&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordertaxe## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.ordertaxe##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordersupplier## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.ordersupplier##&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderpayment## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.orderpayment##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordercontact## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.ordercontact##&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderport## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.orderport##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordercomment## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.ordercomment##&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordernote## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.ordernote##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;/tbody&gt;
+   &lt;/table&gt;
+   &lt;hr /&gt;
+   &lt;table style=\"border: 1px solid black; border-collapse: collapse;\"&gt;
+   &lt;tbody&gt;
+   &lt;tr&gt;
+   &lt;th style=\"background-color: #f2f2f2;\" colspan=\"4\"&gt;Informations sur la r&#233;f&#233;rence r&#233;ceptionn&#233;e&lt;/th&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black; background-color: #f2f2f2;\" colspan=\"4\"&gt;##reception.deliveryreference_url##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_name## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_name##&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_itemtype## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_itemtype##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_type## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_type##&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_model## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_model##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black;\" colspan=\"2\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_manufacturer## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\" colspan=\"2\"&gt;##reception.deliveryreference_manufacturer##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_comment## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_comment##&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_note## :&lt;/strong&gt;&lt;/td&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_note##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;/tbody&gt;
+   &lt;/table&gt;
+   &lt;hr /&gt;
+   &lt;table style=\"border: 1px solid black; border-collapse: collapse;\"&gt;
+   &lt;tbody&gt;
+   &lt;tr&gt;
+   &lt;th style=\"background-color: #f2f2f2;\"&gt;Informations sur la r&#233;ception&lt;/th&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black; background-color: #f2f2f2;\"&gt;##reception.deliveryurl##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliverydate## : &lt;/strong&gt;##reception.deliverydate##             &lt;br /&gt;&lt;strong&gt;##lang.reception.deliverystate## : &lt;/strong&gt;##reception.deliverystate##             &lt;br /&gt;&lt;strong&gt;##lang.reception.deliverynumber## : &lt;/strong&gt;##reception.deliverynumber##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;/tbody&gt;
+   &lt;/table&gt;
+   ##IFreception.associateditems_url##
+   &lt;hr /&gt;
+   &lt;table style=\"border: 1px solid black; border-collapse: collapse;\"&gt;
+   &lt;tbody&gt;
+   &lt;tr&gt;
+   &lt;th style=\"background-color: #f2f2f2;\"&gt;Informations sur le mat&#233;riel associ&#233;&lt;/th&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black; background-color: #f2f2f2;\"&gt;##reception.associateditems_url##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+   &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.associateditems_name## : &lt;/strong&gt;##reception.associateditems_name##             &lt;br /&gt;&lt;strong&gt;##lang.reception.associateditems_serial## : &lt;/strong&gt;##reception.associateditems_serial##             &lt;br /&gt;&lt;strong&gt;##lang.reception.associateditems_otherserial## : &lt;/strong&gt;##reception.associateditems_otherserial##             &lt;br /&gt;&lt;strong&gt;##lang.reception.associateditems_state## : &lt;/strong&gt;##reception.associateditems_state##&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;/tbody&gt;
+   &lt;/table&gt;
+   ##ENDIFreception.associateditems_url##')";
+               
+         $result=$DB->query($query) or die($DB->error());
+
+         $migration->displayMessage("Add order reception notification");
+   
+         $query = "INSERT INTO `glpi_notifications`
+                    VALUES (NULL, 'Taken delivery', 0, 'PluginOrderOrder_Item', 'delivered',
+                           'mail',$notifications_id, '', 1, 1, NOW());";
+         $result=$DB->query($query) or die($DB->error());
+      }
+
+      }   
+      
+   
+   if($update140) {
+      /* Migrate VAT */
+      foreach ($DB->request("glpi_plugin_order_orders") as $data) {
+         $query = "UPDATE `glpi_plugin_order_orders_items`
+                   SET `plugin_order_ordertaxes_id` = '" . $data["plugin_order_ordertaxes_id"] . "'
+                   WHERE `plugin_order_orders_id` = '" . $data["id"] . "'";
+         $result = $DB->query($query);
+      }
+
+   }
+
+   $migration->displayMessage("Update profile for current user");
    PluginOrderProfile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
 
    /* Insert Status */
    if($update150 || $install) {
+
+      $migration->displayMessage("Add order validation notification template");
+
+      //Do One time on 0.80
+      $query_id = "SELECT `id` FROM `glpi_notificationtemplates` 
+                   WHERE `itemtype`='PluginOrderOrder' 
+                      AND `name` = 'Order Validation'";
+      $result   = $DB->query($query_id) or die ($DB->error());
+      if ($DB->numrows($result) > 0) {
+         $notifications_id = $DB->result($result, 0, 'id');
+         
+         $query = "INSERT INTO `glpi_notificationtemplatetranslations` 
+                  (`notificationtemplates_id`, `language`, `subject`, `content_text`, `content_html`)
+                  VALUES($notifications_id, '','##lang.ordervalidation.title##',
+                           '##lang.ordervalidation.url## : ##ordervalidation.url##
+   ##lang.ordervalidation.entity## : ##ordervalidation.entity##
+   ##IFordervalidation.name####lang.ordervalidation.name## : ##ordervalidation.name##
+   ##ENDIFordervalidation.name##
+   ##IFordervalidation.numorder####lang.ordervalidation.numorder## : ##ordervalidation.numorder##
+   ##ENDIFordervalidation.numorder##
+   ##IFordervalidation.orderdate####lang.ordervalidation.orderdate##  : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##
+   ##IFordervalidation.state####lang.ordervalidation.state## : ##ordervalidation.state####ENDIFordervalidation.state##
+   ##IFordervalidation.users####lang.ordervalidation.users## : ##ordervalidation.users####ENDIFordervalidation.users##
+   
+   ##IFordervalidation.comment####lang.ordervalidation.comment## : ##ordervalidation.comment####ENDIFordervalidation.comment##',
+                           '&lt;p&gt;&lt;strong&gt;##lang.ordervalidation.url##&lt;/strong&gt; : &lt;a href=\"##ordervalidation.url##\"&gt;##ordervalidation.url##&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;##lang.ordervalidation.entity##&lt;/strong&gt; : ##ordervalidation.entity##&lt;br /&gt; ##IFordervalidation.name##&lt;strong&gt;##lang.ordervalidation.name##&lt;/strong&gt; : ##ordervalidation.name####ENDIFordervalidation.name##&lt;br /&gt;##IFordervalidation.numorder##&lt;strong&gt;##lang.ordervalidation.numorder##&lt;/strong&gt; : ##ordervalidation.numorder####ENDIFordervalidation.numorder##&lt;br /&gt;##IFordervalidation.orderdate##&lt;strong&gt;##lang.ordervalidation.orderdate##&lt;/strong&gt; : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##&lt;br /&gt;##IFordervalidation.state##&lt;strong&gt;##lang.ordervalidation.state##&lt;/strong&gt; : ##ordervalidation.state####ENDIFordervalidation.state##&lt;br /&gt;##IFordervalidation.users##&lt;strong&gt;##lang.ordervalidation.users##&lt;/strong&gt; : ##ordervalidation.users####ENDIFordervalidation.users##&lt;br /&gt;&lt;br /&gt;##IFordervalidation.comment##&lt;strong&gt;##lang.ordervalidation.comment##&lt;/strong&gt; : ##ordervalidation.comment####ENDIFordervalidation.comment##&lt;/p&gt;');";
+         $result=$DB->query($query) or die($DB->error());
+
+         $migration->displayMessage("Add order validation notifications");
+         
+         $query = "INSERT INTO `glpi_notifications`
+                                      VALUES (NULL, 'New Order Validation', 0, 'PluginOrderOrder', 'ask',
+                                             'mail',".$notifications_id.",
+                                             '', 1, 1, NOW());";
+         $result=$DB->query($query) or die($DB->error());
+         $query = "INSERT INTO `glpi_notifications`
+                                      VALUES (NULL, 'Confirm Order Validation', 0, 'PluginOrderOrder', 'validation',
+                                             'mail',".$notifications_id.",
+                                             '', 1, 1, NOW());";
+         $result=$DB->query($query) or die($DB->error());
+         $query = "INSERT INTO `glpi_notifications`
+                                      VALUES (NULL, 'Cancel Order Validation', 0, 'PluginOrderOrder', 'undovalidation',
+                                             'mail',".$notifications_id.",
+                                             '', 1, 1, NOW());";
+         $result=$DB->query($query) or die($DB->error());
+         $query = "INSERT INTO `glpi_notifications`
+                                      VALUES (NULL, 'Cancel Order', 0, 'PluginOrderOrder', 'cancel',
+                                             'mail',".$notifications_id.",
+                                             '', 1, 1, NOW());";
+         $result=$DB->query($query) or die($DB->error());
+
+      }
+      
+      $migration->displayMessage("Convert order states as dropdown");
       $query = "INSERT INTO `glpi_plugin_order_orderstates` 
                   VALUES   (1, '".addslashes_deep($LANG['plugin_order']['status'][9])."', ''),
                            (2, '".addslashes_deep($LANG['plugin_order']['status'][7])."', ''),
@@ -548,6 +539,7 @@ Informations sur le mat&#233;riel associ&#233;
                            (6, '".addslashes_deep($LANG['plugin_order']['status'][10])."', '')";
       $result = $DB->query($query);
       
+      $migration->displayMessage("Add default order state workflow");
       $query = "UPDATE `glpi_plugin_order_configs` 
                   SET   `order_status_draft` = 1,
                         `order_status_waiting_approval` = 2,
@@ -558,6 +550,7 @@ Informations sur le mat&#233;riel associ&#233;
                   WHERE `id` = 1";
       $result = $DB->query($query);
       
+      $migration->displayMessage("Update orders with new status");
       $query = "UPDATE `glpi_plugin_order_orders` 
                   SET `plugin_order_orderstates_id` = 6 WHERE  `plugin_order_orderstates_id` = 5";
       $result = $DB->query($query);
@@ -582,6 +575,7 @@ Informations sur le mat&#233;riel associ&#233;
                   SET `plugin_order_orderstates_id` = 1 WHERE  `plugin_order_orderstates_id` = 0";
       $result = $DB->query($query);
       
+      $migration->displayMessage("Add new right 'bill' to profile");
       $query = "ALTER TABLE `glpi_plugin_order_profiles` ADD `bill` CHAR( 1 ) COLLATE utf8_unicode_ci DEFAULT NULL";
       $result = $DB->query($query);
       

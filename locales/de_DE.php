@@ -69,6 +69,7 @@ $LANG['plugin_order'][48] = "Eine oder mehrere ausgewählte Positionen wurden no
 $LANG['plugin_order']['bill'][0] = "Bill";
 $LANG['plugin_order']['bill'][1] = "Bill type";
 $LANG['plugin_order']['bill'][2] = "Bill status";
+$LANG['plugin_order']['bill'][3] = "A bill number is mandatory";
 
 $LANG['plugin_order']['config'][0] = "Plugin-Einstellungen";
 $LANG['plugin_order']['config'][1] = "Standard-MwSt";

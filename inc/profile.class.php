@@ -104,20 +104,22 @@ class PluginOrderProfile extends CommonDBTM {
    }
    
    static function changeProfile() {
-      
       $prof = new self();
-      if ($prof->getFromDBByProfile($_SESSION['glpiactiveprofile']['id']))
-         $_SESSION["glpi_plugin_order_profile"]=$prof->fields;
-      else
+      if ($prof->getFromDBByProfile($_SESSION['glpiactiveprofile']['id'])) {
+         $_SESSION["glpi_plugin_order_profile"] = $prof->fields;
+      } else {
          unset($_SESSION["glpi_plugin_order_profile"]);
+      }
    }
 
    /* profiles modification */
    function showForm ($ID, $options=array()) {
       global $LANG;
 
-      if (!haveRight("profile","r")) return false;
-
+      if (!haveRight("profile","r")) {
+         return false;
+      }
+      
       $prof = new Profile();
       if ($ID) {
          $this->getFromDBByProfile($ID);

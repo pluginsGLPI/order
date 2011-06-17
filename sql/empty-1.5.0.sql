@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders_items` (
    `price_ati` float NOT NULL default 0,
    `states_id` int(11) NOT NULL default 1,
    `delivery_date` date default NULL,
-   `plugin_order_bills_id` INT( 11 ) NOT NULL DEFAULT '0'
+   `plugin_order_bills_id` INT( 11 ) NOT NULL DEFAULT '0',
    PRIMARY KEY  (`id`),
    KEY `FK_device` (`items_id`,`itemtype`),
    KEY `item` (`itemtype`,`items_id`),
@@ -376,7 +376,8 @@ CREATE TABLE `glpi_plugin_order_preferences` (
    PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
    
-INSERT INTO `glpi_notificationtemplates` VALUES (NULL, 'Order Validation', 'PluginOrderOrder', '2010-03-12 22:36:46','',NULL),(NULL, 'Order Reception', 'PluginOrderOrder_Item', '2011-01-25 15:00:00','',NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES (NULL, 'Order Validation', 'PluginOrderOrder', '2010-03-12 22:36:46','',NULL);
+INSERT INTO `glpi_notificationtemplates` VALUES (NULL, 'Order Reception', 'PluginOrderOrder_Item', '2011-01-25 15:00:00','',NULL);
 
 INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','1','1','0');
 INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','2','2','0');

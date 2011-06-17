@@ -70,6 +70,7 @@ $LANG['plugin_order'][49] = "La date de commande doit être comprise dans les da
 $LANG['plugin_order']['bill'][0] = "Facture";
 $LANG['plugin_order']['bill'][1] = "Type de facture";
 $LANG['plugin_order']['bill'][2] = "Statut de la facture";
+$LANG['plugin_order']['bill'][3] = "un numéro de facture est obligatoire";
 
 $LANG['plugin_order']['config'][0] = "Configuration du plugin";
 $LANG['plugin_order']['config'][1] = "TVA par défaut";

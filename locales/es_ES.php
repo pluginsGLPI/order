@@ -66,6 +66,7 @@ $LANG['plugin_order'][48] = "Una o varias filas seleccionadas no tienen ítems a
 $LANG['plugin_order']['bill'][0] = "Bill";
 $LANG['plugin_order']['bill'][1] = "Bill type";
 $LANG['plugin_order']['bill'][2] = "Bill status";
+$LANG['plugin_order']['bill'][3] = "A bill number is mandatory";
 
 $LANG['plugin_order']['budget'][1] = "Pedidos asociados";
 $LANG['plugin_order']['budget'][2] = "Presupuesto ya utilizado";

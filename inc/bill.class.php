@@ -57,6 +57,21 @@ class PluginOrderBill extends CommonDropdown {
       return plugin_order_haveRight('bill', 'r');
    }
    
+   function post_getEmpty() {
+      $this->fields['value'] = 0;
+   }
+
+   function prepareInputForAdd($input) {
+      global $LANG;
+      
+      if (!isset ($input["number"]) || $input["number"] == '') {
+         addMessageAfterRedirect($LANG['plugin_order']['bill'][3], false, ERROR);
+         return array ();
+      }
+
+      return $input;
+   }   
+
    function getAdditionalFields() {
       global $LANG;
 
