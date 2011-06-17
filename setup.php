@@ -101,17 +101,7 @@ function plugin_init_order() {
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['title'] = $LANG['plugin_order']['menu'][5];
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['page']  = '/plugins/order/front/reference.php';
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['search'] = '/plugins/order/front/reference.php';
-               
-               if (!isset($_GET['display_type']) || $_GET['display_type'] == HTML_OUTPUT ) {
-                  echo PluginOrderReference::getPerTypeJavascriptCode();
-                  $url = $CFG_GLPI['root_doc']."/plugins/order/pics/viewpertype.png";
-                  $image = "<a onclick='order_window.show();' href='#modal_reference_content' title='".
-                              $LANG['plugin_order']['reference'][11]."'><img src='$url'></a>";
-                  
-                  $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links'][$image]  = '#';
 
-               }
-               
             }
             
             //bill

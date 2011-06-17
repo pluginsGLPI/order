@@ -696,7 +696,7 @@ class PluginOrderReference extends CommonDBTM {
       echo "</div>";
    }
 
-/*
+
    function title() {
       global $LANG, $CFG_GLPI;
       echo "<div align='center'>";
@@ -707,7 +707,6 @@ class PluginOrderReference extends CommonDBTM {
       echo "</div>";
 
    }
-*/
 
    static function getPerTypeJavascriptCode() {
       global $LANG, $CFG_GLPI;

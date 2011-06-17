@@ -41,7 +41,7 @@ commonHeader($LANG['plugin_order']['reference'][1], '', "plugins", "order", "ref
 $reference=new PluginOrderReference();
 if ($reference->canView() || haveRight("config","w")) {
    
-   //$reference->title();
+   $reference->title();
    Search::show("PluginOrderReference");
    
 } else {
