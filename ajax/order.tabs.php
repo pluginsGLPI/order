@@ -90,8 +90,9 @@ if ($_POST["id"] > 0 && $order->can($_POST["id"], 'r')) {
          }
          break;
       case 4 :
-         if ($order->can($_POST["id"],'w'))
+         if ($order->can($_POST["id"],'w')) {
             $order->showGenerationForm($_POST["id"]);
+         }
          break;
       case 5 :
          $orderreception->showOrderReception($_POST["id"]);

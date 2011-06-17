@@ -292,8 +292,8 @@ class PluginOrderOrder extends CommonDBTM {
          /* suppliers */
          $ong[3] = $LANG['plugin_order'][4];
 
-          /* generation*/
-          $ong[4] = $LANG['plugin_order']['generation'][2];
+        /* generation*/
+        $ong[4] = $LANG['plugin_order']['generation'][2];
 
          if ($this->fields['plugin_order_orderstates_id'] != PluginOrderOrderState::DRAFT) {
             /* delivery */
