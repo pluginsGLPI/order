@@ -68,10 +68,14 @@ if ($_POST["id"] > 0 && $order->can($_POST["id"], 'r')) {
          if ($order->fields['plugin_order_orderstates_id'] != PluginOrderOrderState::DRAFT) {
             $orderreception->showOrderReception($_POST["id"]);
             $orderlink->showOrderLink($_POST["id"]);
-            $surveySupplier->showOrderSupplierSurvey($_POST["id"]);
-            if (!$surveySupplier->checkIfSupplierSurveyExists($_POST["id"]) 
-               && $order->can($_POST["id"], 'w')) {
-               $surveySupplier->showForm("",array('plugin_order_orders_id' => $_POST["id"]));
+            
+            if ($order->getState() == PluginOrderOrderState::DELIVERED) {
+               $surveySupplier->showOrderSupplierSurvey($_POST["id"]);
+               if (!$surveySupplier->checkIfSupplierSurveyExists($_POST["id"]) 
+                  && $order->can($_POST["id"], 'w')) {
+                  $surveySupplier->showForm("",array('plugin_order_orders_id' => $_POST["id"]));
+               }
+
             }
 
          }
@@ -90,8 +94,12 @@ if ($_POST["id"] > 0 && $order->can($_POST["id"], 'r')) {
          }
          break;
       case 4 :
-         if ($order->can($_POST["id"],'w')) {
-            $order->showGenerationForm($_POST["id"]);
+         if ($order->getState() == PluginOrderOrderState::DELIVERED) {
+            if ($order->can($_POST["id"],'w')) {
+               $order->showGenerationForm($_POST["id"]);
+
+            }
+
          }
          break;
       case 5 :
@@ -101,10 +109,13 @@ if ($_POST["id"] > 0 && $order->can($_POST["id"], 'r')) {
          $orderlink->showOrderLink($_POST["id"]);
          break;
        case 7 :
-         $surveySupplier->showOrderSupplierSurvey($_POST["id"]);
-         if (!$surveySupplier->checkIfSupplierSurveyExists($_POST["id"]) 
-                && $order->can($_POST["id"], 'w')) {
-            $surveySupplier->showForm("",  array('plugin_order_orders_id' => $_POST["id"]));
+         if ($order->getState() == PluginOrderOrderState::DELIVERED) {
+            $surveySupplier->showOrderSupplierSurvey($_POST["id"]);
+            if (!$surveySupplier->checkIfSupplierSurveyExists($_POST["id"]) 
+                   && $order->can($_POST["id"], 'w')) {
+               $surveySupplier->showForm("",  array('plugin_order_orders_id' => $_POST["id"]));
+            }
+            
          }
          break;
       case 9 :
