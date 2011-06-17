@@ -285,12 +285,13 @@ class PluginOrderOrder_Item extends CommonDBTM {
    function showFormDetail($plugin_order_orders_id) {
       global  $CFG_GLPI, $LANG,$DB;
 
-      $PluginOrderOrder     = new PluginOrderOrder();
-      $PluginOrderReference = new PluginOrderReference();
+      $order     = new PluginOrderOrder();
+      
+      $reference = new PluginOrderReference();
       $PluginOrderReception = new PluginOrderReception();
       
-      $canedit = $PluginOrderOrder->can($plugin_order_orders_id,'w') 
-               && $PluginOrderOrder->canUpdateOrder($plugin_order_orders_id);
+      $canedit = $order->can($plugin_order_orders_id,'w') 
+               && $order->canUpdateOrder($plugin_order_orders_id);
       
       $result_ref = $this->queryDetail($plugin_order_orders_id);
       $numref     = $DB->numrows($result_ref);
@@ -339,7 +340,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
                "</td>";
             /* reference */
             echo "<td align='center'>";
-            echo $PluginOrderReference->getReceptionReferenceLink($data_ref);
+            echo $reference->getReceptionReferenceLink($data_ref);
             echo "</td>";
             /* type */
             echo "<td align='center'>";
@@ -359,8 +360,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
             echo "</tr></table>";
 
             echo "<div class='center' id='detail$rand' style='display:none'>";
-            echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  action=\"" . 
-               getItemTypeFormURL('PluginOrderOrder')."\">";
+            echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  " .
+                  "action=\"" . getItemTypeFormURL('PluginOrderOrder')."\">";
             echo "<table class='tab_cadre_fixe'>";
 
             echo "<tr>";
@@ -380,15 +381,17 @@ class PluginOrderOrder_Item extends CommonDBTM {
             
             $query="SELECT `".$this->getTable()."`.`id` AS IDD, `glpi_plugin_order_references`.`id`, 
                            `glpi_plugin_order_references`.`name`,
-                           `".$this->getTable()."`.`price_taxfree`, `".$this->getTable()."`.`price_discounted`,
-                           `".$this->getTable()."`.`discount`,`".$this->getTable()."`.`plugin_order_ordertaxes_id`,
+                           `".$this->getTable()."`.`price_taxfree`, 
+                           `".$this->getTable()."`.`price_discounted`,
+                           `".$this->getTable()."`.`discount`,
+                           `".$this->getTable()."`.`plugin_order_ordertaxes_id`,
                            `".$this->getTable()."`.`price_ati`
                     FROM `".$this->getTable()."`, `glpi_plugin_order_references`
                     WHERE `".$this->getTable()."`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`
-                     AND `".$this->getTable()."`.`plugin_order_references_id` = '".$refID."'
-                     AND `".$this->getTable()."`.`price_taxfree` LIKE '".$price_taxfree."'
-                     AND `".$this->getTable()."`.`discount` LIKE '".$discount."'
-                     AND `".$this->getTable()."`.`plugin_order_orders_id` = '$plugin_order_orders_id'";
+                      AND `".$this->getTable()."`.`plugin_order_references_id` = '".$refID."'
+                         AND `".$this->getTable()."`.`price_taxfree` LIKE '".$price_taxfree."'
+                            AND `".$this->getTable()."`.`discount` LIKE '".$discount."'
+                                AND `".$this->getTable()."`.`plugin_order_orders_id` = '$plugin_order_orders_id'";
 
             if ($data_ref["itemtype"] == 'SoftwareLicense') {
                $query.=" GROUP BY `glpi_plugin_order_references`.`name` "; 
@@ -417,7 +420,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
                /* reference */
                echo "<td align='center'>";
-               echo $PluginOrderReference->getReceptionReferenceLink($data);
+               echo $reference->getReceptionReferenceLink($data);
                echo "</td>";
                echo "<td align='center'>".formatNumber($data["price_taxfree"])."</td>";
                /* taxe */

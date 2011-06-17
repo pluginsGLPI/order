@@ -289,22 +289,31 @@ class PluginOrderOrder extends CommonDBTM {
       if ($this->fields['id'] > 0) {
          /* detail */
          $ong[2] = $LANG['plugin_order'][5];
-         /* fournisseur */
+         /* suppliers */
          $ong[3] = $LANG['plugin_order'][4];
-         /* generation*/
-         $ong[4] = $LANG['plugin_order']['generation'][2];
-         /* delivery */
-         $ong[5] = $LANG['plugin_order']['delivery'][1];
-         /* item */
-         $ong[6] = $LANG['plugin_order']['item'][0];
-         /* quality */
-         $ong[7] = $LANG['plugin_order'][10];
-         /* documents */
-         if (haveRight("document", "r"))
-            $ong[9] = $LANG['Menu'][27];
+         if ($this->fields['plugin_order_orderstates_id'] != PluginOrderOrderState::DRAFT) {
+            /* generation*/
+            $ong[4] = $LANG['plugin_order']['generation'][2];
+            /* delivery */
+            $ong[5] = $LANG['plugin_order']['delivery'][1];
+            /* item */
+            $ong[6] = $LANG['plugin_order']['item'][0];
+            /* quality */
+            $ong[7] = $LANG['plugin_order'][10];
+            /*bills*/
+            $ong[8] = $LANG['plugin_order']['bill'][0];
+            
+         }
          
-         if (haveRight("notes", "r"))
+         /* documents */
+         if (haveRight("document", "r")) {
+            $ong[9] = $LANG['Menu'][27];
+         }
+         
+         if (haveRight("notes", "r")) {
             $ong[10] = $LANG['title'][37];
+         }
+         
          /* all */
          $ong[12] = $LANG['title'][38];
       }
@@ -335,14 +344,17 @@ class PluginOrderOrder extends CommonDBTM {
    function prepareInputForUpdate($input) {
       global $LANG;
       
-      if( (isset($input['budgets_id']) && $input['budgets_id'] > 0)
-            || (isset($input['budgets_id']) && $this->fields['budgets_id']!=$input['budgets_id']) ) {
+      if( (isset($input['budgets_id']) 
+         && $input['budgets_id'] > 0)
+            || (isset($input['budgets_id']) 
+               && $this->fields['budgets_id'] != $input['budgets_id']) ) {
 
-         if( !canStillUseBudget($input) ) {
-
+         if( !self::canStillUseBudget($input) ) {
             addMessageAfterRedirect($LANG['plugin_order'][49], false, ERROR);
-            return array ();
+            return false;
+
          }
+         
       }
       
       return $input;

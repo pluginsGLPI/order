@@ -29,7 +29,7 @@
 // ----------------------------------------------------------------------
 // Original Authors of file: 
 // NOUH Walid & FONTAN Benjamin & CAILLAUD Xavier & François Legastelois
-// Purpose of file: plugin order v1.4.0 - GLPI 0.80
+// Purpose of file: 
 // ----------------------------------------------------------------------
 // ---------------------------------------------------------------------- */
 

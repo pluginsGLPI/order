@@ -118,7 +118,8 @@ class PluginOrderBill extends CommonDropdown {
    function defineMoreTabs($options=array()) {
       global $LANG;
       if ($this->fields['id'] > 0) {
-         return array(5 => $LANG['Menu'][27], 10 => $LANG['title'][37], 12 => $LANG['title'][38]);
+         return array(5 => $LANG['Menu'][27], 6 => $LANG['plugin_order']['item'][0],
+                      10 => $LANG['title'][37], 12 => $LANG['title'][38]);
       } else {
          return array();
       }
@@ -140,34 +141,34 @@ class PluginOrderBill extends CommonDropdown {
       $tab[2]['name'] = $LANG['common'][27];
       $tab[2]['datatype'] = 'datetime';
 
-      $tab[3]['table'] = $this->getTable();
-      $tab[3]['field'] = 'validationdate';
-      $tab[3]['name'] = $LANG['validation'][4];
+      $tab[3]['table']    = $this->getTable();
+      $tab[3]['field']    = 'validationdate';
+      $tab[3]['name']     = $LANG['validation'][4];
       $tab[3]['datatype'] = 'datetime';
 
-      $tab[4]['table'] = getTableForItemType('User');
-      $tab[4]['field'] = 'name';
+      $tab[4]['table']     = getTableForItemType('User');
+      $tab[4]['field']     = 'name';
       $tab[4]['linkfield'] = 'users_id_validation';
-      $tab[4]['name'] = $LANG['validation'][21];
+      $tab[4]['name']      = $LANG['validation'][21];
 
       $tab[5]['table'] = getTableForItemType('PluginOrderBillType');
       $tab[5]['field'] = 'name';
-      $tab[5]['name'] = $LANG['common'][17];
+      $tab[5]['name']  = $LANG['common'][17];
   
       $tab[6]['table'] = getTableForItemType('PluginOrderBillState');
       $tab[6]['field'] = 'name';
-      $tab[6]['name'] = $LANG['joblist'][0];
+      $tab[6]['name']  = $LANG['joblist'][0];
   
       /* comments */
-      $tab[16]['table'] = $this->getTable();
-      $tab[16]['field'] = 'comment';
-      $tab[16]['name'] = $LANG['plugin_order'][2];
+      $tab[16]['table']    = $this->getTable();
+      $tab[16]['field']    = 'comment';
+      $tab[16]['name']     = $LANG['plugin_order'][2];
       $tab[16]['datatype'] = 'text';
 
       /* ID */
       $tab[30]['table'] = $this->getTable();
       $tab[30]['field'] = 'id';
-      $tab[30]['name'] = $LANG['common'][2];
+      $tab[30]['name']  = $LANG['common'][2];
       /* entity */
       $tab[80]['table'] = 'glpi_entities';
       $tab[80]['field'] = 'completename';

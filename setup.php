@@ -51,7 +51,6 @@ function plugin_init_order() {
       foreach (PluginOrderOrder_Item::getClasses(true) as $type) {
          $PLUGIN_HOOKS['item_purge']['order'][$type] = 'plugin_item_purge_order';
       }
-   }
    
    Plugin::registerClass('PluginOrderOrder', array('document_types'               => true,
                                                    'unicity_types'                => true,
@@ -59,90 +58,92 @@ function plugin_init_order() {
                                                    'notificationtemplates_types'  => true));
 
    
-   Plugin::registerClass('PluginOrderReference', array('document_types'               => true,
-                                                       'massiveaction_noupdate_types' => true));
+      Plugin::registerClass('PluginOrderReference', array('document_types'               => true,
+                                                          'massiveaction_noupdate_types' => true));
+      
+      Plugin::registerClass('PluginOrderOrder_Item', array('notificationtemplates_types'  => true));
+      
+      /*if glpi is loaded */
+      if (getLoginUserID()) {
+      
+         /* link to the config page in plugins menu */
+         if (plugin_order_haveRight("order", "w") || haveRight("config", "w"))
+            $PLUGIN_HOOKS['config_page']['order'] = 'front/config.form.php';
+      
+         if (plugin_order_haveRight("order", "r") 
+            || plugin_order_haveRight("reference", "r") 
+               || plugin_order_haveRight("bill", "r")) {
    
-   Plugin::registerClass('PluginOrderOrder_Item', array('notificationtemplates_types'  => true));
-   
-   /*if glpi is loaded */
-   if (getLoginUserID()) {
-   
-      /* link to the config page in plugins menu */
-      if (plugin_order_haveRight("order", "w") || haveRight("config", "w"))
-         $PLUGIN_HOOKS['config_page']['order'] = 'front/config.form.php';
-   
-      if (plugin_order_haveRight("order", "r") 
-         || plugin_order_haveRight("reference", "r") 
-            || plugin_order_haveRight("bill", "r")) {
-
-         $PLUGIN_HOOKS['menu_entry']['order']      = 'front/menu.php';
-         $PLUGIN_HOOKS['headings']['order']        = 'plugin_get_headings_order';
-         $PLUGIN_HOOKS['headings_action']['order'] = 'plugin_headings_actions_order';
-         
-         // Manage redirects
-         $PLUGIN_HOOKS['redirect_page']['order']['order']      = "front/order.form.php";
-         $PLUGIN_HOOKS['redirect_page']['order']['reference']  = "front/reference.form.php";
-         $PLUGIN_HOOKS['redirect_page']['order']['reception']  = "front/reception.form.php";
-
-         //menu
-         if (plugin_order_haveRight("order","r")) {
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['menu']['title'] = $LANG['plugin_order']['menu'][0];
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['menu']['page']  = '/plugins/order/front/menu.php';
-
-         }
-         //order
-         if (plugin_order_haveRight("order","r")) {
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['title'] = $LANG['plugin_order']['menu'][4];
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['page']  = '/plugins/order/front/order.php';
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['search'] = '/plugins/order/front/order.php';
-
-         }
-         //references
-         if (plugin_order_haveRight("reference","r")) {
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['title'] = $LANG['plugin_order']['menu'][5];
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['page']  = '/plugins/order/front/reference.php';
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['search'] = '/plugins/order/front/reference.php';
-            echo PluginOrderReference::getPerTypeJavascriptCode();
-            $url = $CFG_GLPI['root_doc']."/plugins/order/pics/viewpertype.png";
-            $image = "<a onclick='order_window.show();' href='#modal_reference_content' title='".
-                        $LANG['plugin_order']['reference'][11]."'><img src='$url'></a>";
+            $PLUGIN_HOOKS['menu_entry']['order']      = 'front/menu.php';
+            $PLUGIN_HOOKS['headings']['order']        = 'plugin_get_headings_order';
+            $PLUGIN_HOOKS['headings_action']['order'] = 'plugin_headings_actions_order';
             
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links'][$image]  = '#';
-
+            // Manage redirects
+            $PLUGIN_HOOKS['redirect_page']['order']['order']      = "front/order.form.php";
+            $PLUGIN_HOOKS['redirect_page']['order']['reference']  = "front/reference.form.php";
+            $PLUGIN_HOOKS['redirect_page']['order']['reception']  = "front/reception.form.php";
+   
+            //menu
+            if (plugin_order_haveRight("order","r")) {
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['menu']['title'] = $LANG['plugin_order']['menu'][0];
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['menu']['page']  = '/plugins/order/front/menu.php';
+   
+            }
+            //order
+            if (plugin_order_haveRight("order","r")) {
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['title'] = $LANG['plugin_order']['menu'][4];
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['page']  = '/plugins/order/front/order.php';
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['search'] = '/plugins/order/front/order.php';
+   
+            }
+            //references
+            if (plugin_order_haveRight("reference","r")) {
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['title'] = $LANG['plugin_order']['menu'][5];
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['page']  = '/plugins/order/front/reference.php';
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['search'] = '/plugins/order/front/reference.php';
+               echo PluginOrderReference::getPerTypeJavascriptCode();
+               $url = $CFG_GLPI['root_doc']."/plugins/order/pics/viewpertype.png";
+               $image = "<a onclick='order_window.show();' href='#modal_reference_content' title='".
+                           $LANG['plugin_order']['reference'][11]."'><img src='$url'></a>";
+               
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links'][$image]  = '#';
+   
+            }
+            //bill
+            if (plugin_order_haveRight("bill","r")) {
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['title'] = $LANG['plugin_order']['bill'][0];
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['page']  = '/plugins/order/front/bill.php';
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['links']['search'] = '/plugins/order/front/bill.php';
+   
+            }
          }
-         //bill
-         if (plugin_order_haveRight("bill","r")) {
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['title'] = $LANG['plugin_order']['bill'][0];
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['page']  = '/plugins/order/front/bill.php';
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['links']['search'] = '/plugins/order/front/bill.php';
-
+   
+         if (plugin_order_haveRight("order","w")) {
+            //order
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['add']    = '/plugins/order/front/order.form.php';
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['config'] = '/plugins/order/front/config.form.php';
+   
          }
+   
+         if (plugin_order_haveRight("bill","w")) {
+            //order
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['links']['add']    = '/plugins/order/front/bill.form.php';
+   
+         }
+   
+         if (plugin_order_haveRight("reference","w")) {
+            //references
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['add']    = '/plugins/order/front/reference.form.php';
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['config'] = '/plugins/order/front/config.form.php';
+         }
+         if (haveRight("config","w")) {
+            $PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/config.form.php';
+   
+         }
+         $PLUGIN_HOOKS['use_massive_action']['order'] = 1;
       }
-
-      if (plugin_order_haveRight("order","w")) {
-         //order
-         $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['add']    = '/plugins/order/front/order.form.php';
-         $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['config'] = '/plugins/order/front/config.form.php';
-
-      }
-
-      if (plugin_order_haveRight("bill","w")) {
-         //order
-         $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['links']['add']    = '/plugins/order/front/bill.form.php';
-
-      }
-
-      if (plugin_order_haveRight("reference","w")) {
-         //references
-         $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['add']    = '/plugins/order/front/reference.form.php';
-         $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['config'] = '/plugins/order/front/config.form.php';
-      }
-      if (haveRight("config","w")) {
-         $PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/config.form.php';
-
-      }
-      $PLUGIN_HOOKS['use_massive_action']['order'] = 1;
    }
+
 }
 
 /* get the name and the version of the plugin - needed- */

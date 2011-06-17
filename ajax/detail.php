@@ -44,22 +44,18 @@ if (!defined('GLPI_ROOT')){
 
 checkCentralAccess();
 
-$PluginOrderReference = new PluginOrderReference();
+$reference    = new PluginOrderReference();
+$rand         = $reference->dropdownReferencesByEnterprise("reference", $_POST["itemtype"],
+                                                   $_POST["suppliers_id"]);
+$paramsaction = array('plugin_order_references_id' => '__VALUE__',
+                      'entity_restrict'            => $_POST["entity_restrict"],
+                      'suppliers_id'               => $_POST["suppliers_id"],
+                      'itemtype'                   => $_POST["itemtype"]);
+$fields       = array ("quantity", "priceht", "pricediscounted", "taxe", "validate");
 
-$rand = $PluginOrderReference->dropdownReferencesByEnterprise("reference",$_POST["itemtype"],
-                                                              $_POST["suppliers_id"]);
-
-$paramsaction=array('plugin_order_references_id'=>'__VALUE__',
-              'entity_restrict'=>$_POST["entity_restrict"],
-              'suppliers_id'=>$_POST["suppliers_id"],
-              'itemtype'=>$_POST["itemtype"]
-      );
-
-$fields = array ("quantity","priceht","pricediscounted","taxe","validate");
-foreach ($fields as $field)
-{
+foreach ($fields as $field) {
    $paramsaction['update'] = $field;
-   ajaxUpdateItem("show_$field",$CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",
+   ajaxUpdateItem("show_$field", $CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",
                   $paramsaction, false, "dropdown_reference$rand");
    ajaxUpdateItemOnSelectEvent("dropdown_reference$rand", "show_$field",
                                $CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",
