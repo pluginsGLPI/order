@@ -528,11 +528,13 @@ function plugin_order_install() {
          $result=$DB->query($query) or die($DB->error());
 
       }
-      
-      $migration->displayMessage("Replace states_id byplugin_order_orderstates_id in glpi_plugin_order_orders");
-      $query = "ALTER TABLE `glpi_plugin_order_orders` 
-                CHANGE `states_id` `plugin_order_orderstates_id` INT( 11 ) NOT NULL DEFAULT '1'";
-      $result=$DB->query($query) or die($DB->error());
+      if ($update150) {
+         $migration->displayMessage("Replace states_id byplugin_order_orderstates_id in glpi_plugin_order_orders");
+         $query = "ALTER TABLE `glpi_plugin_order_orders` 
+                   CHANGE `states_id` `plugin_order_orderstates_id` INT( 11 ) NOT NULL DEFAULT '1'";
+         $result=$DB->query($query) or die($DB->error());
+
+      }
 
       $migration->displayMessage("Convert order states as dropdown");
       $query = "INSERT INTO `glpi_plugin_order_orderstates` 
