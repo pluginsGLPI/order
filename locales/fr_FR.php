@@ -94,6 +94,7 @@ $LANG['plugin_order']['config'][16] = "Statut lorsque la commande est validée";
 $LANG['plugin_order']['config'][17] = "Statut lorsqu'au moins un matériel est livré";
 $LANG['plugin_order']['config'][18] = "Statut lorsque tous les matériels sont livrés";
 $LANG['plugin_order']['config'][19] = "Statut lorsque la commande est annulée";
+$LANG['plugin_order']['config'][20] = "Pas de TVA";
 
 $LANG['plugin_order']['delivery'][1] = "Réception matériel(s)";
 $LANG['plugin_order']['delivery'][2] = "Réceptionner matériel";

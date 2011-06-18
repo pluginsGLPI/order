@@ -310,7 +310,7 @@ class PluginOrderOrder extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong = array();
+      $ong    = array();
       $ong[1] = $LANG['title'][26];
 
       if (!$this->getID()) {
@@ -318,10 +318,16 @@ class PluginOrderOrder extends CommonDBTM {
 
       }
       
-      /* detail */
-      $ong[2] = $LANG['plugin_order'][5];
-      /* suppliers */
-      $ong[3] = $LANG['plugin_order'][4];
+      if ($this->checkIfDetailExists($this->getID())) {
+         /* detail */
+         $ong[2] = $LANG['plugin_order'][5];
+      }
+
+      if ($this->fields['suppliers_id']) {
+         /* suppliers */
+         $ong[3] = $LANG['plugin_order'][4];
+
+      }
 
       if ($this->getState() == PluginOrderOrderState::DELIVERED) {
         /* generation*/
@@ -370,7 +376,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       if( isset($input['budgets_id']) && $input['budgets_id'] > 0) {
          
-         if( !canStillUseBudget($input) ) {
+         if( !self::canStillUseBudget($input) ) {
             addMessageAfterRedirect($LANG['plugin_order'][49], false, ERROR);
             return array ();
          }
@@ -583,7 +589,10 @@ class PluginOrderOrder extends CommonDBTM {
       }
       if ($canedit) {
          Dropdown::show('PluginOrderOrderTaxe', 
-                        array('name' => "plugin_order_ordertaxes_id", 'value' => $taxes));
+                        array('name'                => "plugin_order_ordertaxes_id", 
+                              'value'               => $taxes,
+                              'display_emptychoice' => true,
+                              'emptylabel'          => $LANG['plugin_order']['config'][20]));
       } else {
          echo Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $taxes);
       }
@@ -857,11 +866,10 @@ class PluginOrderOrder extends CommonDBTM {
          $detail = new PluginOrderOrder_Item;
          $devices = getAllDatasFromTable("glpi_plugin_order_orders_items", 
                                          "plugin_order_orders_id=$orders_id");
-         if (!empty($devices)) {
-            return true;
-         } else {
-            return false;
-         }
+         return (!empty($devices));
+         
+      } else {
+         return false;
       }
    }
    
@@ -927,7 +935,8 @@ class PluginOrderOrder extends CommonDBTM {
             echo "</td>";
             echo "</tr>";
          } else {
-            echo "<tr class='tab_bg_2 center'><td>" . $LANG['plugin_order']['validation'][0] . "</td></tr>";
+            echo "<tr class='tab_bg_2 center'><td>" 
+               . $LANG['plugin_order']['validation'][0] . "</td></tr>";
          }
          echo "</table></div></form>";
       }

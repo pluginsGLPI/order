@@ -59,7 +59,9 @@ class PluginOrderConfig extends CommonDBTM {
       echo "<tr class='tab_bg_1' align='center'><td>".$LANG['plugin_order']['config'][1].
             "</td><td>";
       Dropdown::show('PluginOrderOrderTaxe', array('name' => "default_taxes",
-                                                   'value' => $this->fields["default_taxes"]));
+                                                   'value' => $this->fields["default_taxes"],
+                                                   'display_emptychoice' => true,
+                                                   'emptylabel' => $LANG['plugin_order']['config'][20]));
       echo "</td>";
       echo "</tr>";
       

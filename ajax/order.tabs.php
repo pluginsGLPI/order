@@ -58,7 +58,9 @@ if ($_POST["id"] > 0 && $order->can($_POST["id"], 'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $order_item->showItem($_POST["id"]);
-         $order->showValidationForm($_POST["id"]);
+         if ($order->checkIfDetailExists($_POST["id"])) {
+            $order->showValidationForm($_POST["id"]);
+         }
          $order_supplier->showOrderSupplierInfos($_POST["id"]);
          if (!$order_supplier->checkIfSupplierInfosExists($_POST["id"]) 
                 && $order->can($_POST["id"], 'w')) {
@@ -84,7 +86,9 @@ if ($_POST["id"] > 0 && $order->can($_POST["id"], 'r')) {
          Plugin::displayAction($order,$_REQUEST['glpi_tab']);
          break;
       case 2 :
-         $order->showValidationForm($_POST["id"]);
+         if ($order->checkIfDetailExists($_POST["id"])) {
+            $order->showValidationForm($_POST["id"]);
+         }
          break;
       case 3 :
          $order_supplier->showOrderSupplierInfos($_POST["id"]);
