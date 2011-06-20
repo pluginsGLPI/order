@@ -450,7 +450,7 @@ class PluginOrderOrder extends CommonDBTM {
                      && $this->getState() != $config['order_status_canceled']);
 
       // Displaying OVER BUDGET ALERT
-      if( !empty($this->fields['budgets_id']) ) {
+      if( $this->fields['budgets_id'] > 0 ) {
             self::displayAlertOverBudget(self::isOverBudget($ID));
       }
 
@@ -1310,13 +1310,13 @@ class PluginOrderOrder extends CommonDBTM {
 
       // Compare BUDGET value to TOTAL_HT value
       if( $total_HT > $budget->getField('value') ) {
-         return ORDER_IS_OVER_BUDGET;
+         return PluginOrderOrder::ORDER_IS_OVER_BUDGET;
 
       }elseif( $total_HT == $budget->getField('value') ) {
-         return ORDER_IS_EQUAL_BUDGET;
+         return PluginOrderOrder::ORDER_IS_EQUAL_BUDGET;
 
       }else{
-         return ORDER_IS_UNDER_BUDGET;
+         return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
       }
    }
    
@@ -1324,19 +1324,19 @@ class PluginOrderOrder extends CommonDBTM {
       global $LANG;
 
       switch($type) {
-         case ORDER_IS_OVER_BUDGET :
+         case PluginOrderOrder::ORDER_IS_OVER_BUDGET :
             $message = "<h3><span class='red'>" . 
                               $LANG['plugin_order']['budget_over'][0] . 
                         "</span></h3>";
             break;
-         case ORDER_IS_EQUAL_BUDGET :
+         case PluginOrderOrder::ORDER_IS_EQUAL_BUDGET :
             $message = "<h3><span class='red'>" . 
                               $LANG['plugin_order']['budget_over'][1] . 
                         "</span></h3>";
             break;
       }
 
-      if( $type != ORDER_IS_UNDER_BUDGET ){
+      if( $type != PluginOrderOrder::ORDER_IS_UNDER_BUDGET ){
          echo "<div class='box' style='margin-bottom:20px;'>";
          echo "<div class='box-tleft'><div class='box-tright'><div class='box-tcenter'>";
          echo "</div></div></div>";
