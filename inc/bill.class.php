@@ -111,6 +111,10 @@ class PluginOrderBill extends CommonDropdown {
             Document::showAssociated($this);
             break;
 
+         case 6 :
+            self::showItems($this);
+            break;
+
          case 10 :
             showNotesForm($_POST['target'], get_class($this), $_POST["id"]);
             break;
@@ -121,6 +125,7 @@ class PluginOrderBill extends CommonDropdown {
 
          case -1 :
             Document::showAssociated($this);
+            self::showItems($this);
             showNotesForm($_POST['target'], get_class($this), $_POST["id"]);
             Log::showForItem($this);
             break;
@@ -200,153 +205,93 @@ class PluginOrderBill extends CommonDropdown {
       return $tab;
    }
 
-   /**
-   * Print the HTML array of Items on a budget
-   *
-   *@return Nothing (display)
-   **/
-   function showItems() {
+   static function showItems(PluginOrderBill $bill) {
       global $DB, $LANG;
-
-      $budgets_id = $this->fields['id'];
-
-      if (!$this->can($budgets_id,'r')) {
-         return false;
-      }
-
-      $query = "SELECT DISTINCT `itemtype`
-                FROM `glpi_infocoms`
-                WHERE `budgets_id` = '$budgets_id'
-                      AND itemtype NOT IN ('ConsumableItem', 'CartridgeItem', 'Software')
-               ORDER BY `itemtype`";
-
+      
+      echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
+      echo "<tr><th>";
+      printPagerForm();
+      echo "</th><th colspan='5'>";
+      echo $LANG['document'][19];
+      echo "</th></tr>";
+      
+      $bills_id = $bill->getID();
+      $query = "SELECT * FROM `".getTableForItemType("PluginOrderOrder_Item");
+      $query.= "` WHERE `plugin_order_bills_id` = '$bills_id'";
+      $query.= getEntitiesRestrictRequest(" AND", getTableForItemType("PluginOrderOrder_Item"), 
+                                          "entities_id", $bill->getEntityID(), true);
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-
-      echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>";
-      printPagerForm();
-      echo "</th><th colspan='4'>";
-      if ($DB->numrows($result)==0) {
-         echo $LANG['document'][13];
-      } else {
+      
+      if (!$number) {
+         echo "</th><td>";
          echo $LANG['document'][19];
-      }
-      echo "</th></tr>";
+         echo "</td></tr>";
+      } else {
 
-      echo "<tr><th>".$LANG['common'][17]."</th>";
-      echo "<th>".$LANG['entity'][0]."</th>";
-      echo "<th>".$LANG['common'][16]."</th>";
-      echo "<th>".$LANG['common'][19]."</th>";
-      echo "<th>".$LANG['common'][20]."</th>";
-      echo "<th>".$LANG['financial'][21]."</th>";
-      echo "</tr>";
+         echo "<tr><th>".$LANG['common'][17]."</th>";
+         echo "<th>".$LANG['entity'][0]."</th>";
+         echo "<th>".$LANG['plugin_order'][7]."</th>";
+         echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
+         echo "<th>".$LANG['state'][0]."</th>";
+         echo "<th>".$LANG['plugin_order']['generation'][9]."</th>";
+         echo "</tr>";
 
-      $num = 0;
-      for ($i = 0; $i < $number ; $i++) {
-         $itemtype = $DB->result($result, $i, "itemtype");
 
-         if (!class_exists($itemtype)) {
-            continue;
-         }
-         $item = new $itemtype();
-         if ($item->canView()) {
-            switch ($itemtype) {
-               default :
-                  $query = "SELECT `".$item->getTable()."`.*,
-                                   `glpi_infocoms`.`value`
-                            FROM `glpi_infocoms`
-                            INNER JOIN `".$item->getTable()."`
-                                 ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
-                            WHERE `glpi_infocoms`.`itemtype` = '$itemtype'
-                                  AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
-                                  getEntitiesRestrictRequest(" AND", $item->getTable())."
-                            ORDER BY `entities_id`,
-                                     `".$item->getTable()."`.`name`";
-               break;
-
-               case 'Cartridge':
-                  $query = "SELECT `".$item->getTable()."`.*,
-                                   `glpi_cartridgeitems`.`name`
-                            FROM `glpi_infocoms`
-                            INNER JOIN `".$item->getTable()."`
-                                 ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
-                            INNER JOIN `glpi_cartridgeitems`
-                                 ON (`".$item->getTable()."`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`)
-                            WHERE `glpi_infocoms`.`itemtype`='$itemtype'
-                                  AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
-                                  getEntitiesRestrictRequest(" AND", $item->getTable())."
-                            ORDER BY `entities_id`,
-                                     `glpi_cartridgeitems`.`name`";
-               break;
-
-               case 'Consumable':
-                  $query = "SELECT `".$item->getTable()."`.*,
-                                   `glpi_consumableitems`.`name`
-                            FROM `glpi_infocoms`
-                            INNER JOIN `".$item->getTable()."`
-                                 ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
-                            INNER JOIN `glpi_consumableitems`
-                                 ON (`".$item->getTable()."`.`consumableitems_id` = `glpi_consumableitems`.`id`)
-                            WHERE `glpi_infocoms`.`itemtype` = '$itemtype'
-                                  AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
-                                  getEntitiesRestrictRequest(" AND", $item->getTable())."
-                            ORDER BY `entities_id`,
-                                     `glpi_consumableitems`.`name`";
-               break;
+         $num = 0;
+         while ($data = $DB->fetch_array($result)) {
+   
+            if (!class_exists($data['itemtype'])) {
+               continue;
             }
-
-            if ($result_linked=$DB->query($query)) {
-               $nb = $DB->numrows($result_linked);
-
-               if ($nb>$_SESSION['glpilist_limit']) {
+            $item = new $data['itemtype']();
+            if ($item->canView()) {
+               if ($number > $_SESSION['glpilist_limit']) {
                   echo "<tr class='tab_bg_1'>";
-                  echo "<td class='center'>".$item->getTypeName($nb)."&nbsp;:&nbsp;$nb</td>";
+                  echo "<td class='center'>".$item->getTypeName()."&nbsp;:&nbsp;</td>";
                   echo "<td class='center' colspan='2'>";
                   echo "<a href='". $item->getSearchURL() . "?" .
-                        rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" .
+                        rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$bills_id) . "&" .
                         rawurlencode("field[0]") . "=50&sort=80&order=ASC&is_deleted=0&start=0". "'>" .
                         $LANG['reports'][57]."</a></td>";
                   echo "<td class='center'>-</td><td class='center'>-</td><td class='center'>-</td></tr>";
-
-               } else if ($nb) {
-                  for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
-                     $ID = "";
-                     if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                        $ID = " (".$data["id"].")";
-                     }
-                     $name = NOT_AVAILABLE;
-                     if ($item->getFromDB($data["id"])) {
-                        $name = $item->getLink();
-                     }
-                     echo "<tr class='tab_bg_1'>";
-                     if ($prem) {
-                        echo "<td class='center top' rowspan='$nb'>".$item->getTypeName($nb)
-                              .($nb>1?"&nbsp;:&nbsp;$nb</td>":"</td>");
-                     }
-                     echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
-                                                                          $data["entities_id"]);
-                     echo "</td><td class='center";
-                     echo (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
-                     echo ">".$name."</td>";
-                     echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-");
-                     echo "</td>";
-                     echo "<td class='center'>".
-                            (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
-                     echo "<td class='center'>".
-                            (isset($data["value"])? "".formatNumber($data["value"],true)."" :"-");
-
-                     echo "</td></tr>";
+               } else {
+                  $ID = "";
+                  if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+                       $ID = " (".$data["id"].")";
                   }
+                  $name = NOT_AVAILABLE;
+                  if ($item->getFromDB($data["id"])) {
+                       $name = $item->getLink();
+                  }
+                  echo "<tr class='tab_bg_1'>";
+                  echo "<td class='center top'>".$item->getTypeName()."</td>";
+                  $order = new PluginOrderOrder();
+                  $order->getFromDB($data["plugin_order_orders_id"]);
+                  echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
+                                                                       $data["entities_id"]);
+                  if ($order->canView()) {
+                     echo "<td class='center'><a href='".$order->getLinkURL()."'>";
+                     echo $order->getName()."</a></td>";
+                  } else {
+                     echo "<td class='center'>".$order->getName(true)."</td>";
+                  }
+                  $reference = new PluginOrderReference();
+                  $reference->getFromDB($data["plugin_order_references_id"]);
+                  if ($reference->canView()) {
+                     echo "<td class='center'><a href='".$reference->getLinkURL()."'>";
+                     echo $reference->getName()."</a></td>";
+                  } else {
+                     echo "<td class='center'>".$reference->getName(true)."</td>";
+                  }
+                  echo "</td></tr>";
+                  echo "<td class='center'>".Dropdown::getDropdownName("glpi_plugin_order_deliverystates",
+                                                                       $data["plugin_order_deliverystates_id"]);
                }
-            $num += $nb;
             }
          }
       }
-      if ($num>0) {
-         echo "<tr class='tab_bg_2'><td class='center b'>".$LANG['common'][33]."&nbsp;:&nbsp;$num</td><td colspan='5'>&nbsp;</td></tr> ";
-      }
       echo "</table></div>";
-   }   
+   }
 }
 ?>

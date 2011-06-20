@@ -60,32 +60,31 @@ if (isset ($_POST["add"])) {
 }
 /* delete order */
 else if (isset ($_POST["delete"])) {
-   $pluginOrderOrder->check($_POST['id'],'w');
+   $pluginOrderOrder->check($_POST['id'], 'w');
    $pluginOrderOrder->delete($_POST);
    $pluginOrderOrder->redirectToList();
 }
 /* restore order */
 else if (isset ($_POST["restore"])) {
-   $pluginOrderOrder->check($_POST['id'],'w');
+   $pluginOrderOrder->check($_POST['id'], 'w');
    $pluginOrderOrder->restore($_POST);
    $pluginOrderOrder->redirectToList();
 }
 /* purge order */
 else if (isset ($_POST["purge"])) {
-   $pluginOrderOrder->check($_POST['id'],'w');
+   $pluginOrderOrder->check($_POST['id'], 'w');
    $pluginOrderOrder->delete($_POST, 1);
    $pluginOrderOrder->redirectToList();
 }
 /* update order */
 else if (isset ($_POST["update"])) {
-   $pluginOrderOrder->check($_POST['id'],'w');
+   $pluginOrderOrder->check($_POST['id'], 'w');
    $pluginOrderOrder->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } 
 //Status update & order workflow
 /* validate order */
 else if (isset ($_POST["validate"])) {
-      
    if ($pluginOrderOrder->canCreate() 
       && ( $pluginOrderOrder->canValidate() 
          || !$config["use_validation"])) {
@@ -94,20 +93,22 @@ else if (isset ($_POST["validate"])) {
                                            $_POST["comment"]);
       $pluginOrderOrder_Item->updateDelivryStatus($_POST["id"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][10]);
+      
    }
    glpi_header($_SERVER['HTTP_REFERER']);
+   
 } else if (isset ($_POST["waiting_for_approval"])) {
-
    if ($pluginOrderOrder->canCreate()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config['order_status_waiting_approval'],
                                            $_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][7]);
+      
    }
    
    glpi_header($_SERVER['HTTP_REFERER']);
+   
 } else if (isset ($_POST["cancel_waiting_for_approval"])) {
-
    if ($pluginOrderOrder->canCreate() && $pluginOrderOrder->canCancel()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config['order_status_draft'],
@@ -117,32 +118,34 @@ else if (isset ($_POST["validate"])) {
    
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["cancel_order"])) {
-
    if ($pluginOrderOrder->canCreate() && $pluginOrderOrder->canCancel()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config['order_status_canceled'],
                                            $_POST["comment"]);
       $pluginOrderOrder->deleteAllLinkWithItem($_POST["id"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][5]);
+      
    }
    
    glpi_header($_SERVER['HTTP_REFERER']);
+   
 }
 else if (isset ($_POST["undovalidation"])) {
-
    if ($pluginOrderOrder->canCreate() && $pluginOrderOrder->canUndo()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config['order_status_draft'],
                                            $_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][8]);
+      
    }
    
    glpi_header($_SERVER['HTTP_REFERER']);
+   
 } else if (isset ($_POST["add_item"])) {
-
    //Details management
    if ($_POST["discount"] < 0 || $_POST["discount"] > 100) {
-      addMessageAfterRedirect($LANG['plugin_order']['detail'][33],false,ERROR);
+      addMessageAfterRedirect($LANG['plugin_order']['detail'][33], false, ERROR);
+      
    } else {
       $pluginOrderOrder->getFromDB($_POST["plugin_order_orders_id"]);
       $new_value = $LANG['plugin_order']['detail'][34]." ";
@@ -153,15 +156,16 @@ else if (isset ($_POST["undovalidation"])) {
       $pluginOrderOrder->addHistory("PluginOrderOrder", "", 
                                     $new_value,$_POST["plugin_order_orders_id"]);
       $pluginOrderOrder_Item->addDetails($_POST["plugin_order_references_id"], $_POST["itemtype"], 
-                                          $_POST["plugin_order_orders_id"], $_POST["quantity"], 
-                                          $_POST["price"], $_POST["discount"], 
-                                          $_POST["plugin_order_ordertaxes_id"]);
+                                         $_POST["plugin_order_orders_id"], $_POST["quantity"], 
+                                         $_POST["price"], $_POST["discount"], 
+                                         $_POST["plugin_order_ordertaxes_id"]);
+                                         
    }
       
    glpi_header($_SERVER['HTTP_REFERER']);
+   
 } 
 else if (isset ($_POST["delete_item"])) {
-   
    if (isset($_POST["plugin_order_orders_id"]) 
          && $_POST["plugin_order_orders_id"] > 0 
             && isset($_POST["item"])) {
@@ -178,15 +182,16 @@ else if (isset ($_POST["delete_item"])) {
 
                if ($nb) {
                   for ($i = 0; $i < $nb; $i++) {
-                     $ID = $DB->result($result, $i, 'id');
+                     $ID       = $DB->result($result, $i, 'id');
                      $items_id = $DB->result($result, $i, 'items_id');
                      
                      if ($items_id) {
                         $lic = new SoftwareLicense;
                         $lic->getFromDB($items_id);
-                        $values["id"] = $lic->fields["id"];
+                        $values["id"]     = $lic->fields["id"];
                         $values["number"] = $lic->fields["number"]-1;
                         $lic->update($values);
+                        
                      }
                      $input["id"] = $ID;
                      
@@ -196,20 +201,24 @@ else if (isset ($_POST["delete_item"])) {
                   $new_value.= Dropdown::getDropdownName("glpi_plugin_order_references", $ID);
                   $pluginOrderOrder->addHistory("PluginOrderOrder", "", $new_value, 
                                                 $_POST["plugin_order_orders_id"]);
+                                                
                } 
             } else {
             
                $new_value = $LANG['plugin_order']['detail'][35]." ";
-               $new_value.= Dropdown::getDropdownName("glpi_plugin_order_references",$ID);
+               $new_value.= Dropdown::getDropdownName("glpi_plugin_order_references", $ID);
                $pluginOrderOrder->addHistory("PluginOrderOrder", "", 
-                                                $new_value,$_POST["plugin_order_orders_id"]);
+                                                $new_value, $_POST["plugin_order_orders_id"]);
                $pluginOrderOrder_Item->delete(array('id' => $ID));
             }
          }
-   } else if (!isset($_POST["item"]))
+   } else if (!isset($_POST["item"])) {
       addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
+
+   }
       
    glpi_header($_SERVER['HTTP_REFERER']);
+   
 } else {
    $pluginOrderOrder->checkGlobal("r");
    commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");

@@ -42,6 +42,8 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders` (
 DROP TABLE IF EXISTS `glpi_plugin_order_orders_items`;
 CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders_items` (
    `id` int(11) NOT NULL auto_increment,
+   `entities_id` int(11) NOT NULL default '0',
+   `is_recursive` tinyint(1) NOT NULL default '0',
    `plugin_order_orders_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
    `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file',
    `items_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
@@ -59,6 +61,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders_items` (
    `plugin_order_bills_id` INT( 11 ) NOT NULL DEFAULT '0',
    PRIMARY KEY  (`id`),
    KEY `FK_device` (`items_id`,`itemtype`),
+   KEY `entities_id` (`entities_id`),
    KEY `item` (`itemtype`,`items_id`),
    KEY `plugin_order_references_id` (`plugin_order_references_id`),
    KEY `plugin_order_deliverystates_id` (`plugin_order_deliverystates_id`),

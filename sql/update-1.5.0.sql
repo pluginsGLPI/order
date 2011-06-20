@@ -51,6 +51,4 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_order_billtypes` (
   `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
-
-INSERT INTO `glpi_notificationtemplates` VALUES(NULL, 'Order Validation', 'PluginOrderOrder', NOW(),'');
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;

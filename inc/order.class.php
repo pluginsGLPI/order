@@ -40,6 +40,7 @@ if (!defined('GLPI_ROOT')){
 class PluginOrderOrder extends CommonDBTM {
 
    public $dohistory=true;
+   public $forward_entity_to = array("PluginOrderOrder_Item");
    
    const ORDER_DEVICE_NOT_DELIVRED        = 0;
    const ORDER_DEVICE_DELIVRED            = 1;
@@ -183,17 +184,17 @@ class PluginOrderOrder extends CommonDBTM {
       $PluginOrderConfig = new PluginOrderConfig;
       $config = $PluginOrderConfig->getConfig();
 
-      $ORDER_VALIDATION_STATUS = array ($config['order_status_draft'],
-                                        $config['order_status_waiting_approval']);
-                                    
       //If order is canceled, cannot validate !
       if ($this->getState() == $config['order_status_canceled']) {
          return false;
+         
       }
 
       //If order is not validate, cannot undo validation !
-      if (in_array($this->getState(), $ORDER_VALIDATION_STATUS)) {
+      if (in_array($this->getState(), array ($config['order_status_draft'],
+                                              $config['order_status_waiting_approval']))) {
          return false;
+         
       }
 
       //If no right to cancel
@@ -413,9 +414,11 @@ class PluginOrderOrder extends CommonDBTM {
          if (!is_null($this->fields['duedate']) 
             && (new DateTime($this->fields['duedate']) < new DateTime())) {
             return true;
+            
          } else {
             return false;
          }
+         
       } else {
          return false;
       }
@@ -449,7 +452,8 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][39] . ": </td>";
       echo "<td>";
       if ($canedit) {
-         autocompletionTextField($this,"name");
+         autocompletionTextField($this, "name");
+         
       } else {
          echo $this->fields["name"];
       }
@@ -459,9 +463,11 @@ class PluginOrderOrder extends CommonDBTM {
       if ($canedit)  {
          if ($this->fields["order_date"] == NULL) {
             showDateFormItem("order_date", date("Y-m-d"), true, true);
+            
          } else {
             showDateFormItem("order_date", $this->fields["order_date"], true, true);
          }
+         
       } else {
          echo convDate($this->fields["order_date"]);
       }
@@ -472,6 +478,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<td>";
       if ($canedit) {
          autocompletionTextField($this,"num_order");
+         
       } else {
          echo $this->fields["num_order"];
       }
@@ -481,6 +488,7 @@ class PluginOrderOrder extends CommonDBTM {
       if ($canedit){
          Dropdown::show('PluginOrderOrderType', array('name' => "plugin_order_ordertypes_id",
                                                       'value' => $this->fields["plugin_order_ordertypes_id"]));
+                                                      
       } else {
          echo Dropdown::getDropdownName("glpi_plugin_order_ordertypes", 
                                         $this->fields["plugin_order_ordertypes_id"]);
@@ -492,6 +500,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<td>";
       if (!$this->getID()) {
          $state = PluginOrderOrderState::DRAFT;
+         
       } else {
          $state = $this->fields["plugin_order_orderstates_id"];
       }
@@ -499,6 +508,7 @@ class PluginOrderOrder extends CommonDBTM {
          Dropdown::show('PluginOrderOrderState', 
                         array('name'   => "plugin_order_orderstates_id",
                               'value'  => $state));
+                              
       } else {
          echo Dropdown::getDropdownName("glpi_plugin_order_orderstates", 
                                         $this->getState());
@@ -512,6 +522,7 @@ class PluginOrderOrder extends CommonDBTM {
                                         'value'    => $this->fields["budgets_id"], 
                                         'entity'   => $this->fields["entities_id"],
                                         'comments' => true));
+                                        
       } else {
          echo Dropdown::getDropdownName("glpi_budgets", $this->fields["budgets_id"]);
       }
@@ -525,6 +536,7 @@ class PluginOrderOrder extends CommonDBTM {
                         array('name'   => "locations_id",
                               'value'  => $this->fields["locations_id"], 
                               'entity' => $this->fields["entities_id"]));
+                              
       } else {
          echo Dropdown::getDropdownName("glpi_locations", $this->fields["locations_id"]);
       }
@@ -549,6 +561,7 @@ class PluginOrderOrder extends CommonDBTM {
       if ($canedit && !$this->checkIfDetailExists($ID)) {
          $this->dropdownSuppliers("suppliers_id", $this->fields["suppliers_id"], 
                                   $this->fields["entities_id"]);
+                                  
       } else {
          echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]);
       }
@@ -560,6 +573,7 @@ class PluginOrderOrder extends CommonDBTM {
       if ($canedit) {
          echo "<input type='text' name='port_price' value=\"".
             formatNumber($this->fields["port_price"], true)."\" size='5'>";
+            
       } else {
          echo formatNumber($this->fields["port_price"]);
       }
@@ -572,6 +586,7 @@ class PluginOrderOrder extends CommonDBTM {
       if ($canedit && $ID > 0) {
          $this->dropdownContacts($this->fields["suppliers_id"],
                                  $this->fields["contacts_id"], $this->fields["entities_id"]);
+                                 
       } else {
          echo Dropdown::getDropdownName("glpi_contacts", $this->fields["contacts_id"]);
       }
@@ -584,6 +599,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       if (empty ($ID) || $ID < 0) {
          $taxes = $default_taxes;
+         
       } else {
          $taxes = $this->fields["plugin_order_ordertaxes_id"];
       }
@@ -593,6 +609,7 @@ class PluginOrderOrder extends CommonDBTM {
                               'value'               => $taxes,
                               'display_emptychoice' => true,
                               'emptylabel'          => $LANG['plugin_order']['config'][20]));
+                              
       } else {
          echo Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $taxes);
       }
@@ -604,14 +621,17 @@ class PluginOrderOrder extends CommonDBTM {
       if ($canedit)  {
          if ($this->fields["duedate"] == NULL) {
             showDateFormItem("duedate", '', true, true);
+            
          } else {
             showDateFormItem("duedate", $this->fields["duedate"], true, true);
          }
+         
       } else {
          echo convDate($this->fields["duedate"]);
       }
       if (self::shouldBeAlreadyDelivered()) {
          echo "&nbsp<span class='red'>".$LANG['plugin_order'][51]."</span>";
+         
       }
       echo "</td>";
       echo "</tr>";
@@ -623,6 +643,7 @@ class PluginOrderOrder extends CommonDBTM {
       if ($canedit) {
          echo "<textarea cols='50' rows='4' name='comment'>" . $this->fields["comment"] . 
             "</textarea>";
+            
       } else {
          echo $this->fields["comment"];
       }

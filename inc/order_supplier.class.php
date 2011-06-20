@@ -204,43 +204,46 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       return true;
    }
    
-   function showOrderSupplierInfos( $ID) {
+   function showOrderSupplierInfos($ID) {
       global $LANG, $DB, $CFG_GLPI;
 
       $order = new PluginOrderOrder;
       $order->getFromDB($ID);
 
-      initNavigateListItems($this->getType(),$LANG['plugin_order'][7] ." = ". $order->fields["name"]);
+      initNavigateListItems($this->getType(), 
+                            $LANG['plugin_order'][7] ." = ". $order->fields["name"]);
 
-      $candelete =$order->can($ID,'w');
-      $query = "SELECT * FROM `".$this->getTable()."` WHERE `plugin_order_orders_id` = '$ID' ";
-      $result = $DB->query($query);
+      $candelete = $order->can($ID,'w');
       $rand=mt_rand();
+      
       echo "<div class='center'>";
       echo "<form method='post' name='show_supplierinfos$rand' id='show_supplierinfos$rand' " .
             "action=\"".getItemTypeFormURL(__CLASS__)."\">";
       echo "<input type='hidden' name='plugin_order_orders_id' value='" . $ID . "'>";
-      echo "<table class='tab_cadre_fixe'>";
       
-      echo "<tr><th colspan='5'>".$LANG['plugin_order'][4]."</th></tr>";
-      echo "<tr><th>&nbsp;</th>";
-      echo "<th>" . $LANG['financial'][26] . "</th>";
-      echo "<th>" . $LANG['plugin_order'][30] . "</th>";
-      echo "<th>" . $LANG['plugin_order'][31] . "</th>";
-      echo "<th>" . $LANG['plugin_order'][28] . "</th>";
-      echo "</tr>";
 
-      if ($DB->numrows($result) > 0) {
+      if (countElementsInTable($this->getTable(), "`plugin_order_orders_id` = '$ID'") > 0) {
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='5'>".$LANG['plugin_order'][4]."</th></tr>";
+         echo "<tr><th>&nbsp;</th>";
+         echo "<th>" . $LANG['financial'][26] . "</th>";
+         echo "<th>" . $LANG['plugin_order'][30] . "</th>";
+         echo "<th>" . $LANG['plugin_order'][31] . "</th>";
+         echo "<th>" . $LANG['plugin_order'][28] . "</th>";
+         echo "</tr>";
 
-         while ($data = $DB->fetch_array($result)) {
+         foreach (getAllDatasFromTable($this->getTable(), "`plugin_order_orders_id` = '$ID'") 
+            as $data) {
             addToNavigateListItems($this->getType(),$data['id']);
             echo "<input type='hidden' name='item[" . $data["id"] . "]' value='" . $ID . "'>";
             echo "<tr class='tab_bg_1 center'>";
             echo "<td>";
             if ($candelete) {
                echo "<input type='checkbox' name='check[" . $data["id"] . "]'";
-               if (isset($_POST['check']) && $_POST['check'] == 'all')
+               if (isset($_POST['check']) && $_POST['check'] == 'all') {
                   echo " checked ";
+
+               }
                echo ">";
             }
             echo "</td>";
@@ -272,9 +275,10 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
             echo "</table>";
             echo "</div>";
          }
+         echo "</table>";
+
       }
       else
-         echo "</table>";
 
       echo "</form>";
       echo "</div>";
@@ -317,13 +321,15 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          for ($i=0 ; $i <$nb ; $i++) {
             $ref = $DB->result($result,$i,"ref");
             $entities_id = $DB->result($result,$i,"entities_id");
-            $plugin_order_deliverystates_id = $DB->result($result,$i,"plugin_order_deliverystates_id");
+            $plugin_order_deliverystates_id = $DB->result($result, $i, 
+                                                          "plugin_order_deliverystates_id");
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo Dropdown::getDropdownName("glpi_entities",$entities_id);
             echo "</td>";
             if ($plugin_order_deliverystates_id > 0)
-               $name = Dropdown::getDropdownName("glpi_plugin_order_deliverystates",$plugin_order_deliverystates_id);
+               $name = Dropdown::getDropdownName("glpi_plugin_order_deliverystates", 
+                                                 $plugin_order_deliverystates_id);
             else
                $name = $LANG['plugin_order']['status'][4];
             echo "<td>" .$ref. "&nbsp;".$name."</td>";
