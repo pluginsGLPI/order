@@ -237,4 +237,6 @@ $LANG['plugin_order']['validation'][17] = "Editar pedido";
 $LANG['plugin_order']['validation'][18] = "Comentario de validación";
 $LANG['plugin_order']['validation'][19] = "Editor de validación";
 
+$LANG['plugin_order']['budget_over'][0] = "Total orders related with this budget is greater than its value.";
+$LANG['plugin_order']['budget_over'][1] = "Total orders related with this budget is equal to its value.";
 ?>
