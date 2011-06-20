@@ -585,7 +585,9 @@ function plugin_order_uninstall() {
                     "glpi_plugin_order_references_suppliers", "glpi_plugin_order_configs",
                     "glpi_plugin_order_orders_suppliers", "glpi_plugin_order_others",
                     "glpi_plugin_order_othertypes", "glpi_plugin_order_bills",
-                    "glpi_plugin_order_deliverystates");
+                    "glpi_plugin_order_deliverystates", "glpi_plugin_order_billstates",
+                    "glpi_plugin_order_billtypes", "glpi_plugin_order_surveysuppliers",
+                    "glpi_plugin_order_preferences");
 
    foreach ($tables as $table)
       $DB->query("DROP TABLE IF EXISTS `$table`;");
