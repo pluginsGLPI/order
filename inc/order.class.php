@@ -45,6 +45,11 @@ class PluginOrderOrder extends CommonDBTM {
    const ORDER_DEVICE_NOT_DELIVRED        = 0;
    const ORDER_DEVICE_DELIVRED            = 1;
    
+   // Const Budget
+   const ORDER_IS_OVER_BUDGET = 1;
+   const ORDER_IS_EQUAL_BUDGET = 2;
+   const ORDER_IS_UNDER_BUDGET = 3;
+
    static function getTypeName() {
       global $LANG;
 
@@ -443,6 +448,11 @@ class PluginOrderOrder extends CommonDBTM {
       $canedit = ($this->canUpdateOrder($ID) 
                   && $this->can($ID, 'w') 
                      && $this->getState() != $config['order_status_canceled']);
+
+      // Displaying OVER BUDGET ALERT
+      if( !empty($this->fields['budgets_id']) ) {
+            self::displayAlertOverBudget(self::isOverBudget($ID));
+      }
 
       $this->showTabs($options);
       $this->showFormHeader($options);
@@ -1277,6 +1287,66 @@ class PluginOrderOrder extends CommonDBTM {
          }
 
       return true;
+   }
+   
+   function isOverBudget($ID){
+      global $DB;
+
+      // Compute all prices for BUDGET
+      $query = "SELECT * 
+               FROM `".$this->getTable()."` 
+               WHERE `budgets_id` = '".$this->fields['budgets_id']."'";
+
+      $total_HT = 0;
+      foreach($DB->request($query) as $data) {
+         $PluginOrderOrder_Item     = new PluginOrderOrder_Item();
+         $prices = $PluginOrderOrder_Item->getAllPrices($data['id']);
+         $total_HT += $prices["priceHT"] + $data['port_price'];
+      }
+
+      // Get BUDGET
+      $budget = new Budget();
+      $budget->getFromDB($this->fields['budgets_id']);
+
+      // Compare BUDGET value to TOTAL_HT value
+      if( $total_HT > $budget->getField('value') ) {
+         return ORDER_IS_OVER_BUDGET;
+
+      }elseif( $total_HT == $budget->getField('value') ) {
+         return ORDER_IS_EQUAL_BUDGET;
+
+      }else{
+         return ORDER_IS_UNDER_BUDGET;
+      }
+   }
+   
+   function displayAlertOverBudget($type) {
+      global $LANG;
+
+      switch($type) {
+         case ORDER_IS_OVER_BUDGET :
+            $message = "<h3><span class='red'>" . 
+                              $LANG['plugin_order']['budget_over'][0] . 
+                        "</span></h3>";
+            break;
+         case ORDER_IS_EQUAL_BUDGET :
+            $message = "<h3><span class='red'>" . 
+                              $LANG['plugin_order']['budget_over'][1] . 
+                        "</span></h3>";
+            break;
+      }
+
+      if( $type != ORDER_IS_UNDER_BUDGET ){
+         echo "<div class='box' style='margin-bottom:20px;'>";
+         echo "<div class='box-tleft'><div class='box-tright'><div class='box-tcenter'>";
+         echo "</div></div></div>";
+         echo "<div class='box-mleft'><div class='box-mright'><div class='box-mcenter'>";
+         echo $message;
+         echo "</div></div></div>";
+         echo "<div class='box-bleft'><div class='box-bright'><div class='box-bcenter'>";
+         echo "</div></div></div>";
+         echo "</div>";  
+      }
    }
    
 }
