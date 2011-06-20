@@ -568,7 +568,7 @@ function plugin_order_install() {
                     WHERE `id`='".$data['items_id']."'";
          $DB->query($update)  or die($DB->error());
       }
-
+      PluginOrderProfile::addRightToProfile($_SESSION['glpiactiveprofile']['id'], "bill" , "w");
    }
    
    return true;
@@ -603,7 +603,8 @@ function plugin_order_uninstall() {
       $DB->query("DROP TABLE IF EXISTS `$table`;");
 
    $in = "IN (" . implode(',', array ("'PluginOrderOrder'", "'PluginOrderReference'",
-                                      "'PluginOrderReference_Supplier'", "'PluginOrderBill'")) . ")";
+                                      "'PluginOrderReference_Supplier'", 
+                                      "'PluginOrderBill'")) . ")";
 
    $tables = array ("glpi_displaypreferences", "glpi_documents_items", "glpi_bookmarks",
                     "glpi_logs");
@@ -652,11 +653,10 @@ function plugin_order_uninstall() {
    $options     = array('itemtype' => 'PluginOrderOrder', 'FIELDS'   => 'id');
    foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
       $options_template = array('notificationtemplates_id' => $data['id'], 'FIELDS'   => 'id');
-   
-         foreach ($DB->request('glpi_notificationtemplatetranslations', 
-                               $options_template) as $data_template) {
-            $translation->delete($data_template);
-         }
+      foreach ($DB->request('glpi_notificationtemplatetranslations', 
+                            $options_template) as $data_template) {
+         $translation->delete($data_template);
+      }
       $template->delete($data);
    }
    
