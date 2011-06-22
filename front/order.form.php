@@ -164,8 +164,7 @@ else if (isset ($_POST["undovalidation"])) {
       
    glpi_header($_SERVER['HTTP_REFERER']);
    
-} 
-else if (isset ($_POST["delete_item"])) {
+} else if (isset ($_POST["delete_item"])) {
    if (isset($_POST["plugin_order_orders_id"]) 
          && $_POST["plugin_order_orders_id"] > 0 
             && isset($_POST["item"])) {
@@ -218,7 +217,79 @@ else if (isset ($_POST["delete_item"])) {
    }
       
    glpi_header($_SERVER['HTTP_REFERER']);
+
+} else if (isset ($_POST["update_item"])) {
+
+   $datas = $pluginOrderOrder_Item->queryRef($_POST['plugin_order_orders_id'], 
+                                             $_POST['old_plugin_order_references_id'], 
+                                             $_POST['old_price_taxfree'], 
+                                             $_POST['old_discount']);
+
+   // Update quantity
+   if (isset($_POST['quantity']) && $_POST['quantity'] > $quantity) {
+      
+      $item    = $DB->fetch_array($datas);
+      $pluginOrderOrder_Item = new PluginOrderOrder_Item();
+      $pluginOrderOrder_Item->getFromDB($item['id']);
+
+      $quantity = $pluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($_POST['plugin_order_orders_id'], 
+                                                            $_POST['old_plugin_order_references_id'],
+                                                            $_POST['old_price_taxfree'],
+                                                            $_POST['old_discount']);
+      $to_add  = $_POST['quantity'] - $quantity;
+      
+      $pluginOrderOrder_Item->addDetails( $pluginOrderOrder_Item->fields['plugin_order_references_id'], 
+                                          $pluginOrderOrder_Item->fields['itemtype'], 
+                                          $pluginOrderOrder_Item->fields['plugin_order_orders_id'], 
+                                          $to_add, 
+                                          $pluginOrderOrder_Item->fields['price_taxfree'], 
+                                          $pluginOrderOrder_Item->fields['discount'], 
+                                          $pluginOrderOrder_Item->fields['plugin_order_ordertaxes_id']);
+   }
    
+   // Update price
+   if (isset($_POST['price_taxfree'])) {
+      while ($item=$DB->fetch_array($datas)){
+         $pluginOrderOrder_Item = new PluginOrderOrder_Item();
+         $pluginOrderOrder_Item->getFromDB($item['id']);
+
+         $input                        = $pluginOrderOrder_Item->fields;
+         $discount                     = $input['discount'];
+         $plugin_order_ordertaxes_id   = $input['plugin_order_ordertaxes_id'];
+
+         $input["price_taxfree"]       = $_POST['price_taxfree'];
+         $input["price_discounted"]    = $input["price_taxfree"] - ($input["price_taxfree"] * ($discount / 100));
+         
+         $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",$plugin_order_ordertaxes_id);
+         $input["price_ati"]  = $pluginOrderOrder_Item->getPricesATI($input["price_discounted"],$taxe_name);
+         $pluginOrderOrder_Item->update($input);
+      }
+   }
+   
+   // Update discount
+   if (isset($_POST['discount'])) {
+      if ($_POST["discount"] < 0 || $_POST["discount"] > 100) {
+         addMessageAfterRedirect($LANG['plugin_order']['detail'][33], false, ERROR);
+      } else {
+         while ($item=$DB->fetch_array($datas)){
+            $pluginOrderOrder_Item = new PluginOrderOrder_Item();
+            $pluginOrderOrder_Item->getFromDB($item['id']);
+
+            $input                        = $pluginOrderOrder_Item->fields;
+            $price                        = $input['price_taxfree'];
+            $plugin_order_ordertaxes_id   = $input['plugin_order_ordertaxes_id'];
+
+            $input["discount"]            = $_POST['discount'];
+            $input["price_discounted"]    = $price - ($price * ($_POST['discount'] / 100));
+
+            $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",$plugin_order_ordertaxes_id);
+            $input["price_ati"]  = $pluginOrderOrder_Item->getPricesATI($input["price_discounted"],$taxe_name);
+            $pluginOrderOrder_Item->update($input);
+         }
+      }
+   }
+   
+   glpi_header($_SERVER['HTTP_REFERER']);
 } else {
    $pluginOrderOrder->checkGlobal("r");
    commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");

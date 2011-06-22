@@ -135,6 +135,7 @@ $LANG['plugin_order']['detail'][37] = "Il n'y a pas assez de matériels à réce
 $LANG['plugin_order']['detail'][38] = "Voulez vous vraiment annuler cette commande ? Cette option est irréversible!";
 $LANG['plugin_order']['detail'][39] = "Voulez vous vraiment annuler la demande de validation ?";
 $LANG['plugin_order']['detail'][40] = "Voulez vous modifier le contenu de la commande ? ";
+$LANG['plugin_order']['detail'][41] = "Souhaitez-vous vraiment mettre à jour cette référence commandée ? ";
 
 $LANG['plugin_order']['generation'][0] = "Génération";
 $LANG['plugin_order']['generation'][1] = "Génération du bon de commande";

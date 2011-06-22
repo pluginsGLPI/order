@@ -127,6 +127,7 @@ $LANG['plugin_order']['detail'][37] = "Not enough items to deliver";
 $LANG['plugin_order']['detail'][38] = "Do you really want to cancel this order ? This option is irreversible !";
 $LANG['plugin_order']['detail'][39] = "Do you want to cancel the validation approval ?";
 $LANG['plugin_order']['detail'][40] = "Do you really want to edit the order ? ";
+$LANG['plugin_order']['detail'][41] = "Do you really want to update this item ? ";
 
 $LANG['plugin_order']['generation'][0] = "Generation";
 $LANG['plugin_order']['generation'][1] = "Generation of the order";

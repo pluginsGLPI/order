@@ -117,6 +117,7 @@ $LANG['plugin_order']['detail'][37] = "Es gibt nicht genügend zu empfangene Ger
 $LANG['plugin_order']['detail'][38] = "Wollen Sie diese Bestellung wirklich stornieren? Dies kann nicht rückgängig gemacht werden!";
 $LANG['plugin_order']['detail'][39] = "Wollen Sie den Freigabeantrag wirklich rückgängig machen?";
 $LANG['plugin_order']['detail'][40] = "Wollen Sie die Bestellung wirklich Bearbeiten?";
+$LANG['plugin_order']['detail'][41] = "Do you really want to update this item ? ";
 
 $LANG['plugin_order']['generation'][0] = "Erzeugen";
 $LANG['plugin_order']['generation'][1] = "Lieferschein erzeugen";

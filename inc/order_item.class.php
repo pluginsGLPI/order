@@ -298,11 +298,12 @@ class PluginOrderOrder_Item extends CommonDBTM {
                FROM `glpi_plugin_order_orders_items` 
                WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id."' 
                   AND `plugin_order_references_id` = '" . $plugin_order_references_id ."' 
-                     AND `price_taxfree` LIKE '" . $price_taxfree ."'
-                        AND `discount` LIKE '" . $discount ."' ";
+                     AND `price_taxfree` = '" . $price_taxfree ."'
+                        AND `discount` = '" . $discount ."' ";
+
       if ($states_id)
          $query.= "AND `states_id` = '".$states_id."' ";
-                  
+
       $result=$DB->query($query);
       
       return $result;
@@ -325,7 +326,15 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
       while ($data_ref=$DB->fetch_array($result_ref)){
 
-         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         echo "<div class='center'>";
+         
+         echo "<form method='post' name='order_updatedetail_form$rand' id='order_updatedetail_form$rand'  " .
+                  "action='" . getItemTypeFormURL('PluginOrderOrder') . "'>";
+                  
+         echo "<input type='hidden' name='plugin_order_orders_id' 
+                  value='" . $plugin_order_orders_id . "'>";
+                        
+         echo "<table class='tab_cadre_fixe'>";
          if (!$numref) {
             echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
 
@@ -352,11 +361,39 @@ class PluginOrderOrder_Item extends CommonDBTM {
             echo "<th>".$LANG['plugin_order']['detail'][25]."</th>";
             echo "</tr>";
             echo "<tr class='tab_bg_1 center'>";
-            echo "<td></td>";
+
+            echo "<td><div id='viewaccept$rand' style='display:none;'>";
+            echo "<input type='submit' onclick=\"return confirm('" . 
+               $LANG['plugin_order']['detail'][41] . "');\" name='update_item' value=\"".
+                  $LANG['buttons'][14]."\" class='submit'>";
+            echo "</div></td>";
+            
             /* quantity */
             $quantity = $this->getTotalQuantityByRefAndDiscount($plugin_order_orders_id, $refID, 
                                                                 $price_taxfree, $discount);
-            echo "<td align='center'>".$quantity."</td>";
+            if($canedit) {
+               echo "<td align='center'>";
+               echo "<script type='text/javascript' >\n";
+               echo "function showQuantity$rand() {\n";
+               echo "Ext.get('quantity$rand').setDisplayed('none');";
+               echo "Ext.get('viewaccept$rand').setDisplayed('block');";
+               $params = array('maxlength' => 15,
+                               'size'      => 8,
+                               'name'      => 'quantity',
+                               'data'      => rawurlencode($quantity));
+               ajaxUpdateItemJsCode("viewquantity$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params,
+                                    false);
+               echo "}";
+               echo "</script>\n";
+               echo "<div id='quantity$rand' class='center' onClick='showQuantity$rand()'>\n";
+               echo $quantity;
+               echo "</div>\n";
+               echo "<div id='viewquantity$rand'>\n";
+               echo "</div>\n";
+               echo "</td>";
+            }else{
+               echo "<td align='center'>".$quantity."</td>";
+            }
             /* type */
             $item = new $data_ref["itemtype"]();
             echo "<td align='center'>".$item->getTypeName()."</td>";
@@ -366,6 +403,10 @@ class PluginOrderOrder_Item extends CommonDBTM {
                "</td>";
             /* reference */
             echo "<td align='center'>";
+
+            echo "<input type='hidden' name='old_plugin_order_references_id' 
+                     value='" . $refID . "'>";
+
             echo $reference->getReceptionReferenceLink($data_ref);
             echo "</td>";
             /* type */
@@ -380,10 +421,56 @@ class PluginOrderOrder_Item extends CommonDBTM {
                echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Model"), 
                                               $data_ref["models_id"]);
             echo "</td>";
-            echo "<td align='center'>".formatNumber($data_ref["price_taxfree"])."</td>";
+            if($canedit) {
+               echo "<td align='center'>";
+               echo "<input type='hidden' name='old_price_taxfree' value='" . $price_taxfree . "'>";
+               echo "<script type='text/javascript' >\n";
+               echo "function showPricetaxfree$rand() {\n";
+               echo "Ext.get('pricetaxfree$rand').setDisplayed('none');";
+               echo "Ext.get('viewaccept$rand').setDisplayed('block');";
+               $params = array('maxlength' => 15,
+                               'size'      => 8,
+                               'name'      => 'price_taxfree',
+                               'data'      => rawurlencode($price_taxfree));
+               ajaxUpdateItemJsCode("viewpricetaxfree$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params,
+                                    false);
+               echo "}";
+               echo "</script>\n";
+               echo "<div id='pricetaxfree$rand' class='center' onClick='showPricetaxfree$rand()'>\n";
+               echo formatNumber($price_taxfree);
+               echo "</div>\n";
+               echo "<div id='viewpricetaxfree$rand'>\n";
+               echo "</div>\n";
+               echo "</td>";
+            }else{
+               echo "<td align='center'>" . formatNumber($price_taxfree) . "</td>";
+            }
             /* reduction */
-            echo "<td align='center'>".formatNumber($data_ref["discount"])."</td>";
-            echo "</tr></table>";
+            if($canedit) {
+               echo "<td align='center'>";
+               echo "<input type='hidden' name='old_discount' value='" . $discount . "'>";
+               echo "<script type='text/javascript' >\n";
+               echo "function showDiscount$rand() {\n";
+               echo "Ext.get('discount$rand').setDisplayed('none');";
+               echo "Ext.get('viewaccept$rand').setDisplayed('block');";
+               $params = array('maxlength' => 15,
+                               'size'      => 8,
+                               'name'      => 'discount',
+                               'data'      => rawurlencode($discount));
+               ajaxUpdateItemJsCode("viewdiscount$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params,
+                                    false);
+               echo "}";
+               echo "</script>\n";
+               echo "<div id='discount$rand' class='center' onClick='showDiscount$rand()'>\n";
+               echo formatNumber($discount);
+               echo "</div>\n";
+               echo "<div id='viewdiscount$rand'>\n";
+               echo "</div>\n";
+               echo "</td>";
+            }else{
+               echo "<td align='center'>" . formatNumber($discount) . "</td>";
+            }
+            echo "</tr></table></form>";
 
             echo "<div class='center' id='detail$rand' style='display:none'>";
             echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  " .

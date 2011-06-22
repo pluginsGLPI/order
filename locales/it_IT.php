@@ -117,6 +117,7 @@ $LANG['plugin_order']['detail'][37] = "Nessun articolo in consegna";
 $LANG['plugin_order']['detail'][38] = "Vuoi CANCELLARE questo Ordine  ? Questa opzione è IRREVERSIBILE !";
 $LANG['plugin_order']['detail'][39] = "Vuoi CANCELLARE il processo di Validazione ?";
 $LANG['plugin_order']['detail'][40] = "Vuoi modificare l'ORDINE ? ";
+$LANG['plugin_order']['detail'][41] = "Do you really want to update this item ? ";
 
 $LANG['plugin_order']['generation'][0] = "Generazione";
 $LANG['plugin_order']['generation'][1] = "Generazione Ordine";
