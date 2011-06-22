@@ -98,7 +98,7 @@ if ($_POST["id"] > 0 && $order->can($_POST["id"], 'r')) {
          }
          break;
       case 4 :
-         if ($order->getState() == PluginOrderOrderState::DELIVERED) {
+         if ($order->getState() > PluginOrderOrderState::DRAFT) {
             if ($order->can($_POST["id"],'w')) {
                $order->showGenerationForm($_POST["id"]);
 

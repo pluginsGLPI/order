@@ -335,7 +335,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       }
 
-      if ($this->getState() == PluginOrderOrderState::DELIVERED) {
+      if ($this->getState() > PluginOrderOrderState::DRAFT) {
         /* generation*/
         $ong[4] = $LANG['plugin_order']['generation'][2];
       
@@ -984,7 +984,7 @@ class PluginOrderOrder extends CommonDBTM {
       $pref     = new PluginOrderPreference;
       $template = $pref->checkPreferenceTemplateValue(getLoginUserID());
       if ($template) {
-         if ($this->canUpdateOrder($ID)) {
+         if ($this->getState() > PluginOrderOrderState::DRAFT) {
             echo "<tr>";
             echo "<td class='center'>";
             echo "<input type='submit' value=\"".$LANG['plugin_order']['generation'][1].
