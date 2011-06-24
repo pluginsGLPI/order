@@ -324,10 +324,10 @@ class PluginOrderOrder extends CommonDBTM {
 
       }
       
-      if ($this->checkIfDetailExists($this->getID())) {
+      //if ($this->checkIfDetailExists($this->getID())) {
          /* detail */
          $ong[2] = $LANG['plugin_order'][5];
-      }
+      //}
 
       if ($this->fields['suppliers_id']) {
          /* suppliers */
@@ -534,7 +534,13 @@ class PluginOrderOrder extends CommonDBTM {
                                         'comments' => true));
                                         
       } else {
-         echo Dropdown::getDropdownName("glpi_budgets", $this->fields["budgets_id"]);
+         $budget = new Budget();
+         if ($this->fields["budgets_id"] 
+            && $budget->can($this->fields["budgets_id"], 'r')) {
+            echo "<a href='".$budget->getLinkURL()."'>".$budget->getName(1)."</a>";
+         } else {
+            echo Dropdown::getDropdownName("glpi_budgets", $this->fields["budgets_id"]);
+         }
       }
       echo "</td></tr>";
       
@@ -909,11 +915,12 @@ class PluginOrderOrder extends CommonDBTM {
       
       $this->getFromDB($orders_id);
 
-      if ($this->can($orders_id,'w') && $this->canDisplayValidationForm($orders_id)) {
-         echo "<form method='post' name='form' action=\"".getItemTypeFormURL('PluginOrderOrder')."\">";
-         echo "<div align='center'><table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_2'><th colspan='3'>" . 
-            $LANG['plugin_order']['validation'][6] . "</th></tr>";
+      echo "<form method='post' name='form' action=\"".getItemTypeFormURL('PluginOrderOrder')."\">";
+      echo "<div align='center'><table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_2'><th colspan='3'>" . 
+         $LANG['plugin_order']['validation'][6] . "</th></tr>";
+
+      if ($this->can($orders_id, 'w') && $this->canDisplayValidationForm($orders_id)) {
          
          if ($this->checkIfDetailExists($orders_id)) {
 
@@ -969,8 +976,8 @@ class PluginOrderOrder extends CommonDBTM {
             echo "<tr class='tab_bg_2 center'><td>" 
                . $LANG['plugin_order']['validation'][0] . "</td></tr>";
          }
-         echo "</table></div></form>";
       }
+      echo "</table></div></form>";
    }
    
    function showGenerationForm($ID) {

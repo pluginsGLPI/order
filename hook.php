@@ -62,6 +62,8 @@ function plugin_order_install() {
 
          $migration->displayMessage($LANG['update'][141] . ' - glpi_dropdown_plugin_order_taxes');
          $query = "SELECT `name` FROM `glpi_dropdown_plugin_order_taxes` ";
+         
+         //Remplace , by . in taxes
          foreach ($DB->request($query) as $data) {
             if(strpos($data["name"], ',')) {
                $name= str_replace(',', '.', $data["name"]);
@@ -205,7 +207,29 @@ function plugin_order_install() {
    if (TableExists("glpi_plugin_order_budgets")) { // version 1.4.0
       $update140 = true;
       $migration->displayMessage("Update to version 1.4.0");
-
+      
+      //Manage budgets migration before dropping the table
+      $budget = new Budget();
+      $matchings = array('FK_budget' => 'id', 'name' => 'name', 'startdate' => 'begin_date', 
+                         'enddate' => 'end_date', 'value' => 'value', 'comments' => 'comment');
+      foreach (getAllDatasFromTable("glpi_plugin_order_budgets") as $data) {
+         if (isset($data['FK_budget']) && $data['FK_budget'] > 0) {
+            foreach ($matchings as $old => $new) {
+               $tmp[$new] = $data[$old];
+            }
+            //Budget already exists in the core: update it
+            if ($budget->getFromDB($data['FK_budget'])) {
+               logDebug("update budget:".$data['name']);
+               $budget->update($tmp);
+            } else {
+               //Budget doesn't exists in the core: create it
+               unset($tmp['id']);
+               $tmp['is_deleted'] = $data['deleted'];
+               logDebug("add budget:".$data['name']);
+               $budget->add($tmp);
+            }
+         }
+      }
       $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.4.0.sql");
    }
 
