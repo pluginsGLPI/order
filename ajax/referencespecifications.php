@@ -45,11 +45,9 @@ if (!defined('GLPI_ROOT')) {
 checkCentralAccess();
 
 $PluginOrderReference = new PluginOrderReference();
-
-if ($_POST["itemtype"])
-{
-   switch ($_POST["field"])
-   {
+logDebug($_POST);
+if ($_POST["itemtype"]) {
+   switch ($_POST["field"]) {
       case "types_id":
          if ($_POST["itemtype"] == 'PluginOrderOther') {
             $file = 'other';
@@ -70,8 +68,7 @@ if ($_POST["itemtype"])
          break;
       case "templates_id":
          $item = new $_POST['itemtype']();
-         if ($item->maybeTemplate())
-         {
+         if ($item->maybeTemplate()) {
             $table = getTableForItemType($_POST["itemtype"]);
             $PluginOrderReference->dropdownTemplate("templates_id", $_POST["entity_restrict"], 
                                                     $table);
@@ -80,8 +77,7 @@ if ($_POST["itemtype"])
          }
          break;
    }  
-}
-else {
+} else {
    return '';
 }
 ?>

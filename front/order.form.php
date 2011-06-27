@@ -36,10 +36,12 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (!isset ($_GET["id"]))
+if (!isset ($_GET["id"])) {
    $_GET["id"] = "";
-if (!isset ($_GET["withtemplate"]))
+}
+if (!isset ($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
+}
 
 $pluginOrderOrder          = new PluginOrderOrder();
 $pluginOrderConfig         = new PluginOrderConfig();
@@ -168,7 +170,7 @@ else if (isset ($_POST["undovalidation"])) {
    if (isset($_POST["plugin_order_orders_id"]) 
          && $_POST["plugin_order_orders_id"] > 0 
             && isset($_POST["item"])) {
-      foreach ($_POST["item"] as $ID => $val)
+      foreach ($_POST["item"] as $ID => $val) {
          if ($val==1) {
             $pluginOrderOrder_Item->getFromDB($ID);
             
@@ -211,6 +213,7 @@ else if (isset ($_POST["undovalidation"])) {
                $pluginOrderOrder_Item->delete(array('id' => $ID));
             }
          }
+      }
    } else if (!isset($_POST["item"])) {
       addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
 
@@ -260,8 +263,8 @@ else if (isset ($_POST["undovalidation"])) {
          $input["price_taxfree"]       = $_POST['price_taxfree'];
          $input["price_discounted"]    = $input["price_taxfree"] - ($input["price_taxfree"] * ($discount / 100));
          
-         $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",$plugin_order_ordertaxes_id);
-         $input["price_ati"]  = $pluginOrderOrder_Item->getPricesATI($input["price_discounted"],$taxe_name);
+         $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $plugin_order_ordertaxes_id);
+         $input["price_ati"]  = $pluginOrderOrder_Item->getPricesATI($input["price_discounted"], $taxe_name);
          $pluginOrderOrder_Item->update($input);
       }
    }
@@ -282,8 +285,8 @@ else if (isset ($_POST["undovalidation"])) {
             $input["discount"]            = $_POST['discount'];
             $input["price_discounted"]    = $price - ($price * ($_POST['discount'] / 100));
 
-            $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",$plugin_order_ordertaxes_id);
-            $input["price_ati"]  = $pluginOrderOrder_Item->getPricesATI($input["price_discounted"],$taxe_name);
+            $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $plugin_order_ordertaxes_id);
+            $input["price_ati"]  = $pluginOrderOrder_Item->getPricesATI($input["price_discounted"], $taxe_name);
             $pluginOrderOrder_Item->update($input);
          }
       }

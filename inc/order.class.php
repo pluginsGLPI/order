@@ -892,7 +892,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       $detail = new PluginOrderOrder_Item;
       $devices = getAllDatasFromTable("glpi_plugin_order_orders_items", 
-                                      "plugin_order_orders_id=$orders_id");
+                                      "`plugin_order_orders_id`='$orders_id'");
       foreach ($devices as $deviceID => $device)
          $detail->delete(array ("id" => $deviceID));
    }
@@ -902,7 +902,7 @@ class PluginOrderOrder extends CommonDBTM {
       if ($orders_id) {
          $detail = new PluginOrderOrder_Item;
          $devices = getAllDatasFromTable("glpi_plugin_order_orders_items", 
-                                         "plugin_order_orders_id=$orders_id");
+                                         "`plugin_order_orders_id`='$orders_id'");
          return (!empty($devices));
          
       } else {
@@ -1310,7 +1310,7 @@ class PluginOrderOrder extends CommonDBTM {
          $prices = $PluginOrderOrder_Item->getAllPrices($data['id']);
          $total_HT += $prices["priceHT"] + $data['port_price'];
       }
-
+logDebug($total_HT);
       // Get BUDGET
       $budget = new Budget();
       $budget->getFromDB($this->fields['budgets_id']);

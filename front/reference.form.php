@@ -35,7 +35,7 @@
 
 define('GLPI_ROOT', '../../..'); 
 include (GLPI_ROOT."/inc/includes.php");
-
+/*
 if(!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
@@ -45,31 +45,31 @@ if(!isset($_GET["withtemplate"])) {
 
 $reference=new PluginOrderReference();
 
-/* add order */
+// add order
 if (isset($_POST["add"])) {
    $reference->check(-1,'w',$_POST);
    $newID = $reference->add($_POST);
    glpi_header($_SERVER['HTTP_REFERER']."?id=$newID");
 }
-/* delete order */
+//delete order
 else if (isset($_POST["delete"])) {
    $reference->check($_POST['id'],'w');
    $reference->delete($_POST);
    $reference->redirectToList();
 }
-/* restore order */
+// restore order
 else if (isset($_POST["restore"])) {
    $reference->check($_POST['id'],'w');
    $reference->restore($_POST);
    $reference->redirectToList();
 }
-/* purge order */
+// purge order
 else if (isset($_POST["purge"])) {
    $reference->check($_POST['id'],'w');
    $reference->delete($_POST,1);
    $reference->redirectToList();
 }
-/* update order */
+// update order
 else if (isset($_POST["update"])) {
    $reference->check($_POST['id'],'w');
    $reference->update($_POST);
@@ -81,6 +81,9 @@ else {
    $reference->showForm($_GET["id"]);
 
    commonFooter();
-}
+}*/
+$dropdown = new PluginOrderReference();
+include (GLPI_ROOT . "/front/dropdown.common.form.php");
+
 
 ?>

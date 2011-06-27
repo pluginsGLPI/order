@@ -105,33 +105,44 @@ class PluginOrderOrder_Item extends CommonDBTM {
                $detail_id = $PluginOrderLink->isItemLinkedToOrder($item->fields["itemtype"],
                                                                   $item->fields["items_id"]);
                if ($detail_id > 0) {
-               
-                  $field_set = false;
-                  $unset_fields = array ("order_number", "delivery_number", "budgets_id",
-                                         "suppliers_id", "value", "buy_date");
-                  $orderitem->getFromDB($detail_id);
-                  $PluginOrderOrder->getFromDB($orderitem->fields["plugin_order_orders_id"]);
-                  $PluginOrderOrder_Supplier->getFromDBByOrder($orderitem->fields["plugin_order_orders_id"]);
-      
-                  $value["order_number"]    = $PluginOrderOrder->fields["num_order"];
-                  $value["delivery_number"] = $orderitem->fields["delivery_number"];
-                  $value["budgets_id"]      = $PluginOrderOrder->fields["budgets_id"];
-                  $value["suppliers_id"]    = $PluginOrderOrder->fields["suppliers_id"];
-                  if (isset($PluginOrderOrder_Supplier->fields["num_bill"]) 
-                     && !empty($PluginOrderOrder_Supplier->fields["num_bill"])) {
-                     $unset_fields[]        = "bill";
-                     $value["bill"]         = $PluginOrderOrder_Supplier->fields["num_bill"];
+                  switch ($item->fields["itemtype"]) {
+                     default:
+                        $field_set = false;
+                        $unset_fields = array ("order_number", "delivery_number", "budgets_id",
+                                               "suppliers_id", "value", "buy_date");
+                        $orderitem->getFromDB($detail_id);
+                        $PluginOrderOrder->getFromDB($orderitem->fields["plugin_order_orders_id"]);
+                        $PluginOrderOrder_Supplier->getFromDBByOrder($orderitem->fields["plugin_order_orders_id"]);
+            
+                        $value["order_number"]    = $PluginOrderOrder->fields["num_order"];
+                        $value["delivery_number"] = $orderitem->fields["delivery_number"];
+                        $value["budgets_id"]      = $PluginOrderOrder->fields["budgets_id"];
+                        $value["suppliers_id"]    = $PluginOrderOrder->fields["suppliers_id"];
+                        if (isset($PluginOrderOrder_Supplier->fields["num_bill"]) 
+                           && !empty($PluginOrderOrder_Supplier->fields["num_bill"])) {
+                           $unset_fields[]        = "bill";
+                           $value["bill"]         = $PluginOrderOrder_Supplier->fields["num_bill"];
+                        }
+                        $value["value"]           = $orderitem->fields["price_discounted"];
+                        $value["buy_date"]        = $PluginOrderOrder->fields["order_date"];
+            
+                        foreach ($unset_fields as $field) {
+                           if (isset ($item->input[$field])) {
+                              $field_set           = true;
+                              $item->input[$field] = $value[$field];
+                           }
+                        }
+                        if ($field_set) {
+                           addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);
+                        }
+                        break;
+                     case 'Contract':
+                        $orderitem->getFromDB($detail_id);
+                        $PluginOrderOrder->getFromDB($orderitem->fields["plugin_order_orders_id"]);
+                        $item->input['cost'] = $orderitem->fields["price_discounted"];
+                        logDebug($item);
+                        break;
                   }
-                  $value["value"]           = $orderitem->fields["price_discounted"];
-                  $value["buy_date"]        = $PluginOrderOrder->fields["order_date"];
-      
-                  foreach ($unset_fields as $field)
-                     if (isset ($item->input[$field])) {
-                        $field_set           = true;
-                        $item->input[$field] = $value[$field];
-                     }
-                  if ($field_set)
-                     addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);
                }
             }
          }

@@ -38,60 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["id"])) {
-	exit();
-}
-
-if (!isset ($_POST["withtemplate"]))
-	$_POST["withtemplate"] = "";
-
-$PluginOrderReference = new PluginOrderReference();
-$PluginOrderReference->checkGlobal("r");
-$PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
-
-if ($_POST["id"]>0 && $PluginOrderReference->can($_POST["id"],'r')) {
-   if (!empty($_POST["withtemplate"])) {
-		switch($_REQUEST['glpi_tab']) {
-			default :
-				break;
-		}
-	} else {
-		switch($_REQUEST['glpi_tab']) {
-         case -1:
-            $PluginOrderReference_Supplier->showReferenceManufacturers($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/reference_supplier.form.php",$_POST["id"]);
-            if ($PluginOrderReference->can($_POST["id"],'w'))
-               $PluginOrderReference_Supplier->showForm("", 
-               array('plugin_order_references_id' => $_POST["id"], 
-               'target' => $CFG_GLPI["root_doc"] ."/plugins/order/front/reference_supplier.form.php"));
-
-            Document::showAssociated($PluginOrderReference);
-         case 2 :  
-            $PluginOrderReference->getAllOrdersByReference($_POST["id"]);
-            break;
-         case 3 :
-            showNotesForm($_POST['target'],"PluginOrderReference",$_POST["id"]);
-            break;
-         case 4 :
-            /* show documents linking form */
-            Document::showAssociated($PluginOrderReference);
-            break;
-         case 12 :
-            /* show history form */
-            Log::showForItem($PluginOrderReference);
-            break;
-         default :
-            $PluginOrderReference_Supplier->showReferenceManufacturers($CFG_GLPI["root_doc"] .
-         "/plugins/order/front/reference_supplier.form.php",$_POST["id"]);
-            if ($PluginOrderReference->can($_POST["id"],'w'))
-               $PluginOrderReference_Supplier->showForm("", 
-               array('plugin_order_references_id' => $_POST["id"], 
-               'target' => $CFG_GLPI["root_doc"] ."/plugins/order/front/reference_supplier.form.php"));
-            break;
-      }
-   }
-}
-
-ajaxFooter();
+$dropdown = new PluginOrderReference();
+include (GLPI_ROOT . "/ajax/dropdown.common.tabs.php");
 
 ?>

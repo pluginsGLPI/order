@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-$reference = new PluginOrderReference;
+$reference = new PluginOrderReference();
 
 if (isset($_POST["action"])) {
    switch($_POST["action"]) {

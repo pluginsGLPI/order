@@ -45,7 +45,8 @@ function plugin_init_order() {
       $PLUGIN_HOOKS['pre_item_purge']['order']  
          = array('Profile' => array('PluginOrderProfile', 'purgeProfiles'));
       $PLUGIN_HOOKS['pre_item_update']['order'] 
-         = array('Infocom' => array('PluginOrderOrder_Item', 'updateItem'));
+         = array('Infocom'  => array('PluginOrderOrder_Item', 'updateItem'),
+                 'Contract' => array('PluginOrderOrder_Item', 'updateItem'));
       $PLUGIN_HOOKS['item_purge']['order']      = array();
       
       foreach (PluginOrderOrder_Item::getClasses(true) as $type) {
@@ -98,9 +99,9 @@ function plugin_init_order() {
             }
             //references
             if (plugin_order_haveRight("reference","r")) {
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['title'] = $LANG['plugin_order']['menu'][5];
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['page']  = '/plugins/order/front/reference.php';
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['search'] = '/plugins/order/front/reference.php';
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['title'] = $LANG['plugin_order']['menu'][5];
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['page']  = '/plugins/order/front/reference.php';
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['links']['search'] = '/plugins/order/front/reference.php';
 
             }
             
@@ -128,8 +129,8 @@ function plugin_init_order() {
    
          if (plugin_order_haveRight("reference","w")) {
             //references
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['add']    = '/plugins/order/front/reference.form.php';
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['config'] = '/plugins/order/front/config.form.php';
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['links']['add']    = '/plugins/order/front/reference.form.php';
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['links']['config'] = '/plugins/order/front/config.form.php';
          }
          if (haveRight("config","w")) {
             $PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/config.form.php';
