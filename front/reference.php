@@ -36,20 +36,7 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['plugin_order']['reference'][1], '', "plugins", "order", "reference");
-
-$reference=new PluginOrderReference();
-if ($reference->canView() || haveRight("config","w")) {
-   
-   $reference->title();
-   Search::show("PluginOrderReference");
-   
-} else {
-   echo "<div align='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . 
-      "/pics/warning.png\" alt=\"warning\"><br><br>";
-   echo "<b>" . $LANG['login'][5] . "</b></div>";
-}
-
-commonFooter();
+$dropdown = new PluginOrderReference();
+include (GLPI_ROOT . "/front/dropdown.common.php");
 
 ?>

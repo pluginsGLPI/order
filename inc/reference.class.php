@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderReference extends CommonDropdown {
 
-   public $dohistory=true;
+   public $dohistory         = true;
    public $first_level_menu  = "plugins";
    public $second_level_menu = "order";
    
@@ -110,7 +110,13 @@ class PluginOrderReference extends CommonDropdown {
       $tab[80]['table'] = 'glpi_entities';
       $tab[80]['field'] = 'completename';
       $tab[80]['name'] = $LANG['entity'][0];
-      
+
+      $tab[86]['table']    = $this->getTable();
+      $tab[86]['field']    = 'is_recursive';
+      $tab[86]['name']     = $LANG['entity'][9];
+      $tab[86]['datatype'] = 'bool';
+      $tab[86]['massiveaction'] = false;
+
       return $tab;
    }
    
@@ -127,15 +133,11 @@ class PluginOrderReference extends CommonDropdown {
          return false;
       }
       
-       if (!isset($input["transfert"])) {
-         $query = "SELECT COUNT(*) AS cpt FROM `".$this->getTable()."` " .
-                "WHERE `name` = '".$input["name"]."' 
-                    AND `entities_id` = '".$input["entities_id"]."' ";
-         $result = $DB->query($query);
-         if ($DB->result($result,0,"cpt") > 0) {
-            addMessageAfterRedirect($LANG['plugin_order']['reference'][6],false,ERROR);
-            return false;
-         }
+       if (!isset($input["transfert"])
+            && countElementsInTable($this->getTable(), 
+                                    "`name` = '".$input["name"]."' AND `entities_id` = '".$input["entities_id"]."'")) {
+         addMessageAfterRedirect($LANG['plugin_order']['reference'][6], false, ERROR);
+         return false;
       }
       
       return $input;
@@ -147,7 +149,7 @@ class PluginOrderReference extends CommonDropdown {
       if (!$this->referenceInUse()) {
          return true;
       } else {
-         addMessageAfterRedirect($LANG['plugin_order']['reference'][7],true,ERROR);
+         addMessageAfterRedirect($LANG['plugin_order']['reference'][7], true, ERROR);
          return false;
       }
 
@@ -155,15 +157,9 @@ class PluginOrderReference extends CommonDropdown {
 
    function referenceInUse(){
       global $DB;
-
-      $query = "SELECT COUNT(*) AS cpt FROM `glpi_plugin_order_orders_items` " .
-            "WHERE `plugin_order_references_id` = '".$this->fields["id"]."' ";
-      $result = $DB->query($query);
-      if ($DB->result($result,0,"cpt") > 0) {
-         return true;
-      } else {
-         return false;
-      }
+      
+      return (countElementsInTable("glpi_plugin_order_orders_items", 
+                                   "`plugin_order_references_id` = '".$this->fields["id"]."'") > 0?true:false);
    }
 
    function getReceptionReferenceLink($data) {
@@ -528,7 +524,7 @@ class PluginOrderReference extends CommonDropdown {
                FROM `glpi_plugin_order_references_suppliers` AS grm, `".$this->getTable()."` AS gr 
                WHERE `grm`.`suppliers_id` = '$ID' 
                   AND `grm`.`plugin_order_references_id` = `gr`.`id`"
-               .getEntitiesRestrictRequest(" AND ","gr",'','',true);
+               .getEntitiesRestrictRequest(" AND ", "gr", '', '', true);
       $result = $DB->query($query);
 
       echo "<div class='center'>";

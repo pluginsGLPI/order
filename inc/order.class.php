@@ -308,7 +308,13 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[80]['table'] = 'glpi_entities';
       $tab[80]['field'] = 'completename';
       $tab[80]['name']  = $LANG['entity'][0];
-      
+
+      $tab[86]['table']    = $this->getTable();
+      $tab[86]['field']    = 'is_recursive';
+      $tab[86]['name']     = $LANG['entity'][9];
+      $tab[86]['datatype'] = 'bool';
+      $tab[86]['massiveaction'] = false;
+
       return $tab;
    }
    
