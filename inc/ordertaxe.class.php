@@ -53,6 +53,61 @@ class PluginOrderOrderTaxe extends CommonDropdown {
    function canView() {
       return plugin_order_haveRight('order', 'r');
    } 
+   
+   static function install(Migration $migration) {
+      global $DB, $LANG;
+      
+      $table = getTableForItemType(__CLASS__);
+      if (!TableExists($table) && !TableExists("glpi_dropdown_plugin_order_taxes")) {
+         //Install
+         $query = "CREATE TABLE `glpi_plugin_order_ordertaxes` (
+                  `id` int(11) NOT NULL auto_increment,
+                  `name` varchar(255) collate utf8_unicode_ci default NULL,
+                  `comment` text collate utf8_unicode_ci,
+                  PRIMARY KEY  (`id`),
+                  KEY `name` (`name`)
+               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"; 
+         $DB->query($query) or die($DB->error());
+
+         $taxes = new self();
+         foreach (array('5.5', '19.6') as $tax) {
+            $taxes->add(array('name' => $tax));
+         }
+      } else {
+         //Update
+
+         $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
+         $migration->changeField($table, "name", "name", "varchar(255) collate utf8_unicode_ci default NULL");
+         $migration->changeField($table, "comments", "comment", "text collate utf8_unicode_ci");
+         $migration->migrationOneTable($table);
+         
+         $migration->displayMessage($LANG['update'][141] . ' - glpi_dropdown_plugin_order_taxes');
+         $query = "SELECT `name` FROM `glpi_dropdown_plugin_order_taxes` ";
+         
+         //Remplace , by . in taxes
+         foreach ($DB->request($query) as $data) {
+            if(strpos($data["name"], ',')) {
+               $name= str_replace(',', '.', $data["name"]);
+               $query = "UPDATE `glpi_dropdown_plugin_order_taxes`
+                         SET `name` = '".$name."'
+                         WHERE `name`= '".$data["name"]."'";
+               $DB->query($query) or die($DB->error());
+            }
+         }
+      }
+      
+   }
+   
+   static function uninstall() {
+      global $DB;
+      
+      //Old table
+      $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_taxes`") or die ($DB->error());
+      
+      //New table
+      $DB->query("DROP TABLE IF EXISTS `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+
+   }
 }
 
 ?>

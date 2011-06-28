@@ -75,7 +75,10 @@ class PluginOrderBill extends CommonDropdown {
    function getAdditionalFields() {
       global $LANG;
 
-      return array(array('name'  => 'value',
+      return array(array('name'  =>'suppliers_id',
+                         'label' => $LANG['financial'][26],
+                         'type'  => 'dropdownValue'),
+                   array('name'  => 'value',
                          'label' => $LANG['financial'][21],
                          'type'  => 'text'),
                    array('name'  => 'number',
@@ -179,6 +182,13 @@ class PluginOrderBill extends CommonDropdown {
       $tab[6]['table'] = getTableForItemType('PluginOrderBillState');
       $tab[6]['field'] = 'name';
       $tab[6]['name']  = $LANG['joblist'][0];
+
+      $tab[7]['table']         = getTableForItemType('Supplier');
+      $tab[7]['field']         = 'name';
+      $tab[7]['name']          = $LANG['financial'][26];
+      $tab[7]['datatype']      = 'itemlink';
+      $tab[7]['itemlink_type'] = 'Supplier';
+      $tab[7]['forcegroupby']  = true;
   
       /* comments */
       $tab[16]['table']    = $this->getTable();
@@ -292,6 +302,46 @@ class PluginOrderBill extends CommonDropdown {
          }
       }
       echo "</table></div>";
+   }
+   
+   static function install(Migration $migration) {
+      global $DB;
+      
+      $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_bills` (
+           `id` int(11) NOT NULL AUTO_INCREMENT,
+           `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
+           `number` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
+           `billdate` datetime DEFAULT NULL,
+           `validationdate` datetime DEFAULT NULL,
+           `comment` text COLLATE utf8_unicode_ci,
+           `plugin_order_billstates_id` int(11) NOT NULL DEFAULT '0',
+           `value` float NOT NULL DEFAULT '0',
+           `plugin_order_billtypes_id` int(11) NOT NULL DEFAULT '0',
+           `suppliers_id` int(11) NOT NULL DEFAULT '0',
+           `plugin_order_orders_id` int(11) NOT NULL DEFAULT '0',
+           `users_id_validation` int(11) NOT NULL DEFAULT '0',
+           `entities_id` int(11) NOT NULL DEFAULT '0',
+           `is_recursive` int(11) NOT NULL DEFAULT '0',
+           `notepad` text COLLATE utf8_unicode_ci,
+           PRIMARY KEY (`id`)
+         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
+   $DB->query($query) or die ($DB->error());
+
+
+   }
+   
+   static function uninstall() {
+      global $DB;
+
+      $table = getTableForItemType(__CLASS__);
+      foreach (array ("glpi_displaypreferences", "glpi_documents_items", "glpi_bookmarks",
+                       "glpi_logs") as $t) {
+         $query = "DELETE FROM `$t` WHERE `itemtype`='".__CLASS__."'";
+         $DB->query($query);
+      }
+      
+
+      $DB->query("DROP TABLE IF EXISTS`".$table."`") or die ($DB->error());
    }
 }
 ?>

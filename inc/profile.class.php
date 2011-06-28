@@ -206,6 +206,57 @@ class PluginOrderProfile extends CommonDBTM {
       $options['candel'] = false;
       $this->showFormButtons($options);
    }
+   
+  static function install(Migration $migration) {
+      global $DB;
+      
+      $table = getTableForItemType(__CLASS__);
+      if (!TableExists($table)) {
+         $query = "CREATE TABLE `glpi_plugin_order_profiles` (
+               `id` int(11) NOT NULL auto_increment,
+               `profiles_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_profiles (id)',
+               `order` char(1) collate utf8_unicode_ci default NULL,
+               `reference` char(1) collate utf8_unicode_ci default NULL,
+               `validation` char(1) collate utf8_unicode_ci default NULL,
+               `cancel` char(1) collate utf8_unicode_ci default NULL,
+               `undo_validation` char(1) collate utf8_unicode_ci default NULL,
+               `bill` char(1) collate utf8_unicode_ci default NULL,
+               PRIMARY KEY  (`id`),
+               KEY `profiles_id` (`profiles_id`)
+            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->query($query) or die($DB->error());
+         PluginOrderProfile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
+
+      } else {
+
+         //1.2.0
+         $migration->dropField("glpi_plugin_order_profiles", "name");
+
+         $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
+         foreach (array('order', 'reference', 'budget', 'validation', 'cancel', 'undo_validation') as $right) {
+            $migration->changeField($table, $right, $right, 
+                                    "char(1) collate utf8_unicode_ci default NULL");
+         }
+         $migration->addField($table, "profiles_id", "int(11) NOT NULL default '0'");
+         $migration->addKey($table, "profiles_id");
+         
+         //1.4.0
+         $migration->dropField($table, "budget");
+         
+         //1.5.0
+         $migration->addField("glpi_plugin_order_profiles", "bill", 
+                              "CHAR( 1 ) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->migrationOneTable($table);
+         PluginOrderProfile::addRightToProfile($_SESSION['glpiactiveprofile']['id'], "bill" , "w");
+      }
+   }
+   
+   static function uninstall() {
+      global $DB;
+      
+      //Current table name
+      $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+   }
 }
 
 ?>

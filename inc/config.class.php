@@ -223,6 +223,113 @@ class PluginOrderConfig extends CommonDBTM {
       $config = $this->getConfig();
       return $config["default_taxes"];
    }
+   
+   static function install(Migration $migration) {
+      global $DB;
+      $table = getTableForItemType(__CLASS__);
+
+
+      $config = new self();
+
+      //This class is available since version 1.3.0
+      if (!TableExists($table) && !TableExists("glpi_plugin_order_config")) {
+            //Install
+            $query = "CREATE TABLE `glpi_plugin_order_configs` (
+                     `id` int(11) NOT NULL auto_increment,
+                     `use_validation` int(11) NOT NULL default 0,
+                     `default_taxes` int(11) NOT NULL default 0,
+                     `generate_assets` int(11) NOT NULL default 0,
+                     `generated_name` varchar(255) collate utf8_unicode_ci default NULL,
+                     `generated_serial` varchar(255) collate utf8_unicode_ci default NULL,
+                     `generated_otherserial` varchar(255) collate utf8_unicode_ci default NULL,
+                     `default_asset_entities_id` int(11) NOT NULL default '0',
+                     `default_asset_states_id` int(11) NOT NULL default '0',  
+                     `generate_ticket` int(11) NOT NULL default '0',
+                     `generated_title` varchar(255) collate utf8_unicode_ci default NULL,
+                     `generated_content` text collate utf8_unicode_ci,
+                     `default_ticketcategories_id` int(11) NOT NULL default '0',
+                     `order_status_draft` int(11) NOT NULL default '0',
+                     `order_status_waiting_approval` int(11) NOT NULL default '0',
+                     `order_status_approved` int(11) NOT NULL default '0',
+                     `order_status_partially_delivred` int(11) NOT NULL default '0',
+                     `order_status_completly_delivered` int(11) NOT NULL default '0',
+                     `order_status_canceled` int(11) NOT NULL default '0',
+                     PRIMARY KEY  (`id`)
+                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"; 
+               $DB->query($query) or die ($DB->error());
+               
+               $tobefilled = "TOBEFILLED";
+               $tmp = array('id' => 1, 'use_validation' => 0, 'default_taxes' => 0, 
+                            'generate_assets' => 0, 'generated_name' => $tobefilled, 
+                            'generated_serial' => $tobefilled, 'generated_otherserial' => $tobefilled,
+                            'default_asset_entities_id' => 0, 'default_asset_states_id' => 0,
+                            'generate_ticket' => 0, 'generated_title' => $tobefilled, 
+                            'generated_content' => $tobefilled, 'default_ticketcategories_id' => 0);
+               $config->add($tmp);
+      } else {
+            //Upgrade
+
+            //1.2.0
+            $migration->renameTable("glpi_plugin_order_config", $table);
+
+            if (!countElementsInTable("glpi_plugin_order_configs")) {
+               $query = "INSERT INTO `glpi_plugin_order_configs`(id,use_validation,default_taxes) VALUES (1,0,0);";
+               $DB->query($query) or die($DB->error());
+            }
+  
+            $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
+            
+            //1.3.0
+            $migration->addField($table, "generate_assets", "int(11) NOT NULL default '0'");
+            $migration->addField($table, "generated_name", 
+                                 "varchar(255) collate utf8_unicode_ci default NULL");
+            $migration->addField($table, "generated_serial", 
+                                 "varchar(255) collate utf8_unicode_ci default NULL");
+            $migration->addField($table, "generated_otherserial", 
+                                 "varchar(255) collate utf8_unicode_ci default NULL");
+            $migration->addField($table, "default_asset_entities_id", 
+                                 "int(11) NOT NULL default '0'");
+            $migration->addField($table, "default_asset_states_id", 
+                                 "int(11) NOT NULL default '0'");
+            $migration->addField($table, "generate_ticket", 
+                                 "int(11) NOT NULL default '0'");
+            $migration->addField($table, "generated_title", 
+                                 "varchar(255) collate utf8_unicode_ci default NULL");
+            $migration->addField($table, "generated_content", 
+                                 "text collate utf8_unicode_ci");
+            $migration->addField($table, "default_ticketcategories_id", 
+                                 "int(11) NOT NULL default '0'");
+            $migration->migrationOneTable($table);
+            
+      }
+
+      $migration->displayMessage("Add default order state workflow");
+      $new_states = array('order_status_draft'               => 1, 
+                          'order_status_waiting_approval'    => 2, 
+                          'order_status_approved'            => 3, 
+                          'order_status_partially_delivred'  => 4, 
+                          'order_status_completly_delivered' => 5, 
+                         'order_status_canceled'            => 6);
+                           
+      foreach ($new_states as $field => $value) {
+         $migration->addField($table, $field, "int(11) NOT NULL default '0'");
+      }
+      $migration->migrationOneTable($table);
+      
+      $new_states['id'] = 1;
+      $config->update($new_states);
+
+   }
+   
+   static function uninstall() {
+      global $DB;
+      
+      //Old table
+      $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_config`");
+
+      //New table
+      $DB->query("DROP TABLE IF EXISTS `".getTableForItemType(__CLASS__)."`");
+   }
 }
 
 ?>

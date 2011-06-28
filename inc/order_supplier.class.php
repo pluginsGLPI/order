@@ -339,6 +339,93 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo "</table>";
       echo "</div>";
    }
+   
+   static function install(Migration $migration) {
+      global $DB;
+      
+      $table = getTableForItemType(__CLASS__);
+      
+      if (!TableExists($table)) {
+         if (!TableExists("glpi_plugin_order_suppliers")) {
+            //install
+            $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders_suppliers` (
+                     `id` int(11) NOT NULL auto_increment,
+                     `entities_id` int(11) NOT NULL default '0',
+                     `is_recursive` tinyint(1) NOT NULL default '0',
+                     `plugin_order_orders_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
+                     `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
+                     `num_quote` varchar(255) collate utf8_unicode_ci default NULL,
+                     `num_order` varchar(255) collate utf8_unicode_ci default NULL,
+                     `num_bill` varchar(255) collate utf8_unicode_ci default NULL,
+                     PRIMARY KEY  (`id`),
+                     KEY `plugin_order_orders_id` (`plugin_order_orders_id`),
+                     KEY `entities_id` (`entities_id`),
+                     KEY `suppliers_id` (`suppliers_id`)
+                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            $DB->query($query) or die ($DB->error());
+         } else {
+            //Upgrade
+
+            //1.2.0
+            $migration->renameTable("glpi_plugin_order_suppliers", $table);
+
+            $migration->addField($table, "entities_id", "int(11) NOT NULL default '0'");
+            $migration->addField($table, "is_recursive", "tinyint(1) NOT NULL default '0'");
+            $migration->addField($table, "suppliers_id", 
+                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
+            $migration->changeField($table, "ID", "id",  "int(11) NOT NULL auto_increment");
+            $migration->changeField($table, "FK_order", "plugin_order_orders_id", 
+                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'");
+            $migration->changeField($table, "numquote", "num_quote", 
+                                    "varchar(255) collate utf8_unicode_ci default NULL");
+            $migration->changeField($table, "numbill", "num_bill", 
+                                    "varchar(255) collate utf8_unicode_ci default NULL");
+            $migration->changeField($table, "numorder", "num_order", 
+                                    "varchar(255) collate utf8_unicode_ci default NULL");
+            $migration->addKey($table, "plugin_order_orders_id");
+            $migration->addKey($table, "suppliers_id");
+            $migration->migrationOneTable($table);
+
+            $query = "SELECT `suppliers_id`, `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_orders` ";
+            foreach ($DB->request($query) as $data) {
+               $query = "UPDATE `glpi_plugin_order_orders_suppliers`
+                         SET `suppliers_id` = '".$data["suppliers_id"]."'
+                         WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
+               $DB->query($query) or die($DB->error());
+      
+               $query = "UPDATE `glpi_plugin_order_orders_suppliers`
+                         SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
+                         WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
+               $DB->query($query) or die($DB->error());
+      
+               $query = "UPDATE `glpi_plugin_order_surveysuppliers`
+                         SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
+                         WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
+               $DB->query($query) or die($DB->error());
+            }
+      
+            $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_references` ";
+            foreach ($DB->request($query) as $data) {
+               $query = "UPDATE `glpi_plugin_order_references_suppliers`
+                         SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
+                         WHERE `plugin_order_references_id` = '".$data["id"]."' ";
+               $DB->query($query) or die($DB->error());
+            }
+            
+         }
+      }
+      
+   }
+   
+   static function uninstall() {
+      global $DB;
+
+      //Old table name
+      $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_detail`") or die ($DB->error());
+      //Current table name
+      $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+      
+   }
 }
 
 ?>

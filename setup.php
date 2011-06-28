@@ -35,13 +35,19 @@
 
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
-   global $PLUGIN_HOOKS, $CFG_GLPI, $LANG;
+   global $PLUGIN_HOOKS, $CFG_GLPI, $LANG, $ORDER_TYPES;
 
    /* load changeprofile function */
    $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile', 'changeProfile');
    
    $plugin = new Plugin();
    if ($plugin->isInstalled('order') && $plugin->isActivated('order')) {
+
+      //Itemtypes in use for an order
+      $ORDER_TYPES = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Printer',
+                           'Phone', 'ConsumableItem', 'CartridgeItem', 'Contract',
+                           'PluginOrderOther', 'SoftwareLicense');
+
       $PLUGIN_HOOKS['pre_item_purge']['order']  
          = array('Profile' => array('PluginOrderProfile', 'purgeProfiles'));
       $PLUGIN_HOOKS['pre_item_update']['order'] 
@@ -53,16 +59,15 @@ function plugin_init_order() {
          $PLUGIN_HOOKS['item_purge']['order'][$type] = 'plugin_item_purge_order';
       }
    
-      Plugin::registerClass('PluginOrderOrder', array('document_types'               => true,
-                                                      'unicity_types'                => true,
-                                                      'massiveaction_noupdate_types' => true,
-                                                      'notificationtemplates_types'  => true));
-
+      Plugin::registerClass('PluginOrderOrder', array('document_types'                   => true,
+                                                      'unicity_types'                    => true,
+                                                      'massiveaction_noupdate_types'     => true,
+                                                      'notificationtemplates_types'      => true));
    
       Plugin::registerClass('PluginOrderReference', array('document_types'               => true,
                                                           'massiveaction_noupdate_types' => true));
       
-      Plugin::registerClass('PluginOrderOrder_Item', array('notificationtemplates_types'  => true));
+      Plugin::registerClass('PluginOrderOrder_Item', array('notificationtemplates_types' => true));
 
       /*if glpi is loaded */
       if (getLoginUserID()) {
@@ -176,7 +181,7 @@ function plugin_order_haveRight($module,$right) {
                   "0" => array("0", "1")); // should never happend;
 
    if (isset($_SESSION["glpi_plugin_order_profile"][$module])
-         && in_array($_SESSION["glpi_plugin_order_profile"][$module],$matches[$right])) {
+         && in_array($_SESSION["glpi_plugin_order_profile"][$module], $matches[$right])) {
       return true;
    } else {
       return false;

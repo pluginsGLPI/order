@@ -367,6 +367,59 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       else
          return 0;
    }
+   
+  static function install(Migration $migration) {
+      global $DB;
+      
+      $table = getTableForItemType(__CLASS__);
+      if (!TableExists($table) && !TableExists("glpi_plugin_order_references_manufacturers")) {
+         $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_suppliers` (
+                     `id` int(11) NOT NULL auto_increment,
+                     `entities_id` int(11) NOT NULL default '0',
+                     `is_recursive` tinyint(1) NOT NULL default '0',
+                     `plugin_order_references_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)',
+                     `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
+                     `price_taxfree` float NOT NULL DEFAULT 0,
+                     `reference_code` varchar(255) collate utf8_unicode_ci default NULL,
+                     PRIMARY KEY  (`id`),
+                     KEY `entities_id` (`entities_id`),
+                     KEY `plugin_order_references_id` (`plugin_order_references_id`),
+                     KEY `suppliers_id` (`suppliers_id`)
+                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->query($query) or die($DB->error());
+      } else {
+         //1.1.0
+         $migration->addField("glpi_plugin_order_references_manufacturers", "reference_code",
+                              "varchar(255) NOT NULL collate utf8_unicode_ci default ''");
+
+         //1.2.0
+         $migration->renameTable("glpi_plugin_order_references_manufacturers", $table);
+         $migration->addField($table, "is_recursive", "int(11) NOT NULL default '0'");
+         $migration->addKey($table, "suppliers_id");
+         $migration->addKey($table, "plugin_order_references_id");
+         $migration->changeField($table, "ID", "id", 
+                                 "int(11) NOT NULL auto_increment");
+         $migration->changeField($table, "FK_entities", "entities_id", 
+                                 "int(11) NOT NULL default '0'");
+         $migration->changeField($table, "FK_reference", "plugin_order_references_id", 
+                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'");
+         $migration->changeField($table, "FK_enterprise", "suppliers_id", 
+                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
+         $migration->changeField($table, "reference_code", "reference_code", 
+                                 "varchar(255) collate utf8_unicode_ci default NULL");
+         $migration->migrationOneTable($table);
+      }
+   }
+   
+   static function uninstall() {
+      global $DB;
+
+      //Old table name
+      $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_references_manufacturers`") or die ($DB->error());
+      
+      //Current table name
+      $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+   }
 }
 
 ?>

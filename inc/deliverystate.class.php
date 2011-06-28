@@ -53,6 +53,42 @@ class PluginOrderDeliveryState extends CommonDropdown {
       return plugin_order_haveRight('order', 'r');
    } 
    
+   static function install(Migration $migration) {
+      global $DB;
+      
+      $table = getTableForItemType(__CLASS__);
+      if (!TableExists($table) && !TableExists("glpi_dropdown_plugin_order_deliverystate")) {
+         //Install
+        $query = "CREATE TABLE `glpi_plugin_order_deliverystates` (
+               `id` int(11) NOT NULL auto_increment,
+               `name` varchar(255) collate utf8_unicode_ci default NULL,
+               `comment` text collate utf8_unicode_ci,
+               PRIMARY KEY  (`id`),
+               KEY `name` (`name`)
+            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->query($query) or die($DB->error());
+      } else {
+         
+         //Upgrade 1.2.0
+         $migration->renameTable("glpi_dropdown_plugin_order_deliverystate", $table);
+         $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
+         $migration->changeField($table, "name", "name", "varchar(255) collate utf8_unicode_ci default NULL");
+         $migration->changeField($table, "comments", "comment", "text collate utf8_unicode_ci");
+         $migration->migrationOneTable($table);
+      }
+   }
+   
+   static function uninstall() {
+      global $DB;
+      
+      //Old table
+      $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_deliverystate`") 
+         or die ($DB->error());
+      
+      //New table
+      $DB->query("DROP TABLE IF EXISTS `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+   }
+
 }
 
 ?>

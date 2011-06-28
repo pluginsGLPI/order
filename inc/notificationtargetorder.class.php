@@ -42,10 +42,10 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
    function getEvents() {
       global $LANG;
-      return array ('ask'              => $LANG['plugin_order']['validation'][1],
-                    'validation'       => $LANG['plugin_order']['validation'][2],
-                    'cancel'           => $LANG['plugin_order']['validation'][5],
-                    'undovalidation'   => $LANG['plugin_order']['validation'][8]);
+      return array ('ask'            => $LANG['plugin_order']['validation'][1],
+                    'validation'     => $LANG['plugin_order']['validation'][2],
+                    'cancel'         => $LANG['plugin_order']['validation'][5],
+                    'undovalidation' => $LANG['plugin_order']['validation'][8]);
    }
 
    function getDatasForTemplate($event,$options=array()) {
@@ -107,18 +107,119 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      $tags = array('ordervalidation.name'         => $LANG['common'][16],
-                     'ordervalidation.numorder'    => $LANG['financial'][18],
-                     'ordervalidation.orderdate'   => $LANG['plugin_order'][1],
-                     'ordervalidation.state'       => $LANG['joblist'][0],
-                     'ordervalidation.comment'     => $LANG['plugin_order']['validation'][18],
-                     'ordervalidation.users'       => $LANG['plugin_order']['validation'][19]);
+      $tags = array('ordervalidation.name'        => $LANG['common'][16],
+                    'ordervalidation.numorder'    => $LANG['financial'][18],
+                    'ordervalidation.orderdate'   => $LANG['plugin_order'][1],
+                    'ordervalidation.state'       => $LANG['joblist'][0],
+                    'ordervalidation.comment'     => $LANG['plugin_order']['validation'][18],
+                    'ordervalidation.users'       => $LANG['plugin_order']['validation'][19]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'=>$tag, 'label'=>$label, 'value'=>true));
       }
 
       asort($this->tag_descriptions);
+   }
+   
+   static function install(Migration $migration) {
+      global $DB;
+      
+      $template = new NotificationTemplate();
+
+      $tmp = array('name' => 'Order Validation', 'itemtype' => __CLASS__, 'comment' => '',
+                   'date_mod' => $_SESSION['glpi_currenttime']);
+      $template->add($tmp);
+
+      if (!countElementsInTable("glpi_notificationtemplates", 
+                                "`name`='Order Validation' " .
+                                   "AND `itemtype`='PluginOrderOrder'")) {
+         $tmp = array('name' => 'Order Validation', 'itemtype' => __CLASS__, 
+                      'date_mod' => $_SESSION['glpi_currenttime'], 'comment' => '',  'css' => '');
+         $template->add($template);
+      }
+      
+      $query_id = "SELECT `id` FROM `glpi_notificationtemplates` 
+                   WHERE `itemtype`='PluginOrderOrder' 
+                      AND `name` = 'Order Validation'";
+      $result   = $DB->query($query_id) or die ($DB->error());
+      if ($DB->numrows($result) > 0) {
+         $notifications_id = $DB->result($result, 0, 'id');
+          
+         $query = "INSERT INTO `glpi_notificationtemplatetranslations` 
+                   (`notificationtemplates_id`, `language`, `subject`, `content_text`, `content_html`)
+                   VALUES($notifications_id, '','##lang.ordervalidation.title##',
+                              '##lang.ordervalidation.url## : ##ordervalidation.url##
+         ##lang.ordervalidation.entity## : ##ordervalidation.entity##
+         ##IFordervalidation.name####lang.ordervalidation.name## : ##ordervalidation.name##
+         ##ENDIFordervalidation.name##
+         ##IFordervalidation.numorder####lang.ordervalidation.numorder## : ##ordervalidation.numorder##
+         ##ENDIFordervalidation.numorder##
+         ##IFordervalidation.orderdate####lang.ordervalidation.orderdate##  : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##
+         ##IFordervalidation.state####lang.ordervalidation.state## : ##ordervalidation.state####ENDIFordervalidation.state##
+         ##IFordervalidation.users####lang.ordervalidation.users## : ##ordervalidation.users####ENDIFordervalidation.users##
+         
+         ##IFordervalidation.comment####lang.ordervalidation.comment## : ##ordervalidation.comment####ENDIFordervalidation.comment##',
+                                 '&lt;p&gt;&lt;strong&gt;##lang.ordervalidation.url##&lt;/strong&gt; : &lt;a href=\"##ordervalidation.url##\"&gt;##ordervalidation.url##&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;##lang.ordervalidation.entity##&lt;/strong&gt; : ##ordervalidation.entity##&lt;br /&gt; ##IFordervalidation.name##&lt;strong&gt;##lang.ordervalidation.name##&lt;/strong&gt; : ##ordervalidation.name####ENDIFordervalidation.name##&lt;br /&gt;##IFordervalidation.numorder##&lt;strong&gt;##lang.ordervalidation.numorder##&lt;/strong&gt; : ##ordervalidation.numorder####ENDIFordervalidation.numorder##&lt;br /&gt;##IFordervalidation.orderdate##&lt;strong&gt;##lang.ordervalidation.orderdate##&lt;/strong&gt; : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##&lt;br /&gt;##IFordervalidation.state##&lt;strong&gt;##lang.ordervalidation.state##&lt;/strong&gt; : ##ordervalidation.state####ENDIFordervalidation.state##&lt;br /&gt;##IFordervalidation.users##&lt;strong&gt;##lang.ordervalidation.users##&lt;/strong&gt; : ##ordervalidation.users####ENDIFordervalidation.users##&lt;br /&gt;&lt;br /&gt;##IFordervalidation.comment##&lt;strong&gt;##lang.ordervalidation.comment##&lt;/strong&gt; : ##ordervalidation.comment####ENDIFordervalidation.comment##&lt;/p&gt;');";
+         $result = $DB->query($query) or die($DB->error());
+      
+               
+         $notifs = array('New Order Validation' => 'ask', 'Confirm Order Validation' => 'validation',
+                         'Cancel Order Validation' => 'undovalidation', 'Cancel Order' => 'cancel');
+         $notification = new Notification();
+         foreach ($notifs as $label => $name) {
+            $migration->displayMessage("Add notification: $name");
+            $tmp = array('name' => $label, 'entities_id' => 0, 'itemtype' => __CLASS__, 
+                         'event' => $name, 'mode' => 'mail', 'comment' => '', 
+                         'is_recursive' => 1, 'is_active' => 1, 
+                         'date_mod' => $_SESSION['glpi_currenttime'], 
+                         'notificationtemplates_id' => $notifications_id);
+            $notification->add($tmp);
+         }
+      }
+   }
+   
+   static function uninstall() {
+      global $DB;
+
+      $notif = new Notification();
+      $options = array('itemtype' => 'PluginOrderOrder',
+                       'event'    => 'ask',
+                       'FIELDS'   => 'id');
+      foreach ($DB->request('glpi_notifications', $options) as $data) {
+         $notif->delete($data);
+      }
+      $options = array('itemtype' => 'PluginOrderOrder',
+                       'event'    => 'validation',
+                       'FIELDS'   => 'id');
+      foreach ($DB->request('glpi_notifications', $options) as $data) {
+         $notif->delete($data);
+      }
+      $options = array('itemtype' => 'PluginOrderOrder',
+                       'event'    => 'cancel',
+                       'FIELDS'   => 'id');
+      foreach ($DB->request('glpi_notifications', $options) as $data) {
+         $notif->delete($data);
+      }
+      $options = array('itemtype' => 'PluginOrderOrder',
+                       'event'    => 'undovalidation',
+                       'FIELDS'   => 'id');
+      foreach ($DB->request('glpi_notifications', $options) as $data) {
+         $notif->delete($data);
+      }
+      
+      //templates
+      $template    = new NotificationTemplate();
+      $translation = new NotificationTemplateTranslation();
+      $options     = array('itemtype' => 'PluginOrderOrder', 'FIELDS'   => 'id');
+      foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
+         $options_template = array('notificationtemplates_id' => $data['id'], 'FIELDS'   => 'id');
+         foreach ($DB->request('glpi_notificationtemplatetranslations', 
+                               $options_template) as $data_template) {
+            $translation->delete($data_template);
+         }
+         $template->delete($data);
+      }
+      
    }
 }
 

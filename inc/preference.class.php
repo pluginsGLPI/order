@@ -185,6 +185,30 @@ class PluginOrderPreference extends CommonDBTM {
       
       return $array_file;
    }
+   
+   static function install(Migration $migration) {
+      global $DB;
+      //Only avaiable since 1.2.0
+      
+      $table = getTableForItemType(__CLASS__);
+      if (!TableExists($table)) {
+         $query = "CREATE TABLE `glpi_plugin_order_preferences` (
+                  `id` int(11) NOT NULL auto_increment,
+                  `user_id` int(11) NOT NULL default 0,
+                  `template` varchar(255) collate utf8_unicode_ci default NULL,
+                  `sign` varchar(255) collate utf8_unicode_ci default NULL,
+                  PRIMARY KEY  (`id`)
+               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->query($query) or die ($DB->error());
+      }
+   }
+   
+   static function uninstall() {
+      global $DB;
+      
+      //Current table name
+      $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+   }
 }
 
 ?>

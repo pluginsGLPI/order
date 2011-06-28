@@ -29,162 +29,17 @@
 // ----------------------------------------------------------------------
 // Original Authors of file: 
 // NOUH Walid & FONTAN Benjamin & CAILLAUD Xavier & François Legastelois
-// Purpose of file: plugin order v1.4.0 - GLPI 0.80
+// Purpose of file: 
 // ----------------------------------------------------------------------
 // ---------------------------------------------------------------------- */
 
 function plugin_order_install() {
-   global $DB,$LANG;
+   foreach (glob(GLPI_ROOT . '/plugins/order/inc/*.php') as $file) {
+      include_once ($file);
+   }
 
-   include_once(GLPI_ROOT."/plugins/order/inc/profile.class.php");
-
-   $install   = false;
-   $update110 = false;
-   $update120 = false;
-   $update130 = false;
-   $update140 = false;
-   $update150 = false;
-   
    $migration = new Migration("1.5.0");
-   
-   if (TableExists("glpi_plugin_order_detail")) {
-      if (!FieldExists("glpi_plugin_order_detail","discount")) { // version 1.1.0
-
-         //----------------------------------------------------------------------//
-         //-----------------------Version 1.1.0 migration -----------------------//
-         //----------------------------------------------------------------------//
-         $migration->displayMessage("Update to version 1.1.0");
-
-         $update110=true;
-
-         //Running SQL update file
-         $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.1.0.sql");
-
-         $migration->displayMessage($LANG['update'][141] . ' - glpi_dropdown_plugin_order_taxes');
-         $query = "SELECT `name` FROM `glpi_dropdown_plugin_order_taxes` ";
-         
-         //Remplace , by . in taxes
-         foreach ($DB->request($query) as $data) {
-            if(strpos($data["name"], ',')) {
-               $name= str_replace(',', '.', $data["name"]);
-               $query = "UPDATE `glpi_dropdown_plugin_order_taxes`
-                         SET `name` = '".$name."'
-                         WHERE `name`= '".$data["name"]."'";
-               $DB->query($query) or die($DB->error());
-            }
-         }
-         
-         $migration->displayMessage($LANG['update'][141] . ' - glpi_plugin_order');
-         if (FieldExists("glpi_plugin_order", "numordersupplier")) {
-            $query = "SELECT `numordersupplier`,`numbill`,`ID` FROM `glpi_plugin_order` ";
-            foreach ($DB->request($query) as $data) {
-               $query = "INSERT INTO  `glpi_plugin_order_suppliers`
-                         (`ID`, `FK_order`, `numorder`, `numbill`) VALUES
-                         (NULL, '".$data["ID"]."', '".$data["numordersupplier"]."', '".$data["numbill"]."') ";
-               $DB->query($query) or die($DB->error());
-               
-            }
-         
-         }
-         $migration->dropField('glpi_plugin_order', 'numordersupplier');
-         $migration->dropField('glpi_plugin_order', 'numbill');
-         $migration->executeMigration();
-      }
-      
-
-         //----------------------------------------------------------------------//
-         //-----------------------Version 1.1.2 migration -----------------------//
-         //----------------------------------------------------------------------//
-
-      $migration->displayMessage("Update to version 1.1.2");
-      
-      $migration->addField("glpi_plugin_order_detail","delivery_status", "int(1) NOT NULL default '0'");
-      $migration->addField("glpi_plugin_order_detail","delivery_comments", "TEXT");
-      
-      if (!TableExists("glpi_dropdown_plugin_order_deliverystate")) {
-         $query = "CREATE TABLE IF NOT EXISTS `glpi_dropdown_plugin_order_deliverystate` (
-                     `ID` int(11) NOT NULL auto_increment,
-                     `name` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-                     `comments` text,
-                     PRIMARY KEY  (`ID`),
-                     KEY `name` (`name`)
-                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-         $DB->query($query) or die($DB->error());
-      }
-      
-      if (TableExists("glpi_dropdown_plugin_order_status")) {
-         $query = "DROP TABLE `glpi_dropdown_plugin_order_status`";
-         $DB->query($query) or die($DB->error());
-      }
-      
-      $migration->executeMigration();
-      
-      if (!TableExists("glpi_plugin_order_surveysuppliers")) {
-         $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_surveysuppliers` (
-                     `ID` int(11) NOT NULL auto_increment,
-                     `FK_order` int(11) NOT NULL default 0,
-                     `FK_enterprise` INT(11) NOT NULL DEFAULT 0,
-                     `answer1` int(11) NOT NULL default 0,
-                     `answer2` int(11) NOT NULL default 0,
-                     `answer3` int(11) NOT NULL default 0,
-                     `answer4` int(11) NOT NULL default 0,
-                     `answer5` int(11) NOT NULL default 0,
-                     `comment` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-                     PRIMARY KEY  (`ID`)
-                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-         $DB->query($query) or die($DB->error());
-      }
-      
-      if (!TableExists("glpi_plugin_order_preferences")) {
-         $query = "CREATE TABLE `glpi_plugin_order_preferences` (
-                     `ID` int(11) NOT NULL auto_increment,
-                     `user_id` int(11) NOT NULL,
-                     `template` varchar(255) NOT NULL,
-                     `sign` varchar(255) NOT NULL,
-                     PRIMARY KEY  (`ID`)
-                  ) ENGINE=MyISAM;";
-
-         $DB->query($query) or die($DB->error());
-      }
-
-      //Post 1.1.0
-      $update120=true;
-      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.2.0.sql");
-      
-      if (!countElementsInTable("glpi_plugin_order_configs")) {
-         $query = "INSERT INTO `glpi_plugin_order_configs`(id,use_validation,default_taxes) VALUES (1,0,0);";
-         $DB->query($query) or die($DB->error());
-      }
-      
-      $query = "SELECT `suppliers_id`, `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_orders` ";
-      foreach ($DB->request($query) as $data) {
-         $query = "UPDATE `glpi_plugin_order_orders_suppliers`
-                   SET `suppliers_id` = '".$data["suppliers_id"]."'
-                   WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
-         $DB->query($query) or die($DB->error());
-
-         $query = "UPDATE `glpi_plugin_order_orders_suppliers`
-                   SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
-                   WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
-         $DB->query($query) or die($DB->error());
-
-         $query = "UPDATE `glpi_plugin_order_surveysuppliers`
-                   SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
-                   WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
-         $DB->query($query) or die($DB->error());
-      }
-
-      $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_references` ";
-      foreach ($DB->request($query) as $data) {
-         $query = "UPDATE `glpi_plugin_order_references_suppliers`
-                   SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
-                   WHERE `plugin_order_references_id` = '".$data["id"]."' ";
-         $DB->query($query) or die($DB->error());
-      }
-      
-      $migration->dropField("glpi_plugin_order_profiles", "name");
-      $migration->executeMigration();
-
+/*
       Plugin::migrateItemType(array(3150 => 'PluginOrderOrder', 3151 => 'PluginOrderReference',
                                     3152 => 'PluginOrderReference_Supplier',
                                     3153 => 'PluginOrderBudget', 3154 => 'PluginOrderOrder_Supplier',
@@ -194,518 +49,47 @@ function plugin_order_install() {
                                     "glpi_infocoms", "glpi_logs", "glpi_tickets"),
                               array("glpi_plugin_order_orders_items", 
                                     "glpi_plugin_order_references"));
+*/
 
-   }
-
-   if (TableExists("glpi_plugin_order_configs") 
-      && !FieldExists("glpi_plugin_order_configs", "generate_assets")) { // version 1.3.0
-      $update130 = true;
-      $migration->displayMessage("Update to version 1.3.0");
-      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.3.0.sql");
-   }
-   
-   if (TableExists("glpi_plugin_order_budgets")) { // version 1.4.0
-      $update140 = true;
-      $migration->displayMessage("Update to version 1.4.0");
-      $migration->displayMessage("Budget migration");
-      
-      //Manage budgets migration before dropping the table
-      $budget = new Budget();
-      $matchings = array('budgets_id' => 'id', 'name' => 'name', 'start_date' => 'begin_date', 
-                         'end_date' => 'end_date', 'value' => 'value', 'comment' => 'comment', 
-                         'entities_id' => 'entities_id', 'is_deleted' => 'is_deleted');
-      foreach (getAllDatasFromTable("glpi_plugin_order_budgets") as $data) {
-         $tmp    = array();
-         $id     = false;
-         foreach ($matchings as $old => $new) {
-            $tmp[$new] = $data[$old];
-         }
-
-         $tmp['comment'] = addslashes($tmp['comment']);
-         
-         //Budget already exists in the core: update it
-         if ($budget->getFromDB($data['budgets_id'])) {
-            $budget->update($tmp);
-            $id = $tmp['id'];
-         } else {
-            //Budget doesn't exists in the core: create it
-            unset($tmp['id']);
-            $id = $budget->add($tmp);
-         }
-         
-         if ($id) {
-            $query = "UPDATE `glpi_plugin_order_orders` SET `budgets_id`='$id' " .
-                     "WHERE `budgets_id`='".$data['id']."'";
-            $DB->query($query) or die ($DB->error());
+   $classes = array('PluginOrderConfig', 'PluginOrderBill', 'PluginOrderBillState', 
+                    'PluginOrderBillType', 'PluginOrderOrderState', 'PluginOrderOrder', 
+                    'PluginOrderOrder_Item', 'PluginOrderReference', 'PluginOrderDeliveryState', 
+                    'PluginOrderNotificationTargetOrder_Item', 'PluginOrderNotificationTargetOrder', 
+                    'PluginOrderOrder_Supplier', 'PluginOrderOrderPayment','PluginOrderOrderTaxe', 
+                    'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
+                    'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier', 
+                    'PluginOrderSurveySupplier');
+   foreach ($classes as $class) {
+      if ($plug=isPluginItemType($class)) {
+         $plugname=strtolower($plug['plugin']);
+         $dir=GLPI_ROOT . "/plugins/$plugname/inc/";
+         $item=strtolower($plug['class']);
+         if (file_exists("$dir$item.class.php")) {
+            include_once ("$dir$item.class.php");
+            call_user_func(array($class,'install'),$migration);
          }
       }
-      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.4.0.sql");
-   }
-
-   if (!TableExists("glpi_plugin_order_orders")) { // not installed
-      $install = true;
-      $migration->displayMessage("Install version 1.5.0");
-      if (!$DB->runFile(GLPI_ROOT ."/plugins/order/sql/empty-1.5.0.sql")) {
-         die ("Install failed !");
-      }
-   }
-   
-   if (!FieldExists("glpi_plugin_order_profiles", "bill")
-         && !TableExists("glpi_plugin_order_orderstates")) { // version 1.5.0
-      $update150 = true;
-      $migration->displayMessage("Update to version 1.5.0");
-      $DB->runFile(GLPI_ROOT ."/plugins/order/sql/update-1.5.0.sql");
-   }
-
-   if($install || $update130) {
-      $migration->displayMessage("Add order reception notification template");
-
-      $query_id = "SELECT `id` 
-                   FROM `glpi_notificationtemplates` 
-                   WHERE `itemtype`='PluginOrderOrder_Item' 
-                      AND `name` = 'Order Reception'";
-      $result           = $DB->query($query_id) or die ($DB->error());
-      $notifications_id = $DB->result($result, 0, 'id');
-      
-      if ($DB->numrows($result)) {
-         if (!countElementsInTable("glpi_notificationtemplatetranslations", 
-                                   "`notificationtemplates_id`='$notifications_id'")) {
-            $query="INSERT INTO `glpi_notificationtemplatetranslations`
-                     VALUES(NULL, ".$notifications_id.",'','##lang.reception.title##','##lang.reception.title## 
-      
-      ##reception.orderurl## 
-      
-      ##lang.reception.ordername## : 
-      ##reception.ordername## 
-      ##lang.reception.orderdate## : 
-      ##reception.orderdate## 
-      
-      ##lang.reception.orderentity## : 
-      ##reception.orderentity## 
-      ##lang.reception.orderstate## : 
-      ##reception.orderstate## 
-      
-      ##lang.reception.ordernumber## : 
-      ##reception.ordernumber## 
-      ##lang.reception.orderbudget## : 
-      ##reception.orderbudget## 
-      
-      ##lang.reception.orderlocation## : 
-      ##reception.orderlocation## 
-      ##lang.reception.ordertaxe## : 
-      ##reception.ordertaxe## 
-      
-      ##lang.reception.ordersupplier## : 
-      ##reception.ordersupplier## 
-      ##lang.reception.orderpayment## : 
-      ##reception.orderpayment## 
-      
-      ##lang.reception.ordercontact## : 
-      ##reception.ordercontact## 
-      ##lang.reception.orderport## : 
-      ##reception.orderport## 
-      
-      ##lang.reception.ordercomment## : 
-      ##reception.ordercomment## 
-      ##lang.reception.ordernote## : 
-      ##reception.ordernote## 
-      
-      Informations sur la r&#233;f&#233;rence r&#233;ceptionn&#233;e 
-      
-      ##reception.deliveryreference_url## 
-      
-      ##lang.reception.deliveryreference_name## : 
-      ##reception.deliveryreference_name## 
-      ##lang.reception.deliveryreference_itemtype## : 
-      ##reception.deliveryreference_itemtype## 
-      
-      ##lang.reception.deliveryreference_type## : 
-      ##reception.deliveryreference_type## 
-      ##lang.reception.deliveryreference_model## : 
-      ##reception.deliveryreference_model## 
-      
-      ##lang.reception.deliveryreference_manufacturer## : 
-      ##reception.deliveryreference_manufacturer## 
-      
-      ##lang.reception.deliveryreference_comment## : 
-      ##reception.deliveryreference_comment## 
-      ##lang.reception.deliveryreference_note## : 
-      ##reception.deliveryreference_note## 
-      
-      Informations sur la r&#233;ception 
-      
-      ##reception.deliveryurl## 
-      
-      ##lang.reception.deliverydate## : ##reception.deliverydate## 
-      ##lang.reception.deliverystate## : ##reception.deliverystate## 
-      ##lang.reception.deliverynumber## : ##reception.deliverynumber## 
-      
-      ##IFreception.associateditems_url##
-      Informations sur le mat&#233;riel associ&#233; 
-      
-      ##reception.associateditems_url## 
-      
-      ##lang.reception.associateditems_name## : ##reception.associateditems_name## 
-      ##lang.reception.associateditems_serial## : ##reception.associateditems_serial## 
-      ##lang.reception.associateditems_otherserial## : ##reception.associateditems_otherserial## 
-      ##lang.reception.associateditems_state## : ##reception.associateditems_state##
-      ##ENDIFreception.associateditems_url##','&lt;table style=\"border: 1px solid black; border-collapse: collapse;\"&gt;
-      &lt;tbody&gt;
-      &lt;tr&gt;
-      &lt;th style=\"background-color: #f2f2f2;\" colspan=\"4\"&gt;Informations sur la commande&lt;/th&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black; background-color: #f2f2f2;\" colspan=\"4\"&gt;##reception.orderurl##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordername## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.ordername##&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderdate## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.orderdate##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderentity## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.orderentity##&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderstate## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.orderstate##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordernumber## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.ordernumber##&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderbudget## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.orderbudget##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderlocation## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.orderlocation##&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordertaxe## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.ordertaxe##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordersupplier## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.ordersupplier##&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderpayment## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.orderpayment##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordercontact## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.ordercontact##&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.orderport## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.orderport##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordercomment## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.ordercomment##&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.ordernote## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.ordernote##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;/tbody&gt;
-      &lt;/table&gt;
-      &lt;hr /&gt;
-      &lt;table style=\"border: 1px solid black; border-collapse: collapse;\"&gt;
-      &lt;tbody&gt;
-      &lt;tr&gt;
-      &lt;th style=\"background-color: #f2f2f2;\" colspan=\"4\"&gt;Informations sur la r&#233;f&#233;rence r&#233;ceptionn&#233;e&lt;/th&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black; background-color: #f2f2f2;\" colspan=\"4\"&gt;##reception.deliveryreference_url##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_name## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_name##&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_itemtype## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_itemtype##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_type## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_type##&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_model## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_model##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black;\" colspan=\"2\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_manufacturer## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\" colspan=\"2\"&gt;##reception.deliveryreference_manufacturer##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_comment## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_comment##&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliveryreference_note## :&lt;/strong&gt;&lt;/td&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;##reception.deliveryreference_note##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;/tbody&gt;
-      &lt;/table&gt;
-      &lt;hr /&gt;
-      &lt;table style=\"border: 1px solid black; border-collapse: collapse;\"&gt;
-      &lt;tbody&gt;
-      &lt;tr&gt;
-      &lt;th style=\"background-color: #f2f2f2;\"&gt;Informations sur la r&#233;ception&lt;/th&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black; background-color: #f2f2f2;\"&gt;##reception.deliveryurl##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.deliverydate## : &lt;/strong&gt;##reception.deliverydate##             &lt;br /&gt;&lt;strong&gt;##lang.reception.deliverystate## : &lt;/strong&gt;##reception.deliverystate##             &lt;br /&gt;&lt;strong&gt;##lang.reception.deliverynumber## : &lt;/strong&gt;##reception.deliverynumber##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;/tbody&gt;
-      &lt;/table&gt;
-      ##IFreception.associateditems_url##
-      &lt;hr /&gt;
-      &lt;table style=\"border: 1px solid black; border-collapse: collapse;\"&gt;
-      &lt;tbody&gt;
-      &lt;tr&gt;
-      &lt;th style=\"background-color: #f2f2f2;\"&gt;Informations sur le mat&#233;riel associ&#233;&lt;/th&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black; background-color: #f2f2f2;\"&gt;##reception.associateditems_url##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-      &lt;td style=\"border: 1px solid black;\"&gt;&lt;strong&gt;##lang.reception.associateditems_name## : &lt;/strong&gt;##reception.associateditems_name##             &lt;br /&gt;&lt;strong&gt;##lang.reception.associateditems_serial## : &lt;/strong&gt;##reception.associateditems_serial##             &lt;br /&gt;&lt;strong&gt;##lang.reception.associateditems_otherserial## : &lt;/strong&gt;##reception.associateditems_otherserial##             &lt;br /&gt;&lt;strong&gt;##lang.reception.associateditems_state## : &lt;/strong&gt;##reception.associateditems_state##&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;/tbody&gt;
-      &lt;/table&gt;
-      ##ENDIFreception.associateditems_url##')";
-                  
-            $result=$DB->query($query) or die($DB->error());
-            $migration->displayMessage("Add notification: Taken delivery");
-            if (!countElementsInTable("glpi_notifications","`name`='Taken delivery'")) {
-               $query = "INSERT INTO `glpi_notifications`
-                          VALUES (NULL, 'Taken delivery', 0, 'PluginOrderOrder_Item', 'delivered',
-                                 'mail',$notifications_id, '', 1, 1, NOW());";
-               $result=$DB->query($query) or die($DB->error());
-            }
-         }
-      }
-
-   }
-      
-   
-   if($update140) {
-      /* Migrate VAT */
-      foreach ($DB->request("glpi_plugin_order_orders") as $data) {
-         $query = "UPDATE `glpi_plugin_order_orders_items`
-                   SET `plugin_order_ordertaxes_id` = '" . $data["plugin_order_ordertaxes_id"] . "'
-                   WHERE `plugin_order_orders_id` = '" . $data["id"] . "'";
-         $result=$DB->query($query) or die($DB->error());
-      }
-
-   }
-
-   $migration->displayMessage("Update profile for current user");
-   PluginOrderProfile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
-
-   /* Insert Status */
-   if($update150 || $install) {
-
-      $migration->displayMessage("Add order validation notification template");
-
-      if (!countElementsInTable("glpi_notificationtemplates", 
-                                "`name`='Order Validation' AND `itemtype`='PluginOrderOrder'")) {
-         $query = "INSERT INTO `glpi_notificationtemplates` VALUES(NULL, 'Order Validation', 'PluginOrderOrder', NOW(),'',NULL);";
-         $result=$DB->query($query) or die($DB->error());
-      }
-
-      $query_id = "SELECT `id` FROM `glpi_notificationtemplates` 
-                   WHERE `itemtype`='PluginOrderOrder' 
-                      AND `name` = 'Order Validation'";
-      $result   = $DB->query($query_id) or die ($DB->error());
-      if ($DB->numrows($result) > 0) {
-         $notifications_id = $DB->result($result, 0, 'id');
-         
-         $query = "INSERT INTO `glpi_notificationtemplatetranslations` 
-                  (`notificationtemplates_id`, `language`, `subject`, `content_text`, `content_html`)
-                  VALUES($notifications_id, '','##lang.ordervalidation.title##',
-                           '##lang.ordervalidation.url## : ##ordervalidation.url##
-   ##lang.ordervalidation.entity## : ##ordervalidation.entity##
-   ##IFordervalidation.name####lang.ordervalidation.name## : ##ordervalidation.name##
-   ##ENDIFordervalidation.name##
-   ##IFordervalidation.numorder####lang.ordervalidation.numorder## : ##ordervalidation.numorder##
-   ##ENDIFordervalidation.numorder##
-   ##IFordervalidation.orderdate####lang.ordervalidation.orderdate##  : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##
-   ##IFordervalidation.state####lang.ordervalidation.state## : ##ordervalidation.state####ENDIFordervalidation.state##
-   ##IFordervalidation.users####lang.ordervalidation.users## : ##ordervalidation.users####ENDIFordervalidation.users##
-   
-   ##IFordervalidation.comment####lang.ordervalidation.comment## : ##ordervalidation.comment####ENDIFordervalidation.comment##',
-                           '&lt;p&gt;&lt;strong&gt;##lang.ordervalidation.url##&lt;/strong&gt; : &lt;a href=\"##ordervalidation.url##\"&gt;##ordervalidation.url##&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;##lang.ordervalidation.entity##&lt;/strong&gt; : ##ordervalidation.entity##&lt;br /&gt; ##IFordervalidation.name##&lt;strong&gt;##lang.ordervalidation.name##&lt;/strong&gt; : ##ordervalidation.name####ENDIFordervalidation.name##&lt;br /&gt;##IFordervalidation.numorder##&lt;strong&gt;##lang.ordervalidation.numorder##&lt;/strong&gt; : ##ordervalidation.numorder####ENDIFordervalidation.numorder##&lt;br /&gt;##IFordervalidation.orderdate##&lt;strong&gt;##lang.ordervalidation.orderdate##&lt;/strong&gt; : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##&lt;br /&gt;##IFordervalidation.state##&lt;strong&gt;##lang.ordervalidation.state##&lt;/strong&gt; : ##ordervalidation.state####ENDIFordervalidation.state##&lt;br /&gt;##IFordervalidation.users##&lt;strong&gt;##lang.ordervalidation.users##&lt;/strong&gt; : ##ordervalidation.users####ENDIFordervalidation.users##&lt;br /&gt;&lt;br /&gt;##IFordervalidation.comment##&lt;strong&gt;##lang.ordervalidation.comment##&lt;/strong&gt; : ##ordervalidation.comment####ENDIFordervalidation.comment##&lt;/p&gt;');";
-         $result = $DB->query($query) or die($DB->error());
-
-         
-         $notifs = array('New Order Validation' => 'ask', 'Confirm Order Validation' => 'validation',
-                         'Cancel Order Validation' => 'undovalidation', 'Cancel Order' => 'cancel');
-         foreach ($notifs as $label => $name) {
-            $migration->displayMessage("Add notification: $name");
-            $query  = "INSERT INTO `glpi_notifications`
-                       VALUES (NULL, '$label', 0, 'PluginOrderOrder', '$name',
-                               'mail',".$notifications_id.", '', 1, 1, NOW());";
-            $result = $DB->query($query) or die($DB->error());
-         
-         }
-
-      }
-      if ($update150) {
-         $migration->changeField("glpi_plugin_order_orders", "states_id", 
-                                 "plugin_order_orderstates_id", 
-                                 "CHAR( 1 ) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->executeMigration();
-      }
-
-      $migration->displayMessage("Convert order states as dropdown");
-      foreach (array (1 => $LANG['plugin_order']['status'][9], 
-                      2 => $LANG['plugin_order']['status'][7],
-                      3 => $LANG['plugin_order']['status'][12],
-                      4 => $LANG['plugin_order']['status'][1],
-                      5 => $LANG['plugin_order']['status'][2],
-                      6 => $LANG['plugin_order']['status'][10]) as $id => $label) {
-         $query = "INSERT INTO `glpi_plugin_order_orderstates` 
-                   VALUES   ($id, '".addslashes_deep($label)."', '')";
-         $result = $DB->query($query) or die($DB->error());
-      }
-      
-      $migration->displayMessage("Add default order state workflow");
-      $query = "UPDATE `glpi_plugin_order_configs` 
-                  SET   `order_status_draft` = '1',
-                        `order_status_waiting_approval` = '2',
-                        `order_status_approved` = '3',
-                        `order_status_partially_delivred` = '4',
-                        `order_status_completly_delivered` = '5',
-                        `order_status_canceled`= '6' 
-                  WHERE `id` = '1'";
-      $result = $DB->query($query) or die($DB->error());
-      
-      $migration->executeMigration();
-      $migration->displayMessage("Update orders with new status");
-      foreach (array(6 => 5, 5 => 4, 4 => 3, 3 => 2, 2 => 1, 1 => 0) as $old => $new) {
-         $query = "UPDATE `glpi_plugin_order_orders` 
-                   SET `plugin_order_orderstates_id` = '$old'
-                   WHERE `plugin_order_orderstates_id` = '$new'";
-         $result = $DB->query($query) or die($DB->error());
-      }
-       
-      $migration->addField("glpi_plugin_order_profiles", "bill", 
-                           "CHAR( 1 ) COLLATE utf8_unicode_ci DEFAULT NULL");
-      $migration->addField("glpi_plugin_order_orders", "duedate", "DATETIME NULL");
-      $migration->addField("glpi_plugin_order_orders_items", "entities_id", 
-                           "INT( 11 ) NOT NULL DEFAULT '0'");
-      $migration->addField("glpi_plugin_order_orders_items", "is_recursive", 
-                           "TINYINT( 1 ) NOT NULL DEFAULT '0'");
-      $migration->addKey("glpi_plugin_order_orders_items", "entities_id", "entities_id", "INDEX");
-      $migration->executeMigration();
-
-      //Forward entities_id and is_recursive into table glpi_plugin_order_orders_items
-      $query = "SELECT `go`.`entities_id` as entities_id , `go`.`is_recursive` as is_recursive, `goi`.`id` as items_id
-                FROM `glpi_plugin_order_orders` as go, `glpi_plugin_order_orders_items` as `goi` 
-                WHERE `goi`.`plugin_order_orders_id`=`go`.`id`";
-      foreach($DB->request($query) as $data) {
-         $update = "UPDATE `glpi_plugin_order_orders_items` 
-                    SET `entities_id`='".$data['entities_id']."' 
-                       AND `is_recursive`='".$data['is_recursive']."' 
-                    WHERE `id`='".$data['items_id']."'";
-         $DB->query($update)  or die($DB->error());
-      }
-      PluginOrderProfile::addRightToProfile($_SESSION['glpiactiveprofile']['id'], "bill" , "w");
    }
    
    return true;
 }
 
 function plugin_order_uninstall() {
-   global $DB;
-
-   /* drop all the plugin tables */
-   $tables = array ("glpi_plugin_order_orders", "glpi_plugin_order_orders_items",
-                    "glpi_plugin_order_profiles", "glpi_plugin_order_ordertaxes",
-                    "glpi_plugin_order_orderpayments", "glpi_plugin_order_ordertypes",
-                    "glpi_plugin_order_orderstates", "glpi_plugin_order_references",
-                    "glpi_plugin_order_references_suppliers", "glpi_plugin_order_configs",
-                    "glpi_plugin_order_orders_suppliers", "glpi_plugin_order_others",
-                    "glpi_plugin_order_othertypes", "glpi_plugin_order_bills",
-                    "glpi_plugin_order_deliverystates", "glpi_plugin_order_billstates",
-                    "glpi_plugin_order_billtypes", "glpi_plugin_order_surveysuppliers",
-                    "glpi_plugin_order_preferences");
-
-   foreach ($tables as $table)
-      $DB->query("DROP TABLE IF EXISTS `$table`;");
-
-   //old tables
-   $tables = array ("glpi_plugin_order", "glpi_plugin_order_detail",
-                    "glpi_plugin_order_device", "glpi_plugin_order_profiles",
-                    "glpi_dropdown_plugin_order_status", "glpi_dropdown_plugin_order_taxes",
-                    "glpi_dropdown_plugin_order_payment", "glpi_plugin_order_references",
-                    "glpi_plugin_order_references_manufacturers", "glpi_plugin_order_config",
-                    "glpi_plugin_order_budgets", "glpi_plugin_order_suppliers",
-                    "glpi_plugin_order_mailing");
-
-   foreach ($tables as $table)
-      $DB->query("DROP TABLE IF EXISTS `$table`;");
-
-   $in = "IN (" . implode(',', array ("'PluginOrderOrder'", "'PluginOrderReference'",
-                                      "'PluginOrderReference_Supplier'", 
-                                      "'PluginOrderBill'")) . ")";
-
-   $tables = array ("glpi_displaypreferences", "glpi_documents_items", "glpi_bookmarks",
-                    "glpi_logs");
-
-   foreach ($tables as $table) {
-      $query = "DELETE FROM `$table` WHERE (`itemtype` " . $in." ) ";
-      $DB->query($query);
+   foreach (glob(GLPI_ROOT . '/plugins/order/inc/*.php') as $file) {
+      include_once ($file);
    }
-   
-   $notif = new Notification();
-   
-   $options = array('itemtype' => 'PluginOrderOrder',
-                    'event'    => 'ask',
-                    'FIELDS'   => 'id');
-   foreach ($DB->request('glpi_notifications', $options) as $data) {
-      $notif->delete($data);
-   }
-   $options = array('itemtype' => 'PluginOrderOrder',
-                    'event'    => 'validation',
-                    'FIELDS'   => 'id');
-   foreach ($DB->request('glpi_notifications', $options) as $data) {
-      $notif->delete($data);
-   }
-   $options = array('itemtype' => 'PluginOrderOrder',
-                    'event'    => 'cancel',
-                    'FIELDS'   => 'id');
-   foreach ($DB->request('glpi_notifications', $options) as $data) {
-      $notif->delete($data);
-   }
-   $options = array('itemtype' => 'PluginOrderOrder',
-                    'event'    => 'undovalidation',
-                    'FIELDS'   => 'id');
-   foreach ($DB->request('glpi_notifications', $options) as $data) {
-      $notif->delete($data);
-   }
-   $options = array('itemtype' => 'PluginOrderOrder_Item',
-                    'event'    => 'delivered',
-                    'FIELDS'   => 'id');
-   foreach ($DB->request('glpi_notifications', $options) as $data) {
-      $notif->delete($data);
-   }
-   
-   //templates
-   $template    = new NotificationTemplate();
-   $translation = new NotificationTemplateTranslation();
-   $options     = array('itemtype' => 'PluginOrderOrder', 'FIELDS'   => 'id');
-   foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
-      $options_template = array('notificationtemplates_id' => $data['id'], 'FIELDS'   => 'id');
-      foreach ($DB->request('glpi_notificationtemplatetranslations', 
-                            $options_template) as $data_template) {
-         $translation->delete($data_template);
+
+   $classes = array('PluginOrderConfig', 'PluginOrderBill', 'PluginOrderBillState', 
+                    'PluginOrderBillType', 'PluginOrderOrderState', 'PluginOrderOrder', 
+                    'PluginOrderOrder_Item', 'PluginOrderReference', 'PluginOrderDeliveryState', 
+                    'PluginOrderNotificationTargetOrder_Item', 'PluginOrderNotificationTargetOrder', 
+                    'PluginOrderOrder_Supplier', 'PluginOrderOrderPayment','PluginOrderOrderTaxe', 
+                    'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
+                    'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier', 
+                    'PluginOrderSurveySupplier');
+      foreach ($classes as $class) {
+         call_user_func(array($class,'uninstall'));
       }
-      $template->delete($data);
-   }
-   
-   //templates
-   $options = array('itemtype' => 'PluginOrderOrder_Item', 'FIELDS'   => 'id');
-   foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
-      $options_template = array('notificationtemplates_id' => $data['id'], 'FIELDS'   => 'id');
-   
-         foreach ($DB->request('glpi_notificationtemplatetranslations', 
-                               $options_template) as $data_template) {
-            $translation->delete($data_template);
-         }
-      $template->delete($data);
-   }
 
    return true;
 }
@@ -734,7 +118,7 @@ function plugin_order_getDropdown() {
 /* define dropdown relations */
 function plugin_order_getDatabaseRelations() {
    $plugin = new Plugin();
-   if ($plugin->isActivated("order"))
+   if ($plugin->isActivated("order")) {
       return array (
          "glpi_plugin_order_orderpayments" => array (
             "glpi_plugin_order_orders" => "plugin_order_orderpayments_id"
@@ -784,8 +168,10 @@ function plugin_order_getDatabaseRelations() {
             "glpi_plugin_order_profiles" => "profiles_id"
          )
       );
-   else
+
+   } else {
       return array ();
+   }
 }
 
 ////// SEARCH FUNCTIONS ///////(){
@@ -794,8 +180,12 @@ function plugin_order_getDatabaseRelations() {
 function plugin_order_getAddSearchOptions($itemtype) {
    global $LANG;
 
+   $plugin = new Plugin();
+   
    $sopt = array();
-   if (plugin_order_haveRight("order","r")) {
+   if ($plugin->isInstalled('order') 
+      && $plugin->isActivated('order') 
+         && plugin_order_haveRight("order","r")) {
       if (in_array($itemtype, PluginOrderOrder_Item::getClasses(true))) {
          $sopt[3160]['table']         = 'glpi_plugin_order_orders';
          $sopt[3160]['field']         = 'name';
@@ -817,26 +207,13 @@ function plugin_order_getAddSearchOptions($itemtype) {
    return $sopt;
 }
 
-function plugin_order_forceGroupBy($type){
-
-   return true;
-   /*
-   switch ($type){
-      case 'PluginOrderOrder':
-         return true;
-         break;
-
-   }
-   return false;*/
-}
-
 function plugin_order_addSelect($type, $ID, $num) {
 
    $searchopt = &Search::getOptions($type);
    $table     = $searchopt[$ID]["table"];
    $field     = $searchopt[$ID]["field"];
 
-   if ($table == "glpi_plugin_order_references" && $num!=0) {
+   if ($table == "glpi_plugin_order_references" && $num != 0) {
       return "`$table`.`itemtype`, `$table`.`$field` AS `ITEM_$num`, ";
    } else {
       return "";

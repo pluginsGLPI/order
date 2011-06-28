@@ -215,9 +215,13 @@ class PluginOrderReference extends CommonDropdown {
                $item     = new $itemtype();
                echo $item->getTypeName();
             } else {
-               $this->dropdownAllItems("itemtype", true, $this->fields["itemtype"], 0, 0,
-                                       $_SESSION["glpiactive_entity"], 
-                                       $CFG_GLPI["root_doc"] ."/plugins/order/ajax/reference.php");
+               $params = array('myname'       => 'itemtype', 'ajax' => true, 
+                               'value'        => $this->fields["itemtype"],
+                               'entity'       => $_SESSION["glpiactive_entity"], 
+                               'ajax_page'    => GLPI_ROOT.'/plugins/order/ajax/referencespecifications.php',
+                               'class' => __CLASS__);
+                               
+               $this->dropdownAllItems($params);
             }
             break;
 
@@ -373,23 +377,38 @@ class PluginOrderReference extends CommonDropdown {
       }
    }
 
-   function dropdownAllItems($myname, $ajax = false, $value = 0, $orders_id = 0, $suppliers_id = 0,
-                             $entity = 0, $ajax_page = '', $filter = false) {
+//   function dropdownAllItems($myname, $ajax = false, $value = 0, $orders_id = 0, $suppliers_id = 0,
+//                             $entity = 0, $ajax_page = '', $filter = false) {
+   function dropdownAllItems($options = array()) {
+
       global $DB;
+      
+      $p['myname']       = '';
+      $p['ajax']         = false;
+      $p['value']        = 0;
+      $p['orders_id']    = 0;
+      $p['suppliers_id'] = 0;
+      $p['entity']       = 0;
+      $p['ajax_page']    = '';
+      $p['filter']       = '';
+      $p['class']       = '';
+      foreach ($options as $key => $value) {
+         $p[$key] = $value;
+      }
       
       $types = PluginOrderOrder_Item::getClasses();
 
-      echo "<select name='$myname' id='$myname'>";
+      echo "<select name='".$p['myname']."' id='".$p['myname']."'>";
       echo "<option value='0' selected>".DROPDOWN_EMPTY_VALUE."</option>\n";
 
-      if ($filter){
+      if ($p['filter']){
 
          $used  = array();
-         $query = "SELECT `itemtype` FROM `".$this->getTable()." as t`
+         $query = "SELECT `itemtype` FROM `".$this->getTable()."` as t
                    LEFT JOIN `glpi_plugin_order_references_suppliers` as s ON (
                       `t`.`id` = `s`.`plugin_order_references_id`)
-                  WHERE `s`.`suppliers_id` = '".$suppliers_id."' ".
-                 getEntitiesRestrictRequest("AND", $this->table, '', $entity, true);
+                  WHERE `s`.`suppliers_id` = '".$p['suppliers_id']."' ".
+                 getEntitiesRestrictRequest("AND", 't', '', $p['entity'], true);
          $result = $DB->query($query);
          $number = $DB->numrows($result);
          if ($number) {
@@ -412,15 +431,23 @@ class PluginOrderReference extends CommonDropdown {
 
       echo "</select>";
 
-      if ($ajax) {
-         $params = array ('itemtype' => '__VALUE__', 'suppliers_id' => $suppliers_id,
-                          'entity_restrict' => $entity, 'plugin_order_orders_id' => $orders_id);
-         
-         foreach (array("types_id", "models_id", "templates_id") as $field) {
-            $params['field'] = $field;
-            ajaxUpdateItemOnSelectEvent($myname, "show_$field", 
-                                        GLPI_ROOT.'/plugins/order/ajax/referencespecifications.php', 
-                                        $params);
+      if ($p['ajax']) {
+         $params = array ('itemtype' => '__VALUE__', 'suppliers_id' => $p['suppliers_id'],
+                          'entity_restrict' => $p['entity'], 
+                          'plugin_order_orders_id' => $p['orders_id']);
+
+         if ($p['class'] != 'PluginOrderOrder_Item') {
+            foreach (array("types_id", "models_id", "templates_id") as $field) {
+               $params['field'] = $field;
+               $params['plugin_order_references_id'] = $p['value'];
+               ajaxUpdateItemOnSelectEvent($p['myname'], "show_$field", 
+                                           $p['ajax_page'], 
+                                           $params);
+            }
+         } else {
+               ajaxUpdateItemOnSelectEvent($p['myname'], "show_reference", 
+                                           $p['ajax_page'], 
+                                           $params);
          }
       }
    }
@@ -482,13 +509,13 @@ class PluginOrderReference extends CommonDropdown {
 
    function dropdownAllItemsByType($name, $itemtype, $entity=0,$types_id=0,$models_id=0) {
 
-      $items    = $this->getAllItemsByType($itemtype,$entity,$types_id,$models_id);
+      $items    = $this->getAllItemsByType($itemtype, $entity, $types_id, $models_id);
       $items[0] = DROPDOWN_EMPTY_VALUE;
       asort($items);
       return Dropdown::showFromArray($name, $items);
    }
 
-   function getAllReferencesByEnterpriseAndType($itemtype,$enterpriseID){
+   function getAllReferencesByEnterpriseAndType($itemtype, $enterpriseID){
       global $DB;
 
       $query = "SELECT `gr`.`name`, `gr`.`id`, `grm`.`reference_code`
@@ -732,6 +759,114 @@ class PluginOrderReference extends CommonDropdown {
       });";
       $out.= "</script>";
       return $out;
+   }
+   
+   static function install(Migration $migration) {
+      global $DB;
+      
+      $table = getTableForItemType(__CLASS__);
+      if (!TableExists($table)) {
+         //Install
+         $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references` (
+               `id` int(11) NOT NULL auto_increment,
+               `entities_id` int(11) NOT NULL default '0',
+               `is_recursive` tinyint(1) NOT NULL default '0',
+               `name` varchar(255) collate utf8_unicode_ci default NULL,
+               `manufacturers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)',
+               `types_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtypes tables (id)',
+               `models_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemmodels tables (id)',
+               `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file',
+               `templates_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
+               `comment` text collate utf8_unicode_ci,
+               `is_deleted` tinyint(1) NOT NULL default '0',
+               `notepad` longtext collate utf8_unicode_ci,
+               PRIMARY KEY  (`id`),
+               KEY `name` (`name`),
+               KEY `entities_id` (`entities_id`),
+               KEY `manufacturers_id` (`manufacturers_id`),
+               KEY `types_id` (`types_id`),
+               KEY `models_id` (`models_id`),
+               KEY `templates_id` (`templates_id`),
+               KEY `is_deleted` (`is_deleted`)
+            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            $DB->query($query) or die ($DB->error());
+            
+      } else {
+         //Upgrade
+         
+         //1.1.0
+         $migration->changeField($table, "FK_manufacturer", "FK_glpi_enterprise", "int(11) NOT NULL DEFAULT '0'");
+         
+         ///1.2.0
+            $migration->changeField($table, "ID", "id", "NOT NULL auto_increment");
+            $migration->changeField($table, "FK_entities", "entities_id", 
+                                    "int(11) NOT NULL default '0'");
+            $migration->changeField($table, "recursive", "is_recursive", 
+                                    "tinyint(1) NOT NULL default '0'");
+            $migration->changeField($table, "name", "name", 
+                                    "varchar(255) collate utf8_unicode_ci default NULL");
+            $migration->changeField($table, "FK_glpi_enterprise", "manufacturers_id", 
+                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)'");
+            $migration->changeField($table, "FK_type", "types_id", 
+                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtypes tables (id)'");
+            $migration->changeField($table, "FK_model", "models_id", 
+                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemmodels tables (id)'");
+            $migration->changeField($table, "type", "itemtype", 
+                                    "varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file'");
+            $migration->changeField($table, "template", "templates_id", 
+                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
+            $migration->changeField($table, "comment", "comment",
+                                    "text collate utf8_unicode_ci");
+            $migration->changeField($table, "deleted", "is_deleted",
+                                    "tinyint(1) NOT NULL default '0'");
+            $migration->addField($table, "notepad", "longtext collate utf8_unicode_ci");
+
+            $migration->addKey($table, "name");
+            $migration->addKey($table, "entities_id");
+            $migration->addKey($table, "manufacturers_id");
+            $migration->addKey($table, "types_id");
+            $migration->addKey($table, "models_id");
+            $migration->addKey($table, "templates_id");
+            $migration->addKey($table, "is_deleted");
+            $migration->migrationOneTable($table);
+
+            Plugin::migrateItemType(array(3150 => 'PluginOrderOrder', 3151 => 'PluginOrderReference',
+                                          3152 => 'PluginOrderReference_Supplier',
+                                          3153 => 'PluginOrderBudget', 3154 => 'PluginOrderOrder_Supplier',
+                                          3155 => 'PluginOrderReception'),
+                                    array("glpi_bookmarks", "glpi_bookmarks_users", 
+                                          "glpi_displaypreferences", "glpi_documents_items", 
+                                          "glpi_infocoms", "glpi_logs", "glpi_tickets"),
+                                    array("glpi_plugin_order_references"));
+            //1.3.0
+            $DB->query("UPDATE `glpi_plugin_order_references`
+                       SET `itemtype`='ConsumableItem' 
+                       WHERE `itemtype` ='Consumable'") or die ($DB->error());
+            $DB->query("UPDATE `glpi_plugin_order_references`
+                       SET `itemtype`='CartridgeItem' 
+                       WHERE `itemtype` ='Cartridge'") or die ($DB->error());
+                       
+            //Displayprefs
+            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderReference','1','1','0');") or die($DB->error());
+            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderReference','2','4','0');") or die($DB->error());
+            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderReference','4','5','0');") or die($DB->error());
+            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderReference','5','9','0');") or die($DB->error());
+            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderReference','6','6','0');") or die($DB->error());
+            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderReference','7','7','0');") or die($DB->error());
+     }
+   }
+   
+   static function uninstall() {
+      global $DB;
+
+      $table  = getTableForItemType(__CLASS__);
+      foreach (array ("glpi_displaypreferences", "glpi_documents_items", "glpi_bookmarks",
+                       "glpi_logs") as $t) {
+         $query = "DELETE FROM `$t` WHERE `itemtype`='".__CLASS__."'";
+         $DB->query($query);
+      }
+
+      $DB->query("DROP TABLE IF EXISTS `$table`") or die ($DB->error());
    }
 }
 

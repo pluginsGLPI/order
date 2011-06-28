@@ -46,7 +46,7 @@ class PluginOrderOrder extends CommonDBTM {
    const ORDER_DEVICE_DELIVRED            = 1;
    
    // Const Budget
-   const ORDER_IS_OVER_BUDGET = 1;
+   const ORDER_IS_OVER_BUDGET  = 1;
    const ORDER_IS_EQUAL_BUDGET = 2;
    const ORDER_IS_UNDER_BUDGET = 3;
 
@@ -330,10 +330,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       }
       
-      //if ($this->checkIfDetailExists($this->getID())) {
-         /* detail */
-         $ong[2] = $LANG['plugin_order'][5];
-      //}
+     $ong[2] = $LANG['plugin_order'][5];
 
       if ($this->fields['suppliers_id']) {
          /* suppliers */
@@ -351,7 +348,8 @@ class PluginOrderOrder extends CommonDBTM {
          $ong[5] = $LANG['plugin_order']['delivery'][1];
          /* item */
          $ong[6] = $LANG['plugin_order']['item'][0];
-
+         //Bills
+         $ong[8] = $LANG['plugin_order']['bill'][4];
       }
 
       if ($this->getState() == PluginOrderOrderState::DELIVERED) {
@@ -1316,7 +1314,7 @@ class PluginOrderOrder extends CommonDBTM {
          $prices = $PluginOrderOrder_Item->getAllPrices($data['id']);
          $total_HT += $prices["priceHT"] + $data['port_price'];
       }
-logDebug($total_HT);
+
       // Get BUDGET
       $budget = new Budget();
       $budget->getFromDB($this->fields['budgets_id']);
@@ -1362,5 +1360,239 @@ logDebug($total_HT);
       }
    }
    
+   //------------------------------------------------------------
+   //--------------------Install / uninstall --------------------
+   //------------------------------------------------------------
+   
+   static function install(Migration $migration) {
+      global $DB, $LANG;
+
+      $table = getTableForItemType(__CLASS__);
+      if (!TableExists($table)) {
+         //Installation
+         if (!TableExists("glpi_plugin_order")) {
+            $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders` (
+                  `id` int(11) NOT NULL auto_increment,
+                  `entities_id` int(11) NOT NULL default '0',
+                  `is_recursive` tinyint(1) NOT NULL default '0',
+                  `name` varchar(255) collate utf8_unicode_ci default NULL,
+                  `num_order` varchar(255) collate utf8_unicode_ci default NULL,
+                  `budgets_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_budgets (id)',
+                  `plugin_order_ordertaxes_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)',
+                  `plugin_order_orderpayments_id` int (11)  NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orderpayments (id)',
+                  `order_date` date default NULL,
+                  `duedate` date default NULL,
+                  `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
+                  `contacts_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_contacts (id)',
+                  `locations_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_locations (id)',
+                  `plugin_order_orderstates_id` int(11) NOT NULL default 1,
+                  `port_price` float NOT NULL default 0,
+                  `comment` text collate utf8_unicode_ci,
+                  `notepad` longtext collate utf8_unicode_ci,
+                  `is_deleted` tinyint(1) NOT NULL default '0',
+                  `plugin_order_ordertypes_id` int (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)',
+                  PRIMARY KEY  (`id`),
+                  KEY `name` (`name`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `plugin_order_ordertaxes_id` (`plugin_order_ordertaxes_id`),
+                  KEY `plugin_order_orderpayments_id` (`plugin_order_orderpayments_id`),
+                  KEY `states_id` (`plugin_order_orderstates_id`),
+                  KEY `suppliers_id` (`suppliers_id`),
+                  KEY `contacts_id` (`contacts_id`),
+                  KEY `locations_id` (`locations_id`),
+                  KEY `is_deleted` (`is_deleted`)
+               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            $DB->query($query) or die ($DB->error());
+         } else {
+            //Upgrade
+
+            //Update to 1.1.0
+            $migration->addField($table, "port_price", "FLOAT NOT NULL default '0'");
+            $migration->addField($table, "taxes", "FLOAT NOT NULL default '0'");
+            $migration->displayMessage($LANG['update'][141] . ' - glpi_plugin_order');
+            if (FieldExists("glpi_plugin_order", "numordersupplier")) {
+               foreach ($DB->request("glpi_plugin_order") as $data) {
+                  $query = "INSERT INTO  `glpi_plugin_order_suppliers`
+                            (`ID`, `FK_order`, `numorder`, `numbill`) VALUES
+                            (NULL, '".$data["ID"]."', '".$data["numordersupplier"]."', '".$data["numbill"]."') ";
+                  $DB->query($query) or die($DB->error());
+               }
+            }
+            $migration->dropField('glpi_plugin_order', 'numordersupplier');
+            $migration->dropField('glpi_plugin_order', 'numbill');
+            $migration->migrationOneTable($table);
+      
+            //1.2.0
+            $migration->renameTable("glpi_plugin_order", $table);
+            
+            $migration->changeField($table, "ID", "id", "NOT NULL auto_increment");
+            $migration->changeField($table, "FK_entities", "entities_id", 
+                                    "int(11) NOT NULL default '0'");
+            $migration->changeField($table, "recursive", "is_recursive", 
+                                    "tinyint(1) NOT NULL default '0'");
+            $migration->changeField($table, "name", "name", 
+                                    "varchar(255) collate utf8_unicode_ci default NULL");
+            $migration->changeField($table, "budget", "budgets_id", 
+                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_budgets (id)'");
+            $migration->changeField($table, "numorder", "num_order", 
+                                    "varchar(255) collate utf8_unicode_ci default NULL");
+            $migration->changeField($table, "taxes", "plugin_order_ordertaxes_id", 
+                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)'");
+            $migration->changeField($table, "payment", "plugin_order_orderpayments_id", 
+                                    "int (11)  NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orderpayments (id)'");
+            $migration->changeField($table, "date", "order_date",
+                                    "date default NULL");
+            $migration->changeField($table, "FK_enterprise", "suppliers_id",
+                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
+            $migration->changeField($table, "FK_contact", "contacts_id",
+                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_contacts (id)'");
+            $migration->changeField($table, "location", "locations_id",
+                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_locations (id)'");
+            $migration->changeField($table, "status", "states_id",
+                                    "int(11) NOT NULL default '0'");
+            $migration->changeField($table, "comment", "comment",
+                                    "text collate utf8_unicode_ci");
+            $migration->changeField($table, "notes", "notepad",
+                                    "longtext collate utf8_unicode_ci");
+            $migration->changeField($table, "deleted", "is_deleted",
+                                    "tinyint(1) NOT NULL default '0'");
+            $migration->addKey($table, "name");
+            $migration->addKey($table, "entities_id");
+            $migration->addKey($table, "plugin_order_ordertaxes_id");
+            $migration->addKey($table, "plugin_order_orderpayments_id");
+            $migration->addKey($table, "states_id");
+            $migration->addKey($table, "suppliers_id");
+            $migration->addKey($table, "contacts_id");
+            $migration->addKey($table, "locations_id");
+            $migration->addKey($table, "is_deleted");
+            $migration->migrationOneTable($table);
+
+            //Manage budgets (here because class has been remove since 1.4.0)
+            $migration->changeField("glpi_plugin_order_budgets", "ID", "id", "NOT NULL auto_increment");
+            $migration->changeField("glpi_plugin_order_budgets", "FK_entities", "entities_id", 
+                                    "int(11) NOT NULL default '0'");
+            $migration->changeField("glpi_plugin_order_budgets", "name", "name", 
+                                    "varchar(255) collate utf8_unicode_ci default NULL");
+            $migration->changeField("glpi_plugin_order_budgets", "comment", "comment",
+                                    "text collate utf8_unicode_ci");
+            $migration->changeField("glpi_plugin_order_budgets", "deleted", "is_deleted", 
+                                    "tinyint(1) NOT NULL default '0'");
+            $migration->changeField("glpi_plugin_order_budgets", "startdate", "start_date", 
+                                    "date default NULL");
+            $migration->changeField("glpi_plugin_order_budgets", "enddate", "end_date", 
+                                    "date default NULL");
+            $migration->changeField("glpi_plugin_order_budgets", "value", "value", 
+                                    "float NOT NULL DEFAULT '0'");
+            $migration->addKey("glpi_plugin_order_budgets", "entities_id");
+            $migration->addKey("glpi_plugin_order_budgets", "is_deleted");
+            $migration->addKey("glpi_plugin_order_budgets", "budgets_id");
+            $migration->migrationOneTable("glpi_plugin_order_budgets");
+            
+            //1.3.0
+            $migration->addField($table, "plugin_order_ordertypes_id",
+                                 "int (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)'");
+            $migration->migrationOneTable($table);
+
+            //1.4.0
+            $migration->changeField("glpi_plugin_order_orders", "states_id", "plugin_order_orderstates_id", 
+                                    "CHAR( 1 ) COLLATE utf8_unicode_ci DEFAULT NULL");
+            $migration->addField($table, "duedate", "DATETIME NULL");
+            $migration->migrationOneTable($table);
+
+            /* Migrate VAT */
+            foreach ($DB->request("glpi_plugin_order_orders") as $data) {
+               $query  = "UPDATE `glpi_plugin_order_orders_items`
+                          SET `plugin_order_ordertaxes_id` = '" . $data["plugin_order_ordertaxes_id"] . "'
+                          WHERE `plugin_order_orders_id` = '" . $data["id"] . "'";
+               $result = $DB->query($query) or die($DB->error());
+            }
+
+
+            $migration->displayMessage("Budget migration");
+            
+            //Manage budgets migration before dropping the table
+            $budget = new Budget();
+            $matchings = array('budgets_id' => 'id', 'name' => 'name', 'start_date' => 'begin_date', 
+                               'end_date' => 'end_date', 'value' => 'value', 'comment' => 'comment', 
+                               'entities_id' => 'entities_id', 'is_deleted' => 'is_deleted');
+            foreach (getAllDatasFromTable("glpi_plugin_order_budgets") as $data) {
+               $tmp    = array();
+               $id     = false;
+               foreach ($matchings as $old => $new) {
+                  $tmp[$new] = $data[$old];
+               }
+      
+               $tmp['comment'] = addslashes($tmp['comment']);
+               
+               //Budget already exists in the core: update it
+               if ($budget->getFromDB($data['budgets_id'])) {
+                  $budget->update($tmp);
+                  $id = $tmp['id'];
+               } else {
+                  //Budget doesn't exists in the core: create it
+                  unset($tmp['id']);
+                  $id = $budget->add($tmp);
+               }
+               
+               if ($id) {
+                  $query = "UPDATE `glpi_plugin_order_orders` SET `budgets_id`='$id' " .
+                           "WHERE `budgets_id`='".$data['id']."'";
+                  $DB->query($query) or die ($DB->error());
+               }
+            }
+            
+            $DB->query("DROP TABLE `glpi_plugin_order_budgets`");
+            
+            foreach (array('glpi_displaypreferences', 'glpi_documents_items', 'glpi_bookmarks', 
+                           'glpi_logs') as $t) {
+               $DB->query("DELETE FROM `$t` WHERE `itemtype` = 'PluginOrderBudget'");
+            }
+ 
+             //1.5.0
+            $migration->displayMessage("Update orders with new status");
+            foreach (array(6 => 5, 5 => 4, 4 => 3, 3 => 2, 2 => 1, 1 => 0) as $old => $new) {
+               $query = "UPDATE `glpi_plugin_order_orders` 
+                         SET `plugin_order_orderstates_id` = '$old'
+                         WHERE `plugin_order_orderstates_id` = '$new'";
+               $result = $DB->query($query) or die($DB->error());
+            }
+            
+            if (TableExists("glpi_dropdown_plugin_order_status")) {
+               $DB->query("DROP TABLE `glpi_dropdown_plugin_order_status`") or die($DB->error());
+            }
+            
+            
+            if (TableExists("glpi_plugin_order_mailing")) {
+               $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_mailing`;") or die($DB->error());
+            }
+            
+            //Displayprefs
+            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','1','1','0');") or die($DB->error());
+            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','2','2','0');") or die($DB->error());
+            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','4','4','0');") or die($DB->error());
+            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','5','5','0');") or die($DB->error());
+            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','6','6','0');") or die($DB->error());
+            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','7','7','0');") or die($DB->error());
+            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','10','10','0');") or die($DB->error());
+         }
+      }
+
+   }
+   
+   static function uninstall() {
+      global $DB;
+
+      $tables = array ("glpi_displaypreferences", "glpi_documents_items", "glpi_bookmarks",
+                       "glpi_logs");
+      foreach ($tables as $table) {
+         $query = "DELETE FROM `$table` WHERE `itemtype`='".__CLASS__."'";
+         $DB->query($query);
+      }
+      
+      //Old table name
+      $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order`") or die ($DB->error());
+      //Current table name
+      $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+   }
 }
 ?>

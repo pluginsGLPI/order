@@ -371,6 +371,48 @@ class PluginOrderSurveySupplier extends CommonDBChild {
             return false;
       }
    }
+   
+  static function install(Migration $migration) {
+      global $DB;
+      //Only avaiable since 1.3.0
+      
+      $table = getTableForItemType(__CLASS__);
+      if (!TableExists("glpi_plugin_order_surveysuppliers")) {
+         $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_surveysuppliers` (
+                     `ID` int(11) NOT NULL auto_increment,
+                     `FK_order` int(11) NOT NULL default 0,
+                     `FK_enterprise` INT(11) NOT NULL DEFAULT 0,
+                     `answer1` int(11) NOT NULL default 0,
+                     `answer2` int(11) NOT NULL default 0,
+                     `answer3` int(11) NOT NULL default 0,
+                     `answer4` int(11) NOT NULL default 0,
+                     `answer5` int(11) NOT NULL default 0,
+                     `comment` varchar(255) collate utf8_unicode_ci NOT NULL default '',
+                     PRIMARY KEY  (`ID`)
+                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->query($query) or die($DB->error());
+      } else {
+         $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
+         $migration->changeField($table, "FK_order", "plugin_order_orders_id", 
+                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'");
+         $migration->changeField($table, "FK_enterprise", "suppliers_id", 
+                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
+         $migration->changeField($table, "comment", "comment", 
+                                 "text collate utf8_unicode_ci");
+         $migration->addField($table, "entities_id", "int(11) NOT NULL default '0'");
+         $migration->addField($table, "is_recursive", "tinyint(1) NOT NULL default '0'");
+         $migration->addKey($table, "plugin_order_orders_id");
+         $migration->addKey($table, "suppliers_id");
+         $migration->migrationOneTable($table);
+      }
+   }
+   
+   static function uninstall() {
+      global $DB;
+      
+      //Current table name
+      $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+   }
 }
 
 ?>

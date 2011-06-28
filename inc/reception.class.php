@@ -628,24 +628,24 @@ class PluginOrderReception extends CommonDBTM {
    */
    static function generateAsset($options) {
       // Retrieve configuration for generate assets feature
-		$PluginOrderConfig = new PluginOrderConfig();
-		$config = $PluginOrderConfig->getConfig();
+      $PluginOrderConfig = new PluginOrderConfig();
+      $config = $PluginOrderConfig->getConfig();
 
-		if ($config["generate_assets"]) {
-		   // Automatic generate assets on delivery
-		   $item = array( "name"                     =>$config["generated_name"],
-		                  "serial"                   =>$config["generated_serial"],
+      if ($config["generate_assets"]) {
+         // Automatic generate assets on delivery
+         $item = array( "name"                     =>$config["generated_name"],
+                        "serial"                   =>$config["generated_serial"],
                         "otherserial"              =>$config["generated_otherserial"],
-                        "entities_id"              =>$config["default_asset_entities_id"],                               
+                        "entities_id"              =>$config["default_asset_entities_id"],
                         "itemtype"                 =>$options["itemtype"],
                         "id"                       =>$options["items_id"],
                         "plugin_order_orders_id"   =>$options["plugin_order_orders_id"]);
 
-		   $options_gen = array(   "plugin_order_orders_id"
-		                              => $options["plugin_order_orders_id"],
-		                           "plugin_order_references_id"
-		                              => $options["plugin_order_references_id"],
-		                           "id" => array($item));
+         $options_gen = array(   "plugin_order_orders_id"
+                                    => $options["plugin_order_orders_id"],
+                                 "plugin_order_references_id"
+                                    => $options["plugin_order_references_id"],
+                                 "id" => array($item));
          
          if($config["generate_ticket"]) {
             $options_gen["generate_ticket"] = 
@@ -656,8 +656,9 @@ class PluginOrderReception extends CommonDBTM {
 
          $PluginOrderLink = new PluginOrderLink();
          $PluginOrderLink->generateNewItem($options_gen);
-		}
+      }
    }
+
 }
 
 ?>

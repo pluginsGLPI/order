@@ -53,6 +53,30 @@ class PluginOrderOrderType extends CommonDropdown {
    function canView() {
       return plugin_order_haveRight('order', 'r');
    } 
+   
+  static function install(Migration $migration) {
+      global $DB;
+      //Only avaiable since 1.3.0
+      
+      $table = getTableForItemType(__CLASS__);
+      if (!TableExists($table)) {
+         $query = "CREATE TABLE `glpi_plugin_order_ordertypes` (
+                  `id` int(11) NOT NULL auto_increment,
+                  `name` varchar(255) collate utf8_unicode_ci default NULL,
+                  `comment` text collate utf8_unicode_ci,
+                  PRIMARY KEY  (`id`),
+                  KEY `name` (`name`)
+               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->query($query) or die ($DB->error());
+      }
+   }
+   
+   static function uninstall() {
+      global $DB;
+      
+      //Current table name
+      $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+   }
 }
 
 ?>
