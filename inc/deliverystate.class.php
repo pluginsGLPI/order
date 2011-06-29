@@ -58,6 +58,8 @@ class PluginOrderDeliveryState extends CommonDropdown {
       
       $table = getTableForItemType(__CLASS__);
       if (!TableExists($table) && !TableExists("glpi_dropdown_plugin_order_deliverystate")) {
+         $migration->displayMessage("Installing $table");
+
          //Install
         $query = "CREATE TABLE `glpi_plugin_order_deliverystates` (
                `id` int(11) NOT NULL auto_increment,
@@ -68,6 +70,7 @@ class PluginOrderDeliveryState extends CommonDropdown {
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die($DB->error());
       } else {
+         $migration->displayMessage("Upgrading $table");
          
          //Upgrade 1.2.0
          $migration->renameTable("glpi_dropdown_plugin_order_deliverystate", $table);

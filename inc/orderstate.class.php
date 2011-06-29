@@ -72,24 +72,26 @@ class PluginOrderOrderState extends CommonDropdown {
       }
    }
    
-   static function install() {
+   static function install(Migration $migration) {
       global $DB, $LANG;
       
       $table = getTableForItemType(__CLASS__);
       //1.2.0
       $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_status`;");
       
-      $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orderstates` (
-               `id` int(11) NOT NULL auto_increment,
-               `name` varchar(255) collate utf8_unicode_ci default NULL,
-               `comment` text collate utf8_unicode_ci,
-               PRIMARY KEY  (`id`),
-               KEY `name` (`name`)
-            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-      $DB->query($query) or die ($DB->error());
+      if (!TableExists($table)) {
+         $migration->displayMessage("Installing $table");
+         $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orderstates` (
+                  `id` int(11) NOT NULL auto_increment,
+                  `name` varchar(255) collate utf8_unicode_ci default NULL,
+                  `comment` text collate utf8_unicode_ci,
+                  PRIMARY KEY  (`id`),
+                  KEY `name` (`name`)
+               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->query($query) or die ($DB->error());
+      }
       
       $state = new self();
-      
       foreach (array (1 => $LANG['plugin_order']['status'][9], 
                       2 => $LANG['plugin_order']['status'][7],
                       3 => $LANG['plugin_order']['status'][12],

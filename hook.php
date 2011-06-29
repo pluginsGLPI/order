@@ -425,4 +425,16 @@ function plugin_headings_order($item) {
    }
 }
 
+/**
+ * Get itemtypes to migration from GLPI 0.72 to GLPI 0.78+
+ */
+function plugin_order_migratetypes($types) {
+   $types[3150] = 'PluginOrderOrder';
+   $types[3151] = 'PluginOrderReference';
+   $types[3152] = 'PluginOrderReference_Supplier';
+   $types[3153] = 'PluginOrderBudget';
+   $types[3154] = 'PluginOrderReception';
+   
+   return $types;
+}
 ?>

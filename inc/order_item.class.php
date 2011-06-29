@@ -713,6 +713,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
       
       if (!TableExists($table)) {
          if (!TableExists("glpi_plugin_order_detail")) {
+            $migration->displayMessage("Installing $table");
+ 
             //install
             $query = "CREATE TABLE IF NOT EXISTS `$table` (
                `id` int(11) NOT NULL auto_increment,
@@ -744,12 +746,14 @@ class PluginOrderOrder_Item extends CommonDBTM {
             $DB->query($query) or die ($DB->error());
          } else {
             //Upgrade
+            $migration->displayMessage("Upgrading $table");
 
             //1.1.2
             $migration->addField("glpi_plugin_order_detail","delivery_status", "int(1) NOT NULL default '0'");
             $migration->addField("glpi_plugin_order_detail","delivery_comments", "TEXT");
             $migration->migrationOneTable("glpi_plugin_order_detail");
-            
+
+            //1.2.0
             $migration->renameTable("glpi_plugin_order_detail", $table);
             
             $migration->changeField($table, "ID", "id",  "int(11) NOT NULL AUTO_INCREMENT");
@@ -776,15 +780,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
             $migration->addKey($table, "states_id");
             $migration->migrationOneTable($table);
             
-            Plugin::migrateItemType(array(3150 => 'PluginOrderOrder', 3151 => 'PluginOrderReference',
-                                          3152 => 'PluginOrderReference_Supplier',
-                                          3153 => 'PluginOrderBudget', 3154 => 'PluginOrderOrder_Supplier',
-                                          3155 => 'PluginOrderReception'),
-                                    array("glpi_bookmarks", "glpi_bookmarks_users", 
-                                          "glpi_displaypreferences", "glpi_documents_items", 
-                                          "glpi_infocoms", "glpi_logs", "glpi_tickets"),
-                                    array("glpi_plugin_order_orders_items"));
-            //1.2.0
+            Plugin::migrateItemType(array(), array(), array($table));
+
 
             //1.4.0
             $migration->addField($table, "plugin_order_ordertaxes_id", 

@@ -766,6 +766,8 @@ class PluginOrderReference extends CommonDropdown {
       
       $table = getTableForItemType(__CLASS__);
       if (!TableExists($table)) {
+         $migration->displayMessage("Installing $table");
+
          //Install
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references` (
                `id` int(11) NOT NULL auto_increment,
@@ -793,6 +795,7 @@ class PluginOrderReference extends CommonDropdown {
             
       } else {
          //Upgrade
+         $migration->displayMessage("Upgrading $table");
          
          //1.1.0
          $migration->changeField($table, "FK_manufacturer", "FK_glpi_enterprise", "int(11) NOT NULL DEFAULT '0'");
@@ -815,7 +818,7 @@ class PluginOrderReference extends CommonDropdown {
                                  "varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file'");
          $migration->changeField($table, "template", "templates_id", 
                                  "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
-         $migration->changeField($table, "comment", "comment",
+         $migration->changeField($table, "comments", "comment",
                                  "text collate utf8_unicode_ci");
          $migration->changeField($table, "deleted", "is_deleted",
                                  "tinyint(1) NOT NULL default '0'");
@@ -830,14 +833,13 @@ class PluginOrderReference extends CommonDropdown {
          $migration->addKey($table, "is_deleted");
          $migration->migrationOneTable($table);
 
-         Plugin::migrateItemType(array(3150 => 'PluginOrderOrder', 3151 => 'PluginOrderReference',
-                                       3152 => 'PluginOrderReference_Supplier',
-                                       3153 => 'PluginOrderBudget', 3154 => 'PluginOrderOrder_Supplier',
-                                       3155 => 'PluginOrderReception'),
+         Plugin::migrateItemType(array(3151 => 'PluginOrderReference'),
                                  array("glpi_bookmarks", "glpi_bookmarks_users", 
                                        "glpi_displaypreferences", "glpi_documents_items", 
-                                       "glpi_infocoms", "glpi_logs", "glpi_tickets"),
-                                 array("glpi_plugin_order_references"));
+                                       "glpi_infocoms", "glpi_logs", "glpi_tickets"));
+
+         Plugin::migrateItemType(array(), array(), array($table));
+
          //1.3.0
          $DB->query("UPDATE `glpi_plugin_order_references`
                     SET `itemtype`='ConsumableItem' 

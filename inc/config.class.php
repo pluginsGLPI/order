@@ -233,6 +233,8 @@ class PluginOrderConfig extends CommonDBTM {
 
       //This class is available since version 1.3.0
       if (!TableExists($table) && !TableExists("glpi_plugin_order_config")) {
+            $migration->displayMessage("Installing $table");
+
             //Install
             $query = "CREATE TABLE `glpi_plugin_order_configs` (
                      `id` int(11) NOT NULL auto_increment,
@@ -268,6 +270,7 @@ class PluginOrderConfig extends CommonDBTM {
                $config->add($tmp);
       } else {
             //Upgrade
+            $migration->displayMessage("Upgrading $table");
 
             //1.2.0
             $migration->renameTable("glpi_plugin_order_config", $table);

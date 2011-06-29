@@ -56,15 +56,18 @@ class PluginOrderBillState extends CommonDropdown {
    static function install(Migration $migration) {
       global $DB;
       
-      $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_billstates` (
-              `id` int(11) NOT NULL AUTO_INCREMENT,
-              `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-              `comment` text COLLATE utf8_unicode_ci,
-              PRIMARY KEY (`id`),
-              KEY `name` (`name`)
-            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-   $DB->query($query) or die ($DB->error());
-   
+      $table = getTableForItemType(__CLASS__);
+      if (!TableExists($table)) {
+         $migration->displayMessage("Installing $table");
+         $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_billstates` (
+                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                 `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                 `comment` text COLLATE utf8_unicode_ci,
+                 PRIMARY KEY (`id`),
+                 KEY `name` (`name`)
+               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->query($query) or die ($DB->error());
+      }
    }
    
    static function uninstall() {

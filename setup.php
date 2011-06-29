@@ -39,8 +39,14 @@ function plugin_init_order() {
 
    /* load changeprofile function */
    $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile', 'changeProfile');
+
+   
    
    $plugin = new Plugin();
+   if ($plugin->isInstalled('order')) {
+      $PLUGIN_HOOKS['migratetypes']['order'] = 'plugin_order_migratetypes';
+   }
+   
    if ($plugin->isInstalled('order') && $plugin->isActivated('order')) {
 
       //Itemtypes in use for an order

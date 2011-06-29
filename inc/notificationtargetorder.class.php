@@ -123,6 +123,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
    
    static function install(Migration $migration) {
       global $DB;
+
+      $migration->displayMessage("Migrate PluginOrderOrder notifications");
       
       $template = new NotificationTemplate();
 

@@ -272,8 +272,8 @@ class PluginOrderReception extends CommonDBTM {
          && !$PluginOrderOrder->canUpdateOrder($plugin_order_orders_id) 
             && $PluginOrderOrder->fields["plugin_order_orderstates_id"] != $config['order_status_canceled'];
       
-      $result_ref=$PluginOrderOrder_Item->queryDetail($plugin_order_orders_id);
-      $numref = $DB->numrows($result_ref);
+      $result_ref = $PluginOrderOrder_Item->queryDetail($plugin_order_orders_id);
+      $numref     = $DB->numrows($result_ref);
 
       while ($data_ref=$DB->fetch_array($result_ref)){
          
@@ -285,9 +285,9 @@ class PluginOrderReception extends CommonDBTM {
          else {
             
             $plugin_order_references_id = $data_ref["id"];
-            $typeRef = $data_ref["itemtype"];
-            $price_taxfree = $data_ref["price_taxfree"];
-            $discount = $data_ref["discount"];
+            $typeRef                    = $data_ref["itemtype"];
+            $price_taxfree              = $data_ref["price_taxfree"];
+            $discount                   = $data_ref["discount"];
 
             $item = new $typeRef();
             $rand = mt_rand();

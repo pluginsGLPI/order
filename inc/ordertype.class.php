@@ -59,7 +59,9 @@ class PluginOrderOrderType extends CommonDropdown {
       //Only avaiable since 1.3.0
       
       $table = getTableForItemType(__CLASS__);
+
       if (!TableExists($table)) {
+         $migration->displayMessage("Installing $table");
          $query = "CREATE TABLE `glpi_plugin_order_ordertypes` (
                   `id` int(11) NOT NULL auto_increment,
                   `name` varchar(255) collate utf8_unicode_ci default NULL,

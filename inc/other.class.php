@@ -60,6 +60,8 @@ class PluginOrderOther extends CommonDBTM {
       
       $table = getTableForItemType(__CLASS__);
       if (!TableExists($table)) {
+         $migration->displayMessage("Installing $table");
+
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_others` (
                   `id` int(11) NOT NULL auto_increment,
                   `entities_id` int(11) NOT NULL default '0',

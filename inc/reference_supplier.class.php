@@ -39,9 +39,9 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderReference_Supplier extends CommonDBChild {
    
-   public $itemtype = 'PluginOrderReference';
-   public $items_id = 'plugin_order_references_id';
-   public $dohistory=true;
+   public $itemtype  = 'PluginOrderReference';
+   public $items_id  = 'plugin_order_references_id';
+   public $dohistory = true;
    
    static function getTypeName() {
       global $LANG;
@@ -373,6 +373,8 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       
       $table = getTableForItemType(__CLASS__);
       if (!TableExists($table) && !TableExists("glpi_plugin_order_references_manufacturers")) {
+         $migration->displayMessage("Installing $table");
+
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_suppliers` (
                      `id` int(11) NOT NULL auto_increment,
                      `entities_id` int(11) NOT NULL default '0',
@@ -388,6 +390,8 @@ class PluginOrderReference_Supplier extends CommonDBChild {
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die($DB->error());
       } else {
+         $migration->displayMessage("Upgrading $table");
+
          //1.1.0
          $migration->addField("glpi_plugin_order_references_manufacturers", "reference_code",
                               "varchar(255) NOT NULL collate utf8_unicode_ci default ''");
@@ -409,6 +413,13 @@ class PluginOrderReference_Supplier extends CommonDBChild {
                                  "varchar(255) collate utf8_unicode_ci default NULL");
          $migration->migrationOneTable($table);
 
+         Plugin::migrateItemType(array(3152 => 'PluginOrderReference_Supplier'),
+                                 array("glpi_bookmarks", "glpi_bookmarks_users", 
+                                       "glpi_displaypreferences", "glpi_documents_items", 
+                                       "glpi_infocoms", "glpi_logs", "glpi_tickets"),
+                                 array());
+
+         //1.5.0
          $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_references` ";
          foreach ($DB->request($query) as $data) {
             $query = "UPDATE `glpi_plugin_order_references_suppliers`

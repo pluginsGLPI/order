@@ -1371,7 +1371,7 @@ class PluginOrderOrder extends CommonDBTM {
       if (!TableExists($table)) {
          //Installation
          if (!TableExists("glpi_plugin_order")) {
-            $migration->displayMessage("Order installation");
+            $migration->displayMessage("Installing $table");
 
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders` (
                   `id` int(11) NOT NULL auto_increment,
@@ -1408,7 +1408,7 @@ class PluginOrderOrder extends CommonDBTM {
          } else {
             //Upgrade
 
-            $migration->displayMessage("Order migration");
+            $migration->displayMessage("Upgrading $table");
 
             //Update to 1.1.0
             $migration->addField('glpi_plugin_order', "port_price", "FLOAT NOT NULL default '0'");
@@ -1470,13 +1470,20 @@ class PluginOrderOrder extends CommonDBTM {
             $migration->addKey($table, "is_deleted");
             $migration->migrationOneTable($table);
 
+            Plugin::migrateItemType(array(3050 => 'PluginOrderOrder'),
+                                    array("glpi_bookmarks", "glpi_bookmarks_users", 
+                                          "glpi_displaypreferences", "glpi_documents_items", 
+                                          "glpi_infocoms", "glpi_logs", "glpi_tickets"),
+                                    array());
+
+
             //Manage budgets (here because class has been remove since 1.4.0)
             $migration->changeField("glpi_plugin_order_budgets", "ID", "id", " int(11) NOT NULL auto_increment");
             $migration->changeField("glpi_plugin_order_budgets", "FK_entities", "entities_id", 
                                     "int(11) NOT NULL default '0'");
-            $migration->changeField("glpi_plugin_order_budgets", "name", "name", 
-                                    "varchar(255) collate utf8_unicode_ci default NULL");
-            $migration->changeField("glpi_plugin_order_budgets", "comment", "comment",
+            $migration->changeField("glpi_plugin_order_budgets", "FK_budget", "budgets_id", 
+                                    "int(11) NOT NULL default '0'");
+            $migration->changeField("glpi_plugin_order_budgets", "comments", "comment",
                                     "text collate utf8_unicode_ci");
             $migration->changeField("glpi_plugin_order_budgets", "deleted", "is_deleted", 
                                     "tinyint(1) NOT NULL default '0'");
@@ -1490,6 +1497,12 @@ class PluginOrderOrder extends CommonDBTM {
             $migration->addKey("glpi_plugin_order_budgets", "is_deleted");
             $migration->migrationOneTable("glpi_plugin_order_budgets");
             
+            Plugin::migrateItemType(array(3153 => 'PluginOrderBudget'),
+                                    array("glpi_bookmarks", "glpi_bookmarks_users", 
+                                          "glpi_displaypreferences", "glpi_documents_items", 
+                                          "glpi_infocoms", "glpi_logs", "glpi_tickets"),
+                                    array());
+            
             //1.3.0
             $migration->addField($table, "plugin_order_ordertypes_id",
                                  "int (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)'");
@@ -1497,12 +1510,10 @@ class PluginOrderOrder extends CommonDBTM {
 
             //1.4.0
             $migration->changeField("glpi_plugin_order_orders", "states_id", "plugin_order_orderstates_id", 
-                                    "CHAR( 1 ) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                    "int(11) NOT NULL default 1");
             $migration->addField($table, "duedate", "DATETIME NULL");
             $migration->migrationOneTable($table);
 
-            $migration->displayMessage("Budget migration");
-            
             //Manage budgets migration before dropping the table
             $budget = new Budget();
             $matchings = array('budgets_id' => 'id', 'name' => 'name', 'start_date' => 'begin_date', 
@@ -1512,7 +1523,9 @@ class PluginOrderOrder extends CommonDBTM {
                $tmp    = array();
                $id     = false;
                foreach ($matchings as $old => $new) {
-                  $tmp[$new] = $data[$old];
+                  if (!is_null($data[$old])) {
+                     $tmp[$new] = $data[$old];
+                  }
                }
       
                $tmp['comment'] = addslashes($tmp['comment']);

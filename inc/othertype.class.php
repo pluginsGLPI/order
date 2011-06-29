@@ -60,6 +60,8 @@ class PluginOrderOtherType extends CommonDropdown {
       
       $table = getTableForItemType(__CLASS__);
       if (!TableExists($table)) {
+         $migration->displayMessage("Installing $table");
+
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_othertypes` (
                   `id` int(11) NOT NULL auto_increment,
                   `name` varchar(255) collate utf8_unicode_ci default NULL,

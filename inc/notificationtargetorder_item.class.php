@@ -334,6 +334,8 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
    static function install(Migration $migration) {
       global $DB;
 
+      $migration->displayMessage("Migrate PluginOrderOrder_Item notifications");
+
       $migration->displayMessage("Add order reception notification template");
       $notifications_id = false;
       

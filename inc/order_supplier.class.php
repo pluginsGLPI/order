@@ -347,6 +347,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       
       if (!TableExists($table)) {
          if (!TableExists("glpi_plugin_order_suppliers")) {
+            $migration->displayMessage("Installing $table");
+
             //install
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders_suppliers` (
                      `id` int(11) NOT NULL auto_increment,
@@ -365,6 +367,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
             $DB->query($query) or die ($DB->error());
          } else {
             //Upgrade
+            $migration->displayMessage("Upgrading $table");
 
             //1.2.0
             $migration->renameTable("glpi_plugin_order_suppliers", $table);
@@ -386,6 +389,13 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
             $migration->addKey($table, "suppliers_id");
             $migration->migrationOneTable($table);
 
+            Plugin::migrateItemType(array(3154 => 'PluginOrderOrder_Supplier'),
+                                    array("glpi_bookmarks", "glpi_bookmarks_users", 
+                                          "glpi_displaypreferences", "glpi_documents_items", 
+                                          "glpi_infocoms", "glpi_logs", "glpi_tickets"),
+                                    array());
+
+            //1.5.0
             $query = "SELECT `suppliers_id`, `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_orders` ";
             foreach ($DB->request($query) as $data) {
                $query = "UPDATE `glpi_plugin_order_orders_suppliers`

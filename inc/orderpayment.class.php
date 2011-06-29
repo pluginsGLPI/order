@@ -59,6 +59,8 @@ class PluginOrderOrderPayment extends CommonDropdown {
       
       $table = getTableForItemType(__CLASS__);
       if (!TableExists($table) && !TableExists("glpi_dropdown_plugin_order_payment")) {
+         $migration->displayMessage("Installing $table");
+
          $query = "CREATE TABLE `glpi_plugin_order_orderpayments` (
                   `id` int(11) NOT NULL auto_increment,
                   `name` varchar(255) collate utf8_unicode_ci default NULL,
@@ -68,6 +70,8 @@ class PluginOrderOrderPayment extends CommonDropdown {
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die ($DB->error());
       } else {
+         $migration->displayMessage("Upgrading $table");
+
          //1.2.0
          $migration->renameTable("glpi_dropdown_plugin_order_payment", $table);
          $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");

@@ -378,6 +378,8 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       
       $table = getTableForItemType(__CLASS__);
       if (!TableExists("glpi_plugin_order_surveysuppliers")) {
+         $migration->displayMessage("Installing $table");
+
          //Installation
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_surveysuppliers` (
                   `id` int(11) NOT NULL auto_increment,
@@ -399,6 +401,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          $DB->query($query) or die($DB->error());
       } else {
          //upgrade
+         $migration->displayMessage("Upgrading $table");
          
          //1.2.0
          $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");

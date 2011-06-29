@@ -192,6 +192,8 @@ class PluginOrderPreference extends CommonDBTM {
       
       $table = getTableForItemType(__CLASS__);
       if (!TableExists($table)) {
+         $migration->displayMessage("Installing $table");
+
          $query = "CREATE TABLE `glpi_plugin_order_preferences` (
                   `id` int(11) NOT NULL auto_increment,
                   `user_id` int(11) NOT NULL default 0,

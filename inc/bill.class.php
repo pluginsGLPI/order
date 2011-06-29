@@ -306,28 +306,31 @@ class PluginOrderBill extends CommonDropdown {
    
    static function install(Migration $migration) {
       global $DB;
+
+      $table = getTableForItemType(__CLASS__);
       
-      $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_bills` (
-           `id` int(11) NOT NULL AUTO_INCREMENT,
-           `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
-           `number` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
-           `billdate` datetime DEFAULT NULL,
-           `validationdate` datetime DEFAULT NULL,
-           `comment` text COLLATE utf8_unicode_ci,
-           `plugin_order_billstates_id` int(11) NOT NULL DEFAULT '0',
-           `value` float NOT NULL DEFAULT '0',
-           `plugin_order_billtypes_id` int(11) NOT NULL DEFAULT '0',
-           `suppliers_id` int(11) NOT NULL DEFAULT '0',
-           `plugin_order_orders_id` int(11) NOT NULL DEFAULT '0',
-           `users_id_validation` int(11) NOT NULL DEFAULT '0',
-           `entities_id` int(11) NOT NULL DEFAULT '0',
-           `is_recursive` int(11) NOT NULL DEFAULT '0',
-           `notepad` text COLLATE utf8_unicode_ci,
-           PRIMARY KEY (`id`)
-         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
-   $DB->query($query) or die ($DB->error());
-
-
+      if (!TableExists($table)) {
+         $migration->displayMessage("Installing $table");
+         $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_bills` (
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
+              `number` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
+              `billdate` datetime DEFAULT NULL,
+              `validationdate` datetime DEFAULT NULL,
+              `comment` text COLLATE utf8_unicode_ci,
+              `plugin_order_billstates_id` int(11) NOT NULL DEFAULT '0',
+              `value` float NOT NULL DEFAULT '0',
+              `plugin_order_billtypes_id` int(11) NOT NULL DEFAULT '0',
+              `suppliers_id` int(11) NOT NULL DEFAULT '0',
+              `plugin_order_orders_id` int(11) NOT NULL DEFAULT '0',
+              `users_id_validation` int(11) NOT NULL DEFAULT '0',
+              `entities_id` int(11) NOT NULL DEFAULT '0',
+              `is_recursive` int(11) NOT NULL DEFAULT '0',
+              `notepad` text COLLATE utf8_unicode_ci,
+              PRIMARY KEY (`id`)
+            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
+      $DB->query($query) or die ($DB->error());
+      }
    }
    
    static function uninstall() {

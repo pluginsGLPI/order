@@ -212,6 +212,8 @@ class PluginOrderProfile extends CommonDBTM {
       
       $table = getTableForItemType(__CLASS__);
       if (!TableExists($table)) {
+         $migration->displayMessage("Installing $table");
+
          $query = "CREATE TABLE `glpi_plugin_order_profiles` (
                `id` int(11) NOT NULL auto_increment,
                `profiles_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_profiles (id)',
@@ -228,6 +230,7 @@ class PluginOrderProfile extends CommonDBTM {
          PluginOrderProfile::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
 
       } else {
+         $migration->displayMessage("Upgrading $table");
 
          //1.2.0
          $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
