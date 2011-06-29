@@ -86,19 +86,22 @@ class PluginOrderBill extends CommonDropdown {
                          'type'  => 'text'),
                    array('name'  => 'billdate',
                          'label' => $LANG['common'][27],
-                         'type'  => 'datetime'),
+                         'type'  => 'date'),
                    array('name'  => 'plugin_order_billtypes_id',
                          'label' => $LANG['common'][17],
                          'type'  => 'dropdownValue'),
                    array('name'  => 'plugin_order_billstates_id',
                          'label' => $LANG['joblist'][0],
                          'type'  => 'dropdownValue'),
+                   array('name'  => 'plugin_order_orders_id',
+                         'label' => $LANG['plugin_order'][7],
+                         'type'  => 'dropdownValue'),
                    array('name'  => 'users_id_validation',
                          'label' => $LANG['validation'][21],
                          'type'  => 'UserDropdown'),
                    array('name'  => 'validationdate',
                          'label' => $LANG['validation'][4],
-                         'type'  => 'datetime'));
+                         'type'  => 'date'));
    }
    
    /**
@@ -189,6 +192,13 @@ class PluginOrderBill extends CommonDropdown {
       $tab[7]['datatype']      = 'itemlink';
       $tab[7]['itemlink_type'] = 'Supplier';
       $tab[7]['forcegroupby']  = true;
+  
+      $tab[8]['table']         = getTableForItemType('PluginOrderOrder');
+      $tab[8]['field']         = 'name';
+      $tab[8]['name']          = $LANG['plugin_order'][7];
+      $tab[8]['datatype']      = 'itemlink';
+      $tab[8]['itemlink_type'] = 'PluginOrderOrder';
+      $tab[8]['forcegroupby']  = true;
   
       /* comments */
       $tab[16]['table']    = $this->getTable();

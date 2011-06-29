@@ -133,12 +133,12 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                           AND `name` = 'Order Validation'";
       $result       = $DB->query($query_id) or die ($DB->error());
       if ($DB->numrows($result) > 0) {
-         $notifications_id = $DB->result($result, 0, 'id');
+         $templates_id = $DB->result($result, 0, 'id');
          
       } else {
          $tmp = array('name' => 'Order Validation', 'itemtype' => 'PluginOrderOrder', 
                       'date_mod' => $_SESSION['glpi_currenttime'], 'comment' => '',  'css' => '');
-         $templates_id = $template->add($template);
+         $templates_id = $template->add($tmp);
       }
       
       if ($templates_id) {
