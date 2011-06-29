@@ -1488,7 +1488,6 @@ class PluginOrderOrder extends CommonDBTM {
                                     "float NOT NULL DEFAULT '0'");
             $migration->addKey("glpi_plugin_order_budgets", "entities_id");
             $migration->addKey("glpi_plugin_order_budgets", "is_deleted");
-            $migration->addKey("glpi_plugin_order_budgets", "budgets_id");
             $migration->migrationOneTable("glpi_plugin_order_budgets");
             
             //1.3.0
@@ -1501,15 +1500,6 @@ class PluginOrderOrder extends CommonDBTM {
                                     "CHAR( 1 ) COLLATE utf8_unicode_ci DEFAULT NULL");
             $migration->addField($table, "duedate", "DATETIME NULL");
             $migration->migrationOneTable($table);
-
-            /* Migrate VAT */
-            foreach ($DB->request("glpi_plugin_order_orders") as $data) {
-               $query  = "UPDATE `glpi_plugin_order_orders_items`
-                          SET `plugin_order_ordertaxes_id` = '" . $data["plugin_order_ordertaxes_id"] . "'
-                          WHERE `plugin_order_orders_id` = '" . $data["id"] . "'";
-               $result = $DB->query($query) or die($DB->error());
-            }
-
 
             $migration->displayMessage("Budget migration");
             

@@ -76,16 +76,17 @@ class PluginOrderOrderTaxe extends CommonDropdown {
       } else {
          //Update
 
+         //1.2.0
+         $migration->renameTable("glpi_dropdown_plugin_order_taxes", $table);
          $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
          $migration->changeField($table, "name", "name", "varchar(255) collate utf8_unicode_ci default NULL");
          $migration->changeField($table, "comments", "comment", "text collate utf8_unicode_ci");
          $migration->migrationOneTable($table);
          
          $migration->displayMessage($LANG['update'][141] . ' - glpi_dropdown_plugin_order_taxes');
-         $query = "SELECT `name` FROM `glpi_dropdown_plugin_order_taxes` ";
          
          //Remplace , by . in taxes
-         foreach ($DB->request($query) as $data) {
+         foreach ($DB->request("SELECT `name` FROM `$table`") as $data) {
             if(strpos($data["name"], ',')) {
                $name= str_replace(',', '.', $data["name"]);
                $query = "UPDATE `glpi_dropdown_plugin_order_taxes`

@@ -230,18 +230,33 @@ class PluginOrderProfile extends CommonDBTM {
       } else {
 
          //1.2.0
-         $migration->dropField("glpi_plugin_order_profiles", "name");
-
          $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
-         foreach (array('order', 'reference', 'budget', 'validation', 'cancel', 'undo_validation') as $right) {
+         foreach (array('order', 'reference', 'budget', 'validation', 'cancel', 'undo_validation') 
+            as $right) {
             $migration->changeField($table, $right, $right, 
                                     "char(1) collate utf8_unicode_ci default NULL");
          }
          $migration->addField($table, "profiles_id", "int(11) NOT NULL default '0'");
          $migration->addKey($table, "profiles_id");
+         $migration->migrationOneTable($table);
          
          //1.4.0
          $migration->dropField($table, "budget");
+
+         //Migration profiles
+         $profile = new self();
+         foreach (getAllDatasFromTable($table) as $data) {
+            $query = "SELECT `id` FROM `glpi_profiles` WHERE `name`='".$data['name']."'";
+            $result = $DB->query($query);
+            if ($DB->numrows($result)) {
+               $data['profiles_id'] = $DB->result($result, 0, 'id');
+               $profile->update($data);
+            } else {
+               $profile->delete($data);
+            }
+         }
+         $migration->dropField("glpi_plugin_order_profiles", "name");
+         $migration->migrationOneTable($table);
          
          //1.5.0
          $migration->addField("glpi_plugin_order_profiles", "bill", 

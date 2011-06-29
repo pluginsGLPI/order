@@ -790,6 +790,15 @@ class PluginOrderOrder_Item extends CommonDBTM {
             $migration->addField($table, "plugin_order_ordertaxes_id", 
                                  "INT (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)'");
             $migration->migrationOneTable($table);
+            
+            /* Migrate VAT */
+            foreach ($DB->request("glpi_plugin_order_orders") as $data) {
+               $query  = "UPDATE `glpi_plugin_order_orders_items`
+                          SET `plugin_order_ordertaxes_id` = '" . $data["plugin_order_ordertaxes_id"] . "'
+                          WHERE `plugin_order_orders_id` = '" . $data["id"] . "'";
+               $result = $DB->query($query) or die($DB->error());
+            }
+
             //1.5.0
             $migration->addField($table, "entities_id",  "INT( 11 ) NOT NULL DEFAULT '0'");
             $migration->addField($table, "is_recursive",  "TINYINT( 1 ) NOT NULL DEFAULT '0'");
