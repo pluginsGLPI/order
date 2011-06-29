@@ -228,4 +228,6 @@ $LANG['plugin_order']['validation'][19] = "Editor of validation";
 
 $LANG['plugin_order']['budget_over'][0] = "Total orders related with this budget is greater than its value.";
 $LANG['plugin_order']['budget_over'][1] = "Total orders related with this budget is equal to its value.";
+
+$LANG['plugin_order']['install'][0] = "Plugin installation or upgrade";
 ?>

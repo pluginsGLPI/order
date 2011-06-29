@@ -126,56 +126,67 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
       $migration->displayMessage("Migrate PluginOrderOrder notifications");
       
-      $template = new NotificationTemplate();
-
-      $tmp = array('name' => 'Order Validation', 'itemtype' => __CLASS__, 'comment' => '',
-                   'date_mod' => $_SESSION['glpi_currenttime']);
-      $template->add($tmp);
-
-      if (!countElementsInTable("glpi_notificationtemplates", 
-                                "`name`='Order Validation' " .
-                                   "AND `itemtype`='PluginOrderOrder'")) {
-         $tmp = array('name' => 'Order Validation', 'itemtype' => __CLASS__, 
-                      'date_mod' => $_SESSION['glpi_currenttime'], 'comment' => '',  'css' => '');
-         $template->add($template);
-      }
-      
-      $query_id = "SELECT `id` FROM `glpi_notificationtemplates` 
-                   WHERE `itemtype`='PluginOrderOrder' 
-                      AND `name` = 'Order Validation'";
-      $result   = $DB->query($query_id) or die ($DB->error());
+      $template     = new NotificationTemplate();
+      $templates_id = false;
+      $query_id     = "SELECT `id` FROM `glpi_notificationtemplates` 
+                       WHERE `itemtype`='PluginOrderOrder' 
+                          AND `name` = 'Order Validation'";
+      $result       = $DB->query($query_id) or die ($DB->error());
       if ($DB->numrows($result) > 0) {
          $notifications_id = $DB->result($result, 0, 'id');
-          
-         $query = "INSERT INTO `glpi_notificationtemplatetranslations` 
-                   (`notificationtemplates_id`, `language`, `subject`, `content_text`, `content_html`)
-                   VALUES($notifications_id, '','##lang.ordervalidation.title##',
-                              '##lang.ordervalidation.url## : ##ordervalidation.url##
-         ##lang.ordervalidation.entity## : ##ordervalidation.entity##
-         ##IFordervalidation.name####lang.ordervalidation.name## : ##ordervalidation.name##
-         ##ENDIFordervalidation.name##
-         ##IFordervalidation.numorder####lang.ordervalidation.numorder## : ##ordervalidation.numorder##
-         ##ENDIFordervalidation.numorder##
-         ##IFordervalidation.orderdate####lang.ordervalidation.orderdate##  : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##
-         ##IFordervalidation.state####lang.ordervalidation.state## : ##ordervalidation.state####ENDIFordervalidation.state##
-         ##IFordervalidation.users####lang.ordervalidation.users## : ##ordervalidation.users####ENDIFordervalidation.users##
          
-         ##IFordervalidation.comment####lang.ordervalidation.comment## : ##ordervalidation.comment####ENDIFordervalidation.comment##',
-                                 '&lt;p&gt;&lt;strong&gt;##lang.ordervalidation.url##&lt;/strong&gt; : &lt;a href=\"##ordervalidation.url##\"&gt;##ordervalidation.url##&lt;/a&gt;&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;##lang.ordervalidation.entity##&lt;/strong&gt; : ##ordervalidation.entity##&lt;br /&gt; ##IFordervalidation.name##&lt;strong&gt;##lang.ordervalidation.name##&lt;/strong&gt; : ##ordervalidation.name####ENDIFordervalidation.name##&lt;br /&gt;##IFordervalidation.numorder##&lt;strong&gt;##lang.ordervalidation.numorder##&lt;/strong&gt; : ##ordervalidation.numorder####ENDIFordervalidation.numorder##&lt;br /&gt;##IFordervalidation.orderdate##&lt;strong&gt;##lang.ordervalidation.orderdate##&lt;/strong&gt; : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##&lt;br /&gt;##IFordervalidation.state##&lt;strong&gt;##lang.ordervalidation.state##&lt;/strong&gt; : ##ordervalidation.state####ENDIFordervalidation.state##&lt;br /&gt;##IFordervalidation.users##&lt;strong&gt;##lang.ordervalidation.users##&lt;/strong&gt; : ##ordervalidation.users####ENDIFordervalidation.users##&lt;br /&gt;&lt;br /&gt;##IFordervalidation.comment##&lt;strong&gt;##lang.ordervalidation.comment##&lt;/strong&gt; : ##ordervalidation.comment####ENDIFordervalidation.comment##&lt;/p&gt;');";
-         $result = $DB->query($query) or die($DB->error());
+      } else {
+         $tmp = array('name' => 'Order Validation', 'itemtype' => 'PluginOrderOrder', 
+                      'date_mod' => $_SESSION['glpi_currenttime'], 'comment' => '',  'css' => '');
+         $templates_id = $template->add($template);
+      }
       
-               
+      if ($templates_id) {
+         $translation = new NotificationTemplateTranslation();
+         if (!countElementsInTable($translation->getTable(), "`notificationtemplates_id`='$templates_id'")) {
+            $tmp['notificationtemplates_id'] = $templates_id;
+            $tmp['language'] = '';
+            $tmp['subject'] = '##lang.ordervalidation.title##';
+            $tmp['content_text'] = '##lang.ordervalidation.url## : ##ordervalidation.url##
+            ##lang.ordervalidation.entity## : ##ordervalidation.entity##
+            ##IFordervalidation.name####lang.ordervalidation.name## : ##ordervalidation.name##
+            ##ENDIFordervalidation.name##
+            ##IFordervalidation.numorder####lang.ordervalidation.numorder## : ##ordervalidation.numorder##
+            ##ENDIFordervalidation.numorder##
+            ##IFordervalidation.orderdate####lang.ordervalidation.orderdate##  : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##
+            ##IFordervalidation.state####lang.ordervalidation.state## : ##ordervalidation.state####ENDIFordervalidation.state##
+            ##IFordervalidation.users####lang.ordervalidation.users## : ##ordervalidation.users####ENDIFordervalidation.users##
+            
+            ##IFordervalidation.comment####lang.ordervalidation.comment## : ##ordervalidation.comment####ENDIFordervalidation.comment##';
+            $tmp['content_html'] = '&lt;p&gt;&lt;strong&gt;##lang.ordervalidation.url##&lt;/strong&gt; : ' .
+                  '&lt;a href=\"##ordervalidation.url##\"&gt;##ordervalidation.url##&lt;/a&gt;&lt;br /&gt;' .
+                  '&lt;br /&gt;&lt;strong&gt;##lang.ordervalidation.entity##&lt;/strong&gt; : ##ordervalidation.entity##&lt;br /&gt;' .
+                  ' ##IFordervalidation.name##&lt;strong&gt;##lang.ordervalidation.name##&lt;/strong&gt;' .
+                  ' : ##ordervalidation.name####ENDIFordervalidation.name##&lt;br /&gt;' .
+                  '##IFordervalidation.numorder##&lt;strong&gt;##lang.ordervalidation.numorder##&lt;/strong&gt;' .
+                  ' : ##ordervalidation.numorder####ENDIFordervalidation.numorder##&lt;br /&gt;##IFordervalidation.orderdate##&lt;strong&gt;##lang.ordervalidation.orderdate##&lt;/strong&gt;' .
+                  ' : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##&lt;br /&gt;' .
+                  '##IFordervalidation.state##&lt;strong&gt;##lang.ordervalidation.state##&lt;/strong&gt;' .
+                  ' : ##ordervalidation.state####ENDIFordervalidation.state##&lt;br /&gt;' .
+                  '##IFordervalidation.users##&lt;strong&gt;##lang.ordervalidation.users##&lt;/strong&gt;' .
+                  ' : ##ordervalidation.users####ENDIFordervalidation.users##&lt;br /&gt;&lt;br /&gt;' .
+                  '##IFordervalidation.comment##&lt;strong&gt;##lang.ordervalidation.comment##&lt;/strong&gt; : ##ordervalidation.comment####ENDIFordervalidation.comment##&lt;/p&gt;';
+            $translation->add($tmp);
+         }
+   
          $notifs = array('New Order Validation' => 'ask', 'Confirm Order Validation' => 'validation',
                          'Cancel Order Validation' => 'undovalidation', 'Cancel Order' => 'cancel');
          $notification = new Notification();
          foreach ($notifs as $label => $name) {
-            $migration->displayMessage("Add notification: $name");
-            $tmp = array('name' => $label, 'entities_id' => 0, 'itemtype' => __CLASS__, 
-                         'event' => $name, 'mode' => 'mail', 'comment' => '', 
-                         'is_recursive' => 1, 'is_active' => 1, 
-                         'date_mod' => $_SESSION['glpi_currenttime'], 
-                         'notificationtemplates_id' => $notifications_id);
-            $notification->add($tmp);
+            if (!countElementsInTable("glpi_notifications", "`itemtype`='PluginOrderOrder' " .
+                                         "AND `event`='$name'")) {
+               $tmp = array('name' => $label, 'entities_id' => 0, 'itemtype' => 'PluginOrderOrder', 
+                            'event' => $name, 'mode' => 'mail', 'comment' => '', 
+                            'is_recursive' => 1, 'is_active' => 1, 
+                            'date_mod' => $_SESSION['glpi_currenttime'], 
+                            'notificationtemplates_id' => $templates_id);
+                $notification->add($tmp);
+            }
          }
       }
    }

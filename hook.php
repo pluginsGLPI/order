@@ -34,23 +34,19 @@
 // ---------------------------------------------------------------------- */
 
 function plugin_order_install() {
+   global $LANG;
    foreach (glob(GLPI_ROOT . '/plugins/order/inc/*.php') as $file) {
       include_once ($file);
    }
 
-   $migration = new Migration("1.5.0");
-/*
-      Plugin::migrateItemType(array(3150 => 'PluginOrderOrder', 3151 => 'PluginOrderReference',
-                                    3152 => 'PluginOrderReference_Supplier',
-                                    3153 => 'PluginOrderBudget', 3154 => 'PluginOrderOrder_Supplier',
-                                    3155 => 'PluginOrderReception'),
-                              array("glpi_bookmarks", "glpi_bookmarks_users", 
-                                    "glpi_displaypreferences", "glpi_documents_items", 
-                                    "glpi_infocoms", "glpi_logs", "glpi_tickets"),
-                              array("glpi_plugin_order_orders_items", 
-                                    "glpi_plugin_order_references"));
-*/
+   echo "<center>";
+   echo "<table class='tab_cadre_fixe'>";
+   echo "<tr><th>".$LANG['plugin_order']['install'][0]."<th></tr>";
 
+   echo "<tr class='tab_bg_1'>";
+   echo "<td align='center'>";
+   
+   $migration = new Migration("1.5.0");
    $classes = array('PluginOrderConfig', 'PluginOrderBill', 'PluginOrderBillState', 
                     'PluginOrderBillType', 'PluginOrderOrderState', 'PluginOrderOrder', 
                     'PluginOrderOrder_Item', 'PluginOrderReference', 'PluginOrderDeliveryState', 
@@ -70,7 +66,11 @@ function plugin_order_install() {
          }
       }
    }
-   
+
+   echo "</td>";
+   echo "</tr>";
+   echo "</table></center>";
+
    return true;
 }
 
@@ -109,8 +109,7 @@ function plugin_order_getDropdown() {
                     'PluginOrderDeliveryState' => $LANG['plugin_order']['status'][3],
                     'PluginOrderBillState'     => $LANG['plugin_order']['bill'][2],
                     'PluginOrderBillType'      => $LANG['plugin_order']['bill'][1]);
-   }
-   else {
+   } else {
       return array ();
    }
 }
@@ -195,11 +194,11 @@ function plugin_order_getAddSearchOptions($itemtype) {
          $sopt[3160]['datatype']      = 'itemlink';
          $sopt[3160]['itemlink_type'] = 'PluginOrderOrder';
 
-         $sopt[3161]['table']        = 'glpi_plugin_order_orders';
-         $sopt[3161]['field']        = 'num_order';
-         $sopt[3161]['linkfield']    = '';
-         $sopt[3161]['name']         = $LANG['plugin_order'][0];
-         $sopt[3161]['forcegroupby'] =  true;
+         $sopt[3161]['table']         = 'glpi_plugin_order_orders';
+         $sopt[3161]['field']         = 'num_order';
+         $sopt[3161]['linkfield']     = '';
+         $sopt[3161]['name']          = $LANG['plugin_order'][0];
+         $sopt[3161]['forcegroupby']  =  true;
          $sopt[3161]['datatype']      = 'itemlink';
          $sopt[3161]['itemlink_type'] = 'PluginOrderOrder';
       }
@@ -226,16 +225,21 @@ function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,
 
    switch ($new_table){
       case "glpi_plugin_order_orders" : // From items
-         $out = " LEFT JOIN `glpi_plugin_order_orders_items` ON (`$ref_table`.`id` = `glpi_plugin_order_orders_items`.`items_id` AND `glpi_plugin_order_orders_items`.`itemtype` = '$type') ";
-         $out.= " LEFT JOIN `glpi_plugin_order_orders` ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`) ";
+         $out = " LEFT JOIN `glpi_plugin_order_orders_items` " .
+                  "ON (`$ref_table`.`id` = `glpi_plugin_order_orders_items`.`items_id` " .
+                     "AND `glpi_plugin_order_orders_items`.`itemtype` = '$type') ";
+         $out.= " LEFT JOIN `glpi_plugin_order_orders` " .
+                  "ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`) ";
          return $out;
          break;
       case "glpi_budgets" : // From order list
-         $out = " LEFT JOIN `glpi_budgets` ON (`glpi_plugin_order_orders`.`budgets_id` = `glpi_budgets`.`id`) ";
+         $out = " LEFT JOIN `glpi_budgets` " .
+                  "ON (`glpi_plugin_order_orders`.`budgets_id` = `glpi_budgets`.`id`) ";
          return $out;
          break;
       case "glpi_contacts" : // From order list
-         $out = " LEFT JOIN `glpi_contacts` ON (`glpi_plugin_order_orders`.`contacts_id` = `glpi_contacts`.`id`) ";
+         $out = " LEFT JOIN `glpi_contacts` " .
+                  "ON (`glpi_plugin_order_orders`.`contacts_id` = `glpi_contacts`.`id`) ";
          return $out;
          break;
    }

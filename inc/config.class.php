@@ -226,9 +226,9 @@ class PluginOrderConfig extends CommonDBTM {
    
    static function install(Migration $migration) {
       global $DB;
+
+
       $table = getTableForItemType(__CLASS__);
-
-
       $config = new self();
 
       //This class is available since version 1.3.0

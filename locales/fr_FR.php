@@ -248,4 +248,5 @@ $LANG['plugin_order']['validation'][19] = "Editeur de la validation";
 $LANG['plugin_order']['budget_over'][0] = "Le total des commandes liées à ce budget est supérieur à sa valeur.";
 $LANG['plugin_order']['budget_over'][1] = "Le total des commandes liées à ce budget est égal à sa valeur.";
 
+$LANG['plugin_order']['install'][0] = "Installation ou mise à jour du plugin";
 ?>
