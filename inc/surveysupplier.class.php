@@ -378,20 +378,29 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       
       $table = getTableForItemType(__CLASS__);
       if (!TableExists("glpi_plugin_order_surveysuppliers")) {
+         //Installation
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_surveysuppliers` (
-                     `ID` int(11) NOT NULL auto_increment,
-                     `FK_order` int(11) NOT NULL default 0,
-                     `FK_enterprise` INT(11) NOT NULL DEFAULT 0,
-                     `answer1` int(11) NOT NULL default 0,
-                     `answer2` int(11) NOT NULL default 0,
-                     `answer3` int(11) NOT NULL default 0,
-                     `answer4` int(11) NOT NULL default 0,
-                     `answer5` int(11) NOT NULL default 0,
-                     `comment` varchar(255) collate utf8_unicode_ci NOT NULL default '',
-                     PRIMARY KEY  (`ID`)
-                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  `id` int(11) NOT NULL auto_increment,
+                  `entities_id` int(11) NOT NULL default '0',
+                  `is_recursive` tinyint(1) NOT NULL default '0',
+                  `plugin_order_orders_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
+                  `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
+                  `answer1` int(11) NOT NULL default 0,
+                  `answer2` int(11) NOT NULL default 0,
+                  `answer3` int(11) NOT NULL default 0,
+                  `answer4` int(11) NOT NULL default 0,
+                  `answer5` int(11) NOT NULL default 0,
+                  `comment` text collate utf8_unicode_ci,
+                  PRIMARY KEY  (`id`),
+                  KEY `plugin_order_orders_id` (`plugin_order_orders_id`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `suppliers_id` (`suppliers_id`)
+               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die($DB->error());
       } else {
+         //upgrade
+         
+         //1.2.0
          $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
          $migration->changeField($table, "FK_order", "plugin_order_orders_id", 
                                  "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'");
@@ -404,6 +413,14 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          $migration->addKey($table, "plugin_order_orders_id");
          $migration->addKey($table, "suppliers_id");
          $migration->migrationOneTable($table);
+         
+         $query = "SELECT `suppliers_id`, `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_orders` ";
+         foreach ($DB->request($query) as $data) {
+            $query = "UPDATE `glpi_plugin_order_surveysuppliers`
+                      SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
+                      WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
+            $DB->query($query) or die($DB->error());
+         }
       }
    }
    

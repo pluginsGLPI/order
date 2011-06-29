@@ -408,6 +408,14 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          $migration->changeField($table, "reference_code", "reference_code", 
                                  "varchar(255) collate utf8_unicode_ci default NULL");
          $migration->migrationOneTable($table);
+
+         $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_references` ";
+         foreach ($DB->request($query) as $data) {
+            $query = "UPDATE `glpi_plugin_order_references_suppliers`
+                      SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
+                      WHERE `plugin_order_references_id` = '".$data["id"]."' ";
+            $DB->query($query) or die($DB->error());
+         }
       }
    }
    

@@ -75,6 +75,7 @@ class PluginOrderOrderState extends CommonDropdown {
    static function install() {
       global $DB, $LANG;
       
+      $table = getTableForItemType(__CLASS__);
       //1.2.0
       $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_status`;");
       
@@ -95,7 +96,9 @@ class PluginOrderOrderState extends CommonDropdown {
                       4 => $LANG['plugin_order']['status'][1],
                       5 => $LANG['plugin_order']['status'][2],
                       6 => $LANG['plugin_order']['status'][10]) as $id => $label) {
-         $state->add(array('id' => $id, 'name' => addslashes_deep($label)));
+         if (!countElementsInTable($table, "`id`='$id'")) {
+            $state->add(array('id' => $id, 'name' => addslashes_deep($label)));
+         }
       }
 
    }

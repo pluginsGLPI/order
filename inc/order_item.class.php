@@ -752,10 +752,10 @@ class PluginOrderOrder_Item extends CommonDBTM {
             
             $migration->renameTable("glpi_plugin_order_detail", $table);
             
-            $migration->changeField($table, "ID", "id",  "int(11) NOT NULL auto_increment");
+            $migration->changeField($table, "ID", "id",  "int(11) NOT NULL AUTO_INCREMENT");
             $migration->changeField($table, "FK_order", "plugin_order_orders_id", 
                                     "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'");
-            $migration->changeField($table, "device_type", "items_id", 
+            $migration->changeField($table, "device_type", "itemtype", 
                                     "varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file'");
             $migration->changeField($table, "FK_device",  "items_id", 
                                     "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
@@ -769,8 +769,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
                                     "text collate utf8_unicode_ci");
             $migration->changeField($table, "status", "states_id",  "int(11) NOT NULL default 1");
             $migration->changeField($table, "date", "delivery_date",  "date default NULL");
-            $migration->addKey($table, "FK_device", array("items_id", "itemtype"));
-            $migration->addKey($table, "item", array("itemtype", "items_id"));
+            $migration->addKey($table, array("items_id", "itemtype"), "FK_device" );
+            $migration->addKey($table, array("itemtype", "items_id"), "item");
             $migration->addKey($table, "plugin_order_references_id");
             $migration->addKey($table, "plugin_order_deliverystates_id");
             $migration->addKey($table, "states_id");
@@ -790,6 +790,12 @@ class PluginOrderOrder_Item extends CommonDBTM {
             $migration->addField($table, "plugin_order_ordertaxes_id", 
                                  "INT (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)'");
             $migration->migrationOneTable($table);
+            //1.5.0
+            $migration->addField($table, "entities_id",  "INT( 11 ) NOT NULL DEFAULT '0'");
+            $migration->addField($table, "is_recursive",  "TINYINT( 1 ) NOT NULL DEFAULT '0'");
+            $migration->addField($table, "bills_id",  "INT( 11 ) NOT NULL DEFAULT '0'");
+            $migration->addKey("glpi_plugin_order_orders_items", "entities_id", "entities_id", "INDEX");
+            $migration->migrationOneTable($table);
 
             //Forward entities_id and is_recursive into table glpi_plugin_order_orders_items
             $query = "SELECT `go`.`entities_id` as entities_id , `go`.`is_recursive` as is_recursive, `goi`.`id` as items_id
@@ -802,13 +808,6 @@ class PluginOrderOrder_Item extends CommonDBTM {
                           WHERE `id`='".$data['items_id']."'";
                $DB->query($update)  or die($DB->error());
             }
-
-            //1.5.0
-            $migration->addField($table, "entities_id",  "INT( 11 ) NOT NULL DEFAULT '0'");
-            $migration->addField($table, "is_recursive",  "TINYINT( 1 ) NOT NULL DEFAULT '0'");
-            $migration->addField($table, "bills_id",  "INT( 11 ) NOT NULL DEFAULT '0'");
-            $migration->addKey("glpi_plugin_order_orders_items", "entities_id", "entities_id", "INDEX");
-            $migration->migrationOneTable($table);
             
          }
       }

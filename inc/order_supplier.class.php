@@ -397,24 +397,9 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
                          SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
                          WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
                $DB->query($query) or die($DB->error());
-      
-               $query = "UPDATE `glpi_plugin_order_surveysuppliers`
-                         SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
-                         WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
-               $DB->query($query) or die($DB->error());
             }
-      
-            $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_references` ";
-            foreach ($DB->request($query) as $data) {
-               $query = "UPDATE `glpi_plugin_order_references_suppliers`
-                         SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
-                         WHERE `plugin_order_references_id` = '".$data["id"]."' ";
-               $DB->query($query) or die($DB->error());
-            }
-            
          }
       }
-      
    }
    
    static function uninstall() {

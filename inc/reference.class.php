@@ -798,62 +798,67 @@ class PluginOrderReference extends CommonDropdown {
          $migration->changeField($table, "FK_manufacturer", "FK_glpi_enterprise", "int(11) NOT NULL DEFAULT '0'");
          
          ///1.2.0
-            $migration->changeField($table, "ID", "id", "NOT NULL auto_increment");
-            $migration->changeField($table, "FK_entities", "entities_id", 
-                                    "int(11) NOT NULL default '0'");
-            $migration->changeField($table, "recursive", "is_recursive", 
-                                    "tinyint(1) NOT NULL default '0'");
-            $migration->changeField($table, "name", "name", 
-                                    "varchar(255) collate utf8_unicode_ci default NULL");
-            $migration->changeField($table, "FK_glpi_enterprise", "manufacturers_id", 
-                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)'");
-            $migration->changeField($table, "FK_type", "types_id", 
-                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtypes tables (id)'");
-            $migration->changeField($table, "FK_model", "models_id", 
-                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemmodels tables (id)'");
-            $migration->changeField($table, "type", "itemtype", 
-                                    "varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file'");
-            $migration->changeField($table, "template", "templates_id", 
-                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
-            $migration->changeField($table, "comment", "comment",
-                                    "text collate utf8_unicode_ci");
-            $migration->changeField($table, "deleted", "is_deleted",
-                                    "tinyint(1) NOT NULL default '0'");
-            $migration->addField($table, "notepad", "longtext collate utf8_unicode_ci");
+         $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
+         $migration->changeField($table, "FK_entities", "entities_id", 
+                                 "int(11) NOT NULL default '0'");
+         $migration->changeField($table, "recursive", "is_recursive", 
+                                 "tinyint(1) NOT NULL default '0'");
+         $migration->changeField($table, "name", "name", 
+                                 "varchar(255) collate utf8_unicode_ci default NULL");
+         $migration->changeField($table, "FK_glpi_enterprise", "manufacturers_id", 
+                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)'");
+         $migration->changeField($table, "FK_type", "types_id", 
+                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtypes tables (id)'");
+         $migration->changeField($table, "FK_model", "models_id", 
+                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemmodels tables (id)'");
+         $migration->changeField($table, "type", "itemtype", 
+                                 "varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file'");
+         $migration->changeField($table, "template", "templates_id", 
+                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
+         $migration->changeField($table, "comment", "comment",
+                                 "text collate utf8_unicode_ci");
+         $migration->changeField($table, "deleted", "is_deleted",
+                                 "tinyint(1) NOT NULL default '0'");
+         $migration->addField($table, "notepad", "longtext collate utf8_unicode_ci");
 
-            $migration->addKey($table, "name");
-            $migration->addKey($table, "entities_id");
-            $migration->addKey($table, "manufacturers_id");
-            $migration->addKey($table, "types_id");
-            $migration->addKey($table, "models_id");
-            $migration->addKey($table, "templates_id");
-            $migration->addKey($table, "is_deleted");
-            $migration->migrationOneTable($table);
+         $migration->addKey($table, "name");
+         $migration->addKey($table, "entities_id");
+         $migration->addKey($table, "manufacturers_id");
+         $migration->addKey($table, "types_id");
+         $migration->addKey($table, "models_id");
+         $migration->addKey($table, "templates_id");
+         $migration->addKey($table, "is_deleted");
+         $migration->migrationOneTable($table);
 
-            Plugin::migrateItemType(array(3150 => 'PluginOrderOrder', 3151 => 'PluginOrderReference',
-                                          3152 => 'PluginOrderReference_Supplier',
-                                          3153 => 'PluginOrderBudget', 3154 => 'PluginOrderOrder_Supplier',
-                                          3155 => 'PluginOrderReception'),
-                                    array("glpi_bookmarks", "glpi_bookmarks_users", 
-                                          "glpi_displaypreferences", "glpi_documents_items", 
-                                          "glpi_infocoms", "glpi_logs", "glpi_tickets"),
-                                    array("glpi_plugin_order_references"));
-            //1.3.0
-            $DB->query("UPDATE `glpi_plugin_order_references`
-                       SET `itemtype`='ConsumableItem' 
-                       WHERE `itemtype` ='Consumable'") or die ($DB->error());
-            $DB->query("UPDATE `glpi_plugin_order_references`
-                       SET `itemtype`='CartridgeItem' 
-                       WHERE `itemtype` ='Cartridge'") or die ($DB->error());
-                       
-            //Displayprefs
-            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderReference','1','1','0');") or die($DB->error());
-            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderReference','2','4','0');") or die($DB->error());
-            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderReference','4','5','0');") or die($DB->error());
-            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderReference','5','9','0');") or die($DB->error());
-            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderReference','6','6','0');") or die($DB->error());
-            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderReference','7','7','0');") or die($DB->error());
-     }
+         Plugin::migrateItemType(array(3150 => 'PluginOrderOrder', 3151 => 'PluginOrderReference',
+                                       3152 => 'PluginOrderReference_Supplier',
+                                       3153 => 'PluginOrderBudget', 3154 => 'PluginOrderOrder_Supplier',
+                                       3155 => 'PluginOrderReception'),
+                                 array("glpi_bookmarks", "glpi_bookmarks_users", 
+                                       "glpi_displaypreferences", "glpi_documents_items", 
+                                       "glpi_infocoms", "glpi_logs", "glpi_tickets"),
+                                 array("glpi_plugin_order_references"));
+         //1.3.0
+         $DB->query("UPDATE `glpi_plugin_order_references`
+                    SET `itemtype`='ConsumableItem' 
+                    WHERE `itemtype` ='Consumable'") or die ($DB->error());
+         $DB->query("UPDATE `glpi_plugin_order_references`
+                    SET `itemtype`='CartridgeItem' 
+                    WHERE `itemtype` ='Cartridge'") or die ($DB->error());
+                    
+         //Displayprefs
+            
+         $prefs = array(1 => 1, 2 => 4, 4 => 5, 5 => 9, 6 => 6, 7 => 7);
+         foreach ($prefs as $num => $rank) {
+            if (!countElementsInTable("glpi_displaypreferences", 
+                                       "`itemtype`='PluginOrderReference' AND `num`='$num' 
+                                          AND `rank`='$rank' AND `users_id`='0'")) {
+               $DB->query("INSERT INTO glpi_displaypreferences 
+                           VALUES (NULL,'PluginOrderReference','$num','$rank','0');") 
+                  or die($DB->error());
+            }
+         }
+      }
    }
    
    static function uninstall() {

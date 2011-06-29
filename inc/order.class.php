@@ -1371,6 +1371,8 @@ class PluginOrderOrder extends CommonDBTM {
       if (!TableExists($table)) {
          //Installation
          if (!TableExists("glpi_plugin_order")) {
+            $migration->displayMessage("Order installation");
+
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders` (
                   `id` int(11) NOT NULL auto_increment,
                   `entities_id` int(11) NOT NULL default '0',
@@ -1406,10 +1408,11 @@ class PluginOrderOrder extends CommonDBTM {
          } else {
             //Upgrade
 
+            $migration->displayMessage("Order migration");
+
             //Update to 1.1.0
-            $migration->addField($table, "port_price", "FLOAT NOT NULL default '0'");
-            $migration->addField($table, "taxes", "FLOAT NOT NULL default '0'");
-            $migration->displayMessage($LANG['update'][141] . ' - glpi_plugin_order');
+            $migration->addField('glpi_plugin_order', "port_price", "FLOAT NOT NULL default '0'");
+            $migration->addField('glpi_plugin_order', "taxes", "FLOAT NOT NULL default '0'");
             if (FieldExists("glpi_plugin_order", "numordersupplier")) {
                foreach ($DB->request("glpi_plugin_order") as $data) {
                   $query = "INSERT INTO  `glpi_plugin_order_suppliers`
@@ -1420,16 +1423,16 @@ class PluginOrderOrder extends CommonDBTM {
             }
             $migration->dropField('glpi_plugin_order', 'numordersupplier');
             $migration->dropField('glpi_plugin_order', 'numbill');
-            $migration->migrationOneTable($table);
+            $migration->migrationOneTable('glpi_plugin_order');
       
             //1.2.0
             $migration->renameTable("glpi_plugin_order", $table);
             
-            $migration->changeField($table, "ID", "id", "NOT NULL auto_increment");
+            $migration->changeField($table, "ID", "id", "int(11) NOT NULL AUTO_INCREMENT");
             $migration->changeField($table, "FK_entities", "entities_id", 
-                                    "int(11) NOT NULL default '0'");
+                                    "int(11) NOT NULL default 0");
             $migration->changeField($table, "recursive", "is_recursive", 
-                                    "tinyint(1) NOT NULL default '0'");
+                                    "tinyint(1) NOT NULL default 0");
             $migration->changeField($table, "name", "name", 
                                     "varchar(255) collate utf8_unicode_ci default NULL");
             $migration->changeField($table, "budget", "budgets_id", 
@@ -1468,7 +1471,7 @@ class PluginOrderOrder extends CommonDBTM {
             $migration->migrationOneTable($table);
 
             //Manage budgets (here because class has been remove since 1.4.0)
-            $migration->changeField("glpi_plugin_order_budgets", "ID", "id", "NOT NULL auto_increment");
+            $migration->changeField("glpi_plugin_order_budgets", "ID", "id", " int(11) NOT NULL auto_increment");
             $migration->changeField("glpi_plugin_order_budgets", "FK_entities", "entities_id", 
                                     "int(11) NOT NULL default '0'");
             $migration->changeField("glpi_plugin_order_budgets", "name", "name", 
@@ -1565,15 +1568,18 @@ class PluginOrderOrder extends CommonDBTM {
             if (TableExists("glpi_plugin_order_mailing")) {
                $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_mailing`;") or die($DB->error());
             }
-            
+
             //Displayprefs
-            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','1','1','0');") or die($DB->error());
-            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','2','2','0');") or die($DB->error());
-            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','4','4','0');") or die($DB->error());
-            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','5','5','0');") or die($DB->error());
-            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','6','6','0');") or die($DB->error());
-            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','7','7','0');") or die($DB->error());
-            $DB->query("INSERT INTO glpi_displaypreferences VALUES (NULL,'PluginOrderOrder','10','10','0');") or die($DB->error());
+            $prefs = array(1 => 1, 2 => 2, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 10 => 10);
+            foreach ($prefs as $num => $rank) {
+               if (!countElementsInTable("glpi_displaypreferences", 
+                                          "`itemtype`='PluginOrderOrder' AND `num`='$num' 
+                                             AND `rank`='$rank' AND `users_id`='0'")) {
+                  $DB->query("INSERT INTO glpi_displaypreferences 
+                              VALUES (NULL,'PluginOrderOrder','$num','$rank','0');") 
+                     or die($DB->error());
+               }
+            }
          }
       }
 
