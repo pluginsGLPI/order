@@ -247,17 +247,8 @@ class PluginOrderProfile extends CommonDBTM {
          $migration->dropField($table, "budget");
 
          //Migration profiles
-         $profile = new self();
-         foreach (getAllDatasFromTable($table) as $data) {
-            $query = "SELECT `id` FROM `glpi_profiles` WHERE `name`='".$data['name']."'";
-            $result = $DB->query($query);
-            if ($DB->numrows($result)) {
-               $data['profiles_id'] = $DB->result($result, 0, 'id');
-               $profile->update($data);
-            } else {
-               $profile->delete($data);
-            }
-         }
+         $DB->query("UPDATE `$table` SET `profiles_id`=`id`");
+         
          $migration->dropField("glpi_plugin_order_profiles", "name");
          $migration->migrationOneTable($table);
          
