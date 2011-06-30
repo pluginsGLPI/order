@@ -3,7 +3,7 @@
  * @version $Id: HEADER 2011-03-23 15:41:26 tsmr $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2010 by the INDEPNET Development Team.
+ Copyright (C) 2003-2011 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
@@ -24,12 +24,12 @@
 
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  --------------------------------------------------------------------------
 // ----------------------------------------------------------------------
 // Original Authors of file: 
 // NOUH Walid & FONTAN Benjamin & CAILLAUD Xavier & François Legastelois
-// Purpose of file: plugin order v1.4.0 - GLPI 0.80
+// Purpose of file: 
 // ----------------------------------------------------------------------
 // ---------------------------------------------------------------------- */
  

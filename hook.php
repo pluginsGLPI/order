@@ -3,7 +3,7 @@
  * @version $Id: HEADER 2011-03-23 15:41:26 tsmr $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2010 by the INDEPNET Development Team.
+ Copyright (C) 2003-2011 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
@@ -24,7 +24,7 @@
 
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  --------------------------------------------------------------------------
 // ----------------------------------------------------------------------
 // Original Authors of file: 
@@ -255,7 +255,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
    $table = $searchopt[$ID]["table"];
    $field = $searchopt[$ID]["field"];
 
-   $PluginOrderReference = new PluginOrderReference();
+   $reference = new PluginOrderReference();
 
    switch ($table . '.' . $field) {
       /* display associated items with order */
@@ -281,7 +281,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
             return " ";
 
          } else {
-            return $PluginOrderReference->getTemplateName($data["itemtype"], $data["ITEM_" . $num]);
+            return $reference->getTemplateName($data["itemtype"], $data["ITEM_" . $num]);
          }
          break;
    }
@@ -372,58 +372,57 @@ function plugin_get_headings_order($item,$withtemplate) {
 // Define headings actions added by the plugin
 function plugin_headings_actions_order($item) {
 
-   if (in_array(get_class($item),PluginOrderOrder_Item::getClasses(true))||
-      get_class($item)=='Profile' 
-         || get_class($item)=='Supplier' 
-            || get_class($item)=='Budget' 
-               || get_class($item)=='Preference') {
+   $classes = PluginOrderOrder_Item::getClasses(true);
+   $classes[] = 'Profile';
+   $classes[] = 'Supplier';
+   $classes[] = 'Budget';
+   $classes[] ='Preference';
+   if (in_array(get_class($item),$classes)) {
       return array(1 => "plugin_headings_order");
+   } else {
+      return false;
    }
-   return false;
 }
 
 /* action heading */
 function plugin_headings_order($item) {
    global $CFG_GLPI;
 
-   $PluginOrderProfile        = new PluginOrderProfile();
-   $PluginOrderOrder_Item     = new PluginOrderOrder_Item();
-   $PluginOrderOrder          = new PluginOrderOrder();
-   $PluginOrderReference      = new PluginOrderReference();
-   $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
-   $PluginOrderSurveySupplier = new PluginOrderSurveySupplier();
+   $profile        = new PluginOrderProfile();
+   $order_item     = new PluginOrderOrder_Item();
+   $order          = new PluginOrderOrder();
+   $reference      = new PluginOrderReference();
+   $order_supplier = new PluginOrderOrder_Supplier();
+   $surveysupplier = new PluginOrderSurveySupplier();
 
    switch (get_class($item)) {
       case 'Profile' :
-         if (!$PluginOrderProfile->getFromDBByProfile($item->getField('id'))) {
-            $PluginOrderProfile->createAccess($item->getField('id'));
+         if (!$profile->getFromDBByProfile($item->getField('id'))) {
+            $profile->createAccess($item->getField('id'));
 
          }
-         $PluginOrderProfile->showForm($item->getField('id'), 
-                                       array('target' => $CFG_GLPI["root_doc"].
-                                                            "/plugins/order/front/profile.form.php"));
+         $profile->showForm($item->getField('id'));
          break;
       case 'Supplier' :
-         $PluginOrderReference->showReferencesFromSupplier($item->getField('id'));
-         $PluginOrderOrder_Supplier->showDeliveries($item->getField('id'));
-         $PluginOrderSurveySupplier->showGlobalNotation($item->getField('id'));
+         $reference->showReferencesFromSupplier($item->getField('id'));
+         $order_supplier->showDeliveries($item->getField('id'));
+         $surveysupplier->showGlobalNotation($item->getField('id'));
          break;
       case 'Budget' :
-         $PluginOrderOrder->getAllOrdersByBudget($_POST["id"]);
+         $order->getAllOrdersByBudget($_POST["id"]);
          break;
       case "Preference" :
          $pref    = new PluginOrderPreference();
-         $pref_ID = $pref->checkIfPreferenceExists(getLoginUserID());
-         if (!$pref_ID) {
-            $pref_ID = $pref->addDefaultPreference(getLoginUserID());
+         $id = $pref->checkIfPreferenceExists(getLoginUserID());
+         if (!$id) {
+            $id = $pref->addDefaultPreference(getLoginUserID());
 
          }
-         $pref->showForm($CFG_GLPI['root_doc']."/plugins/order/front/preference.form.php", $pref_ID,
-                         getLoginUserID());
+         $pref->showForm($id, getLoginUserID());
          break;
       default :
          if (in_array(get_class($item), PluginOrderOrder_Item::getClasses(true))) {
-            $PluginOrderOrder_Item->showPluginFromItems(get_class($item),$item->getField('id'));
+            $order_item->showPluginFromItems(get_class($item), $item->getField('id'));
          }
          break;
    }
