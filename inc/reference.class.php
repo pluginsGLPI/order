@@ -642,34 +642,39 @@ class PluginOrderReference extends CommonDropdown {
          return 0;
       }
 
-      $input                = $this->fields;
-      $input['entities_id'] = $entity;
-      $oldref               = $input['id'];
-      unset($input['id']);
-      $input['transfert']   = 1;
-      $newid=$this->add($input);
       
-      $PluginOrderReference_Supplier       = new PluginOrderReference_Supplier();
-      $PluginOrderReference_Supplier->getFromDBByReference($oldref);
-      $input = $PluginOrderReference_Supplier->fields;
-      $input['entities_id']                = $entity;
-      $input['plugin_order_references_id'] = $newid;
-      unset($input['id']);
-      $PluginOrderReference_Supplier->add($input);
-      
-      $PluginOrderOrder_Item = new PluginOrderOrder_Item();
-      
-      $query="SELECT `id` FROM `glpi_plugin_order_orders_items`
-               WHERE `plugin_order_references_id` = '$oldref' ";
-      
-      $result=$DB->query($query);
-      $num=$DB->numrows($result);
-      if ($num) {
-         while ($dataref=$DB->fetch_array($result)) {
-            $values["id"] = $dataref['id'];
-            $values["plugin_order_references_id"] = $newid;
-            $PluginOrderOrder_Item->update($values);
+      //If reference is not visible in the target entity : transfer it!
+      if(!countElementsInTableForEntity($this->getTable(), $entity, "`id`='".$this->getID()."'")) {
+         $input                = $this->fields;
+         $input['entities_id'] = $entity;
+         $oldref               = $input['id'];
+         unset($input['id']);
+         $input['transfert']   = 1;
+         $newid=$this->add($input);
+         
+         $PluginOrderReference_Supplier       = new PluginOrderReference_Supplier();
+         $PluginOrderReference_Supplier->getFromDBByReference($oldref);
+         $input = $PluginOrderReference_Supplier->fields;
+         $input['entities_id']                = $entity;
+         $input['plugin_order_references_id'] = $newid;
+         unset($input['id']);
+         $PluginOrderReference_Supplier->add($input);
+         
+         $PluginOrderOrder_Item = new PluginOrderOrder_Item();
+         
+         $query = "SELECT `id` FROM `glpi_plugin_order_orders_items`
+                   WHERE `plugin_order_references_id` = '$oldref' ";
+         
+         $result = $DB->query($query);
+         $num    = $DB->numrows($result);
+         if ($num) {
+            while ($dataref=$DB->fetch_array($result)) {
+               $values["id"] = $dataref['id'];
+               $values["plugin_order_references_id"] = $newid;
+               $PluginOrderOrder_Item->update($values);
+            }
          }
+         
       }
    }
    

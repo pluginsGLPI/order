@@ -1192,34 +1192,32 @@ class PluginOrderOrder extends CommonDBTM {
       }
    }
    
-   function transfer($ID,$entity) {
+   function transfer($ID, $entity) {
       global $DB;
       
-      $PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier;
-      $PluginOrderReference      = new PluginOrderReference();
-      $PluginOrderOrder_Item     = new PluginOrderOrder_Item();
+      $supplier   = new PluginOrderOrder_Supplier;
+      $reference  = new PluginOrderReference();
       
       $this->getFromDB($ID);
       $input["id"]          = $ID;
       $input["entities_id"] = $entity;
       $this->update($input);
       
-      if($PluginOrderOrder_Supplier->getFromDBByOrder($ID)) {
-         $input["id"] = $PluginOrderOrder_Supplier->fields["id"];
+      if($supplier->getFromDBByOrder($ID)) {
+         $input["id"]          = $supplier->fields["id"];
          $input["entities_id"] = $entity;
-         $PluginOrderOrder_Supplier->update($input);
+         $supplier->update($input);
       }
-      $query="SELECT `plugin_order_references_id` FROM `glpi_plugin_order_orders_items`
-               WHERE `plugin_order_orders_id` = '$ID' 
-               GROUP BY plugin_order_references_id";
+      
+      $query = "SELECT `plugin_order_references_id` FROM `glpi_plugin_order_orders_items`
+                WHERE `plugin_order_orders_id` = '$ID' 
+                GROUP BY plugin_order_references_id";
       
       $result = $DB->query($query);
       $num    = $DB->numrows($result);
       if ($num) {
          while ($detail=$DB->fetch_array($result)) {
-
-            $ref = $PluginOrderReference->transfer($detail["plugin_order_references_id"],
-                                                   $entity);
+            $ref = $reference->transfer($detail["plugin_order_references_id"], $entity);
          }
       }
    }
