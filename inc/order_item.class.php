@@ -809,7 +809,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
          $migration->addKey($table, "plugin_order_bills_id");
          $migration->addKey($table, "plugin_order_billstates_id");
          $migration->migrationOneTable($table);
-          //Forward entities_id and is_recursive into table glpi_plugin_order_orders_items
+         
+         //Forward entities_id and is_recursive into table glpi_plugin_order_orders_items
          $query = "SELECT `go`.`entities_id` as entities_id , `go`.`is_recursive` as is_recursive, `goi`.`id` as items_id
                    FROM `glpi_plugin_order_orders` as go, `$table` as `goi` 
                    WHERE `goi`.`plugin_order_orders_id`=`go`.`id`";
@@ -820,6 +821,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
                        WHERE `id`='".$data['items_id']."'";
             $DB->query($update)  or die($DB->error());
          }
+         
          $migration->executeMigration();
       }
    }
