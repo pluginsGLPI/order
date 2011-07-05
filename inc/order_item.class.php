@@ -140,7 +140,6 @@ class PluginOrderOrder_Item extends CommonDBTM {
                         $orderitem->getFromDB($detail_id);
                         $order->getFromDB($orderitem->fields["plugin_order_orders_id"]);
                         $item->input['cost'] = $orderitem->fields["price_discounted"];
-                        logDebug($item);
                         break;
                   }
                }
@@ -410,15 +409,17 @@ class PluginOrderOrder_Item extends CommonDBTM {
             echo "</td>";
             /* type */
             echo "<td align='center'>";
-            if (file_exists(GLPI_ROOT."/inc/".strtolower($data_ref["itemtype"])."type.class.php"))
+            if (file_exists(GLPI_ROOT."/inc/".strtolower($data_ref["itemtype"])."type.class.php")) {
                echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Type"), 
                                                                   $data_ref["types_id"]);
+            }
             echo "</td>";
             /* modele */
             echo "<td align='center'>";
-            if (file_exists(GLPI_ROOT."/inc/".strtolower($data_ref["itemtype"])."model.class.php"))
+            if (file_exists(GLPI_ROOT."/inc/".strtolower($data_ref["itemtype"])."model.class.php")) {
                echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Model"), 
                                               $data_ref["models_id"]);
+            }
             echo "</td>";
             if($canedit) {
                echo "<td align='center'>";
@@ -627,7 +628,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
       global $DB;
 
       $PluginOrderConfig = new PluginOrderConfig;
-      $config = $PluginOrderConfig->getConfig();
+      $config            = $PluginOrderConfig->getConfig();
 
       $order = new PluginOrderOrder;
       $order->getFromDB($plugin_order_orders_id);
@@ -641,17 +642,21 @@ class PluginOrderOrder_Item extends CommonDBTM {
       $all_delivered = true;
       
       if ($number) {
-         while ($data = $DB->fetch_array($result))
-            if (!$data["states_id"])
+         while ($data = $DB->fetch_array($result)) {
+            if (!$data["states_id"]) {
                $all_delivered = false;
+            }
+         }
       }
       if ($all_delivered 
-            && $order->fields["plugin_order_orderstates_id"] != $config['order_status_completly_delivered'])
+            && $order->fields["plugin_order_orderstates_id"] != $config['order_status_completly_delivered']) {
          $order->updateOrderStatus($plugin_order_orders_id, 
                                    $config['order_status_completly_delivered']);
-      else if ($order->fields["plugin_order_orderstates_id"] != $config['order_status_partially_delivred'])
+      } else if ($order->fields["plugin_order_orderstates_id"] 
+                  != $config['order_status_partially_delivred']) {
          $order->updateOrderStatus($plugin_order_orders_id, 
                                    $config['order_status_partially_delivred']);
+      }
    }
 
    function getAllPrices($plugin_order_orders_id) {
@@ -708,15 +713,13 @@ class PluginOrderOrder_Item extends CommonDBTM {
    
    static function install(Migration $migration) {
       global $DB;
-      
       $table = getTableForItemType(__CLASS__);
       
-      if (!TableExists($table)) {
-         if (!TableExists("glpi_plugin_order_detail")) {
-            $migration->displayMessage("Installing $table");
+      if (!TableExists($table) && !TableExists("glpi_plugin_order_detail")) {
+         $migration->displayMessage("Installing $table");
  
-            //install
-            $query = "CREATE TABLE IF NOT EXISTS `$table` (
+         //install
+         $query = "CREATE TABLE IF NOT EXISTS `$table` (
                `id` int(11) NOT NULL auto_increment,
                `entities_id` int(11) NOT NULL default '0',
                `is_recursive` tinyint(1) NOT NULL default '0',
@@ -735,6 +738,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
                `states_id` int(11) NOT NULL default 1,
                `delivery_date` date default NULL,
                `plugin_order_bills_id` INT( 11 ) NOT NULL DEFAULT '0',
+               `plugin_order_billstates` INT( 11 ) NOT NULL DEFAULT '0',
                PRIMARY KEY  (`id`),
                KEY `FK_device` (`items_id`,`itemtype`),
                KEY `entities_id` (`entities_id`),
@@ -744,80 +748,80 @@ class PluginOrderOrder_Item extends CommonDBTM {
                KEY `states_id` (`states_id`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
             $DB->query($query) or die ($DB->error());
-         } else {
-            //Upgrade
-            $migration->displayMessage("Upgrading $table");
+      } else {
+         //Upgrade
+         $migration->displayMessage("Upgrading $table");
 
-            //1.1.2
-            $migration->addField("glpi_plugin_order_detail","delivery_status", "int(1) NOT NULL default '0'");
-            $migration->addField("glpi_plugin_order_detail","delivery_comments", "TEXT");
+         //1.1.2
+         if (TableExists("glpi_plugin_order_detail")) {
+            $migration->addField("glpi_plugin_order_detail", "delivery_status", "int(1) NOT NULL default '0'");
+            $migration->addField("glpi_plugin_order_detail", "delivery_comments", "TEXT");
             $migration->migrationOneTable("glpi_plugin_order_detail");
 
-            //1.2.0
-            $migration->renameTable("glpi_plugin_order_detail", $table);
-            
-            $migration->changeField($table, "ID", "id",  "int(11) NOT NULL AUTO_INCREMENT");
-            $migration->changeField($table, "FK_order", "plugin_order_orders_id", 
-                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'");
-            $migration->changeField($table, "device_type", "itemtype", 
-                                    "varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file'");
-            $migration->changeField($table, "FK_device",  "items_id", 
-                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
-            $migration->changeField($table, "FK_reference", "plugin_order_references_id", 
-                                    "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'");
-            $migration->changeField($table, "delivery_status",  "plugin_order_deliverystates_id", 
-                                    "int (11)  NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_deliverystates (id)'");
-            $migration->changeField($table, "deliverynum",  "delivery_number", 
-                                    "varchar(255) collate utf8_unicode_ci default NULL");
-            $migration->changeField($table, "delivery_comments",  "delivery_comment", 
-                                    "text collate utf8_unicode_ci");
-            $migration->changeField($table, "status", "states_id",  "int(11) NOT NULL default 1");
-            $migration->changeField($table, "date", "delivery_date",  "date default NULL");
-            $migration->addKey($table, array("items_id", "itemtype"), "FK_device" );
-            $migration->addKey($table, array("itemtype", "items_id"), "item");
-            $migration->addKey($table, "plugin_order_references_id");
-            $migration->addKey($table, "plugin_order_deliverystates_id");
-            $migration->addKey($table, "states_id");
-            $migration->migrationOneTable($table);
-            
-            Plugin::migrateItemType(array(), array(), array($table));
-
-
-            //1.4.0
-            $migration->addField($table, "plugin_order_ordertaxes_id", 
-                                 "INT (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)'");
-            $migration->migrationOneTable($table);
-            
-            /* Migrate VAT */
-            foreach ($DB->request("glpi_plugin_order_orders") as $data) {
-               $query  = "UPDATE `glpi_plugin_order_orders_items`
-                          SET `plugin_order_ordertaxes_id` = '" . $data["plugin_order_ordertaxes_id"] . "'
-                          WHERE `plugin_order_orders_id` = '" . $data["id"] . "'";
-               $result = $DB->query($query) or die($DB->error());
-            }
-
-            //1.5.0
-            $migration->addField($table, "entities_id",  "INT( 11 ) NOT NULL DEFAULT '0'");
-            $migration->addField($table, "is_recursive",  "TINYINT( 1 ) NOT NULL DEFAULT '0'");
-            $migration->addField($table, "bills_id",  "INT( 11 ) NOT NULL DEFAULT '0'");
-            $migration->addKey("glpi_plugin_order_orders_items", "entities_id", "entities_id", "INDEX");
-            $migration->migrationOneTable($table);
-
-            //Forward entities_id and is_recursive into table glpi_plugin_order_orders_items
-            $query = "SELECT `go`.`entities_id` as entities_id , `go`.`is_recursive` as is_recursive, `goi`.`id` as items_id
-                      FROM `glpi_plugin_order_orders` as go, `$table` as `goi` 
-                      WHERE `goi`.`plugin_order_orders_id`=`go`.`id`";
-            foreach($DB->request($query) as $data) {
-               $update = "UPDATE `$table` 
-                          SET `entities_id`='".$data['entities_id']."' 
-                             AND `is_recursive`='".$data['is_recursive']."' 
-                          WHERE `id`='".$data['items_id']."'";
-               $DB->query($update)  or die($DB->error());
-            }
-            
          }
+
+         //1.2.0
+         $migration->renameTable("glpi_plugin_order_detail", $table);
+         
+         $migration->changeField($table, "ID", "id",  "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($table, "FK_order", "plugin_order_orders_id", 
+                                  "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'");
+         $migration->changeField($table, "device_type", "itemtype", 
+                                 "varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file'");
+         $migration->changeField($table, "FK_device",  "items_id", 
+                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
+         $migration->changeField($table, "FK_reference", "plugin_order_references_id", 
+                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'");
+         $migration->changeField($table, "delivery_status",  "plugin_order_deliverystates_id", 
+                                 "int (11)  NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_deliverystates (id)'");
+         $migration->changeField($table, "deliverynum",  "delivery_number", 
+                                 "varchar(255) collate utf8_unicode_ci default NULL");
+         $migration->changeField($table, "delivery_comments",  "delivery_comment", 
+                                 "text collate utf8_unicode_ci");
+         $migration->changeField($table, "status", "states_id",  "int(11) NOT NULL default 1");
+         $migration->changeField($table, "date", "delivery_date",  "date default NULL");
+         $migration->addKey($table, array("items_id", "itemtype"), "FK_device" );
+         $migration->addKey($table, array("itemtype", "items_id"), "item");
+         $migration->addKey($table, "plugin_order_references_id");
+         $migration->addKey($table, "plugin_order_deliverystates_id");
+         $migration->addKey($table, "states_id");
+         $migration->migrationOneTable($table);
+         
+         Plugin::migrateItemType(array(), array(), array($table));
+          //1.4.0
+         $migration->addField($table, "plugin_order_ordertaxes_id", 
+                              "INT (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)'");
+         $migration->migrationOneTable($table);
+         
+         /* Migrate VAT */
+          foreach ($DB->request("glpi_plugin_order_orders") as $data) {
+            $query  = "UPDATE `glpi_plugin_order_orders_items`
+                       SET `plugin_order_ordertaxes_id` = '" . $data["plugin_order_ordertaxes_id"] . "'
+                       WHERE `plugin_order_orders_id` = '" . $data["id"] . "'";
+            $result = $DB->query($query) or die($DB->error());
+         }
+          //1.5.0
+         $migration->addField($table, "entities_id",  "INT( 11 ) NOT NULL DEFAULT '0'");
+         $migration->addField($table, "is_recursive",  "TINYINT( 1 ) NOT NULL DEFAULT '0'");
+         $migration->addField($table, "plugin_order_bills_id",  "INT( 11 ) NOT NULL DEFAULT '0'");
+         $migration->addField($table, "plugin_order_billstates_id", "INT( 11 ) NOT NULL DEFAULT '0'");
+         $migration->addKey($table, "entities_id");
+         $migration->addKey($table, "plugin_order_bills_id");
+         $migration->addKey($table, "plugin_order_billstates_id");
+         $migration->migrationOneTable($table);
+          //Forward entities_id and is_recursive into table glpi_plugin_order_orders_items
+         $query = "SELECT `go`.`entities_id` as entities_id , `go`.`is_recursive` as is_recursive, `goi`.`id` as items_id
+                   FROM `glpi_plugin_order_orders` as go, `$table` as `goi` 
+                   WHERE `goi`.`plugin_order_orders_id`=`go`.`id`";
+         foreach($DB->request($query) as $data) {
+            $update = "UPDATE `$table` 
+                       SET `entities_id`='".$data['entities_id']."' 
+                          AND `is_recursive`='".$data['is_recursive']."' 
+                       WHERE `id`='".$data['items_id']."'";
+            $DB->query($update)  or die($DB->error());
+         }
+         $migration->executeMigration();
       }
-      
    }
    
    static function uninstall() {

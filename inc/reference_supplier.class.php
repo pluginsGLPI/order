@@ -393,8 +393,11 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          $migration->displayMessage("Upgrading $table");
 
          //1.1.0
+         if (TableExists("glpi_plugin_order_references_manufacturers")) {
          $migration->addField("glpi_plugin_order_references_manufacturers", "reference_code",
                               "varchar(255) NOT NULL collate utf8_unicode_ci default ''");
+         $migration->migrationOneTable("glpi_plugin_order_references_manufacturers");
+         }
 
          //1.2.0
          $migration->renameTable("glpi_plugin_order_references_manufacturers", $table);

@@ -92,18 +92,10 @@ class PluginOrderReception extends CommonDBTM {
    }
    
    function checkItemStatus($plugin_order_orders_id, $plugin_order_references_id, $states_id) {
-      global $DB;
-      
-      $query = "SELECT COUNT(*) AS cpt 
-               FROM `glpi_plugin_order_orders_items` 
-               WHERE `plugin_order_orders_id` = '$plugin_order_orders_id' 
-               AND `plugin_order_references_id` = '$plugin_order_references_id' 
-               AND `states_id` = '".$states_id."' ";
-      $result = $DB->query($query);
-      if ($DB->result($result, 0, "cpt") > 0)
-         return ($DB->result($result, 0, 'cpt'));
-      else
-         return false;
+      return !countElementsInTable("glpi_plugin_order_orders_items",
+                                   "`plugin_order_orders_id` = '$plugin_order_orders_id' 
+                                       AND `plugin_order_references_id` = '$plugin_order_references_id' 
+                                          AND `states_id` = '".$states_id."'");
    }
    
    function deleteDelivery($detailID) {
@@ -114,34 +106,34 @@ class PluginOrderReception extends CommonDBTM {
       
       if ($detail->fields["itemtype"] == 'SoftwareLicense') {
       
-         $result=$PluginOrderOrder_Item->queryRef($_POST["plugin_order_orders_id"],
-                                                  $detail->fields["plugin_order_references_id"],
-                                                  $detail->fields["price_taxfree"],
-                                                  $detail->fields["discount"],
-                                                  PluginOrderOrder::ORDER_DEVICE_DELIVRED);
+         $result = $PluginOrderOrder_Item->queryRef($_POST["plugin_order_orders_id"],
+                                                    $detail->fields["plugin_order_references_id"],
+                                                    $detail->fields["price_taxfree"],
+                                                    $detail->fields["discount"],
+                                                    PluginOrderOrder::ORDER_DEVICE_DELIVRED);
          $nb = $DB->numrows($result);
          
          if ($nb) {
             for ($i = 0; $i < $nb; $i++) {
                $detailID = $DB->result($result, $i, 'id');
 
-               $input["id"] = $detailID;
-               $input["delivery_date"] = 'NULL';
-               $input["states_id"] = PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED;
-               $input["delivery_number"] = "";
+               $input["id"]                             = $detailID;
+               $input["delivery_date"]                  = 'NULL';
+               $input["states_id"]                      = PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED;
+               $input["delivery_number"]                = "";
                $input["plugin_order_deliverystates_id"] = 0;
-               $input["delivery_comment"] = "";
+               $input["delivery_comment"]               = "";
                $detail->update($input);
             }
          }
       
       } else {
-         $values["id"] = $detailID;
-         $values["date"] = 0;
-         $values["states_id"] = PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED;
-         $values["delivery_number"] = "";
+         $values["id"]                             = $detailID;
+         $values["date"]                           = 0;
+         $values["states_id"]                      = PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED;
+         $values["delivery_number"]                = "";
          $values["plugin_order_deliverystates_id"] = 0;
-         $values["delivery_comment"] = "";
+         $values["delivery_comment"]               = "";
          $detail->update($values);
       }
    }

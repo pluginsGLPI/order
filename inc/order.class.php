@@ -103,7 +103,6 @@ class PluginOrderOrder extends CommonDBTM {
       }
    }
    
-      
    function canDisplayValidationForm($orders_id) {
 
       $this->getFromDB($orders_id);
@@ -123,9 +122,6 @@ class PluginOrderOrder extends CommonDBTM {
       $PluginOrderConfig = new PluginOrderConfig();
       $config = $PluginOrderConfig->getConfig();
       
-      $ORDER_VALIDATION_STATUS = array ($config['order_status_draft'],
-                                        $config['order_status_waiting_approval']);
-
       //If no validation process -> can validate if order is in draft state
       if (!$config["use_validation"]) {
          return ($this->getState()  == $config['order_status_draft']);
@@ -141,7 +137,8 @@ class PluginOrderOrder extends CommonDBTM {
          if (!$this->canValidate()) {
             return false;
          } else {
-            return (in_array($this->getState(), $ORDER_VALIDATION_STATUS));
+            return (in_array($this->getState(), array ($config['order_status_draft'],
+                                                       $config['order_status_waiting_approval'])));
          }
       }
    }
@@ -149,7 +146,7 @@ class PluginOrderOrder extends CommonDBTM {
    function canCancelOrder() {
 
       $PluginOrderConfig = new PluginOrderConfig();
-      $config = $PluginOrderConfig->getConfig();
+      $config            = $PluginOrderConfig->getConfig();
                                         
       //If order is canceled, cannot validate !
       if ($this->getState() == $config['order_status_canceled']) {
@@ -167,7 +164,7 @@ class PluginOrderOrder extends CommonDBTM {
    function canDoValidationRequest() {
       
       $PluginOrderConfig = new PluginOrderConfig;
-      $config = $PluginOrderConfig->getConfig();
+      $config            = $PluginOrderConfig->getConfig();
       
       if (!$config["use_validation"]) {
          return false;
@@ -179,7 +176,7 @@ class PluginOrderOrder extends CommonDBTM {
    function canCancelValidationRequest() {
 
       $PluginOrderConfig = new PluginOrderConfig;
-      $config = $PluginOrderConfig->getConfig();
+      $config            = $PluginOrderConfig->getConfig();
 
       return ($this->getState() == $config['order_status_waiting_approval']);
    }
@@ -187,7 +184,7 @@ class PluginOrderOrder extends CommonDBTM {
    function canUndoValidation() {
       
       $PluginOrderConfig = new PluginOrderConfig;
-      $config = $PluginOrderConfig->getConfig();
+      $config            = $PluginOrderConfig->getConfig();
 
       //If order is canceled, cannot validate !
       if ($this->getState() == $config['order_status_canceled']) {
