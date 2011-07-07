@@ -65,7 +65,7 @@ if ($_POST["id"] > 0 && $order->can($_POST["id"], 'r')) {
             $order_supplier->showForm("",  array('plugin_order_orders_id' => $_POST["id"]));
 
          }
-         if ($order->fields['plugin_order_orderstates_id'] != PluginOrderOrderState::DRAFT) {
+         if ($order->getState() != PluginOrderOrderState::DRAFT) {
             $orderreception->showOrderReception($_POST["id"]);
             $orderlink->showOrderLink($_POST["id"]);
             
@@ -79,7 +79,7 @@ if ($_POST["id"] > 0 && $order->can($_POST["id"], 'r')) {
             }
 
          }
-
+         $order_item->showBillsItems($_POST["id"]);
          Document::showAssociated($order);
          Plugin::displayAction($order,$_REQUEST['glpi_tab']);
          break;
@@ -118,11 +118,14 @@ if ($_POST["id"] > 0 && $order->can($_POST["id"], 'r')) {
             
          }
          break;
+      case 8:
+         $order_item->showBillsItems($_POST["id"]);
+         break;
       case 9 :
          Document::showAssociated($order);
          break;
       case 10 :
-         showNotesForm($_POST['target'],"PluginOrderOrder", $_POST["id"]);
+         showNotesForm($_POST['target'], "PluginOrderOrder", $_POST["id"]);
          break;
       case 12 :
          Log::showForItem($order);

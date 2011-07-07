@@ -191,14 +191,12 @@ class PluginOrderBill extends CommonDropdown {
       $tab[7]['name']          = $LANG['financial'][26];
       $tab[7]['datatype']      = 'itemlink';
       $tab[7]['itemlink_type'] = 'Supplier';
-      $tab[7]['forcegroupby']  = true;
-  
+
       $tab[8]['table']         = getTableForItemType('PluginOrderOrder');
       $tab[8]['field']         = 'name';
       $tab[8]['name']          = $LANG['plugin_order'][7];
       $tab[8]['datatype']      = 'itemlink';
       $tab[8]['itemlink_type'] = 'PluginOrderOrder';
-      $tab[8]['forcegroupby']  = true;
   
       /* comments */
       $tab[16]['table']    = $this->getTable();
@@ -341,6 +339,36 @@ class PluginOrderBill extends CommonDropdown {
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
       $DB->query($query) or die ($DB->error());
       }
+      
+      if (FieldExists("glpi_plugin_order_orders_suppliers", "num_bill")) {
+         //Migrate bills
+         $bill = new PluginOrderBill();
+         $query = "SELECT `num_bill`, `plugin_order_orders_id`, `entities_id`, `is_recursive` " .
+                  "FROM `glpi_plugin_order_orders_suppliers`";
+         foreach ($DB->request($query) as $data) {
+            if (!is_null($data['num_bill']) 
+               && $data['num_bill'] != '' 
+                  && !countElementsInTable('glpi_plugin_order_bills', 
+                                           "`number`='".$data['num_bill']."'")) {
+               //create new bill and link it to the order 
+               $tmp['name']                   = $tmp['number'] = $data['num_bill'];
+               $tmp['entities_id']            = $data['entities_id'];
+               $tmp['is_recursive']           = $data['is_recursive'];
+               $tmp['plugin_order_orders_id'] = $data['plugin_order_orders_id'];
+               $bills_id            = $bill->add($tmp);
+
+               //All order items are now linked to this bill
+               $query = "UPDATE `glpi_plugin_order_orders_items` " .
+                        "SET `plugin_order_bills_id`='$bills_id' " .
+                        "WHERE `plugin_order_orders_id`='".$data['plugin_order_orders_id']."'";
+               $DB->query($query);
+            }
+            
+         }
+         //$migration->dropField("glpi_plugin_order_orders_suppliers", "num_bill");
+         //$migration->migrationOneTable("glpi_plugin_order_orders_suppliers");
+      }
+
    }
    
    static function uninstall() {

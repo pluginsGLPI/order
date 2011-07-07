@@ -237,16 +237,17 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       $options['colspan'] = 1;
       $this->showFormHeader($options);
       
-      $PluginOrderOrder = new PluginOrderOrder();
-      $PluginOrderOrder->getFromDB($plugin_order_orders_id);
+      $order = new PluginOrderOrder();
+      $order->getFromDB($plugin_order_orders_id);
       echo "<input type='hidden' name='plugin_order_orders_id' value='$plugin_order_orders_id'>";
-      echo "<input type='hidden' name='entities_id' value='".$PluginOrderOrder->getEntityID()."'>";
-      echo "<input type='hidden' name='is_recursive' value='".$PluginOrderOrder->isRecursive()."'>";
+      echo "<input type='hidden' name='entities_id' value='".$order->getEntityID()."'>";
+      echo "<input type='hidden' name='is_recursive' value='".$order->isRecursive()."'>";
       
       echo "<tr class='tab_bg_1'><td>" . $LANG['financial'][26] . ": </td><td>";
-      $suppliers_id = $PluginOrderOrder->fields["suppliers_id"];
-      if ($ID > 0)
+      $suppliers_id = $order->fields["suppliers_id"];
+      if ($ID > 0) {
          $suppliers_id = $this->fields["suppliers_id"];
+      }
       $link=getItemTypeFormURL('Supplier');
       echo "<a href=\"" . $link . "?id=" . $suppliers_id . "\">" . 
          Dropdown::getDropdownName("glpi_suppliers", $suppliers_id) . "</a>";
@@ -294,10 +295,10 @@ class PluginOrderSurveySupplier extends CommonDBChild {
 
       initNavigateListItems($this->getType(),$LANG['plugin_order'][7] ." = ". $order->fields["name"]);
 
-      $candelete =$order->can($ID,'w');
-      $query = "SELECT * FROM `".$this->getTable()."` WHERE `plugin_order_orders_id` = '$ID' ";
-      $result = $DB->query($query);
-      $rand=mt_rand();
+      $candelete = $order->can($ID,'w');
+      $query     = "SELECT * FROM `".$this->getTable()."` WHERE `plugin_order_orders_id` = '$ID' ";
+      $result    = $DB->query($query);
+      $rand      = mt_rand();
       echo "<div class='center'>";
       echo "<form method='post' name='show_suppliersurvey$rand' id='show_suppliersurvey$rand' " .
             " action=\"".getItemTypeFormURL(__CLASS__)."\">";
@@ -339,22 +340,24 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          }
          echo "</table>";
 
-         if ($candelete)
-         {
+         if ($candelete) {
             echo "<div class='center'>";
             echo "<table width='900px' class='tab_glpi'>";
-            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('show_suppliersurvey$rand') ) return false;\" href='#'>".$LANG['buttons'][18]."</a></td>";
+            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''>";
+            echo "</td><td class='center'><a onclick= \"if ( markCheckboxes('show_suppliersurvey$rand') ) return false;\" href='#'>".
+               $LANG['buttons'][18]."</a></td>";
 
-            echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('show_suppliersurvey$rand') ) return false;\" href='#'>".$LANG['buttons'][19]."</a>";
+            echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('show_suppliersurvey$rand') ) return false;\" href='#'>".
+               $LANG['buttons'][19]."</a>";
             echo "</td><td align='left' width='80%'>";
             echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit' >";
             echo "</td>";
             echo "</table>";
             echo "</div>";
          }
-      }
-      else
+      } else {
          echo "</table>";
+      }
 
       echo "</form>";
       echo "</div>";
@@ -365,10 +368,11 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       if ($plugin_order_orders_id) {
          $devices = getAllDatasFromTable($this->getTable(), 
                                          "`plugin_order_orders_id` = '$plugin_order_orders_id' ");
-         if (!empty($devices))
+         if (!empty($devices)) {
             return true;
-         else
+         } else {
             return false;
+         }
       }
    }
    

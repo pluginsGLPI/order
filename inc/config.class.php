@@ -39,7 +39,9 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderConfig extends CommonDBTM {
 
-   
+   function __construct() {
+      $this->getConfig();
+   }
    static function getTypeName() {
       global $LANG;
 
@@ -83,10 +85,10 @@ class PluginOrderConfig extends CommonDBTM {
 
       echo "<tr class='tab_bg_1' align='center'>
                   <td>".$LANG['plugin_order']['config'][4]."</td><td>";
-                  Dropdown::showYesNo("generate_assets", $this->fields["generate_assets"]);
+                  Dropdown::showYesNo("generate_assets", $this->canGenerateAsset());
       echo "</td></tr>";
       
-      if ($this->fields["generate_assets"]) {
+      if ($this->canGenerateAsset()) {
          echo "<tr class='tab_bg_1' align='center'>
                <td>".$LANG['plugin_order']['config'][5]."</td><td>";
                   autocompletionTextField($this, "generated_name");
@@ -130,10 +132,10 @@ class PluginOrderConfig extends CommonDBTM {
    
       echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][4]."</td><td>";
-                  Dropdown::showYesNo("generate_ticket", $this->fields["generate_ticket"]);
+                  Dropdown::showYesNo("generate_ticket", $this->canGenerateTicket());
       echo "</td></tr>";
       
-      if ($this->fields["generate_ticket"]) {
+      if ($this->canGenerateTicket()) {
          echo "<tr class='tab_bg_1' align='center'>
                   <td>".$LANG['plugin_order']['config'][10]."</td><td>";
                   autocompletionTextField($this, "generated_title");
@@ -212,18 +214,92 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</table></form></div>";
    }
    
+   //----------------- Getters and setters -------------------//
+   
    function getConfig(){
-   
       $this->getFromDB(1);
-      return $this->fields; 
+   }
+
+   function useValidation() {
+      return $this->fields['use_validation'];
    }
    
+   function getDraftState() {
+      return $this->fields['order_status_draft'];
+      
+   }
+   
+   function getWaitingForApprovalState() {
+      return $this->fields['order_status_waiting_approval'];
+      
+   }
+
+   function getApprovedState() {
+      return $this->fields['order_status_approved'];
+      
+   }
+
+   function getPartiallyDeliveredState() {
+      return $this->fields['order_status_partially_delivred'];
+      
+   }
+
+   function getDeliveredState() {
+      return $this->fields['order_status_completly_delivered'];
+      
+   }
+
+   function getCanceledState() {
+      return $this->fields['order_status_canceled'];
+      
+   }
+
    function getDefaultTaxes() {
-   
-      $config = $this->getConfig();
-      return $config["default_taxes"];
+      return $this->fields['default_taxes'];
    }
    
+   function canGenerateAsset() {
+      return $this->fields['generate_assets'];
+   }
+
+   function canGenerateTicket() {
+      return $this->fields['generate_ticket'];
+   }
+
+   function getGeneratedAssetName() {
+      return $this->fields['generated_name'];
+   }
+
+   function getGeneratedAssetSerial() {
+      return $this->fields['generated_serial'];
+   }
+
+   function getGeneratedAssetEntity() {
+      return $this->fields['default_asset_entities_id'];
+   }
+
+   function getGeneratedAssetState() {
+      return $this->fields['default_asset_states_id'];
+   }
+
+   function getGeneratedAssetOtherserial() {
+      return $this->fields['generated_otherserial'];
+   }
+
+   function getGeneratedTicketTitle() {
+      return $this->fields['generated_title'];
+   }
+
+   function getGeneratedTicketContent() {
+      return $this->fields['generated_content'];
+   }
+
+   function getGeneratedTicketCategory() {
+      return $this->fields['default_ticketcategories_id'];
+   }
+
+   //----------------- Install & uninstall -------------------//
+
    static function install(Migration $migration) {
       global $DB;
 
@@ -312,8 +388,8 @@ class PluginOrderConfig extends CommonDBTM {
                           'order_status_approved'            => 3, 
                           'order_status_partially_delivred'  => 4, 
                           'order_status_completly_delivered' => 5, 
-                         'order_status_canceled'            => 6);
-                           
+                          'order_status_canceled'            => 6);
+
       foreach ($new_states as $field => $value) {
          $migration->addField($table, $field, "int(11) NOT NULL default '0'");
       }

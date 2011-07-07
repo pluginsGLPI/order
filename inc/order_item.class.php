@@ -182,8 +182,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
    function addDetails($plugin_order_references_id, $itemtype, $plugin_order_orders_id, $quantity, 
                        $price, $discounted_price, $plugin_order_ordertaxes_id) {
                           
-      $pluginOrderConfig = new PluginOrderConfig();
-      $config            = $pluginOrderConfig->getConfig();
+      $config = new PluginOrderConfig();
 
       if ($quantity > 0) {
          for ($i = 0; $i < $quantity; $i++) {
@@ -289,7 +288,28 @@ class PluginOrderOrder_Item extends CommonDBTM {
       
       return $result;
    }
-   
+
+   function queryBills($ID) {
+      global $DB;
+      
+      $query="SELECT `".$this->getTable()."`.`id` AS IDD, `glpi_plugin_order_references`.`id`,
+               `glpi_plugin_order_references`.`itemtype`,`glpi_plugin_order_references`.`types_id`,
+               `glpi_plugin_order_references`.`models_id`, 
+               `glpi_plugin_order_references`.`manufacturers_id`,
+               `glpi_plugin_order_references`.`name`,
+               `".$this->getTable()."`.`plugin_order_bills_id`,
+               `".$this->getTable()."`.`plugin_order_billstates_id`
+               FROM `".$this->getTable()."`, `glpi_plugin_order_references`
+               WHERE `".$this->getTable()."`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`
+               AND `".$this->getTable()."`.`plugin_order_orders_id` = '$ID'
+               GROUP BY `glpi_plugin_order_references`.`id`,`".$this->getTable()."`.`price_taxfree`,`".
+                  $this->getTable()."`.`discount`
+               ORDER BY `glpi_plugin_order_references`.`name` ";
+
+      $result=$DB->query($query);
+      
+      return $result;
+   }   
    function queryRef($plugin_order_orders_id, $plugin_order_references_id, $price_taxfree, 
                      $discount, $states_id = false) {
       global $DB;
@@ -610,8 +630,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
                                  $price_taxfree, $discount) {
       global $DB;
 
-      $PluginOrderConfig = new PluginOrderConfig;
-      $config = $PluginOrderConfig->getConfig();
+      $config = new PluginOrderConfig;
 
       $query = "SELECT COUNT(*) AS deliveredquantity
                 FROM `".$this->getTable()."`
@@ -627,10 +646,9 @@ class PluginOrderOrder_Item extends CommonDBTM {
    function updateDelivryStatus($plugin_order_orders_id) {
       global $DB;
 
-      $PluginOrderConfig = new PluginOrderConfig;
-      $config            = $PluginOrderConfig->getConfig();
+      $config = new PluginOrderConfig();
+      $order  = new PluginOrderOrder();
 
-      $order = new PluginOrderOrder;
       $order->getFromDB($plugin_order_orders_id);
 
       $query = "SELECT `states_id`
@@ -639,23 +657,27 @@ class PluginOrderOrder_Item extends CommonDBTM {
       $result = $DB->query($query);
       $number = $DB->numrows($result);
       
-      $all_delivered = true;
-      
+      $delivery_status = 0;
+      $is_delivered    = 1; //Except order to be totally delivered
       if ($number) {
          while ($data = $DB->fetch_array($result)) {
-            if (!$data["states_id"]) {
-               $all_delivered = false;
+            if ($data["states_id"] == PluginOrderOrder::ORDER_DEVICE_DELIVRED) {
+               $delivery_status = 1;
+            } else {
+               $is_delivered = 0;
             }
          }
       }
-      if ($all_delivered 
-            && $order->fields["plugin_order_orderstates_id"] != $config['order_status_completly_delivered']) {
-         $order->updateOrderStatus($plugin_order_orders_id, 
-                                   $config['order_status_completly_delivered']);
-      } else if ($order->fields["plugin_order_orderstates_id"] 
-                  != $config['order_status_partially_delivred']) {
-         $order->updateOrderStatus($plugin_order_orders_id, 
-                                   $config['order_status_partially_delivred']);
+
+      //Are all items delivered ?
+      if ($is_delivered && $order->getState() != $config->getDeliveredState()) {
+          $order->updateOrderStatus($plugin_order_orders_id, $config->getDeliveredState());
+         //At least one item is delivered
+      } else {
+         if ($delivery_status) {
+            $order->updateOrderStatus($plugin_order_orders_id, 
+                                      $config->getPartiallyDeliveredState());
+         }
       }
    }
 
@@ -711,6 +733,93 @@ class PluginOrderOrder_Item extends CommonDBTM {
       }
    }
    
+   function showBillsItems($orders_id) {
+      global $DB, $LANG;
+
+      echo "<div class='center'>";
+         
+      echo "<form method='post' name='bills_form' id='bills_form'  " .
+               "action='" . getItemTypeFormURL('PluginOrderOrder') . "'>";
+                  
+      echo "<input type='hidden' name='plugin_order_orders_id' 
+               value='" . $orders_id . "'>";
+                        
+      echo "<table class='tab_cadre_fixe'>";
+      if (!countElementsInTable($this->getTable(), "`plugin_order_orders_id`='$orders_id'")) {
+         echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
+      } else {
+         $rand = mt_rand();
+         echo "<th></th>";
+         echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
+         echo "<th>".$LANG['plugin_order']['detail'][6]."</th>";
+         echo "<th>".$LANG['common'][22]."</th>";
+         echo "<th>".$LANG['plugin_order']['bill'][0]."</th>";
+         echo "<th>".$LANG['plugin_order']['bill'][2]."</th>";
+         echo "</tr>";
+
+         $order      = new PluginOrderOrder();
+         $reference  = new PluginOrderReference();
+         $order_item = new PluginOrderOrder_Item();
+         $canedit    = $order->can($orders_id, 'w');
+         
+         $results = $this->queryBills($orders_id);
+         while ($data = $DB->fetch_array($results)) {
+            echo "<tr class='tab_bg_1'>";
+            if ($canedit){
+               echo "<td width='10'>";
+               $sel="";
+               if (isset($_GET["select"])&& $_GET["select"] == "all") {
+                  $sel = "checked";
+               }
+               echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
+               echo "<input type='hidden' name='plugin_order_orders_id' value='" . 
+                   $orders_id . "'>";
+               echo "</td>";
+            }
+            
+            //Reference
+            echo "<td align='center'>";
+            echo $reference->getReceptionReferenceLink($data);
+            echo "</td>";
+            
+            //Type
+            echo "<td align='center'>";
+            if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."type.class.php")) {
+               echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"), 
+                                                                  $data["types_id"]);
+            }
+            echo "</td>";
+            //Model
+            echo "<td align='center'>";
+            if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."model.class.php")) {
+               echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"), 
+                                              $data["models_id"]);
+            }
+            echo "<td align='center'>";
+            if ($canedit) {
+               Dropdown::show('PluginOrderBill', array('value' => $data['plugin_order_bills_id'], 
+                                                       'comments' => true));
+            } else {
+               echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBill'), 
+                                                               $data['plugin_order_bills_id']);
+            }
+            echo "</td>";
+            echo "<td align='center'>";
+            if ($canedit) {
+               Dropdown::show('PluginOrderBillState', 
+                              array('value'    => $data['plugin_order_billstates_id'], 
+                                    'comments' => true));
+            } else {
+               echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBillState'), 
+                                                                  $data['plugin_order_billstates_id']);
+            }
+            echo "</td>";
+            echo "</tr>";
+
+         }
+      }
+         
+   }
    static function install(Migration $migration) {
       global $DB;
       $table = getTableForItemType(__CLASS__);

@@ -36,25 +36,31 @@
 define('GLPI_ROOT', '../../..'); 
 include (GLPI_ROOT."/inc/includes.php");
 
-if(!isset($_GET["id"])) $_GET["id"] = "";
-if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
-if(!isset($_GET["plugin_order_orders_id"])) $_GET["plugin_order_orders_id"] = "";
+if(!isset($_GET["id"])) {
+   $_GET["id"] = "";
+}
+if(!isset($_GET["withtemplate"])) {
+   $_GET["withtemplate"] = "";
+}
+if(!isset($_GET["plugin_order_orders_id"])) {
+   $_GET["plugin_order_orders_id"] = "";
+}
 
-$PluginOrderOrder_Supplier=new PluginOrderOrder_Supplier();
-$PluginOrderOrder=new PluginOrderOrder();
+$PluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
+$PluginOrderOrder          = new PluginOrderOrder();
 
 if (isset($_POST["add"])) {
    if ($PluginOrderOrder_Supplier->canCreate()) {
       if (isset($_POST["plugin_order_orders_id"]) && $_POST["plugin_order_orders_id"] > 0) {
-         $newID=$PluginOrderOrder_Supplier->add($_POST);
+         $newID     = $PluginOrderOrder_Supplier->add($_POST);
          $new_value = $LANG['plugin_order']['history'][2]. " ";
-         if ($_POST["num_quote"])
+         if ($_POST["num_quote"]) {
             $new_value.= $LANG['plugin_order'][30]." ".$_POST["num_quote"];
-         if ($_POST["num_order"])
+         }
+         if ($_POST["num_order"]) {
             $new_value.= " - ".$LANG['plugin_order'][31]." : ".$_POST["num_order"];
-         if ($_POST["num_bill"])
-            $new_value.= " - ".$LANG['plugin_order'][28]." : ".$_POST["num_bill"];
-         $PluginOrderOrder->addHistory('PluginOrderOrder',"",$new_value,
+         }
+         $PluginOrderOrder->addHistory('PluginOrderOrder', "", $new_value,
                                        $_POST["plugin_order_orders_id"]);
       }
    }
@@ -62,7 +68,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    if ($PluginOrderOrder_Supplier->canCreate()) {
       foreach ($_POST["check"] as $ID => $value) {
-         $PluginOrderOrder_Supplier->delete(array("id"=>$ID),0,0);
+         $PluginOrderOrder_Supplier->delete(array( "id" => $ID), 0, 0);
          $new_value = $LANG['plugin_order']['history'][4]. " ".$LANG['plugin_order'][4]." : ".$ID;
          $PluginOrderOrder->addHistory('PluginOrderOrder',"",$new_value,
                                        $_POST["plugin_order_orders_id"]);
@@ -79,7 +85,7 @@ else if (isset($_POST["update"])) {
 } else {
    $PluginOrderOrder_Supplier->checkGlobal("r");
    
-   commonHeader($LANG['plugin_order']['title'][1],'',"plugins","order","order");
+   commonHeader($LANG['plugin_order']['title'][1],'',"plugins", "order", "order");
    
    $PluginOrderOrder_Supplier->showForm($_GET["id"], 
                                         array('plugin_order_orders_id' => 

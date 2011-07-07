@@ -44,18 +44,16 @@ if (!isset ($_GET["withtemplate"])) {
 }
 
 $pluginOrderOrder          = new PluginOrderOrder();
-$pluginOrderConfig         = new PluginOrderConfig();
+$config         = new PluginOrderConfig();
 $pluginOrderOrder_Item     = new PluginOrderOrder_Item();
 $pluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
-
-$config = $pluginOrderConfig->getConfig();
    
 /* add order */
 if (isset ($_POST["add"])) {
    $pluginOrderOrder->check(-1,'w',$_POST);
 
    /* FORCE Status */
-   $_POST['plugin_order_orderstates_id'] = $config['order_status_draft'];
+   $_POST['plugin_order_orderstates_id'] = $config->getDraftState();
 
    $newID = $pluginOrderOrder->add($_POST);
    glpi_header($_SERVER['HTTP_REFERER']."?id=$newID");
@@ -89,9 +87,9 @@ else if (isset ($_POST["update"])) {
 else if (isset ($_POST["validate"])) {
    if ($pluginOrderOrder->canCreate() 
       && ( $pluginOrderOrder->canValidate() 
-         || !$config["use_validation"])) {
+         || !$config->useValidation())) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"], 
-                                           $config['order_status_approved'],
+                                           $config->getApprovedState(),
                                            $_POST["comment"]);
       $pluginOrderOrder_Item->updateDelivryStatus($_POST["id"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][10]);
@@ -102,7 +100,7 @@ else if (isset ($_POST["validate"])) {
 } else if (isset ($_POST["waiting_for_approval"])) {
    if ($pluginOrderOrder->canCreate()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
-                                           $config['order_status_waiting_approval'],
+                                           $config->getWaitingForApprovalState(),
                                            $_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][7]);
       
@@ -113,7 +111,7 @@ else if (isset ($_POST["validate"])) {
 } else if (isset ($_POST["cancel_waiting_for_approval"])) {
    if ($pluginOrderOrder->canCreate() && $pluginOrderOrder->canCancel()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
-                                           $config['order_status_draft'],
+                                           $config->getDraftState(),
                                            $_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][14]);
    }
@@ -122,7 +120,7 @@ else if (isset ($_POST["validate"])) {
 } else if (isset ($_POST["cancel_order"])) {
    if ($pluginOrderOrder->canCreate() && $pluginOrderOrder->canCancel()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
-                                           $config['order_status_canceled'],
+                                           $config->getCanceledState(),
                                            $_POST["comment"]);
       $pluginOrderOrder->deleteAllLinkWithItem($_POST["id"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][5]);
@@ -135,7 +133,7 @@ else if (isset ($_POST["validate"])) {
 else if (isset ($_POST["undovalidation"])) {
    if ($pluginOrderOrder->canCreate() && $pluginOrderOrder->canUndo()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
-                                           $config['order_status_draft'],
+                                           $config->getDraftState(),
                                            $_POST["comment"]);
       addMessageAfterRedirect($LANG['plugin_order']['validation'][8]);
       
@@ -230,8 +228,7 @@ else if (isset ($_POST["undovalidation"])) {
 
    // Update quantity
    if (isset($_POST['quantity']) && $_POST['quantity'] > $quantity) {
-      
-      $item    = $DB->fetch_array($datas);
+      $item                  = $DB->fetch_array($datas);
       $pluginOrderOrder_Item = new PluginOrderOrder_Item();
       $pluginOrderOrder_Item->getFromDB($item['id']);
 

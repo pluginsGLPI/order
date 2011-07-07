@@ -74,11 +74,6 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       $tab[2]['name'] = $LANG['plugin_order'][31];
       $tab[2]['datatype'] = 'text';
       
-      $tab[3]['table'] = $this->getTable();
-      $tab[3]['field'] = 'num_bill';
-      $tab[3]['name'] = $LANG['plugin_order'][28];
-      $tab[3]['datatype'] = 'text';
-      
       $tab[4]['table'] = 'glpi_suppliers';
       $tab[4]['field'] = 'name';
       $tab[4]['name'] = $LANG['financial'][26];
@@ -173,7 +168,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       $link=getItemTypeFormURL('Supplier');
       echo "<a href=\"" . $link. "?id=" . $supplier . "\">" . Dropdown::getDropdownName("glpi_suppliers", $supplier) . "</a></td>";
       echo "<input type='hidden' name='suppliers_id' value='".$supplier."'>";
-      
+      echo "</td>";
+
       /* number of quote */
       echo "<td>" . $LANG['plugin_order'][30] . ": </td><td>";
       autocompletionTextField($this,"num_quote");
@@ -182,17 +178,13 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
+      echo "</td><td colspan='2'></td>";
       
       /* num order supplier */
       echo "<td>" . $LANG['plugin_order'][31] . ": </td><td>";
       autocompletionTextField($this,"num_order");
-      echo "</td>";
-      
-      /* number of bill */
-      echo "<td>" . $LANG['plugin_order'][28] . ": </td><td>";
-      autocompletionTextField($this,"num_bill");
-      echo "</td>";
-      
+
+
       echo "</tr>";
       
       $options['candel'] = false;
@@ -224,12 +216,11 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 
       if (countElementsInTable($this->getTable(), "`plugin_order_orders_id` = '$ID'") > 0) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='5'>".$LANG['plugin_order'][4]."</th></tr>";
+         echo "<tr><th colspan='4'>".$LANG['plugin_order'][4]."</th></tr>";
          echo "<tr><th>&nbsp;</th>";
          echo "<th>" . $LANG['financial'][26] . "</th>";
          echo "<th>" . $LANG['plugin_order'][30] . "</th>";
          echo "<th>" . $LANG['plugin_order'][31] . "</th>";
-         echo "<th>" . $LANG['plugin_order'][28] . "</th>";
          echo "</tr>";
 
          foreach (getAllDatasFromTable($this->getTable(), "`plugin_order_orders_id` = '$ID'") 
@@ -255,9 +246,6 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
             echo "</td>";
             echo "<td>";
             echo $data["num_order"];
-            echo "</td>";
-            echo "<td>";
-            echo $data["num_bill"];
             echo "</td>";
             echo "</tr>";
          }
@@ -358,7 +346,6 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
                      `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
                      `num_quote` varchar(255) collate utf8_unicode_ci default NULL,
                      `num_order` varchar(255) collate utf8_unicode_ci default NULL,
-                     `num_bill` varchar(255) collate utf8_unicode_ci default NULL,
                      PRIMARY KEY  (`id`),
                      KEY `plugin_order_orders_id` (`plugin_order_orders_id`),
                      KEY `entities_id` (`entities_id`),
@@ -407,6 +394,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
                          SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
                          WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
                $DB->query($query) or die($DB->error());
+               
+             
             }
          }
       }

@@ -46,7 +46,7 @@ if (isset($_POST["action"])) {
    switch ($_POST["action"]) {
       case "reception":
          echo "</td><td>";
-         showDateFormItem("delivery_date",date("Y-m-d"),true,1);
+         showDateFormItem("delivery_date", date("Y-m-d"), true, 1);
          echo "</td><td>";
          echo $LANG['financial'][19]."&nbsp;";
          echo "<input type='text' name='delivery_number' size='20'>";

@@ -39,8 +39,8 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderLink extends CommonDBChild {
 
-	public $dohistory=true;
-	public $table="glpi_plugin_order_orders_items";
+   public $dohistory=true;
+   public $table="glpi_plugin_order_orders_items";
    
    public $itemtype = 'PluginOrderOrder';
    public $items_id = 'plugin_order_orders_id';
@@ -71,7 +71,7 @@ class PluginOrderLink extends CommonDBChild {
          $infos = plugin_version_geninventorynumber();
          if ($infos['version'] >= '1.1.0') {
             $fields = plugin_geninventorynumber_getFieldInfos("otherserial");
-            $gen_config = plugin_geninventorynumber_getConfig();
+            //$gen_config = plugin_geninventorynumber_getConfig();
             $use_plugin_geninventorynumber = true;
          } else {
             $use_plugin_geninventorynumber = false;
@@ -183,24 +183,26 @@ class PluginOrderLink extends CommonDBChild {
       $PluginOrderReference = new PluginOrderReference();
       $PluginOrderReception = new PluginOrderReception();
       
-      $PluginOrderConfig = new PluginOrderConfig;
-      $config = $PluginOrderConfig->getConfig();
+      $config = new PluginOrderConfig;
       
       $PluginOrderOrder->getFromDB($plugin_order_orders_id);
-      $canedit = $PluginOrderOrder->can($plugin_order_orders_id, 'w') && !$PluginOrderOrder->canUpdateOrder($plugin_order_orders_id) && $PluginOrderOrder->fields["plugin_order_orderstates_id"] != $config['order_status_canceled'];
+      $canedit = $PluginOrderOrder->can($plugin_order_orders_id, 'w') 
+                  && !$PluginOrderOrder->canUpdateOrder($plugin_order_orders_id) 
+                     && $PluginOrderOrder->getState() != $config->getCanceledState();
       
-      $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, `glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`itemtype`, `glpi_plugin_order_references`.`manufacturers_id`,`glpi_plugin_order_orders_items`.`price_taxfree`,`glpi_plugin_order_orders_items`.`discount` " .
-      "FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references` " .
-      "WHERE `plugin_order_orders_id` = '$plugin_order_orders_id' " .
-      "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`  " .
-      "AND `glpi_plugin_order_orders_items`.`states_id` = '".PluginOrderOrder::ORDER_DEVICE_DELIVRED."'   " .
-      "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
-      "ORDER BY `glpi_plugin_order_references`.`name`";
+      $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
+                     "`glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`itemtype`, `glpi_plugin_order_references`.`manufacturers_id`,`glpi_plugin_order_orders_items`.`price_taxfree`,`glpi_plugin_order_orders_items`.`discount` " .
+                   "FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references` " .
+                   "WHERE `plugin_order_orders_id` = '$plugin_order_orders_id' " .
+                     "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`  " .
+                        "AND `glpi_plugin_order_orders_items`.`states_id` = '".PluginOrderOrder::ORDER_DEVICE_DELIVRED."'   " .
+                  "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
+                  "ORDER BY `glpi_plugin_order_references`.`name`";
 
       $result_ref = $DB->query($query_ref);
-      $numref = $DB->numrows($result_ref);
+      $numref     = $DB->numrows($result_ref);
 
-      while ($data_ref=$DB->fetch_array($result_ref)){
+      while ($data_ref = $DB->fetch_array($result_ref)){
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          if (!$numref)
@@ -208,7 +210,7 @@ class PluginOrderLink extends CommonDBChild {
          else {
             
             $plugin_order_references_id = $data_ref["id"];
-            $itemtype = $data_ref["itemtype"];		
+            $itemtype = $data_ref["itemtype"];
             $canuse = ($itemtype != 'PluginOrderOther');
             $item = new $itemtype();
             $rand = mt_rand();
@@ -486,19 +488,19 @@ class PluginOrderLink extends CommonDBChild {
    }
    
    function isItemLinkedToOrder($itemtype, $items_id) {
-		global $DB;
-		
-		$query = "SELECT `id`
+      global $DB;
+      
+      $query = "SELECT `id`
                FROM `glpi_plugin_order_orders_items`
                WHERE `itemtype` = '$itemtype'
                AND `items_id` = '$items_id' ";
       $result = $DB->query($query);
-		if ($DB->numrows($result))
-			return ($DB->result($result, 0, 'id'));
-		else
-			return 0;
-	}
-	
+      if ($DB->numrows($result))
+         return ($DB->result($result, 0, 'id'));
+      else
+         return 0;
+   }
+   
    function generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, $templateID = 0) {
       global $LANG;
 
@@ -520,7 +522,8 @@ class PluginOrderLink extends CommonDBChild {
             $fields = $ic->fields;
             unset ($fields["id"]);
             if (isset ($fields["immo_number"])) {
-               $fields["immo_number"] = autoName($fields["immo_number"], "immo_number", 1, 'Infocom', $entity);
+               $fields["immo_number"] = autoName($fields["immo_number"], "immo_number", 1, 
+                                                 'Infocom', $entity);
             }
 
             if (empty ($fields['buy_date'])) {
@@ -534,38 +537,40 @@ class PluginOrderLink extends CommonDBChild {
          $fields["id"] = $ic->fields["id"];
       }
 
-      $fields["itemtype"] = $itemtype;
-      $fields["items_id"] = $items_id;
-      $fields["order_number"] = $order->fields["num_order"];
+      $fields["itemtype"]        = $itemtype;
+      $fields["items_id"]        = $items_id;
+      $fields["order_number"]    = $order->fields["num_order"];
       $fields["delivery_number"] = $detail->fields["delivery_number"];
-      $fields["budgets_id"] = $order->fields["budgets_id"];
-      $fields["suppliers_id"] = $order->fields["suppliers_id"];
-      if (isset($PluginOrderOrder_Supplier->fields["num_bill"]))
-         $fields["bill"] = $PluginOrderOrder_Supplier->fields["num_bill"];
-      $fields["value"] = $detail->fields["price_discounted"];
-      $fields["order_date"] = $order->fields["order_date"];
-      $fields["delivery_date"] = $detail->fields["delivery_date"];
-      if (!$exists)
+      $fields["budgets_id"]      = $order->fields["budgets_id"];
+      $fields["suppliers_id"]    = $order->fields["suppliers_id"];
+      if (isset($PluginOrderOrder_Supplier->fields["num_bill"])) {
+         $fields["bill"]         = $PluginOrderOrder_Supplier->fields["num_bill"];
+      }
+      $fields["value"]           = $detail->fields["price_discounted"];
+      $fields["order_date"]      = $order->fields["order_date"];
+      $fields["delivery_date"]   = $detail->fields["delivery_date"];
+      if (!$exists) {
          $ic->add($fields);
-      else
+      } else {
          $ic->update($fields);
+      }
    }
    
    function removeInfoComRelatedToOrder($itemtype, $items_id) {
 
-	$infocom = new InfoCom();
-	$infocom->getFromDBforDevice($itemtype, $items_id);
-	$input["id"] = $infocom->fields["id"];
-	$input["order_number"] = "";
-	$input["delivery_number"] = "";
-	$input["budgets_id"] = 0;
-	$input["suppliers_id"] = 0;
-	$input["bill"] = "";
-	$input["value"] = 0;
-	$input["order_date"] = NULL;
-	$input["delivery_date"] = NULL;
+   $infocom = new InfoCom();
+   $infocom->getFromDBforDevice($itemtype, $items_id);
+   $input["id"] = $infocom->fields["id"];
+   $input["order_number"] = "";
+   $input["delivery_number"] = "";
+   $input["budgets_id"] = 0;
+   $input["suppliers_id"] = 0;
+   $input["bill"] = "";
+   $input["value"] = 0;
+   $input["order_date"] = NULL;
+   $input["delivery_date"] = NULL;
 
-	$infocom->update($input);
+   $infocom->update($input);
 }
 
    function createLinkWithItem($detailID = 0, $items_id = 0, $itemtype = 0, $plugin_order_orders_id = 0, $entity = 0, $templateID = 0, $history = true, $check_link = true) {
@@ -641,7 +646,8 @@ class PluginOrderLink extends CommonDBChild {
             $input["itemtype"] = $itemtype;
             $detail->update($input);
             $detail->getFromDB($detailID);
-            $this->generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, $templateID);
+            $this->generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, 
+                                                 $templateID);
             if ($history) {
                $order = new PluginOrderOrder();
                $order->getFromDB($detail->fields["plugin_order_orders_id"]);
@@ -668,26 +674,29 @@ class PluginOrderLink extends CommonDBChild {
       
       if ($itemtype == 'SoftWareLicense') {
             
-         $detail = new PluginOrderOrder_Item();
+         $detail  = new PluginOrderOrder_Item();
          $detail->getFromDB($detailID);
          $license = $detail->fields["items_id"];
          
          $this->removeInfoComRelatedToOrder($itemtype, $license);
-         
-         $result=$PluginOrderOrder_Item->queryRef($detail->fields["plugin_order_orders_id"],$detail->fields["plugin_order_references_id"],$detail->fields["price_taxfree"],$detail->fields["discount"],PluginOrderOrder::ORDER_DEVICE_DELIVRED);
+         $result=$PluginOrderOrder_Item->queryRef($detail->fields["plugin_order_orders_id"],
+                                                  $detail->fields["plugin_order_references_id"],
+                                                  $detail->fields["price_taxfree"],
+                                                  $detail->fields["discount"],
+                                                  PluginOrderOrder::ORDER_DEVICE_DELIVRED);
          
          $nb = $DB->numrows($result);
 
          if ($nb) {
             for ($i = 0; $i < $nb; $i++) {
                $ID = $DB->result($result, $i, 'id');
-               $input["id"] = $ID;
+               $input["id"]       = $ID;
                $input["items_id"] = 0;
                $detail->update($input);
                
                $lic = new SoftwareLicense();
                $lic->getFromDB($license);
-               $values["id"] = $lic->fields["id"];
+               $values["id"]     = $lic->fields["id"];
                $values["number"] = $lic->fields["number"]-1;
                $lic->update($values);
             }
@@ -734,9 +743,7 @@ class PluginOrderLink extends CommonDBChild {
       global $DB, $LANG;
 
       // Retrieve plugin configuration
-      $PluginOrderConfig = new PluginOrderConfig();
-		$config = $PluginOrderConfig->getConfig();
-
+      $config               = new PluginOrderConfig();
       $PluginOrderReference = new PluginOrderReference();
       
       foreach ($params["id"] as $tmp => $values) {
@@ -744,7 +751,9 @@ class PluginOrderLink extends CommonDBChild {
          $entity = $values["entities_id"];
          //------------- Template management -----------------------//
          //Look for a template in the entity
-         $templateID = $PluginOrderReference->checkIfTemplateExistsInEntity($values["id"], $values["itemtype"], $entity);
+         $templateID = $PluginOrderReference->checkIfTemplateExistsInEntity($values["id"], 
+                                                                            $values["itemtype"], 
+                                                                            $entity);
          
          $order = new PluginOrderOrder();
          $order->getFromDB($values["plugin_order_orders_id"]);
@@ -762,69 +771,73 @@ class PluginOrderLink extends CommonDBChild {
 
             $fields = array ();
             foreach ($item->fields as $key => $value) {
-               if ($value != '' && (!isset ($fields[$key]) || $fields[$key] == '' || $fields[$key] == 0))
+               if ($value != '' 
+                  && (!isset ($fields[$key]) || $fields[$key] == '' || $fields[$key] == 0))
                   $input[$key] = $value;
             }
             
-            if(!empty($config["default_asset_states_id"])) {
-               $input["states_id"] = $config["default_asset_states_id"];  
+            if(!$config->getGeneratedAssetState()) {
+               $input["states_id"] = $config->getGeneratedAssetState();
             }
 
             $input["entities_id"] = $entity;
-            $input["serial"] = $values["serial"];
+            $input["serial"]      = $values["serial"];
             
-            if ($values["name"])
+            if ($values["name"]) {
                $input["name"] = $values["name"];
-            else
-               $input["name"] = autoName($item->fields["name"], "name", $templateID, $values["itemtype"],$entity);
+            } else {
+               $input["name"] = autoName($item->fields["name"], "name", $templateID, 
+                                         $values["itemtype"],$entity);
+            }
             
-            if ($values["otherserial"])
+            if ($values["otherserial"]) {
                $input["otherserial"] = $values["otherserial"];
-            else
-               $input["otherserial"] = autoName($item->fields["otherserial"], "otherserial", $templateID, $values["itemtype"],$entity);
+            } else {
+               $input["otherserial"] = autoName($item->fields["otherserial"], "otherserial", 
+                                                $templateID, $values["itemtype"],$entity);
+            }
             
          } else {
 
-            if(!empty($config["default_asset_states_id"])) {
-               $input["states_id"] = $config["default_asset_states_id"];  
+            if(!$config->getGeneratedAssetState()) {
+               $input["states_id"] = $config->getGeneratedAssetState();
             }
 
-            $input["entities_id"] = $entity;
-            $input["serial"] = $values["serial"];
-            $input["otherserial"] = $values["otherserial"];
-            $input["name"] = $values["name"];
-
-            $typefield = getForeignKeyFieldForTable(getTableForItemType($values["itemtype"]."Type"));
-            $input[$typefield] = $reference->fields["types_id"];
-            $modelfield = getForeignKeyFieldForTable(getTableForItemType($values["itemtype"]."Model"));
-            $input[$modelfield] = $reference->fields["models_id"];
-
+            $input["entities_id"]      = $entity;
+            $input["serial"]           = $values["serial"];
+            $input["otherserial"]      = $values["otherserial"];
+            $input["name"]             = $values["name"];
             $input["manufacturers_id"] = $reference->fields["manufacturers_id"];
-            /*if ($entity == $reference->fields["entities_id"])
-               $input["locations_id"] = $order->fields["locations_id"];*/
+
+            $typefield          = getForeignKeyFieldForTable(getTableForItemType($values["itemtype"]."Type"));
+            $input[$typefield]  = $reference->fields["types_id"];
+            $modelfield         = getForeignKeyFieldForTable(getTableForItemType($values["itemtype"]."Model"));
+            $input[$modelfield] = $reference->fields["models_id"];
                
          }
 
          $newID = $item->add($input);
 
          // Attach new ticket if option is on
-   		if(isset($params['generate_ticket'])) {
-   		   $input = array();
-   		   $input['entities_id']         = $entity;
-   		   $input['name']               = $params['generate_ticket']['title'];
-   		   $input['content']             = $params['generate_ticket']['content'];
-   		   $input['ticketcategories_id'] = $params['generate_ticket']['ticketcategories_id'];
+         if(isset($params['generate_ticket'])) {
+            $input = array();
+            $input['entities_id']         = $entity;
+            $input['name']                = addslashes($params['generate_ticket']['title']);
+            $input['content']             = addslashes($params['generate_ticket']['content']);
+            $input['ticketcategories_id'] = $params['generate_ticket']['ticketcategories_id'];
             $input['items_id']            = $newID;
             $input['itemtype']            = $values["itemtype"];
             $input['urgency']             = 3;
-            $input['_users_id_assign']  = 0;
-            $input['_groups_id_assign'] = 0;
+            $input['_users_id_assign']    = 0;
+            $input['_groups_id_assign']   = 0;
             $ticket = new Ticket();
             $ticketID = $ticket->add($input);
-   		}
+         }
 
          //-------------- End template management ---------------------------------//
-         $this->createLinkWithItem($values["id"], $newID, $values["itemtype"], $values["plugin_order_orders_id"], $entity, $templateID, false, false);
+         $this->createLinkWithItem($values["id"], $newID, $values["itemtype"], 
+                                   $values["plugin_order_orders_id"], $entity, $templateID, 
+                                   false, false);
 
          //Add item's history
          $new_value = $LANG['plugin_order']['delivery'][13] . ' : ' . $order->fields["name"];

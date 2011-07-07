@@ -43,60 +43,58 @@ if(!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
 }
 
-$PluginOrderReception = new PluginOrderReception();
-$PluginOrderOrder_Item = new PluginOrderOrder_Item();
+$reception  = new PluginOrderReception();
+$order_item = new PluginOrderOrder_Item();
 
 if (isset ($_POST["update"])) {
 
-   if ($PluginOrderReception->canCreate()) {
-      $PluginOrderOrder_Item->getFromDB($_POST["id"]);
-      if ($PluginOrderOrder_Item->fields["itemtype"] == 'SoftwareLicense') {
+   if ($reception->canCreate()) {
+      $order_item->getFromDB($_POST["id"]);
+      if ($order_item->fields["itemtype"] == 'SoftwareLicense') {
          $result=
-            $PluginOrderOrder_Item->queryRef($PluginOrderOrder_Item->fields["plugin_order_orders_id"],
-                                             $PluginOrderOrder_Item->fields["plugin_order_references_id"],
-                                             $PluginOrderOrder_Item->fields["price_taxfree"],
-                                             $PluginOrderOrder_Item->fields["discount"],
+            $order_item->queryRef($order_item->fields["plugin_order_orders_id"],
+                                             $order_item->fields["plugin_order_references_id"],
+                                             $order_item->fields["price_taxfree"],
+                                             $order_item->fields["discount"],
                                              PluginOrderOrder::ORDER_DEVICE_DELIVRED);
          $nb = $DB->numrows($result);
 
          if ($nb) {
             for ($i = 0; $i < $nb; $i++) {
                $ID = $DB->result($result, $i, 'id');
-               $input["id"] = $ID;
-               $input["delivery_date"] = $_POST["delivery_date"];
-               $input["delivery_number"] = $_POST["delivery_number"];
+               $input["id"]                             = $ID;
+               $input["delivery_date"]                  = $_POST["delivery_date"];
+               $input["delivery_number"]                = $_POST["delivery_number"];
                $input["plugin_order_deliverystates_id"] = $_POST["plugin_order_deliverystates_id"];
-               $input["delivery_comment"] = $_POST["delivery_comment"];
-               $PluginOrderOrder_Item->update($input);
+               $input["delivery_comment"]               = $_POST["delivery_comment"];
+               $order_item->update($input);
             }
          }
       } else {
-         $PluginOrderOrder_Item->update($_POST);
+         $order_item->update($_POST);
       }
    }
    glpi_header($_SERVER['HTTP_REFERER']);
    
 } else if (isset ($_POST["delete"])) {
 
-   $PluginOrderReception->deleteDelivery($_POST["id"]);
-   glpi_header($CFG_GLPI["root_doc"] . 
-      "/plugins/order/front/order.form.php?id=".$_POST["plugin_order_orders_id"]);
+   $reception->deleteDelivery($_POST["id"]);
+   glpi_header(getItemTypeFormURL('PluginOrderOrder')."?id=".$_POST["plugin_order_orders_id"]);
    
 } else if (isset ($_POST["reception"])) {
-
-/* reception d'une ligne detail */
-   $PluginOrderReception->updateReceptionStatus($_POST);
+   //A new item is delivered
+   $reception->updateReceptionStatus($_POST);
    glpi_header($_SERVER["HTTP_REFERER"]);
    
 } else if (isset ($_POST["bulk_reception"])) {
-
-   $PluginOrderReception->updateBulkReceptionStatus($_POST);
+   //Several new items are delivered
+   $reception->updateBulkReceptionStatus($_POST);
    glpi_header($_SERVER["HTTP_REFERER"]);
 
 } else {
    
-   commonHeader($LANG['plugin_order']['title'][1],'',"plugins","order","order");
-   $PluginOrderReception->showForm($_GET["id"]);
+   commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
+   $reception->showForm($_GET["id"]);
    commonFooter();
    
 }
