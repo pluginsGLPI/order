@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 checkCentralAccess();
 
 $PluginOrderReference = new PluginOrderReference();
-logDebug($_POST);
+
 if ($_POST["itemtype"]) {
    switch ($_POST["field"]) {
       case "types_id":

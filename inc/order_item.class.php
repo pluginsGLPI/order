@@ -630,8 +630,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
                                  $price_taxfree, $discount) {
       global $DB;
 
-      $config = new PluginOrderConfig;
-
+      $config = new PluginOrderConfig();
       $query = "SELECT COUNT(*) AS deliveredquantity
                 FROM `".$this->getTable()."`
                 WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'

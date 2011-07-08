@@ -473,7 +473,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][0] . "*: </td>";
       echo "<td>";
       if ($canedit) {
-         autocompletionTextField($this,"num_order");
+         autocompletionTextField($this, "num_order");
          
       } else {
          echo $this->fields["num_order"];
@@ -597,7 +597,7 @@ class PluginOrderOrder extends CommonDBTM {
       /* tva port price */
       echo "<td>" . $LANG['plugin_order'][25] . " " . $LANG['plugin_order'][26] . ": </td><td>";
       $PluginOrderConfig = new PluginOrderConfig();
-      $default_taxes = $PluginOrderConfig->getDefaultTaxes();
+      $default_taxes     = $PluginOrderConfig->getDefaultTaxes();
 
       if (empty ($ID) || $ID < 0) {
          $taxes = $default_taxes;

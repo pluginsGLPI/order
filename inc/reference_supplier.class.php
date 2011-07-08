@@ -168,7 +168,8 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
       if ($ID > 0) {
          $link=getItemTypeFormURL('Supplier');
-         echo "<a href=\"" . $link. "?id=" . $this->fields["suppliers_id"] . "\">" . Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]) . "</a>";
+         echo "<a href=\"" . $link. "?id=" . $this->fields["suppliers_id"] . "\">" . 
+            Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]) . "</a>";
          echo "<input type='hidden' name='suppliers_id' value='".$this->fields["suppliers_id"]."'>";
       } else {
          $suppliers = array();
@@ -197,7 +198,8 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       
       echo "<td>" . $LANG['plugin_order']['detail'][4] . ": </td>";
       echo "<td>";
-      echo "<input type='text' name='price_taxfree' value=\"".formatNumber($this->fields["price_taxfree"],true)."\" size='7'>";
+      echo "<input type='text' name='price_taxfree' value=\"".
+         formatNumber($this->fields["price_taxfree"],true)."\" size='7'>";
       echo "</td>";
       
       echo "<td></td>";
@@ -208,7 +210,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       $options['candel'] = false;
       $this->showFormButtons($options);
       
-      if (strpos($_SERVER['PHP_SELF'],"reference_supplier")) {
+      if (strpos($_SERVER['PHP_SELF'], "reference_supplier")) {
          $this->addDivForTabs();
       }
       return true;
@@ -220,9 +222,10 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       $ref = new PluginOrderReference;
       $ref->getFromDB($ID);
       
-      initNavigateListItems($this->getType(),$LANG['plugin_order']['reference'][1] ." = ". $ref->fields["name"]);
+      initNavigateListItems($this->getType(),
+                            $LANG['plugin_order']['reference'][1] ." = ". $ref->fields["name"]);
 
-      $candelete =$ref->can($ID,'w');
+      $candelete =$ref->can($ID, 'w');
       $query = "SELECT * FROM `".$this->getTable()."` WHERE `plugin_order_references_id` = '$ID' ";
       $result = $DB->query($query);
       $rand=mt_rand();
@@ -249,13 +252,15 @@ class PluginOrderReference_Supplier extends CommonDBChild {
             echo "<td>";
             if ($candelete) {
                echo "<input type='checkbox' name='check[" . $data["id"] . "]'";
-               if (isset($_POST['check']) && $_POST['check'] == 'all')
+               if (isset($_POST['check']) && $_POST['check'] == 'all') {
                   echo " checked ";
+               }
                echo ">";
             }
             echo "</td>";
             $link=getItemTypeFormURL($this->getType());
-            echo "<td><a href='".$link."?id=".$data["id"]."&plugin_order_references_id=".$ID."'>" .Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
+            echo "<td><a href='".$link."?id=".$data["id"]."&plugin_order_references_id=".$ID."'>" .
+               Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
             echo "<td>";
             echo $data["reference_code"];
             echo "</td>";
@@ -266,8 +271,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          }
          echo "</table>";
 
-         if ($candelete)
-         {     
+         if ($candelete) {
             echo "<div class='center'>";
             echo "<table width='900px' class='tab_glpi'>";
             echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('show_supplierref$rand') ) return false;\" href='#'>".$LANG['buttons'][18]."</a></td>";
@@ -279,93 +283,43 @@ class PluginOrderReference_Supplier extends CommonDBChild {
             echo "</table>";
             echo "</div>";
          }
-      }
-      else
+      } else {
          echo "</table>";
+      }
 
       echo "</form>";
 
       echo "</div>";
       
    }
-
-   /*function addSupplierToReference($target,$plugin_order_references_id){
-      global $LANG,$DB;
-
-      if ($this->canView()){
-
-         $suppliers = array();
-         $reference = new PluginOrderReference;
-         $reference->getFromDB($plugin_order_references_id);
-
-         if (!$reference->fields["is_deleted"]){
-            $query = "SELECT `suppliers_id`
-                     FROM `".$this->getTable()."`
-                     WHERE `plugin_order_references_id` = '$plugin_order_references_id'";
-            $result = $DB->query($query);
-            while ($data = $DB->fetch_array($result))
-               $suppliers["suppliers_id"] = $data["suppliers_id"];
-
-            echo "<form method='post' name='add_ref_manu' action=\"$target\">";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<input type='hidden' name='plugin_order_references_id' value='" . $plugin_order_references_id . "'>";
-            echo "<input type='hidden' name='entities_id' value='".$reference->fields["entities_id"]."'>";
-            echo "<input type='hidden' name='is_recursive' value='".$reference->fields["is_recursive"]."'>";
-            echo "<tr>";
-            echo "<th colspan='3' align='center'>".$LANG['plugin_order']['reference'][2]."</th></tr>";
-            echo "<tr>";
-            echo "<th>" . $LANG['financial'][26] . "</th>";
-            echo "<th>" . $LANG['plugin_order']['reference'][1]. "</th>";
-            echo "<th>" . $LANG['plugin_order']['detail'][4] . "</th></tr>";
-            echo "<tr>";
-            echo "<td class='tab_bg_1' align='center'>";
-            Dropdown::show('Supplier', array('name' => "suppliers_id",'used' => $suppliers,'entity' => $_SESSION["glpiactive_entity"]));
-            echo "</td>";
-            echo "<td class='tab_bg_1' align='center'>";
-            autocompletionTextField($this,"reference_code");
-            echo "</td>";
-            echo "<td class='tab_bg_1' align='center'>";
-            echo "<input type='text' name='price_taxfree' value=\"".formatNumber("price_taxfree",true)."\" size='7'>";
-            echo "</td>";
-            echo "</tr>";
-            echo "<tr>";
-            echo "<td class='tab_bg_1' align='center' colspan='3'>";
-            echo "<input type='submit' name='add_reference_supplier' value=\"" . $LANG['buttons'][8] . "\" class='submit' >";
-            echo "</td>";
-            echo "</tr>";
-            echo "</table></form>";
-            echo "</div>";
-
-         }
-      }
-   }*/
-
    function getPriceByReferenceAndSupplier($plugin_order_references_id,$suppliers_id){
       global $DB;
 
       $query = "SELECT `price_taxfree`
-               FROM `".$this->getTable()."` " .
-            "WHERE `plugin_order_references_id` = '$plugin_order_references_id'
-            AND `suppliers_id` = '$suppliers_id' ";
+                FROM `".$this->getTable()."` 
+                WHERE `plugin_order_references_id` = '$plugin_order_references_id'
+                   AND `suppliers_id` = '$suppliers_id' ";
       $result = $DB->query($query);
-      if ($DB->numrows($result) > 0)
+      if ($DB->numrows($result) > 0) {
          return $DB->result($result,0,"price_taxfree");
-      else
+      } else {
          return 0;
+      }
    }
    
    function getReferenceCodeByReferenceAndSupplier($plugin_order_references_id,$suppliers_id){
       global $DB;
 
       $query = "SELECT `reference_code`
-               FROM `".$this->getTable()."` " .
-            "WHERE `plugin_order_references_id` = '$plugin_order_references_id'
-            AND `suppliers_id` = '$suppliers_id' ";
+                FROM `".$this->getTable()."` 
+                WHERE `plugin_order_references_id` = '$plugin_order_references_id'
+                   AND `suppliers_id` = '$suppliers_id' ";
       $result = $DB->query($query);
-      if ($DB->numrows($result) > 0)
-         return $DB->result($result,0,"reference_code");
-      else
+      if ($DB->numrows($result) > 0) {
+         return $DB->result($result, 0, "reference_code");
+      } else {
          return 0;
+      }
    }
    
   static function install(Migration $migration) {

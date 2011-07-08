@@ -135,7 +135,8 @@ class PluginOrderReference extends CommonDropdown {
       
        if (!isset($input["transfert"])
             && countElementsInTable($this->getTable(), 
-                                    "`name` = '".$input["name"]."' AND `entities_id` = '".$input["entities_id"]."'")) {
+                                    "`name` = '".$input["name"]."' 
+                                       AND `entities_id` = '".$input["entities_id"]."'")) {
          addMessageAfterRedirect($LANG['plugin_order']['reference'][6], false, ERROR);
          return false;
       }
@@ -159,7 +160,8 @@ class PluginOrderReference extends CommonDropdown {
       global $DB;
       
       return (countElementsInTable("glpi_plugin_order_orders_items", 
-                                   "`plugin_order_references_id` = '".$this->fields["id"]."'") > 0?true:false);
+                                   "`plugin_order_references_id` = '".
+                                      $this->fields["id"]."'") > 0?true:false);
    }
 
    function getReceptionReferenceLink($data) {
@@ -277,14 +279,14 @@ class PluginOrderReference extends CommonDropdown {
    function displayMoreTabs($tab) {
       global $CFG_GLPI;
       
-      $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
+      $reference_supplier = new PluginOrderReference_Supplier();
       $supplier_page = $CFG_GLPI["root_doc"] ."/plugins/order/front/reference_supplier.form.php";
       switch ($tab) {
 
          case -1:
-            $PluginOrderReference_Supplier->showReferenceManufacturers($supplier_page, $_POST["id"]);
+            $reference_supplier->showReferenceManufacturers($supplier_page, $_POST["id"]);
             if ($this->can($_POST["id"],'w'))
-               $PluginOrderReference_Supplier->showForm("", 
+               $reference_supplier->showForm("", 
                array('plugin_order_references_id' => $_POST["id"], 
                'target' => $CFG_GLPI["root_doc"] ."/plugins/order/front/reference_supplier.form.php"));
 
@@ -304,11 +306,10 @@ class PluginOrderReference extends CommonDropdown {
             Log::showForItem($this);
             break;
          default :
-            $PluginOrderReference_Supplier->showReferenceManufacturers($supplier_page, $_POST["id"]);
+            $reference_supplier->showReferenceManufacturers($supplier_page, $_POST["id"]);
             if ($this->can($_POST["id"],'w')) {
-               $PluginOrderReference_Supplier->showForm("",  
-                                                        array('plugin_order_references_id' => $_POST["id"], 
-                                                              'target' => $supplier_page));
+               $reference_supplier->showForm("",array('plugin_order_references_id' => $_POST["id"], 
+                                                      'target' => $supplier_page));
 
             }
             break;
@@ -332,10 +333,11 @@ class PluginOrderReference extends CommonDropdown {
    function dropdownTemplate($name, $entity, $table, $value = 0) {
       global $DB;
 
-      $result = $DB->query("SELECT `template_name`, `id` FROM `" . $table .
-      "` WHERE `entities_id` = '" . $entity . "' 
-            AND `is_template` = '1' 
-               AND `template_name` <> '' GROUP BY `template_name` ORDER BY `template_name`");
+      $query = "SELECT `template_name`, `id` FROM ` $table`
+                WHERE `entities_id` = ' $entity' 
+                   AND `is_template` = '1' 
+                      AND `template_name` <> '' GROUP BY `template_name` ORDER BY `template_name`";
+      $result = $DB->query($query);
 
       $option[0] = DROPDOWN_EMPTY_VALUE;
       while ($data = $DB->fetch_array($result)) {
@@ -358,11 +360,11 @@ class PluginOrderReference extends CommonDropdown {
    function checkIfTemplateExistsInEntity($detailID, $itemtype, $entity) {
       global $DB;
 
-      $query = "SELECT `".$this->getTable()."`.`templates_id` " .
-            "FROM `glpi_plugin_order_orders_items`, `".$this->getTable()."` " .
-            "WHERE `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `".
-               $this->getTable()."`.`id` " .
-            "AND `glpi_plugin_order_orders_items`.`id` = '$detailID' ;";
+      $query = "SELECT `".$this->getTable()."`.`templates_id` 
+               FROM `glpi_plugin_order_orders_items`, `".$this->getTable()."` 
+               WHERE `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `".
+                   $this->getTable()."`.`id`
+                      AND `glpi_plugin_order_orders_items`.`id` = '$detailID' ;";
       $result = $DB->query($query);
       if (!$DB->numrows($result)) {
          return 0;
@@ -377,8 +379,6 @@ class PluginOrderReference extends CommonDropdown {
       }
    }
 
-//   function dropdownAllItems($myname, $ajax = false, $value = 0, $orders_id = 0, $suppliers_id = 0,
-//                             $entity = 0, $ajax_page = '', $filter = false) {
    function dropdownAllItems($options = array()) {
 
       global $DB;
@@ -410,6 +410,7 @@ class PluginOrderReference extends CommonDropdown {
                   WHERE `s`.`suppliers_id` = '".$p['suppliers_id']."' ".
                  getEntitiesRestrictRequest("AND", 't', '', $p['entity'], true);
          $result = $DB->query($query);
+
          $number = $DB->numrows($result);
          if ($number) {
             while ($data=$DB->fetch_array($result)) {
@@ -496,7 +497,6 @@ class PluginOrderReference extends CommonDropdown {
                      ORDER BY `name` ASC";
             break;
       }
-
       $result = $DB->query($query);
 
       $device = array ();
@@ -524,7 +524,7 @@ class PluginOrderReference extends CommonDropdown {
                    AND `grm`.`suppliers_id` = '$enterpriseID'
                      AND `grm`.`plugin_order_references_id` = `gr`.`id` ";
 
-      $result = $DB->query($query);
+      $result     = $DB->query($query);
       $references = array();
       while ($data = $DB->fetch_array($result)) {
          $references[$data["id"]] = $data["name"];
@@ -538,7 +538,7 @@ class PluginOrderReference extends CommonDropdown {
 
    function dropdownReferencesByEnterprise($name, $itemtype, $enterpriseID) {
 
-      $references = $this->getAllReferencesByEnterpriseAndType($itemtype, $enterpriseID);
+      $references    = $this->getAllReferencesByEnterpriseAndType($itemtype, $enterpriseID);
       $references[0] = '-----';
       return Dropdown::showFromArray($name, $references);
    }
@@ -567,11 +567,11 @@ class PluginOrderReference extends CommonDropdown {
          while ($data = $DB->fetch_array($result)) {
             echo "<tr class='tab_bg_1' align='center'>";
             echo "<td>";
-            echo Dropdown::getDropdownName("glpi_entities",$data["entities_id"]);
+            echo Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
             echo "</td>";
 
             echo "<td>";
-            echo Dropdown::getDropdownName("glpi_manufacturers",$data["manufacturers_id"]);
+            echo Dropdown::getDropdownName("glpi_manufacturers", $data["manufacturers_id"]);
             echo "</td>";
 
             echo "<td>";
@@ -617,7 +617,7 @@ class PluginOrderReference extends CommonDropdown {
          echo "<tr class='tab_bg_1' align='center'>"; 
          echo "<td>";
 
-         $link=getItemTypeFormURL('PluginOrderOrder');
+         $link = getItemTypeFormURL('PluginOrderOrder');
          if ($this->canView()) {
             echo "<a href=\"".$link."?id=".$data["id"]."\">".$data["name"]."</a>";
          } else {
@@ -652,13 +652,13 @@ class PluginOrderReference extends CommonDropdown {
          $input['transfert']   = 1;
          $newid=$this->add($input);
          
-         $PluginOrderReference_Supplier       = new PluginOrderReference_Supplier();
-         $PluginOrderReference_Supplier->getFromDBByReference($oldref);
-         $input = $PluginOrderReference_Supplier->fields;
+         $reference_supplier       = new PluginOrderReference_Supplier();
+         $reference_supplier->getFromDBByReference($oldref);
+         $input = $reference_supplier->fields;
          $input['entities_id']                = $entity;
          $input['plugin_order_references_id'] = $newid;
          unset($input['id']);
-         $PluginOrderReference_Supplier->add($input);
+         $reference_supplier->add($input);
          
          $PluginOrderOrder_Item = new PluginOrderOrder_Item();
          
