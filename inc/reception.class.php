@@ -258,7 +258,7 @@ class PluginOrderReception extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG;
 
       $order_order      = new PluginOrderOrder();
-      $order_order_Item = new PluginOrderOrder_Item();
+      $order_item = new PluginOrderOrder_Item();
       $order_reference  = new PluginOrderReference();
       $config                = new PluginOrderConfig;
       $order_order->getFromDB($plugin_order_orders_id);
@@ -270,7 +270,7 @@ class PluginOrderReception extends CommonDBTM {
          && !$order_order->canUpdateOrder($plugin_order_orders_id) 
             && $order_order->getState() != $config->getCanceledState();
       
-      $result_ref = $order_order_Item->queryDetail($plugin_order_orders_id);
+      $result_ref = $order_item->queryDetail($plugin_order_orders_id);
       $numref     = $DB->numrows($result_ref);
 
       while ($data_ref=$DB->fetch_array($result_ref)){
@@ -306,11 +306,11 @@ class PluginOrderReception extends CommonDBTM {
             echo "<td align='center'>" . Dropdown::getDropdownName("glpi_manufacturers",
                                                                    $data_ref["manufacturers_id"]) . "</td>";
             echo "<td>" . $order_reference->getReceptionReferenceLink($data_ref) . "</td>";
-            $total = $order_order_Item->getTotalQuantityByRefAndDiscount($plugin_order_orders_id,
+            $total = $order_item->getTotalQuantityByRefAndDiscount($plugin_order_orders_id,
                                                                               $plugin_order_references_id,
                                                                               $data_ref["price_taxfree"],
                                                                               $data_ref["discount"]);
-            echo "<td>" . $order_order_Item->getDeliveredQuantity($plugin_order_orders_id,
+            echo "<td>" . $order_item->getDeliveredQuantity($plugin_order_orders_id,
                                                                        $plugin_order_references_id,
                                                                        $data_ref["price_taxfree"],
                                                                        $data_ref["discount"])
@@ -633,10 +633,11 @@ class PluginOrderReception extends CommonDBTM {
 
       if ($config->canGenerateAsset()) {
          // Automatic generate assets on delivery
-         $item = array( "name"                     => $config->getGeneratedAssetName(),
-                        "serial"                   => $config->getGeneratedAssetSerial(),
-                        "otherserial"              => $config->getGeneratedAssetOtherserial(),
-                        "entities_id"              => $config->getGeneratedAssetEntity(),
+         $rand = mt_rand();
+         $item = array( "name"                     => $config->getGeneratedAssetName().$rand,
+                        "serial"                   => $config->getGeneratedAssetSerial().$rand,
+                        "otherserial"              => $config->getGeneratedAssetOtherserial().$rand,
+                        "entities_id"              => $config->getGeneratedAssetEntity().$rand,
                         "itemtype"                 => $options["itemtype"],
                         "id"                       => $options["items_id"],
                         "plugin_order_orders_id"   => $options["plugin_order_orders_id"]);

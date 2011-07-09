@@ -65,7 +65,7 @@ class PluginOrderLink extends CommonDBChild {
       echo "<div class='center'>";
 
       //If plugin geninventorynumber is installed, activated and version >= 1.1.0
-      $plugin = new Plugin;
+      $plugin = new Plugin();
       if ($plugin->isInstalled("geninventorynumber") && $plugin->isActivated("geninventorynumber")) {
          usePlugin("geninventorynumber", true);
          $infos = plugin_version_geninventorynumber();
@@ -82,31 +82,35 @@ class PluginOrderLink extends CommonDBChild {
 
       echo "<a href='" . $_SERVER["HTTP_REFERER"] . "'>" . $LANG['buttons'][13] . "</a></br><br>";
 
-      echo "<form method='post' name='order_deviceGeneration' id='order_deviceGeneration' action=\"" . $CFG_GLPI["root_doc"] . "/plugins/order/front/link.form.php\">";
+      echo "<form method='post' name='order_deviceGeneration' id='order_deviceGeneration' action=\"" . 
+         getItemTypeFormURL("PluginOrderLink")."\">";
       
       echo "<table class='tab_cadre_fixe'>";
       $colspan = "5";
-      if (isMultiEntitiesMode())
+      if (isMultiEntitiesMode()) {
          $colspan = "6";
+      }
       echo "<tr><th colspan='$colspan'>" . $LANG['plugin_order']['delivery'][3] . "</tr></th>";
       echo "<tr><th>" . $LANG['plugin_order']['reference'][1] . "</th>";
       echo "<th>" . $LANG['common'][19] . "</th>";
       echo "<th>" . $LANG['common'][20] . "</th>";
       echo "<th>" . $LANG['common'][16] . "</th>";
       echo "<th>" . $LANG['common'][13] . "</th>";
-      if (isMultiEntitiesMode())
+      if (isMultiEntitiesMode()) {
          echo "<th>" . $LANG['entity'][0] . "</th>";
+      }
       echo "</tr>";
-      echo "<input type='hidden' name='plugin_order_orders_id' value=" . $params["plugin_order_orders_id"] . ">";
-      echo "<input type='hidden' name='plugin_order_references_id' value=" . $params["plugin_order_references_id"] . ">";
+      echo "<input type='hidden' name='plugin_order_orders_id' value=" . 
+         $params["plugin_order_orders_id"] . ">";
+      echo "<input type='hidden' name='plugin_order_references_id' value=" . 
+         $params["plugin_order_references_id"] . ">";
 
       $order = new PluginOrderOrder();
       $order->getFromDB($params["plugin_order_orders_id"]);
       
-      $PluginOrderReference = new PluginOrderReference();
-      
-      $i = 0;
-      $found = false;
+      $reference = new PluginOrderReference();
+      $i         = 0;
+      $found     = false;
 
       foreach ($params["item"] as $key => $val)
          if ($val == 1) {
@@ -114,21 +118,25 @@ class PluginOrderLink extends CommonDBChild {
             $detail->getFromDB($key);
 
             if (!$detail->fields["items_id"]) {
-
-               if ($use_plugin_geninventorynumber && $gen_config->fields["active"] && $fields[$params['itemtype'][$key]]['enabled'] && in_array($params['itemtype'][$key], $GENINVENTORYNUMBER_INVENTORY_TYPES)) {
+               if ($use_plugin_geninventorynumber 
+                  && $gen_config->fields["active"] 
+                     && $fields[$params['itemtype'][$key]]['enabled'] 
+                        && in_array($params['itemtype'][$key], $GENINVENTORYNUMBER_INVENTORY_TYPES)) {
                   $gen_inventorynumber = true;
                } else {
                   $gen_inventorynumber = false;
                }
 
                echo "<tr class='tab_bg_1'><td align='center'>" . $_POST["name"][$key] . "</td>";
-               $templateID = $PluginOrderReference->checkIfTemplateExistsInEntity($params["id"][$key], $params['itemtype'][$key], $order->fields["entities_id"]);
+               $templateID = $reference->checkIfTemplateExistsInEntity($params["id"][$key], 
+                                                                       $params['itemtype'][$key], 
+                                                                       $order->fields["entities_id"]);
                if ($templateID) {
                   $item = new $params['itemtype'][$key]();
                   $item->getFromDB($templateID);
                   
-                  $name = $item->fields["name"];
-                  $serial = $item->fields["serial"];
+                  $name        = $item->fields["name"];
+                  $serial      = $item->fields["serial"];
                   $otherserial = $item->fields["otherserial"];
                }
                
@@ -145,31 +153,41 @@ class PluginOrderLink extends CommonDBChild {
                
                echo "<td align='center'>";
                if ($templateID) {
-                  echo $PluginOrderReference->getTemplateName($params['itemtype'][$key], $templateID);
+                  echo $reference->getTemplateName($params['itemtype'][$key], $templateID);
                }   
                echo "</td>";
                
                if (isMultiEntitiesMode()) {
                   echo "<td>";
-                  $entity_restrict = ($order->fields["is_recursive"] ? getSonsOf('glpi_entities',$order->fields["entities_id"]) : $order->fields["entities_id"]);
-                  Dropdown::show('Entity', array('name' => "id[$i][entities_id]",'value' => $order->fields["entities_id"], 'entity' => $entity_restrict));
+                  $entity_restrict = ($order->fields["is_recursive"] ? 
+                     getSonsOf('glpi_entities',$order->fields["entities_id"]) 
+                        : $order->fields["entities_id"]);
+                  Dropdown::show('Entity', array('name' => "id[$i][entities_id]",
+                                                 'value' => $order->fields["entities_id"], 
+                                                 'entity' => $entity_restrict));
                   echo "</td>";
                } else {
-                  echo "<input type='hidden' name='id[$i][entities_id]' value=" . $_SESSION["glpiactive_entity"] . ">";
+                  echo "<input type='hidden' name='id[$i][entities_id]' value=" . 
+                     $_SESSION["glpiactive_entity"] . ">";
                }
                echo "</tr>";
                echo "<input type='hidden' name='id[$i][itemtype]' value=" . $params['itemtype'][$key] . ">";
                echo "<input type='hidden' name='id[$i][id]' value=" . $params["id"][$key] . ">";
-               echo "<input type='hidden' name='id[$i][plugin_order_orders_id]' value=" . $params["plugin_order_orders_id"] . ">";
+               echo "<input type='hidden' name='id[$i][plugin_order_orders_id]' value=" . 
+                  $params["plugin_order_orders_id"] . ">";
                $found = true;
             }
             $i++;
          }
 
-      if ($found)
-         echo "<tr><td align='center' colspan='$colspan' class='tab_bg_2'><input type='submit' name='generate' class='submit' value=" . $LANG['plugin_order']['delivery'][9] . "></td></tr>";
-      else
-         echo "<tr><td align='center' colspan='$colspan' class='tab_bg_2'>" . $LANG['plugin_order']['delivery'][17] . "</td></tr>";
+      if ($found) {
+         echo "<tr><td align='center' colspan='$colspan' class='tab_bg_2'>"; 
+         echo "<input type='submit' name='generate' class='submit' value=" . 
+            $LANG['plugin_order']['delivery'][9] . "></td></tr>";
+      } else {
+         echo "<tr><td align='center' colspan='$colspan' class='tab_bg_2'>" . 
+            $LANG['plugin_order']['delivery'][17] . "</td></tr>";
+      }
 
       echo "</table>";
       echo "</form></div>";
@@ -178,10 +196,10 @@ class PluginOrderLink extends CommonDBChild {
    function showOrderLink($plugin_order_orders_id) {
       global $DB, $CFG_GLPI, $LANG;
 
-      $PluginOrderOrder = new PluginOrderOrder();
+      $PluginOrderOrder      = new PluginOrderOrder();
       $PluginOrderOrder_Item = new PluginOrderOrder_Item();
-      $PluginOrderReference = new PluginOrderReference();
-      $PluginOrderReception = new PluginOrderReception();
+      $PluginOrderReference  = new PluginOrderReference();
+      $PluginOrderReception  = new PluginOrderReception();
       
       $config = new PluginOrderConfig;
       
@@ -763,7 +781,7 @@ class PluginOrderLink extends CommonDBChild {
       global $DB, $LANG;
 
       // Retrieve plugin configuration
-      $config               = new PluginOrderConfig();
+      $config    = new PluginOrderConfig();
       $reference = new PluginOrderReference();
       
       foreach ($params["id"] as $tmp => $values) {

@@ -36,25 +36,24 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["id"])) $_GET["id"] = "";
-if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
+if(!isset($_GET["id"])) {
+   $_GET["id"] = "";
+}
+if(!isset($_GET["withtemplate"])) {
+   $_GET["withtemplate"] = "";
+}
 
-$PluginOrderReception = new PluginOrderReception();
-$PluginOrderLink = new PluginOrderLink();
-$PluginOrderOrder_Item = new PluginOrderOrder_Item;
-
-$plugin = new Plugin;
-//if ($plugin->isActivated("genericobject"))
-// usePlugin('genericobject');
+$reception  = new PluginOrderReception();
+$link       = new PluginOrderLink();
+$order_item = new PluginOrderOrder_Item();
+$plugin     = new Plugin();
 
 if (isset ($_POST["generation"])) {
-
    if (isset ($_POST["item"])) {
-   
       foreach ($_POST["item"] as $key => $val) {
          if ($val == 1) {
-            $PluginOrderOrder_Item->getFromDB($_POST["id"][$key]);
-            if ($PluginOrderOrder_Item->fields["states_id"] == 
+            $order_item->getFromDB($_POST["id"][$key]);
+            if ($order_item->fields["states_id"] == 
                   PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
                addMessageAfterRedirect($LANG['plugin_order'][45], true, ERROR);
                glpi_header($_SERVER["HTTP_REFERER"]);
@@ -64,68 +63,56 @@ if (isset ($_POST["generation"])) {
    }
 
    if (isset ($_POST["item"])) {
-      
       commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
-      
-      $PluginOrderLink->showItemGenerationForm($_POST);
-      
+      $link->showItemGenerationForm($_POST);
       commonFooter();
       
    } else {
       addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
       glpi_header($_SERVER["HTTP_REFERER"]);
    }
-}
-/* genere le materiel */
-else if (isset ($_POST["generate"])) {
-   $PluginOrderLink->generateNewItem($_POST);
+} elseif (isset ($_POST["generate"])) {
+   $link->generateNewItem($_POST);
    glpi_header(getItemTypeFormURL('PluginOrderOrder')."?id=" . 
                                     $_POST["plugin_order_orders_id"] . "");
-}
-/* supprime un lien d'une ligne detail vers un materiel */
-else if (isset ($_POST["deleteLinkWithItem"])) {
+} elseif (isset ($_POST["deleteLinkWithItem"])) {
    foreach ($_POST["item"] as $key => $val) {
       if ($val == 1)
-         $PluginOrderLink->deleteLinkWithItem($key, $_POST["itemtype"][$key],
+         $link->deleteLinkWithItem($key, $_POST["itemtype"][$key],
                                               $_POST["plugin_order_orders_id"]);
    }
    glpi_header(getItemTypeFormURL('PluginOrderOrder')."?id=" . 
-      $_POST["plugin_order_orders_id"] . "");
-}
-/* cree un lien d'une ligne detail vers un materiel */
-else if (isset ($_POST["createLinkWithItem"])) {
-
+                                     $_POST["plugin_order_orders_id"] . "");
+} elseif (isset ($_POST["createLinkWithItem"])) {
    if ($_POST["item"]) {
-      $i = 0;
+      $i    = 0;
       $doit = 1;
       if ($_POST["itemtype"] != 'SoftwareLicense'
          && $_POST["itemtype"] != 'ConsumableItem'
-             && $_POST["itemtype"] != 'CartridgeItem')
-         if (count($_POST["item"]) > 1)
+             && $_POST["itemtype"] != 'CartridgeItem') {
+         if (count($_POST["item"]) > 1) {
             $doit = 0;
-      if ($doit) {
+         }
+      }
 
-         foreach ($_POST["item"] as $key => $val)
-         {
-            if ($val == 1)
-            {
-               $PluginOrderOrder_Item->getFromDB($_POST["id"][$key]);
-               if ($PluginOrderOrder_Item->fields["states_id"] == 
+      if ($doit) {
+         foreach ($_POST["item"] as $key => $val) {
+            if ($val == 1) {
+               $order_item->getFromDB($_POST["id"][$key]);
+               if ($order_item->fields["states_id"] == 
                      PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
                   addMessageAfterRedirect($LANG['plugin_order'][46], true, ERROR);
                   glpi_header($_SERVER["HTTP_REFERER"]);
-               } else
-               {
-
-                  $PluginOrderLink->createLinkWithItem($key, $_POST["items_id"], 
-                                                       $_POST["itemtype"], 
-                                                       $_POST["plugin_order_orders_id"]);
-                  
+               } else {
+                  $link->createLinkWithItem($key, $_POST["items_id"], 
+                                            $_POST["itemtype"], 
+                                            $_POST["plugin_order_orders_id"]);
                }
             }
          }
-      } else
+      } else {
          addMessageAfterRedirect($LANG['plugin_order'][42], true, ERROR);
+      }
    }
    glpi_header(getItemTypeFormURL('PluginOrderOrder')."?id=" . 
                                     $_POST["plugin_order_orders_id"] . "");
