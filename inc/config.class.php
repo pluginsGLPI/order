@@ -40,7 +40,9 @@ if (!defined('GLPI_ROOT')){
 class PluginOrderConfig extends CommonDBTM {
 
    function __construct() {
-      $this->getConfig();
+      if (TableExists($this->getTable())) {
+         $this->getConfig();
+      }
    }
    static function getTypeName() {
       global $LANG;

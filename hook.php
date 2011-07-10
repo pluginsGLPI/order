@@ -47,14 +47,14 @@ function plugin_order_install() {
    echo "<td align='center'>";
    
    $migration = new Migration("1.5.0");
-   $classes = array('PluginOrderConfig', 'PluginOrderBill', 'PluginOrderBillState', 
-                    'PluginOrderBillType', 'PluginOrderOrderState', 'PluginOrderOrder', 
-                    'PluginOrderOrder_Item', 'PluginOrderReference', 'PluginOrderDeliveryState', 
+   $classes = array('PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',  
+                    'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',  
+                    'PluginOrderReference', 'PluginOrderDeliveryState', 
                     'PluginOrderNotificationTargetOrder_Item', 'PluginOrderNotificationTargetOrder', 
-                    'PluginOrderOrder_Supplier', 'PluginOrderOrderPayment','PluginOrderOrderTaxe', 
+                    'PluginOrderOrder_Supplier', 'PluginOrderBill', 'PluginOrderOrderPayment', 
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                     'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier', 
-                    'PluginOrderSurveySupplier');
+                    'PluginOrderSurveySupplier', 'PluginOrderOrderTaxe');
    foreach ($classes as $class) {
       if ($plug=isPluginItemType($class)) {
          $plugname=strtolower($plug['plugin']);
