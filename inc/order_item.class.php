@@ -289,7 +289,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
       return $result;
    }
 
-   function queryBills($ID) {
+   function queryBills($orders_id, $references_id) {
       global $DB;
       
       $query="SELECT `".$this->getTable()."`.`id` AS IDD, `glpi_plugin_order_references`.`id`,
@@ -301,7 +301,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
                `".$this->getTable()."`.`plugin_order_billstates_id`
                FROM `".$this->getTable()."`, `glpi_plugin_order_references`
                WHERE `".$this->getTable()."`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`
-               AND `".$this->getTable()."`.`plugin_order_orders_id` = '$ID'
+               AND `".$this->getTable()."`.`plugin_order_orders_id` = '$orders_id'
+               AND `glpi_plugin_order_references`.`id` = '$references_id'
                GROUP BY `glpi_plugin_order_references`.`id`,`".$this->getTable()."`.`price_taxfree`,`".
                   $this->getTable()."`.`discount`
                ORDER BY `glpi_plugin_order_references`.`name` ";
@@ -707,9 +708,9 @@ class PluginOrderOrder_Item extends CommonDBTM {
       }
    }
 
-   function showPluginFromItems($itemtype, $ID) {
+    function showPluginFromItems($itemtype, $ID) {
       global $LANG,$CFG_GLPI;
-
+ 
       $infos = $this->getOrderInfosByItem($itemtype, $ID);
       if ($infos) {
          echo "<div class='center'>";
@@ -722,104 +723,177 @@ class PluginOrderOrder_Item extends CommonDBTM {
          if ($this->canView()) {
             echo "<a href=\"".$link."?id=".$infos["id"]."\">".$infos["name"]."</a>";
          } else {
-            echo $infos["name"];
-         }
+            echo $infos["name"];    
+          }
          echo "</td></tr>";
          echo "<tr align='center'><td class='tab_bg_2'>" . 
             $LANG['plugin_order']['detail'][21] . "</td>";
          echo "<td class='tab_bg_2'>" . convDate($infos["order_date"]) . "</td></tr>";
          echo "</table></div>";
-      }
-   }
-   
-   function showBillsItems($orders_id) {
-      global $DB, $LANG;
+       }
+    }
 
-      echo "<div class='center'>";
-         
-      echo "<form method='post' name='bills_form' id='bills_form'  " .
-               "action='" . getItemTypeFormURL('PluginOrderOrder') . "'>";
-                  
-      echo "<input type='hidden' name='plugin_order_orders_id' 
-               value='" . $orders_id . "'>";
+
+   function showBillsItems($ID) {
+      global $DB, $CFG_GLPI, $LANG;
+
+      $order      = new PluginOrderOrder();
+      $reference  = new PluginOrderReference();
+      
+      $config = new PluginOrderConfig;
+      
+      $order->getFromDB($ID);
+      $canedit = $order->can($ID, 'w') 
+                  && !$order->canUpdateOrder($ID) 
+                     && $order->getState() != $config->getCanceledState();
+      
+      $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
+                     "`glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, " .
+                     "`glpi_plugin_order_references`.`name`, " .
+                     "`glpi_plugin_order_references`.`itemtype`, " .
+                     "`glpi_plugin_order_references`.`manufacturers_id` " .
+                   "FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references` " .
+                   "WHERE `plugin_order_orders_id` = '$ID' " .
+                     "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id` " .
+                  "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
+                  "ORDER BY `glpi_plugin_order_references`.`name`";
+
+      $result_ref = $DB->query($query_ref);
+      $numref     = $DB->numrows($result_ref);
+
+      while ($data_ref = $DB->fetch_array($result_ref)) {
+
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         if (!$numref) {
+            echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
+         } else {
+            $rand = mt_rand();
+            $plugin_order_references_id = $data_ref["id"];
+            $itemtype = $data_ref["itemtype"];
+            $item     = new $itemtype();
+            echo "<tr><th><ul><li>";
+            echo "<a href=\"javascript:showHideDiv('generation$rand','generation', '".
+               GLPI_ROOT."/pics/plus.png','".GLPI_ROOT."/pics/moins.png');\">";
+            echo "<img alt='' name='generation' src=\"".GLPI_ROOT."/pics/plus.png\">";
+            echo "</a>";
+            echo "</li></ul></th>";
+            echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";
+            echo "<th>" . $LANG['common'][5] . "</th>";
+            echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
+            echo "</tr>";
+            echo "<tr class='tab_bg_1 center'>";
+            echo "<td></td>";
+            echo "<td align='center'>" . $item->getTypeName() . "</td>";
+            echo "<td align='center'>" . Dropdown::getDropdownName("glpi_manufacturers", 
+                                                                   $data_ref["manufacturers_id"]); 
+            echo "</td>";
+            echo "<td>" . $reference->getReceptionReferenceLink($data_ref) . "</td>";
+            echo "</tr></table>";
+
+            echo "<div class='center' id='generation$rand' style='display:none'>";
+            echo "<form method='post' name='bills_form$rand' id='bills_form$rand'  " .
+                     "action='" . getItemTypeFormURL('PluginOrderBill') . "'>";
                         
-      echo "<table class='tab_cadre_fixe'>";
-      if (!countElementsInTable($this->getTable(), "`plugin_order_orders_id`='$orders_id'")) {
-         echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
-      } else {
-         $rand = mt_rand();
-         echo "<th></th>";
-         echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
-         echo "<th>".$LANG['plugin_order']['detail'][6]."</th>";
-         echo "<th>".$LANG['common'][22]."</th>";
-         echo "<th>".$LANG['plugin_order']['bill'][0]."</th>";
-         echo "<th>".$LANG['plugin_order']['bill'][2]."</th>";
-         echo "</tr>";
+            echo "<input type='hidden' name='plugin_order_orders_id' 
+                     value='" . $ID . "'>";
+            echo "<table class='tab_cadre_fixe'>";
 
-         $order      = new PluginOrderOrder();
-         $reference  = new PluginOrderReference();
-         $order_item = new PluginOrderOrder_Item();
-         $canedit    = $order->can($orders_id, 'w');
-         
-         $results = $this->queryBills($orders_id);
-         while ($data = $DB->fetch_array($results)) {
-            echo "<tr class='tab_bg_1'>";
-            if ($canedit){
-               echo "<td width='10'>";
-               $sel="";
-               if (isset($_GET["select"])&& $_GET["select"] == "all") {
-                  $sel = "checked";
-               }
-               echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
-               echo "<input type='hidden' name='plugin_order_orders_id' value='" . 
-                   $orders_id . "'>";
-               echo "</td>";
-            }
-            
-            //Reference
-            echo "<td align='center'>";
-            echo $reference->getReceptionReferenceLink($data);
-            echo "</td>";
-            
-            //Type
-            echo "<td align='center'>";
-            if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."type.class.php")) {
-               echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"), 
-                                                                  $data["types_id"]);
-            }
-            echo "</td>";
-            //Model
-            echo "<td align='center'>";
-            if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."model.class.php")) {
-               echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"), 
-                                              $data["models_id"]);
-            }
-            echo "<td align='center'>";
-            if ($canedit) {
-               Dropdown::show('PluginOrderBill', array('value' => $data['plugin_order_bills_id'], 
-                                                       'comments' => true));
-            } else {
-               echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBill'), 
-                                                               $data['plugin_order_bills_id']);
-            }
-            echo "</td>";
-            echo "<td align='center'>";
-            if ($canedit) {
-               Dropdown::show('PluginOrderBillState', 
-                              array('value'    => $data['plugin_order_billstates_id'], 
-                                    'comments' => true));
-            } else {
-               echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBillState'), 
-                                                                  $data['plugin_order_billstates_id']);
-            }
-            echo "</td>";
+            echo "<th></th>";
+            echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
+            echo "<th>".$LANG['plugin_order']['detail'][6]."</th>";
+            echo "<th>".$LANG['common'][22]."</th>";
+            echo "<th>".$LANG['plugin_order']['bill'][0]."</th>";
+            echo "<th>".$LANG['plugin_order']['bill'][2]."</th>";
             echo "</tr>";
 
+            $results = $this->queryBills($ID, $data_ref['id']);
+            while ($data = $DB->fetch_array($results)) {
+               echo "<tr class='tab_bg_1'>";
+               if ($canedit){
+                  echo "<td width='10'>";
+                  $sel="";
+                  if (isset($_GET["select"]) && $_GET["select"] == "all") {
+                     $sel = "checked";
+                  }
+                  echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
+                  echo "<input type='hidden' name='plugin_order_orders_id' value='" . 
+                      $ID . "'>";
+                  echo "</td>";
+               }
+               
+               //Reference
+               echo "<td align='center'>";
+               echo $reference->getReceptionReferenceLink($data);
+               echo "</td>";
+               
+               //Type
+               echo "<td align='center'>";
+               if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."type.class.php")) {
+                  echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"), 
+                                                                     $data["types_id"]);
+               }
+               echo "</td>";
+               //Model
+               echo "<td align='center'>";
+               if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."model.class.php")) {
+                  echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"), 
+                                                 $data["models_id"]);
+               }
+               echo "<td align='center'>";
+               echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBill'), 
+                                                                  $data['plugin_order_bills_id']);
+               echo "</td>";
+               echo "<td align='center'>";
+               echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBillState'), 
+                                                                     $data['plugin_order_billstates_id']);
+               echo "</td>";
+               echo "</tr>";
+
+            }
          }
+            
+         echo "</table>";
+         if ($canedit) {
+            echo "<div class='center'>";
+            echo "<table width='950px' class='tab_glpi'>";
+            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"].
+               "/pics/arrow-left.png\" alt=''></td><td class='center'>"; 
+            echo "<a onclick= \"if ( markCheckboxes('bills_form$rand') ) " .
+                  "return false;\" href='#'>".$LANG['buttons'][18]."</a></td>";
+
+            echo "<td>/</td><td class='center'>"; 
+            echo "<a onclick= \"if ( unMarkCheckboxes('bills_form$rand') ) " .
+                  "return false;\" href='#'>".$LANG['buttons'][19]."</a>";
+            echo "</td><td align='left' width='80%'>";
+            echo "<input type='hidden' name='plugin_order_orders_id' value='$ID'>";
+            $this->dropdownBillItemsActions($ID);
+            echo "</td>";
+            echo "</table>";
+            echo "</div>";
+
+         }
+         echo "</form></div>";
       }
-         
+      echo "<br>";
    }
-   static function install(Migration $migration) {
+   
+      function dropdownBillItemsActions($orders_id) {
+         global $LANG, $CFG_GLPI;
+         $action['']      = DROPDOWN_EMPTY_VALUE;
+         $action['bill']  = $LANG['plugin_order']['bill'][0];
+         $action['state'] = $LANG['plugin_order']['bill'][2];
+         $rand            = Dropdown::showFromArray('chooseAction', $action);
+         
+         $params = array ('action' => '__VALUE__', 'plugin_order_orders_id' => $orders_id);
+         ajaxUpdateItemOnSelectEvent("dropdown_chooseAction$rand", "show_billsActions$rand", 
+                                     $CFG_GLPI["root_doc"] . "/plugins/order/ajax/billactions.php", 
+                                     $params);
+          echo "<span id='show_billsActions$rand'>&nbsp;</span>";
+         
+      }
+      
+
+      static function install(Migration $migration) {
       global $DB;
       $table = getTableForItemType(__CLASS__);
       

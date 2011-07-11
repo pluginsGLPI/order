@@ -28,33 +28,37 @@
  --------------------------------------------------------------------------
 // ----------------------------------------------------------------------
 // Original Authors of file: 
-// NOUH Walid & FONTAN Benjamin & CAILLAUD Xavier & François Legastelois
+// NOUH Walid
 // Purpose of file: 
 // ----------------------------------------------------------------------
 // ---------------------------------------------------------------------- */
 
-define('GLPI_ROOT', '../../..'); 
+define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-if (isset($_POST['action'])) {
-   $order_item = new PluginOrderOrder_Item();
-   switch ($_POST['chooseAction']) {
-      case 'bill':
-      case 'state':
-         if (isset ($_POST["item"])) {
-            foreach ($_POST["item"] as $key => $val) {
-               if ($val == 1) {
-                  $tmp = $_POST;
-                  $tmp['id'] = $key;
-                  $order_item->update($tmp);
-               }
-            }
-         }
+if (!defined('GLPI_ROOT')) {
+   die("Can not acces directly to this file");
+}
+
+if (isset($_POST["action"])) {
+   switch($_POST["action"]) {
+      case "bill":
+         echo "&nbsp;<input type='hidden' name='plugin_order_orders_id' " .
+               "  value='".$_POST["plugin_order_orders_id"]."'>"; 
+         Dropdown::show('PluginOrderBill', 
+                        array('condition' => 
+                                 "`plugin_order_orders_id`='".$_POST['plugin_order_orders_id']."'"));
+         break;
+      case "state":
+         echo "&nbsp;<input type='hidden' name='plugin_order_orders_id' " .
+               "  value='".$_POST["plugin_order_orders_id"]."'>"; 
+         Dropdown::show('PluginOrderBillState');
          break;
    }
-   glpi_header($_SERVER["HTTP_REFERER"]);
+    echo"<input type='submit' name='action' class='submit' " .
+        "   value='".$LANG['buttons'][2]."'>"; 
 }
-$dropdown = new PluginOrderBill();
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
 
 ?>
