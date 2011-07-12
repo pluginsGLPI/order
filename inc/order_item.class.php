@@ -214,12 +214,10 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
       $order     = new PluginOrderOrder();
       $reference = new PluginOrderReference();
-
-      if ($order->canUpdateOrder($plugin_order_orders_id)) {
-
-         $canedit=$order->can($plugin_order_orders_id,'w');
-
-         if ($canedit) {
+      
+      $order->getFromDB($plugin_order_orders_id);
+      if ($order->canUpdateOrder()) {
+         if ($order->can($plugin_order_orders_id, 'w')) {
             echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\"".
                getItemTypeFormURL('PluginOrderOrder')."\">";
             echo "<input type='hidden' name='plugin_order_orders_id' value=\"$plugin_order_orders_id\">";
@@ -325,7 +323,6 @@ class PluginOrderOrder_Item extends CommonDBTM {
       }
 
       $result=$DB->query($query);
-      
       return $result;
    }
    
@@ -334,23 +331,20 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
       $order                = new PluginOrderOrder();
       $reference            = new PluginOrderReference();
-      $PluginOrderReception = new PluginOrderReception();
+      $reception            = new PluginOrderReception();
       $result_ref           = $this->queryDetail($plugin_order_orders_id);
       $numref               = $DB->numrows($result_ref);
       $rand                 = mt_rand();
       $canedit              = $order->can($plugin_order_orders_id,'w') 
-                              && $order->canUpdateOrder($plugin_order_orders_id);
+                              && $order->canUpdateOrder();
 
       while ($data_ref=$DB->fetch_array($result_ref)){
 
          echo "<div class='center'>";
-         
          echo "<form method='post' name='order_updatedetail_form$rand' id='order_updatedetail_form$rand'  " .
                   "action='" . getItemTypeFormURL('PluginOrderOrder') . "'>";
-                  
          echo "<input type='hidden' name='plugin_order_orders_id' 
                   value='" . $plugin_order_orders_id . "'>";
-                        
          echo "<table class='tab_cadre_fixe'>";
          if (!$numref) {
             echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
@@ -359,8 +353,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
             $refID         = $data_ref["id"];
             $price_taxfree = $data_ref["price_taxfree"];
             $discount      = $data_ref["discount"];
-            
-            $rand = mt_rand();
+            $rand          = mt_rand();
             echo "<tr><th><ul><li>";
             echo "<a href=\"javascript:showHideDiv('detail$rand','detail', '".
                                                    GLPI_ROOT."/pics/plus.png','".
@@ -539,8 +532,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
                echo "<tr class='tab_bg_1'>";
                if ($canedit){
                   echo "<td width='10'>";
-                  $sel="";
-                  if (isset($_GET["select"])&& $_GET["select"] == "all") {
+                  $sel = "";
+                  if (isset($_GET["select"]) && $_GET["select"] == "all") {
                      $sel = "checked";
                   }
                   echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
@@ -569,7 +562,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
                /* price ati */
                echo "<td align='center'>".formatNumber($data["price_ati"])."</td>";
                /* status  */
-               echo "<td align='center'>".$PluginOrderReception->getReceptionStatus($data["IDD"]).
+               echo "<td align='center'>".$reception->getReceptionStatus($data["IDD"]).
                   "</td></tr>";
 
             }
@@ -730,14 +723,21 @@ class PluginOrderOrder_Item extends CommonDBTM {
     }
 
 
-   function showBillsItems($ID) {
+   function showBillsItems(PluginOrderOrder $order) {
       global $DB, $CFG_GLPI, $LANG;
 
-      $order      = new PluginOrderOrder();
       $reference  = new PluginOrderReference();
+
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>" . $LANG['plugin_order']['bill'][4] . "</th></tr>";
+      echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['plugin_order']['bill'][5] . ": </td>";
+      echo "<td>";
+      echo PluginOrderBillState::getState($order->fields['plugin_order_billstates_id']);
+      echo "</td></tr>";
+      echo "</tr></table></div>";
       
-      $order->getFromDB($ID);
-      $canedit = $order->can($ID, 'w')  && !$order->canUpdateOrder($ID) && !$order->isCanceled();
+      $canedit = $order->can($order->getID(), 'w')
+                   && !$order->canUpdateOrder() && !$order->isCanceled();
       
       $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
                      "`glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, " .
@@ -745,22 +745,19 @@ class PluginOrderOrder_Item extends CommonDBTM {
                      "`glpi_plugin_order_references`.`itemtype`, " .
                      "`glpi_plugin_order_references`.`manufacturers_id` " .
                    "FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references` " .
-                   "WHERE `plugin_order_orders_id` = '$ID' " .
+                   "WHERE `plugin_order_orders_id` = '".$order->getID()."' " .
                      "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id` " .
                   "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
                   "ORDER BY `glpi_plugin_order_references`.`name`";
-
       $result_ref = $DB->query($query_ref);
-      $numref     = $DB->numrows($result_ref);
 
       while ($data_ref = $DB->fetch_array($result_ref)) {
-
          echo "<div class='center'><table class='tab_cadre_fixe'>";
-         if (!$numref) {
+         if (!$DB->numrows($result_ref)) {
             echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
+
          } else {
-            $rand = mt_rand();
-            $plugin_order_references_id = $data_ref["id"];
+            $rand     = mt_rand();
             $itemtype = $data_ref["itemtype"];
             $item     = new $itemtype();
             echo "<tr><th><ul><li>";
@@ -787,7 +784,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
                      "action='" . getItemTypeFormURL('PluginOrderBill') . "'>";
                         
             echo "<input type='hidden' name='plugin_order_orders_id' 
-                     value='" . $ID . "'>";
+                     value='" . $order->getID() . "'>";
             echo "<table class='tab_cadre_fixe'>";
 
             echo "<th></th>";
@@ -798,18 +795,18 @@ class PluginOrderOrder_Item extends CommonDBTM {
             echo "<th>".$LANG['plugin_order']['bill'][2]."</th>";
             echo "</tr>";
 
-            $results = $this->queryBills($ID, $data_ref['id']);
+            $results = $this->queryBills($order->getID(), $data_ref['id']);
             while ($data = $DB->fetch_array($results)) {
                echo "<tr class='tab_bg_1'>";
                if ($canedit){
                   echo "<td width='10'>";
-                  $sel="";
+                  $sel = "";
                   if (isset($_GET["select"]) && $_GET["select"] == "all") {
                      $sel = "checked";
                   }
                   echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
                   echo "<input type='hidden' name='plugin_order_orders_id' value='" . 
-                      $ID . "'>";
+                      $order->getID() . "'>";
                   echo "</td>";
                }
                
@@ -861,8 +858,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
             echo "<a onclick= \"if ( unMarkCheckboxes('bills_form$rand') ) " .
                   "return false;\" href='#'>".$LANG['buttons'][19]."</a>";
             echo "</td><td align='left' width='80%'>";
-            echo "<input type='hidden' name='plugin_order_orders_id' value='$ID'>";
-            $this->dropdownBillItemsActions($ID);
+            echo "<input type='hidden' name='plugin_order_orders_id' value='".$order->getID()."'>";
+            $this->dropdownBillItemsActions($order->getID());
             echo "</td>";
             echo "</table>";
             echo "</div>";

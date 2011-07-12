@@ -117,11 +117,10 @@ class PluginOrderOrder extends CommonDBTM {
 
    }
    
-   function canUpdateOrder($orders_id) {
-      if (!$orders_id) {
+   function canUpdateOrder() {
+      if (!$this->getID()) {
          return true;
       } else {
-         $this->getFromDB($orders_id);
          return ($this->isDraft() || $this->isWaitingForApproval());
       }
    }
@@ -440,7 +439,7 @@ class PluginOrderOrder extends CommonDBTM {
          $this->getEmpty();
       }
 
-      $canedit = ($this->canUpdateOrder($ID) && $this->can($ID, 'w') && !$this->isCanceled());
+      $canedit = ($this->canUpdateOrder() && $this->can($ID, 'w') && !$this->isCanceled());
       $options['canedit'] = $canedit;
       
       // Displaying OVER BUDGET ALERT
@@ -518,7 +517,7 @@ class PluginOrderOrder extends CommonDBTM {
                                         $this->getState());
       }
       echo "</td>";
-      
+
       /* budget */
       echo "<td>" . $LANG['plugin_order'][3] . ": </td><td>";
       if ($canedit) {
@@ -1281,21 +1280,21 @@ class PluginOrderOrder extends CommonDBTM {
    }
    
    function updateBillState($ID) {
-      $all_paied   = true;
+      $all_PAID   = true;
       $order_items = getAllDatasFromTable(getTableForItemType('PluginOrderOrder_Item'), 
                                           "`plugin_order_orders_id`='$ID'");
       foreach ($order_items as $item) {
-         if ($item['plugin_order_billstates_id'] == PluginOrderBillState::NOTPAIED) {
-            $all_paied = false;
+         if ($item['plugin_order_billstates_id'] == PluginOrderBillState::NOTPAID) {
+            $all_PAID = false;
          }
       }
       
       $order = new self();
       $order->getFromDB($ID);
-      if($all_paied) {
-         $state = PluginOrderBillState::PAIED;
+      if($all_PAID) {
+         $state = PluginOrderBillState::PAID;
       } else {
-         $state = PluginOrderBillState::NOTPAIED;
+         $state = PluginOrderBillState::NOTPAID;
       }
       $order->update(array('id' => $ID, 'plugin_order_billstates_id' => $state));
    }

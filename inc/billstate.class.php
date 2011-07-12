@@ -39,8 +39,8 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderBillState extends CommonDropdown {
 
-   const NOTPAIED = 0;
-   const PAIED    = 1;
+   const NOTPAID = 0;
+   const PAID    = 1;
 
    static function getTypeName() {
       global $LANG;
@@ -55,6 +55,21 @@ class PluginOrderBillState extends CommonDropdown {
    function canView() {
       return plugin_order_haveRight('bill', 'r');
    } 
+   
+   static function getStates() {
+      global $LANG;
+      return array(self::NOTPAID => $LANG['plugin_order']['bill'][7], 
+                   self::PAID    => $LANG['plugin_order']['bill'][6]);
+   }
+   
+   static function getState($states_id) {
+      $states = self::getStates();
+      if (isset($states[$states_id])) {
+         return $states[$states_id];
+      } else {
+         return '';
+      }
+   }
    
    static function install(Migration $migration) {
       global $DB;

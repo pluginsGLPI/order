@@ -74,6 +74,9 @@ $LANG['plugin_order']['bill'][1] = "Type de facture";
 $LANG['plugin_order']['bill'][2] = "Statut de la facture";
 $LANG['plugin_order']['bill'][3] = "un numéro de facture est obligatoire";
 $LANG['plugin_order']['bill'][4] = "Factures";
+$LANG['plugin_order']['bill'][5] = "Statut facturation";
+$LANG['plugin_order']['bill'][6] = "Payée";
+$LANG['plugin_order']['bill'][7] = "En cours de paiement";
 
 $LANG['plugin_order']['config'][0] = "Configuration du plugin";
 $LANG['plugin_order']['config'][1] = "TVA par défaut";

@@ -203,7 +203,7 @@ class PluginOrderLink extends CommonDBChild {
       
       $PluginOrderOrder->getFromDB($plugin_order_orders_id);
       $canedit = $PluginOrderOrder->can($plugin_order_orders_id, 'w') 
-                  && !$PluginOrderOrder->canUpdateOrder($plugin_order_orders_id) 
+                  && !$PluginOrderOrder->canUpdateOrder() 
                      && !$PluginOrderOrder->isCanceled();
       
       $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .

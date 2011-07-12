@@ -174,8 +174,7 @@ class PluginOrderReception extends CommonDBTM {
       $order_reference->getFromDB($this->fields["plugin_order_references_id"]);
       
       $canedit = $order_order->can($this->getOrdersID(), 'w') 
-         && !$order_order->canUpdateOrder($this->getOrdersID()) 
-            && !$order_order->isCanceled();
+                  && !$order_order->canUpdateOrder()  && !$order_order->isCanceled();
       
       echo "<input type='hidden' name='plugin_order_orders_id' value='" . 
          $this->getOrdersID() . "'>";
@@ -264,8 +263,7 @@ class PluginOrderReception extends CommonDBTM {
                             $LANG['plugin_order'][7] ." = ". $order_order->fields["name"]);
       
       $canedit = $order_order->can($plugin_order_orders_id, 'w') 
-         && !$order_order->canUpdateOrder($plugin_order_orders_id) 
-            && !$order_order->isCanceled();
+                   && !$order_order->canUpdateOrder()  && !$order_order->isCanceled();
       
       $result_ref = $order_item->queryDetail($plugin_order_orders_id);
       $numref     = $DB->numrows($result_ref);

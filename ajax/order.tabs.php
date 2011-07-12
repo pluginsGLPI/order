@@ -79,7 +79,7 @@ if ($_POST["id"] > 0 && $order->can($_POST["id"], 'r')) {
             }
 
          }
-         $order_item->showBillsItems($_POST["id"]);
+         $order_item->showBillsItems($order);
          Document::showAssociated($order);
          Plugin::displayAction($order,$_REQUEST['glpi_tab']);
          break;
@@ -119,7 +119,7 @@ if ($_POST["id"] > 0 && $order->can($_POST["id"], 'r')) {
          }
          break;
       case 8:
-         $order_item->showBillsItems($_POST["id"]);
+         $order_item->showBillsItems($order);
          break;
       case 9 :
          Document::showAssociated($order);

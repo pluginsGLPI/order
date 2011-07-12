@@ -365,8 +365,8 @@ class PluginOrderBill extends CommonDropdown {
             }
             
          }
-         //$migration->dropField("glpi_plugin_order_orders_suppliers", "num_bill");
-         //$migration->migrationOneTable("glpi_plugin_order_orders_suppliers");
+         $migration->dropField("glpi_plugin_order_orders_suppliers", "num_bill");
+         $migration->migrationOneTable("glpi_plugin_order_orders_suppliers");
       }
 
    }
