@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT'))
    define('GLPI_ROOT', '../../..'); 
 include (GLPI_ROOT."/inc/includes.php");
 
-$config= new PluginOrderConfig();
+$config = new PluginOrderConfig();
 
 if (isset($_POST["update"])) {
 

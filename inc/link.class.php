@@ -201,12 +201,10 @@ class PluginOrderLink extends CommonDBChild {
       $PluginOrderReference  = new PluginOrderReference();
       $PluginOrderReception  = new PluginOrderReception();
       
-      $config = new PluginOrderConfig;
-      
       $PluginOrderOrder->getFromDB($plugin_order_orders_id);
       $canedit = $PluginOrderOrder->can($plugin_order_orders_id, 'w') 
                   && !$PluginOrderOrder->canUpdateOrder($plugin_order_orders_id) 
-                     && $PluginOrderOrder->getState() != $config->getCanceledState();
+                     && !$PluginOrderOrder->isCanceled();
       
       $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
                      "`glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`itemtype`, `glpi_plugin_order_references`.`manufacturers_id`,`glpi_plugin_order_orders_items`.`price_taxfree`,`glpi_plugin_order_orders_items`.`discount` " .
@@ -811,7 +809,7 @@ class PluginOrderLink extends CommonDBChild {
                   $input[$key] = $value;
             }
             
-            if(!$config->getGeneratedAssetState()) {
+            if($config->getGeneratedAssetState()) {
                $input["states_id"] = $config->getGeneratedAssetState();
             }
 
@@ -840,7 +838,7 @@ class PluginOrderLink extends CommonDBChild {
             $input['contracttypes_id'] = $reference->fields['types_id'];
          } else {
 
-            if(!$config->getGeneratedAssetState()) {
+            if($config->getGeneratedAssetState()) {
                $input["states_id"]     = $config->getGeneratedAssetState();
             }
 

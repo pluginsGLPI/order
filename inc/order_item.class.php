@@ -182,8 +182,6 @@ class PluginOrderOrder_Item extends CommonDBTM {
    function addDetails($plugin_order_references_id, $itemtype, $plugin_order_orders_id, $quantity, 
                        $price, $discounted_price, $plugin_order_ordertaxes_id) {
                           
-      $config = PluginOrderConfig::getConfig();
-
       if ($quantity > 0) {
          for ($i = 0; $i < $quantity; $i++) {
             $input["plugin_order_orders_id"]     = $plugin_order_orders_id;
@@ -630,8 +628,6 @@ class PluginOrderOrder_Item extends CommonDBTM {
    function getDeliveredQuantity($plugin_order_orders_id, $plugin_order_references_id,
                                  $price_taxfree, $discount) {
       global $DB;
-
-      $config = PluginOrderConfig::getConfig();
       $query = "SELECT COUNT(*) AS deliveredquantity
                 FROM `".$this->getTable()."`
                 WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
@@ -670,7 +666,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
       }
 
       //Are all items delivered ?
-      if ($is_delivered && $order->getState() != $config->getDeliveredState()) {
+      if ($is_delivered && !$order->isDelivered()) {
           $order->updateOrderStatus($plugin_order_orders_id, $config->getDeliveredState());
          //At least one item is delivered
       } else {
@@ -739,8 +735,6 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
       $order      = new PluginOrderOrder();
       $reference  = new PluginOrderReference();
-      
-      $config = new PluginOrderConfig;
       
       $order->getFromDB($ID);
       $canedit = $order->can($ID, 'w')  && !$order->canUpdateOrder($ID) && !$order->isCanceled();
