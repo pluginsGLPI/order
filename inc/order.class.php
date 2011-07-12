@@ -140,6 +140,8 @@ class PluginOrderOrder extends CommonDBTM {
    }
    
    function canValidateOrder() {
+      $config = PluginOrderConfig::getConfig();
+      
       //If no validation process -> can validate if order is in draft state
       if (!$config->useValidation()) {
          return $this->isDraft();

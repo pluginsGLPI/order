@@ -575,7 +575,9 @@ class PluginOrderLink extends CommonDBChild {
          }
          $fields["value"]           = $detail->fields["price_discounted"];
          $fields["order_date"]      = $order->fields["order_date"];
-         $fields["delivery_date"]   = $detail->fields["delivery_date"];
+         if (!is_null($detail->fields["delivery_date"])) {
+            $fields["delivery_date"]   = $detail->fields["delivery_date"];
+         }
          if (!$exists) {
             $ic->add($fields);
          } else {

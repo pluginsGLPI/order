@@ -297,10 +297,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
                `".$this->getTable()."`.`plugin_order_billstates_id`
                FROM `".$this->getTable()."`, `glpi_plugin_order_references`
                WHERE `".$this->getTable()."`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`
-               AND `".$this->getTable()."`.`plugin_order_orders_id` = '$orders_id'
-               AND `glpi_plugin_order_references`.`id` = '$references_id'
-               GROUP BY `glpi_plugin_order_references`.`id`,`".$this->getTable()."`.`price_taxfree`,`".
-                  $this->getTable()."`.`discount`
+                  AND `".$this->getTable()."`.`plugin_order_orders_id` = '$orders_id'
+                     AND `glpi_plugin_order_references`.`id` = '$references_id'
                ORDER BY `glpi_plugin_order_references`.`name` ";
 
       $result=$DB->query($query);
@@ -830,10 +828,14 @@ class PluginOrderOrder_Item extends CommonDBTM {
                }
                $bill = new PluginOrderBill();
                echo "<td align='center'>";
-               if ($bill->can($data['plugin_order_bills_id'], 'r')) {
-                  echo "<a href='".$bill->getLinkURL()."'>".$bill->getName(true)."</a>";
-               } else {
-                  echo $bill->getName();
+               if ($data["plugin_order_bills_id"] > 0) {
+                  if ($bill->can($data['plugin_order_bills_id'], 'r')) {
+                     echo "<a href='".$bill->getLinkURL()."'>".$bill->getName(true)."</a>";
+
+                  } else {
+                     echo $bill->getName();
+                  }
+
                }
                echo "</td>";
                echo "<td align='center'>";

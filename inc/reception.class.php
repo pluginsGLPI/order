@@ -632,7 +632,7 @@ class PluginOrderReception extends CommonDBTM {
          $item = array( "name"                     => $config->getGeneratedAssetName().$rand,
                         "serial"                   => $config->getGeneratedAssetSerial().$rand,
                         "otherserial"              => $config->getGeneratedAssetOtherserial().$rand,
-                        "entities_id"              => $config->getGeneratedAssetEntity().$rand,
+                        "entities_id"              => $config->getGeneratedAssetEntity(),
                         "itemtype"                 => $options["itemtype"],
                         "id"                       => $options["items_id"],
                         "plugin_order_orders_id"   => $options["plugin_order_orders_id"]);
@@ -645,7 +645,8 @@ class PluginOrderReception extends CommonDBTM {
             $options_gen["generate_ticket"] = 
                   array("title"                 => $config->getGeneratedTicketTitle(),
                         "content"               => $config->getGeneratedTicketContent(),
-                        "ticketcategories_id"   => $config->getGeneratedTicketCategory());
+                        "ticketcategories_id"   => $config->getGeneratedTicketCategory(),
+                        "entities_id"           => $config->getGeneratedAssetEntity());
          }
 
          $link = new PluginOrderLink();
