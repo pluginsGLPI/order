@@ -144,6 +144,8 @@ function plugin_init_order() {
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['links']['config'] = '/plugins/order/front/config.form.php';
          }
          if (haveRight("config","w")) {
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['title'] = $LANG['common'][12];
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['page']  = '/plugins/order/front/config.form.php';
             $PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/config.form.php';
    
          }

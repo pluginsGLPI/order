@@ -182,7 +182,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
    function addDetails($plugin_order_references_id, $itemtype, $plugin_order_orders_id, $quantity, 
                        $price, $discounted_price, $plugin_order_ordertaxes_id) {
                           
-      $config = new PluginOrderConfig();
+      $config = PluginOrderConfig::getConfig();
 
       if ($quantity > 0) {
          for ($i = 0; $i < $quantity; $i++) {
@@ -631,7 +631,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
                                  $price_taxfree, $discount) {
       global $DB;
 
-      $config = new PluginOrderConfig();
+      $config = PluginOrderConfig::getConfig();
       $query = "SELECT COUNT(*) AS deliveredquantity
                 FROM `".$this->getTable()."`
                 WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
@@ -646,7 +646,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
    function updateDelivryStatus($plugin_order_orders_id) {
       global $DB;
 
-      $config = new PluginOrderConfig();
+      $config = PluginOrderConfig::getConfig();
       $order  = new PluginOrderOrder();
 
       $order->getFromDB($plugin_order_orders_id);
@@ -723,7 +723,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
          if ($this->canView()) {
             echo "<a href=\"".$link."?id=".$infos["id"]."\">".$infos["name"]."</a>";
          } else {
-            echo $infos["name"];    
+            echo $infos["name"];
           }
          echo "</td></tr>";
          echo "<tr align='center'><td class='tab_bg_2'>" . 
@@ -839,13 +839,17 @@ class PluginOrderOrder_Item extends CommonDBTM {
                   echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"), 
                                                  $data["models_id"]);
                }
+               $bill = new PluginOrderBill();
                echo "<td align='center'>";
-               echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBill'), 
-                                                                  $data['plugin_order_bills_id']);
+               if ($bill->can($data['plugin_order_bills_id'], 'r')) {
+                  echo "<a href='".$bill->getLinkURL()."'>".$bill->getName(true)."</a>";
+               } else {
+                  echo $bill->getName();
+               }
                echo "</td>";
                echo "<td align='center'>";
                echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBillState'), 
-                                                                     $data['plugin_order_billstates_id']);
+                                                                  $data['plugin_order_billstates_id']);
                echo "</td>";
                echo "</tr>";
 
@@ -891,7 +895,6 @@ class PluginOrderOrder_Item extends CommonDBTM {
           echo "<span id='show_billsActions$rand'>&nbsp;</span>";
          
       }
-      
 
       static function install(Migration $migration) {
       global $DB;

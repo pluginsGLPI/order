@@ -173,7 +173,7 @@ class PluginOrderReception extends CommonDBTM {
       $order_reference = new PluginOrderReference();
       $order_reference->getFromDB($this->fields["plugin_order_references_id"]);
       
-      $config = new PluginOrderConfig();
+      $config = PluginOrderConfig::getConfig();
       
       $canedit = $order_order->can($this->getOrdersID(), 'w') 
          && !$order_order->canUpdateOrder($this->getOrdersID()) 
@@ -629,7 +629,7 @@ class PluginOrderReception extends CommonDBTM {
    */
    static function generateAsset($options = array()) {
       // Retrieve configuration for generate assets feature
-      $config = new PluginOrderConfig();
+      $config = PluginOrderConfig::getConfig();
 
       if ($config->canGenerateAsset()) {
          // Automatic generate assets on delivery

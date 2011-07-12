@@ -80,6 +80,36 @@ class PluginOrderOrder extends CommonDBTM {
       return plugin_order_haveRight("validation", "w");
    }
    
+   function isDraft() {
+      $config = PluginOrderConfig::getConfig();
+      return ($this->getState() == $config->getDraftState());
+   }
+
+   function isWaitingForApproval() {
+      $config = PluginOrderConfig::getConfig();
+      return ($this->getState() == $config->getWaitingForApprovalState());
+   }
+
+   function isApproved() {
+      $config = PluginOrderConfig::getConfig();
+      return ($this->getState() == $config->getApprovedState());
+   }
+
+   function isPartiallyDelivered() {
+      $config = PluginOrderConfig::getConfig();
+      return ($this->getState() == $config->getPartiallyDeliveredState());
+   }
+
+   function isDelivered() {
+      $config = PluginOrderConfig::getConfig();
+      return ($this->getState() == $config->getDeliveredState());
+   }
+
+   function isCanceled() {
+      $config = PluginOrderConfig::getConfig();
+      return ($this->getState() == $config->getCanceledState());
+   }
+   
    function cleanDBonPurge() {
 
       $temp = new PluginOrderOrder_Item();
@@ -93,8 +123,7 @@ class PluginOrderOrder extends CommonDBTM {
       } else {
          $config   = new PluginOrderConfig();
          $this->getFromDB($orders_id);
-         return (in_array($this->getState(), 
-                          array ($config->getDraftState(), $config->getWaitingForApprovalState())));
+         return ($this->isDraft() || $this->isWaitingForApproval());
       }
    }
    
@@ -114,16 +143,16 @@ class PluginOrderOrder extends CommonDBTM {
    
    function canValidateOrder() {
       
-      $config = new PluginOrderConfig();
+      $config = PluginOrderConfig::getConfig();
       
       //If no validation process -> can validate if order is in draft state
       if (!$config->useValidation()) {
-         return ($this->getState()  == $config->getDraftState());
+         return $this->isDraft();
       } else {
          //Validation process is used
 
          //If order is canceled, cannot validate !
-         if ($this->getState() == $config->getCanceledState()) {
+         if ($this->isCanceled()) {
             return false;
          }
 
@@ -131,14 +160,13 @@ class PluginOrderOrder extends CommonDBTM {
          if (!$this->canValidate()) {
             return false;
          } else {
-            return (in_array($this->getState(), 
-                             array ($config->getDraftState(), $config->getWaitingForApprovalState())));
+            return ($this->isDraft() || $this->isWaitingForApproval());
          }
       }
    }
 
    function canCancelOrder() {
-      $config = new PluginOrderConfig();
+      $config = PluginOrderConfig::getConfig();
       //If order is canceled, cannot validate !
       if ($this->getState() == $config->getCanceledState()) {
          return false;
@@ -153,33 +181,32 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
    function canDoValidationRequest() {
-      $config = new PluginOrderConfig();
+      $config = PluginOrderConfig::getConfig();
       
       if (!$config->useValidation()) {
          return false;
       } else {
-         return ($this->getState() == $config->getDraftState());
+         return $this->isDraft();
       }
    }
 
    function canCancelValidationRequest() {
-      $config = new PluginOrderConfig();
+      $config = PluginOrderConfig::getConfig();
 
-      return ($this->getState() == $config->getWaitingForApprovalState());
+      return $this->isWaitingForApproval();
    }
 
    function canUndoValidation() {
-      $config = new PluginOrderConfig();
+      $config = PluginOrderConfig::getConfig();
 
       //If order is canceled, cannot validate !
-      if ($this->getState() == $config->getCanceledState()) {
+      if ($this->isCanceled()) {
          return false;
          
       }
 
       //If order is not validate, cannot undo validation !
-      if (in_array($this->getState(), array ($config->getDraftState(),
-                                              $config->getWaitingForApprovalState()))) {
+      if ($this->isDraft() || $this->isWaitingForApproval()) {
          return false;
          
       }
@@ -398,9 +425,8 @@ class PluginOrderOrder extends CommonDBTM {
     * 
     */
    function shouldBeAlreadyDelivered() {
-      $config = new PluginOrderConfig();
-      if (in_array($this->getState(), array($config->getApprovedState(), 
-                                            $config->getPartiallyDeliveredState()))) {
+      $config = PluginOrderConfig::getConfig();
+      if ($this->isApproved() || $this->isPartiallyDelivered()) {
          if (!is_null($this->fields['duedate']) 
             && (new DateTime($this->fields['duedate']) < new DateTime())) {
             return true;
@@ -416,7 +442,7 @@ class PluginOrderOrder extends CommonDBTM {
    
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
-      $config = new PluginOrderConfig();
+      $config = PluginOrderConfig::getConfig();
 
       if (!$this->canView()) {
          return false;
@@ -430,9 +456,7 @@ class PluginOrderOrder extends CommonDBTM {
          $this->getEmpty();
       }
 
-      $canedit = ($this->canUpdateOrder($ID) 
-                  && $this->can($ID, 'w') 
-                     && $this->getState() != $config->getCanceledState());
+      $canedit = ($this->canUpdateOrder($ID) && $this->can($ID, 'w') && !$this->isCanceled());
       $options['canedit'] = $canedit;
       
       // Displaying OVER BUDGET ALERT
@@ -495,7 +519,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['status'][0] . ": </td>";
       echo "<td>";
       if (!$this->getID()) {
-         $state = PluginOrderOrderState::DRAFT;
+         $state = $config->getDraftState();
          
       } else {
          $state = $this->fields["plugin_order_orderstates_id"];
@@ -810,7 +834,7 @@ class PluginOrderOrder extends CommonDBTM {
    function updateOrderStatus($orders_id, $status, $comments = '') {
       global $CFG_GLPI;
 
-      $config = new PluginOrderConfig();
+      $config = PluginOrderConfig::getConfig();
       
       $input["plugin_order_orderstates_id"] = $status;
       $input["id"]                          = $orders_id;
@@ -1275,6 +1299,26 @@ class PluginOrderOrder extends CommonDBTM {
       return true;
    }
    
+   function updateBillState($ID) {
+      $all_paied   = true;
+      $order_items = getAllDatasFromTable(getTableForItemType('PluginOrderOrder_Item'), 
+                                          "`plugin_order_orders_id`='$ID'");
+      foreach ($order_items as $item) {
+         if ($item['plugin_order_billstates_id'] == PluginOrderBillState::NOTPAIED) {
+            $all_paied = false;
+         }
+      }
+      
+      $order = new self();
+      $order->getFromDB($ID);
+      if($all_paied) {
+         $state = PluginOrderBillState::PAIED;
+      } else {
+         $state = PluginOrderBillState::NOTPAIED;
+      }
+      $order->update(array('id' => $ID, 'plugin_order_billstates_id' => $state));
+   }
+   
    function isOverBudget($ID){
       global $DB;
 
@@ -1285,8 +1329,8 @@ class PluginOrderOrder extends CommonDBTM {
 
       $total_HT = 0;
       foreach($DB->request($query) as $data) {
-         $PluginOrderOrder_Item     = new PluginOrderOrder_Item();
-         $prices = $PluginOrderOrder_Item->getAllPrices($data['id']);
+         $item      = new PluginOrderOrder_Item();
+         $prices    = $item->getAllPrices($data['id']);
          $total_HT += $prices["priceHT"] + $data['port_price'];
       }
 
@@ -1362,6 +1406,7 @@ class PluginOrderOrder extends CommonDBTM {
                `contacts_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_contacts (id)',
                `locations_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_locations (id)',
                `plugin_order_orderstates_id` int(11) NOT NULL default 1,
+               `plugin_order_billstates_id` int(11) NOT NULL default 1,
                `port_price` float NOT NULL default 0,
                `comment` text collate utf8_unicode_ci,
                `notepad` longtext collate utf8_unicode_ci,
@@ -1551,6 +1596,9 @@ class PluginOrderOrder extends CommonDBTM {
             $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_mailing`;") or die($DB->error());
          }
 
+         $migration->addField($table, 'plugin_order_billstates_id', "int(11) NOT NULL default 0");
+         $migration->migrationOneTable($table);
+         
          //Displayprefs
          $prefs = array(1 => 1, 2 => 2, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 10 => 10);
          foreach ($prefs as $num => $rank) {

@@ -39,11 +39,25 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderConfig extends CommonDBTM {
 
+   
+   static function getConfig($update = false) {
+      static $config = null;
+
+      if (is_null($config)) {
+         $config = new self();
+      }
+      if ($update) {
+         $config->getFromDB(1);
+      }
+      return $config;
+   }
+
    function __construct() {
       if (TableExists($this->getTable())) {
-         $this->getConfig();
+         $this->getFromDB(1);
       }
    }
+   
    static function getTypeName() {
       global $LANG;
 
@@ -217,10 +231,6 @@ class PluginOrderConfig extends CommonDBTM {
    }
    
    //----------------- Getters and setters -------------------//
-   
-   function getConfig(){
-      $this->getFromDB(1);
-   }
 
    function useValidation() {
       return $this->fields['use_validation'];

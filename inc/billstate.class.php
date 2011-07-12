@@ -39,6 +39,9 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderBillState extends CommonDropdown {
 
+   const NOTPAIED = 0;
+   const PAIED    = 1;
+
    static function getTypeName() {
       global $LANG;
 

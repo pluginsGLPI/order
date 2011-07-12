@@ -42,11 +42,13 @@ $config= new PluginOrderConfig();
 if (isset($_POST["update"])) {
 
    $config->update($_POST);
+   //Update singelton
+   PluginOrderConfig::getConfig(true);
    glpi_header($_SERVER['HTTP_REFERER']);
    
 } else {
 
-commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "menu");
+commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "config");
 
 $config->showConfigForm();
 
