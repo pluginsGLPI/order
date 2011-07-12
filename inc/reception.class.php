@@ -173,11 +173,9 @@ class PluginOrderReception extends CommonDBTM {
       $order_reference = new PluginOrderReference();
       $order_reference->getFromDB($this->fields["plugin_order_references_id"]);
       
-      $config = PluginOrderConfig::getConfig();
-      
       $canedit = $order_order->can($this->getOrdersID(), 'w') 
          && !$order_order->canUpdateOrder($this->getOrdersID()) 
-            && $order_order->getState() != $config->getCanceledState();
+            && !$order_order->isCanceled();
       
       echo "<input type='hidden' name='plugin_order_orders_id' value='" . 
          $this->getOrdersID() . "'>";
@@ -258,9 +256,8 @@ class PluginOrderReception extends CommonDBTM {
       global $DB, $CFG_GLPI, $LANG;
 
       $order_order      = new PluginOrderOrder();
-      $order_item = new PluginOrderOrder_Item();
+      $order_item       = new PluginOrderOrder_Item();
       $order_reference  = new PluginOrderReference();
-      $config                = new PluginOrderConfig;
       $order_order->getFromDB($plugin_order_orders_id);
       
       initNavigateListItems($this->getType(),
@@ -268,7 +265,7 @@ class PluginOrderReception extends CommonDBTM {
       
       $canedit = $order_order->can($plugin_order_orders_id, 'w') 
          && !$order_order->canUpdateOrder($plugin_order_orders_id) 
-            && $order_order->getState() != $config->getCanceledState();
+            && !$order_order->isCanceled();
       
       $result_ref = $order_item->queryDetail($plugin_order_orders_id);
       $numref     = $DB->numrows($result_ref);

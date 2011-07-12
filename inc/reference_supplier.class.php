@@ -125,8 +125,9 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       /* principal */
       $ong[1] = $LANG['title'][26];
       if ($this->fields['id'] > 0) {
-         if (haveRight("document", "r"))
+         if (haveRight("document", "r")) {
             $ong[4] = $LANG['Menu'][27];
+         }
          $ong[12] = $LANG['title'][38];
       }
       return $ong;
@@ -151,8 +152,9 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          $this->check(-1,'w',$input);
       }
       
-      if (strpos($_SERVER['PHP_SELF'],"reference_supplier"))
+      if (strpos($_SERVER['PHP_SELF'],"reference_supplier")) {
          $this->showTabs($options);
+      }
       $this->showFormHeader($options);
       
       $PluginOrderReference = new PluginOrderReference();

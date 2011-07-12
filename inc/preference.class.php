@@ -86,14 +86,13 @@ class PluginOrderPreference extends CommonDBTM {
    function showForm($ID){
       global $LANG,$CFG_GLPI;
       
-      $data=plugin_version_order();
+      $data = plugin_version_order();
       $this->getFromDB($ID);
       
-      $dir_template = GLPI_ROOT."/plugins/order/templates/";
+      $dir_template   = GLPI_ROOT."/plugins/order/templates/";
       $array_template = $this->getFiles($dir_template,"odt",$this->fields["template"]);
-      
-      $dir_sign = GLPI_ROOT."/plugins/order/signatures/";
-      $array_sign = $this->getFiles($dir_sign,"png",$this->fields["sign"]);
+      $dir_sign       = GLPI_ROOT."/plugins/order/signatures/";
+      $array_sign     = $this->getFiles($dir_sign,"png",$this->fields["sign"]);
       
       if (!empty($array_template)) {
       
@@ -105,8 +104,11 @@ class PluginOrderPreference extends CommonDBTM {
          
          echo "<select name='template'>";
          echo "<option value=''>".DROPDOWN_EMPTY_VALUE."</option>";
-         foreach ($array_template as $item)
-            echo "<option value='".$item[0]."' ".($item[0]==$this->fields["template"]?" selected ":"").">".$item[0]." - ".$item[1]."</option>";
+         foreach ($array_template as $item) {
+            echo "<option value='".$item[0]."' ".
+               ($item[0]==$this->fields["template"]?" selected ":"").">".
+                  $item[0]." - ".$item[1]."</option>";
+         }
             
          echo "</select></td></tr>";
          echo "<tr class='tab_bg_2'><td align='center'>".$LANG['plugin_order']['parser'][3]."</td>";
@@ -114,18 +116,23 @@ class PluginOrderPreference extends CommonDBTM {
          
          echo "<select name='sign'>";
          echo "<option value=''>".DROPDOWN_EMPTY_VALUE."</option>";
-         foreach ($array_sign as $item)
-            echo "<option value='".$item[0]."' ".($item[0]==$this->fields["sign"]?" selected ":"").">".$item[0]." - ".$item[1]."</option>";
+         foreach ($array_sign as $item) {
+            echo "<option value='".$item[0]."' ".
+               ($item[0]==$this->fields["sign"]?" selected ":"").">".
+                  $item[0]." - ".$item[1]."</option>";
+         }
             
          echo "</select></td></tr>";
          
          if (isset($this->fields["sign"]) && !empty($this->fields["sign"])) {
             echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
-            echo "<img src='".$CFG_GLPI["root_doc"]."/plugins/order/signatures/".$this->fields["sign"]."'>";
+            echo "<img src='".$CFG_GLPI["root_doc"]."/plugins/order/signatures/".
+               $this->fields["sign"]."'>";
             echo "</td></tr>";
          }
          
-         echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input type='hidden' name='id' value='".$ID."'>";
+         echo "<tr class='tab_bg_2'><td align='center' colspan='2'>"; 
+         echo "<input type='hidden' name='id' value='".$ID."'>";
          echo "<input type='submit' name='update' value='".$LANG['buttons'][2]."' class='submit' ></td>";
          echo "</tr>";
          
@@ -151,28 +158,20 @@ class PluginOrderPreference extends CommonDBTM {
             $filedate = convdate(date ("Y-m-d", filemtime($dir . $file)));
             $basename=explode('.', basename($filename));
             $extension = array_pop($basename);
-            if ($filename == ".." OR $filename == ".")
-            {
-            echo "";
-            }
-            else
-               {
-               if ($filetype == 'file' && $extension ==$ext)
-                  {
+            if ($filename == ".." OR $filename == ".") {
+               echo "";
+            } else {
+               if ($filetype == 'file' && $extension ==$ext) {
                   if ($ext == 'png') {
                      $name = array_shift($basename);
                      if (strtolower($name) == strtolower($_SESSION["glpiname"])) {
                         $array_file[] = array($filename,$filedate,$extension);
                      }
-                  }
-                  else
-                  {
-                  $array_file[] = array($filename,$filedate,$extension);
+                  } else {
+                     $array_file[] = array($filename,$filedate,$extension);
                   }
                   
-               }
-               elseif ($filetype == "dir")
-                  {
+               } elseif ($filetype == "dir") {
                   $array_dir[] = $filename;
                   }
                }

@@ -166,7 +166,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          
       echo "<td>";
       $link=getItemTypeFormURL('Supplier');
-      echo "<a href=\"" . $link. "?id=" . $supplier . "\">" . Dropdown::getDropdownName("glpi_suppliers", $supplier) . "</a></td>";
+      echo "<a href=\"" . $link. "?id=" . $supplier . "\">" . 
+         Dropdown::getDropdownName("glpi_suppliers", $supplier) . "</a></td>";
       echo "<input type='hidden' name='suppliers_id' value='".$supplier."'>";
       echo "</td>";
 

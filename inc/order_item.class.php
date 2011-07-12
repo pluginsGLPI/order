@@ -664,7 +664,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
             if ($data["states_id"] == PluginOrderOrder::ORDER_DEVICE_DELIVRED) {
                $delivery_status = 1;
             } else {
-               $is_delivered = 0;
+               $is_delivered    = 0;
             }
          }
       }
@@ -743,9 +743,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
       $config = new PluginOrderConfig;
       
       $order->getFromDB($ID);
-      $canedit = $order->can($ID, 'w') 
-                  && !$order->canUpdateOrder($ID) 
-                     && $order->getState() != $config->getCanceledState();
+      $canedit = $order->can($ID, 'w')  && !$order->canUpdateOrder($ID) && !$order->isCanceled();
       
       $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
                      "`glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, " .

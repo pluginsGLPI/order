@@ -116,10 +116,11 @@ class PluginOrderSurveySupplier extends CommonDBChild {
             "WHERE `plugin_order_orders_id` = '".$plugin_order_orders_id."' ";
       $result = $DB->query($query);
       $nb = $DB->numrows($result);
-      if ($nb)
+      if ($nb) {
          return $DB->result($result,0,"total")/5;
-      else
+      } else {
          return 0;
+      }
    }
    
    function getNotation($suppliers_id,$field) {
@@ -133,25 +134,29 @@ class PluginOrderSurveySupplier extends CommonDBChild {
                .getEntitiesRestrictRequest(" AND ","glpi_plugin_order_orders","entities_id",'',true);
       $result = $DB->query($query);
       $nb = $DB->numrows($result);
-      if ($nb)
+      if ($nb) {
          return $DB->result($result,0,"total")/$DB->result($result,0,"nb");
-      else
+      } else {
          return 0;
+      }
    }
    
    function showGlobalNotation($suppliers_id) {
       global $LANG,$DB;
       
-      $query = "SELECT `glpi_plugin_order_orders`.`id`, `glpi_plugin_order_orders`.`entities_id`, `glpi_plugin_order_orders`.`name`,`".$this->getTable()."`.`comment` 
-                  FROM `glpi_plugin_order_orders`,`".$this->getTable()."`
-                  WHERE `".$this->getTable()."`.`suppliers_id` = `glpi_plugin_order_orders`.`suppliers_id` 
-                  AND `".$this->getTable()."`.`plugin_order_orders_id` = `glpi_plugin_order_orders`.`id` 
-                  AND `glpi_plugin_order_orders`.`suppliers_id` = '".$suppliers_id."'"
-                  .getEntitiesRestrictRequest(" AND ","glpi_plugin_order_orders","entities_id",'',true);
-      $query.= " GROUP BY `".$this->table."`.`id`";
-      $result = $DB->query($query);
-      $nb = $DB->numrows($result);
-      $total = 0;
+      $query  = "SELECT `glpi_plugin_order_orders`.`id`, 
+                `glpi_plugin_order_orders`.`entities_id`, `glpi_plugin_order_orders`.`name`,
+                `".$this->getTable()."`.`comment` 
+                 FROM `glpi_plugin_order_orders`,`".$this->getTable()."`
+                 WHERE `".$this->getTable()."`.`suppliers_id` = `glpi_plugin_order_orders`.`suppliers_id` 
+                    AND `".$this->getTable()."`.`plugin_order_orders_id` = `glpi_plugin_order_orders`.`id` 
+                     AND `glpi_plugin_order_orders`.`suppliers_id` = '".$suppliers_id."'"
+                        .getEntitiesRestrictRequest(" AND ","glpi_plugin_order_orders",
+                                                    "entities_id",'',true);
+      $query   .= " GROUP BY `".$this->table."`.`id`";
+      $result   = $DB->query($query);
+      $nb       = $DB->numrows($result);
+      $total    = 0;
       $nb_order = 0;
       
       echo "<br><div class='center'>";
@@ -168,16 +173,16 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       
       if ($nb) {
          for ($i=0 ; $i <$nb ; $i++) {
-            $name = $DB->result($result,$i,"name");
-            $ID = $DB->result($result,$i,"id");
-            $comment = $DB->result($result,$i,"comment");
+            $name        = $DB->result($result,$i,"name");
+            $ID          = $DB->result($result,$i,"id");
+            $comment     = $DB->result($result,$i,"comment");
             $entities_id = $DB->result($result,$i,"entities_id");
-            $note = $this->getTotalNotation($ID);
+            $note        = $this->getTotalNotation($ID);
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo Dropdown::getDropdownName("glpi_entities",$entities_id);
             echo "</td>";
-            $link=getItemTypeFormURL('PluginOrderOrder');
+            $link = getItemTypeFormURL('PluginOrderOrder');
             echo "<td><a href=\"" . $link . "?id=" . $ID . "\">" . $name . "</a></td>";
             echo "<td>" . $note." / 10"."</td>";
             echo "<td>" . nl2br($comment)."</td>";
@@ -293,7 +298,8 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       $order = new PluginOrderOrder;
       $order->getFromDB($ID);
 
-      initNavigateListItems($this->getType(),$LANG['plugin_order'][7] ." = ". $order->fields["name"]);
+      initNavigateListItems($this->getType(), 
+                            $LANG['plugin_order'][7] ." = ". $order->fields["name"]);
 
       $candelete = $order->can($ID,'w');
       $query     = "SELECT * FROM `".$this->getTable()."` WHERE `plugin_order_orders_id` = '$ID' ";

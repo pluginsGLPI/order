@@ -319,13 +319,14 @@ class PluginOrderReference extends CommonDropdown {
    function defineMoreTabs($options=array()) {
       global $LANG;
       
-      $ong[1] = $LANG['title'][26];
+      $ong[1]       = $LANG['title'][26];
       if ($this->fields['id'] > 0) {
-         $ong[2] = $LANG['plugin_order'][11];
-         $ong[3] = $LANG['title'][37];
-         if (haveRight("document", "r"))
+         $ong[2]    = $LANG['plugin_order'][11];
+         $ong[3]    = $LANG['title'][37];
+         if (haveRight("document", "r")) {
             $ong[4] = $LANG['Menu'][27];
-         $ong[12] = $LANG['title'][38];
+         }
+         $ong[12]   = $LANG['title'][38];
       }
       return $ong;
    }
@@ -456,7 +457,7 @@ class PluginOrderReference extends CommonDropdown {
    function getAllItemsByType($itemtype, $entity, $types_id = 0, $models_id = 0) {
       global $DB;
 
-      $and = "";
+      $and  = "";
       $item = new $itemtype();
       
       if (file_exists(GLPI_ROOT."/inc/".strtolower($itemtype)."type.class.php")) {

@@ -121,7 +121,6 @@ class PluginOrderOrder extends CommonDBTM {
       if (!$orders_id) {
          return true;
       } else {
-         $config   = new PluginOrderConfig();
          $this->getFromDB($orders_id);
          return ($this->isDraft() || $this->isWaitingForApproval());
       }
@@ -142,9 +141,6 @@ class PluginOrderOrder extends CommonDBTM {
    }
    
    function canValidateOrder() {
-      
-      $config = PluginOrderConfig::getConfig();
-      
       //If no validation process -> can validate if order is in draft state
       if (!$config->useValidation()) {
          return $this->isDraft();
@@ -166,17 +162,10 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
    function canCancelOrder() {
-      $config = PluginOrderConfig::getConfig();
-      //If order is canceled, cannot validate !
-      if ($this->getState() == $config->getCanceledState()) {
+      //If order is canceled or if no right to cancel!
+      if ($this->isCanceled() || !$this->canCancel()) {
          return false;
       }
-
-      //If no right to cancel
-      if (!$this->canCancel()) {
-         return false;
-      }
-
       return true;
    }
 
@@ -191,14 +180,10 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
    function canCancelValidationRequest() {
-      $config = PluginOrderConfig::getConfig();
-
       return $this->isWaitingForApproval();
    }
 
    function canUndoValidation() {
-      $config = PluginOrderConfig::getConfig();
-
       //If order is canceled, cannot validate !
       if ($this->isCanceled()) {
          return false;
@@ -425,7 +410,6 @@ class PluginOrderOrder extends CommonDBTM {
     * 
     */
    function shouldBeAlreadyDelivered() {
-      $config = PluginOrderConfig::getConfig();
       if ($this->isApproved() || $this->isPartiallyDelivered()) {
          if (!is_null($this->fields['duedate']) 
             && (new DateTime($this->fields['duedate']) < new DateTime())) {
@@ -884,11 +868,8 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
    function needValidation($ID) {
-      $config = new PluginOrderConfig;
-      
       if ($ID > 0 && $this->getFromDB($ID)) {
-         return (in_array($this->getState(), array ($config->getDraftState(),
-                                                    $config->getWaitingForApprovalState())));
+         return ($this->isDraft() || $this->isWaitingForApproval());
       } else {
          return false;
       }
