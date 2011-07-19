@@ -886,6 +886,87 @@ class PluginOrderOrder_Item extends CommonDBTM {
           echo "<span id='show_billsActions$rand'>&nbsp;</span>";
          
       }
+      
+      function updateQuantity($post) {
+         global $DB;
+
+         $quantity = $this->getTotalQuantityByRefAndDiscount($_POST['plugin_order_orders_id'], 
+                                                             $_POST['old_plugin_order_references_id'],
+                                                             $_POST['old_price_taxfree'],
+                                                             $_POST['old_discount']);
+
+         if($_POST['quantity'] > $quantity) {
+            $datas = $this->queryRef($_POST['plugin_order_orders_id'], 
+                                     $_POST['old_plugin_order_references_id'], 
+                                     $_POST['old_price_taxfree'], 
+                                     $_POST['old_discount']);
+
+            $item = $DB->fetch_array($datas);
+            $this->getFromDB($item['id']);
+                                                      
+            $to_add  = $_POST['quantity'] - $quantity;
+
+            $this->addDetails($this->fields['plugin_order_references_id'], 
+                              $this->fields['itemtype'], 
+                              $this->fields['plugin_order_orders_id'], 
+                              $to_add, 
+                              $this->fields['price_taxfree'], 
+                              $this->fields['discount'], 
+                              $this->fields['plugin_order_ordertaxes_id']);
+         }
+         
+      }
+      
+      function updatePrice_taxfree($post) {
+         global $DB;
+         
+         $datas = $this->queryRef($_POST['plugin_order_orders_id'], 
+                                  $_POST['old_plugin_order_references_id'], 
+                                  $_POST['old_price_taxfree'], 
+                                  $_POST['old_discount']);
+
+         while ($item=$DB->fetch_array($datas)){
+            $this->getFromDB($item['id']);
+
+            $input                        = $this->fields;
+            $discount                     = $input['discount'];
+            $plugin_order_ordertaxes_id   = $input['plugin_order_ordertaxes_id'];
+
+            $input["price_taxfree"]       = $_POST['price_taxfree'];
+            $input["price_discounted"]    = $input["price_taxfree"] - ($input["price_taxfree"] * ($discount / 100));
+
+            $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $plugin_order_ordertaxes_id);
+            $input["price_ati"]  = $this->getPricesATI($input["price_discounted"], $taxe_name);
+            $this->update($input);
+         }
+      }
+      
+      function updateDiscount($post) {
+         global $DB;
+         
+         $price = (isset($_POST['price_taxfree']))
+                     ? $_POST['price_taxfree']
+                     : $_POST['old_price_taxfree'];
+
+         $datas = $this->queryRef($_POST['plugin_order_orders_id'], 
+                                  $_POST['old_plugin_order_references_id'], 
+                                  $price, 
+                                  $_POST['old_discount']);
+
+         while ($item=$DB->fetch_array($datas)){
+            $this->getFromDB($item['id']);
+
+            $input                        = $this->fields;
+            $plugin_order_ordertaxes_id   = $input['plugin_order_ordertaxes_id'];
+
+            $input["discount"]            = $_POST['discount'];
+            $input["price_discounted"]    = $price - ($price * ($_POST['discount'] / 100));
+
+            $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $plugin_order_ordertaxes_id);
+            $input["price_ati"]  = $this->getPricesATI($input["price_discounted"], $taxe_name);
+            $this->update($input);
+         }
+      }
 
       static function install(Migration $migration) {
       global $DB;
