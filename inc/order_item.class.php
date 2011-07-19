@@ -371,10 +371,28 @@ class PluginOrderOrder_Item extends CommonDBTM {
             echo "<tr class='tab_bg_1 center'>";
 
             echo "<td><div id='viewaccept$rand' style='display:none;'>";
-            echo "<input type='submit' onclick=\"return confirm('" . 
+            echo "<p><input type='submit' onclick=\"return confirm('" . 
                $LANG['plugin_order']['detail'][41] . "');\" name='update_item' value=\"".
-                  $LANG['buttons'][14]."\" class='submit'>";
+                  $LANG['buttons'][14]."\" class='submit'></p>";
+            echo "<br /><p><input type='button' onclick=\"hideForm$rand();\" value=\"".
+                  $LANG['buttons'][34]."\" class='submit'></p>";
             echo "</div></td>";
+            
+            if($canedit) {
+               echo "<script type='text/javascript' >\n";
+               echo "function hideForm$rand() {\n";
+               echo "Ext.get('quantity$rand').setDisplayed('block');";
+               echo "Ext.get('pricetaxfree$rand').setDisplayed('block');";
+               echo "Ext.get('discount$rand').setDisplayed('block');";
+
+               echo "Ext.select('#viewquantity$rand input').remove();";
+               echo "Ext.select('#viewpricetaxfree$rand input').remove();";
+               echo "Ext.select('#viewdiscount$rand input').remove();";
+
+               echo "Ext.get('viewaccept$rand').setDisplayed('none');";
+               echo "}\n";
+               echo "</script>\n";
+            }
             
             /* quantity */
             $quantity = $this->getTotalQuantityByRefAndDiscount($plugin_order_orders_id, $refID, 
