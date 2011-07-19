@@ -460,8 +460,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
                                'size'      => 8,
                                'name'      => 'price_taxfree',
                                'data'      => rawurlencode($price_taxfree));
-               ajaxUpdateItemJsCode("viewpricetaxfree$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params,
-                                    false);
+               ajaxUpdateItemJsCode("viewpricetaxfree$rand", 
+                                    $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params, false);
                echo "}";
                echo "</script>\n";
                echo "<div id='pricetaxfree$rand' class='center' onClick='showPricetaxfree$rand()'>\n";
@@ -485,8 +485,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
                                'size'      => 8,
                                'name'      => 'discount',
                                'data'      => rawurlencode($discount));
-               ajaxUpdateItemJsCode("viewdiscount$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params,
-                                    false);
+               ajaxUpdateItemJsCode("viewdiscount$rand", 
+                                    $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params, false);
                echo "}";
                echo "</script>\n";
                echo "<div id='discount$rand' class='center' onClick='showDiscount$rand()'>\n";
@@ -609,38 +609,38 @@ class PluginOrderOrder_Item extends CommonDBTM {
       }
    }
 
-   function getTotalQuantityByRefAndDiscount($plugin_order_orders_id, $plugin_order_references_id,
+   function getTotalQuantityByRefAndDiscount($orders_id, $references_id,
                                              $price_taxfree, $discount) {
       global $DB;
 
       $query = "SELECT COUNT(*) AS quantity
                 FROM `".$this->getTable()."`
-                WHERE  `plugin_order_orders_id` = '$plugin_order_orders_id'
-                  AND `plugin_order_references_id` = '$plugin_order_references_id'
+                WHERE  `plugin_order_orders_id` = '$orders_id'
+                  AND `plugin_order_references_id` = '$references_id'
                      AND `price_taxfree` LIKE '$price_taxfree'
                         AND `discount` LIKE '$discount'";
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'quantity'));
    }
 
-   function getTotalQuantityByRef($plugin_order_orders_id, $plugin_order_references_id) {
+   function getTotalQuantityByRef($orders_id, $references_id) {
       global $DB;
 
       $query = "SELECT COUNT(*) AS quantity
                 FROM `".$this->getTable()."`
-                WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
-                   AND `plugin_order_references_id` = '$plugin_order_references_id' ";
+                WHERE `plugin_order_orders_id` = '$orders_id'
+                   AND `plugin_order_references_id` = '$references_id' ";
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'quantity'));
    }
 
-   function getDeliveredQuantity($plugin_order_orders_id, $plugin_order_references_id,
+   function getDeliveredQuantity($orders_id, $references_id,
                                  $price_taxfree, $discount) {
       global $DB;
       $query = "SELECT COUNT(*) AS deliveredquantity
                 FROM `".$this->getTable()."`
-                WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
-                   AND `plugin_order_references_id` = '$plugin_order_references_id'
+                WHERE `plugin_order_orders_id` = '$orders_id'
+                   AND `plugin_order_references_id` = '$references_id'
                       AND `price_taxfree` LIKE '$price_taxfree'
                          AND `discount` LIKE '$discount'
                             AND `states_id` != '0' ";
@@ -648,17 +648,17 @@ class PluginOrderOrder_Item extends CommonDBTM {
       return ($DB->result($result, 0, 'deliveredquantity'));
    }
 
-   function updateDelivryStatus($plugin_order_orders_id) {
+   function updateDelivryStatus($orders_id) {
       global $DB;
 
       $config = PluginOrderConfig::getConfig();
       $order  = new PluginOrderOrder();
 
-      $order->getFromDB($plugin_order_orders_id);
+      $order->getFromDB($orders_id);
 
       $query = "SELECT `states_id`
                 FROM `".$this->getTable()."`
-                WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'";
+                WHERE `plugin_order_orders_id` = '$orders_id'";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
       
@@ -676,23 +676,23 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
       //Are all items delivered ?
       if ($is_delivered && !$order->isDelivered()) {
-          $order->updateOrderStatus($plugin_order_orders_id, $config->getDeliveredState());
+          $order->updateOrderStatus($orders_id, $config->getDeliveredState());
          //At least one item is delivered
       } else {
          if ($delivery_status) {
-            $order->updateOrderStatus($plugin_order_orders_id, 
+            $order->updateOrderStatus($orders_id, 
                                       $config->getPartiallyDeliveredState());
          }
       }
    }
 
-   function getAllPrices($plugin_order_orders_id) {
+   function getAllPrices($orders_id) {
       global $DB;
 
       $query = "SELECT SUM(`price_ati`) AS priceTTC, SUM(`price_discounted`) AS priceHT,
                      SUM(`price_ati` - `price_discounted`) as priceTVA
                 FROM `".$this->getTable()."`
-                WHERE `plugin_order_orders_id` = '$plugin_order_orders_id' ";
+                WHERE `plugin_order_orders_id` = '$orders_id' ";
       $result = $DB->query($query);
       return $DB->fetch_array($result);
    }
@@ -1029,7 +1029,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
          //1.1.2
          if (TableExists("glpi_plugin_order_detail")) {
-            $migration->addField("glpi_plugin_order_detail", "delivery_status", "int(1) NOT NULL default '0'");
+            $migration->addField("glpi_plugin_order_detail", "delivery_status", 
+                                 "int(1) NOT NULL default '0'");
             $migration->addField("glpi_plugin_order_detail", "delivery_comments", "TEXT");
             $migration->migrationOneTable("glpi_plugin_order_detail");
 
@@ -1086,7 +1087,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
          $migration->migrationOneTable($table);
          
          //Forward entities_id and is_recursive into table glpi_plugin_order_orders_items
-         $query = "SELECT `go`.`entities_id` as entities_id , `go`.`is_recursive` as is_recursive, `goi`.`id` as items_id
+         $query = "SELECT `go`.`entities_id` as entities_id ,
+                          `go`.`is_recursive` as is_recursive, `goi`.`id` as items_id
                    FROM `glpi_plugin_order_orders` as go, `$table` as `goi` 
                    WHERE `goi`.`plugin_order_orders_id`=`go`.`id`";
          foreach($DB->request($query) as $data) {

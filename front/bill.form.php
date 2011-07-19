@@ -28,7 +28,7 @@
  --------------------------------------------------------------------------
 // ----------------------------------------------------------------------
 // Original Authors of file: 
-// NOUH Walid & FONTAN Benjamin & CAILLAUD Xavier & François Legastelois
+// NOUH Walid
 // Purpose of file: 
 // ----------------------------------------------------------------------
 // ---------------------------------------------------------------------- */
@@ -44,7 +44,7 @@ if (isset($_POST['action'])) {
          if (isset ($_POST["item"])) {
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
-                  $tmp = $_POST;
+                  $tmp       = $_POST;
                   $tmp['id'] = $key;
                   $order_item->update($tmp);
                }
@@ -52,6 +52,7 @@ if (isset($_POST['action'])) {
          }
          break;
    }
+   PluginOrderOrder::updateBillState($order_item->fields['plugin_order_orders_id']);
    glpi_header($_SERVER["HTTP_REFERER"]);
 }
 $dropdown = new PluginOrderBill();

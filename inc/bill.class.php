@@ -238,6 +238,7 @@ class PluginOrderBill extends CommonDropdown {
       $query.= "` WHERE `plugin_order_bills_id` = '$bills_id'";
       $query.= getEntitiesRestrictRequest(" AND", getTableForItemType("PluginOrderOrder_Item"), 
                                           "entities_id", $bill->getEntityID(), true);
+      $query.= "GROUP BY `itemtype`";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
       
@@ -249,14 +250,14 @@ class PluginOrderBill extends CommonDropdown {
 
          echo "<tr><th>".$LANG['common'][17]."</th>";
          echo "<th>".$LANG['entity'][0]."</th>";
-         echo "<th>".$LANG['plugin_order'][7]."</th>";
          echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
          echo "<th>".$LANG['state'][0]."</th>";
          echo "<th>".$LANG['plugin_order']['generation'][9]."</th>";
          echo "</tr>";
 
-
-         $num = 0;
+         $old_itemtype = '';
+         $num          = 0;
+         
          while ($data = $DB->fetch_array($result)) {
    
             if (!class_exists($data['itemtype'])) {
@@ -264,48 +265,31 @@ class PluginOrderBill extends CommonDropdown {
             }
             $item = new $data['itemtype']();
             if ($item->canView()) {
-               if ($number > $_SESSION['glpilist_limit']) {
-                  echo "<tr class='tab_bg_1'>";
-                  echo "<td class='center'>".$item->getTypeName()."&nbsp;:&nbsp;</td>";
-                  echo "<td class='center' colspan='2'>";
-                  echo "<a href='". $item->getSearchURL() . "?" .
-                        rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$bills_id) . "&" .
-                        rawurlencode("field[0]") . "=50&sort=80&order=ASC&is_deleted=0&start=0". "'>" .
-                        $LANG['reports'][57]."</a></td>";
-                  echo "<td class='center'>-</td><td class='center'>-</td><td class='center'>-</td></tr>";
-               } else {
-                  $ID = "";
-                  if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                       $ID = " (".$data["id"].")";
-                  }
-                  $name = NOT_AVAILABLE;
-                  if ($item->getFromDB($data["id"])) {
-                       $name = $item->getLink();
-                  }
-                  echo "<tr class='tab_bg_1'>";
-                  echo "<td class='center top'>".$item->getTypeName()."</td>";
-                  $order = new PluginOrderOrder();
-                  $order->getFromDB($data["plugin_order_orders_id"]);
-                  echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
-                                                                       $data["entities_id"]);
-                  if ($order->canView()) {
-                     echo "<td class='center'><a href='".$order->getLinkURL()."'>";
-                     echo $order->getName()."</a></td>";
-                  } else {
-                     echo "<td class='center'>".$order->getName(true)."</td>";
-                  }
-                  $reference = new PluginOrderReference();
-                  $reference->getFromDB($data["plugin_order_references_id"]);
-                  if ($reference->canView()) {
-                     echo "<td class='center'><a href='".$reference->getLinkURL()."'>";
-                     echo $reference->getName()."</a></td>";
-                  } else {
-                     echo "<td class='center'>".$reference->getName(true)."</td>";
-                  }
-                  echo "</td></tr>";
-                  echo "<td class='center'>".Dropdown::getDropdownName("glpi_plugin_order_deliverystates",
-                                                                       $data["plugin_order_deliverystates_id"]);
+               if ($old_itemtype != $data['itemtype']) {
+                  echo $item->getTypeName()."&nbsp;:&nbsp;"; 
                }
+               $ID = "";
+               if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+                    $ID = " (".$data["id"].")";
+               }
+               $name = NOT_AVAILABLE;
+               if ($item->getFromDB($data["id"])) {
+                    $name = $item->getLink();
+               }
+
+               echo "<td class='center top'>".$item->getTypeName()."</td>";
+               $reference = new PluginOrderReference();
+               $reference->getFromDB($data["plugin_order_references_id"]);
+               if ($reference->canView()) {
+                  echo "<td class='center'><a href='".$reference->getLinkURL()."'>";
+                  echo $reference->getName()."</a></td>";
+               } else {
+                  echo "<td class='center'>".$reference->getName(true)."</td>";
+               }
+               echo "</td>";
+               echo "<td class='center'>".Dropdown::getDropdownName("glpi_plugin_order_deliverystates",
+                                                                    $data["plugin_order_deliverystates_id"]);
+               echo "</tr>";
             }
          }
       }

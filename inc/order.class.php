@@ -1281,19 +1281,19 @@ class PluginOrderOrder extends CommonDBTM {
       return true;
    }
    
-   function updateBillState($ID) {
-      $all_PAID   = true;
+   static function updateBillState($ID) {
+      $all_paid   = true;
       $order_items = getAllDatasFromTable(getTableForItemType('PluginOrderOrder_Item'), 
                                           "`plugin_order_orders_id`='$ID'");
       foreach ($order_items as $item) {
          if ($item['plugin_order_billstates_id'] == PluginOrderBillState::NOTPAID) {
-            $all_PAID = false;
+            $all_paid = false;
          }
       }
       
       $order = new self();
       $order->getFromDB($ID);
-      if($all_PAID) {
+      if($all_paid) {
          $state = PluginOrderBillState::PAID;
       } else {
          $state = PluginOrderBillState::NOTPAID;
