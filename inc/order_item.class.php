@@ -555,6 +555,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
                // Compute for detail_hideForm javascript function
                $hideForm.="Ext.get('detail_pricetaxfree$rand').setDisplayed('block');\n";
                $hideForm.="Ext.select('#detail_viewpricetaxfree$rand input').remove();\n";
+               //$hideForm.="Ext.get('detail_tva$rand').setDisplayed('block');\n";
+               //$hideForm.="Ext.select('#detail_viewtva$rand input').remove();\n";
                $hideForm.="Ext.get('detail_discount$rand').setDisplayed('block');\n";
                $hideForm.="Ext.select('#detail_viewdiscount$rand input').remove();\n";
 
@@ -689,7 +691,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
                echo "&nbsp;<input type='button' onclick=\"detail_hideForm$global_rand();\" 
                      value=\"" . $LANG['buttons'][34] . "\" class='submit'>";
 
-               echo "</div>"
+               echo "</div>";
                echo "</td>";
                
                echo "</table>";
