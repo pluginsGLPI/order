@@ -226,17 +226,62 @@ else if (isset ($_POST["undovalidation"])) {
    }
 
    if(isset($_POST['price_taxfree'])) {
-      $pluginOrderOrder_Item->updatePrice_taxfree($_POST);
+      $datas = $pluginOrderOrder_Item->queryRef( $_POST['plugin_order_orders_id'], 
+                                                 $_POST['old_plugin_order_references_id'], 
+                                                 $_POST['old_price_taxfree'], 
+                                                 $_POST['old_discount']);
+      while ($item=$DB->fetch_array($datas)){
+         $input = array( 'item_id'        => $item['id'],
+                         'price_taxfree'  => $_POST['price_taxfree']);
+         $pluginOrderOrder_Item->updatePrice_taxfree($input);
+      }
    }
 
    if(isset($_POST['discount'])) {
       if ($_POST["discount"] < 0 || $_POST["discount"] > 100) {
          addMessageAfterRedirect($LANG['plugin_order']['detail'][33], false, ERROR);
       } else {
-         $pluginOrderOrder_Item->updateDiscount($_POST);
+         
+         $price = (isset($_POST['price_taxfree'])) ? $_POST['price_taxfree'] : $_POST['old_price_taxfree'];
+         
+         $datas = $pluginOrderOrder_Item->queryRef( $_POST['plugin_order_orders_id'], 
+                                                    $_POST['old_plugin_order_references_id'], 
+                                                    $price, 
+                                                    $_POST['old_discount']);
+         while ($item=$DB->fetch_array($datas)){
+            $input = array( 'item_id'  => $item['id'],
+                            'discount' => $_POST['discount'],
+                            'price'    => $price);
+            $pluginOrderOrder_Item->updateDiscount($input);
+         }
       }
    }
  
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset ($_POST["update_detail_item"])) {
+
+   if(isset($_POST['detail_price_taxfree'])) {
+      foreach($_POST['detail_price_taxfree'] as $item_id => $price) {
+         $input = array( 'item_id'        => $item_id,
+                         'price_taxfree'  => $price);
+         $pluginOrderOrder_Item->updatePrice_taxfree($input);
+      }
+   }
+   
+   if(isset($_POST['detail_discount'])) {
+      foreach($_POST['detail_discount'] as $item_id => $discount) {
+
+         $price = (isset($_POST['detail_price_taxfree'])) 
+                     ? $_POST['detail_price_taxfree'][$item_id] 
+                     : $_POST['detail_old_price_taxfree'][$item_id];
+                     
+         $input = array( 'item_id'  => $item_id,
+                         'discount' => $discount,
+                         'price'    => $price);
+         $pluginOrderOrder_Item->updateDiscount($input);
+      }
+   }
+   
    glpi_header($_SERVER['HTTP_REFERER']);
 } else {
    $pluginOrderOrder->checkGlobal("r");

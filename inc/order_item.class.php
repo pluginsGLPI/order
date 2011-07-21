@@ -338,6 +338,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
       while ($data_ref=$DB->fetch_array($result_ref)){
 
+         $global_rand = mt_rand();
+
          echo "<div class='center'>";
          echo "<form method='post' name='order_updatedetail_form$rand' id='order_updatedetail_form$rand'  " .
                   "action='" . getItemTypeFormURL('PluginOrderOrder') . "'>";
@@ -542,9 +544,22 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
             $result = $DB->query($query);
             $num    = $DB->numrows($result);
-            
+
+            // Initialize for detail_hideForm javascript function
+            $hideForm = "";
+
             while ($data=$DB->fetch_array($result)){
                
+               $rand = mt_rand();
+               
+               // Compute for detail_hideForm javascript function
+               $hideForm.="Ext.get('detail_pricetaxfree$rand').setDisplayed('block');\n";
+               $hideForm.="Ext.select('#detail_viewpricetaxfree$rand input').remove();\n";
+               //$hideForm.="Ext.get('detail_tva$rand').setDisplayed('block');\n";
+               //$hideForm.="Ext.select('#detail_viewtva$rand input').remove();\n";
+               $hideForm.="Ext.get('detail_discount$rand').setDisplayed('block');\n";
+               $hideForm.="Ext.select('#detail_viewdiscount$rand input').remove();\n";
+
                echo "<tr class='tab_bg_1'>";
                if ($canedit){
                   echo "<td width='10'>";
@@ -563,16 +578,70 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
                /* reference */
                echo "<td align='center'>";
+               echo "<input type='hidden' name='detail_old_plugin_order_references_id[".$data["IDD"]."]' 
+                           value='" . $data["id"] . "'>";
                echo $reference->getReceptionReferenceLink($data);
                echo "</td>";
-               echo "<td align='center'>".formatNumber($data["price_taxfree"])."</td>";
+               
+               if($canedit) {
+                  echo "<td align='center'>";
+                  echo "<input type='hidden' name='detail_old_price_taxfree[".$data["IDD"]."]' 
+                              value='" . $data["price_taxfree"] . "'>";
+                  echo "<script type='text/javascript' >\n";
+                  echo "function showDetailPricetaxfree$rand() {\n";
+                  echo "Ext.get('detail_pricetaxfree$rand').setDisplayed('none');";
+                  echo "Ext.get('detail_viewaccept$global_rand').setDisplayed('block');";
+                  $params = array('maxlength' => 15,
+                                  'size'      => 8,
+                                  'name'      => 'detail_price_taxfree['.$data["IDD"].']',
+                                  'data'      => rawurlencode($data["price_taxfree"]));
+                  ajaxUpdateItemJsCode("detail_viewpricetaxfree$rand", 
+                                       $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params, false);
+                  echo "}";
+                  echo "</script>\n";
+                  echo "<div id='detail_pricetaxfree$rand' class='center' 
+                           onClick='showDetailPricetaxfree$rand()'>\n";
+                  echo formatNumber($data["price_taxfree"]);
+                  echo "</div>\n";
+                  echo "<div id='detail_viewpricetaxfree$rand'>\n";
+                  echo "</div>\n";
+                  echo "</td>";
+               }else{
+                  echo "<td align='center'>" . formatNumber($data["price_taxfree"]) . "</td>";
+               }
+               
                /* taxe */
                echo "<td align='center'>";
                echo Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTaxe"), 
-                                                                  $data["plugin_order_ordertaxes_id"]);
+                                                               $data["plugin_order_ordertaxes_id"]);
                echo "</td>";
                /* reduction */
-               echo "<td align='center'>".formatNumber($data["discount"])."</td>";
+               if($canedit) {
+                  echo "<td align='center'>";
+                  echo "<input type='hidden' name='detail_old_discount[".$data["IDD"]."]' 
+                              value='" . $data["discount"] . "'>";
+                  echo "<script type='text/javascript' >\n";
+                  echo "function showDetailDiscount$rand() {\n";
+                  echo "Ext.get('detail_discount$rand').setDisplayed('none');";
+                  echo "Ext.get('detail_viewaccept$global_rand').setDisplayed('block');";
+                  $params = array('maxlength' => 15,
+                                  'size'      => 8,
+                                  'name'      => 'detail_discount['.$data["IDD"].']',
+                                  'data'      => rawurlencode($data["discount"]));
+                  ajaxUpdateItemJsCode("detail_viewdiscount$rand", 
+                                       $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params, false);
+                  echo "}";
+                  echo "</script>\n";
+                  echo "<div id='detail_discount$rand' class='center' 
+                           onClick='showDetailDiscount$rand()'>\n";
+                  echo formatNumber($data["discount"]);
+                  echo "</div>\n";
+                  echo "<div id='detail_viewdiscount$rand'>\n";
+                  echo "</div>\n";
+                  echo "</td>";
+               }else{
+                  echo "<td align='center'>" . formatNumber($data["discount"]) . "</td>";
+               }
                /* price with reduction */
                echo "<td align='center'>".formatNumber($data["price_discounted"])."</td>";
                /* price ati */
@@ -583,6 +652,16 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
             }
             echo "</table>";
+            
+            if($canedit) {
+               echo "<script type='text/javascript' >\n";
+               echo "function detail_hideForm$global_rand() {\n";
+               echo $hideForm;
+               echo "Ext.get('detail_viewaccept$global_rand').setDisplayed('none');";
+               echo "}\n";
+               echo "</script>\n";
+            }
+            
             if ($canedit) {
                
                echo "<div class='center'>";
@@ -595,11 +674,26 @@ class PluginOrderOrder_Item extends CommonDBTM {
                echo "<td>/</td><td class='center'>"; 
                echo "<a onclick= \"if ( unMarkCheckboxes('order_detail_form$rand') ) " .
                       " return false;\" href='#'>".$LANG['buttons'][19]."</a>";
-               echo "</td><td align='left' width='80%'>";
+               echo "</td><td align='left'>";
                echo "<input type='submit' onclick=\"return confirm('" . 
                   $LANG['plugin_order']['detail'][36] . "')\" name='delete_item' value=\"".
                      $LANG['buttons'][6]."\" class='submit'>";
                echo "</td>";
+               
+               // Edit buttons 
+               echo "<td align='left' width='80%'>";
+               echo "<div id='detail_viewaccept$global_rand' style='display:none;'>";
+
+               echo "&nbsp;<input type='submit' onclick=\"return confirm('" . 
+                  $LANG['plugin_order']['detail'][41] . "');\" name='update_detail_item' 
+                     value=\"". $LANG['buttons'][14] . "\" class='submit'>&nbsp;";
+                     
+               echo "&nbsp;<input type='button' onclick=\"detail_hideForm$global_rand();\" 
+                     value=\"" . $LANG['buttons'][34] . "\" class='submit'>";
+
+               echo "</div>"
+               echo "</td>";
+               
                echo "</table>";
                echo "</div>";
             }
@@ -908,21 +1002,21 @@ class PluginOrderOrder_Item extends CommonDBTM {
       function updateQuantity($post) {
          global $DB;
 
-         $quantity = $this->getTotalQuantityByRefAndDiscount($_POST['plugin_order_orders_id'], 
-                                                             $_POST['old_plugin_order_references_id'],
-                                                             $_POST['old_price_taxfree'],
-                                                             $_POST['old_discount']);
+         $quantity = $this->getTotalQuantityByRefAndDiscount($post['plugin_order_orders_id'], 
+                                                             $post['old_plugin_order_references_id'],
+                                                             $post['old_price_taxfree'],
+                                                             $post['old_discount']);
 
-         if($_POST['quantity'] > $quantity) {
-            $datas = $this->queryRef($_POST['plugin_order_orders_id'], 
-                                     $_POST['old_plugin_order_references_id'], 
-                                     $_POST['old_price_taxfree'], 
-                                     $_POST['old_discount']);
+         if($post['quantity'] > $quantity) {
+            $datas = $this->queryRef($post['plugin_order_orders_id'], 
+                                     $post['old_plugin_order_references_id'], 
+                                     $post['old_price_taxfree'], 
+                                     $post['old_discount']);
 
             $item = $DB->fetch_array($datas);
             $this->getFromDB($item['id']);
-                                                      
-            $to_add  = $_POST['quantity'] - $quantity;
+     
+            $to_add  = $post['quantity'] - $quantity;
 
             $this->addDetails($this->fields['plugin_order_references_id'], 
                               $this->fields['itemtype'], 
@@ -937,53 +1031,35 @@ class PluginOrderOrder_Item extends CommonDBTM {
       
       function updatePrice_taxfree($post) {
          global $DB;
+
+         $this->getFromDB($post['item_id']);
          
-         $datas = $this->queryRef($_POST['plugin_order_orders_id'], 
-                                  $_POST['old_plugin_order_references_id'], 
-                                  $_POST['old_price_taxfree'], 
-                                  $_POST['old_discount']);
+         $input = $this->fields;
+         $discount                     = $input['discount'];
+         $plugin_order_ordertaxes_id   = $input['plugin_order_ordertaxes_id'];
 
-         while ($item=$DB->fetch_array($datas)){
-            $this->getFromDB($item['id']);
+         $input["price_taxfree"]       = $post['price_taxfree'];
+         $input["price_discounted"]    = $input["price_taxfree"] - ($input["price_taxfree"] * ($discount / 100));
 
-            $input                        = $this->fields;
-            $discount                     = $input['discount'];
-            $plugin_order_ordertaxes_id   = $input['plugin_order_ordertaxes_id'];
-
-            $input["price_taxfree"]       = $_POST['price_taxfree'];
-            $input["price_discounted"]    = $input["price_taxfree"] - ($input["price_taxfree"] * ($discount / 100));
-
-            $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $plugin_order_ordertaxes_id);
-            $input["price_ati"]  = $this->getPricesATI($input["price_discounted"], $taxe_name);
-            $this->update($input);
-         }
+         $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $plugin_order_ordertaxes_id);
+         $input["price_ati"]  = $this->getPricesATI($input["price_discounted"], $taxe_name);
+         $this->update($input);
       }
       
       function updateDiscount($post) {
          global $DB;
          
-         $price = (isset($_POST['price_taxfree']))
-                     ? $_POST['price_taxfree']
-                     : $_POST['old_price_taxfree'];
+         $this->getFromDB($post['item_id']);
 
-         $datas = $this->queryRef($_POST['plugin_order_orders_id'], 
-                                  $_POST['old_plugin_order_references_id'], 
-                                  $price, 
-                                  $_POST['old_discount']);
+         $input                        = $this->fields;
+         $plugin_order_ordertaxes_id   = $input['plugin_order_ordertaxes_id'];
 
-         while ($item=$DB->fetch_array($datas)){
-            $this->getFromDB($item['id']);
+         $input["discount"]            = $post['discount'];
+         $input["price_discounted"]    = $post['price'] - ($post['price'] * ($post['discount'] / 100));
 
-            $input                        = $this->fields;
-            $plugin_order_ordertaxes_id   = $input['plugin_order_ordertaxes_id'];
-
-            $input["discount"]            = $_POST['discount'];
-            $input["price_discounted"]    = $price - ($price * ($_POST['discount'] / 100));
-
-            $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $plugin_order_ordertaxes_id);
-            $input["price_ati"]  = $this->getPricesATI($input["price_discounted"], $taxe_name);
-            $this->update($input);
-         }
+         $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $plugin_order_ordertaxes_id);
+         $input["price_ati"]  = $this->getPricesATI($input["price_discounted"], $taxe_name);
+         $this->update($input);
       }
 
       static function install(Migration $migration) {
