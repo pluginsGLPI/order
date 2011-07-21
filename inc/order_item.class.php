@@ -555,8 +555,6 @@ class PluginOrderOrder_Item extends CommonDBTM {
                // Compute for detail_hideForm javascript function
                $hideForm.="Ext.get('detail_pricetaxfree$rand').setDisplayed('block');\n";
                $hideForm.="Ext.select('#detail_viewpricetaxfree$rand input').remove();\n";
-               //$hideForm.="Ext.get('detail_tva$rand').setDisplayed('block');\n";
-               //$hideForm.="Ext.select('#detail_viewtva$rand input').remove();\n";
                $hideForm.="Ext.get('detail_discount$rand').setDisplayed('block');\n";
                $hideForm.="Ext.select('#detail_viewdiscount$rand input').remove();\n";
 
