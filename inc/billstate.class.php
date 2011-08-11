@@ -48,6 +48,17 @@ class PluginOrderBillState extends CommonDropdown {
       return $LANG['plugin_order']['bill'][2];
    }
 
+   function pre_deleteItem() {
+      global $LANG;
+      if ($this->getID() <= self::CANCELED ) {
+         addMessageAfterRedirect($LANG['plugin_order']['status'][15].": ".$this->fields['name'], 
+                                 false, ERROR);
+         return false;
+      } else {
+         return true;
+      }
+   }
+
    function canCreate() {
       return plugin_order_haveRight('bill', 'w');
    }
@@ -72,7 +83,7 @@ class PluginOrderBillState extends CommonDropdown {
    }
    
    static function install(Migration $migration) {
-      global $DB;
+      global $DB, $LANG;
       
       $table = getTableForItemType(__CLASS__);
       if (!TableExists($table)) {
@@ -85,6 +96,14 @@ class PluginOrderBillState extends CommonDropdown {
                  KEY `name` (`name`)
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die ($DB->error());
+      }
+      $state = new self();
+      foreach (array(self::PAID     => $LANG['plugin_order']['status'][16],
+                     self::NOTPAID  => $LANG['plugin_order']['status'][17]) 
+               as $id => $label) {
+         if (!countElementsInTable($table, "`id`='$id'")) {
+            $state->add(array('id' => $id, 'name' => addslashes_deep($label)));
+         }
       }
    }
    

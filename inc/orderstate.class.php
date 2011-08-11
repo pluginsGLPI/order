@@ -46,6 +46,7 @@ class PluginOrderOrderState extends CommonDropdown {
    const BEING_DELIVERING     = 4;
    const DELIVERED            = 5;
    const CANCELED             = 6;
+   const PAID                 = 7;
 
    static function getTypeName() {
       global $LANG;
@@ -97,7 +98,8 @@ class PluginOrderOrderState extends CommonDropdown {
                       3 => $LANG['plugin_order']['status'][12],
                       4 => $LANG['plugin_order']['status'][1],
                       5 => $LANG['plugin_order']['status'][2],
-                      6 => $LANG['plugin_order']['status'][10]) as $id => $label) {
+                      6 => $LANG['plugin_order']['status'][10],
+                      7 => $LANG['plugin_order']['status'][16]) as $id => $label) {
          if (!countElementsInTable($table, "`id`='$id'")) {
             $state->add(array('id' => $id, 'name' => addslashes_deep($label)));
          }

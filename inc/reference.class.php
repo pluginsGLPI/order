@@ -239,8 +239,8 @@ class PluginOrderReference extends CommonDropdown {
                $plugin_typefilename = GLPI_ROOT."/plugins/order/inc/".strtolower($file)."type.class.php";
                $itemtypeclass       = $this->fields["itemtype"]."Type";
                
-               if (file_exists($core_typefilename) 
-                     || file_exists($plugin_typefilename)) {
+               //if (file_exists($core_typefilename) 
+              ///       || file_exists($plugin_typefilename)) {
                   if (!$reference_in_use) {
                      Dropdown::show($itemtypeclass, 
                                     array('name'  => "types_id", 
@@ -249,7 +249,7 @@ class PluginOrderReference extends CommonDropdown {
                      echo Dropdown::getDropdownName(getTableForItemType($itemtypeclass),
                                                                         $this->fields["types_id"]);
                   }
-               }
+              // }
             }
       
             echo "</span>";

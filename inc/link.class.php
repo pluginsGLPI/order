@@ -541,7 +541,7 @@ class PluginOrderLink extends CommonDBChild {
          // ADD Infocoms
          $ic     = new Infocom();
          $fields = array ();
-   
+
          $exists = false;
    
          if ($templateID) {
@@ -570,8 +570,9 @@ class PluginOrderLink extends CommonDBChild {
          $fields["delivery_number"] = $detail->fields["delivery_number"];
          $fields["budgets_id"]      = $order->fields["budgets_id"];
          $fields["suppliers_id"]    = $order->fields["suppliers_id"];
-         if (isset($order_supplier->fields["num_bill"])) {
-            $fields["bill"]         = $order_supplier->fields["num_bill"];
+         if ($detail->fields['plugin_order_bills_id']) {
+            $bill                   = new PluginOrderBill();
+            $fileds['bill']         = $bill->getField('number');
          }
          $fields["value"]           = $detail->fields["price_discounted"];
          $fields["order_date"]      = $order->fields["order_date"];

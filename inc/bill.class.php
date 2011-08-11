@@ -197,6 +197,11 @@ class PluginOrderBill extends CommonDropdown {
       $tab[8]['name']          = $LANG['plugin_order'][7];
       $tab[8]['datatype']      = 'itemlink';
       $tab[8]['itemlink_type'] = 'PluginOrderOrder';
+ 
+      $tab[9]['table'] = $this->getTable();
+      $tab[9]['field'] = 'name';
+      $tab[9]['name'] = $LANG['common'][16];
+      $tab[9]['datatype'] = 'itemlink';
   
       /* comments */
       $tab[16]['table']    = $this->getTable();
@@ -265,9 +270,11 @@ class PluginOrderBill extends CommonDropdown {
             }
             $item = new $data['itemtype']();
             if ($item->canView()) {
+               echo "<tr>";
+               /*
                if ($old_itemtype != $data['itemtype']) {
                   echo $item->getTypeName()."&nbsp;:&nbsp;"; 
-               }
+               }*/
                $ID = "";
                if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                     $ID = " (".$data["id"].")";
@@ -278,6 +285,9 @@ class PluginOrderBill extends CommonDropdown {
                }
 
                echo "<td class='center top'>".$item->getTypeName()."</td>";
+               echo "<td class='center top'>";
+               echo Dropdown::getDropdownName('glpi_entities', $item->getEntityID())."</td>";
+               
                $reference = new PluginOrderReference();
                $reference->getFromDB($data["plugin_order_references_id"]);
                if ($reference->canView()) {
@@ -326,7 +336,7 @@ class PluginOrderBill extends CommonDropdown {
       
       if (FieldExists("glpi_plugin_order_orders_suppliers", "num_bill")) {
          //Migrate bills
-         $bill = new PluginOrderBill();
+         $bill  = new PluginOrderBill();
          $query = "SELECT `num_bill`, `plugin_order_orders_id`, `entities_id`, `is_recursive` " .
                   "FROM `glpi_plugin_order_orders_suppliers`";
          foreach ($DB->request($query) as $data) {
@@ -336,10 +346,15 @@ class PluginOrderBill extends CommonDropdown {
                                            "`number`='".$data['num_bill']."'")) {
                //create new bill and link it to the order 
                $tmp['name']                   = $tmp['number'] = $data['num_bill'];
+               //Get supplier from the order
+               $tmp['suppliers_id']           = $data['suppliers_id'];
+               //Bill has the same entities_id and is_recrusive
                $tmp['entities_id']            = $data['entities_id'];
                $tmp['is_recursive']           = $data['is_recursive'];
+               //Link bill to order
                $tmp['plugin_order_orders_id'] = $data['plugin_order_orders_id'];
-               $bills_id            = $bill->add($tmp);
+               //Create bill
+               $bills_id                      = $bill->add($tmp);
 
                //All order items are now linked to this bill
                $query = "UPDATE `glpi_plugin_order_orders_items` " .

@@ -61,6 +61,7 @@ function plugin_init_order() {
                  'Contract' => array('PluginOrderOrder_Item', 'updateItem'));
       $PLUGIN_HOOKS['item_purge']['order']      = array();
       
+      include_once(GLPI_ROOT."/plugins/order/inc/order_item.class.php");
       foreach (PluginOrderOrder_Item::getClasses(true) as $type) {
          $PLUGIN_HOOKS['item_purge']['order'][$type] = 'plugin_item_purge_order';
       }

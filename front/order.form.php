@@ -220,7 +220,6 @@ else if (isset ($_POST["undovalidation"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset ($_POST["update_item"])) {
-   
    if(isset($_POST['quantity'])) {
       $pluginOrderOrder_Item->updateQuantity($_POST);
    }
@@ -256,8 +255,8 @@ else if (isset ($_POST["undovalidation"])) {
          }
       }
    }
- 
-   glpi_header($_SERVER['HTTP_REFERER']);
+   exit();
+   //glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["update_detail_item"])) {
 
    if(isset($_POST['detail_price_taxfree'])) {

@@ -214,6 +214,13 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
+            <td>".$LANG['plugin_order']['config'][21]."</td><td>";
+            Dropdown::show('PluginOrderOrderState', 
+                           array('name'   => 'order_status_paid',
+                                 'value'  => $this->fields["order_status_paid"]));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][19]."</td><td>";
             Dropdown::show('PluginOrderOrderState', 
                            array('name'   => 'order_status_canceled',
@@ -263,6 +270,11 @@ class PluginOrderConfig extends CommonDBTM {
 
    function getCanceledState() {
       return $this->fields['order_status_canceled'];
+      
+   }
+
+   function getPaidState() {
+      return $this->fields['order_status_paid'];
       
    }
 
@@ -344,6 +356,7 @@ class PluginOrderConfig extends CommonDBTM {
                      `order_status_partially_delivred` int(11) NOT NULL default '0',
                      `order_status_completly_delivered` int(11) NOT NULL default '0',
                      `order_status_canceled` int(11) NOT NULL default '0',
+                     `order_status_paid` int(11) NOT NULL default '0',
                      PRIMARY KEY  (`id`)
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"; 
                $DB->query($query) or die ($DB->error());
@@ -400,7 +413,8 @@ class PluginOrderConfig extends CommonDBTM {
                           'order_status_approved'            => 3, 
                           'order_status_partially_delivred'  => 4, 
                           'order_status_completly_delivered' => 5, 
-                          'order_status_canceled'            => 6);
+                          'order_status_canceled'            => 6,
+                          'order_status_paid'                => 7);
 
       foreach ($new_states as $field => $value) {
          $migration->addField($table, $field, "int(11) NOT NULL default '0'");

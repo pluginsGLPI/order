@@ -109,6 +109,11 @@ class PluginOrderOrder extends CommonDBTM {
       $config = PluginOrderConfig::getConfig();
       return ($this->getState() == $config->getCanceledState());
    }
+
+   function isPaid() {
+      $config = PluginOrderConfig::getConfig();
+      return ($this->getState() == $config->getPaidState());
+   }
    
    function cleanDBonPurge() {
 
@@ -530,7 +535,7 @@ class PluginOrderOrder extends CommonDBTM {
                                         
       } else {
          $budget = new Budget();
-         if ($this->fields["budgets_id"] 
+         if ($this->fields["budgets_id"] > 0 
             && $budget->can($this->fields["budgets_id"], 'r')) {
             echo "<a href='".$budget->getLinkURL()."'>".$budget->getName(1)."</a>";
          } else {
@@ -1559,16 +1564,11 @@ class PluginOrderOrder extends CommonDBTM {
                                  "int(11) NOT NULL default 1");
          $migration->addField($table, "duedate", "DATETIME NULL");
          $migration->migrationOneTable($table);
- 
+
           //1.5.0
-         $migration->displayMessage("Update orders with new status");
-         foreach (array(6 => 5, 5 => 4, 4 => 3, 3 => 2, 2 => 1, 1 => 0) as $old => $new) {
-            $query = "UPDATE `glpi_plugin_order_orders` 
-                      SET `plugin_order_orderstates_id` = '$old'
-                      WHERE `plugin_order_orderstates_id` = '$new'";
-            $result = $DB->query($query) or die($DB->error());
-         }
-            
+         $query = "UPDATE `glpi_plugin_order_orders` SET `plugin_order_orderstates_id`=`plugin_order_orderstates_id`+1";
+         $DB->query($query) or die ($DB->error());
+
          if (TableExists("glpi_dropdown_plugin_order_status")) {
             $DB->query("DROP TABLE `glpi_dropdown_plugin_order_status`") or die($DB->error());
          }

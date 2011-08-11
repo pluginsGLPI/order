@@ -51,14 +51,11 @@ if (isset($_POST["action"])) {
                         array('condition' => 
                                  "`plugin_order_orders_id`='".$_POST['plugin_order_orders_id']."'"));
          break;
-      case "state":
-         echo "&nbsp;<input type='hidden' name='plugin_order_orders_id' " .
-               "  value='".$_POST["plugin_order_orders_id"]."'>"; 
-         Dropdown::show('PluginOrderBillState');
-         break;
    }
-    echo"<input type='submit' name='action' class='submit' " .
-        "   value='".$LANG['buttons'][2]."'>"; 
+   
+   Dropdown::show('PluginOrderBillState', array('comments' => true));
+   echo"&nbsp;<input type='submit' name='action' class='submit' " .
+       "   value='".$LANG['buttons'][2]."'>"; 
 }
 
 ?>
