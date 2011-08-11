@@ -91,7 +91,7 @@ $LANG['plugin_order']['config'][9] = "Catégorie par défaut";
 $LANG['plugin_order']['config'][10] = "Titre par défaut";
 $LANG['plugin_order']['config'][11] = "Description par défaut";
 $LANG['plugin_order']['config'][12] = "Statut par défaut";
-$LANG['plugin_order']['config'][13] = "Workflow des statuts de commande";
+$LANG['plugin_order']['config'][13] = "Cycle de vie d'une commande";
 $LANG['plugin_order']['config'][14] = "Statut avant la validation";
 $LANG['plugin_order']['config'][15] = "Statut en attente de validation";
 $LANG['plugin_order']['config'][16] = "Statut lorsque la commande est validée";
@@ -99,6 +99,7 @@ $LANG['plugin_order']['config'][17] = "Statut lorsqu'au moins un matériel est l
 $LANG['plugin_order']['config'][18] = "Statut lorsque tous les matériels sont livrés";
 $LANG['plugin_order']['config'][19] = "Statut lorsque la commande est annulée";
 $LANG['plugin_order']['config'][20] = "Pas de TVA";
+$LANG['plugin_order']['config'][21] = "Statut lorsque la commande est payée";
 
 $LANG['plugin_order']['delivery'][1] = "Réception matériel(s)";
 $LANG['plugin_order']['delivery'][2] = "Réceptionner matériel";
@@ -213,6 +214,10 @@ $LANG['plugin_order']['status'][12] = "Validée";
 $LANG['plugin_order']['status'][13] = "Statistique livraison";
 $LANG['plugin_order']['status'][14] = "La commande est validée, toute modification est interdite";
 $LANG['plugin_order']['status'][15] = "Vous ne pouvez pas supprimer ce statut";
+$LANG['plugin_order']['status'][16] = "Payée";
+$LANG['plugin_order']['status'][17] = "Non payée";
+$LANG['plugin_order']['status'][18] = "Valeur payée";
+$LANG['plugin_order']['status'][19] = "Résumé de la facturation";
 
 $LANG['plugin_order']['survey'][0] = "Qualité fournisseur";
 $LANG['plugin_order']['survey'][1] = "Qualité du suivi administratif (contrat, factures, courrier...)";

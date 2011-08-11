@@ -73,6 +73,10 @@ $LANG['plugin_order']['bill'][0] = "Bill";
 $LANG['plugin_order']['bill'][1] = "Bill type";
 $LANG['plugin_order']['bill'][2] = "Bill status";
 $LANG['plugin_order']['bill'][3] = "A bill number is mandatory";
+$LANG['plugin_order']['bill'][4] = "Bills";
+$LANG['plugin_order']['bill'][5] = "Payment status";
+$LANG['plugin_order']['bill'][6] = "Paid";
+$LANG['plugin_order']['bill'][7] = "Being paid";
 
 $LANG['plugin_order']['config'][0] = "Plugin-Einstellungen";
 $LANG['plugin_order']['config'][1] = "Standard-MwSt";
@@ -191,6 +195,10 @@ $LANG['plugin_order']['status'][12] = "Genehmigt";
 $LANG['plugin_order']['status'][13] = "Delivery statistics";
 $LANG['plugin_order']['status'][14] = "the order is validated, any update is forbidden";
 $LANG['plugin_order']['status'][15] = "You cannot remove this status";
+$LANG['plugin_order']['status'][16] = "Paid";
+$LANG['plugin_order']['status'][17] = "Not paid";
+$LANG['plugin_order']['status'][18] = "Paid value";
+$LANG['plugin_order']['status'][19] = "Billing summary";
 
 $LANG['plugin_order']['survey'][0] = "Supplier quality";
 $LANG['plugin_order']['survey'][1] = "Administrative followup quality (contracts, bills, mail, etc.)";
