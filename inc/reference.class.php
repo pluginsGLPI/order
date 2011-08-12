@@ -216,12 +216,13 @@ class PluginOrderReference extends CommonDropdown {
                $itemtype = $this->fields["itemtype"];
                $item     = new $itemtype();
                echo $item->getTypeName();
+               echo "<input type='hidden' name='itemtype' value='$itemtype'>";
             } else {
                $params = array('myname'       => 'itemtype', 'ajax' => true, 
                                'value'        => $this->fields["itemtype"],
                                'entity'       => $_SESSION["glpiactive_entity"], 
                                'ajax_page'    => GLPI_ROOT.'/plugins/order/ajax/referencespecifications.php',
-                               'class' => __CLASS__);
+                               'class'        => __CLASS__);
                                
                $this->dropdownAllItems($params);
             }
@@ -239,8 +240,8 @@ class PluginOrderReference extends CommonDropdown {
                $plugin_typefilename = GLPI_ROOT."/plugins/order/inc/".strtolower($file)."type.class.php";
                $itemtypeclass       = $this->fields["itemtype"]."Type";
                
-               //if (file_exists($core_typefilename) 
-              ///       || file_exists($plugin_typefilename)) {
+               if (file_exists($core_typefilename) 
+                     || file_exists($plugin_typefilename)) {
                   if (!$reference_in_use) {
                      Dropdown::show($itemtypeclass, 
                                     array('name'  => "types_id", 
@@ -249,7 +250,7 @@ class PluginOrderReference extends CommonDropdown {
                      echo Dropdown::getDropdownName(getTableForItemType($itemtypeclass),
                                                                         $this->fields["types_id"]);
                   }
-              // }
+                }
             }
       
             echo "</span>";
