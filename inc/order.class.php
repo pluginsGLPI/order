@@ -1479,7 +1479,7 @@ class PluginOrderOrder extends CommonDBTM {
          $migration->addKey($table, "is_deleted");
          $migration->migrationOneTable($table);
 
-         Plugin::migrateItemType(array(3050 => 'PluginOrderOrder'),
+         Plugin::migrateItemType(array(3150 => 'PluginOrderOrder'),
                                  array("glpi_bookmarks", "glpi_bookmarks_users", 
                                        "glpi_displaypreferences", "glpi_documents_items", 
                                        "glpi_infocoms", "glpi_logs", "glpi_tickets"),
