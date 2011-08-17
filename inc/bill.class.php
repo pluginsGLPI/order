@@ -271,10 +271,7 @@ class PluginOrderBill extends CommonDropdown {
             $item = new $data['itemtype']();
             if ($item->canView()) {
                echo "<tr>";
-               /*
-               if ($old_itemtype != $data['itemtype']) {
-                  echo $item->getTypeName()."&nbsp;:&nbsp;"; 
-               }*/
+
                $ID = "";
                if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                     $ID = " (".$data["id"].")";
@@ -337,9 +334,8 @@ class PluginOrderBill extends CommonDropdown {
       if (FieldExists("glpi_plugin_order_orders_suppliers", "num_bill")) {
          //Migrate bills
          $bill  = new PluginOrderBill();
-         $query = "SELECT `num_bill`, `plugin_order_orders_id`, `entities_id`, `is_recursive` " .
-                  "FROM `glpi_plugin_order_orders_suppliers`";
-         foreach ($DB->request($query) as $data) {
+         $query = "SELECT * FROM `glpi_plugin_order_orders_suppliers`";
+         foreach (getAllDatasFromTable('glpi_plugin_order_orders_suppliers') as $data) {
             if (!is_null($data['num_bill']) 
                && $data['num_bill'] != '' 
                   && !countElementsInTable('glpi_plugin_order_bills', 
@@ -347,7 +343,7 @@ class PluginOrderBill extends CommonDropdown {
                //create new bill and link it to the order 
                $tmp['name']                   = $tmp['number'] = $data['num_bill'];
                //Get supplier from the order
-               $tmp['suppliers_id']           = $data['suppliers_id'];
+               $tmp['suppliers_id']        = $data['suppliers_id'];
                //Bill has the same entities_id and is_recrusive
                $tmp['entities_id']            = $data['entities_id'];
                $tmp['is_recursive']           = $data['is_recursive'];

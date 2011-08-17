@@ -1537,12 +1537,13 @@ class PluginOrderOrder extends CommonDBTM {
                   unset($tmp['id']);
                   $id = $budget->add($tmp);
                }
-                 
+/*
                if ($id) {
                   $query = "UPDATE `glpi_plugin_order_orders` SET `budgets_id`='$id' " .
-                          "WHERE `budgets_id`='".$data['id']."'";
+                           "WHERE `budgets_id`='".$data['id']."'";
                   $DB->query($query) or die ($DB->error());
                }
+*/
             }
                
             $DB->query("DROP TABLE `glpi_plugin_order_budgets`");
