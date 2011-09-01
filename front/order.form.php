@@ -282,6 +282,10 @@ else if (isset ($_POST["undovalidation"])) {
    }
    
    glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset ($_GET['unlink_order'])) {
+   $pluginOrderOrder->check($_GET['id'], 'w');
+   $pluginOrderOrder->unlinkBudget($_GET['id']);
+   glpi_header($_SERVER['HTTP_REFERER']);
 } else {
    $pluginOrderOrder->checkGlobal("r");
    commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");

@@ -398,7 +398,7 @@ class PluginOrderOrder extends CommonDBTM {
          && $input['budgets_id'] > 0)
             || (isset($input['budgets_id']) 
                && $this->fields['budgets_id'] != $input['budgets_id']) ) {
-         if( !self::canStillUseBudget($input) ) {
+         if( !self::canStillUseBudget($input) && !isset($input['_unlink_budget'])) {
             addMessageAfterRedirect($LANG['plugin_order'][49], false, ERROR);
          }
       }
@@ -1216,8 +1216,9 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       
-      echo "<tr><th colspan='3'>".$LANG['plugin_order'][11]."</th></tr>";
+      echo "<tr><th colspan='4'>".$LANG['plugin_order'][11]."</th></tr>";
       echo "<tr>"; 
+      echo "<th style='width:15%;'>".$LANG['rulesengine'][7]."</th>";
       echo "<th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['plugin_order'][14]."</th>";
@@ -1234,10 +1235,14 @@ class PluginOrderOrder extends CommonDBTM {
                                                                            $data["plugin_order_ordertaxes_id"]));
          $total +=  $prices["priceTTC"] + $postagewithTVA;
          
+         $link = getItemTypeFormURL($this->getType());
+         
          echo "<tr class='tab_bg_1' align='center'>"; 
          echo "<td>";
+            echo "<a href=\"".$link."?unlink_order=unlink_order&id=".$data["id"]."\">".$LANG['plugin_order'][52]."</a>";
+         echo "</td>";
+         echo "<td>";
 
-         $link = getItemTypeFormURL($this->getType());
          if ($this->canView()) {
             echo "<a href=\"".$link."?id=".$data["id"]."\">".$data["name"]."</a>";
          } else {
@@ -1358,6 +1363,13 @@ class PluginOrderOrder extends CommonDBTM {
          echo "</div></div></div>";
          echo "</div>";  
       }
+   }
+   
+   function unlinkBudget($ID) {
+      $order = new self();
+      $order->getFromDB($ID);
+      $order->update(array('id' => $ID, 'budgets_id' => 0, '_unlink_budget' => 1));
+      
    }
    
    //------------------------------------------------------------

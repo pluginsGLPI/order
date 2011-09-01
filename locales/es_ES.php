@@ -66,6 +66,7 @@ $LANG['plugin_order'][48] = "Una o varias filas seleccionadas no tienen ítems a
 $LANG['plugin_order'][49] = "The order date must be within the dates entered for the selected budget.";
 $LANG['plugin_order'][50] = "Estimated due date";
 $LANG['plugin_order'][51] = "Due date overtaken";
+$LANG['plugin_order'][52] = "Unlink";
 
 $LANG['plugin_order']['bill'][0] = "Bill";
 $LANG['plugin_order']['bill'][1] = "Bill type";
