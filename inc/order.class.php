@@ -385,10 +385,7 @@ class PluginOrderOrder extends CommonDBTM {
       if( isset($input['budgets_id']) && $input['budgets_id'] > 0) {
          if( !self::canStillUseBudget($input) ) {
             addMessageAfterRedirect($LANG['plugin_order'][49], false, ERROR);
-            return array ();
-
          }
-
       }
 
       return $input;
@@ -403,10 +400,7 @@ class PluginOrderOrder extends CommonDBTM {
                && $this->fields['budgets_id'] != $input['budgets_id']) ) {
          if( !self::canStillUseBudget($input) ) {
             addMessageAfterRedirect($LANG['plugin_order'][49], false, ERROR);
-            return false;
-
          }
-         
       }
       
       return $input;
