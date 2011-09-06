@@ -304,7 +304,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
       $result=$DB->query($query);
       
       return $result;
-   }   
+   }
+
    function queryRef($plugin_order_orders_id, $plugin_order_references_id, $price_taxfree, 
                      $discount, $states_id = false) {
       global $DB;
@@ -1116,7 +1117,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
                `states_id` int(11) NOT NULL default 1,
                `delivery_date` date default NULL,
                `plugin_order_bills_id` INT( 11 ) NOT NULL DEFAULT '0',
-               `plugin_order_billstates` INT( 11 ) NOT NULL DEFAULT '0',
+               `plugin_order_billstates_id` INT( 11 ) NOT NULL DEFAULT '0',
                PRIMARY KEY  (`id`),
                KEY `FK_device` (`items_id`,`itemtype`),
                KEY `entities_id` (`entities_id`),
