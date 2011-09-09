@@ -54,8 +54,20 @@ class PluginOrderReception extends CommonDBTM {
       return plugin_order_haveRight('order', 'w');
    }
 
+   function canUpdate() {
+      return plugin_order_haveRight('order', 'w');
+   }
+
+   function canUpdateItem() {
+      return true;
+   }
+
    function canView() {
       return plugin_order_haveRight('order', 'r');
+   }
+   
+   function canViewItem() {
+      return true;
    }
    
    function getOrdersID() {
@@ -152,18 +164,18 @@ class PluginOrderReception extends CommonDBTM {
 
    function showForm ($ID, $options=array()) {
       global $LANG;
-      
+
       if (!$this->canView()) {
          return false;
       }
-         
+
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID, 'r');
       } else {
          // Create item
-         $this->check(-1,'w',$options);
+         $this->check(-1, 'w', $options);
       }
-      
+
       $this->showTabs($options);
       $this->showFormHeader($options);
       
