@@ -320,6 +320,8 @@ class PluginOrderOrder extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG;
 
+      $config = PluginOrderConfig::getConfig();
+
       $ong    = array();
       $ong[1] = $LANG['title'][26];
 
@@ -336,7 +338,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       }
 
-      if ($this->getState() > PluginOrderOrderState::DRAFT) {
+      if ($config->canGenerateOrderPDF() && $this->getState() > PluginOrderOrderState::DRAFT) {
         /* generation*/
         $ong[4] = $LANG['plugin_order']['generation'][2];
       
@@ -350,7 +352,8 @@ class PluginOrderOrder extends CommonDBTM {
          $ong[8] = $LANG['plugin_order']['bill'][4];
       }
 
-      if ($this->getState() == PluginOrderOrderState::DELIVERED) {
+      if ($config->canUseSupplierSatisfaction() 
+         && $this->getState() == PluginOrderOrderState::DELIVERED) {
          /* quality */
          $ong[7] = $LANG['plugin_order'][10];
          

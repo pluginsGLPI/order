@@ -45,7 +45,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       return array ('ask'            => $LANG['plugin_order']['validation'][1],
                     'validation'     => $LANG['plugin_order']['validation'][2],
                     'cancel'         => $LANG['plugin_order']['validation'][5],
-                    'undovalidation' => $LANG['plugin_order']['validation'][8]);
+                    'undovalidation' => $LANG['plugin_order']['validation'][8],
+                    'duedate'        => $LANG['plugin_order'][52]);
    }
 
    function getDatasForTemplate($event,$options=array()) {
@@ -115,9 +116,10 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                     'ordervalidation.users'       => $LANG['plugin_order']['validation'][19]);
 
       foreach ($tags as $tag => $label) {
-         $this->addTagToList(array('tag'=>$tag, 'label'=>$label, 'value'=>true));
+         $this->addTagToList(array('tag' => $tag, 'label' => $label, 'value' => true));
       }
 
+      
       asort($this->tag_descriptions);
    }
    
@@ -128,7 +130,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       
       $template     = new NotificationTemplate();
       $templates_id = false;
-      $query_id     = "SELECT `id` FROM `glpi_notificationtemplates` 
+      $query_id     = "SELECT `id` 
+                       FROM `glpi_notificationtemplates` 
                        WHERE `itemtype`='PluginOrderOrder' 
                           AND `name` = 'Order Validation'";
       $result       = $DB->query($query_id) or die ($DB->error());
@@ -175,7 +178,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          }
    
          $notifs = array('New Order Validation' => 'ask', 'Confirm Order Validation' => 'validation',
-                         'Cancel Order Validation' => 'undovalidation', 'Cancel Order' => 'cancel');
+                         'Cancel Order Validation' => 'undovalidation', 'Cancel Order' => 'cancel', 
+                         'Due date' => 'duedate');
          $notification = new Notification();
          foreach ($notifs as $label => $name) {
             if (!countElementsInTable("glpi_notifications", "`itemtype`='PluginOrderOrder' " .
@@ -195,29 +199,14 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       global $DB;
 
       $notif = new Notification();
-      $options = array('itemtype' => 'PluginOrderOrder',
-                       'event'    => 'ask',
-                       'FIELDS'   => 'id');
-      foreach ($DB->request('glpi_notifications', $options) as $data) {
-         $notif->delete($data);
-      }
-      $options = array('itemtype' => 'PluginOrderOrder',
-                       'event'    => 'validation',
-                       'FIELDS'   => 'id');
-      foreach ($DB->request('glpi_notifications', $options) as $data) {
-         $notif->delete($data);
-      }
-      $options = array('itemtype' => 'PluginOrderOrder',
-                       'event'    => 'cancel',
-                       'FIELDS'   => 'id');
-      foreach ($DB->request('glpi_notifications', $options) as $data) {
-         $notif->delete($data);
-      }
-      $options = array('itemtype' => 'PluginOrderOrder',
-                       'event'    => 'undovalidation',
-                       'FIELDS'   => 'id');
-      foreach ($DB->request('glpi_notifications', $options) as $data) {
-         $notif->delete($data);
+
+      foreach (array('ask', 'validation', 'cancel', 'undovalidation', 'duedate') as $event) {
+         $options = array('itemtype' => 'PluginOrderOrder',
+                          'event'    => $event,
+                          'FIELDS'   => 'id');
+         foreach ($DB->request('glpi_notifications', $options) as $data) {
+            $notif->delete($data);
+         }
       }
       
       //templates

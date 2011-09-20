@@ -85,7 +85,20 @@ class PluginOrderConfig extends CommonDBTM {
       
       echo "<tr class='tab_bg_1' align='center'>
                   <td>".$LANG['plugin_order']['config'][2]."</td><td>";
-                  Dropdown::showYesNo("use_validation",$this->fields["use_validation"]); 
+                  Dropdown::showYesNo("use_validation", $this->fields["use_validation"]); 
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>
+                  <td>".$LANG['plugin_order']['config'][22]."</td><td>";
+                  Dropdown::showYesNo("generate_order_pdf", $this->fields["generate_order_pdf"]); 
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>
+                  <td>".$LANG['plugin_order']['config'][23]."</td><td>";
+                  Dropdown::showYesNo("use_supplier_satisfaction", 
+                                      $this->fields["use_supplier_satisfaction"]); 
       echo "</td>";
       echo "</tr>";
 
@@ -322,6 +335,14 @@ class PluginOrderConfig extends CommonDBTM {
       return $this->fields['default_ticketcategories_id'];
    }
 
+   function canUseSupplierSatisfaction() {
+      return $this->fields['use_supplier_satisfaction'];
+   }
+
+   function canGenerateOrderPDF() {
+      return $this->fields['generate_order_pdf'];
+   }
+
    //----------------- Install & uninstall -------------------//
 
    static function install(Migration $migration) {
@@ -338,9 +359,11 @@ class PluginOrderConfig extends CommonDBTM {
             //Install
             $query = "CREATE TABLE `glpi_plugin_order_configs` (
                      `id` int(11) NOT NULL auto_increment,
-                     `use_validation` int(11) NOT NULL default 0,
-                     `default_taxes` int(11) NOT NULL default 0,
-                     `generate_assets` int(11) NOT NULL default 0,
+                     `use_validation` tinyint(1) NOT NULL default '0',
+                     `use_supplier_satisfaction` tinyint(1) NOT NULL default '0',
+                     `generate_order_pdf` tinyint(1) NOT NULL default '0',
+                     `default_taxes` int(11) NOT NULL default '0',
+                     `generate_assets` int(11) NOT NULL default '0',
                      `generated_name` varchar(255) collate utf8_unicode_ci default NULL,
                      `generated_serial` varchar(255) collate utf8_unicode_ci default NULL,
                      `generated_otherserial` varchar(255) collate utf8_unicode_ci default NULL,
@@ -384,7 +407,7 @@ class PluginOrderConfig extends CommonDBTM {
             $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
             
             //1.3.0
-            $migration->addField($table, "generate_assets", "int(11) NOT NULL default '0'");
+            $migration->addField($table, "generate_assets", "tinyint(1) NOT NULL default '0'");
             $migration->addField($table, "generated_name", 
                                  "varchar(255) collate utf8_unicode_ci default NULL");
             $migration->addField($table, "generated_serial", 
@@ -396,13 +419,17 @@ class PluginOrderConfig extends CommonDBTM {
             $migration->addField($table, "default_asset_states_id", 
                                  "int(11) NOT NULL default '0'");
             $migration->addField($table, "generate_ticket", 
-                                 "int(11) NOT NULL default '0'");
+                                 "tinyint(1) NOT NULL default '0'");
             $migration->addField($table, "generated_title", 
                                  "varchar(255) collate utf8_unicode_ci default NULL");
             $migration->addField($table, "generated_content", 
                                  "text collate utf8_unicode_ci");
             $migration->addField($table, "default_ticketcategories_id", 
                                  "int(11) NOT NULL default '0'");
+            $migration->addField($table, "use_supplier_quality", 
+                                 "tinyint(1) NOT NULL default '0'");
+            $migration->addField($table, "generate_order_pdf", 
+                                 "tinyint(1) NOT NULL default '0'");
             $migration->migrationOneTable($table);
             
       }

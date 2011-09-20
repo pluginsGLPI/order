@@ -68,6 +68,7 @@ $LANG['plugin_order'][48] = "Une ou plusieurs lignes sélectionnées n'ont pas d
 $LANG['plugin_order'][49] = "La date de commande doit être comprise dans les dates déclarées pour le budget sélectionné.";
 $LANG['plugin_order'][50] = "Date de livraison estimée";
 $LANG['plugin_order'][51] = "La date estimée est dépassée";
+$LANG['plugin_order'][52] = "Dépassement date de livraison estimée";
 $LANG['plugin_order'][52] = "Supprimer le lien";
 
 $LANG['plugin_order']['bill'][0] = "Facture";
@@ -101,6 +102,9 @@ $LANG['plugin_order']['config'][18] = "Statut lorsque tous les matériels sont l
 $LANG['plugin_order']['config'][19] = "Statut lorsque la commande est annulée";
 $LANG['plugin_order']['config'][20] = "Pas de TVA";
 $LANG['plugin_order']['config'][21] = "Statut lorsque la commande est payée";
+$LANG['plugin_order']['config'][22] = "Génération d'un bon de commande en PDF";
+$LANG['plugin_order']['config'][23] = "Activer la qualité des fournisseurs";
+
 
 $LANG['plugin_order']['delivery'][1] = "Réception matériel(s)";
 $LANG['plugin_order']['delivery'][2] = "Réceptionner matériel";
