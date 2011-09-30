@@ -1546,13 +1546,7 @@ class PluginOrderOrder extends CommonDBTM {
                   unset($tmp['id']);
                   $id = $budget->add($tmp);
                }
-/*
-               if ($id) {
-                  $query = "UPDATE `glpi_plugin_order_orders` SET `budgets_id`='$id' " .
-                           "WHERE `budgets_id`='".$data['id']."'";
-                  $DB->query($query) or die ($DB->error());
-               }
-*/
+
             }
                
             $DB->query("DROP TABLE `glpi_plugin_order_budgets`");
@@ -1570,16 +1564,17 @@ class PluginOrderOrder extends CommonDBTM {
          $migration->migrationOneTable($table);
 
          //1.4.0
-         $migration->changeField("glpi_plugin_order_orders", "states_id", "plugin_order_orderstates_id", 
-                                 "int(11) NOT NULL default 1");
+         if ($migration->changeField("glpi_plugin_order_orders", "states_id", 
+                                     "plugin_order_orderstates_id", "int(11) NOT NULL default 1")) {
+            $migration->migrationOneTable($table);
+            $query = "UPDATE `glpi_plugin_order_orders` SET `plugin_order_orderstates_id`=`plugin_order_orderstates_id`+1";
+            $DB->query($query) or die ($DB->error());
+         }
+         
          $migration->addField($table, "duedate", "DATETIME NULL");
          $migration->migrationOneTable($table);
 
-          //1.5.0
-         //TODO seulement lors de la migration !!! 
-         $query = "UPDATE `glpi_plugin_order_orders` SET `plugin_order_orderstates_id`=`plugin_order_orderstates_id`+1";
-         $DB->query($query) or die ($DB->error());
-
+         //1.5.0
          if (TableExists("glpi_dropdown_plugin_order_status")) {
             $DB->query("DROP TABLE `glpi_dropdown_plugin_order_status`") or die($DB->error());
          }
