@@ -426,7 +426,7 @@ class PluginOrderConfig extends CommonDBTM {
                                  "text collate utf8_unicode_ci");
             $migration->addField($table, "default_ticketcategories_id", 
                                  "int(11) NOT NULL default '0'");
-            $migration->addField($table, "use_supplier_quality", 
+            $migration->addField($table, "use_supplier_satisfaction", 
                                  "tinyint(1) NOT NULL default '0'");
             $migration->addField($table, "generate_order_pdf", 
                                  "tinyint(1) NOT NULL default '0'");

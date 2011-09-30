@@ -1576,6 +1576,7 @@ class PluginOrderOrder extends CommonDBTM {
          $migration->migrationOneTable($table);
 
           //1.5.0
+         //TODO seulement lors de la migration !!! 
          $query = "UPDATE `glpi_plugin_order_orders` SET `plugin_order_orderstates_id`=`plugin_order_orderstates_id`+1";
          $DB->query($query) or die ($DB->error());
 
@@ -1598,8 +1599,7 @@ class PluginOrderOrder extends CommonDBTM {
                                        "`itemtype`='PluginOrderOrder' AND `num`='$num' 
                                           AND `rank`='$rank' AND `users_id`='0'")) {
                $DB->query("INSERT INTO glpi_displaypreferences 
-                           VALUES (NULL,'PluginOrderOrder','$num','$rank','0');") 
-                  or die($DB->error());
+                           VALUES (NULL,'PluginOrderOrder','$num','$rank','0');");
             }
          }
       }
