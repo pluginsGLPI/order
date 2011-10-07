@@ -314,7 +314,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
                FROM `glpi_plugin_order_orders_items` 
                WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id."' 
                   AND `plugin_order_references_id` = '" . $plugin_order_references_id ."' 
-                     AND `price_taxfree` = FLOAT('" . number_format($price_taxfree, 2, '.','') ."')
+                     AND `price_taxfree` = '" . number_format($price_taxfree, 2, '.','') ."'
                         AND `discount` = '" . number_format($discount, 2, '.','') ."' ";
 
       if ($states_id) {
