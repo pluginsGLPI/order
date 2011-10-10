@@ -214,31 +214,46 @@ class PluginOrderOrder extends CommonDBTM {
       $tab['common'] = $LANG['plugin_order']['title'][1];
 
       /* order_number */
-      $tab[1]['table']    = $this->getTable();
-      $tab[1]['field']    = 'num_order';
-      $tab[1]['name']     = $LANG['plugin_order'][0];
-      $tab[1]['datatype'] = 'itemlink';
+      $tab[1]['table']       = $this->getTable();
+      $tab[1]['field']       = 'num_order';
+      $tab[1]['name']        = $LANG['plugin_order'][0];
+      $tab[1]['datatype']    = 'itemlink';
+      $tab[1]['checktype']   = 'text';
+      $tab[1]['displaytype'] = 'text';
+      $tab[1]['injectable']  = true;
 
       /* order_date */
-      $tab[2]['table']    = $this->getTable();
-      $tab[2]['field']    = 'order_date';
-      $tab[2]['name']     = $LANG['plugin_order'][1];
-      $tab[2]['datatype'] = 'date';
+      $tab[2]['table']       = $this->getTable();
+      $tab[2]['field']       = 'order_date';
+      $tab[2]['name']        = $LANG['plugin_order'][1];
+      $tab[2]['datatype']    = 'date';
+      $tab[2]['checktype']   = 'date';
+      $tab[2]['displaytype'] = 'date';
+      $tab[2]['injectable']  = true;
 
       /* taxes*/
-      $tab[3]['table'] = 'glpi_plugin_order_ordertaxes';
-      $tab[3]['field'] = 'name';
-      $tab[3]['name']  = $LANG['plugin_order'][25] . " " . $LANG['plugin_order'][26];
+      $tab[3]['table']       = 'glpi_plugin_order_ordertaxes';
+      $tab[3]['field']       = 'name';
+      $tab[3]['name']        = $LANG['plugin_order'][25] . " " . $LANG['plugin_order'][26];
+      $tab[3]['checktype']   = 'text';
+      $tab[3]['displaytype'] = 'dropdown';
+      $tab[3]['injectable']  = true;
 
       /* location */
-      $tab[4]['table'] = 'glpi_locations';
-      $tab[4]['field'] = 'completename';
-      $tab[4]['name']  = $LANG['plugin_order'][40];
+      $tab[4]['table']       = 'glpi_locations';
+      $tab[4]['field']       = 'completename';
+      $tab[4]['name']        = $LANG['plugin_order'][40];
+      $tab[4]['checktype']   = 'text';
+      $tab[4]['displaytype'] = 'dropdown';
+      $tab[4]['injectable']  = true;
 
       /* status */
-      $tab[5]['table'] = 'glpi_plugin_order_orderstates';
-      $tab[5]['field'] = 'name';
-      $tab[5]['name']  = $LANG['plugin_order']['status'][0];
+      $tab[5]['table']       = 'glpi_plugin_order_orderstates';
+      $tab[5]['field']       = 'name';
+      $tab[5]['name']        = $LANG['plugin_order']['status'][0];
+      $tab[5]['checktype']   = 'text';
+      $tab[5]['displaytype'] = 'dropdown';
+      $tab[5]['injectable']  = true;
 
       /* supplier */
       $tab[6]['table']         = 'glpi_suppliers';
@@ -247,11 +262,17 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[6]['datatype']      = 'itemlink';
       $tab[6]['itemlink_type'] = 'Supplier';
       $tab[6]['forcegroupby']  = true;
+      $tab[6]['checktype']     = 'text';
+      $tab[6]['displaytype']   = 'dropdown';
+      $tab[6]['injectable']    = true;
 
       /* payment */
-      $tab[7]['table'] = 'glpi_plugin_order_orderpayments';
-      $tab[7]['field'] = 'name';
-      $tab[7]['name']  = $LANG['plugin_order'][32];
+      $tab[7]['table']         = 'glpi_plugin_order_orderpayments';
+      $tab[7]['field']         = 'name';
+      $tab[7]['name']          = $LANG['plugin_order'][32];
+      $tab[7]['checktype']     = 'text';
+      $tab[7]['displaytype']   = 'dropdown';
+      $tab[7]['injectable']    = true;
 
       /* contact */
       $tab[8]['table']         = 'glpi_contacts';
@@ -260,6 +281,9 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[8]['datatype']      = 'itemlink';
       $tab[8]['itemlink_type'] = 'Contact';
       $tab[8]['forcegroupby']  = true;
+      $tab[8]['checktype']     = 'text';
+      $tab[8]['displaytype']   = 'dropdown';
+      $tab[8]['injectable']    = true;
 
       /* budget */
       $tab[9]['table']         = 'glpi_budgets';
@@ -268,50 +292,73 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[9]['datatype']      = 'itemlink';
       $tab[9]['itemlink_type'] = 'Budget';
       $tab[9]['forcegroupby']  = true;
+      $tab[9]['checktype']     = 'text';
+      $tab[9]['displaytype']   = 'dropdown';
+      $tab[9]['injectable']    = true;
 
       /* title */
-      $tab[10]['table'] = $this->getTable();
-      $tab[10]['field'] = 'name';
-      $tab[10]['name']  = $LANG['plugin_order'][39];
+      $tab[10]['table']        = $this->getTable();
+      $tab[10]['field']        = 'name';
+      $tab[10]['name']         = $LANG['plugin_order'][39];
+      $tab[10]['checktype']    = 'text';
+      $tab[10]['displaytype']  = 'text';
+      $tab[10]['injectable']   = true;
 
       /* type */
-      $tab[11]['table'] = 'glpi_plugin_order_ordertypes';
-      $tab[11]['field'] = 'name';
-      $tab[11]['name']  = $LANG['common'][17];
+      $tab[11]['table']        = 'glpi_plugin_order_ordertypes';
+      $tab[11]['field']        = 'name';
+      $tab[11]['name']         = $LANG['common'][17];
+      $tab[11]['checktype']    = 'text';
+      $tab[11]['displaytype']  = 'dropdown';
+      $tab[11]['injectable']   = true;
 
       /* order_date */
-      $tab[12]['table']    = $this->getTable();
-      $tab[12]['field']    = 'duedate';
-      $tab[12]['name']     = $LANG['plugin_order'][50];
-      $tab[12]['datatype'] = 'date';
+      $tab[12]['table']        = $this->getTable();
+      $tab[12]['field']        = 'duedate';
+      $tab[12]['name']         = $LANG['plugin_order'][50];
+      $tab[12]['datatype']     = 'date';
+      $tab[12]['checktype']    = 'date';
+      $tab[12]['displaytype']  = 'date';
+      $tab[12]['injectable']   = true;
 
       /* comments */
-      $tab[16]['table']    = $this->getTable();
-      $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['plugin_order'][2];
-      $tab[16]['datatype'] = 'text';
+      $tab[16]['table']        = $this->getTable();
+      $tab[16]['field']        = 'comment';
+      $tab[16]['name']         = $LANG['plugin_order'][2];
+      $tab[16]['datatype']     = 'text';
+      $tab[16]['checktype']    = 'text';
+      $tab[16]['displaytype']  = 'multiline_text';
+      $tab[16]['injectable']   = true;
 
       /* port price */
-      $tab[17]['table']    = $this->getTable();
-      $tab[17]['field']    = 'port_price';
-      $tab[17]['name']     = $LANG['plugin_order'][26];
-      $tab[17]['datatype'] = 'decimal';
+      $tab[17]['table']        = $this->getTable();
+      $tab[17]['field']        = 'port_price';
+      $tab[17]['name']         = $LANG['plugin_order'][26];
+      $tab[17]['datatype']     = 'decimal';
+      $tab[17]['checktype']    = 'text';
+      $tab[17]['displaytype']  = 'text';
+      $tab[17]['injectable']   = true;
 
       /* id */
-      $tab[30]['table'] = $this->getTable();
-      $tab[30]['field'] = 'id';
-      $tab[30]['name']  = $LANG['common'][2];
+      $tab[30]['table']       = $this->getTable();
+      $tab[30]['field']       = 'id';
+      $tab[30]['name']        = $LANG['common'][2];
+      $tab[30]['injectable']  = false;
 
       /* entity */
-      $tab[80]['table'] = 'glpi_entities';
-      $tab[80]['field'] = 'completename';
-      $tab[80]['name']  = $LANG['entity'][0];
+      $tab[80]['table']       = 'glpi_entities';
+      $tab[80]['field']       = 'completename';
+      $tab[80]['name']        = $LANG['entity'][0];
+      $tab[80]['injectable']  = false;
 
-      $tab[86]['table']    = $this->getTable();
-      $tab[86]['field']    = 'is_recursive';
-      $tab[86]['name']     = $LANG['entity'][9];
-      $tab[86]['datatype'] = 'bool';
+      $tab[86]['table']         = $this->getTable();
+      $tab[86]['field']         = 'is_recursive';
+      $tab[86]['name']          = $LANG['entity'][9];
+      $tab[86]['datatype']      = 'bool';
       $tab[86]['massiveaction'] = false;
+      $tab[86]['checktype']     = 'bool';
+      $tab[86]['displaytype']   = 'bool';
+      $tab[86]['injectable']    = true;
 
       return $tab;
    }

@@ -151,6 +151,10 @@ function plugin_init_order() {
    
          }
          $PLUGIN_HOOKS['use_massive_action']['order'] = 1;
+
+         $PLUGIN_HOOKS['plugin_datainjection_populate']['order'] 
+            = "plugin_datainjection_populate_order";
+
       }
    }
 
