@@ -1491,7 +1491,10 @@ class PluginOrderOrder extends CommonDBTM {
          }
       
          //1.2.0
-         $migration->renameTable("glpi_plugin_order", $table);
+         $domigration_itemtypes = false;
+         if ($migration->renameTable("glpi_plugin_order", $table)) {
+            $domigration_itemtypes = true;
+         }
             
          $migration->changeField($table, "ID", "id", "int(11) NOT NULL AUTO_INCREMENT");
          $migration->changeField($table, "FK_entities", "entities_id", 
@@ -1535,11 +1538,14 @@ class PluginOrderOrder extends CommonDBTM {
          $migration->addKey($table, "is_deleted");
          $migration->migrationOneTable($table);
 
-         Plugin::migrateItemType(array(3150 => 'PluginOrderOrder'),
-                                 array("glpi_bookmarks", "glpi_bookmarks_users", 
-                                       "glpi_displaypreferences", "glpi_documents_items", 
-                                       "glpi_infocoms", "glpi_logs", "glpi_tickets"),
-                                 array());
+         //Only migrate itemtypes when it's only necessary, otherwise it breaks upgrade procedure !
+         if ($domigration_itemtypes) {
+            Plugin::migrateItemType(array(3150 => 'PluginOrderOrder'),
+                                    array("glpi_bookmarks", "glpi_bookmarks_users", 
+                                          "glpi_displaypreferences", "glpi_documents_items", 
+                                          "glpi_infocoms", "glpi_logs", "glpi_tickets"),
+                                    array());
+         }
 
          if (TableExists("glpi_plugin_order_budgets")) {
             //Manage budgets (here because class has been remove since 1.4.0)
