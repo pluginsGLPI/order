@@ -309,13 +309,13 @@ class PluginOrderOrder_Item extends CommonDBTM {
    function queryRef($plugin_order_orders_id, $plugin_order_references_id, $price_taxfree, 
                      $discount, $states_id = false) {
       global $DB;
-      
+
       $query = "SELECT `id`, `items_id`
                FROM `glpi_plugin_order_orders_items` 
                WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id."' 
                   AND `plugin_order_references_id` = '" . $plugin_order_references_id ."' 
-                     AND `price_taxfree` = '" . number_format($price_taxfree, 2, '.','') ."'
-                        AND `discount` = '" . number_format($discount, 2, '.','') ."' ";
+                     AND CAST(`price_taxfree` AS CHAR) = '" . $price_taxfree ."'
+                        AND CAST(`discount` AS CHAR) = '" . $discount ."' ";
 
       if ($states_id) {
          $query.= "AND `states_id` = '".$states_id."' ";
@@ -712,8 +712,8 @@ class PluginOrderOrder_Item extends CommonDBTM {
                 FROM `".$this->getTable()."`
                 WHERE  `plugin_order_orders_id` = '$orders_id'
                   AND `plugin_order_references_id` = '$references_id'
-                     AND `price_taxfree` LIKE '$price_taxfree'
-                        AND `discount` LIKE '$discount'";
+                     AND CAST(`price_taxfree` AS CHAR) = '$price_taxfree'
+                        AND CAST(`discount` AS CHAR) = '$discount'";
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'quantity'));
    }
@@ -1043,7 +1043,14 @@ class PluginOrderOrder_Item extends CommonDBTM {
                                                              $post['old_discount']);
 
          if($post['quantity'] > $quantity) {
-            $this->getFromDB($post['plugin_order_orders_items_id']);
+				$datas = $this->queryRef(	$post['plugin_order_orders_id'], 
+													$post['old_plugin_order_references_id'], 
+													$post['old_price_taxfree'], 
+													$post['old_discount']);
+
+				$item = $DB->fetch_array($datas);
+
+            $this->getFromDB($item['id']);
             $to_add  = $post['quantity'] - $quantity;
 
             $this->addDetails($this->fields['plugin_order_references_id'], 

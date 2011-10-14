@@ -255,8 +255,9 @@ else if (isset ($_POST["undovalidation"])) {
          }
       }
    }
-   exit();
-   //glpi_header($_SERVER['HTTP_REFERER']);
+
+   glpi_header($_SERVER['HTTP_REFERER']);
+
 } else if (isset ($_POST["update_detail_item"])) {
 
    if(isset($_POST['detail_price_taxfree'])) {
