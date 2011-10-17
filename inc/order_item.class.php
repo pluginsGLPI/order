@@ -578,12 +578,12 @@ class PluginOrderOrder_Item extends CommonDBChild {
             $hideForm = "";
 
             while ($data=$DB->fetch_array($result)) {
-               $rand = mt_rand();
+               $rand_line = mt_rand();
                // Compute for detail_hideForm javascript function
-               $hideForm.="Ext.get('detail_pricetaxfree$rand').setDisplayed('block');\n";
-               $hideForm.="Ext.select('#detail_viewpricetaxfree$rand input').remove();\n";
-               $hideForm.="Ext.get('detail_discount$rand').setDisplayed('block');\n";
-               $hideForm.="Ext.select('#detail_viewdiscount$rand input').remove();\n";
+               $hideForm.="Ext.get('detail_pricetaxfree$rand_line').setDisplayed('block');\n";
+               $hideForm.="Ext.select('#detail_viewpricetaxfree$rand_line input').remove();\n";
+               $hideForm.="Ext.get('detail_discount$rand_line').setDisplayed('block');\n";
+               $hideForm.="Ext.select('#detail_viewdiscount$rand_line input').remove();\n";
 
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
@@ -613,22 +613,22 @@ class PluginOrderOrder_Item extends CommonDBChild {
                   echo "<input type='hidden' name='detail_old_price_taxfree[".$data["IDD"]."]' 
                               value='" . $data["price_taxfree"] . "'>";
                   echo "<script type='text/javascript' >\n";
-                  echo "function showDetailPricetaxfree$rand() {\n";
-                  echo "Ext.get('detail_pricetaxfree$rand').setDisplayed('none');";
+                  echo "function showDetailPricetaxfree$rand_line() {\n";
+                  echo "Ext.get('detail_pricetaxfree$rand_line').setDisplayed('none');";
                   echo "Ext.get('detail_viewaccept$global_rand').setDisplayed('block');";
                   $params = array('maxlength' => 15,
                                   'size'      => 8,
                                   'name'      => 'detail_price_taxfree['.$data["IDD"].']',
                                   'data'      => rawurlencode($data["price_taxfree"]));
-                  ajaxUpdateItemJsCode("detail_viewpricetaxfree$rand", 
+                  ajaxUpdateItemJsCode("detail_viewpricetaxfree$rand_line", 
                                        $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params, false);
                   echo "}";
                   echo "</script>\n";
-                  echo "<div id='detail_pricetaxfree$rand' class='center' 
-                           onClick='showDetailPricetaxfree$rand()'>\n";
+                  echo "<div id='detail_pricetaxfree$rand_line' class='center' 
+                           onClick='showDetailPricetaxfree$rand_line()'>\n";
                   echo formatNumber($data["price_taxfree"]);
                   echo "</div>\n";
-                  echo "<div id='detail_viewpricetaxfree$rand'>\n";
+                  echo "<div id='detail_viewpricetaxfree$rand_line'>\n";
                   echo "</div>\n";
                   echo "</td>";
                } else {
@@ -646,22 +646,22 @@ class PluginOrderOrder_Item extends CommonDBChild {
                   echo "<input type='hidden' name='detail_old_discount[".$data["IDD"]."]' 
                               value='" . $data["discount"] . "'>";
                   echo "<script type='text/javascript' >\n";
-                  echo "function showDetailDiscount$rand() {\n";
-                  echo "Ext.get('detail_discount$rand').setDisplayed('none');";
+                  echo "function showDetailDiscount$rand_line() {\n";
+                  echo "Ext.get('detail_discount$rand_line').setDisplayed('none');";
                   echo "Ext.get('detail_viewaccept$global_rand').setDisplayed('block');";
                   $params = array('maxlength' => 15,
                                   'size'      => 8,
                                   'name'      => 'detail_discount['.$data["IDD"].']',
                                   'data'      => rawurlencode($data["discount"]));
-                  ajaxUpdateItemJsCode("detail_viewdiscount$rand", 
+                  ajaxUpdateItemJsCode("detail_viewdiscount$rand_line", 
                                        $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params, false);
                   echo "}";
                   echo "</script>\n";
-                  echo "<div id='detail_discount$rand' class='center' 
-                           onClick='showDetailDiscount$rand()'>\n";
+                  echo "<div id='detail_discount$rand_line' class='center' 
+                           onClick='showDetailDiscount$rand_line()'>\n";
                   echo formatNumber($data["discount"]);
                   echo "</div>\n";
-                  echo "<div id='detail_viewdiscount$rand'>\n";
+                  echo "<div id='detail_viewdiscount$rand_line'>\n";
                   echo "</div>\n";
                   echo "</td>";
                } else {
