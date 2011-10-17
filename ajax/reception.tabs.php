@@ -42,27 +42,27 @@ if (!isset ($_POST["id"])) {
    exit ();
 }
 
-if (!isset ($_POST["withtemplate"]))
-   $_POST["withtemplate"] = "";
+$reception = new PluginOrderReception();
+$reception->checkGlobal("r");
 
-$PluginOrderReception = new PluginOrderReception();
-$PluginOrderReception->checkGlobal("r");
-
-if ($_POST["id"]>0 && $PluginOrderReception->can($_POST["id"],'r')) {
-
-   if (!empty($_POST["withtemplate"])) {
-      switch($_REQUEST['glpi_tab']) {
-         default :
-            break;
-      }
-   } else {
-      switch($_REQUEST['glpi_tab']) {
-         default :
-            break;
-      }
+if ($_POST["id"]>0 && $reception->can($_POST["id"],'r')) {
+   switch($_REQUEST['glpi_tab']) {
+       case -1 :
+         break;
+       
+       case 12:
+         //Reception item shares the same table as order_item
+         $order_item = new PluginOrderOrder_Item();
+         $order_item->getFromDB($_POST['id']);
+         Log::showForItem($order_item);
+         break;
+       
+       default:
+         if (!Plugin::displayAction($reception, $_REQUEST['glpi_tab'])) {
+         }
+         break;
    }
 }
-
 ajaxFooter();
 
 ?>

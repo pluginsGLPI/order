@@ -276,11 +276,17 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          if ($candelete) {
             echo "<div class='center'>";
             echo "<table width='900px' class='tab_glpi'>";
-            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('show_supplierref$rand') ) return false;\" href='#'>".$LANG['buttons'][18]."</a></td>";
+            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>"; 
+            echo "<td class='center'>" .
+                  "<a onclick= \"if ( markCheckboxes('show_supplierref$rand') ) " .
+                     "return false;\" href='#'>".$LANG['buttons'][18]."</a></td>";
 
-            echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('show_supplierref$rand') ) return false;\" href='#'>".$LANG['buttons'][19]."</a>";
+            echo "<td>/</td><td class='center'>" .
+                  "<a onclick= \"if ( unMarkCheckboxes('show_supplierref$rand') ) " .
+                     "return false;\" href='#'>".$LANG['buttons'][19]."</a>";
             echo "</td><td align='left' width='80%'>";
-            echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit' >";
+            echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . 
+                  "\" class='submit' >";
             echo "</td>";
             echo "</table>";
             echo "</div>";
@@ -294,7 +300,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       echo "</div>";
       
    }
-   function getPriceByReferenceAndSupplier($plugin_order_references_id,$suppliers_id){
+   function getPriceByReferenceAndSupplier($plugin_order_references_id, $suppliers_id){
       global $DB;
 
       $query = "SELECT `price_taxfree`
@@ -303,13 +309,13 @@ class PluginOrderReference_Supplier extends CommonDBChild {
                    AND `suppliers_id` = '$suppliers_id' ";
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
-         return $DB->result($result,0,"price_taxfree");
+         return $DB->result($result, 0, "price_taxfree");
       } else {
          return 0;
       }
    }
    
-   function getReferenceCodeByReferenceAndSupplier($plugin_order_references_id,$suppliers_id){
+   function getReferenceCodeByReferenceAndSupplier($plugin_order_references_id, $suppliers_id){
       global $DB;
 
       $query = "SELECT `reference_code`
@@ -393,10 +399,10 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       global $DB;
 
       //Old table name
-      $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_references_manufacturers`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_references_manufacturers`");
       
       //Current table name
-      $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`");
    }
 }
 

@@ -42,6 +42,7 @@ class PluginOrderReference extends CommonDropdown {
    public $dohistory         = true;
    public $first_level_menu  = "plugins";
    public $second_level_menu = "order";
+   public $forward_entity_to = array('PluginOrderReference_Supplier');
    
    static function getTypeName() {
       global $LANG;
@@ -159,15 +160,18 @@ class PluginOrderReference extends CommonDropdown {
    function referenceInUse(){
       global $DB;
       
-      return (countElementsInTable("glpi_plugin_order_orders_items", 
+      $number = countElementsInTable("glpi_plugin_order_orders_items", 
                                    "`plugin_order_references_id` = '".
-                                      $this->fields["id"]."'") > 0?true:false);
+                                      $this->fields["id"]."'");
+      if ($number > 0) {
+         return true;
+      } else {
+         return false;
+      }
    }
 
    function getReceptionReferenceLink($data) {
-      
       $link=getItemTypeFormURL($this->getType());
-      
       if ($this->canView()) {
          return "<a href=\"".$link."?id=".$data["id"]."\">" . $data["name"] . "</a>";
       } else {
@@ -266,6 +270,16 @@ class PluginOrderReference extends CommonDropdown {
                }
             }
             echo "</span>";
+            break;
+
+         case 'reference_templates_id' :
+            echo "<span id='show_templates_id'>";
+            if (FieldExists(getTableForItemType($this->fields['itemtype']), 'is_template')) {
+               $this->dropdownTemplate('templates_id', $this->fields['entities_id'], 
+                                       getTableForItemType($this->fields['itemtype']), 
+                                       $this->fields['templates_id']);
+            }
+            echo "</span>";
 
             break;
 
@@ -335,7 +349,7 @@ class PluginOrderReference extends CommonDropdown {
    function dropdownTemplate($name, $entity, $table, $value = 0) {
       global $DB;
 
-      $query = "SELECT `template_name`, `id` FROM ` $table`
+      $query = "SELECT `template_name`, `id` FROM `$table`
                 WHERE `entities_id` = ' $entity' 
                    AND `is_template` = '1' 
                       AND `template_name` <> '' GROUP BY `template_name` ORDER BY `template_name`";

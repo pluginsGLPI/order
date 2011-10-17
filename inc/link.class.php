@@ -207,7 +207,12 @@ class PluginOrderLink extends CommonDBChild {
                      && !$PluginOrderOrder->isCanceled();
       
       $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
-                     "`glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`itemtype`, `glpi_plugin_order_references`.`manufacturers_id`,`glpi_plugin_order_orders_items`.`price_taxfree`,`glpi_plugin_order_orders_items`.`discount` " .
+                     "`glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, " .
+                     "`glpi_plugin_order_references`.`name`, " .
+                     "`glpi_plugin_order_references`.`itemtype`, " .
+                     "`glpi_plugin_order_references`.`manufacturers_id`, " .
+                     "`glpi_plugin_order_orders_items`.`price_taxfree`, " .
+                     "`glpi_plugin_order_orders_items`.`discount` " .
                    "FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references` " .
                    "WHERE `plugin_order_orders_id` = '$plugin_order_orders_id' " .
                      "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`  " .
@@ -219,19 +224,18 @@ class PluginOrderLink extends CommonDBChild {
       $numref     = $DB->numrows($result_ref);
 
       while ($data_ref = $DB->fetch_array($result_ref)){
-
          echo "<div class='center'><table class='tab_cadre_fixe'>";
-         if (!$numref)
+         if (!$numref) {
             echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
-         else {
-            
+         } else {
             $plugin_order_references_id = $data_ref["id"];
-            $itemtype = $data_ref["itemtype"];
-            $canuse = ($itemtype != 'PluginOrderOther');
-            $item = new $itemtype();
-            $rand = mt_rand();
+            $itemtype                   = $data_ref["itemtype"];
+            $canuse                     = ($itemtype != 'PluginOrderOther');
+            $item                       = new $itemtype();
+            $rand                       = mt_rand();
             echo "<tr><th><ul><li>";
-            echo "<a href=\"javascript:showHideDiv('generation$rand','generation', '".GLPI_ROOT."/pics/plus.png','".GLPI_ROOT."/pics/moins.png');\">";
+            echo "<a href=\"javascript:showHideDiv('generation$rand','generation', " .
+                    "'".GLPI_ROOT."/pics/plus.png','".GLPI_ROOT."/pics/moins.png');\">";
             echo "<img alt='' name='generation' src=\"".GLPI_ROOT."/pics/plus.png\">";
             echo "</a>";
             echo "</li></ul></th>";
@@ -242,12 +246,16 @@ class PluginOrderLink extends CommonDBChild {
             echo "<tr class='tab_bg_1 center'>";
             echo "<td></td>";
             echo "<td align='center'>" . $item->getTypeName() . "</td>";
-            echo "<td align='center'>" . Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]) . "</td>";
+            echo "<td align='center'>" . 
+               Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]) . 
+                  "</td>";
             echo "<td>" . $PluginOrderReference->getReceptionReferenceLink($data_ref) . "</td>";
             echo "</tr></table>";
 
             echo "<div class='center' id='generation$rand' style='display:none'>";
-            echo "<form method='post' name='order_generation_form$rand' id='order_generation_form$rand'  action=\"" . $CFG_GLPI["root_doc"] . "/plugins/order/front/link.form.php\">";
+            echo "<form method='post' name='order_generation_form$rand' " .
+                  "id='order_generation_form$rand'  action=\"" . 
+                     $CFG_GLPI["root_doc"] . "/plugins/order/front/link.form.php\">";
             echo "<table class='tab_cadre_fixe'>";
 
             echo "<tr>";
@@ -262,22 +270,32 @@ class PluginOrderLink extends CommonDBChild {
             echo "<th>" . $LANG['plugin_order']['detail'][21] . "</th>";
             echo "<th>" . $LANG['plugin_order']['item'][0] . "</th></tr>";
             
-            $query = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, `glpi_plugin_order_references`.`id` AS id,`glpi_plugin_order_references`.`templates_id`, `glpi_plugin_order_orders_items`.`states_id`, `glpi_plugin_order_orders_items`.`delivery_date`,`glpi_plugin_order_orders_items`.`delivery_number`, `glpi_plugin_order_references`.`name`, `glpi_plugin_order_references`.`itemtype`, `glpi_plugin_order_orders_items`.`items_id`,`glpi_plugin_order_orders_items`.`price_taxfree`, `glpi_plugin_order_orders_items`.`discount`
+            $query = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
+                        "`glpi_plugin_order_references`.`id` AS id," .
+                        "`glpi_plugin_order_references`.`templates_id`, " .
+                        "`glpi_plugin_order_orders_items`.`states_id`, " .
+                        "`glpi_plugin_order_orders_items`.`delivery_date`," .
+                        "`glpi_plugin_order_orders_items`.`delivery_number`, " .
+                        "`glpi_plugin_order_references`.`name`, " .
+                        "`glpi_plugin_order_references`.`itemtype`, " .
+                        "`glpi_plugin_order_orders_items`.`items_id`," .
+                        "`glpi_plugin_order_orders_items`.`price_taxfree`, " .
+                        "`glpi_plugin_order_orders_items`.`discount`
                     FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references`
                     WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
                     AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = '".$plugin_order_references_id."'
                     AND `glpi_plugin_order_orders_items`.`states_id` = '".PluginOrderOrder::ORDER_DEVICE_DELIVRED."'
                     AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id` ";
             if ($itemtype == 'SoftwareLicense')
-               $query.=" GROUP BY `glpi_plugin_order_orders_items`.`price_taxfree`,`glpi_plugin_order_orders_items`.`discount` ";
+               $query.=" GROUP BY `glpi_plugin_order_orders_items`.`price_taxfree`," .
+                        "`glpi_plugin_order_orders_items`.`discount` ";
             $query.=" ORDER BY `glpi_plugin_order_references`.`name` ";
 
             $result = $DB->query($query);
-            $num = $DB->numrows($result);
+            $num    = $DB->numrows($result);
             
             while ($data=$DB->fetch_array($result)){
-               $random = mt_rand();
-               
+               $random   = mt_rand();
                $detailID = $data["IDD"];
 
                echo "<tr class='tab_bg_2'>";

@@ -157,7 +157,8 @@ class PluginOrderReception extends CommonDBTM {
    function defineTabs($options=array()) {
       global $LANG;
 
-      $ong[1] = $LANG['title'][26];
+      $ong[1]  = $LANG['title'][26];
+      $ong[12] = $LANG['title'][38];
 
       return $ong;
    }
@@ -239,9 +240,17 @@ class PluginOrderReception extends CommonDBTM {
       }
       echo "</td>";
       
-      echo "<td></td>";
-      echo "<td></td>";
-      
+      echo "<td>".$LANG['plugin_order']['bill'][0]."</td>";
+      echo "<td>";
+      if (plugin_order_haveRight("bill", "w")) {
+         Dropdown::show('PluginOrderBill',
+                        array('name'  => "plugin_order_bills_id",
+                              'value' => $this->fields["plugin_order_bills_id"]));
+      } elseif (plugin_order_haveRight("bill", "r")) {
+         echo Dropdown::getDropdownName("glpi_plugin_order_bills",
+                                        $this->fields["plugin_order_bills_id"]);
+      }
+      echo "</td>";
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'><td>";
@@ -499,7 +508,7 @@ class PluginOrderReception extends CommonDBTM {
    function updateBulkReceptionStatus($params) {
       global $LANG, $DB;
       
-      $query = "SELECT `id`, `itemtype`
+      $query = "SELECT `id`, `itemtype`, 'entities_id'
                FROM `glpi_plugin_order_orders_items` 
                WHERE `plugin_order_orders_id` = '" . $params["plugin_order_orders_id"] ."' 
                AND `plugin_order_references_id` = '" . $params["plugin_order_references_id"] ."' 
@@ -509,15 +518,13 @@ class PluginOrderReception extends CommonDBTM {
       $nb      = $DB->numrows($result);
       
       if ($nb < $params['number_reception']) {
-
          addMessageAfterRedirect($LANG['plugin_order']['detail'][37], true, ERROR);
-
       } else {
-
          for ($i = 0; $i < $params['number_reception']; $i++) {
             // Automatic generate asset
-            $options = array( "itemtype" => $DB->result($result, $i, 1),
-                              "items_id" => $DB->result($result, $i, 0),
+            $options = array( "itemtype"    => $DB->result($result, $i, "itemtype"),
+                              "items_id"    => $DB->result($result, $i, "id"),
+                              "entities_id" => $DB->result($result, $i, "entities_id"),
                               "plugin_order_orders_id" 
                                          => $params['plugin_order_orders_id'],
                               "plugin_order_references_id" 
@@ -534,7 +541,7 @@ class PluginOrderReception extends CommonDBTM {
    }
    
    function receptionOneItem($detailID, $plugin_order_orders_id, $delivery_date, 
-                             $delivery_number,$plugin_order_deliverystates_id) {
+                             $delivery_number, $plugin_order_deliverystates_id) {
       global $LANG,$CFG_GLPI;
       
       $detail                                  = new PluginOrderOrder_Item();
@@ -561,10 +568,10 @@ class PluginOrderReception extends CommonDBTM {
       $detail = new PluginOrderOrder_Item();
       $detail->getFromDB($detailID);
       $result = $detail->queryRef($_POST["plugin_order_orders_id"],
-                                               $plugin_order_references_id,
-                                               $detail->fields["price_taxfree"],
-                                               $detail->fields["discount"],
-                                               PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED);
+                                  $plugin_order_references_id,
+                                  $detail->fields["price_taxfree"],
+                                  $detail->fields["discount"],
+                                  PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED);
       $nb = $DB->numrows($result);
 
       if ($nb) {
@@ -600,8 +607,9 @@ class PluginOrderReception extends CommonDBTM {
                   if ($detail->getFromDB($key)) {
 
                      // Automatic generate asset
-                     $options = array( "itemtype" => $params["itemtype"][$key],
-                                       "items_id" => $key,
+                     $options = array( "itemtype"    => $params["itemtype"][$key],
+                                       "items_id"    => $key,
+                                       'entities_id' => $detail->getEntityID(),
                                        "plugin_order_orders_id"
                                           => $detail->fields["plugin_order_orders_id"],
                                        "plugin_order_references_id"
@@ -644,7 +652,7 @@ class PluginOrderReception extends CommonDBTM {
          $item = array( "name"                     => $config->getGeneratedAssetName().$rand,
                         "serial"                   => $config->getGeneratedAssetSerial().$rand,
                         "otherserial"              => $config->getGeneratedAssetOtherserial().$rand,
-                        "entities_id"              => $config->getGeneratedAssetEntity(),
+                        "entities_id"              => $options['entities_id'],
                         "itemtype"                 => $options["itemtype"],
                         "id"                       => $options["items_id"],
                         "plugin_order_orders_id"   => $options["plugin_order_orders_id"]);
@@ -658,7 +666,7 @@ class PluginOrderReception extends CommonDBTM {
                   array("title"                 => $config->getGeneratedTicketTitle(),
                         "content"               => $config->getGeneratedTicketContent(),
                         "ticketcategories_id"   => $config->getGeneratedTicketCategory(),
-                        "entities_id"           => $config->getGeneratedAssetEntity());
+                        "entities_id"           => $options['entities_id']);
          }
 
          $link = new PluginOrderLink();

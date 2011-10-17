@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderOrder extends CommonDBTM {
 
-   public $dohistory=true;
+   public $dohistory = true;
    public $forward_entity_to = array("PluginOrderOrder_Item");
    
    const ORDER_DEVICE_NOT_DELIVRED        = 0;
@@ -727,7 +727,7 @@ class PluginOrderOrder extends CommonDBTM {
                                                                            $this->fields["plugin_order_ordertaxes_id"]));
 
          echo $LANG['plugin_order'][15] . " : ";
-         $priceHTwithpostage=$prices["priceHT"]+$this->fields["port_price"];
+         $priceHTwithpostage = $prices["priceHT"] + $this->fields["port_price"];
          echo formatNumber($priceHTwithpostage) . "<br />";
          
          // total price (with taxes)

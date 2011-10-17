@@ -36,7 +36,10 @@
 function plugin_order_install() {
    global $LANG;
    foreach (glob(GLPI_ROOT . '/plugins/order/inc/*.php') as $file) {
-      include_once ($file);
+      //Do not load datainjection files (not needed and avoid missing class error message)
+      if (!preg_match('/injection.class.php/', $file) ) {
+         include_once ($file);
+      }
    }
 
    echo "<center>";
@@ -120,53 +123,37 @@ function plugin_order_getDatabaseRelations() {
    if ($plugin->isActivated("order")) {
       return array (
          "glpi_plugin_order_orderpayments" => array (
-            "glpi_plugin_order_orders" => "plugin_order_orderpayments_id"
-         ),
+            "glpi_plugin_order_orders" => "plugin_order_orderpayments_id"),
          "glpi_plugin_order_ordertaxes" => array (
-            "glpi_plugin_order_orders" => "plugin_order_ordertaxes_id"
-         ),
+            "glpi_plugin_order_orders" => "plugin_order_ordertaxes_id"),
          "glpi_plugin_order_ordertypes" => array (
-            "glpi_plugin_order_orders" => "plugin_order_ordertypes_id"
-         ),
+            "glpi_plugin_order_orders" => "plugin_order_ordertypes_id"),
          "glpi_plugin_order_orderstates" => array (
-            "glpi_plugin_order_orders" => "plugin_order_orderstates_id"
-         ),
+            "glpi_plugin_order_orders" => "plugin_order_orderstates_id"),
          "glpi_plugin_order_deliverystates" => array (
-            "glpi_plugin_order_orders_items" => "plugin_order_deliverystates_id"
-         ),
+            "glpi_plugin_order_orders_items" => "plugin_order_deliverystates_id"),
          "glpi_plugin_order_orders" => array (
-            "glpi_plugin_order_orders_items" => "plugin_order_orders_id",
-            "glpi_plugin_order_orders_suppliers" => "plugin_order_orders_id"
-         ),
+            "glpi_plugin_order_orders_items"     => "plugin_order_orders_id",
+            "glpi_plugin_order_orders_suppliers" => "plugin_order_orders_id"),
          "glpi_plugin_order_references" => array (
-            "glpi_plugin_order_orders_items" => "plugin_order_references_id",
-            "glpi_plugin_order_references_suppliers" => "plugin_order_references_id"
-         ),
-         "glpi_entities" => array (
-            "glpi_plugin_order_orders" => "entities_id",
-            "glpi_plugin_order_references" => "entities_id",
-            "glpi_plugin_order_others" => "entities_id"
-         ),
+            "glpi_plugin_order_orders_items"         => "plugin_order_references_id",
+            "glpi_plugin_order_references_suppliers" => "plugin_order_references_id"),
+         
+         "glpi_entities" => array ("glpi_plugin_order_orders"     => "entities_id",
+                                   "glpi_plugin_order_references" => "entities_id",
+                                   "glpi_plugin_order_others"     => "entities_id",
+                                   "glpi_plugin_order_bills"      => "entities_id"),
          "glpi_budgets" => array ("glpi_plugin_order_orders" => "budgets_id"),
+         
          "glpi_plugin_order_othertypes" => array ("glpi_plugin_order_others" => "othertypes_id"),
-         "glpi_suppliers" => array (
-            "glpi_plugin_order_orders" => "suppliers_id",
-            "glpi_plugin_order_orders_suppliers" => "suppliers_id",
-            "glpi_plugin_order_references_suppliers" => "suppliers_id"
-         ),
-         "glpi_manufacturers" => array (
-            "glpi_plugin_order_references" => "manufacturers_id"
-         ),
-         "glpi_contacts" => array (
-            "glpi_plugin_order_orders" => "contacts_id"
-         ),
-         "glpi_locations" => array (
-            "glpi_plugin_order_orders" => "locations_id"
-         ),
-         "glpi_profiles" => array (
-            "glpi_plugin_order_profiles" => "profiles_id"
-         )
-      );
+         "glpi_suppliers" => array ("glpi_plugin_order_orders"               => "suppliers_id",
+                                    "glpi_plugin_order_orders_suppliers"     => "suppliers_id",
+                                    "glpi_plugin_order_references_suppliers" => "suppliers_id"),
+                                    
+         "glpi_manufacturers" => array ("glpi_plugin_order_references" => "manufacturers_id"),
+         "glpi_contacts"      => array ("glpi_plugin_order_orders"     => "contacts_id"),
+         "glpi_locations"     => array ("glpi_plugin_order_orders"     => "locations_id"),
+         "glpi_profiles"      => array ("glpi_plugin_order_profiles"   => "profiles_id"));
 
    } else {
       return array ();

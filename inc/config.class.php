@@ -132,7 +132,7 @@ class PluginOrderConfig extends CommonDBTM {
                   <td>".$LANG['plugin_order']['config'][7]."</td><td>";
                   autocompletionTextField($this, "generated_otherserial");
          echo "</td></tr>";
-         
+         /*
          echo "<tr class='tab_bg_1' align='center'>";
          echo "<td>".$LANG['plugin_order']['config'][8]."</td><td>";
          if (isMultiEntitiesMode()) {
@@ -143,7 +143,7 @@ class PluginOrderConfig extends CommonDBTM {
             echo $_SESSION["glpiactive_entity"];
          }
          echo "</td></tr>";
-   
+         */
          echo "<tr class='tab_bg_1' align='center'>
                   <td>".$LANG['plugin_order']['config'][12]."</td><td>";
                   Dropdown::show('State', 
@@ -152,38 +152,36 @@ class PluginOrderConfig extends CommonDBTM {
                                        'entity' => $_SESSION["glpiactiveentities"]));
          echo "</td></tr>";
 
-      }
-      
-      // TICKETS
-      echo "<tr class='tab_bg_1' align='center'>
-               <th colspan='2'>".$LANG['job'][38]."</th>
-            </tr>";
-   
-      echo "<tr class='tab_bg_1' align='center'>
-            <td>".$LANG['plugin_order']['config'][4]."</td><td>";
-                  Dropdown::showYesNo("generate_ticket", $this->canGenerateTicket());
-      echo "</td></tr>";
-      
-      if ($this->canGenerateTicket()) {
+         // TICKETS
          echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order']['config'][10]."</td><td>";
-                  autocompletionTextField($this, "generated_title");
+                  <th colspan='2'>".$LANG['job'][38]."</th>
+               </tr>";
+      
+         echo "<tr class='tab_bg_1' align='center'>
+               <td>".$LANG['plugin_order']['config'][4]."</td><td>";
+                     Dropdown::showYesNo("generate_ticket", $this->canGenerateTicket());
          echo "</td></tr>";
          
-         echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order']['config'][11]."</td><td>";
-         echo "<textarea cols='60' rows='4' name='generated_content'>" .
-                     $this->fields["generated_content"] . "</textarea>";
-         echo "</td></tr>";
-         
-         echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order']['config'][9]."</td><td>";
-                  Dropdown::show('TicketCategory', 
-                                 array('name'   => 'default_ticketcategories_id',
-                                       'value'  => $this->fields["default_ticketcategories_id"],
-                                       'entity' => $_SESSION["glpiactiveentities"]));
-         echo "</td></tr>";
-
+         if ($this->canGenerateTicket()) {
+            echo "<tr class='tab_bg_1' align='center'>
+                     <td>".$LANG['plugin_order']['config'][10]."</td><td>";
+                     autocompletionTextField($this, "generated_title");
+            echo "</td></tr>";
+            
+            echo "<tr class='tab_bg_1' align='center'>
+                     <td>".$LANG['plugin_order']['config'][11]."</td><td>";
+            echo "<textarea cols='60' rows='4' name='generated_content'>" .
+                        $this->fields["generated_content"] . "</textarea>";
+            echo "</td></tr>";
+            
+            echo "<tr class='tab_bg_1' align='center'>
+                     <td>".$LANG['plugin_order']['config'][9]."</td><td>";
+                     Dropdown::show('TicketCategory', 
+                                    array('name'   => 'default_ticketcategories_id',
+                                          'value'  => $this->fields["default_ticketcategories_id"],
+                                          'entity' => $_SESSION["glpiactiveentities"]));
+            echo "</td></tr>";
+         }
       }
 
       /* Workflow */
@@ -311,10 +309,6 @@ class PluginOrderConfig extends CommonDBTM {
       return $this->fields['generated_serial'];
    }
 
-   function getGeneratedAssetEntity() {
-      return $this->fields['default_asset_entities_id'];
-   }
-
    function getGeneratedAssetState() {
       return $this->fields['default_asset_states_id'];
    }
@@ -367,7 +361,6 @@ class PluginOrderConfig extends CommonDBTM {
                      `generated_name` varchar(255) collate utf8_unicode_ci default NULL,
                      `generated_serial` varchar(255) collate utf8_unicode_ci default NULL,
                      `generated_otherserial` varchar(255) collate utf8_unicode_ci default NULL,
-                     `default_asset_entities_id` int(11) NOT NULL default '0',
                      `default_asset_states_id` int(11) NOT NULL default '0',  
                      `generate_ticket` int(11) NOT NULL default '0',
                      `generated_title` varchar(255) collate utf8_unicode_ci default NULL,
@@ -388,7 +381,7 @@ class PluginOrderConfig extends CommonDBTM {
                $tmp = array('id' => 1, 'use_validation' => 0, 'default_taxes' => 0, 
                             'generate_assets' => 0, 'generated_name' => $tobefilled, 
                             'generated_serial' => $tobefilled, 'generated_otherserial' => $tobefilled,
-                            'default_asset_entities_id' => 0, 'default_asset_states_id' => 0,
+                            'default_asset_states_id' => 0,
                             'generate_ticket' => 0, 'generated_title' => $tobefilled, 
                             'generated_content' => $tobefilled, 'default_ticketcategories_id' => 0);
                $config->add($tmp);

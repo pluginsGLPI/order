@@ -37,7 +37,9 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderOrder_Item extends CommonDBTM {
+class PluginOrderOrder_Item extends CommonDBChild {
+
+   public $dohistory = true;
 
    // From CommonDBRelation
    public $itemtype_1 = "PluginOrderOrder";
@@ -82,6 +84,37 @@ class PluginOrderOrder_Item extends CommonDBTM {
       $tab[3]['field']    = 'price_taxfree';
       $tab[3]['name']     = $LANG['plugin_order']['detail'][25];
       $tab[3]['datatype'] = 'decimal';
+
+      /* order_number */
+      $tab[4]['table']       = $this->getTable();
+      $tab[4]['field']       = 'delivery_number';
+      $tab[4]['name']        = $LANG['financial'][19];
+      $tab[4]['checktype']   = 'text';
+      $tab[4]['displaytype'] = 'text';
+      $tab[4]['injectable']  = true;
+
+      /* order_date */
+      $tab[5]['table']       = $this->getTable();
+      $tab[5]['field']       = 'delivery_date';
+      $tab[5]['name']        = $LANG['plugin_order']['detail'][21];
+      $tab[5]['datatype']    = 'date';
+      $tab[5]['checktype']   = 'date';
+      $tab[5]['displaytype'] = 'date';
+      $tab[5]['injectable']  = true;
+
+      /* comments */
+      $tab[16]['table']        = $this->getTable();
+      $tab[16]['field']        = 'comment';
+      $tab[16]['name']         = $LANG['plugin_order'][2];
+      $tab[16]['datatype']     = 'text';
+      $tab[16]['checktype']    = 'text';
+      $tab[16]['displaytype']  = 'multiline_text';
+      $tab[16]['injectable']   = true;
+
+      $tab[86]['table']         = 'glpi_plugin_order_deliverystates';
+      $tab[86]['field']         = 'name';
+      $tab[86]['name']          = $LANG['plugin_order']['status'][3];
+      $tab[86]['injectable']    = true;
       
       return $tab;
    }
@@ -150,13 +183,12 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
    static function getClasses($all = false) {
       global $ORDER_TYPES;
-      
-      $types = $ORDER_TYPES;
-      
+
       if ($all) {
-         return $types;
+         return $ORDER_TYPES;
       }
       
+      $types = $ORDER_TYPES;
       foreach ($types as $key=>$type) {
          if (!class_exists($type)) {
             continue;
@@ -181,13 +213,15 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
    function addDetails($plugin_order_references_id, $itemtype, $plugin_order_orders_id, $quantity, 
                        $price, $discounted_price, $plugin_order_ordertaxes_id) {
-                          
-      if ($quantity > 0) {
+      $order = new PluginOrderOrder();
+      if ($quantity > 0 && $order->getFromDB($plugin_order_orders_id)) {
          for ($i = 0; $i < $quantity; $i++) {
             $input["plugin_order_orders_id"]     = $plugin_order_orders_id;
             $input["plugin_order_references_id"] = $plugin_order_references_id;
             $input["plugin_order_ordertaxes_id"] = $plugin_order_ordertaxes_id;
             $input["itemtype"]                   = $itemtype;
+            $input["entities_id"]                = $order->getEntityID();
+            $input["is_recursive"]               = $order->isRecursive();
             $input["price_taxfree"]              = $price;
             $input["price_discounted"]           = $price - ($price * ($discounted_price / 100));
             $input["states_id"]                  = PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED;;
@@ -204,7 +238,6 @@ class PluginOrderOrder_Item extends CommonDBTM {
 
    /* show details of orders */
    function showItem($ID) {
-
       $this->showFormDetail($ID);
       $this->showAddForm($ID);
    }
@@ -252,9 +285,9 @@ class PluginOrderOrder_Item extends CommonDBTM {
                echo "<td class='tab_bg_1' align='center'><span id='show_pricediscounted'>&nbsp;</span></td>";
                echo "<td class='tab_bg_1' align='center'><span id='show_validate'>&nbsp;</span></td>";
                echo "</tr>";
-            }
-            else
+            } else {
                echo "<tr><td align='center'>".$LANG['plugin_order']['detail'][27]."</td></tr>";
+            }
 
             echo "</table></div></form>";
          }
@@ -264,7 +297,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
    function queryDetail($ID) {
       global $DB;
       
-      $query="SELECT `".$this->getTable()."`.`id` AS IDD, `glpi_plugin_order_references`.`id`,
+      $query = "SELECT `".$this->getTable()."`.`id` AS IDD, `glpi_plugin_order_references`.`id`,
                `glpi_plugin_order_references`.`itemtype`,`glpi_plugin_order_references`.`types_id`,
                `glpi_plugin_order_references`.`models_id`, 
                `glpi_plugin_order_references`.`manufacturers_id`,
@@ -279,10 +312,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
                GROUP BY `glpi_plugin_order_references`.`id`,`".$this->getTable()."`.`price_taxfree`,`".
                   $this->getTable()."`.`discount`
                ORDER BY `glpi_plugin_order_references`.`name` ";
-
-      $result=$DB->query($query);
-      
-      return $result;
+      return $DB->query($query);
    }
 
    function queryBills($orders_id, $references_id) {
@@ -301,9 +331,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
                      AND `glpi_plugin_order_references`.`id` = '$references_id'
                ORDER BY `glpi_plugin_order_references`.`name` ";
 
-      $result=$DB->query($query);
-      
-      return $result;
+      return $DB->query($query);
    }
 
    function queryRef($plugin_order_orders_id, $plugin_order_references_id, $price_taxfree, 
@@ -321,8 +349,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
          $query.= "AND `states_id` = '".$states_id."' ";
       }
 
-      $result=$DB->query($query);
-      return $result;
+      return $DB->query($query);
    }
    
    function showFormDetail($plugin_order_orders_id) {
@@ -334,15 +361,15 @@ class PluginOrderOrder_Item extends CommonDBTM {
       $result_ref           = $this->queryDetail($plugin_order_orders_id);
       $numref               = $DB->numrows($result_ref);
       $rand                 = mt_rand();
-      $canedit              = $order->can($plugin_order_orders_id,'w') 
+      $canedit              = $order->can($plugin_order_orders_id, 'w') 
                               && $order->canUpdateOrder();
 
-      while ($data_ref=$DB->fetch_array($result_ref)){
-
+      while ($data_ref = $DB->fetch_array($result_ref)){
          $global_rand = mt_rand();
 
          echo "<div class='center'>";
-         echo "<form method='post' name='order_updatedetail_form$rand' id='order_updatedetail_form$rand'  " .
+         echo "<form method='post' name='order_updatedetail_form$rand' " .
+                  "id='order_updatedetail_form$rand'  " .
                   "action='" . getItemTypeFormURL('PluginOrderOrder') . "'>";
          echo "<input type='hidden' name='plugin_order_orders_id' 
                   value='" . $plugin_order_orders_id . "'>";
@@ -351,7 +378,6 @@ class PluginOrderOrder_Item extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'>";
          if (!$numref) {
             echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
-
          } else {
             $refID         = $data_ref["id"];
             $price_taxfree = $data_ref["price_taxfree"];
@@ -422,7 +448,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
                echo "<div id='viewquantity$rand'>\n";
                echo "</div>\n";
                echo "</td>";
-            }else{
+            } else {
                echo "<td align='center'>".$quantity."</td>";
             }
             /* type */
@@ -500,7 +526,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
                echo "<div id='viewdiscount$rand'>\n";
                echo "</div>\n";
                echo "</td>";
-            }else{
+            }else {
                echo "<td align='center'>" . formatNumber($discount) . "</td>";
             }
             echo "</tr></table></form>";
@@ -552,9 +578,7 @@ class PluginOrderOrder_Item extends CommonDBTM {
             $hideForm = "";
 
             while ($data=$DB->fetch_array($result)) {
-               
                $rand = mt_rand();
-               
                // Compute for detail_hideForm javascript function
                $hideForm.="Ext.get('detail_pricetaxfree$rand').setDisplayed('block');\n";
                $hideForm.="Ext.select('#detail_viewpricetaxfree$rand input').remove();\n";
@@ -664,14 +688,12 @@ class PluginOrderOrder_Item extends CommonDBTM {
             }
             
             if ($canedit) {
-               
                echo "<div class='center'>";
                echo "<table width='950px' class='tab_glpi'>";
                echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''>"; 
                echo "</td><td class='center'>"; 
                echo "<a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='#'>".
                   $LANG['buttons'][18]."</a></td>";
-
                echo "<td>/</td><td class='center'>"; 
                echo "<a onclick= \"if ( unMarkCheckboxes('order_detail_form$rand') ) " .
                       " return false;\" href='#'>".$LANG['buttons'][19]."</a>";
