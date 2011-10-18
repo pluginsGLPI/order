@@ -72,10 +72,6 @@ $LANG['plugin_order']['bill'][5] = "Payment status";
 $LANG['plugin_order']['bill'][6] = "Paid";
 $LANG['plugin_order']['bill'][7] = "Being paid";
 
-$LANG['plugin_order']['budget'][1] = "Pedidos asociados";
-$LANG['plugin_order']['budget'][2] = "Presupuesto ya utilizado";
-$LANG['plugin_order']['budget'][3] = "El presupuesto tiene valor nulo. Por favor, añada un valor";
-
 $LANG['plugin_order']['config'][0] = "Configuración del plugin";
 $LANG['plugin_order']['config'][1] = "IVA predeterminado";
 $LANG['plugin_order']['config'][2] = "Utilizar proceso de validación";
@@ -89,6 +85,17 @@ $LANG['plugin_order']['config'][9] = "Categoría predeterminada";
 $LANG['plugin_order']['config'][10] = "Título predeterminado";
 $LANG['plugin_order']['config'][11] = "Descripción predeterminada";
 $LANG['plugin_order']['config'][12] = "Estado predeterminado";
+$LANG['plugin_order']['config'][13] = "Order lifecycle";
+$LANG['plugin_order']['config'][14] = "State before validation";
+$LANG['plugin_order']['config'][15] = "Waiting for validation state";
+$LANG['plugin_order']['config'][16] = "Validated order state";
+$LANG['plugin_order']['config'][17] = "Order being delivered state";
+$LANG['plugin_order']['config'][18] = "Order delivered state";
+$LANG['plugin_order']['config'][19] = "Canceled order state";
+$LANG['plugin_order']['config'][20] = "No VAT";
+$LANG['plugin_order']['config'][21] = "Order paied state";
+$LANG['plugin_order']['config'][22] = "Order generation in PDF";
+$LANG['plugin_order']['config'][23] = "Activate suppliers quality satisfaction";
 
 $LANG['plugin_order']['delivery'][1] = "Material entregado";
 $LANG['plugin_order']['delivery'][2] = "Recibir material";

@@ -100,7 +100,6 @@ $LANG['plugin_order']['config'][21] = "Statut lorsque la commande est payée";
 $LANG['plugin_order']['config'][22] = "Génération d'un bon de commande en PDF";
 $LANG['plugin_order']['config'][23] = "Activer la qualité des fournisseurs";
 
-
 $LANG['plugin_order']['delivery'][1] = "Réception matériel(s)";
 $LANG['plugin_order']['delivery'][2] = "Réceptionner matériel";
 $LANG['plugin_order']['delivery'][3] = "Générer matériel associé";

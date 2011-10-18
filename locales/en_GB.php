@@ -87,6 +87,17 @@ $LANG['plugin_order']['config'][9] = "Default category";
 $LANG['plugin_order']['config'][10] = "Default title";
 $LANG['plugin_order']['config'][11] = "Default description";
 $LANG['plugin_order']['config'][12] = "Default state";
+$LANG['plugin_order']['config'][13] = "Order lifecycle";
+$LANG['plugin_order']['config'][14] = "State before validation";
+$LANG['plugin_order']['config'][15] = "Waiting for validation state";
+$LANG['plugin_order']['config'][16] = "Validated order state";
+$LANG['plugin_order']['config'][17] = "Order being delivered state";
+$LANG['plugin_order']['config'][18] = "Order delivered state";
+$LANG['plugin_order']['config'][19] = "Canceled order state";
+$LANG['plugin_order']['config'][20] = "No VAT";
+$LANG['plugin_order']['config'][21] = "Order paied state";
+$LANG['plugin_order']['config'][22] = "Order generation in PDF";
+$LANG['plugin_order']['config'][23] = "Activate suppliers quality satisfaction";
 
 $LANG['plugin_order']['delivery'][1] = "Item delivered";
 $LANG['plugin_order']['delivery'][2] = "Take item delivery";
@@ -146,7 +157,7 @@ $LANG['plugin_order']['generation'][13] = "Discount rate";
 $LANG['plugin_order']['generation'][14] = "TOTAL tax free";
 $LANG['plugin_order']['generation'][15] = "TOTAL with taxes";
 $LANG['plugin_order']['generation'][16] = "Signature of issuing order";
-$LANG['plugin_order']['generation'][17] = "�";
+$LANG['plugin_order']['generation'][17] = "€";
 
 $LANG['plugin_order']['history'][2] = "Add";
 $LANG['plugin_order']['history'][4] = "Delete";

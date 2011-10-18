@@ -27,8 +27,7 @@
  @link      http://www.glpi-project.org/
  @since     2009
  ---------------------------------------------------------------------- */
- 
-$LANG['plugin_order']['title'][1] = "Bestellverwaltung";
+ $LANG['plugin_order']['title'][1] = "Bestellverwaltung";
 
 $LANG['plugin_order'][0] = "Bestellnummer";
 $LANG['plugin_order'][1] = "Bestelldatum";
@@ -38,8 +37,8 @@ $LANG['plugin_order'][4] = "Detail Lieferant";
 $LANG['plugin_order'][5] = "Freigabe";
 $LANG['plugin_order'][6] = "Lieferung";
 $LANG['plugin_order'][7] = "Bestellung";
-$LANG['plugin_order'][8] = "Autre équipement";
-$LANG['plugin_order'][9] = "Type d'autre équipement";
+$LANG['plugin_order'][8] = "Other item";
+$LANG['plugin_order'][9] = "Other type of item";
 $LANG['plugin_order'][10] = "Quality";
 $LANG['plugin_order'][11] = "Verbundene Bestellungen";
 $LANG['plugin_order'][12] = "Verbrauchtes Budget";
