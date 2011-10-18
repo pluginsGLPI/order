@@ -188,10 +188,10 @@ function plugin_version_order() {
 
 /* check prerequisites before install : may print errors or add to message after redirect -optional- */
 function plugin_order_check_prerequisites(){
-   if (GLPI_VERSION>=0.80) {
-      return true;
+   if (version_compare(GLPI_VERSION,'0.80','lt') || version_compare(GLPI_VERSION,'0.81','ge')) {
+      echo "This plugin requires 0.80.x";
    } else {
-      echo "GLPI version not compatible need 0.80";
+      return true;
    }
 }
 
