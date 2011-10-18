@@ -1,37 +1,32 @@
 <?php
 /*
- * @version $Id: HEADER 2011-03-23 15:41:26 tsmr $
- -------------------------------------------------------------------------
- GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2011 by the INDEPNET Development Team.
-
- http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
-
+ * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
- This file is part of GLPI.
+ This file is part of the order plugin.
 
- GLPI is free software; you can redistribute it and/or modify
+ Order plugin is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
 
- GLPI is distributed in the hope that it will be useful,
+ Order plugin is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ along with GLPI; along with Behaviors. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
-// ----------------------------------------------------------------------
-// Original Authors of file: 
-// NOUH Walid & FONTAN Benjamin & CAILLAUD Xavier & François Legastelois
-// Purpose of file: 
-// ----------------------------------------------------------------------
-// ---------------------------------------------------------------------- */
+ @package   order
+ @author    the order plugin team
+ @copyright Copyright (c) 2010-2011 Order plugin team
+ @license   GPLv2+
+            http://www.gnu.org/licenses/gpl.txt
+ @link      https://forge.indepnet.net/projects/order
+ @link      http://www.glpi-project.org/
+ @since     2009
+ ---------------------------------------------------------------------- */
 
 $LANG['plugin_order']['title'][1] = "Orders management";
 
