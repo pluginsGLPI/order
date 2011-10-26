@@ -234,15 +234,18 @@ class PluginOrderProfile extends CommonDBTM {
             $migration->changeField($table, $right, $right, 
                                     "char(1) collate utf8_unicode_ci default NULL");
          }
-         $migration->addField($table, "profiles_id", "int(11) NOT NULL default '0'");
-         $migration->addKey($table, "profiles_id");
-         $migration->migrationOneTable($table);
+         
+         if ($migration->addField($table, "profiles_id", "int(11) NOT NULL default '0'")) {
+            $migration->addKey($table, "profiles_id");
+            $migration->migrationOneTable($table);
+
+            //Migration profiles
+            $DB->query("UPDATE `$table` SET `profiles_id`=`id`");
+         }
          
          //1.4.0
          $migration->dropField($table, "budget");
 
-         //Migration profiles
-         $DB->query("UPDATE `$table` SET `profiles_id`=`id`");
          
          $migration->dropField("glpi_plugin_order_profiles", "name");
          $migration->migrationOneTable($table);
@@ -253,6 +256,8 @@ class PluginOrderProfile extends CommonDBTM {
          $migration->migrationOneTable($table);
          PluginOrderProfile::addRightToProfile($_SESSION['glpiactiveprofile']['id'], "bill" , "w");
       }
+      
+      self::changeProfile();
    }
    
    static function uninstall() {

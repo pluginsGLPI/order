@@ -74,7 +74,10 @@ function plugin_order_install() {
 
 function plugin_order_uninstall() {
    foreach (glob(GLPI_ROOT . '/plugins/order/inc/*.php') as $file) {
-      include_once ($file);
+      //Do not load datainjection files (not needed and avoid missing class error message)
+      if (!preg_match('/injection.class.php/', $file) ) {
+         include_once ($file);
+      }
    }
 
    $classes = array('PluginOrderConfig', 'PluginOrderBill', 'PluginOrderBillState', 
@@ -332,7 +335,7 @@ function plugin_item_purge_order($item) {
 function plugin_get_headings_order($item,$withtemplate) {
    global $LANG;
 
-   $type = get_Class($item);
+   $type = get_class($item);
    if ($type == 'Profile') {
       if ($item->getField('id') && $item->getField('interface')!='helpdesk') {
          return array(1 => $LANG['plugin_order']['title'][1]);

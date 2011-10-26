@@ -32,10 +32,10 @@
 function plugin_init_order() {
    global $PLUGIN_HOOKS, $CFG_GLPI, $LANG, $ORDER_TYPES;
 
+   Plugin::registerClass('PluginOrderProfile');
+
    /* load changeprofile function */
    $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile', 'changeProfile');
-
-   
    
    $plugin = new Plugin();
    if ($plugin->isInstalled('order')) {
