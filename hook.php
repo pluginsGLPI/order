@@ -44,7 +44,7 @@ function plugin_order_install() {
    echo "<tr class='tab_bg_1'>";
    echo "<td align='center'>";
    
-   $migration = new Migration("1.5.0");
+   $migration = new Migration("1.5.1");
    $classes = array('PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',  
                     'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',  
                     'PluginOrderReference', 'PluginOrderDeliveryState', 
