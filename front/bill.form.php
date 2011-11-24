@@ -48,7 +48,7 @@ if (isset($_POST['action'])) {
          break;
    }
    PluginOrderOrder::updateBillState($order_item->fields['plugin_order_orders_id']);
-   glpi_header($_SERVER["HTTP_REFERER"]);
+   Html::back();
 }
 $dropdown = new PluginOrderBill();
 include (GLPI_ROOT . "/front/dropdown.common.form.php");

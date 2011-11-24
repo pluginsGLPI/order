@@ -177,7 +177,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
             echo "<td>";
             echo Dropdown::getDropdownName("glpi_entities",$entities_id);
             echo "</td>";
-            $link = getItemTypeFormURL('PluginOrderOrder');
+            $link = Toolbox::getItemTypeFormURL('PluginOrderOrder');
             echo "<td><a href=\"" . $link . "?id=" . $ID . "\">" . $name . "</a></td>";
             echo "<td>" . $note." / 10"."</td>";
             echo "<td>" . nl2br($comment)."</td>";
@@ -194,7 +194,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
             echo "<td colspan='2'></td>";
             echo "<td><div align='left'>" . $LANG['plugin_order']['survey'][$i]. "</div></td>";
             echo "<td><div align='left'>" . 
-               formatNumber($this->getNotation($suppliers_id,"answer$i"))."&nbsp;/ 10</div></td>";
+               Html::formatNumber($this->getNotation($suppliers_id,"answer$i"))."&nbsp;/ 10</div></td>";
             echo "</tr>";
          }
          
@@ -205,7 +205,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          echo "<tr class='tab_bg_1 b'>";
          echo "<td colspan='2'></td>";
          echo "<td><div align='left'>" . $LANG['plugin_order']['survey'][9]. "</div></td>";
-         echo "<td><div align='left'>" . formatNumber($total/$nb_order)."&nbsp;/ 10</div></td>";
+         echo "<td><div align='left'>" . Html::formatNumber($total/$nb_order)."&nbsp;/ 10</div></td>";
          echo "</tr>";
       }
       echo "</table>";
@@ -248,7 +248,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       if ($ID > 0) {
          $suppliers_id = $this->fields["suppliers_id"];
       }
-      $link=getItemTypeFormURL('Supplier');
+      $link=Toolbox::getItemTypeFormURL('Supplier');
       echo "<a href=\"" . $link . "?id=" . $suppliers_id . "\">" . 
          Dropdown::getDropdownName("glpi_suppliers", $suppliers_id) . "</a>";
       echo "<input type='hidden' name='suppliers_id' value='".$suppliers_id."'>";
@@ -274,7 +274,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          echo "<tr><th><div align='left'>" . $LANG['plugin_order']['survey'][8] . 
                ": </div></th><th><div align='left'>";
          $total = $this->getTotalNotation($this->fields["plugin_order_orders_id"]);
-         echo formatNumber($total)." / 10";
+         echo Html::formatNumber($total)." / 10";
          echo "</div></th>";
          echo "</tr>";
       }
@@ -293,7 +293,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       $order = new PluginOrderOrder;
       $order->getFromDB($ID);
 
-      initNavigateListItems($this->getType(), 
+      Session::initNavigateListItems($this->getType(), 
                             $LANG['plugin_order'][7] ." = ". $order->fields["name"]);
 
       $candelete = $order->can($ID,'w');
@@ -302,7 +302,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       $rand      = mt_rand();
       echo "<div class='center'>";
       echo "<form method='post' name='show_suppliersurvey$rand' id='show_suppliersurvey$rand' " .
-            " action=\"".getItemTypeFormURL(__CLASS__)."\">";
+            " action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\">";
       echo "<input type='hidden' name='plugin_order_orders_id' value='" . $ID . "'>";
       echo "<table class='tab_cadre_fixe'>";
       
@@ -316,7 +316,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       if ($DB->numrows($result) > 0) {
 
          while ($data = $DB->fetch_array($result)) {
-            addToNavigateListItems($this->getType(),$data['id']);
+            Session::addToNavigateListItems($this->getType(),$data['id']);
             echo "<input type='hidden' name='item[" . $data["id"] . "]' value='" . $ID . "'>";
             echo "<tr class='tab_bg_1 center'>";
             echo "<td>";
@@ -327,7 +327,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
                echo ">";
             }
             echo "</td>";
-            $link=getItemTypeFormURL($this->getType());
+            $link=Toolbox::getItemTypeFormURL($this->getType());
             echo "<td><a href='".$link."?id=".$data["id"]."&plugin_order_orders_id=".$ID."'>" .
                Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
             echo "<td>";

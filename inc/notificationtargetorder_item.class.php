@@ -73,7 +73,7 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
 
       // orderdate
       $this->datas['##lang.reception.orderdate##'] = $LANG['plugin_order'][1];
-      $this->datas['##reception.orderdate##'] = convDate($order->getField("order_date"));
+      $this->datas['##reception.orderdate##'] = Html::convDate($order->getField("order_date"));
       
       // orderlocation
       $this->datas['##lang.reception.orderlocation##'] = $LANG['plugin_order'][40];
@@ -150,7 +150,7 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
       // deliverydate
       $this->datas['##lang.reception.deliverydate##'] = $LANG['plugin_order']['detail'][21];
       $this->datas['##reception.deliverydate##'] = (!empty($delivery_date)) 
-                                                      ? convDate($delivery_date) 
+                                                      ? Html::convDate($delivery_date) 
                                                       : 'N/A';
 
       // deliverynumber

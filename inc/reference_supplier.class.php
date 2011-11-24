@@ -120,7 +120,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       /* principal */
       $ong[1] = $LANG['title'][26];
       if ($this->fields['id'] > 0) {
-         if (haveRight("document", "r")) {
+         if (Session::haveRight("document", "r")) {
             $ong[4] = $LANG['Menu'][27];
          }
          $ong[12] = $LANG['title'][38];
@@ -164,7 +164,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       echo "<td>";
 
       if ($ID > 0) {
-         $link=getItemTypeFormURL('Supplier');
+         $link=Toolbox::getItemTypeFormURL('Supplier');
          echo "<a href=\"" . $link. "?id=" . $this->fields["suppliers_id"] . "\">" . 
             Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]) . "</a>";
          echo "<input type='hidden' name='suppliers_id' value='".$this->fields["suppliers_id"]."'>";
@@ -186,7 +186,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
       echo "<td>" . $LANG['plugin_order']['reference'][10] . ": </td>";
       echo "<td>";
-      autocompletionTextField($this,"reference_code");
+      Html::autocompletionTextField($this,"reference_code");
       echo "</td></tr>";
       
       echo "</tr>";
@@ -196,7 +196,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       echo "<td>" . $LANG['plugin_order']['detail'][4] . ": </td>";
       echo "<td>";
       echo "<input type='text' name='price_taxfree' value=\"".
-         formatNumber($this->fields["price_taxfree"],true)."\" size='7'>";
+         Html::formatNumber($this->fields["price_taxfree"],true)."\" size='7'>";
       echo "</td>";
       
       echo "<td></td>";
@@ -219,7 +219,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       $ref = new PluginOrderReference;
       $ref->getFromDB($ID);
       
-      initNavigateListItems($this->getType(),
+      Session::initNavigateListItems($this->getType(),
                             $LANG['plugin_order']['reference'][1] ." = ". $ref->fields["name"]);
 
       $candelete =$ref->can($ID, 'w');
@@ -243,7 +243,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          echo "<input type='hidden' name='plugin_order_references_id' value='" . $ID . "'>";
 
          while ($data = $DB->fetch_array($result)) {
-            addToNavigateListItems($this->getType(),$data['id']);
+            Session::addToNavigateListItems($this->getType(),$data['id']);
             echo "<input type='hidden' name='item[" . $data["id"] . "]' value='" . $ID . "'>";
             echo "<tr class='tab_bg_1 center'>";
             echo "<td>";
@@ -255,14 +255,14 @@ class PluginOrderReference_Supplier extends CommonDBChild {
                echo ">";
             }
             echo "</td>";
-            $link=getItemTypeFormURL($this->getType());
+            $link=Toolbox::getItemTypeFormURL($this->getType());
             echo "<td><a href='".$link."?id=".$data["id"]."&plugin_order_references_id=".$ID."'>" .
                Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
             echo "<td>";
             echo $data["reference_code"];
             echo "</td>";
             echo "<td>";
-            echo formatNumber($data["price_taxfree"]);
+            echo Html::formatNumber($data["price_taxfree"]);
             echo "</td>";
             echo "</tr>";
          }

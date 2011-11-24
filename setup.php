@@ -72,10 +72,10 @@ function plugin_init_order() {
       Plugin::registerClass('PluginOrderOrder_Item', array('notificationtemplates_types' => true));
 
       /*if glpi is loaded */
-      if (getLoginUserID()) {
+      if (Session::getLoginUserID()) {
       
          /* link to the config page in plugins menu */
-         if (plugin_order_haveRight("order", "w") || haveRight("config", "w"))
+         if (plugin_order_haveRight("order", "w") || Session::haveRight("config", "w"))
             $PLUGIN_HOOKS['config_page']['order'] = 'front/config.form.php';
       
          if (plugin_order_haveRight("order", "r") 
@@ -155,7 +155,7 @@ function plugin_init_order() {
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['links']['config'] 
                = '/plugins/order/front/config.form.php';
          }
-         if (haveRight("config","w")) {
+         if (Session::haveRight("config","w")) {
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['title'] 
                = $LANG['common'][12];
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['page']  
@@ -178,7 +178,8 @@ function plugin_version_order() {
    global $LANG;
 
    return array ('name'           => $LANG['plugin_order']['title'][1],
-                 'version'        => '1.5.1',
+                 'version'        => '1.6.0',
+                 'license' 		 => 'GPLv3',
                  'author'         => 'Benjamin Fontan, Walid Nouh, Xavier Caillaud, François Legastelois',
                  'homepage'       => 'https://forge.indepnet.net/projects/show/order',
                  'minGlpiVersion' => '0.80',
@@ -188,11 +189,11 @@ function plugin_version_order() {
 
 /* check prerequisites before install : may print errors or add to message after redirect -optional- */
 function plugin_order_check_prerequisites(){
-   if (version_compare(GLPI_VERSION,'0.80','lt') || version_compare(GLPI_VERSION,'0.81','ge')) {
-      echo "This plugin requires 0.80.x";
-   } else {
-      return true;
+   if (version_compare(GLPI_VERSION,'0.83','lt') || version_compare(GLPI_VERSION,'0.84','ge')) {
+      echo "This plugin requires GLPI >= 0.83";
+      return false;
    }
+   return true;
 }
 
 function plugin_order_check_config() {

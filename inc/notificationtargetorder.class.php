@@ -62,7 +62,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       $this->datas['##ordervalidation.numorder##'] = $this->obj->getField("num_order");
       
       $this->datas['##lang.ordervalidation.orderdate##'] = $LANG['plugin_order'][1];
-      $this->datas['##ordervalidation.orderdate##'] = convDate($this->obj->getField("order_date"));
+      $this->datas['##ordervalidation.orderdate##'] = Html::convDate($this->obj->getField("order_date"));
       
       $this->datas['##lang.ordervalidation.state##'] = $LANG['joblist'][0];
       $this->datas['##ordervalidation.state##'] =  
@@ -91,7 +91,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                                                          " " . $LANG['plugin_order']['mailing'][2];
             break;
       }
-      $this->datas['##ordervalidation.users##'] =  html_clean(getUserName(getLoginUserID()));
+      $this->datas['##ordervalidation.users##'] =  html_clean(getUserName(Session::getLoginUserID()));
       
       $this->datas['##lang.ordervalidation.url##'] = "URL";
       $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_order_".$this->obj->getField("id");

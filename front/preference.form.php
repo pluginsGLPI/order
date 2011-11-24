@@ -40,12 +40,12 @@ $PluginOrderPreference= new PluginOrderPreference();
 if (isset($_POST["update"])) {
    
    $PluginOrderPreference->update($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 
 } else {
-   commonHeader($LANG['plugin_order']['title'][1],'',"plugins","order","order");
+   Html::header($LANG['plugin_order']['title'][1],'',"plugins","order","order");
    $PluginOrderPreference->showForm("./preference.form.php",$_GET["id"]);
-   commonFooter();
+   Html::footer();
 
 }
 

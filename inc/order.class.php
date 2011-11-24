@@ -401,12 +401,12 @@ class PluginOrderOrder extends CommonDBTM {
          
       }         
       /* documents */
-      if (haveRight("document", "r")) {
+      if (Session::haveRight("document", "r")) {
          $ong[9] = $LANG['Menu'][27];
 
       }
          
-      if (haveRight("notes", "r")) {
+      if (Session::haveRight("notes", "r")) {
          $ong[10] = $LANG['title'][37];
 
       }
@@ -421,7 +421,7 @@ class PluginOrderOrder extends CommonDBTM {
       global $LANG;
       
       if (!isset ($input["num_order"]) || $input["num_order"] == '') {
-         addMessageAfterRedirect($LANG['plugin_order'][44], false, ERROR);
+         Session::addMessageAfterRedirect($LANG['plugin_order'][44], false, ERROR);
          return array ();
       } elseif (!isset ($input["name"]) || $input["name"] == '') {
          $input["name"] = $input["num_order"];
@@ -429,7 +429,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       if( isset($input['budgets_id']) && $input['budgets_id'] > 0) {
          if( !self::canStillUseBudget($input) ) {
-            addMessageAfterRedirect($LANG['plugin_order'][49], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['plugin_order'][49], false, ERROR);
          }
       }
 
@@ -444,7 +444,7 @@ class PluginOrderOrder extends CommonDBTM {
             || (isset($input['budgets_id']) 
                && $this->fields['budgets_id'] != $input['budgets_id']) ) {
          if( !self::canStillUseBudget($input) && !isset($input['_unlink_budget'])) {
-            addMessageAfterRedirect($LANG['plugin_order'][49], false, ERROR);
+            Session::addMessageAfterRedirect($LANG['plugin_order'][49], false, ERROR);
          }
       }
       
@@ -501,7 +501,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][39] . ": </td>";
       echo "<td>";
       if ($canedit) {
-         autocompletionTextField($this, "name");
+         Html::autocompletionTextField($this, "name");
          
       } else {
          echo $this->fields["name"];
@@ -511,14 +511,14 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<td>" . $LANG['plugin_order'][1] . "*:</td><td>";
       if ($canedit)  {
          if ($this->fields["order_date"] == NULL) {
-            showDateFormItem("order_date", date("Y-m-d"), true, true);
+            Html::showDateFormItem("order_date", date("Y-m-d"), true, true);
             
          } else {
-            showDateFormItem("order_date", $this->fields["order_date"], true, true);
+            Html::showDateFormItem("order_date", $this->fields["order_date"], true, true);
          }
          
       } else {
-         echo convDate($this->fields["order_date"]);
+         echo Html::convDate($this->fields["order_date"]);
       }
       echo "</td></tr>";
 
@@ -526,7 +526,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][0] . "*: </td>";
       echo "<td>";
       if ($canedit) {
-         autocompletionTextField($this, "num_order");
+         Html::autocompletionTextField($this, "num_order");
          
       } else {
          echo $this->fields["num_order"];
@@ -627,10 +627,10 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<td>";
       if ($canedit) {
          echo "<input type='text' name='port_price' value=\"".
-            formatNumber($this->fields["port_price"], true)."\" size='5'>";
+            Html::formatNumber($this->fields["port_price"], true)."\" size='5'>";
             
       } else {
-         echo formatNumber($this->fields["port_price"]);
+         echo Html::formatNumber($this->fields["port_price"]);
       }
       echo "</td>";
       echo "</tr>";
@@ -675,14 +675,14 @@ class PluginOrderOrder extends CommonDBTM {
       echo $LANG['plugin_order'][50].": </td><td>";
       if ($canedit)  {
          if ($this->fields["duedate"] == NULL) {
-            showDateFormItem("duedate", '', true, true);
+            Html::showDateFormItem("duedate", '', true, true);
             
          } else {
-            showDateFormItem("duedate", $this->fields["duedate"], true, true);
+            Html::showDateFormItem("duedate", $this->fields["duedate"], true, true);
          }
          
       } else {
-         echo convDate($this->fields["duedate"]);
+         echo Html::convDate($this->fields["duedate"]);
       }
       if (self::shouldBeAlreadyDelivered()) {
          echo "&nbsp<span class='red'>".$LANG['plugin_order'][51]."</span>";
@@ -713,7 +713,7 @@ class PluginOrderOrder extends CommonDBTM {
          $prices = $PluginOrderOrder_Item->getAllPrices($ID);
 
          echo $LANG['plugin_order'][13] . " : ";
-         echo formatNumber($prices["priceHT"]) . "<br />";
+         echo Html::formatNumber($prices["priceHT"]) . "<br />";
      
          // total price (with postage)
          $postagewithTVA = 
@@ -723,17 +723,17 @@ class PluginOrderOrder extends CommonDBTM {
 
          echo $LANG['plugin_order'][15] . " : ";
          $priceHTwithpostage = $prices["priceHT"] + $this->fields["port_price"];
-         echo formatNumber($priceHTwithpostage) . "<br />";
+         echo Html::formatNumber($priceHTwithpostage) . "<br />";
          
          // total price (with taxes)
          echo $LANG['plugin_order'][14] . " : ";
          $total = $prices["priceTTC"] + $postagewithTVA;
-         echo formatNumber($total) . "<br />";
+         echo Html::formatNumber($total) . "<br />";
          
          // total TVA
          echo "(" . $LANG['plugin_order'][25] . " : ";
          $total_tva = $prices["priceTVA"] + ($postagewithTVA- $this->fields["port_price"]);
-         echo formatNumber($total_tva) . ")</td>";
+         echo Html::formatNumber($total_tva) . ")</td>";
       } else
          echo "</td>";
 
@@ -767,7 +767,7 @@ class PluginOrderOrder extends CommonDBTM {
       $result=$DB->query($query);
 
       echo "<select name='suppliers_id' id='suppliers_id'>\n";
-      echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>\n";
+      echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>\n";
 
       $prev=-1;
      while ($data=$DB->fetch_array($result)) {
@@ -783,7 +783,7 @@ class PluginOrderOrder extends CommonDBTM {
             $output.=" (".$data["id"].")";
          }
          echo "<option value='".$data["id"]."' ".($value==$data["id"]?" selected ":"").
-            " title=\"".cleanInputText($output)."\">".
+            " title=\"".Html::cleanInputText($output)."\">".
                substr($output, 0, $CFG_GLPI["dropdown_chars_limit"])."</option>";
       }
       if ($prev>=0) {
@@ -794,7 +794,7 @@ class PluginOrderOrder extends CommonDBTM {
       $params=array('suppliers_id' => '__VALUE__', 'entity_restrict' => $entity_restrict,
                     'rand' => $rand, 'myname' => $myname);
 
-      ajaxUpdateItemOnSelectEvent("suppliers_id", "show_contacts_id", 
+      Ajax::updateItemOnSelectEvent("suppliers_id", "show_contacts_id", 
                                   $CFG_GLPI["root_doc"]."/plugins/order/ajax/dropdownSupplier.php", 
                                   $params);
 
@@ -820,7 +820,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       echo "<select name=\"contacts_id\">";
 
-      echo "<option value=\"0\">".DROPDOWN_EMPTY_VALUE."</option>";
+      echo "<option value=\"0\">".Dropdown::EMPTY_VALUE."</option>";
 
       if ($DB->numrows($result)) {
          $prev=-1;
@@ -837,7 +837,7 @@ class PluginOrderOrder extends CommonDBTM {
                $output.=" (".$data["id"].")";
             }
             echo "<option value='".$data["id"]."' ".($value==$data["id"]?" selected ":"").
-               " title=\"".cleanInputText($output)."\">".
+               " title=\"".Html::cleanInputText($output)."\">".
                   substr($output, 0, $CFG_GLPI["dropdown_chars_limit"])."</option>";
          }
          if ($prev>=0) {
@@ -948,7 +948,7 @@ class PluginOrderOrder extends CommonDBTM {
       
       $this->getFromDB($orders_id);
 
-      echo "<form method='post' name='form' action=\"".getItemTypeFormURL('PluginOrderOrder')."\">";
+      echo "<form method='post' name='form' action=\"".Toolbox::getItemTypeFormURL('PluginOrderOrder')."\">";
       echo "<div align='center'><table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_2'><th colspan='3'>" . 
          $LANG['plugin_order']['validation'][6] . "</th></tr>";
@@ -1045,7 +1045,7 @@ class PluginOrderOrder extends CommonDBTM {
       global $LANG,$DB;
       
       $pref = new PluginOrderPreference();
-      $template=$pref->checkPreferenceTemplateValue(getLoginUserID());
+      $template=$pref->checkPreferenceTemplateValue(Session::getLoginUserID());
       if ($template) {
 
          $config = array('PATH_TO_TMP' => GLPI_DOC_DIR . '/_tmp');
@@ -1097,16 +1097,16 @@ class PluginOrderOrder extends CommonDBTM {
 
          $tmpname=Dropdown::getDropdownName("glpi_locations",$this->fields["locations_id"],1);
          $comment=$tmpname["comment"];
-         $odf->setVars('comment_delivery_address',html_clean($comment),true,'UTF-8');
+         $odf->setVars('comment_delivery_address',Html::clean($comment),true,'UTF-8');
          
          if ($town) {
             $town = $town. ", ";
          }
          $odf->setVars('title_date_order', $town.$LANG['plugin_order']['generation'][5]." ",true,'UTF-8');
-         $odf->setVars('date_order', convDate($this->fields["order_date"]),true,'UTF-8');
+         $odf->setVars('date_order', Html::convDate($this->fields["order_date"]),true,'UTF-8');
          
          $odf->setVars('title_sender', $LANG['plugin_order']['generation'][10],true,'UTF-8');
-         $odf->setVars('sender', html_clean(getUserName(getLoginUserID())),true,'UTF-8');
+         $odf->setVars('sender', Html::clean(getUserName(Session::getLoginUserID())),true,'UTF-8');
          
          $output='';
          $contact = new Contact();
@@ -1155,16 +1155,16 @@ class PluginOrderOrder extends CommonDBTM {
             $article->titleArticle($element['ref']);
             $article->refArticle($element['refnumber']);
             $article->TVAArticle($element['taxe']);
-            $article->HTPriceArticle(html_clean(formatNumber($element['price_taxfree'])));
+            $article->HTPriceArticle(html_clean(Html::formatNumber($element['price_taxfree'])));
             if ($element['discount'] != 0) {
-               $article->discount(html_clean(formatNumber($element['discount']))." %");
+               $article->discount(html_clean(Html::formatNumber($element['discount']))." %");
             } else {
                $article->discount("");
             }
-            $article->HTPriceTotalArticle(html_clean(formatNumber($element['price_discounted'])));
+            $article->HTPriceTotalArticle(html_clean(Html::formatNumber($element['price_discounted'])));
 
             $total_TTC_Article = $element['price_discounted']*(1+($element['taxe']/100));
-            $article->ATIPriceTotalArticle(html_clean(formatNumber($total_TTC_Article)));
+            $article->ATIPriceTotalArticle(html_clean(Html::formatNumber($total_TTC_Article)));
             $article->merge();
          }
 
@@ -1183,26 +1183,26 @@ class PluginOrderOrder extends CommonDBTM {
          $total_TTC  = $prices["priceTTC"]   + $postagewithTVA;
 
          $odf->setVars('title_totalht',$LANG['plugin_order'][13],true,'UTF-8');
-         $odf->setVars('totalht',html_clean(formatNumber($prices['priceHT'])),true,'UTF-8');
+         $odf->setVars('totalht',Html::clean(Html::formatNumber($prices['priceHT'])),true,'UTF-8');
          
          $odf->setVars('title_port',$LANG['plugin_order'][15],true,'UTF-8');
-         $odf->setVars('totalht_port_price',html_clean(formatNumber($total_HT)),true,'UTF-8');
+         $odf->setVars('totalht_port_price',Html::clean(Html::formatNumber($total_HT)),true,'UTF-8');
 
          $odf->setVars('title_price_port',$LANG['plugin_order'][26],true,'UTF-8');
          $odf->setVars('price_port_tva'," (".Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", 
                                     $this->fields["plugin_order_ordertaxes_id"])."%)",true,'UTF-8');
-         $odf->setVars('port_price',html_clean(formatNumber($postagewithTVA)),true,'UTF-8');
+         $odf->setVars('port_price',Html::clean(Html::formatNumber($postagewithTVA)),true,'UTF-8');
 
          $odf->setVars('title_tva',$LANG['plugin_order'][25],true,'UTF-8');
-         $odf->setVars('totaltva',html_clean(formatNumber($total_TVA)),true,'UTF-8');
+         $odf->setVars('totaltva',Html::clean(Html::formatNumber($total_TVA)),true,'UTF-8');
 
          $odf->setVars('title_totalttc',$LANG['plugin_order'][14],true,'UTF-8');
-         $odf->setVars('totalttc',html_clean(formatNumber($total_TTC)),true,'UTF-8');
+         $odf->setVars('totalttc',Html::clean(Html::formatNumber($total_TTC)),true,'UTF-8');
 
          $odf->setVars('title_money',$LANG['plugin_order']['generation'][17],true,'UTF-8');
          $odf->setVars('title_sign',$LANG['plugin_order']['generation'][16],true,'UTF-8');
          
-         $sign=$pref->checkPreferenceSignatureValue(getLoginUserID());
+         $sign=$pref->checkPreferenceSignatureValue(Session::getLoginUserID());
          if ($sign) {
             $odf->setImage('sign', '../signatures/'.$sign);
          } else {
@@ -1280,7 +1280,7 @@ class PluginOrderOrder extends CommonDBTM {
                                                                            $data["plugin_order_ordertaxes_id"]));
          $total +=  $prices["priceTTC"] + $postagewithTVA;
          
-         $link = getItemTypeFormURL($this->getType());
+         $link = Toolbox::getItemTypeFormURL($this->getType());
          
          echo "<tr class='tab_bg_1' align='center'>"; 
          echo "<td>";
@@ -1300,7 +1300,7 @@ class PluginOrderOrder extends CommonDBTM {
          echo "</td>";
          
          echo "<td>";
-         echo formatnumber($prices["priceTTC"] + $postagewithTVA);
+         echo Html::formatnumber($prices["priceTTC"] + $postagewithTVA);
          echo "</td>";
          
          echo "</tr>"; 
@@ -1312,7 +1312,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<table class='tab_cadre' width='15%'>";
       echo "<tr class='tab_bg_2'><td>" . $LANG['plugin_order'][12] . ": </td>";
       echo "<td>";
-      echo formatNumber($total) . "</td>";
+      echo Html::formatNumber($total) . "</td>";
       echo "</tr>";
       echo "</table></div>";
 

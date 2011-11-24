@@ -159,7 +159,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          $supplier = $this->fields["suppliers_id"];
          
       echo "<td>";
-      $link=getItemTypeFormURL('Supplier');
+      $link=Toolbox::getItemTypeFormURL('Supplier');
       echo "<a href=\"" . $link. "?id=" . $supplier . "\">" . 
          Dropdown::getDropdownName("glpi_suppliers", $supplier) . "</a></td>";
       echo "<input type='hidden' name='suppliers_id' value='".$supplier."'>";
@@ -167,7 +167,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 
       /* number of quote */
       echo "<td>" . $LANG['plugin_order'][30] . ": </td><td>";
-      autocompletionTextField($this,"num_quote");
+      Html::autocompletionTextField($this,"num_quote");
       echo "</td>";
       
       echo "</tr>";
@@ -177,7 +177,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       
       /* num order supplier */
       echo "<td>" . $LANG['plugin_order'][31] . ": </td><td>";
-      autocompletionTextField($this,"num_order");
+      Html::autocompletionTextField($this,"num_order");
 
 
       echo "</tr>";
@@ -197,7 +197,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       $order = new PluginOrderOrder;
       $order->getFromDB($ID);
 
-      initNavigateListItems($this->getType(), 
+      Session::initNavigateListItems($this->getType(), 
                             $LANG['plugin_order'][7] ." = ". $order->fields["name"]);
 
       $candelete = $order->can($ID,'w');
@@ -205,7 +205,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       
       echo "<div class='center'>";
       echo "<form method='post' name='show_supplierinfos$rand' id='show_supplierinfos$rand' " .
-            "action=\"".getItemTypeFormURL(__CLASS__)."\">";
+            "action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\">";
       echo "<input type='hidden' name='plugin_order_orders_id' value='" . $ID . "'>";
       
 
@@ -220,7 +220,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 
          foreach (getAllDatasFromTable($this->getTable(), "`plugin_order_orders_id` = '$ID'") 
             as $data) {
-            addToNavigateListItems($this->getType(),$data['id']);
+            Session::addToNavigateListItems($this->getType(),$data['id']);
             echo "<input type='hidden' name='item[" . $data["id"] . "]' value='" . $ID . "'>";
             echo "<tr class='tab_bg_1 center'>";
             echo "<td>";
@@ -233,7 +233,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
                echo ">";
             }
             echo "</td>";
-            $link=getItemTypeFormURL($this->getType());
+            $link=Toolbox::getItemTypeFormURL($this->getType());
             echo "<td><a href='".$link."?id=".$data["id"]."&plugin_order_orders_id=".$ID."'>" .
                Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
             echo "<td>";

@@ -33,16 +33,12 @@ $AJAX_INCLUDE=1;
 define('GLPI_ROOT','../../..');
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+Html::header_nocache();
 
-checkLoginUser();
+Session::checkLoginUser();
 
 if (isset($_REQUEST['node'])) {
-  /* if ($_SESSION['glpiactiveprofile']['interface']=='helpdesk') {
-      $target="helpdesk.public.php";
-   } else {*/
-      $target="reference.php";
-   //}
+	$target="reference.php";
 
    $nodes=array();
    // Root node

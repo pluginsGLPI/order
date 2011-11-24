@@ -161,7 +161,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                            }
                         }
                         if ($field_set) {
-                           addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);
+                           Session::addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);
                         }
                         break;
                      case 'Contract':
@@ -247,7 +247,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
       if ($order->canUpdateOrder()) {
          if ($order->can($plugin_order_orders_id, 'w')) {
             echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\"".
-               getItemTypeFormURL('PluginOrderOrder')."\">";
+               Toolbox::getItemTypeFormURL('PluginOrderOrder')."\">";
             echo "<input type='hidden' name='plugin_order_orders_id' value=\"$plugin_order_orders_id\">";
             echo "<div class='center'>";
             echo"<table class='tab_cadre_fixe'>";
@@ -365,7 +365,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
          echo "<div class='center'>";
          echo "<form method='post' name='order_updatedetail_form$rand' " .
                   "id='order_updatedetail_form$rand'  " .
-                  "action='" . getItemTypeFormURL('PluginOrderOrder') . "'>";
+                  "action='" . Toolbox::getItemTypeFormURL('PluginOrderOrder') . "'>";
          echo "<input type='hidden' name='plugin_order_orders_id' 
                   value='" . $plugin_order_orders_id . "'>";
          echo "<input type='hidden' name='plugin_order_order_items_id' 
@@ -433,7 +433,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                'size'      => 8,
                                'name'      => 'quantity',
                                'data'      => rawurlencode($quantity));
-               ajaxUpdateItemJsCode("viewquantity$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", 
+               aAjax:updateItemJsCode("viewquantity$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", 
                                     $params, false);
                echo "}";
                echo "</script>\n";
@@ -486,18 +486,18 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                'size'      => 8,
                                'name'      => 'price_taxfree',
                                'data'      => rawurlencode($price_taxfree));
-               ajaxUpdateItemJsCode("viewpricetaxfree$rand", 
+               Ajax::updateItemJsCode("viewpricetaxfree$rand", 
                                     $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params, false);
                echo "}";
                echo "</script>\n";
                echo "<div id='pricetaxfree$rand' class='center' onClick='showPricetaxfree$rand()'>\n";
-               echo formatNumber($price_taxfree);
+               echo Html::formatNumber($price_taxfree);
                echo "</div>\n";
                echo "<div id='viewpricetaxfree$rand'>\n";
                echo "</div>\n";
                echo "</td>";
             } else {
-               echo "<td align='center'>" . formatNumber($price_taxfree) . "</td>";
+               echo "<td align='center'>" . Html::formatNumber($price_taxfree) . "</td>";
             }
             /* reduction */
             if ($canedit) {
@@ -511,24 +511,24 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                'size'      => 8,
                                'name'      => 'discount',
                                'data'      => rawurlencode($discount));
-               ajaxUpdateItemJsCode("viewdiscount$rand", 
+               Ajax::updateItemJsCode("viewdiscount$rand", 
                                     $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params, false);
                echo "}";
                echo "</script>\n";
                echo "<div id='discount$rand' class='center' onClick='showDiscount$rand()'>\n";
-               echo formatNumber($discount);
+               echo Html::formatNumber($discount);
                echo "</div>\n";
                echo "<div id='viewdiscount$rand'>\n";
                echo "</div>\n";
                echo "</td>";
             }else {
-               echo "<td align='center'>" . formatNumber($discount) . "</td>";
+               echo "<td align='center'>" . Html::formatNumber($discount) . "</td>";
             }
             echo "</tr></table></form>";
 
             echo "<div class='center' id='detail$rand' style='display:none'>";
             echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  " .
-                  "action=\"" . getItemTypeFormURL('PluginOrderOrder')."\">";
+                  "action=\"" . Toolbox::getItemTypeFormURL('PluginOrderOrder')."\">";
             echo "<table class='tab_cadre_fixe'>";
 
             echo "<tr>";
@@ -615,19 +615,19 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                   'size'      => 8,
                                   'name'      => 'detail_price_taxfree['.$data["IDD"].']',
                                   'data'      => rawurlencode($data["price_taxfree"]));
-                  ajaxUpdateItemJsCode("detail_viewpricetaxfree$rand_line", 
+                  Ajax::updateItemJsCode("detail_viewpricetaxfree$rand_line", 
                                        $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params, false);
                   echo "}";
                   echo "</script>\n";
                   echo "<div id='detail_pricetaxfree$rand_line' class='center' 
                            onClick='showDetailPricetaxfree$rand_line()'>\n";
-                  echo formatNumber($data["price_taxfree"]);
+                  echo Html::formatNumber($data["price_taxfree"]);
                   echo "</div>\n";
                   echo "<div id='detail_viewpricetaxfree$rand_line'>\n";
                   echo "</div>\n";
                   echo "</td>";
                } else {
-                  echo "<td align='center'>" . formatNumber($data["price_taxfree"]) . "</td>";
+                  echo "<td align='center'>" . Html::formatNumber($data["price_taxfree"]) . "</td>";
                }
                
                /* taxe */
@@ -648,24 +648,24 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                   'size'      => 8,
                                   'name'      => 'detail_discount['.$data["IDD"].']',
                                   'data'      => rawurlencode($data["discount"]));
-                  ajaxUpdateItemJsCode("detail_viewdiscount$rand_line", 
+                  Ajax::updateItemJsCode("detail_viewdiscount$rand_line", 
                                        $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params, false);
                   echo "}";
                   echo "</script>\n";
                   echo "<div id='detail_discount$rand_line' class='center' 
                            onClick='showDetailDiscount$rand_line()'>\n";
-                  echo formatNumber($data["discount"]);
+                  echo Html::formatNumber($data["discount"]);
                   echo "</div>\n";
                   echo "<div id='detail_viewdiscount$rand_line'>\n";
                   echo "</div>\n";
                   echo "</td>";
                } else {
-                  echo "<td align='center'>" . formatNumber($data["discount"]) . "</td>";
+                  echo "<td align='center'>" . Html::formatNumber($data["discount"]) . "</td>";
                }
                /* price with reduction */
-               echo "<td align='center'>".formatNumber($data["price_discounted"])."</td>";
+               echo "<td align='center'>".fHtml::ormatNumber($data["price_discounted"])."</td>";
                /* price ati */
-               echo "<td align='center'>".formatNumber($data["price_ati"])."</td>";
+               echo "<td align='center'>".Html::formatNumber($data["price_ati"])."</td>";
                /* status  */
                echo "<td align='center'>".$reception->getReceptionStatus($data["IDD"]).
                   "</td></tr>";
@@ -832,7 +832,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
          echo "<tr align='center'><td class='tab_bg_2'>" . $LANG['plugin_order'][39] . "</td>";
          echo "<td class='tab_bg_2'>";
          $item = new $itemtype();
-         $link = getItemTypeFormURL('PluginOrderOrder');
+         $link = Toolbox::getItemTypeFormURL('PluginOrderOrder');
          if ($this->canView()) {
             echo "<a href=\"".$link."?id=".$infos["id"]."\">".$infos["name"]."</a>";
          } else {
@@ -841,7 +841,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
          echo "</td></tr>";
          echo "<tr align='center'><td class='tab_bg_2'>" . 
             $LANG['plugin_order']['detail'][21] . "</td>";
-         echo "<td class='tab_bg_2'>" . convDate($infos["order_date"]) . "</td></tr>";
+         echo "<td class='tab_bg_2'>" . Html::convDate($infos["order_date"]) . "</td></tr>";
          echo "</table></div>";
        }
     }
@@ -944,7 +944,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
 
             echo "<div class='center' id='generation$rand' style='display:none'>";
             echo "<form method='post' name='bills_form$rand' id='bills_form$rand'  " .
-                     "action='" . getItemTypeFormURL('PluginOrderBill') . "'>";
+                     "action='" . Toolbox::getItemTypeFormURL('PluginOrderBill') . "'>";
                         
             echo "<input type='hidden' name='plugin_order_orders_id' 
                      value='" . $order->getID() . "'>";
@@ -1039,12 +1039,12 @@ class PluginOrderOrder_Item extends CommonDBChild {
    
       function dropdownBillItemsActions($orders_id) {
          global $LANG, $CFG_GLPI;
-         $action['']      = DROPDOWN_EMPTY_VALUE;
+         $action['']      = Dropdown::EMPTY_VALUE;
          $action['bill']  = $LANG['plugin_order']['bill'][0];
          $rand            = Dropdown::showFromArray('chooseAction', $action);
          
          $params = array ('action' => '__VALUE__', 'plugin_order_orders_id' => $orders_id);
-         ajaxUpdateItemOnSelectEvent("dropdown_chooseAction$rand", "show_billsActions$rand", 
+         Ajax::updateItemOnSelectEvent("dropdown_chooseAction$rand", "show_billsActions$rand", 
                                      $CFG_GLPI["root_doc"] . "/plugins/order/ajax/billactions.php", 
                                      $params);
           echo "<span id='show_billsActions$rand'>&nbsp;</span>";

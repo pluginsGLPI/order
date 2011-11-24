@@ -32,9 +32,9 @@ $AJAX_INCLUDE=1;
 define('GLPI_ROOT','../../..');
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+Html::header_nocache();
 
-checkLoginUser();
+Session::checkLoginUser();
 
 if (!isset($_GET['target'])) {
    $_GET['target']=$CFG_GLPI['root_doc']."/plugins/order/front/reference.php";
@@ -42,6 +42,6 @@ if (!isset($_GET['target'])) {
 
 PluginOrderReference::showSelector($_GET['target']);//
 
-ajaxFooter();
+Html::ajaxFooter();
 
 ?>

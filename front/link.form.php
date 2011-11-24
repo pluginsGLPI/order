@@ -50,25 +50,25 @@ if (isset ($_POST["generation"])) {
             $order_item->getFromDB($_POST["id"][$key]);
             if ($order_item->fields["states_id"] == 
                   PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
-               addMessageAfterRedirect($LANG['plugin_order'][45], true, ERROR);
-               glpi_header($_SERVER["HTTP_REFERER"]);
+               Session::addMessageAfterRedirect($LANG['plugin_order'][45], true, ERROR);
+               Html::back();
             }
          }
       }
    }
 
    if (isset ($_POST["item"])) {
-      commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
+      Html::header($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
       $link->showItemGenerationForm($_POST);
-      commonFooter();
+      Html::footer();
       
    } else {
-      addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
-      glpi_header($_SERVER["HTTP_REFERER"]);
+      Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
+      Html::back();
    }
 } elseif (isset ($_POST["generate"])) {
    $link->generateNewItem($_POST);
-   glpi_header(getItemTypeFormURL('PluginOrderOrder')."?id=" . 
+   Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=" . 
                                     $_POST["plugin_order_orders_id"] . "");
 } elseif (isset ($_POST["deleteLinkWithItem"])) {
    foreach ($_POST["item"] as $key => $val) {
@@ -76,7 +76,7 @@ if (isset ($_POST["generation"])) {
          $link->deleteLinkWithItem($key, $_POST["itemtype"][$key],
                                               $_POST["plugin_order_orders_id"]);
    }
-   glpi_header(getItemTypeFormURL('PluginOrderOrder')."?id=" . 
+   Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=" . 
                                      $_POST["plugin_order_orders_id"] . "");
 } elseif (isset ($_POST["createLinkWithItem"])) {
    if ($_POST["item"]) {
@@ -96,8 +96,8 @@ if (isset ($_POST["generation"])) {
                $order_item->getFromDB($_POST["id"][$key]);
                if ($order_item->fields["states_id"] == 
                      PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
-                  addMessageAfterRedirect($LANG['plugin_order'][46], true, ERROR);
-                  glpi_header($_SERVER["HTTP_REFERER"]);
+                  Session::addMessageAfterRedirect($LANG['plugin_order'][46], true, ERROR);
+                  Html::back();
                } else {
                   $link->createLinkWithItem($key, $_POST["items_id"], 
                                             $_POST["itemtype"], 
@@ -106,10 +106,10 @@ if (isset ($_POST["generation"])) {
             }
          }
       } else {
-         addMessageAfterRedirect($LANG['plugin_order'][42], true, ERROR);
+         Session::addMessageAfterRedirect($LANG['plugin_order'][42], true, ERROR);
       }
    }
-   glpi_header(getItemTypeFormURL('PluginOrderOrder')."?id=" . 
+   Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=" . 
                                     $_POST["plugin_order_orders_id"] . "");
    
 }

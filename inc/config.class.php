@@ -115,17 +115,17 @@ class PluginOrderConfig extends CommonDBTM {
       if ($this->canGenerateAsset()) {
          echo "<tr class='tab_bg_1' align='center'>
                <td>".$LANG['plugin_order']['config'][5]."</td><td>";
-                  autocompletionTextField($this, "generated_name");
+                  Html::autocompletionTextField($this, "generated_name");
          echo "</td></tr>";
    
          echo "<tr class='tab_bg_1' align='center'>
                   <td>".$LANG['plugin_order']['config'][6]."</td><td>";
-                  autocompletionTextField($this, "generated_serial");
+                  Html::autocompletionTextField($this, "generated_serial");
          echo "</td></tr>";
          
          echo "<tr class='tab_bg_1' align='center'>
                   <td>".$LANG['plugin_order']['config'][7]."</td><td>";
-                  autocompletionTextField($this, "generated_otherserial");
+                  Html::autocompletionTextField($this, "generated_otherserial");
          echo "</td></tr>";
          /*
          echo "<tr class='tab_bg_1' align='center'>";

@@ -69,26 +69,26 @@ if (isset ($_POST["update"])) {
          $order_item->update($_POST);
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
    
 } elseif (isset ($_POST["delete"])) {
    $reception->deleteDelivery($_POST["id"]);
-   glpi_header(getItemTypeFormURL('PluginOrderOrder')."?id=".$_POST["plugin_order_orders_id"]);
+   Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=".$_POST["plugin_order_orders_id"]);
    
 } elseif (isset ($_POST["reception"])) {
    //A new item is delivered
    $reception->updateReceptionStatus($_POST);
-   glpi_header($_SERVER["HTTP_REFERER"]);
+   Html::back();
    
 } elseif (isset ($_POST["bulk_reception"])) {
    //Several new items are delivered
    $reception->updateBulkReceptionStatus($_POST);
-   glpi_header($_SERVER["HTTP_REFERER"]);
+   Html::back();
 
 } else {
-   commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
+   Html::header($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
    $reception->showForm($_GET["id"]);
-   commonFooter();
+   Html::footer();
    
 }
 

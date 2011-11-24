@@ -46,13 +46,13 @@ if (isset($_POST["add"]))
          $newID=$PluginOrderReference_Supplier->add($_POST);
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 }
 else if (isset($_POST["update"]))
 {
    if ($PluginOrderReference_Supplier->canCreate())
       $PluginOrderReference_Supplier->update($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 }
 else if (isset($_POST["delete"]))
 {
@@ -61,20 +61,20 @@ else if (isset($_POST["delete"]))
       foreach ($_POST["check"] as $ID => $value)
          $PluginOrderReference_Supplier->delete(array("id"=>$ID));
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 }
 else
 {
    $PluginOrderReference_Supplier->checkGlobal("r");
    
-   commonHeader($LANG['plugin_order']['reference'][5],'',"plugins","order","reference");
+   Html::header($LANG['plugin_order']['reference'][5],'',"plugins","order","reference");
    
    /* load order form */
    $PluginOrderReference_Supplier->showForm($_GET["id"], 
                                             array('plugin_order_references_id' => 
                                                $_GET["plugin_order_references_id"]));
 
-   commonFooter();
+   Html::footer();
 }
 
 ?>

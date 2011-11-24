@@ -43,28 +43,28 @@ if (isset($_POST["add"])) {
          $newID=$PluginOrderSurveySupplier->add($_POST);
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset($_POST["delete"])) {
    if ($PluginOrderSurveySupplier->canCreate()) {
       foreach ($_POST["check"] as $ID => $value) {
          $PluginOrderSurveySupplier->delete(array("id"=>$ID),0,0);
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset($_POST["update"])) {
    if ($PluginOrderSurveySupplier->canCreate()) {
       
       $PluginOrderSurveySupplier->update($_POST);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else {
    $PluginOrderSurveySupplier->checkGlobal("r");
-   commonHeader($LANG['plugin_order']['title'][1],'',"plugins","order","order");
+   Html::header($LANG['plugin_order']['title'][1],'',"plugins","order","order");
    $PluginOrderSurveySupplier->showForm($_GET["id"], 
                                         array('plugin_order_orders_id' => 
                                                 $_GET["plugin_order_orders_id"]));
 
-   commonFooter();
+   Html::footer();
 }
 
 ?>

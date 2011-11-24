@@ -78,11 +78,11 @@ class PluginOrderLink extends CommonDBChild {
       echo "<a href='" . $_SERVER["HTTP_REFERER"] . "'>" . $LANG['buttons'][13] . "</a></br><br>";
 
       echo "<form method='post' name='order_deviceGeneration' id='order_deviceGeneration' action=\"" . 
-         getItemTypeFormURL("PluginOrderLink")."\">";
+         Toolbox::getItemTypeFormURL("PluginOrderLink")."\">";
       
       echo "<table class='tab_cadre_fixe'>";
       $colspan = "5";
-      if (isMultiEntitiesMode()) {
+      if (Session::isMultiEntitiesMode()) {
          $colspan = "6";
       }
       echo "<tr><th colspan='$colspan'>" . $LANG['plugin_order']['delivery'][3] . "</tr></th>";
@@ -139,7 +139,7 @@ class PluginOrderLink extends CommonDBChild {
 
                //If geninventorynumber plugin is active, and this type is managed by the plugin
                if ($gen_inventorynumber) {
-                  echo "<td align='center'>".DROPDOWN_EMPTY_VALUE."</td>";
+                  echo "<td align='center'>".Dropdown::EMPTY_VALUE."</td>";
                } else {
                   echo "<td><input type='text' size='20' name='id[$i][otherserial]'></td>";
                }
@@ -152,7 +152,7 @@ class PluginOrderLink extends CommonDBChild {
                }   
                echo "</td>";
                
-               if (isMultiEntitiesMode()) {
+               if (Session::isMultiEntitiesMode()) {
                   echo "<td>";
                   $entity_restrict = ($order->fields["is_recursive"] ? 
                      getSonsOf('glpi_entities',$order->fields["entities_id"]) 
@@ -310,11 +310,11 @@ class PluginOrderLink extends CommonDBChild {
                   echo "<td align='center'>" . $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($plugin_order_orders_id,$plugin_order_references_id, $data["price_taxfree"], $data["discount"]) . "</td>";
                echo "<td align='center'>" . $PluginOrderReference->getReceptionReferenceLink($data) . "</td>";
                echo "<td align='center'>" . $PluginOrderReception->getReceptionStatus($detailID) . "</td>";
-               echo "<td align='center'>" . convDate($data["delivery_date"]) . "</td>";
+               echo "<td align='center'>" . Html::convDate($data["delivery_date"]) . "</td>";
                echo "<td align='center'>" . $this->getReceptionItemName($data["items_id"], $data["itemtype"]);
                if ($data["items_id"] != 0) {
                   echo "&nbsp;";
-                  showToolTip(nl2br($this->getLinkedItemDetails($data["itemtype"], $data["items_id"])));
+                  Html::showToolTip(nl2br($this->getLinkedItemDetails($data["itemtype"], $data["items_id"])));
                }
                echo "<input type='hidden' name='id[$detailID]' value='$detailID'>";
                echo "<input type='hidden' name='name[$detailID]' value='" . $data["name"] . "'>";
@@ -435,7 +435,7 @@ class PluginOrderLink extends CommonDBChild {
                $item = new $itemtype();
                $item->getFromDB($items_id);
                $name = $item->getField("name");
-               $link=getItemTypeFormURL($item->getType());
+               $link=Toolbox::getItemTypeFormURL($item->getType());
                if ($_SESSION["glpiis_ids_visible"] || empty($name)) $name.=" (".$items_id.")";
                return ("<a href=" . $link . "?id=" . $items_id . "&itemtype=" . $itemtype . ">" . 
                   $name."</a>");
@@ -444,7 +444,7 @@ class PluginOrderLink extends CommonDBChild {
                $ci   = new Consumable();
                $ci->getFromDB($items_id);
                $ct   = new ConsumableItem();
-               $link = getItemTypeFormURL($ct->getType());
+               $link = Toolbox::getItemTypeFormURL($ct->getType());
                $ct->getFromDB($ci->fields['consumableitems_id']);
                return ("<a href=" . $link . "?id=" . $ct->fields['id'] . ">" . 
                   $LANG['consumables'][0] . ': #' . $items_id . ' (' . $ct->fields["name"] . ')' . 
@@ -454,7 +454,7 @@ class PluginOrderLink extends CommonDBChild {
                $ci = new Cartridge();
                $ci->getFromDB($items_id);
                $ct = new CartridgeItem();
-               $link=getItemTypeFormURL($ct->getType());
+               $link=Toolbox::getItemTypeFormURL($ct->getType());
                $ct->getFromDB($ci->fields['cartridgeitems_id']);
                return ("<a href=" . $link . "?id=" . $ct->fields['id'] . ">" . 
                   $LANG['cartridges'][0] . ': #' . $items_id . 
@@ -471,7 +471,7 @@ class PluginOrderLink extends CommonDBChild {
       $reception = new PluginOrderReception();
       
       echo "<select name='generationActions$rand' id='generationActions$rand'>";
-      echo "<option value='0' selected>".DROPDOWN_EMPTY_VALUE."</option>";
+      echo "<option value='0' selected>".Dropdown::EMPTY_VALUE."</option>";
       
       $restricted = array('ConsumableItem', 'CartridgeItem', 'SoftwareLicense', 'Contract');
       
@@ -488,7 +488,7 @@ class PluginOrderLink extends CommonDBChild {
       $params = array ('action' => '__VALUE__', 'itemtype' => $itemtype,
                        'plugin_order_references_id'=>$plugin_order_references_id,
                        'plugin_order_orders_id'=>$plugin_order_orders_id);
-      ajaxUpdateItemOnSelectEvent("generationActions$rand", "show_generationActions$rand", 
+      Ajax::updateItemOnSelectEvent("generationActions$rand", "show_generationActions$rand", 
                                   $CFG_GLPI["root_doc"] . "/plugins/order/ajax/linkactions.php", 
                                   $params);
       echo "<span id='show_generationActions$rand'>&nbsp;</span>";
@@ -714,9 +714,9 @@ class PluginOrderLink extends CommonDBChild {
             $new_value = $LANG['plugin_order']['delivery'][14] . ' : ' . $order->fields["name"];
             $order->addHistory($itemtype, '', $new_value, $items_id);
          }
-         addMessageAfterRedirect($LANG['plugin_order']['delivery'][14], true);
+         Session::addMessageAfterRedirect($LANG['plugin_order']['delivery'][14], true);
       } else {
-         addMessageAfterRedirect($LANG['plugin_order']['delivery'][16], true, ERROR);
+         Session::addMessageAfterRedirect($LANG['plugin_order']['delivery'][16], true, ERROR);
       }
 
    }
@@ -779,7 +779,7 @@ class PluginOrderLink extends CommonDBChild {
             $input["items_id"] = 0;
             $detail->update($input);
          } else
-            addMessageAfterRedirect($LANG['plugin_order'][48], TRUE, ERROR);
+            Session::addMessageAfterRedirect($LANG['plugin_order'][48], TRUE, ERROR);
 
          $new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $order->fields["name"];
          $order->addHistory($itemtype, '', $new_value, $items_id);
@@ -902,7 +902,7 @@ class PluginOrderLink extends CommonDBChild {
          $new_value .= $item->getTypeName() . " -> " . $item->getField("name");
          $order->addHistory('PluginOrderOrder', '', $new_value, $values["plugin_order_orders_id"]);
 
-         addMessageAfterRedirect($LANG['plugin_order']['detail'][30], true);
+         Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][30], true);
 
       }
    }

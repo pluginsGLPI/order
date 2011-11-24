@@ -51,7 +51,7 @@ if (isset ($_POST["add"])) {
    $_POST['plugin_order_orderstates_id'] = $config->getDraftState();
 
    $newID = $pluginOrderOrder->add($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']."?id=$newID");
+   Html::back();
 }
 /* delete order */
 else if (isset ($_POST["delete"])) {
@@ -75,7 +75,7 @@ else if (isset ($_POST["purge"])) {
 else if (isset ($_POST["update"])) {
    $pluginOrderOrder->check($_POST['id'], 'w');
    $pluginOrderOrder->update($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } 
 //Status update & order workflow
 /* validate order */
@@ -87,42 +87,42 @@ else if (isset ($_POST["validate"])) {
                                            $config->getApprovedState(),
                                            $_POST["comment"]);
       $pluginOrderOrder_Item->updateDelivryStatus($_POST["id"]);
-      addMessageAfterRedirect($LANG['plugin_order']['validation'][10]);
+      Session::addMessageAfterRedirect($LANG['plugin_order']['validation'][10]);
       
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
    
 } else if (isset ($_POST["waiting_for_approval"])) {
    if ($pluginOrderOrder->canCreate()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getWaitingForApprovalState(),
                                            $_POST["comment"]);
-      addMessageAfterRedirect($LANG['plugin_order']['validation'][7]);
+      Session::addMessageAfterRedirect($LANG['plugin_order']['validation'][7]);
       
    }
    
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
    
 } else if (isset ($_POST["cancel_waiting_for_approval"])) {
    if ($pluginOrderOrder->canCreate() && $pluginOrderOrder->canCancel()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getDraftState(),
                                            $_POST["comment"]);
-      addMessageAfterRedirect($LANG['plugin_order']['validation'][14]);
+      Session::addMessageAfterRedirect($LANG['plugin_order']['validation'][14]);
    }
    
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset ($_POST["cancel_order"])) {
    if ($pluginOrderOrder->canCreate() && $pluginOrderOrder->canCancel()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getCanceledState(),
                                            $_POST["comment"]);
       $pluginOrderOrder->deleteAllLinkWithItem($_POST["id"]);
-      addMessageAfterRedirect($LANG['plugin_order']['validation'][5]);
+      Session::addMessageAfterRedirect($LANG['plugin_order']['validation'][5]);
       
    }
    
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
    
 }
 else if (isset ($_POST["undovalidation"])) {
@@ -130,16 +130,16 @@ else if (isset ($_POST["undovalidation"])) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getDraftState(),
                                            $_POST["comment"]);
-      addMessageAfterRedirect($LANG['plugin_order']['validation'][8]);
+      Session::addMessageAfterRedirect($LANG['plugin_order']['validation'][8]);
       
    }
    
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
    
 } else if (isset ($_POST["add_item"])) {
    //Details management
    if ($_POST["discount"] < 0 || $_POST["discount"] > 100) {
-      addMessageAfterRedirect($LANG['plugin_order']['detail'][33], false, ERROR);
+      Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][33], false, ERROR);
       
    } else {
       $pluginOrderOrder->getFromDB($_POST["plugin_order_orders_id"]);
@@ -157,7 +157,7 @@ else if (isset ($_POST["undovalidation"])) {
                                          
    }
       
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
    
 } else if (isset ($_POST["delete_item"])) {
    if (isset($_POST["plugin_order_orders_id"]) 
@@ -180,7 +180,7 @@ else if (isset ($_POST["undovalidation"])) {
                      $items_id = $DB->result($result, $i, 'items_id');
                      
                      if ($items_id) {
-                        $lic = new SoftwareLicense;
+                        $lic = new SoftwareLicense();
                         $lic->getFromDB($items_id);
                         $values["id"]     = $lic->fields["id"];
                         $values["number"] = $lic->fields["number"]-1;
@@ -208,11 +208,11 @@ else if (isset ($_POST["undovalidation"])) {
          }
       }
    } else if (!isset($_POST["item"])) {
-      addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
+      Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
 
    }
       
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 
 } else if (isset ($_POST["update_item"])) {
    if(isset($_POST['quantity'])) {
@@ -233,7 +233,7 @@ else if (isset ($_POST["undovalidation"])) {
 
    if(isset($_POST['discount'])) {
       if ($_POST["discount"] < 0 || $_POST["discount"] > 100) {
-         addMessageAfterRedirect($LANG['plugin_order']['detail'][33], false, ERROR);
+         Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][33], false, ERROR);
       } else {
          
          $price = (isset($_POST['price_taxfree'])) ? $_POST['price_taxfree'] : $_POST['old_price_taxfree'];
@@ -251,7 +251,7 @@ else if (isset ($_POST["undovalidation"])) {
       }
    }
 
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 
 } else if (isset ($_POST["update_detail_item"])) {
 
@@ -277,16 +277,16 @@ else if (isset ($_POST["undovalidation"])) {
       }
    }
    
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset ($_GET['unlink_order'])) {
    $pluginOrderOrder->check($_GET['id'], 'w');
    $pluginOrderOrder->unlinkBudget($_GET['id']);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else {
    $pluginOrderOrder->checkGlobal("r");
-   commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
+   Html::header($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
    $pluginOrderOrder->showForm($_GET["id"]);
-   commonFooter();
+   Html::footer();
 }
 
 ?>

@@ -32,10 +32,10 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownSupplier.php")) {
    define('GLPI_ROOT','../../..');
    include (GLPI_ROOT."/inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
-   header_nocache();
+   Html::header_nocache();
 }
 
-checkCentralAccess();
+Session::checkCentralAccess();
 
 // Make a select box
 
@@ -61,9 +61,9 @@ if (isset($_POST["suppliers_id"])) {
          'myname'=>$_POST['myname']
          );
    
-   $default="<select name='".$_POST["myname"]."'><option value='0'>".DROPDOWN_EMPTY_VALUE.
+   $default="<select name='".$_POST["myname"]."'><option value='0'>".Dropdown::EMPTY_VALUE.
                "</option></select>";
-   ajaxDropdown($use_ajax,"/plugins/order/ajax/dropdownContact.php",$paramssuppliers_id,$default,
+   Ajax::dropdown($use_ajax,"/plugins/order/ajax/dropdownContact.php",$paramssuppliers_id,$default,
                 $rand);
 
 }

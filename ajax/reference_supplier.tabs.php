@@ -65,6 +65,6 @@ if ($_POST["id"]>0 && $PluginOrderReference_Supplier->can($_POST["id"],'r')) {
    }
 }
 
-ajaxFooter();
+Html::ajaxFooter();
 
 ?>

@@ -60,7 +60,7 @@ class PluginOrderBill extends CommonDropdown {
       global $LANG;
       
       if (!isset ($input["number"]) || $input["number"] == '') {
-         addMessageAfterRedirect($LANG['plugin_order']['bill'][3], false, ERROR);
+         Session::addMessageAfterRedirect($LANG['plugin_order']['bill'][3], false, ERROR);
          return array ();
       }
 
@@ -234,7 +234,7 @@ class PluginOrderBill extends CommonDropdown {
       
       echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
       echo "<tr><th>";
-      printPagerForm();
+      Html::printPagerForm();
       echo "</th><th colspan='5'>";
       echo $LANG['document'][19];
       echo "</th></tr>";

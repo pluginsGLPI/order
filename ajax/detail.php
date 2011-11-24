@@ -31,13 +31,13 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+Html::header_nocache();
 
 if (!defined('GLPI_ROOT')){
    die("Can not acces directly to this file");
 }
 
-checkCentralAccess();
+Session::checkCentralAccess();
 
 $reference    = new PluginOrderReference();
 $rand         = $reference->dropdownReferencesByEnterprise("reference", $_POST["itemtype"],
@@ -50,9 +50,9 @@ $fields       = array ("quantity", "priceht", "pricediscounted", "taxe", "valida
 
 foreach ($fields as $field) {
    $paramsaction['update'] = $field;
-   ajaxUpdateItem("show_$field", $CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",
+   Ajax::updateItem("show_$field", $CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",
                   $paramsaction, false, "dropdown_reference$rand");
-   ajaxUpdateItemOnSelectEvent("dropdown_reference$rand", "show_$field",
+   Ajax::updateItemOnSelectEvent("dropdown_reference$rand", "show_$field",
                                $CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",
                                $paramsaction);
 }

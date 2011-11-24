@@ -59,7 +59,7 @@ if (isset($_POST["add"])) {
                                        $_POST["plugin_order_orders_id"]);
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset($_POST["delete"])) {
    if ($PluginOrderOrder_Supplier->canCreate()) {
       foreach ($_POST["check"] as $ID => $value) {
@@ -69,24 +69,24 @@ if (isset($_POST["add"])) {
                                        $_POST["plugin_order_orders_id"]);
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 }
 else if (isset($_POST["update"])) {
    if ($PluginOrderOrder_Supplier->canCreate()) {
       
       $PluginOrderOrder_Supplier->update($_POST);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else {
    $PluginOrderOrder_Supplier->checkGlobal("r");
    
-   commonHeader($LANG['plugin_order']['title'][1],'',"plugins", "order", "order");
+   Html::header($LANG['plugin_order']['title'][1],'',"plugins", "order", "order");
    
    $PluginOrderOrder_Supplier->showForm($_GET["id"], 
                                         array('plugin_order_orders_id' => 
                                              $_GET["plugin_order_orders_id"]));
 
-   commonFooter();
+   Html::footer();
 }
 
 ?>

@@ -120,12 +120,12 @@ class PluginOrderReference extends CommonDropdown {
       global $DB,$LANG;
 
       if (!isset($input["name"]) || $input["name"] == '') {
-         addMessageAfterRedirect($LANG['plugin_order']['reference'][8], false, ERROR);
+         Session::addMessageAfterRedirect($LANG['plugin_order']['reference'][8], false, ERROR);
          return false;
       }
 
       if (!$input["itemtype"]) {
-         addMessageAfterRedirect($LANG['plugin_order']['reference'][9], false, ERROR);
+         Session::addMessageAfterRedirect($LANG['plugin_order']['reference'][9], false, ERROR);
          return false;
       }
       
@@ -133,7 +133,7 @@ class PluginOrderReference extends CommonDropdown {
             && countElementsInTable($this->getTable(), 
                                     "`name` = '".$input["name"]."' 
                                        AND `entities_id` = '".$input["entities_id"]."'")) {
-         addMessageAfterRedirect($LANG['plugin_order']['reference'][6], false, ERROR);
+         Session::addMessageAfterRedirect($LANG['plugin_order']['reference'][6], false, ERROR);
          return false;
       }
       
@@ -146,7 +146,7 @@ class PluginOrderReference extends CommonDropdown {
       if (!$this->referenceInUse()) {
          return true;
       } else {
-         addMessageAfterRedirect($LANG['plugin_order']['reference'][7], true, ERROR);
+         Session::addMessageAfterRedirect($LANG['plugin_order']['reference'][7], true, ERROR);
          return false;
       }
 
@@ -166,7 +166,7 @@ class PluginOrderReference extends CommonDropdown {
    }
 
    function getReceptionReferenceLink($data) {
-      $link=getItemTypeFormURL($this->getType());
+      $link=Toolbox::getItemTypeFormURL($this->getType());
       if ($this->canView()) {
          return "<a href=\"".$link."?id=".$data["id"]."\">" . $data["name"] . "</a>";
       } else {
@@ -333,7 +333,7 @@ class PluginOrderReference extends CommonDropdown {
       if ($this->fields['id'] > 0) {
          $ong[2]    = $LANG['plugin_order'][11];
          $ong[3]    = $LANG['title'][37];
-         if (haveRight("document", "r")) {
+         if (Session::haveRight("document", "r")) {
             $ong[4] = $LANG['Menu'][27];
          }
          $ong[12]   = $LANG['title'][38];
@@ -350,7 +350,7 @@ class PluginOrderReference extends CommonDropdown {
                       AND `template_name` <> '' GROUP BY `template_name` ORDER BY `template_name`";
       $result = $DB->query($query);
 
-      $option[0] = DROPDOWN_EMPTY_VALUE;
+      $option[0] = Dropdown::EMPTY_VALUE;
       while ($data = $DB->fetch_array($result)) {
          $option[$data["id"]] = $data["template_name"];
       }
@@ -410,7 +410,7 @@ class PluginOrderReference extends CommonDropdown {
       $types = PluginOrderOrder_Item::getClasses();
 
       echo "<select name='".$p['myname']."' id='".$p['myname']."'>";
-      echo "<option value='0' selected>".DROPDOWN_EMPTY_VALUE."</option>\n";
+      echo "<option value='0' selected>".Dropdown::EMPTY_VALUE."</option>\n";
 
       if ($p['filter']){
 
@@ -452,12 +452,12 @@ class PluginOrderReference extends CommonDropdown {
             foreach (array("types_id", "models_id", "templates_id") as $field) {
                $params['field'] = $field;
                $params['plugin_order_references_id'] = $p['value'];
-               ajaxUpdateItemOnSelectEvent($p['myname'], "show_$field", 
+               Ajax::updateItemOnSelectEvent($p['myname'], "show_$field", 
                                            $p['ajax_page'], 
                                            $params);
             }
          } else {
-               ajaxUpdateItemOnSelectEvent($p['myname'], "show_reference", 
+               Ajax::updateItemOnSelectEvent($p['myname'], "show_reference", 
                                            $p['ajax_page'], 
                                            $params);
          }
@@ -521,7 +521,7 @@ class PluginOrderReference extends CommonDropdown {
    function dropdownAllItemsByType($name, $itemtype, $entity=0,$types_id=0,$models_id=0) {
 
       $items    = $this->getAllItemsByType($itemtype, $entity, $types_id, $models_id);
-      $items[0] = DROPDOWN_EMPTY_VALUE;
+      $items[0] = Dropdown::EMPTY_VALUE;
       asort($items);
       return Dropdown::showFromArray($name, $items);
    }

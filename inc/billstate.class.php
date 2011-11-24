@@ -46,7 +46,7 @@ class PluginOrderBillState extends CommonDropdown {
    function pre_deleteItem() {
       global $LANG;
       if ($this->getID() <= self::CANCELED ) {
-         addMessageAfterRedirect($LANG['plugin_order']['status'][15].": ".$this->fields['name'], 
+         Session::addMessageAfterRedirect($LANG['plugin_order']['status'][15].": ".$this->fields['name'], 
                                  false, ERROR);
          return false;
       } else {
@@ -97,7 +97,7 @@ class PluginOrderBillState extends CommonDropdown {
                      self::NOTPAID  => $LANG['plugin_order']['status'][17]) 
                as $id => $label) {
          if (!countElementsInTable($table, "`id`='$id'")) {
-            $state->add(array('id' => $id, 'name' => addslashes_deep($label)));
+            $state->add(array('id' => $id, 'name' => Toolbox::addslashes_deep($label)));
          }
       }
    }

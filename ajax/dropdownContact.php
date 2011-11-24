@@ -32,13 +32,10 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownContact.php")) {
    define('GLPI_ROOT','../../..');
    include (GLPI_ROOT."/inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
-   header_nocache();
-}
-if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+   Html::header_nocache();
 }
 
-checkCentralAccess();
+Session::checkCentralAccess();
 
 // Make a select box with all glpi users
 $where=" WHERE `glpi_contacts_suppliers`.`contacts_id` = `glpi_contacts`.`id` " .
@@ -56,7 +53,7 @@ if (isset($_POST["entity_restrict"])) {
 }
 
 if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
-   $where.=" AND `glpi_contacts`.`name` ".makeTextSearch($_POST['searchText']);
+   $where.=" AND `glpi_contacts`.`name` ".Search::makeTextSearch($_POST['searchText']);
 
 $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
@@ -72,7 +69,7 @@ $result = $DB->query($query);
 
 echo "<select name=\"contacts_id\">";
 
-echo "<option value=\"0\">".DROPDOWN_EMPTY_VALUE."</option>";
+echo "<option value=\"0\">".Dropdown::EMPTY_VALUE."</option>";
 
 if ($DB->numrows($result)) {
    $prev=-1;

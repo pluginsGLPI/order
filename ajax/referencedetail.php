@@ -31,13 +31,13 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+Html::header_nocache();
 
 if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-checkCentralAccess();
+Session::checkCentralAccess();
 
 
 if ($_POST["plugin_order_references_id"] > 0) { 
@@ -49,7 +49,7 @@ if ($_POST["plugin_order_references_id"] > 0) {
          echo "<input type='text' name='quantity' size='5'>";
          break;
       case 'priceht':
-         echo "<input type='text' name='price' value=\"".formatNumber($price, true)."\" size='5'>";
+         echo "<input type='text' name='price' value=\"".Html::formatNumber($price, true)."\" size='5'>";
          break;
       case 'pricediscounted':
          echo "<input type='text' name='discount' size='5' value='0'>";

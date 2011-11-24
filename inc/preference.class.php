@@ -91,14 +91,14 @@ class PluginOrderPreference extends CommonDBTM {
       
       if (!empty($array_template)) {
       
-         echo "<div align='center'><form method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
+         echo "<div align='center'><form method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<table class='tab_cadre_fixe' cellpadding='5'>";
          echo "<tr><th colspan='2'>" . $data['name'] . " - ". $data['version'] . "</th></tr>";
          echo "<tr class='tab_bg_2'><td align='center'>".$LANG['plugin_order']['parser'][1]."</td>";
          echo "<td align='center'>";
          
          echo "<select name='template'>";
-         echo "<option value=''>".DROPDOWN_EMPTY_VALUE."</option>";
+         echo "<option value=''>".Dropdown::EMPTY_VALUE."</option>";
          foreach ($array_template as $item) {
             echo "<option value='".$item[0]."' ".
                ($item[0]==$this->fields["template"]?" selected ":"").">".
@@ -110,7 +110,7 @@ class PluginOrderPreference extends CommonDBTM {
          echo "<td align='center'>";
          
          echo "<select name='sign'>";
-         echo "<option value=''>".DROPDOWN_EMPTY_VALUE."</option>";
+         echo "<option value=''>".Dropdown::EMPTY_VALUE."</option>";
          foreach ($array_sign as $item) {
             echo "<option value='".$item[0]."' ".
                ($item[0]==$this->fields["sign"]?" selected ":"").">".
@@ -150,7 +150,7 @@ class PluginOrderPreference extends CommonDBTM {
             {
             $filename = $file;
             $filetype = filetype($dir . $file);
-            $filedate = convdate(date ("Y-m-d", filemtime($dir . $file)));
+            $filedate = Html::convdate(date ("Y-m-d", filemtime($dir . $file)));
             $basename=explode('.', basename($filename));
             $extension = array_pop($basename);
             if ($filename == ".." OR $filename == ".") {

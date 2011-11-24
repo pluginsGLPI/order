@@ -30,17 +30,15 @@
 
 define('GLPI_ROOT', '../../..'); 
 include (GLPI_ROOT."/inc/includes.php");
-commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
+Html::header($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
 
 $order = new PluginOrderOrder();
-if ($order->canView() || haveRight("config","w")) {
+if ($order->canView() || Session::haveRight("config","w")) {
    Search::show("PluginOrderOrder");
 } else {
-   echo "<div align='center'><br><br><img src=\"".
-      $CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
-   echo "<b>".$LANG['login'][5]."</b></div>";
+   Html::displayRightError();
 }
 
-commonFooter();
+Html::footer();
 
 ?>

@@ -204,7 +204,7 @@ class PluginOrderReception extends CommonDBTM {
       echo "<td>" . $LANG['financial'][19] . ": </td>";
       echo "<td>";
       if ($canedit) {
-         autocompletionTextField($this,"delivery_number");
+         Html::autocompletionTextField($this,"delivery_number");
       } else {
          echo $this->fields["delivery_number"];
       }
@@ -213,9 +213,9 @@ class PluginOrderReception extends CommonDBTM {
       echo "<td>" . $LANG['plugin_order']['detail'][21] . ": </td>";
       echo "<td>";
       if ($canedit) {
-         showDateFormItem("delivery_date", $this->fields["delivery_date"], true, 1);
+         Html::showDateFormItem("delivery_date", $this->fields["delivery_date"], true, 1);
       } else {
-         echo convDate($this->fields["delivery_date"]);
+         echo Html::convDate($this->fields["delivery_date"]);
       }
       echo "</td>";
       
@@ -275,7 +275,7 @@ class PluginOrderReception extends CommonDBTM {
       $order_reference  = new PluginOrderReference();
       $order_order->getFromDB($plugin_order_orders_id);
       
-      initNavigateListItems($this->getType(),
+      Session::initNavigateListItems($this->getType(),
                             $LANG['plugin_order'][7] ." = ". $order_order->fields["name"]);
       
       $canedit = $order_order->can($plugin_order_orders_id, 'w') 
@@ -286,7 +286,7 @@ class PluginOrderReception extends CommonDBTM {
 
       while ($data_ref=$DB->fetch_array($result_ref)){
          
-         addToNavigateListItems($this->getType(), $data_ref['IDD']);
+         Session::addToNavigateListItems($this->getType(), $data_ref['IDD']);
          
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          if (!$numref)
@@ -399,7 +399,7 @@ class PluginOrderReception extends CommonDBTM {
                }
                echo "<td align='center'>" . $order_reference->getReceptionReferenceLink($data) . "</td>";
                echo "<td align='center'>";
-               $link=getItemTypeFormURL($this->getType());
+               $link=Toolbox::getItemTypeFormURL($this->getType());
                if ($canedit && $data["states_id"] == PluginOrderOrder::ORDER_DEVICE_DELIVRED) {
                   echo "<a href=\"" . $link . "?id=".$data["IDD"]."\">";
                }
@@ -408,7 +408,7 @@ class PluginOrderReception extends CommonDBTM {
                   echo "</a>";
                }
                echo "</td>";
-               echo "<td align='center'>" . convDate($data["delivery_date"]) . "</td>";
+               echo "<td align='center'>" . Html::convDate($data["delivery_date"]) . "</td>";
                echo "<td align='center'>" . $data["delivery_number"] . "</td>";
                echo "<td align='center'>" . 
                   Dropdown::getDropdownName("glpi_plugin_order_deliverystates",
@@ -449,7 +449,7 @@ class PluginOrderReception extends CommonDBTM {
                   echo "function viewmassreception" . $plugin_order_orders_id . "$rand(){\n";
                   $params = array ('plugin_order_orders_id'     => $plugin_order_orders_id,
                                    'plugin_order_references_id' => $plugin_order_references_id);
-                  ajaxUpdateItemJsCode("massreception".$plugin_order_orders_id.$rand,
+                  Ajax::updateItemJsCode("massreception".$plugin_order_orders_id.$rand,
                                        $CFG_GLPI["root_doc"]."/plugins/order/ajax/massreception.php",
                                        $params, false);
                   echo "};";
@@ -470,13 +470,13 @@ class PluginOrderReception extends CommonDBTM {
       $rand = mt_rand();
 
       echo "<select name='receptionActions$rand' id='receptionActions$rand'>";
-      echo "<option value='0' selected>".DROPDOWN_EMPTY_VALUE."</option>";
+      echo "<option value='0' selected>".Dropdown::EMPTY_VALUE."</option>";
       echo "<option value='reception'>" . $LANG['plugin_order']['delivery'][2] . "</option>";
       echo "</select>";
       $params = array ('action' => '__VALUE__', 'itemtype' => $itemtype,
                        'plugin_order_references_id'=>$plugin_order_references_id,
                        'plugin_order_orders_id'=>$plugin_order_orders_id);
-      ajaxUpdateItemOnSelectEvent("receptionActions$rand", "show_receptionActions$rand",
+      Ajax::updateItemOnSelectEvent("receptionActions$rand", "show_receptionActions$rand",
                                   $CFG_GLPI["root_doc"] . "/plugins/order/ajax/receptionactions.php",
                                   $params);
       echo "<span id='show_receptionActions$rand'>&nbsp;</span>";
@@ -513,7 +513,7 @@ class PluginOrderReception extends CommonDBTM {
       $nb      = $DB->numrows($result);
       
       if ($nb < $params['number_reception']) {
-         addMessageAfterRedirect($LANG['plugin_order']['detail'][37], true, ERROR);
+         Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][37], true, ERROR);
       } else {
          for ($i = 0; $i < $params['number_reception']; $i++) {
             // Automatic generate asset
@@ -552,7 +552,7 @@ class PluginOrderReception extends CommonDBTM {
          NotificationEvent::raiseEvent('delivered', $detail, array());
       }
 
-      addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
+      Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
    }
    
    function receptionAllItem($detailID, $plugin_order_references_id, $plugin_order_orders_id,
@@ -580,7 +580,7 @@ class PluginOrderReception extends CommonDBTM {
             $detail->update($input);
          }
       }
-      addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
+      Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
    }
    
    function updateReceptionStatus($params) {
@@ -620,14 +620,14 @@ class PluginOrderReception extends CommonDBTM {
                                                 $params["delivery_date"], $params["delivery_number"],
                                                 $params["plugin_order_deliverystates_id"]);
                      } else
-                        addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);
+                        Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);
                   }
                }
             }// $val == 1
 
          $detail->updateDelivryStatus($plugin_order_orders_id);
       } else {
-         addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
+         Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
       }
    }
    
