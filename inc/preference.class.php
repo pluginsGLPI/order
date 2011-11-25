@@ -33,7 +33,33 @@ if (!defined('GLPI_ROOT')){
 }
 
 class PluginOrderPreference extends CommonDBTM {
+   
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
 
+      if ($item->getType()=='Preference') {
+            return $LANG['plugin_order']['title'][1];
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      global $CFG_GLPI;
+      
+      $pref = new self();
+      
+      if ($item->getType()=='Preference') {
+         $id = $pref->checkIfPreferenceExists(Session::getLoginUserID());
+         if (!$id) {
+            $id = $pref->addDefaultPreference(Session::getLoginUserID());
+
+         }
+         $pref->showForm($id, Session::getLoginUserID());
+      }
+      return true;
+   }
+   
    function checkIfPreferenceExists($user_id) {
       global $DB;
       

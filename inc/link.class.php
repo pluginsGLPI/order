@@ -43,7 +43,7 @@ class PluginOrderLink extends CommonDBChild {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['plugin_order']['generation'][0];
+      return $LANG['plugin_order']['item'][0];
    }
    
    function canCreate() {
@@ -52,6 +52,29 @@ class PluginOrderLink extends CommonDBChild {
 
    function canView() {
       return plugin_order_haveRight('order', 'r');
+   }
+   
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      if (!$withtemplate) {
+
+         if ($item->getType()=='PluginOrderOrder') {
+
+            return self::getTypeName();
+         
+         }
+      }
+      return '';
+   }
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      
+      $self=new self();
+      
+      if ($item->getType()=='PluginOrderOrder') {
+         $self->showOrderLink($item->getID());
+      }
+      return true;
    }
    
    function showItemGenerationForm($params) {
@@ -230,8 +253,8 @@ class PluginOrderLink extends CommonDBChild {
             $rand                       = mt_rand();
             echo "<tr><th><ul><li>";
             echo "<a href=\"javascript:showHideDiv('generation$rand','generation', " .
-                    "'".GLPI_ROOT."/pics/plus.png','".GLPI_ROOT."/pics/moins.png');\">";
-            echo "<img alt='' name='generation' src=\"".GLPI_ROOT."/pics/plus.png\">";
+                    "'".$CFG_GLPI["root_doc"]."/pics/plus.png','".$CFG_GLPI["root_doc"]."/pics/moins.png');\">";
+            echo "<img alt='' name='generation' src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\">";
             echo "</a>";
             echo "</li></ul></th>";
             echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";

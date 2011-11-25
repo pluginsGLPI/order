@@ -54,7 +54,72 @@ class PluginOrderOrder_Item extends CommonDBChild {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['plugin_order']['title'][1]." - ".$LANG['plugin_order']['menu'][5];
+      return $LANG['plugin_order']['title'][1];
+   }
+   
+   /**
+    * Hook called After an item is uninstall or purge
+    */
+   static function cleanForItem(CommonDBTM $item) {
+
+      $temp = new self();
+      $temp->deleteByCriteria(
+         array('itemtype' => $item->getType(),
+               'items_id' => $item->getField('id'))
+      );
+   }
+   
+   static function countForOrder(PluginOrderOrder $item) {
+
+      return countElementsInTable('glpi_plugin_order_orders_items',
+                                  "`plugin_order_orders_id` = '".$item->getID()."'");
+   }
+
+
+   static function countForItem(CommonDBTM $item) {
+
+      return countElementsInTable('glpi_plugin_order_orders_items',
+                                  "`itemtype`='".$item->getType()."'
+                                   AND `items_id` = '".$item->getID()."'");
+   }
+   
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if (!$withtemplate) {
+
+         if ($item->getType()=='PluginOrderOrder'
+             && count(PluginOrderOrder::getTypes(false))) {
+            if ($_SESSION['glpishow_count_on_tabs']) {
+               return self::createTabEntry($LANG['plugin_order'][53], self::countForOrder($item));
+            }
+            return $LANG['plugin_order'][53];
+         
+         } else if (in_array($item->getType(), PluginOrderOrder::getTypes(true))
+                    && $this->canView()) {
+            if ($_SESSION['glpishow_count_on_tabs']) {
+               return self::createTabEntry(PluginOrderOrder::getTypeName(2), self::countForItem($item));
+            }
+            return PluginOrderOrder::getTypeName(2);
+         }
+      }
+      return '';
+   }
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      global $CFG_GLPI;
+      
+      $self=new self();
+      
+      if ($item->getType()=='PluginOrderOrder') {
+         $self->showItem($item->getID());
+
+      } else if (in_array($item->getType(), PluginOrderOrder::getTypes(true))) {
+         
+         $self->showPluginFromItems(get_class($item), $item->getField('id'));
+
+      }
+      return true;
    }
 
    function getSearchOptions() {

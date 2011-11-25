@@ -66,7 +66,29 @@ class PluginOrderBill extends CommonDropdown {
 
       return $input;
    }   
+   
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
+      if (!$withtemplate) {
+
+         if ($item->getType()=='PluginOrderOrder') {
+
+            return self::getTypeName();
+         
+         }
+      }
+      return '';
+   }
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      
+      if ($item->getType()=='PluginOrderOrder') {
+         $order_item     = new PluginOrderOrder_Item();
+         $order_item->showBillsItems($item);
+      }
+      return true;
+   }
+   
    function getAdditionalFields() {
       global $LANG;
 

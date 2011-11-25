@@ -33,7 +33,12 @@ if (!defined('GLPI_ROOT')){
 }
 
 class PluginOrderOrder extends CommonDBTM {
-
+   
+   static $types = array(
+         'Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Printer',
+                           'Phone', 'ConsumableItem', 'CartridgeItem', 'Contract',
+                           'PluginOrderOther', 'SoftwareLicense');
+         
    public $dohistory = true;
    public $forward_entity_to = array("PluginOrderOrder_Item");
    
@@ -201,6 +206,82 @@ class PluginOrderOrder extends CommonDBTM {
       return ($this->canUndo());
    }
    
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if ($item->getType()=='Budget') {
+            return $LANG['plugin_order']['title'][1];
+      } else if ($item->getType()==__CLASS__) {
+         
+         $config = PluginOrderConfig::getConfig();
+         
+         $ong[1] = $LANG['plugin_order'][5];
+         
+         if ($config->canGenerateOrderPDF() && $item->getState() > PluginOrderOrderState::DRAFT) {
+         // generation
+            $ong[2] = $LANG['plugin_order']['generation'][2];
+         
+         }
+
+         return $ong;
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      
+      $order = new self();
+      
+      if ($item->getType()=='Budget') {
+      
+         $order->getAllOrdersByBudget($item->getField('id'));
+         
+      } else if ($item->getType() == __CLASS__) {
+         switch ($tabnum) {
+            case 1 :
+               $item->showValidationForm($item->getID());
+               break;
+
+            case 2 :
+               $item->showGenerationForm($item->getID());
+               break;
+
+         }
+      }
+      return true;
+   }
+   
+   /*define header form */
+   function defineTabs($options=array()) {
+      global $LANG;
+
+      $ong = array();
+		$config = PluginOrderConfig::getConfig();
+		
+		$this->addStandardTab('PluginOrderOrder_Item', $ong,$options);
+
+		$this->addStandardTab('PluginOrderOrder', $ong,$options);
+		if ($this->fields['suppliers_id']) {
+         $this->addStandardTab('PluginOrderOrder_Supplier', $ong, $options);
+      }
+      if ($this->getState() != PluginOrderOrderState::DRAFT) {
+         $this->addStandardTab('PluginOrderReception', $ong, $options);
+         $this->addStandardTab('PluginOrderLink', $ong, $options);
+         $this->addStandardTab('PluginOrderBill', $ong, $options);
+      }
+      if ($config->canUseSupplierSatisfaction() 
+            && $this->getState() == PluginOrderOrderState::DELIVERED) {
+            $this->addStandardTab('PluginOrderSurveySupplier', $ong, $options);
+            
+      }
+      $this->addStandardTab('Document',$ong,$options);
+      $this->addStandardTab('Note',$ong,$options);
+      $this->addStandardTab('Log',$ong,$options);
+      
+      return $ong;
+   }
+   
    function getSearchOptions() {
       global $LANG;
 
@@ -356,65 +437,6 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[86]['injectable']    = true;
 
       return $tab;
-   }
-   
-   /*define header form */
-   function defineTabs($options=array()) {
-      global $LANG;
-
-      $config = PluginOrderConfig::getConfig();
-
-      $ong    = array();
-      $ong[1] = $LANG['title'][26];
-
-      if (!$this->getID()) {
-         return $ong;
-
-      }
-      
-     $ong[2] = $LANG['plugin_order'][5];
-
-      if ($this->fields['suppliers_id']) {
-         /* suppliers */
-         $ong[3] = $LANG['plugin_order'][4];
-
-      }
-
-      if ($config->canGenerateOrderPDF() && $this->getState() > PluginOrderOrderState::DRAFT) {
-        /* generation*/
-        $ong[4] = $LANG['plugin_order']['generation'][2];
-      
-      }
-      if ($this->getState() != PluginOrderOrderState::DRAFT) {
-         /* delivery */
-         $ong[5] = $LANG['plugin_order']['delivery'][1];
-         /* item */
-         $ong[6] = $LANG['plugin_order']['item'][0];
-         //Bills
-         $ong[8] = $LANG['plugin_order']['bill'][4];
-      }
-
-      if ($config->canUseSupplierSatisfaction() 
-         && $this->getState() == PluginOrderOrderState::DELIVERED) {
-         /* quality */
-         $ong[7] = $LANG['plugin_order'][10];
-         
-      }         
-      /* documents */
-      if (Session::haveRight("document", "r")) {
-         $ong[9] = $LANG['Menu'][27];
-
-      }
-         
-      if (Session::haveRight("notes", "r")) {
-         $ong[10] = $LANG['title'][37];
-
-      }
-         
-      /* all */
-      $ong[12] = $LANG['title'][38];
-
-      return $ong;
    }
 
    function prepareInputForAdd($input) {
@@ -909,7 +931,7 @@ class PluginOrderOrder extends CommonDBTM {
       $changes[0] = 0;
       $changes[1] = $old_value;
       $changes[2] = $new_value;
-      Log::history($ID, $type, $changes, 0, HISTORY_LOG_SIMPLE_MESSAGE);
+      Log::history($ID, $type, $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
    }
 
    function needValidation($ID) {
@@ -1415,6 +1437,49 @@ class PluginOrderOrder extends CommonDBTM {
       $order->getFromDB($ID);
       $order->update(array('id' => $ID, 'budgets_id' => 0, '_unlink_budget' => 1));
       
+   }
+   
+   /**
+    * For other plugins, add a type to the linkable types
+    *
+    * @since version 1.6.0
+    *
+    * @param $type string class name
+   **/
+   static function registerType($type) {
+      if (!in_array($type, self::$types)) {
+         self::$types[] = $type;
+      }
+   }
+
+
+   /**
+    * Type than could be linked to a Rack
+    *
+    * @param $all boolean, all type, or only allowed ones
+    *
+    * @return array of types
+   **/
+   static function getTypes($all=false) {
+
+      if ($all) {
+         return self::$types;
+      }
+
+      // Only allowed types
+      $types = self::$types;
+
+      foreach ($types as $key => $type) {
+         if (!class_exists($type)) {
+            continue;
+         }
+
+         $item = new $type();
+         if (!$item->canView()) {
+            unset($types[$key]);
+         }
+      }
+      return $types;
    }
    
    //------------------------------------------------------------

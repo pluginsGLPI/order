@@ -87,12 +87,39 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       return $tab;
    }
    
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      if (!$withtemplate) {
+
+         if ($item->getType()=='PluginOrderOrder') {
+
+            return self::getTypeName();
+         
+         }
+      }
+      return '';
+   }
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      
+      $self=new self();
+      
+      if ($item->getType()=='PluginOrderOrder') {
+         $self->showOrderSupplierInfos($item->getID());
+         if (!$self->checkIfSupplierInfosExists($item->getID()) 
+                && $item->can($item->getID(),'w')) {
+            $self->showForm("", array('plugin_order_orders_id' => $item->getID()));
+         }
+      }
+      return true;
+   }
+   
    function defineTabs($options=array()) {
       global $LANG;
-      /* principal */
-      $ong[1] = $LANG['title'][26];
-      $ong[12] = $LANG['title'][38];
 
+      $ong = array();
+		$this->addStandardTab('PluginOrderOrder_Supplier',$ong,$options);
+      
       return $ong;
    }
    

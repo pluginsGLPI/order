@@ -407,7 +407,7 @@ class PluginOrderReference extends CommonDropdown {
          $p[$key] = $value;
       }
       
-      $types = PluginOrderOrder_Item::getClasses();
+      $types = PluginOrderOrder::getTypes();
 
       echo "<select name='".$p['myname']."' id='".$p['myname']."'>";
       echo "<option value='0' selected>".Dropdown::EMPTY_VALUE."</option>\n";

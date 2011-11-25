@@ -117,14 +117,12 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    
    function defineTabs($options=array()) {
       global $LANG;
-      /* principal */
-      $ong[1] = $LANG['title'][26];
-      if ($this->fields['id'] > 0) {
-         if (Session::haveRight("document", "r")) {
-            $ong[4] = $LANG['Menu'][27];
-         }
-         $ong[12] = $LANG['title'][38];
-      }
+
+      $ong = array();
+		$this->addStandardTab('PluginOrderReference_Supplier',$ong,$options);
+      $this->addStandardTab('Document',$ong,$options);
+      $this->addStandardTab('Log',$ong,$options);
+      
       return $ong;
    }
 

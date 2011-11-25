@@ -30,10 +30,14 @@
 
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
-   global $PLUGIN_HOOKS, $CFG_GLPI, $LANG, $ORDER_TYPES;
+   global $PLUGIN_HOOKS, $CFG_GLPI, $LANG;
 
-   Plugin::registerClass('PluginOrderProfile');
-
+   Plugin::registerClass('PluginOrderProfile',
+                         array('addtabon' => 'Profile'));
+   
+   Plugin::registerClass('PluginOrderPreference',
+                         array('addtabon' => 'Preference'));
+                         
    /* load changeprofile function */
    $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile', 'changeProfile');
    
@@ -42,29 +46,20 @@ function plugin_init_order() {
       $PLUGIN_HOOKS['migratetypes']['order'] = 'plugin_order_migratetypes';
    }
    
-   if ($plugin->isInstalled('order') && $plugin->isActivated('order')) {
-
-      //Itemtypes in use for an order
-      $ORDER_TYPES = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Printer',
-                           'Phone', 'ConsumableItem', 'CartridgeItem', 'Contract',
-                           'PluginOrderOther', 'SoftwareLicense');
+   if ($plugin->isActivated('order')) {
 
       $PLUGIN_HOOKS['pre_item_purge']['order']  
          = array('Profile' => array('PluginOrderProfile', 'purgeProfiles'));
+         
       $PLUGIN_HOOKS['pre_item_update']['order'] 
          = array('Infocom'  => array('PluginOrderOrder_Item', 'updateItem'),
                  'Contract' => array('PluginOrderOrder_Item', 'updateItem'));
-      $PLUGIN_HOOKS['item_purge']['order']      = array();
-      
-      include_once(GLPI_ROOT."/plugins/order/inc/order_item.class.php");
-      foreach (PluginOrderOrder_Item::getClasses(true) as $type) {
-         $PLUGIN_HOOKS['item_purge']['order'][$type] = 'plugin_item_purge_order';
-      }
    
       Plugin::registerClass('PluginOrderOrder', array('document_types'                   => true,
                                                       'unicity_types'                    => true,
                                                       'massiveaction_noupdate_types'     => true,
-                                                      'notificationtemplates_types'      => true));
+                                                      'notificationtemplates_types'      => true,
+                                                      'addtabon'                         => 'Budget'));
    
       Plugin::registerClass('PluginOrderReference', array('document_types'               => true,
                                                           'massiveaction_noupdate_types' => true));
@@ -167,7 +162,8 @@ function plugin_init_order() {
 
          $PLUGIN_HOOKS['plugin_datainjection_populate']['order'] 
             = "plugin_datainjection_populate_order";
-
+         
+         $PLUGIN_HOOKS['post_init']['order'] = 'plugin_order_postinit';
       }
    }
 

@@ -170,7 +170,7 @@ function plugin_order_getAddSearchOptions($itemtype) {
    if ($plugin->isInstalled('order') 
       && $plugin->isActivated('order') 
          && plugin_order_haveRight("order","r")) {
-      if (in_array($itemtype, PluginOrderOrder_Item::getClasses(true))) {
+      if (in_array($itemtype, PluginOrderOrder::getTypes(true))) {
          $sopt[3160]['table']         = 'glpi_plugin_order_orders';
          $sopt[3160]['field']         = 'name';
          $sopt[3160]['linkfield']     = '';
@@ -321,14 +321,18 @@ function plugin_order_MassiveActionsProcess($data) {
    }
 }
 
-/* hook done on purge item case */
-function plugin_item_purge_order($item) {
 
-   $type = get_class($item);
-   $temp = new PluginOrderOrder_Item();
-   $temp->deleteByCriteria(array('itemtype' => $type, 'items_id' => $item->getField('id')));
+function plugin_order_postinit() {
+   global $CFG_GLPI, $PLUGIN_HOOKS;
 
-   return true;
+   $PLUGIN_HOOKS['item_purge']['order'] = array();
+   foreach (PluginOrderOrder::getTypes(true) as $type) {
+      
+      $PLUGIN_HOOKS['item_purge']['order'][$type]
+         = array('PluginOrderOrder_Item','cleanForItem');
+
+      CommonGLPI::registerStandardTab($type, 'PluginOrderOrder_Item');
+   }
 }
 
 // Define headings added by the plugin
@@ -336,20 +340,11 @@ function plugin_get_headings_order($item,$withtemplate) {
    global $LANG;
 
    $type = get_class($item);
-   if ($type == 'Profile') {
-      if ($item->getField('id') && $item->getField('interface')!='helpdesk') {
-         return array(1 => $LANG['plugin_order']['title'][1]);
-      }
-   } else if (in_array($type, PluginOrderOrder_Item::getClasses(true)) 
-               || $type == 'Supplier' 
-                  || $type == 'Budget') {
+   if ($type == 'Supplier') {
       if ($item->getField('id') && !$withtemplate) {
          // Non template case
          return array(1 => $LANG['plugin_order']['title'][1]);
       }
-   } else if ($type == 'Preference') {
-      // Non template case
-      return array(1 => $LANG['plugin_order']['title'][1]);
    }
    return false;
 }
@@ -357,11 +352,7 @@ function plugin_get_headings_order($item,$withtemplate) {
 // Define headings actions added by the plugin
 function plugin_headings_actions_order($item) {
 
-   $classes = PluginOrderOrder_Item::getClasses(true);
-   $classes[] = 'Profile';
-   $classes[] = 'Supplier';
-   $classes[] = 'Budget';
-   $classes[] ='Preference';
+   $classes = array('Supplier');
    if (in_array(get_class($item),$classes)) {
       return array(1 => "plugin_headings_order");
    } else {
@@ -373,42 +364,15 @@ function plugin_headings_actions_order($item) {
 function plugin_headings_order($item) {
    global $CFG_GLPI;
 
-   $profile        = new PluginOrderProfile();
-   $order_item     = new PluginOrderOrder_Item();
-   $order          = new PluginOrderOrder();
    $reference      = new PluginOrderReference();
    $order_supplier = new PluginOrderOrder_Supplier();
    $surveysupplier = new PluginOrderSurveySupplier();
 
    switch (get_class($item)) {
-      case 'Profile' :
-         if (!$profile->getFromDBByProfile($item->getField('id'))) {
-            $profile->createAccess($item->getField('id'));
-
-         }
-         $profile->showForm($item->getField('id'));
-         break;
       case 'Supplier' :
          $reference->showReferencesFromSupplier($item->getField('id'));
          $order_supplier->showDeliveries($item->getField('id'));
          $surveysupplier->showGlobalNotation($item->getField('id'));
-         break;
-      case 'Budget' :
-         $order->getAllOrdersByBudget($_POST["id"]);
-         break;
-      case "Preference" :
-         $pref    = new PluginOrderPreference();
-         $id = $pref->checkIfPreferenceExists(Session::getLoginUserID());
-         if (!$id) {
-            $id = $pref->addDefaultPreference(Session::getLoginUserID());
-
-         }
-         $pref->showForm($id, Session::getLoginUserID());
-         break;
-      default :
-         if (in_array(get_class($item), PluginOrderOrder_Item::getClasses(true))) {
-            $order_item->showPluginFromItems(get_class($item), $item->getField('id'));
-         }
          break;
    }
 }
