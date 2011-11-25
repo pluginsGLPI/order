@@ -445,9 +445,9 @@ class PluginOrderOrder_Item extends CommonDBChild {
             $rand          = mt_rand();
             echo "<tr><th><ul><li>";
             echo "<a href=\"javascript:showHideDiv('detail$rand','detail', '".
-                                                   GLPI_ROOT."/pics/plus.png','".
-                                                   GLPI_ROOT."/pics/moins.png');\">";
-            echo "<img alt='' name='detail' src=\"".GLPI_ROOT."/pics/plus.png\">";
+                                                   $CFG_GLPI["root_doc"]."/pics/plus.png','".
+                                                   $CFG_GLPI["root_doc"]."/pics/moins.png');\">";
+            echo "<img alt='' name='detail' src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\">";
             echo "</a>";
             echo "</li></ul></th>";
             echo "<th>".$LANG['plugin_order']['detail'][7]."</th>";

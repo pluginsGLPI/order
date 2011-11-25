@@ -51,7 +51,7 @@ $fields       = array ("quantity", "priceht", "pricediscounted", "taxe", "valida
 foreach ($fields as $field) {
    $paramsaction['update'] = $field;
    Ajax::updateItem("show_$field", $CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",
-                  $paramsaction, false, "dropdown_reference$rand");
+                  $paramsaction,  "dropdown_reference$rand");
    Ajax::updateItemOnSelectEvent("dropdown_reference$rand", "show_$field",
                                $CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",
                                $paramsaction);
