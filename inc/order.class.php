@@ -1020,7 +1020,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<tr><th>".$LANG['plugin_order']['generation'][1]."</th></tr>";
       
       $pref     = new PluginOrderPreference();
-      $template = $pref->checkPreferenceTemplateValue(getLoginUserID());
+      $template = $pref->checkPreferenceTemplateValue(Session::getLoginUserID());
       if ($template) {
          if ($this->getState() > PluginOrderOrderState::DRAFT) {
             echo "<tr>";
@@ -1115,7 +1115,7 @@ class PluginOrderOrder extends CommonDBTM {
                                    $contact->fields["firstname"]);
          }
          $odf->setVars('title_recipient',$LANG['plugin_order']['generation'][11],true,'UTF-8');
-         $odf->setVars('recipient',html_clean($output),true,'UTF-8');
+         $odf->setVars('recipient',Html::clean($output),true,'UTF-8');
          
          $odf->setVars('nb',$LANG['plugin_order']['generation'][6],true,'UTF-8');
          $odf->setVars('title_item',$LANG['plugin_order']['generation'][7],true,'UTF-8');
@@ -1155,16 +1155,16 @@ class PluginOrderOrder extends CommonDBTM {
             $article->titleArticle($element['ref']);
             $article->refArticle($element['refnumber']);
             $article->TVAArticle($element['taxe']);
-            $article->HTPriceArticle(html_clean(Html::formatNumber($element['price_taxfree'])));
+            $article->HTPriceArticle(Html::clean(Html::formatNumber($element['price_taxfree'])));
             if ($element['discount'] != 0) {
-               $article->discount(html_clean(Html::formatNumber($element['discount']))." %");
+               $article->discount(Html::clean(Html::formatNumber($element['discount']))." %");
             } else {
                $article->discount("");
             }
-            $article->HTPriceTotalArticle(html_clean(Html::formatNumber($element['price_discounted'])));
+            $article->HTPriceTotalArticle(Html::clean(Html::formatNumber($element['price_discounted'])));
 
             $total_TTC_Article = $element['price_discounted']*(1+($element['taxe']/100));
-            $article->ATIPriceTotalArticle(html_clean(Html::formatNumber($total_TTC_Article)));
+            $article->ATIPriceTotalArticle(Html::clean(Html::formatNumber($total_TTC_Article)));
             $article->merge();
          }
 

@@ -433,7 +433,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                'size'      => 8,
                                'name'      => 'quantity',
                                'data'      => rawurlencode($quantity));
-               aAjax:updateItemJsCode("viewquantity$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", 
+               Ajax::updateItemJsCode("viewquantity$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", 
                                     $params, false);
                echo "}";
                echo "</script>\n";
@@ -663,7 +663,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                   echo "<td align='center'>" . Html::formatNumber($data["discount"]) . "</td>";
                }
                /* price with reduction */
-               echo "<td align='center'>".fHtml::ormatNumber($data["price_discounted"])."</td>";
+               echo "<td align='center'>".Html::formatNumber($data["price_discounted"])."</td>";
                /* price ati */
                echo "<td align='center'>".Html::formatNumber($data["price_ati"])."</td>";
                /* status  */

@@ -398,12 +398,12 @@ function plugin_headings_order($item) {
          break;
       case "Preference" :
          $pref    = new PluginOrderPreference();
-         $id = $pref->checkIfPreferenceExists(getLoginUserID());
+         $id = $pref->checkIfPreferenceExists(Session::getLoginUserID());
          if (!$id) {
-            $id = $pref->addDefaultPreference(getLoginUserID());
+            $id = $pref->addDefaultPreference(Session::getLoginUserID());
 
          }
-         $pref->showForm($id, getLoginUserID());
+         $pref->showForm($id, Session::getLoginUserID());
          break;
       default :
          if (in_array(get_class($item), PluginOrderOrder_Item::getClasses(true))) {
