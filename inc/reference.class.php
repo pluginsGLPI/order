@@ -280,66 +280,43 @@ class PluginOrderReference extends CommonDropdown {
 
       }
    }
+   
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-   /**
-    * Display more tabs
-    *
-    * @param $tab
-   **/
-   function displayMoreTabs($tab) {
+      if (!$withtemplate) {
+
+         if ($item->getType()==__CLASS__) {
+
+            return self::getTypeName();
+         
+         }
+      }
+      return '';
+   }
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       global $CFG_GLPI;
       
-      $reference_supplier = new PluginOrderReference_Supplier();
-      $supplier_page = $CFG_GLPI["root_doc"] ."/plugins/order/front/reference_supplier.form.php";
-      switch ($tab) {
+      $self=new self();
+      
+      if ($item->getType()==__CLASS__) {
+         $self->getAllOrdersByReference($item->getID());
 
-         case -1:
-            $reference_supplier->showReferenceManufacturers($supplier_page, $_POST["id"]);
-            if ($this->can($_POST["id"],'w'))
-               $reference_supplier->showForm("", 
-               array('plugin_order_references_id' => $_POST["id"], 
-               'target' => $CFG_GLPI["root_doc"] ."/plugins/order/front/reference_supplier.form.php"));
-
-            Document::showAssociated($this);
-         case 2 :  
-            $this->getAllOrdersByReference($_POST["id"]);
-            break;
-         case 3 :
-            showNotesForm($_POST['target'], "PluginOrderReference", $_POST["id"]);
-            break;
-         case 4 :
-            /* show documents linking form */
-            Document::showAssociated($this);
-            break;
-         case 12 :
-            /* show history form */
-            Log::showForItem($this);
-            break;
-         default :
-            $reference_supplier->showReferenceManufacturers($supplier_page, $_POST["id"]);
-            if ($this->can($_POST["id"],'w')) {
-               $reference_supplier->showForm("",array('plugin_order_references_id' => $_POST["id"], 
-                                                      'target' => $supplier_page));
-
-            }
-            break;
       }
+      return true;
    }
    
-   function defineMoreTabs($options=array()) {
+   function defineTabs($options=array()) {
       global $LANG;
-      
-      $ong[1]       = $LANG['title'][26];
-      if ($this->fields['id'] > 0) {
-         $ong[2]    = $LANG['plugin_order'][11];
-         $ong[3]    = $LANG['title'][37];
-         if (Session::haveRight("document", "r")) {
-            $ong[4] = $LANG['Menu'][27];
-         }
-         $ong[12]   = $LANG['title'][38];
-      }
+
+      $this->addStandardTab('PluginOrderReference_Supplier', $ong, $options);
+      $this->addStandardTab(__CLASS__,$ong,$options);
+      $this->addStandardTab('Document',$ong,$options);
+      $this->addStandardTab('Note',$ong,$options);
+      $this->addStandardTab('Log',$ong,$options);
       return $ong;
    }
+   
    
    function dropdownTemplate($name, $entity, $table, $value = 0) {
       global $DB;
@@ -628,7 +605,7 @@ class PluginOrderReference extends CommonDropdown {
          echo "<tr class='tab_bg_1' align='center'>"; 
          echo "<td>";
 
-         $link = getItemTypeFormURL('PluginOrderOrder');
+         $link = Toolbox::getItemTypeFormURL('PluginOrderOrder');
          if ($this->canView()) {
             echo "<a href=\"".$link."?id=".$data["id"]."\">".$data["name"]."</a>";
          } else {

@@ -65,28 +65,6 @@ class PluginOrderBill extends CommonDropdown {
       }
 
       return $input;
-   }   
-   
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-
-      if (!$withtemplate) {
-
-         if ($item->getType()=='PluginOrderOrder') {
-
-            return self::getTypeName();
-         
-         }
-      }
-      return '';
-   }
-
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      
-      if ($item->getType()=='PluginOrderOrder') {
-         $order_item     = new PluginOrderOrder_Item();
-         $order_item->showBillsItems($item);
-      }
-      return true;
    }
    
    function getAdditionalFields() {
@@ -121,58 +99,58 @@ class PluginOrderBill extends CommonDropdown {
                          'type'  => 'date'));
    }
    
-   /**
-    * Display more tabs
-    *
-    * @param $tab
-   **/
-   function displayMoreTabs($tab) {
-
-      switch ($tab) {
-
-         case 4 :
-            self::showOrdersItems($this);
-            break;
-
-         case 5 :
-            Document::showAssociated($this);
-            break;
-
-         case 6 :
-            self::showItems($this);
-            break;
-
-         case 10 :
-            showNotesForm($_POST['target'], get_class($this), $_POST["id"]);
-            break;
-        
-         case 12 :
-            Log::showForItem($this);
-            break;
-
-         case -1 :
-            self::showOrdersItems($this);
-            Document::showAssociated($this);
-            self::showItems($this);
-            showNotesForm($_POST['target'], get_class($this), $_POST["id"]);
-            Log::showForItem($this);
-            break;
-      }
-   }
-   
-   function title() {
-   }
-   
-   function defineMoreTabs($options=array()) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
-      if ($this->fields['id'] > 0) {
-         return array(4 => $LANG['plugin_order']['menu'][4], 5 => $LANG['Menu'][27], 
-                      6 => $LANG['plugin_order']['item'][0], 10 => $LANG['title'][37], 
-                      12 => $LANG['title'][38]);
-      } else {
-         return array();
+      
+      if (!$withtemplate) {
+         
+         if ($item->getType()=='PluginOrderOrder') {
+
+            return self::getTypeName();
+         
+         } else if ($item->getType()==__CLASS__) {
+         
+            $ong[1] = $LANG['plugin_order']['menu'][4];
+            $ong[2] = $LANG['plugin_order']['item'][0];
+            return $ong;
+            
+         }
       }
+      return '';
    }
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      global $CFG_GLPI;
+      
+      if ($item->getType()=='PluginOrderOrder') {
+      
+         $order_item     = new PluginOrderOrder_Item();
+         $order_item->showBillsItems($item);
+         
+      } else if ($item->getType()==__CLASS__) {
+         switch ($tabnum) {
+            case 1 :
+               self::showOrdersItems($item);
+               break;
+
+            case 2 :
+               self::showItems($item);
+               break;
+         }
+      }
+      return true;
+   }
+   
+   function defineTabs($options=array()) {
+      global $LANG;
+
+      $this->addStandardTab(__CLASS__,$ong,$options);
+      $this->addStandardTab('Document',$ong,$options);
+      $this->addStandardTab('Note',$ong,$options);
+      $this->addStandardTab('Log',$ong,$options);
+      return $ong;
+   }
+
    function getSearchOptions() {
       global $LANG;
 

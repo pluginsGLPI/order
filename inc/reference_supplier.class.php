@@ -125,6 +125,35 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       
       return $ong;
    }
+   
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+      
+      if (!$withtemplate) {
+
+         if ($item->getType()=='PluginOrderReference') {
+
+            return $LANG['plugin_order'][4];
+         
+         }
+      }
+      return '';
+   }
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      global $CFG_GLPI;
+      
+      $self=new self();
+      
+      if ($item->getType()=='PluginOrderReference') {
+         $supplier_page = $CFG_GLPI["root_doc"] ."/plugins/order/front/reference_supplier.form.php";
+         $self->showReferenceManufacturers($supplier_page, $item->getID());
+         $self->showForm("",array('plugin_order_references_id' => $item->getID(), 
+                                                   'target' => $supplier_page));
+
+      }
+      return true;
+   }
 
    function showForm ($ID, $options=array()) {
       global $LANG, $DB;
