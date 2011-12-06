@@ -78,7 +78,7 @@ class PluginOrderLink extends CommonDBChild {
    }
    
    function showItemGenerationForm($params) {
-      global $LANG, $CFG_GLPI, $GENINVENTORYNUMBER_INVENTORY_TYPES;
+      global $LANG, $CFG_GLPI, $GENINVENTORYNUMBER_TYPES;
       
       echo "<div class='center'>";
 
@@ -139,7 +139,7 @@ class PluginOrderLink extends CommonDBChild {
                if ($use_plugin_geninventorynumber 
                   && $gen_config->fields["active"] 
                      && $fields[$params['itemtype'][$key]]['enabled'] 
-                        && in_array($params['itemtype'][$key], $GENINVENTORYNUMBER_INVENTORY_TYPES)) {
+                        && in_array($params['itemtype'][$key], $GENINVENTORYNUMBER_TYPES)) {
                   $gen_inventorynumber = true;
                } else {
                   $gen_inventorynumber = false;

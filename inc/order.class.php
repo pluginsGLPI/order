@@ -1557,10 +1557,8 @@ class PluginOrderOrder extends CommonDBTM {
          }
             
          $migration->changeField($table, "ID", "id", "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($table, "FK_entities", "entities_id", 
-                                 "int(11) NOT NULL default 0");
-         $migration->changeField($table, "recursive", "is_recursive", 
-                                 "tinyint(1) NOT NULL default 0");
+         $migration->changeField($table, "FK_entities", "entities_id", "integer");
+         $migration->changeField($table, "recursive", "is_recursive", "bool");
          $migration->changeField($table, "name", "name", 
                                  "varchar(255) collate utf8_unicode_ci default NULL");
          $migration->changeField($table, "budget", "budgets_id", 

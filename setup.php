@@ -16,7 +16,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; along with Behaviors. If not, see <http://www.gnu.org/licenses/>.
+ along with GLPI; along with order. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team

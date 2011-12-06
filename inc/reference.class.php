@@ -308,13 +308,13 @@ class PluginOrderReference extends CommonDropdown {
    
    function defineTabs($options=array()) {
       global $LANG;
-
-      $this->addStandardTab('PluginOrderReference_Supplier', $ong, $options);
-      $this->addStandardTab(__CLASS__,$ong,$options);
-      $this->addStandardTab('Document',$ong,$options);
-      $this->addStandardTab('Note',$ong,$options);
-      $this->addStandardTab('Log',$ong,$options);
-      return $ong;
+      $tabs = array();
+      $this->addStandardTab('PluginOrderReference_Supplier', $tabs, $options);
+      $this->addStandardTab(__CLASS__,$tabs,$options);
+      $this->addStandardTab('Document',$tabs,$options);
+      $this->addStandardTab('Note',$tabs,$options);
+      $this->addStandardTab('Log',$tabs,$options);
+      return $tabs;
    }
    
    
