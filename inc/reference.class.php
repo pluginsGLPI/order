@@ -269,7 +269,8 @@ class PluginOrderReference extends CommonDropdown {
 
          case 'reference_templates_id' :
             echo "<span id='show_templates_id'>";
-            if (FieldExists(getTableForItemType($this->fields['itemtype']), 'is_template')) {
+            if ($this->fields['itemtype'] != '' 
+               && FieldExists(getTableForItemType($this->fields['itemtype']), 'is_template')) {
                $this->dropdownTemplate('templates_id', $this->fields['entities_id'], 
                                        getTableForItemType($this->fields['itemtype']), 
                                        $this->fields['templates_id']);
