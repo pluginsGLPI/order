@@ -504,32 +504,29 @@ class PluginOrderReference extends CommonDropdown {
       return Dropdown::showFromArray($name, $items);
    }
 
-   function getAllReferencesByEnterpriseAndType($itemtype, $enterpriseID){
+   function dropdownReferencesByEnterprise($options = array()) {
       global $DB;
-
       $query = "SELECT `gr`.`name`, `gr`.`id`, `grm`.`reference_code`
                 FROM `".$this->getTable()."` AS gr, `glpi_plugin_order_references_suppliers` AS grm 
-                WHERE `gr`.`itemtype` = '$itemtype'
-                   AND `grm`.`suppliers_id` = '$enterpriseID'
+                WHERE `gr`.`itemtype` = '".$options['itemtype']."'
+                   AND `grm`.`suppliers_id` = '".$options['suppliers_id']."'
                      AND `grm`.`plugin_order_references_id` = `gr`.`id` ";
 
       $result     = $DB->query($query);
       $references = array();
       while ($data = $DB->fetch_array($result)) {
-         $references[$data["id"]] = $data["name"];
-         if ($data['reference_code']) {
-            $references[$data["id"]] .= ' ('.$data['reference_code'].')';
-         }
+         $references[] = $data["id"];
       }
 
-      return $references;
-   }
-
-   function dropdownReferencesByEnterprise($name, $itemtype, $enterpriseID) {
-
-      $references    = $this->getAllReferencesByEnterpriseAndType($itemtype, $enterpriseID);
-      $references[0] = '-----';
-      return Dropdown::showFromArray($name, $references);
+      if (!empty($references)) {
+         $condition = "`id` IN (".implode(',', $references).")";
+         return Dropdown::show(__CLASS__, array('condition'           => $condition, 
+                                                'name'                => 'reference', 
+                                                'display_emptychoice' => true,
+                                                'entity'     => $options['entity_restrict']));
+      } else {
+         return Dropdown::EMPTY_VALUE;
+      }
    }
 
    function showReferencesFromSupplier($ID){

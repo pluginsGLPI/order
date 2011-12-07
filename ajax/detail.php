@@ -40,12 +40,11 @@ if (!defined('GLPI_ROOT')){
 Session::checkCentralAccess();
 
 $reference    = new PluginOrderReference();
-$rand         = $reference->dropdownReferencesByEnterprise("reference", $_POST["itemtype"],
-                                                           $_POST["suppliers_id"]);
-$paramsaction = array('plugin_order_references_id' => '__VALUE__',
-                      'entity_restrict'            => $_POST["entity_restrict"],
+$paramsaction = array('entity_restrict'            => $_POST["entity_restrict"],
                       'suppliers_id'               => $_POST["suppliers_id"],
                       'itemtype'                   => $_POST["itemtype"]);
+$rand         = $reference->dropdownReferencesByEnterprise($paramsaction);
+$paramsaction['plugin_order_references_id'] = '__VALUE__';
 $fields       = array ("quantity", "priceht", "pricediscounted", "taxe", "validate");
 
 foreach ($fields as $field) {

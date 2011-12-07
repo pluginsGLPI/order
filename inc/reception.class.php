@@ -635,15 +635,17 @@ class PluginOrderReception extends CommonDBTM {
 
                      self::generateAsset($options);
                      
-                     if (!$plugin_order_orders_id)
+                     if (!$plugin_order_orders_id) {
                         $plugin_order_orders_id = $detail->fields["plugin_order_orders_id"];
+                     }
 
                      if ($detail->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
                         $this->receptionOneItem($key, $plugin_order_orders_id,
                                                 $params["delivery_date"], $params["delivery_number"],
                                                 $params["plugin_order_deliverystates_id"]);
-                     } else
+                     } else {
                         Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);
+                     }
                   }
                }
             }// $val == 1
@@ -667,13 +669,14 @@ class PluginOrderReception extends CommonDBTM {
       if ($config->canGenerateAsset()) {
          // Automatic generate assets on delivery
          $rand = mt_rand();
-         $item = array( "name"                     => $config->getGeneratedAssetName().$rand,
-                        "serial"                   => $config->getGeneratedAssetSerial().$rand,
-                        "otherserial"              => $config->getGeneratedAssetOtherserial().$rand,
+         $item = array( "name"                     => $config->getGeneratedAssetName(),
+                        "serial"                   => $config->getGeneratedAssetSerial(),
+                        "otherserial"              => $config->getGeneratedAssetOtherserial(),
                         "entities_id"              => $options['entities_id'],
                         "itemtype"                 => $options["itemtype"],
                         "id"                       => $options["items_id"],
-                        "plugin_order_orders_id"   => $options["plugin_order_orders_id"]);
+                        "plugin_order_orders_id"   => $options["plugin_order_orders_id"],
+                        "rand"                     => $rand);
 
          $options_gen = array("plugin_order_orders_id"     => $options["plugin_order_orders_id"],
                               "plugin_order_references_id" => $options["plugin_order_references_id"],
