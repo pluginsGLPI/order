@@ -1045,7 +1045,7 @@ class PluginOrderOrder extends CommonDBTM {
       $template = $pref->checkPreferenceTemplateValue(Session::getLoginUserID());
       if ($template) {
          if ($this->getState() > PluginOrderOrderState::DRAFT) {
-            echo "<tr>";
+            echo "<tr class='tab_bg_1'>";
             echo "<td class='center'>";
             echo "<input type='submit' value=\"".$LANG['plugin_order']['generation'][1].
                "\" class='submit' ></div></td></tr>";
@@ -1054,7 +1054,7 @@ class PluginOrderOrder extends CommonDBTM {
 
          }
       } else {
-         echo "<tr>";
+         echo "<tr class='tab_bg_1'>";
          echo "<td class='center'>"; 
          echo "<a href='".$CFG_GLPI['root_doc']."/front/preference.php?forcetab=order_1'>";
          echo $LANG['plugin_order']['parser'][4]."</a></td></tr>";
