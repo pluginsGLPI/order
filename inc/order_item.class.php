@@ -992,7 +992,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
             echo "</a>";
             echo "</li></ul></th>";
             echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";
-            echo "<th>" . $LANG['common'][5] . "</th>";
+            echo "<th>" . $LANG['entity'][0] . "</th>";
             echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
             echo "</tr>";
             
