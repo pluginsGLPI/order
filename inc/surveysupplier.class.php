@@ -73,7 +73,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       if ($item->getType()=='PluginOrderOrder') {
          $self->showOrderSupplierSurvey($item->getID());
          if (!$self->checkIfSupplierSurveyExists($item->getID()) 
-                && $order->can($_POST["id"], 'w')) {
+                && $item->can($_POST["id"], 'w')) {
             $self->showForm("",  array('plugin_order_orders_id' => $item->getID()));
          }
       }
