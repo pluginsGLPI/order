@@ -743,7 +743,7 @@ class PluginOrderOrder extends CommonDBTM {
          
       }
       if ($this->isDelivered() && $this->fields['deliverydate']) {
-         echo "<br/>".convDate($this->fields['deliverydate']);
+         echo "<br/>".Html::convDate($this->fields['deliverydate']);
       } 
       echo "</td>";
       echo "</tr>";
@@ -1579,8 +1579,8 @@ class PluginOrderOrder extends CommonDBTM {
                             ."&nbsp;:  $message\n");
                   $task->addVolume(1);
                } else {
-                  addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity)
-                                         ."&nbsp;:  $message");
+                  Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity)
+                                                  ."&nbsp;:  $message");
                }
                $input["type"]     = Alert::THRESHOLD;
                $input["itemtype"] = 'PluginOrderOrder';
@@ -1597,8 +1597,8 @@ class PluginOrderOrder extends CommonDBTM {
                   $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
                             ."&nbsp;: Send order alert failed\n");
                } else {
-                  addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity)
-                                         ."&nbsp;: Send order alert failed", false, ERROR);
+                  Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity)
+                                                 ."&nbsp;: Send order alert failed", false, ERROR);
                   }
                }
             }
