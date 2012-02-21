@@ -534,7 +534,7 @@ class PluginOrderReference extends CommonDropdown {
                 FROM `".$this->getTable()."` AS gr, `glpi_plugin_order_references_suppliers` AS grm 
                 WHERE `gr`.`itemtype` = '$itemtype'
                    AND `grm`.`suppliers_id` = '$enterpriseID'
-                     AND `grm`.`plugin_order_references_id` = `gr`.`id` ";
+                     AND `grm`.`plugin_order_references_id` = `gr`.`id` ORDER BY `gr`.`name` ASC";
 
       $result     = $DB->query($query);
       $references = array();

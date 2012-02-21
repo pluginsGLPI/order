@@ -178,7 +178,7 @@ function plugin_version_order() {
    global $LANG;
 
    return array ('name'           => $LANG['plugin_order']['title'][1],
-                 'version'        => '1.5.1',
+                 'version'        => '1.5.2',
                  'author'         => 'Benjamin Fontan, Walid Nouh, Xavier Caillaud, François Legastelois',
                  'homepage'       => 'https://forge.indepnet.net/projects/show/order',
                  'minGlpiVersion' => '0.80',
@@ -213,5 +213,4 @@ function plugin_order_haveRight($module,$right) {
       return false;
    }
 }
-
 ?>

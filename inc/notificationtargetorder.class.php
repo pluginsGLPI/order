@@ -40,63 +40,91 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                     'validation'     => $LANG['plugin_order']['validation'][2],
                     'cancel'         => $LANG['plugin_order']['validation'][5],
                     'undovalidation' => $LANG['plugin_order']['validation'][8],
-                    'duedate'        => $LANG['plugin_order'][52]);
+                    'duedate'        => $LANG['plugin_order'][55]);
    }
 
    function getDatasForTemplate($event,$options=array()) {
       global $LANG, $CFG_GLPI;
       
       $events = $this->getAllEvents();
+      if ($event == 'duedate') {
+         $this->datas['##order.entity##'] = Dropdown::getDropdownName('glpi_entities',
+                                                                      $options['entities_id']);
+         $this->datas['##order.action##']            = $events[$event];
+         
+         foreach ($options['orders'] as $id => $order) {
+            $tmp = array();
+            $tmp['##order.item.name##']      = $order['name'];
+            $tmp['##order.item.numorder##']  = $order['num_order'];
+            $tmp['##order.item.url##']       = urldecode($CFG_GLPI["url_base"].
+                                                    "/index.php?redirect=plugin_order_order_".$id);
+            $tmp['##order.item.orderdate##'] = convDate($order["order_date"]);
+            $tmp['##order.item.duedate##']   = convDate($order["duedate"]);
+            $tmp['##order.item.deliverydate##']  = convDate($order["deliverydate"]);
+            $tmp['##order.item.comment##']   = html_clean($order["comment"]);
+            $tmp['##order.item.state##']   = Dropdown::getDropdownName('glpi_plugin_order_orderstates', 
+                                                                       $order["plugin_order_orderstates_id"]);
+            $this->datas['orders'][] = $tmp;
+         }
+   
+         $this->getTags();
+         foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+            if (!isset($this->datas[$tag])) {
+               $this->datas[$tag] = $values['label'];
+            }
+         }
+      	
+      } else {
+         $this->datas['##lang.ordervalidation.title##'] = $events[$event];
+         
+         $this->datas['##lang.ordervalidation.entity##'] = $LANG['entity'][0];
+         $this->datas['##ordervalidation.entity##'] =
+                              Dropdown::getDropdownName('glpi_entities',
+                                                        $this->obj->getField('entities_id'));
+                                                        
+         $this->datas['##lang.ordervalidation.name##'] = $LANG['common'][16];
+         $this->datas['##ordervalidation.name##'] = $this->obj->getField("name");
+         
+         $this->datas['##lang.ordervalidation.numorder##'] = $LANG['financial'][18];
+         $this->datas['##ordervalidation.numorder##'] = $this->obj->getField("num_order");
+         
+         $this->datas['##lang.ordervalidation.orderdate##'] = $LANG['plugin_order'][1];
+         $this->datas['##ordervalidation.orderdate##'] = convDate($this->obj->getField("order_date"));
+         
+         $this->datas['##lang.ordervalidation.state##'] = $LANG['joblist'][0];
+         $this->datas['##ordervalidation.state##'] =  
+                              Dropdown::getDropdownName("glpi_plugin_order_orderstates", 
+                                                         $this->fields["plugin_order_orderstates_id"]);
+         
+         $this->datas['##lang.ordervalidation.comment##'] = $LANG['plugin_order']['validation'][18];
+         $comment = stripslashes(str_replace(array('\r\n', '\n', '\r'), "<br/>", $options['comments']));
+         $this->datas['##ordervalidation.comment##'] = nl2br($comment);
+         
+         switch ($event) {
+            case "ask" :
+               $this->datas['##lang.ordervalidation.users##'] = $LANG['plugin_order']['validation'][1] .
+                                                            " " . $LANG['plugin_order']['mailing'][2];
+               break;
+            case "validation" :
+               $this->datas['##lang.ordervalidation.users##'] = $LANG['plugin_order']['validation'][10] .
+                                                            " " . $LANG['plugin_order']['mailing'][2];
+               break;
+            case "cancel" :
+               $this->datas['##lang.ordervalidation.users##'] = $LANG['plugin_order']['validation'][5] .
+                                                            " " . $LANG['plugin_order']['mailing'][2];
+               break;
+            case "undovalidation" :
+               $this->datas['##lang.ordervalidation.users##'] = $LANG['plugin_order']['validation'][16] .
+                                                            " " . $LANG['plugin_order']['mailing'][2];
+               break;
+         }
+         $this->datas['##ordervalidation.users##'] =  html_clean(getUserName(getLoginUserID()));
+         
+         $this->datas['##lang.ordervalidation.url##'] = "URL";
+         $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_order_".$this->obj->getField("id");
+         $this->datas['##ordervalidation.url##'] = urldecode($url);
 
-      $this->datas['##lang.ordervalidation.title##'] = $events[$event];
-      
-      $this->datas['##lang.ordervalidation.entity##'] = $LANG['entity'][0];
-      $this->datas['##ordervalidation.entity##'] =
-                           Dropdown::getDropdownName('glpi_entities',
-                                                     $this->obj->getField('entities_id'));
-                                                     
-      $this->datas['##lang.ordervalidation.name##'] = $LANG['common'][16];
-      $this->datas['##ordervalidation.name##'] = $this->obj->getField("name");
-      
-      $this->datas['##lang.ordervalidation.numorder##'] = $LANG['financial'][18];
-      $this->datas['##ordervalidation.numorder##'] = $this->obj->getField("num_order");
-      
-      $this->datas['##lang.ordervalidation.orderdate##'] = $LANG['plugin_order'][1];
-      $this->datas['##ordervalidation.orderdate##'] = convDate($this->obj->getField("order_date"));
-      
-      $this->datas['##lang.ordervalidation.state##'] = $LANG['joblist'][0];
-      $this->datas['##ordervalidation.state##'] =  
-                           Dropdown::getDropdownName("glpi_plugin_order_orderstates", 
-                                                      $this->fields["plugin_order_orderstates_id"]);
-      
-      $this->datas['##lang.ordervalidation.comment##'] = $LANG['plugin_order']['validation'][18];
-      $comment = stripslashes(str_replace(array('\r\n', '\n', '\r'), "<br/>", $options['comments']));
-      $this->datas['##ordervalidation.comment##'] = nl2br($comment);
-      
-      switch ($event) {
-         case "ask" :
-            $this->datas['##lang.ordervalidation.users##'] = $LANG['plugin_order']['validation'][1] .
-                                                         " " . $LANG['plugin_order']['mailing'][2];
-            break;
-         case "validation" :
-            $this->datas['##lang.ordervalidation.users##'] = $LANG['plugin_order']['validation'][10] .
-                                                         " " . $LANG['plugin_order']['mailing'][2];
-            break;
-         case "cancel" :
-            $this->datas['##lang.ordervalidation.users##'] = $LANG['plugin_order']['validation'][5] .
-                                                         " " . $LANG['plugin_order']['mailing'][2];
-            break;
-         case "undovalidation" :
-            $this->datas['##lang.ordervalidation.users##'] = $LANG['plugin_order']['validation'][16] .
-                                                         " " . $LANG['plugin_order']['mailing'][2];
-            break;
       }
-      $this->datas['##ordervalidation.users##'] =  html_clean(getUserName(getLoginUserID()));
-      
-      $this->datas['##lang.ordervalidation.url##'] = "URL";
-      $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_order_".$this->obj->getField("id");
-      $this->datas['##ordervalidation.url##'] = urldecode($url);
-
    }
    
    function getTags() {
@@ -107,13 +135,25 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                     'ordervalidation.orderdate'   => $LANG['plugin_order'][1],
                     'ordervalidation.state'       => $LANG['joblist'][0],
                     'ordervalidation.comment'     => $LANG['plugin_order']['validation'][18],
-                    'ordervalidation.users'       => $LANG['plugin_order']['validation'][19]);
+                    'ordervalidation.users'       => $LANG['plugin_order']['validation'][19],
+                    'order.entity'                => $LANG['plugin_order'][53], 
+                    'order.item.name'             => $LANG['common'][16],
+                    'order.item.state'            => $LANG['joblist'][0],
+                    'order.item.numorder'         => $LANG['financial'][18],
+                    'order.item.orderdate'        => $LANG['plugin_order'][1],
+                    'order.item.duedate'          => $LANG['plugin_order'][50],
+                    'order.item.deliverydate'     => $LANG['plugin_order'][53],
+                    'order.item.comment'          => $LANG['common'][25]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag' => $tag, 'label' => $label, 'value' => true));
       }
 
-      
+     $this->addTagToList(array('tag'     => 'orders',
+                                'label'   => $LANG['plugin_order'][55],
+                                'value'   => false,
+                                'foreach' => true));
+
       asort($this->tag_descriptions);
    }
    
@@ -172,8 +212,61 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          }
    
          $notifs = array('New Order Validation' => 'ask', 'Confirm Order Validation' => 'validation',
-                         'Cancel Order Validation' => 'undovalidation', 'Cancel Order' => 'cancel', 
-                         'Due date' => 'duedate');
+                         'Cancel Order Validation' => 'undovalidation', 'Cancel Order' => 'cancel');
+         $notification = new Notification();
+         foreach ($notifs as $label => $name) {
+            if (!countElementsInTable("glpi_notifications", "`itemtype`='PluginOrderOrder' " .
+                                         "AND `event`='$name'")) {
+               $tmp = array('name' => $label, 'entities_id' => 0, 'itemtype' => 'PluginOrderOrder', 
+                            'event' => $name, 'mode' => 'mail', 'comment' => '', 
+                            'is_recursive' => 1, 'is_active' => 1, 
+                            'date_mod' => $_SESSION['glpi_currenttime'], 
+                            'notificationtemplates_id' => $templates_id);
+                $notification->add($tmp);
+            }
+         }
+      }
+      
+      $query_id     = "SELECT `id` 
+                       FROM `glpi_notificationtemplates` 
+                       WHERE `itemtype`='PluginOrderOrder' 
+                          AND `name` = 'Due date overtaken'";
+      $result       = $DB->query($query_id) or die ($DB->error());
+      if ($DB->numrows($result) > 0) {
+         $templates_id = $DB->result($result, 0, 'id');
+         
+      } else {
+         $tmp = array('name' => 'Due date overtaken', 'itemtype' => 'PluginOrderOrder', 
+                      'date_mod' => $_SESSION['glpi_currenttime'], 'comment' => '',  'css' => '');
+         $templates_id = $template->add($tmp);
+      }
+      
+      if ($templates_id) {
+         $translation = new NotificationTemplateTranslation();
+         if (!countElementsInTable($translation->getTable(), "`notificationtemplates_id`='$templates_id'")) {
+            $tmp['notificationtemplates_id'] = $templates_id;
+            $tmp['language'] = '';
+            $tmp['subject'] = '##order.action## ##order.entity##';
+            $tmp['content_text'] = '##lang.order.entity## : ##order.entity##\n' .
+                                   ' \n##FOREACHorders##\n' .
+                                   '##lang.order.item.name## : ##order.item.name##\n ' .
+                                   '##lang.order.item.numorder## : ##order.item.numorder##\n ' .
+                                   '##lang.order.item.orderdate## : ##order.item.orderdate##\n ' .
+                                   '##lang.order.item.duedate## : ##order.item.duedate##\n ' .
+                                   '##lang.order.item.deliverydate## : ##order.item.deliverydate##\n ' .
+                                   '##order.item.url## \n ##ENDFOREACHorders##';
+            $tmp['content_html'] = "##lang.order.entity## : ##order.entity##&lt;br /&gt; " .
+                                   "&lt;br /&gt;##FOREACHorders##&lt;br /&gt;" .
+                                   "##lang.order.item.name## : ##order.item.name##&lt;br /&gt; " .
+                                   "##lang.order.item.numorder## : ##order.item.numorder##&lt;br /&gt; " .
+                                   "##lang.order.item.orderdate## : ##order.item.orderdate##&lt;br /&gt; &lt;a&gt;" .
+                                   "##lang.order.item.duedate## : ##order.item.duedate##&lt;br /&gt; &lt;/a&gt;&lt;a&gt;" .
+                                   "##lang.order.item.deliverydate## : ##order.item.deliverydate##&lt;br /&gt; &lt;/a&gt;&lt;a&gt;" .
+                                   "##order.item.url##&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHorders##";  
+            $translation->add($tmp);
+         }
+
+         $notifs       = array('Due date overtaken' => 'duedate');
          $notification = new Notification();
          foreach ($notifs as $label => $name) {
             if (!countElementsInTable("glpi_notifications", "`itemtype`='PluginOrderOrder' " .
