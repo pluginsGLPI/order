@@ -257,16 +257,18 @@ class PluginOrderOrder extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-		$config = PluginOrderConfig::getConfig();
-		
-		$this->addStandardTab('PluginOrderOrder_Item', $ong,$options);
+      $config = PluginOrderConfig::getConfig();
+      
+      $this->addStandardTab('PluginOrderOrder_Item', $ong,$options);
 
-		$this->addStandardTab('PluginOrderOrder', $ong,$options);
-		if ($this->fields['suppliers_id']) {
+      $this->addStandardTab('PluginOrderOrder', $ong,$options);
+      if ($config->canUseSupplierInformations() && $this->fields['suppliers_id']) {
          $this->addStandardTab('PluginOrderOrder_Supplier', $ong, $options);
       }
       if ($this->getState() != PluginOrderOrderState::DRAFT) {
-         $this->addStandardTab('PluginOrderReception', $ong, $options);
+         if ($this->checkIfDetailExists($this->getID(), true)) {
+            $this->addStandardTab('PluginOrderReception', $ong, $options);
+         }
          $this->addStandardTab('PluginOrderLink', $ong, $options);
          $this->addStandardTab('PluginOrderBill', $ong, $options);
       }
@@ -397,6 +399,24 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[12]['displaytype']  = 'date';
       $tab[12]['injectable']   = true;
 
+      /* order_date */
+      $tab[13]['table']        = $this->getTable();
+      $tab[13]['field']        = 'deliverydate';
+      $tab[13]['name']         = $LANG['plugin_order'][53];
+      $tab[13]['datatype']     = 'date';
+      $tab[13]['checktype']    = 'date';
+      $tab[13]['displaytype']  = 'date';
+      $tab[13]['injectable']   = true;
+
+      /* order_date */
+      $tab[14]['table']        = $this->getTable();
+      $tab[14]['field']        = 'is_late';
+      $tab[14]['name']         = $LANG['plugin_order']['status'][20];
+      $tab[14]['datatype']     = 'bool';
+      $tab[14]['checktype']    = 'bool';
+      $tab[14]['displaytype']  = 'bool';
+      $tab[14]['injectable']   = true;
+
       /* comments */
       $tab[16]['table']        = $this->getTable();
       $tab[16]['field']        = 'comment';
@@ -470,15 +490,23 @@ class PluginOrderOrder extends CommonDBTM {
          }
       }
       
+      //Check is order is late or not
+      if (!isset($input['is_late']) && $this->shouldBeAlreadyDelivered()) {
+         $this->setIsLate();
+      }
       return $input;
    }
 
+   function setIsLate() {
+      $this->update(array('id' => $this->getID(), 'is_late' => 1));
+   }
+   
    /**
     * 
     */
-   function shouldBeAlreadyDelivered() {
-      if ($this->isApproved() || $this->isPartiallyDelivered()) {
-         if (!is_null($this->fields['duedate']) 
+   function shouldBeAlreadyDelivered($check_all_status = false) {
+      if ($check_all_status || $this->isApproved() || $this->isPartiallyDelivered()) {
+         if (!is_null($this->fields['duedate']) && $this->fields['duedate'] != '' 
             && (new DateTime($this->fields['duedate']) < new DateTime())) {
             return true;
             
@@ -557,9 +585,9 @@ class PluginOrderOrder extends CommonDBTM {
       /* type order */
       echo "<td>" . $LANG['common'][17] . ": </td><td>";
       if ($canedit){
-         Dropdown::show('PluginOrderOrderType', array('name' => "plugin_order_ordertypes_id",
-                                                      'value' => $this->fields["plugin_order_ordertypes_id"]));
-                                                      
+         Dropdown::show('PluginOrderOrderType', 
+                        array('name'  => "plugin_order_ordertypes_id",
+                              'value' => $this->fields["plugin_order_ordertypes_id"]));
       } else {
          echo Dropdown::getDropdownName("glpi_plugin_order_ordertypes", 
                                         $this->fields["plugin_order_ordertypes_id"]);
@@ -694,7 +722,11 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='2'></td><td>";
-      echo $LANG['plugin_order'][50].": </td><td>";
+      echo $LANG['plugin_order'][50].":";
+      if ($this->isDelivered() && $this->fields['deliverydate']) {
+         echo "<br/>".$LANG['plugin_order'][53].":";
+      }
+      echo " </td><td>";
       if ($canedit)  {
          if ($this->fields["duedate"] == NULL) {
             Html::showDateFormItem("duedate", '', true, true);
@@ -706,10 +738,13 @@ class PluginOrderOrder extends CommonDBTM {
       } else {
          echo Html::convDate($this->fields["duedate"]);
       }
-      if (self::shouldBeAlreadyDelivered()) {
-         echo "&nbsp<span class='red'>".$LANG['plugin_order'][51]."</span>";
+      if ($this->shouldBeAlreadyDelivered()) {
+         echo "<br/><span class='red'>".$LANG['plugin_order'][51]."</span>";
          
       }
+      if ($this->isDelivered() && $this->fields['deliverydate']) {
+         echo "<br/>".convDate($this->fields['deliverydate']);
+      } 
       echo "</td>";
       echo "</tr>";
       
@@ -890,6 +925,9 @@ class PluginOrderOrder extends CommonDBTM {
       $input["plugin_order_orderstates_id"] = $status;
       $input["id"]                          = $orders_id;
       $this->dohistory                      = false;
+      if ($status == $config->getDeliveredState()) {
+         $input['deliverydate'] = $_SESSION['glpi_currenttime'];
+      }
       $this->update($input);
       $this->addStatusLog($orders_id, $status, $comments);
 
@@ -952,12 +990,15 @@ class PluginOrderOrder extends CommonDBTM {
       }
    }
    
-   function checkIfDetailExists($orders_id) {
+   function checkIfDetailExists($orders_id, $only_delivered = false) {
       
       if ($orders_id) {
-         $detail = new PluginOrderOrder_Item;
-         $devices = getAllDatasFromTable("glpi_plugin_order_orders_items", 
-                                         "`plugin_order_orders_id`='$orders_id'");
+         $detail  = new PluginOrderOrder_Item();
+         $where = "`plugin_order_orders_id`='$orders_id'";
+         if ($only_delivered) {
+            $where.= " AND `plugin_order_deliverystates_id` > 0";
+         }
+         $devices = getAllDatasFromTable("glpi_plugin_order_orders_items", $where);
          return (!empty($devices));
          
       } else {
@@ -1403,6 +1444,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
    }
    
+   
    function displayAlertOverBudget($type) {
       global $LANG;
 
@@ -1481,7 +1523,90 @@ class PluginOrderOrder extends CommonDBTM {
       }
       return $types;
    }
-   
+
+   static function cronComputeLateOrders($task) {
+      global $CFG_GLPI, $DB;
+      $nblate = 0;
+      
+      $table = getTableForItemType(__CLASS__);
+      foreach (getAllDatasFromTable($table) as $values) {
+         $order = new self();
+         $order->fields = $values;
+         if (!$order->fields['is_late'] && $order->shouldBeAlreadyDelivered(true)) {
+            $order->setIsLate();
+            $nblate++;
+         }
+      }
+      $task->addVolume($nblate);
+
+      $cron_status = 1;
+      if ($CFG_GLPI["use_mailing"]) {
+         $message = array();
+         $alert   = new Alert();
+         
+         $entities[] = 0;
+         foreach ($DB->request("SELECT `id` FROM `glpi_entities` ORDER BY `id` ASC") as $entity) {
+            $entities[] = $entity['id'];
+         }
+         foreach ($entities as $entity) {
+            $query_alert = "SELECT `$table`.`id` AS id,
+                                   `$table`.`name` AS name,
+                                   `$table`.`num_order` AS num_order,
+                                   `$table`.`order_date` AS order_date,
+                                   `$table`.`duedate` AS duedate,
+                                   `$table`.`deliverydate` AS deliverydate,
+                                   `$table`.`comment` AS comment,
+                                   `$table`.`plugin_order_orderstates_id` AS plugin_order_orderstates_id,
+                                   `glpi_alerts`.`id` AS alertID,
+                                   `glpi_alerts`.`date`
+                            FROM `$table`
+                            LEFT JOIN `glpi_alerts`
+                                  ON (`$table`.`id` = `glpi_alerts`.`items_id`
+                                      AND `glpi_alerts`.`itemtype` = '".__CLASS__."')
+                            WHERE `$table`.`entities_id` = '".$entity."'
+                                   AND (`glpi_alerts`.`date` IS NULL) AND `$table`.`is_late`='1';";
+         $orders = array();
+         foreach ($DB->request($query_alert) as $order) {
+            $orders[$order['id']] = $order;
+         }
+
+         if (!empty($orders)) {
+            $options['entities_id'] = $entity;
+            $options['orders']      = $orders;
+            if (NotificationEvent::raiseEvent('duedate', new PluginOrderOrder(), $options)) {
+               if ($task) {
+                  $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
+                            ."&nbsp;:  $message\n");
+                  $task->addVolume(1);
+               } else {
+                  addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity)
+                                         ."&nbsp;:  $message");
+               }
+               $input["type"]     = Alert::THRESHOLD;
+               $input["itemtype"] = 'PluginOrderOrder';
+               
+               // add alerts
+               foreach ($orders as $ID=>$tmp) {
+                  $input["items_id"] = $ID;
+                  $alert->add($input);
+                  unset($alert->fields['id']);
+                }
+
+             } else {
+               if ($task) {
+                  $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
+                            ."&nbsp;: Send order alert failed\n");
+               } else {
+                  addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity)
+                                         ."&nbsp;: Send order alert failed", false, ERROR);
+                  }
+               }
+            }
+         }
+      }
+      return true;
+   }
+
    //------------------------------------------------------------
    //--------------------Install / uninstall --------------------
    //------------------------------------------------------------
@@ -1494,6 +1619,7 @@ class PluginOrderOrder extends CommonDBTM {
       if (!TableExists($table) && !TableExists("glpi_plugin_order")) {
          $migration->displayMessage("Installing $table");
 
+ 
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders` (
                `id` int(11) NOT NULL auto_increment,
                `entities_id` int(11) NOT NULL default '0',
@@ -1505,6 +1631,8 @@ class PluginOrderOrder extends CommonDBTM {
                `plugin_order_orderpayments_id` int (11)  NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orderpayments (id)',
                `order_date` date default NULL,
                `duedate` date default NULL,
+               `deliverydate` date default NULL,
+               `is_late` tinyint(1) NOT NULL default '0',
                `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
                `contacts_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_contacts (id)',
                `locations_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_locations (id)',
@@ -1524,6 +1652,7 @@ class PluginOrderOrder extends CommonDBTM {
                KEY `suppliers_id` (`suppliers_id`),
                KEY `contacts_id` (`contacts_id`),
                KEY `locations_id` (`locations_id`),
+               KEY `is_late` (`locations_id`),
                KEY `is_deleted` (`is_deleted`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
             $DB->query($query) or die ($DB->error());
@@ -1696,8 +1825,18 @@ class PluginOrderOrder extends CommonDBTM {
          }
 
          $migration->addField($table, 'plugin_order_billstates_id', "int(11) NOT NULL default 0");
-         $migration->migrationOneTable($table);
          
+         //1.5.2
+         $migration->addField($table, 'deliverydate', "DATETIME NULL");
+         $migration->addField($table, "is_late", "TINYINT(1) NOT NULL DEFAULT '0'");
+         $migration->addKey($table, "is_late");
+         if (!countElementsInTable('glpi_crontasks', "`name`='computeLateOrders'")) {
+            Crontask::Register(__CLASS__, 'computeLateOrders', HOUR_TIMESTAMP, 
+                               array('param' => 24, 'mode' => CronTask::MODE_EXTERNAL));
+         }
+
+         $migration->migrationOneTable($table);
+
          //Displayprefs
          $prefs = array(1 => 1, 2 => 2, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 10 => 10);
          foreach ($prefs as $num => $rank) {

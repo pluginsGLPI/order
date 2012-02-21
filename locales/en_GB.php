@@ -64,6 +64,9 @@ $LANG['plugin_order'][49] = "The order date must be within the dates entered for
 $LANG['plugin_order'][50] = "Estimated due date";
 $LANG['plugin_order'][51] = "Due date overtaken";
 $LANG['plugin_order'][52] = "Unlink";
+$LANG['plugin_order'][53] = "Delivery date";
+$LANG['plugin_order'][54] = "Due date overtake";
+$LANG['plugin_order'][55] = "Late orders";
 
 $LANG['plugin_order']['bill'][0] = "Bill";
 $LANG['plugin_order']['bill'][1] = "Bill type";
@@ -98,6 +101,8 @@ $LANG['plugin_order']['config'][20] = "No VAT";
 $LANG['plugin_order']['config'][21] = "Order paied state";
 $LANG['plugin_order']['config'][22] = "Order generation in PDF";
 $LANG['plugin_order']['config'][23] = "Activate suppliers quality satisfaction";
+$LANG['plugin_order']['config'][24] = "Display order's suppliers informations";
+$LANG['plugin_order']['config'][25] = "Color to be displayed when order due date is overtaken";
 
 $LANG['plugin_order']['delivery'][1] = "Item delivered";
 $LANG['plugin_order']['delivery'][2] = "Take item delivery";
@@ -216,6 +221,7 @@ $LANG['plugin_order']['status'][16] = "Paid";
 $LANG['plugin_order']['status'][17] = "Not paid";
 $LANG['plugin_order']['status'][18] = "Paid value";
 $LANG['plugin_order']['status'][19] = "Billing summary";
+$LANG['plugin_order']['status'][20] = "Order is late";
 
 $LANG['plugin_order']['survey'][0] = "Supplier quality";
 $LANG['plugin_order']['survey'][1] = "Administrative followup quality (contracts, bills, mail, etc.)";

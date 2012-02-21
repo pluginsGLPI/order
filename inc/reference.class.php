@@ -44,7 +44,7 @@ class PluginOrderReference extends CommonDropdown {
 
       return $LANG['plugin_order']['reference'][1];
    }
-   
+  
    function canCreate() {
       return plugin_order_haveRight('reference', 'w');
    }
@@ -510,7 +510,7 @@ class PluginOrderReference extends CommonDropdown {
                 FROM `".$this->getTable()."` AS gr, `glpi_plugin_order_references_suppliers` AS grm 
                 WHERE `gr`.`itemtype` = '".$options['itemtype']."'
                    AND `grm`.`suppliers_id` = '".$options['suppliers_id']."'
-                     AND `grm`.`plugin_order_references_id` = `gr`.`id` ";
+                     AND `grm`.`plugin_order_references_id` = `gr`.`id`  ORDER BY `gr`.`name` ASC";
 
       $result     = $DB->query($query);
       $references = array();
@@ -523,7 +523,7 @@ class PluginOrderReference extends CommonDropdown {
          return Dropdown::show(__CLASS__, array('condition'           => $condition, 
                                                 'name'                => 'reference', 
                                                 'display_emptychoice' => true,
-                                                'entity'     => $options['entity_restrict']));
+                                                'entity'              => $options['entity_restrict']));
       } else {
          return Dropdown::EMPTY_VALUE;
       }

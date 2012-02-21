@@ -71,10 +71,11 @@ class PluginOrderConfig extends CommonDBTM {
       echo "<input type='hidden' name='id' value='1'>";
       echo "<tr class='tab_bg_1' align='center'><td>".$LANG['plugin_order']['config'][1].
             "</td><td>";
-      Dropdown::show('PluginOrderOrderTaxe', array('name' => "default_taxes",
-                                                   'value' => $this->fields["default_taxes"],
-                                                   'display_emptychoice' => true,
-                                                   'emptylabel' => $LANG['plugin_order']['config'][20]));
+      Dropdown::show('PluginOrderOrderTaxe', 
+                     array('name'                => "default_taxes",
+                           'value'               => $this->fields["default_taxes"],
+                           'display_emptychoice' => true,
+                           'emptylabel'          => $LANG['plugin_order']['config'][20]));
       echo "</td>";
       echo "</tr>";
       
@@ -94,6 +95,20 @@ class PluginOrderConfig extends CommonDBTM {
                   <td>".$LANG['plugin_order']['config'][23]."</td><td>";
                   Dropdown::showYesNo("use_supplier_satisfaction", 
                                       $this->fields["use_supplier_satisfaction"]); 
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>
+                  <td>".$LANG['plugin_order']['config'][24]."</td><td>";
+                  Dropdown::showYesNo("use_supplier_informations", 
+                                      $this->fields["use_supplier_informations"]); 
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>
+                  <td>".$LANG['plugin_order']['config'][25]."</td><td>";
+      echo "<input type='text' name='shoudbedelivered_color' " .
+              "value='".$this->fields['shoudbedelivered_color']."'>";
       echo "</td>";
       echo "</tr>";
 
@@ -328,10 +343,18 @@ class PluginOrderConfig extends CommonDBTM {
       return $this->fields['use_supplier_satisfaction'];
    }
 
+   function canUseSupplierInformations() {
+      return $this->fields['use_supplier_informations'];
+   }
+
    function canGenerateOrderPDF() {
       return $this->fields['generate_order_pdf'];
    }
-
+   
+   function getShouldBeDevileredColor() {
+      return $this->fields['shoudbedelivered_color'];
+   }
+   
    //----------------- Install & uninstall -------------------//
 
    static function install(Migration $migration) {
@@ -350,6 +373,7 @@ class PluginOrderConfig extends CommonDBTM {
                      `id` int(11) NOT NULL auto_increment,
                      `use_validation` tinyint(1) NOT NULL default '0',
                      `use_supplier_satisfaction` tinyint(1) NOT NULL default '0',
+                     `use_supplier_infos` tinyint(1) NOT NULL default '1',
                      `generate_order_pdf` tinyint(1) NOT NULL default '0',
                      `default_taxes` int(11) NOT NULL default '0',
                      `generate_assets` int(11) NOT NULL default '0',
@@ -368,6 +392,7 @@ class PluginOrderConfig extends CommonDBTM {
                      `order_status_completly_delivered` int(11) NOT NULL default '0',
                      `order_status_canceled` int(11) NOT NULL default '0',
                      `order_status_paid` int(11) NOT NULL default '0',
+                     `shoudbedelivered_color` char(20) collate utf8_unicode_ci default NULL,
                      PRIMARY KEY  (`id`)
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"; 
                $DB->query($query) or die ($DB->error());
@@ -418,6 +443,10 @@ class PluginOrderConfig extends CommonDBTM {
                                  "tinyint(1) NOT NULL default '0'");
             $migration->addField($table, "generate_order_pdf", 
                                  "tinyint(1) NOT NULL default '0'");
+            $migration->addField($table, "use_supplier_informations", 
+                                 "tinyint(1) NOT NULL default '1'");
+            $migration->addField($table, "shoudbedelivered_color", 
+                                 "char(20) collate utf8_unicode_ci default '#ff5555'");
             $migration->migrationOneTable($table);
             
       }

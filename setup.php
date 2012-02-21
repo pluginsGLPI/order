@@ -210,5 +210,4 @@ function plugin_order_haveRight($module,$right) {
       return false;
    }
 }
-
 ?>

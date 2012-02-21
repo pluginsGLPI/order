@@ -273,6 +273,26 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
    return "";
 }
 
+function plugin_order_displayConfigItem($type, $ID, $data, $num) {
+   global $CFG_GLPI, $LANG;
+   
+   $searchopt = &Search::getOptions($type);
+   $table = $searchopt[$ID]["table"];
+   $field = $searchopt[$ID]["field"];
+   switch ($table . '.' . $field) {
+      case "glpi_plugin_order_orders.is_late":
+         $message = "";
+         if ($data["ITEM_" . $num]) {
+            $config = PluginOrderConfig::getConfig();
+            if ($config->getShouldBeDevileredColor() != '') {
+               $message.= " style=\"background-color:".$config->getShouldBeDevileredColor().";\" ";
+            }
+         }
+         return $message;
+
+   }
+}
+
 ////// SPECIFIC MODIF MASSIVE FUNCTIONS ///////
 
 function plugin_order_MassiveActions($type) {
