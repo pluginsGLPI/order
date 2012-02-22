@@ -1652,7 +1652,7 @@ class PluginOrderOrder extends CommonDBTM {
                KEY `suppliers_id` (`suppliers_id`),
                KEY `contacts_id` (`contacts_id`),
                KEY `locations_id` (`locations_id`),
-               KEY `is_late` (`locations_id`),
+               KEY `is_late` (`is_late`),
                KEY `is_deleted` (`is_deleted`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
             $DB->query($query) or die ($DB->error());

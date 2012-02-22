@@ -373,7 +373,7 @@ class PluginOrderConfig extends CommonDBTM {
                      `id` int(11) NOT NULL auto_increment,
                      `use_validation` tinyint(1) NOT NULL default '0',
                      `use_supplier_satisfaction` tinyint(1) NOT NULL default '0',
-                     `use_supplier_infos` tinyint(1) NOT NULL default '1',
+                     `use_supplier_informations` tinyint(1) NOT NULL default '1',
                      `generate_order_pdf` tinyint(1) NOT NULL default '0',
                      `default_taxes` int(11) NOT NULL default '0',
                      `generate_assets` int(11) NOT NULL default '0',
