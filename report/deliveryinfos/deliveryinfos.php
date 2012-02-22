@@ -61,8 +61,8 @@ if ($report->criteriasValidated()) {
                                                          $LANG['financial'][26], 'Supplier'),
                              new PluginReportsColumnLink('entities_id', 
                                                          $LANG['entity'][0], 'Entity'),
-                             new PluginReportsColumnInteger('total', $LANG['plugin_order']['delivery'][2]),
-                             new PluginReportsColumnInteger('late', $LANG['plugin_order']['delivery'][3]),
+                             new PluginReportsColumnInteger('total', $LANG['plugin_order']['deliveryinfos'][2]),
+                             new PluginReportsColumnInteger('late', $LANG['plugin_order']['deliveryinfos'][3]),
                        ));
 
    $query_total = "SELECT count(*) FROM `glpi_plugin_order_orders`"; 

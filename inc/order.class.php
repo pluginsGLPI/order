@@ -97,7 +97,8 @@ class PluginOrderOrder extends CommonDBTM {
 
    function isDelivered() {
       $config = PluginOrderConfig::getConfig();
-      return ($this->getState() == $config->getDeliveredState());
+      return (isset($this->fields['plugin_order_orderstates_id']) 
+         && $this->getState() == $config->getDeliveredState());
    }
 
    function isCanceled() {
@@ -462,8 +463,9 @@ class PluginOrderOrder extends CommonDBTM {
       if( (isset($input['budgets_id']) 
          && $input['budgets_id'] > 0)
             || (isset($input['budgets_id']) 
-               && $this->fields['budgets_id'] != $input['budgets_id']) ) {
-         if( !self::canStillUseBudget($input) && !isset($input['_unlink_budget'])) {
+               && $input['budgets_id'] > 0 
+                  && $this->fields['budgets_id'] != $input['budgets_id']) ) {
+         if(!self::canStillUseBudget($input) && !isset($input['_unlink_budget'])) {
             addMessageAfterRedirect($LANG['plugin_order'][49], false, ERROR);
          }
       }
@@ -903,7 +905,7 @@ class PluginOrderOrder extends CommonDBTM {
       $input["plugin_order_orderstates_id"] = $status;
       $input["id"]                          = $orders_id;
       $this->dohistory                      = false;
-      if ($status == $config->getDeliveredState()) {
+      if (!$this->isDelivered() && $status == $config->getDeliveredState()) {
          $input['deliverydate'] = $_SESSION['glpi_currenttime'];
       }
       $this->update($input);
@@ -1478,6 +1480,7 @@ class PluginOrderOrder extends CommonDBTM {
       if ($CFG_GLPI["use_mailing"]) {
          $message = array();
          $alert   = new Alert();
+         $config  = PluginOrderConfig::getConfig();
          
          $entities[] = 0;
          foreach ($DB->request("SELECT `id` FROM `glpi_entities` ORDER BY `id` ASC") as $entity) {
@@ -1499,7 +1502,8 @@ class PluginOrderOrder extends CommonDBTM {
                                   ON (`$table`.`id` = `glpi_alerts`.`items_id`
                                       AND `glpi_alerts`.`itemtype` = '".__CLASS__."')
                             WHERE `$table`.`entities_id` = '".$entity."'
-                                   AND (`glpi_alerts`.`date` IS NULL) AND `$table`.`is_late`='1';";
+                                   AND (`glpi_alerts`.`date` IS NULL) AND `$table`.`is_late`='1' 
+                                      AND `plugin_order_orderstates_id`!='".$config->getDeliveredState()."';";
          $orders = array();
          foreach ($DB->request($query_alert) as $order) {
             $orders[$order['id']] = $order;
