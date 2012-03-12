@@ -78,8 +78,6 @@ function plugin_init_order() {
                || plugin_order_haveRight("bill", "r")) {
    
             $PLUGIN_HOOKS['menu_entry']['order']      = 'front/menu.php';
-            $PLUGIN_HOOKS['headings']['order']        = 'plugin_get_headings_order';
-            $PLUGIN_HOOKS['headings_action']['order'] = 'plugin_headings_actions_order';
             
             // Manage redirects
             $PLUGIN_HOOKS['redirect_page']['order']['order']      = "front/order.form.php";

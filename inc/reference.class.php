@@ -283,12 +283,13 @@ class PluginOrderReference extends CommonDropdown {
    }
    
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-
+      global $LANG;
+      
       if (!$withtemplate) {
 
          if ($item->getType()==__CLASS__) {
 
-            return self::getTypeName();
+            return $LANG['plugin_order'][11];
          
          }
       }

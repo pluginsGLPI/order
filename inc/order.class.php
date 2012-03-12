@@ -266,7 +266,7 @@ class PluginOrderOrder extends CommonDBTM {
          $this->addStandardTab('PluginOrderOrder_Supplier', $ong, $options);
       }
       if ($this->getState() != PluginOrderOrderState::DRAFT) {
-         if ($this->checkIfDetailExists($this->getID(), true)) {
+         if ($this->checkIfDetailExists($this->getID(), false)) {
             $this->addStandardTab('PluginOrderReception', $ong, $options);
          }
          $this->addStandardTab('PluginOrderLink', $ong, $options);
