@@ -114,7 +114,7 @@ class PluginOrderLink extends CommonDBChild {
       echo "<th>" . $LANG['common'][20] . "</th>";
       echo "<th>" . $LANG['common'][16] . "</th>";
       echo "<th>" . $LANG['common'][13] . "</th>";
-      if (isMultiEntitiesMode()) {
+      if (Session::isMultiEntitiesMode()) {
          echo "<th>" . $LANG['entity'][0] . "</th>";
       }
       echo "</tr>";
