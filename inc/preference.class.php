@@ -42,7 +42,16 @@ class PluginOrderPreference extends CommonDBTM {
       }
       return '';
    }
+   
+   
+   function canCreate() {
+      return plugin_order_haveRight('order', 'w');
+   }
 
+
+   function canView() {
+      return plugin_order_haveRight('order', 'r');
+   }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       global $CFG_GLPI;
@@ -55,7 +64,7 @@ class PluginOrderPreference extends CommonDBTM {
             $id = $pref->addDefaultPreference(Session::getLoginUserID());
 
          }
-         $pref->showForm($id, Session::getLoginUserID());
+         $pref->showForm($id);
       }
       return true;
    }
@@ -104,11 +113,20 @@ class PluginOrderPreference extends CommonDBTM {
          return 0;   
    }
 
-   function showForm($ID){
-      global $LANG,$CFG_GLPI;
-      
-      $data = plugin_version_order();
-      $this->getFromDB($ID);
+   function showForm ($ID, $options=array()) {
+      global $CFG_GLPI, $LANG;
+
+      if (!$this->canView()) {
+         return false;
+      }
+
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+      // Create item
+         $this->check(-1,'r');
+         $this->getEmpty();
+      }
       
       $dir_template   = GLPI_ROOT."/plugins/order/templates/";
       $array_template = $this->getFiles($dir_template,"odt",$this->fields["template"]);
@@ -119,6 +137,7 @@ class PluginOrderPreference extends CommonDBTM {
       
          echo "<div align='center'><form method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<table class='tab_cadre_fixe' cellpadding='5'>";
+         $data = plugin_version_order();
          echo "<tr><th colspan='2'>" . $data['name'] . " - ". $data['version'] . "</th></tr>";
          echo "<tr class='tab_bg_2'><td align='center'>".$LANG['plugin_order']['parser'][1]."</td>";
          echo "<td align='center'>";
@@ -134,6 +153,7 @@ class PluginOrderPreference extends CommonDBTM {
          echo "</select></td></tr>";
          echo "<tr class='tab_bg_2'><td align='center'>".$LANG['plugin_order']['parser'][3]."</td>";
          echo "<td align='center'>";
+         //echo "<input type='hidden' name='id' value='".$ID."'>";
          
          echo "<select name='sign'>";
          echo "<option value=''>".Dropdown::EMPTY_VALUE."</option>";
@@ -151,13 +171,8 @@ class PluginOrderPreference extends CommonDBTM {
                $this->fields["sign"]."'>";
             echo "</td></tr>";
          }
-         
-         echo "<tr class='tab_bg_2'><td align='center' colspan='2'>"; 
-         echo "<input type='hidden' name='id' value='".$ID."'>";
-         echo "<input type='submit' name='update' value='".$LANG['buttons'][2]."' class='submit' ></td>";
-         echo "</tr>";
-         
-         echo "</table></form></div>";
+         $options["candel"] = false;
+         $this->showFormButtons($options);
       } else {
          echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
          echo "<b>".$LANG['plugin_order']['parser'][2]."</b></div>";
@@ -222,6 +237,12 @@ class PluginOrderPreference extends CommonDBTM {
                   PRIMARY KEY  (`id`)
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die ($DB->error());
+      }
+      
+      if (TableExists("glpi_plugin_order_preferences")) {
+         //1.6.0
+         $migration->changeField($table, "ID", "id", " int(11) NOT NULL auto_increment");
+         $migration->migrationOneTable($table);
       }
    }
    

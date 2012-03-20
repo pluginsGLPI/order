@@ -44,7 +44,7 @@ if (isset($_POST["update"])) {
 
 } else {
    Html::header($LANG['plugin_order']['title'][1],'',"plugins","order","order");
-   $PluginOrderPreference->showForm("./preference.form.php",$_GET["id"]);
+   $PluginOrderPreference->showForm($_GET["id"]);
    Html::footer();
 
 }
