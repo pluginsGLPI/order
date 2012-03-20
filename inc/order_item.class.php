@@ -220,7 +220,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                         }
             
                         foreach ($unset_fields as $field) {
-                           if (isset ($item->input[$field])) {
+                           if (isset ($item->input[$field]) && !empty($item->input[$field])) {
                               $field_set           = true;
                               $item->input[$field] = $value[$field];
                            }
