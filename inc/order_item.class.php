@@ -148,7 +148,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                         $value["suppliers_id"]    = $order->fields["suppliers_id"];
                         $value["value"]           = $orderitem->fields["price_discounted"];
                         $value["buy_date"]        = $order->fields["order_date"];
-                        if (isset($order_supplier->fields["num_bill"]) 
+                        if (isset($order_supplier->fields["num_bill"])
                            && !empty($order_supplier->fields["num_bill"])) {
                            $unset_fields[]        = "bill";
                            $value["bill"]         = $order_supplier->fields["num_bill"];
@@ -160,7 +160,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                               $item->input[$field] = $value[$field];
                            }
                         }
-                        if ($field_set) {
+                        if ($field_set && !isset($item->input['_no_warning'])) {
                            addMessageAfterRedirect($LANG['plugin_order']['infocom'][1], true, ERROR);
                         }
                         break;
@@ -206,7 +206,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                        AND `plugin_order_references_id` = '$plugin_order_references_id' "));
    }
 
-   function addDetails($plugin_order_references_id, $itemtype, $plugin_order_orders_id, $quantity, 
+   function addDetails($plugin_order_references_id, $itemtype, $plugin_order_orders_id, $quantity,
                        $price, $discounted_price, $plugin_order_ordertaxes_id) {
       $order = new PluginOrderOrder();
       if ($quantity > 0 && $order->getFromDB($plugin_order_orders_id)) {
@@ -221,7 +221,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
             $input["price_discounted"]           = $price - ($price * ($discounted_price / 100));
             $input["states_id"]                  = PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED;;
 
-            $input["price_ati"]                  = $this->getPricesATI($input["price_discounted"], 
+            $input["price_ati"]                  = $this->getPricesATI($input["price_discounted"],
                                                                        Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
                                                                                                  $plugin_order_ordertaxes_id));
             $input["discount"]                   = $discounted_price;
@@ -265,10 +265,10 @@ class PluginOrderOrder_Item extends CommonDBChild {
                echo"</tr>";
                echo "<tr>";
                echo "<td class='tab_bg_1' align='center'>";
-               $params = array('myname'       => 'itemtype', 'ajax' => true, 
-                               'orders_id'    => $order->fields["id"], 
+               $params = array('myname'       => 'itemtype', 'ajax' => true,
+                               'orders_id'    => $order->fields["id"],
                                'suppliers_id' => $order->fields['suppliers_id'],
-                               'entity'       => $order->fields['entities_id'], 
+                               'entity'       => $order->fields['entities_id'],
                                'ajax_page'    => $CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php",
                                'filter'       => true, "class" => __CLASS__);
                $reference->dropdownAllItems($params);
@@ -294,12 +294,12 @@ class PluginOrderOrder_Item extends CommonDBChild {
       
       $query = "SELECT `".$this->getTable()."`.`id` AS IDD, `glpi_plugin_order_references`.`id`,
                `glpi_plugin_order_references`.`itemtype`,`glpi_plugin_order_references`.`types_id`,
-               `glpi_plugin_order_references`.`models_id`, 
+               `glpi_plugin_order_references`.`models_id`,
                `glpi_plugin_order_references`.`manufacturers_id`,
                `glpi_plugin_order_references`.`name`,
-               `".$this->getTable()."`.`price_taxfree`, `".$this->getTable()."`.`price_ati`, 
+               `".$this->getTable()."`.`price_taxfree`, `".$this->getTable()."`.`price_ati`,
                `".$this->getTable()."`.`price_discounted`,
-               `".$this->getTable()."`.`discount`, 
+               `".$this->getTable()."`.`discount`,
                `".$this->getTable()."`.`plugin_order_ordertaxes_id`
                FROM `".$this->getTable()."`, `glpi_plugin_order_references`
                WHERE `".$this->getTable()."`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`
@@ -315,7 +315,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
       
       $query="SELECT `".$this->getTable()."`.`id` AS IDD, `glpi_plugin_order_references`.`id`,
                `glpi_plugin_order_references`.`itemtype`,`glpi_plugin_order_references`.`types_id`,
-               `glpi_plugin_order_references`.`models_id`, 
+               `glpi_plugin_order_references`.`models_id`,
                `glpi_plugin_order_references`.`manufacturers_id`,
                `glpi_plugin_order_references`.`name`,
                `".$this->getTable()."`.`plugin_order_bills_id`,
@@ -329,14 +329,14 @@ class PluginOrderOrder_Item extends CommonDBChild {
       return $DB->query($query);
    }
 
-   function queryRef($plugin_order_orders_id, $plugin_order_references_id, $price_taxfree, 
+   function queryRef($plugin_order_orders_id, $plugin_order_references_id, $price_taxfree,
                      $discount, $states_id = false) {
       global $DB;
 
       $query = "SELECT `id`, `items_id`
-               FROM `glpi_plugin_order_orders_items` 
-               WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id."' 
-                  AND `plugin_order_references_id` = '" . $plugin_order_references_id ."' 
+               FROM `glpi_plugin_order_orders_items`
+               WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id."'
+                  AND `plugin_order_references_id` = '" . $plugin_order_references_id ."'
                      AND CAST(`price_taxfree` AS CHAR) = '" . $price_taxfree ."'
                         AND CAST(`discount` AS CHAR) = '" . $discount ."' ";
 
@@ -356,7 +356,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
       $result_ref           = $this->queryDetail($plugin_order_orders_id);
       $numref               = $DB->numrows($result_ref);
       $rand                 = mt_rand();
-      $canedit              = $order->can($plugin_order_orders_id, 'w') 
+      $canedit              = $order->can($plugin_order_orders_id, 'w')
                               && $order->canUpdateOrder();
 
       while ($data_ref = $DB->fetch_array($result_ref)){
@@ -366,9 +366,9 @@ class PluginOrderOrder_Item extends CommonDBChild {
          echo "<form method='post' name='order_updatedetail_form$rand' " .
                   "id='order_updatedetail_form$rand'  " .
                   "action='" . getItemTypeFormURL('PluginOrderOrder') . "'>";
-         echo "<input type='hidden' name='plugin_order_orders_id' 
+         echo "<input type='hidden' name='plugin_order_orders_id'
                   value='" . $plugin_order_orders_id . "'>";
-         echo "<input type='hidden' name='plugin_order_order_items_id' 
+         echo "<input type='hidden' name='plugin_order_order_items_id'
                   value='" . $data_ref['IDD'] . "'>";
          echo "<table class='tab_cadre_fixe'>";
          if (!$numref) {
@@ -397,7 +397,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
             echo "<tr class='tab_bg_1 center'>";
 
             echo "<td><div id='viewaccept$rand' style='display:none;'>";
-            echo "<p><input type='submit' onclick=\"return confirm('" . 
+            echo "<p><input type='submit' onclick=\"return confirm('" .
                $LANG['plugin_order']['detail'][41] . "');\" name='update_item' value=\"".
                   $LANG['buttons'][14]."\" class='submit'></p>";
             echo "<br /><p><input type='button' onclick=\"hideForm$rand();\" value=\"".
@@ -421,7 +421,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
             }
             
             /* quantity */
-            $quantity = $this->getTotalQuantityByRefAndDiscount($plugin_order_orders_id, $refID, 
+            $quantity = $this->getTotalQuantityByRefAndDiscount($plugin_order_orders_id, $refID,
                                                                 $price_taxfree, $discount);
             if($canedit) {
                echo "<td align='center'>";
@@ -433,7 +433,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                'size'      => 8,
                                'name'      => 'quantity',
                                'data'      => rawurlencode($quantity));
-               ajaxUpdateItemJsCode("viewquantity$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php", 
+               ajaxUpdateItemJsCode("viewquantity$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php",
                                     $params, false);
                echo "}";
                echo "</script>\n";
@@ -450,13 +450,13 @@ class PluginOrderOrder_Item extends CommonDBChild {
             $item = new $data_ref["itemtype"]();
             echo "<td align='center'>".$item->getTypeName()."</td>";
             /* manufacturer */
-            echo "<td align='center'>".Dropdown::getDropdownName("glpi_manufacturers", 
+            echo "<td align='center'>".Dropdown::getDropdownName("glpi_manufacturers",
                                                                  $data_ref["manufacturers_id"]).
                "</td>";
             /* reference */
             echo "<td align='center'>";
 
-            echo "<input type='hidden' name='old_plugin_order_references_id' 
+            echo "<input type='hidden' name='old_plugin_order_references_id'
                      value='" . $refID . "'>";
 
             echo $reference->getReceptionReferenceLink($data_ref);
@@ -464,14 +464,14 @@ class PluginOrderOrder_Item extends CommonDBChild {
             /* type */
             echo "<td align='center'>";
             if (file_exists(GLPI_ROOT."/inc/".strtolower($data_ref["itemtype"])."type.class.php")) {
-               echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Type"), 
+               echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Type"),
                                                                   $data_ref["types_id"]);
             }
             echo "</td>";
             /* modele */
             echo "<td align='center'>";
             if (file_exists(GLPI_ROOT."/inc/".strtolower($data_ref["itemtype"])."model.class.php")) {
-               echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Model"), 
+               echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Model"),
                                               $data_ref["models_id"]);
             }
             echo "</td>";
@@ -486,7 +486,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                'size'      => 8,
                                'name'      => 'price_taxfree',
                                'data'      => rawurlencode($price_taxfree));
-               ajaxUpdateItemJsCode("viewpricetaxfree$rand", 
+               ajaxUpdateItemJsCode("viewpricetaxfree$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params, false);
                echo "}";
                echo "</script>\n";
@@ -511,7 +511,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                'size'      => 8,
                                'name'      => 'discount',
                                'data'      => rawurlencode($discount));
-               ajaxUpdateItemJsCode("viewdiscount$rand", 
+               ajaxUpdateItemJsCode("viewdiscount$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params, false);
                echo "}";
                echo "</script>\n";
@@ -546,9 +546,9 @@ class PluginOrderOrder_Item extends CommonDBChild {
             echo "<th>".$LANG['plugin_order'][14]."</th>";
             echo "<th>".$LANG['plugin_order']['detail'][19]."</th></tr>";
             
-            $query="SELECT `".$this->getTable()."`.`id` AS IDD, `glpi_plugin_order_references`.`id`, 
+            $query="SELECT `".$this->getTable()."`.`id` AS IDD, `glpi_plugin_order_references`.`id`,
                            `glpi_plugin_order_references`.`name`,
-                           `".$this->getTable()."`.`price_taxfree`, 
+                           `".$this->getTable()."`.`price_taxfree`,
                            `".$this->getTable()."`.`price_discounted`,
                            `".$this->getTable()."`.`discount`,
                            `".$this->getTable()."`.`plugin_order_ordertaxes_id`,
@@ -561,7 +561,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                 AND `".$this->getTable()."`.`plugin_order_orders_id` = '$plugin_order_orders_id'";
 
             if ($data_ref["itemtype"] == 'SoftwareLicense') {
-               $query.=" GROUP BY `glpi_plugin_order_references`.`name` "; 
+               $query.=" GROUP BY `glpi_plugin_order_references`.`name` ";
 
             }
             $query .= " ORDER BY `glpi_plugin_order_references`.`name` ";
@@ -588,7 +588,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                      $sel = "checked";
                   }
                   echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
-                  echo "<input type='hidden' name='plugin_order_orders_id' value='" . 
+                  echo "<input type='hidden' name='plugin_order_orders_id' value='" .
                      $plugin_order_orders_id . "'>";
                   echo "</td>";
                }
@@ -598,14 +598,14 @@ class PluginOrderOrder_Item extends CommonDBChild {
 
                /* reference */
                echo "<td align='center'>";
-               echo "<input type='hidden' name='detail_old_plugin_order_references_id[".$data["IDD"]."]' 
+               echo "<input type='hidden' name='detail_old_plugin_order_references_id[".$data["IDD"]."]'
                            value='" . $data["id"] . "'>";
                echo $reference->getReceptionReferenceLink($data);
                echo "</td>";
                
                if ($canedit) {
                   echo "<td align='center'>";
-                  echo "<input type='hidden' name='detail_old_price_taxfree[".$data["IDD"]."]' 
+                  echo "<input type='hidden' name='detail_old_price_taxfree[".$data["IDD"]."]'
                               value='" . $data["price_taxfree"] . "'>";
                   echo "<script type='text/javascript' >\n";
                   echo "function showDetailPricetaxfree$rand_line() {\n";
@@ -615,11 +615,11 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                   'size'      => 8,
                                   'name'      => 'detail_price_taxfree['.$data["IDD"].']',
                                   'data'      => rawurlencode($data["price_taxfree"]));
-                  ajaxUpdateItemJsCode("detail_viewpricetaxfree$rand_line", 
+                  ajaxUpdateItemJsCode("detail_viewpricetaxfree$rand_line",
                                        $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params, false);
                   echo "}";
                   echo "</script>\n";
-                  echo "<div id='detail_pricetaxfree$rand_line' class='center' 
+                  echo "<div id='detail_pricetaxfree$rand_line' class='center'
                            onClick='showDetailPricetaxfree$rand_line()'>\n";
                   echo formatNumber($data["price_taxfree"]);
                   echo "</div>\n";
@@ -632,13 +632,13 @@ class PluginOrderOrder_Item extends CommonDBChild {
                
                /* taxe */
                echo "<td align='center'>";
-               echo Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTaxe"), 
+               echo Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTaxe"),
                                                                $data["plugin_order_ordertaxes_id"]);
                echo "</td>";
                /* reduction */
                if ($canedit) {
                   echo "<td align='center'>";
-                  echo "<input type='hidden' name='detail_old_discount[".$data["IDD"]."]' 
+                  echo "<input type='hidden' name='detail_old_discount[".$data["IDD"]."]'
                               value='" . $data["discount"] . "'>";
                   echo "<script type='text/javascript' >\n";
                   echo "function showDetailDiscount$rand_line() {\n";
@@ -648,11 +648,11 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                   'size'      => 8,
                                   'name'      => 'detail_discount['.$data["IDD"].']',
                                   'data'      => rawurlencode($data["discount"]));
-                  ajaxUpdateItemJsCode("detail_viewdiscount$rand_line", 
+                  ajaxUpdateItemJsCode("detail_viewdiscount$rand_line",
                                        $CFG_GLPI["root_doc"]."/ajax/inputtext.php", $params, false);
                   echo "}";
                   echo "</script>\n";
-                  echo "<div id='detail_discount$rand_line' class='center' 
+                  echo "<div id='detail_discount$rand_line' class='center'
                            onClick='showDetailDiscount$rand_line()'>\n";
                   echo formatNumber($data["discount"]);
                   echo "</div>\n";
@@ -685,28 +685,28 @@ class PluginOrderOrder_Item extends CommonDBChild {
             if ($canedit) {
                echo "<div class='center'>";
                echo "<table width='950px' class='tab_glpi'>";
-               echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''>"; 
-               echo "</td><td class='center'>"; 
+               echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''>";
+               echo "</td><td class='center'>";
                echo "<a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='#'>".
                   $LANG['buttons'][18]."</a></td>";
-               echo "<td>/</td><td class='center'>"; 
+               echo "<td>/</td><td class='center'>";
                echo "<a onclick= \"if ( unMarkCheckboxes('order_detail_form$rand') ) " .
                       " return false;\" href='#'>".$LANG['buttons'][19]."</a>";
                echo "</td><td align='left'>";
-               echo "<input type='submit' onclick=\"return confirm('" . 
+               echo "<input type='submit' onclick=\"return confirm('" .
                   $LANG['plugin_order']['detail'][36] . "')\" name='delete_item' value=\"".
                      $LANG['buttons'][6]."\" class='submit'>";
                echo "</td>";
                
-               // Edit buttons 
+               // Edit buttons
                echo "<td align='left' width='80%'>";
                echo "<div id='detail_viewaccept$global_rand' style='display:none;'>";
 
-               echo "&nbsp;<input type='submit' onclick=\"return confirm('" . 
-                  $LANG['plugin_order']['detail'][41] . "');\" name='update_detail_item' 
+               echo "&nbsp;<input type='submit' onclick=\"return confirm('" .
+                  $LANG['plugin_order']['detail'][41] . "');\" name='update_detail_item'
                      value=\"". $LANG['buttons'][14] . "\" class='submit'>&nbsp;";
                      
-               echo "&nbsp;<input type='button' onclick=\"detail_hideForm$global_rand();\" 
+               echo "&nbsp;<input type='button' onclick=\"detail_hideForm$global_rand();\"
                      value=\"" . $LANG['buttons'][34] . "\" class='submit'>";
 
                echo "</div>";
@@ -788,7 +788,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
          //At least one item is delivered
       } else {
          if ($delivery_status) {
-            $order->updateOrderStatus($orders_id, 
+            $order->updateOrderStatus($orders_id,
                                       $config->getPartiallyDeliveredState());
          }
       }
@@ -839,7 +839,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
             echo $infos["name"];
           }
          echo "</td></tr>";
-         echo "<tr align='center'><td class='tab_bg_2'>" . 
+         echo "<tr align='center'><td class='tab_bg_2'>" .
             $LANG['plugin_order']['detail'][21] . "</td>";
          echo "<td class='tab_bg_2'>" . convDate($infos["order_date"]) . "</td></tr>";
          echo "</table></div>";
@@ -859,7 +859,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
       echo PluginOrderBillState::getState($order->fields['plugin_order_billstates_id']);
       echo "</td></tr></table>";
       
-      if (countElementsInTable(getTableForItemType(__CLASS__), 
+      if (countElementsInTable(getTableForItemType(__CLASS__),
                            "`plugin_order_orders_id`='".$order->getID().
                               "' GROUP BY `plugin_order_bills_id`")) {
          echo "<table class='tab_cadre_fixe'>";
@@ -869,12 +869,12 @@ class PluginOrderOrder_Item extends CommonDBChild {
          echo "<th>" . $LANG['plugin_order']['status'][18] . "</th></tr>";
          
          $bill = new PluginOrderBill();
-         foreach($DB->request(getTableForItemType(__CLASS__), 
+         foreach($DB->request(getTableForItemType(__CLASS__),
                               "`plugin_order_orders_id`='".$order->getID().
                                  "' GROUP BY `plugin_order_bills_id`") as $item) {
-         if (isset($item->fields['plugin_order_bills_id']) 
+         if (isset($item->fields['plugin_order_bills_id'])
             && $item->fields['plugin_order_bills_id']) {
-            echo "<tr class='tab_bg_1'><td class='center'>"; 
+            echo "<tr class='tab_bg_1'><td class='center'>";
             if ($bill->can($item->fields['plugin_order_bills_id'], 'r')) {
                echo "<td><a href='".$item->getURL()."'>".$bill->getName()."</a></td>";
             } else {
@@ -883,7 +883,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
             
             echo "</td>";
             echo "<td>";
-            echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBillState'), 
+            echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBillState'),
                                            $bill->fields['plugin_order_billstates_id']);
             echo "</td></tr>";
                
@@ -895,7 +895,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
 
       echo "</div>";
       
-      //Can write orders, and order is not already paid 
+      //Can write orders, and order is not already paid
       $canedit = $order->can($order->getID(), 'w')
                    && !$order->isPaid() && !$order->isCanceled();
       
@@ -946,7 +946,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
             echo "<form method='post' name='bills_form$rand' id='bills_form$rand'  " .
                      "action='" . getItemTypeFormURL('PluginOrderBill') . "'>";
                         
-            echo "<input type='hidden' name='plugin_order_orders_id' 
+            echo "<input type='hidden' name='plugin_order_orders_id'
                      value='" . $order->getID() . "'>";
             echo "<table class='tab_cadre_fixe'>";
 
@@ -968,7 +968,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                      $sel = "checked";
                   }
                   echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
-                  echo "<input type='hidden' name='plugin_order_orders_id' value='" . 
+                  echo "<input type='hidden' name='plugin_order_orders_id' value='" .
                       $order->getID() . "'>";
                   echo "</td>";
                }
@@ -981,14 +981,14 @@ class PluginOrderOrder_Item extends CommonDBChild {
                //Type
                echo "<td align='center'>";
                if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."type.class.php")) {
-                  echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"), 
+                  echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"),
                                                                      $data["types_id"]);
                }
                echo "</td>";
                //Model
                echo "<td align='center'>";
                if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."model.class.php")) {
-                  echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"), 
+                  echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"),
                                                  $data["models_id"]);
                }
                $bill = new PluginOrderBill();
@@ -1004,7 +1004,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                }
                echo "</td>";
                echo "<td align='center'>";
-               echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBillState'), 
+               echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBillState'),
                                                                   $data['plugin_order_billstates_id']);
                echo "</td>";
                echo "</tr>";
@@ -1017,11 +1017,11 @@ class PluginOrderOrder_Item extends CommonDBChild {
             echo "<div class='center'>";
             echo "<table width='950px' class='tab_glpi'>";
             echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"].
-               "/pics/arrow-left.png\" alt=''></td><td class='center'>"; 
+               "/pics/arrow-left.png\" alt=''></td><td class='center'>";
             echo "<a onclick= \"if ( markCheckboxes('bills_form$rand') ) " .
                   "return false;\" href='#'>".$LANG['buttons'][18]."</a></td>";
 
-            echo "<td>/</td><td class='center'>"; 
+            echo "<td>/</td><td class='center'>";
             echo "<a onclick= \"if ( unMarkCheckboxes('bills_form$rand') ) " .
                   "return false;\" href='#'>".$LANG['buttons'][19]."</a>";
             echo "</td><td align='left' width='80%'>";
@@ -1044,8 +1044,8 @@ class PluginOrderOrder_Item extends CommonDBChild {
          $rand            = Dropdown::showFromArray('chooseAction', $action);
          
          $params = array ('action' => '__VALUE__', 'plugin_order_orders_id' => $orders_id);
-         ajaxUpdateItemOnSelectEvent("dropdown_chooseAction$rand", "show_billsActions$rand", 
-                                     $CFG_GLPI["root_doc"] . "/plugins/order/ajax/billactions.php", 
+         ajaxUpdateItemOnSelectEvent("dropdown_chooseAction$rand", "show_billsActions$rand",
+                                     $CFG_GLPI["root_doc"] . "/plugins/order/ajax/billactions.php",
                                      $params);
           echo "<span id='show_billsActions$rand'>&nbsp;</span>";
          
@@ -1054,15 +1054,15 @@ class PluginOrderOrder_Item extends CommonDBChild {
       function updateQuantity($post) {
          global $DB;
 
-         $quantity = $this->getTotalQuantityByRefAndDiscount($post['plugin_order_orders_id'], 
+         $quantity = $this->getTotalQuantityByRefAndDiscount($post['plugin_order_orders_id'],
                                                              $post['old_plugin_order_references_id'],
                                                              $post['old_price_taxfree'],
                                                              $post['old_discount']);
 
          if($post['quantity'] > $quantity) {
-				$datas = $this->queryRef(	$post['plugin_order_orders_id'], 
-													$post['old_plugin_order_references_id'], 
-													$post['old_price_taxfree'], 
+				$datas = $this->queryRef(	$post['plugin_order_orders_id'],
+													$post['old_plugin_order_references_id'],
+													$post['old_price_taxfree'],
 													$post['old_discount']);
 
 				$item = $DB->fetch_array($datas);
@@ -1070,12 +1070,12 @@ class PluginOrderOrder_Item extends CommonDBChild {
             $this->getFromDB($item['id']);
             $to_add  = $post['quantity'] - $quantity;
 
-            $this->addDetails($this->fields['plugin_order_references_id'], 
-                              $this->fields['itemtype'], 
-                              $this->fields['plugin_order_orders_id'], 
-                              $to_add, 
-                              $this->fields['price_taxfree'], 
-                              $this->fields['discount'], 
+            $this->addDetails($this->fields['plugin_order_references_id'],
+                              $this->fields['itemtype'],
+                              $this->fields['plugin_order_orders_id'],
+                              $to_add,
+                              $this->fields['price_taxfree'],
+                              $this->fields['discount'],
                               $this->fields['plugin_order_ordertaxes_id']);
          }
          
@@ -1157,7 +1157,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
 
          //1.1.2
          if (TableExists("glpi_plugin_order_detail")) {
-            $migration->addField("glpi_plugin_order_detail", "delivery_status", 
+            $migration->addField("glpi_plugin_order_detail", "delivery_status",
                                  "int(1) NOT NULL default '0'");
             $migration->addField("glpi_plugin_order_detail", "delivery_comments", "TEXT");
             $migration->migrationOneTable("glpi_plugin_order_detail");
@@ -1168,19 +1168,19 @@ class PluginOrderOrder_Item extends CommonDBChild {
          $migration->renameTable("glpi_plugin_order_detail", $table);
          
          $migration->changeField($table, "ID", "id",  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($table, "FK_order", "plugin_order_orders_id", 
+         $migration->changeField($table, "FK_order", "plugin_order_orders_id",
                                   "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'");
-         $migration->changeField($table, "device_type", "itemtype", 
+         $migration->changeField($table, "device_type", "itemtype",
                                  "varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file'");
-         $migration->changeField($table, "FK_device",  "items_id", 
+         $migration->changeField($table, "FK_device",  "items_id",
                                  "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
-         $migration->changeField($table, "FK_reference", "plugin_order_references_id", 
+         $migration->changeField($table, "FK_reference", "plugin_order_references_id",
                                  "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'");
-         $migration->changeField($table, "delivery_status",  "plugin_order_deliverystates_id", 
+         $migration->changeField($table, "delivery_status",  "plugin_order_deliverystates_id",
                                  "int (11)  NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_deliverystates (id)'");
-         $migration->changeField($table, "deliverynum",  "delivery_number", 
+         $migration->changeField($table, "deliverynum",  "delivery_number",
                                  "varchar(255) collate utf8_unicode_ci default NULL");
-         $migration->changeField($table, "delivery_comments",  "delivery_comment", 
+         $migration->changeField($table, "delivery_comments",  "delivery_comment",
                                  "text collate utf8_unicode_ci");
          $migration->changeField($table, "status", "states_id",  "int(11) NOT NULL default 1");
          $migration->changeField($table, "date", "delivery_date",  "date default NULL");
@@ -1193,7 +1193,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
          
          Plugin::migrateItemType(array(), array(), array($table));
           //1.4.0
-         $migration->addField($table, "plugin_order_ordertaxes_id", 
+         $migration->addField($table, "plugin_order_ordertaxes_id",
                               "INT (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)'");
          $migration->migrationOneTable($table);
          
@@ -1217,8 +1217,8 @@ class PluginOrderOrder_Item extends CommonDBChild {
          $fields = $DB->list_fields($table);
          foreach (array('price_taxfree', 'price_discounted') as $field) {
             
-            if (FieldExists($table, $field) 
-               && isset($fields[$field]) 
+            if (FieldExists($table, $field)
+               && isset($fields[$field])
                   && $fields[$field]['Type'] == 'float') {
                //$migration->changeField($table, $field, $field."_old", "float NOT NULL default 0");
                $migration->addField($table, $field."2", "DOUBLE NOT NULL DEFAULT '0'");
@@ -1234,12 +1234,12 @@ class PluginOrderOrder_Item extends CommonDBChild {
          //Forward entities_id and is_recursive into table glpi_plugin_order_orders_items
          $query = "SELECT `go`.`entities_id` as entities_id ,
                           `go`.`is_recursive` as is_recursive, `goi`.`id` as items_id
-                   FROM `glpi_plugin_order_orders` as go, `$table` as `goi` 
+                   FROM `glpi_plugin_order_orders` as go, `$table` as `goi`
                    WHERE `goi`.`plugin_order_orders_id`=`go`.`id`";
          foreach($DB->request($query) as $data) {
-            $update = "UPDATE `$table` 
-                       SET `entities_id`='".$data['entities_id']."' 
-                          AND `is_recursive`='".$data['is_recursive']."' 
+            $update = "UPDATE `$table`
+                       SET `entities_id`='".$data['entities_id']."'
+                          AND `is_recursive`='".$data['is_recursive']."'
                        WHERE `id`='".$data['items_id']."'";
             $DB->query($update)  or die($DB->error());
          }

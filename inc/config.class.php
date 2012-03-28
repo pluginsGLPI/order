@@ -71,7 +71,7 @@ class PluginOrderConfig extends CommonDBTM {
       echo "<input type='hidden' name='id' value='1'>";
       echo "<tr class='tab_bg_1' align='center'><td>".$LANG['plugin_order']['config'][1].
             "</td><td>";
-      Dropdown::show('PluginOrderOrderTaxe', 
+      Dropdown::show('PluginOrderOrderTaxe',
                      array('name'                => "default_taxes",
                            'value'               => $this->fields["default_taxes"],
                            'display_emptychoice' => true,
@@ -81,27 +81,27 @@ class PluginOrderConfig extends CommonDBTM {
       
       echo "<tr class='tab_bg_1' align='center'>
                   <td>".$LANG['plugin_order']['config'][2]."</td><td>";
-                  Dropdown::showYesNo("use_validation", $this->fields["use_validation"]); 
+                  Dropdown::showYesNo("use_validation", $this->fields["use_validation"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
                   <td>".$LANG['plugin_order']['config'][22]."</td><td>";
-                  Dropdown::showYesNo("generate_order_pdf", $this->fields["generate_order_pdf"]); 
+                  Dropdown::showYesNo("generate_order_pdf", $this->fields["generate_order_pdf"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
                   <td>".$LANG['plugin_order']['config'][23]."</td><td>";
-                  Dropdown::showYesNo("use_supplier_satisfaction", 
-                                      $this->fields["use_supplier_satisfaction"]); 
+                  Dropdown::showYesNo("use_supplier_satisfaction",
+                                      $this->fields["use_supplier_satisfaction"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
                   <td>".$LANG['plugin_order']['config'][24]."</td><td>";
-                  Dropdown::showYesNo("use_supplier_informations", 
-                                      $this->fields["use_supplier_informations"]); 
+                  Dropdown::showYesNo("use_supplier_informations",
+                                      $this->fields["use_supplier_informations"]);
       echo "</td>";
       echo "</tr>";
 
@@ -156,7 +156,7 @@ class PluginOrderConfig extends CommonDBTM {
          */
          echo "<tr class='tab_bg_1' align='center'>
                   <td>".$LANG['plugin_order']['config'][12]."</td><td>";
-                  Dropdown::show('State', 
+                  Dropdown::show('State',
                                  array('name'   => 'default_asset_states_id',
                                        'value'  => $this->fields["default_asset_states_id"],
                                        'entity' => $_SESSION["glpiactiveentities"]));
@@ -186,7 +186,7 @@ class PluginOrderConfig extends CommonDBTM {
             
             echo "<tr class='tab_bg_1' align='center'>
                      <td>".$LANG['plugin_order']['config'][9]."</td><td>";
-                     Dropdown::show('TicketCategory', 
+                     Dropdown::show('TicketCategory',
                                     array('name'   => 'default_ticketcategories_id',
                                           'value'  => $this->fields["default_ticketcategories_id"],
                                           'entity' => $_SESSION["glpiactiveentities"]));
@@ -201,57 +201,57 @@ class PluginOrderConfig extends CommonDBTM {
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][14]."</td><td>";
-            Dropdown::show('PluginOrderOrderState', 
+            Dropdown::show('PluginOrderOrderState',
                            array('name'   => 'order_status_draft',
                                  'value'  => $this->fields["order_status_draft"]));
       echo "</td></tr>";
       
       echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][15]."</td><td>";
-            Dropdown::show('PluginOrderOrderState', 
+            Dropdown::show('PluginOrderOrderState',
                            array('name'   => 'order_status_waiting_approval',
                                  'value'  => $this->fields["order_status_waiting_approval"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][16]."</td><td>";
-            Dropdown::show('PluginOrderOrderState', 
+            Dropdown::show('PluginOrderOrderState',
                            array('name'   => 'order_status_approved',
                                  'value'  => $this->fields["order_status_approved"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][17]."</td><td>";
-            Dropdown::show('PluginOrderOrderState', 
+            Dropdown::show('PluginOrderOrderState',
                            array('name'   => 'order_status_partially_delivred',
                                  'value'  => $this->fields["order_status_partially_delivred"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][18]."</td><td>";
-            Dropdown::show('PluginOrderOrderState', 
+            Dropdown::show('PluginOrderOrderState',
                            array('name'   => 'order_status_completly_delivered',
                                  'value'  => $this->fields["order_status_completly_delivered"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][21]."</td><td>";
-            Dropdown::show('PluginOrderOrderState', 
+            Dropdown::show('PluginOrderOrderState',
                            array('name'   => 'order_status_paid',
                                  'value'  => $this->fields["order_status_paid"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".$LANG['plugin_order']['config'][19]."</td><td>";
-            Dropdown::show('PluginOrderOrderState', 
+            Dropdown::show('PluginOrderOrderState',
                            array('name'   => 'order_status_canceled',
                                  'value'  => $this->fields["order_status_canceled"]));
       echo "</td></tr>";
 
 
-      echo "<tr class='tab_bg_1' align='center'>"; 
-      echo "<td colspan='2' align='center'>"; 
-      echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >"; 
+      echo "<tr class='tab_bg_1' align='center'>";
+      echo "<td colspan='2' align='center'>";
+      echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
       echo"</td>";
       echo "</tr>";
       
@@ -373,6 +373,7 @@ class PluginOrderConfig extends CommonDBTM {
                      `id` int(11) NOT NULL auto_increment,
                      `use_validation` tinyint(1) NOT NULL default '0',
                      `use_supplier_satisfaction` tinyint(1) NOT NULL default '0',
+                     `use_supplier_informations` tinyint(1) NOT NULL default '0',
                      `use_supplier_infos` tinyint(1) NOT NULL default '1',
                      `generate_order_pdf` tinyint(1) NOT NULL default '0',
                      `default_taxes` int(11) NOT NULL default '0',
@@ -380,7 +381,7 @@ class PluginOrderConfig extends CommonDBTM {
                      `generated_name` varchar(255) collate utf8_unicode_ci default NULL,
                      `generated_serial` varchar(255) collate utf8_unicode_ci default NULL,
                      `generated_otherserial` varchar(255) collate utf8_unicode_ci default NULL,
-                     `default_asset_states_id` int(11) NOT NULL default '0',  
+                     `default_asset_states_id` int(11) NOT NULL default '0',
                      `generate_ticket` int(11) NOT NULL default '0',
                      `generated_title` varchar(255) collate utf8_unicode_ci default NULL,
                      `generated_content` text collate utf8_unicode_ci,
@@ -394,15 +395,15 @@ class PluginOrderConfig extends CommonDBTM {
                      `order_status_paid` int(11) NOT NULL default '0',
                      `shoudbedelivered_color` char(20) collate utf8_unicode_ci default NULL,
                      PRIMARY KEY  (`id`)
-                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"; 
+                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
                $DB->query($query) or die ($DB->error());
                
                $tobefilled = "TOBEFILLED";
-               $tmp = array('id' => 1, 'use_validation' => 0, 'default_taxes' => 0, 
-                            'generate_assets' => 0, 'generated_name' => $tobefilled, 
+               $tmp = array('id' => 1, 'use_validation' => 0, 'default_taxes' => 0,
+                            'generate_assets' => 0, 'generated_name' => $tobefilled,
                             'generated_serial' => $tobefilled, 'generated_otherserial' => $tobefilled,
                             'default_asset_states_id' => 0,
-                            'generate_ticket' => 0, 'generated_title' => $tobefilled, 
+                            'generate_ticket' => 0, 'generated_title' => $tobefilled,
                             'generated_content' => $tobefilled, 'default_ticketcategories_id' => 0);
                $config->add($tmp);
       } else {
@@ -421,42 +422,42 @@ class PluginOrderConfig extends CommonDBTM {
             
             //1.3.0
             $migration->addField($table, "generate_assets", "tinyint(1) NOT NULL default '0'");
-            $migration->addField($table, "generated_name", 
+            $migration->addField($table, "generated_name",
                                  "varchar(255) collate utf8_unicode_ci default NULL");
-            $migration->addField($table, "generated_serial", 
+            $migration->addField($table, "generated_serial",
                                  "varchar(255) collate utf8_unicode_ci default NULL");
-            $migration->addField($table, "generated_otherserial", 
+            $migration->addField($table, "generated_otherserial",
                                  "varchar(255) collate utf8_unicode_ci default NULL");
-            $migration->addField($table, "default_asset_entities_id", 
+            $migration->addField($table, "default_asset_entities_id",
                                  "int(11) NOT NULL default '0'");
-            $migration->addField($table, "default_asset_states_id", 
+            $migration->addField($table, "default_asset_states_id",
                                  "int(11) NOT NULL default '0'");
-            $migration->addField($table, "generate_ticket", 
+            $migration->addField($table, "generate_ticket",
                                  "tinyint(1) NOT NULL default '0'");
-            $migration->addField($table, "generated_title", 
+            $migration->addField($table, "generated_title",
                                  "varchar(255) collate utf8_unicode_ci default NULL");
-            $migration->addField($table, "generated_content", 
+            $migration->addField($table, "generated_content",
                                  "text collate utf8_unicode_ci");
-            $migration->addField($table, "default_ticketcategories_id", 
+            $migration->addField($table, "default_ticketcategories_id",
                                  "int(11) NOT NULL default '0'");
-            $migration->addField($table, "use_supplier_satisfaction", 
+            $migration->addField($table, "use_supplier_satisfaction",
                                  "tinyint(1) NOT NULL default '0'");
-            $migration->addField($table, "generate_order_pdf", 
+            $migration->addField($table, "generate_order_pdf",
                                  "tinyint(1) NOT NULL default '0'");
-            $migration->addField($table, "use_supplier_informations", 
+            $migration->addField($table, "use_supplier_informations",
                                  "tinyint(1) NOT NULL default '1'");
-            $migration->addField($table, "shoudbedelivered_color", 
+            $migration->addField($table, "shoudbedelivered_color",
                                  "char(20) collate utf8_unicode_ci default '#ff5555'");
             $migration->migrationOneTable($table);
             
       }
 
       $migration->displayMessage("Add default order state workflow");
-      $new_states = array('order_status_draft'               => 1, 
-                          'order_status_waiting_approval'    => 2, 
-                          'order_status_approved'            => 3, 
-                          'order_status_partially_delivred'  => 4, 
-                          'order_status_completly_delivered' => 5, 
+      $new_states = array('order_status_draft'               => 1,
+                          'order_status_waiting_approval'    => 2,
+                          'order_status_approved'            => 3,
+                          'order_status_partially_delivred'  => 4,
+                          'order_status_completly_delivered' => 5,
                           'order_status_canceled'            => 6,
                           'order_status_paid'                => 7);
 
