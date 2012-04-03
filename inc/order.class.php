@@ -976,10 +976,9 @@ class PluginOrderOrder extends CommonDBTM {
          $detail  = new PluginOrderOrder_Item();
          $where = "`plugin_order_orders_id`='$orders_id'";
          if ($only_delivered) {
-            $where.= " AND `plugin_order_deliverystates_id` > 0";
+            $where.= " AND `states_id` > 0";
          }
-         $devices = getAllDatasFromTable("glpi_plugin_order_orders_items", $where);
-         return (!empty($devices));
+         return (countElementsInTable("glpi_plugin_order_orders_items", $where));
          
       } else {
          return false;
