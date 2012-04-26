@@ -390,20 +390,25 @@ class PluginOrderOrder extends CommonDBTM {
          return $ong;
 
       }
-      
-     $ong[2] = $LANG['plugin_order'][5];
+     
+     if (plugin_order_haveRight('order','w')) {
+        $ong[2] = $LANG['plugin_order'][5];
+     }
 
+     //if ($config->canGenerateOrderPDF() && $this->getState() > PluginOrderOrderState::DRAFT) {
+     if ($config->canGenerateOrderPDF()
+       // && $this->getState() > PluginOrderOrderState::DRAFT
+           && plugin_order_haveRight('order','w')) {
+     /* generation*/
+        $ong[4] = $LANG['plugin_order']['generation'][2];
+      
+     }
+      
       //Display suppliers related informations
       if ($config->canUseSupplierInformations() && $this->fields['suppliers_id']) {
          $ong[3] = $LANG['plugin_order'][4];
       }
-
-      //if ($config->canGenerateOrderPDF() && $this->getState() > PluginOrderOrderState::DRAFT) {
-        /* generation*/
-        $ong[4] = $LANG['plugin_order']['generation'][2];
-      
-      //}
-
+        
       //if ($this->getState() != PluginOrderOrderState::DRAFT) {
          /* delivery */
          $ong[5] = $LANG['plugin_order']['delivery'][1];
@@ -411,10 +416,12 @@ class PluginOrderOrder extends CommonDBTM {
             /* item */
             $ong[6] = $LANG['plugin_order']['item'][0];
          }
+      //}
+      if (plugin_order_haveRight("bill", "r")) {
          //Bills
          $ong[8] = $LANG['plugin_order']['bill'][4];
-      //}
-
+      }
+         
       if ($config->canUseSupplierSatisfaction()
          && $this->getState() == PluginOrderOrderState::DELIVERED) {
          /* quality */

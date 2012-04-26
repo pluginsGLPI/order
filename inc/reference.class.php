@@ -81,11 +81,13 @@ class PluginOrderReference extends CommonDropdown {
       $tab[3]['field'] = 'itemtype';
       $tab[3]['name'] = $LANG['state'][6];
       $tab[3]['datatype'] = 'itemtypename';
-
+      $tab[3]['massiveaction'] = false;
+      
       $tab[4]['table'] = $this->getTable();
       $tab[4]['field'] = 'models_id';
       $tab[4]['name'] = $LANG['common'][22];
-
+      $tab[4]['massiveaction'] = false;
+      
       $tab[5]['table'] = 'glpi_manufacturers';
       $tab[5]['field'] = 'name';
       $tab[5]['name'] = $LANG['common'][5];
@@ -93,25 +95,29 @@ class PluginOrderReference extends CommonDropdown {
       $tab[6]['table'] = $this->getTable();
       $tab[6]['field'] = 'types_id';
       $tab[6]['name'] = $LANG['common'][17];
+      $tab[6]['massiveaction'] = false;
       
       $tab[7]['table'] = $this->getTable();
       $tab[7]['field'] = 'templates_id';
       $tab[7]['name'] = $LANG['common'][13];
-      
+      $tab[7]['massiveaction'] = false;
+            
       $tab[30]['table'] = $this->getTable();
       $tab[30]['field'] = 'id';
       $tab[30]['name']=$LANG['common'][2];
-
+      $tab[30]['massiveaction'] = false;
+      
       /* entity */
       $tab[80]['table'] = 'glpi_entities';
       $tab[80]['field'] = 'completename';
       $tab[80]['name'] = $LANG['entity'][0];
-
+      $tab[80]['massiveaction'] = false;
+      
       $tab[86]['table']    = $this->getTable();
       $tab[86]['field']    = 'is_recursive';
       $tab[86]['name']     = $LANG['entity'][9];
       $tab[86]['datatype'] = 'bool';
-      $tab[86]['massiveaction'] = false;
+//      $tab[86]['massiveaction'] = false;
 
       return $tab;
    }
@@ -130,8 +136,8 @@ class PluginOrderReference extends CommonDropdown {
       }
       
        if (!isset($input["transfert"])
-            && countElementsInTable($this->getTable(), 
-                                    "`name` = '".$input["name"]."' 
+            && countElementsInTable($this->getTable(),
+                                    "`name` = '".$input["name"]."'
                                        AND `entities_id` = '".$input["entities_id"]."'")) {
          addMessageAfterRedirect($LANG['plugin_order']['reference'][6], false, ERROR);
          return false;
@@ -155,7 +161,7 @@ class PluginOrderReference extends CommonDropdown {
    function referenceInUse(){
       global $DB;
       
-      $number = countElementsInTable("glpi_plugin_order_orders_items", 
+      $number = countElementsInTable("glpi_plugin_order_orders_items",
                                    "`plugin_order_references_id` = '".
                                       $this->fields["id"]."'");
       if ($number > 0) {
@@ -217,9 +223,9 @@ class PluginOrderReference extends CommonDropdown {
                echo $item->getTypeName();
                echo "<input type='hidden' name='itemtype' value='$itemtype'>";
             } else {
-               $params = array('myname'       => 'itemtype', 'ajax' => true, 
+               $params = array('myname'       => 'itemtype', 'ajax' => true,
                                'value'        => $this->fields["itemtype"],
-                               'entity'       => $_SESSION["glpiactive_entity"], 
+                               'entity'       => $_SESSION["glpiactive_entity"],
                                'ajax_page'    => GLPI_ROOT.'/plugins/order/ajax/referencespecifications.php',
                                'class'        => __CLASS__);
                                
@@ -231,7 +237,7 @@ class PluginOrderReference extends CommonDropdown {
             echo "<span id='show_types_id'>";
             if ($this->fields["itemtype"]) {
                if ($this->fields["itemtype"] == 'PluginOrderOther') {
-                  $file = 'other'; 
+                  $file = 'other';
                } else {
                   $file = $this->fields["itemtype"];
                }
@@ -239,11 +245,11 @@ class PluginOrderReference extends CommonDropdown {
                $plugin_typefilename = GLPI_ROOT."/plugins/order/inc/".strtolower($file)."type.class.php";
                $itemtypeclass       = $this->fields["itemtype"]."Type";
                
-               if (file_exists($core_typefilename) 
+               if (file_exists($core_typefilename)
                      || file_exists($plugin_typefilename)) {
                   if (!$reference_in_use) {
-                     Dropdown::show($itemtypeclass, 
-                                    array('name'  => "types_id", 
+                     Dropdown::show($itemtypeclass,
+                                    array('name'  => "types_id",
                                           'value' => $this->fields["types_id"]));
                   } else{
                      echo Dropdown::getDropdownName(getTableForItemType($itemtypeclass),
@@ -269,10 +275,10 @@ class PluginOrderReference extends CommonDropdown {
 
          case 'reference_templates_id' :
             echo "<span id='show_templates_id'>";
-            if ($this->fields['itemtype'] != '' 
+            if ($this->fields['itemtype'] != ''
                && FieldExists(getTableForItemType($this->fields['itemtype']), 'is_template')) {
-               $this->dropdownTemplate('templates_id', $this->fields['entities_id'], 
-                                       getTableForItemType($this->fields['itemtype']), 
+               $this->dropdownTemplate('templates_id', $this->fields['entities_id'],
+                                       getTableForItemType($this->fields['itemtype']),
                                        $this->fields['templates_id']);
             }
             echo "</span>";
@@ -297,12 +303,12 @@ class PluginOrderReference extends CommonDropdown {
          case -1:
             $reference_supplier->showReferenceManufacturers($supplier_page, $_POST["id"]);
             if ($this->can($_POST["id"],'w'))
-               $reference_supplier->showForm("", 
-               array('plugin_order_references_id' => $_POST["id"], 
+               $reference_supplier->showForm("",
+               array('plugin_order_references_id' => $_POST["id"],
                'target' => $CFG_GLPI["root_doc"] ."/plugins/order/front/reference_supplier.form.php"));
 
             Document::showAssociated($this);
-         case 2 :  
+         case 2 :
             $this->getAllOrdersByReference($_POST["id"]);
             break;
          case 3 :
@@ -319,7 +325,7 @@ class PluginOrderReference extends CommonDropdown {
          default :
             $reference_supplier->showReferenceManufacturers($supplier_page, $_POST["id"]);
             if ($this->can($_POST["id"],'w')) {
-               $reference_supplier->showForm("",array('plugin_order_references_id' => $_POST["id"], 
+               $reference_supplier->showForm("",array('plugin_order_references_id' => $_POST["id"],
                                                       'target' => $supplier_page));
 
             }
@@ -346,8 +352,8 @@ class PluginOrderReference extends CommonDropdown {
       global $DB;
 
       $query = "SELECT `template_name`, `id` FROM `$table`
-                WHERE `entities_id` = ' $entity' 
-                   AND `is_template` = '1' 
+                WHERE `entities_id` = ' $entity'
+                   AND `is_template` = '1'
                       AND `template_name` <> '' GROUP BY `template_name` ORDER BY `template_name`";
       $result = $DB->query($query);
 
@@ -372,8 +378,8 @@ class PluginOrderReference extends CommonDropdown {
    function checkIfTemplateExistsInEntity($detailID, $itemtype, $entity) {
       global $DB;
 
-      $query = "SELECT `".$this->getTable()."`.`templates_id` 
-               FROM `glpi_plugin_order_orders_items`, `".$this->getTable()."` 
+      $query = "SELECT `".$this->getTable()."`.`templates_id`
+               FROM `glpi_plugin_order_orders_items`, `".$this->getTable()."`
                WHERE `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `".
                    $this->getTable()."`.`id`
                       AND `glpi_plugin_order_orders_items`.`id` = '$detailID' ;";
@@ -446,20 +452,20 @@ class PluginOrderReference extends CommonDropdown {
 
       if ($p['ajax']) {
          $params = array ('itemtype' => '__VALUE__', 'suppliers_id' => $p['suppliers_id'],
-                          'entity_restrict' => $p['entity'], 
+                          'entity_restrict' => $p['entity'],
                           'plugin_order_orders_id' => $p['orders_id']);
 
          if ($p['class'] != 'PluginOrderOrder_Item') {
             foreach (array("types_id", "models_id", "templates_id") as $field) {
                $params['field'] = $field;
                $params['plugin_order_references_id'] = $p['value'];
-               ajaxUpdateItemOnSelectEvent($p['myname'], "show_$field", 
-                                           $p['ajax_page'], 
+               ajaxUpdateItemOnSelectEvent($p['myname'], "show_$field",
+                                           $p['ajax_page'],
                                            $params);
             }
          } else {
-               ajaxUpdateItemOnSelectEvent($p['myname'], "show_reference", 
-                                           $p['ajax_page'], 
+               ajaxUpdateItemOnSelectEvent($p['myname'], "show_reference",
+                                           $p['ajax_page'],
                                            $params);
          }
       }
@@ -480,7 +486,10 @@ class PluginOrderReference extends CommonDropdown {
             getForeignKeyFieldForTable(getTableForItemType($itemtype."Model"))."` ='$models_id' ":"");
       }
       if ($item->maybeTemplate()) {
-         $and .= " AND `is_template` = 0 AND `is_deleted` = 0 ";
+         $and .= " AND `is_template` = 0 ";
+      }
+      if ($item->maybeDeleted()) {
+         $and .= " AND `is_deleted` = 0 ";
       }
       
       $used = "AND `id` NOT IN (SELECT `items_id` FROM `glpi_plugin_order_orders_items`)";
@@ -491,15 +500,15 @@ class PluginOrderReference extends CommonDropdown {
 
       switch ($itemtype) {
          default :
-            $query = "SELECT `id`, `name` 
-                     FROM `" . getTableForItemType($itemtype) . "` 
-                     WHERE `entities_id` = '" . $entity ."' ". $and . " 
+            $query = "SELECT `id`, `name`
+                     FROM `" . getTableForItemType($itemtype) . "`
+                     WHERE `entities_id` = '" . $entity ."' ". $and . "
                      $used ";
             break;
          case 'ConsumableItem' :
             $query = "SELECT `id`, `name` FROM `glpi_consumableitems`
                      WHERE `entities_id` = '" . $entity . "'
-                     AND `consumableitemtypes_id` = '$types_id' 
+                     AND `consumableitemtypes_id` = '$types_id'
                      ORDER BY `name`";
             break;
          case 'CartridgeItem' :
@@ -531,7 +540,7 @@ class PluginOrderReference extends CommonDropdown {
       global $DB;
 
       $query = "SELECT `gr`.`name`, `gr`.`id`, `grm`.`reference_code`
-                FROM `".$this->getTable()."` AS gr, `glpi_plugin_order_references_suppliers` AS grm 
+                FROM `".$this->getTable()."` AS gr, `glpi_plugin_order_references_suppliers` AS grm
                 WHERE `gr`.`itemtype` = '$itemtype'
                    AND `grm`.`suppliers_id` = '$enterpriseID'
                      AND `grm`.`plugin_order_references_id` = `gr`.`id` ORDER BY `gr`.`name` ASC";
@@ -559,9 +568,9 @@ class PluginOrderReference extends CommonDropdown {
       global $LANG, $DB, $CFG_GLPI;
 
       $query = "SELECT `gr`.`id`, `gr`.`manufacturers_id`, `gr`.`entities_id`, `gr`.`itemtype`,
-                       `gr`.`name`, `grm`.`price_taxfree` 
-               FROM `glpi_plugin_order_references_suppliers` AS grm, `".$this->getTable()."` AS gr 
-               WHERE `grm`.`suppliers_id` = '$ID' 
+                       `gr`.`name`, `grm`.`price_taxfree`
+               FROM `glpi_plugin_order_references_suppliers` AS grm, `".$this->getTable()."` AS gr
+               WHERE `grm`.`suppliers_id` = '$ID'
                   AND `grm`.`plugin_order_references_id` = `gr`.`id`"
                .getEntitiesRestrictRequest(" AND ", "gr", '', '', true);
       $result = $DB->query($query);
@@ -608,9 +617,9 @@ class PluginOrderReference extends CommonDropdown {
    function getAllOrdersByReference($plugin_order_references_id){
       global $DB,$LANG;
       
-      $query = "SELECT `glpi_plugin_order_orders`.* 
+      $query = "SELECT `glpi_plugin_order_orders`.*
                FROM `glpi_plugin_order_orders_items`
-               LEFT JOIN `glpi_plugin_order_orders` 
+               LEFT JOIN `glpi_plugin_order_orders`
                   ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`)
                WHERE `plugin_order_references_id` = '".$plugin_order_references_id."'
                GROUP BY `glpi_plugin_order_orders`.`id`
@@ -620,20 +629,20 @@ class PluginOrderReference extends CommonDropdown {
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='5'>".$LANG['plugin_order'][11]."</th></tr>";
-      echo "<tr>"; 
+      echo "<tr>";
       echo "<th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "</tr>";
  
       while ($data = $DB->fetch_array($result)) {
-         echo "<tr class='tab_bg_1' align='center'>"; 
+         echo "<tr class='tab_bg_1' align='center'>";
          echo "<td>";
 
          $link = getItemTypeFormURL('PluginOrderOrder');
          if ($this->canView()) {
             echo "<a href=\"".$link."?id=".$data["id"]."\">".$data["name"]."</a>";
          } else {
-            echo $data["name"];  
+            echo $data["name"];
          }
          echo "</td>";
 
@@ -641,7 +650,7 @@ class PluginOrderReference extends CommonDropdown {
          echo Dropdown::getDropdownName("glpi_entities",$data["entities_id"]);
          echo "</td>";
 
-         echo "</tr>"; 
+         echo "</tr>";
       }
       
       echo "</table></div>";
@@ -819,21 +828,21 @@ class PluginOrderReference extends CommonDropdown {
          
          ///1.2.0
          $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
-         $migration->changeField($table, "FK_entities", "entities_id", 
+         $migration->changeField($table, "FK_entities", "entities_id",
                                  "int(11) NOT NULL default '0'");
-         $migration->changeField($table, "recursive", "is_recursive", 
+         $migration->changeField($table, "recursive", "is_recursive",
                                  "tinyint(1) NOT NULL default '0'");
-         $migration->changeField($table, "name", "name", 
+         $migration->changeField($table, "name", "name",
                                  "varchar(255) collate utf8_unicode_ci default NULL");
-         $migration->changeField($table, "FK_glpi_enterprise", "manufacturers_id", 
+         $migration->changeField($table, "FK_glpi_enterprise", "manufacturers_id",
                                  "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)'");
-         $migration->changeField($table, "FK_type", "types_id", 
+         $migration->changeField($table, "FK_type", "types_id",
                                  "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtypes tables (id)'");
-         $migration->changeField($table, "FK_model", "models_id", 
+         $migration->changeField($table, "FK_model", "models_id",
                                  "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemmodels tables (id)'");
-         $migration->changeField($table, "type", "itemtype", 
+         $migration->changeField($table, "type", "itemtype",
                                  "varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file'");
-         $migration->changeField($table, "template", "templates_id", 
+         $migration->changeField($table, "template", "templates_id",
                                  "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
          $migration->changeField($table, "comments", "comment",
                                  "text collate utf8_unicode_ci");
@@ -851,29 +860,29 @@ class PluginOrderReference extends CommonDropdown {
          $migration->migrationOneTable($table);
 
          Plugin::migrateItemType(array(3151 => 'PluginOrderReference'),
-                                 array("glpi_bookmarks", "glpi_bookmarks_users", 
-                                       "glpi_displaypreferences", "glpi_documents_items", 
+                                 array("glpi_bookmarks", "glpi_bookmarks_users",
+                                       "glpi_displaypreferences", "glpi_documents_items",
                                        "glpi_infocoms", "glpi_logs", "glpi_tickets"));
 
          Plugin::migrateItemType(array(), array(), array($table));
 
          //1.3.0
          $DB->query("UPDATE `glpi_plugin_order_references`
-                    SET `itemtype`='ConsumableItem' 
+                    SET `itemtype`='ConsumableItem'
                     WHERE `itemtype` ='Consumable'") or die ($DB->error());
          $DB->query("UPDATE `glpi_plugin_order_references`
-                    SET `itemtype`='CartridgeItem' 
+                    SET `itemtype`='CartridgeItem'
                     WHERE `itemtype` ='Cartridge'") or die ($DB->error());
                     
          //Displayprefs
             
          $prefs = array(1 => 1, 2 => 4, 4 => 5, 5 => 9, 6 => 6, 7 => 7);
          foreach ($prefs as $num => $rank) {
-            if (!countElementsInTable("glpi_displaypreferences", 
-                                       "`itemtype`='PluginOrderReference' AND `num`='$num' 
+            if (!countElementsInTable("glpi_displaypreferences",
+                                       "`itemtype`='PluginOrderReference' AND `num`='$num'
                                           AND `rank`='$rank' AND `users_id`='0'")) {
-               $DB->query("INSERT INTO glpi_displaypreferences 
-                           VALUES (NULL,'PluginOrderReference','$num','$rank','0');") 
+               $DB->query("INSERT INTO glpi_displaypreferences
+                           VALUES (NULL,'PluginOrderReference','$num','$rank','0');")
                   or die($DB->error());
             }
          }
