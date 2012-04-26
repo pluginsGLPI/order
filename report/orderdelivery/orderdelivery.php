@@ -50,37 +50,39 @@ new PluginReportsDateIntervalCriteria($report, 'order_date', $LANG['plugin_order
 new PluginReportsDateIntervalCriteria($report, 'deliverydate', $LANG['plugin_order'][53]);
 new PluginReportsLocationCriteria($report, 'locations_id', $LANG['plugin_order'][40]);
 new PluginReportsSupplierCriteria($report, 'suppliers_id', $LANG['financial'][26]);
-new PluginReportsDropdownCriteria($report, 'plugin_order_orderstates_id', 'PluginOrderOrderState', 
+new PluginReportsDropdownCriteria($report, 'plugin_order_orderstates_id', 'PluginOrderOrderState',
                                   $LANG['joblist'][0]);
 $report->displayCriteriasForm();
 
 if ($report->criteriasValidated()) {
    $report->setSubNameAuto();
 
-   $report->setColumns(array(new PluginReportsColumnLink('entities_id', 
+   $report->setColumns(array(new PluginReportsColumnLink('entities_id',
                                                          $LANG['entity'][0], 'Entity'),
-                             new PluginReportsColumnLink('id', $LANG['common'][16], 
-                                                         'PluginOrderOrder', 
-                                                         array('with_comment' => true, 
+                             new PluginReportsColumnLink('id', $LANG['common'][16],
+                                                         'PluginOrderOrder',
+                                                         array('with_comment' => true,
                                                                'with_navigate' => true)),
                              new PluginReportsColumn('num_order', $LANG['plugin_order'][0]),
-                             new PluginReportsColumnLink('suppliers_id', 
+                             new PluginReportsColumnLink('suppliers_id',
                                                          $LANG['financial'][26], 'Supplier'),
-                             new PluginReportsColumnLink('plugin_order_orderstates_id', 
-                                                         $LANG['joblist'][0], 
-                                                         'PluginOrderOrderState', 
+                             new PluginReportsColumnLink('plugin_order_orderstates_id',
+                                                         $LANG['joblist'][0],
+                                                         'PluginOrderOrderState',
                                                          array('with_comment' => true)),
                              new PluginReportsColumnDateTime('order_date', $LANG['plugin_order'][1]),
                              new PluginReportsColumnDateTime('duedate', $LANG['plugin_order'][50]),
                              new PluginReportsColumnDateTime('deliverydate', $LANG['plugin_order'][53]),
-                             new PluginReportsColumnLink('locations_id', 
+                             new PluginReportsColumnLink('locations_id',
                                                          $LANG['plugin_order'][40], 'Location',
                                                          array('with_comment' => true))
                        ));
    
+    //TODO : ne pas chercher dans la poublelles
    $query = "SELECT * FROM `glpi_plugin_order_orders`";
    $query.= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");
-   $query.= $report->addSqlCriteriasRestriction(); 
+   $query.= $report->addSqlCriteriasRestriction();
+   $query.= " AND `is_deleted`='0'";
    $query.="GROUP BY `entities_id`, `plugin_order_orderstates_id`, `num_order`, `order_date`";
    $report->setGroupBy("entities_id", "plugin_order_orderstates_id", "num_order", "order_date");
    $report->setSqlRequest($query);
