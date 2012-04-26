@@ -395,10 +395,12 @@ class PluginOrderOrder extends CommonDBTM {
         $ong[2] = $LANG['plugin_order'][5];
      }
 
-     //if ($config->canGenerateOrderPDF() && $this->getState() > PluginOrderOrderState::DRAFT) {
      if ($config->canGenerateOrderPDF()
-       // && $this->getState() > PluginOrderOrderState::DRAFT
+        && $this->getState() > PluginOrderOrderState::DRAFT
            && plugin_order_haveRight('order','w')) {
+     //if ($config->canGenerateOrderPDF()
+     // && $this->getState() > PluginOrderOrderState::DRAFT
+     //   && plugin_order_haveRight('order','w')) {
      /* generation*/
         $ong[4] = $LANG['plugin_order']['generation'][2];
       
@@ -1368,13 +1370,23 @@ class PluginOrderOrder extends CommonDBTM {
    }
    
    function canStillUseBudget($input){
-         $budget = new Budget();
-         $budget->getFromDB($input['budgets_id']);
-
-         if( !($input['order_date'] > $budget->getField('begin_date')
-                  && $input['order_date'] < $budget->getField('end_date'))) {
+      $budget = new Budget();
+      $budget->getFromDB($input['budgets_id']);
+         
+      //If no begin date on a budget : do not display a warning
+      if (empty($budget->fields['begin_date'])) {
+         return true;
+      } else {
+         //There's a begin date and order date is prior to it
+         if($input['order_date'] < $budget->getField('begin_date')) {
             return false;
          }
+         //There's an end date and order date is above it
+         if (!empty($budget->fields['end_date'])
+            && $input['order_date'] > $budget->getField('end_date')) {
+            return false;
+         }
+      }
 
       return true;
    }
@@ -1407,6 +1419,13 @@ class PluginOrderOrder extends CommonDBTM {
                FROM `".$this->getTable()."`
                WHERE `budgets_id` = '".$this->fields['budgets_id']."'";
 
+      // Get BUDGET
+      $budget = new Budget();
+      $budget->getFromDB($this->fields['budgets_id']);
+      if ($budget->fields['value'] == 0) {
+         return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
+      }
+      
       $total_HT = 0;
       foreach($DB->request($query) as $data) {
          $item      = new PluginOrderOrder_Item();
@@ -1414,18 +1433,14 @@ class PluginOrderOrder extends CommonDBTM {
          $total_HT += $prices["priceHT"] + $data['port_price'];
       }
 
-      // Get BUDGET
-      $budget = new Budget();
-      $budget->getFromDB($this->fields['budgets_id']);
 
       // Compare BUDGET value to TOTAL_HT value
       if( $total_HT > $budget->getField('value') ) {
          return PluginOrderOrder::ORDER_IS_OVER_BUDGET;
 
-      }elseif( $total_HT == $budget->getField('value') ) {
+      } elseif( $total_HT == $budget->getField('value') ) {
          return PluginOrderOrder::ORDER_IS_EQUAL_BUDGET;
-
-      }else{
+      } else{
          return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
       }
    }
