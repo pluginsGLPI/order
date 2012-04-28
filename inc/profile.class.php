@@ -79,7 +79,8 @@ class PluginOrderProfile extends CommonDBTM {
       if (!$myProf->getFromDBByProfile($ID)) {
 
          $myProf->add(array('profiles_id' => $ID, 'order' => 'w', 'reference'=>'w',
-                            'validation'=>'w', 'cancel'=>'w', 'undo_validation'=>'w', 'bill' => 'w'));
+                            'validation'=>'w', 'cancel'=>'w', 'undo_validation'=>'w',
+                            'bill' => 'w', 'delivery' => 'w'));
             
       }
    }
@@ -90,7 +91,7 @@ class PluginOrderProfile extends CommonDBTM {
          $tmp = $myProf->fields;
          $tmp[$right] = $value;
          $myProf->update($tmp);
-      }   
+      }
    }
    
    function createAccess($ID) {
@@ -125,10 +126,10 @@ class PluginOrderProfile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       
-      echo "<th colspan='4' align='center'><strong>" . 
+      echo "<th colspan='4' align='center'><strong>" .
          $LANG['plugin_order']['profile'][0] . " " . $prof->fields["name"] . "</strong></th>";
       
-      echo "</tr>";  
+      echo "</tr>";
       echo "<tr class='tab_bg_2'>";
       
       echo "<td>" . $LANG['plugin_order']['menu'][1] . ":</td><td>";
@@ -157,7 +158,14 @@ class PluginOrderProfile extends CommonDBTM {
          echo $LANG['profiles'][12]; // No access;
       }
       echo "</td>";
-      echo "<td colspan='2'></td>";
+
+      echo "<td>" . $LANG['plugin_order']['delivery'][2] . ":</td><td>";
+      if ($prof->fields['interface']!='helpdesk') {
+         Profile::dropdownNoneReadWrite("delivery", $this->fields["delivery"], 1, 1, 1);
+      } else {
+         echo $LANG['profiles'][12]; // No access;
+      }
+      echo "</td>";
       
       echo "</tr>";
       
@@ -218,6 +226,7 @@ class PluginOrderProfile extends CommonDBTM {
                `cancel` char(1) collate utf8_unicode_ci default NULL,
                `undo_validation` char(1) collate utf8_unicode_ci default NULL,
                `bill` char(1) collate utf8_unicode_ci default NULL,
+               `delivery` char(1) collate utf8_unicode_ci default NULL,
                PRIMARY KEY  (`id`),
                KEY `profiles_id` (`profiles_id`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
@@ -229,9 +238,9 @@ class PluginOrderProfile extends CommonDBTM {
 
          //1.2.0
          $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
-         foreach (array('order', 'reference', 'budget', 'validation', 'cancel', 'undo_validation') 
+         foreach (array('order', 'reference', 'budget', 'validation', 'cancel', 'undo_validation')
             as $right) {
-            $migration->changeField($table, $right, $right, 
+            $migration->changeField($table, $right, $right,
                                     "char(1) collate utf8_unicode_ci default NULL");
          }
          
@@ -251,9 +260,20 @@ class PluginOrderProfile extends CommonDBTM {
          $migration->migrationOneTable($table);
          
          //1.5.0
-         $migration->addField("glpi_plugin_order_profiles", "bill", 
+         $migration->addField("glpi_plugin_order_profiles", "bill",
                               "CHAR( 1 ) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->migrationOneTable($table);
+         
+         //1.5.3
+         //Add delivery right
+         if ($migration->addField("glpi_plugin_order_profiles", "delivery",
+                              "CHAR( 1 ) COLLATE utf8_unicode_ci DEFAULT NULL")) {
+            $migration->migrationOneTable($table);
+            //Update profiles : copy order right not to change current behavior
+            $update = "UPDATE `glpi_plugin_order_profiles` SET `delivery`=`order`";
+            $DB->request($update);
+         }
+         
          PluginOrderProfile::addRightToProfile($_SESSION['glpiactiveprofile']['id'], "bill" , "w");
       }
       

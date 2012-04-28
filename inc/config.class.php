@@ -369,7 +369,7 @@ class PluginOrderConfig extends CommonDBTM {
             $migration->displayMessage("Installing $table");
 
             //Install
-            $query = "CREATE TABLE `glpi_plugin_order_configs` (
+            $query = "CREATE TABLE `$table` (
                      `id` int(11) NOT NULL auto_increment,
                      `use_validation` tinyint(1) NOT NULL default '0',
                      `use_supplier_satisfaction` tinyint(1) NOT NULL default '0',
@@ -393,7 +393,7 @@ class PluginOrderConfig extends CommonDBTM {
                      `order_status_completly_delivered` int(11) NOT NULL default '0',
                      `order_status_canceled` int(11) NOT NULL default '0',
                      `order_status_paid` int(11) NOT NULL default '0',
-                     `shoudbedelivered_color` char(20) collate utf8_unicode_ci default NULL,
+                     `shoudbedelivered_color` char(20) collate utf8_unicode_ci default '#ff5555',
                      PRIMARY KEY  (`id`)
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
                $DB->query($query) or die ($DB->error());
@@ -404,7 +404,8 @@ class PluginOrderConfig extends CommonDBTM {
                             'generated_serial' => $tobefilled, 'generated_otherserial' => $tobefilled,
                             'default_asset_states_id' => 0,
                             'generate_ticket' => 0, 'generated_title' => $tobefilled,
-                            'generated_content' => $tobefilled, 'default_ticketcategories_id' => 0);
+                            'generated_content' => $tobefilled, 'default_ticketcategories_id' => 0,
+                            'shoudbedelivered_color' => '#ff5555');
                $config->add($tmp);
       } else {
             //Upgrade
@@ -414,7 +415,7 @@ class PluginOrderConfig extends CommonDBTM {
             $migration->renameTable("glpi_plugin_order_config", $table);
 
             if (!countElementsInTable("glpi_plugin_order_configs")) {
-               $query = "INSERT INTO `glpi_plugin_order_configs`(id,use_validation,default_taxes) VALUES (1,0,0);";
+               $query = "INSERT INTO `glpi_plugin_order_configs`(`id`,`use_validation`,`default_taxes`) VALUES (1,0,0);";
                $DB->query($query) or die($DB->error());
             }
   

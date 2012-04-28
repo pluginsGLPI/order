@@ -37,13 +37,13 @@ class PluginOrderPreference extends CommonDBTM {
    function checkIfPreferenceExists($user_id) {
       global $DB;
       
-      $result = $DB->query("SELECT `id` 
-                        FROM `".$this->getTable()."` 
+      $result = $DB->query("SELECT `id`
+                        FROM `".$this->getTable()."`
                         WHERE `user_id` = '".$user_id."' ");
       if ($DB->numrows($result) > 0)
          return $DB->result($result,0,"id");
       else
-         return 0;   
+         return 0;
    }
    
    function addDefaultPreference($user_id) {
@@ -57,25 +57,25 @@ class PluginOrderPreference extends CommonDBTM {
    function checkPreferenceSignatureValue($user_id) {
       global $DB;
       
-      $result = $DB->query("SELECT * 
-                        FROM `".$this->getTable()."` 
+      $result = $DB->query("SELECT *
+                        FROM `".$this->getTable()."`
                         WHERE `user_id` = '".$user_id."' ");
       if ($DB->numrows($result) > 0)
          return $DB->result($result,0,"sign");
       else
-         return 0;   
+         return 0;
    }
    
    function checkPreferenceTemplateValue($user_id) {
       global $DB;
       
-      $result = $DB->query("SELECT * 
-                        FROM `".$this->getTable()."` 
+      $result = $DB->query("SELECT *
+                        FROM `".$this->getTable()."`
                         WHERE `user_id` = '".$user_id."' ");
       if ($DB->numrows($result) > 0)
          return $DB->result($result,0,"template");
       else
-         return 0;   
+         return 0;
    }
 
    function showForm($ID){
@@ -85,9 +85,9 @@ class PluginOrderPreference extends CommonDBTM {
       $this->getFromDB($ID);
       
       $dir_template   = GLPI_ROOT."/plugins/order/templates/";
-      $array_template = $this->getFiles($dir_template,"odt",$this->fields["template"]);
+      $array_template = $this->getFiles($dir_template, "odt", $this->fields["template"]);
       $dir_sign       = GLPI_ROOT."/plugins/order/signatures/";
-      $array_sign     = $this->getFiles($dir_sign,"png",$this->fields["sign"]);
+      $array_sign     = $this->getFiles($dir_sign, "png", $this->fields["sign"]);
       
       if (!empty($array_template)) {
       
@@ -126,7 +126,7 @@ class PluginOrderPreference extends CommonDBTM {
             echo "</td></tr>";
          }
          
-         echo "<tr class='tab_bg_2'><td align='center' colspan='2'>"; 
+         echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
          echo "<input type='hidden' name='id' value='".$ID."'>";
          echo "<input type='submit' name='update' value='".$LANG['buttons'][2]."' class='submit' ></td>";
          echo "</tr>";
@@ -146,30 +146,29 @@ class PluginOrderPreference extends CommonDBTM {
       
       if (is_dir($dir)) {
          if ($dh = opendir($dir)) {
-            while (($file = readdir($dh)) !== false)
-            {
-            $filename = $file;
-            $filetype = filetype($dir . $file);
-            $filedate = convdate(date ("Y-m-d", filemtime($dir . $file)));
-            $basename=explode('.', basename($filename));
-            $extension = array_pop($basename);
-            if ($filename == ".." OR $filename == ".") {
-               echo "";
-            } else {
-               if ($filetype == 'file' && $extension ==$ext) {
-                  if ($ext == 'png') {
-                     $name = array_shift($basename);
-                     if (strtolower($name) == strtolower($_SESSION["glpiname"])) {
-                        $array_file[] = array($filename,$filedate,$extension);
+            while (($file = readdir($dh)) !== false) {
+               $filename  = $file;
+               $filetype  = filetype($dir . $file);
+               $filedate  = convdate(date ("Y-m-d", filemtime($dir . $file)));
+               $basename  = explode('.', basename($filename));
+               $extension = array_pop($basename);
+               if ($filename == ".." OR $filename == ".") {
+                  echo "";
+               } else {
+                  if ($filetype == 'file' && $extension ==$ext) {
+                     if ($ext == 'png') {
+                        $name = array_shift($basename);
+                        if (strtolower($name) == strtolower($_SESSION["glpiname"])) {
+                           $array_file[] = array($filename, $filedate, $extension);
+                        }
+                     } else {
+                        $array_file[] = array($filename, $filedate, $extension);
                      }
-                  } else {
-                     $array_file[] = array($filename,$filedate,$extension);
+                     
+                  } elseif ($filetype == "dir") {
+                     $array_dir[] = $filename;
+                     }
                   }
-                  
-               } elseif ($filetype == "dir") {
-                  $array_dir[] = $filename;
-                  }
-               }
             }
             closedir($dh);
          }

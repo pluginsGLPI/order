@@ -41,6 +41,7 @@ if (!isset ($_POST["withtemplate"])) {
    $_POST["withtemplate"] = "";
 }
 
+$config         = PluginOrderConfig::getConfig();
 $order          = new PluginOrderOrder();
 $order_item     = new PluginOrderOrder_Item();
 $order_supplier = new PluginOrderOrder_Supplier();
@@ -53,71 +54,94 @@ if ($_POST["id"] > 0 && $order->can($_POST["id"], 'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $order_item->showItem($_POST["id"]);
-         $order->showValidationForm($_POST["id"]);
-         $order_supplier->showOrderSupplierInfos($_POST["id"]);
-         if (!$order_supplier->checkIfSupplierInfosExists($_POST["id"]) 
-                && $order->can($_POST["id"], 'w')) {
-            $order_supplier->showForm("",  array('plugin_order_orders_id' => $_POST["id"]));
-
+         if (plugin_order_haveRight('order','w')) {
+            $order->showValidationForm($_POST["id"]);
          }
-         if ($order->getState() != PluginOrderOrderState::DRAFT) {
+         if ($config->canUseSupplierInformations() && $order->fields['suppliers_id']) {
+            $order_supplier->showForm("", array('plugin_order_orders_id' => $_POST["id"]));
+         }
+         
+         if ($config->canGenerateOrderPDF()
+            && $order->getState() > PluginOrderOrderState::DRAFT
+               && plugin_order_haveRight('order','w') && $order->can($_POST["id"],'w')) {
+            $order->showGenerationForm($_POST["id"]);
+         }
+         
+         if (plugin_order_haveRight('delivery', 'r')
+            && $order->getState() > PluginOrderOrderState::DRAFT) {
             $orderreception->showOrderReception($_POST["id"]);
-            $orderlink->showOrderLink($_POST["id"]);
             
-            if ($order->getState() == PluginOrderOrderState::DELIVERED) {
-               $surveySupplier->showOrderSupplierSurvey($_POST["id"]);
-               if (!$surveySupplier->checkIfSupplierSurveyExists($_POST["id"]) 
-                  && $order->can($_POST["id"], 'w')) {
-                  $surveySupplier->showForm("",array('plugin_order_orders_id' => $_POST["id"]));
-               }
-
+            if ($order->checkIfDetailExists($order->getID(), true)) {
+               $orderlink->showOrderLink($_POST["id"]);
             }
-
          }
-         $order_item->showBillsItems($order);
-         Document::showAssociated($order);
+
+         if ($config->canUseSupplierSatisfaction()
+            && $order->getState() == PluginOrderOrderState::DELIVERED) {
+            $surveySupplier->showOrderSupplierSurvey($_POST["id"]);
+            if (!$surveySupplier->checkIfSupplierSurveyExists($_POST["id"])
+                   && $order->can($_POST["id"], 'w')) {
+               $surveySupplier->showForm("",  array('plugin_order_orders_id' => $_POST["id"]));
+            }
+         }
+
+         if (plugin_order_haveRight("bill", "r")) {
+            $order_item->showBillsItems($order);
+         }
+         if (haveRight("document", "r")) {
+            Document::showAssociated($order);
+         }
          Plugin::displayAction($order,$_REQUEST['glpi_tab']);
          break;
       case 2 :
-         $order->showValidationForm($_POST["id"]);
-         break;
+        if (plugin_order_haveRight('order','w')) {
+           $order->showValidationForm($_POST["id"]);
+        }
+        break;
       case 3 :
-         $order_supplier->showOrderSupplierInfos($_POST["id"]);
-         if (!$order_supplier->checkIfSupplierInfosExists($_POST["id"]) 
-                && $order->can($_POST["id"],'w')) {
+         if ($config->canUseSupplierInformations() && $order->fields['suppliers_id']) {
             $order_supplier->showForm("", array('plugin_order_orders_id' => $_POST["id"]));
          }
          break;
       case 4 :
-         if ($order->getState() > PluginOrderOrderState::DRAFT) {
-            if ($order->can($_POST["id"],'w')) {
-               $order->showGenerationForm($_POST["id"]);
-
-            }
-
+         if ($config->canGenerateOrderPDF()
+            && $order->getState() > PluginOrderOrderState::DRAFT
+               && plugin_order_haveRight('order','w') && $order->can($_POST["id"],'w')) {
+            $order->showGenerationForm($_POST["id"]);
          }
          break;
       case 5 :
-         $orderreception->showOrderReception($_POST["id"]);
+         if (plugin_order_haveRight('delivery', 'r')
+            && $order->getState() > PluginOrderOrderState::DRAFT) {
+            $orderreception->showOrderReception($_POST["id"]);
+         }
          break;
       case 6 :
-         $orderlink->showOrderLink($_POST["id"]);
+         if (plugin_order_haveRight('delivery', 'r')
+            && $order->getState() > PluginOrderOrderState::DRAFT
+               && $order->checkIfDetailExists($order->getID(), true)) {
+            $orderlink->showOrderLink($_POST["id"]);
+         }
          break;
        case 7 :
-         if ($order->getState() == PluginOrderOrderState::DELIVERED) {
+         if ($config->canUseSupplierSatisfaction()
+            && $order->getState() == PluginOrderOrderState::DELIVERED) {
             $surveySupplier->showOrderSupplierSurvey($_POST["id"]);
-            if (!$surveySupplier->checkIfSupplierSurveyExists($_POST["id"]) 
+            if (!$surveySupplier->checkIfSupplierSurveyExists($_POST["id"])
                    && $order->can($_POST["id"], 'w')) {
                $surveySupplier->showForm("",  array('plugin_order_orders_id' => $_POST["id"]));
             }
-            
          }
          break;
       case 8:
-         $order_item->showBillsItems($order);
+         if (plugin_order_haveRight("bill", "r")) {
+            $order_item->showBillsItems($order);
+         }
          break;
       case 9 :
-         Document::showAssociated($order);
+         if (haveRight('document', 'r')) {
+            Document::showAssociated($order);
+         }
          break;
       case 10 :
          showNotesForm($_POST['target'], "PluginOrderOrder", $_POST["id"]);

@@ -45,13 +45,13 @@ function plugin_order_install() {
    echo "<td align='center'>";
    
    $migration = new Migration("1.5.1");
-   $classes = array('PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',  
-                    'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',  
-                    'PluginOrderReference', 'PluginOrderDeliveryState', 
-                    'PluginOrderNotificationTargetOrder_Item', 'PluginOrderNotificationTargetOrder', 
-                    'PluginOrderOrder_Supplier', 'PluginOrderBill', 'PluginOrderOrderPayment', 
+   $classes = array('PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',
+                    'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',
+                    'PluginOrderReference', 'PluginOrderDeliveryState',
+                    'PluginOrderNotificationTargetOrder_Item', 'PluginOrderNotificationTargetOrder',
+                    'PluginOrderOrder_Supplier', 'PluginOrderBill', 'PluginOrderOrderPayment',
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
-                    'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier', 
+                    'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
                     'PluginOrderSurveySupplier', 'PluginOrderOrderTaxe');
    foreach ($classes as $class) {
       if ($plug=isPluginItemType($class)) {
@@ -80,13 +80,13 @@ function plugin_order_uninstall() {
       }
    }
 
-   $classes = array('PluginOrderConfig', 'PluginOrderBill', 'PluginOrderBillState', 
-                    'PluginOrderBillType', 'PluginOrderOrderState', 'PluginOrderOrder', 
-                    'PluginOrderOrder_Item', 'PluginOrderReference', 'PluginOrderDeliveryState', 
-                    'PluginOrderNotificationTargetOrder_Item', 'PluginOrderNotificationTargetOrder', 
-                    'PluginOrderOrder_Supplier', 'PluginOrderOrderPayment','PluginOrderOrderTaxe', 
+   $classes = array('PluginOrderConfig', 'PluginOrderBill', 'PluginOrderBillState',
+                    'PluginOrderBillType', 'PluginOrderOrderState', 'PluginOrderOrder',
+                    'PluginOrderOrder_Item', 'PluginOrderReference', 'PluginOrderDeliveryState',
+                    'PluginOrderNotificationTargetOrder_Item', 'PluginOrderNotificationTargetOrder',
+                    'PluginOrderOrder_Supplier', 'PluginOrderOrderPayment','PluginOrderOrderTaxe',
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
-                    'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier', 
+                    'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
                     'PluginOrderSurveySupplier');
       foreach ($classes as $class) {
          call_user_func(array($class,'uninstall'));
@@ -167,8 +167,8 @@ function plugin_order_getAddSearchOptions($itemtype) {
    $plugin = new Plugin();
    
    $sopt = array();
-   if ($plugin->isInstalled('order') 
-      && $plugin->isActivated('order') 
+   if ($plugin->isInstalled('order')
+      && $plugin->isActivated('order')
          && plugin_order_haveRight("order","r")) {
       if (in_array($itemtype, PluginOrderOrder_Item::getClasses(true))) {
          $sopt[3160]['table']         = 'glpi_plugin_order_orders';
@@ -246,7 +246,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
       /* display associated items with order */
       case "glpi_plugin_order_references.types_id" :
          if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."type.class.php")) {
-            return Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"), 
+            return Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"),
                                              $data["ITEM_" . $num]);
          } else {
             return " ";
@@ -254,7 +254,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
          break;
       case "glpi_plugin_order_references.models_id" :
          if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."model.class.php")) {
-            return Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"), 
+            return Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"),
                                              $data["ITEM_" . $num]);
  
          } else {
@@ -315,7 +315,7 @@ function plugin_order_MassiveActionsDisplay($options=array()) {
             // No case for add_document : use GLPI core one
             case "plugin_order_transfert" :
                Dropdown::show('Entity');
-               echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" . 
+               echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
                   $LANG['buttons'][2] . "\" >";
                break;
          }
@@ -360,8 +360,8 @@ function plugin_get_headings_order($item,$withtemplate) {
       if ($item->getField('id') && $item->getField('interface')!='helpdesk') {
          return array(1 => $LANG['plugin_order']['title'][1]);
       }
-   } else if (in_array($type, PluginOrderOrder_Item::getClasses(true)) 
-               || $type == 'Supplier' 
+   } else if (in_array($type, PluginOrderOrder_Item::getClasses(true))
+               || $type == 'Supplier'
                   || $type == 'Budget') {
       if ($item->getField('id') && !$withtemplate) {
          // Non template case
@@ -382,7 +382,7 @@ function plugin_headings_actions_order($item) {
    $classes[] = 'Supplier';
    $classes[] = 'Budget';
    $classes[] ='Preference';
-   if (in_array(get_class($item),$classes)) {
+   if (in_array(get_class($item), $classes)) {
       return array(1 => "plugin_headings_order");
    } else {
       return false;
@@ -417,8 +417,8 @@ function plugin_headings_order($item) {
          $order->getAllOrdersByBudget($_POST["id"]);
          break;
       case "Preference" :
-         $pref    = new PluginOrderPreference();
-         $id = $pref->checkIfPreferenceExists(getLoginUserID());
+         $pref = new PluginOrderPreference();
+         $id   = $pref->checkIfPreferenceExists(getLoginUserID());
          if (!$id) {
             $id = $pref->addDefaultPreference(getLoginUserID());
 

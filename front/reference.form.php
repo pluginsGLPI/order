@@ -28,57 +28,9 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-define('GLPI_ROOT', '../../..'); 
+define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
-/*
-if(!isset($_GET["id"])) {
-   $_GET["id"] = "";
-}
-if(!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = "";
-}
 
-$reference=new PluginOrderReference();
-
-// add order
-if (isset($_POST["add"])) {
-   $reference->check(-1,'w',$_POST);
-   $newID = $reference->add($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']."?id=$newID");
-}
-//delete order
-else if (isset($_POST["delete"])) {
-   $reference->check($_POST['id'],'w');
-   $reference->delete($_POST);
-   $reference->redirectToList();
-}
-// restore order
-else if (isset($_POST["restore"])) {
-   $reference->check($_POST['id'],'w');
-   $reference->restore($_POST);
-   $reference->redirectToList();
-}
-// purge order
-else if (isset($_POST["purge"])) {
-   $reference->check($_POST['id'],'w');
-   $reference->delete($_POST,1);
-   $reference->redirectToList();
-}
-// update order
-else if (isset($_POST["update"])) {
-   $reference->check($_POST['id'],'w');
-   $reference->update($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
-}
-else {
-   $reference->checkGlobal("r");
-   commonHeader($LANG['plugin_order']['reference'][1],'',"plugins", "order", "reference");
-   $reference->showForm($_GET["id"]);
-
-   commonFooter();
-}*/
 $dropdown = new PluginOrderReference();
 include (GLPI_ROOT . "/front/dropdown.common.form.php");
-
-
 ?>

@@ -37,7 +37,22 @@ $PluginOrderOrder     = new PluginOrderOrder();
 $PluginOrderReference = new PluginOrderReference();
 $PluginOrderBill      = new PluginOrderBill();
 
-if ($PluginOrderOrder->canView() 
+//If there's only one possibility, do not display menu!
+if ($PluginOrderOrder->canView()
+   && !$PluginOrderReference->canView()
+      && !$PluginOrderBill->canView()) {
+   glpi_header(getItemTypeSearchURL('PluginOrderOrder'));
+}elseif (!$PluginOrderOrder->canView()
+   && $PluginOrderReference->canView()
+      && !$PluginOrderBill->canView()) {
+   glpi_header(getItemTypeSearchURL('PluginOrderReference'));
+} elseif (!$PluginOrderOrder->canView()
+   && !$PluginOrderReference->canView()
+      && $PluginOrderBill->canView()) {
+   glpi_header(getItemTypeSearchURL('PluginOrderBill'));
+}
+
+if ($PluginOrderOrder->canView()
       || $PluginOrderReference->canView()) {
    echo "<div class='center'>";
    echo "<table class='tab_cadre'>";
@@ -46,27 +61,27 @@ if ($PluginOrderOrder->canView()
    if ($PluginOrderOrder->canView()) {
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td><img src='../pics/order-icon.png'></td>";
-      echo "<td><a href='".getItemTypeSearchURL('PluginOrderOrder')."'>" . 
+      echo "<td><a href='".getItemTypeSearchURL('PluginOrderOrder')."'>" .
          $LANG['plugin_order']['menu'][1] . "</a></td></tr>";
    }
 
    if ($PluginOrderReference->canView()) {
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td><img src='../pics/reference-icon.png'></td>";
-      echo "<td><a href='".getItemTypeSearchURL('PluginOrderReference')."'>" . 
+      echo "<td><a href='".getItemTypeSearchURL('PluginOrderReference')."'>" .
          $LANG['plugin_order']['menu'][2] . "</a></td></tr>";
    }
 
    if ($PluginOrderBill->canView()) {
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td><img src='../pics/bill-icon.png'></td>";
-      echo "<td><a href='".getItemTypeSearchURL('PluginOrderBill')."'>" . 
+      echo "<td><a href='".getItemTypeSearchURL('PluginOrderBill')."'>" .
          $LANG['plugin_order']['menu'][6] . "</a></td></tr>";
    }
 
    echo "</table></div>";
 } else {
-   echo "<div align='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . 
+   echo "<div align='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] .
          "/pics/warning.png\" alt=\"warning\"><br><br>";
    echo "<b>" . $LANG['login'][5] . "</b></div>";
 }

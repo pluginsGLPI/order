@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')){
 class PluginOrderOrder extends CommonDBTM {
 
    public $dohistory = true;
-   public $forward_entity_to = array("PluginOrderOrder_Item");
+   public $forward_entity_to = array("PluginOrderOrder_Item", "PluginOrderOrder_Supplier");
    
    const ORDER_DEVICE_NOT_DELIVRED        = 0;
    const ORDER_DEVICE_DELIVRED            = 1;
@@ -398,9 +398,6 @@ class PluginOrderOrder extends CommonDBTM {
      if ($config->canGenerateOrderPDF()
         && $this->getState() > PluginOrderOrderState::DRAFT
            && plugin_order_haveRight('order','w')) {
-     //if ($config->canGenerateOrderPDF()
-     // && $this->getState() > PluginOrderOrderState::DRAFT
-     //   && plugin_order_haveRight('order','w')) {
      /* generation*/
         $ong[4] = $LANG['plugin_order']['generation'][2];
       
@@ -411,14 +408,15 @@ class PluginOrderOrder extends CommonDBTM {
          $ong[3] = $LANG['plugin_order'][4];
       }
         
-      //if ($this->getState() != PluginOrderOrderState::DRAFT) {
+      if (plugin_order_haveRight('delivery', 'r')
+         && $this->getState() > PluginOrderOrderState::DRAFT) {
          /* delivery */
          $ong[5] = $LANG['plugin_order']['delivery'][1];
          if ($this->checkIfDetailExists($this->getID(), true)) {
             /* item */
             $ong[6] = $LANG['plugin_order']['item'][0];
          }
-      //}
+      }
       if (plugin_order_haveRight("bill", "r")) {
          //Bills
          $ong[8] = $LANG['plugin_order']['bill'][4];
@@ -435,13 +433,7 @@ class PluginOrderOrder extends CommonDBTM {
          $ong[9] = $LANG['Menu'][27];
 
       }
-         
-      if (haveRight("notes", "r")) {
-         $ong[10] = $LANG['title'][37];
-
-      }
-         
-      /* all */
+      $ong[10] = $LANG['title'][37];
       $ong[12] = $LANG['title'][38];
 
       return $ong;
@@ -1613,6 +1605,7 @@ class PluginOrderOrder extends CommonDBTM {
                KEY `contacts_id` (`contacts_id`),
                KEY `locations_id` (`locations_id`),
                KEY `is_late` (`locations_id`),
+               KEY `users_id_recipient` (`users_id_recipient`),
                KEY `is_deleted` (`is_deleted`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
             $DB->query($query) or die ($DB->error());
@@ -1796,7 +1789,6 @@ class PluginOrderOrder extends CommonDBTM {
             Crontask::Register(__CLASS__, 'computeLateOrders', HOUR_TIMESTAMP,
                                array('param' => 24, 'mode' => CronTask::MODE_EXTERNAL));
          }
-
          $migration->migrationOneTable($table);
 
          //Displayprefs
