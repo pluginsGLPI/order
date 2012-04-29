@@ -360,20 +360,18 @@ class PluginOrderReference extends CommonDropdown {
       global $DB;
 
       $query = "SELECT `template_name`, `id` FROM `$table`
-                WHERE `entities_id` = ' $entity'
+                WHERE `entities_id` = '$entity'
                    AND `is_template` = '1'
                       AND `template_name` <> '' GROUP BY `template_name` ORDER BY `template_name`";
-      $result = $DB->query($query);
 
       $option[0] = DROPDOWN_EMPTY_VALUE;
-      while ($data = $DB->fetch_array($result)) {
+      foreach ($DB->request($query) as $data) {
          $option[$data["id"]] = $data["template_name"];
       }
       return Dropdown::showFromArray($name, $option, array('value'  => $value));
    }
 
    function getTemplateName($itemtype, $ID) {
-      
       if ($ID) {
          $item = new $itemtype();
          $item->getFromDB($ID);
@@ -554,7 +552,7 @@ class PluginOrderReference extends CommonDropdown {
       global $LANG, $DB, $CFG_GLPI;
 
       $query = "SELECT `gr`.`id`, `gr`.`manufacturers_id`, `gr`.`entities_id`, `gr`.`itemtype`,
-                       `gr`.`name`, `grm`.`price_taxfree`
+                       `gr`.`name`, `grm`.`price_taxfree`, `grm`.`reference_code`
                FROM `glpi_plugin_order_references_suppliers` AS grm, `".$this->getTable()."` AS gr
                WHERE `grm`.`suppliers_id` = '$ID'
                   AND `grm`.`plugin_order_references_id` = `gr`.`id`"
@@ -563,12 +561,14 @@ class PluginOrderReference extends CommonDropdown {
 
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='5'>".$LANG['plugin_order']['reference'][3]."</th></tr>";
+      echo "<tr><th colspan='6'>".$LANG['plugin_order']['reference'][3]."</th></tr>";
       echo "<tr>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['common'][5]."</th>";
       echo "<th>".$LANG['plugin_order']['reference'][1]."</th>";
-      echo "<th>". $LANG['common'][17]."</th><th>".$LANG['plugin_order']['detail'][4]."</th></tr>";
+      echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
+      echo "<th>".$LANG['plugin_order']['reference'][1]."</th>";
+      echo "<th>".$LANG['plugin_order']['detail'][4]."</th></tr>";
 
       if ($DB->numrows($result) > 0) {
          while ($data = $DB->fetch_array($result)) {
@@ -585,10 +585,16 @@ class PluginOrderReference extends CommonDropdown {
             $PluginOrderReference = new PluginOrderReference();
             echo $PluginOrderReference->getReceptionReferenceLink($data);
             echo "</td>";
+            
             echo "<td>";
             $item = new $data["itemtype"]();
             echo $item->getTypeName();
             echo "</td>";
+            
+            echo "<td>";
+            echo $data['reference_code'];
+            echo "</td>";
+            
             echo "<td>";
             echo $data["price_taxfree"];
             echo "</td>";

@@ -28,6 +28,18 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
+if (!defined('PLUGIN_ORDER_TEMPLATE_DIR')) {
+   define ("PLUGIN_ORDER_TEMPLATE_DIR",  GLPI_ROOT."/plugins/order/templates/");
+}
+if (!defined('PLUGIN_ORDER_SIGNATURE_DIR')) {
+   define ("PLUGIN_ORDER_SIGNATURE_DIR", GLPI_ROOT."/plugins/order/signatures/");
+}
+if (!defined('PLUGIN_ORDER_TEMPLATE_EXTENSION')) {
+   define ("PLUGIN_ORDER_TEMPLATE_EXTENSION", "odt");
+}
+if (!defined('PLUGIN_ORDER_SIGNATURE_EXTENSION')) {
+   define ("PLUGIN_ORDER_SIGNATURE_EXTENSION", "png");
+}
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
    global $PLUGIN_HOOKS, $CFG_GLPI, $LANG, $ORDER_TYPES;
@@ -43,7 +55,7 @@ function plugin_init_order() {
    }
    
    if ($plugin->isInstalled('order') && $plugin->isActivated('order')) {
-
+      
       //Itemtypes in use for an order
       $ORDER_TYPES = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Printer',
                            'Phone', 'ConsumableItem', 'CartridgeItem', 'Contract',

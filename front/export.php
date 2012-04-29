@@ -35,6 +35,6 @@ require_once('../lib/odtphp/odf.php');
 
 $PluginOrderOrder = new PluginOrderOrder();
 
-$PluginOrderOrder->generateOrder($_GET["id"]);
+$PluginOrderOrder->generateOrder($_POST);
  
 ?>

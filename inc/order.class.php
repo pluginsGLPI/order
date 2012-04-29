@@ -1057,22 +1057,36 @@ class PluginOrderOrder extends CommonDBTM {
    function showGenerationForm($ID) {
       global $LANG,$CFG_GLPI;
 
-      echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/export.php?id=".$ID.
-          "&display_type=".PDF_OUTPUT_LANDSCAPE."' method=\"post\">";
+      echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/export.php' method=\"POST\">";
       echo "<div align=\"center\"><table class='tab_cadre_fixe'>";
-      echo "<tr><th>".$LANG['plugin_order']['generation'][1]."</th></tr>";
+      echo "<tr><th colspan='2'>".$LANG['plugin_order']['generation'][1]."</th></tr>";
       
-      $pref     = new PluginOrderPreference();
-      $template = $pref->checkPreferenceTemplateValue(getLoginUserID());
-      if ($template) {
+      if (PluginOrderPreference::atLeastOneTemplateExists()) {
          if ($this->getState() > PluginOrderOrderState::DRAFT) {
+            $template = PluginOrderPreference::checkPreferenceTemplateValue(getLoginUserID());
             echo "<tr>";
-            echo "<td class='center'>";
+            echo "<td>".$LANG['plugin_order']['parser'][1]."</td>";
+            echo "<td>";
+            PluginOrderPreference::dropdownFileTemplates($template);
+            echo "</td></tr>";
+            if (PluginOrderPreference::atLeastOneSignatureExists()) {
+               echo "<tr>";
+               $signature = PluginOrderPreference::checkPreferenceSignatureValue(getLoginUserID());
+               echo "<td class='center'>".$LANG['plugin_order']['parser'][3]."</td>";
+               echo "<td class='center' >";
+               PluginOrderPreference::dropdownFileSignatures($signature);
+               echo "</td></tr>";
+            } else {
+               echo "<input type='hidden' name='sign' value='0'>";
+            }
+            echo "<tr>";
+            echo "<td class='center' colspan='2'>";
+            echo "<input type='hidden' name='id' value='$ID'>";
             echo "<input type='submit' value=\"".$LANG['plugin_order']['generation'][1].
-               "\" class='submit' ></div></td></tr>";
+               "\" class='submit' ></td></tr>";
             echo "</td>";
             echo "</tr>";
-
+            
          }
       } else {
          echo "<tr>";
@@ -1084,17 +1098,16 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</table></div></form>";
    }
    
-   function generateOrder($ID) {
+   function generateOrder($params) {
       global $LANG,$DB;
       
-      $pref = new PluginOrderPreference();
-      $template=$pref->checkPreferenceTemplateValue(getLoginUserID());
-      if ($template) {
-
-         $config = array('PATH_TO_TMP' => GLPI_DOC_DIR . '/_tmp');
-
-         $odf = new odf("../templates/$template", $config);
+      $ID        = $params['id'];
+      $template  = $params['template'];
+      $signature = $params['sign'];
       
+      if ($template) {
+         $config = array('PATH_TO_TMP' => GLPI_DOC_DIR . '/_tmp');
+         $odf    = new odf("../templates/$template", $config);
          $this->getFromDB($ID);
          
          $PluginOrderOrder_Item         = new PluginOrderOrder_Item();
@@ -1110,13 +1123,14 @@ class PluginOrderOrder extends CommonDBTM {
          
          $entity = new Entity();
          $entity->getFromDB($this->fields["entities_id"]);
-         $entdata=new EntityData();
-         $town = '';
+         $entdata = new EntityData();
+         $town    = '';
             
-         if ($this->fields["entities_id"]!=0)
+         if ($this->fields["entities_id"]!=0) {
             $name_entity = $entity->fields["name"];
-         else
+         } else {
             $name_entity = $LANG['entity'][2];
+         }
             
          $odf->setVars('entity_name', $name_entity, true, 'UTF-8');
          if ($entdata->getFromDB($this->fields["entities_id"])) {
@@ -1171,8 +1185,8 @@ class PluginOrderOrder extends CommonDBTM {
          
          $listeArticles = array();
          
-         $result=$PluginOrderOrder_Item->queryDetail($ID);
-         $num=$DB->numrows($result);
+         $result = $PluginOrderOrder_Item->queryDetail($ID);
+         $num    = $DB->numrows($result);
          
          while ($data=$DB->fetch_array($result)){
 
@@ -1245,9 +1259,8 @@ class PluginOrderOrder extends CommonDBTM {
          $odf->setVars('title_money',$LANG['plugin_order']['generation'][17],true,'UTF-8');
          $odf->setVars('title_sign',$LANG['plugin_order']['generation'][16],true,'UTF-8');
          
-         $sign=$pref->checkPreferenceSignatureValue(getLoginUserID());
-         if ($sign) {
-            $odf->setImage('sign', '../signatures/'.$sign);
+         if ($signature) {
+            $odf->setImage('sign', '../signatures/'.$signature);
          } else {
             $odf->setImage('sign', '../pics/nothing.gif');
          }

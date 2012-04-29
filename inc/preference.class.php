@@ -34,129 +34,166 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderPreference extends CommonDBTM {
 
-   function checkIfPreferenceExists($user_id) {
-      global $DB;
-      
-      $result = $DB->query("SELECT `id`
-                        FROM `".$this->getTable()."`
-                        WHERE `user_id` = '".$user_id."' ");
-      if ($DB->numrows($result) > 0)
-         return $DB->result($result,0,"id");
-      else
-         return 0;
+   
+   static function checkIfPreferenceExists($users_id) {
+      return self::checkPreferenceValue('id', $users_id);
    }
    
-   function addDefaultPreference($user_id) {
-   
-      $input["user_id"]=$user_id;
-      $input["template"]="";
-      $input["sign"]="";
-      return $this->add($input);
+   function addDefaultPreference($users_id) {
+      $id = self::checkIfPreferenceExists($users_id);
+      if (!$id) {
+         $input["users_id"]  = $users_id;
+         $input["template"] = "";
+         $input["sign"]     = "";
+         $id = $this->add($input);
+      }
+      return $id;
    }
    
-   function checkPreferenceSignatureValue($user_id) {
-      global $DB;
-      
-      $result = $DB->query("SELECT *
-                        FROM `".$this->getTable()."`
-                        WHERE `user_id` = '".$user_id."' ");
-      if ($DB->numrows($result) > 0)
-         return $DB->result($result,0,"sign");
-      else
-         return 0;
-   }
-   
-   function checkPreferenceTemplateValue($user_id) {
-      global $DB;
-      
-      $result = $DB->query("SELECT *
-                        FROM `".$this->getTable()."`
-                        WHERE `user_id` = '".$user_id."' ");
-      if ($DB->numrows($result) > 0)
-         return $DB->result($result,0,"template");
-      else
-         return 0;
-   }
-
-   function showForm($ID){
-      global $LANG,$CFG_GLPI;
-      
-      $data = plugin_version_order();
-      $this->getFromDB($ID);
-      
-      $dir_template   = GLPI_ROOT."/plugins/order/templates/";
-      $array_template = $this->getFiles($dir_template, "odt", $this->fields["template"]);
-      $dir_sign       = GLPI_ROOT."/plugins/order/signatures/";
-      $array_sign     = $this->getFiles($dir_sign, "png", $this->fields["sign"]);
-      
-      if (!empty($array_template)) {
-      
-         echo "<div align='center'><form method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
-         echo "<table class='tab_cadre_fixe' cellpadding='5'>";
-         echo "<tr><th colspan='2'>" . $data['name'] . " - ". $data['version'] . "</th></tr>";
-         echo "<tr class='tab_bg_2'><td align='center'>".$LANG['plugin_order']['parser'][1]."</td>";
-         echo "<td align='center'>";
-         
-         echo "<select name='template'>";
-         echo "<option value=''>".DROPDOWN_EMPTY_VALUE."</option>";
-         foreach ($array_template as $item) {
-            echo "<option value='".$item[0]."' ".
-               ($item[0]==$this->fields["template"]?" selected ":"").">".
-                  $item[0]." - ".$item[1]."</option>";
-         }
-            
-         echo "</select></td></tr>";
-         echo "<tr class='tab_bg_2'><td align='center'>".$LANG['plugin_order']['parser'][3]."</td>";
-         echo "<td align='center'>";
-         
-         echo "<select name='sign'>";
-         echo "<option value=''>".DROPDOWN_EMPTY_VALUE."</option>";
-         foreach ($array_sign as $item) {
-            echo "<option value='".$item[0]."' ".
-               ($item[0]==$this->fields["sign"]?" selected ":"").">".
-                  $item[0]." - ".$item[1]."</option>";
-         }
-            
-         echo "</select></td></tr>";
-         
-         if (isset($this->fields["sign"]) && !empty($this->fields["sign"])) {
-            echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
-            echo "<img src='".$CFG_GLPI["root_doc"]."/plugins/order/signatures/".
-               $this->fields["sign"]."'>";
-            echo "</td></tr>";
-         }
-         
-         echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
-         echo "<input type='hidden' name='id' value='".$ID."'>";
-         echo "<input type='submit' name='update' value='".$LANG['buttons'][2]."' class='submit' ></td>";
-         echo "</tr>";
-         
-         echo "</table></form></div>";
+   /**
+    *
+    * Get a preference for an user
+    * @since 1.5.3
+    * @param unknown_type preference field to get
+    * @param unknown_type user ID
+    * @return preference value or 0
+    */
+   static function checkPreferenceValue($field, $users_id) {
+      $data = getAllDatasFromTable(getTableForItemType(__CLASS__), "`users_id`='$users_id'");
+      if (!empty($data)) {
+         $first = array_pop($data);
+         return $first[$field];
       } else {
-         echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
-         echo "<b>".$LANG['plugin_order']['parser'][2]."</b></div>";
+         return 0;
       }
    }
    
-   function getFiles($dir,$ext,$select=-1) {
+   static function checkPreferenceSignatureValue($users_id) {
+      return self::checkPreferenceValue('sign', $users_id);
+   }
+   
+   static function checkPreferenceTemplateValue($users_id) {
+      return self::checkPreferenceValue('template', $users_id);
+   }
+
+   /**
+    *
+    * Display a dropdown of all ODT template files available
+    * @since 1.5.3
+    * @param $value default value
+    */
+   static function dropdownFileTemplates($value = '') {
+      return self::dropdownListFiles('template', PLUGIN_ORDER_TEMPLATE_EXTENSION,
+                                     PLUGIN_ORDER_TEMPLATE_DIR, $value);
+   }
+
+   /**
+    *
+    * Display a dropdown of all PNG signatures files available
+    * @since 1.5.3
+    * @param $value default value
+    */
+   static function dropdownFileSignatures($value = '', $empy_value = true) {
+      return self::dropdownListFiles('sign', PLUGIN_ORDER_SIGNATURE_EXTENSION,
+                                     PLUGIN_ORDER_SIGNATURE_DIR, $value);
+   }
+   
+   /**
+    *
+    * Display a dropdown which contains all files of a certain type in a directory
+    * @since 1.5.3
+    * @param $name dropdown name
+    * @param $extension list files of this extension only
+    * @param $directory directory in which to look for files
+    * @param $value default value
+    */
+   static function dropdownListFiles($name, $extension, $directory, $value = '') {
+      $files     = self::getFiles($directory, $extension);
+      $values    = array();
+      if (empty($files)) {
+         $values[0] = DROPDOWN_EMPTY_VALUE;
+      }
+      foreach ($files as $file) {
+         $values[$file[0]] = $file[0]." - ".$file[1];
+      }
+      return Dropdown::showFromArray($name, $values, array('value' => $value));
+   }
+   
+   /**
+    *
+    * Check if at least one template exists
+    * @since 1.5.3
+    * @return true if at least one template exists, false otherwise
+    */
+   static function atLeastOneTemplateExists() {
+      $files = self::getFiles(PLUGIN_ORDER_TEMPLATE_DIR, PLUGIN_ORDER_TEMPLATE_EXTENSION);
+      return (!empty($files));
+   }
+
+   /**
+    *
+    * Check if at least one signature exists
+    * @since 1.5.3
+    * @return true if at least one signature exists, false otherwise
+    */
+   static function atLeastOneSignatureExists() {
+      $files = self::getFiles(PLUGIN_ORDER_SIGNATURE_DIR, PLUGIN_ORDER_SIGNATURE_EXTENSION);
+      return (!empty($files));
+   }
+   
+   function showForm($ID){
+      global $LANG,$CFG_GLPI;
       
-      //$file_select = $dir.$select;
+      $version = plugin_version_order();
+      $this->getFromDB($ID);
+      
+      echo "<div align='center'><form method='post' action='".getItemTypeFormURL(__CLASS__)."'>";
+      echo "<table class='tab_cadre_fixe' cellpadding='5'>";
+      echo "<tr><th colspan='2'>" . $version['name'] . " - ". $version['version'] . "</th></tr>";
+      echo "<tr class='tab_bg_2'><td align='center'>".$LANG['plugin_order']['parser'][1]."</td>";
+      echo "<td align='center'>";
+      self::dropdownFileTemplates($this->fields["template"]);
+      echo "</td></tr>";
+         
+      echo "<tr class='tab_bg_2'><td align='center'>".$LANG['plugin_order']['parser'][3]."</td>";
+      echo "<td align='center'>";
+      self::dropdownFileSignatures($this->fields["sign"]);
+      echo "</td></tr>";
+         
+      if (isset($this->fields["sign"]) && !empty($this->fields["sign"])) {
+         echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
+          echo "<img src='".$CFG_GLPI["root_doc"]."/plugins/order/signatures/".
+            $this->fields["sign"]."'>";
+         echo "</td></tr>";
+      }
+         
+      echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
+      echo "<input type='hidden' name='id' value='".$ID."'>";
+      echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>";
+      echo "<input type='submit' name='update' value='".$LANG['buttons'][2]."' class='submit' ></td>";
+      echo "</tr>";
+         
+      echo "</table></form></div>";
+   }
+   
+   static function getFiles($directory , $ext) {
+      
       $array_dir  = array();
       $array_file = array();
       
-      if (is_dir($dir)) {
-         if ($dh = opendir($dir)) {
+      if (is_dir($directory)) {
+         if ($dh = opendir($directory)) {
             while (($file = readdir($dh)) !== false) {
                $filename  = $file;
-               $filetype  = filetype($dir . $file);
-               $filedate  = convdate(date ("Y-m-d", filemtime($dir . $file)));
+               $filetype  = filetype($directory. $file);
+               $filedate  = convdate(date ("Y-m-d", filemtime($directory . $file)));
                $basename  = explode('.', basename($filename));
                $extension = array_pop($basename);
                if ($filename == ".." OR $filename == ".") {
                   echo "";
                } else {
                   if ($filetype == 'file' && $extension ==$ext) {
-                     if ($ext == 'png') {
+                     if ($ext == PLUGIN_ORDER_SIGNATURE_EXTENSION) {
                         $name = array_shift($basename);
                         if (strtolower($name) == strtolower($_SESSION["glpiname"])) {
                            $array_file[] = array($filename, $filedate, $extension);
@@ -189,12 +226,18 @@ class PluginOrderPreference extends CommonDBTM {
 
          $query = "CREATE TABLE `glpi_plugin_order_preferences` (
                   `id` int(11) NOT NULL auto_increment,
-                  `user_id` int(11) NOT NULL default 0,
+                  `users_id` int(11) NOT NULL default 0,
                   `template` varchar(255) collate utf8_unicode_ci default NULL,
                   `sign` varchar(255) collate utf8_unicode_ci default NULL,
-                  PRIMARY KEY  (`id`)
+                  PRIMARY KEY  (`id`),
+                  KEY `users_id` (`users_id`)
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die ($DB->error());
+      } else {
+         //1.5.3
+         $migration->changeField($table, 'user_id', 'users_id', "INT(11) NOT NULL DEFAULT '0'");
+         $migration->addKey($table, 'users_id');
+         $migration->migrationOneTable($table);
       }
    }
    

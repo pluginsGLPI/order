@@ -352,24 +352,24 @@ function plugin_item_purge_order($item) {
 }
 
 // Define headings added by the plugin
-function plugin_get_headings_order($item,$withtemplate) {
+function plugin_get_headings_order($item, $withtemplate) {
    global $LANG;
 
    $type = get_class($item);
    if ($type == 'Profile') {
       if ($item->getField('id') && $item->getField('interface')!='helpdesk') {
-         return array(1 => $LANG['plugin_order']['title'][1]);
+         return array(1 => $LANG['plugin_order']['menu'][4]);
       }
    } else if (in_array($type, PluginOrderOrder_Item::getClasses(true))
                || $type == 'Supplier'
                   || $type == 'Budget') {
       if ($item->getField('id') && !$withtemplate) {
          // Non template case
-         return array(1 => $LANG['plugin_order']['title'][1]);
+         return array(1 => $LANG['plugin_order']['menu'][4]);
       }
    } else if ($type == 'Preference') {
       // Non template case
-      return array(1 => $LANG['plugin_order']['title'][1]);
+      return array(1 => $LANG['plugin_order']['menu'][4]);
    }
    return false;
 }
@@ -418,12 +418,8 @@ function plugin_headings_order($item) {
          break;
       case "Preference" :
          $pref = new PluginOrderPreference();
-         $id   = $pref->checkIfPreferenceExists(getLoginUserID());
-         if (!$id) {
-            $id = $pref->addDefaultPreference(getLoginUserID());
-
-         }
-         $pref->showForm($id, getLoginUserID());
+         $id = $pref->addDefaultPreference(getLoginUserID());
+         $pref->showForm($id);
          break;
       default :
          if (in_array(get_class($item), PluginOrderOrder_Item::getClasses(true))) {
