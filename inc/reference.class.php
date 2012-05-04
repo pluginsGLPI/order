@@ -287,7 +287,11 @@ class PluginOrderReference extends CommonDropdown {
       
       if (!$withtemplate) {
 
-         if ($item->getType()==__CLASS__) {
+         if ($item->getType()=='Supplier') {
+         
+            return $LANG['plugin_order']['title'][1];
+         
+         } else if ($item->getType()==__CLASS__) {
 
             return $LANG['plugin_order'][11];
          
@@ -300,8 +304,16 @@ class PluginOrderReference extends CommonDropdown {
       global $CFG_GLPI;
       
       $self=new self();
+      $order_supplier = new PluginOrderOrder_Supplier();
+      $surveysupplier = new PluginOrderSurveySupplier();
       
-      if ($item->getType()==__CLASS__) {
+      if ($item->getType()=='Supplier') {
+      
+         $self->showReferencesFromSupplier($item->getField('id'));
+         $order_supplier->showDeliveries($item->getField('id'));
+         $surveysupplier->showGlobalNotation($item->getField('id'));
+         
+      } else if ($item->getType()==__CLASS__) {
          $self->getAllOrdersByReference($item->getID());
 
       }

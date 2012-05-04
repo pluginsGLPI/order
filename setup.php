@@ -37,7 +37,7 @@ function plugin_init_order() {
    
    Plugin::registerClass('PluginOrderPreference',
                          array('addtabon' => 'Preference'));
-                         
+                                              
    /* load changeprofile function */
    $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile', 'changeProfile');
    
@@ -62,7 +62,8 @@ function plugin_init_order() {
                                                       'addtabon'                         => 'Budget'));
    
       Plugin::registerClass('PluginOrderReference', array('document_types'               => true,
-                                                          'massiveaction_noupdate_types' => true));
+                                                          'massiveaction_noupdate_types' => true,
+                                                          'addtabon'                     => 'Supplier'));
       
       Plugin::registerClass('PluginOrderOrder_Item', array('notificationtemplates_types' => true));
 
@@ -172,7 +173,7 @@ function plugin_version_order() {
    global $LANG;
 
    return array ('name'           => $LANG['plugin_order']['title'][1],
-                 'version'        => '1.6.0',
+                 'version'        => '1.6.1',
                  'license' 		 => 'GPLv3',
                  'author'         => 'Benjamin Fontan, Walid Nouh, Xavier Caillaud, François Legastelois',
                  'homepage'       => 'https://forge.indepnet.net/projects/show/order',
