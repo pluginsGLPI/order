@@ -465,7 +465,7 @@ class PluginOrderOrder extends CommonDBTM {
             }
          }
       }
-      
+
       return $input;
    }
    
@@ -526,20 +526,20 @@ class PluginOrderOrder extends CommonDBTM {
          $this->check(-1,'w');
          $this->getEmpty();
       }
-/*
+
       if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
          $template   = "newcomp";
-         $datestring = $LANG['computers'][14]." : ";
-         $date       = convDateTime($_SESSION["glpi_currenttime"]);
+         //$datestring = $LANG['computers'][14]." : ";
+         //$date       = convDateTime($_SESSION["glpi_currenttime"]);
       } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
          $template   = "newtemplate";
-         $datestring = $LANG['computers'][14]." : ";
-         $date       = convDateTime($_SESSION["glpi_currenttime"]);
+         //$datestring = $LANG['computers'][14]." : ";
+         //$date       = convDateTime($_SESSION["glpi_currenttime"]);
       } else {
          $datestring = $LANG['common'][26].": ";
-         $date       = convDateTime($this->fields["date_mod"]);
+         //$date       = convDateTime($this->fields["date_mod"]);
          $template   = false;
-      }*/
+      }
       $canedit = ($this->canUpdateOrder() && $this->can($ID, 'w') && !$this->isCanceled());
       $options['canedit'] = $canedit;
       
@@ -553,17 +553,19 @@ class PluginOrderOrder extends CommonDBTM {
 
       //Display without inside table
       /* title */
-      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][39] . ": </td>";
+      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][39] . "*: </td>";
       echo "<td>";
       if ($canedit) {
-         autocompletionTextField($this, "name");
+         $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
+                                $this->getType(), $this->fields["entities_id"]);
+         autocompletionTextField($this, "name", array('value' => $objectName));
          
       } else {
          echo $this->fields["name"];
       }
       echo "</td>";
       /* date of order */
-      echo "<td>" . $LANG['plugin_order'][1] . "*:</td><td>";
+      echo "<td>" . $LANG['plugin_order'][1] . ":</td><td>";
       if ($canedit)  {
          if ($this->fields["order_date"] == NULL) {
             showDateFormItem("order_date", date("Y-m-d"), true, true);
@@ -581,7 +583,9 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][0] . "*: </td>";
       echo "<td>";
       if ($canedit) {
-         autocompletionTextField($this, "num_order");
+         $objectOrder = autoName($this->fields["num_order"], "num_order", ($template === "newcomp"),
+                                $this->getType(), $this->fields["entities_id"]);
+         autocompletionTextField($this, "num_order", array('value' => $objectOrder));
          
       } else {
          echo $this->fields["num_order"];
