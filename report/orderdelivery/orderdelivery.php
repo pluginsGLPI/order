@@ -82,7 +82,7 @@ if ($report->criteriasValidated()) {
    $query = "SELECT * FROM `glpi_plugin_order_orders`";
    $query.= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");
    $query.= $report->addSqlCriteriasRestriction();
-   $query.= " AND `is_deleted`='0'";
+   $query.= " AND `is_deleted`='0' AND `is_template`='0' ";
    $query.="GROUP BY `entities_id`, `plugin_order_orderstates_id`, `num_order`, `order_date`";
    $report->setGroupBy("entities_id", "plugin_order_orderstates_id", "num_order", "order_date");
    $report->setSqlRequest($query);

@@ -76,14 +76,14 @@ else if (isset ($_POST["update"])) {
    $pluginOrderOrder->check($_POST['id'], 'w');
    $pluginOrderOrder->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
-} 
+}
 //Status update & order workflow
 /* validate order */
 else if (isset ($_POST["validate"])) {
-   if ($pluginOrderOrder->canCreate() 
-      && ( $pluginOrderOrder->canValidate() 
+   if ($pluginOrderOrder->canCreate()
+      && ( $pluginOrderOrder->canValidate()
          || !$config->useValidation())) {
-      $pluginOrderOrder->updateOrderStatus($_POST["id"], 
+      $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getApprovedState(),
                                            $_POST["comment"]);
       $pluginOrderOrder_Item->updateDelivryStatus($_POST["id"]);
@@ -148,11 +148,11 @@ else if (isset ($_POST["undovalidation"])) {
                                              $_POST["plugin_order_references_id"]);
       $new_value.= " (".$LANG['plugin_order']['detail'][7]." : ".$_POST["quantity"];
       $new_value.= " ".$LANG['plugin_order']['detail'][25]." : ".$_POST["discount"].")";
-      $pluginOrderOrder->addHistory("PluginOrderOrder", "", 
+      $pluginOrderOrder->addHistory("PluginOrderOrder", "",
                                     $new_value,$_POST["plugin_order_orders_id"]);
-      $pluginOrderOrder_Item->addDetails($_POST["plugin_order_references_id"], $_POST["itemtype"], 
-                                         $_POST["plugin_order_orders_id"], $_POST["quantity"], 
-                                         $_POST["price"], $_POST["discount"], 
+      $pluginOrderOrder_Item->addDetails($_POST["plugin_order_references_id"], $_POST["itemtype"],
+                                         $_POST["plugin_order_orders_id"], $_POST["quantity"],
+                                         $_POST["price"], $_POST["discount"],
                                          $_POST["plugin_order_ordertaxes_id"]);
                                          
    }
@@ -160,8 +160,8 @@ else if (isset ($_POST["undovalidation"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
    
 } else if (isset ($_POST["delete_item"])) {
-   if (isset($_POST["plugin_order_orders_id"]) 
-         && $_POST["plugin_order_orders_id"] > 0 
+   if (isset($_POST["plugin_order_orders_id"])
+         && $_POST["plugin_order_orders_id"] > 0
             && isset($_POST["item"])) {
       foreach ($_POST["item"] as $ID => $val) {
          if ($val==1) {
@@ -193,15 +193,15 @@ else if (isset ($_POST["undovalidation"])) {
                   }
                   $new_value = $LANG['plugin_order']['detail'][35]." ";
                   $new_value.= Dropdown::getDropdownName("glpi_plugin_order_references", $ID);
-                  $pluginOrderOrder->addHistory("PluginOrderOrder", "", $new_value, 
+                  $pluginOrderOrder->addHistory("PluginOrderOrder", "", $new_value,
                                                 $_POST["plugin_order_orders_id"]);
                                                 
-               } 
+               }
             } else {
             
                $new_value = $LANG['plugin_order']['detail'][35]." ";
                $new_value.= Dropdown::getDropdownName("glpi_plugin_order_references", $ID);
-               $pluginOrderOrder->addHistory("PluginOrderOrder", "", 
+               $pluginOrderOrder->addHistory("PluginOrderOrder", "",
                                                 $new_value, $_POST["plugin_order_orders_id"]);
                $pluginOrderOrder_Item->delete(array('id' => $ID));
             }
@@ -220,9 +220,9 @@ else if (isset ($_POST["undovalidation"])) {
    }
 
    if(isset($_POST['price_taxfree'])) {
-      $datas = $pluginOrderOrder_Item->queryRef( $_POST['plugin_order_orders_id'], 
-                                                 $_POST['old_plugin_order_references_id'], 
-                                                 $_POST['old_price_taxfree'], 
+      $datas = $pluginOrderOrder_Item->queryRef( $_POST['plugin_order_orders_id'],
+                                                 $_POST['old_plugin_order_references_id'],
+                                                 $_POST['old_price_taxfree'],
                                                  $_POST['old_discount']);
       while ($item=$DB->fetch_array($datas)){
          $input = array( 'item_id'        => $item['id'],
@@ -238,9 +238,9 @@ else if (isset ($_POST["undovalidation"])) {
          
          $price = (isset($_POST['price_taxfree'])) ? $_POST['price_taxfree'] : $_POST['old_price_taxfree'];
          
-         $datas = $pluginOrderOrder_Item->queryRef( $_POST['plugin_order_orders_id'], 
-                                                    $_POST['old_plugin_order_references_id'], 
-                                                    $price, 
+         $datas = $pluginOrderOrder_Item->queryRef( $_POST['plugin_order_orders_id'],
+                                                    $_POST['old_plugin_order_references_id'],
+                                                    $price,
                                                     $_POST['old_discount']);
          while ($item=$DB->fetch_array($datas)){
             $input = array( 'item_id'  => $item['id'],
@@ -266,8 +266,8 @@ else if (isset ($_POST["undovalidation"])) {
    if(isset($_POST['detail_discount'])) {
       foreach($_POST['detail_discount'] as $item_id => $discount) {
 
-         $price = (isset($_POST['detail_price_taxfree'])) 
-                     ? $_POST['detail_price_taxfree'][$item_id] 
+         $price = (isset($_POST['detail_price_taxfree']))
+                     ? $_POST['detail_price_taxfree'][$item_id]
                      : $_POST['detail_old_price_taxfree'][$item_id];
                      
          $input = array( 'item_id'  => $item_id,
@@ -285,7 +285,7 @@ else if (isset ($_POST["undovalidation"])) {
 } else {
    $pluginOrderOrder->checkGlobal("r");
    commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
-   $pluginOrderOrder->showForm($_GET["id"]);
+   $pluginOrderOrder->showForm($_GET["id"], $_GET);
    commonFooter();
 }
 

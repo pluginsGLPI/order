@@ -391,7 +391,7 @@ class PluginOrderOrder extends CommonDBTM {
       $ong    = array();
       $ong[1] = $LANG['title'][26];
 
-      if (!$this->getID()) {
+      if (!$this->getID() || $this->fields['is_template']) {
          return $ong;
 
       }
@@ -404,7 +404,7 @@ class PluginOrderOrder extends CommonDBTM {
         && $this->getState() > PluginOrderOrderState::DRAFT
            && plugin_order_haveRight('generate_order_odt', 'w')) {
      /* generation*/
-        $ong[4] = $LANG['plugin_order']['generation'][1];
+        $ong[4] = $LANG['plugin_order']['generation'][0];
       
      }
       
@@ -447,20 +447,25 @@ class PluginOrderOrder extends CommonDBTM {
 
    function prepareInputForAdd($input) {
       global $LANG;
-      
-      if (!isset ($input["num_order"]) || $input["num_order"] == '') {
-         addMessageAfterRedirect($LANG['plugin_order'][44], false, ERROR);
-         return array ();
-      } elseif (!isset ($input["name"]) || $input["name"] == '') {
-         $input["name"] = $input["num_order"];
-      }
-
-      if( isset($input['budgets_id']) && $input['budgets_id'] > 0) {
-         if( !self::canStillUseBudget($input) ) {
-            addMessageAfterRedirect($LANG['plugin_order'][49], false, ERROR);
+      if (isset($input["id"]) && $input["id"]>0) {
+         $input["_oldID"] = $input["id"];
+         unset($input['id']);
+         unset($input['withtemplate']);
+      } else {
+         if (!isset ($input["num_order"]) || $input["num_order"] == '') {
+            addMessageAfterRedirect($LANG['plugin_order'][44], false, ERROR);
+            return array ();
+         } elseif (!isset ($input["name"]) || $input["name"] == '') {
+            $input["name"] = $input["num_order"];
+         }
+   
+         if( isset($input['budgets_id']) && $input['budgets_id'] > 0) {
+            if( !self::canStillUseBudget($input) ) {
+               addMessageAfterRedirect($LANG['plugin_order'][49], false, ERROR);
+            }
          }
       }
-
+      
       return $input;
    }
    
@@ -521,7 +526,20 @@ class PluginOrderOrder extends CommonDBTM {
          $this->check(-1,'w');
          $this->getEmpty();
       }
-
+/*
+      if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
+         $template   = "newcomp";
+         $datestring = $LANG['computers'][14]." : ";
+         $date       = convDateTime($_SESSION["glpi_currenttime"]);
+      } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
+         $template   = "newtemplate";
+         $datestring = $LANG['computers'][14]." : ";
+         $date       = convDateTime($_SESSION["glpi_currenttime"]);
+      } else {
+         $datestring = $LANG['common'][26].": ";
+         $date       = convDateTime($this->fields["date_mod"]);
+         $template   = false;
+      }*/
       $canedit = ($this->canUpdateOrder() && $this->can($ID, 'w') && !$this->isCanceled());
       $options['canedit'] = $canedit;
       
@@ -1317,7 +1335,7 @@ class PluginOrderOrder extends CommonDBTM {
       
       $query = "SELECT *
                FROM `".$this->getTable()."`
-               WHERE `budgets_id` = '".$budgets_id."'
+               WHERE `budgets_id` = '".$budgets_id." AND `is_template`='0'
                ORDER BY `entities_id`, `name` ";
       $result = $DB->query($query);
 
@@ -1384,7 +1402,7 @@ class PluginOrderOrder extends CommonDBTM {
    function canStillUseBudget($input){
       $budget = new Budget();
       $budget->getFromDB($input['budgets_id']);
-         
+      
       //If no begin date on a budget : do not display a warning
       if (empty($budget->fields['begin_date'])) {
          return true;
@@ -1425,7 +1443,10 @@ class PluginOrderOrder extends CommonDBTM {
    
    function isOverBudget($ID){
       global $DB;
-
+      //Do not check if it's a template
+      if ($this->fields['is_template']) {
+         return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
+      }
       // Compute all prices for BUDGET
       $query = "SELECT *
                FROM `".$this->getTable()."`
@@ -1499,7 +1520,7 @@ class PluginOrderOrder extends CommonDBTM {
       $nblate = 0;
       
       $table = getTableForItemType(__CLASS__);
-      foreach (getAllDatasFromTable($table) as $values) {
+      foreach (getAllDatasFromTable($table, "`is_template`='0'") as $values) {
          $order = new self();
          $order->fields = $values;
          if (!$order->fields['is_late'] && $order->shouldBeAlreadyDelivered(true)) {
@@ -1595,6 +1616,8 @@ class PluginOrderOrder extends CommonDBTM {
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders` (
                `id` int(11) NOT NULL auto_increment,
                `entities_id` int(11) NOT NULL default '0',
+               `is_template` tinyint(1) NOT NULL default '0',
+               `template_name` varchar(255) collate utf8_unicode_ci default NULL,
                `is_recursive` tinyint(1) NOT NULL default '0',
                `name` varchar(255) collate utf8_unicode_ci default NULL,
                `num_order` varchar(255) collate utf8_unicode_ci default NULL,
@@ -1626,6 +1649,7 @@ class PluginOrderOrder extends CommonDBTM {
                KEY `locations_id` (`locations_id`),
                KEY `is_late` (`locations_id`),
                KEY `users_id_recipient` (`users_id_recipient`),
+               KEY `is_template` (`is_template`),
                KEY `is_deleted` (`is_deleted`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
             $DB->query($query) or die ($DB->error());
@@ -1811,6 +1835,13 @@ class PluginOrderOrder extends CommonDBTM {
          }
          $migration->migrationOneTable($table);
 
+         if ($migration->addField($table, "is_template",
+                         "tinyint(1) NOT NULL DEFAULT 0")) {
+            $migration->addField($table, "template_name",
+                                 "VARCHAR(255) collate utf8_unicode_ci default NULL");
+            $migration->migrationOneTable($table);
+         }
+         
          //Displayprefs
          $prefs = array(1 => 1, 2 => 2, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 10 => 10);
          foreach ($prefs as $num => $rank) {

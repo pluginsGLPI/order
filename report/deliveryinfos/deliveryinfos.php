@@ -70,7 +70,7 @@ if ($report->criteriasValidated()) {
    $query_total.= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");
    $query_total.= $report->addSqlCriteriasRestriction();
    $query_total.= "AND `glpi_plugin_order_orders`.`suppliers_id`=`suppliers`.`id`";
-   $query_late = $query_total." AND `is_late`='1' AND `is_deleted`='0'";
+   $query_late = $query_total." AND `is_late`='1' AND `is_deleted`='0' AND `is_template`='0'";
 
    $supplier = "JOIN `glpi_suppliers`as suppliers
                                  ON (`glpi_plugin_order_orders`.`suppliers_id` = suppliers.`id`)";

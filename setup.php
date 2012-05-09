@@ -119,7 +119,7 @@ function plugin_init_order() {
                   = '/plugins/order/front/order.php';
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['search']
                   = '/plugins/order/front/order.php';
-   
+                  
             }
             //references
             if (plugin_order_haveRight("reference","r")) {
@@ -146,8 +146,10 @@ function plugin_init_order() {
    
          if (plugin_order_haveRight("order","w")) {
             //order
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['template']
+               = '/front/setup.templates.php?itemtype=PluginOrderOrder&add=0';
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['add']
-               = '/plugins/order/front/order.form.php';
+               = '/front/setup.templates.php?itemtype=PluginOrderOrder&add=1';
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['config']
                = '/plugins/order/front/config.form.php';
    
