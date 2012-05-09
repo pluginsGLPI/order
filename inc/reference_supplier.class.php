@@ -164,10 +164,9 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       echo "<td>";
 
       if ($ID > 0) {
-         $link=getItemTypeFormURL('Supplier');
-         echo "<a href=\"" . $link. "?id=" . $this->fields["suppliers_id"] . "\">" . 
-            Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]) . "</a>";
-         echo "<input type='hidden' name='suppliers_id' value='".$this->fields["suppliers_id"]."'>";
+         $supplier = new Supplier();
+         $supplier->getFromDB($this->fields['suppliers_id']);
+         echo $supplier->getLink(haveRight('supplier', 'r'));
       } else {
          $suppliers = array();
          $query = "SELECT `suppliers_id`
@@ -216,7 +215,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    function showReferenceManufacturers($target, $ID) {
       global $LANG, $DB, $CFG_GLPI;
 
-      $ref = new PluginOrderReference;
+      $ref = new PluginOrderReference();
       $ref->getFromDB($ID);
       
       initNavigateListItems($this->getType(),
@@ -255,6 +254,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
                echo ">";
             }
             echo "</td>";
+            
             $link=getItemTypeFormURL($this->getType());
             echo "<td><a href='".$link."?id=".$data["id"]."&plugin_order_references_id=".$ID."'>" .
                Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
@@ -271,7 +271,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          if ($candelete) {
             echo "<div class='center'>";
             echo "<table width='900px' class='tab_glpi'>";
-            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>"; 
+            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
             echo "<td class='center'>" .
                   "<a onclick= \"if ( markCheckboxes('show_supplierref$rand') ) " .
                      "return false;\" href='#'>".$LANG['buttons'][18]."</a></td>";
@@ -280,7 +280,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
                   "<a onclick= \"if ( unMarkCheckboxes('show_supplierref$rand') ) " .
                      "return false;\" href='#'>".$LANG['buttons'][19]."</a>";
             echo "</td><td align='left' width='80%'>";
-            echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . 
+            echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] .
                   "\" class='submit' >";
             echo "</td>";
             echo "</table>";
@@ -299,7 +299,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       global $DB;
 
       $query = "SELECT `price_taxfree`
-                FROM `".$this->getTable()."` 
+                FROM `".$this->getTable()."`
                 WHERE `plugin_order_references_id` = '$plugin_order_references_id'
                    AND `suppliers_id` = '$suppliers_id' ";
       $result = $DB->query($query);
@@ -314,7 +314,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       global $DB;
 
       $query = "SELECT `reference_code`
-                FROM `".$this->getTable()."` 
+                FROM `".$this->getTable()."`
                 WHERE `plugin_order_references_id` = '$plugin_order_references_id'
                    AND `suppliers_id` = '$suppliers_id' ";
       $result = $DB->query($query);
@@ -361,21 +361,21 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          $migration->addField($table, "is_recursive", "int(11) NOT NULL default '0'");
          $migration->addKey($table, "suppliers_id");
          $migration->addKey($table, "plugin_order_references_id");
-         $migration->changeField($table, "ID", "id", 
+         $migration->changeField($table, "ID", "id",
                                  "int(11) NOT NULL auto_increment");
-         $migration->changeField($table, "FK_entities", "entities_id", 
+         $migration->changeField($table, "FK_entities", "entities_id",
                                  "int(11) NOT NULL default '0'");
-         $migration->changeField($table, "FK_reference", "plugin_order_references_id", 
+         $migration->changeField($table, "FK_reference", "plugin_order_references_id",
                                  "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'");
-         $migration->changeField($table, "FK_enterprise", "suppliers_id", 
+         $migration->changeField($table, "FK_enterprise", "suppliers_id",
                                  "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
-         $migration->changeField($table, "reference_code", "reference_code", 
+         $migration->changeField($table, "reference_code", "reference_code",
                                  "varchar(255) collate utf8_unicode_ci default NULL");
          $migration->migrationOneTable($table);
 
          Plugin::migrateItemType(array(3152 => 'PluginOrderReference_Supplier'),
-                                 array("glpi_bookmarks", "glpi_bookmarks_users", 
-                                       "glpi_displaypreferences", "glpi_documents_items", 
+                                 array("glpi_bookmarks", "glpi_bookmarks_users",
+                                       "glpi_displaypreferences", "glpi_documents_items",
                                        "glpi_infocoms", "glpi_logs", "glpi_tickets"),
                                  array());
 
