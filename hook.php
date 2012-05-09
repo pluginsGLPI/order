@@ -444,8 +444,8 @@ function plugin_order_migratetypes($types) {
 
 function plugin_datainjection_populate_order() {
    global $INJECTABLE_TYPES;
-
-   $INJECTABLE_TYPES['PluginOrderOrderInjection'] = 'order';
+   $INJECTABLE_TYPES['PluginOrderOrderInjection']     = 'order';
+   $INJECTABLE_TYPES['PluginOrderReferenceInjection'] = 'order';
 }
 
 ?>

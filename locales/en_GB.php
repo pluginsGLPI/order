@@ -146,7 +146,7 @@ $LANG['plugin_order']['detail'][40] = "Do you really want to edit the order ? ";
 $LANG['plugin_order']['detail'][41] = "Do you really want to update this item ? ";
 
 $LANG['plugin_order']['generation'][0] = "Generation";
-$LANG['plugin_order']['generation'][1] = "Generation of the order";
+$LANG['plugin_order']['generation'][1] = "Order Generation";
 $LANG['plugin_order']['generation'][2] = "Order";
 $LANG['plugin_order']['generation'][3] = "Invoice address";
 $LANG['plugin_order']['generation'][4] = "Delivery address";

@@ -80,7 +80,7 @@ class PluginOrderProfile extends CommonDBTM {
 
          $myProf->add(array('profiles_id' => $ID, 'order' => 'w', 'reference'=>'w',
                             'validation'=>'w', 'cancel'=>'w', 'undo_validation'=>'w',
-                            'bill' => 'w', 'delivery' => 'w'));
+                            'bill' => 'w', 'delivery' => 'w', 'generate_order_odt' => 'w'));
             
       }
    }
@@ -169,6 +169,20 @@ class PluginOrderProfile extends CommonDBTM {
       
       echo "</tr>";
       
+      echo "<tr class='tab_bg_2'>";
+
+      echo "<td>" . $LANG['plugin_order']['generation'][1] . ":</td><td>";
+      if ($prof->fields['interface']!='helpdesk') {
+         Profile::dropdownNoneReadWrite("generate_order_odt",
+                                        $this->fields["generate_order_odt"], 1, 0, 1);
+      } else {
+         echo $LANG['profiles'][12]; // No access;
+      }
+      echo "</td>";
+      echo "<td colspan='2'></td>";
+      echo "</tr>";
+      
+      
       echo "<tr align='center'><th colspan='4' >".$LANG['plugin_order'][5]."</th></tr>";
       
       echo "<tr class='tab_bg_2'>";
@@ -227,6 +241,7 @@ class PluginOrderProfile extends CommonDBTM {
                `undo_validation` char(1) collate utf8_unicode_ci default NULL,
                `bill` char(1) collate utf8_unicode_ci default NULL,
                `delivery` char(1) collate utf8_unicode_ci default NULL,
+               `generate_order_odt` char(1) collate utf8_unicode_ci default NULL,
                PRIMARY KEY  (`id`),
                KEY `profiles_id` (`profiles_id`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
@@ -263,6 +278,7 @@ class PluginOrderProfile extends CommonDBTM {
          $migration->addField("glpi_plugin_order_profiles", "bill",
                               "CHAR( 1 ) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->migrationOneTable($table);
+         self::addRightToProfile($_SESSION['glpiactiveprofile']['id'], "bill" , "w");
          
          //1.5.3
          //Add delivery right
@@ -271,10 +287,18 @@ class PluginOrderProfile extends CommonDBTM {
             $migration->migrationOneTable($table);
             //Update profiles : copy order right not to change current behavior
             $update = "UPDATE `glpi_plugin_order_profiles` SET `delivery`=`order`";
-            $DB->request($update);
+            $DB->query($update);
+            self::addRightToProfile($_SESSION['glpiactiveprofile']['id'], "delivery" , "w");
+         }
+         if ($migration->addField("glpi_plugin_order_profiles", "generate_order_odt",
+                              "CHAR( 1 ) COLLATE utf8_unicode_ci DEFAULT NULL")) {
+            $migration->migrationOneTable($table);
+            //Update profiles : copy order right not to change current behavior
+            $update = "UPDATE `glpi_plugin_order_profiles` SET `generate_order_odt`=`order`";
+            $DB->query($update);
+            self::addRightToProfile($_SESSION['glpiactiveprofile']['id'], "generate_order_odt" , "w");
          }
          
-         PluginOrderProfile::addRightToProfile($_SESSION['glpiactiveprofile']['id'], "bill" , "w");
       }
       
       self::changeProfile();

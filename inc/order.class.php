@@ -34,21 +34,20 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderOrder extends CommonDBTM {
 
-   public $dohistory = true;
-   public $forward_entity_to = array("PluginOrderOrder_Item", "PluginOrderOrder_Supplier");
+   public $dohistory               = true;
+   public $forward_entity_to       = array("PluginOrderOrder_Item", "PluginOrderOrder_Supplier");
    
-   const ORDER_DEVICE_NOT_DELIVRED        = 0;
-   const ORDER_DEVICE_DELIVRED            = 1;
+   const ORDER_DEVICE_NOT_DELIVRED = 0;
+   const ORDER_DEVICE_DELIVRED     = 1;
    
    // Const Budget
-   const ORDER_IS_OVER_BUDGET  = 1;
-   const ORDER_IS_EQUAL_BUDGET = 2;
-   const ORDER_IS_UNDER_BUDGET = 3;
+   const ORDER_IS_OVER_BUDGET      = 1;
+   const ORDER_IS_EQUAL_BUDGET     = 2;
+   const ORDER_IS_UNDER_BUDGET     = 3;
 
    static function getTypeName() {
       global $LANG;
-
-      return $LANG['plugin_order']['title'][1];
+      return $LANG['plugin_order']['menu'][4];
    }
    
    function getState() {
@@ -200,6 +199,12 @@ class PluginOrderOrder extends CommonDBTM {
 
       //If no right to cancel
       return ($this->canUndo());
+   }
+   
+   function canDisplayValidationTab() {
+      return (plugin_order_haveRight('order','w')
+               && $this->canValidateOrder() || $this->canCancelOrder() || $this->canUndoValidation()
+               || $this->canCancelValidationRequest() || $this->canDoValidationRequest());
    }
    
    function getSearchOptions() {
@@ -391,20 +396,21 @@ class PluginOrderOrder extends CommonDBTM {
 
       }
      
-     if (plugin_order_haveRight('order','w')) {
+     if ($this->canDisplayValidationTab()) {
         $ong[2] = $LANG['plugin_order'][5];
      }
 
      if ($config->canGenerateOrderPDF()
         && $this->getState() > PluginOrderOrderState::DRAFT
-           && plugin_order_haveRight('order','w')) {
+           && plugin_order_haveRight('generate_order_odt', 'w')) {
      /* generation*/
-        $ong[4] = $LANG['plugin_order']['generation'][2];
+        $ong[4] = $LANG['plugin_order']['generation'][1];
       
      }
       
       //Display suppliers related informations
-      if ($config->canUseSupplierInformations() && $this->fields['suppliers_id']) {
+      if (haveRight("supplier", 'r')
+         && $config->canUseSupplierInformations() && $this->fields['suppliers_id']) {
          $ong[3] = $LANG['plugin_order'][4];
       }
         
@@ -1139,6 +1145,7 @@ class PluginOrderOrder extends CommonDBTM {
             $town = $entdata->fields["town"];
             $odf->setVars('entity_town', $town,true,'UTF-8');
             $odf->setVars('entity_country', $entdata->fields["country"], true, 'UTF-8');
+            $odf->setVars('entity_ldapdn', $entdata->fields["ldap_dn"], true, 'UTF-8');
          }
          
          $supplier = new Supplier();
