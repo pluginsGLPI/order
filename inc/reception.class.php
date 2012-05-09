@@ -256,7 +256,7 @@ class PluginOrderReception extends CommonDBTM {
          echo "<textarea cols='100' rows='4' name='delivery_comment'>" .
              $this->fields["delivery_comment"] . "</textarea>";
       } else {
-         echo $this->fields["comment"];
+         echo $this->fields["delivery_comment"];
       }
       echo "</td>";
       echo "</tr>";

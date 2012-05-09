@@ -63,67 +63,93 @@ class PluginOrderReference extends CommonDropdown {
    function getSearchOptions() {
       global $LANG;
 
-      $tab = array();
-    
-      $tab['common'] = $LANG['plugin_order']['reference'][1];
+      $tab['common']           = $LANG['plugin_order']['reference'][1];
 
-      $tab[1]['table'] = $this->getTable();
-      $tab[1]['field'] = 'name';
-      $tab[1]['name'] = $LANG['plugin_order']['detail'][2];
-      $tab[1]['datatype'] = 'itemlink';
-
-      $tab[2]['table'] = $this->getTable();
-      $tab[2]['field'] = 'comment';
-      $tab[2]['name'] = $LANG['common'][25];
-      $tab[2]['datatype'] = 'text';
-
-      $tab[3]['table'] = $this->getTable();
-      $tab[3]['field'] = 'itemtype';
-      $tab[3]['name'] = $LANG['state'][6];
-      $tab[3]['datatype'] = 'itemtypename';
-      $tab[3]['massiveaction'] = false;
+      $tab[1]['table']          = $this->getTable();
+      $tab[1]['field']          = 'name';
+      $tab[1]['name']           = $LANG['plugin_order']['detail'][2];
+      $tab[1]['datatype']       = 'itemlink';
+      $tab[1]['checktype']      = 'text';
+      $tab[1]['displaytype']    = 'text';
+      $tab[1]['injectable']     = true;
       
-      $tab[4]['table'] = $this->getTable();
-      $tab[4]['field'] = 'models_id';
-      $tab[4]['name'] = $LANG['common'][22];
-      $tab[4]['massiveaction'] = false;
+      $tab[2]['table']          = $this->getTable();
+      $tab[2]['field']          = 'comment';
+      $tab[2]['name']           = $LANG['common'][25];
+      $tab[2]['datatype']       = 'text';
+      $tab[2]['checktype']      = 'text';
+      $tab[2]['displaytype']    = 'multiline_text';
+      $tab[2]['injectable']     = true;
       
-      $tab[5]['table'] = 'glpi_manufacturers';
-      $tab[5]['field'] = 'name';
-      $tab[5]['name'] = $LANG['common'][5];
-
-      $tab[6]['table'] = $this->getTable();
-      $tab[6]['field'] = 'types_id';
-      $tab[6]['name'] = $LANG['common'][17];
-      $tab[6]['massiveaction'] = false;
+      $tab[3]['table']          = $this->getTable();
+      $tab[3]['field']          = 'itemtype';
+      $tab[3]['name']           = $LANG['state'][6];
+      $tab[3]['datatype']       = 'itemtypename';
+      $tab[3]['massiveaction']  = false;
+      $tab[3]['checktype']      = 'itemtype';
+      $tab[3]['displaytype']    = 'reference_itemtype';
+      $tab[3]['injectable']     = true;
       
-      $tab[7]['table'] = $this->getTable();
-      $tab[7]['field'] = 'templates_id';
-      $tab[7]['name'] = $LANG['common'][13];
-      $tab[7]['massiveaction'] = false;
-            
-      $tab[30]['table'] = $this->getTable();
-      $tab[30]['field'] = 'id';
-      $tab[30]['name']=$LANG['common'][2];
+      $tab[4]['table']          = $this->getTable();
+      $tab[4]['field']          = 'models_id';
+      $tab[4]['name']           = $LANG['common'][22];
+      $tab[4]['massiveaction']  = false;
+      $tab[4]['checktype']      = 'text';
+      $tab[4]['displaytype']    = 'reference_model';
+      $tab[4]['injectable']     = true;
+      
+      $tab[5]['table']          = 'glpi_manufacturers';
+      $tab[5]['field']          = 'name';
+      $tab[5]['name']           = $LANG['common'][5];
+      $tab[5]['checktype']      = 'text';
+      $tab[5]['displaytype']    = 'dropdown';
+      $tab[5]['injectable']     = true;
+      
+      $tab[6]['table']          = $this->getTable();
+      $tab[6]['field']          = 'types_id';
+      $tab[6]['name']           = $LANG['common'][17];
+      $tab[6]['massiveaction']  = false;
+      $tab[6]['checktype']      = 'text';
+      $tab[6]['displaytype']    = 'reference_type';
+      $tab[6]['injectable']     = true;
+      
+      $tab[7]['table']          = $this->getTable();
+      $tab[7]['field']          = 'templates_id';
+      $tab[7]['name']           = $LANG['common'][13];
+      $tab[7]['massiveaction']  = false;
+      $tab[7]['checktype']      = 'text';
+      $tab[7]['displaytype']    = 'dropdown';
+      $tab[7]['injectable']     = true;
+      
+      $tab[30]['table']         = $this->getTable();
+      $tab[30]['field']         = 'id';
+      $tab[30]['name']          = $LANG['common'][2];
       $tab[30]['massiveaction'] = false;
-
-      $tab[31]['table']    = $this->getTable();
-      $tab[31]['field']    = 'is_active';
-      $tab[31]['name']     = $LANG['common'][60];
-      $tab[31]['datatype'] = 'bool';
+      $tab[30]['injectable']    = false;
+      
+      $tab[31]['table']         = $this->getTable();
+      $tab[31]['field']         = 'is_active';
+      $tab[31]['name']          = $LANG['common'][60];
+      $tab[31]['datatype']      = 'bool';
+      $tab[31]['checktype']     = 'bool';
+      $tab[31]['displaytype']   = 'bool';
+      $tab[31]['injectable']    = true;
       
       /* entity */
-      $tab[80]['table'] = 'glpi_entities';
-      $tab[80]['field'] = 'completename';
-      $tab[80]['name'] = $LANG['entity'][0];
+      $tab[80]['table']         = 'glpi_entities';
+      $tab[80]['field']         = 'completename';
+      $tab[80]['name']          = $LANG['entity'][0];
       $tab[80]['massiveaction'] = false;
+      $tab[80]['injectable']    = false;
       
-      $tab[86]['table']    = $this->getTable();
-      $tab[86]['field']    = 'is_recursive';
-      $tab[86]['name']     = $LANG['entity'][9];
-      $tab[86]['datatype'] = 'bool';
-//      $tab[86]['massiveaction'] = false;
-
+      $tab[86]['table']         = $this->getTable();
+      $tab[86]['field']         = 'is_recursive';
+      $tab[86]['name']          = $LANG['entity'][9];
+      $tab[86]['datatype']      = 'bool';
+      $tab[86]['checktype']     = 'text';
+      $tab[86]['displaytype']   = 'dropdown';
+      $tab[86]['injectable']    = true;
+      
       return $tab;
    }
    
@@ -866,15 +892,13 @@ class PluginOrderReference extends CommonDropdown {
                     WHERE `itemtype` ='Cartridge'") or die ($DB->error());
                     
          //Displayprefs
-            
          $prefs = array(1 => 1, 2 => 4, 4 => 5, 5 => 9, 6 => 6, 7 => 7);
          foreach ($prefs as $num => $rank) {
             if (!countElementsInTable("glpi_displaypreferences",
                                        "`itemtype`='PluginOrderReference' AND `num`='$num'
                                           AND `rank`='$rank' AND `users_id`='0'")) {
                $DB->query("INSERT INTO glpi_displaypreferences
-                           VALUES (NULL,'PluginOrderReference','$num','$rank','0');")
-                  or die($DB->error());
+                           VALUES (NULL,'PluginOrderReference','$num','$rank','0');");
             }
          }
       }
