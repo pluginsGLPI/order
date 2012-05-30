@@ -1652,7 +1652,6 @@ class PluginOrderOrder extends CommonDBTM {
                KEY `contacts_id` (`contacts_id`),
                KEY `locations_id` (`locations_id`),
                KEY `is_late` (`locations_id`),
-               KEY `users_id_recipient` (`users_id_recipient`),
                KEY `is_template` (`is_template`),
                KEY `is_deleted` (`is_deleted`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
