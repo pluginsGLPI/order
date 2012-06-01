@@ -533,13 +533,171 @@ class PluginOrderReference extends CommonDropdown {
 
       if (!empty($references)) {
          $condition = "`id` IN (".implode(',', $references).")";
-         return Dropdown::show(__CLASS__, array('condition'           => $condition, 
+         return $this->showReferences(__CLASS__, array('condition'           => $condition, 
                                                 'name'                => 'reference', 
                                                 'display_emptychoice' => true,
                                                 'entity'              => $options['entity_restrict']));
       } else {
          return Dropdown::EMPTY_VALUE;
       }
+   }
+   
+   function showReferences($itemtype, $options=array()) {
+      global $DB,$CFG_GLPI,$LANG;
+
+      if ($itemtype && !($item = getItemForItemtype($itemtype))) {
+         return false;
+      }
+
+      $table = $item->getTable();
+
+      $params['name']        = $item->getForeignKeyField();
+      $params['value']       = ($itemtype=='Entity' ? $_SESSION['glpiactive_entity'] : '');
+      $params['comments']    = true;
+      $params['entity']      = -1;
+      $params['entity_sons'] = false;
+      $params['toupdate']    = '';
+      $params['used']        = array();
+      $params['toadd']       = array();
+      $params['on_change']   = '';
+      $params['condition']   = '';
+      $params['rand']        = mt_rand();
+      $params['displaywith'] = array();
+      //Parameters about choice 0
+      //Empty choice's label
+      $params['emptylabel'] = Dropdown::EMPTY_VALUE;
+      //Display emptychoice ?
+      $params['display_emptychoice'] = true;
+      //In case of Entity dropdown, display root entity ?
+      $params['display_rootentity']  = false;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+      $name         = $params['emptylabel'];
+      $comment      = "";
+      $limit_length = $_SESSION["glpidropdown_chars_limit"];
+
+      // Check default value for dropdown : need to be a numeric
+      if (strlen($params['value'])==0 || !is_numeric($params['value'])) {
+         $params['value'] = 0;
+      }
+
+      if ($params['value'] > 0
+         || ($itemtype == "Entity" && $params['value'] >= 0)) {
+         $tmpname = self::getDropdownName($table, $params['value'], 1);
+
+         if ($tmpname["name"] != "&nbsp;") {
+            $name    = $tmpname["name"];
+            $comment = $tmpname["comment"];
+
+            if (Toolbox::strlen($name) > $_SESSION["glpidropdown_chars_limit"]) {
+               if ($item instanceof CommonTreeDropdown) {
+                  $pos          = strrpos($name, ">");
+                  $limit_length = max(Toolbox::strlen($name) - $pos,
+                                      $_SESSION["glpidropdown_chars_limit"]);
+
+                  if (Toolbox::strlen($name)>$limit_length) {
+                     $name = "&hellip;".Toolbox::substr($name, -$limit_length);
+                  }
+
+               } else {
+                  $limit_length = Toolbox::strlen($name);
+               }
+
+            } else {
+               $limit_length = $_SESSION["glpidropdown_chars_limit"];
+            }
+         }
+      }
+
+      // Manage entity_sons
+      if (!($params['entity']<0) && $params['entity_sons']) {
+         if (is_array($params['entity'])) {
+            echo "entity_sons options is not available with array of entity";
+         } else {
+            $params['entity'] = getSonsOf('glpi_entities',$params['entity']);
+         }
+      }
+
+      $use_ajax = false;
+      if ($CFG_GLPI["use_ajax"]) {
+         $nb = 0;
+
+         if ($item->isEntityAssign()) {
+            if (!($params['entity']<0)) {
+               $nb = countElementsInTableForEntity($table, $params['entity'], $params['condition']);
+            } else {
+               $nb = countElementsInTableForMyEntities($table, $params['condition']);
+            }
+
+         } else {
+            $nb = countElementsInTable($table, $params['condition']);
+         }
+
+         $nb -= count($params['used']);
+         
+         //TODO : temporarily disable ajax for display references
+         //MUST to find other solution
+         /*if ($nb>$CFG_GLPI["ajax_limit_count"]) {
+            $use_ajax = true;
+         }*/
+      }
+
+      $param = array('searchText'           => '__VALUE__',
+                      'value'               => $params['value'],
+                      'itemtype'            => $itemtype,
+                      'myname'              => $params['name'],
+                      'limit'               => $limit_length,
+                      'toadd'               => $params['toadd'],
+                      'comment'             => $params['comments'],
+                      'rand'                => $params['rand'],
+                      'entity_restrict'     => $params['entity'],
+                      'update_item'         => $params['toupdate'],
+                      'used'                => $params['used'],
+                      'on_change'           => $params['on_change'],
+                      'condition'           => $params['condition'],
+                      'emptylabel'          => $params['emptylabel'],
+                      'display_emptychoice' => $params['display_emptychoice'],
+                      'displaywith'         => $params['displaywith'],
+                      'display_rootentity'  => $params['display_rootentity']);
+
+      $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].
+                    $params['rand']."'>";
+      $default .= "<option value='".$params['value']."'>$name</option></select>";
+      Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $param, $default, $params['rand']);
+
+      // Display comment
+      if ($params['comments']) {
+         $options_tooltip = array('contentid' => "comment_".$params['name'].$params['rand']);
+
+         if ($item->canView()
+            && $params['value'] && $item->getFromDB($params['value'])
+            && $item->canViewItem()) {
+
+            $options_tooltip['link']       = $item->getLinkURL();
+            $options_tooltip['linktarget'] = '_blank';
+         }
+
+         Html::showToolTip($comment,$options_tooltip);
+
+         if (($item instanceof CommonDropdown)
+              && $item->canCreate()
+              && !isset($_GET['popup'])) {
+
+               echo "<img alt='' title=\"".$LANG['buttons'][8]."\" src='".$CFG_GLPI["root_doc"].
+                     "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
+                     onClick=\"var w = window.open('".$item->getFormURL()."?popup=1&amp;rand=".
+                     $params['rand']."' ,'glpipopup', 'height=400, ".
+                     "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+         }
+
+      }
+
+      return $params['rand'];
    }
 
    function showReferencesFromSupplier($ID){
