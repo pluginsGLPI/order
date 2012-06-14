@@ -119,7 +119,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                                                             " " . $LANG['plugin_order']['mailing'][2];
                break;
          }
-         $this->datas['##ordervalidation.users##'] =  html_clean(getUserName(Session::getLoginUserID()));
+         $this->datas['##ordervalidation.users##'] =  Html::clean(getUserName(Session::getLoginUserID()));
          
          $this->datas['##lang.ordervalidation.url##'] = "URL";
          $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_order_".$this->obj->getField("id");
