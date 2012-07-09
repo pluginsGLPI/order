@@ -278,9 +278,9 @@ else if (isset ($_POST["undovalidation"])) {
    }
    
    Html::back();
-} else if (isset ($_GET['unlink_order'])) {
-   $pluginOrderOrder->check($_GET['id'], 'w');
-   $pluginOrderOrder->unlinkBudget($_GET['id']);
+} else if (isset ($_POST['unlink_order'])) {
+   $pluginOrderOrder->check($_POST['id'], 'w');
+   $pluginOrderOrder->unlinkBudget($_POST['id']);
    Html::back();
 } else {
    $pluginOrderOrder->checkGlobal("r");

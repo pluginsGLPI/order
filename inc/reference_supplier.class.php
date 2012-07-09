@@ -317,7 +317,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          echo "</table>";
       }
 
-      echo "</form>";
+      Html::closeForm();
 
       echo "</div>";
       

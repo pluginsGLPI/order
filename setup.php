@@ -37,7 +37,8 @@ function plugin_init_order() {
    
    Plugin::registerClass('PluginOrderPreference',
                          array('addtabon' => 'Preference'));
-                                              
+   
+   $PLUGIN_HOOKS['csrf_compliant']['order'] = true;
    /* load changeprofile function */
    $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile', 'changeProfile');
    
@@ -177,15 +178,15 @@ function plugin_version_order() {
                  'license' 		 => 'GPLv3',
                  'author'         => 'Benjamin Fontan, Walid Nouh, Xavier Caillaud, François Legastelois',
                  'homepage'       => 'https://forge.indepnet.net/projects/show/order',
-                 'minGlpiVersion' => '0.80',
+                 'minGlpiVersion' => '0.83.3',
       
    );
 }
 
 /* check prerequisites before install : may print errors or add to message after redirect -optional- */
 function plugin_order_check_prerequisites(){
-   if (version_compare(GLPI_VERSION,'0.83','lt') || version_compare(GLPI_VERSION,'0.84','ge')) {
-      echo "This plugin requires GLPI >= 0.83";
+   if (version_compare(GLPI_VERSION,'0.83.3','lt') || version_compare(GLPI_VERSION,'0.84','ge')) {
+      echo "This plugin requires GLPI >= 0.83.3";
       return false;
    }
    return true;

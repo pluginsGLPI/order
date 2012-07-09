@@ -290,7 +290,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       }
       else
 
-      echo "</form>";
+      Html::closeForm();
       echo "</div>";
    }
    

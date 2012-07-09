@@ -533,7 +533,7 @@ class PluginOrderReference extends CommonDropdown {
 
       if (!empty($references)) {
          $condition = "`id` IN (".implode(',', $references).")";
-         return $this->showReferences(__CLASS__, array('condition'           => $condition, 
+         return Dropdown::show(__CLASS__, array('condition'           => $condition, 
                                                 'name'                => 'reference', 
                                                 'display_emptychoice' => true,
                                                 'entity'              => $options['entity_restrict']));

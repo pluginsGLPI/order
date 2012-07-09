@@ -388,7 +388,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          echo "</table>";
       }
 
-      echo "</form>";
+      Html::closeForm();
       echo "</div>";
    }
    

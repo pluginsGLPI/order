@@ -208,7 +208,8 @@ class PluginOrderLink extends CommonDBChild {
       }
 
       echo "</table>";
-      echo "</form></div>";
+      Html::closeForm();
+      echo "</div>";
    }
    
    function showOrderLink($plugin_order_orders_id) {
@@ -361,7 +362,8 @@ class PluginOrderLink extends CommonDBChild {
                echo "</table>";
                echo "</div>";
             }
-            echo "</form></div>";
+            Html::closeForm();
+            echo "</div>";
          }
          echo "<br>";
       }

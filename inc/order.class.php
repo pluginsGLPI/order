@@ -799,7 +799,8 @@ class PluginOrderOrder extends CommonDBTM {
       if ($canedit) {
          $this->showFormButtons($options);
       } else {
-         echo "</table></div></form>";
+         echo "</table></div>";
+         Html::closeForm();
       }
       $this->addDivForTabs();
       
@@ -1069,7 +1070,8 @@ class PluginOrderOrder extends CommonDBTM {
                . $LANG['plugin_order']['validation'][0] . "</td></tr>";
          }
       }
-      echo "</table></div></form>";
+      echo "</table></div>";
+      Html::closeForm();
    }
    
    function showGenerationForm($ID) {
@@ -1099,7 +1101,8 @@ class PluginOrderOrder extends CommonDBTM {
          echo $LANG['plugin_order']['parser'][4]."</a></td></tr>";
       }
  
-      echo "</table></div></form>";
+      echo "</table></div>";
+      Html::closeForm();
    }
    
    function generateOrder($ID) {
@@ -1345,7 +1348,9 @@ class PluginOrderOrder extends CommonDBTM {
          
          echo "<tr class='tab_bg_1' align='center'>";
          echo "<td>";
-            echo "<a href=\"".$link."?unlink_order=unlink_order&id=".$data["id"]."\">".$LANG['plugin_order'][52]."</a>";
+         Html::showMinimalForm($link,
+                                  'unlink_order', $LANG['plugin_order'][52],
+                                  array('id' => $data["id"]));
          echo "</td>";
          echo "<td>";
 

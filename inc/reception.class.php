@@ -481,7 +481,8 @@ class PluginOrderReception extends CommonDBTM {
                   echo $LANG['plugin_order']['delivery'][4]."</a></p><br>\n";
                }
             }
-            echo "</form></div>";
+            Html::closeForm();
+            echo "</div>";
          }
          echo "<br>";
       }

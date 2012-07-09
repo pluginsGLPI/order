@@ -451,7 +451,8 @@ class PluginOrderBill extends CommonDropdown {
             echo "</div>";
 
          }
-         echo "</form></div>";
+         Html::closeForm();
+         echo "</div>";
       }
       echo "<br>";
    }

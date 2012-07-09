@@ -349,7 +349,8 @@ class PluginOrderOrder_Item extends CommonDBChild {
                echo "<tr><td align='center'>".$LANG['plugin_order']['detail'][27]."</td></tr>";
             }
 
-            echo "</table></div></form>";
+            echo "</table></div>";
+            Html::closeForm();
          }
       }
    }
@@ -589,8 +590,8 @@ class PluginOrderOrder_Item extends CommonDBChild {
             }else {
                echo "<td align='center'>" . Html::formatNumber($discount) . "</td>";
             }
-            echo "</tr></table></form>";
-
+            echo "</tr></table>";
+            Html::closeForm();
             echo "<div class='center' id='detail$rand' style='display:none'>";
             echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  " .
                   "action=\"" . Toolbox::getItemTypeFormURL('PluginOrderOrder')."\">";
@@ -780,7 +781,8 @@ class PluginOrderOrder_Item extends CommonDBChild {
                echo "</table>";
                echo "</div>";
             }
-            echo "</form></div>";
+            Html::closeForm();
+            echo "</div>";
          }
          echo "<br>";
       }
@@ -1097,7 +1099,8 @@ class PluginOrderOrder_Item extends CommonDBChild {
             echo "</div>";
 
          }
-         echo "</form></div>";
+         Html::closeForm();
+         echo "</div>";
       }
       echo "<br>";
    }
