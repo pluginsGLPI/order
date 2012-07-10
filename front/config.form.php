@@ -29,7 +29,7 @@
  ---------------------------------------------------------------------- */
 
 if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '../../..'); 
+   define('GLPI_ROOT', '../../..');
 }
 include (GLPI_ROOT."/inc/includes.php");
 
@@ -46,6 +46,7 @@ if (isset($_POST["update"])) {
 
 commonHeader($LANG['plugin_order']['title'][1], '', "plugins", "order", "config");
 
+checkRight("config", "w");
 $config->showConfigForm();
 
 commonFooter();
