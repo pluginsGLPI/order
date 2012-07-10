@@ -30,8 +30,11 @@
 
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
-   global $PLUGIN_HOOKS, $CFG_GLPI, $LANG;
-
+   global $PLUGIN_HOOKS, $CFG_GLPI, $LANG, $ORDER_TYPES;
+   
+   //Make sure the array is always defined
+   $ORDER_TYPES = array();
+   
    Plugin::registerClass('PluginOrderProfile',
                          array('addtabon' => 'Profile'));
    
@@ -49,10 +52,10 @@ function plugin_init_order() {
    
    if ($plugin->isActivated('order')) {
 
-      $PLUGIN_HOOKS['pre_item_purge']['order']  
+      $PLUGIN_HOOKS['pre_item_purge']['order']
          = array('Profile' => array('PluginOrderProfile', 'purgeProfiles'));
          
-      $PLUGIN_HOOKS['pre_item_update']['order'] 
+      $PLUGIN_HOOKS['pre_item_update']['order']
          = array('Infocom'  => array('PluginOrderOrder_Item', 'updateItem'),
                  'Contract' => array('PluginOrderOrder_Item', 'updateItem'));
    
@@ -75,8 +78,8 @@ function plugin_init_order() {
          if (plugin_order_haveRight("order", "w") || Session::haveRight("config", "w"))
             $PLUGIN_HOOKS['config_page']['order'] = 'front/config.form.php';
       
-         if (plugin_order_haveRight("order", "r") 
-            || plugin_order_haveRight("reference", "r") 
+         if (plugin_order_haveRight("order", "r")
+            || plugin_order_haveRight("reference", "r")
                || plugin_order_haveRight("bill", "r")) {
    
             $PLUGIN_HOOKS['menu_entry']['order']      = 'front/menu.php';
@@ -88,40 +91,40 @@ function plugin_init_order() {
    
             //menu
             if (plugin_order_haveRight("order","r")) {
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['menu']['title'] 
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['menu']['title']
                   = $LANG['plugin_order']['menu'][0];
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['menu']['page']  
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['menu']['page']
                   = '/plugins/order/front/menu.php';
    
             }
             //order
             if (plugin_order_haveRight("order","r")) {
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['title'] 
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['title']
                   = $LANG['plugin_order']['menu'][4];
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['page']  
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['page']
                   = '/plugins/order/front/order.php';
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['search'] 
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['search']
                   = '/plugins/order/front/order.php';
    
             }
             //references
             if (plugin_order_haveRight("reference","r")) {
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['title'] 
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['title']
                   = $LANG['plugin_order']['menu'][5];
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['page']  
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['page']
                   = '/plugins/order/front/reference.php';
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['links']['search'] 
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['links']['search']
                   = '/plugins/order/front/reference.php';
 
             }
             
             //bill
             if (plugin_order_haveRight("bill","r")) {
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['title'] 
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['title']
                   = $LANG['plugin_order']['bill'][0];
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['page']  
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['page']
                   = '/plugins/order/front/bill.php';
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['links']['search'] 
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['links']['search']
                   = '/plugins/order/front/bill.php';
    
             }
@@ -129,9 +132,9 @@ function plugin_init_order() {
    
          if (plugin_order_haveRight("order","w")) {
             //order
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['add']    
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['add']
                = '/plugins/order/front/order.form.php';
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['config'] 
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['config']
                = '/plugins/order/front/config.form.php';
    
          }
@@ -147,20 +150,20 @@ function plugin_init_order() {
             //references
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['links']['add']
                = '/plugins/order/front/reference.form.php';
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['links']['config'] 
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['links']['config']
                = '/plugins/order/front/config.form.php';
          }
          if (Session::haveRight("config","w")) {
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['title'] 
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['title']
                = $LANG['common'][12];
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['page']  
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['page']
                = '/plugins/order/front/config.form.php';
             $PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/config.form.php';
    
          }
          $PLUGIN_HOOKS['use_massive_action']['order'] = 1;
 
-         $PLUGIN_HOOKS['plugin_datainjection_populate']['order'] 
+         $PLUGIN_HOOKS['plugin_datainjection_populate']['order']
             = "plugin_datainjection_populate_order";
          
          $PLUGIN_HOOKS['post_init']['order'] = 'plugin_order_postinit';

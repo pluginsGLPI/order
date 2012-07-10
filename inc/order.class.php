@@ -1348,7 +1348,7 @@ class PluginOrderOrder extends CommonDBTM {
          
          echo "<tr class='tab_bg_1' align='center'>";
          echo "<td>";
-         Html::showMinimalForm($link,
+         Html::showSimpleForm($link,
                                   'unlink_order', $LANG['plugin_order'][52],
                                   array('id' => $data["id"]));
          echo "</td>";
