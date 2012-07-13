@@ -40,7 +40,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                     'validation'     => $LANG['plugin_order']['validation'][2],
                     'cancel'         => $LANG['plugin_order']['validation'][5],
                     'undovalidation' => $LANG['plugin_order']['validation'][8],
-                    'duedate'        => $LANG['plugin_order'][52]);
+                    'duedate'        => $LANG['plugin_order'][54]);
    }
 
    function getDatasForTemplate($event,$options=array()) {

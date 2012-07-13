@@ -63,9 +63,10 @@ $LANG['plugin_order'][48] = "Une ou plusieurs lignes sélectionnées n'ont pas d
 $LANG['plugin_order'][49] = "La date de commande doit être comprise dans les dates déclarées pour le budget sélectionné.";
 $LANG['plugin_order'][50] = "Date de livraison estimée";
 $LANG['plugin_order'][51] = "La date estimée est dépassée";
-$LANG['plugin_order'][52] = "Dépassement date de livraison estimée";
 $LANG['plugin_order'][52] = "Supprimer le lien";
 $LANG['plugin_order'][53] = "Détail de la commande";
+$LANG['plugin_order'][54] = "Dépassement date de livraison estimée";
+$LANG['plugin_order'][55] = "Commandes en retard";
 
 $LANG['plugin_order']['bill'][0] = "Facture";
 $LANG['plugin_order']['bill'][1] = "Type de facture";

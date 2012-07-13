@@ -37,7 +37,8 @@ class PluginOrderPreference extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getType()=='Preference') {
+      if ($item->getType()=='Preference' && isset ($_SESSION['glpiactiveprofile']['interface']) 
+            && $_SESSION['glpiactiveprofile']['interface'] !='helpdesk') {
             return $LANG['plugin_order']['title'][1];
       }
       return '';
