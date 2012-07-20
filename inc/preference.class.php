@@ -136,8 +136,8 @@ class PluginOrderPreference extends CommonDBTM {
       
       if (!empty($array_template)) {
       
-         echo "<div align='center'><form method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-         echo "<table class='tab_cadre_fixe' cellpadding='5'>";
+         echo "<form method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+         echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='5'>";
          $data = plugin_version_order();
          echo "<tr><th colspan='2'>" . $data['name'] . " - ". $data['version'] . "</th></tr>";
          echo "<tr class='tab_bg_2'><td align='center'>".$LANG['plugin_order']['parser'][1]."</td>";
