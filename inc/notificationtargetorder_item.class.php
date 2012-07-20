@@ -119,7 +119,7 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
 
       // orderport
       $this->datas['##lang.reception.orderport##'] = $LANG['plugin_order'][26];
-      $this->datas['##reception.orderport##'] = formatNumber($order->getField('port_price'));
+      $this->datas['##reception.orderport##'] = Html::formatNumber($order->getField('port_price'));
 
       // ordercomment
       $this->datas['##lang.reception.ordercomment##'] = $LANG['common'][25];
