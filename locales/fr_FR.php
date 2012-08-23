@@ -175,11 +175,11 @@ $LANG['plugin_order']['item'][2] = "Aucun matériel associé";
 $LANG['plugin_order']['mailing'][2] = "par";
 
 $LANG['plugin_order']['menu'][0] = "Menu principal";
-$LANG['plugin_order']['menu'][1] = "Gérer les commandes";
-$LANG['plugin_order']['menu'][2] = "Gérer le catalogue de références produits";
+$LANG['plugin_order']['menu'][1] = "Commandes";
+$LANG['plugin_order']['menu'][2] = "Catalogue de références produits";
 $LANG['plugin_order']['menu'][4] = "Commandes";
 $LANG['plugin_order']['menu'][5] = "Références";
-$LANG['plugin_order']['menu'][6] = "Gérer les factures";
+$LANG['plugin_order']['menu'][6] = "Factures";
 
 $LANG['plugin_order']['parser'][1] = "Utiliser ce modèle";
 $LANG['plugin_order']['parser'][2] = "Aucun fichier trouvé dans le répertoire";

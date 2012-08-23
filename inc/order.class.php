@@ -544,7 +544,7 @@ class PluginOrderOrder extends CommonDBTM {
       $options['canedit'] = $canedit;
       
       if ($template) {
-         unset($this->fields['order_date']);
+         $this->fields['order_date'] = NULL;
       }
       // Displaying OVER BUDGET ALERT
       if( $this->fields['budgets_id'] > 0 ) {

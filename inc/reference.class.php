@@ -134,6 +134,34 @@ class PluginOrderReference extends CommonDropdown {
       $tab[31]['checktype']     = 'bool';
       $tab[31]['displaytype']   = 'bool';
       $tab[31]['injectable']    = true;
+
+      $tab[32]['table']         = 'glpi_plugin_order_references_suppliers';
+      $tab[32]['field']         = 'price_taxfree';
+      $tab[32]['name']          = $LANG['plugin_order']['detail'][4];
+      $tab[32]['forcegroupby']  = true;
+      $tab[32]['usehaving']     = true;
+      $tab[32]['massiveaction'] = false;
+      $tab[32]['joinparams']    = array('jointype' => 'child');
+
+      $tab[33]['table']         = 'glpi_plugin_order_references_suppliers';
+      $tab[33]['field']         = 'reference_code';
+      $tab[33]['name']          = $LANG['plugin_order']['reference'][10];
+      $tab[33]['forcegroupby']  = true;
+      $tab[33]['usehaving']     = true;
+      $tab[33]['massiveaction'] = false;
+      $tab[33]['joinparams']    = array('jointype' => 'child');
+      
+      $tab[34]['table']         = 'glpi_suppliers';
+      $tab[34]['field']         = 'name';
+      $tab[34]['name']          = $LANG['financial'][26];
+      $tab[34]['datatype']      = 'itemlink';
+      $tab[34]['itemlink_type'] = 'Supplier';
+      $tab[34]['forcegroupby']  = true;
+      $tab[34]['usehaving']     = true;
+      $tab[34]['massiveaction'] = false;
+      $tab[34]['joinparams']    = array('beforejoin'
+                                         => array('table'      => 'glpi_plugin_order_references_suppliers',
+                                                  'joinparams' => array('jointype' => 'child')));
       
       /* entity */
       $tab[80]['table']         = 'glpi_entities';

@@ -180,7 +180,7 @@ $LANG['plugin_order']['menu'][1] = "Gestione Ordini";
 $LANG['plugin_order']['menu'][2] = "Gestione Riferimenti Prodotti";
 $LANG['plugin_order']['menu'][4] = "Ordini";
 $LANG['plugin_order']['menu'][5] = "Riferimenti";
-$LANG['plugin_order']['menu'][6] = "Manage bills";
+$LANG['plugin_order']['menu'][6] = "Bills";
 
 $LANG['plugin_order']['parser'][1] = "Usa questo modello";
 $LANG['plugin_order']['parser'][2] = "Nessun file nel folder";

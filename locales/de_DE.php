@@ -179,7 +179,7 @@ $LANG['plugin_order']['menu'][1] = "Bestellungen verwalten";
 $LANG['plugin_order']['menu'][2] = "Liste der Produktreferenzen verwalten";
 $LANG['plugin_order']['menu'][4] = "Bestellungen";
 $LANG['plugin_order']['menu'][5] = "Referenzen";
-$LANG['plugin_order']['menu'][6] = "Manage bills";
+$LANG['plugin_order']['menu'][6] = "Bills";
 
 $LANG['plugin_order']['parser'][1] = "Use this model";
 $LANG['plugin_order']['parser'][2] = "No file found into the folder";

@@ -179,7 +179,7 @@ $LANG['plugin_order']['menu'][2] = "Gestionar referencias de productos";
 $LANG['plugin_order']['menu'][3] = "Gestionar presupuestos";
 $LANG['plugin_order']['menu'][4] = "Pedidos";
 $LANG['plugin_order']['menu'][5] = "Referencias";
-$LANG['plugin_order']['menu'][6] = "Manage bills";
+$LANG['plugin_order']['menu'][6] = "Bills";
 
 $LANG['plugin_order']['parser'][0] = "Ficheros";
 $LANG['plugin_order']['parser'][1] = "Usar este modelo";

@@ -114,7 +114,7 @@ class PluginOrderPreference extends CommonDBTM {
          $values[0] = DROPDOWN_EMPTY_VALUE;
       }
       foreach ($files as $file) {
-         $values[$file[0]] = $file[0]." - ".$file[1];
+         $values[$file[0]] = $file[0];
       }
       return Dropdown::showFromArray($name, $values, array('value' => $value));
    }

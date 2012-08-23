@@ -175,11 +175,11 @@ $LANG['plugin_order']['item'][2] = "No associated item";
 $LANG['plugin_order']['mailing'][2] = "by";
 
 $LANG['plugin_order']['menu'][0] = "Menu";
-$LANG['plugin_order']['menu'][1] = "Manage orders";
-$LANG['plugin_order']['menu'][2] = "Manage products references";
+$LANG['plugin_order']['menu'][1] = "Orders";
+$LANG['plugin_order']['menu'][2] = "Products references";
 $LANG['plugin_order']['menu'][4] = "Orders";
 $LANG['plugin_order']['menu'][5] = "References";
-$LANG['plugin_order']['menu'][6] = "Manage bills";
+$LANG['plugin_order']['menu'][6] = "Bills";
 
 $LANG['plugin_order']['parser'][1] = "Use this model";
 $LANG['plugin_order']['parser'][2] = "No file found into the folder";
