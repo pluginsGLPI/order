@@ -50,7 +50,7 @@ $orderlink      = new PluginOrderLink();
 $surveySupplier = new PluginOrderSurveySupplier();
 $order->checkGlobal("r");
 
-if ($_POST["id"] > 0 && $order->can($_POST["id"], 'r') && !$order->fields['is_template']) {
+if ($_POST["id"] > 0 && $order->can($_POST["id"], 'r')) {
    switch($_REQUEST['glpi_tab']) {
       case -1 :
          $order_item->showItem($_POST["id"]);
