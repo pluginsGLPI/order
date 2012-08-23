@@ -599,6 +599,7 @@ class PluginOrderLink extends CommonDBChild {
          } else {
             $ic->add($fields);
          }
+         
       }
    }
    
@@ -810,13 +811,16 @@ class PluginOrderLink extends CommonDBChild {
          //Look for a template in the entity
          $templateID = $reference->checkIfTemplateExistsInEntity($values["id"], $values["itemtype"],
                                                                  $entity);
+         
          $item  = new $values["itemtype"]();
          if ($values['itemtype'])
          $order = new PluginOrderOrder();
          $order->getFromDB($values["plugin_order_orders_id"]);
          $reference->getFromDB($params["plugin_order_references_id"]);
          
+          
          if ($templateID) {
+
             $item->getFromDB($templateID);
             unset ($item->fields["is_template"]);
             unset ($item->fields["date_mod"]);

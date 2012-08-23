@@ -609,8 +609,9 @@ class PluginOrderReception extends CommonDBTM {
 
                      self::generateAsset($options);
                      
-                     if (!$plugin_order_orders_id)
+                     if (!$plugin_order_orders_id) {
                         $plugin_order_orders_id = $detail->fields["plugin_order_orders_id"];
+                     }
 
                      if ($detail->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
                         $this->receptionOneItem($key, $plugin_order_orders_id,

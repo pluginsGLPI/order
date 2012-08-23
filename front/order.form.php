@@ -66,9 +66,14 @@ else if (isset ($_POST["restore"])) {
    $pluginOrderOrder->redirectToList();
 }
 /* purge order */
-else if (isset ($_POST["purge"])) {
-   $pluginOrderOrder->check($_POST['id'], 'w');
-   $pluginOrderOrder->delete($_POST, 1);
+else if (isset ($_POST["purge"]) || isset($_GET["purge"])) {
+   if (isset($_POST['id'])) {
+      $id = $_POST['id'];
+   } else {
+      $id = $_GET['id'];
+   }
+   $pluginOrderOrder->check($id, 'w');
+   $pluginOrderOrder->delete(array('id' => $id), 1);
    $pluginOrderOrder->redirectToList();
 }
 /* update order */

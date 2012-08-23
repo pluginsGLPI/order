@@ -333,6 +333,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
                      `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
                      `num_quote` varchar(255) collate utf8_unicode_ci default NULL,
                      `num_order` varchar(255) collate utf8_unicode_ci default NULL,
+                     `num_bill` varchar(255) collate utf8_unicode_ci default NULL,
                      PRIMARY KEY  (`id`),
                      KEY `plugin_order_orders_id` (`plugin_order_orders_id`),
                      KEY `entities_id` (`entities_id`),

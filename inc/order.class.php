@@ -543,6 +543,9 @@ class PluginOrderOrder extends CommonDBTM {
       $canedit = ($this->canUpdateOrder() && $this->can($ID, 'w') && !$this->isCanceled());
       $options['canedit'] = $canedit;
       
+      if ($template) {
+         unset($this->fields['order_date']);
+      }
       // Displaying OVER BUDGET ALERT
       if( $this->fields['budgets_id'] > 0 ) {
             self::displayAlertOverBudget(self::isOverBudget($ID));
@@ -1085,7 +1088,8 @@ class PluginOrderOrder extends CommonDBTM {
    function showGenerationForm($ID) {
       global $LANG,$CFG_GLPI;
 
-      echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/export.php' method=\"POST\">";
+      echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/export.php?id=".$ID.
+          "&display_type=".PDF_OUTPUT_LANDSCAPE."' method=\"post\">";
       echo "<div align=\"center\"><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".$LANG['plugin_order']['generation'][1]."</th></tr>";
       
@@ -1836,6 +1840,7 @@ class PluginOrderOrder extends CommonDBTM {
             Crontask::Register(__CLASS__, 'computeLateOrders', HOUR_TIMESTAMP,
                                array('param' => 24, 'mode' => CronTask::MODE_EXTERNAL));
          }
+
          $migration->migrationOneTable($table);
 
          if ($migration->addField($table, "is_template",
