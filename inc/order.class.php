@@ -544,7 +544,7 @@ class PluginOrderOrder extends CommonDBTM {
       $cancancel = ($this->canCancel() && $this->can($ID, 'w') && $this->isCanceled());
       $options['canedit'] = $canedit;
       $options['candel']  = $cancancel;
-      if ($template == "newcomp") {
+      if ($template) {
          $this->fields['order_date'] = NULL;
       }
       // Displaying OVER BUDGET ALERT
