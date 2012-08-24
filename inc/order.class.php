@@ -540,10 +540,11 @@ class PluginOrderOrder extends CommonDBTM {
          //$date       = convDateTime($this->fields["date_mod"]);
          $template   = false;
       }
-      $canedit = ($this->canUpdateOrder() && $this->can($ID, 'w') && !$this->isCanceled());
+      $canedit   = ($this->canUpdateOrder() && $this->can($ID, 'w') && !$this->isCanceled());
+      $cancancel = ($this->canCancel() && $this->can($ID, 'w') && $this->isCanceled());
       $options['canedit'] = $canedit;
-      
-      if ($template) {
+      $options['candel']  = $cancancel;
+      if ($template == "newcomp") {
          $this->fields['order_date'] = NULL;
       }
       // Displaying OVER BUDGET ALERT
@@ -808,7 +809,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       echo "</tr>";
       
-      if ($canedit) {
+      if ($canedit || $cancancel) {
          $this->showFormButtons($options);
       } else {
          echo "</table></div></form>";
