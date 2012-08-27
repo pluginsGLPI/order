@@ -1178,7 +1178,7 @@ class PluginOrderOrder extends CommonDBTM {
                $town = $entdata->fields["town"];
                $odf->setVars('entity_town', $town,true,'UTF-8');
                $odf->setVars('entity_country', $entdata->fields["country"], true, 'UTF-8');
-               $odf->setVars('entity_ldapdn', $entdata->fields["ldap_dn"], true, 'UTF-8');
+               //$odf->setVars('entity_ldapdn', $entdata->fields["ldap_dn"], true, 'UTF-8');
             }
             
             $supplier = new Supplier();
