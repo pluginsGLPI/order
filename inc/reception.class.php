@@ -285,7 +285,7 @@ class PluginOrderReception extends CommonDBTM {
       $numref     = $DB->numrows($result_ref);
       
       while ($data_ref=$DB->fetch_array($result_ref)){
-         addToNavigateListItems($this->getType(), $data_ref['IDD']);
+         
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          if (!$numref) {
             echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
@@ -348,6 +348,7 @@ class PluginOrderReception extends CommonDBTM {
                              `glpi_plugin_order_references`.`id` AS id,
                              `glpi_plugin_order_references`.`templates_id`,
                              `glpi_plugin_order_orders_items`.`states_id`,
+                             `glpi_plugin_order_orders_items`.`comment`,
                              `glpi_plugin_order_orders_items`.`plugin_order_deliverystates_id`,
                              `glpi_plugin_order_orders_items`.`delivery_date`,
                              `glpi_plugin_order_orders_items`.`delivery_number`,
@@ -371,7 +372,7 @@ class PluginOrderReception extends CommonDBTM {
             while ($data=$DB->fetch_array($result)){
                $random   = mt_rand();
                $detailID = $data["IDD"];
-
+               addToNavigateListItems($this->getType(), $detailID);
                echo "<tr class='tab_bg_2'>";
                $status    = 1;
                if ($typeRef != 'SoftwareLicense') {
@@ -392,7 +393,9 @@ class PluginOrderReception extends CommonDBTM {
                   echo "<td width='15' align='left'></td>";
                }
                if ($typeRef != 'SoftwareLicense') {
-                  echo "<td align='center'>" . $data["IDD"] . "</td>";
+                  echo "<td align='center'>" . $data["IDD"]."&nbsp;";
+                  showTooltip($data['comment']);
+                  echo "</td>";
                }
                echo "<td align='center'>" . $reference->getReceptionReferenceLink($data) . "</td>";
                echo "<td align='center'>";

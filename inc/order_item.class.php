@@ -51,6 +51,14 @@ class PluginOrderOrder_Item extends CommonDBChild {
       return plugin_order_haveRight('order', 'r');
    }
 
+   function canUpdateItem() {
+      return true;
+   }
+
+   function canViewItem() {
+      return true;
+   }
+   
    static function getTypeName() {
       global $LANG;
 
@@ -358,10 +366,11 @@ class PluginOrderOrder_Item extends CommonDBChild {
       $rand                 = mt_rand();
       $canedit              = $order->can($plugin_order_orders_id, 'w')
                               && $order->canUpdateOrder();
-
+      initNavigateListItems($this->getType(),
+                            $LANG['plugin_order'][7] ." = ". $order->getName());
+      
       while ($data_ref = $DB->fetch_array($result_ref)){
          $global_rand = mt_rand();
-
          echo "<div class='center'>";
          echo "<form method='post' name='order_updatedetail_form$rand' " .
                   "id='order_updatedetail_form$rand'  " .
@@ -548,6 +557,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
             
             $query="SELECT `".$this->getTable()."`.`id` AS IDD, `glpi_plugin_order_references`.`id`,
                            `glpi_plugin_order_references`.`name`,
+                           `".$this->getTable()."`.`comment`,
                            `".$this->getTable()."`.`price_taxfree`,
                            `".$this->getTable()."`.`price_discounted`,
                            `".$this->getTable()."`.`discount`,
@@ -574,6 +584,8 @@ class PluginOrderOrder_Item extends CommonDBChild {
 
             while ($data=$DB->fetch_array($result)) {
                $rand_line = mt_rand();
+               addToNavigateListItems($this->getType(), $data['IDD']);
+               
                // Compute for detail_hideForm javascript function
                $hideForm.="Ext.get('detail_pricetaxfree$rand_line').setDisplayed('block');\n";
                $hideForm.="Ext.select('#detail_viewpricetaxfree$rand_line input').remove();\n";
@@ -593,7 +605,10 @@ class PluginOrderOrder_Item extends CommonDBChild {
                   echo "</td>";
                }
                if ($data_ref["itemtype"] != 'SoftwareLicense') {
-                  echo "<td align='center'>".$data["IDD"]."</td>";
+                  echo "<td align='center'><a href='".
+                     getItemTypeFormURL('PluginOrderOrder_Item')."?id=".$data['IDD']."'>".$data['IDD']."</a>";
+                     echo "&nbsp;";
+                     showToolTip($data['comment']);
                }
 
                /* reference */
@@ -846,7 +861,135 @@ class PluginOrderOrder_Item extends CommonDBChild {
        }
     }
 
+   function defineTabs($options=array()) {
+      global $LANG;
 
+      $ong[1]  = $LANG['title'][26];
+      $ong[12] = $LANG['title'][38];
+
+      return $ong;
+   }
+    
+   function showForm ($ID, $options=array()) {
+      global $LANG;
+
+      if (!$this->canView()) {
+         return false;
+      }
+
+      if ($ID > 0) {
+         $this->check($ID, 'r');
+      } else {
+         // Create item
+         $this->check(-1, 'w', $options);
+      }
+
+      $this->showTabs($options);
+      $this->showFormHeader($options);
+      
+      $order_order = new PluginOrderOrder();
+      $order_order->getFromDB($this->fields['plugin_order_orders_id']);
+
+      $order_reference = new PluginOrderReference();
+      $order_reference->getFromDB($this->fields["plugin_order_references_id"]);
+      
+      $canedit = $order_order->can($this->fields['plugin_order_orders_id'], 'w')
+                  && $order_order->canUpdateOrder()  && !$order_order->isCanceled();
+      
+      echo "<input type='hidden' name='plugin_order_orders_id' value='" .
+         $this->fields['plugin_order_orders_id'] . "'>";
+      
+      echo "<tr class='tab_bg_1'>";
+      
+      echo "<td>" . $LANG['plugin_order'][7] . ": </td>";
+      echo "<td>";
+      echo $order_order->getLink(true);
+      echo "</td>";
+      
+      echo "<td>" . $LANG['plugin_order']['detail'][2] . ": </td>";
+      echo "<td>";
+      $data         = array();
+      $data["id"]   = $this->fields["plugin_order_references_id"];
+      $data["name"] = $order_reference->fields["name"];
+      echo $order_reference->getReceptionReferenceLink($data);
+      echo "</td>";
+
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . $LANG['plugin_order']['detail'][4] . ": </td>";
+      if ($canedit) {
+         echo "<td><input type='text' name='price_taxfree' value='".$this->fields['price_taxfree']."'>";
+      } else {
+         echo "<td>".formatNumber($this->fields['price_taxfree'])."</td>";
+      }
+      
+      echo "<td>" . $LANG['plugin_order'][25] . ": </td>";
+      echo "<td>";
+      if ($canedit) {
+         Dropdown::show('PluginOrderOrderTaxe',
+                        array('value' => $this->fields['plugin_order_ordertaxes_id']));
+      } else {
+         echo Dropdown::getDropdownName('glpi_plugin_order_ordertaxes',
+                                         $this->fields['plugin_order_ordertaxes_id']);
+      }
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . $LANG['plugin_order']['detail'][25] . ": </td>";
+      if ($canedit) {
+         echo "<td><input type='text' name='discount' value='".$this->fields['discount']."'>";
+      } else {
+         echo "<td>".formatNumber($this->fields['discount'])."</td>";
+      }
+      
+      echo "<td>" . $LANG['plugin_order']['detail'][18] . ": </td>";
+      echo "<td>".formatNumber($this->fields['price_discounted'])."</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . $LANG['plugin_order'][14] . ": </td>";
+      echo "<td>".formatNumber($this->fields['price_ati'])."</td>";
+      
+      echo "<td>" . $LANG['joblist'][0] . ": </td>";
+      echo "<td>";
+      echo Dropdown::getDropdownName('glpi_plugin_order_deliverystates',
+                                      $this->fields['plugin_order_deliverystates_id']);
+      echo "</td>";
+      echo "</tr>";
+  
+      echo "<tr class='tab_bg_1'><td>";
+      //comments of order
+      echo $LANG['plugin_order'][2] . ":  </td>";
+      echo "<td colspan='3'>";
+      echo "<textarea cols='50' rows='4' name='comment'>" . $this->fields["comment"] .
+            "</textarea>";
+      echo "</td></tr>";
+      
+      $this->showFormButtons(array('canedit' => $canedit));
+      $this->addDivForTabs();
+
+      return true;
+   }
+   
+   function updatePrices($order_items_id) {
+      global $DB;
+      $this->getFromDB($order_items_id);
+      if (isset($this->input['price_taxfree'])
+         || isset($this->input['plugin_order_ordertaxes_id'])) {
+         $datas = $this->queryRef($this->fields['plugin_order_orders_id'],
+                                  $this->fields['plugin_order_references_id'],
+                                  $this->fields['price_taxfree'],
+                                  $this->fields['discount']);
+         while ($item=$DB->fetch_array($datas)){
+            $input = array( 'item_id'       => $item['id'],
+                            'price_taxfree'  => $this->fields['price_taxfree']);
+            $this->updatePrice_taxfree($input);
+         }
+      }
+   }
+   
    function showBillsItems(PluginOrderOrder $order) {
       global $DB, $CFG_GLPI, $LANG;
 
@@ -1037,84 +1180,81 @@ class PluginOrderOrder_Item extends CommonDBChild {
       echo "<br>";
    }
    
-      function dropdownBillItemsActions($orders_id) {
-         global $LANG, $CFG_GLPI;
-         $action['']      = DROPDOWN_EMPTY_VALUE;
-         $action['bill']  = $LANG['plugin_order']['bill'][0];
-         $rand            = Dropdown::showFromArray('chooseAction', $action);
+  function dropdownBillItemsActions($orders_id) {
+      global $LANG, $CFG_GLPI;
+      $action['']      = DROPDOWN_EMPTY_VALUE;
+      $action['bill']  = $LANG['plugin_order']['bill'][0];
+      $rand            = Dropdown::showFromArray('chooseAction', $action);
          
-         $params = array ('action' => '__VALUE__', 'plugin_order_orders_id' => $orders_id);
-         ajaxUpdateItemOnSelectEvent("dropdown_chooseAction$rand", "show_billsActions$rand",
-                                     $CFG_GLPI["root_doc"] . "/plugins/order/ajax/billactions.php",
-                                     $params);
-          echo "<span id='show_billsActions$rand'>&nbsp;</span>";
+      $params = array ('action' => '__VALUE__', 'plugin_order_orders_id' => $orders_id);
+      ajaxUpdateItemOnSelectEvent("dropdown_chooseAction$rand", "show_billsActions$rand",
+                                  $CFG_GLPI["root_doc"] . "/plugins/order/ajax/billactions.php",
+                                  $params);
+       echo "<span id='show_billsActions$rand'>&nbsp;</span>";
          
-      }
+   }
       
-      function updateQuantity($post) {
-         global $DB;
+   function updateQuantity($post) {
+      global $DB;
+      $quantity = $this->getTotalQuantityByRefAndDiscount($post['plugin_order_orders_id'],
+                                                          $post['old_plugin_order_references_id'],
+                                                          $post['old_price_taxfree'],
+                                                          $post['old_discount']);
 
-         $quantity = $this->getTotalQuantityByRefAndDiscount($post['plugin_order_orders_id'],
-                                                             $post['old_plugin_order_references_id'],
-                                                             $post['old_price_taxfree'],
-                                                             $post['old_discount']);
+      if($post['quantity'] > $quantity) {
 
-         if($post['quantity'] > $quantity) {
-				$datas = $this->queryRef(	$post['plugin_order_orders_id'],
-													$post['old_plugin_order_references_id'],
-													$post['old_price_taxfree'],
-													$post['old_discount']);
+         $datas = $this->queryRef($post['plugin_order_orders_id'],
+                                  $post['old_plugin_order_references_id'],
+                                  $post['old_price_taxfree'],
+                                  $post['old_discount']);
+         $item = $DB->fetch_array($datas);
 
-				$item = $DB->fetch_array($datas);
-
-            $this->getFromDB($item['id']);
-            $to_add  = $post['quantity'] - $quantity;
-
-            $this->addDetails($this->fields['plugin_order_references_id'],
-                              $this->fields['itemtype'],
-                              $this->fields['plugin_order_orders_id'],
-                              $to_add,
-                              $this->fields['price_taxfree'],
-                              $this->fields['discount'],
-                              $this->fields['plugin_order_ordertaxes_id']);
-         }
-         
+         $this->getFromDB($item['id']);
+         $to_add  = $post['quantity'] - $quantity;
+         $this->addDetails($this->fields['plugin_order_references_id'],
+                           $this->fields['itemtype'],
+                           $this->fields['plugin_order_orders_id'],
+                           $to_add,
+                           $this->fields['price_taxfree'],
+                           $this->fields['discount'],
+                           $this->fields['plugin_order_ordertaxes_id']);
       }
+   }
       
-      function updatePrice_taxfree($post) {
-         global $DB;
+   function updatePrice_taxfree($post) {
+      global $DB;
 
-         $this->getFromDB($post['item_id']);
-         
-         $input = $this->fields;
-         $discount                     = $input['discount'];
-         $plugin_order_ordertaxes_id   = $input['plugin_order_ordertaxes_id'];
-
-         $input["price_taxfree"]       = $post['price_taxfree'];
-         $input["price_discounted"]    = $input["price_taxfree"] - ($input["price_taxfree"] * ($discount / 100));
-
-         $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $plugin_order_ordertaxes_id);
-         $input["price_ati"]  = $this->getPricesATI($input["price_discounted"], $taxe_name);
-         $this->update($input);
-      }
+      $this->getFromDB($post['item_id']);
       
-      function updateDiscount($post) {
-         global $DB;
+      $input = $this->fields;
+      $discount                     = $input['discount'];
+      $plugin_order_ordertaxes_id   = $input['plugin_order_ordertaxes_id'];
+
+      $input["price_taxfree"]       = $post['price_taxfree'];
+      $input["price_discounted"]    = $input["price_taxfree"] - ($input["price_taxfree"] * ($discount / 100));
+
+      $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $plugin_order_ordertaxes_id);
+      $input["price_ati"]  = $this->getPricesATI($input["price_discounted"], $taxe_name);
+      $this->update($input);
+   }
+      
+   function updateDiscount($post) {
+      global $DB;
          
-         $this->getFromDB($post['item_id']);
+      $this->getFromDB($post['item_id']);
 
-         $input                        = $this->fields;
-         $plugin_order_ordertaxes_id   = $input['plugin_order_ordertaxes_id'];
+      $input                        = $this->fields;
+      $plugin_order_ordertaxes_id   = $input['plugin_order_ordertaxes_id'];
 
-         $input["discount"]            = $post['discount'];
-         $input["price_discounted"]    = $post['price'] - ($post['price'] * ($post['discount'] / 100));
+      $input["discount"]            = $post['discount'];
+      $input["price_discounted"]    = $post['price'] - ($post['price'] * ($post['discount'] / 100));
 
-         $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $plugin_order_ordertaxes_id);
-         $input["price_ati"]  = $this->getPricesATI($input["price_discounted"], $taxe_name);
-         $this->update($input);
-      }
+      $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $plugin_order_ordertaxes_id);
+      $input["price_ati"]  = $this->getPricesATI($input["price_discounted"], $taxe_name);
+      $this->update($input);
+   }
 
-      static function install(Migration $migration) {
+   static function install(Migration $migration) {
       global $DB;
       $table = getTableForItemType(__CLASS__);
       
@@ -1142,6 +1282,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                `delivery_date` date default NULL,
                `plugin_order_bills_id` INT( 11 ) NOT NULL DEFAULT '0',
                `plugin_order_billstates_id` INT( 11 ) NOT NULL DEFAULT '0',
+               `comment` text collate utf8_unicode_ci,
                PRIMARY KEY  (`id`),
                KEY `FK_device` (`items_id`,`itemtype`),
                KEY `entities_id` (`entities_id`),
@@ -1212,6 +1353,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
          $migration->addKey($table, "entities_id");
          $migration->addKey($table, "plugin_order_bills_id");
          $migration->addKey($table, "plugin_order_billstates_id");
+         $migration->addField($table, "comment", "text collate utf8_unicode_ci");
          $migration->migrationOneTable($table);
 
          $fields = $DB->list_fields($table);
