@@ -571,7 +571,6 @@ class PluginOrderLink extends CommonDBChild {
                }
             }
          }
-         $fields['id']              = $infocomID;
          $fields["entities_id"]     = $entity;
          $fields["itemtype"]        = $itemtype;
          $fields["items_id"]        = $items_id;
@@ -595,6 +594,7 @@ class PluginOrderLink extends CommonDBChild {
          }
          $fields['_no_warning'] = true;
          if ($infocomID) {
+            $fields['id']              = $infocomID;
             $ic->update($fields);
          } else {
             $ic->add($fields);
@@ -846,7 +846,7 @@ class PluginOrderLink extends CommonDBChild {
                $input["name"] = $values["name"];
             }
             
-            if ($item->getField('otherserial')) {
+            if ($item->getField('otherserial') != NOT_AVAILABLE) {
                if ($item->fields['otherserial']) {
                   $input["otherserial"] = autoName($item->fields["otherserial"], "otherserial",
                                                    $templateID, $values["itemtype"], $entity);
