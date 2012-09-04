@@ -878,7 +878,7 @@ class PluginOrderLink extends CommonDBChild {
             $input[$modelfield]        = $reference->fields["models_id"];
                
          }
-
+         $input = addslashes_deep($input);
          $newID = $item->add($input);
 
          // Attach new ticket if option is on
