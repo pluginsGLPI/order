@@ -893,9 +893,11 @@ class PluginOrderOrder_Item extends CommonDBChild {
       $order_reference = new PluginOrderReference();
       $order_reference->getFromDB($this->fields["plugin_order_references_id"]);
       
-      $canedit = $order_order->can($this->fields['plugin_order_orders_id'], 'w')
-                  && $order_order->canUpdateOrder()  && !$order_order->isCanceled();
-      
+      $canedit        = $order_order->can($this->fields['plugin_order_orders_id'], 'w')
+                          && $order_order->canUpdateOrder()  && !$order_order->isCanceled();
+      $canedit_comment = $order_order->can($this->fields['plugin_order_orders_id'], 'w')
+                          && !$order_order->isCanceled();
+                  
       echo "<input type='hidden' name='plugin_order_orders_id' value='" .
          $this->fields['plugin_order_orders_id'] . "'>";
       
@@ -963,11 +965,16 @@ class PluginOrderOrder_Item extends CommonDBChild {
       //comments of order
       echo $LANG['plugin_order'][2] . ":  </td>";
       echo "<td colspan='3'>";
-      echo "<textarea cols='50' rows='4' name='comment'>" . $this->fields["comment"] .
-            "</textarea>";
+      if ($canedit_comment) {
+         echo "<textarea cols='50' rows='4' name='comment'>" . $this->fields["comment"] .
+               "</textarea>";
+      } else {
+         echo $this->fields['comment'];
+      }
       echo "</td></tr>";
       
-      $this->showFormButtons(array('canedit' => $canedit));
+      $this->showFormButtons(array('canedit' => ($canedit || $canedit_comment),
+                                    'candel' => $canedit));
       $this->addDivForTabs();
 
       return true;
