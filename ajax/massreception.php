@@ -33,13 +33,13 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-checkLoginUser();
+Session::checkLoginUser();
 
 $PluginOrderReception = new PluginOrderReception();
 
 echo "<table width='950px' class='tab_cadre_fixe'>";
 echo "<tr class='tab_bg_2'><td>".$LANG['plugin_order']['detail'][21]."</td><td>";
-showDateFormItem("delivery_date",date("Y-m-d"),true,1);
+Html::showDateFormItem("delivery_date",date("Y-m-d"),true,1);
 echo "</td><td>";
 echo $LANG['financial'][19]."</td><td>";
 echo "<input type='text' name='delivery_number' size='20'>";
@@ -60,6 +60,6 @@ echo "</td>";
 echo "<td><input type='submit' name='bulk_reception' class='submit' value='".
    $LANG['buttons'][2]."'></td></tr></table>";
 
-ajaxFooter();
+Html::ajaxFooter();
 
 ?>
