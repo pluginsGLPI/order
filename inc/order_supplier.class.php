@@ -195,9 +195,10 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       $candelete = $order->can($ID,'w');
       $rand      = mt_rand();
       
-      echo "<div class='center'>";
+      
       echo "<form method='post' name='show_supplierinfos$rand' id='show_supplierinfos$rand' " .
             "action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\">";
+      echo "<div class='center'>";
       echo "<input type='hidden' name='plugin_order_orders_id' value='" . $ID . "'>";
       
       if (countElementsInTable($this->getTable(), "`plugin_order_orders_id` = '$ID'") > 0) {
@@ -233,17 +234,15 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
             echo "</td>";
             echo "</tr>";
          }
-         echo "</table>";
+         echo "</table></div>";
 
          if ($candelete) {
-            Html::openArrowMassives('show_supplierinfos$rand');
+            Html::openArrowMassives("show_supplierinfos$rand", true);
             Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
-            //echo "</div>";
          }
-         echo "</table>";
+
       }
       Html::closeForm();
-      echo "</div>";
    }
    
    function checkIfSupplierInfosExists($plugin_order_orders_id) {

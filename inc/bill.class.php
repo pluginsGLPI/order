@@ -233,7 +233,7 @@ class PluginOrderBill extends CommonDropdown {
             }
             $item = new $data['itemtype']();
             if ($item->canView()) {
-               echo "<tr>";
+               echo "<tr class='tab_bg_1'>";
 
                $ID = "";
                if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {

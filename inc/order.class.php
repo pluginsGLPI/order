@@ -1099,13 +1099,13 @@ class PluginOrderOrder extends CommonDBTM {
       if (PluginOrderPreference::atLeastOneTemplateExists()) {
          if ($this->getState() > PluginOrderOrderState::DRAFT) {
             $template = PluginOrderPreference::checkPreferenceTemplateValue(Session::getLoginUserID());
-            echo "<tr>";
+            echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['plugin_order']['parser'][1]."</td>";
             echo "<td>";
             PluginOrderPreference::dropdownFileTemplates($template);
             echo "</td></tr>";
             if (PluginOrderPreference::atLeastOneSignatureExists()) {
-               echo "<tr>";
+               echo "<tr class='tab_bg_1'>";
                $signature = PluginOrderPreference::checkPreferenceSignatureValue(Session::getLoginUserID());
                echo "<td class='center'>".$LANG['plugin_order']['parser'][3]."</td>";
                echo "<td class='center' >";
@@ -1114,7 +1114,7 @@ class PluginOrderOrder extends CommonDBTM {
             } else {
                echo "<input type='hidden' name='sign' value='0'>";
             }
-            echo "<tr>";
+            echo "<tr class='tab_bg_1'>";
             echo "<td class='center' colspan='2'>";
             echo "<input type='hidden' name='id' value='$ID'>";
             echo "<input type='submit' value=\"".$LANG['plugin_order']['generation'][1].
@@ -1124,7 +1124,7 @@ class PluginOrderOrder extends CommonDBTM {
             
          }
       } else {
-         echo "<tr>";
+         echo "<tr class='tab_bg_1'>";
          echo "<td class='center'>";
          echo "<a href='".$CFG_GLPI['root_doc']."/front/preference.php?forcetab=order_1'>";
          echo $LANG['plugin_order']['parser'][4]."</a></td></tr>";
