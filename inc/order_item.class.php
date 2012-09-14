@@ -1409,17 +1409,37 @@ class PluginOrderOrder_Item extends CommonDBChild {
       $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
       
    }
+   
+   static function countForOrder(PluginOrderOrder $item) {
+
+      return countElementsInTable('glpi_plugin_order_orders_items',
+                                  "`plugin_order_orders_id` = '".$item->getID()."'");
+   }
+
+
+   static function countForItem(CommonDBTM $item) {
+
+      return countElementsInTable('glpi_plugin_order_orders_items',
+                                  "`itemtype`='".$item->getType()."'
+                                   AND `items_id` = '".$item->getID()."'");
+   }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
       if (in_array(get_class($item), PluginOrderOrder_Item::getClasses(true))) {
          if ($item->getField('id') && !$withtemplate) {
-            // Non template case
-            return array(1 => $LANG['plugin_order']['menu'][4]);
+            
+            if ($_SESSION['glpishow_count_on_tabs']) {
+               return self::createTabEntry($LANG['plugin_order']['menu'][4], self::countForItem($item));
+            }
+            return $LANG['plugin_order']['menu'][4];
          }
       } elseif (get_class($item) == 'PluginOrderOrder') {
-         return array(1 => $LANG['title'][26]);
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry($LANG['plugin_order'][7], self::countForOrder($item));
+         }
+         return $LANG['plugin_order'][7];
       }
       return '';
    }
@@ -1432,6 +1452,10 @@ class PluginOrderOrder_Item extends CommonDBChild {
       } elseif(get_class($item) == 'PluginOrderOrder') {
          $order_item = new self();
          $order_item->showItem($item->getID());
+      } else if (in_array($item->getType(), PluginOrderOrder_Item::getClasses(true))) {
+         $order_item = new self();
+         $order_item->showPluginFromItems(get_class($item), $item->getField('id'));
+
       }
       return true;
    }
