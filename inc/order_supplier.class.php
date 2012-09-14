@@ -88,9 +88,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    }
    
    function defineTabs($options=array()) {
-      global $LANG;
-      $ong[1]  = $LANG['title'][26];
-      $ong[12] = $LANG['title'][38];
+
+      $this->addStandardTab('PluginOrderOrder_Supplier',$ong,$options);
 
       return $ong;
    }
@@ -139,7 +138,10 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          $this->check(-1, 'w', $input);
          $this->getFromDBByOrder($plugin_order_orders_id);
       }
-
+      
+      if (strpos($_SERVER['PHP_SELF'],"order_supplier")) {
+         $this->showTabs($options);
+      }
       $this->showFormHeader($options);
       $PluginOrderOrder = new PluginOrderOrder();
       $PluginOrderOrder->getFromDB($plugin_order_orders_id);
