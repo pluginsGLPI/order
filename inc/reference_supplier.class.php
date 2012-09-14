@@ -119,7 +119,6 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       global $LANG;
       $ong = array();
       $this->addStandardTab('Document',$ong,$options);
-      $this->addStandardTab('Note',$ong,$options);
       $this->addStandardTab('Log',$ong,$options);
       return $ong;
    }
