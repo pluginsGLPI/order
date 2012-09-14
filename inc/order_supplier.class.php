@@ -193,7 +193,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
                             $LANG['plugin_order'][7] ." = ". $order->fields["name"]);
 
       $candelete = $order->can($ID,'w');
-      $rand=mt_rand();
+      $rand      = mt_rand();
       
       echo "<div class='center'>";
       echo "<form method='post' name='show_supplierinfos$rand' id='show_supplierinfos$rand' " .
@@ -239,19 +239,11 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          echo "</table>";
 
          if ($candelete) {
-            echo "<div class='center'>";
-            echo "<table width='900px' class='tab_glpi'>";
-            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('show_supplierinfos$rand') ) return false;\" href='#'>".$LANG['buttons'][18]."</a></td>";
-
-            echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('show_supplierinfos$rand') ) return false;\" href='#'>".$LANG['buttons'][19]."</a>";
-            echo "</td><td align='left' width='80%'>";
-            echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit' >";
-            echo "</td>";
-            echo "</table>";
+            Html::openArrowMassives('show_supplierinfos$rand');
+            Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
             echo "</div>";
          }
          echo "</table>";
-
       }
       else
 
@@ -425,7 +417,11 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          $surveysupplier->showGlobalNotation($item->getField('id'));
       } elseif (get_class($item) == 'PluginOrderOrder') {
          $order_supplier = new self();
-         $order_supplier->showForm($item->getID());
+         $order_supplier->showOrderSupplierInfos($item->getID());
+         if (!$order_supplier->checkIfSupplierInfosExists($item->getID())
+            && $item->can($item->getID(),'w')) {
+            $order_supplier->showForm("", array('plugin_order_orders_id' => $item->getID()));
+         }
       }
       return true;
    }
