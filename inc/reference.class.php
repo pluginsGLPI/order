@@ -272,7 +272,7 @@ class PluginOrderReference extends CommonDropdown {
     * @param $ID
     * @param $field array
    **/
-   /*
+   
    function displaySpecificTypeField($ID, $field=array()) {
       global $CFG_GLPI;
       
@@ -349,8 +349,8 @@ class PluginOrderReference extends CommonDropdown {
             break;
 
       }
-   }*/
-
+   }
+/*
    /**
     * Display more tabs
     *
