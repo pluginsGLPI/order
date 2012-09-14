@@ -128,7 +128,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       if (get_class($item) == __CLASS__) {
          return array (1 => $LANG['title'][26]);
       } elseif (get_class($item) == 'PluginOrderReference') {
-         return array(1 => $LANG['plugin_order'][11]);
+         return array(1 => $LANG['plugin_order'][4]);
       }
       return '';
    }
