@@ -200,7 +200,6 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
             "action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\">";
       echo "<input type='hidden' name='plugin_order_orders_id' value='" . $ID . "'>";
       
-
       if (countElementsInTable($this->getTable(), "`plugin_order_orders_id` = '$ID'") > 0) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='4'>".$LANG['plugin_order'][4]."</th></tr>";
@@ -210,8 +209,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          echo "<th>" . $LANG['plugin_order'][31] . "</th>";
          echo "</tr>";
 
-         foreach (getAllDatasFromTable($this->getTable(), "`plugin_order_orders_id` = '$ID'")
-            as $data) {
+         foreach (getAllDatasFromTable($this->getTable(), "`plugin_order_orders_id` = '$ID'") as $data) {
             Session::addToNavigateListItems($this->getType(),$data['id']);
             echo "<input type='hidden' name='item[" . $data["id"] . "]' value='" . $ID . "'>";
             echo "<tr class='tab_bg_1 center'>";
@@ -220,7 +218,6 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
                echo "<input type='checkbox' name='check[" . $data["id"] . "]'";
                if (isset($_POST['check']) && $_POST['check'] == 'all') {
                   echo " checked ";
-
                }
                echo ">";
             }
@@ -241,13 +238,11 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          if ($candelete) {
             Html::openArrowMassives('show_supplierinfos$rand');
             Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
-            echo "</div>";
+            //echo "</div>";
          }
          echo "</table>";
       }
-      else
-
-     Html::closeForm();
+      Html::closeForm();
       echo "</div>";
    }
    
