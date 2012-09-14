@@ -188,7 +188,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    function showOrderSupplierInfos($ID) {
       global $LANG, $DB, $CFG_GLPI;
 
-      $order = new PluginOrderOrder;
+      $order = new PluginOrderOrder();
       $order->getFromDB($ID);
 
       Session::initNavigateListItems($this->getType(),
@@ -416,6 +416,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          $order_supplier->showOrderSupplierInfos($item->getID());
          if (!$order_supplier->checkIfSupplierInfosExists($item->getID())
             && $item->can($item->getID(),'w')) {
+            $order_supplier->showOrderSupplierInfos($item->getID());
             $order_supplier->showForm("", array('plugin_order_orders_id' => $item->getID()));
          }
       }

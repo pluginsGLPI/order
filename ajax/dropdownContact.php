@@ -48,7 +48,7 @@ $where=" WHERE `glpi_contacts_suppliers`.`contacts_id` = `glpi_contacts`.`id` " 
 
 if (isset($_POST["entity_restrict"])) {
    if (!is_numeric($_POST["entity_restrict"]) && !is_array($_POST["entity_restrict"])) {
-      $_POST["entity_restrict"] = unserialize(Toolbox::stripslashes($_POST["entity_restrict"]));
+      $_POST["entity_restrict"] = unserialize(Toolbox::stripslashes_deep($_POST["entity_restrict"]));
    }
    $where.=getEntitiesRestrictRequest("AND","glpi_contacts",'',$_POST["entity_restrict"],true);
 } else {

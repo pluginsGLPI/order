@@ -123,13 +123,13 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
 
       // ordercomment
       $this->datas['##lang.reception.ordercomment##'] = $LANG['common'][25];
-      $comment = Toolbox::stripslashes(str_replace(array('\r\n', '\n', '\r'),
+      $comment = Toolbox::stripslashes_deep(str_replace(array('\r\n', '\n', '\r'),
                                  "<br/>", $order->getField('comment')));
       $this->datas['##reception.ordercomment##'] = nl2br($comment);
 
       // ordernote
       $this->datas['##lang.reception.ordernote##'] = $LANG['title'][37];
-      $notepad = Toolbox::stripslashes(str_replace(array('\r\n', '\n', '\r'),
+      $notepad = Toolbox::stripslashes_deep(str_replace(array('\r\n', '\n', '\r'),
                                  "<br/>", $order->getField('notepad')));
       $this->datas['##reception.ordernote##'] = nl2br($notepad);
 
@@ -211,13 +211,13 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
       
       // deliveryreference_comment
       $this->datas['##lang.reception.deliveryreference_comment##'] = $LANG['common'][25];
-      $comment = Toolbox::stripslashes(str_replace(array('\r\n', '\n', '\r'),
+      $comment = Toolbox::stripslashes_deep(str_replace(array('\r\n', '\n', '\r'),
                                  "<br/>", $reference->getField('comment')));
       $this->datas['##reception.deliveryreference_comment##'] = nl2br($comment);
       
       // deliveryreference_note
       $this->datas['##lang.reception.deliveryreference_note##'] = $LANG['title'][37];
-      $notepad = Toolbox::stripslashes(str_replace(array('\r\n', '\n', '\r'),
+      $notepad = Toolbox::stripslashes_deep(str_replace(array('\r\n', '\n', '\r'),
                                  "<br/>", $reference->getField('notepad')));
       $this->datas['##reception.deliveryreference_note##'] = nl2br($notepad);
 
