@@ -97,7 +97,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                                                          $this->obj->getField("plugin_order_orderstates_id"));
          
          $this->datas['##lang.ordervalidation.comment##'] = $LANG['plugin_order']['validation'][18];
-         $comment = Toolbox::stripslashes(str_replace(array('\r\n', '\n', '\r'), "<br/>", $options['comments']));
+         $comment = Toolbox::stripslashes_deep(str_replace(array('\r\n', '\n', '\r'), "<br/>", $options['comments']));
          $this->datas['##ordervalidation.comment##'] = nl2br($comment);
          
          switch ($event) {

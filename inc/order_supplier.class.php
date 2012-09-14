@@ -423,6 +423,9 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          $reference->showReferencesFromSupplier($item->getField('id'));
          $order_supplier->showDeliveries($item->getField('id'));
          $surveysupplier->showGlobalNotation($item->getField('id'));
+      } elseif (get_class($item) == 'PluginOrderOrder') {
+         $order_supplier = new self();
+         $order_supplier->showForm($item->getID());
       }
       return true;
    }
