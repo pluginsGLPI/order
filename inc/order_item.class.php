@@ -856,7 +856,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
          echo "</td></tr>";
          echo "<tr align='center'><td class='tab_bg_2'>" .
             $LANG['plugin_order']['detail'][21] . "</td>";
-         echo "<td class='tab_bg_2'>" . convDate($infos["order_date"]) . "</td></tr>";
+         echo "<td class='tab_bg_2'>" . convDate($infos["delivery_date"]) . "</td></tr>";
          echo "</table></div>";
        }
     }
