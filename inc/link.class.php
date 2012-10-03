@@ -338,6 +338,7 @@ class PluginOrderLink extends CommonDBChild {
 
             }
             echo "</table>";
+            echo "</div>";
             if ($canedit & $canuse) {
                openArrowMassive("order_generation_form$rand", true);
                echo "<input type='hidden' name='plugin_order_orders_id' value='$plugin_order_orders_id'>";

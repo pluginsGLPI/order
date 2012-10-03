@@ -34,23 +34,29 @@ if (!defined('GLPI_ROOT')){
 // Class NotificationTarget
 class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
+   const AUTHOR         = 30;
+   const AUTHOR_GROUP   = 31;
+   const DELIVERY_USER  = 32;
+   const DELIVERY_GROUP = 33;
+   
    function getEvents() {
       global $LANG;
-      return array ('ask'            => $LANG['plugin_order']['validation'][1],
+      return array ('ask'          => $LANG['plugin_order']['validation'][1],
                     'validation'     => $LANG['plugin_order']['validation'][2],
                     'cancel'         => $LANG['plugin_order']['validation'][5],
                     'undovalidation' => $LANG['plugin_order']['validation'][8],
-                    'duedate'        => $LANG['plugin_order'][55]);
+                    'duedate'        => $LANG['plugin_order'][55],
+                    'delivered'      => $LANG['plugin_order']['delivery'][17]);
    }
 
    function getDatasForTemplate($event,$options=array()) {
       global $LANG, $CFG_GLPI;
       
       $events = $this->getAllEvents();
+      $this->datas['##order.action##'] = $events[$event];
       if ($event == 'duedate') {
          $this->datas['##order.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                       $options['entities_id']);
-         $this->datas['##order.action##']            = $events[$event];
          
          foreach ($options['orders'] as $id => $order) {
             $tmp = array();
@@ -117,8 +123,14 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                $this->datas['##lang.ordervalidation.users##'] = $LANG['plugin_order']['validation'][16] .
                                                             " " . $LANG['plugin_order']['mailing'][2];
                break;
+            case "delivered" :
+               $this->datas['##lang.ordervalidation.users##'] = $LANG['plugin_order']['delivery'][17];
+               break;
          }
          $this->datas['##ordervalidation.users##'] =  html_clean(getUserName(getLoginUserID()));
+         
+         $this->datas['##order.author.name##']       =  html_clean(getUserName($this->obj->getField('users_id')));
+         $this->datas['##order.deliveryuser.name##'] =  html_clean(getUserName($this->obj->getField('users_id_delivery')));
          
          $this->datas['##lang.ordervalidation.url##'] = "URL";
          $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_order_".$this->obj->getField("id");
@@ -143,12 +155,19 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                     'order.item.orderdate'        => $LANG['plugin_order'][1],
                     'order.item.duedate'          => $LANG['plugin_order'][50],
                     'order.item.deliverydate'     => $LANG['plugin_order'][53],
-                    'order.item.comment'          => $LANG['common'][25]);
+                    'order.item.comment'          => $LANG['common'][25],
+                    'order.author.name'           => $LANG['plugin_order'][56],
+                    'order.author.phone'          => $LANG['plugin_order'][56].' - '.$LANG['help'][35],
+                    'order.deliveryuser.name'     => $LANG['plugin_order'][58],
+                    'order.deliveryuser.phone'    => $LANG['plugin_order'][58].' - '.$LANG['help'][35]);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag' => $tag, 'label' => $label, 'value' => true));
       }
-
+      
+      $this->addTagToList(array('tag' => 'order.action', 'label' => $LANG['rulesengine'][30],
+                                'value' => false));
+      
      $this->addTagToList(array('tag'     => 'orders',
                                 'label'   => $LANG['plugin_order'][55],
                                 'value'   => false,
@@ -244,9 +263,10 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       if ($templates_id) {
          $translation = new NotificationTemplateTranslation();
          if (!countElementsInTable($translation->getTable(), "`notificationtemplates_id`='$templates_id'")) {
+            $tmp                 = array();
             $tmp['notificationtemplates_id'] = $templates_id;
-            $tmp['language'] = '';
-            $tmp['subject'] = '##order.action## ##order.entity##';
+            $tmp['language']     = '';
+            $tmp['subject']      = '##order.action## ##order.entity##';
             $tmp['content_text'] = '##lang.order.entity## : ##order.entity##\n' .
                                    ' \n##FOREACHorders##\n' .
                                    '##lang.order.item.name## : ##order.item.name##\n ' .
@@ -280,6 +300,59 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
             }
          }
       }
+         
+      $template     = new NotificationTemplate();
+      $templates_id = false;
+      $query_id     = "SELECT `id`
+                       FROM `glpi_notificationtemplates`
+                       WHERE `itemtype`='PluginOrderOrder'
+                          AND `name` = 'Order Delivered'";
+      $result       = $DB->query($query_id) or die ($DB->error());
+      if ($DB->numrows($result) > 0) {
+         $templates_id = $DB->result($result, 0, 'id');
+         
+      } else {
+         $tmp = array('name' => 'Order Delivered', 'itemtype' => 'PluginOrderOrder',
+                      'date_mod' => $_SESSION['glpi_currenttime'], 'comment' => '',  'css' => '');
+         $templates_id = $template->add($tmp);
+      }
+      
+      if ($templates_id) {
+         $translation = new NotificationTemplateTranslation();
+         if (!countElementsInTable($translation->getTable(), "`notificationtemplates_id`='$templates_id'")) {
+            $tmp['notificationtemplates_id'] = $templates_id;
+            $tmp['language'] = '';
+            $tmp['subject'] = '##order.action##
+                ##lang.ordervalidation.name## :
+                ##ordervalidation.name##
+                ##lang.ordervalidation.orderdate## :
+                ##ordervalidation.orderdate##
+                 
+                ##lang.ordervalidation.entity## :
+                ##ordervalidation.entity##';
+            $tmp['content_html'] = '&lt;p&gt;##order.action## &lt;br /&gt;&lt;br /&gt;&#160;
+                ##lang.ordervalidation.name## : &lt;br /&gt;&#160;
+                ##ordervalidation.name## &lt;br /&gt;&#160;
+                ##lang.ordervalidation.orderdate## : &lt;br /&gt;&#160;
+                ##ordervalidation.orderdate## &lt;br /&gt;&#160; &lt;br /&gt;&#160;
+                ##lang.ordervalidation.entity## : &lt;br /&gt;&#160;##ordervalidation.entity##&lt;/p&gt;';
+            $translation->add($tmp);
+         }
+      }
+      
+      $notifs = array('Order Delivered' => 'delivered');
+      $notification = new Notification();
+      foreach ($notifs as $label => $name) {
+         if (!countElementsInTable("glpi_notifications", "`itemtype`='PluginOrderOrder' " .
+                                      "AND `event`='$name'")) {
+            $tmp = array('name' => $label, 'entities_id' => 0, 'itemtype' => 'PluginOrderOrder',
+                         'event' => $name, 'mode' => 'mail', 'comment' => '',
+                         'is_recursive' => 1, 'is_active' => 1,
+                         'date_mod' => $_SESSION['glpi_currenttime'],
+                         'notificationtemplates_id' => $templates_id);
+             $notification->add($tmp);
+         }
+      }
    }
    
    static function uninstall() {
@@ -287,7 +360,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
       $notif = new Notification();
 
-      foreach (array('ask', 'validation', 'cancel', 'undovalidation', 'duedate') as $event) {
+      foreach (array('ask', 'validation', 'cancel', 'undovalidation', 'duedate', 'delivered') as $event) {
          $options = array('itemtype' => 'PluginOrderOrder',
                           'event'    => $event,
                           'FIELDS'   => 'id');
@@ -309,6 +382,34 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          $template->delete($data);
       }
       
+   }
+
+   /**
+    * Get additionnals targets for Tickets
+   **/
+   function getAdditionalTargets($event='') {
+      global $LANG;
+      $this->addTarget(self::AUTHOR, $LANG['plugin_order'][56]);
+      $this->addTarget(self::AUTHOR_GROUP, $LANG['plugin_order'][57]);
+      $this->addTarget(self::DELIVERY_USER, $LANG['plugin_order'][58]);
+      $this->addTarget(self::DELIVERY_GROUP, $LANG['plugin_order'][59]);
+  }
+
+   function getSpecificTargets($data, $options) {
+      switch ($data['items_id']) {
+         case self::AUTHOR:
+            $this->getUserByField ("users_id");
+            break;
+         case self::DELIVERY_USER:
+            $this->getUserByField ("users_id_delivery");
+            break;
+         case self::AUTHOR_GROUP:
+            $this->getUsersAddressesByGroup($this->obj->fields['groups_id']);
+            break;
+         case self::DELIVERY_GROUP:
+            $this->getUsersAddressesByGroup($this->obj->fields['groups_id_delivery']);
+            break;
+      }
    }
 }
 

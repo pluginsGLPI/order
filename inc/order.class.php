@@ -358,6 +358,26 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[17]['displaytype']  = 'text';
       $tab[17]['injectable']   = true;
 
+      $tab[24]['table']     = 'glpi_users';
+      $tab[24]['field']     = 'name';
+      $tab[24]['linkfield'] = 'users_id';
+      $tab[24]['name']      = $LANG['plugin_order'][56];
+
+      $tab[25]['table']     = 'glpi_users';
+      $tab[25]['field']     = 'name';
+      $tab[25]['linkfield'] = 'users_id_delivery';
+      $tab[25]['name']      = $LANG['plugin_order'][58];
+
+      $tab[26]['table']     = 'glpi_groups';
+      $tab[26]['field']     = 'name';
+      $tab[26]['linkfield'] = 'groups_id';
+      $tab[26]['name']      = $LANG['plugin_order'][57];
+
+      $tab[27]['table']     = 'glpi_groups';
+      $tab[27]['field']     = 'name';
+      $tab[27]['linkfield'] = 'groups_id_delivery';
+      $tab[27]['name']      = $LANG['plugin_order'][59];
+      
       /* id */
       $tab[30]['table']       = $this->getTable();
       $tab[30]['field']       = 'id';
@@ -407,9 +427,8 @@ class PluginOrderOrder extends CommonDBTM {
         $ong[4] = $LANG['plugin_order']['generation'][0];
       
      }
-      
       //Display suppliers related informations
-      if (haveRight("supplier", 'r')
+      if (haveRight("contact_enterprise", 'r')
          && $config->canUseSupplierInformations() && $this->fields['suppliers_id']) {
          $ong[3] = $LANG['plugin_order'][4];
       }
@@ -762,6 +781,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'><td>";
+      
       //comments of order
       echo $LANG['plugin_order'][2] . ":  </td>";
       echo "<td>";
@@ -809,6 +829,53 @@ class PluginOrderOrder extends CommonDBTM {
 
       echo "</tr>";
       
+      echo "<tr class='tab_bg_1'><td>".$LANG['plugin_order'][56]."</td><td>";
+      if ($canedit) {
+         if ($this->isNewID($this->getID())) {
+            $value = getLoginUserID();
+         } else {
+            $value = $this->fields['users_id'];
+         }
+      User::dropdown(array('name'   => $value,
+                           'value'  => $this->fields["users_id"],
+                           'right'  => 'interface',
+                           'entity' => $this->fields["entities_id"]));
+               } else {
+         echo Dropdown::getDropdownName('glpi_users', $this->fields['users_id']);
+      }
+      echo "</td>";
+      echo "<td>".$LANG['plugin_order'][57]."</td><td>";
+      if ($canedit) {
+         Dropdown::show('Group', array('value' => $this->fields['groups_id']));
+      } else {
+         echo Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id']);
+      }
+      echo "</td>";
+      
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>".$LANG['plugin_order'][58]."</td><td>";
+      if ($canedit) {
+         User::dropdown(array('name'   => 'users_id_delivery',
+                              'value'  => $this->fields["users_id_delivery"],
+                              'right'  => 'interface',
+                              'entity' => $this->fields["entities_id"]));
+      } else {
+         echo Dropdown::getDropdownName('glpi_users', $this->fields['users_id_delivery']);
+      }
+      echo "</td>";
+      echo "<td>".$LANG['plugin_order'][59]."</td><td>";
+      if ($canedit) {
+         Dropdown::show('Group', array('name' => 'groups_id_delivery',
+                                      'value' => $this->fields['groups_id_delivery']));
+      } else {
+         echo Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id_delivery']);
+      }
+      echo "</td>";
+      
+      echo "</td></tr>";
+      
+      
       if ($canedit || $cancancel) {
          $this->showFormButtons($options);
       } else {
@@ -840,7 +907,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>\n";
 
       $prev=-1;
-     while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetch_array($result)) {
          if ($data["entities_id"]!=$prev) {
             if ($prev>=0) {
                echo "</optgroup>";
@@ -962,6 +1029,9 @@ class PluginOrderOrder extends CommonDBTM {
                break;
             case $config->getDraftState():
                $event = "undovalidation";
+               break;
+            case $config->getDeliveredState():
+               $event = "delivered";
                break;
             default:
                $notify = false;
@@ -1654,6 +1724,10 @@ class PluginOrderOrder extends CommonDBTM {
                `comment` text collate utf8_unicode_ci,
                `notepad` longtext collate utf8_unicode_ci,
                `is_deleted` tinyint(1) NOT NULL default '0',
+               `users_id` int(11) NOT NULL default '0',
+               `groups_id` int(11) NOT NULL default '0',
+               `users_id_delivery` int(11) NOT NULL default '0',
+               `group_id_delivery` int(11) NOT NULL default '0',
                `plugin_order_ordertypes_id` int (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)',
                PRIMARY KEY  (`id`),
                KEY `name` (`name`),
@@ -1858,6 +1932,11 @@ class PluginOrderOrder extends CommonDBTM {
                                  "VARCHAR(255) collate utf8_unicode_ci default NULL");
             $migration->migrationOneTable($table);
          }
+
+         $migration->addField($table, "users_id", "INT(11) NOT NULL DEFAULT '0'");
+         $migration->addField($table, "groups_id", "INT(11) NOT NULL DEFAULT '0'");
+         $migration->addField($table, "users_id_delivery", "INT(11) NOT NULL DEFAULT '0'");
+         $migration->addField($table, "groups_id_delivery", "INT(11) NOT NULL DEFAULT '0'");
          
          //Displayprefs
          $prefs = array(1 => 1, 2 => 2, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 10 => 10);

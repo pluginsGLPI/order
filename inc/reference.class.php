@@ -359,9 +359,8 @@ class PluginOrderReference extends CommonDropdown {
       global $CFG_GLPI;
       
       $reference_supplier = new PluginOrderReference_Supplier();
-      $supplier_page = $CFG_GLPI["root_doc"] ."/plugins/order/front/reference_supplier.form.php";
+      $supplier_page      = $CFG_GLPI["root_doc"] ."/plugins/order/front/reference_supplier.form.php";
       switch ($tab) {
-
          case -1:
             $reference_supplier->showReferenceManufacturers($supplier_page, $_POST["id"]);
             if ($this->can($_POST["id"],'w'))
@@ -369,21 +368,28 @@ class PluginOrderReference extends CommonDropdown {
                array('plugin_order_references_id' => $_POST["id"],
                'target' => $CFG_GLPI["root_doc"] ."/plugins/order/front/reference_supplier.form.php"));
 
+
             Document::showAssociated($this);
+            break;
+            
          case 2 :
             $this->getAllOrdersByReference($_POST["id"]);
             break;
+            
          case 3 :
             showNotesForm($_POST['target'], "PluginOrderReference", $_POST["id"]);
             break;
+            
          case 4 :
             /* show documents linking form */
             Document::showAssociated($this);
             break;
+            
          case 12 :
             /* show history form */
             Log::showForItem($this);
             break;
+            
          default :
             $reference_supplier->showReferenceManufacturers($supplier_page, $_POST["id"]);
             if ($this->can($_POST["id"],'w')) {
@@ -663,38 +669,46 @@ class PluginOrderReference extends CommonDropdown {
    function getAllOrdersByReference($plugin_order_references_id){
       global $DB,$LANG;
       
+      $order = new PluginOrderOrder();
       $query = "SELECT `glpi_plugin_order_orders`.*
                FROM `glpi_plugin_order_orders_items`
                LEFT JOIN `glpi_plugin_order_orders`
                   ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`)
-               WHERE `plugin_order_references_id` = '".$plugin_order_references_id."'
-               GROUP BY `glpi_plugin_order_orders`.`id`
+               WHERE `plugin_order_references_id` = '".$plugin_order_references_id."'";
+      $query.= getEntitiesRestrictRequest(" AND ", "glpi_plugin_order_orders", $_SESSION['glpiactive_entity']);
+      $query.= " GROUP BY `glpi_plugin_order_orders`.`id`
                ORDER BY `entities_id`, `name` ";
 
       echo "<div class='center'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='5'>".$LANG['plugin_order'][11]."</th></tr>";
-      echo "<tr>";
-      echo "<th>".$LANG['common'][16]."</th>";
-      echo "<th>".$LANG['entity'][0]."</th>";
-      echo "</tr>";
+      $iterator = $DB->request($query);
+      if ($iterator->numrows()) {
 
-      $order = new PluginOrderOrder();
-      foreach ($DB->request($query) as $data) {
-         echo "<tr class='tab_bg_1' align='center'>";
-         echo "<td>";
-         $order->getFromDB($data['id']);
-         echo $order->getLink($this->canView());
-         echo "</td>";
-
-         echo "<td>";
-         echo Dropdown::getDropdownName("glpi_entities",$data["entities_id"]);
-         echo "</td>";
-
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='5'>".$LANG['plugin_order'][11]."</th></tr>";
+         echo "<tr>";
+         echo "<th>".$LANG['common'][16]."</th>";
+         echo "<th>".$LANG['entity'][0]."</th>";
          echo "</tr>";
+
+         foreach ($iterator as $data) {
+            echo "<tr class='tab_bg_1' align='center'>";
+            echo "<td>";
+            $order->getFromDB($data['id']);
+            echo $order->getLink($order->canView());
+            echo "</td>";
+   
+            echo "<td>";
+            echo Dropdown::getDropdownName("glpi_entities",$data["entities_id"]);
+            echo "</td>";
+   
+            echo "</tr>";
+            echo "</table>";
+         }
+      } else {
+         echo "<span class='center'>".$LANG['document'][13]."</span>";
       }
       
-      echo "</table></div>";
+      echo "</div>";
    }
    
    function transfer($ID, $entity) {
