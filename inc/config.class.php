@@ -16,7 +16,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; along with Behaviors. If not, see <http://www.gnu.org/licenses/>.
+ along with GLPI; along with Behav$LANG['plugin_order']['config'][26]iors. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
@@ -112,6 +112,13 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
+      echo "<tr class='tab_bg_1' align='center'>
+                  <td>".$LANG['plugin_order']['config'][26]."</td><td>";
+                  Dropdown::showYesNo("copy_documents",
+                                      $this->fields["copy_documents"]);
+      echo "</td>";
+      echo "</tr>";
+      
       // Automatic actions
       echo "<tr class='tab_bg_1' align='center'>
                <th colspan='2'>".$LANG['plugin_order']['config'][3]."</th>
@@ -350,6 +357,10 @@ class PluginOrderConfig extends CommonDBTM {
    function canGenerateOrderPDF() {
       return $this->fields['generate_order_pdf'];
    }
+
+   function canCopyDocuments() {
+      return $this->fields['copy_documents'];
+   }
    
    function getShouldBeDevileredColor() {
       return $this->fields['shoudbedelivered_color'];
@@ -376,6 +387,7 @@ class PluginOrderConfig extends CommonDBTM {
                      `use_supplier_informations` tinyint(1) NOT NULL default '0',
                      `use_supplier_infos` tinyint(1) NOT NULL default '1',
                      `generate_order_pdf` tinyint(1) NOT NULL default '0',
+                     `copy_documents` tinyint(1) NOT NULL default '0',
                      `default_taxes` int(11) NOT NULL default '0',
                      `generate_assets` int(11) NOT NULL default '0',
                      `generated_name` varchar(255) collate utf8_unicode_ci default NULL,
@@ -449,6 +461,8 @@ class PluginOrderConfig extends CommonDBTM {
                                  "tinyint(1) NOT NULL default '1'");
             $migration->addField($table, "shoudbedelivered_color",
                                  "char(20) collate utf8_unicode_ci default '#ff5555'");
+            $migration->addField($table, "copy_documents", "tinyint(1) NOT NULL DEFAULT '0'");
+            
             $migration->migrationOneTable($table);
             
       }

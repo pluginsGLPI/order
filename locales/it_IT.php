@@ -104,6 +104,7 @@ $LANG['plugin_order']['config'][23] = "Activate suppliers quality satisfaction";
 $LANG['plugin_order']['config'][23] = "Activate suppliers quality satisfaction";
 $LANG['plugin_order']['config'][24] = "Display order's suppliers informations";
 $LANG['plugin_order']['config'][25] = "Color to be displayed when order due date is overtaken";
+$LANG['plugin_order']['config'][26] = "Copy order documents when a new item is created";
 
 $LANG['plugin_order']['delivery'][1] = "Ricezione Articoli";
 $LANG['plugin_order']['delivery'][2] = "Articolo preso in consegna";

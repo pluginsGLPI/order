@@ -338,16 +338,15 @@ class PluginOrderLink extends CommonDBChild {
 
             }
             echo "</table>";
-            echo "</div>";
+            //echo "</div>";
             if ($canedit & $canuse) {
                openArrowMassive("order_generation_form$rand", true);
                echo "<input type='hidden' name='plugin_order_orders_id' value='$plugin_order_orders_id'>";
                $this->dropdownLinkActions($itemtype, $plugin_order_references_id, $plugin_order_orders_id);
-               echo "</td>";
                echo "</table>";
-               echo "</div>";
             }
             echo "</form>";
+            echo "</div>";
          }
          echo "<br>";
       }
@@ -912,8 +911,29 @@ class PluginOrderLink extends CommonDBChild {
          $new_value .= $item->getTypeName() . " -> " . $item->getField("name");
          $order->addHistory('PluginOrderOrder', '', $new_value, $values["plugin_order_orders_id"]);
 
+         //Copy order documents if needed
+         self::copyDocuments($values['itemtype'], $newID, $values["plugin_order_orders_id"]);
+         
          addMessageAfterRedirect($LANG['plugin_order']['detail'][30], true);
 
+      }
+   }
+   
+   static function copyDocuments($itemtype, $items_id, $orders_id) {
+      global $CFG_GLPI;
+      
+      $config        = PluginOrderConfig::getConfig();
+      $document_item = new Document_Item();
+      
+      if ($config->canCopyDocuments() && in_array($itemtype, $CFG_GLPI["document_types"])) {
+         foreach (getAllDatasFromTable('glpi_documents_items',
+                                         "`itemtype`='PluginOrderOrder'
+                                           AND `items_id`='$orders_id'") as $doc) {
+            $doc['itemtype'] = $itemtype;
+            $doc['items_id'] = $items_id;
+            unset($doc['id']);
+            $document_item->add($doc);
+         }
       }
    }
 }
