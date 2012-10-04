@@ -644,7 +644,7 @@ class PluginOrderLink extends CommonDBChild {
                   $order     = new PluginOrderOrder();
                   $new_value = $LANG['plugin_order']['delivery'][14] . ' : ' . $lic->getField("name");
                   $order->addHistory('PluginOrderOrder', '', $new_value, $plugin_order_orders_id);
-s               }
+               }
             }
             
          } elseif (in_array($itemtype, $restricted)) {

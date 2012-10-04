@@ -841,7 +841,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".$LANG['plugin_order'][56]."</td><td>";
       if ($canedit) {
          if ($this->isNewID($this->getID())) {
-            $value = getLoginUserID();
+            $value = Session::getLoginUserID();
          } else {
             $value = $this->fields['users_id'];
          }
@@ -876,7 +876,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<td>".$LANG['plugin_order'][59]."</td><td>";
       if ($canedit) {
          Dropdown::show('Group', array('name' => 'groups_id_delivery',
-                                      'value' => $this->fields['groups_id_delivery']));
+                                       'value' => $this->fields['groups_id_delivery']));
       } else {
          echo Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id_delivery']);
       }
@@ -1739,7 +1739,7 @@ class PluginOrderOrder extends CommonDBTM {
                `users_id` int(11) NOT NULL default '0',
                `groups_id` int(11) NOT NULL default '0',
                `users_id_delivery` int(11) NOT NULL default '0',
-               `group_id_delivery` int(11) NOT NULL default '0',
+               `groups_id_delivery` int(11) NOT NULL default '0',
                `plugin_order_ordertypes_id` int (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)',
                PRIMARY KEY  (`id`),
                KEY `name` (`name`),
