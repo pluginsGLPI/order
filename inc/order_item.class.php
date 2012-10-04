@@ -846,17 +846,22 @@ class PluginOrderOrder_Item extends CommonDBChild {
          echo "<tr align='center'><th colspan='2'>" . $LANG['plugin_order'][47] . ": </th></tr>";
          echo "<tr align='center'><td class='tab_bg_2'>" . $LANG['plugin_order'][39] . "</td>";
          echo "<td class='tab_bg_2'>";
-         $item = new $itemtype();
-         $link = getItemTypeFormURL('PluginOrderOrder');
-         if ($this->canView()) {
-            echo "<a href=\"".$link."?id=".$infos["id"]."\">".$infos["name"]."</a>";
-         } else {
-            echo $infos["name"];
-          }
+         $order = new PluginOrderOrder();
+         $order->getFromDB($infos['id']);
+         echo $order->getLink($order->canView());
          echo "</td></tr>";
-         echo "<tr align='center'><td class='tab_bg_2'>" .
-            $LANG['plugin_order']['detail'][21] . "</td>";
-         echo "<td class='tab_bg_2'>" . convDate($infos["delivery_date"]) . "</td></tr>";
+         
+         $result = getAllDatasFromTable($this->getTable(),
+                                        "`plugin_order_orders_id`='".$infos['id']."'
+                                           AND `itemtype`='$itemtype'
+                                              AND `items_id`='$ID'");
+         if (!empty($result)) {
+            $link = array_shift($result);
+            echo "<tr align='center'><td class='tab_bg_2'>" .
+               $LANG['plugin_order']['detail'][21] . "</td>";
+            echo "<td class='tab_bg_2'>" . convDate($link["delivery_date"]) . "</td></tr>";
+            
+         }
          echo "</table></div>";
        }
     }
