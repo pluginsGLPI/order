@@ -290,7 +290,7 @@ else if (isset ($_POST["undovalidation"])) {
 } else {
    $pluginOrderOrder->checkGlobal("r");
    Html::header($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
-   $pluginOrderOrder->showForm($_GET["id"]);
+   $pluginOrderOrder->showForm($_GET["id"], array('withtemplate' => $_GET['withtemplate']));
    Html::footer();
 }
 

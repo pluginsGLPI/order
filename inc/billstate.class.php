@@ -46,7 +46,7 @@ class PluginOrderBillState extends CommonDropdown {
    function pre_deleteItem() {
       global $LANG;
       if ($this->getID() <= self::CANCELED ) {
-         Session::addMessageAfterRedirect($LANG['plugin_order']['status'][15].": ".$this->fields['name'], 
+         Session::addMessageAfterRedirect($LANG['plugin_order']['status'][15].": ".$this->fields['name'],
                                  false, ERROR);
          return false;
       } else {
@@ -60,11 +60,11 @@ class PluginOrderBillState extends CommonDropdown {
 
    function canView() {
       return plugin_order_haveRight('bill', 'r');
-   } 
+   }
    
    static function getStates() {
       global $LANG;
-      return array(self::NOTPAID => $LANG['plugin_order']['bill'][7], 
+      return array(self::NOTPAID => $LANG['plugin_order']['bill'][7],
                    self::PAID    => $LANG['plugin_order']['bill'][6]);
    }
    
@@ -93,8 +93,8 @@ class PluginOrderBillState extends CommonDropdown {
          $DB->query($query) or die ($DB->error());
       }
       $state = new self();
-      foreach (array(self::PAID     => $LANG['plugin_order']['status'][16],
-                     self::NOTPAID  => $LANG['plugin_order']['status'][17]) 
+      foreach (array(self::PAID   => $LANG['plugin_order']['status'][16],
+                     self::NOTPAID  => $LANG['plugin_order']['status'][17])
                as $id => $label) {
          if (!countElementsInTable($table, "`id`='$id'")) {
             $state->add(array('id' => $id, 'name' => Toolbox::addslashes_deep($label)));

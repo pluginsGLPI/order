@@ -67,6 +67,10 @@ $LANG['plugin_order'][52] = "Supprimer le lien";
 $LANG['plugin_order'][53] = "Date de livraison effective";
 $LANG['plugin_order'][54] = "Dépassement date de livraison estimée";
 $LANG['plugin_order'][55] = "Commandes en retard";
+$LANG['plugin_order'][56] = "Auteur";
+$LANG['plugin_order'][57] = "Groupe auteur";
+$LANG['plugin_order'][58] = "Destinataire";
+$LANG['plugin_order'][59] = "Groupe destinataire";
 
 $LANG['plugin_order']['bill'][0] = "Facture";
 $LANG['plugin_order']['bill'][1] = "Type de facture";
@@ -103,6 +107,7 @@ $LANG['plugin_order']['config'][22] = "Génération d'un bon de commande en ODT"
 $LANG['plugin_order']['config'][23] = "Activer la qualité des fournisseurs";
 $LANG['plugin_order']['config'][24] = "Afficher les informations fournisseur de la commande";
 $LANG['plugin_order']['config'][25] = "Couleur lorsque la date de livraison estimée est dépassée";
+$LANG['plugin_order']['config'][26] = "Copier les documents de la commande à la génération d'un matériel";
 
 $LANG['plugin_order']['delivery'][1] = "Réception matériel(s)";
 $LANG['plugin_order']['delivery'][2] = "Réceptionner matériel";
@@ -118,6 +123,7 @@ $LANG['plugin_order']['delivery'][14] = "Matériel lié à la commande";
 $LANG['plugin_order']['delivery'][15] = "Matériel délié de la commande";
 $LANG['plugin_order']['delivery'][16] = "Matériel déjà lié à un objet d'inventaire";
 $LANG['plugin_order']['delivery'][17] = "Aucun matériel à générer";
+$LANG['plugin_order']['delivery'][17] = "Commande totalement livrée";
 
 $LANG['plugin_order']['detail'][1] = "Equipement";
 $LANG['plugin_order']['detail'][2] = "Référence";

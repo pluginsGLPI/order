@@ -148,8 +148,9 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    function showForm ($ID, $options=array()) {
       global $LANG, $DB;
       
-      if (!$this->canView())
+      if (!$this->canView()) {
          return false;
+      }
       
       $plugin_order_references_id = -1;
       if (isset($options['plugin_order_references_id'])) {
@@ -194,9 +195,9 @@ class PluginOrderReference_Supplier extends CommonDBChild {
             $suppliers[] = $data["suppliers_id"];
 
          Dropdown::show('Supplier',
-                  array('name'   => 'suppliers_id',
-                        'used' => $suppliers,
-                        'entity' => $PluginOrderReference->getEntityID()));
+                        array('name'   => 'suppliers_id',
+                               'used'   => $suppliers,
+                               'entity' => $PluginOrderReference->getEntityID()));
       }
       echo "</td>";
 
@@ -239,10 +240,13 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       Session::initNavigateListItems($this->getType(),
                             $LANG['plugin_order']['reference'][1] ." = ". $ref->fields["name"]);
 
-      $candelete =$ref->can($ID, 'w');
-      $query = "SELECT * FROM `".$this->getTable()."` WHERE `plugin_order_references_id` = '$ID' ";
-      $result = $DB->query($query);
-      $rand=mt_rand();
+      $candelete = $ref->can($ID, 'w');
+      $query     = "SELECT * FROM `".$this->getTable()."` WHERE `plugin_order_references_id` = '$ID' ";
+      $query    .= getEntitiesRestrictRequest(" AND", $this->getTable(), "entities_id",
+                                              $ref->fields['entities_id'],
+                                              $ref->fields['is_recursive']);
+      $result    = $DB->query($query);
+      $rand      = mt_rand();
       echo "<div class='center'>";
       echo "<form method='post' name='show_supplierref$rand' id='show_supplierref$rand' action=\"$target\">";
       echo "<input type='hidden' name='plugin_order_references_id' value='" . $ID . "'>";

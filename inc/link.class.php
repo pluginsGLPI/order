@@ -644,7 +644,7 @@ class PluginOrderLink extends CommonDBChild {
                   $order     = new PluginOrderOrder();
                   $new_value = $LANG['plugin_order']['delivery'][14] . ' : ' . $lic->getField("name");
                   $order->addHistory('PluginOrderOrder', '', $new_value, $plugin_order_orders_id);
-               }
+s               }
             }
             
          } elseif (in_array($itemtype, $restricted)) {
@@ -893,6 +893,9 @@ class PluginOrderLink extends CommonDBChild {
          $new_value .= $item->getTypeName() . " -> " . $item->getField("name");
          $order->addHistory('PluginOrderOrder', '', $new_value, $values["plugin_order_orders_id"]);
 
+         //Copy order documents if needed
+         self::copyDocuments($values['itemtype'], $newID, $values["plugin_order_orders_id"], $entity);
+         
          Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][30], true);
 
       }
@@ -916,6 +919,41 @@ class PluginOrderLink extends CommonDBChild {
       return true;
    }
    
-}
+   
+   /**
+    * Copy order documents into the newly generated item
+    * @since 1.5.3
+    * @param unknown_type $itemtype
+    * @param unknown_type $items_id
+    * @param unknown_type $orders_id
+    * @param unknown_type $entity
+    */
+   static function copyDocuments($itemtype, $items_id, $orders_id, $entity) {
+      global $CFG_GLPI;
+      
+      $config        = PluginOrderConfig::getConfig();
+      
+      if ($config->canCopyDocuments() && in_array($itemtype, $CFG_GLPI["document_types"])) {
 
+         $document_item = new Document_Item();
+         $document      = new Document();
+         
+         foreach (getAllDatasFromTable('glpi_documents_items',
+                                         "`itemtype`='PluginOrderOrder'
+                                           AND `items_id`='$orders_id'") as $doc) {
+            $document->getFromDB($doc['documents_id']);
+            $newdocument = clone $document;
+            $newdocument->fields['entities_id'] = $entity;
+            unset($newdocument->fields['id']);
+            $newID = $document->add($newdocument->fields);
+         
+            $tmp['itemtype']     = $itemtype;
+            $tmp['items_id']     = $items_id;
+            $tmp['documents_id'] = $newID;
+            $document_item->add($tmp);
+            
+         }
+      }
+   }
+}
 ?>
