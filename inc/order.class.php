@@ -1727,7 +1727,7 @@ class PluginOrderOrder extends CommonDBTM {
                `users_id` int(11) NOT NULL default '0',
                `groups_id` int(11) NOT NULL default '0',
                `users_id_delivery` int(11) NOT NULL default '0',
-               `group_id_delivery` int(11) NOT NULL default '0',
+               `groups_id_delivery` int(11) NOT NULL default '0',
                `plugin_order_ordertypes_id` int (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)',
                PRIMARY KEY  (`id`),
                KEY `name` (`name`),
