@@ -931,17 +931,26 @@ class PluginOrderLink extends CommonDBChild {
       global $CFG_GLPI;
       
       $config        = PluginOrderConfig::getConfig();
-      $document_item = new Document_Item();
       
       if ($config->canCopyDocuments() && in_array($itemtype, $CFG_GLPI["document_types"])) {
+
+         $document_item = new Document_Item();
+         $document      = new Document();
+         
          foreach (getAllDatasFromTable('glpi_documents_items',
                                          "`itemtype`='PluginOrderOrder'
                                            AND `items_id`='$orders_id'") as $doc) {
-            $doc['itemtype']    = $itemtype;
-            $doc['items_id']    = $items_id;
-            $doc['entities_id'] = $entity;
-            unset($doc['id']);
-            $document_item->add($doc);
+            $document->getFromDB($doc['documents_id']);
+            $newdocument = clone $document;
+            $newdocument->fields['entities_id'] = $entity;
+            unset($newdocument->fields['id']);
+            $newID = $document->add($newdocument->fields);
+         
+            $tmp['itemtype']     = $itemtype;
+            $tmp['items_id']     = $items_id;
+            $tmp['documents_id'] = $newID;
+            $document_item->add($tmp);
+            
          }
       }
    }

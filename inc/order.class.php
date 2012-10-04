@@ -836,11 +836,11 @@ class PluginOrderOrder extends CommonDBTM {
          } else {
             $value = $this->fields['users_id'];
          }
-      User::dropdown(array('name'   => $value,
-                           'value'  => $this->fields["users_id"],
+      User::dropdown(array('name'   => 'users_id',
+                           'value'  => $value,
                            'right'  => 'interface',
                            'entity' => $this->fields["entities_id"]));
-               } else {
+      } else {
          echo Dropdown::getDropdownName('glpi_users', $this->fields['users_id']);
       }
       echo "</td>";
@@ -858,7 +858,7 @@ class PluginOrderOrder extends CommonDBTM {
       if ($canedit) {
          User::dropdown(array('name'   => 'users_id_delivery',
                               'value'  => $this->fields["users_id_delivery"],
-                              'right'  => 'interface',
+                              'right'  => 'all',
                               'entity' => $this->fields["entities_id"]));
       } else {
          echo Dropdown::getDropdownName('glpi_users', $this->fields['users_id_delivery']);
