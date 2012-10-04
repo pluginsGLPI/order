@@ -407,7 +407,7 @@ class PluginOrderOrder extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-      if (!isset($options['withtemplate']) || $options['withtemplate'] != 1) {
+      if (!isset($options['withtemplate']) || !$options['withtemplate']) {
          $this->addStandardTab('PluginOrderOrder_Item', $ong,$options);
          $this->addStandardTab('PluginOrderOrder', $ong,$options);
          $this->addStandardTab('PluginOrderOrder_Supplier', $ong, $options);
@@ -453,7 +453,7 @@ class PluginOrderOrder extends CommonDBTM {
       if ($item->getType()=='Budget') {
          $order = new self();
          $order->getAllOrdersByBudget($item->getField('id'));
-      } else if ($item->getType() == __CLASS__) {
+      } elseif ($item->getType() == __CLASS__) {
          switch ($tabnum) {
             case 1 :
                $item->showValidationForm($item->getID());
