@@ -912,14 +912,22 @@ class PluginOrderLink extends CommonDBChild {
          $order->addHistory('PluginOrderOrder', '', $new_value, $values["plugin_order_orders_id"]);
 
          //Copy order documents if needed
-         self::copyDocuments($values['itemtype'], $newID, $values["plugin_order_orders_id"]);
+         self::copyDocuments($values['itemtype'], $newID, $values["plugin_order_orders_id"], $entity);
          
          addMessageAfterRedirect($LANG['plugin_order']['detail'][30], true);
 
       }
    }
    
-   static function copyDocuments($itemtype, $items_id, $orders_id) {
+   /**
+    * Copy order documents into the newly generated item
+    * @since 1.5.3
+    * @param unknown_type $itemtype
+    * @param unknown_type $items_id
+    * @param unknown_type $orders_id
+    * @param unknown_type $entity
+    */
+   static function copyDocuments($itemtype, $items_id, $orders_id, $entity) {
       global $CFG_GLPI;
       
       $config        = PluginOrderConfig::getConfig();
@@ -929,8 +937,9 @@ class PluginOrderLink extends CommonDBChild {
          foreach (getAllDatasFromTable('glpi_documents_items',
                                          "`itemtype`='PluginOrderOrder'
                                            AND `items_id`='$orders_id'") as $doc) {
-            $doc['itemtype'] = $itemtype;
-            $doc['items_id'] = $items_id;
+            $doc['itemtype']    = $itemtype;
+            $doc['items_id']    = $items_id;
+            $doc['entities_id'] = $entity;
             unset($doc['id']);
             $document_item->add($doc);
          }

@@ -322,14 +322,14 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          if (!countElementsInTable($translation->getTable(), "`notificationtemplates_id`='$templates_id'")) {
             $tmp['notificationtemplates_id'] = $templates_id;
             $tmp['language'] = '';
-            $tmp['subject'] = '##order.action##
-                ##lang.ordervalidation.name## :
-                ##ordervalidation.name##
-                ##lang.ordervalidation.orderdate## :
-                ##ordervalidation.orderdate##
-                 
-                ##lang.ordervalidation.entity## :
-                ##ordervalidation.entity##';
+            $tmp['subject'] = '##order.action## ##ordervalidation.name## ##ordervalidation.numorder##';
+            $tmp['content_text'] = '##order.action##
+##lang.ordervalidation.name## :
+##ordervalidation.name##
+##lang.ordervalidation.orderdate## :
+##ordervalidation.orderdate##
+##lang.ordervalidation.entity## :
+##ordervalidation.entity##';
             $tmp['content_html'] = '&lt;p&gt;##order.action## &lt;br /&gt;&lt;br /&gt;&#160;
                 ##lang.ordervalidation.name## : &lt;br /&gt;&#160;
                 ##ordervalidation.name## &lt;br /&gt;&#160;
