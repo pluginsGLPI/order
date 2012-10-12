@@ -496,6 +496,27 @@ class PluginOrderOrder extends CommonDBTM {
       return $input;
    }
    
+   
+   function post_addItem() {
+		global $CFG_GLPI;
+
+		// Manage add from template
+		if (isset($this->input["_oldID"])) {
+
+			// ADD Documents
+			$docitem=new Document_Item();
+			$restrict = "`items_id` = '".$this->input["_oldID"]."' AND `itemtype` = '".$this->getType()."'";
+         $docs = getAllDatasFromTable("glpi_documents_items",$restrict);
+         if (!empty($docs)) {
+            foreach ($docs as $doc) {
+               $docitem->add(array('documents_id' => $doc["documents_id"],
+                        'itemtype' => $this->getType(),
+                        'items_id' => $this->fields['id']));
+            }
+			}
+		}
+	}
+	
    function prepareInputForUpdate($input) {
       global $LANG;
       Toolbox::logDebug("update", $input);
