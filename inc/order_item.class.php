@@ -273,12 +273,15 @@ class PluginOrderOrder_Item extends CommonDBChild {
                echo"</tr>";
                echo "<tr>";
                echo "<td class='tab_bg_1' align='center'>";
-               $params = array('myname'       => 'itemtype', 'ajax' => true,
+               $params = array('myname'       => 'itemtype',
                                'orders_id'    => $order->fields["id"],
                                'suppliers_id' => $order->fields['suppliers_id'],
                                'entity'       => $order->fields['entities_id'],
-                               'ajax_page'    => $CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php",
-                               'filter'       => true, "class" => __CLASS__);
+                               'ajax_page'    => $CFG_GLPI["root_doc"]."/plugins/order/ajax/detailref.php",
+                               'filter'       => true,
+                               'class'        => __CLASS__,
+                               'span'         => 'show_reference');
+
                $reference->dropdownAllItems($params);
                echo "</td>";
                echo "<td class='tab_bg_1' align='center'><span id='show_reference'>&nbsp;</span></td>";
@@ -289,7 +292,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                echo "<td class='tab_bg_1' align='center'><span id='show_validate'>&nbsp;</span></td>";
                echo "</tr>";
             } else {
-               echo "<tr><td align='center'>".$LANG['plugin_order']['detail'][27]."</td></tr>";
+               echo "<tr class='tab_bg_1'><td align='center'>".$LANG['plugin_order']['detail'][27]."</td></tr>";
             }
 
             echo "</table></div>";

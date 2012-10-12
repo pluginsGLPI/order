@@ -286,7 +286,7 @@ class PluginOrderReference extends CommonDropdown {
                echo $item->getTypeName();
                echo "<input type='hidden' name='itemtype' value='$itemtype'>";
             } else {
-               $params = array('myname'       => 'itemtype', 'ajax' => true,
+               $params = array('myname'       => 'itemtype',
                                'value'        => $this->fields["itemtype"],
                                'entity'       => $_SESSION["glpiactive_entity"],
                                'ajax_page'    => GLPI_ROOT.'/plugins/order/ajax/referencespecifications.php',
@@ -494,11 +494,9 @@ class PluginOrderReference extends CommonDropdown {
    }
 
    function dropdownAllItems($options = array()) {
-
-      global $DB;
+      global $DB, $CFG_GLPI;
       
       $p['myname']       = '';
-      $p['ajax']         = false;
       $p['value']        = 0;
       $p['orders_id']    = 0;
       $p['suppliers_id'] = 0;
@@ -506,6 +504,7 @@ class PluginOrderReference extends CommonDropdown {
       $p['ajax_page']    = '';
       $p['filter']       = '';
       $p['class']       = '';
+      $p['span']       = '';
       foreach ($options as $key => $value) {
          $p[$key] = $value;
       }
@@ -545,26 +544,189 @@ class PluginOrderReference extends CommonDropdown {
       }
 
       echo "</select>";
+        
+      $params = array ('itemtype'         => '__VALUE__',
+                       'suppliers_id'     => $p['suppliers_id'],
+                       'entity_restrict'  => $p['entity'],
+                       'orders_id'        => $p['orders_id'],
+                       'span'             => 'show_quantity');
 
-      if ($p['ajax']) {
-         $params = array ('itemtype' => '__VALUE__', 'suppliers_id' => $p['suppliers_id'],
-                          'entity_restrict' => $p['entity'],
-                          'plugin_order_orders_id' => $p['orders_id']);
+      if ($p['class'] != 'PluginOrderOrder_Item') {
+         foreach (array("types_id", "models_id", "templates_id") as $field) {
+            $params['field'] = $field;
+            $params['plugin_order_references_id'] = $p['value'];
+            Ajax::updateItemOnSelectEvent($p['myname'], "show_$field",
+                                        $p['ajax_page'],
+                                        $params);
+         }
+      } else {
+            Ajax::updateItemOnSelectEvent($p['myname'], "show_reference",
+                                        $p['ajax_page'],
+                                        $params);
+      }
+   }
+   
+   
+   /**
+    * Permet l'affichage dynamique d'une liste déroulante imbriquee
+    *
+    * @static
+    * @param array ($itemtype,$options)
+    */
+   static function dropdownReferencesByEnterprise($itemtype, $options=array()) {
+      global $DB,$CFG_GLPI,$LANG;
 
-         if ($p['class'] != 'PluginOrderOrder_Item') {
-            foreach (array("types_id", "models_id", "templates_id") as $field) {
-               $params['field'] = $field;
-               $params['plugin_order_references_id'] = $p['value'];
-               Ajax::updateItemOnSelectEvent($p['myname'], "show_$field",
-                                           $p['ajax_page'],
-                                           $params);
-            }
-         } else {
-               Ajax::updateItemOnSelectEvent($p['myname'], "show_reference",
-                                           $p['ajax_page'],
-                                           $params);
+      $item = getItemForItemtype($itemtype);
+      if ($itemtype && !($item = getItemForItemtype($itemtype))) {
+         return false;
+      }
+
+      $table = $item->getTable();
+      
+      $params['comments']    = true;
+      $params['condition']   = '';
+      $params['entity']      = -1;
+      $params['name']        = "reference";
+      $params['value']       = 0;
+      $params['entity_sons'] = false;
+      $params['rand']        = mt_rand();
+      $params['used']        = array();
+      $params['table']       = $table;
+      $params['emptylabel']  = Dropdown::EMPTY_VALUE;
+      
+      
+      //specific
+      
+      $params['action']       = "";
+      $params['itemtype']     = "";
+      $params['span']         = "";
+      $params['orders_id']    = 0;
+      $params['suppliers_id'] = 0;
+      
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
          }
       }
+
+      $name         = $params['emptylabel'];
+      $comment      = "";
+      $limit_length = $_SESSION["glpidropdown_chars_limit"];
+      
+      if (strlen($params['value'])==0 || !is_numeric($params['value'])) {
+         $params['value'] = 0;
+      }
+
+      if ($params['value'] > 0) {
+         $tmpname = Dropdown::getDropdownName($table, $params['value'], 1);
+
+         if ($tmpname["name"] != "&nbsp;") {
+            $name    = $tmpname["name"];
+            $comment = $tmpname["comment"];
+
+            if (Toolbox::strlen($name) > $_SESSION["glpidropdown_chars_limit"]) {
+               if ($item instanceof CommonTreeDropdown) {
+                  $pos          = strrpos($name, ">");
+                  $limit_length = max(Toolbox::strlen($name) - $pos,
+                                      $_SESSION["glpidropdown_chars_limit"]);
+
+                  if (Toolbox::strlen($name)>$limit_length) {
+                     $name = "&hellip;".Toolbox::substr($name, -$limit_length);
+                  }
+
+               } else {
+                  $limit_length = Toolbox::strlen($name);
+               }
+
+            } else {
+               $limit_length = $_SESSION["glpidropdown_chars_limit"];
+            }
+         }
+      }
+      
+      // Manage entity_sons
+      if (!($params['entity']<0) && $params['entity_sons']) {
+         if (is_array($params['entity'])) {
+            echo "entity_sons options is not available with array of entity";
+         } else {
+            $params['entity'] = getSonsOf('glpi_entities',$params['entity']);
+         }
+      }
+      
+      
+      $use_ajax = false;
+      if ($CFG_GLPI["use_ajax"]) {
+         $nb = 0;
+
+         if ($item->isEntityAssign()) {
+            if (!($params['entity']<0)) {
+               $nb = countElementsInTableForEntity($table, $params['entity'], $params['condition']);
+            } else {
+               $nb = countElementsInTableForMyEntities($table, $params['condition']);
+            }
+
+         } else {
+            $nb = countElementsInTable($table, $params['condition']);
+         }
+
+         $nb -= count($params['used']);
+
+         if ($nb>$CFG_GLPI["ajax_limit_count"]) {
+            $use_ajax = true;
+         }
+      }
+      
+      $param = array('searchText'           => '__VALUE__',
+                      'value'               => $params['value'],
+                      'itemtype'            => $params['itemtype'],
+                      'myname'              => $params['name'],
+                      'limit'               => $limit_length,
+                      'comment'             => $params['comments'],
+                      'rand'                => $params['rand'],
+                      'entity_restrict'     => $params['entity'],
+                      'used'                => $params['used'],
+                      'condition'           => $params['condition'],
+                      'table'               => $params['table'],
+                      //specific
+                      'action'              => $params['action'],
+                      'span'                => $params['span'],
+                      'orders_id'           => $params['orders_id'],
+                      'suppliers_id'        => $params['suppliers_id']);
+                      
+      $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].
+                    $params['rand']."'>";
+      $default .= "<option value='".$params['value']."'>$name</option></select>";
+
+      Ajax::dropdown($use_ajax, "/plugins/order/ajax/dropdownValue.php", $param, $default,  $params['rand']);
+
+      // Display comment
+      if ($params['comments']) {
+         $options_tooltip = array('contentid' => "comment_".$param['myname'].$params['rand']);
+
+         if ($params['value'] && $item->getFromDB($params['value'])
+            ) {
+
+            $options_tooltip['link']       = $item->getLinkURL();
+            $options_tooltip['linktarget'] = '_blank';
+         }
+
+         Html::showToolTip($comment,$options_tooltip);
+
+         if (($item instanceof CommonDropdown)
+              && $item->canCreate()
+              && !isset($_GET['popup'])) {
+
+               echo "<img alt='' title=\"".$LANG['buttons'][8]."\" src='".$CFG_GLPI["root_doc"].
+                     "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
+                     onClick=\"var w = window.open('".$item->getFormURL()."?popup=1&amp;rand=".
+                     $params['rand']."' ,'glpipopup', 'height=400, ".
+                     "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+         }
+      }
+
+      
+
+      return $params['rand'];
    }
 
    function dropdownAllItemsByType($name, $itemtype, $entity=0,$types_id=0,$models_id=0) {
@@ -605,24 +767,6 @@ class PluginOrderReference extends CommonDropdown {
       return $rand;
    }
 
-   function dropdownReferencesByEnterprise($name, $itemtype, $enterpriseID) {
-      global $DB;
-      
-      $query = "SELECT `gr`.`name`, `gr`.`id`, `grm`.`reference_code`
-                FROM `".$this->getTable()."` AS gr, `glpi_plugin_order_references_suppliers` AS grm
-                WHERE `gr`.`itemtype` = '$itemtype'
-                   AND `grm`.`suppliers_id` = '$enterpriseID'
-                     AND `grm`.`plugin_order_references_id` = `gr`.`id` AND `gr`.`is_active`='1'
-                        ORDER BY `gr`.`name` ASC";
-      $references[0] = Dropdown::EMPTY_VALUE;
-      foreach ($DB->request($query) as $data) {
-         $references[$data["id"]] = $data["name"];
-         if ($data['reference_code']) {
-            $references[$data["id"]] .= ' ('.$data['reference_code'].')';
-         }
-      }
-      return Dropdown::showFromArray($name, $references);
-   }
 
    function showReferencesFromSupplier($ID){
       global $LANG, $DB, $CFG_GLPI;

@@ -39,20 +39,13 @@ if (!defined('GLPI_ROOT')){
 
 Session::checkCentralAccess();
 
-$rand = $_POST["rand"];
-$paramsaction = array('plugin_order_references_id' => '__VALUE__',
-                      'entity_restrict'            => $_POST["entity_restrict"],
-                      'suppliers_id'               => $_POST["suppliers_id"],
-                      'itemtype'                   => $_POST['itemtype']);
-$fields       = array ("quantity", "priceht", "pricediscounted", "taxe", "validate");
-
-foreach ($fields as $field) {
-   $paramsaction['update'] = $field;
-   Ajax::updateItem("show_$field", $CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",
-                  $paramsaction, "dropdown_reference$rand");
-   Ajax::updateItemOnSelectEvent("dropdown_reference$rand", "show_$field",
-                               $CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",
-                               $paramsaction);
-}
+$params = array('itemtype'    => $_POST['itemtype'],
+               'orders_id'     => $_POST['orders_id'],
+               'suppliers_id'  => $_POST['suppliers_id'],
+               'entity'        => $_POST['entity_restrict'],
+               'span'          => $_POST['span'],
+               'action'        => $CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php");
+$ref    = new PluginOrderReference();                        
+$ref->dropdownReferencesByEnterprise("PluginOrderReference",$params);
 
 ?>
