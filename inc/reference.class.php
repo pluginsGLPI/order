@@ -272,7 +272,7 @@ class PluginOrderReference extends CommonDropdown {
                          'type'  => 'reference_templates_id'),
                    array('name'  => 'date_mod',
                          'label' => $LANG['common'][26],
-                         'type'  => 'datetime'));
+                         'type'  => 'date_mod'));
    }
 
    /**
@@ -355,6 +355,10 @@ class PluginOrderReference extends CommonDropdown {
             }
             echo "</span>";
 
+            break;
+         
+         case 'date_mod' :
+            echo Html::convDateTime($this->fields["date_mod"]);
             break;
 
       }
@@ -1103,7 +1107,11 @@ class PluginOrderReference extends CommonDropdown {
          $DB->query("UPDATE `glpi_plugin_order_references`
                     SET `itemtype`='CartridgeItem'
                     WHERE `itemtype` ='Cartridge'") or die ($DB->error());
-                    
+         
+         //1.7.0
+         $migration->addField($table, "date_mod", "DATETIME NULL");
+         $migration->addKey($table, "date_mod");
+                   
          //Displayprefs
          $prefs = array(1 => 1, 2 => 4, 4 => 5, 5 => 9, 6 => 6, 7 => 7);
          foreach ($prefs as $num => $rank) {
@@ -1114,9 +1122,6 @@ class PluginOrderReference extends CommonDropdown {
                            VALUES (NULL,'PluginOrderReference','$num','$rank','0');");
             }
          }
-         //1.7.0
-         $migration->addField($table, "date_mod", "DATETIME DEFAULT NULL");
-         $migration->addKey($table, "date_mod");
       }
    }
    
