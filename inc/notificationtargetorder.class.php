@@ -129,8 +129,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          }
          $this->datas['##ordervalidation.users##'] =  Html::clean(getUserName(Session::getLoginUserID()));
 
-         $this->datas['##order.author.name##']       =  html_clean(getUserName($this->obj->getField('users_id')));
-         $this->datas['##order.deliveryuser.name##'] =  html_clean(getUserName($this->obj->getField('users_id_delivery')));
+         $this->datas['##order.author.name##']       =  Html::clean(getUserName($this->obj->getField('users_id')));
+         $this->datas['##order.deliveryuser.name##'] =  Html::clean(getUserName($this->obj->getField('users_id_delivery')));
          
          $this->datas['##lang.ordervalidation.url##'] = "URL";
          $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_order_".$this->obj->getField("id");
