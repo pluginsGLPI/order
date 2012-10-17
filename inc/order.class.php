@@ -383,7 +383,13 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[30]['field']       = 'id';
       $tab[30]['name']        = $LANG['common'][2];
       $tab[30]['injectable']  = false;
-
+      
+      $tab[35]['table']          = $this->getTable();
+      $tab[35]['field']          = 'date_mod';
+      $tab[35]['massiveaction']  = false;
+      $tab[35]['name']           = $LANG['common'][26];
+      $tab[35]['datatype']       = 'datetime';
+      
       /* entity */
       $tab[80]['table']       = 'glpi_entities';
       $tab[80]['field']       = 'completename';
@@ -903,6 +909,10 @@ class PluginOrderOrder extends CommonDBTM {
       }
       echo "</td>";
       
+      echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_1'><td class='center' colspan = '4'>" . $LANG['common'][26] . ":";
+      echo Html::convDateTime($this->fields["date_mod"]);
       echo "</td></tr>";
       
       
@@ -1762,6 +1772,7 @@ class PluginOrderOrder extends CommonDBTM {
                `users_id_delivery` int(11) NOT NULL default '0',
                `groups_id_delivery` int(11) NOT NULL default '0',
                `plugin_order_ordertypes_id` int (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)',
+               `date_mod` datetime default NULL,
                PRIMARY KEY  (`id`),
                KEY `name` (`name`),
                KEY `entities_id` (`entities_id`),
@@ -1773,7 +1784,8 @@ class PluginOrderOrder extends CommonDBTM {
                KEY `locations_id` (`locations_id`),
                KEY `is_late` (`locations_id`),
                KEY `is_template` (`is_template`),
-               KEY `is_deleted` (`is_deleted`)
+               KEY `is_deleted` (`is_deleted`),
+               KEY date_mod (date_mod)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
             $DB->query($query) or die ($DB->error());
       } else {
@@ -1970,6 +1982,10 @@ class PluginOrderOrder extends CommonDBTM {
          $migration->addField($table, "groups_id", "INT(11) NOT NULL DEFAULT '0'");
          $migration->addField($table, "users_id_delivery", "INT(11) NOT NULL DEFAULT '0'");
          $migration->addField($table, "groups_id_delivery", "INT(11) NOT NULL DEFAULT '0'");
+         
+         //1.7.0
+         $migration->addField($table, "date_mod", "DATETIME NULL");
+         $migration->addKey($table, "date_mod");
          
          //Displayprefs
          $prefs = array(1 => 1, 2 => 2, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 10 => 10);
