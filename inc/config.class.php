@@ -119,6 +119,14 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
       
+      echo "<tr class='tab_bg_1' align='center'>
+                  <td>".$LANG['plugin_order']['config'][27]."</td><td>";
+                  Dropdown::show("DocumentCategory",
+                                 array('value' => $this->fields["documentcategories_id"]));
+      echo "</td>";
+      echo "</tr>";
+      
+      
       // Automatic actions
       echo "<tr class='tab_bg_1' align='center'>
                <th colspan='2'>".$LANG['plugin_order']['config'][3]."</th>
@@ -367,6 +375,10 @@ class PluginOrderConfig extends CommonDBTM {
    function getShouldBeDevileredColor() {
       return $this->fields['shoudbedelivered_color'];
    }
+
+   function getDefaultDocumentCategory() {
+      return $this->fields['documentcategories_id'];
+   }
    
    //----------------- Install & uninstall -------------------//
 
@@ -408,6 +420,7 @@ class PluginOrderConfig extends CommonDBTM {
                      `order_status_canceled` int(11) NOT NULL default '0',
                      `order_status_paid` int(11) NOT NULL default '0',
                      `shoudbedelivered_color` char(20) collate utf8_unicode_ci default '#ff5555',
+                     `documentcategories_id` int(11) NOT NULL default '0',
                      PRIMARY KEY  (`id`)
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
                $DB->query($query) or die ($DB->error());
@@ -466,7 +479,7 @@ class PluginOrderConfig extends CommonDBTM {
             $migration->changeField($table, "default_ticketcategories_id",
                                     "default_itilcategories_id", "INTEGER");
             $migration->addField($table, "copy_documents", "tinyint(1) NOT NULL DEFAULT '0'");
-            
+            $migration->addField($table, "documentcategories_id", "integer");
             $migration->migrationOneTable($table);
             
       }
