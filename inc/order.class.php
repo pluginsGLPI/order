@@ -831,7 +831,7 @@ class PluginOrderOrder extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'><td>".$LANG['plugin_order'][56]."</td><td>";
       if ($canedit) {
-         if ($this->isNewID($this->getID())) {
+         if ($template == 'newcomp') {
             $value = getLoginUserID();
          } else {
             $value = $this->fields['users_id'];
