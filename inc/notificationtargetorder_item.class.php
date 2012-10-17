@@ -113,8 +113,8 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
 
       // orderstate
       $this->datas['##lang.reception.orderstate##'] = $LANG['joblist'][0];
-      $this->datas['##reception.orderstate##'] =  
-               Dropdown::getDropdownName("glpi_plugin_order_orderstates", 
+      $this->datas['##reception.orderstate##'] =
+               Dropdown::getDropdownName("glpi_plugin_order_orderstates",
                                           $order->getField('plugin_order_orderstates_id'));
 
       // orderport
@@ -123,20 +123,20 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
 
       // ordercomment
       $this->datas['##lang.reception.ordercomment##'] = $LANG['common'][25];
-      $comment = stripslashes(str_replace(array('\r\n', '\n', '\r'), 
+      $comment = stripslashes(str_replace(array('\r\n', '\n', '\r'),
                                  "<br/>", $order->getField('comment')));
       $this->datas['##reception.ordercomment##'] = nl2br($comment);
 
       // ordernote
       $this->datas['##lang.reception.ordernote##'] = $LANG['title'][37];
-      $notepad = stripslashes(str_replace(array('\r\n', '\n', '\r'), 
+      $notepad = stripslashes(str_replace(array('\r\n', '\n', '\r'),
                                  "<br/>", $order->getField('notepad')));
       $this->datas['##reception.ordernote##'] = nl2br($notepad);
 
       // orderurl
-      $this->datas['##lang.reception.orderurl##'] = "URL " . 
+      $this->datas['##lang.reception.orderurl##'] = "URL " .
                $LANG['plugin_order']['detail'][2];
-      $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_order_" . 
+      $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_order_" .
                $order->getField("id")."_5";
       $this->datas['##reception.orderurl##'] = urldecode($url);
       
@@ -149,20 +149,20 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
 
       // deliverydate
       $this->datas['##lang.reception.deliverydate##'] = $LANG['plugin_order']['detail'][21];
-      $this->datas['##reception.deliverydate##'] = (!empty($delivery_date)) 
-                                                      ? convDate($delivery_date) 
+      $this->datas['##reception.deliverydate##'] = (!empty($delivery_date))
+                                                      ? convDate($delivery_date)
                                                       : 'N/A';
 
       // deliverynumber
       $this->datas['##lang.reception.deliverynumber##'] = $LANG['financial'][19];
-      $this->datas['##reception.deliverynumber##'] = (!empty($delivery_number)) 
-                                                         ? $delivery_number 
+      $this->datas['##reception.deliverynumber##'] = (!empty($delivery_number))
+                                                         ? $delivery_number
                                                          : 'N/A';
 
       // deliverystate
       $this->datas['##lang.reception.deliverystate##'] = $LANG['plugin_order']['status'][3];
-      $this->datas['##reception.deliverystate##'] = 
-            (!empty($delivery_state)) 
+      $this->datas['##reception.deliverystate##'] =
+            (!empty($delivery_state))
                ? Dropdown::getDropdownName('glpi_plugin_order_deliverystates',$delivery_state)
                : 'N/A';
 
@@ -179,19 +179,19 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
       $reference->getFromDB($this->obj->getField("plugin_order_references_id"));
 
       // deliveryreference_name
-      $this->datas['##lang.reception.deliveryreference_name##'] = 
+      $this->datas['##lang.reception.deliveryreference_name##'] =
                $LANG['plugin_order']['reference'][1];
       $this->datas['##reception.deliveryreference_name##'] = $reference->getField('name');
 
       // deliveryreference_itemtype
-      $itemtype   = $reference->getField("itemtype"); 
+      $itemtype   = $reference->getField("itemtype");
       $item       = new $itemtype();
       $this->datas['##lang.reception.deliveryreference_itemtype##'] = $LANG['state'][6];
       $this->datas['##reception.deliveryreference_itemtype##'] =  $item->getTypeName();
 
       // deliveryreference_type
       $this->datas['##lang.reception.deliveryreference_type##'] = $LANG['common'][17];
-      $this->datas['##reception.deliveryreference_type##'] = 
+      $this->datas['##reception.deliveryreference_type##'] =
                Dropdown::getDropdownName(getTableForItemType(
                                           $reference->getField("itemtype")."Type"),
                                           $reference->getField("types_id"));
@@ -206,25 +206,25 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
       // deliveryreference_manufacturer
       $this->datas['##lang.reception.deliveryreference_manufacturer##'] = $LANG['common'][5];
       $this->datas['##reception.deliveryreference_manufacturer##'] =
-               Dropdown::getDropdownName("glpi_manufacturers", 
+               Dropdown::getDropdownName("glpi_manufacturers",
                                           $reference->getField("manufacturers_id"));
       
       // deliveryreference_comment
       $this->datas['##lang.reception.deliveryreference_comment##'] = $LANG['common'][25];
-      $comment = stripslashes(str_replace(array('\r\n', '\n', '\r'), 
+      $comment = stripslashes(str_replace(array('\r\n', '\n', '\r'),
                                  "<br/>", $reference->getField('comment')));
       $this->datas['##reception.deliveryreference_comment##'] = nl2br($comment);
       
       // deliveryreference_note
       $this->datas['##lang.reception.deliveryreference_note##'] = $LANG['title'][37];
-      $notepad = stripslashes(str_replace(array('\r\n', '\n', '\r'), 
+      $notepad = stripslashes(str_replace(array('\r\n', '\n', '\r'),
                                  "<br/>", $reference->getField('notepad')));
       $this->datas['##reception.deliveryreference_note##'] = nl2br($notepad);
 
       // deliveryreference_url
-      $this->datas['##lang.reception.deliveryreference_url##'] = "URL " . 
+      $this->datas['##lang.reception.deliveryreference_url##'] = "URL " .
                $LANG['plugin_order']['detail'][2];
-      $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_reference_" . 
+      $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_reference_" .
                $reference->getField("id");
       $this->datas['##reception.deliveryreference_url##'] = urldecode($url);
       
@@ -247,17 +247,17 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
          
          // associateditems_otherserial
          $this->datas['##lang.reception.associateditems_otherserial##'] = $LANG['common'][20];
-         $this->datas['##reception.associateditems_otherserial##'] = 
+         $this->datas['##reception.associateditems_otherserial##'] =
                $item->getField('otherserial');
          
          // associateditems_state
          $this->datas['##lang.reception.associateditems_state##'] = $LANG['state'][0];
-         $this->datas['##reception.associateditems_state##'] = 
-               Dropdown::getDropdownName("glpi_manufacturers", 
+         $this->datas['##reception.associateditems_state##'] =
+               Dropdown::getDropdownName("glpi_manufacturers",
                                           $item->getField("states_id"));
 
          // associateditems_url
-         $this->datas['##lang.reception.associateditems_url##'] = 
+         $this->datas['##lang.reception.associateditems_url##'] =
                   "URL ".$LANG['plugin_order']['item'][0];
          $url = $CFG_GLPI["url_base"]."/index.php?redirect=".strtolower($itemtype)."_".$items_id;
          $this->datas['##reception.associateditems_url##'] = urldecode($url);
@@ -268,7 +268,7 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      $tags = array( 
+      $tags = array(
                      // Order
                      'reception.ordername'      => $LANG['plugin_order'][39],
                      'reception.orderentity'    => $LANG['entity'][0],
@@ -283,19 +283,19 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
                      'reception.orderstate'     => $LANG['joblist'][0],
                      'reception.orderport'      => $LANG['plugin_order'][26],
                      'reception.ordercomment'   => $LANG['common'][25],
-                     'reception.ordernote'      => $LANG['title'][37],                     
+                     'reception.ordernote'      => $LANG['title'][37],
                   
                      // Delivery
-                     'reception.deliverydate'                     
+                     'reception.deliverydate'
                         => $LANG['plugin_order']['detail'][21],
                      'reception.deliverynumber'                   => $LANG['financial'][19],
-                     'reception.deliverystate'                    
+                     'reception.deliverystate'
                         => $LANG['plugin_order']['status'][3],
-                     'reception.deliveryurl'                      
+                     'reception.deliveryurl'
                         => "URL ".$LANG['plugin_order'][6],
                         
                      // DeliveryReference
-                     'reception.deliveryreference_name'           
+                     'reception.deliveryreference_name'
                         => $LANG['plugin_order']['reference'][1],
                      'reception.deliveryreference_itemtype'       => $LANG['state'][6],
                      'reception.deliveryreference_type'          => $LANG['common'][17],
@@ -303,11 +303,11 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
                      'reception.deliveryreference_manufacturer'  => $LANG['common'][5],
                      'reception.deliveryreference_comment'        => $LANG['common'][25],
                      'reception.deliveryreference_note'        => $LANG['title'][37],
-                     'reception.deliveryreference_url'            
+                     'reception.deliveryreference_url'
                         => "URL ".$LANG['plugin_order']['detail'][2],
 
                      // AssociatedItems
-                     'reception.associateditems_name'          
+                     'reception.associateditems_name'
                         => $LANG['plugin_order']['item'][0]." - ".$LANG['common'][16],
                      'reception.associateditems_serial'
                         => $LANG['plugin_order']['item'][0]." - ".$LANG['common'][19],
@@ -315,7 +315,7 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
                         => $LANG['plugin_order']['item'][0]." - ".$LANG['common'][20],
                      'reception.associateditems_state'
                         => $LANG['plugin_order']['item'][0]." - ".$LANG['state'][0],
-                     'reception.associateditems_url'           
+                     'reception.associateditems_url'
                         => "URL ".$LANG['plugin_order']['item'][0]
       );
 
@@ -334,14 +334,14 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
       $migration->displayMessage("Add order reception notification template");
       $notifications_id = false;
       
-      $query_id = "SELECT `id` 
-                   FROM `glpi_notificationtemplates` 
-                   WHERE `itemtype`='PluginOrderOrder_Item' 
+      $query_id = "SELECT `id`
+                   FROM `glpi_notificationtemplates`
+                   WHERE `itemtype`='PluginOrderOrder_Item'
                       AND `name` = 'Order Reception'";
       $result           = $DB->query($query_id) or die ($DB->error());
       
       if (!$DB->numrows($result)) {
-         $query = "INSERT INTO `glpi_notificationtemplates` 
+         $query = "INSERT INTO `glpi_notificationtemplates`
                    VALUES (NULL, 'Order Reception', 'PluginOrderOrder_Item', '2011-01-25 15:00:00','',NULL);";
          $DB->query($query) or die ($DB->error());
          $notifications_id = $DB->insert_id();
@@ -350,86 +350,86 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
       }
       
       if ($notifications_id) {
-         if (!countElementsInTable("glpi_notificationtemplatetranslations", 
+         if (!countElementsInTable("glpi_notificationtemplatetranslations",
                                    "`notificationtemplates_id`='$notifications_id'")) {
             $query="INSERT INTO `glpi_notificationtemplatetranslations`
-                     VALUES(NULL, ".$notifications_id.",'','##lang.reception.title##','##lang.reception.title## 
+                     VALUES(NULL, ".$notifications_id.",'','##lang.reception.title##','##lang.reception.title##
       
-      ##reception.orderurl## 
+      ##reception.orderurl##
       
-      ##lang.reception.ordername## : 
-      ##reception.ordername## 
-      ##lang.reception.orderdate## : 
-      ##reception.orderdate## 
+      ##lang.reception.ordername## :
+      ##reception.ordername##
+      ##lang.reception.orderdate## :
+      ##reception.orderdate##
       
-      ##lang.reception.orderentity## : 
-      ##reception.orderentity## 
-      ##lang.reception.orderstate## : 
-      ##reception.orderstate## 
+      ##lang.reception.orderentity## :
+      ##reception.orderentity##
+      ##lang.reception.orderstate## :
+      ##reception.orderstate##
       
-      ##lang.reception.ordernumber## : 
-      ##reception.ordernumber## 
-      ##lang.reception.orderbudget## : 
-      ##reception.orderbudget## 
+      ##lang.reception.ordernumber## :
+      ##reception.ordernumber##
+      ##lang.reception.orderbudget## :
+      ##reception.orderbudget##
       
-      ##lang.reception.orderlocation## : 
-      ##reception.orderlocation## 
-      ##lang.reception.ordertaxe## : 
-      ##reception.ordertaxe## 
+      ##lang.reception.orderlocation## :
+      ##reception.orderlocation##
+      ##lang.reception.ordertaxe## :
+      ##reception.ordertaxe##
       
-      ##lang.reception.ordersupplier## : 
-      ##reception.ordersupplier## 
-      ##lang.reception.orderpayment## : 
-      ##reception.orderpayment## 
+      ##lang.reception.ordersupplier## :
+      ##reception.ordersupplier##
+      ##lang.reception.orderpayment## :
+      ##reception.orderpayment##
       
-      ##lang.reception.ordercontact## : 
-      ##reception.ordercontact## 
-      ##lang.reception.orderport## : 
-      ##reception.orderport## 
+      ##lang.reception.ordercontact## :
+      ##reception.ordercontact##
+      ##lang.reception.orderport## :
+      ##reception.orderport##
       
-      ##lang.reception.ordercomment## : 
-      ##reception.ordercomment## 
-      ##lang.reception.ordernote## : 
-      ##reception.ordernote## 
+      ##lang.reception.ordercomment## :
+      ##reception.ordercomment##
+      ##lang.reception.ordernote## :
+      ##reception.ordernote##
       
-      Informations sur la r&#233;f&#233;rence r&#233;ceptionn&#233;e 
+      Informations sur la r&#233;f&#233;rence r&#233;ceptionn&#233;e
       
-      ##reception.deliveryreference_url## 
+      ##reception.deliveryreference_url##
       
-      ##lang.reception.deliveryreference_name## : 
-      ##reception.deliveryreference_name## 
-      ##lang.reception.deliveryreference_itemtype## : 
-      ##reception.deliveryreference_itemtype## 
+      ##lang.reception.deliveryreference_name## :
+      ##reception.deliveryreference_name##
+      ##lang.reception.deliveryreference_itemtype## :
+      ##reception.deliveryreference_itemtype##
       
-      ##lang.reception.deliveryreference_type## : 
-      ##reception.deliveryreference_type## 
-      ##lang.reception.deliveryreference_model## : 
-      ##reception.deliveryreference_model## 
+      ##lang.reception.deliveryreference_type## :
+      ##reception.deliveryreference_type##
+      ##lang.reception.deliveryreference_model## :
+      ##reception.deliveryreference_model##
       
-      ##lang.reception.deliveryreference_manufacturer## : 
-      ##reception.deliveryreference_manufacturer## 
+      ##lang.reception.deliveryreference_manufacturer## :
+      ##reception.deliveryreference_manufacturer##
       
-      ##lang.reception.deliveryreference_comment## : 
-      ##reception.deliveryreference_comment## 
-      ##lang.reception.deliveryreference_note## : 
-      ##reception.deliveryreference_note## 
+      ##lang.reception.deliveryreference_comment## :
+      ##reception.deliveryreference_comment##
+      ##lang.reception.deliveryreference_note## :
+      ##reception.deliveryreference_note##
       
-      Informations sur la r&#233;ception 
+      Informations sur la r&#233;ception
       
-      ##reception.deliveryurl## 
+      ##reception.deliveryurl##
       
-      ##lang.reception.deliverydate## : ##reception.deliverydate## 
-      ##lang.reception.deliverystate## : ##reception.deliverystate## 
-      ##lang.reception.deliverynumber## : ##reception.deliverynumber## 
+      ##lang.reception.deliverydate## : ##reception.deliverydate##
+      ##lang.reception.deliverystate## : ##reception.deliverystate##
+      ##lang.reception.deliverynumber## : ##reception.deliverynumber##
       
       ##IFreception.associateditems_url##
-      Informations sur le mat&#233;riel associ&#233; 
+      Informations sur le mat&#233;riel associ&#233;
       
-      ##reception.associateditems_url## 
+      ##reception.associateditems_url##
       
-      ##lang.reception.associateditems_name## : ##reception.associateditems_name## 
-      ##lang.reception.associateditems_serial## : ##reception.associateditems_serial## 
-      ##lang.reception.associateditems_otherserial## : ##reception.associateditems_otherserial## 
+      ##lang.reception.associateditems_name## : ##reception.associateditems_name##
+      ##lang.reception.associateditems_serial## : ##reception.associateditems_serial##
+      ##lang.reception.associateditems_otherserial## : ##reception.associateditems_otherserial##
       ##lang.reception.associateditems_state## : ##reception.associateditems_state##
       ##ENDIFreception.associateditems_url##','&lt;table style=\"border: 1px solid black; border-collapse: collapse;\"&gt;
       &lt;tbody&gt;
@@ -580,12 +580,12 @@ class PluginOrderNotificationTargetOrder_Item extends NotificationTarget {
       foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
          $options_template = array('notificationtemplates_id' => $data['id'], 'FIELDS'   => 'id');
       
-            foreach ($DB->request('glpi_notificationtemplatetranslations', 
+            foreach ($DB->request('glpi_notificationtemplatetranslations',
                                   $options_template) as $data_template) {
                $translation->delete($data_template);
             }
          $template->delete($data);
-      }      
+      }
    }
 }
 

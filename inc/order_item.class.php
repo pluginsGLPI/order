@@ -62,7 +62,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['plugin_order']['title'][1]." - ".$LANG['plugin_order']['menu'][5];
+      return $LANG['plugin_order'][60];
    }
 
    function getSearchOptions() {
@@ -1410,6 +1410,37 @@ class PluginOrderOrder_Item extends CommonDBChild {
       //Current table name
       $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
       
+      $DB->query("DELETE FROM `glpi_notifications` WHERE `itemtype`='PluginOrderOrder_Item'");
+      self::uninstallOrderItemNotification();
+      
+   }
+   
+   static function uninstallOrderItemNotification() {
+      global $DB;
+      
+      $notif = new Notification();
+      
+      $options = array('itemtype' => 'PluginOrderOrder_Item',
+                    'event'    => 'delivered',
+                    'FIELDS'   => 'id');
+      foreach ($DB->request('glpi_notifications', $options) as $data) {
+         $notif->delete($data);
+      }
+
+      $template    = new NotificationTemplate();
+      $translation = new NotificationTemplateTranslation();
+
+      //templates
+      $options = array('itemtype' => 'PluginOrderOrder_Item', 'FIELDS'   => 'id');
+      foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
+         $options_template = array('notificationtemplates_id' => $data['id'], 'FIELDS'   => 'id');
+      
+            foreach ($DB->request('glpi_notificationtemplatetranslations',
+                                  $options_template) as $data_template) {
+               $translation->delete($data_template);
+            }
+         $template->delete($data);
+      }
    }
 }
 

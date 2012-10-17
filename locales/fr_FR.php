@@ -108,6 +108,7 @@ $LANG['plugin_order']['config'][23] = "Activer la qualité des fournisseurs";
 $LANG['plugin_order']['config'][24] = "Afficher les informations fournisseur de la commande";
 $LANG['plugin_order']['config'][25] = "Couleur lorsque la date de livraison estimée est dépassée";
 $LANG['plugin_order']['config'][26] = "Copier les documents de la commande à la génération d'un matériel";
+$LANG['plugin_order']['config'][27] = "Rubrique par défaut pour l'ajout de documents à une commande";
 
 $LANG['plugin_order']['delivery'][1] = "Réception matériel(s)";
 $LANG['plugin_order']['delivery'][2] = "Réceptionner matériel";

@@ -67,6 +67,8 @@ function plugin_init_order() {
          = array('Infocom'  => array('PluginOrderOrder_Item', 'updateItem'),
                  'Contract' => array('PluginOrderOrder_Item', 'updateItem'));
       $PLUGIN_HOOKS['item_purge']['order']      = array();
+      $PLUGIN_HOOKS['item_add']['order']
+         = array('Document' => array('PluginOrderOrder', 'addDocumentCategory'));
       
       include_once(GLPI_ROOT."/plugins/order/inc/order_item.class.php");
       foreach (PluginOrderOrder_Item::getClasses(true) as $type) {
