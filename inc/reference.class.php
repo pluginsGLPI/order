@@ -163,6 +163,12 @@ class PluginOrderReference extends CommonDropdown {
                                          => array('table'      => 'glpi_plugin_order_references_suppliers',
                                                   'joinparams' => array('jointype' => 'child')));
       
+      $tab[35]['table']=$this->getTable();
+      $tab[35]['field']='date_mod';
+      $tab[35]['massiveaction']=false;
+      $tab[35]['name']=$LANG['common'][26];
+      $tab[35]['datatype']='datetime';
+      
       /* entity */
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
@@ -263,7 +269,10 @@ class PluginOrderReference extends CommonDropdown {
                          'type'  => 'reference_models_id'),
                    array('name'  => 'templates_id',
                          'label' => $LANG['common'][13],
-                         'type'  => 'reference_templates_id'));
+                         'type'  => 'reference_templates_id'),
+                   array('name'  => 'date_mod',
+                         'label' => $LANG['common'][26],
+                         'type'  => 'datetime'));
    }
 
    /**
@@ -1024,6 +1033,7 @@ class PluginOrderReference extends CommonDropdown {
                `is_deleted` tinyint(1) NOT NULL default '0',
                `is_active` tinyint(1) NOT NULL default '1',
                `notepad` longtext collate utf8_unicode_ci,
+               `date_mod` datetime default NULL,
                PRIMARY KEY  (`id`),
                KEY `name` (`name`),
                KEY `entities_id` (`entities_id`),
@@ -1032,7 +1042,8 @@ class PluginOrderReference extends CommonDropdown {
                KEY `models_id` (`models_id`),
                KEY `templates_id` (`templates_id`),
                KEY `is_active` (`is_active`),
-               KEY `is_deleted` (`is_deleted`)
+               KEY `is_deleted` (`is_deleted`),
+               KEY date_mod (date_mod)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
             $DB->query($query) or die ($DB->error());
             
@@ -1103,6 +1114,9 @@ class PluginOrderReference extends CommonDropdown {
                            VALUES (NULL,'PluginOrderReference','$num','$rank','0');");
             }
          }
+         //1.7.0
+         $migration->addField($table, "date_mod", "DATETIME DEFAULT NULL");
+         $migration->addKey($table, "date_mod");
       }
    }
    
