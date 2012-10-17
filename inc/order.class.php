@@ -583,17 +583,17 @@ class PluginOrderOrder extends CommonDBTM {
       }
 
       if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
-         $template   = "newcomp";
-         //$datestring = $LANG['computers'][14]." : ";
-         //$date       = Html::convDateTime($_SESSION["glpi_currenttime"]);
+         $template = "newcomp";
+         $datestring = $LANG['computers'][14]." : ";
+         $date = Html::convDateTime($_SESSION["glpi_currenttime"]);
       } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
-         $template   = "newtemplate";
-         //$datestring = $LANG['computers'][14]." : ";
-         //$date       = Html::convDateTime($_SESSION["glpi_currenttime"]);
+         $template = "newtemplate";
+         $datestring = $LANG['computers'][14]." : ";
+         $date = Html::convDateTime($_SESSION["glpi_currenttime"]);
       } else {
          $datestring = $LANG['common'][26].": ";
-         //$date       = Html::convDateTime($this->fields["date_mod"]);
-         $template   = false;
+         $date = Html::convDateTime($this->fields["date_mod"]);
+         $template = false;
       }
       $canedit   = ($this->canUpdateOrder() && $this->can($ID, 'w') && !$this->isCanceled());
       $cancancel = ($this->canCancel() && $this->can($ID, 'w') && $this->isCanceled());
@@ -911,9 +911,12 @@ class PluginOrderOrder extends CommonDBTM {
       
       echo "</td></tr>";
       
-      echo "<tr class='tab_bg_1'><td class='center' colspan = '4'>" . $LANG['common'][26] . ":";
-      echo Html::convDateTime($this->fields["date_mod"]);
-      echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='6'>";
+      $datestring = $LANG['common'][26].": ";
+      $date = Html::convDateTime($this->fields["date_mod"]);
+      echo $datestring.$date."</td>";
+      echo "</tr>";
       
       
       if ($canedit || $cancancel) {
