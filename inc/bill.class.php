@@ -220,7 +220,7 @@ class PluginOrderBill extends CommonDropdown {
          echo "<th>".$LANG['entity'][0]."</th>";
          echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
          echo "<th>".$LANG['state'][0]."</th>";
-         echo "<th>".$LANG['plugin_order']['generation'][9]."</th>";
+         //echo "<th>".$LANG['plugin_order']['generation'][9]."</th>";
          echo "</tr>";
 
          $old_itemtype = '';
