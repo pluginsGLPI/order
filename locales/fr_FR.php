@@ -71,6 +71,7 @@ $LANG['plugin_order'][56] = "Auteur";
 $LANG['plugin_order'][57] = "Groupe auteur";
 $LANG['plugin_order'][58] = "Destinataire";
 $LANG['plugin_order'][59] = "Groupe destinataire";
+$LANG['plugin_order'][60] = "Element de la commande";
 
 $LANG['plugin_order']['bill'][0] = "Facture";
 $LANG['plugin_order']['bill'][1] = "Type de facture";

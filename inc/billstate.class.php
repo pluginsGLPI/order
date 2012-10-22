@@ -92,11 +92,11 @@ class PluginOrderBillState extends CommonDropdown {
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die ($DB->error());
       }
-      $state = new self();
-      foreach (array(self::PAID   => $LANG['plugin_order']['status'][16],
-                     self::NOTPAID  => $LANG['plugin_order']['status'][17])
-               as $id => $label) {
-         if (!countElementsInTable($table, "`id`='$id'")) {
+      if (countElementsInTable($table, "`id`='$id'") < 2) {
+         $state = new self();
+         foreach (array(self::PAID   => $LANG['plugin_order']['status'][16],
+                        self::NOTPAID  => $LANG['plugin_order']['status'][17])
+                  as $id => $label) {
             $state->add(array('id' => $id, 'name' => Toolbox::addslashes_deep($label)));
          }
       }
@@ -107,4 +107,3 @@ class PluginOrderBillState extends CommonDropdown {
       $DB->query("DROP TABLE IF EXISTS `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
    }
 }
-?>

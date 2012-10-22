@@ -66,6 +66,11 @@ $LANG['plugin_order'][52] = "Unlink";
 $LANG['plugin_order'][53] = "Delivery date";
 $LANG['plugin_order'][54] = "Due date overtake";
 $LANG['plugin_order'][55] = "Late orders";
+$LANG['plugin_order'][56] = "Author";
+$LANG['plugin_order'][57] = "Author group";
+$LANG['plugin_order'][58] = "Recipient";
+$LANG['plugin_order'][59] = "Recipient group";
+$LANG['plugin_order'][60] = "Order item";
 
 $LANG['plugin_order']['bill'][0] = "Bill";
 $LANG['plugin_order']['bill'][1] = "Bill type";
