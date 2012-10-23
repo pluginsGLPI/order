@@ -92,7 +92,7 @@ class PluginOrderBillState extends CommonDropdown {
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die ($DB->error());
       }
-      if (countElementsInTable($table, "`id`='$id'") < 2) {
+      if (countElementsInTable($table) < 2) {
          $state = new self();
          foreach (array(self::PAID   => $LANG['plugin_order']['status'][16],
                         self::NOTPAID  => $LANG['plugin_order']['status'][17])

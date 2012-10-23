@@ -841,7 +841,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
       }
    }
 
-    function showPluginFromItems($itemtype, $ID) {
+   function showPluginFromItems($itemtype, $ID) {
       global $LANG,$CFG_GLPI;
  
       $infos = $this->getOrderInfosByItem($itemtype, $ID);
@@ -1197,7 +1197,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
       echo "<br>";
    }
    
-  function dropdownBillItemsActions($orders_id) {
+   function dropdownBillItemsActions($orders_id) {
       global $LANG, $CFG_GLPI;
       $action['']      = Dropdown::EMPTY_VALUE;
       $action['bill']  = $LANG['plugin_order']['bill'][0];
@@ -1423,7 +1423,6 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                   "`plugin_order_orders_id` = '".$item->getID()."'");
    }
 
-
    static function countForItem(CommonDBTM $item) {
 
       return countElementsInTable('glpi_plugin_order_orders_items',
@@ -1450,7 +1449,6 @@ class PluginOrderOrder_Item extends CommonDBChild {
       }
       return '';
    }
-
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       if (get_class($item) == 'Budget') {

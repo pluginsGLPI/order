@@ -522,11 +522,9 @@ class PluginOrderOrder extends CommonDBTM {
 			}
 		}
 	}
-	
+
    function prepareInputForUpdate($input) {
       global $LANG;
-      Toolbox::logDebug("update", $input);
-      
       if( (isset($input['budgets_id'])
          && $input['budgets_id'] > 0)
             || (isset($input['budgets_id'])

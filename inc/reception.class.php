@@ -191,13 +191,17 @@ class PluginOrderReception extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       
       echo "<td>" . $LANG['plugin_order']['detail'][2] . ": </td>";
-      echo "<td colspan='3'>";
+      echo "<td>";
       $data         = array();
       $data["id"]   = $this->fields["plugin_order_references_id"];
       $data["name"] = $order_reference->fields["name"];
       echo $order_reference->getReceptionReferenceLink($data);
       echo "</td>";
 
+      echo "<td>".$LANG['plugin_order']['status'][8]."</td>";
+      echo "<td>";
+      Dropdown::showYesNo('states_id', $this->fields['states_id']);
+      echo "</td>";
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
@@ -521,6 +525,7 @@ class PluginOrderReception extends CommonDBTM {
             $this->receptionOneItem($DB->result($result, $i, 0), $params['plugin_order_orders_id'],
                                     $params["delivery_date"], $params["delivery_number"],
                                     $params["plugin_order_deliverystates_id"]);
+            $this->updateReceptionStatus(array('item' => array($DB->result($result, $i, 0) => 'on')));
          }
          $detail = new PluginOrderOrder_Item();
          $detail->updateDelivryStatus($params['plugin_order_orders_id']);
@@ -622,6 +627,15 @@ class PluginOrderReception extends CommonDBTM {
       } else {
          Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
       }
+   }
+   
+   function prepareInputForUpdate($input) {
+      if (isset($input['states_id']) && !$input['states_id']) {
+         $input['delivery_date']                  = null;
+         $input['delivery_number']                = '';
+         $input['plugin_order_deliverystates_id'] = 0;
+      }
+      return $input;
    }
    
    /**

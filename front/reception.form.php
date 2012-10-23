@@ -33,8 +33,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 if(!isset($_GET["id"])) {
    $_GET["id"] = "";
-} 
-if(!isset($_GET["withtemplate"])) { 
+}
+if(!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
 }
 
@@ -62,13 +62,14 @@ if (isset ($_POST["update"])) {
                $input["delivery_number"]                = $_POST["delivery_number"];
                $input["plugin_order_deliverystates_id"] = $_POST["plugin_order_deliverystates_id"];
                $input["delivery_comment"]               = $_POST["delivery_comment"];
-               $order_item->update($input);
+               $reception->update($input);
             }
          }
       } else {
-         $order_item->update($_POST);
+         $reception->update($_POST);
       }
    }
+   $reception->updateReceptionStatus(array('item' => array($_POST['id'] => 'on')));
    Html::redirect($_SERVER['HTTP_REFERER']);
    
 } elseif (isset ($_POST["delete"])) {
