@@ -142,7 +142,8 @@ class PluginOrderReference extends CommonDropdown {
       $tab[32]['usehaving']     = true;
       $tab[32]['massiveaction'] = false;
       $tab[32]['joinparams']    = array('jointype' => 'child');
-
+      $tab[32]['datatype']      = 'decimal';
+      
       $tab[33]['table']         = 'glpi_plugin_order_references_suppliers';
       $tab[33]['field']         = 'reference_code';
       $tab[33]['name']          = $LANG['plugin_order']['reference'][10];
@@ -581,7 +582,7 @@ class PluginOrderReference extends CommonDropdown {
    
    
    /**
-    * Permet l'affichage dynamique d'une liste déroulante imbriquee
+    * Permet l'affichage dynamique d'une liste dï¿½roulante imbriquee
     *
     * @static
     * @param array ($itemtype,$options)
@@ -1082,6 +1083,7 @@ class PluginOrderReference extends CommonDropdown {
                                  "tinyint(1) NOT NULL default '0'");
          $migration->addField($table, "notepad", "longtext collate utf8_unicode_ci");
          $migration->addField($table, "is_active", "TINYINT(1) NOT NULL DEFAULT '1'");
+         $migration->addField($table, "date_mod", "datetime");
          
          $migration->addKey($table, "name");
          $migration->addKey($table, "entities_id");
@@ -1091,6 +1093,7 @@ class PluginOrderReference extends CommonDropdown {
          $migration->addKey($table, "templates_id");
          $migration->addKey($table, "is_deleted");
          $migration->addKey($table, "is_active");
+         $migration->addKey($table, "date_mod");
          $migration->migrationOneTable($table);
 
          Plugin::migrateItemType(array(3151 => 'PluginOrderReference'),

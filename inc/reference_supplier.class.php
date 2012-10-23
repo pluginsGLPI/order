@@ -83,9 +83,9 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       $tab[1]['name'] = $LANG['plugin_order']['reference'][10];
       $tab[1]['datatype'] = 'text';
 
-      $tab[2]['table'] = $this->getTable();
-      $tab[2]['field'] = 'price_taxfree';
-      $tab[2]['name'] = $LANG['plugin_order']['detail'][4];
+      $tab[2]['table']    = $this->getTable();
+      $tab[2]['field']    = 'price_taxfree';
+      $tab[2]['name']     = $LANG['plugin_order']['detail'][4];
       $tab[2]['datatype'] = 'decimal';
 
       $tab[3]['table'] = 'glpi_suppliers';

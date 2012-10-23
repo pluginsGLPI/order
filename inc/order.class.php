@@ -1998,7 +1998,7 @@ class PluginOrderOrder extends CommonDBTM {
          $migration->addField($table, "groups_id_delivery", "INT(11) NOT NULL DEFAULT '0'");
          
          //1.7.0
-         $migration->addField($table, "date_mod", "DATETIME NULL");
+         $migration->addField($table, "date_mod", "datetime");
          $migration->addKey($table, "date_mod");
          
          //Displayprefs
