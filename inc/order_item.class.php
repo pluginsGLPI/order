@@ -1451,16 +1451,12 @@ class PluginOrderOrder_Item extends CommonDBChild {
    }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      if (get_class($item) == 'Budget') {
-         $order = new self();
-         $order->getAllOrdersByBudget($item->getID());
-      } elseif(get_class($item) == 'PluginOrderOrder') {
+      if(get_class($item) == 'PluginOrderOrder') {
          $order_item = new self();
          $order_item->showItem($item->getID());
       } else if (in_array($item->getType(), PluginOrderOrder_Item::getClasses(true))) {
          $order_item = new self();
          $order_item->showPluginFromItems(get_class($item), $item->getField('id'));
-
       }
       return true;
    }

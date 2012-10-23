@@ -185,14 +185,15 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       return true;
    }
    
-   function showOrderSupplierInfos($ID) {
+   static function showOrderSupplierInfos($ID) {
       global $LANG, $DB, $CFG_GLPI;
 
+      $table = getTableForItemType(__CLASS__);
       $order = new PluginOrderOrder();
       $order->getFromDB($ID);
 
-      Session::initNavigateListItems($this->getType(),
-                            $LANG['plugin_order'][7] ." = ". $order->fields["name"]);
+      Session::initNavigateListItems(__CLASS__,
+                                     $LANG['plugin_order'][7] ." = ". $order->fields["name"]);
 
       $candelete = $order->can($ID,'w');
       $rand      = mt_rand();
@@ -203,7 +204,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo "<div class='center'>";
       echo "<input type='hidden' name='plugin_order_orders_id' value='" . $ID . "'>";
       
-      if (countElementsInTable($this->getTable(), "`plugin_order_orders_id` = '$ID'") > 0) {
+      if (countElementsInTable($table, "`plugin_order_orders_id` = '$ID'") > 0) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='4'>".$LANG['plugin_order'][4]."</th></tr>";
          echo "<tr><th>&nbsp;</th>";
@@ -212,8 +213,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          echo "<th>" . $LANG['plugin_order'][31] . "</th>";
          echo "</tr>";
 
-         foreach (getAllDatasFromTable($this->getTable(), "`plugin_order_orders_id` = '$ID'") as $data) {
-            Session::addToNavigateListItems($this->getType(),$data['id']);
+         foreach (getAllDatasFromTable($table, "`plugin_order_orders_id` = '$ID'") as $data) {
+            Session::addToNavigateListItems(__CLASS__,$data['id']);
             echo "<input type='hidden' name='item[" . $data["id"] . "]' value='" . $ID . "'>";
             echo "<tr class='tab_bg_1 center'>";
             echo "<td>";
@@ -225,7 +226,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
                echo ">";
             }
             echo "</td>";
-            $link=Toolbox::getItemTypeFormURL($this->getType());
+            $link=Toolbox::getItemTypeFormURL(__CLASS__);
             echo "<td><a href='".$link."?id=".$data["id"]."&plugin_order_orders_id=".$ID."'>" .
                Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
             echo "<td>";
@@ -260,42 +261,46 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       }
    }
    
-   function showDeliveries($suppliers_id) {
-      global $LANG,$DB;
+   static function showDeliveries($suppliers_id) {
+      global $LANG, $DB;
       
-      $query = "SELECT COUNT(`glpi_plugin_order_orders_items`.`plugin_order_references_id`) AS ref, `glpi_plugin_order_orders_items`.`plugin_order_deliverystates_id`, `glpi_plugin_order_orders`.`entities_id`
+      $query = "SELECT COUNT(`glpi_plugin_order_orders_items`.`plugin_order_references_id`) AS ref,
+                       `glpi_plugin_order_orders_items`.`plugin_order_deliverystates_id` as sid,
+                       `glpi_plugin_order_orders`.`entities_id`
                   FROM `glpi_plugin_order_orders_items`
-                  LEFT JOIN `glpi_plugin_order_orders` ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`)
+                  LEFT JOIN `glpi_plugin_order_orders`
+                     ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`)
                   WHERE `glpi_plugin_order_orders`.`suppliers_id` = '".$suppliers_id."'
                   AND `glpi_plugin_order_orders_items`.`states_id` = '".PluginOrderOrder::ORDER_DEVICE_DELIVRED."' "
                   .getEntitiesRestrictRequest(" AND ","glpi_plugin_order_orders",'','',true);
-      $query.= "GROUP BY `glpi_plugin_order_orders`.`entities_id`,`glpi_plugin_order_orders_items`.`plugin_order_deliverystates_id`";
+      $query.= "GROUP BY `glpi_plugin_order_orders`.`entities_id`,
+                         `glpi_plugin_order_orders_items`.`plugin_order_deliverystates_id`";
       $result = $DB->query($query);
-      $nb = $DB->numrows($result);
+      $nb     = $DB->numrows($result);
       
       echo "<br><div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
       echo "<th>".$LANG['entity'][0]."</th>";
-      echo "<th>" . $LANG['plugin_order']['status'][13] ."</th>";
+      echo "<th>".$LANG['plugin_order']['status'][13] ."</th>";
       echo "</tr>";
       
       if ($nb) {
-         for ($i=0 ; $i <$nb ; $i++) {
-            $ref = $DB->result($result,$i,"ref");
-            $entities_id = $DB->result($result,$i,"entities_id");
-            $plugin_order_deliverystates_id = $DB->result($result, $i,
-                                                          "plugin_order_deliverystates_id");
+         for ($i = 0 ; $i < $nb ; $i++) {
+            $ref               = $DB->result($result,$i,"ref");
+            $entities_id       = $DB->result($result,$i,"entities_id");
+            $deliverystates_id = $DB->result($result, $i, "sid");
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
-            echo Dropdown::getDropdownName("glpi_entities",$entities_id);
+            echo Dropdown::getDropdownName("glpi_entities", $entities_id);
             echo "</td>";
-            if ($plugin_order_deliverystates_id > 0)
+            if ($deliverystates_id > 0) {
                $name = Dropdown::getDropdownName("glpi_plugin_order_deliverystates",
-                                                 $plugin_order_deliverystates_id);
-            else
+                                                 $deliverystates_id);
+            } else {
                $name = $LANG['plugin_order']['status'][4];
-            echo "<td>" .$ref. "&nbsp;".$name."</td>";
+            }
+            echo "<td>" .$name. "&nbsp;:".$ref."</td>";
             echo "</tr>";
          }
       }
@@ -402,21 +407,17 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       return '';
    }
 
-
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       if (get_class($item) == 'Supplier') {
-         $reference      = new PluginOrderReference();
-         $order_supplier = new self();
-         $surveysupplier = new PluginOrderSurveySupplier();
-         $reference->showReferencesFromSupplier($item->getField('id'));
-         $order_supplier->showDeliveries($item->getField('id'));
-         $surveysupplier->showGlobalNotation($item->getField('id'));
+         PluginOrderReference_Supplier::showReferencesFromSupplier($item->getField('id'));
+         self::showDeliveries($item->getField('id'));
+         PluginOrderSurveySupplier::showGlobalNotation($item->getField('id'));
       } elseif (get_class($item) == 'PluginOrderOrder') {
          $order_supplier = new self();
-         $order_supplier->showOrderSupplierInfos($item->getID());
+         self::showOrderSupplierInfos($item->getID());
          if (!$order_supplier->checkIfSupplierInfosExists($item->getID())
             && $item->can($item->getID(),'w')) {
-            $order_supplier->showOrderSupplierInfos($item->getID());
+            self::showOrderSupplierInfos($item->getID());
             $order_supplier->showForm("", array('plugin_order_orders_id' => $item->getID()));
          }
       }

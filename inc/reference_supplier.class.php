@@ -421,6 +421,75 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       //Current table name
       $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`");
    }
+
+   static function showReferencesFromSupplier($ID){
+      global $LANG, $DB, $CFG_GLPI;
+
+      if (isset($_POST["start"])) {
+         $start = $_POST["start"];
+      } else {
+         $start = 0;
+      }
+      
+      $query = "SELECT `gr`.`id`, `gr`.`manufacturers_id`, `gr`.`entities_id`, `gr`.`itemtype`,
+                       `gr`.`name`, `grm`.`price_taxfree`, `grm`.`reference_code`
+               FROM `glpi_plugin_order_references_suppliers` AS grm, `glpi_plugin_order_references` AS gr
+               WHERE `grm`.`suppliers_id` = '$ID'
+                  AND `grm`.`plugin_order_references_id` = `gr`.`id`"
+               .getEntitiesRestrictRequest(" AND ", "gr", '', '', true);
+      $query_limit = $query." LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
+      $result = $DB->query($query);
+      $nb     = $DB->numrows($result);
+      echo "<div class='center'>";
+
+      if ($nb) {
+
+         $result = $DB->query($query_limit);
+         Html::printAjaxPager($LANG['plugin_order']['reference'][3], $start, $nb);
+         
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr>";
+         echo "<th>".$LANG['entity'][0]."</th>";
+         echo "<th>".$LANG['common'][5]."</th>";
+         echo "<th>".$LANG['plugin_order']['reference'][1]."</th>";
+         echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
+         echo "<th>".$LANG['plugin_order']['reference'][1]."</th>";
+         echo "<th>".$LANG['plugin_order']['detail'][4]."</th></tr>";
+         
+         
+         while ($data = $DB->fetch_array($result)) {
+            echo "<tr class='tab_bg_1' align='center'>";
+            echo "<td>";
+            echo Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
+            echo "</td>";
+
+            echo "<td>";
+            echo Dropdown::getDropdownName("glpi_manufacturers", $data["manufacturers_id"]);
+            echo "</td>";
+
+            echo "<td>";
+            $PluginOrderReference = new PluginOrderReference();
+            echo $PluginOrderReference->getReceptionReferenceLink($data);
+            echo "</td>";
+            
+            echo "<td>";
+            $item = new $data["itemtype"]();
+            echo $item->getTypeName();
+            echo "</td>";
+            
+            echo "<td>";
+            echo $data['reference_code'];
+            echo "</td>";
+            
+            echo "<td>";
+            echo $data["price_taxfree"];
+            echo "</td>";
+            echo "</tr>";
+         }
+      }
+      echo "</table>";
+      echo "</div>";
+   }
 }
 
 ?>
