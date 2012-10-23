@@ -544,11 +544,6 @@ class PluginOrderReception extends CommonDBTM {
       $input["plugin_order_deliverystates_id"] = $plugin_order_deliverystates_id;
       $detail->update($input);
 
-      if ($CFG_GLPI["use_mailing"]) {
-         $detail->getFromDB($detailID);
-         NotificationEvent::raiseEvent('delivered', $detail, array());
-      }
-
       Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
    }
    
@@ -617,8 +612,9 @@ class PluginOrderReception extends CommonDBTM {
                         $this->receptionOneItem($key, $plugin_order_orders_id,
                                                 $params["delivery_date"], $params["delivery_number"],
                                                 $params["plugin_order_deliverystates_id"]);
-                     } else
+                     } else {
                         Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);
+                     }
                   }
                }
             }// $val == 1
