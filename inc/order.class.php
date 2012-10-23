@@ -1732,7 +1732,9 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
    static function addDocumentCategory(Document $document) {
-      if (isset($document->input['itemtype']) && $document->input['itemtype'] == __CLASS__) {
+      if (isset($document->input['itemtype'])
+         && $document->input['itemtype'] == __CLASS__
+            && !$document->input['documentcategories_id']) {
          $config   = PluginOrderConfig::getConfig();
          $category = $config->getDefaultDocumentCategory();
          if ($category) {
