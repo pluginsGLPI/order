@@ -861,6 +861,16 @@ class PluginOrderOrder extends CommonDBTM {
          echo "</td>";
 
       echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo $LANG['common'][26].": </td>";
+      echo "<td>";
+      echo Html::convDateTime($this->fields["date_mod"]);
+      echo "</td><td colspan='2'></td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['mailing'][121]."</td></tr>";
       
       echo "<tr class='tab_bg_1'><td>".$LANG['plugin_order'][56]."</td><td>";
       if ($canedit) {
@@ -907,14 +917,6 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</td>";
       
       echo "</td></tr>";
-      
-      echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='6'>";
-      $datestring = $LANG['common'][26].": ";
-      $date = Html::convDateTime($this->fields["date_mod"]);
-      echo $datestring.$date."</td>";
-      echo "</tr>";
-      
       
       if ($canedit || $cancancel) {
          $this->showFormButtons($options);

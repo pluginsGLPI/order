@@ -51,7 +51,7 @@ if (isset ($_POST["add"])) {
    $_POST['plugin_order_orderstates_id'] = $config->getDraftState();
 
    $newID = $pluginOrderOrder->add($_POST);
-   Html::redirect($_SERVER['HTTP_REFERER']."?id=$newID");
+   Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=$newID");
 }
 /* delete order */
 else if (isset ($_POST["delete"])) {
