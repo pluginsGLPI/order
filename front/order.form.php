@@ -91,7 +91,7 @@ else if (isset ($_POST["validate"])) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getApprovedState(),
                                            $_POST["comment"]);
-      $pluginOrderOrder_Item->updateDelivryStatus($_POST["id"]);
+      PluginOrderReception::updateDelivryStatus($_POST["id"]);
       Session::addMessageAfterRedirect($LANG['plugin_order']['validation'][10]);
       
    }
