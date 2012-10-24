@@ -475,7 +475,7 @@ class PluginOrderConfig extends CommonDBTM {
             $migration->addField($table, "shoudbedelivered_color",
                                  "char(20) collate utf8_unicode_ci default '#ff5555'");
             $migration->addField($table, "copy_documents", "tinyint(1) NOT NULL DEFAULT '0'");
-            $migration->addField($table, "documentcategories_id", "integer");
+            $migration->addField($table, "documentcategories_id", "int(11) NOT NULL default '0'");
             $migration->migrationOneTable($table);
             
       }

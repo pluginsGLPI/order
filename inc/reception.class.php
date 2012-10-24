@@ -190,13 +190,18 @@ class PluginOrderReception extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       
       echo "<td>" . $LANG['plugin_order']['detail'][2] . ": </td>";
-      echo "<td colspan='3'>";
+      echo "<td>";
       $data         = array();
       $data["id"]   = $this->fields["plugin_order_references_id"];
       $data["name"] = $order_reference->fields["name"];
       echo $order_reference->getReceptionReferenceLink($data);
       echo "</td>";
 
+      echo "<td>".$LANG['plugin_order']['status'][8]."</td>";
+      echo "<td>";
+      Dropdown::showYesNo('states_id', $this->fields['states_id']);
+      echo "</td>";
+      
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
@@ -530,8 +535,7 @@ class PluginOrderReception extends CommonDBTM {
                                     $params["delivery_date"], $params["delivery_number"],
                                     $params["plugin_order_deliverystates_id"]);
          }
-         $detail = new PluginOrderOrder_Item();
-         $detail->updateDelivryStatus($params['plugin_order_orders_id']);
+         self::updateDelivryStatus($params['plugin_order_orders_id']);
       }
    }
    
@@ -620,16 +624,72 @@ class PluginOrderReception extends CommonDBTM {
                         $this->receptionOneItem($key, $plugin_order_orders_id,
                                                 $params["delivery_date"], $params["delivery_number"],
                                                 $params["plugin_order_deliverystates_id"]);
-                     } else
+                     } else {
                         addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);
+                     }
                   }
                }
             }// $val == 1
 
-         $detail->updateDelivryStatus($plugin_order_orders_id);
+         self::updateDelivryStatus($plugin_order_orders_id);
       } else {
          addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
       }
+   }
+
+   static function updateDelivryStatus($orders_id) {
+      global $DB;
+
+      $config = PluginOrderConfig::getConfig();
+      $order  = new PluginOrderOrder();
+
+      $order->getFromDB($orders_id);
+
+      $query = "SELECT `states_id`
+                FROM `glpi_plugin_order_orders_items`
+                WHERE `plugin_order_orders_id` = '$orders_id'";
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      
+      $delivery_status = 0;
+      $is_delivered    = 1; //Except order to be totally delivered
+      if ($number) {
+         while ($data = $DB->fetch_array($result)) {
+            if ($data["states_id"] == PluginOrderOrder::ORDER_DEVICE_DELIVRED) {
+               $delivery_status = 1;
+            } else {
+               $is_delivered    = 0;
+            }
+         }
+      }
+
+      //Are all items delivered ?
+      if ($is_delivered && !$order->isDelivered()) {
+          $order->updateOrderStatus($orders_id, $config->getDeliveredState());
+         //At least one item is delivered
+      } else {
+         if ($delivery_status) {
+            $order->updateOrderStatus($orders_id,
+                                      $config->getPartiallyDeliveredState());
+         }
+      }
+   }
+   
+   function prepareInputForUpdate($input) {
+      if (isset($input['states_id']) && !$input['states_id']) {
+         $input['delivery_date']                  = null;
+         $input['delivery_number']                = '';
+         $input['plugin_order_deliverystates_id'] = 0;
+      }
+      return $input;
+   }
+   
+   function post_updateItem($history = 1) {
+      self::updateDelivryStatus($this->fields['plugin_order_orders_id']);
+   }
+   
+   function post_purgeItem() {
+      self::updateDelivryStatus($this->fields['plugin_order_orders_id']);
    }
    
    /**

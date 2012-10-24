@@ -771,44 +771,6 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                              AND `states_id` != '0' ");
    }
 
-   function updateDelivryStatus($orders_id) {
-      global $DB;
-
-      $config = PluginOrderConfig::getConfig();
-      $order  = new PluginOrderOrder();
-
-      $order->getFromDB($orders_id);
-
-      $query = "SELECT `states_id`
-                FROM `".$this->getTable()."`
-                WHERE `plugin_order_orders_id` = '$orders_id'";
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-      
-      $delivery_status = 0;
-      $is_delivered    = 1; //Except order to be totally delivered
-      if ($number) {
-         while ($data = $DB->fetch_array($result)) {
-            if ($data["states_id"] == PluginOrderOrder::ORDER_DEVICE_DELIVRED) {
-               $delivery_status = 1;
-            } else {
-               $is_delivered    = 0;
-            }
-         }
-      }
-
-      //Are all items delivered ?
-      if ($is_delivered && !$order->isDelivered()) {
-          $order->updateOrderStatus($orders_id, $config->getDeliveredState());
-         //At least one item is delivered
-      } else {
-         if ($delivery_status) {
-            $order->updateOrderStatus($orders_id,
-                                      $config->getPartiallyDeliveredState());
-         }
-      }
-   }
-
    function getAllPrices($orders_id) {
       global $DB;
 
@@ -1409,8 +1371,6 @@ class PluginOrderOrder_Item extends CommonDBChild {
       $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_detail`") or die ($DB->error());
       //Current table name
       $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
-      
-      $DB->query("DELETE FROM `glpi_notifications` WHERE `itemtype`='PluginOrderOrder_Item'");
       self::uninstallOrderItemNotification();
       
    }
