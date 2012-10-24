@@ -235,6 +235,7 @@ class PluginOrderPreference extends CommonDBTM {
          $DB->query($query) or die ($DB->error());
       } else {
          //1.5.3
+         $migration->changeField($table, 'ID', 'id', "int(11) NOT NULL auto_increment");
          $migration->changeField($table, 'user_id', 'users_id', "INT(11) NOT NULL DEFAULT '0'");
          $migration->addKey($table, 'users_id');
          $migration->migrationOneTable($table);

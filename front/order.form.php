@@ -51,7 +51,7 @@ if (isset ($_POST["add"])) {
    $_POST['plugin_order_orderstates_id'] = $config->getDraftState();
 
    $newID = $pluginOrderOrder->add($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']."?id=$newID");
+   glpi_header(getItemTypeFormURL('PluginOrderOrder')."?id=$newID");
 }
 /* delete order */
 else if (isset ($_POST["delete"])) {

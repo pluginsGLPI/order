@@ -265,7 +265,7 @@ class PluginOrderReception extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
-      
+      $options['candel'] = false;
       $this->showFormButtons($options);
       $this->addDivForTabs();
 
@@ -689,6 +689,7 @@ class PluginOrderReception extends CommonDBTM {
    }
    
    function post_purgeItem() {
+      logDebug($this->fields);
       self::updateDelivryStatus($this->fields['plugin_order_orders_id']);
    }
    

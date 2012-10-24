@@ -411,7 +411,7 @@ class PluginOrderOrder extends CommonDBTM {
       $ong    = array();
       $ong[1] = $LANG['title'][26];
 
-      if (!$this->getID() || $this->fields['is_template']) {
+      if (!$this->getID() || (isset($options['withtemplate']) && $options['withtemplate'] == 1)) {
          return $ong;
 
       }
@@ -1382,8 +1382,18 @@ class PluginOrderOrder extends CommonDBTM {
                                                     true,'UTF-8');
                
          }
+         $message = "_";
+         if (isMultiEntitiesMode()) {
+            $entity = new Entity;
+            $entity->getFromDB($this->fields['entities_id']);
+            $message.= $entity->getName();
+         }
+         $message   .= "_".$this->fields['num_order']."_";
+         $message   .= convDateTime($_SESSION['glpi_currenttime']);
+         $message    = str_replace(" ", "_", $message);
+         $outputfile = str_replace(".odt", $message.".odt", $template);
          // We export the file
-         $odf->exportAsAttachedFile();
+         $odf->exportAsAttachedFile($outputfile);
       }
    }
    
@@ -1422,7 +1432,7 @@ class PluginOrderOrder extends CommonDBTM {
       
       $query = "SELECT *
                FROM `".$this->getTable()."`
-               WHERE `budgets_id` = '".$budgets_id." AND `is_template`='0'
+               WHERE `budgets_id` = '".$budgets_id."' AND `is_template`='0'
                ORDER BY `entities_id`, `name` ";
       $result = $DB->query($query);
 
