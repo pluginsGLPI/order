@@ -142,7 +142,8 @@ class PluginOrderReference extends CommonDropdown {
       $tab[32]['usehaving']     = true;
       $tab[32]['massiveaction'] = false;
       $tab[32]['joinparams']    = array('jointype' => 'child');
-
+      $tab[32]['datatype']      = 'decimal';
+      
       $tab[33]['table']         = 'glpi_plugin_order_references_suppliers';
       $tab[33]['field']         = 'reference_code';
       $tab[33]['name']          = $LANG['plugin_order']['reference'][10];

@@ -65,7 +65,7 @@ class PluginOrderBill extends CommonDropdown {
       }
 
       return $input;
-   }   
+   }
 
    function getAdditionalFields() {
       global $LANG;
@@ -144,8 +144,8 @@ class PluginOrderBill extends CommonDropdown {
    function defineMoreTabs($options=array()) {
       global $LANG;
       if ($this->fields['id'] > 0) {
-         return array(4 => $LANG['plugin_order']['menu'][4], 5 => $LANG['Menu'][27], 
-                      6 => $LANG['plugin_order']['item'][0], 10 => $LANG['title'][37], 
+         return array(4 => $LANG['plugin_order']['menu'][4], 5 => $LANG['Menu'][27],
+                      6 => $LANG['plugin_order']['item'][0], 10 => $LANG['title'][37],
                       12 => $LANG['title'][38]);
       } else {
          return array();
@@ -242,7 +242,7 @@ class PluginOrderBill extends CommonDropdown {
       $bills_id = $bill->getID();
       $query = "SELECT * FROM `".getTableForItemType("PluginOrderOrder_Item");
       $query.= "` WHERE `plugin_order_bills_id` = '$bills_id'";
-      $query.= getEntitiesRestrictRequest(" AND", getTableForItemType("PluginOrderOrder_Item"), 
+      $query.= getEntitiesRestrictRequest(" AND", getTableForItemType("PluginOrderOrder_Item"),
                                           "entities_id", $bill->getEntityID(), true);
       $query.= "GROUP BY `itemtype`";
       $result = $DB->query($query);
@@ -312,7 +312,7 @@ class PluginOrderBill extends CommonDropdown {
       $order = new PluginOrderOrder();
       $order->getFromDB($bill->fields['plugin_order_orders_id']);
       
-      //Can write orders, and order is not already paid 
+      //Can write orders, and order is not already paid
       $canedit = $order->can($order->getID(), 'w')
                    && !$order->isPaid() && !$order->isCanceled();
 
@@ -365,7 +365,7 @@ class PluginOrderBill extends CommonDropdown {
             echo "<form method='post' name='bills_form$rand' id='bills_form$rand'  " .
                      "action='" . getItemTypeFormURL('PluginOrderBill') . "'>";
                         
-            echo "<input type='hidden' name='plugin_order_orders_id' 
+            echo "<input type='hidden' name='plugin_order_orders_id'
                      value='" . $order->getID() . "'>";
             echo "<table class='tab_cadre_fixe'>";
 
@@ -387,7 +387,7 @@ class PluginOrderBill extends CommonDropdown {
                      $sel = "checked";
                   }
                   echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
-                  echo "<input type='hidden' name='plugin_order_orders_id' value='" . 
+                  echo "<input type='hidden' name='plugin_order_orders_id' value='" .
                       $order->getID() . "'>";
                   echo "</td>";
                }
@@ -400,14 +400,14 @@ class PluginOrderBill extends CommonDropdown {
                //Type
                echo "<td align='center'>";
                if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."type.class.php")) {
-                  echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"), 
+                  echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"),
                                                                      $data["types_id"]);
                }
                echo "</td>";
                //Model
                echo "<td align='center'>";
                if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."model.class.php")) {
-                  echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"), 
+                  echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"),
                                                  $data["models_id"]);
                }
                $bill = new PluginOrderBill();
@@ -423,7 +423,7 @@ class PluginOrderBill extends CommonDropdown {
                }
                echo "</td>";
                echo "<td align='center'>";
-               echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBillState'), 
+               echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBillState'),
                                                                   $data['plugin_order_billstates_id']);
                echo "</td>";
                echo "</tr>";
@@ -436,11 +436,11 @@ class PluginOrderBill extends CommonDropdown {
             echo "<div class='center'>";
             echo "<table width='950px' class='tab_glpi'>";
             echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"].
-               "/pics/arrow-left.png\" alt=''></td><td class='center'>"; 
+               "/pics/arrow-left.png\" alt=''></td><td class='center'>";
             echo "<a onclick= \"if ( markCheckboxes('bills_form$rand') ) " .
                   "return false;\" href='#'>".$LANG['buttons'][18]."</a></td>";
 
-            echo "<td>/</td><td class='center'>"; 
+            echo "<td>/</td><td class='center'>";
             echo "<a onclick= \"if ( unMarkCheckboxes('bills_form$rand') ) " .
                   "return false;\" href='#'>".$LANG['buttons'][19]."</a>";
             echo "</td><td align='left' width='80%'>";
@@ -471,7 +471,7 @@ class PluginOrderBill extends CommonDropdown {
               `validationdate` datetime DEFAULT NULL,
               `comment` text COLLATE utf8_unicode_ci,
               `plugin_order_billstates_id` int(11) NOT NULL DEFAULT '0',
-              `value` float NOT NULL DEFAULT '0',
+              `value` decimal(20,4) NOT NULL DEFAULT '0.0000',
               `plugin_order_billtypes_id` int(11) NOT NULL DEFAULT '0',
               `suppliers_id` int(11) NOT NULL DEFAULT '0',
               `plugin_order_orders_id` int(11) NOT NULL DEFAULT '0',
@@ -482,41 +482,42 @@ class PluginOrderBill extends CommonDropdown {
               PRIMARY KEY (`id`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
       $DB->query($query) or die ($DB->error());
-      }
-      
-      if (FieldExists("glpi_plugin_order_orders_suppliers", "num_bill")) {
-         //Migrate bills
-         $bill  = new PluginOrderBill();
-         $query = "SELECT * FROM `glpi_plugin_order_orders_suppliers`";
-         foreach (getAllDatasFromTable('glpi_plugin_order_orders_suppliers') as $data) {
-            if (!is_null($data['num_bill']) 
-               && $data['num_bill'] != '' 
-                  && !countElementsInTable('glpi_plugin_order_bills', 
-                                           "`number`='".$data['num_bill']."'")) {
-               //create new bill and link it to the order 
-               $tmp['name']                   = $tmp['number'] = $data['num_bill'];
-               //Get supplier from the order
-               $tmp['suppliers_id']        = $data['suppliers_id'];
-               //Bill has the same entities_id and is_recrusive
-               $tmp['entities_id']            = $data['entities_id'];
-               $tmp['is_recursive']           = $data['is_recursive'];
-               //Link bill to order
-               $tmp['plugin_order_orders_id'] = $data['plugin_order_orders_id'];
-               //Create bill
-               $bills_id                      = $bill->add($tmp);
-
-               //All order items are now linked to this bill
-               $query = "UPDATE `glpi_plugin_order_orders_items` " .
-                        "SET `plugin_order_bills_id`='$bills_id' " .
-                        "WHERE `plugin_order_orders_id`='".$data['plugin_order_orders_id']."'";
-               $DB->query($query);
+      } else {
+         if (FieldExists("glpi_plugin_order_orders_suppliers", "num_bill")) {
+            //Migrate bills
+            $bill  = new PluginOrderBill();
+            $query = "SELECT * FROM `glpi_plugin_order_orders_suppliers`";
+            foreach (getAllDatasFromTable('glpi_plugin_order_orders_suppliers') as $data) {
+               if (!is_null($data['num_bill'])
+                  && $data['num_bill'] != ''
+                     && !countElementsInTable('glpi_plugin_order_bills',
+                                              "`number`='".$data['num_bill']."'")) {
+                  //create new bill and link it to the order
+                  $tmp['name']                   = $tmp['number'] = $data['num_bill'];
+                  //Get supplier from the order
+                  $tmp['suppliers_id']        = $data['suppliers_id'];
+                  //Bill has the same entities_id and is_recrusive
+                  $tmp['entities_id']            = $data['entities_id'];
+                  $tmp['is_recursive']           = $data['is_recursive'];
+                  //Link bill to order
+                  $tmp['plugin_order_orders_id'] = $data['plugin_order_orders_id'];
+                  //Create bill
+                  $bills_id                      = $bill->add($tmp);
+   
+                  //All order items are now linked to this bill
+                  $query = "UPDATE `glpi_plugin_order_orders_items` " .
+                           "SET `plugin_order_bills_id`='$bills_id' " .
+                           "WHERE `plugin_order_orders_id`='".$data['plugin_order_orders_id']."'";
+                  $DB->query($query);
+               }
+               
             }
-            
          }
-         $migration->dropField("glpi_plugin_order_orders_suppliers", "num_bill");
-         $migration->migrationOneTable("glpi_plugin_order_orders_suppliers");
+         $migration->changeField($table, "value", "value", "decimal(20,4) NOT NULL DEFAULT '0.0000'");
+         $migration->migrationOneTable($table);
       }
-
+      $migration->dropField("glpi_plugin_order_orders_suppliers", "num_bill");
+      $migration->migrationOneTable("glpi_plugin_order_orders_suppliers");
    }
    
    static function uninstall() {
