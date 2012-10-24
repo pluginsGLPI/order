@@ -618,7 +618,7 @@ class PluginOrderReception extends CommonDBTM {
                }
             }// $val == 1
 
-         //$detail->updateDelivryStatus($plugin_order_orders_id);
+         self::updateDelivryStatus($plugin_order_orders_id);
       } else {
          Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
       }
