@@ -69,11 +69,12 @@ if (isset ($_POST["update"])) {
          $reception->update($_POST);
       }
    }
-   $reception->updateReceptionStatus(array('item' => array($_POST['id'] => 'on')));
+   //$reception->updateReceptionStatus(array('item' => array($_POST['id'] => 'on')));
    Html::redirect($_SERVER['HTTP_REFERER']);
    
 } elseif (isset ($_POST["delete"])) {
    $reception->deleteDelivery($_POST["id"]);
+   $reception->updateReceptionStatus(array('item' => array($_POST['id'] => 'on')));
    Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=".$_POST["plugin_order_orders_id"]);
    
 } elseif (isset ($_POST["reception"])) {
