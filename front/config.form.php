@@ -47,7 +47,7 @@ if (isset($_POST["update"])) {
 Html::header($LANG['plugin_order']['title'][1], '', "plugins", "order", "config");
 
 Session::checkRight("config", "w");
-$config->showConfigForm();
+$config->showForm();
 
 Html::footer();
 

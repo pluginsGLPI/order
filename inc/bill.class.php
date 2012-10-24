@@ -434,7 +434,7 @@ class PluginOrderBill extends CommonDropdown {
               `validationdate` datetime DEFAULT NULL,
               `comment` text COLLATE utf8_unicode_ci,
               `plugin_order_billstates_id` int(11) NOT NULL DEFAULT '0',
-              `value` float NOT NULL DEFAULT '0',
+              `value` decimal(20,4) NOT NULL DEFAULT '0.0000',
               `plugin_order_billtypes_id` int(11) NOT NULL DEFAULT '0',
               `suppliers_id` int(11) NOT NULL DEFAULT '0',
               `plugin_order_orders_id` int(11) NOT NULL DEFAULT '0',
@@ -444,42 +444,42 @@ class PluginOrderBill extends CommonDropdown {
               `notepad` text COLLATE utf8_unicode_ci,
               PRIMARY KEY (`id`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
-      $DB->query($query) or die ($DB->error());
-      }
-      
-      if (FieldExists("glpi_plugin_order_orders_suppliers", "num_bill")) {
-         //Migrate bills
-         $bill  = new PluginOrderBill();
-         $query = "SELECT * FROM `glpi_plugin_order_orders_suppliers`";
-         foreach (getAllDatasFromTable('glpi_plugin_order_orders_suppliers') as $data) {
-            if (!is_null($data['num_bill'])
-               && $data['num_bill'] != ''
-                  && !countElementsInTable('glpi_plugin_order_bills',
-                                           "`number`='".$data['num_bill']."'")) {
-               //create new bill and link it to the order
-               $tmp['name']                   = $tmp['number'] = $data['num_bill'];
-               //Get supplier from the order
-               $tmp['suppliers_id']        = $data['suppliers_id'];
-               //Bill has the same entities_id and is_recrusive
-               $tmp['entities_id']            = $data['entities_id'];
-               $tmp['is_recursive']           = $data['is_recursive'];
-               //Link bill to order
-               $tmp['plugin_order_orders_id'] = $data['plugin_order_orders_id'];
-               //Create bill
-               $bills_id                      = $bill->add($tmp);
-
-               //All order items are now linked to this bill
-               $query = "UPDATE `glpi_plugin_order_orders_items` " .
-                        "SET `plugin_order_bills_id`='$bills_id' " .
-                        "WHERE `plugin_order_orders_id`='".$data['plugin_order_orders_id']."'";
-               $DB->query($query);
+         $DB->query($query) or die ($DB->error());
+      } else {
+         if (FieldExists("glpi_plugin_order_orders_suppliers", "num_bill")) {
+            //Migrate bills
+            $bill  = new PluginOrderBill();
+            $query = "SELECT * FROM `glpi_plugin_order_orders_suppliers`";
+            foreach (getAllDatasFromTable('glpi_plugin_order_orders_suppliers') as $data) {
+               if (!is_null($data['num_bill'])
+                  && $data['num_bill'] != ''
+                     && !countElementsInTable('glpi_plugin_order_bills',
+                                              "`number`='".$data['num_bill']."'")) {
+                  //create new bill and link it to the order
+                  $tmp['name']                   = $tmp['number'] = $data['num_bill'];
+                  //Get supplier from the order
+                  $tmp['suppliers_id']        = $data['suppliers_id'];
+                  //Bill has the same entities_id and is_recrusive
+                  $tmp['entities_id']            = $data['entities_id'];
+                  $tmp['is_recursive']           = $data['is_recursive'];
+                  //Link bill to order
+                  $tmp['plugin_order_orders_id'] = $data['plugin_order_orders_id'];
+                  //Create bill
+                  $bills_id                      = $bill->add($tmp);
+   
+                  //All order items are now linked to this bill
+                  $query = "UPDATE `glpi_plugin_order_orders_items` " .
+                           "SET `plugin_order_bills_id`='$bills_id' " .
+                           "WHERE `plugin_order_orders_id`='".$data['plugin_order_orders_id']."'";
+                  $DB->query($query);
+               }
             }
-            
-         }
-         $migration->dropField("glpi_plugin_order_orders_suppliers", "num_bill");
-         $migration->migrationOneTable("glpi_plugin_order_orders_suppliers");
-      }
-
+          }
+         $migration->changeField($table, "value", "value", "decimal(20,4) NOT NULL DEFAULT '0.0000'");
+         $migration->migrationOneTable($table);
+       }
+      $migration->dropField("glpi_plugin_order_orders_suppliers", "num_bill");
+      $migration->migrationOneTable("glpi_plugin_order_orders_suppliers");
    }
    
    static function uninstall() {

@@ -83,9 +83,9 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       $tab[1]['name'] = $LANG['plugin_order']['reference'][10];
       $tab[1]['datatype'] = 'text';
 
-      $tab[2]['table'] = $this->getTable();
-      $tab[2]['field'] = 'price_taxfree';
-      $tab[2]['name'] = $LANG['plugin_order']['detail'][4];
+      $tab[2]['table']    = $this->getTable();
+      $tab[2]['field']    = 'price_taxfree';
+      $tab[2]['name']     = $LANG['plugin_order']['detail'][4];
       $tab[2]['datatype'] = 'decimal';
 
       $tab[3]['table'] = 'glpi_suppliers';
@@ -360,7 +360,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
                      `is_recursive` tinyint(1) NOT NULL default '0',
                      `plugin_order_references_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)',
                      `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
-                     `price_taxfree` float NOT NULL DEFAULT 0,
+                     `price_taxfree` decimal(20,4) NOT NULL DEFAULT '0.0000',
                      `reference_code` varchar(255) collate utf8_unicode_ci default NULL,
                      PRIMARY KEY  (`id`),
                      KEY `entities_id` (`entities_id`),
@@ -393,6 +393,8 @@ class PluginOrderReference_Supplier extends CommonDBChild {
                                  "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
          $migration->changeField($table, "reference_code", "reference_code",
                                  "varchar(255) collate utf8_unicode_ci default NULL");
+         $migration->changeField($table, "price_taxfree", "price_taxfree",
+                                 "decimal(20,4) NOT NULL DEFAULT '0.0000'");
          $migration->migrationOneTable($table);
 
          Plugin::migrateItemType(array(3152 => 'PluginOrderReference_Supplier'),
@@ -420,6 +422,75 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       
       //Current table name
       $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`");
+   }
+
+   static function showReferencesFromSupplier($ID){
+      global $LANG, $DB, $CFG_GLPI;
+
+      if (isset($_POST["start"])) {
+         $start = $_POST["start"];
+      } else {
+         $start = 0;
+      }
+      
+      $query = "SELECT `gr`.`id`, `gr`.`manufacturers_id`, `gr`.`entities_id`, `gr`.`itemtype`,
+                       `gr`.`name`, `grm`.`price_taxfree`, `grm`.`reference_code`
+               FROM `glpi_plugin_order_references_suppliers` AS grm, `glpi_plugin_order_references` AS gr
+               WHERE `grm`.`suppliers_id` = '$ID'
+                  AND `grm`.`plugin_order_references_id` = `gr`.`id`"
+               .getEntitiesRestrictRequest(" AND ", "gr", '', '', true);
+      $query_limit = $query." LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
+      $result = $DB->query($query);
+      $nb     = $DB->numrows($result);
+      echo "<div class='center'>";
+
+      if ($nb) {
+
+         $result = $DB->query($query_limit);
+         Html::printAjaxPager($LANG['plugin_order']['reference'][3], $start, $nb);
+         
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr>";
+         echo "<th>".$LANG['entity'][0]."</th>";
+         echo "<th>".$LANG['common'][5]."</th>";
+         echo "<th>".$LANG['plugin_order']['reference'][1]."</th>";
+         echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
+         echo "<th>".$LANG['plugin_order']['reference'][1]."</th>";
+         echo "<th>".$LANG['plugin_order']['detail'][4]."</th></tr>";
+         
+         
+         while ($data = $DB->fetch_array($result)) {
+            echo "<tr class='tab_bg_1' align='center'>";
+            echo "<td>";
+            echo Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
+            echo "</td>";
+
+            echo "<td>";
+            echo Dropdown::getDropdownName("glpi_manufacturers", $data["manufacturers_id"]);
+            echo "</td>";
+
+            echo "<td>";
+            $PluginOrderReference = new PluginOrderReference();
+            echo $PluginOrderReference->getReceptionReferenceLink($data);
+            echo "</td>";
+            
+            echo "<td>";
+            $item = new $data["itemtype"]();
+            echo $item->getTypeName();
+            echo "</td>";
+            
+            echo "<td>";
+            echo $data['reference_code'];
+            echo "</td>";
+            
+            echo "<td>";
+            echo $data["price_taxfree"];
+            echo "</td>";
+            echo "</tr>";
+         }
+      }
+      echo "</table>";
+      echo "</div>";
    }
 }
 

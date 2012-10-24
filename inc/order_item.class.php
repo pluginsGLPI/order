@@ -776,44 +776,6 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                              AND `states_id` != '0' ");
    }
 
-   function updateDelivryStatus($orders_id) {
-      global $DB;
-
-      $config = PluginOrderConfig::getConfig();
-      $order  = new PluginOrderOrder();
-
-      $order->getFromDB($orders_id);
-
-      $query = "SELECT `states_id`
-                FROM `".$this->getTable()."`
-                WHERE `plugin_order_orders_id` = '$orders_id'";
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-      
-      $delivery_status = 0;
-      $is_delivered    = 1; //Except order to be totally delivered
-      if ($number) {
-         while ($data = $DB->fetch_array($result)) {
-            if ($data["states_id"] == PluginOrderOrder::ORDER_DEVICE_DELIVRED) {
-               $delivery_status = 1;
-            } else {
-               $is_delivered    = 0;
-            }
-         }
-      }
-
-      //Are all items delivered ?
-      if ($is_delivered && !$order->isDelivered()) {
-          $order->updateOrderStatus($orders_id, $config->getDeliveredState());
-         //At least one item is delivered
-      } else {
-         if ($delivery_status) {
-            $order->updateOrderStatus($orders_id,
-                                      $config->getPartiallyDeliveredState());
-         }
-      }
-   }
-
    function getAllPrices($orders_id) {
       global $DB;
 
@@ -1291,10 +1253,10 @@ class PluginOrderOrder_Item extends CommonDBChild {
                `plugin_order_ordertaxes_id` float NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)',
                `delivery_number` varchar(255) collate utf8_unicode_ci default NULL,
                `delivery_comment` text collate utf8_unicode_ci,
-               `price_taxfree` float NOT NULL default 0,
-               `price_discounted` float NOT NULL default 0,
-               `discount` float NOT NULL default 0,
-               `price_ati` float NOT NULL default 0,
+               `price_taxfree` decimal(20,4) NOT NULL DEFAULT '0.0000',
+               `price_discounted` decimal(20,4) NOT NULL DEFAULT '0.0000',
+               `discount` decimal(20,4) NOT NULL DEFAULT '0.0000',
+               `price_ati` decimal(20,4) NOT NULL DEFAULT '0.0000',
                `states_id` int(11) NOT NULL default 1,
                `delivery_date` date default NULL,
                `plugin_order_bills_id` INT( 11 ) NOT NULL DEFAULT '0',
@@ -1373,14 +1335,29 @@ class PluginOrderOrder_Item extends CommonDBChild {
          $migration->addField($table, "comment", "text collate utf8_unicode_ci");
          $migration->migrationOneTable($table);
 
+         //Change format for prices : from float to decimal
+         $migration->changeField($table, "price_taxfree", "price_taxfree",
+                                 "decimal(20,4) NOT NULL DEFAULT '0.0000'");
+         $migration->changeField($table, "price_discounted", "price_discounted",
+                                 "decimal(20,4) NOT NULL DEFAULT '0.0000'");
+         $migration->changeField($table, "price_ati", "price_ati",
+                                 "decimal(20,4) NOT NULL DEFAULT '0.0000'");
+         $migration->changeField($table, "discount", "discount",
+                                 "decimal(20,4) NOT NULL DEFAULT '0.0000'");
+         
+         //Drop unused fields from previous migration
+         $migration->dropField($table, "price_taxfree2");
+         $migration->dropField($table, "price_discounted2");
+         $migration->migrationOneTable($table);
+         
+         /*
          $fields = $DB->list_fields($table);
          foreach (array('price_taxfree', 'price_discounted') as $field) {
             
             if (FieldExists($table, $field)
                && isset($fields[$field])
                   && $fields[$field]['Type'] == 'float') {
-               //$migration->changeField($table, $field, $field."_old", "float NOT NULL default 0");
-               $migration->addField($table, $field."2", "DOUBLE NOT NULL DEFAULT '0'");
+               $migration->addField($table, $field."2", "decimal(20,4) NOT NULL DEFAULT '0.0000'");
                $migration->migrationOneTable($table);
                
                $query = "UPDATE $table SET `".$field."2`=`$field`";
@@ -1388,7 +1365,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                
             }
 
-         }
+         }*/
          
          //Forward entities_id and is_recursive into table glpi_plugin_order_orders_items
          $query = "SELECT `go`.`entities_id` as entities_id ,
@@ -1451,16 +1428,14 @@ class PluginOrderOrder_Item extends CommonDBChild {
    }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      if (get_class($item) == 'Budget') {
-         $order = new self();
-         $order->getAllOrdersByBudget($item->getID());
-      } elseif(get_class($item) == 'PluginOrderOrder') {
-         $order_item = new self();
-         $order_item->showItem($item->getID());
+      if(get_class($item) == 'PluginOrderOrder') {
+         if (!$item->fields['is_template']) {
+            $order_item = new self();
+            $order_item->showItem($item->getID());
+         }
       } else if (in_array($item->getType(), PluginOrderOrder_Item::getClasses(true))) {
          $order_item = new self();
          $order_item->showPluginFromItems(get_class($item), $item->getField('id'));
-
       }
       return true;
    }

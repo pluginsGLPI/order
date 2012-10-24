@@ -683,6 +683,7 @@ class PluginOrderLink extends CommonDBChild {
             $detail->getFromDB($detailID);
             $this->generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id,
                                                  $templateID);
+            self::copyDocuments($itemtype, $items_id, $plugin_order_orders_id, $entity);
             if ($history) {
                $order = new PluginOrderOrder();
                $order->getFromDB($detail->fields["plugin_order_orders_id"]);
@@ -698,6 +699,7 @@ class PluginOrderLink extends CommonDBChild {
             $new_value = $LANG['plugin_order']['delivery'][14] . ' : ' . $order->fields["name"];
             $order->addHistory($itemtype, '', $new_value, $items_id);
          }
+         
          Session::addMessageAfterRedirect($LANG['plugin_order']['delivery'][14], true);
       } else {
          Session::addMessageAfterRedirect($LANG['plugin_order']['delivery'][16], true, ERROR);
@@ -937,7 +939,6 @@ class PluginOrderLink extends CommonDBChild {
 
          $document_item = new Document_Item();
          $document      = new Document();
-         
          foreach (getAllDatasFromTable('glpi_documents_items',
                                          "`itemtype`='PluginOrderOrder'
                                            AND `items_id`='$orders_id'") as $doc) {
@@ -945,13 +946,11 @@ class PluginOrderLink extends CommonDBChild {
             $newdocument = clone $document;
             $newdocument->fields['entities_id'] = $entity;
             unset($newdocument->fields['id']);
-            $newID = $document->add($newdocument->fields);
-         
+            $newID               = $document->add($newdocument->fields);
             $tmp['itemtype']     = $itemtype;
             $tmp['items_id']     = $items_id;
             $tmp['documents_id'] = $newID;
             $document_item->add($tmp);
-            
          }
       }
    }

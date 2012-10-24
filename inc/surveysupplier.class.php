@@ -106,13 +106,12 @@ class PluginOrderSurveySupplier extends CommonDBChild {
    function getTotalNotation($plugin_order_orders_id) {
       global $DB;
       
-      $query = "SELECT (`answer1` + `answer2` + `answer3` + `answer4` + `answer5`) AS total FROM `".
-                  $this->getTable()."` " .
-            "WHERE `plugin_order_orders_id` = '".$plugin_order_orders_id."' ";
+      $query  = "SELECT (`answer1` + `answer2` + `answer3` + `answer4` + `answer5`) AS total
+                 FROM `".$this->getTable()."` " .
+                "WHERE `plugin_order_orders_id` = '".$plugin_order_orders_id."' ";
       $result = $DB->query($query);
-      $nb = $DB->numrows($result);
-      if ($nb) {
-         return $DB->result($result,0,"total")/5;
+      if ($DB->numrows($result)) {
+         return $DB->result($result, 0, "total") /5;
       } else {
          return 0;
       }
@@ -136,19 +135,25 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       }
    }
    
-   function showGlobalNotation($suppliers_id) {
+   static function showGlobalNotation($suppliers_id) {
       global $LANG,$DB;
       
+      $config = PluginOrderConfig::getConfig();
+      if (!$config->canUseSupplierSatisfaction()) {
+         return;
+      }
+      
+      $survey = new self();
       $query  = "SELECT `glpi_plugin_order_orders`.`id`,
                 `glpi_plugin_order_orders`.`entities_id`, `glpi_plugin_order_orders`.`name`,
-                `".$this->getTable()."`.`comment`
-                 FROM `glpi_plugin_order_orders`,`".$this->getTable()."`
-                 WHERE `".$this->getTable()."`.`suppliers_id` = `glpi_plugin_order_orders`.`suppliers_id`
-                    AND `".$this->getTable()."`.`plugin_order_orders_id` = `glpi_plugin_order_orders`.`id`
+                `".$survey->getTable()."`.`comment`
+                 FROM `glpi_plugin_order_orders`,`".$survey->getTable()."`
+                 WHERE `".$survey->getTable()."`.`suppliers_id` = `glpi_plugin_order_orders`.`suppliers_id`
+                    AND `".$survey->getTable()."`.`plugin_order_orders_id` = `glpi_plugin_order_orders`.`id`
                      AND `glpi_plugin_order_orders`.`suppliers_id` = '".$suppliers_id."'"
                         .getEntitiesRestrictRequest(" AND ","glpi_plugin_order_orders",
                                                     "entities_id",'',true);
-      $query   .= " GROUP BY `".$this->table."`.`id`";
+      $query   .= " GROUP BY `".$survey->getTable()."`.`id`";
       $result   = $DB->query($query);
       $nb       = $DB->numrows($result);
       $total    = 0;
@@ -172,7 +177,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
             $ID          = $DB->result($result,$i,"id");
             $comment     = $DB->result($result,$i,"comment");
             $entities_id = $DB->result($result,$i,"entities_id");
-            $note        = $this->getTotalNotation($ID);
+            $note        = $survey->getTotalNotation($ID);
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo Dropdown::getDropdownName("glpi_entities",$entities_id);
@@ -182,7 +187,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
             echo "<td>" . $note." / 10"."</td>";
             echo "<td>" . nl2br($comment)."</td>";
             echo "</tr>";
-            $total+= $this->getTotalNotation($ID);
+            $total+= $survey->getTotalNotation($ID);
             $nb_order++;
          }
          echo "<tr>";
@@ -194,7 +199,8 @@ class PluginOrderSurveySupplier extends CommonDBChild {
             echo "<td colspan='2'></td>";
             echo "<td><div align='left'>" . $LANG['plugin_order']['survey'][$i]. "</div></td>";
             echo "<td><div align='left'>" .
-               Html::formatNumber($this->getNotation($suppliers_id,"answer$i"))."&nbsp;/ 10</div></td>";
+               Html::formatNumber($survey->getNotation($suppliers_id, "answer$i")).
+                  "&nbsp;/ 10</div></td>";
             echo "</tr>";
          }
          
@@ -281,23 +287,26 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       
       $this->showFormButtons($options);
       
-      if (strpos($_SERVER['PHP_SELF'],"surveysupplier")) {
+      if (strpos($_SERVER['PHP_SELF'], "surveysupplier")) {
          $this->addDivForTabs();
       }
       return true;
    }
    
-   function showOrderSupplierSurvey($ID) {
+   static function showOrderSupplierSurvey($ID) {
       global $LANG, $DB, $CFG_GLPI;
 
       $order = new PluginOrderOrder;
       $order->getFromDB($ID);
 
-      Session::initNavigateListItems($this->getType(),
-                            $LANG['plugin_order'][7] ." = ". $order->fields["name"]);
+      $survey = new self();
+      
+      $table = getTableForItemType(__CLASS__);
+      Session::initNavigateListItems(__CLASS__,
+                                     $LANG['plugin_order'][7] ." = ". $order->fields["name"]);
 
       $candelete = $order->can($ID,'w');
-      $query     = "SELECT * FROM `".$this->getTable()."` WHERE `plugin_order_orders_id` = '$ID' ";
+      $query     = "SELECT * FROM `$table` WHERE `plugin_order_orders_id` = '$ID' ";
       $result    = $DB->query($query);
       $rand      = mt_rand();
       echo "<div class='center'>";
@@ -316,7 +325,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       if ($DB->numrows($result) > 0) {
 
          while ($data = $DB->fetch_array($result)) {
-            Session::addToNavigateListItems($this->getType(),$data['id']);
+            Session::addToNavigateListItems(__CLASS__,$data['id']);
             echo "<input type='hidden' name='item[" . $data["id"] . "]' value='" . $ID . "'>";
             echo "<tr class='tab_bg_1 center'>";
             echo "<td>";
@@ -327,11 +336,11 @@ class PluginOrderSurveySupplier extends CommonDBChild {
                echo ">";
             }
             echo "</td>";
-            $link=Toolbox::getItemTypeFormURL($this->getType());
+            $link=Toolbox::getItemTypeFormURL(__CLASS__);
             echo "<td><a href='".$link."?id=".$data["id"]."&plugin_order_orders_id=".$ID."'>" .
                Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
             echo "<td>";
-            $total = $this->getTotalNotation($ID);
+            $total = $survey->getTotalNotation($ID);
             echo $total." / 10";
             echo "</td>";
             echo "<td>";
@@ -343,17 +352,8 @@ class PluginOrderSurveySupplier extends CommonDBChild {
 
          if ($candelete) {
             echo "<div class='center'>";
-            echo "<table width='900px' class='tab_glpi'>";
-            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''>";
-            echo "</td><td class='center'><a onclick= \"if ( markCheckboxes('show_suppliersurvey$rand') ) return false;\" href='#'>".
-               $LANG['buttons'][18]."</a></td>";
-
-            echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('show_suppliersurvey$rand') ) return false;\" href='#'>".
-               $LANG['buttons'][19]."</a>";
-            echo "</td><td align='left' width='80%'>";
-            echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit' >";
-            echo "</td>";
-            echo "</table>";
+            Html::openArrowMassives("show_suppliersurvey$rand");
+            Html::closeArrowMassives(array("delete" => $LANG['buttons'][6]));
             echo "</div>";
          }
       } else {
@@ -364,16 +364,12 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       echo "</div>";
    }
    
-   function checkIfSupplierSurveyExists($plugin_order_orders_id) {
-      
-      if ($plugin_order_orders_id) {
-         $devices = getAllDatasFromTable($this->getTable(),
-                                         "`plugin_order_orders_id` = '$plugin_order_orders_id' ");
-         if (!empty($devices)) {
-            return true;
-         } else {
-            return false;
-         }
+   function checkIfSupplierSurveyExists($orders_id) {
+      if ($orders_id) {
+         return (countElementsInTable(getTableForItemType(__CLASS__),
+                                         "`plugin_order_orders_id` = '$orders_id' "));
+      } else {
+         return false;
       }
    }
    
@@ -422,10 +418,12 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          $migration->addKey($table, "suppliers_id");
          $migration->migrationOneTable($table);
          
-         $query = "SELECT `suppliers_id`, `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_orders` ";
+         $query = "SELECT `suppliers_id`, `entities_id`,`is_recursive`,`id`
+                   FROM `glpi_plugin_order_orders` ";
          foreach ($DB->request($query) as $data) {
             $query = "UPDATE `glpi_plugin_order_surveysuppliers`
-                      SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
+                      SET `entities_id` = '".$data["entities_id"]."',
+                          `is_recursive` = '".$data["is_recursive"]."'
                       WHERE `plugin_order_orders_id` = '".$data["id"]."' ";
             $DB->query($query) or die($DB->error());
          }
@@ -454,7 +452,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       if ($item->getType() == 'PluginOrderOrder') {
          $survey = new self();
-         $survey->showOrderSupplierSurvey($item->getID());
+         self::showOrderSupplierSurvey($item->getID());
          if (!$survey->checkIfSupplierSurveyExists($item->getID())
              && $item->can($item->getID(), 'w')) {
             $survey->showForm("",  array('plugin_order_orders_id' => $item->getID()));

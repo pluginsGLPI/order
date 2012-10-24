@@ -51,7 +51,9 @@ if (isset ($_POST["add"])) {
    $_POST['plugin_order_orderstates_id'] = $config->getDraftState();
 
    $newID = $pluginOrderOrder->add($_POST);
-   Html::redirect($_SERVER['HTTP_REFERER']."?id=$newID");
+   
+   $url = Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=$newID";
+   Html::redirect($url);
 }
 /* delete order */
 else if (isset ($_POST["delete"])) {
@@ -91,7 +93,7 @@ else if (isset ($_POST["validate"])) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getApprovedState(),
                                            $_POST["comment"]);
-      $pluginOrderOrder_Item->updateDelivryStatus($_POST["id"]);
+      PluginOrderReception::updateDelivryStatus($_POST["id"]);
       Session::addMessageAfterRedirect($LANG['plugin_order']['validation'][10]);
       
    }

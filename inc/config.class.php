@@ -59,7 +59,7 @@ class PluginOrderConfig extends CommonDBTM {
       return $LANG['plugin_order']['config'][0];
    }
    
-   function showConfigForm(){
+   function showForm(){
       global $LANG;
       
       $this->getFromDB(1);
