@@ -413,7 +413,10 @@ class PluginOrderOrder extends CommonDBTM {
       global $LANG;
 
       $ong = array();
-      if (!isset($options['withtemplate']) || !$options['withtemplate']) {
+
+      if (!$this->fields['is_template']
+         || !isset($options['withtemplate'])
+            || !$options['withtemplate']) {
          $this->addStandardTab('PluginOrderOrder_Item', $ong,$options);
          $this->addStandardTab('PluginOrderOrder', $ong,$options);
          $this->addStandardTab('PluginOrderOrder_Supplier', $ong, $options);
@@ -733,7 +736,12 @@ class PluginOrderOrder extends CommonDBTM {
                                   $this->fields["entities_id"]);
                                   
       } else {
-         echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]);
+         $supplier = new Supplier();
+         if ($supplier->can($this->fields['suppliers_id'], 'r')) {
+            echo $supplier->getLink();
+         } else {
+            echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]);
+         }
       }
       echo "</td>";
 
@@ -1427,8 +1435,19 @@ class PluginOrderOrder extends CommonDBTM {
                                                     true,'UTF-8');
                
          }
+         
+         $message = "_";
+         if (Session::isMultiEntitiesMode()) {
+            $entity = new Entity;
+            $entity->getFromDB($this->fields['entities_id']);
+            $message.= $entity->getName();
+         }
+         $message   .= "_".$this->fields['num_order']."_";
+         $message   .= Html::convDateTime($_SESSION['glpi_currenttime']);
+         $message    = str_replace(" ", "_", $message);
+         $outputfile = str_replace(".odt", $message.".odt", $template);
          // We export the file
-         $odf->exportAsAttachedFile();
+         $odf->exportAsAttachedFile($outputfile);
       }
    }
    
@@ -1624,7 +1643,6 @@ class PluginOrderOrder extends CommonDBTM {
          return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
       }
    }
-   
    
    function displayAlertOverBudget($type) {
       global $LANG;

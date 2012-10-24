@@ -265,7 +265,7 @@ class PluginOrderReception extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
-      
+      $options['candel'] = false;
       $this->showFormButtons($options);
       $this->addDivForTabs();
 

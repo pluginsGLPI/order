@@ -744,7 +744,7 @@ class PluginOrderReference extends CommonDropdown {
                LEFT JOIN `glpi_plugin_order_orders`
                   ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`)
                WHERE `plugin_order_references_id` = '".$plugin_order_references_id."'";
-      $query.= getEntitiesRestrictRequest(" AND ", "glpi_plugin_order_orders", $_SESSION['glpiactive_entity']);
+      $query.= getEntitiesRestrictRequest(" AND ", "glpi_plugin_order_orders", "entities_id", $_SESSION['glpiactive_entity']);
       $query.= " GROUP BY `glpi_plugin_order_orders`.`id`
                ORDER BY `entities_id`, `name` ";
       
