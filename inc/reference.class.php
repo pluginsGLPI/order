@@ -709,11 +709,11 @@ class PluginOrderReference extends CommonDropdown {
          default:
             $item = new $itemtype();
             $and  = "";
-            if (class_exists($itemtype."Type")) {
+            if (class_exists($itemtype."Type", false)) {
                $and .= ($types_id != 0 ? " AND `".
                   getForeignKeyFieldForTable(getTableForItemType($itemtype."Type"))."` = '$types_id' ":"");
             }
-            if (class_exists($itemtype."Model")) {
+            if (class_exists($itemtype."Model", false)) {
                $and .= ($models_id != 0 ? " AND `".
                   getForeignKeyFieldForTable(getTableForItemType($itemtype."Model"))."` ='$models_id' ":"");
             }
@@ -725,7 +725,8 @@ class PluginOrderReference extends CommonDropdown {
             }
             
             $condition = "1". $and . "
-                          AND `id` NOT IN (SELECT `items_id` FROM `glpi_plugin_order_orders_items`)";
+                          AND `id` NOT IN (SELECT `items_id` FROM `glpi_plugin_order_orders_items`
+                             WHERE `itemtype`='$itemtype')";
             $rand = Dropdown::show($itemtype, array('condition' => $condition, 'name' => $name,
                                                     'entity' => $entity, 'comments' => true,
                                                     'displaywith' => array ('serial', 'otherserial')));
