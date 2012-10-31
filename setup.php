@@ -200,7 +200,7 @@ function plugin_version_order() {
    global $LANG;
 
    return array ('name'           => $LANG['plugin_order']['title'][1],
-                 'version'        => '1.5.3',
+                 'version'        => '1.5.4',
                  'author'         => 'Benjamin Fontan, Walid Nouh, Xavier Caillaud, François Legastelois',
                  'homepage'       => 'https://forge.indepnet.net/projects/show/order',
                  'minGlpiVersion' => '0.80',

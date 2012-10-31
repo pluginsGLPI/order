@@ -245,7 +245,13 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
    switch ($table . '.' . $field) {
       /* display associated items with order */
       case "glpi_plugin_order_references.types_id" :
-         if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."type.class.php")) {
+      case "glpi_plugin_order_references.types_id" :
+         if ($data["itemtype"] == 'PluginOrderOther') {
+            $file = GLPI_ROOT."/plugins/order/inc/othertype.class.php";
+         } else {
+            $file = GLPI_ROOT."/inc/".strtolower($data["itemtype"])."type.class.php";
+         }
+         if (file_exists($file)) {
             return Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"),
                                              $data["ITEM_" . $num]);
          } else {
