@@ -810,7 +810,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
       if ($infos) {
          echo "<div class='center'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr align='center'><th colspan='2'>" . $LANG['plugin_order'][47] . ": </th></tr>";
+         echo "<tr align='center'><th colspan='2'>" . $LANG['plugin_order'][47] . "</th></tr>";
          echo "<tr align='center'><td class='tab_bg_2'>" . $LANG['plugin_order'][39] . "</td>";
          echo "<td class='tab_bg_2'>";
          $order = new PluginOrderOrder();
@@ -823,8 +823,15 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                               AND `items_id`='$ID'");
          if (!empty($result)) {
             $link = array_shift($result);
+            $reference = new PluginOrderReference();
+            $reference->getFromDB($link['plugin_order_references_id']);
+            if (plugin_order_haveRight('reference', 'r')) {
+               echo "<tr align='center'><td class='tab_bg_2'>" .
+                     $LANG['plugin_order']['detail'][2] . "</td>";
+               echo "<td class='tab_bg_2'>" . $reference->getLink($reference->canView()) . "</td></tr>";
+            }
             echo "<tr align='center'><td class='tab_bg_2'>" .
-               $LANG['plugin_order']['detail'][21] . "</td>";
+                  $LANG['plugin_order']['detail'][21] . "</td>";
             echo "<td class='tab_bg_2'>" . Html::convDate($link["delivery_date"]) . "</td></tr>";
             
          }
