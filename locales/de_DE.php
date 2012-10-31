@@ -209,6 +209,8 @@ $LANG['plugin_order']['reference'][9] = "Eine Referenz ohne Typ kann nicht erzeu
 $LANG['plugin_order']['reference'][10] = "Produktreferenz des Lieferanten";
 $LANG['plugin_order']['reference'][11] = "View by item type";
 $LANG['plugin_order']['reference'][12] = "Select the wanted item type";
+$LANG['plugin_order']['reference'][13] = "Copy reference";
+$LANG['plugin_order']['reference'][14] = "Copy of";
 
 $LANG['plugin_order']['status'][0] = "Status";
 $LANG['plugin_order']['status'][1] = "Wird geliefert";

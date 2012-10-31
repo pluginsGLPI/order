@@ -834,6 +834,24 @@ class PluginOrderReference extends CommonDropdown {
       }
    }
    
+   function copy($ID) {
+      $source = new self();
+      $source->getFromDB($ID);
+      
+      $target = clone $source;
+      unset($target->fields['id']);
+      $target->fields['name'] = $LANG['plugin_order']['reference'][14].' '.$target->fields['name'];
+      $newID = $this->add($target->fields);
+      
+      foreach (getAllDatasFromTable('glpi_plugin_order_references_suppliers',
+                                     "`plugin_order_references_id`='$ID'") as $refsup) {
+         $reference_supplier = new  PluginOrderReference_Supplier();
+         $refsup['plugin_order_references_id'] = $newID;
+         unset($refsup['id']);
+         $reference_supplier->add($refsup);
+      }
+      return true;
+   }
    /**
     * Display entities of the loaded profile
     *

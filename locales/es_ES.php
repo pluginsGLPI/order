@@ -210,6 +210,8 @@ $LANG['plugin_order']['reference'][9] = "No se puede crear una referencia sin ti
 $LANG['plugin_order']['reference'][10] = "Referencia del fabricante del producto";
 $LANG['plugin_order']['reference'][11] = "Ver por tipo de ítem";
 $LANG['plugin_order']['reference'][12] = "Seleccionar el tipo de ítem deseado";
+$LANG['plugin_order']['reference'][13] = "Copy reference";
+$LANG['plugin_order']['reference'][14] = "Copy of";
 
 $LANG['plugin_order']['status'][0] = "Estado del pedido";
 $LANG['plugin_order']['status'][1] = "En proceso de entrega";

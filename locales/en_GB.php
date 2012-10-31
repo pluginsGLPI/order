@@ -209,6 +209,8 @@ $LANG['plugin_order']['reference'][9] = "Cannot create reference without a type"
 $LANG['plugin_order']['reference'][10] = "Manufacturer's product reference";
 $LANG['plugin_order']['reference'][11] = "View by item type";
 $LANG['plugin_order']['reference'][12] = "Select the wanted item type";
+$LANG['plugin_order']['reference'][13] = "Copy reference";
+$LANG['plugin_order']['reference'][14] = "Copy of";
 
 $LANG['plugin_order']['status'][0] = "Order status";
 $LANG['plugin_order']['status'][1] = "Being delivered";
