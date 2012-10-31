@@ -818,8 +818,14 @@ class PluginOrderOrder_Item extends CommonDBChild {
                                            AND `itemtype`='$itemtype'
                                               AND `items_id`='$ID'");
          if (!empty($result)) {
-            $link = array_shift($result);
-            echo "<tr align='center'><td class='tab_bg_2'>" .
+            $link      = array_shift($result);
+            $reference = new PluginOrderReference();
+            $reference->getFromDB($link['plugin_order_references_id']);
+            if (plugin_order_haveRight('reference', 'r')) {
+               echo "<tr align='center'><td class='tab_bg_2'>" .
+                     $LANG['plugin_order']['detail'][2] . "</td>";
+               echo "<td class='tab_bg_2'>" . $reference->getLink($reference->canView()) . "</td></tr>";
+            }            echo "<tr align='center'><td class='tab_bg_2'>" .
                $LANG['plugin_order']['detail'][21] . "</td>";
             echo "<td class='tab_bg_2'>" . convDate($link["delivery_date"]) . "</td></tr>";
             
