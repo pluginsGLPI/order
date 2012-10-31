@@ -835,6 +835,7 @@ class PluginOrderReference extends CommonDropdown {
    }
    
    function copy($ID) {
+      global $LANG;
       $source = new self();
       $source->getFromDB($ID);
       

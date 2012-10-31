@@ -204,10 +204,10 @@ function plugin_version_order() {
    global $LANG;
 
    return array ('name'           => $LANG['plugin_order']['title'][1],
-                 'version'        => '1.7.0',
-                 'author'         => 'The order team',
+                 'version'        => '1.7.1',
+                 'author'         => 'The plugin order team',
                  'homepage'       => 'https://forge.indepnet.net/projects/show/order',
-                 'minGlpiVersion' => '0.80',
+                 'minGlpiVersion' => '0.83.3',
                  'license'        => 'GPLv2+');
 }
 
