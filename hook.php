@@ -302,6 +302,9 @@ function plugin_order_MassiveActions($type) {
       case 'PluginOrderOrder' :
          return array ("plugin_order_transfert" => $LANG['buttons'][48]);
          break;
+      case 'PluginOrderReference':
+         return array ("plugin_order_copy_reference" => $LANG['plugin_order']['reference'][13]);
+         break;
    }
    return array ();
 }
@@ -320,6 +323,15 @@ function plugin_order_MassiveActionsDisplay($options=array()) {
                break;
          }
          break;
+      case 'PluginOrderReference':
+         switch ($options['action']) {
+            case "plugin_order_copy_reference":
+               echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
+                     $LANG['buttons'][2] . "\" >";
+               break;
+                   
+         }
+         break;
    }
    return "";
 }
@@ -332,13 +344,23 @@ function plugin_order_MassiveActionsProcess($data) {
          if ($data['itemtype'] == 'PluginOrderOrder') {
             foreach ($data["item"] as $key => $val) {
                if ($val == 1) {
-                  $PluginOrderOrder = new PluginOrderOrder();
-                  $PluginOrderOrder->transfer($key,$data['entities_id']);
+                  $order = new PluginOrderOrder();
+                  $order->transfer($key,$data['entities_id']);
                }
             }
          }
          break;
-   }
+      case "plugin_order_copy_reference" :
+         if ($data['itemtype'] == 'PluginOrderReference') {
+            foreach ($data["item"] as $key => $val) {
+               if ($val == 1) {
+                  $reference = new PluginOrderReference();
+                  $reference->copy($key);
+               }
+            }
+         }
+         break;
+      }
 }
 
 /* hook done on purge item case */

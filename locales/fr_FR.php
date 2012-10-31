@@ -210,6 +210,8 @@ $LANG['plugin_order']['reference'][9] = "Impossible de créer une référence sa
 $LANG['plugin_order']['reference'][10] = "Référence produit fournisseur";
 $LANG['plugin_order']['reference'][11] = "Vue par type de matériel";
 $LANG['plugin_order']['reference'][12] = "Sélectionnez le type de matériel souhaité";
+$LANG['plugin_order']['reference'][13] = "Copier la référence";
+$LANG['plugin_order']['reference'][14] = "Copie de";
 
 $LANG['plugin_order']['status'][0] = "Statut commande";
 $LANG['plugin_order']['status'][1] = "En cours de livraison";
