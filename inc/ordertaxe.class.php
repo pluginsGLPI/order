@@ -47,7 +47,7 @@ class PluginOrderOrderTaxe extends CommonDropdown {
 
    function canView() {
       return plugin_order_haveRight('order', 'r');
-   } 
+   }
    
    static function install(Migration $migration) {
       global $DB, $LANG;
@@ -64,7 +64,7 @@ class PluginOrderOrderTaxe extends CommonDropdown {
                   `comment` text collate utf8_unicode_ci,
                   PRIMARY KEY  (`id`),
                   KEY `name` (`name`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"; 
+               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die($DB->error());
 
          $taxes = new self();
@@ -87,7 +87,7 @@ class PluginOrderOrderTaxe extends CommonDropdown {
          foreach ($DB->request("SELECT `name` FROM `$table`") as $data) {
             if(strpos($data["name"], ',')) {
                $name= str_replace(',', '.', $data["name"]);
-               $query = "UPDATE `glpi_dropdown_plugin_order_taxes`
+               $query = "UPDATE `$table`
                          SET `name` = '".$name."'
                          WHERE `name`= '".$data["name"]."'";
                $DB->query($query) or die($DB->error());
