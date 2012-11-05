@@ -701,10 +701,13 @@ class PluginOrderReference extends CommonDropdown {
       switch ($itemtype) {
          case 'CartridgeItem':
          case 'ConsumableItem':
-            $rand = Dropdown::show($itemtype,
-                                   array('condition' => "`cartridgeitemtypes_id` = '$types_id'",
-                                         'name' => $name, 'entity' => $entity,
-                                         'displaywith' => array('ref')));
+            $fk        = getForeignkeyFieldForItemType($itemtype."Type");
+            $condition = "`$fk` = '$types_id'";
+            $rand      = Dropdown::show($itemtype,
+                                        array('condition'  => $condition,
+                                              'name'        => $name,
+                                              'entity'      => $entity,
+                                              'displaywith' => array('ref')));
              break;
          default:
             $item = new $itemtype();
@@ -724,11 +727,13 @@ class PluginOrderReference extends CommonDropdown {
                $and .= " AND `is_deleted` = 0 ";
             }
             
-            $condition = "1". $and . "
-                          AND `id` NOT IN (SELECT `items_id` FROM `glpi_plugin_order_orders_items`
-                             WHERE `itemtype`='$itemtype')";
-            $rand = Dropdown::show($itemtype, array('condition' => $condition, 'name' => $name,
-                                                    'entity' => $entity, 'comments' => true,
+            $condition = "1 $and AND `id` NOT IN ";
+            $condition.= "(SELECT `items_id` FROM `glpi_plugin_order_orders_items`
+                           WHERE `itemtype`='$itemtype' AND `items_id`!='0')";
+            $rand = Dropdown::show($itemtype, array('condition'  => $condition,
+                                                    'name'        => $name,
+                                                    'entity'      => $entity,
+                                                    'comments'    => true,
                                                     'displaywith' => array ('serial', 'otherserial')));
             break;
       }
