@@ -664,33 +664,48 @@ class PluginOrderLink extends CommonDBChild {
             $input["id"]       = $detailID;
             $input["items_id"] = $newID;
             $input["itemtype"] = $itemtype;
-            $detail->update($input);
+            if ($detail->update($input)) {
+               $this->generateInfoComRelatedToOrder($entity, $detailID, $type, $newID, 0);
+            }
 
-            $this->generateInfoComRelatedToOrder($entity, $detailID, $type, $newID, 0);
          } elseif ($itemtype == 'Contract') {
             $input["id"]       = $detailID;
             $input["items_id"] = $items_id;
             $input["itemtype"] = $itemtype;
-            $detail->update($input);
-            $detail->getFromDB($detailID);
-            $item = new Contract();
-            $item->update(array('id' => $items_id, 'cost' => $detail->fields["price_discounted"]));
+            if ($detail->update($input)) {
+               $detail->getFromDB($detailID);
+               
+               
+               $item = new Contract();
+               if ($item->update(array('id'  => $items_id,
+                                   'cost' => $detail->fields["price_discounted"]))) {
+                  $order = new PluginOrderOrder();
+                  $order->getFromDB($plugin_order_orders_id);
+                  if (!countElementsInTable('glpi_contracts_suppliers',
+                                            "`contracts_id`='$items_id'
+                                            AND `suppliers_id`='".$order->fields['suppliers_id']."'")) {
+                     $contract_supplier = new Contract_Supplier();
+                     $contract_supplier->add(array('contracts_id' => $items_id,
+                                                   'suppliers_id'  => $order->fields['suppliers_id']));
+                  }
+               }
+            }
          } else {
             $input["id"]       = $detailID;
             $input["items_id"] = $items_id;
             $input["itemtype"] = $itemtype;
-            $detail->update($input);
-            $detail->getFromDB($detailID);
-            $this->generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id,
-                                                 $templateID);
-            self::copyDocuments($itemtype, $items_id, $plugin_order_orders_id, $entity);
-            if ($history) {
-               $order = new PluginOrderOrder();
-               $order->getFromDB($detail->fields["plugin_order_orders_id"]);
-               $item  = new $itemtype();
-               $item->getFromDB($items_id);
-               $new_value = $LANG['plugin_order']['delivery'][14] . ' : ' . $item->getField("name");
-               $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
+            if ($detail->update($input)) {
+               $this->generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id,
+                     $templateID);
+               self::copyDocuments($itemtype, $items_id, $plugin_order_orders_id, $entity);
+               if ($history) {
+                  $order = new PluginOrderOrder();
+                  $order->getFromDB($detail->fields["plugin_order_orders_id"]);
+                  $item  = new $itemtype();
+                  $item->getFromDB($items_id);
+                  $new_value = $LANG['plugin_order']['delivery'][14] . ' : ' . $item->getField("name");
+                  $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
+               }
             }
          }
          if ($history) {
