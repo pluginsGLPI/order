@@ -179,7 +179,10 @@ class PluginOrderProfile extends CommonDBTM {
          echo $LANG['profiles'][12]; // No access;
       }
       echo "</td>";
-      echo "<td colspan='2'></td>";
+      echo "<td>".$LANG['plugin_order']['profile'][4]."</td>";
+      echo "<td>";
+      Dropdown::showYesNo('open_ticket', $this->fields['open_ticket']);
+      echo "</td>";
       echo "</tr>";
       
       
@@ -242,6 +245,7 @@ class PluginOrderProfile extends CommonDBTM {
                `bill` char(1) collate utf8_unicode_ci default NULL,
                `delivery` char(1) collate utf8_unicode_ci default NULL,
                `generate_order_odt` char(1) collate utf8_unicode_ci default NULL,
+               `open_ticket` char(1) default NULL,
                PRIMARY KEY  (`id`),
                KEY `profiles_id` (`profiles_id`)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
@@ -271,35 +275,37 @@ class PluginOrderProfile extends CommonDBTM {
          $migration->dropField($table, "budget");
 
          
-         $migration->dropField("glpi_plugin_order_profiles", "name");
+         $migration->dropField($table, "name");
          $migration->migrationOneTable($table);
          
          //1.5.0
-         $migration->addField("glpi_plugin_order_profiles", "bill",
-                              "CHAR( 1 ) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($table, "bill", "char");
          $migration->migrationOneTable($table);
          self::addRightToProfile($_SESSION['glpiactiveprofile']['id'], "bill" , "w");
          
          //1.5.3
          //Add delivery right
-         if ($migration->addField("glpi_plugin_order_profiles", "delivery",
-                              "CHAR( 1 ) COLLATE utf8_unicode_ci DEFAULT NULL")) {
+         if ($migration->addField($table, "delivery", "char")) {
             $migration->migrationOneTable($table);
             //Update profiles : copy order right not to change current behavior
-            $update = "UPDATE `glpi_plugin_order_profiles` SET `delivery`=`order`";
+            $update = "UPDATE `$table` SET `delivery`=`order`";
             $DB->query($update);
             self::addRightToProfile($_SESSION['glpiactiveprofile']['id'], "delivery" , "w");
          }
-         if ($migration->addField("glpi_plugin_order_profiles", "generate_order_odt",
-                              "CHAR( 1 ) COLLATE utf8_unicode_ci DEFAULT NULL")) {
+         if ($migration->addField($table, "generate_order_odt", "char")) {
             $migration->migrationOneTable($table);
             //Update profiles : copy order right not to change current behavior
-            $update = "UPDATE `glpi_plugin_order_profiles` SET `generate_order_odt`=`order`";
+            $update = "UPDATE `$table` SET `generate_order_odt`=`order`";
             $DB->query($update);
             self::addRightToProfile($_SESSION['glpiactiveprofile']['id'], "generate_order_odt" , "w");
          }
          
       }
+
+      //1.7.2
+      $migration->addField($table, "open_ticket", "char");
+      $migration->migrationOneTable($table);
+      self::addRightToProfile($_SESSION['glpiactiveprofile']['id'], "open_ticket" , "w");
       
       self::changeProfile();
    }

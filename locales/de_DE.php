@@ -197,6 +197,7 @@ $LANG['plugin_order']['profile'][0] = "Berechtigungsverwaltung";
 $LANG['plugin_order']['profile'][1] = "Bestellung freigeben";
 $LANG['plugin_order']['profile'][2] = "Bestellung stornieren";
 $LANG['plugin_order']['profile'][3] = "Freigegebene Bestellung ändern";
+$LANG['plugin_order']['profile'][4] = "Link order to a ticket";
 
 $LANG['plugin_order']['reference'][1] = "Produktreferenz";
 $LANG['plugin_order']['reference'][2] = "Produktreferenz hinzufügen";

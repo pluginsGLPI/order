@@ -56,6 +56,7 @@ function plugin_init_order() {
    }
    
    if ($plugin->isInstalled('order') && $plugin->isActivated('order')) {
+      $PLUGIN_HOOKS['assign_to_ticket']['order'] = true;
       
       //Itemtypes in use for an order
       $ORDER_TYPES = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Printer',
@@ -75,11 +76,14 @@ function plugin_init_order() {
       foreach (PluginOrderOrder_Item::getClasses(true) as $type) {
          $PLUGIN_HOOKS['item_purge']['order'][$type] = 'plugin_item_purge_order';
       }
-      Plugin::registerClass('PluginOrderOrder', array('document_types'                   => true,
-                                                      'unicity_types'                    => true,
-                                                      'massiveaction_noupdate_types'     => true,
-                                                      'notificationtemplates_types'      => true,
-                                                      'addtabon' => array('Budget')));
+      Plugin::registerClass('PluginOrderOrder', array('document_types'              => true,
+                                                      'unicity_types'                => true,
+                                                      'notificationtemplates_types'  => true,
+                                                      'helpdesk_visible_types'       => true,
+                                                      'ticket_types'                 => true,
+                                                      'contract_types'               => true,
+                                                      'linkuser_types'               => true,
+                                                      'addtabon'                     => array('Budget')));
    
       Plugin::registerClass('PluginOrderReference', array('document_types'               => true));
       
@@ -204,7 +208,7 @@ function plugin_version_order() {
    global $LANG;
 
    return array ('name'           => $LANG['plugin_order']['title'][1],
-                 'version'        => '1.7.1',
+                 'version'        => '1.7.2',
                  'author'         => 'The plugin order team',
                  'homepage'       => 'https://forge.indepnet.net/projects/show/order',
                  'minGlpiVersion' => '0.83.3',

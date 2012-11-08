@@ -198,6 +198,7 @@ $LANG['plugin_order']['profile'][0] = "Gestión de permisos";
 $LANG['plugin_order']['profile'][1] = "Validar pedido";
 $LANG['plugin_order']['profile'][2] = "Cancelar pedido";
 $LANG['plugin_order']['profile'][3] = "Editar un pedido validado";
+$LANG['plugin_order']['profile'][4] = "Link order to a ticket";
 
 $LANG['plugin_order']['reference'][1] = "Referencia del producto";
 $LANG['plugin_order']['reference'][2] = "Añadir un proveedor";

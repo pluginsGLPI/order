@@ -197,6 +197,7 @@ $LANG['plugin_order']['profile'][0] = "Rights management";
 $LANG['plugin_order']['profile'][1] = "Order validation";
 $LANG['plugin_order']['profile'][2] = "Cancel order";
 $LANG['plugin_order']['profile'][3] = "Edit a validated order";
+$LANG['plugin_order']['profile'][4] = "Link order to a ticket";
 
 $LANG['plugin_order']['reference'][1] = "Product reference";
 $LANG['plugin_order']['reference'][2] = "Add a supplier";

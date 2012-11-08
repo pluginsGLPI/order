@@ -397,4 +397,12 @@ function plugin_datainjection_populate_order() {
    $INJECTABLE_TYPES['PluginOrderReferenceInjection'] = 'order';
 }
 
+function plugin_order_AssignToTicket($types) {
+   global $LANG;
+
+   if (plugin_order_haveRight("open_ticket", "1")) {
+      $types['PluginOrderOrder'] = $LANG['plugin_order'][7];
+   }
+   return $types;
+}
 ?>
