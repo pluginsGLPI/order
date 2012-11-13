@@ -601,7 +601,8 @@ class PluginOrderOrder extends CommonDBTM {
    function showForm ($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
       $config = PluginOrderConfig::getConfig();
-
+      $user   = new User();
+      
       if (!$this->canView()) {
          return false;
       }
@@ -860,31 +861,97 @@ class PluginOrderOrder extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2' class='center'>".$datestring.$date;
+      if (!$template && !empty($this->fields['template_name'])) {
+         echo "<span class='small_space'>(".$LANG['common'][13]."&nbsp;: ".
+               $this->fields['template_name'].")</span>";
+      }
+      echo "</td><td colspan='2'></td>";
+      echo "</tr>";
       
-      echo "<tr class='tab_bg_1'><td>";
+      echo "<tr class='tab_bg_1'>";
       
       //comments of order
-      echo $LANG['plugin_order'][2] . ":  </td>";
-      echo "<td>";
+      echo "<td>".$LANG['common'][25] . ":  </td>";
+      echo "<td colspan='3' align='center'>";
       if ($canedit) {
-         echo "<textarea cols='50' rows='4' name='comment'>" . $this->fields["comment"] .
+         echo "<textarea cols='40' rows='3' name='comment'>" . $this->fields["comment"] .
             "</textarea>";
             
       } else {
          echo $this->fields["comment"];
       }
-      echo "</td>";
+      echo "</td></tr>";
 
-      /* total price (without taxes) */
+      echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2'>".$LANG['mailing'][121]."</th>";
+      if ($ID > 0 && !$template) {
+         echo "<th colspan='2'>".$LANG['financial'][5]."</th></tr>";
+      } else {
+         echo "<th colspan='2'></th>";
+      }
       
-      /* status of bill */
-      echo "<td colspan=\"2\" style=\"width:40%;\">";
-      if ($ID > 0) {
+      echo "</tr><tr class='tab_bg_1'>";
+      echo "<td colspan='2'>";
+      echo "<table class='format'>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['plugin_order'][56].":</td><td>";
+      if ($canedit) {
+         if ($template == 'newcomp') {
+            $value = Session::getLoginUserID();
+         } else {
+            $value = $this->fields['users_id'];
+         }
+         User::dropdown(array('name'   => 'users_id',
+         'value'  => $value,
+         'right'  => 'interface',
+         'entity' => $this->fields["entities_id"]));
+      } else {
+         $user->getFromDB($this->fields['users_id']);
+         $output = formatUserName($this->fields['users_id'],$user->fields['name'],
+                                  $user->fields['realname'], $user->fields['firstname']);
+         echo $output;
+      }
+      echo "</td>";
+      echo "<td>".$LANG['plugin_order'][57].":</td><td>";
+      if ($canedit) {
+         Dropdown::show('Group', array('value' => $this->fields['groups_id']));
+      } else {
+         echo Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id']);
+      }
+      echo "</td></tr>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['plugin_order'][58].":</td><td>";
+      if ($canedit) {
+         User::dropdown(array('name'   => 'users_id_delivery',
+                              'value'  => $this->fields["users_id_delivery"],
+                              'right'  => 'all',
+                              'entity' => $this->fields["entities_id"]));
+      } else {
+         $user->getFromDB($this->fields['users_id_delivery']);
+         $output = formatUserName($this->fields['users_id'],$user->fields['name'],
+                                  $user->fields['realname'], $user->fields['firstname']);
+         echo $output;
+      }
+      echo "</td>";
+      echo "<td>".$LANG['plugin_order'][59].":</td><td>";
+      if ($canedit) {
+         Dropdown::show('Group', array('name'  => 'groups_id_delivery',
+                                        'value' => $this->fields['groups_id_delivery']));
+      } else {
+         echo Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id_delivery']);
+      }
+      echo "</td>";
+      echo "</tr></table></td>";
+      
+      echo "<td colspan='2'>";
+      if ($ID > 0 && !$template) {
+         echo "<table class='format'>";
          $PluginOrderOrder_Item = new PluginOrderOrder_Item();
          $prices = $PluginOrderOrder_Item->getAllPrices($ID);
 
-         echo $LANG['plugin_order'][13] . " : ";
-         echo Html::formatNumber($prices["priceHT"]) . "<br />";
+         echo "<tr><td>".$LANG['plugin_order'][13]."</td>";
+         echo "<td>".Html::formatNumber($prices["priceHT"]) ."</td></tr>";
      
          // total price (with postage)
          $postagewithTVA =
@@ -892,78 +959,22 @@ class PluginOrderOrder extends CommonDBTM {
                                                  Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
                                                                            $this->fields["plugin_order_ordertaxes_id"]));
 
-         echo $LANG['plugin_order'][15] . " : ";
+         echo "<tr><td>".$LANG['plugin_order'][15]."</td>";
          $priceHTwithpostage = $prices["priceHT"] + $this->fields["port_price"];
-         echo Html::formatNumber($priceHTwithpostage) . "<br />";
+         echo "<td>".Html::formatNumber($priceHTwithpostage) . "</td></tr>";
          
          // total price (with taxes)
-         echo $LANG['plugin_order'][14] . " : ";
+         echo "<tr><td>".$LANG['plugin_order'][14] . "</td>";
          $total = $prices["priceTTC"] + $postagewithTVA;
-         echo Html::formatNumber($total) . "<br />";
+         echo "<td>".Html::formatNumber($total) . "</td></tr>";
          
          // total TVA
-         echo "(" . $LANG['plugin_order'][25] . " : ";
+         echo "<tr><td>" . $LANG['plugin_order'][25] . "</td>";
+         echo "<td>";
          $total_tva = $prices["priceTVA"] + ($postagewithTVA- $this->fields["port_price"]);
-         echo Html::formatNumber($total_tva) . ")</td>";
-      } else
-         echo "</td>";
-
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo $LANG['common'][26].": </td>";
-      echo "<td>";
-      echo Html::convDateTime($this->fields["date_mod"]);
-      echo "</td><td colspan='2'></td>";
-      echo "</tr>";
-      
-      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['mailing'][121]."</td></tr>";
-      
-      echo "<tr class='tab_bg_1'><td>".$LANG['plugin_order'][56]."</td><td>";
-      if ($canedit) {
-         if ($template == 'newcomp') {
-            $value = Session::getLoginUserID();
-         } else {
-            $value = $this->fields['users_id'];
-         }
-      User::dropdown(array('name'   => 'users_id',
-                           'value'  => $value,
-                           'right'  => 'interface',
-                           'entity' => $this->fields["entities_id"]));
-      } else {
-         echo Dropdown::getDropdownName('glpi_users', $this->fields['users_id']);
+         echo Html::formatNumber($total_tva) . "</td></tr>";
+         echo "</table>";
       }
-      echo "</td>";
-      echo "<td>".$LANG['plugin_order'][57]."</td><td>";
-      if ($canedit) {
-         Dropdown::show('Group', array('value' => $this->fields['groups_id']));
-      } else {
-         echo Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id']);
-      }
-      echo "</td>";
-      
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'><td>".$LANG['plugin_order'][58]."</td><td>";
-      if ($canedit) {
-         User::dropdown(array('name'   => 'users_id_delivery',
-                              'value'  => $this->fields["users_id_delivery"],
-                              'right'  => 'all',
-                              'entity' => $this->fields["entities_id"]));
-      } else {
-         echo Dropdown::getDropdownName('glpi_users', $this->fields['users_id_delivery']);
-      }
-      echo "</td>";
-      echo "<td>".$LANG['plugin_order'][59]."</td><td>";
-      if ($canedit) {
-         Dropdown::show('Group', array('name' => 'groups_id_delivery',
-                                       'value' => $this->fields['groups_id_delivery']));
-      } else {
-         echo Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id_delivery']);
-      }
-      echo "</td>";
-      
       echo "</td></tr>";
       
       if ($canedit || $cancancel) {
