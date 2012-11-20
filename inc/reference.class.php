@@ -388,7 +388,7 @@ class PluginOrderReference extends CommonDropdown {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       if ($item->getType() == __CLASS__) {
-         $item->showOrders($item->getID());
+         $item->showOrders($item);
       }
       
       return true;
@@ -740,7 +740,7 @@ class PluginOrderReference extends CommonDropdown {
       return $rand;
    }
    
-   function showOrders($plugin_order_references_id){
+   function showOrders($ref){
       global $DB,$LANG;
       
       $order = new PluginOrderOrder();
@@ -748,8 +748,8 @@ class PluginOrderReference extends CommonDropdown {
                FROM `glpi_plugin_order_orders_items`
                LEFT JOIN `glpi_plugin_order_orders`
                   ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`)
-               WHERE `plugin_order_references_id` = '".$plugin_order_references_id."'";
-      $query.= getEntitiesRestrictRequest(" AND ", "glpi_plugin_order_orders", "entities_id", $_SESSION['glpiactive_entity']);
+               WHERE `plugin_order_references_id` = '".$ref->getID()."'";
+      $query.= getEntitiesRestrictRequest(" AND ", "glpi_plugin_order_orders", "entities_id", $ref->fields["entities_id"],true);
       $query.= " GROUP BY `glpi_plugin_order_orders`.`id`
                ORDER BY `entities_id`, `name` ";
       
@@ -789,7 +789,7 @@ class PluginOrderReference extends CommonDropdown {
          echo "</table>";
       } else {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><td class='center'>".$LANG['document'][13]."</td></tr>";
+         echo "<tr class='tab_bg_1'><td class='center'>".$LANG['document'][13]."</td></tr>";
          echo "</table>";
       }
       
