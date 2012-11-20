@@ -34,11 +34,13 @@ if (!defined('GLPI_ROOT')){
 // Class NotificationTarget
 class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
-   const AUTHOR         = 30;
-   const AUTHOR_GROUP   = 31;
-   const DELIVERY_USER  = 32;
-   const DELIVERY_GROUP = 33;
-   
+   const AUTHOR                    = 30;
+   const AUTHOR_GROUP              = 31;
+   const DELIVERY_USER             = 32;
+   const DELIVERY_GROUP            = 33;
+   const SUPERVISOR_AUTHOR_GROUP   = 34;
+   const SUPERVISOR_DELIVERY_GROUP = 35;
+    
    function getEvents() {
       global $LANG;
       return array ('ask'          => $LANG['plugin_order']['validation'][1],
@@ -393,7 +395,11 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       $this->addTarget(self::AUTHOR_GROUP, $LANG['plugin_order'][57]);
       $this->addTarget(self::DELIVERY_USER, $LANG['plugin_order'][58]);
       $this->addTarget(self::DELIVERY_GROUP, $LANG['plugin_order'][59]);
-  }
+      $this->addTarget(self::SUPERVISOR_AUTHOR_GROUP,
+                       $LANG['common'][64]." ".$LANG['plugin_order'][57]);
+      $this->addTarget(self::SUPERVISOR_DELIVERY_GROUP,
+                       $LANG['common'][64]." ".$LANG['plugin_order'][59]);
+   }
 
    function getSpecificTargets($data, $options) {
       switch ($data['items_id']) {
@@ -404,10 +410,16 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
             $this->getUserByField ("users_id_delivery");
             break;
          case self::AUTHOR_GROUP:
-            $this->getUsersAddressesByGroup($this->obj->fields['groups_id']);
+            $this->getAddressesByGroup(0, $this->obj->fields['groups_id']);
             break;
          case self::DELIVERY_GROUP:
-            $this->getUsersAddressesByGroup($this->obj->fields['groups_id_delivery']);
+            $this->getAddressesByGroup(0, $this->obj->fields['groups_id_delivery']);
+            break;
+         case self::SUPERVISOR_AUTHOR_GROUP:
+            $this->getAddressesByGroup(1, $this->obj->fields['groups_id']);
+            break;
+         case self::SUPERVISOR_DELIVERY_GROUP:
+            $this->getAddressesByGroup(1, $this->obj->fields['groups_id_delivery']);
             break;
       }
    }
