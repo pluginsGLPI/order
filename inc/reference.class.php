@@ -781,7 +781,7 @@ class PluginOrderReference extends CommonDropdown {
             echo "</td>";
    
             echo "<td>";
-            echo Dropdown::getDropdownName("glpi_entities",$data["entities_id"]);
+            echo Dropdown::getDropdownName("glpi_entities",$order->fields["entities_id"]);
             echo "</td>";
    
             echo "</tr>";
