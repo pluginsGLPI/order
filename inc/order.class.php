@@ -2009,7 +2009,7 @@ class PluginOrderOrder extends CommonDBTM {
                   }
                }
          
-               $tmp['comment'] = Toolbox::addslashes($tmp['comment']);
+               $tmp['comment'] = Toolbox::addslashes_deep($tmp['comment']);
                   
                //Budget already exists in the core: update it
                if ($budget->getFromDB($data['budgets_id'])) {
@@ -2102,6 +2102,10 @@ class PluginOrderOrder extends CommonDBTM {
                            VALUES (NULL,'PluginOrderOrder','$num','$rank','0');");
             }
          }
+         
+         //Remove unused notifications
+         $notification = new Notification();
+         $notification->deleteByCriteria("`itemtype`='PluginOrderOrder_Item'");
       }
    }
    

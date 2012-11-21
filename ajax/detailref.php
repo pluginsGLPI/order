@@ -44,8 +44,9 @@ $params = array('itemtype'    => $_POST['itemtype'],
                'suppliers_id'  => $_POST['suppliers_id'],
                'entity'        => $_POST['entity_restrict'],
                'span'          => $_POST['span'],
-               'action'        => $CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php");
-$ref    = new PluginOrderReference();                        
+               'action'        => $CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php",
+               'condition'     => '');
+$ref    = new PluginOrderReference();
 $ref->dropdownReferencesByEnterprise("PluginOrderReference",$params);
 
 ?>
