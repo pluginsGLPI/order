@@ -262,6 +262,7 @@ class PluginOrderProfile extends CommonDBTM {
             $migration->changeField($table, $right, $right,
                                     "char(1) collate utf8_unicode_ci default NULL");
          }
+         $migration->migrationOneTable($table);
          
          if ($migration->addField($table, "profiles_id", "int(11) NOT NULL default '0'")) {
             $migration->addKey($table, "profiles_id");
