@@ -744,13 +744,13 @@ class PluginOrderReference extends CommonDropdown {
       global $DB,$LANG;
       
       $order = new PluginOrderOrder();
-      $query = "SELECT `glpi_plugin_order_orders`.*
+      $query = "SELECT `glpi_plugin_order_orders_items`.*
                FROM `glpi_plugin_order_orders_items`
-               LEFT JOIN `glpi_plugin_order_orders`
-                  ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`)
+               LEFT JOIN `glpi_plugin_order_references`
+                  ON (`glpi_plugin_order_references`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_references_id`)
                WHERE `plugin_order_references_id` = '".$ref->getID()."'";
-      $query.= getEntitiesRestrictRequest(" AND ", "glpi_plugin_order_orders", "entities_id", $ref->fields["entities_id"],true);
-      $query.= " GROUP BY `glpi_plugin_order_orders`.`id`
+      $query.= getEntitiesRestrictRequest(" AND ", "glpi_plugin_order_references", "entities_id", $ref->fields["entities_id"],true);
+      $query.= " GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_orders_id`
                ORDER BY `entities_id`, `name` ";
       
       $result = $DB->query($query);
@@ -776,7 +776,7 @@ class PluginOrderReference extends CommonDropdown {
          foreach ($DB->request($query_limit) as $data) {
             echo "<tr class='tab_bg_1' align='center'>";
             echo "<td>";
-            $order->getFromDB($data['id']);
+            $order->getFromDB($data['plugin_order_orders_id']);
             echo $order->getLink($order->canView());
             echo "</td>";
    
