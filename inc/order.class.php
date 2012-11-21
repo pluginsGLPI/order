@@ -908,10 +908,12 @@ class PluginOrderOrder extends CommonDBTM {
          'right'  => 'interface',
          'entity' => $this->fields["entities_id"]));
       } else {
-         $user->getFromDB($this->fields['users_id']);
-         $output = formatUserName($this->fields['users_id'],$user->fields['name'],
-                                  $user->fields['realname'], $user->fields['firstname']);
-         echo $output;
+         if ($this->fields['users_id']) {
+            $user->getFromDB($this->fields['users_id']);
+            $output = formatUserName($this->fields['users_id'],$user->fields['name'],
+                  $user->fields['realname'], $user->fields['firstname']);
+            echo $output;
+         }
       }
       echo "</td>";
       echo "<td>".$LANG['plugin_order'][57].":</td><td>";
@@ -928,10 +930,12 @@ class PluginOrderOrder extends CommonDBTM {
                               'right'  => 'all',
                               'entity' => $this->fields["entities_id"]));
       } else {
-         $user->getFromDB($this->fields['users_id_delivery']);
-         $output = formatUserName($this->fields['users_id'],$user->fields['name'],
-                                  $user->fields['realname'], $user->fields['firstname']);
-         echo $output;
+         if ($this->fields['users_id_delivery']) {
+            $user->getFromDB($this->fields['users_id_delivery']);
+            $output = formatUserName($this->fields['users_id'],$user->fields['name'],
+                  $user->fields['realname'], $user->fields['firstname']);
+            echo $output;
+         }
       }
       echo "</td>";
       echo "<td>".$LANG['plugin_order'][59].":</td><td>";
