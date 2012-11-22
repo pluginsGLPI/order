@@ -127,7 +127,7 @@ class PluginOrderOrder extends CommonDBTM {
    
    function canDisplayValidationForm($orders_id) {
 
-      $this->getFromDB($orders_id);
+//      $this->getFromDB($orders_id);
 
       //If it's an order creation -> do not display form
       if (!$orders_id) {
@@ -486,9 +486,7 @@ class PluginOrderOrder extends CommonDBTM {
 
          return $ong;
       }
-      
    }
-
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       if ($item->getType()=='Budget') {
@@ -507,7 +505,6 @@ class PluginOrderOrder extends CommonDBTM {
       
       return true;
    }
-   
 
    function prepareInputForAdd($input) {
       global $LANG;
@@ -535,7 +532,6 @@ class PluginOrderOrder extends CommonDBTM {
 
       return $input;
    }
-   
    
    function post_addItem() {
 		global $CFG_GLPI;
@@ -1204,7 +1200,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<tr class='tab_bg_2'><th colspan='3'>" .
          $LANG['plugin_order']['validation'][6] . "</th></tr>";
 
-      if ($this->can($orders_id, 'w') && $this->canDisplayValidationForm($orders_id)) {
+      if ($this->can($orders_id, 'r') && $this->canDisplayValidationForm($orders_id)) {
          
          if ($this->checkIfDetailExists($orders_id)) {
 

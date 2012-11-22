@@ -87,7 +87,7 @@ else if (isset ($_POST["update"])) {
 //Status update & order workflow
 /* validate order */
 else if (isset ($_POST["validate"])) {
-   if ($pluginOrderOrder->canCreate()
+   if ($pluginOrderOrder->canView()
       && ( $pluginOrderOrder->canValidate()
          || !$config->useValidation())) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
@@ -111,7 +111,7 @@ else if (isset ($_POST["validate"])) {
    Html::redirect($_SERVER['HTTP_REFERER']);
    
 } else if (isset ($_POST["cancel_waiting_for_approval"])) {
-   if ($pluginOrderOrder->canCreate() && $pluginOrderOrder->canCancel()) {
+   if ($pluginOrderOrder->canView() && $pluginOrderOrder->canCancel()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getDraftState(),
                                            $_POST["comment"]);
@@ -120,7 +120,7 @@ else if (isset ($_POST["validate"])) {
    
    Html::redirect($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["cancel_order"])) {
-   if ($pluginOrderOrder->canCreate() && $pluginOrderOrder->canCancel()) {
+   if ($pluginOrderOrder->canView() && $pluginOrderOrder->canCancel()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getCanceledState(),
                                            $_POST["comment"]);
@@ -133,7 +133,7 @@ else if (isset ($_POST["validate"])) {
    
 }
 else if (isset ($_POST["undovalidation"])) {
-   if ($pluginOrderOrder->canCreate() && $pluginOrderOrder->canUndo()) {
+   if ($pluginOrderOrder->canView() && $pluginOrderOrder->canUndo()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getDraftState(),
                                            $_POST["comment"]);
