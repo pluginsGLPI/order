@@ -133,11 +133,11 @@ function plugin_init_order() {
             }
             //references
             if (plugin_order_haveRight("reference","r")) {
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['title']
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['title']
                   = $LANG['plugin_order']['menu'][5];
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['page']
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['page']
                   = '/plugins/order/front/reference.php';
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['links']['search']
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['search']
                   = '/plugins/order/front/reference.php';
 
             }
@@ -176,10 +176,10 @@ function plugin_init_order() {
    
          if (plugin_order_haveRight("reference","w")) {
             //references
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['links']['add']
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['add']
                = '/plugins/order/front/reference.form.php';
            if (Session::haveRight('config', 'w')) {
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderReference']['links']['config']
+               $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['config']
                   = '/plugins/order/front/config.form.php';
            }
          }

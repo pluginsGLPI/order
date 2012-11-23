@@ -32,11 +32,9 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderReference extends CommonDropdown {
+class PluginOrderReference extends CommonDBTM {
 
    public $dohistory         = true;
-   public $first_level_menu  = "plugins";
-   public $second_level_menu = "order";
    public $forward_entity_to = array('PluginOrderReference_Supplier');
    
    static function getTypeName() {
@@ -250,120 +248,6 @@ class PluginOrderReference extends CommonDropdown {
       return (!$this->referenceInUse());
    }
 
-   function getAdditionalFields() {
-      global $LANG;
-
-      return array(array('name'  => 'is_active',
-                         'label' => $LANG['common'][60],
-                         'type'  => 'bool'),
-                  array('name'  => 'manufacturers_id',
-                         'label' => $LANG['common'][5],
-                         'type'  => 'dropdownValue'),
-                  array('name'  => 'itemtype',
-                         'label' => $LANG['state'][6],
-                         'type'  => 'reference_itemtype'),
-                   array('name'  => 'types_id',
-                         'label' => $LANG['common'][17],
-                         'type'  => 'reference_types_id'),
-                   array('name'  => 'models_id',
-                         'label' => $LANG['common'][22],
-                         'type'  => 'reference_models_id'),
-                   array('name'  => 'templates_id',
-                         'label' => $LANG['common'][13],
-                         'type'  => 'reference_templates_id'),
-                   array('name'  => 'date_mod',
-                         'label' => $LANG['common'][26],
-                         'type'  => 'date_mod'));
-   }
-
-   /**
-    * Display specific fields for FieldUnicity
-    *
-    * @param $ID
-    * @param $field array
-   **/
-   
-   function displaySpecificTypeField($ID, $field=array()) {
-      global $CFG_GLPI;
-      
-      $reference_in_use = (!$ID?false:$this->referenceInUse());
-       
-      switch ($field['type']) {
-         case 'reference_itemtype' :
-            if ($ID > 0) {
-               $itemtype = $this->fields["itemtype"];
-               $item     = new $itemtype();
-               echo $item->getTypeName();
-               echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-            } else {
-               $params = array('myname'       => 'itemtype',
-                               'value'        => $this->fields["itemtype"],
-                               'entity'       => $_SESSION["glpiactive_entity"],
-                               'ajax_page'    => GLPI_ROOT.'/plugins/order/ajax/referencespecifications.php',
-                               'class'        => __CLASS__);
-                               
-               $this->dropdownAllItems($params);
-            }
-            break;
-
-         case 'reference_types_id' :
-            echo "<span id='show_types_id'>";
-            if ($this->fields["itemtype"]) {
-               if ($this->fields["itemtype"] == 'PluginOrderOther') {
-                  $file = 'other';
-               } else {
-                  $file = $this->fields["itemtype"];
-               }
-               $core_typefilename   = GLPI_ROOT."/inc/".strtolower($file)."type.class.php";
-               $plugin_typefilename = GLPI_ROOT."/plugins/order/inc/".strtolower($file)."type.class.php";
-               $itemtypeclass       = $this->fields["itemtype"]."Type";
-               if (file_exists($core_typefilename)
-                     || file_exists($plugin_typefilename)) {
-                  if (!$reference_in_use) {
-                     Dropdown::show($itemtypeclass,
-                                    array('name'  => "types_id",
-                                          'value' => $this->fields["types_id"]));
-                  } else{
-                     echo Dropdown::getDropdownName(getTableForItemType($itemtypeclass),
-                                                                        $this->fields["types_id"]);
-                  }
-                }
-            }
-      
-            echo "</span>";
-            break;
-            
-         case 'reference_models_id' :
-            echo "<span id='show_models_id'>";
-            if ($this->fields["itemtype"]) {
-               if (file_exists(GLPI_ROOT."/inc/".strtolower($this->fields["itemtype"])."model.class.php")) {
-                  Dropdown::show($this->fields["itemtype"]."Model",
-                                 array('name'  => "models_id",
-                                       'value' => $this->fields["models_id"]));
-               }
-            }
-            echo "</span>";
-            break;
-
-         case 'reference_templates_id' :
-            echo "<span id='show_templates_id'>";
-            if ($this->fields['itemtype'] != ''
-               && FieldExists(getTableForItemType($this->fields['itemtype']), 'is_template')) {
-               $this->dropdownTemplate('templates_id', $this->fields['entities_id'],
-                                       getTableForItemType($this->fields['itemtype']),
-                                       $this->fields['templates_id']);
-            }
-            echo "</span>";
-
-            break;
-         
-         case 'date_mod' :
-            echo Html::convDateTime($this->fields["date_mod"]);
-            break;
-
-      }
-   }
-
    function defineTabs($options=array()) {
       global $LANG;
 
@@ -533,6 +417,125 @@ class PluginOrderReference extends CommonDropdown {
       }
    }
    
+   function showForm($id, $options = array()) {
+      global $CFG_GLPI, $LANG;
+
+      if (!$this->canView()) {
+         return false;
+      }
+      
+      if ($id > 0) {
+         $this->check($id,'r');
+      } else {
+         // Create item
+         $this->check(-1,'w');
+         $this->getEmpty();
+      }
+      
+      $reference_in_use = (!$id?false:$this->referenceInUse());
+      
+      $this->showTabs($options);
+      $this->showFormHeader($options);
+      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][39] . "</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "name");
+      echo "</td>";
+      echo "<td>".$LANG['common'][25] . "</td>";
+      echo "<td align='center' rowspan='3'>";
+      echo "<textarea cols='50' rows='3' name='comment'>" . $this->fields["comment"] .
+            "</textarea>";
+      echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][60] . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo('is_active', $this->fields['is_active']);
+      echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][5] . "</td>";
+      echo "<td>";
+      Dropdown::show('Manufacturer', array('value' => $this->fields['manufacturers_id']));
+      echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_1'><td>" . $LANG['state'][6] . "</td>";
+      echo "<td>";
+      if ($id > 0) {
+         $itemtype = $this->fields["itemtype"];
+         $item     = new $itemtype();
+         echo $item->getTypeName();
+         echo "<input type='hidden' name='itemtype' value='$itemtype'>";
+      } else {
+            $params = array('myname'       => 'itemtype',
+            'value'        => $this->fields["itemtype"],
+            'entity'       => $_SESSION["glpiactive_entity"],
+            'ajax_page'    => GLPI_ROOT.'/plugins/order/ajax/referencespecifications.php',
+            'class'        => __CLASS__);
+                   
+            $this->dropdownAllItems($params);
+            }
+      echo "</td>";
+      
+      echo "<td>" . $LANG['common'][17] . "</td>";
+      echo "<td>";
+      echo "<span id='show_types_id'>";
+      if ($this->fields["itemtype"]) {
+         if ($this->fields["itemtype"] == 'PluginOrderOther') {
+            $file = 'other';
+         } else {
+            $file = $this->fields["itemtype"];
+         }
+         $core_typefilename   = GLPI_ROOT."/inc/".strtolower($file)."type.class.php";
+         $plugin_typefilename = GLPI_ROOT."/plugins/order/inc/".strtolower($file)."type.class.php";
+         $itemtypeclass       = $this->fields["itemtype"]."Type";
+         if (file_exists($core_typefilename)
+               || file_exists($plugin_typefilename)) {
+            if (!$reference_in_use) {
+               Dropdown::show($itemtypeclass,
+               array('name'  => "types_id",
+               'value' => $this->fields["types_id"]));
+            } else{
+               echo Dropdown::getDropdownName(getTableForItemType($itemtypeclass),
+                     $this->fields["types_id"]);
+            }
+         }
+      }
+      echo "</span>";
+      echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][22] . "</td>";
+      echo "<td>";
+      echo "<span id='show_models_id'>";
+      if ($this->fields["itemtype"]) {
+         if (file_exists(GLPI_ROOT."/inc/".strtolower($this->fields["itemtype"])."model.class.php")) {
+            Dropdown::show($this->fields["itemtype"]."Model",
+            array('name'  => "models_id",
+            'value' => $this->fields["models_id"]));
+         }
+      }
+      echo "</span>";
+      echo "</td>";
+
+      echo "<td>" . $LANG['common'][13] . "</td>";
+      echo "<td>";
+      echo "<span id='show_templates_id'>";
+      if ($this->fields['itemtype'] != ''
+         && FieldExists(getTableForItemType($this->fields['itemtype']), 'is_template')) {
+         $this->dropdownTemplate('templates_id', $this->fields['entities_id'],
+                                 getTableForItemType($this->fields['itemtype']),
+                                 $this->fields['templates_id']);
+      }
+      echo "</span>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][26] . "</td>";
+      echo "<td>";
+      echo Html::convDateTime($this->fields["date_mod"]);
+      echo "</td><td colspan='2'></td></tr>";
+      $this->showFormButtons($options);
+      Html::closeForm();
+      
+      $this->addDivForTabs();
+      return true;
+   }
    
    /**
     * Permet l'affichage dynamique d'une liste d�roulante imbriquee

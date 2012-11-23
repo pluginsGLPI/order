@@ -31,6 +31,38 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT."/inc/includes.php");
 
-$dropdown = new PluginOrderReference();
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
-?>
+if (!isset ($_GET["id"])) {
+   $_GET["id"] = "";
+}
+if (!isset ($_GET["withtemplate"])) {
+   $_GET["withtemplate"] = "";
+}
+
+$reference = new PluginOrderReference();
+
+if (isset ($_POST["add"])) {
+   $reference->check(-1,'w',$_POST);
+   $newID = $reference->add($_POST);
+   $url   = Toolbox::getItemTypeFormURL('PluginOrderReference')."?id=$newID";
+   Html::redirect($url);
+}
+/* delete order */
+else if (isset ($_POST["delete"])) {
+   $reference->check($_POST['id'], 'w');
+   $reference->delete($_POST);
+   $reference->redirectToList();
+}
+/* restore order */
+else if (isset ($_POST["restore"])) {
+   $reference->check($_POST['id'], 'w');
+   $reference->restore($_POST);
+   $reference->redirectToList();
+}
+else if (isset ($_POST["update"])) {
+   $reference->check($_POST['id'], 'w');
+   $reference->update($_POST);
+   Html::back();
+}
+Html::header(PluginOrderReference::getTypeName(1), '', "plugins", "order", "reference");
+$reference->showForm($_GET["id"], array('withtemplate' => $_GET['withtemplate']));
+Html::footer();

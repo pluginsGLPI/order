@@ -27,11 +27,17 @@
  @link      http://www.glpi-project.org/
  @since     2009
  ---------------------------------------------------------------------- */
-
 define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT . "/inc/includes.php");
+include (GLPI_ROOT."/inc/includes.php");
+Html::header(PluginOrderReference::getTypeName(), '', "plugins", "order", "reference");
 
-$dropdown = new PluginOrderReference();
-include (GLPI_ROOT . "/front/dropdown.common.php");
+$reference = new PluginOrderReference();
+if ($reference->canView()) {
+   Search::show("PluginOrderReference");
+} else {
+   echo "<div align='center'><br><br><img src=\"".
+         $CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
+   echo "<b>".$LANG['login'][5]."</b></div>";
+}
 
-?>
+Html::footer();
