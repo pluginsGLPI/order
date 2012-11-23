@@ -833,7 +833,7 @@ class PluginOrderReference extends CommonDBTM {
          $num    = $DB->numrows($result);
          if ($num) {
             while ($dataref=$DB->fetch_array($result)) {
-               $values["id"] = $dataref['id'];
+               $values["id"]                         = $dataref['id'];
                $values["plugin_order_references_id"] = $newid;
                $PluginOrderOrder_Item->update($values);
             }

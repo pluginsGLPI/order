@@ -307,8 +307,10 @@ function plugin_order_MassiveActions($type) {
       case 'PluginOrderOrder' :
          return array ("plugin_order_transfert" => $LANG['buttons'][48]);
          break;
+         
       case 'PluginOrderReference':
-         return array ("plugin_order_copy_reference" => $LANG['plugin_order']['reference'][13]);
+         return array ("plugin_order_copy_reference"     => $LANG['plugin_order']['reference'][13],
+                         "plugin_order_transfer_reference" => $LANG['buttons'][48]);
          break;
    }
    return array ();
@@ -335,6 +337,11 @@ function plugin_order_MassiveActionsDisplay($options=array()) {
                      $LANG['buttons'][2] . "\" >";
                break;
                    
+            case "plugin_order_transfer_reference" :
+               Dropdown::show('Entity');
+               echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
+                     $LANG['buttons'][2] . "\" >";
+               break;
          }
          break;
    }
@@ -347,9 +354,9 @@ function plugin_order_MassiveActionsProcess($data) {
    switch ($data['action']) {
       case "plugin_order_transfert" :
          if ($data['itemtype'] == 'PluginOrderOrder') {
+            $order = new PluginOrderOrder();
             foreach ($data["item"] as $key => $val) {
                if ($val == 1) {
-                  $order = new PluginOrderOrder();
                   $order->transfer($key,$data['entities_id']);
                }
             }
@@ -357,15 +364,25 @@ function plugin_order_MassiveActionsProcess($data) {
          break;
       case "plugin_order_copy_reference" :
          if ($data['itemtype'] == 'PluginOrderReference') {
-            foreach ($data["item"] as $key => $val) {
+             $reference = new PluginOrderReference();
+             foreach ($data["item"] as $key => $val) {
                if ($val == 1) {
-                  $reference = new PluginOrderReference();
                   $reference->copy($key);
                }
             }
          }
          break;
-      }
+      case "plugin_order_transfer_reference" :
+         if ($data['itemtype'] == 'PluginOrderReference') {
+            $reference = new PluginOrderReference();
+            foreach ($data["item"] as $key => $val) {
+               if ($val == 1) {
+                  $reference->transfer($key, $data['entities_id']);
+               }
+            }
+         }
+         break;
+   }
 }
 
 /* hook done on purge item case */
