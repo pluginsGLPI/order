@@ -58,6 +58,13 @@ else if (isset ($_POST["restore"])) {
    $reference->restore($_POST);
    $reference->redirectToList();
 }
+else if (isset($_POST["purge"])) {
+
+	$reference->check($_POST['id'],'w');
+   $reference->delete($_POST,1);
+	$reference->redirectToList();
+	
+}
 else if (isset ($_POST["update"])) {
    $reference->check($_POST['id'], 'w');
    $reference->update($_POST);
