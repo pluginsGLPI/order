@@ -91,9 +91,11 @@ function plugin_init_order() {
                             array('notificationtemplates_types' => true,
                                   'addtabon' => PluginOrderOrder_Item::getClasses(true)));
       Plugin::registerClass('PluginOrderProfile', array('addtabon' => array('Profile')));
-      Plugin::registerClass('PluginOrderOrder_Supplier', array('addtabon' => array('Supplier')));
-      Plugin::registerClass('PluginOrderPreference', array('addtabon' => array('Preference')));
       
+      if (plugin_order_haveRight('order', 'r')) {
+         Plugin::registerClass('PluginOrderOrder_Supplier', array('addtabon' => array('Supplier')));
+         Plugin::registerClass('PluginOrderPreference', array('addtabon' => array('Preference')));
+      }
       /*if glpi is loaded */
       if (Session::getLoginUserID()) {
       
