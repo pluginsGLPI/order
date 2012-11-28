@@ -36,7 +36,6 @@ include (GLPI_ROOT."/inc/includes.php");
 $config = new PluginOrderConfig();
 
 if (isset($_POST["update"])) {
-
    $config->update($_POST);
    //Update singelton
    PluginOrderConfig::getConfig(true);

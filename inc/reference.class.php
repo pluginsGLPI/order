@@ -52,10 +52,8 @@ class PluginOrderReference extends CommonDBTM {
    }
    
    function cleanDBonPurge() {
-
       $temp = new PluginOrderReference_Supplier();
       $temp->deleteByCriteria(array('plugin_order_references_id' => $this->fields['id']));
-
    }
    
    function getSearchOptions() {

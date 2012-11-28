@@ -126,6 +126,19 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
       
+      echo "<tr class='tab_bg_1' align='center'>
+                  <td>".$LANG['plugin_order'][57].' '.$LANG['devices'][24]."</td><td>";
+      Dropdown::show("Group", array('value' => $this->fields["groups_id_author"],
+                                     'name'  => 'groups_id_author'));
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>
+                  <td>".$LANG['plugin_order'][59].' '.$LANG['devices'][24]."</td><td>";
+      Dropdown::show("Group", array('value' => $this->fields["groups_id_recipient"],
+                                     'name'  => 'groups_id_recipient'));
+      echo "</td>";
+      echo "</tr>";
       
       // Automatic actions
       echo "<tr class='tab_bg_1' align='center'>
@@ -157,18 +170,7 @@ class PluginOrderConfig extends CommonDBTM {
                   <td>".$LANG['plugin_order']['config'][7]."</td><td>";
                   Html::autocompletionTextField($this, "generated_otherserial");
          echo "</td></tr>";
-         /*
-         echo "<tr class='tab_bg_1' align='center'>";
-         echo "<td>".$LANG['plugin_order']['config'][8]."</td><td>";
-         if (Session::isMultiEntitiesMode()) {
-            Dropdown::show('Entity', array(  'name'   => "default_asset_entities_id",
-                                             'value'  => $this->fields["default_asset_entities_id"],
-                                             'entity' => $_SESSION["glpiactiveentities"]));
-         } else {
-            echo $_SESSION["glpiactive_entity"];
-         }
-         echo "</td></tr>";
-         */
+
          echo "<tr class='tab_bg_1' align='center'>
                   <td>".$LANG['plugin_order']['config'][12]."</td><td>";
                   Dropdown::show('State',
@@ -379,7 +381,15 @@ class PluginOrderConfig extends CommonDBTM {
    function getDefaultDocumentCategory() {
       return $this->fields['documentcategories_id'];
    }
-   
+
+   function getDefaultAuthorGroup() {
+      return $this->fields['groups_id_author'];
+   }
+
+   function getDefaultRecipientGroup() {
+      return $this->fields['groups_id_recipient'];
+   }
+    
    //----------------- Install & uninstall -------------------//
 
    static function install(Migration $migration) {
@@ -421,6 +431,8 @@ class PluginOrderConfig extends CommonDBTM {
                      `order_status_paid` int(11) NOT NULL default '0',
                      `shoudbedelivered_color` char(20) collate utf8_unicode_ci default '#ff5555',
                      `documentcategories_id` int(11) NOT NULL default '0',
+                     `groups_id_author` int(11) NOT NULL default '0',
+                     `groups_id_recipient` int(11) NOT NULL default '0',
                      PRIMARY KEY  (`id`)
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
                $DB->query($query) or die ($DB->error());
@@ -480,6 +492,8 @@ class PluginOrderConfig extends CommonDBTM {
                                     "default_itilcategories_id", "INTEGER");
             $migration->addField($table, "copy_documents", "tinyint(1) NOT NULL DEFAULT '0'");
             $migration->addField($table, "documentcategories_id", "integer");
+            $migration->addField($table, "groups_id_author", "integer");
+            $migration->addField($table, "groups_id_recipient", "integer");
             $migration->migrationOneTable($table);
             
       }

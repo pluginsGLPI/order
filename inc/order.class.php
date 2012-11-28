@@ -35,7 +35,8 @@ if (!defined('GLPI_ROOT')){
 class PluginOrderOrder extends CommonDBTM {
 
    public $dohistory               = true;
-   public $forward_entity_to       = array("PluginOrderOrder_Item", "PluginOrderOrder_Supplier");
+   public $forward_entity_to       = array("PluginOrderOrder_Item", "PluginOrderOrder_Supplier",
+                                             "PluginOrderSurveySupplier");
    
    const ORDER_DEVICE_NOT_DELIVRED = 0;
    const ORDER_DEVICE_DELIVRED     = 1;
@@ -111,10 +112,10 @@ class PluginOrderOrder extends CommonDBTM {
    }
    
    function cleanDBonPurge() {
-
-      $temp = new PluginOrderOrder_Item();
-      $temp->deleteByCriteria(array('plugin_order_orders_id' => $this->fields['id']));
-
+      foreach ($this->forward_entity_to as $itemtype) {
+         $temp = new $itemtype();
+         $temp->deleteByCriteria(array('plugin_order_orders_id' => $this->fields['id']));
+      }
    }
    
    function canUpdateOrder() {
@@ -439,7 +440,6 @@ class PluginOrderOrder extends CommonDBTM {
       return $tab;
    }
    
-
    function defineTabs($options=array()) {
       global $LANG;
 
@@ -534,25 +534,25 @@ class PluginOrderOrder extends CommonDBTM {
    }
    
    function post_addItem() {
-		global $CFG_GLPI;
-
-		// Manage add from template
-		if (isset($this->input["_oldID"])) {
-
-			// ADD Documents
-			$docitem=new Document_Item();
-			$restrict = "`items_id` = '".$this->input["_oldID"]."' AND `itemtype` = '".$this->getType()."'";
+      global $CFG_GLPI;
+   
+      // Manage add from template
+      if (isset($this->input["_oldID"])) {
+   
+         // ADD Documents
+         $docitem=new Document_Item();
+         $restrict = "`items_id` = '".$this->input["_oldID"]."' AND `itemtype` = '".$this->getType()."'";
          $docs = getAllDatasFromTable("glpi_documents_items",$restrict);
          if (!empty($docs)) {
             foreach ($docs as $doc) {
                $docitem->add(array('documents_id' => $doc["documents_id"],
-                        'itemtype' => $this->getType(),
-                        'items_id' => $this->fields['id']));
+                     'itemtype' => $this->getType(),
+                     'items_id' => $this->fields['id']));
             }
-			}
-		}
-	}
-
+         }
+      }
+   }
+    
    function prepareInputForUpdate($input) {
       global $LANG;
       if( (isset($input['budgets_id'])
@@ -914,7 +914,12 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['plugin_order'][57].":</td><td>";
       if ($canedit) {
-         Dropdown::show('Group', array('value' => $this->fields['groups_id']));
+         if (empty ($ID) || $ID < 0) {
+            $groups_id = $config->getDefaultAuthorGroup();
+         } else {
+            $groups_id = $this->fields['groups_id'];
+         }
+         Dropdown::show('Group', array('value' => $groups_id));
       } else {
          echo Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id']);
       }
@@ -936,8 +941,13 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['plugin_order'][59].":</td><td>";
       if ($canedit) {
+         if (empty ($ID) || $ID < 0) {
+            $groups_id = $config->getDefaultRecipientGroup();
+         } else {
+            $groups_id = $this->fields['groups_id_delivery'];
+         }
          Dropdown::show('Group', array('name'  => 'groups_id_delivery',
-                                        'value' => $this->fields['groups_id_delivery']));
+                                        'value' => $groups_id));
       } else {
          echo Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id_delivery']);
       }
@@ -1823,7 +1833,7 @@ class PluginOrderOrder extends CommonDBTM {
          $config   = PluginOrderConfig::getConfig();
          $category = $config->getDefaultDocumentCategory();
          if ($category) {
-            $document->update(array('id' => $document->getID(),
+            $document->update(array('id'                    => $document->getID(),
                                      'documentcategories_id' => $category));
          }
       }
