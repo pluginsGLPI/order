@@ -139,6 +139,15 @@ class PluginOrderConfig extends CommonDBTM {
                                      'name'  => 'groups_id_recipient'));
       echo "</td>";
       echo "</tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>
+                  <td>".$LANG['plugin_order'][58].' '.$LANG['devices'][24]."</td><td>";
+      User::dropdown(array('name'   => 'users_id_recipient',
+                            'value'  => $this->fields["users_id_recipient"],
+                            'right'  => 'all',
+                            'entity' => 0));
+      echo "</td>";
+      echo "</tr>";
       
       // Automatic actions
       echo "<tr class='tab_bg_1' align='center'>
@@ -390,6 +399,10 @@ class PluginOrderConfig extends CommonDBTM {
       return $this->fields['groups_id_recipient'];
    }
     
+   function getDefaultRecipient() {
+      return $this->fields['users_id_recipient'];
+   }
+   
    //----------------- Install & uninstall -------------------//
 
    static function install(Migration $migration) {
@@ -433,6 +446,7 @@ class PluginOrderConfig extends CommonDBTM {
                      `documentcategories_id` int(11) NOT NULL default '0',
                      `groups_id_author` int(11) NOT NULL default '0',
                      `groups_id_recipient` int(11) NOT NULL default '0',
+                     `users_id_recipient` int(11) NOT NULL default '0',
                      PRIMARY KEY  (`id`)
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
                $DB->query($query) or die ($DB->error());
@@ -494,6 +508,7 @@ class PluginOrderConfig extends CommonDBTM {
             $migration->addField($table, "documentcategories_id", "integer");
             $migration->addField($table, "groups_id_author", "integer");
             $migration->addField($table, "groups_id_recipient", "integer");
+            $migration->addField($table, "users_id_recipient", "integer");
             $migration->migrationOneTable($table);
             
       }

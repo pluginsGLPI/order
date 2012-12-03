@@ -882,7 +882,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2'>".$LANG['mailing'][121]."</th>";
+      echo "<th colspan='2'>".$LANG['common'][103]."</th>";
       if ($ID > 0 && !$template) {
          echo "<th colspan='2'>".$LANG['financial'][5]."</th></tr>";
       } else {
@@ -926,8 +926,13 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'><td>".$LANG['plugin_order'][58].":</td><td>";
       if ($canedit) {
+         if (empty ($ID) || $ID < 0) {
+            $users_id = $config->getDefaultRecipient();
+         } else {
+            $users_id = 0;
+         }
          User::dropdown(array('name'   => 'users_id_delivery',
-                              'value'  => $this->fields["users_id_delivery"],
+                              'value'  => $users_id,
                               'right'  => 'all',
                               'entity' => $this->fields["entities_id"]));
       } else {
