@@ -184,6 +184,11 @@ class PluginOrderReference extends CommonDBTM {
       return $tab;
    }
    
+   function post_getEmpty() {
+
+      $this->fields['is_active'] = 1;
+   }
+   
    function prepareInputForAdd($input){
       global $DB,$LANG;
 
