@@ -346,7 +346,7 @@ class PluginOrderReference extends CommonDBTM {
       global $DB, $CFG_GLPI;
       
       $p['myname']       = '';
-      $p['value']        = 0;
+      $p['value']        = "";
       $p['orders_id']    = 0;
       $p['suppliers_id'] = 0;
       $p['entity']       = 0;
@@ -390,7 +390,7 @@ class PluginOrderReference extends CommonDBTM {
       foreach ($types as $type) {
          $item = new $type();
          echo "<option value='".$type."' ";
-         if (isset($p['value']) && $p['value'] == $item->getType()) {
+         if (isset($p['value']) && $p['value'] == $type) {
             echo "selected";
          }
          echo " >".$item->getTypeName()."</option>\n";
@@ -475,7 +475,7 @@ class PluginOrderReference extends CommonDBTM {
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
       } else {
             $params = array('myname'       => 'itemtype',
-            'value'        => $options["itemtype"],
+            'value'        => $options["item"],
             'entity'       => $_SESSION["glpiactive_entity"],
             'ajax_page'    => GLPI_ROOT.'/plugins/order/ajax/referencespecifications.php',
             'class'        => __CLASS__);
