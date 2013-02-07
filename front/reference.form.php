@@ -50,6 +50,10 @@ if (!isset ($_GET["itemtype"])) {
    $_GET["itemtype"] = "";
 }
 
+if (!isset ($_GET["entities_id"])) {
+   $_GET["entities_id"] = "";
+}
+
 $reference = new PluginOrderReference();
 
 if (isset ($_POST["add"])) {
@@ -94,7 +98,8 @@ if (isset ($_GET["popup"])
 }
 $reference->showForm($_GET["id"], array('withtemplate' => $_GET['withtemplate'],
                                           'popup' => $_GET["popup"],
-                                          'item' => $_GET["itemtype"]));
+                                          'item' => $_GET["itemtype"],
+                                          'entities_id' => $_GET["entities_id"]));
 
 
 if (isset ($_GET["popup"]) 

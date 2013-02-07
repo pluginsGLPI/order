@@ -708,7 +708,7 @@ class PluginOrderReference extends CommonDBTM {
                echo "<img alt='' title=\"".$LANG['buttons'][8]."\" src='".$CFG_GLPI["root_doc"].
                      "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
                      onClick=\"var w = window.open('".$item->getFormURL()."?popup=1&amp;rand=".
-                     $params['rand']."&amp;itemtype=".$params['itemtype']."', ". 
+                     $params['rand']."&amp;itemtype=".$params['itemtype']."&amp;entities_id=".$params['entity']."', ". 
                      "'glpipopup', 'height=400,width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
          }
       }
