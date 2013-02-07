@@ -38,12 +38,28 @@ if (!isset ($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
 }
 
+if (isset ($_POST["popup"])) {
+   $_GET["popup"] = $_POST["popup"];
+}
+
+if (!isset ($_GET["popup"])) {
+   $_GET["popup"] = "";
+}
+
+if (!isset ($_GET["itemtype"])) {
+   $_GET["itemtype"] = "";
+}
+
 $reference = new PluginOrderReference();
 
 if (isset ($_POST["add"])) {
    $reference->check(-1,'w',$_POST);
    $newID = $reference->add($_POST);
    $url   = Toolbox::getItemTypeFormURL('PluginOrderReference')."?id=$newID";
+   if (isset ($_GET["popup"]) 
+      && $_GET["popup"] == 1) {
+      $url   .= "&popup=1";
+   }
    Html::redirect($url);
 }
 /* delete order */
@@ -70,6 +86,20 @@ else if (isset ($_POST["update"])) {
    $reference->update($_POST);
    Html::back();
 }
-Html::header(PluginOrderReference::getTypeName(1), '', "plugins", "order", "reference");
-$reference->showForm($_GET["id"], array('withtemplate' => $_GET['withtemplate']));
-Html::footer();
+if (isset ($_GET["popup"]) 
+      && $_GET["popup"] == 1) {
+   Html::popheader(PluginOrderReference::getTypeName(1), '', "plugins", "order", "reference");
+} else {
+   Html::header(PluginOrderReference::getTypeName(1), '', "plugins", "order", "reference");
+}
+$reference->showForm($_GET["id"], array('withtemplate' => $_GET['withtemplate'],
+                                          'popup' => $_GET["popup"],
+                                          'item' => $_GET["itemtype"]));
+
+
+if (isset ($_GET["popup"]) 
+      && $_GET["popup"] == 1) {
+   Html::popfooter();
+} else {
+   Html::footer();
+}

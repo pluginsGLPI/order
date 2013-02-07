@@ -389,7 +389,11 @@ class PluginOrderReference extends CommonDBTM {
       
       foreach ($types as $type) {
          $item = new $type();
-         echo "<option value='".$type."'>".$item->getTypeName()."</option>\n";
+         echo "<option value='".$type."' ";
+         if (isset($p['value']) && $p['value'] == $item->getType()) {
+            echo "selected";
+         }
+         echo " >".$item->getTypeName()."</option>\n";
       }
 
       echo "</select>";
@@ -434,11 +438,19 @@ class PluginOrderReference extends CommonDBTM {
       
       $this->showTabs($options);
       $this->showFormHeader($options);
-      echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order'][39] . "</td>";
+
+      if(isset($options['popup'])) {
+         echo "<input type='hidden' name='popup' value='".$options['popup']."'>";
+      }
+      if(!isset($options['item']) || empty($options['item'])) {
+         $options['item'] = $this->fields["itemtype"];
+      }
+      
+      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td>".$LANG['common'][25] . "</td>";
+      echo "<td rowspan='3'>".$LANG['common'][25] . "</td>";
       echo "<td align='center' rowspan='3'>";
       echo "<textarea cols='50' rows='3' name='comment'>" . $this->fields["comment"] .
             "</textarea>";
@@ -463,7 +475,7 @@ class PluginOrderReference extends CommonDBTM {
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
       } else {
             $params = array('myname'       => 'itemtype',
-            'value'        => $this->fields["itemtype"],
+            'value'        => $options["itemtype"],
             'entity'       => $_SESSION["glpiactive_entity"],
             'ajax_page'    => GLPI_ROOT.'/plugins/order/ajax/referencespecifications.php',
             'class'        => __CLASS__);
@@ -475,15 +487,15 @@ class PluginOrderReference extends CommonDBTM {
       echo "<td>" . $LANG['common'][17] . "</td>";
       echo "<td>";
       echo "<span id='show_types_id'>";
-      if ($this->fields["itemtype"]) {
-         if ($this->fields["itemtype"] == 'PluginOrderOther') {
+      if ($options['item']) {
+         if ($options['item'] == 'PluginOrderOther') {
             $file = 'other';
          } else {
-            $file = $this->fields["itemtype"];
+            $file = $options['item'];
          }
          $core_typefilename   = GLPI_ROOT."/inc/".strtolower($file)."type.class.php";
          $plugin_typefilename = GLPI_ROOT."/plugins/order/inc/".strtolower($file)."type.class.php";
-         $itemtypeclass       = $this->fields["itemtype"]."Type";
+         $itemtypeclass       = $options['item']."Type";
          if (file_exists($core_typefilename)
                || file_exists($plugin_typefilename)) {
             if (!$reference_in_use) {
@@ -502,9 +514,9 @@ class PluginOrderReference extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][22] . "</td>";
       echo "<td>";
       echo "<span id='show_models_id'>";
-      if ($this->fields["itemtype"]) {
-         if (file_exists(GLPI_ROOT."/inc/".strtolower($this->fields["itemtype"])."model.class.php")) {
-            Dropdown::show($this->fields["itemtype"]."Model",
+      if ($options['item']) {
+         if (file_exists(GLPI_ROOT."/inc/".strtolower($options['item'])."model.class.php")) {
+            Dropdown::show($options['item']."Model",
             array('name'  => "models_id",
             'value' => $this->fields["models_id"]));
          }
@@ -515,10 +527,10 @@ class PluginOrderReference extends CommonDBTM {
       echo "<td>" . $LANG['common'][13] . "</td>";
       echo "<td>";
       echo "<span id='show_templates_id'>";
-      if ($this->fields['itemtype'] != ''
-         && FieldExists(getTableForItemType($this->fields['itemtype']), 'is_template')) {
+      if (!empty($options['item'])
+         && FieldExists(getTableForItemType($options['item']), 'is_template')) {
          $this->dropdownTemplate('templates_id', $this->fields['entities_id'],
-                                 getTableForItemType($this->fields['itemtype']),
+                                 getTableForItemType($options['item']),
                                  $this->fields['templates_id']);
       }
       echo "</span>";
@@ -626,17 +638,27 @@ class PluginOrderReference extends CommonDBTM {
       if ($CFG_GLPI["use_ajax"]) {
          $nb = 0;
 
+         $query = "SELECT COUNT(*) AS cpt FROM `".$table."` as t
+                   LEFT JOIN `glpi_plugin_order_references_suppliers` as s ON (
+                      `t`.`id` = `s`.`plugin_order_references_id`)
+                  WHERE `s`.`suppliers_id` = '".$params['suppliers_id']."'
+                        AND `t`.`itemtype` = '".$params['itemtype']."'";
          if ($item->isEntityAssign()) {
+            
             if (!($params['entity']<0)) {
-               $nb = countElementsInTableForEntity($table, $params['entity'], $params['condition']);
+               
+               $query .= getEntitiesRestrictRequest("AND", 't', '', $params['entity'], true);
+
             } else {
-               $nb = countElementsInTableForMyEntities($table, $params['condition']);
+               
+               $query .= getEntitiesRestrictRequest("AND", 't', '', '', true);
             }
-
-         } else {
-            $nb = countElementsInTable($table, $params['condition']);
+            
+         } 
+         $result = $DB->query($query);
+         if ($DB->numrows($result)==1) {
+            $nb = $DB->result($result, 0, "cpt");
          }
-
          $nb -= count($params['used']);
 
          if ($nb>$CFG_GLPI["ajax_limit_count"]) {
@@ -680,15 +702,14 @@ class PluginOrderReference extends CommonDBTM {
 
          Html::showToolTip($comment,$options_tooltip);
 
-         if (($item instanceof CommonDropdown)
-              && $item->canCreate()
+         if ($item->canCreate()
               && !isset($_GET['popup'])) {
 
                echo "<img alt='' title=\"".$LANG['buttons'][8]."\" src='".$CFG_GLPI["root_doc"].
                      "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
                      onClick=\"var w = window.open('".$item->getFormURL()."?popup=1&amp;rand=".
-                     $params['rand']."' ,'glpipopup', 'height=400, ".
-                     "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+                     $params['rand']."&amp;itemtype=".$params['itemtype']."', ". 
+                     "'glpipopup', 'height=400,width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
          }
       }
 
