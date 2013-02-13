@@ -371,10 +371,12 @@ function plugin_order_MassiveActionsProcess($data) {
 
 /* hook done on purge item case */
 function plugin_item_purge_order($item) {
-
-   $type = get_class($item);
-   $temp = new PluginOrderOrder_Item();
-   $temp->deleteByCriteria(array('itemtype' => $type, 'items_id' => $item->getField('id')));
+   global $DB;
+   
+   $query = "UPDATE `glpi_plugin_order_orders_items`
+             SET `items_id`='0'
+             WHERE `itemtype`='".$item->getType()."' AND `items_id`='".$item->getField('id')."'";
+   $DB->query($query);
 
    return true;
 }

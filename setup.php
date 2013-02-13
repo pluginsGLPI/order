@@ -66,7 +66,6 @@ function plugin_init_order() {
       $PLUGIN_HOOKS['pre_item_update']['order']
          = array('Infocom'  => array('PluginOrderOrder_Item', 'updateItem'),
                  'Contract' => array('PluginOrderOrder_Item', 'updateItem'));
-      $PLUGIN_HOOKS['item_purge']['order']      = array();
       $PLUGIN_HOOKS['item_add']['order']
          = array('Document' => array('PluginOrderOrder', 'addDocumentCategory'));
       
