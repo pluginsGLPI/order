@@ -1329,11 +1329,11 @@ class PluginOrderOrder extends CommonDBTM {
       
       if ($template) {
          $config = array('PATH_TO_TMP' => GLPI_DOC_DIR . '/_tmp');
-         $odf    = new odf("../templates/$template", $config);
+         $odf    = new odf(PLUGIN_ORDER_TEMPLATE_DIR."$template", $config);
          $this->getFromDB($ID);
          
-         if(file_exists(GLPI_ROOT."/plugins/order/generate/custom.php")) {
-            include_once (GLPI_ROOT."/plugins/order/generate/custom.php");
+         if(file_exists(PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR."custom.php")) {
+            include_once (PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR."custom.php");
          }
          if (function_exists("plugin_order_getCustomFieldsForODT")) {
             plugin_order_getCustomFieldsForODT($ID, $template, $odf, $signature);
@@ -1341,7 +1341,7 @@ class PluginOrderOrder extends CommonDBTM {
             $PluginOrderOrder_Item         = new PluginOrderOrder_Item();
             $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
             
-            $odf->setImage('logo', '../logo/logo.jpg');
+            $odf->setImage('logo', PLUGIN_ORDER_TEMPLATE_LOGO_DIR.'/logo.jpg');
             
             $odf->setVars('title_order', $LANG['plugin_order']['generation'][12], true, 'UTF-8');
             $odf->setVars('num_order', $this->fields["num_order"], true, 'UTF-8');
@@ -1489,7 +1489,7 @@ class PluginOrderOrder extends CommonDBTM {
             $odf->setVars('title_sign',$LANG['plugin_order']['generation'][16],true,'UTF-8');
             
             if ($signature) {
-               $odf->setImage('sign', '../signatures/'.$signature);
+               $odf->setImage('sign', PLUGIN_ORDER_SIGNATURE_DIR.$signature);
             } else {
                $odf->setImage('sign', '../pics/nothing.gif');
             }

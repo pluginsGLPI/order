@@ -34,12 +34,20 @@ if (!defined('PLUGIN_ORDER_TEMPLATE_DIR')) {
 if (!defined('PLUGIN_ORDER_SIGNATURE_DIR')) {
    define ("PLUGIN_ORDER_SIGNATURE_DIR", GLPI_ROOT."/plugins/order/signatures/");
 }
+if (!defined('PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR')) {
+   define ("PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR",  GLPI_ROOT."/plugins/order/generate/");
+}
+if (!defined('PLUGIN_ORDER_TEMPLATE_LOGO_DIR')) {
+   define ("PLUGIN_ORDER_TEMPLATE_LOGO_DIR",  GLPI_ROOT."/plugins/order/logo/");
+}
+
 if (!defined('PLUGIN_ORDER_TEMPLATE_EXTENSION')) {
    define ("PLUGIN_ORDER_TEMPLATE_EXTENSION", "odt");
 }
 if (!defined('PLUGIN_ORDER_SIGNATURE_EXTENSION')) {
    define ("PLUGIN_ORDER_SIGNATURE_EXTENSION", "png");
 }
+
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
    global $PLUGIN_HOOKS, $CFG_GLPI, $LANG, $ORDER_TYPES;
