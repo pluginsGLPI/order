@@ -728,6 +728,7 @@ class PluginOrderReference extends CommonDBTM {
       switch ($itemtype) {
          case 'CartridgeItem':
          case 'ConsumableItem':
+         case 'SoftwareLicense':
             $fk        = getForeignkeyFieldForItemType($itemtype."Type");
             $condition = "`$fk` = '$types_id'";
             $rand      = Dropdown::show($itemtype,
@@ -736,6 +737,7 @@ class PluginOrderReference extends CommonDBTM {
                                               'entity'      => $entity,
                                               'displaywith' => array('ref')));
              break;
+         
          default:
             $item = new $itemtype();
             $and  = "";
@@ -754,7 +756,9 @@ class PluginOrderReference extends CommonDBTM {
                $and .= " AND `is_deleted` = 0 ";
             }
             
-            $condition = "1 $and AND `id` NOT IN ";
+            $table = getTableForItemType($itemtype);
+            
+            $condition = "1 $and AND `$table`.`id` NOT IN ";
             $condition.= "(SELECT `items_id` FROM `glpi_plugin_order_orders_items`
                            WHERE `itemtype`='$itemtype' AND `items_id`!='0')";
             $rand = Dropdown::show($itemtype, array('condition'  => $condition,

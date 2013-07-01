@@ -320,7 +320,9 @@ class PluginOrderLink extends CommonDBChild {
             if ($canedit & $canuse) {
                Html::openArrowMassives("order_generation_form$rand", true);
                echo "<input type='hidden' name='plugin_order_orders_id' value='$plugin_order_orders_id'>";
-               $this->dropdownLinkActions($itemtype, $plugin_order_references_id, $plugin_order_orders_id);
+               $entities_id = $PluginOrderOrder->fields['entities_id'];
+               
+               $this->dropdownLinkActions($itemtype, $plugin_order_references_id, $plugin_order_orders_id, $entities_id);
                Html::closeArrowMassives(array());
             }
             
@@ -441,7 +443,7 @@ class PluginOrderLink extends CommonDBChild {
       }
    }
 
-   function dropdownLinkActions($itemtype,$plugin_order_references_id,$plugin_order_orders_id) {
+   function dropdownLinkActions($itemtype,$plugin_order_references_id,$plugin_order_orders_id, $entities_id) {
       global $LANG,$CFG_GLPI;
       
       $rand       = mt_rand();
@@ -462,7 +464,8 @@ class PluginOrderLink extends CommonDBChild {
       $params = array ('action'                     => '__VALUE__',
                        'itemtype'                   => $itemtype,
                        'plugin_order_references_id' => $plugin_order_references_id,
-                       'plugin_order_orders_id'     => $plugin_order_orders_id);
+                       'plugin_order_orders_id'     => $plugin_order_orders_id,
+                       'entities_id'                => $entities_id);
       Ajax::updateItemOnSelectEvent("dropdown_generationActions$rand", "show_generationActions$rand",
                                   $CFG_GLPI["root_doc"] . "/plugins/order/ajax/linkactions.php",
                                   $params);

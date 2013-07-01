@@ -51,7 +51,7 @@ if (isset($_POST["action"])) {
          echo "&nbsp;<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>";
          $reference->getFromDB($_POST["plugin_order_references_id"]);
          $reference->dropdownAllItemsByType("items_id", $_POST["itemtype"], 
-                                            $_SESSION["glpiactive_entity"],
+                                            $_POST["entities_id"],
                                             $reference->fields["types_id"],
                                             $reference->fields["models_id"]);
          echo "&nbsp;<input type='submit' name='createLinkWithItem' " .
