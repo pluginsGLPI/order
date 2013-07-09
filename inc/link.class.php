@@ -922,12 +922,19 @@ class PluginOrderLink extends CommonDBChild {
       }
    }
 
+   static function countForOrder(PluginOrderOrder $item) {
+      return countElementsInTable('glpi_plugin_order_orders_items',
+                                  "`plugin_order_orders_id` = '".$item->getID()."' ".
+                                  "AND `states_id` = '".PluginOrderOrder::ORDER_DEVICE_DELIVRED."'");
+   }
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
       
       if ($item->getType()=='PluginOrderOrder') {
          if ($item->checkIfDetailExists($item->getID(), true)) {
-            return array(1 => $LANG['plugin_order']['item'][0]);
+            return self::createTabEntry($LANG['plugin_order']['item'][0], 
+                                        self::countForOrder($item));
          }
       }
    }

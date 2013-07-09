@@ -717,13 +717,19 @@ class PluginOrderReception extends CommonDBTM {
       }
    }
 
+   static function countForOrder(PluginOrderOrder $item) {
+      return countElementsInTable('glpi_plugin_order_orders_items',
+                                  "`plugin_order_orders_id` = '".$item->getID()."'");
+   }
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
       
       if ($item->getType()=='PluginOrderOrder') {
          if (plugin_order_haveRight('delivery', 'r')
             && $item->getState() > PluginOrderOrderState::DRAFT) {
-            return array(1 => $LANG['plugin_order']['delivery'][1]);
+            return self::createTabEntry($LANG['plugin_order']['delivery'][1], 
+                                        self::countForOrder($item));
          }
       }
    }
