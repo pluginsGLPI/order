@@ -942,6 +942,7 @@ class PluginOrderLink extends CommonDBChild {
                                          "`itemtype`='PluginOrderOrder'
                                            AND `items_id`='$orders_id'") as $doc) {
             $document->getFromDB($doc['documents_id']);
+            $mime     = $document->fields['mime'];
             $newdocument = clone $document;
             $newdocument->fields['entities_id'] = $entity;
             unset($newdocument->fields['id']);
@@ -951,6 +952,12 @@ class PluginOrderLink extends CommonDBChild {
             $tmp['items_id']     = $items_id;
             $tmp['documents_id'] = $newID;
             $document_item->add($tmp);
+
+            //force mimetype
+            $document->update(array(
+               'id'       => $newID,
+               'mime'     => $mime
+            ));
             
          }
       }
