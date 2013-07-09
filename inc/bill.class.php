@@ -340,9 +340,9 @@ class PluginOrderBill extends CommonDropdown {
             $itemtype = $data_ref["itemtype"];
             $item     = new $itemtype();
             echo "<tr><th><ul><li>";
-            echo "<a href=\"javascript:showHideDiv('generation$rand','generation', '".
+            echo "<a href=\"javascript:showHideDiv('generation$rand','generation_img$rand', '".
                GLPI_ROOT."/pics/plus.png','".GLPI_ROOT."/pics/moins.png');\">";
-            echo "<img alt='' name='generation' src=\"".GLPI_ROOT."/pics/plus.png\">";
+            echo "<img alt='' name='generation_img$rand' src=\"".GLPI_ROOT."/pics/plus.png\">";
             echo "</a>";
             echo "</li></ul></th>";
             echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";

@@ -303,9 +303,9 @@ class PluginOrderReception extends CommonDBTM {
             $item = new $typeRef();
             $rand = mt_rand();
             echo "<tr><th><ul><li>";
-            echo "<a href=\"javascript:showHideDiv('reception$rand','reception', '".
+            echo "<a href=\"javascript:showHideDiv('reception$rand','reception_img$rand', '".
                GLPI_ROOT."/pics/plus.png','".GLPI_ROOT."/pics/moins.png');\">";
-            echo "<img alt='' name='reception' src=\"".GLPI_ROOT."/pics/plus.png\">";
+            echo "<img alt='' name='reception_img$rand' src=\"".GLPI_ROOT."/pics/plus.png\">";
             echo "</a>";
             echo "</li></ul></th>";
             echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";
