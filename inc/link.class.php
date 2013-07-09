@@ -242,44 +242,6 @@ class PluginOrderLink extends CommonDBChild {
             $canuse                     = ($itemtype != 'PluginOrderOther');
             $item                       = new $itemtype();
             $rand                       = mt_rand();
-            echo "<tr><th><ul><li>";
-            echo "<a href=\"javascript:showHideDiv('generation$rand','generation_img$rand', " .
-                    "'".GLPI_ROOT."/pics/plus.png','".GLPI_ROOT."/pics/moins.png');\">";
-            echo "<img alt='' name='generation_img$rand' src=\"".GLPI_ROOT."/pics/plus.png\">";
-            echo "</a>";
-            echo "</li></ul></th>";
-            echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";
-            echo "<th>" . $LANG['common'][5] . "</th>";
-            echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
-            echo "</tr>";
-            echo "<tr class='tab_bg_1 center'>";
-            echo "<td></td>";
-            echo "<td align='center'>" . $item->getTypeName() . "</td>";
-            echo "<td align='center'>" .
-               Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]) .
-                  "</td>";
-            echo "<td>" . $PluginOrderReference->getReceptionReferenceLink($data_ref) . "</td>";
-            echo "</tr></table>";
-
-            echo "<div class='center' id='generation$rand' style='display:none'>";
-            echo "<form method='post' name='order_generation_form$rand' " .
-                  "id='order_generation_form$rand'  action=\"" .
-                     $CFG_GLPI["root_doc"] . "/plugins/order/front/link.form.php\">";
-            echo "<table class='tab_cadre_fixe'>";
-
-            echo "<tr>";
-            if ($canedit & $canuse) {
-               echo "<th width='15'></th>";
-            }
-            if ($itemtype != 'SoftwareLicense') {
-               echo "<th>" . $LANG['common'][2] . "</th>";
-            } else {
-               echo "<th>" . $LANG['plugin_order']['detail'][7] . "</th>";
-            }
-            echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
-            echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
-            echo "<th>" . $LANG['plugin_order']['detail'][21] . "</th>";
-            echo "<th>" . $LANG['plugin_order']['item'][0] . "</th></tr>";
             
             $query = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
                         "`glpi_plugin_order_references`.`id` AS id," .
@@ -304,6 +266,45 @@ class PluginOrderLink extends CommonDBChild {
 
             $result = $DB->query($query);
             $num    = $DB->numrows($result);
+            
+            echo "<tr><th><ul><li>";
+            echo "<a href=\"javascript:showHideDiv('generation$rand','generation_img$rand', " .
+                    "'".GLPI_ROOT."/pics/plus.png','".GLPI_ROOT."/pics/moins.png');\">";
+            echo "<img alt='' name='generation_img$rand' src=\"".GLPI_ROOT."/pics/plus.png\">";
+            echo "</a>";
+            echo "</li></ul></th>";
+            echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";
+            echo "<th>" . $LANG['common'][5] . "</th>";
+            echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
+            echo "</tr>";
+            echo "<tr class='tab_bg_1 center'>";
+            echo "<td></td>";
+            echo "<td align='center'>" . $item->getTypeName() . "</td>";
+            echo "<td align='center'>" .
+               Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]) .
+                  "</td>";
+            echo "<td>" . $PluginOrderReference->getReceptionReferenceLink($data_ref) . "&nbsp;($num)</td>";
+            echo "</tr></table>";
+
+            echo "<div class='center' id='generation$rand' style='display:none'>";
+            echo "<form method='post' name='order_generation_form$rand' " .
+                  "id='order_generation_form$rand'  action=\"" .
+                     $CFG_GLPI["root_doc"] . "/plugins/order/front/link.form.php\">";
+            echo "<table class='tab_cadre_fixe'>";
+
+            echo "<tr>";
+            if ($canedit & $canuse) {
+               echo "<th width='15'></th>";
+            }
+            if ($itemtype != 'SoftwareLicense') {
+               echo "<th>" . $LANG['common'][2] . "</th>";
+            } else {
+               echo "<th>" . $LANG['plugin_order']['detail'][7] . "</th>";
+            }
+            echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
+            echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
+            echo "<th>" . $LANG['plugin_order']['detail'][21] . "</th>";
+            echo "<th>" . $LANG['plugin_order']['item'][0] . "</th></tr>";
             
             while ($data=$DB->fetch_array($result)){
                $random   = mt_rand();
