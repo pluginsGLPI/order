@@ -65,7 +65,7 @@ if (isset ($_POST["generation"])) {
       Session::addMessageAfterRedirect(__("No item selected", "order"), false, ERROR);
       Html::redirect($_SERVER["HTTP_REFERER"]);
    }
-} elseif (isset ($_POST[__("Generate", "order")])) {
+} elseif (isset ($_POST["generate"])) {
    $link->generateNewItem($_POST);
    Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=" .
                                     $_POST["plugin_order_orders_id"] . "");
