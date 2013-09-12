@@ -44,7 +44,7 @@ if (isset($_POST["action"])) {
          echo "</td><td>";
          echo __("Delivery form")."&nbsp;";
          echo "<input type='text' name='delivery_number' size='20'>";
-         echo $LANG['plugin_order']['status'][3]."&nbsp;";
+         echo __("Delivery status", "order")."&nbsp;";
          Dropdown::show('PluginOrderDeliveryState',
                         array('name' => "plugin_order_deliverystates_id"));
          echo "</td><td><input type='submit' name='reception' class='submit' value='".

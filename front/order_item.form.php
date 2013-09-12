@@ -39,7 +39,7 @@ if (isset($_POST['update'])) {
    $item->updatePrices($_POST['id']);
    Html::redirect($_SERVER['HTTP_REFERER']);
 }
-Html::header($LANG['plugin_order']['title'][1],'',"plugins", "order", "order");
+Html::header(__("Orders management", "order"),'',"plugins", "order", "order");
 $item->showForm($_GET["id"]);
 Html::footer();
 ?>

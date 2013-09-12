@@ -93,7 +93,7 @@ else if (isset ($_POST["validate"])) {
                                            $config->getApprovedState(),
                                            $_POST["comment"]);
       PluginOrderReception::updateDelivryStatus($_POST["id"]);
-      Session::addMessageAfterRedirect($LANG['plugin_order']['validation'][10]);
+      Session::addMessageAfterRedirect(__("Order is validated", "order"));
       
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
@@ -103,7 +103,7 @@ else if (isset ($_POST["validate"])) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getWaitingForApprovalState(),
                                            $_POST["comment"]);
-      Session::addMessageAfterRedirect($LANG['plugin_order']['validation'][7]);
+      Session::addMessageAfterRedirect(__("Order validation successfully requested", "order"));
       
    }
    
@@ -114,7 +114,7 @@ else if (isset ($_POST["validate"])) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getDraftState(),
                                            $_POST["comment"]);
-      Session::addMessageAfterRedirect($LANG['plugin_order']['validation'][14]);
+      Session::addMessageAfterRedirect(__("Validation query is now canceled", "order"));
    }
    
    Html::redirect($_SERVER['HTTP_REFERER']);
@@ -124,7 +124,7 @@ else if (isset ($_POST["validate"])) {
                                            $config->getCanceledState(),
                                            $_POST["comment"]);
       $pluginOrderOrder->deleteAllLinkWithItem($_POST["id"]);
-      Session::addMessageAfterRedirect($LANG['plugin_order']['validation'][5]);
+      Session::addMessageAfterRedirect(__("Order canceled", "order"));
       
    }
    
@@ -136,7 +136,7 @@ else if (isset ($_POST["undovalidation"])) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getDraftState(),
                                            $_POST["comment"]);
-      Session::addMessageAfterRedirect($LANG['plugin_order']['validation'][8]);
+      Session::addMessageAfterRedirect(__("Order currently edited", "order"));
       
    }
    
@@ -145,15 +145,15 @@ else if (isset ($_POST["undovalidation"])) {
 } else if (isset ($_POST["add_item"])) {
    //Details management
    if ($_POST["discount"] < 0 || $_POST["discount"] > 100) {
-      Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][33], false, ERROR);
+      Session::addMessageAfterRedirect(__("The discount pourcentage must be between 0 and 100", "order"), false, ERROR);
       
    } else {
       $pluginOrderOrder->getFromDB($_POST["plugin_order_orders_id"]);
-      $new_value = $LANG['plugin_order']['detail'][34]." ";
+      $new_value = __("Add reference", "order")." ";
       $new_value.= Dropdown::getDropdownName("glpi_plugin_order_references",
                                              $_POST["plugin_order_references_id"]);
-      $new_value.= " (".$LANG['plugin_order']['detail'][7]." : ".$_POST["quantity"];
-      $new_value.= " ".$LANG['plugin_order']['detail'][25]." : ".$_POST["discount"].")";
+      $new_value.= " (".__("Quantity", "order")." : ".$_POST["quantity"];
+      $new_value.= " ".__("Discount (%)", "order")." : ".$_POST["discount"].")";
       $pluginOrderOrder->addHistory("PluginOrderOrder", "",
                                     $new_value,$_POST["plugin_order_orders_id"]);
       $pluginOrderOrder_Item->addDetails($_POST["plugin_order_references_id"], $_POST["itemtype"],
@@ -197,7 +197,7 @@ else if (isset ($_POST["undovalidation"])) {
                      
                      $pluginOrderOrder_Item->delete(array('id'=>$input["id"]));
                   }
-                  $new_value = $LANG['plugin_order']['detail'][35]." ";
+                  $new_value = __("Remove reference", "order")." ";
                   $new_value.= Dropdown::getDropdownName("glpi_plugin_order_references", $ID);
                   $pluginOrderOrder->addHistory("PluginOrderOrder", "", $new_value,
                                                 $_POST["plugin_order_orders_id"]);
@@ -205,7 +205,7 @@ else if (isset ($_POST["undovalidation"])) {
                }
             } else {
             
-               $new_value = $LANG['plugin_order']['detail'][35]." ";
+               $new_value = __("Remove reference", "order")." ";
                $new_value.= Dropdown::getDropdownName("glpi_plugin_order_references", $ID);
                $pluginOrderOrder->addHistory("PluginOrderOrder", "",
                                                 $new_value, $_POST["plugin_order_orders_id"]);
@@ -214,7 +214,7 @@ else if (isset ($_POST["undovalidation"])) {
          }
       }
    } else if (!isset($_POST["item"])) {
-      Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
+      Session::addMessageAfterRedirect(__("No item selected", "order"), false, ERROR);
 
    }
       
@@ -239,7 +239,7 @@ else if (isset ($_POST["undovalidation"])) {
 
    if(isset($_POST['discount'])) {
       if ($_POST["discount"] < 0 || $_POST["discount"] > 100) {
-         Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][33], false, ERROR);
+         Session::addMessageAfterRedirect(__("The discount pourcentage must be between 0 and 100", "order"), false, ERROR);
       } else {
          
          $price = (isset($_POST['price_taxfree'])) ? $_POST['price_taxfree'] : $_POST['old_price_taxfree'];
@@ -290,7 +290,7 @@ else if (isset ($_POST["undovalidation"])) {
    Html::redirect($_SERVER['HTTP_REFERER']);
 } else {
    $pluginOrderOrder->checkGlobal("r");
-   Html::header($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
+   Html::header(__("Orders management", "order"), '', "plugins", "order", "order");
    $pluginOrderOrder->showForm($_GET["id"], array('withtemplate' => $_GET['withtemplate']));
    Html::footer();
 }

@@ -35,9 +35,9 @@ if (!defined('GLPI_ROOT')) {
 class PluginOrderDeliveryState extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
+      
 
-      return $LANG['plugin_order']['status'][3];
+      return __("Delivery status", "order");
    }
    
    static function canCreate() {

@@ -36,9 +36,9 @@ if (!defined('GLPI_ROOT')) {
 class PluginOrderOrderTaxe extends CommonDropdown {
    
    static function getTypeName($nb=0) {
-      global $LANG;
+      
 
-      return $LANG['plugin_order'][25];
+      return __("VAT", "order");
    }
    
    static function canCreate() {

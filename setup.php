@@ -50,7 +50,7 @@ if (!defined('PLUGIN_ORDER_SIGNATURE_EXTENSION')) {
 
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
-   global $PLUGIN_HOOKS, $CFG_GLPI, $LANG, $ORDER_TYPES;
+   global $PLUGIN_HOOKS, $CFG_GLPI, $ORDER_TYPES;
 
    Plugin::registerClass('PluginOrderProfile');
    $PLUGIN_HOOKS['csrf_compliant']['order'] = true;
@@ -125,7 +125,7 @@ function plugin_init_order() {
             //menu
             if (plugin_order_haveRight("order","r")) {
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['menu']['title']
-                  = $LANG['plugin_order']['menu'][0];
+                  = __("Menu", "order");
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['menu']['page']
                   = '/plugins/order/front/menu.php';
    
@@ -133,7 +133,7 @@ function plugin_init_order() {
             //order
             if (plugin_order_haveRight("order","r")) {
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['title']
-                  = $LANG['plugin_order']['menu'][4];
+                  = __("Orders", "order");
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['page']
                   = '/plugins/order/front/order.php';
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['search']
@@ -143,7 +143,7 @@ function plugin_init_order() {
             //references
             if (plugin_order_haveRight("reference","r")) {
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['title']
-                  = $LANG['plugin_order']['menu'][5];
+                  = __("References", "order");
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['page']
                   = '/plugins/order/front/reference.php';
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['search']
@@ -154,7 +154,7 @@ function plugin_init_order() {
             //bill
             if (plugin_order_haveRight("bill","r")) {
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['title']
-                  = $LANG['plugin_order']['bill'][0];
+                  = __("Bill", "order");
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['page']
                   = '/plugins/order/front/bill.php';
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['links']['search']
@@ -213,9 +213,9 @@ function plugin_init_order() {
 
 /* get the name and the version of the plugin - needed- */
 function plugin_version_order() {
-   global $LANG;
+   
 
-   return array ('name'           => $LANG['plugin_order']['title'][1],
+   return array ('name'           => __("Orders management", "order"),
                  'version'        => '1.7.2',
                  'author'         => 'The plugin order team',
                  'homepage'       => 'https://forge.indepnet.net/projects/show/order',

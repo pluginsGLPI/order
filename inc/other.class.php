@@ -35,9 +35,7 @@ if (!defined('GLPI_ROOT')) {
 class PluginOrderOther extends CommonDBTM {
    
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      return $LANG['plugin_order'][8];
+      return __("Other item");
    }
    
    static function canCreate() {

@@ -44,9 +44,9 @@ class PluginOrderOrderState extends CommonDropdown {
    const PAID                 = 7;
 
    static function getTypeName($nb=0) {
-      global $LANG;
+      
 
-      return $LANG['plugin_order']['status'][0];
+      return __("Order status", "order");
    }
    
    static function canCreate() {
@@ -58,9 +58,9 @@ class PluginOrderOrderState extends CommonDropdown {
    } 
    
    function pre_deleteItem() {
-      global $LANG;
+      
       if ($this->getID() <= self::CANCELED ) {
-         Session::addMessageAfterRedirect($LANG['plugin_order']['status'][15].": ".$this->fields['name'], 
+         Session::addMessageAfterRedirect(__("You cannot remove this status", "order").": ".$this->fields['name'], 
                                  false, ERROR);
          return false;
       } else {
@@ -69,7 +69,7 @@ class PluginOrderOrderState extends CommonDropdown {
    }
    
    static function install(Migration $migration) {
-      global $DB, $LANG;
+      global $DB;
       
       $table = getTableForItemType(__CLASS__);
       //1.2.0
@@ -88,13 +88,13 @@ class PluginOrderOrderState extends CommonDropdown {
       }
       
       $state = new self();
-      foreach (array (1 => $LANG['plugin_order']['status'][9], 
-                      2 => $LANG['plugin_order']['status'][7],
-                      3 => $LANG['plugin_order']['status'][12],
-                      4 => $LANG['plugin_order']['status'][1],
-                      5 => $LANG['plugin_order']['status'][2],
-                      6 => $LANG['plugin_order']['status'][10],
-                      7 => $LANG['plugin_order']['status'][16]) as $id => $label) {
+      foreach (array (1 => __("Draft", "order"), 
+                      2 => __("Waiting for approval", "order"),
+                      3 => __("Validated", "order"),
+                      4 => __("Being delivered", "order"),
+                      5 => __("Delivered", "order"),
+                      6 => __("Canceled", "order"),
+                      7 => __("Paid", "order")) as $id => $label) {
          if (!countElementsInTable($table, "`id`='$id'")) {
             $state->add(array('id' => $id, 'name' => Toolbox::addslashes_deep($label)));
          }

@@ -42,17 +42,17 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
    const SUPERVISOR_DELIVERY_GROUP = 35;
     
    function getEvents() {
-      global $LANG;
-      return array ('ask'          => $LANG['plugin_order']['validation'][1],
-                    'validation'     => $LANG['plugin_order']['validation'][2],
-                    'cancel'         => $LANG['plugin_order']['validation'][5],
-                    'undovalidation' => $LANG['plugin_order']['validation'][8],
-                    'duedate'        => $LANG['plugin_order'][55],
-                    'delivered'      => $LANG['plugin_order']['delivery'][17]);
+      
+      return array ('ask'          => __("Request order validation", "order"),
+                    'validation'     => __("Order validated", "order"),
+                    'cancel'         => __("Order canceled", "order"),
+                    'undovalidation' => __("Order currently edited", "order"),
+                    'duedate'        => __("Late orders", "order"),
+                    'delivered'      => __("No item to generate", "order"));
    }
 
    function getDatasForTemplate($event,$options=array()) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
       
       $events = $this->getAllEvents();
       $this->datas['##order.action##'] = $events[$event];
@@ -96,7 +96,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          $this->datas['##lang.ordervalidation.numorder##'] = __("Order number");
          $this->datas['##ordervalidation.numorder##'] = $this->obj->getField("num_order");
          
-         $this->datas['##lang.ordervalidation.orderdate##'] = $LANG['plugin_order'][1];
+         $this->datas['##lang.ordervalidation.orderdate##'] = __("Date of order", "order");
          $this->datas['##ordervalidation.orderdate##'] = Html::convDate($this->obj->getField("order_date"));
          
          $this->datas['##lang.ordervalidation.state##'] = __("Status");
@@ -104,29 +104,29 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                               Dropdown::getDropdownName("glpi_plugin_order_orderstates",
                                                          $this->obj->getField("plugin_order_orderstates_id"));
          
-         $this->datas['##lang.ordervalidation.comment##'] = $LANG['plugin_order']['validation'][18];
+         $this->datas['##lang.ordervalidation.comment##'] = __("Comment of validation", "order");
          $comment = Toolbox::stripslashes_deep(str_replace(array('\r\n', '\n', '\r'), "<br/>", $options['comments']));
          $this->datas['##ordervalidation.comment##'] = nl2br($comment);
          
          switch ($event) {
             case "ask" :
-               $this->datas['##lang.ordervalidation.users##'] = $LANG['plugin_order']['validation'][1] .
-                                                            " " . $LANG['plugin_order']['mailing'][2];
+               $this->datas['##lang.ordervalidation.users##'] = __("Request order validation", "order") .
+                                                            " " . __("By");
                break;
             case "validation" :
-               $this->datas['##lang.ordervalidation.users##'] = $LANG['plugin_order']['validation'][10] .
-                                                            " " . $LANG['plugin_order']['mailing'][2];
+               $this->datas['##lang.ordervalidation.users##'] = __("Order is validated", "order") .
+                                                            " " . __("By");
                break;
             case "cancel" :
-               $this->datas['##lang.ordervalidation.users##'] = $LANG['plugin_order']['validation'][5] .
-                                                            " " . $LANG['plugin_order']['mailing'][2];
+               $this->datas['##lang.ordervalidation.users##'] = __("Order canceled", "order") .
+                                                            " " . __("By");
                break;
             case "undovalidation" :
-               $this->datas['##lang.ordervalidation.users##'] = $LANG['plugin_order']['validation'][16] .
-                                                            " " . $LANG['plugin_order']['mailing'][2];
+               $this->datas['##lang.ordervalidation.users##'] = __("Validation canceled successfully", "order") .
+                                                            " " . __("By");
                break;
             case "delivered" :
-               $this->datas['##lang.ordervalidation.users##'] = $LANG['plugin_order']['delivery'][17];
+               $this->datas['##lang.ordervalidation.users##'] = __("No item to generate", "order");
                break;
          }
          $this->datas['##ordervalidation.users##'] =  Html::clean(getUserName(Session::getLoginUserID()));
@@ -142,26 +142,26 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
    }
    
    function getTags() {
-      global $LANG;
+      
 
       $tags = array('ordervalidation.name'        => __("Name"),
                     'ordervalidation.numorder'    => __("Order number"),
-                    'ordervalidation.orderdate'   => $LANG['plugin_order'][1],
+                    'ordervalidation.orderdate'   => __("Date of order", "order"),
                     'ordervalidation.state'       => __("Status"),
-                    'ordervalidation.comment'     => $LANG['plugin_order']['validation'][18],
-                    'ordervalidation.users'       => $LANG['plugin_order']['validation'][19],
-                    'order.entity'                => $LANG['plugin_order'][53],
+                    'ordervalidation.comment'     => __("Comment of validation", "order"),
+                    'ordervalidation.users'       => __("Editor of validation", "order"),
+                    'order.entity'                => __("Delivery date"),
                     'order.item.name'             => __("Name"),
                     'order.item.state'            => __("Status"),
                     'order.item.numorder'         => __("Order number"),
-                    'order.item.orderdate'        => $LANG['plugin_order'][1],
-                    'order.item.duedate'          => $LANG['plugin_order'][50],
-                    'order.item.deliverydate'     => $LANG['plugin_order'][53],
+                    'order.item.orderdate'        => __("Date of order", "order"),
+                    'order.item.duedate'          => __("Estimated due date", "order"),
+                    'order.item.deliverydate'     => __("Delivery date"),
                     'order.item.comment'          => __("Comments"),
-                    'order.author.name'           => $LANG['plugin_order'][56],
-                    'order.author.phone'          => $LANG['plugin_order'][56].' - '.__("Phone"),
-                    'order.deliveryuser.name'     => $LANG['plugin_order'][58],
-                    'order.deliveryuser.phone'    => $LANG['plugin_order'][58].' - '.__("Phone"));
+                    'order.author.name'           => __("Author"),
+                    'order.author.phone'          => __("Author").' - '.__("Phone"),
+                    'order.deliveryuser.name'     => __("Recipient"),
+                    'order.deliveryuser.phone'    => __("Recipient").' - '.__("Phone"));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag' => $tag, 'label' => $label, 'value' => true));
@@ -171,7 +171,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                                 'value' => false));
       
      $this->addTagToList(array('tag'     => 'orders',
-                                'label'   => $LANG['plugin_order'][55],
+                                'label'   => __("Late orders", "order"),
                                 'value'   => false,
                                 'foreach' => true));
 
@@ -390,15 +390,15 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
     * Get additionnals targets for Tickets
    **/
    function getAdditionalTargets($event='') {
-      global $LANG;
-      $this->addTarget(self::AUTHOR, $LANG['plugin_order'][56]);
-      $this->addTarget(self::AUTHOR_GROUP, $LANG['plugin_order'][57]);
-      $this->addTarget(self::DELIVERY_USER, $LANG['plugin_order'][58]);
-      $this->addTarget(self::DELIVERY_GROUP, $LANG['plugin_order'][59]);
+      
+      $this->addTarget(self::AUTHOR, __("Author"));
+      $this->addTarget(self::AUTHOR_GROUP, __("Author group", "order"));
+      $this->addTarget(self::DELIVERY_USER, __("Recipient"));
+      $this->addTarget(self::DELIVERY_GROUP, __("Recipient group", "order"));
       $this->addTarget(self::SUPERVISOR_AUTHOR_GROUP,
-                       __("Manager")." ".$LANG['plugin_order'][57]);
+                       __("Manager")." ".__("Author group", "order"));
       $this->addTarget(self::SUPERVISOR_DELIVERY_GROUP,
-                       __("Manager")." ".$LANG['plugin_order'][59]);
+                       __("Manager")." ".__("Recipient group", "order"));
    }
 
    function getSpecificTargets($data, $options) {

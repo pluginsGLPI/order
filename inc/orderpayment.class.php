@@ -36,9 +36,9 @@ if (!defined('GLPI_ROOT')) {
 class PluginOrderOrderPayment extends CommonDropdown {
    
    static function getTypeName($nb=0) {
-      global $LANG;
+      
 
-      return $LANG['plugin_order'][32];
+      return __("Payment conditions", "order");
    }
    
    static function canCreate() {

@@ -30,7 +30,7 @@
 
 include ("../../../inc/includes.php");
 
-Html::header($LANG['plugin_order']['title'][1], '', "plugins", "order", "menu");
+Html::header(__("Orders management", "order"), '', "plugins", "order", "menu");
 
 $PluginOrderOrder     = new PluginOrderOrder();
 $PluginOrderReference = new PluginOrderReference();
@@ -55,27 +55,27 @@ if (PluginOrderOrder::canView()
       || PluginOrderReference::canView()) {
    echo "<div class='center'>";
    echo "<table class='tab_cadre'>";
-   echo "<tr><th colspan='2'>" . $LANG['plugin_order']['title'][1] . "</th></tr>";
+   echo "<tr><th colspan='2'>" . __("Orders management", "order") . "</th></tr>";
 
    if (PluginOrderOrder::canView()) {
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td><img src='../pics/order-icon.png'></td>";
       echo "<td><a href='".Toolbox::getItemTypeSearchURL('PluginOrderOrder')."'>" .
-         $LANG['plugin_order']['menu'][1] . "</a></td></tr>";
+         __("Orders", "order") . "</a></td></tr>";
    }
 
    if (PluginOrderReference::canView()) {
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td><img src='../pics/reference-icon.png'></td>";
       echo "<td><a href='".Toolbox::getItemTypeSearchURL('PluginOrderReference')."'>" .
-         $LANG['plugin_order']['menu'][2] . "</a></td></tr>";
+         __("Products references", "order") . "</a></td></tr>";
    }
 
    if (PluginOrderBill::canView()) {
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td><img src='../pics/bill-icon.png'></td>";
       echo "<td><a href='".Toolbox::getItemTypeSearchURL('PluginOrderBill')."'>" .
-         $LANG['plugin_order']['menu'][6] . "</a></td></tr>";
+         __("Bills", "order") . "</a></td></tr>";
    }
 
    echo "</table></div>";

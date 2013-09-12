@@ -38,9 +38,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    public $dohistory = true;
    
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      return $LANG['plugin_order'][4];
+      return __("Supplier Detail", "order");
    }
    
    static function canCreate() {
@@ -52,20 +50,20 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    }
    
    function getSearchOptions() {
-      global $LANG;
+      
 
       $tab = array();
     
-      $tab['common'] = $LANG['plugin_order'][4];
+      $tab['common'] = __("Supplier Detail", "order");
 
       $tab[1]['table'] = $this->getTable();
       $tab[1]['field'] = 'num_quote';
-      $tab[1]['name'] = $LANG['plugin_order'][30];
+      $tab[1]['name'] = __("Quote number", "order");
       $tab[1]['datatype'] = 'text';
 
       $tab[2]['table'] = $this->getTable();
       $tab[2]['field'] = 'num_order';
-      $tab[2]['name'] = $LANG['plugin_order'][31];
+      $tab[2]['name'] = __("Order number");
       $tab[2]['datatype'] = 'text';
       
       $tab[4]['table'] = 'glpi_suppliers';
@@ -122,7 +120,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    }
    
    function showForm ($ID, $options=array()) {
-      global $LANG;
+      
       if (!self::canView())
          return false;
       
@@ -164,7 +162,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo "</td>";
 
       /* number of quote */
-      echo "<td>" . $LANG['plugin_order'][30] . ": </td><td>";
+      echo "<td>" . __("Quote number", "order") . ": </td><td>";
       Html::autocompletionTextField($this,"num_quote");
       echo "</td>";
       
@@ -174,7 +172,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo "</td><td colspan='2'></td>";
       
       /* num order supplier */
-      echo "<td>" . $LANG['plugin_order'][31] . ": </td><td>";
+      echo "<td>" . __("Order number") . ": </td><td>";
       Html::autocompletionTextField($this,"num_order");
 
 
@@ -186,14 +184,14 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    }
    
    static function showOrderSupplierInfos($ID) {
-      global $LANG, $DB, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $table = getTableForItemType(__CLASS__);
       $order = new PluginOrderOrder();
       $order->getFromDB($ID);
 
       Session::initNavigateListItems(__CLASS__,
-                                     $LANG['plugin_order'][7] ." = ". $order->fields["name"]);
+                                     __("Order", "order") ." = ". $order->fields["name"]);
 
       $candelete = $order->can($ID,'w');
       $rand      = mt_rand();
@@ -206,11 +204,11 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       
       if (countElementsInTable($table, "`plugin_order_orders_id` = '$ID'") > 0) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='4'>".$LANG['plugin_order'][4]."</th></tr>";
+         echo "<tr><th colspan='4'>".__("Supplier Detail", "order")."</th></tr>";
          echo "<tr><th>&nbsp;</th>";
          echo "<th>" . __("Supplier") . "</th>";
-         echo "<th>" . $LANG['plugin_order'][30] . "</th>";
-         echo "<th>" . $LANG['plugin_order'][31] . "</th>";
+         echo "<th>" . __("Quote number", "order") . "</th>";
+         echo "<th>" . __("Order number") . "</th>";
          echo "</tr>";
 
          foreach (getAllDatasFromTable($table, "`plugin_order_orders_id` = '$ID'") as $data) {
@@ -262,7 +260,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    }
    
    static function showDeliveries($suppliers_id) {
-      global $LANG, $DB;
+      global $DB;
       
       $query = "SELECT COUNT(`glpi_plugin_order_orders_items`.`plugin_order_references_id`) AS ref,
                        `glpi_plugin_order_orders_items`.`plugin_order_deliverystates_id` as sid,
@@ -282,7 +280,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
       echo "<th>".__("Entity")."</th>";
-      echo "<th>".$LANG['plugin_order']['status'][13] ."</th>";
+      echo "<th>".__("Delivery statistics", "order") ."</th>";
       echo "</tr>";
       
       if ($nb) {
@@ -298,7 +296,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
                $name = Dropdown::getDropdownName("glpi_plugin_order_deliverystates",
                                                  $deliverystates_id);
             } else {
-               $name = $LANG['plugin_order']['status'][4];
+               $name = __("No specified status", "order");
             }
             echo "<td>" .$name. "&nbsp;:".$ref."</td>";
             echo "</tr>";
@@ -395,13 +393,13 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
+      
       if (get_class($item) == 'Supplier') {
-         return array(1 => $LANG['plugin_order']['menu'][4]);
+         return array(1 => __("Orders", "order"));
       } elseif (get_class($item) == 'PluginOrderOrder') {
          $config = PluginOrderConfig::getConfig();
          if ($config->canUseSupplierInformations() && $item->fields['suppliers_id']) {
-            return array(1 => $LANG['plugin_order'][4]);
+            return array(1 => __("Supplier Detail", "order"));
          }
       }
       return '';

@@ -66,7 +66,7 @@ else
 {
    $PluginOrderReference_Supplier->checkGlobal("r");
    
-   Html::header($LANG['plugin_order']['reference'][5],'',"plugins","order","reference");
+   Html::header(__("Supplier for the reference", "order"),'',"plugins","order","reference");
    
    /* load order form */
    $PluginOrderReference_Supplier->showForm($_GET["id"], 

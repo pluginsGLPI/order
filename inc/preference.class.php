@@ -142,7 +142,7 @@ class PluginOrderPreference extends CommonDBTM {
    }
    
    function showForm($ID){
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
       
       $version = plugin_version_order();
       $this->getFromDB($ID);
@@ -150,12 +150,12 @@ class PluginOrderPreference extends CommonDBTM {
       echo "<form method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'><div align='center'>";
       echo "<table class='tab_cadre_fixe' cellpadding='5'>";
       echo "<tr><th colspan='2'>" . $version['name'] . " - ". $version['version'] . "</th></tr>";
-      echo "<tr class='tab_bg_2'><td align='center'>".$LANG['plugin_order']['parser'][1]."</td>";
+      echo "<tr class='tab_bg_2'><td align='center'>".__("Use this model", "order")."</td>";
       echo "<td align='center'>";
       self::dropdownFileTemplates($this->fields["template"]);
       echo "</td></tr>";
          
-      echo "<tr class='tab_bg_2'><td align='center'>".$LANG['plugin_order']['parser'][3]."</td>";
+      echo "<tr class='tab_bg_2'><td align='center'>".__("Use this sign", "order")."</td>";
       echo "<td align='center'>";
       self::dropdownFileSignatures($this->fields["sign"]);
       echo "</td></tr>";
@@ -252,10 +252,10 @@ class PluginOrderPreference extends CommonDBTM {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
+      
 
       if (get_class($item) == 'Preference') {
-         return array(1 => $LANG['plugin_order']['menu'][4]);
+         return array(1 => __("Orders", "order"));
       }
       return '';
    }

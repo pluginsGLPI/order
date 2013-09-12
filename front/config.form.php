@@ -40,7 +40,7 @@ if (isset($_POST["update"])) {
    
 } else {
 
-Html::header($LANG['plugin_order']['title'][1], '', "plugins", "order", "config");
+Html::header(__("Orders management", "order"), '', "plugins", "order", "config");
 
 Session::checkRight("config", "w");
 $config->showForm();

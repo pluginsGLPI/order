@@ -45,9 +45,9 @@ $DBCONNECTION_REQUIRED=0; // Really a big SQL request
 include ("../../../../inc/includes.php");
 
 $report = new PluginReportsAutoReport();
-new PluginReportsDateIntervalCriteria($report, 'order_date', $LANG['plugin_order'][1]);
-new PluginReportsDateIntervalCriteria($report, 'deliverydate', $LANG['plugin_order'][53]);
-new PluginReportsLocationCriteria($report, 'locations_id', $LANG['plugin_order'][40]);
+new PluginReportsDateIntervalCriteria($report, 'order_date', __("Date of order", "order"));
+new PluginReportsDateIntervalCriteria($report, 'deliverydate', __("Delivery date"));
+new PluginReportsLocationCriteria($report, 'locations_id', __("Delivery location", "order"));
 new PluginReportsSupplierCriteria($report, 'suppliers_id', __("Supplier"));
 new PluginReportsDropdownCriteria($report, 'plugin_order_orderstates_id', 'PluginOrderOrderState',
                                   __("Status"));
@@ -60,8 +60,8 @@ if ($report->criteriasValidated()) {
                                                          __("Supplier"), 'Supplier'),
                              new PluginReportsColumnLink('entities_id',
                                                          __("Entity"), 'Entity'),
-                             new PluginReportsColumnInteger('total', $LANG['plugin_order']['deliveryinfos'][2]),
-                             new PluginReportsColumnInteger('late', $LANG['plugin_order']['deliveryinfos'][3]),
+                             new PluginReportsColumnInteger('total'['plugin_order']['deliveryinfos'][2]),
+                             new PluginReportsColumnInteger('late'['plugin_order']['deliveryinfos'][3]),
                        ));
     //TODO : ne pas chercher dans la poublelles
                        

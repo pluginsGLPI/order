@@ -29,7 +29,6 @@
  ---------------------------------------------------------------------- */
 
 function plugin_order_install() {
-   global $LANG;
    foreach (glob(GLPI_ROOT . '/plugins/order/inc/*.php') as $file) {
       //Do not load datainjection files (not needed and avoid missing class error message)
       if (!preg_match('/injection.class.php/', $file) ) {
@@ -39,7 +38,7 @@ function plugin_order_install() {
 
    echo "<center>";
    echo "<table class='tab_cadre_fixe'>";
-   echo "<tr><th>".$LANG['plugin_order']['install'][0]."<th></tr>";
+   echo "<tr><th>".__("Plugin installation or upgrade", "order")."<th></tr>";
 
    echo "<tr class='tab_bg_1'>";
    echo "<td align='center'>";
@@ -98,18 +97,16 @@ function plugin_order_uninstall() {
 /* define dropdown tables to be manage in GLPI : */
 function plugin_order_getDropdown() {
    /* table => name */
-   global $LANG;
-
    $plugin = new Plugin();
    if ($plugin->isActivated("order")) {
-      return array ('PluginOrderOrderTaxe'     => $LANG['plugin_order'][25],
-                    'PluginOrderOrderPayment'  => $LANG['plugin_order'][32],
+      return array ('PluginOrderOrderTaxe'     => __("VAT", "order"),
+                    'PluginOrderOrderPayment'  => __("Payment conditions", "order"),
                     'PluginOrderOrderType'     => __("Type"),
-                    'PluginOrderOrderState'    => $LANG['plugin_order']['status'][0],
-                    'PluginOrderOtherType'     => $LANG['plugin_order'][9],
-                    'PluginOrderDeliveryState' => $LANG['plugin_order']['status'][3],
-                    'PluginOrderBillState'     => $LANG['plugin_order']['bill'][2],
-                    'PluginOrderBillType'      => $LANG['plugin_order']['bill'][1]);
+                    'PluginOrderOrderState'    => __("Order status", "order"),
+                    'PluginOrderOtherType'     => __("Other type of item", "order"),
+                    'PluginOrderDeliveryState' => __("Delivery status", "order"),
+                    'PluginOrderBillState'     => __("Bill status", "order"),
+                    'PluginOrderBillType'      => __("Bill type", "order"));
    } else {
       return array ();
    }
@@ -162,8 +159,6 @@ function plugin_order_getDatabaseRelations() {
 
 // Define search option for types of the plugins
 function plugin_order_getAddSearchOptions($itemtype) {
-   global $LANG;
-
    $plugin = new Plugin();
    
    $sopt = array();
@@ -174,7 +169,7 @@ function plugin_order_getAddSearchOptions($itemtype) {
          $sopt[3160]['table']         = 'glpi_plugin_order_orders';
          $sopt[3160]['field']         = 'name';
          $sopt[3160]['linkfield']     = '';
-         $sopt[3160]['name']          = $LANG['plugin_order'][39];
+         $sopt[3160]['name']          = __("Order name", "order");
          $sopt[3160]['forcegroupby']  = true;
          $sopt[3160]['datatype']      = 'itemlink';
          $sopt[3160]['itemlink_type'] = 'PluginOrderOrder';
@@ -182,7 +177,7 @@ function plugin_order_getAddSearchOptions($itemtype) {
          $sopt[3161]['table']         = 'glpi_plugin_order_orders';
          $sopt[3161]['field']         = 'num_order';
          $sopt[3161]['linkfield']     = '';
-         $sopt[3161]['name']          = $LANG['plugin_order'][0];
+         $sopt[3161]['name']          = __("Order number", "order");
          $sopt[3161]['forcegroupby']  =  true;
          $sopt[3161]['datatype']      = 'itemlink';
          $sopt[3161]['itemlink_type'] = 'PluginOrderOrder';
@@ -301,15 +296,13 @@ function plugin_order_displayConfigItem($type, $ID, $data, $num) {
 ////// SPECIFIC MODIF MASSIVE FUNCTIONS ///////
 
 function plugin_order_MassiveActions($type) {
-   global $LANG;
-
    switch ($type) {
       case 'PluginOrderOrder' :
          return array ("plugin_order_transfert" => __("Transfer"));
          break;
          
       case 'PluginOrderReference':
-         return array ("plugin_order_copy_reference"     => $LANG['plugin_order']['reference'][13],
+         return array ("plugin_order_copy_reference"     => __("Copy reference", "order"),
                          "plugin_order_transfer_reference" => __("Transfer"));
          break;
    }
@@ -414,10 +407,8 @@ function plugin_datainjection_populate_order() {
 }
 
 function plugin_order_AssignToTicket($types) {
-   global $LANG;
-
    if (plugin_order_haveRight("open_ticket", "1")) {
-      $types['PluginOrderOrder'] = $LANG['plugin_order'][7];
+      $types['PluginOrderOrder'] = __("Order", "order");
    }
    return $types;
 }

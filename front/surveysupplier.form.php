@@ -58,7 +58,7 @@ if (isset($_POST["add"])) {
    Html::redirect($_SERVER['HTTP_REFERER']);
 } else {
    $PluginOrderSurveySupplier->checkGlobal("r");
-   Html::header($LANG['plugin_order']['title'][1],'',"plugins","order","order");
+   Html::header(__("Orders management", "order"),'',"plugins","order","order");
    $PluginOrderSurveySupplier->showForm($_GET["id"], 
                                         array('plugin_order_orders_id' => 
                                                 $_GET["plugin_order_orders_id"]));

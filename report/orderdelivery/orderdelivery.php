@@ -45,9 +45,9 @@ $DBCONNECTION_REQUIRED=0; // Really a big SQL request
 include ("../../../../inc/includes.php");
 
 $report = new PluginReportsAutoReport();
-new PluginReportsDateIntervalCriteria($report, 'order_date', $LANG['plugin_order'][1]);
-new PluginReportsDateIntervalCriteria($report, 'deliverydate', $LANG['plugin_order'][53]);
-new PluginReportsLocationCriteria($report, 'locations_id', $LANG['plugin_order'][40]);
+new PluginReportsDateIntervalCriteria($report, 'order_date', __("Date of order", "order"));
+new PluginReportsDateIntervalCriteria($report, 'deliverydate', __("Delivery date"));
+new PluginReportsLocationCriteria($report, 'locations_id', __("Delivery location", "order"));
 new PluginReportsSupplierCriteria($report, 'suppliers_id', __("Supplier"));
 new PluginReportsDropdownCriteria($report, 'plugin_order_orderstates_id', 'PluginOrderOrderState',
                                   __("Status"));
@@ -62,18 +62,18 @@ if ($report->criteriasValidated()) {
                                                          'PluginOrderOrder',
                                                          array('with_comment' => true,
                                                                'with_navigate' => true)),
-                             new PluginReportsColumn('num_order', $LANG['plugin_order'][0]),
+                             new PluginReportsColumn('num_order'['plugin_order'][0]),
                              new PluginReportsColumnLink('suppliers_id',
                                                          __("Supplier"), 'Supplier'),
                              new PluginReportsColumnLink('plugin_order_orderstates_id',
                                                          __("Status"),
                                                          'PluginOrderOrderState',
                                                          array('with_comment' => true)),
-                             new PluginReportsColumnDateTime('order_date', $LANG['plugin_order'][1]),
-                             new PluginReportsColumnDateTime('duedate', $LANG['plugin_order'][50]),
-                             new PluginReportsColumnDateTime('deliverydate', $LANG['plugin_order'][53]),
+                             new PluginReportsColumnDateTime('order_date', __("Date of order", "order")),
+                             new PluginReportsColumnDateTime('duedate', __("Estimated due date", "order")),
+                             new PluginReportsColumnDateTime('deliverydate', __("Delivery date")),
                              new PluginReportsColumnLink('locations_id',
-                                                         $LANG['plugin_order'][40], 'Location',
+                                                         __("Delivery location", "order"), 'Location',
                                                          array('with_comment' => true))
                        ));
    

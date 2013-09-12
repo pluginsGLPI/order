@@ -39,9 +39,7 @@ class PluginOrderBill extends CommonDropdown {
    public $second_level_menu = "order";
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      return $LANG['plugin_order']['bill'][0];
+      return __("Bill", "order");
    }
    
    static function canCreate() {
@@ -57,10 +55,8 @@ class PluginOrderBill extends CommonDropdown {
    }
 
    function prepareInputForAdd($input) {
-      global $LANG;
-      
       if (!isset ($input["number"]) || $input["number"] == '') {
-         Session::addMessageAfterRedirect($LANG['plugin_order']['bill'][3], false, ERROR);
+         Session::addMessageAfterRedirect(__("A bill number is mandatory", "order"), false, ERROR);
          return array ();
       }
 
@@ -68,8 +64,6 @@ class PluginOrderBill extends CommonDropdown {
    }
 
    function getAdditionalFields() {
-      global $LANG;
-
       return array(array('name'  =>'suppliers_id',
                          'label' => __("Supplier"),
                          'type'  => 'dropdownValue'),
@@ -89,7 +83,7 @@ class PluginOrderBill extends CommonDropdown {
                          'label' => __("Status"),
                          'type'  => 'dropdownValue'),
                    array('name'  => 'plugin_order_orders_id',
-                         'label' => $LANG['plugin_order'][7],
+                         'label' => __("Order", "order"),
                          'type'  => 'dropdownValue'),
                    array('name'  => 'users_id_validation',
                          'label' => __("Approver"),
@@ -112,11 +106,11 @@ class PluginOrderBill extends CommonDropdown {
    }
    
    function getSearchOptions() {
-      global $LANG;
+      
 
       $tab = array();
     
-      $tab['common'] = $LANG['plugin_order']['bill'][0];
+      $tab['common'] = __("Bill", "order");
 
       /* order_number */
       $tab[1]['table'] = $this->getTable();
@@ -155,7 +149,7 @@ class PluginOrderBill extends CommonDropdown {
 
       $tab[8]['table']         = getTableForItemType('PluginOrderOrder');
       $tab[8]['field']         = 'name';
-      $tab[8]['name']          = $LANG['plugin_order'][7];
+      $tab[8]['name']          = __("Order", "order");
       $tab[8]['datatype']      = 'itemlink';
       $tab[8]['itemlink_type'] = 'PluginOrderOrder';
  
@@ -167,7 +161,7 @@ class PluginOrderBill extends CommonDropdown {
       /* comments */
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = $LANG['plugin_order'][2];
+      $tab[16]['name']     = __("Description");
       $tab[16]['datatype'] = 'text';
 
       /* ID */
@@ -190,13 +184,13 @@ class PluginOrderBill extends CommonDropdown {
    }
 
    static function showItems(PluginOrderBill $bill) {
-      global $DB, $LANG;
+      global $DB;
       
       echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
       echo "<tr><th>";
       Html::printPagerForm();
       echo "</th><th colspan='5'>";
-      echo $LANG['document'][19];
+      echo _n("Item", "Items", 2);
       echo "</th></tr>";
       
       $bills_id = $bill->getID();
@@ -210,15 +204,15 @@ class PluginOrderBill extends CommonDropdown {
       
       if (!$number) {
          echo "</th><td>";
-         echo $LANG['document'][19];
+         echo _n("Item", "Items", 2);
          echo "</td></tr>";
       } else {
 
          echo "<tr><th>".__("Type")."</th>";
          echo "<th>".__("Entity")."</th>";
-         echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
+         echo "<th>".__("Reference")."</th>";
          echo "<th>".__("Status")."</th>";
-         //echo "<th>".$LANG['plugin_order']['generation'][9]."</th>";
+         //echo "<th>".__("Sum tax free", "order")."</th>";
          echo "</tr>";
 
          $old_itemtype = '';
@@ -265,7 +259,7 @@ class PluginOrderBill extends CommonDropdown {
    }
    
    static function showOrdersItems(PluginOrderBill $bill) {
-      global $DB,$LANG,$CFG_GLPI;
+      global $DB,$CFG_GLPI;
       
       $reference  = new PluginOrderReference();
       
@@ -291,7 +285,7 @@ class PluginOrderBill extends CommonDropdown {
       while ($data_ref = $DB->fetch_array($result_ref)) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          if (!$DB->numrows($result_ref)) {
-            echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
+            echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
 
          } else {
             $order_item = new PluginOrderOrder_Item();
@@ -305,9 +299,9 @@ class PluginOrderBill extends CommonDropdown {
             echo "<img alt='' name='generation_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
             echo "</a>";
             echo "</li></ul></th>";
-            echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";
+            echo "<th>" . __("Type") . "</th>";
             echo "<th>" . __("Manufacturer") . "</th>";
-            echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
+            echo "<th>" . __("Product reference", "order") . "</th>";
             echo "</tr>";
             
             echo "<tr class='tab_bg_1 center'>";
@@ -330,11 +324,11 @@ class PluginOrderBill extends CommonDropdown {
             echo "<table class='tab_cadre_fixe'>";
 
             echo "<th></th>";
-            echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
-            echo "<th>".$LANG['plugin_order']['detail'][6]."</th>";
+            echo "<th>".__("Reference")."</th>";
+            echo "<th>".__("Type")."</th>";
             echo "<th>".__("Model")."</th>";
-            echo "<th>".$LANG['plugin_order']['bill'][0]."</th>";
-            echo "<th>".$LANG['plugin_order']['bill'][2]."</th>";
+            echo "<th>".__("Bill", "order")."</th>";
+            echo "<th>".__("Bill status", "order")."</th>";
             echo "</tr>";
 
             $results = $order_item->queryBills($order->getID(), $data_ref['id']);
@@ -495,7 +489,7 @@ class PluginOrderBill extends CommonDropdown {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
+      
 
       if (!$withtemplate) {
 
@@ -505,8 +499,8 @@ class PluginOrderBill extends CommonDropdown {
 
          } else if ($item->getType()==__CLASS__) {
 
-            $ong[1] = $LANG['plugin_order']['menu'][4];
-            $ong[2] = $LANG['plugin_order']['item'][0];
+            $ong[1] = __("Orders", "order");
+            $ong[2] = _n("Associated item", "Associated items", 2);
             return $ong;
 
          }

@@ -54,94 +54,92 @@ class PluginOrderConfig extends CommonDBTM {
    }
    
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      return $LANG['plugin_order']['config'][0];
+      return __("Plugin configuration", "order");
    }
    
    function showForm(){
-      global $LANG;
+      
       
       $this->getFromDB(1);
       echo "<div class='center'>";
       echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>".$LANG['plugin_order']['config'][0]."</th></tr>";
+      echo "<tr><th colspan='2'>".__("Plugin configuration", "order")."</th></tr>";
       
       echo "<input type='hidden' name='id' value='1'>";
-      echo "<tr class='tab_bg_1' align='center'><td>".$LANG['plugin_order']['config'][1].
+      echo "<tr class='tab_bg_1' align='center'><td>".__("Default VAT", "order").
             "</td><td>";
       Dropdown::show('PluginOrderOrderTaxe',
                      array('name'                => "default_taxes",
                            'value'               => $this->fields["default_taxes"],
                            'display_emptychoice' => true,
-                           'emptylabel'          => $LANG['plugin_order']['config'][20]));
+                           'emptylabel'          => __("No VAT", "order")));
       echo "</td>";
       echo "</tr>";
       
       echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order']['config'][2]."</td><td>";
+                  <td>".__("Use validation process", "order")."</td><td>";
                   Dropdown::showYesNo("use_validation", $this->fields["use_validation"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order']['config'][22]."</td><td>";
+                  <td>".__("Order generation in ODT", "order")."</td><td>";
                   Dropdown::showYesNo("generate_order_pdf", $this->fields["generate_order_pdf"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order']['config'][23]."</td><td>";
+                  <td>".__("Activate suppliers quality satisfaction", "order")."</td><td>";
                   Dropdown::showYesNo("use_supplier_satisfaction",
                                       $this->fields["use_supplier_satisfaction"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order']['config'][24]."</td><td>";
+                  <td>".__("Display order's suppliers informations", "order")."</td><td>";
                   Dropdown::showYesNo("use_supplier_informations",
                                       $this->fields["use_supplier_informations"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order']['config'][25]."</td><td>";
+                  <td>".__("Color to be displayed when order due date is overtaken", "order")."</td><td>";
       echo "<input type='text' name='shoudbedelivered_color' " .
               "value='".$this->fields['shoudbedelivered_color']."'>";
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order']['config'][26]."</td><td>";
+                  <td>".__("Copy order documents when a new item is created", "order")."</td><td>";
                   Dropdown::showYesNo("copy_documents",
                                       $this->fields["copy_documents"]);
       echo "</td>";
       echo "</tr>";
       
       echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order']['config'][27]."</td><td>";
+                  <td>".__("Default heading when adding a document to an order", "order")."</td><td>";
                   Dropdown::show("DocumentCategory",
                                  array('value' => $this->fields["documentcategories_id"]));
       echo "</td>";
       echo "</tr>";
       
       echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order'][57].' ('.__("Default values").")</td><td>";
+                  <td>".__("Author group", "order").' ('.__("Default values").")</td><td>";
       Dropdown::show("Group", array('value' => $this->fields["groups_id_author"],
                                      'name'  => 'groups_id_author'));
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order'][59].' ('.__("Default values").")</td><td>";
+                  <td>".__("Recipient group", "order").' ('.__("Default values").")</td><td>";
       Dropdown::show("Group", array('value' => $this->fields["groups_id_recipient"],
                                      'name'  => 'groups_id_recipient'));
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order'][58].' ('.__("Default values").")</td><td>";
+                  <td>".__("Recipient").' ('.__("Default values").")</td><td>";
       User::dropdown(array('name'   => 'users_id_recipient',
                             'value'  => $this->fields["users_id_recipient"],
                             'right'  => 'all',
@@ -151,7 +149,7 @@ class PluginOrderConfig extends CommonDBTM {
       
       // Automatic actions
       echo "<tr class='tab_bg_1' align='center'>
-               <th colspan='2'>".$LANG['plugin_order']['config'][3]."</th>
+               <th colspan='2'>".__("Automatic actions when delivery", "order")."</th>
             </tr>";
       
       // ASSETS
@@ -160,28 +158,28 @@ class PluginOrderConfig extends CommonDBTM {
             </tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order']['config'][4]."</td><td>";
+                  <td>".__("Enable automatic generation", "order")."</td><td>";
                   Dropdown::showYesNo("generate_assets", $this->canGenerateAsset());
       echo "</td></tr>";
       
       if ($this->canGenerateAsset()) {
          echo "<tr class='tab_bg_1' align='center'>
-               <td>".$LANG['plugin_order']['config'][5]."</td><td>";
+               <td>".__("Default name", "order")."</td><td>";
                   Html::autocompletionTextField($this, "generated_name");
          echo "</td></tr>";
    
          echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order']['config'][6]."</td><td>";
+                  <td>".__("Default serial number", "order")."</td><td>";
                   Html::autocompletionTextField($this, "generated_serial");
          echo "</td></tr>";
          
          echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order']['config'][7]."</td><td>";
+                  <td>".__("Default inventory number", "order")."</td><td>";
                   Html::autocompletionTextField($this, "generated_otherserial");
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order']['config'][12]."</td><td>";
+                  <td>".__("Default state", "order")."</td><td>";
                   Dropdown::show('State',
                                  array('name'   => 'default_asset_states_id',
                                        'value'  => $this->fields["default_asset_states_id"],
@@ -194,24 +192,24 @@ class PluginOrderConfig extends CommonDBTM {
                </tr>";
       
          echo "<tr class='tab_bg_1' align='center'>
-               <td>".$LANG['plugin_order']['config'][4]."</td><td>";
+               <td>".__("Enable automatic generation", "order")."</td><td>";
                      Dropdown::showYesNo("generate_ticket", $this->canGenerateTicket());
          echo "</td></tr>";
          
          if ($this->canGenerateTicket()) {
             echo "<tr class='tab_bg_1' align='center'>
-                     <td>".$LANG['plugin_order']['config'][10]."</td><td>";
+                     <td>".__("Default title", "order")."</td><td>";
                      Html::autocompletionTextField($this, "generated_title");
             echo "</td></tr>";
             
             echo "<tr class='tab_bg_1' align='center'>
-                     <td>".$LANG['plugin_order']['config'][11]."</td><td>";
+                     <td>".__("Default description", "order")."</td><td>";
             echo "<textarea cols='60' rows='4' name='generated_content'>" .
                         $this->fields["generated_content"] . "</textarea>";
             echo "</td></tr>";
             
             echo "<tr class='tab_bg_1' align='center'>
-                     <td>".$LANG['plugin_order']['config'][9]."</td><td>";
+                     <td>".__("Default category", "order")."</td><td>";
                      Dropdown::show('ItilCategory',
                                     array('name'   => 'default_itilcategories_id',
                                           'value'  => $this->fields["default_itilcategories_id"],
@@ -222,53 +220,53 @@ class PluginOrderConfig extends CommonDBTM {
 
       /* Workflow */
       echo "<tr class='tab_bg_1' align='center'>
-               <th colspan='2'>".$LANG['plugin_order']['config'][13]."</th>
+               <th colspan='2'>".__("Order lifecycle", "order")."</th>
             </tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
-            <td>".$LANG['plugin_order']['config'][14]."</td><td>";
+            <td>".__("State before validation", "order")."</td><td>";
             Dropdown::show('PluginOrderOrderState',
                            array('name'   => 'order_status_draft',
                                  'value'  => $this->fields["order_status_draft"]));
       echo "</td></tr>";
       
       echo "<tr class='tab_bg_1' align='center'>
-            <td>".$LANG['plugin_order']['config'][15]."</td><td>";
+            <td>".__("Waiting for validation state", "order")."</td><td>";
             Dropdown::show('PluginOrderOrderState',
                            array('name'   => 'order_status_waiting_approval',
                                  'value'  => $this->fields["order_status_waiting_approval"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
-            <td>".$LANG['plugin_order']['config'][16]."</td><td>";
+            <td>".__("Validated order state", "order")."</td><td>";
             Dropdown::show('PluginOrderOrderState',
                            array('name'   => 'order_status_approved',
                                  'value'  => $this->fields["order_status_approved"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
-            <td>".$LANG['plugin_order']['config'][17]."</td><td>";
+            <td>".__("Order being delivered state", "order")."</td><td>";
             Dropdown::show('PluginOrderOrderState',
                            array('name'   => 'order_status_partially_delivred',
                                  'value'  => $this->fields["order_status_partially_delivred"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
-            <td>".$LANG['plugin_order']['config'][18]."</td><td>";
+            <td>".__("Order delivered state", "order")."</td><td>";
             Dropdown::show('PluginOrderOrderState',
                            array('name'   => 'order_status_completly_delivered',
                                  'value'  => $this->fields["order_status_completly_delivered"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
-            <td>".$LANG['plugin_order']['config'][21]."</td><td>";
+            <td>".__("Order paied state", "order")."</td><td>";
             Dropdown::show('PluginOrderOrderState',
                            array('name'   => 'order_status_paid',
                                  'value'  => $this->fields["order_status_paid"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
-            <td>".$LANG['plugin_order']['config'][19]."</td><td>";
+            <td>".__("Canceled order state", "order")."</td><td>";
             Dropdown::show('PluginOrderOrderState',
                            array('name'   => 'order_status_canceled',
                                  'value'  => $this->fields["order_status_canceled"]));

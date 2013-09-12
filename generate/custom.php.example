@@ -29,7 +29,7 @@
  ---------------------------------------------------------------------- */
 
 function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signature) {
-   global $LANG, $DB;
+   global $DB;
 
    $order = new PluginOrderOrder();
    $odf->setImage('logo', '../logo/logo.jpg');
@@ -39,11 +39,11 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
             
    $odf->setImage('logo', '../logo/logo.jpg');
             
-   $odf->setVars('title_order', $LANG['plugin_order']['generation'][12], true, 'UTF-8');
+   $odf->setVars('title_order', __("Order number", "order"), true, 'UTF-8');
    $odf->setVars('num_order', $order->fields["num_order"], true, 'UTF-8');
    $odf->setVars('comment', $order->fields["comment"], true, 'UTF-8');
    
-   $odf->setVars('title_invoice_address', $LANG['plugin_order']['generation'][3], true, 'UTF-8');
+   $odf->setVars('title_invoice_address', __("Invoice address", "order"), true, 'UTF-8');
             
    $entity = new Entity();
    $entity->getFromDB($order->fields["entities_id"]);
@@ -75,7 +75,7 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
       $odf->setVars('supplier_country', $supplier->fields["country"],true,'UTF-8');
    }
             
-   $odf->setVars('title_delivery_address',$LANG['plugin_order']['generation'][4],true,'UTF-8');
+   $odf->setVars('title_delivery_address',__("Delivery address", "order"),true,'UTF-8');
    $tmpname=Dropdown::getDropdownName("glpi_locations",$order->fields["locations_id"],1);
    $comment=$tmpname["comment"];
    $odf->setVars('comment_delivery_address',html_clean($comment),true,'UTF-8');
@@ -83,10 +83,10 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
    if ($town) {
       $town = $town. ", ";
    }
-   $odf->setVars('title_date_order', $town.$LANG['plugin_order']['generation'][5]." ",true,'UTF-8');
+   $odf->setVars('title_date_order', $town.__("The", "order")." ",true,'UTF-8');
    $odf->setVars('date_order', convDate($order->fields["order_date"]),true,'UTF-8');
             
-   $odf->setVars('title_sender', $LANG['plugin_order']['generation'][10],true,'UTF-8');
+   $odf->setVars('title_sender', __("Issuer order", "order"),true,'UTF-8');
    $odf->setVars('sender', html_clean(getUserName(getLoginUserID())),true,'UTF-8');
             
    $output='';
@@ -95,16 +95,16 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
       $output=formatUserName($contact->fields["id"], "", $contact->fields["name"],
                              $contact->fields["firstname"]);
    }
-   $odf->setVars('title_recipient',$LANG['plugin_order']['generation'][11],true,'UTF-8');
+   $odf->setVars('title_recipient',__("Recipient", "order"),true,'UTF-8');
    $odf->setVars('recipient',html_clean($output),true,'UTF-8');
-   $odf->setVars('nb',$LANG['plugin_order']['generation'][6],true,'UTF-8');
-   $odf->setVars('title_item',$LANG['plugin_order']['generation'][7],true,'UTF-8');
-   $odf->setVars('title_ref',$LANG['plugin_order']['detail'][2],true,'UTF-8');
-   $odf->setVars('HTPrice_item',$LANG['plugin_order']['generation'][8],true,'UTF-8');
-   $odf->setVars('TVA_item',$LANG['plugin_order'][25],true,'UTF-8');
-   $odf->setVars('title_discount',$LANG['plugin_order']['generation'][13],true,'UTF-8');
-   $odf->setVars('HTPriceTotal_item',$LANG['plugin_order']['generation'][9],true,'UTF-8');
-   $odf->setVars('ATIPriceTotal_item',$LANG['plugin_order'][14],true,'UTF-8');
+   $odf->setVars('nb',__("Quantity", "order"),true,'UTF-8');
+   $odf->setVars('title_item',__("Designation", "order"),true,'UTF-8');
+   $odf->setVars('title_ref',__("Reference"),true,'UTF-8');
+   $odf->setVars('HTPrice_item',__("Unit price", "order"),true,'UTF-8');
+   $odf->setVars('TVA_item',__("VAT", "order"),true,'UTF-8');
+   $odf->setVars('title_discount',__("Discount rate", "order"),true,'UTF-8');
+   $odf->setVars('HTPriceTotal_item',__("Sum tax free", "order"),true,'UTF-8');
+   $odf->setVars('ATIPriceTotal_item',__("Price ATI", "order"),true,'UTF-8');
             
    $listeArticles = array();
    $result = $PluginOrderOrder_Item->queryDetail($ID);
@@ -157,32 +157,32 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
        $total_TVA  = $prices["priceTVA"]   + $postagewithTVA - $order->fields["port_price"];
        $total_TTC  = $prices["priceTTC"]   + $postagewithTVA;
    
-       $odf->setVars('title_totalht',$LANG['plugin_order'][13],true,'UTF-8');
+       $odf->setVars('title_totalht',__("Price tax free", "order"),true,'UTF-8');
        $odf->setVars('totalht',html_clean(formatNumber($prices['priceHT'])),true,'UTF-8');
             
-       $odf->setVars('title_port',$LANG['plugin_order'][15],true,'UTF-8');
+       $odf->setVars('title_port',__("Price tax free with postage", "order"),true,'UTF-8');
        $odf->setVars('totalht_port_price',html_clean(formatNumber($total_HT)),true,'UTF-8');
    
-       $odf->setVars('title_price_port',$LANG['plugin_order'][26],true,'UTF-8');
+       $odf->setVars('title_price_port',__("Postage", "order"),true,'UTF-8');
        $odf->setVars('price_port_tva'," (".Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
                                        $order->fields["plugin_order_ordertaxes_id"])."%)",true,'UTF-8');
        $odf->setVars('port_price',html_clean(formatNumber($postagewithTVA)),true,'UTF-8');
    
-       $odf->setVars('title_tva',$LANG['plugin_order'][25],true,'UTF-8');
+       $odf->setVars('title_tva',__("VAT", "order"),true,'UTF-8');
        $odf->setVars('totaltva',html_clean(formatNumber($total_TVA)),true,'UTF-8');
    
-       $odf->setVars('title_totalttc',$LANG['plugin_order'][14],true,'UTF-8');
+       $odf->setVars('title_totalttc',__("Price ATI", "order"),true,'UTF-8');
        $odf->setVars('totalttc',html_clean(formatNumber($total_TTC)),true,'UTF-8');
    
-       $odf->setVars('title_money',$LANG['plugin_order']['generation'][17],true,'UTF-8');
-       $odf->setVars('title_sign',$LANG['plugin_order']['generation'][16],true,'UTF-8');
+       $odf->setVars('title_money',__("€", "order"),true,'UTF-8');
+       $odf->setVars('title_sign',__("Signature of issuing order", "order"),true,'UTF-8');
 
        if ($signature) {
           $odf->setImage('sign', '../signatures/'.$signature);
        } else {
           $odf->setImage('sign', '../pics/nothing.gif');
        }
-       //$odf->setVars('title_conditions',$LANG['plugin_order'][32],true,'UTF-8');
+       //$odf->setVars('title_conditions',__("Payment conditions", "order"),true,'UTF-8');
        $odf->setVars('payment_conditions',
                      Dropdown::getDropdownName("glpi_plugin_order_orderpayments",
                                                $order->fields["plugin_order_orderpayments_id"]),

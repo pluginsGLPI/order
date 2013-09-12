@@ -49,7 +49,7 @@ if (isset ($_POST["generation"])) {
             $order_item->getFromDB($_POST["id"][$key]);
             if ($order_item->fields["states_id"] ==
                   PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
-               Session::addMessageAfterRedirect($LANG['plugin_order'][45], true, ERROR);
+               Session::addMessageAfterRedirect(__("Cannot generate items not delivered", "order"), true, ERROR);
                Html::redirect($_SERVER["HTTP_REFERER"]);
             }
          }
@@ -57,15 +57,15 @@ if (isset ($_POST["generation"])) {
    }
 
    if (isset ($_POST["item"])) {
-      Html::header($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
+      Html::header(__("Orders management", "order"), '', "plugins", "order", "order");
       $link->showItemGenerationForm($_POST);
       Html::footer();
       
    } else {
-      Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
+      Session::addMessageAfterRedirect(__("No item selected", "order"), false, ERROR);
       Html::redirect($_SERVER["HTTP_REFERER"]);
    }
-} elseif (isset ($_POST["generate"])) {
+} elseif (isset ($_POST[__("Generate", "order")])) {
    $link->generateNewItem($_POST);
    Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=" .
                                     $_POST["plugin_order_orders_id"] . "");
@@ -93,7 +93,7 @@ if (isset ($_POST["generation"])) {
                $order_item->getFromDB($_POST["id"][$key]);
                if ($order_item->fields["states_id"] ==
                      PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
-                  Session::addMessageAfterRedirect($LANG['plugin_order'][46], true, ERROR);
+                  Session::addMessageAfterRedirect(__("Cannot link items not delivered", "order"), true, ERROR);
                   Html::redirect($_SERVER["HTTP_REFERER"]);
                } else {
                   $link->createLinkWithItem($key, $_POST["items_id"],
@@ -103,7 +103,7 @@ if (isset ($_POST["generation"])) {
             }
          }
       } else {
-         Session::addMessageAfterRedirect($LANG['plugin_order'][42], true, ERROR);
+         Session::addMessageAfterRedirect(__("Cannot link several items to one detail line", "order"), true, ERROR);
       }
    }
    Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=" .

@@ -38,15 +38,15 @@ class PluginOrderBillState extends CommonDropdown {
    const PAID    = 1;
 
    static function getTypeName($nb=0) {
-      global $LANG;
+      
 
-      return $LANG['plugin_order']['bill'][2];
+      return __("Bill status", "order");
    }
 
    function pre_deleteItem() {
-      global $LANG;
+      
       if ($this->getID() <= self::PAID ) {
-         Session::addMessageAfterRedirect($LANG['plugin_order']['status'][15].": ".$this->fields['name'],
+         Session::addMessageAfterRedirect(__("You cannot remove this status", "order").": ".$this->fields['name'],
                                  false, ERROR);
          return false;
       } else {
@@ -63,9 +63,9 @@ class PluginOrderBillState extends CommonDropdown {
    }
    
    static function getStates() {
-      global $LANG;
-      return array(self::NOTPAID => $LANG['plugin_order']['bill'][7],
-                   self::PAID    => $LANG['plugin_order']['bill'][6],);
+      
+      return array(self::NOTPAID => __("Being paid", "order"),
+                   self::PAID    => __("Paid", "order"),);
    }
    
    static function getState($states_id) {
@@ -78,7 +78,7 @@ class PluginOrderBillState extends CommonDropdown {
    }
    
    static function install(Migration $migration) {
-      global $DB, $LANG;
+      global $DB;
       
       $table = getTableForItemType(__CLASS__);
       if (!TableExists($table)) {
@@ -94,8 +94,8 @@ class PluginOrderBillState extends CommonDropdown {
       }
       if (countElementsInTable($table) < 2) {
          $state = new self();
-         foreach (array(self::PAID   => $LANG['plugin_order']['status'][16],
-                        self::NOTPAID  => $LANG['plugin_order']['status'][17])
+         foreach (array(self::PAID   => __("Paid", "order"),
+                        self::NOTPAID  => __("Not paid", "order"))
                   as $id => $label) {
             $state->add(array('id' => $id, 'name' => Toolbox::addslashes_deep($label)));
          }

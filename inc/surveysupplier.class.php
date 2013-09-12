@@ -38,9 +38,9 @@ class PluginOrderSurveySupplier extends CommonDBChild {
    static public $items_id = 'plugin_order_orders_id';
    
    static function getTypeName($nb=0) {
-      global $LANG;
+      
 
-      return $LANG['plugin_order']['survey'][0];
+      return __("Supplier quality", "order");
    }
    
    static function canCreate() {
@@ -88,9 +88,9 @@ class PluginOrderSurveySupplier extends CommonDBChild {
    }
    
    function addNotation($field,$value) {
-      global $LANG;
       
-      echo "<font size='1'>".$LANG['plugin_order']['survey'][7]."</font>&nbsp;";
+      
+      echo "<font size='1'>".__("Really satisfied", "order")."</font>&nbsp;";
       
       for ($i=10 ; $i >= 1 ; $i--) {
          echo "&nbsp;".$i."&nbsp;<input type='radio' name='".$field."' value='".$i."' ";
@@ -99,7 +99,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          echo ">";
       }
       
-      echo "&nbsp;<font size='1'>".$LANG['plugin_order']['survey'][6]."</font>";
+      echo "&nbsp;<font size='1'>".__("Really unsatisfied", "order")."</font>";
    }
    
    function getTotalNotation($plugin_order_orders_id) {
@@ -135,7 +135,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
    }
    
    static function showGlobalNotation($suppliers_id) {
-      global $LANG,$DB;
+      global $DB;
       
       $config = PluginOrderConfig::getConfig();
       if (!$config->canUseSupplierSatisfaction()) {
@@ -161,13 +161,13 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       echo "<br><div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
-      echo "<th colspan='4'>" . $LANG['plugin_order']['survey'][0]. "</th>";
+      echo "<th colspan='4'>" . __("Supplier quality", "order"). "</th>";
       echo "</tr>";
       echo "<tr>";
       echo "<th>" . __("Entity")."</th>";
-      echo "<th>" . $LANG['plugin_order'][39]. "</th>";
-      echo "<th>" . $LANG['plugin_order']['survey'][10]."</th>";
-      echo "<th>" . $LANG['plugin_order']['survey'][11]."</th>";
+      echo "<th>" . __("Order name", "order"). "</th>";
+      echo "<th>" . __("Note", "order")."</th>";
+      echo "<th>" . __("Comment on survey", "order")."</th>";
       echo "</tr>";
       
       if ($nb) {
@@ -193,15 +193,40 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          echo "<th colspan='4'>&nbsp;</th>";
          echo "</tr>";
          
-         for ($i=1 ; $i <= 5 ; $i++) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td colspan='2'></td>";
-            echo "<td><div align='left'>" . $LANG['plugin_order']['survey'][$i]. "</div></td>";
-            echo "<td><div align='left'>" .
-               Html::formatNumber($survey->getNotation($suppliers_id, "answer$i")).
-                  "&nbsp;/ 10</div></td>";
-            echo "</tr>";
-         }
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2'></td>";
+         echo "<td><div align='left'>" . __("Administrative followup quality (contracts, bills, mail, etc.)", "order"). "</div></td>";
+         echo "<td><div align='left'>" .
+            Html::formatNumber($survey->getNotation($suppliers_id, "answer1")).
+               "&nbsp;/ 10</div></td>";
+         
+               echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2'></td>";
+         echo "<td><div align='left'>" . __("Commercial followup quality, visits, responseness", "order"). "</div></td>";
+         echo "<td><div align='left'>" .
+            Html::formatNumber($survey->getNotation($suppliers_id, "answer2")).
+               "&nbsp;/ 10</div></td>";
+         
+               echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2'></td>";
+         echo "<td><div align='left'>" . __("Contacts availability", "order"). "</div></td>";
+         echo "<td><div align='left'>" .
+            Html::formatNumber($survey->getNotation($suppliers_id, "answer3")).
+               "&nbsp;/ 10</div></td>";
+         
+               echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2'></td>";
+         echo "<td><div align='left'>" . __("Quality of supplier intervention", "order"). "</div></td>";
+         echo "<td><div align='left'>" .
+            Html::formatNumber($survey->getNotation($suppliers_id, "answer4")).
+               "&nbsp;/ 10</div></td>";
+         
+               echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2'></td>";
+         echo "<td><div align='left'>" . __("Reliability about annouced delays", "order"). "</div></td>";
+         echo "<td><div align='left'>" .
+            Html::formatNumber($survey->getNotation($suppliers_id, "answer5")).
+               "&nbsp;/ 10</div></td>";
          
          echo "<tr>";
          echo "<th colspan='4'>&nbsp;</th>";
@@ -209,7 +234,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          
          echo "<tr class='tab_bg_1 b'>";
          echo "<td colspan='2'></td>";
-         echo "<td><div align='left'>" . $LANG['plugin_order']['survey'][9]. "</div></td>";
+         echo "<td><div align='left'>" . __("Final supplier note", "order"). "</div></td>";
          echo "<td><div align='left'>" . Html::formatNumber($total/$nb_order)."&nbsp;/ 10</div></td>";
          echo "</tr>";
       }
@@ -218,7 +243,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
    }
    
    function showForm ($ID, $options=array()) {
-      global $LANG;
+      
       
       if (!self::canView())
          return false;
@@ -260,12 +285,30 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       echo "</td>";
       echo "</tr>";
       
-      for ($i=1 ; $i <= 5 ; $i++) {
-         echo "<tr class='tab_bg_1'><td>" . $LANG['plugin_order']['survey'][$i] . ": </td><td>";
-         $this->addNotation("answer$i",$this->fields["answer$i"]);
-         echo "</td>";
-         echo "</tr>";
-      }
+      echo "<tr class='tab_bg_1'><td>" . __("Administrative followup quality (contracts, bills, mail, etc.)", "order") . ": </td><td>";
+      $this->addNotation("answer1",$this->fields["answer1"]);
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'><td>" . __("Commercial followup quality, visits, responseness", "order") . ": </td><td>";
+      $this->addNotation("answer2",$this->fields["answer2"]);
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'><td>" . __("Contacts availability", "order") . ": </td><td>";
+      $this->addNotation("answer3",$this->fields["answer3"]);
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'><td>" . __("Quality of supplier intervention", "order") . ": </td><td>";
+      $this->addNotation("answer4",$this->fields["answer4"]);
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'><td>" . __("Reliability about annouced delays", "order") . ": </td><td>";
+      $this->addNotation("answer5",$this->fields["answer5"]);
+      echo "</td>";
+      echo "</tr>";
       
       echo "<tr class='tab_bg_1'><td>";
       //comments of order
@@ -276,7 +319,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       echo "</tr>";
       
       if ($ID>0) {
-         echo "<tr><th><div align='left'>" . $LANG['plugin_order']['survey'][8] .
+         echo "<tr><th><div align='left'>" . __("Average mark up to 10 (X points / 5)", "order") .
                ": </div></th><th><div align='left'>";
          $total = $this->getTotalNotation($this->fields["plugin_order_orders_id"]);
          echo Html::formatNumber($total)." / 10";
@@ -293,7 +336,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
    }
    
    static function showOrderSupplierSurvey($ID) {
-      global $LANG, $DB, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $order = new PluginOrderOrder;
       $order->getFromDB($ID);
@@ -302,7 +345,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       
       $table = getTableForItemType(__CLASS__);
       Session::initNavigateListItems(__CLASS__,
-                                     $LANG['plugin_order'][7] ." = ". $order->fields["name"]);
+                                     __("Order", "order") ." = ". $order->fields["name"]);
 
       $candelete = $order->can($ID,'w');
       $query     = "SELECT * FROM `$table` WHERE `plugin_order_orders_id` = '$ID' ";
@@ -314,11 +357,11 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       echo "<input type='hidden' name='plugin_order_orders_id' value='" . $ID . "'>";
       echo "<table class='tab_cadre_fixe'>";
       
-      echo "<tr><th colspan='5'>".$LANG['plugin_order']['survey'][0]."</th></tr>";
+      echo "<tr><th colspan='5'>".__("Supplier quality", "order")."</th></tr>";
       echo "<tr><th>&nbsp;</th>";
       echo "<th>" . __("Supplier") . "</th>";
-      echo "<th>" . $LANG['plugin_order']['survey'][10] . "</th>";
-      echo "<th>" . $LANG['plugin_order']['survey'][11] . "</th>";
+      echo "<th>" . __("Note", "order") . "</th>";
+      echo "<th>" . __("Comment on survey", "order") . "</th>";
       echo "</tr>";
 
       if ($DB->numrows($result) > 0) {
@@ -437,13 +480,11 @@ class PluginOrderSurveySupplier extends CommonDBChild {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
-      
       if (get_class($item) == 'PluginOrderOrder') {
          $config = PluginOrderConfig::getConfig();
          if ($config->canUseSupplierSatisfaction()
             && $item->getState() == PluginOrderOrderState::DELIVERED) {
-            return array(1 => $LANG['plugin_order'][10]);
+            return array(1 => __("Quality"));
          }
       }
    }

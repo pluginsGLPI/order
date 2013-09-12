@@ -59,7 +59,7 @@ if ($_POST["plugin_order_references_id"] > 0) {
                         array('name'                => "plugin_order_ordertaxes_id",
                               'value'               => $config->getDefaultTaxes(),
                               'display_emptychoice' => true,
-                              'emptylabel'          => $LANG['plugin_order']['config'][20]));
+                              'emptylabel'          => __("No VAT", "order")));
          break;
       case 'validate':
          echo "<input type='hidden' name='itemtype' value='".

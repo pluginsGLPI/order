@@ -40,9 +40,7 @@ class PluginOrderReception extends CommonDBTM {
    public $items_id  = 'plugin_order_orders_id';
    
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      return $LANG['plugin_order'][6];
+      return __("Delivery", "order");
    }
    
    static function canCreate() {
@@ -158,7 +156,7 @@ class PluginOrderReception extends CommonDBTM {
    }
 
    function showForm ($ID, $options=array()) {
-      global $LANG;
+      
 
       if (!self::canView()) {
          return false;
@@ -188,7 +186,7 @@ class PluginOrderReception extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       
-      echo "<td>" . $LANG['plugin_order']['detail'][2] . ": </td>";
+      echo "<td>" . __("Reference") . ": </td>";
       echo "<td>";
       $data         = array();
       $data["id"]   = $this->fields["plugin_order_references_id"];
@@ -196,7 +194,7 @@ class PluginOrderReception extends CommonDBTM {
       echo $order_reference->getReceptionReferenceLink($data);
       echo "</td>";
 
-      echo "<td>".$LANG['plugin_order']['status'][8]."</td>";
+      echo "<td>".__("Taken delivery", "order")."</td>";
       echo "<td>";
       Dropdown::showYesNo('states_id', $this->fields['states_id']);
       echo "</td>";
@@ -213,7 +211,7 @@ class PluginOrderReception extends CommonDBTM {
       }
       echo "</td>";
       
-      echo "<td>" . $LANG['plugin_order']['detail'][21] . ": </td>";
+      echo "<td>" . __("Delivery date") . ": </td>";
       echo "<td>";
       if ($canedit) {
          Html::showDateFormItem("delivery_date", $this->fields["delivery_date"], true, 1);
@@ -226,7 +224,7 @@ class PluginOrderReception extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       
-      echo "<td>" . $LANG['plugin_order']['status'][3] . ": </td>";
+      echo "<td>" . __("Delivery status", "order") . ": </td>";
       echo "<td>";
       if ($canedit) {
          Dropdown::show('PluginOrderDeliveryState',
@@ -238,7 +236,7 @@ class PluginOrderReception extends CommonDBTM {
       }
       echo "</td>";
       
-      echo "<td>".$LANG['plugin_order']['bill'][0]."</td>";
+      echo "<td>".__("Bill", "order")."</td>";
       echo "<td>";
       if (plugin_order_haveRight("bill", "w")) {
          Dropdown::show('PluginOrderBill',
@@ -271,7 +269,7 @@ class PluginOrderReception extends CommonDBTM {
    }
    
    function showOrderReception($orders_id) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $order_order      = new PluginOrderOrder();
       $order_item       = new PluginOrderOrder_Item();
@@ -279,7 +277,7 @@ class PluginOrderReception extends CommonDBTM {
       $order_order->getFromDB($orders_id);
       
       Session::initNavigateListItems($this->getType(),
-                            $LANG['plugin_order'][7] ." = ". $order_order->fields["name"]);
+                            __("Order", "order") ." = ". $order_order->fields["name"]);
       
       $canedit = self::canCreate()
                    && !$order_order->canUpdateOrder()  && !$order_order->isCanceled();
@@ -291,7 +289,7 @@ class PluginOrderReception extends CommonDBTM {
          
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          if (!$numref) {
-            echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
+            echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
          } else {
             $references_id  = $data_ref["id"];
             $typeRef        = $data_ref["itemtype"];
@@ -306,10 +304,10 @@ class PluginOrderReception extends CommonDBTM {
             echo "<img alt='' name='reception_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
             echo "</a>";
             echo "</li></ul></th>";
-            echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";
+            echo "<th>" . __("Type") . "</th>";
             echo "<th>" . __("Manufacturer") . "</th>";
-            echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
-            echo "<th>" . $LANG['plugin_order']['delivery'][5] . "</th>";
+            echo "<th>" . __("Product reference", "order") . "</th>";
+            echo "<th>" . __("Delivered items", "order") . "</th>";
             echo "</tr>";
             echo "<tr class='tab_bg_1 center'>";
             echo "<td></td>";
@@ -338,11 +336,11 @@ class PluginOrderReception extends CommonDBTM {
             if ($typeRef != 'SoftwareLicense') {
                echo "<th>" . __("ID") . "</th>";
             }
-            echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
-            echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
-            echo "<th>" . $LANG['plugin_order']['detail'][21] . "</th>";
+            echo "<th>" . __("Reference") . "</th>";
+            echo "<th>" . __("Status") . "</th>";
+            echo "<th>" . __("Delivery date") . "</th>";
             echo "<th>" . __("Delivery form") . "</th>";
-            echo "<th>" . $LANG['plugin_order']['status'][3] . "</th>";
+            echo "<th>" . __("Delivery status", "order") . "</th>";
             echo "</tr>";
             
             $query = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD,
@@ -448,7 +446,7 @@ class PluginOrderReception extends CommonDBTM {
                   echo "};";
                   echo "</script>\n";
                   echo "<p><a href='javascript:viewmassreception".$orders_id."$rand();'>";
-                  echo $LANG['plugin_order']['delivery'][4]."</a></p><br>\n";
+                  echo __("Take item delivery (bulk)", "order")."</a></p><br>\n";
                }
             }
             Html::closeForm();
@@ -459,13 +457,13 @@ class PluginOrderReception extends CommonDBTM {
    }
    
    function dropdownReceptionActions($itemtype, $plugin_order_references_id, $plugin_order_orders_id) {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
       
       $rand = mt_rand();
 
       echo "<select name='receptionActions$rand' id='receptionActions$rand'>";
       echo "<option value='0' selected>".Dropdown::EMPTY_VALUE."</option>";
-      echo "<option value='reception'>" . $LANG['plugin_order']['delivery'][2] . "</option>";
+      echo "<option value='reception'>" . __("Take item delivery", "order") . "</option>";
       echo "</select>";
       $params = array ('action' => '__VALUE__', 'itemtype' => $itemtype,
                        'plugin_order_references_id'=>$plugin_order_references_id,
@@ -477,17 +475,17 @@ class PluginOrderReception extends CommonDBTM {
    }
    
    function getReceptionStatus($ID) {
-      global $DB, $LANG;
+      global $DB;
 
       $detail = new PluginOrderOrder_Item();
       $detail->getFromDB($ID);
 
       switch ($detail->fields["states_id"]) {
          case PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED :
-            return $LANG['plugin_order']['status'][11];
+            return __("Waiting for delivery", "order");
             
          case PluginOrderOrder::ORDER_DEVICE_DELIVRED :
-            return $LANG['plugin_order']['status'][8];
+            return __("Taken delivery", "order");
             
          default :
             return "";
@@ -495,7 +493,7 @@ class PluginOrderReception extends CommonDBTM {
    }
 
    function updateBulkReceptionStatus($params) {
-      global $LANG, $DB;
+      global $DB;
       
       $query = "SELECT `id`, `itemtype`, 'entities_id'
                FROM `glpi_plugin_order_orders_items`
@@ -507,7 +505,7 @@ class PluginOrderReception extends CommonDBTM {
       $nb      = $DB->numrows($result);
       
       if ($nb < $params['number_reception']) {
-         Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][37], true, ERROR);
+         Session::addMessageAfterRedirect(__("Not enough items to deliver", "order"), true, ERROR);
       } else {
          for ($i = 0; $i < $params['number_reception']; $i++) {
             // Automatic generate asset
@@ -531,7 +529,7 @@ class PluginOrderReception extends CommonDBTM {
    
    function receptionOneItem($detailID, $plugin_order_orders_id, $delivery_date,
                              $delivery_number, $plugin_order_deliverystates_id) {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
       
       $detail                                  = new PluginOrderOrder_Item();
       $input["id"]                             = $detailID;
@@ -541,12 +539,12 @@ class PluginOrderReception extends CommonDBTM {
       $input["plugin_order_deliverystates_id"] = $plugin_order_deliverystates_id;
       $detail->update($input);
 
-      Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
+      Session::addMessageAfterRedirect(__("Item successfully taken delivery", "order"), true);
    }
    
    function receptionAllItem($detailID, $plugin_order_references_id, $plugin_order_orders_id,
                              $delivery_date, $delivery_number, $plugin_order_deliverystates_id) {
-      global $LANG, $DB;
+      global $DB;
       
       
       $detail = new PluginOrderOrder_Item();
@@ -569,11 +567,11 @@ class PluginOrderReception extends CommonDBTM {
             $detail->update($input);
          }
       }
-      Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][31], true);
+      Session::addMessageAfterRedirect(__("Item successfully taken delivery", "order"), true);
    }
    
    function updateReceptionStatus($params) {
-      global $LANG;
+      
 
       $detail                 = new PluginOrderOrder_Item();
       $plugin_order_orders_id = 0;
@@ -610,7 +608,7 @@ class PluginOrderReception extends CommonDBTM {
                                                 $params["delivery_date"], $params["delivery_number"],
                                                 $params["plugin_order_deliverystates_id"]);
                      } else {
-                        Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][32], true, ERROR);
+                        Session::addMessageAfterRedirect(__("Item already taken delivery", "order"), true, ERROR);
                      }
                   }
                }
@@ -618,7 +616,7 @@ class PluginOrderReception extends CommonDBTM {
 
          self::updateDelivryStatus($plugin_order_orders_id);
       } else {
-         Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][29], false, ERROR);
+         Session::addMessageAfterRedirect(__("No item selected", "order"), false, ERROR);
       }
    }
    
@@ -721,12 +719,12 @@ class PluginOrderReception extends CommonDBTM {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
+      
       
       if ($item->getType()=='PluginOrderOrder') {
          if (plugin_order_haveRight('delivery', 'r')
             && $item->getState() > PluginOrderOrderState::DRAFT) {
-            return self::createTabEntry($LANG['plugin_order']['delivery'][1], 
+            return self::createTabEntry(__("Item delivered", "order"), 
                                         self::countForOrder($item));
          }
       }

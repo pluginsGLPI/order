@@ -87,7 +87,7 @@ if (isset ($_POST["update"])) {
    Html::redirect($_SERVER["HTTP_REFERER"]);
 
 } else {
-   Html::header($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
+   Html::header(__("Orders management", "order"), '', "plugins", "order", "order");
    $reception->showForm($_GET["id"]);
    Html::footer();
    

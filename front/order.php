@@ -29,7 +29,7 @@
  ---------------------------------------------------------------------- */
 
 include ("../../../inc/includes.php");
-Html::header($LANG['plugin_order']['title'][1], '', "plugins", "order", "order");
+Html::header(__("Orders management", "order"), '', "plugins", "order", "order");
 
 $order = new PluginOrderOrder();
 if (PluginOrderOrder::canView() || Session::haveRight("config","w")) {

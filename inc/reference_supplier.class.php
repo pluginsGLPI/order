@@ -39,9 +39,9 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    public $dohistory = true;
    
    static function getTypeName($nb=0) {
-      global $LANG;
+      
 
-      return $LANG['plugin_order']['reference'][5];
+      return __("Supplier for the reference", "order");
    }
    
    static function canCreate() {
@@ -72,20 +72,20 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    }
    
    function getSearchOptions() {
-      global $LANG;
+      
 
       $tab = array();
     
-      $tab['common'] = $LANG['plugin_order']['reference'][5];
+      $tab['common'] = __("Supplier for the reference", "order");
 
       $tab[1]['table'] = $this->getTable();
       $tab[1]['field'] = 'reference_code';
-      $tab[1]['name'] = $LANG['plugin_order']['reference'][10];
+      $tab[1]['name'] = __("Manufacturer's product reference", "order");
       $tab[1]['datatype'] = 'text';
 
       $tab[2]['table']    = $this->getTable();
       $tab[2]['field']    = 'price_taxfree';
-      $tab[2]['name']     = $LANG['plugin_order']['detail'][4];
+      $tab[2]['name']     = __("Unit price tax free", "order");
       $tab[2]['datatype'] = 'decimal';
 
       $tab[3]['table'] = 'glpi_suppliers';
@@ -123,11 +123,11 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    }
    
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
+      
       if (get_class($item) == __CLASS__) {
          return array (1 => __("Main"));
       } elseif (get_class($item) == 'PluginOrderReference') {
-         return array(1 => $LANG['plugin_order'][4]);
+         return array(1 => __("Supplier Detail", "order"));
       }
       return '';
    }
@@ -145,7 +145,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    }
    
    function showForm ($ID, $options=array()) {
-      global $LANG, $DB;
+      global $DB;
       
       if (!self::canView()) {
          return false;
@@ -200,7 +200,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       }
       echo "</td>";
 
-      echo "<td>" . $LANG['plugin_order']['reference'][10] . ": </td>";
+      echo "<td>" . __("Manufacturer's product reference", "order") . ": </td>";
       echo "<td>";
       Html::autocompletionTextField($this,"reference_code");
       echo "</td></tr>";
@@ -209,7 +209,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       
       echo "<tr class='tab_bg_1'>";
       
-      echo "<td>" . $LANG['plugin_order']['detail'][4] . ": </td>";
+      echo "<td>" . __("Unit price tax free", "order") . ": </td>";
       echo "<td>";
       echo "<input type='text' name='price_taxfree' value=\"".
          Html::formatNumber($this->fields["price_taxfree"],true)."\" size='7'>";
@@ -230,14 +230,14 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    }
 
    function showReferenceManufacturers($ID) {
-      global $LANG, $DB, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $ref = new PluginOrderReference();
       $ref->getFromDB($ID);
       
       $target = Toolbox::getItemTypeFormURL(__CLASS__);
       Session::initNavigateListItems($this->getType(),
-                            $LANG['plugin_order']['reference'][1] ." = ". $ref->fields["name"]);
+                            __("Product reference", "order") ." = ". $ref->fields["name"]);
 
       $candelete = $ref->can($ID, 'w');
       $query     = "SELECT * FROM `".$this->getTable()."` WHERE `plugin_order_references_id` = '$ID' ";
@@ -251,11 +251,11 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       echo "<input type='hidden' name='plugin_order_references_id' value='" . $ID . "'>";
       echo "<table class='tab_cadre_fixe'>";
       
-      echo "<tr><th colspan='5'>".$LANG['plugin_order'][4]."</th></tr>";
+      echo "<tr><th colspan='5'>".__("Supplier Detail", "order")."</th></tr>";
       echo "<tr><th>&nbsp;</th>";
       echo "<th>" . __("Supplier") . "</th>";
-      echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
-      echo "<th>" . $LANG['plugin_order']['detail'][4] . "</th>";
+      echo "<th>" . __("Product reference", "order") . "</th>";
+      echo "<th>" . __("Unit price tax free", "order") . "</th>";
       echo "</tr>";
 
       if ($DB->numrows($result) > 0) {
@@ -424,7 +424,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    }
 
    static function showReferencesFromSupplier($ID){
-      global $LANG, $DB, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (isset($_POST["start"])) {
          $start = $_POST["start"];
@@ -446,16 +446,16 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       if ($nb) {
 
          $result = $DB->query($query_limit);
-         Html::printAjaxPager($LANG['plugin_order']['reference'][3], $start, $nb);
+         Html::printAjaxPager(__("List references", "order"), $start, $nb);
          
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr>";
          echo "<th>".__("Entity")."</th>";
          echo "<th>".__("Manufacturer")."</th>";
-         echo "<th>".$LANG['plugin_order']['reference'][1]."</th>";
-         echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
-         echo "<th>".$LANG['plugin_order']['reference'][1]."</th>";
-         echo "<th>".$LANG['plugin_order']['detail'][4]."</th></tr>";
+         echo "<th>".__("Product reference", "order")."</th>";
+         echo "<th>".__("Reference")."</th>";
+         echo "<th>".__("Product reference", "order")."</th>";
+         echo "<th>".__("Unit price tax free", "order")."</th></tr>";
          
          
          while ($data = $DB->fetch_array($result)) {

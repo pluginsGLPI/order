@@ -37,7 +37,7 @@ Session::checkLoginUser();
 $PluginOrderReception = new PluginOrderReception();
 
 echo "<table width='950px' class='tab_cadre_fixe'>";
-echo "<tr class='tab_bg_2'><td>".$LANG['plugin_order']['detail'][21]."</td><td>";
+echo "<tr class='tab_bg_2'><td>".__("Delivery date")."</td><td>";
 Html::showDateFormItem("delivery_date",date("Y-m-d"),true,1);
 echo "</td><td>";
 echo __("Delivery form")."</td><td>";
@@ -47,13 +47,13 @@ echo "<input type='hidden' name='plugin_order_references_id' value='".
    $_POST['plugin_order_references_id']."'>";
 echo "<input type='hidden' name='plugin_order_orders_id' value='".
    $_POST['plugin_order_orders_id']."'>";
-echo $LANG['plugin_order']['delivery'][6]."</td><td>";
+echo __("Number to deliver", "order")."</td><td>";
 $nb = $PluginOrderReception->checkItemStatus($_POST['plugin_order_orders_id'],
                                              $_POST['plugin_order_references_id'], 
                                              PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED);
 Dropdown::showInteger('number_reception','',1,$nb);
 echo "</td><td>";
-echo $LANG['plugin_order']['status'][3]."&nbsp;";
+echo __("Delivery status", "order")."&nbsp;";
 Dropdown::show('PluginOrderDeliveryState', array('name' => "plugin_order_deliverystates_id"));
 echo "</td>";
 echo "<td><input type='submit' name='bulk_reception' class='submit' value='".

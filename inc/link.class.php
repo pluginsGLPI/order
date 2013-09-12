@@ -40,9 +40,9 @@ class PluginOrderLink extends CommonDBChild {
    static public $items_id  = 'plugin_order_orders_id';
    
    static function getTypeName($nb=0) {
-      global $LANG;
+      
 
-      return $LANG['plugin_order']['generation'][0];
+      return __("Generation", "order");
    }
    
    static function canCreate() {
@@ -58,7 +58,7 @@ class PluginOrderLink extends CommonDBChild {
    }
    
    function showItemGenerationForm($params) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
       
       echo "<a href='" . $_SERVER["HTTP_REFERER"] . "'>" . __("Back") . "</a></br><br>";
       echo "<form method='post' name='order_deviceGeneration' id='order_deviceGeneration' action=\"" .
@@ -70,8 +70,8 @@ class PluginOrderLink extends CommonDBChild {
       if (Session::isMultiEntitiesMode()) {
          $colspan = "6";
       }
-      echo "<tr><th colspan='$colspan'>" . $LANG['plugin_order']['delivery'][3] . "</tr></th>";
-      echo "<tr><th>" . $LANG['plugin_order']['reference'][1] . "</th>";
+      echo "<tr><th colspan='$colspan'>" . __("Generate item", "order") . "</tr></th>";
+      echo "<tr><th>" . __("Product reference", "order") . "</th>";
       echo "<th>" . __("Name") . "</th>";
       echo "<th>" . __("Serial Number") . "</th>";
       echo "<th>" . __("Inventory number") . "</th>";
@@ -164,10 +164,10 @@ class PluginOrderLink extends CommonDBChild {
       if ($found) {
          echo "<tr><td align='center' colspan='$colspan' class='tab_bg_2'>";
          echo "<input type='submit' name='generate' class='submit' value=" .
-            $LANG['plugin_order']['delivery'][9] . "></td></tr>";
+            __("Generate", "order") . "></td></tr>";
       } else {
          echo "<tr><td align='center' colspan='$colspan' class='tab_bg_2'>" .
-            $LANG['plugin_order']['delivery'][17] . "</td></tr>";
+            __("No item to generate", "order") . "</td></tr>";
       }
 
       echo "</table>";
@@ -176,7 +176,7 @@ class PluginOrderLink extends CommonDBChild {
    }
    
    function showOrderLink($plugin_order_orders_id) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $PluginOrderOrder      = new PluginOrderOrder();
       $PluginOrderOrder_Item = new PluginOrderOrder_Item();
@@ -208,7 +208,7 @@ class PluginOrderLink extends CommonDBChild {
       while ($data_ref = $DB->fetch_array($result_ref)){
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          if (!$numref) {
-            echo "<tr><th>" . $LANG['plugin_order']['detail'][20] . "</th></tr></table></div>";
+            echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
          } else {
             $plugin_order_references_id = $data_ref["id"];
             $itemtype                   = $data_ref["itemtype"];
@@ -246,9 +246,9 @@ class PluginOrderLink extends CommonDBChild {
             echo "<img alt='' name='generation_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
             echo "</a>";
             echo "</li></ul></th>";
-            echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";
+            echo "<th>" . __("Type") . "</th>";
             echo "<th>" . __("Manufacturer") . "</th>";
-            echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
+            echo "<th>" . __("Product reference", "order") . "</th>";
             echo "</tr>";
             echo "<tr class='tab_bg_1 center'>";
             echo "<td></td>";
@@ -272,12 +272,12 @@ class PluginOrderLink extends CommonDBChild {
             if ($itemtype != 'SoftwareLicense') {
                echo "<th>" . __("ID") . "</th>";
             } else {
-               echo "<th>" . $LANG['plugin_order']['detail'][7] . "</th>";
+               echo "<th>" . __("Quantity", "order") . "</th>";
             }
-            echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
-            echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
-            echo "<th>" . $LANG['plugin_order']['detail'][21] . "</th>";
-            echo "<th>" . $LANG['plugin_order']['item'][0] . "</th></tr>";
+            echo "<th>" . __("Reference") . "</th>";
+            echo "<th>" . __("Status") . "</th>";
+            echo "<th>" . __("Delivery date") . "</th>";
+            echo "<th>" . _n("Associated item", "Associated items", 2) . "</th></tr>";
             
             while ($data=$DB->fetch_array($result)){
                $random   = mt_rand();
@@ -335,7 +335,7 @@ class PluginOrderLink extends CommonDBChild {
    }
    
    function getLinkedItemDetails($itemtype, $items_id) {
-      global $LANG;
+      
       
       $comments = "";
       switch ($itemtype) {
@@ -418,10 +418,10 @@ class PluginOrderLink extends CommonDBChild {
    }
 
    function getReceptionItemName($items_id, $itemtype) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
       
       if ($items_id == 0) {
-         return ($LANG['plugin_order']['item'][2]);
+         return (__("No associated item", "order"));
       } else {
          switch ($itemtype) {
             case 'ConsumableItem' :
@@ -445,7 +445,7 @@ class PluginOrderLink extends CommonDBChild {
    }
 
    function dropdownLinkActions($itemtype,$plugin_order_references_id,$plugin_order_orders_id, $entities_id) {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
       
       $rand       = mt_rand();
       $reception  = new PluginOrderReception();
@@ -453,11 +453,11 @@ class PluginOrderLink extends CommonDBChild {
       if ($reception->checkItemStatus($plugin_order_orders_id, $plugin_order_references_id,
                                       PluginOrderOrder::ORDER_DEVICE_DELIVRED)) {
          if (!in_array($itemtype, self::getTypesThanCannotBeGenerared())) {
-            $actions['generation'] = $LANG['plugin_order']['delivery'][3];
+            $actions['generation'] = __("Generate item", "order");
          }
          if ($itemtype::canView()) {
-            $actions['createLink'] = $LANG['plugin_order']['delivery'][11];
-            $actions['deleteLink'] = $LANG['plugin_order']['delivery'][12];
+            $actions['createLink'] = __("Link to an existing item", "order");
+            $actions['deleteLink'] = __("Delete item link", "order");
          }
       }
       $rand   = Dropdown::showFromArray('generationActions', $actions);
@@ -515,7 +515,7 @@ class PluginOrderLink extends CommonDBChild {
    }
    
    function generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, $templateID = 0) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       
       //Do not try to generate infocoms if itemtype doesn't support it (ie contracts...)
@@ -606,7 +606,7 @@ class PluginOrderLink extends CommonDBChild {
    function createLinkWithItem($detailID = 0, $items_id = 0, $itemtype = 0,
                                $plugin_order_orders_id = 0, $entity = 0, $templateID = 0,
                                $history = true, $check_link = true) {
-      global $LANG, $DB;
+      global $DB;
 
       if (!$check_link
          || !$this->itemAlreadyLinkedToAnOrder($itemtype, $items_id, $plugin_order_orders_id,
@@ -645,7 +645,7 @@ class PluginOrderLink extends CommonDBChild {
                
                if ($history) {
                   $order     = new PluginOrderOrder();
-                  $new_value = $LANG['plugin_order']['delivery'][14] . ' : ' . $lic->getField("name");
+                  $new_value = __("Item linked to order", "order") . ' : ' . $lic->getField("name");
                   $order->addHistory('PluginOrderOrder', '', $new_value, $plugin_order_orders_id);
                }
             }
@@ -706,7 +706,7 @@ class PluginOrderLink extends CommonDBChild {
                   $order->getFromDB($detail->fields["plugin_order_orders_id"]);
                   $item  = new $itemtype();
                   $item->getFromDB($items_id);
-                  $new_value = $LANG['plugin_order']['delivery'][14] . ' : ' . $item->getField("name");
+                  $new_value = __("Item linked to order", "order") . ' : ' . $item->getField("name");
                   $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
                }
             }
@@ -714,19 +714,19 @@ class PluginOrderLink extends CommonDBChild {
          if ($history) {
             $order = new PluginOrderOrder();
             $order->getFromDB($detail->fields["plugin_order_orders_id"]);
-            $new_value = $LANG['plugin_order']['delivery'][14] . ' : ' . $order->fields["name"];
+            $new_value = __("Item linked to order", "order") . ' : ' . $order->fields["name"];
             $order->addHistory($itemtype, '', $new_value, $items_id);
          }
          
-         Session::addMessageAfterRedirect($LANG['plugin_order']['delivery'][14], true);
+         Session::addMessageAfterRedirect(__("Item linked to order", "order"), true);
       } else {
-         Session::addMessageAfterRedirect($LANG['plugin_order']['delivery'][16], true, ERROR);
+         Session::addMessageAfterRedirect(__("Item already linked to another one", "order"), true, ERROR);
       }
 
    }
    
    function deleteLinkWithItem($detailID, $itemtype, $plugin_order_orders_id) {
-      global $DB, $LANG;
+      global $DB;
       
       if ($itemtype == 'SoftWareLicense') {
             
@@ -759,12 +759,12 @@ class PluginOrderLink extends CommonDBChild {
             
             $order     = new PluginOrderOrder();
             $order->getFromDB($detail->fields["plugin_order_orders_id"]);
-            $new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $order->fields["name"];
+            $new_value = __("Item unlink form order", "order") . ' : ' . $order->fields["name"];
             $order->addHistory($itemtype, '', $new_value, $license);
 
             $item      = new $itemtype();
             $item->getFromDB($license);
-            $new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $item->getField("name");
+            $new_value = __("Item unlink form order", "order") . ' : ' . $item->getField("name");
             $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
          }
       } else {
@@ -783,20 +783,20 @@ class PluginOrderLink extends CommonDBChild {
             $input["items_id"] = 0;
             $detail->update($input);
          } else
-            Session::addMessageAfterRedirect($LANG['plugin_order'][48], TRUE, ERROR);
+            Session::addMessageAfterRedirect(__("One or several selected rows haven't linked items", "order"), TRUE, ERROR);
 
-         $new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $order->fields["name"];
+         $new_value = __("Item unlink form order", "order") . ' : ' . $order->fields["name"];
          $order->addHistory($itemtype, '', $new_value, $items_id);
          
          $item = new $itemtype();
          $item->getFromDB($items_id);
-         $new_value = $LANG['plugin_order']['delivery'][15] . ' : ' . $item->getField("name");
+         $new_value = __("Item unlink form order", "order") . ' : ' . $item->getField("name");
          $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
       }
    }
    
    function generateNewItem($params) {
-      global $DB, $LANG;
+      global $DB;
 
       // Retrieve plugin configuration
       $config    = new PluginOrderConfig();
@@ -905,18 +905,18 @@ class PluginOrderLink extends CommonDBChild {
                                    false, false);
 
          //Add item's history
-         $new_value = $LANG['plugin_order']['delivery'][13] . ' : ' . $order->fields["name"];
+         $new_value = __("Item generated by using order", "order") . ' : ' . $order->fields["name"];
          $order->addHistory($values["itemtype"], '', $new_value, $newID);
 
          //Add order's history
-         $new_value  = $LANG['plugin_order']['delivery'][13] . ' : ';
+         $new_value  = __("Item generated by using order", "order") . ' : ';
          $new_value .= $item->getTypeName() . " -> " . $item->getField("name");
          $order->addHistory('PluginOrderOrder', '', $new_value, $values["plugin_order_orders_id"]);
 
          //Copy order documents if needed
          self::copyDocuments($values['itemtype'], $newID, $values["plugin_order_orders_id"], $entity);
          
-         Session::addMessageAfterRedirect($LANG['plugin_order']['detail'][30], true);
+         Session::addMessageAfterRedirect(__("Item successfully selected", "order"), true);
 
       }
    }
@@ -928,11 +928,11 @@ class PluginOrderLink extends CommonDBChild {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
+      
       
       if ($item->getType()=='PluginOrderOrder') {
          if ($item->checkIfDetailExists($item->getID(), true)) {
-            return self::createTabEntry($LANG['plugin_order']['item'][0], 
+            return self::createTabEntry(_n("Associated item", "Associated items", 2), 
                                         self::countForOrder($item));
          }
       }

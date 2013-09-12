@@ -38,9 +38,9 @@ class PluginOrderReference extends CommonDBTM {
    static public $forward_entity_to = array('PluginOrderReference_Supplier');
    
    static function getTypeName($nb=0) {
-      global $LANG;
+      
 
-      return $LANG['plugin_order']['reference'][1];
+      return __("Product reference", "order");
    }
    
    static function canCreate() {
@@ -57,13 +57,13 @@ class PluginOrderReference extends CommonDBTM {
    }
    
    function getSearchOptions() {
-      global $LANG;
+      
 
-      $tab['common']           = $LANG['plugin_order']['reference'][1];
+      $tab['common']           = __("Product reference", "order");
 
       $tab[1]['table']          = $this->getTable();
       $tab[1]['field']          = 'name';
-      $tab[1]['name']           = $LANG['plugin_order']['detail'][2];
+      $tab[1]['name']           = __("Reference");
       $tab[1]['datatype']       = 'itemlink';
       $tab[1]['checktype']      = 'text';
       $tab[1]['displaytype']    = 'text';
@@ -133,7 +133,7 @@ class PluginOrderReference extends CommonDBTM {
 
       $tab[32]['table']         = 'glpi_plugin_order_references_suppliers';
       $tab[32]['field']         = 'price_taxfree';
-      $tab[32]['name']          = $LANG['plugin_order']['detail'][4];
+      $tab[32]['name']          = __("Unit price tax free", "order");
       $tab[32]['forcegroupby']  = true;
       $tab[32]['usehaving']     = true;
       $tab[32]['massiveaction'] = false;
@@ -142,7 +142,7 @@ class PluginOrderReference extends CommonDBTM {
       
       $tab[33]['table']         = 'glpi_plugin_order_references_suppliers';
       $tab[33]['field']         = 'reference_code';
-      $tab[33]['name']          = $LANG['plugin_order']['reference'][10];
+      $tab[33]['name']          = __("Manufacturer's product reference", "order");
       $tab[33]['forcegroupby']  = true;
       $tab[33]['usehaving']     = true;
       $tab[33]['massiveaction'] = false;
@@ -190,15 +190,15 @@ class PluginOrderReference extends CommonDBTM {
    }
    
    function prepareInputForAdd($input){
-      global $DB,$LANG;
+      global $DB;
 
       if (!isset($input["name"]) || $input["name"] == '') {
-         Session::addMessageAfterRedirect($LANG['plugin_order']['reference'][8], false, ERROR);
+         Session::addMessageAfterRedirect(__("Cannot create reference without a name", "order"), false, ERROR);
          return false;
       }
 
       if (!$input["itemtype"]) {
-         Session::addMessageAfterRedirect($LANG['plugin_order']['reference'][9], false, ERROR);
+         Session::addMessageAfterRedirect(__("Cannot create reference without a type", "order"), false, ERROR);
          return false;
       }
       
@@ -206,7 +206,7 @@ class PluginOrderReference extends CommonDBTM {
             && countElementsInTable($this->getTable(),
                                     "`name` = '".$input["name"]."'
                                        AND `entities_id` = '".$input["entities_id"]."'")) {
-         Session::addMessageAfterRedirect($LANG['plugin_order']['reference'][6], false, ERROR);
+         Session::addMessageAfterRedirect(__("A reference with the same name still exists", "order"), false, ERROR);
          return false;
       }
       
@@ -214,12 +214,12 @@ class PluginOrderReference extends CommonDBTM {
    }
 
    function pre_deleteItem(){
-      global $LANG;
+      
 
       if (!$this->referenceInUse()) {
          return true;
       } else {
-         Session::addMessageAfterRedirect($LANG['plugin_order']['reference'][7], true, ERROR);
+         Session::addMessageAfterRedirect(__("Reference(s) in use", "order"), true, ERROR);
          return false;
       }
 
@@ -253,7 +253,7 @@ class PluginOrderReference extends CommonDBTM {
    }*/
 
    function defineTabs($options=array()) {
-      global $LANG;
+      
 
       $ong = array();
       if (!$this->isNewID($this->getID())) {
@@ -267,9 +267,8 @@ class PluginOrderReference extends CommonDBTM {
    }
    
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
       if (get_class($item) == __CLASS__) {
-         return array (1 => $LANG['plugin_order'][11]);
+         return array (1 => __("Linked orders", "order"));
       }
       return '';
    }
@@ -426,7 +425,7 @@ class PluginOrderReference extends CommonDBTM {
    }
    
    function showForm($id, $options = array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if (!self::canView()) {
          return false;
@@ -560,7 +559,7 @@ class PluginOrderReference extends CommonDBTM {
     * @param array ($itemtype,$options)
     */
    static function dropdownReferencesByEnterprise($itemtype, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$CFG_GLPI;
 
       $item = getItemForItemtype($itemtype);
       if ($itemtype && !($item = getItemForItemtype($itemtype))) {
@@ -773,7 +772,7 @@ class PluginOrderReference extends CommonDBTM {
    }
    
    function showOrders($ref){
-      global $DB,$LANG;
+      global $DB;
       
       $order = new PluginOrderOrder();
       $query = "SELECT `glpi_plugin_order_orders_items`.*
@@ -798,7 +797,7 @@ class PluginOrderReference extends CommonDBTM {
          }
          $query_limit = $query." LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
          
-         Html::printAjaxPager($LANG['plugin_order'][11], $start, $nb);
+         Html::printAjaxPager(__("Linked orders", "order"), $start, $nb);
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr>";
          echo "<th>".__("Name")."</a></th>";
@@ -872,13 +871,13 @@ class PluginOrderReference extends CommonDBTM {
    }
    
    function copy($ID) {
-      global $LANG;
+      
       $source = new self();
       $source->getFromDB($ID);
       
       $target = clone $source;
       unset($target->fields['id']);
-      $target->fields['name'] = $LANG['plugin_order']['reference'][14].' '.$target->fields['name'];
+      $target->fields['name'] = __("Copy of", "order").' '.$target->fields['name'];
       $newID = $this->add($target->fields);
       
       foreach (getAllDatasFromTable('glpi_plugin_order_references_suppliers',
@@ -897,11 +896,11 @@ class PluginOrderReference extends CommonDBTM {
     * @param $target target for entity change action
     */
    static function showSelector($target) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI;
 
       $rand=mt_rand();
       Plugin::loadLang('order');
-      echo "<div class='center' ><span class='b'>".$LANG['plugin_order']['reference'][12].
+      echo "<div class='center' ><span class='b'>".__("Select the wanted item type", "order").
          "</span><br>";
       echo "<a style='font-size:14px;' href='".$target."?reset=reset' title=\"".
              __("Show all")."\">".str_replace(" ","&nbsp;",__("Show all"))."</a></div>";
@@ -949,18 +948,18 @@ class PluginOrderReference extends CommonDBTM {
 
 
    function title() {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
       echo "<div align='center'>";
       echo self::getPerTypeJavascriptCode();
       echo "<a onclick='order_window.show();' href='#modal_reference_content' title='".
-             $LANG['plugin_order']['reference'][11]."'>".
-             $LANG['plugin_order']['reference'][11]."</a>";
+             __("View by item type", "order")."'>".
+             __("View by item type", "order")."</a>";
       echo "</div>";
 
    }
 
    static function getPerTypeJavascriptCode() {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
       
       $out = "<script type='text/javascript'>";
       $out.= "cleanhide('modal_reference_content');";
@@ -971,7 +970,7 @@ class PluginOrderReference extends CommonDBTM {
          closeAction:'hide',
          modal: true,
          autoScroll: true,
-         title: \"".$LANG['plugin_order']['reference'][11]."\",
+         title: \"".__("View by item type", "order")."\",
          autoLoad: '".$CFG_GLPI['root_doc']."/plugins/order/ajax/referencetree.php'
       });";
       $out.= "</script>";
