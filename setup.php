@@ -226,7 +226,7 @@ function plugin_version_order() {
 
 /* check prerequisites before install : may print errors or add to message after redirect -optional- */
 function plugin_order_check_prerequisites(){
-   if (version_compare(GLPI_VERSION,'0.83.3','lt') || version_compare(GLPI_VERSION,'0.84','ge')) {
+   if (version_compare(GLPI_VERSION,'0.84','lt') || version_compare(GLPI_VERSION,'0.85','ge')) {
       echo "This plugin requires 0.83.3+";
    } else {
       return true;

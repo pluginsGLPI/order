@@ -28,8 +28,7 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT . "/inc/includes.php");
+include ("../../../inc/includes.php");
 
 $dropdown = new PluginOrderOtherType();
 include (GLPI_ROOT . "/front/dropdown.common.php");

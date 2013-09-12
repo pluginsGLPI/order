@@ -28,8 +28,7 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT . "/inc/includes.php");
+include ("../../../inc/includes.php");
 
 require_once('../lib/odtphp/odf.php');
 

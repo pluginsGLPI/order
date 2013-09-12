@@ -42,8 +42,7 @@
 $USEDBREPLICATE=1;
 $DBCONNECTION_REQUIRED=0; // Really a big SQL request
 
-define('GLPI_ROOT', '../../../..');
-include (GLPI_ROOT . "/inc/includes.php");
+include ("../../../../inc/includes.php");
 
 $report = new PluginReportsAutoReport();
 new PluginReportsDateIntervalCriteria($report, 'order_date', $LANG['plugin_order'][1]);

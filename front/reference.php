@@ -27,8 +27,7 @@
  @link      http://www.glpi-project.org/
  @since     2009
  ---------------------------------------------------------------------- */
-define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT."/inc/includes.php");
+include ("../../../inc/includes.php");
 Html::header(PluginOrderReference::getTypeName(), '', "plugins", "order", "reference");
 
 $reference = new PluginOrderReference();
