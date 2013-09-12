@@ -37,7 +37,7 @@ class PluginOrderBillState extends CommonDropdown {
    const NOTPAID = 0;
    const PAID    = 1;
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
       return $LANG['plugin_order']['bill'][2];
@@ -54,11 +54,11 @@ class PluginOrderBillState extends CommonDropdown {
       }
    }
 
-   function canCreate() {
+   static function canCreate() {
       return plugin_order_haveRight('bill', 'w');
    }
 
-   function canView() {
+   static function canView() {
       return plugin_order_haveRight('bill', 'r');
    }
    

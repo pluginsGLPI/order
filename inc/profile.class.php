@@ -34,17 +34,17 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderProfile extends CommonDBTM {
    
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
       return $LANG['plugin_order']['profile'][0];
    }
    
-   function canCreate() {
+   static function canCreate() {
       return Session::haveRight('profile', 'w');
    }
 
-   function canView() {
+   static function canView() {
       return Session::haveRight('profile', 'r');
    }
    
@@ -136,7 +136,7 @@ class PluginOrderProfile extends CommonDBTM {
       if ($prof->fields['interface']!='helpdesk') {
          Profile::dropdownNoneReadWrite("order",$this->fields["order"], 1, 1, 1);
       } else {
-         echo $LANG['profiles'][12]; // No access;
+         echo __("No access"); // No access;
       }
       echo "</td>";
 
@@ -144,7 +144,7 @@ class PluginOrderProfile extends CommonDBTM {
       if ($prof->fields['interface']!='helpdesk') {
          Profile::dropdownNoneReadWrite("reference",$this->fields["reference"], 1, 1, 1);
       } else {
-         echo $LANG['profiles'][12]; // No access;
+         echo __("No access"); // No access;
       }
       echo "</td>";
       
@@ -155,7 +155,7 @@ class PluginOrderProfile extends CommonDBTM {
       if ($prof->fields['interface']!='helpdesk') {
          Profile::dropdownNoneReadWrite("bill",$this->fields["bill"], 1, 1, 1);
       } else {
-         echo $LANG['profiles'][12]; // No access;
+         echo __("No access"); // No access;
       }
       echo "</td>";
 
@@ -163,7 +163,7 @@ class PluginOrderProfile extends CommonDBTM {
       if ($prof->fields['interface']!='helpdesk') {
          Profile::dropdownNoneReadWrite("delivery", $this->fields["delivery"], 1, 1, 1);
       } else {
-         echo $LANG['profiles'][12]; // No access;
+         echo __("No access"); // No access;
       }
       echo "</td>";
       
@@ -176,7 +176,7 @@ class PluginOrderProfile extends CommonDBTM {
          Profile::dropdownNoneReadWrite("generate_order_odt",
                                         $this->fields["generate_order_odt"], 1, 0, 1);
       } else {
-         echo $LANG['profiles'][12]; // No access;
+         echo __("No access"); // No access;
       }
       echo "</td>";
       echo "<td>".$LANG['plugin_order']['profile'][4]."</td>";
@@ -194,7 +194,7 @@ class PluginOrderProfile extends CommonDBTM {
       if ($prof->fields['interface']!='helpdesk') {
          Profile::dropdownNoneReadWrite("validation",$this->fields["validation"],1,0,1);
       } else {
-         echo $LANG['profiles'][12]; // No access;
+         echo __("No access"); // No access;
       }
       echo "</td>";
       
@@ -202,7 +202,7 @@ class PluginOrderProfile extends CommonDBTM {
       if ($prof->fields['interface']!='helpdesk') {
          Profile::dropdownNoneReadWrite("cancel",$this->fields["cancel"],1,0,1);
       } else {
-         echo $LANG['profiles'][12]; // No access;
+         echo __("No access"); // No access;
       }
       echo "</td>";
       
@@ -213,7 +213,7 @@ class PluginOrderProfile extends CommonDBTM {
       if ($prof->fields['interface']!='helpdesk') {
          Profile::dropdownNoneReadWrite("undo_validation",$this->fields["undo_validation"],1,0,1);
       } else {
-         echo $LANG['profiles'][12]; // No access;
+         echo __("No access"); // No access;
       }
       echo "</td>";
       

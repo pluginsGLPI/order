@@ -38,17 +38,17 @@ class PluginOrderBill extends CommonDropdown {
    public $first_level_menu  = "plugins";
    public $second_level_menu = "order";
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
       return $LANG['plugin_order']['bill'][0];
    }
    
-   function canCreate() {
+   static function canCreate() {
       return plugin_order_haveRight('bill', 'w');
    }
 
-   function canView() {
+   static function canView() {
       return plugin_order_haveRight('bill', 'r');
    }
    
@@ -71,31 +71,31 @@ class PluginOrderBill extends CommonDropdown {
       global $LANG;
 
       return array(array('name'  =>'suppliers_id',
-                         'label' => $LANG['financial'][26],
+                         'label' => __("Supplier"),
                          'type'  => 'dropdownValue'),
                    array('name'  => 'value',
-                         'label' => $LANG['financial'][21],
+                         'label' => __("Value"),
                          'type'  => 'text'),
                    array('name'  => 'number',
-                         'label' => $LANG['financial'][4],
+                         'label' => __("Number"),
                          'type'  => 'text'),
                    array('name'  => 'billdate',
-                         'label' => $LANG['common'][27],
+                         'label' => __("Date"),
                          'type'  => 'date'),
                    array('name'  => 'plugin_order_billtypes_id',
-                         'label' => $LANG['common'][17],
+                         'label' => __("Type"),
                          'type'  => 'dropdownValue'),
                    array('name'  => 'plugin_order_billstates_id',
-                         'label' => $LANG['joblist'][0],
+                         'label' => __("Status"),
                          'type'  => 'dropdownValue'),
                    array('name'  => 'plugin_order_orders_id',
                          'label' => $LANG['plugin_order'][7],
                          'type'  => 'dropdownValue'),
                    array('name'  => 'users_id_validation',
-                         'label' => $LANG['validation'][21],
+                         'label' => __("Approver"),
                          'type'  => 'UserDropdown'),
                    array('name'  => 'validationdate',
-                         'label' => $LANG['validation'][4],
+                         'label' => __("Approval date"),
                          'type'  => 'date'));
    }
    
@@ -104,8 +104,6 @@ class PluginOrderBill extends CommonDropdown {
    }
    
    function defineTabs($options=array()) {
-      global $LANG;
-
       $this->addStandardTab(__CLASS__,$ong,$options);
       $this->addStandardTab('Document',$ong,$options);
       $this->addStandardTab('Note',$ong,$options);
@@ -123,35 +121,35 @@ class PluginOrderBill extends CommonDropdown {
       /* order_number */
       $tab[1]['table'] = $this->getTable();
       $tab[1]['field'] = 'number';
-      $tab[1]['name'] = $LANG['financial'][4];
+      $tab[1]['name'] = __("Number");
       $tab[1]['datatype'] = 'itemlink';
 
       $tab[2]['table'] = $this->getTable();
       $tab[2]['field'] = 'billdate';
-      $tab[2]['name'] = $LANG['common'][27];
+      $tab[2]['name'] = __("Date");
       $tab[2]['datatype'] = 'datetime';
 
       $tab[3]['table']    = $this->getTable();
       $tab[3]['field']    = 'validationdate';
-      $tab[3]['name']     = $LANG['validation'][4];
+      $tab[3]['name']     = __("Approval date");
       $tab[3]['datatype'] = 'datetime';
 
       $tab[4]['table']     = getTableForItemType('User');
       $tab[4]['field']     = 'name';
       $tab[4]['linkfield'] = 'users_id_validation';
-      $tab[4]['name']      = $LANG['validation'][21];
+      $tab[4]['name']      = __("Approver");
 
       $tab[5]['table'] = getTableForItemType('PluginOrderBillType');
       $tab[5]['field'] = 'name';
-      $tab[5]['name']  = $LANG['common'][17];
+      $tab[5]['name']  = __("Type");
   
       $tab[6]['table'] = getTableForItemType('PluginOrderBillState');
       $tab[6]['field'] = 'name';
-      $tab[6]['name']  = $LANG['joblist'][0];
+      $tab[6]['name']  = __("Status");
 
       $tab[7]['table']         = getTableForItemType('Supplier');
       $tab[7]['field']         = 'name';
-      $tab[7]['name']          = $LANG['financial'][26];
+      $tab[7]['name']          = __("Supplier");
       $tab[7]['datatype']      = 'itemlink';
       $tab[7]['itemlink_type'] = 'Supplier';
 
@@ -163,7 +161,7 @@ class PluginOrderBill extends CommonDropdown {
  
       $tab[9]['table'] = $this->getTable();
       $tab[9]['field'] = 'name';
-      $tab[9]['name'] = $LANG['common'][16];
+      $tab[9]['name'] = __("Name");
       $tab[9]['datatype'] = 'itemlink';
   
       /* comments */
@@ -175,16 +173,16 @@ class PluginOrderBill extends CommonDropdown {
       /* ID */
       $tab[30]['table'] = $this->getTable();
       $tab[30]['field'] = 'id';
-      $tab[30]['name']  = $LANG['common'][2];
+      $tab[30]['name']  = __("ID");
 
       /* entity */
       $tab[80]['table'] = 'glpi_entities';
       $tab[80]['field'] = 'completename';
-      $tab[80]['name'] = $LANG['entity'][0];
+      $tab[80]['name'] = __("Entity");
 
       $tab[86]['table']    = $this->getTable();
       $tab[86]['field']    = 'is_recursive';
-      $tab[86]['name']     = $LANG['entity'][9];
+      $tab[86]['name']     = __("Child entities");
       $tab[86]['datatype'] = 'bool';
       $tab[86]['massiveaction'] = false;
 
@@ -216,10 +214,10 @@ class PluginOrderBill extends CommonDropdown {
          echo "</td></tr>";
       } else {
 
-         echo "<tr><th>".$LANG['common'][17]."</th>";
-         echo "<th>".$LANG['entity'][0]."</th>";
+         echo "<tr><th>".__("Type")."</th>";
+         echo "<th>".__("Entity")."</th>";
          echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
-         echo "<th>".$LANG['state'][0]."</th>";
+         echo "<th>".__("Status")."</th>";
          //echo "<th>".$LANG['plugin_order']['generation'][9]."</th>";
          echo "</tr>";
 
@@ -232,7 +230,7 @@ class PluginOrderBill extends CommonDropdown {
                continue;
             }
             $item = new $data['itemtype']();
-            if ($item->canView()) {
+            if ($data['itemtype']::canView()) {
                echo "<tr class='tab_bg_1'>";
 
                $ID = "";
@@ -250,7 +248,7 @@ class PluginOrderBill extends CommonDropdown {
                
                $reference = new PluginOrderReference();
                $reference->getFromDB($data["plugin_order_references_id"]);
-               if ($reference->canView()) {
+               if (PluginOrderReference::canView()) {
                   echo "<td class='center'><a href='".$reference->getLinkURL()."'>";
                   echo $reference->getName()."</a></td>";
                } else {
@@ -308,7 +306,7 @@ class PluginOrderBill extends CommonDropdown {
             echo "</a>";
             echo "</li></ul></th>";
             echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";
-            echo "<th>" . $LANG['common'][5] . "</th>";
+            echo "<th>" . __("Manufacturer") . "</th>";
             echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
             echo "</tr>";
             
@@ -334,7 +332,7 @@ class PluginOrderBill extends CommonDropdown {
             echo "<th></th>";
             echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
             echo "<th>".$LANG['plugin_order']['detail'][6]."</th>";
-            echo "<th>".$LANG['common'][22]."</th>";
+            echo "<th>".__("Model")."</th>";
             echo "<th>".$LANG['plugin_order']['bill'][0]."</th>";
             echo "<th>".$LANG['plugin_order']['bill'][2]."</th>";
             echo "</tr>";
@@ -400,11 +398,11 @@ class PluginOrderBill extends CommonDropdown {
             echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"].
                "/pics/arrow-left.png\" alt=''></td><td class='center'>";
             echo "<a onclick= \"if ( markCheckboxes('bills_form$rand') ) " .
-                  "return false;\" href='#'>".$LANG['buttons'][18]."</a></td>";
+                  "return false;\" href='#'>".__("Check all")."</a></td>";
 
             echo "<td>/</td><td class='center'>";
             echo "<a onclick= \"if ( unMarkCheckboxes('bills_form$rand') ) " .
-                  "return false;\" href='#'>".$LANG['buttons'][19]."</a>";
+                  "return false;\" href='#'>".__("Uncheck all")."</a>";
             echo "</td><td align='left' width='80%'>";
             echo "<input type='hidden' name='plugin_order_orders_id' value='".$order->getID()."'>";
             $order_item->dropdownBillItemsActions($order->getID());

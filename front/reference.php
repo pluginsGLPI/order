@@ -31,12 +31,12 @@ include ("../../../inc/includes.php");
 Html::header(PluginOrderReference::getTypeName(), '', "plugins", "order", "reference");
 
 $reference = new PluginOrderReference();
-if ($reference->canView()) {
+if (PluginOrderReference::canView()) {
    Search::show("PluginOrderReference");
 } else {
    echo "<div align='center'><br><br><img src=\"".
          $CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
-   echo "<b>".$LANG['login'][5]."</b></div>";
+   echo "<b>".__("Access denied")."</b></div>";
 }
 
 Html::footer();

@@ -48,18 +48,18 @@ $report = new PluginReportsAutoReport();
 new PluginReportsDateIntervalCriteria($report, 'order_date', $LANG['plugin_order'][1]);
 new PluginReportsDateIntervalCriteria($report, 'deliverydate', $LANG['plugin_order'][53]);
 new PluginReportsLocationCriteria($report, 'locations_id', $LANG['plugin_order'][40]);
-new PluginReportsSupplierCriteria($report, 'suppliers_id', $LANG['financial'][26]);
+new PluginReportsSupplierCriteria($report, 'suppliers_id', __("Supplier"));
 new PluginReportsDropdownCriteria($report, 'plugin_order_orderstates_id', 'PluginOrderOrderState',
-                                  $LANG['joblist'][0]);
+                                  __("Status"));
 $report->displayCriteriasForm();
 
 if ($report->criteriasValidated()) {
    $report->setSubNameAuto();
 
    $report->setColumns(array(new PluginReportsColumnLink('suppliers_id',
-                                                         $LANG['financial'][26], 'Supplier'),
+                                                         __("Supplier"), 'Supplier'),
                              new PluginReportsColumnLink('entities_id',
-                                                         $LANG['entity'][0], 'Entity'),
+                                                         __("Entity"), 'Entity'),
                              new PluginReportsColumnInteger('total', $LANG['plugin_order']['deliveryinfos'][2]),
                              new PluginReportsColumnInteger('late', $LANG['plugin_order']['deliveryinfos'][3]),
                        ));

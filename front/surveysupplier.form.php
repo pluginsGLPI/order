@@ -37,21 +37,21 @@ if(!isset($_GET["plugin_order_orders_id"])) $_GET["plugin_order_orders_id"] = ""
 $PluginOrderSurveySupplier=new PluginOrderSurveySupplier();
 
 if (isset($_POST["add"])) {
-   if ($PluginOrderSurveySupplier->canCreate()) {
+   if (PluginOrderSurveySupplier::canCreate()) {
       if (isset($_POST["plugin_order_orders_id"]) && $_POST["plugin_order_orders_id"] > 0) {
          $newID=$PluginOrderSurveySupplier->add($_POST);
       }
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["delete"])) {
-   if ($PluginOrderSurveySupplier->canCreate()) {
+   if (PluginOrderSurveySupplier::canCreate()) {
       foreach ($_POST["check"] as $ID => $value) {
          $PluginOrderSurveySupplier->delete(array("id"=>$ID),0,0);
       }
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["update"])) {
-   if ($PluginOrderSurveySupplier->canCreate()) {
+   if (PluginOrderSurveySupplier::canCreate()) {
       
       $PluginOrderSurveySupplier->update($_POST);
    }

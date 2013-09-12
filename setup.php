@@ -193,8 +193,7 @@ function plugin_init_order() {
            }
          }
          if (Session::haveRight("config","w")) {
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['title']
-               = $LANG['common'][12];
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['title'] = __("Setup");
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['page']
                = '/plugins/order/front/config.form.php';
             if (Session::haveRight('config', 'w')) {

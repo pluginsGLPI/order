@@ -67,7 +67,7 @@ if ($_POST["plugin_order_references_id"] > 0) {
          echo "<input type='hidden' name='plugin_order_references_id' value='".
                $_POST["plugin_order_references_id"]."' class='submit' >";
          echo "<input type='submit' name='add_item' value=\"".
-            $LANG['buttons'][8]."\" class='submit' >";
+            __("Add")."\" class='submit' >";
          break;
    }
 } else {

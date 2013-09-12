@@ -44,7 +44,7 @@ $supplier = new PluginOrderOrder_Supplier();
 $order    = new PluginOrderOrder();
 
 if (isset($_POST["add"])) {
-   if ($supplier->canCreate()) {
+   if (PluginOrderOrder_Supplier::canCreate()) {
       if (isset($_POST["plugin_order_orders_id"]) && $_POST["plugin_order_orders_id"] > 0) {
          if ($supplier->add($_POST)) {
             $new_value = $LANG['plugin_order']['history'][2]. " ";
@@ -60,7 +60,7 @@ if (isset($_POST["add"])) {
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
 } elseif (isset($_POST["delete"])) {
-   if ($supplier->canCreate()) {
+   if (PluginOrderOrder_Supplier::canCreate()) {
       foreach ($_POST["check"] as $ID => $value) {
          if ($supplier->delete(array( "id" => $ID), 0, 0)) {
             $new_value = $LANG['plugin_order']['history'][4]. " ".$LANG['plugin_order'][4]." : ".$ID;
@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
    Html::redirect($_SERVER['HTTP_REFERER']);
 }
 elseif (isset($_POST["update"])) {
-   if ($supplier->canCreate()) {
+   if (PluginOrderOrder_Supplier::canCreate()) {
       $supplier->update($_POST);
    }
    Html::redirect($_SERVER['HTTP_REFERER']);

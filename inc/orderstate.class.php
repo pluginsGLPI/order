@@ -43,17 +43,17 @@ class PluginOrderOrderState extends CommonDropdown {
    const CANCELED             = 6;
    const PAID                 = 7;
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
       return $LANG['plugin_order']['status'][0];
    }
    
-   function canCreate() {
+   static function canCreate() {
       return plugin_order_haveRight('order', 'w');
    }
 
-   function canView() {
+   static function canView() {
       return plugin_order_haveRight('order', 'r');
    } 
    

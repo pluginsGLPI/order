@@ -170,7 +170,7 @@ class PluginOrderPreference extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
       echo "<input type='hidden' name='id' value='".$ID."'>";
       echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>";
-      echo "<input type='submit' name='update' value='".$LANG['buttons'][2]."' class='submit' ></td>";
+      echo "<input type='submit' name='update' value='".__("Post")."' class='submit' ></td>";
       echo "</tr>";
          
       echo "</table>";

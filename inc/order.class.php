@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')){
 class PluginOrderOrder extends CommonDBTM {
 
    public $dohistory               = true;
-   public $forward_entity_to       = array("PluginOrderOrder_Item", "PluginOrderOrder_Supplier",
+   static public $forward_entity_to       = array("PluginOrderOrder_Item", "PluginOrderOrder_Supplier",
                                              "PluginOrderSurveySupplier");
    
    const ORDER_DEVICE_NOT_DELIVRED = 0;
@@ -46,7 +46,7 @@ class PluginOrderOrder extends CommonDBTM {
    const ORDER_IS_EQUAL_BUDGET     = 2;
    const ORDER_IS_UNDER_BUDGET     = 3;
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
       return $LANG['plugin_order']['menu'][4];
    }
@@ -55,23 +55,23 @@ class PluginOrderOrder extends CommonDBTM {
       return $this->fields["plugin_order_orderstates_id"];
    }
    
-   function canCreate() {
+   static function canCreate() {
       return plugin_order_haveRight('order', 'w');
    }
 
-   function canView() {
+   static function canView() {
       return plugin_order_haveRight('order', 'r');
    }
    
-   function canCancel() {
+   static function canCancel() {
       return plugin_order_haveRight("cancel", "w");
    }
    
-   function canUndo() {
+   static function canUndo() {
       return plugin_order_haveRight("undo_validation", "w");
    }
    
-   function canValidate() {
+   static function canValidate() {
       return plugin_order_haveRight("validation", "w");
    }
    
@@ -112,7 +112,7 @@ class PluginOrderOrder extends CommonDBTM {
    }
    
    function cleanDBonPurge() {
-      foreach ($this->forward_entity_to as $itemtype) {
+      foreach (self::$forward_entity_to as $itemtype) {
          $temp = new $itemtype();
          $temp->deleteByCriteria(array('plugin_order_orders_id' => $this->fields['id']));
       }
@@ -155,7 +155,7 @@ class PluginOrderOrder extends CommonDBTM {
          }
 
          //If no right to validate
-         if (!$this->canValidate()) {
+         if (!self::canValidate()) {
             return false;
          } else {
             return ($this->isDraft() || $this->isWaitingForApproval());
@@ -165,7 +165,7 @@ class PluginOrderOrder extends CommonDBTM {
 
    function canCancelOrder() {
       //If order is canceled or if no right to cancel!
-      if ($this->isCanceled() || !$this->canCancel()) {
+      if ($this->isCanceled() || !self::canCancel()) {
          return false;
       }
       return true;
@@ -199,7 +199,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
 
       //If no right to cancel
-      return ($this->canUndo());
+      return (self::canUndo());
    }
    
    function canDisplayValidationTab() {
@@ -265,7 +265,7 @@ class PluginOrderOrder extends CommonDBTM {
       /* supplier */
       $tab[6]['table']         = 'glpi_suppliers';
       $tab[6]['field']         = 'name';
-      $tab[6]['name']          = $LANG['financial'][26];
+      $tab[6]['name']          = __("Supplier");
       $tab[6]['datatype']      = 'itemlink';
       $tab[6]['itemlink_type'] = 'Supplier';
       $tab[6]['forcegroupby']  = true;
@@ -286,7 +286,7 @@ class PluginOrderOrder extends CommonDBTM {
       /* contact */
       $tab[8]['table']         = 'glpi_contacts';
       $tab[8]['field']         = 'completename';
-      $tab[8]['name']          = $LANG['common'][18];
+      $tab[8]['name']          = __("Alternate username");
       $tab[8]['datatype']      = 'itemlink';
       $tab[8]['itemlink_type'] = 'Contact';
       $tab[8]['forcegroupby']  = true;
@@ -298,7 +298,7 @@ class PluginOrderOrder extends CommonDBTM {
       /* budget */
       $tab[9]['table']         = 'glpi_budgets';
       $tab[9]['field']         = 'name';
-      $tab[9]['name']          = $LANG['financial'][87];
+      $tab[9]['name']          = __("Budget");
       $tab[9]['datatype']      = 'itemlink';
       $tab[9]['itemlink_type'] = 'Budget';
       $tab[9]['forcegroupby']  = true;
@@ -319,7 +319,7 @@ class PluginOrderOrder extends CommonDBTM {
       /* type */
       $tab[11]['table']         = 'glpi_plugin_order_ordertypes';
       $tab[11]['field']         = 'name';
-      $tab[11]['name']          = $LANG['common'][17];
+      $tab[11]['name']          = __("Type");
       $tab[11]['checktype']     = 'text';
       $tab[11]['displaytype']   = 'dropdown';
       $tab[11]['injectable']    = true;
@@ -348,7 +348,7 @@ class PluginOrderOrder extends CommonDBTM {
       /* order_date */
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'is_late';
-      $tab[14]['name']         = $LANG['plugin_order']['status'][20];
+      $tab[14]['name']          = $LANG['plugin_order']['status'][20];
       $tab[14]['datatype']      = 'bool';
       $tab[14]['checktype']     = 'bool';
       $tab[14]['displaytype']   = 'bool';
@@ -357,7 +357,7 @@ class PluginOrderOrder extends CommonDBTM {
       
       $tab[15]['table']         = 'glpi_plugin_appliances_appliances';
       $tab[15]['field']         = 'is_helpdesk_visible';
-      $tab[15]['name']          = $LANG['software'][46];
+      $tab[15]['name']          = __("Associable to a ticket");
       $tab[15]['datatype']      = 'bool';
       $tab[15]['injectable']    = true;
       $tab[15]['massiveaction'] = true;
@@ -409,27 +409,27 @@ class PluginOrderOrder extends CommonDBTM {
       /* id */
       $tab[30]['table']         = $this->getTable();
       $tab[30]['field']         = 'id';
-      $tab[30]['name']          = $LANG['common'][2];
+      $tab[30]['name']          = __("ID");
       $tab[30]['injectable']    = false;
       $tab[30]['massiveaction'] = false;
       
       $tab[35]['table']          = $this->getTable();
       $tab[35]['field']          = 'date_mod';
       $tab[35]['massiveaction']  = false;
-      $tab[35]['name']           = $LANG['common'][26];
+      $tab[35]['name']           = __("Last update");
       $tab[35]['datatype']       = 'datetime';
       $tab[35]['massiveaction']  = false;
       
       /* entity */
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['name']          = __("Entity");
       $tab[80]['injectable']    = false;
       $tab[80]['massiveaction'] = false;
       
       $tab[86]['table']         = $this->getTable();
       $tab[86]['field']         = 'is_recursive';
-      $tab[86]['name']          = $LANG['entity'][9];
+      $tab[86]['name']          = __("Child entities");
       $tab[86]['datatype']      = 'bool';
       $tab[86]['massiveaction'] = false;
       $tab[86]['checktype']     = 'bool';
@@ -441,8 +441,6 @@ class PluginOrderOrder extends CommonDBTM {
    }
    
    function defineTabs($options=array()) {
-      global $LANG;
-
       $ong = array();
 
       if (!$this->fields['is_template']
@@ -599,7 +597,7 @@ class PluginOrderOrder extends CommonDBTM {
       $config = PluginOrderConfig::getConfig();
       $user   = new User();
       
-      if (!$this->canView()) {
+      if (!self::canView()) {
          return false;
       }
 
@@ -613,19 +611,17 @@ class PluginOrderOrder extends CommonDBTM {
 
       if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
          $template = "newcomp";
-         $datestring = $LANG['computers'][14]." : ";
-         $date = Html::convDateTime($_SESSION["glpi_currenttime"]);
+         $datestring = sprintf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
+         
       } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
          $template = "newtemplate";
-         $datestring = $LANG['computers'][14]." : ";
-         $date = Html::convDateTime($_SESSION["glpi_currenttime"]);
+         $datestring = sprintf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
       } else {
-         $datestring = $LANG['common'][26].": ";
-         $date = Html::convDateTime($this->fields["date_mod"]);
+         $datestring = sprintf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
          $template = false;
       }
       $canedit   = ($this->canUpdateOrder() && $this->can($ID, 'w') && !$this->isCanceled());
-      $cancancel = ($this->canCancel() && $this->can($ID, 'w') && $this->isCanceled());
+      $cancancel = (self::canCancel() && $this->can($ID, 'w') && $this->isCanceled());
       $options['canedit'] = $canedit;
       $options['candel']  = $cancancel;
       if ($template) {
@@ -680,7 +676,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
       echo "</td>";
       /* type order */
-      echo "<td>" . $LANG['common'][17] . ": </td><td>";
+      echo "<td>" . __("Type") . ": </td><td>";
       if ($canedit){
          Dropdown::show('PluginOrderOrderType',
                         array('name'  => "plugin_order_ordertypes_id",
@@ -758,7 +754,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</tr>";
       
       /* supplier of order */
-      echo "<tr class='tab_bg_1'><td>" . $LANG['financial'][26] . ": </td>";
+      echo "<tr class='tab_bg_1'><td>" . __("Supplier") . ": </td>";
       echo "<td>";
       if ($canedit && !$this->checkIfDetailExists($ID)) {
          $this->dropdownSuppliers("suppliers_id", $this->fields["suppliers_id"],
@@ -788,7 +784,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</tr>";
       
       /* linked contact of the supplier of order */
-      echo "<tr class='tab_bg_1'><td>".$LANG['common'][92].": </td>";
+      echo "<tr class='tab_bg_1'><td>".__("Contact").": </td>";
       echo "<td><span id='show_contacts_id'>";
       if ($canedit && $ID > 0) {
          $this->dropdownContacts($this->fields["suppliers_id"],
@@ -824,7 +820,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['software'][46] . "&nbsp;:</td><td>";
+      echo "<td>" . __("Associable to a ticket") . "&nbsp;:</td><td>";
       if ($canedit) {
          Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
       } else {
@@ -859,9 +855,9 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2' class='center'>".$datestring.$date;
+      echo "<td colspan='2' class='center'>".$datestring;
       if (!$template && !empty($this->fields['template_name'])) {
-         echo "<span class='small_space'>(".$LANG['common'][13]."&nbsp;: ".
+         echo "<span class='small_space'>(".__("Template name")."&nbsp;: ".
                $this->fields['template_name'].")</span>";
       }
       echo "</td><td colspan='2'></td>";
@@ -870,7 +866,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       
       //comments of order
-      echo "<td>".$LANG['common'][25] . ":  </td>";
+      echo "<td>".__("Comments") . ":  </td>";
       echo "<td colspan='3' align='center'>";
       if ($canedit) {
          echo "<textarea cols='40' rows='3' name='comment'>" . $this->fields["comment"] .
@@ -882,9 +878,9 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2'>".$LANG['common'][103]."</th>";
+      echo "<th colspan='2'>".__("Actor")."</th>";
       if ($ID > 0 && !$template) {
-         echo "<th colspan='2'>".$LANG['financial'][5]."</th></tr>";
+         echo "<th colspan='2'>".__("Cost")."</th></tr>";
       } else {
          echo "<th colspan='2'></th>";
       }
@@ -1102,8 +1098,6 @@ class PluginOrderOrder extends CommonDBTM {
    }
    
    function addStatusLog($orders_id, $status, $comments = '') {
-      global $LANG;
-
       $changes = Dropdown::getDropdownName("glpi_plugin_order_orderstates", $status);
 
       if ($comments != '') {
@@ -1221,7 +1215,7 @@ class PluginOrderOrder extends CommonDBTM {
 
             echo "<tr class='tab_bg_1'>";
             echo "<td valign='top' align='right'>";
-            echo $LANG['common'][25] . ":&nbsp;";
+            echo __("Comments") . ":&nbsp;";
             echo "</td>";
             echo "<td valign='top' align='left'>";
             echo "<textarea cols='40' rows='4' name='comment'></textarea>";
@@ -1357,7 +1351,7 @@ class PluginOrderOrder extends CommonDBTM {
             if ($this->fields["entities_id"]!=0) {
                $name_entity = $entity->fields["name"];
             } else {
-               $name_entity = $LANG['entity'][2];
+               $name_entity = __("Root entity");
             }
                
             $odf->setVars('entity_name', $name_entity, true, 'UTF-8');
@@ -1570,9 +1564,9 @@ class PluginOrderOrder extends CommonDBTM {
          
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr>";
-         echo "<th style='width:15%;'>".$LANG['rulesengine'][7]."</th>";
-         echo "<th>".$LANG['common'][16]."</th>";
-         echo "<th>".$LANG['entity'][0]."</th>";
+         echo "<th style='width:15%;'>"._n("Action", "Actions", 2)."</th>";
+         echo "<th>".__("Name")."</th>";
+         echo "<th>".__("Entity")."</th>";
          echo "<th>".$LANG['plugin_order'][14]."</th>";
          echo "</tr>";
          
@@ -1624,7 +1618,7 @@ class PluginOrderOrder extends CommonDBTM {
             
       } else {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><td class='center'>".$LANG['document'][13]."</td></tr>";
+         echo "<tr><td class='center'>".__("No item to display")."</td></tr>";
          echo "</table>";
       }
       
@@ -1849,7 +1843,7 @@ class PluginOrderOrder extends CommonDBTM {
    //------------------------------------------------------------
    
    static function install(Migration $migration) {
-      global $DB, $LANG;
+      global $DB;
 
       $table = getTableForItemType(__CLASS__);
       //Installation

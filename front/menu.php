@@ -37,41 +37,41 @@ $PluginOrderReference = new PluginOrderReference();
 $PluginOrderBill      = new PluginOrderBill();
 
 //If there's only one possibility, do not display menu!
-if ($PluginOrderOrder->canView()
-   && !$PluginOrderReference->canView()
-      && !$PluginOrderBill->canView()) {
+if (PluginOrderOrder::canView()
+   && !PluginOrderReference::canView()
+      && !PluginOrderBill::canView()) {
    Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderOrder'));
-}elseif (!$PluginOrderOrder->canView()
-   && $PluginOrderReference->canView()
-      && !$PluginOrderBill->canView()) {
+}elseif (!PluginOrderOrder::canView()
+   && PluginOrderReference::canView()
+      && !PluginOrderBill::canView()) {
    Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderReference'));
-} elseif (!$PluginOrderOrder->canView()
-   && !$PluginOrderReference->canView()
-      && $PluginOrderBill->canView()) {
+} elseif (!PluginOrderOrder::canView()
+   && !PluginOrderReference::canView()
+      && PluginOrderBill::canView()) {
    Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderBill'));
 }
 
-if ($PluginOrderOrder->canView()
-      || $PluginOrderReference->canView()) {
+if (PluginOrderOrder::canView()
+      || PluginOrderReference::canView()) {
    echo "<div class='center'>";
    echo "<table class='tab_cadre'>";
    echo "<tr><th colspan='2'>" . $LANG['plugin_order']['title'][1] . "</th></tr>";
 
-   if ($PluginOrderOrder->canView()) {
+   if (PluginOrderOrder::canView()) {
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td><img src='../pics/order-icon.png'></td>";
       echo "<td><a href='".Toolbox::getItemTypeSearchURL('PluginOrderOrder')."'>" .
          $LANG['plugin_order']['menu'][1] . "</a></td></tr>";
    }
 
-   if ($PluginOrderReference->canView()) {
+   if (PluginOrderReference::canView()) {
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td><img src='../pics/reference-icon.png'></td>";
       echo "<td><a href='".Toolbox::getItemTypeSearchURL('PluginOrderReference')."'>" .
          $LANG['plugin_order']['menu'][2] . "</a></td></tr>";
    }
 
-   if ($PluginOrderBill->canView()) {
+   if (PluginOrderBill::canView()) {
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td><img src='../pics/bill-icon.png'></td>";
       echo "<td><a href='".Toolbox::getItemTypeSearchURL('PluginOrderBill')."'>" .
@@ -82,7 +82,7 @@ if ($PluginOrderOrder->canView()
 } else {
    echo "<div align='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] .
          "/pics/warning.png\" alt=\"warning\"><br><br>";
-   echo "<b>" . $LANG['login'][5] . "</b></div>";
+   echo "<b>" . __("Access denied") . "</b></div>";
 }
 
 Html::footer();

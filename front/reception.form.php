@@ -42,7 +42,7 @@ $order_item = new PluginOrderOrder_Item();
 
 if (isset ($_POST["update"])) {
 
-   if ($reception->canCreate()) {
+   if (PluginOrderReception::canCreate()) {
       $order_item->getFromDB($_POST["id"]);
       if ($order_item->fields["itemtype"] == 'SoftwareLicense') {
          $result=

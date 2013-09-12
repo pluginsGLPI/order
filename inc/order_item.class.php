@@ -43,11 +43,11 @@ class PluginOrderOrder_Item extends CommonDBChild {
    public $itemtype_2 = 'itemtype';
    public $items_id_2 = 'items_id';
    
-   function canCreate() {
+   static function canCreate() {
       return plugin_order_haveRight('order', 'w');
    }
 
-   function canView() {
+   static function canView() {
       return plugin_order_haveRight('order', 'r');
    }
 
@@ -59,7 +59,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
       return true;
    }
    
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
       return $LANG['plugin_order'][60];
@@ -91,7 +91,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
       /* order_number */
       $tab[4]['table']       = $this->getTable();
       $tab[4]['field']       = 'delivery_number';
-      $tab[4]['name']        = $LANG['financial'][19];
+      $tab[4]['name']        = __("Delivery form");
       $tab[4]['checktype']   = 'text';
       $tab[4]['displaytype'] = 'text';
       $tab[4]['injectable']  = true;
@@ -196,8 +196,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
          if (!class_exists($type)) {
             continue;
          }
-         $item = new $type();
-         if (!$item->canView()) {
+         if (!$type::canView()) {
             unset($types[$key]);
          }
       }
@@ -263,7 +262,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
 
             if ($order->fields["suppliers_id"]) {
                echo "<tr>";
-               echo "<th align='center'>".$LANG['common'][17]."</th>";
+               echo "<th align='center'>".__("Type")."</th>";
                echo "<th align='center'>".$LANG['plugin_order']['reference'][1]."</th>";
                echo "<th align='center'>".$LANG['plugin_order']['detail'][7]."</th>";
                echo "<th align='center'>".$LANG['plugin_order']['detail'][4]."</th>";
@@ -399,10 +398,10 @@ class PluginOrderOrder_Item extends CommonDBChild {
             echo "</li></ul></th>";
             echo "<th>".$LANG['plugin_order']['detail'][7]."</th>";
             echo "<th>".$LANG['plugin_order']['detail'][1]."</th>";
-            echo "<th>".$LANG['common'][5]."</th>";
+            echo "<th>".__("Manufacturer")."</th>";
             echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
             echo "<th>".$LANG['plugin_order']['detail'][6]."</th>";
-            echo "<th>".$LANG['common'][22]."</th>";
+            echo "<th>".__("Model")."</th>";
             echo "<th>".$LANG['plugin_order']['detail'][4]."</th>";
             echo "<th>".$LANG['plugin_order']['detail'][25]."</th>";
             echo "</tr>";
@@ -411,9 +410,9 @@ class PluginOrderOrder_Item extends CommonDBChild {
             echo "<td><div id='viewaccept$rand' style='display:none;'>";
             echo "<p><input type='submit' onclick=\"return confirm('" .
                $LANG['plugin_order']['detail'][41] . "');\" name='update_item' value=\"".
-                  $LANG['buttons'][14]."\" class='submit'></p>";
+                  _sx("button", "Update")."\" class='submit'></p>";
             echo "<br /><p><input type='button' onclick=\"hideForm$rand();\" value=\"".
-                  $LANG['buttons'][34]."\" class='submit'></p>";
+                  _sx("button", "Cancel")."\" class='submit'></p>";
             echo "</div></td>";
             
             if($canedit) {
@@ -549,7 +548,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
                echo "<th></th>";
             }
             if ($data_ref["itemtype"] != 'SoftwareLicense') {
-               echo "<th>".$LANG['common'][2]."</th>";
+               echo "<th>".__("ID")."</th>";
             }
             echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
             echo "<th>".$LANG['plugin_order']['detail'][4]."</th>";
@@ -707,14 +706,14 @@ class PluginOrderOrder_Item extends CommonDBChild {
                echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''>";
                echo "</td><td class='center'>";
                echo "<a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='#'>".
-                  $LANG['buttons'][18]."</a></td>";
+                  __("Check all")."</a></td>";
                echo "<td>/</td><td class='center'>";
                echo "<a onclick= \"if ( unMarkCheckboxes('order_detail_form$rand') ) " .
-                      " return false;\" href='#'>".$LANG['buttons'][19]."</a>";
+                      " return false;\" href='#'>".__("Uncheck all")."</a>";
                echo "</td><td align='left'>";
                echo "<input type='submit' onclick=\"return confirm('" .
                   $LANG['plugin_order']['detail'][36] . "')\" name='delete_item' value=\"".
-                     $LANG['buttons'][6]."\" class='submit'>";
+                     __("Delete permanently")."\" class='submit'>";
                echo "</td>";
                
                // Edit buttons
@@ -723,10 +722,10 @@ class PluginOrderOrder_Item extends CommonDBChild {
 
                echo "&nbsp;<input type='submit' onclick=\"return confirm('" .
                   $LANG['plugin_order']['detail'][41] . "');\" name='update_detail_item'
-                     value=\"". $LANG['buttons'][14] . "\" class='submit'>&nbsp;";
+                     value=\"". _sx("button", "Update") . "\" class='submit'>&nbsp;";
                      
                echo "&nbsp;<input type='button' onclick=\"detail_hideForm$global_rand();\"
-                     value=\"" . $LANG['buttons'][34] . "\" class='submit'>";
+                     value=\"" . _sx("button", "Cancel") . "\" class='submit'>";
 
                echo "</div>";
                echo "</td>";
@@ -815,7 +814,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
          echo "<td class='tab_bg_2'>";
          $order = new PluginOrderOrder();
          $order->getFromDB($infos['id']);
-         echo $order->getLink($order->canView());
+         echo $order->getLink(PluginOrderOrder::canView());
          
          $result = getAllDatasFromTable($this->getTable(),
                                         "`plugin_order_orders_id`='".$infos['id']."'
@@ -828,7 +827,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
             if (plugin_order_haveRight('reference', 'r')) {
                echo "<tr align='center'><td class='tab_bg_2'>" .
                      $LANG['plugin_order']['detail'][2] . "</td>";
-               echo "<td class='tab_bg_2'>" . $reference->getLink($reference->canView()) . "</td></tr>";
+               echo "<td class='tab_bg_2'>" . $reference->getLink(PluginOrderReference::canView()) . "</td></tr>";
             }
             echo "<tr align='center'><td class='tab_bg_2'>" .
                   $LANG['plugin_order']['detail'][21] . "</td>";
@@ -840,10 +839,8 @@ class PluginOrderOrder_Item extends CommonDBChild {
     }
 
    function defineTabs($options=array()) {
-      global $LANG;
-
-      $ong[1]  = $LANG['title'][26];
-      $ong[12] = $LANG['title'][38];
+      $ong[1]  = __("Main");
+      $ong[12] = __("Historical");
 
       return $ong;
    }
@@ -851,7 +848,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
    function showForm ($ID, $options=array()) {
       global $LANG;
 
-      if (!$this->canView()) {
+      if (!self::canView()) {
          return false;
       }
 
@@ -932,7 +929,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
       echo "<td>" . $LANG['plugin_order'][14] . ": </td>";
       echo "<td>".Html::formatNumber($this->fields['price_ati'])."</td>";
       
-      echo "<td>" . $LANG['joblist'][0] . ": </td>";
+      echo "<td>" . __("Status") . ": </td>";
       echo "<td>";
       echo Dropdown::getDropdownName('glpi_plugin_order_deliverystates',
                                       $this->fields['plugin_order_deliverystates_id']);
@@ -991,9 +988,9 @@ class PluginOrderOrder_Item extends CommonDBChild {
                            "`plugin_order_orders_id`='".$order->getID().
                               "' GROUP BY `plugin_order_bills_id`")) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th>" . $LANG['common'][16] . "</th>";
-         echo "<th>" . $LANG['joblist'][0] . "</th>";
-         echo "<th>" . $LANG['financial'][21] . "</th>";
+         echo "<tr class='tab_bg_1'><th>" . __("Name") . "</th>";
+         echo "<th>" . __("Status") . "</th>";
+         echo "<th>" . __("Value") . "</th>";
          echo "<th>" . $LANG['plugin_order']['status'][18] . "</th></tr>";
          
          $bill = new PluginOrderBill();
@@ -1055,7 +1052,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
             echo "</a>";
             echo "</li></ul></th>";
             echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";
-            echo "<th>" . $LANG['common'][5] . "</th>";
+            echo "<th>" . __("Manufacturer") . "</th>";
             echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
             echo "</tr>";
             
@@ -1081,7 +1078,7 @@ class PluginOrderOrder_Item extends CommonDBChild {
             echo "<th></th>";
             echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
             echo "<th>".$LANG['plugin_order']['detail'][6]."</th>";
-            echo "<th>".$LANG['common'][22]."</th>";
+            echo "<th>".__("Model")."</th>";
             echo "<th>".$LANG['plugin_order']['bill'][0]."</th>";
             echo "<th>".$LANG['plugin_order']['bill'][2]."</th>";
             echo "</tr>";
@@ -1147,11 +1144,11 @@ class PluginOrderOrder_Item extends CommonDBChild {
             echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"].
                "/pics/arrow-left.png\" alt=''></td><td class='center'>";
             echo "<a onclick= \"if ( markCheckboxes('bills_form$rand') ) " .
-                  "return false;\" href='#'>".$LANG['buttons'][18]."</a></td>";
+                  "return false;\" href='#'>".__("Check all")."</a></td>";
 
             echo "<td>/</td><td class='center'>";
             echo "<a onclick= \"if ( unMarkCheckboxes('bills_form$rand') ) " .
-                  "return false;\" href='#'>".$LANG['buttons'][19]."</a>";
+                  "return false;\" href='#'>".__("Uncheck all")."</a>";
             echo "</td><td align='left' width='80%'>";
             echo "<input type='hidden' name='plugin_order_orders_id' value='".$order->getID()."'>";
             $this->dropdownBillItemsActions($order->getID());

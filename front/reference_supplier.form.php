@@ -38,7 +38,7 @@ $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 
 if (isset($_POST["add"]))
 {
-   if ($PluginOrderReference_Supplier->canCreate())
+   if (PluginOrderReference_Supplier::canCreate())
    {
       if (isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0)
       {
@@ -49,13 +49,13 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["update"]))
 {
-   if ($PluginOrderReference_Supplier->canCreate())
+   if (PluginOrderReference_Supplier::canCreate())
       $PluginOrderReference_Supplier->update($_POST);
    Html::redirect($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
 {
-   if ($PluginOrderReference_Supplier->canCreate())
+   if (PluginOrderReference_Supplier::canCreate())
    {
       foreach ($_POST["check"] as $ID => $value)
          $PluginOrderReference_Supplier->delete(array("id"=>$ID));

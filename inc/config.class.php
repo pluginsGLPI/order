@@ -53,7 +53,7 @@ class PluginOrderConfig extends CommonDBTM {
       }
    }
    
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
       return $LANG['plugin_order']['config'][0];
@@ -127,21 +127,21 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</tr>";
       
       echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order'][57].' '.$LANG['devices'][24]."</td><td>";
+                  <td>".$LANG['plugin_order'][57].' ('.__("Default values").")</td><td>";
       Dropdown::show("Group", array('value' => $this->fields["groups_id_author"],
                                      'name'  => 'groups_id_author'));
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order'][59].' '.$LANG['devices'][24]."</td><td>";
+                  <td>".$LANG['plugin_order'][59].' ('.__("Default values").")</td><td>";
       Dropdown::show("Group", array('value' => $this->fields["groups_id_recipient"],
                                      'name'  => 'groups_id_recipient'));
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
-                  <td>".$LANG['plugin_order'][58].' '.$LANG['devices'][24]."</td><td>";
+                  <td>".$LANG['plugin_order'][58].' ('.__("Default values").")</td><td>";
       User::dropdown(array('name'   => 'users_id_recipient',
                             'value'  => $this->fields["users_id_recipient"],
                             'right'  => 'all',
@@ -156,7 +156,7 @@ class PluginOrderConfig extends CommonDBTM {
       
       // ASSETS
       echo "<tr class='tab_bg_1' align='center'>
-               <th colspan='2'>".$LANG['common'][1]."</th>
+               <th colspan='2'>".__('Item')."</th>
             </tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
@@ -190,7 +190,7 @@ class PluginOrderConfig extends CommonDBTM {
 
          // TICKETS
          echo "<tr class='tab_bg_1' align='center'>
-                  <th colspan='2'>".$LANG['job'][38]."</th>
+                  <th colspan='2'>".__("Ticket")."</th>
                </tr>";
       
          echo "<tr class='tab_bg_1' align='center'>
@@ -277,7 +277,7 @@ class PluginOrderConfig extends CommonDBTM {
 
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td colspan='2' align='center'>";
-      echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
+      echo "<input type='submit' name='update' value=\""._sx("button", "Post")."\" class='submit' >";
       echo"</td>";
       echo "</tr>";
       

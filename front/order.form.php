@@ -86,8 +86,8 @@ else if (isset ($_POST["update"])) {
 //Status update & order workflow
 /* validate order */
 else if (isset ($_POST["validate"])) {
-   if ($pluginOrderOrder->canView()
-      && ( $pluginOrderOrder->canValidate()
+   if (PluginOrderOrder::canView()
+      && ( PluginOrderOrder::canValidate()
          || !$config->useValidation())) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getApprovedState(),
@@ -99,7 +99,7 @@ else if (isset ($_POST["validate"])) {
    Html::redirect($_SERVER['HTTP_REFERER']);
    
 } else if (isset ($_POST["waiting_for_approval"])) {
-   if ($pluginOrderOrder->canCreate()) {
+   if (pluginOrderOrder::canCreate()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getWaitingForApprovalState(),
                                            $_POST["comment"]);
@@ -110,7 +110,7 @@ else if (isset ($_POST["validate"])) {
    Html::redirect($_SERVER['HTTP_REFERER']);
    
 } else if (isset ($_POST["cancel_waiting_for_approval"])) {
-   if ($pluginOrderOrder->canView() && $pluginOrderOrder->canCancel()) {
+   if (pluginOrderOrder::canView() && pluginOrderOrder::canCancel()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getDraftState(),
                                            $_POST["comment"]);
@@ -119,7 +119,7 @@ else if (isset ($_POST["validate"])) {
    
    Html::redirect($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["cancel_order"])) {
-   if ($pluginOrderOrder->canView() && $pluginOrderOrder->canCancel()) {
+   if (pluginOrderOrder::canView() && pluginOrderOrder::canCancel()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getCanceledState(),
                                            $_POST["comment"]);
@@ -132,7 +132,7 @@ else if (isset ($_POST["validate"])) {
    
 }
 else if (isset ($_POST["undovalidation"])) {
-   if ($pluginOrderOrder->canView() && $pluginOrderOrder->canUndo()) {
+   if (pluginOrderOrder::canView() && pluginOrderOrder::canUndo()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
                                            $config->getDraftState(),
                                            $_POST["comment"]);

@@ -36,20 +36,20 @@ class PluginOrderLink extends CommonDBChild {
 
    public $dohistory = true;
    public $table     = "glpi_plugin_order_orders_items";
-   public $itemtype  = 'PluginOrderOrder';
-   public $items_id  = 'plugin_order_orders_id';
+   static public $itemtype  = 'PluginOrderOrder';
+   static public $items_id  = 'plugin_order_orders_id';
    
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
       return $LANG['plugin_order']['generation'][0];
    }
    
-   function canCreate() {
+   static function canCreate() {
       return plugin_order_haveRight('delivery', 'w');
    }
 
-   function canView() {
+   static function canView() {
       return plugin_order_haveRight('delivery', 'r');
    }
    
@@ -60,7 +60,7 @@ class PluginOrderLink extends CommonDBChild {
    function showItemGenerationForm($params) {
       global $LANG, $CFG_GLPI;
       
-      echo "<a href='" . $_SERVER["HTTP_REFERER"] . "'>" . $LANG['buttons'][13] . "</a></br><br>";
+      echo "<a href='" . $_SERVER["HTTP_REFERER"] . "'>" . __("Back") . "</a></br><br>";
       echo "<form method='post' name='order_deviceGeneration' id='order_deviceGeneration' action=\"" .
          Toolbox::getItemTypeFormURL("PluginOrderLink")."\">";
       echo "<div class='center'>";
@@ -72,12 +72,12 @@ class PluginOrderLink extends CommonDBChild {
       }
       echo "<tr><th colspan='$colspan'>" . $LANG['plugin_order']['delivery'][3] . "</tr></th>";
       echo "<tr><th>" . $LANG['plugin_order']['reference'][1] . "</th>";
-      echo "<th>" . $LANG['common'][16] . "</th>";
-      echo "<th>" . $LANG['common'][19] . "</th>";
-      echo "<th>" . $LANG['common'][20] . "</th>";
-      echo "<th>" . $LANG['common'][13] . "</th>";
+      echo "<th>" . __("Name") . "</th>";
+      echo "<th>" . __("Serial Number") . "</th>";
+      echo "<th>" . __("Inventory number") . "</th>";
+      echo "<th>" . __("Template name") . "</th>";
       if (Session::isMultiEntitiesMode() && count($_SESSION['glpiactiveentities']) > 1) {
-         echo "<th>" . $LANG['entity'][0] . "</th>";
+         echo "<th>" . __("Entity") . "</th>";
       }
       echo "</tr>";
       echo "<input type='hidden' name='plugin_order_orders_id' value=" .
@@ -184,7 +184,7 @@ class PluginOrderLink extends CommonDBChild {
       $PluginOrderReception  = new PluginOrderReception();
       
       $PluginOrderOrder->getFromDB($plugin_order_orders_id);
-      $canedit = $this->canCreate()
+      $canedit = self::canCreate()
                   && !$PluginOrderOrder->canUpdateOrder()
                      && !$PluginOrderOrder->isCanceled();
       
@@ -247,7 +247,7 @@ class PluginOrderLink extends CommonDBChild {
             echo "</a>";
             echo "</li></ul></th>";
             echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";
-            echo "<th>" . $LANG['common'][5] . "</th>";
+            echo "<th>" . __("Manufacturer") . "</th>";
             echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
             echo "</tr>";
             echo "<tr class='tab_bg_1 center'>";
@@ -270,7 +270,7 @@ class PluginOrderLink extends CommonDBChild {
                echo "<th width='15'></th>";
             }
             if ($itemtype != 'SoftwareLicense') {
-               echo "<th>" . $LANG['common'][2] . "</th>";
+               echo "<th>" . __("ID") . "</th>";
             } else {
                echo "<th>" . $LANG['plugin_order']['detail'][7] . "</th>";
             }
@@ -351,31 +351,31 @@ class PluginOrderLink extends CommonDBChild {
             $item->getFromDB($items_id);
 
             if ($item->getField("name")) {
-               $comments = "<strong>" . $LANG['common'][16] .
+               $comments = "<strong>" . __("Name") .
                   ":</strong> " . $item->getField("name");
             }
 
             if ($item->getField("entities_id")) {
-               $comments = "<strong>" . $LANG['entity'][0] . ":</strong> " .
+               $comments = "<strong>" . __("Entity") . ":</strong> " .
                   Dropdown::getDropdownName("glpi_entities", $item->getField("entities_id"));
             }
 
             if ($item->getField("serial") != '') {
-               $comments .= "<br><strong>" . $LANG['common'][19] . ":</strong> " .
+               $comments .= "<br><strong>" . __("Serial Number") . ":</strong> " .
                   $item->getField("serial");
             }
 
             if ($item->getField("otherserial") != '') {
-               $comments .= "<br><strong>" . $LANG['common'][20] . ":</strong> " .
+               $comments .= "<br><strong>" . __("Inventory number") . ":</strong> " .
                   $item->getField("otherserial");
             }
             if ($item->getField("locations_id")) {
-               $comments .= "<br><strong>" . $LANG['common'][15] . ":</strong> " .
+               $comments .= "<br><strong>" . __("Location") . ":</strong> " .
                   Dropdown::getDropdownName('glpi_locations', $item->getField("locations_id"));
             }
 
             if ($item->getField("users_id")) {
-               $comments .= "<br><strong>" . $LANG['common'][34] . ":</strong> " .
+               $comments .= "<br><strong>" . __("User") . ":</strong> " .
                   Dropdown::getDropdownName('glpi_users', $item->getField("users_id"));
             }
             break;
@@ -384,17 +384,17 @@ class PluginOrderLink extends CommonDBChild {
             if ($ci->getFromDB($items_id)) {
                $ct = new ConsumableItem();
                $ct->getFromDB($ci->fields['consumableitems_id']);
-               $comments = "<strong>" . $LANG['entity'][0] . ":</strong> " .
+               $comments = "<strong>" . __("Entity") . ":</strong> " .
                   Dropdown::getDropdownName("glpi_entities", $ct->fields["entities_id"]);
-               $comments .= '<br><strong>' . $LANG['consumables'][0] . ' : </strong> #' . $items_id;
-               $comments .= '<br><strong>' . $LANG['consumables'][12] . ' : </strong>' .
+               $comments .= '<br><strong>' . __("Consumable") . ' : </strong> #' . $items_id;
+               $comments .= '<br><strong>' . __("Consumable type") . ' : </strong>' .
                   $ct->fields['name'];
-               $comments .= '<br><strong>' . $LANG['common'][5] . ' : </strong>' .
+               $comments .= '<br><strong>' . __("Manufacturer") . ' : </strong>' .
                   Dropdown::getDropdownName('glpi_manufacturers', $ct->fields['manufacturers_id']);
-               $comments .= '<br><strong>' . $LANG['consumables'][23] . ' : </strong>' .
-                  (!$ci->fields['users_id'] ? $LANG['consumables'][1] : $LANG['consumables'][15]);
+               $comments .= '<br><strong>' . __("State") . ' : </strong>' .
+                  (!$ci->fields['users_id'] ? __("In stock") : __("Used"));
                if ($ci->fields['users_id']) {
-                  $comments .= '<br><strong>' . $LANG['common'][34] . ' : </strong>' .
+                  $comments .= '<br><strong>' . __("User") . ' : </strong>' .
                      Dropdown::getDropdownName('glpi_users', $ci->fields['users_id']);
                }
             }
@@ -404,12 +404,12 @@ class PluginOrderLink extends CommonDBChild {
             if ($ci->getFromDB($items_id)) {
                $ct = new CartridgeItem();
                $ct->getFromDB($ci->fields['cartridgeitems_id']);
-               $comments = "<strong>" . $LANG['entity'][0] . ":</strong> " .
+               $comments = "<strong>" . __("Entity") . ":</strong> " .
                   Dropdown::getDropdownName("glpi_entities", $ct->fields["entities_id"]);
-               $comments .= '<br><strong>' . $LANG['cartridges'][0] . ' : </strong> #' . $items_id;
-               $comments .= '<br><strong>' . $LANG['cartridges'][12] . ' : </strong>' .
+               $comments .= '<br><strong>' . __("Cartridge") . ' : </strong> #' . $items_id;
+               $comments .= '<br><strong>' . _n("New", "New", 2) . ' : </strong>' .
                   $ct->fields['name'];
-               $comments .= '<br><strong>' . $LANG['common'][5] . ' : </strong>' .
+               $comments .= '<br><strong>' . __("Manufacturer") . ' : </strong>' .
                   Dropdown::getDropdownName('glpi_manufacturers', $ct->fields['manufacturers_id']);
             }
       }
@@ -455,8 +455,7 @@ class PluginOrderLink extends CommonDBChild {
          if (!in_array($itemtype, self::getTypesThanCannotBeGenerared())) {
             $actions['generation'] = $LANG['plugin_order']['delivery'][3];
          }
-         $item = new $itemtype();
-         if ($item->canView()) {
+         if ($itemtype::canView()) {
             $actions['createLink'] = $LANG['plugin_order']['delivery'][11];
             $actions['deleteLink'] = $LANG['plugin_order']['delivery'][12];
          }

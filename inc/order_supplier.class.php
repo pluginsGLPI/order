@@ -33,21 +33,21 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderOrder_Supplier extends CommonDBChild {
    
-   public $itemtype  = 'PluginOrderOrder';
-   public $items_id  = 'plugin_order_orders_id';
+   static public $itemtype  = 'PluginOrderOrder';
+   static public $items_id  = 'plugin_order_orders_id';
    public $dohistory = true;
    
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
       return $LANG['plugin_order'][4];
    }
    
-   function canCreate() {
+   static function canCreate() {
       return plugin_order_haveRight('order', 'w');
    }
 
-   function canView() {
+   static function canView() {
       return plugin_order_haveRight('order', 'r');
    }
    
@@ -70,19 +70,19 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       
       $tab[4]['table'] = 'glpi_suppliers';
       $tab[4]['field'] = 'name';
-      $tab[4]['name'] = $LANG['financial'][26];
+      $tab[4]['name'] = __("Supplier");
       $tab[4]['datatype']='itemlink';
       $tab[4]['itemlink_type']='Supplier';
       $tab[4]['forcegroupby']=true;
       
       $tab[30]['table'] = $this->getTable();
       $tab[30]['field'] = 'id';
-      $tab[30]['name']=$LANG['common'][2];
+      $tab[30]['name']=__("ID");
 
       /* entity */
       $tab[80]['table'] = 'glpi_entities';
       $tab[80]['field'] = 'completename';
-      $tab[80]['name'] = $LANG['entity'][0];
+      $tab[80]['name'] = __("Entity");
       
       return $tab;
    }
@@ -123,7 +123,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    
    function showForm ($ID, $options=array()) {
       global $LANG;
-      if (!$this->canView())
+      if (!self::canView())
          return false;
       
       $plugin_order_orders_id = -1;
@@ -150,7 +150,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo "<input type='hidden' name='is_recursive' value='".$PluginOrderOrder->isRecursive()."'>";
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['financial'][26] . ": </td>";
+      echo "<td>" . __("Supplier") . ": </td>";
       $supplier = $PluginOrderOrder->fields["suppliers_id"];
       if ($ID > 0) {
          $supplier = $this->fields["suppliers_id"];
@@ -208,7 +208,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='4'>".$LANG['plugin_order'][4]."</th></tr>";
          echo "<tr><th>&nbsp;</th>";
-         echo "<th>" . $LANG['financial'][26] . "</th>";
+         echo "<th>" . __("Supplier") . "</th>";
          echo "<th>" . $LANG['plugin_order'][30] . "</th>";
          echo "<th>" . $LANG['plugin_order'][31] . "</th>";
          echo "</tr>";
@@ -241,7 +241,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 
          if ($candelete) {
             Html::openArrowMassives("show_supplierinfos$rand", true);
-            Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
+            Html::closeArrowMassives(array('delete' => __("Delete permanently")));
          }
 
       }
@@ -281,7 +281,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo "<br><div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
-      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".__("Entity")."</th>";
       echo "<th>".$LANG['plugin_order']['status'][13] ."</th>";
       echo "</tr>";
       

@@ -34,29 +34,28 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderSurveySupplier extends CommonDBChild {
    
-   public $itemtype = 'PluginOrderOrder';
-   public $items_id = 'plugin_order_orders_id';
+   static public $itemtype = 'PluginOrderOrder';
+   static public $items_id = 'plugin_order_orders_id';
    
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
       return $LANG['plugin_order']['survey'][0];
    }
    
-   function canCreate() {
+   static function canCreate() {
       return plugin_order_haveRight('order', 'w');
    }
 
-   function canView() {
+   static function canView() {
       return plugin_order_haveRight('order', 'r');
    }
    
    //function getSearchOptions()  ?
    
    function defineTabs($options=array()) {
-      global $LANG;
       /* principal */
-      $ong[1] = $LANG['title'][26];
+      $ong[1] = __("Main");
 
       return $ong;
    }
@@ -165,7 +164,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       echo "<th colspan='4'>" . $LANG['plugin_order']['survey'][0]. "</th>";
       echo "</tr>";
       echo "<tr>";
-      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>" . __("Entity")."</th>";
       echo "<th>" . $LANG['plugin_order'][39]. "</th>";
       echo "<th>" . $LANG['plugin_order']['survey'][10]."</th>";
       echo "<th>" . $LANG['plugin_order']['survey'][11]."</th>";
@@ -221,7 +220,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
    function showForm ($ID, $options=array()) {
       global $LANG;
       
-      if (!$this->canView())
+      if (!self::canView())
          return false;
       
       $plugin_order_orders_id = -1;
@@ -249,7 +248,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       echo "<input type='hidden' name='entities_id' value='".$order->getEntityID()."'>";
       echo "<input type='hidden' name='is_recursive' value='".$order->isRecursive()."'>";
       
-      echo "<tr class='tab_bg_1'><td>" . $LANG['financial'][26] . ": </td><td>";
+      echo "<tr class='tab_bg_1'><td>" . __("Supplier") . ": </td><td>";
       $suppliers_id = $order->fields["suppliers_id"];
       if ($ID > 0) {
          $suppliers_id = $this->fields["suppliers_id"];
@@ -270,7 +269,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       
       echo "<tr class='tab_bg_1'><td>";
       //comments of order
-      echo $LANG['common'][25] . ": </td>";
+      echo __("Comments") . ": </td>";
       echo "<td>";
       echo "<textarea cols='80' rows='4' name='comment'>" . $this->fields["comment"] . "</textarea>";
       echo "</td>";
@@ -317,7 +316,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       
       echo "<tr><th colspan='5'>".$LANG['plugin_order']['survey'][0]."</th></tr>";
       echo "<tr><th>&nbsp;</th>";
-      echo "<th>" . $LANG['financial'][26] . "</th>";
+      echo "<th>" . __("Supplier") . "</th>";
       echo "<th>" . $LANG['plugin_order']['survey'][10] . "</th>";
       echo "<th>" . $LANG['plugin_order']['survey'][11] . "</th>";
       echo "</tr>";
@@ -353,7 +352,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          if ($candelete) {
             echo "<div class='center'>";
             Html::openArrowMassives("show_suppliersurvey$rand");
-            Html::closeArrowMassives(array("delete" => $LANG['buttons'][6]));
+            Html::closeArrowMassives(array("delete" => __("Delete permanently")));
             echo "</div>";
          }
       } else {

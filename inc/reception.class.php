@@ -39,17 +39,17 @@ class PluginOrderReception extends CommonDBTM {
    public $itemtype  = 'PluginOrderOrder';
    public $items_id  = 'plugin_order_orders_id';
    
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
       return $LANG['plugin_order'][6];
    }
    
-   function canCreate() {
+   static function canCreate() {
       return plugin_order_haveRight('delivery', 'w');
    }
 
-   function canUpdate() {
+   static function canUpdate() {
       return plugin_order_haveRight('delivery', 'w');
    }
 
@@ -57,7 +57,7 @@ class PluginOrderReception extends CommonDBTM {
       return true;
    }
 
-   function canView() {
+   static function canView() {
       return plugin_order_haveRight('delivery', 'r');
    }
    
@@ -150,8 +150,6 @@ class PluginOrderReception extends CommonDBTM {
    }
    
    function defineTabs($options=array()) {
-      global $LANG;
-
       $ong = array();
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -162,7 +160,7 @@ class PluginOrderReception extends CommonDBTM {
    function showForm ($ID, $options=array()) {
       global $LANG;
 
-      if (!$this->canView()) {
+      if (!self::canView()) {
          return false;
       }
 
@@ -206,7 +204,7 @@ class PluginOrderReception extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       
-      echo "<td>" . $LANG['financial'][19] . ": </td>";
+      echo "<td>" . __("Delivery form") . ": </td>";
       echo "<td>";
       if ($canedit) {
          Html::autocompletionTextField($this,"delivery_number");
@@ -255,7 +253,7 @@ class PluginOrderReception extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'><td>";
       //comments of order
-      echo $LANG['common'][25] . ": </td>";
+      echo __("Comments") . ": </td>";
       echo "<td colspan='3'>";
       if ($canedit) {
          echo "<textarea cols='100' rows='4' name='delivery_comment'>" .
@@ -283,7 +281,7 @@ class PluginOrderReception extends CommonDBTM {
       Session::initNavigateListItems($this->getType(),
                             $LANG['plugin_order'][7] ." = ". $order_order->fields["name"]);
       
-      $canedit = $this->canCreate()
+      $canedit = self::canCreate()
                    && !$order_order->canUpdateOrder()  && !$order_order->isCanceled();
                             
       $result_ref = $order_item->queryDetail($orders_id);
@@ -309,7 +307,7 @@ class PluginOrderReception extends CommonDBTM {
             echo "</a>";
             echo "</li></ul></th>";
             echo "<th>" . $LANG['plugin_order']['detail'][6] . "</th>";
-            echo "<th>" . $LANG['common'][5] . "</th>";
+            echo "<th>" . __("Manufacturer") . "</th>";
             echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
             echo "<th>" . $LANG['plugin_order']['delivery'][5] . "</th>";
             echo "</tr>";
@@ -338,12 +336,12 @@ class PluginOrderReception extends CommonDBTM {
             echo "<tr>";
             echo "<th width='15'></th>";
             if ($typeRef != 'SoftwareLicense') {
-               echo "<th>" . $LANG['common'][2] . "</th>";
+               echo "<th>" . __("ID") . "</th>";
             }
             echo "<th>" . $LANG['plugin_order']['detail'][2] . "</th>";
             echo "<th>" . $LANG['plugin_order']['detail'][19] . "</th>";
             echo "<th>" . $LANG['plugin_order']['detail'][21] . "</th>";
-            echo "<th>" . $LANG['financial'][19] . "</th>";
+            echo "<th>" . __("Delivery form") . "</th>";
             echo "<th>" . $LANG['plugin_order']['status'][3] . "</th>";
             echo "</tr>";
             

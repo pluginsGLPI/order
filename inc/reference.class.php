@@ -35,19 +35,19 @@ if (!defined('GLPI_ROOT')){
 class PluginOrderReference extends CommonDBTM {
 
    public $dohistory         = true;
-   public $forward_entity_to = array('PluginOrderReference_Supplier');
+   static public $forward_entity_to = array('PluginOrderReference_Supplier');
    
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
       return $LANG['plugin_order']['reference'][1];
    }
    
-   function canCreate() {
+   static function canCreate() {
       return plugin_order_haveRight('reference', 'w');
    }
 
-   function canView() {
+   static function canView() {
       return plugin_order_haveRight('reference', 'r');
    }
    
@@ -71,7 +71,7 @@ class PluginOrderReference extends CommonDBTM {
       
       $tab[2]['table']          = $this->getTable();
       $tab[2]['field']          = 'comment';
-      $tab[2]['name']           = $LANG['common'][25];
+      $tab[2]['name']           = __("Comments");
       $tab[2]['datatype']       = 'text';
       $tab[2]['checktype']      = 'text';
       $tab[2]['displaytype']    = 'multiline_text';
@@ -79,7 +79,7 @@ class PluginOrderReference extends CommonDBTM {
       
       $tab[3]['table']          = $this->getTable();
       $tab[3]['field']          = 'itemtype';
-      $tab[3]['name']           = $LANG['state'][6];
+      $tab[3]['name']           = __("Item type");
       $tab[3]['datatype']       = 'itemtypename';
       $tab[3]['massiveaction']  = false;
       $tab[3]['checktype']      = 'itemtype';
@@ -88,7 +88,7 @@ class PluginOrderReference extends CommonDBTM {
       
       $tab[4]['table']          = $this->getTable();
       $tab[4]['field']          = 'models_id';
-      $tab[4]['name']           = $LANG['common'][22];
+      $tab[4]['name']           = __("Model");
       $tab[4]['massiveaction']  = false;
       $tab[4]['checktype']      = 'text';
       $tab[4]['displaytype']    = 'reference_model';
@@ -96,14 +96,14 @@ class PluginOrderReference extends CommonDBTM {
       
       $tab[5]['table']          = 'glpi_manufacturers';
       $tab[5]['field']          = 'name';
-      $tab[5]['name']           = $LANG['common'][5];
+      $tab[5]['name']           = __("Manufacturer");
       $tab[5]['checktype']      = 'text';
       $tab[5]['displaytype']    = 'dropdown';
       $tab[5]['injectable']     = true;
       
       $tab[6]['table']          = $this->getTable();
       $tab[6]['field']          = 'types_id';
-      $tab[6]['name']           = $LANG['common'][17];
+      $tab[6]['name']           = __("Type");
       $tab[6]['massiveaction']  = false;
       $tab[6]['checktype']      = 'text';
       $tab[6]['displaytype']    = 'reference_type';
@@ -111,7 +111,7 @@ class PluginOrderReference extends CommonDBTM {
       
       $tab[7]['table']          = $this->getTable();
       $tab[7]['field']          = 'templates_id';
-      $tab[7]['name']           = $LANG['common'][13];
+      $tab[7]['name']           = __("Template name");
       $tab[7]['massiveaction']  = false;
       $tab[7]['checktype']      = 'text';
       $tab[7]['displaytype']    = 'dropdown';
@@ -119,13 +119,13 @@ class PluginOrderReference extends CommonDBTM {
       
       $tab[30]['table']         = $this->getTable();
       $tab[30]['field']         = 'id';
-      $tab[30]['name']          = $LANG['common'][2];
+      $tab[30]['name']          = __("ID");
       $tab[30]['massiveaction'] = false;
       $tab[30]['injectable']    = false;
       
       $tab[31]['table']         = $this->getTable();
       $tab[31]['field']         = 'is_active';
-      $tab[31]['name']          = $LANG['common'][60];
+      $tab[31]['name']          = __("Active");
       $tab[31]['datatype']      = 'bool';
       $tab[31]['checktype']     = 'bool';
       $tab[31]['displaytype']   = 'bool';
@@ -150,7 +150,7 @@ class PluginOrderReference extends CommonDBTM {
       
       $tab[34]['table']         = 'glpi_suppliers';
       $tab[34]['field']         = 'name';
-      $tab[34]['name']          = $LANG['financial'][26];
+      $tab[34]['name']          = __("Supplier");
       $tab[34]['datatype']      = 'itemlink';
       $tab[34]['itemlink_type'] = 'Supplier';
       $tab[34]['forcegroupby']  = true;
@@ -163,19 +163,19 @@ class PluginOrderReference extends CommonDBTM {
       $tab[35]['table']=$this->getTable();
       $tab[35]['field']='date_mod';
       $tab[35]['massiveaction']=false;
-      $tab[35]['name']=$LANG['common'][26];
+      $tab[35]['name']=__("Last update");
       $tab[35]['datatype']='datetime';
       
       /* entity */
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['name']          = __("Entity");
       $tab[80]['massiveaction'] = false;
       $tab[80]['injectable']    = false;
       
       $tab[86]['table']         = $this->getTable();
       $tab[86]['field']         = 'is_recursive';
-      $tab[86]['name']          = $LANG['entity'][9];
+      $tab[86]['name']          = __("Child entities");
       $tab[86]['datatype']      = 'bool';
       $tab[86]['checktype']     = 'text';
       $tab[86]['displaytype']   = 'dropdown';
@@ -240,16 +240,17 @@ class PluginOrderReference extends CommonDBTM {
 
    function getReceptionReferenceLink($data) {
       $link=Toolbox::getItemTypeFormURL($this->getType());
-      if ($this->canView()) {
+      if (self::canView()) {
          return "<a href=\"".$link."?id=".$data["id"]."\">" . $data["name"] . "</a>";
       } else {
          return $data['name'];
       }
    }
 
-   function canDelete() {
+   //TODO : find a new a way to check deletion
+   /*function canDelete() {
       return (!$this->referenceInUse());
-   }
+   }*/
 
    function defineTabs($options=array()) {
       global $LANG;
@@ -427,7 +428,7 @@ class PluginOrderReference extends CommonDBTM {
    function showForm($id, $options = array()) {
       global $CFG_GLPI, $LANG;
 
-      if (!$this->canView()) {
+      if (!self::canView()) {
          return false;
       }
       
@@ -451,27 +452,27 @@ class PluginOrderReference extends CommonDBTM {
          $options['item'] = $this->fields["itemtype"];
       }
       
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . "</td>";
+      echo "<tr class='tab_bg_1'><td>" . __("Name") . "</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='3'>".$LANG['common'][25] . "</td>";
+      echo "<td rowspan='3'>".__("Comments") . "</td>";
       echo "<td align='center' rowspan='3'>";
       echo "<textarea cols='50' rows='3' name='comment'>" . $this->fields["comment"] .
             "</textarea>";
       echo "</td></tr>";
       
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][60] . "</td>";
+      echo "<tr class='tab_bg_1'><td>" . __("Active") . "</td>";
       echo "<td>";
       Dropdown::showYesNo('is_active', $this->fields['is_active']);
       echo "</td></tr>";
       
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][5] . "</td>";
+      echo "<tr class='tab_bg_1'><td>" . __("Manufacturer") . "</td>";
       echo "<td>";
       Dropdown::show('Manufacturer', array('value' => $this->fields['manufacturers_id']));
       echo "</td></tr>";
       
-      echo "<tr class='tab_bg_1'><td>" . $LANG['state'][6] . "</td>";
+      echo "<tr class='tab_bg_1'><td>" . __("Item type") . "</td>";
       echo "<td>";
       if ($id > 0) {
          $itemtype = $this->fields["itemtype"];
@@ -489,7 +490,7 @@ class PluginOrderReference extends CommonDBTM {
             }
       echo "</td>";
       
-      echo "<td>" . $LANG['common'][17] . "</td>";
+      echo "<td>" . __("Type") . "</td>";
       echo "<td>";
       echo "<span id='show_types_id'>";
       if ($options['item']) {
@@ -516,7 +517,7 @@ class PluginOrderReference extends CommonDBTM {
       echo "</span>";
       echo "</td></tr>";
       
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][22] . "</td>";
+      echo "<tr class='tab_bg_1'><td>" . __("Model") . "</td>";
       echo "<td>";
       echo "<span id='show_models_id'>";
       if ($options['item']) {
@@ -529,7 +530,7 @@ class PluginOrderReference extends CommonDBTM {
       echo "</span>";
       echo "</td>";
 
-      echo "<td>" . $LANG['common'][13] . "</td>";
+      echo "<td>" . __("Template name") . "</td>";
       echo "<td>";
       echo "<span id='show_templates_id'>";
       if (!empty($options['item'])
@@ -541,7 +542,7 @@ class PluginOrderReference extends CommonDBTM {
       echo "</span>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][26] . "</td>";
+      echo "<tr class='tab_bg_1'><td>" . __("Last update") . "</td>";
       echo "<td>";
       echo Html::convDateTime($this->fields["date_mod"]);
       echo "</td><td colspan='2'></td></tr>";
@@ -707,10 +708,10 @@ class PluginOrderReference extends CommonDBTM {
 
          Html::showToolTip($comment,$options_tooltip);
 
-         if ($item->canCreate()
+         if ($itemtype::canCreate()
               && !isset($_GET['popup'])) {
 
-               echo "<img alt='' title=\"".$LANG['buttons'][8]."\" src='".$CFG_GLPI["root_doc"].
+               echo "<img alt='' title=\"".__("Add")."\" src='".$CFG_GLPI["root_doc"].
                      "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
                      onClick=\"var w = window.open('".$item->getFormURL()."?popup=1&amp;rand=".
                      $params['rand']."&amp;itemtype=".$params['itemtype']."&amp;entities_id=".$params['entity']."', ". 
@@ -800,15 +801,15 @@ class PluginOrderReference extends CommonDBTM {
          Html::printAjaxPager($LANG['plugin_order'][11], $start, $nb);
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr>";
-         echo "<th>".$LANG['common'][16]."</a></th>";
-         echo "<th>".$LANG['entity'][0]."</th>";
+         echo "<th>".__("Name")."</a></th>";
+         echo "<th>".__("Entity")."</th>";
          echo "</tr>";
 
          foreach ($DB->request($query_limit) as $data) {
             echo "<tr class='tab_bg_1' align='center'>";
             echo "<td>";
             $order->getFromDB($data['plugin_order_orders_id']);
-            echo $order->getLink($order->canView());
+            echo $order->getLink(PluginOrderOrder::canView());
             echo "</td>";
    
             echo "<td>";
@@ -820,7 +821,7 @@ class PluginOrderReference extends CommonDBTM {
          echo "</table>";
       } else {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><td class='center'>".$LANG['document'][13]."</td></tr>";
+         echo "<tr class='tab_bg_1'><td class='center'>".__("No item to display")."</td></tr>";
          echo "</table>";
       }
       
@@ -903,7 +904,7 @@ class PluginOrderReference extends CommonDBTM {
       echo "<div class='center' ><span class='b'>".$LANG['plugin_order']['reference'][12].
          "</span><br>";
       echo "<a style='font-size:14px;' href='".$target."?reset=reset' title=\"".
-             $LANG['buttons'][40]."\">".str_replace(" ","&nbsp;",$LANG['buttons'][40])."</a></div>";
+             __("Show all")."\">".str_replace(" ","&nbsp;",__("Show all"))."</a></div>";
 
       echo "<div class='left' style='width:100%'>";
 

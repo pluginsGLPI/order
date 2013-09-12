@@ -49,7 +49,7 @@ if (isset($_POST["action"])) {
    
    Dropdown::show('PluginOrderBillState', array('comments' => true));
    echo"&nbsp;<input type='submit' name='action' class='submit' " .
-       "   value='".$LANG['buttons'][2]."'>";
+       "   value='".__("Post")."'>";
 }
 
 ?>

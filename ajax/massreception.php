@@ -40,7 +40,7 @@ echo "<table width='950px' class='tab_cadre_fixe'>";
 echo "<tr class='tab_bg_2'><td>".$LANG['plugin_order']['detail'][21]."</td><td>";
 Html::showDateFormItem("delivery_date",date("Y-m-d"),true,1);
 echo "</td><td>";
-echo $LANG['financial'][19]."</td><td>";
+echo __("Delivery form")."</td><td>";
 echo "<input type='text' name='delivery_number' size='20'>";
 echo "</td><td>";
 echo "<input type='hidden' name='plugin_order_references_id' value='".
@@ -57,7 +57,7 @@ echo $LANG['plugin_order']['status'][3]."&nbsp;";
 Dropdown::show('PluginOrderDeliveryState', array('name' => "plugin_order_deliverystates_id"));
 echo "</td>";
 echo "<td><input type='submit' name='bulk_reception' class='submit' value='".
-   $LANG['buttons'][2]."'></td></tr></table>";
+   __("Post")."'></td></tr></table>";
 
 Html::ajaxFooter();
 

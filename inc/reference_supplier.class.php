@@ -34,21 +34,21 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderReference_Supplier extends CommonDBChild {
    
-   public $itemtype  = 'PluginOrderReference';
-   public $items_id  = 'plugin_order_references_id';
+   static public $itemtype  = 'PluginOrderReference';
+   static public $items_id  = 'plugin_order_references_id';
    public $dohistory = true;
    
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
       return $LANG['plugin_order']['reference'][5];
    }
    
-   function canCreate() {
+   static function canCreate() {
       return plugin_order_haveRight('reference', 'w');
    }
 
-   function canView() {
+   static function canView() {
       return plugin_order_haveRight('reference', 'r');
    }
    
@@ -90,19 +90,19 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
       $tab[3]['table'] = 'glpi_suppliers';
       $tab[3]['field'] = 'name';
-      $tab[3]['name'] = $LANG['financial'][26];
+      $tab[3]['name']  = __("Supplier");
       $tab[3]['datatype']='itemlink';
       $tab[3]['itemlink_type']='Supplier';
       $tab[3]['forcegroupby']=true;
       
       $tab[30]['table'] = $this->getTable();
       $tab[30]['field'] = 'id';
-      $tab[30]['name']=$LANG['common'][2];
+      $tab[30]['name']  = __("ID");
 
       /* entity */
       $tab[80]['table'] = 'glpi_entities';
       $tab[80]['field'] = 'completename';
-      $tab[80]['name'] = $LANG['entity'][0];
+      $tab[80]['name'] = __("Entity");
       
       return $tab;
    }
@@ -116,7 +116,6 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    }
    
    function defineTabs($options=array()) {
-      global $LANG;
       $ong = array();
       $this->addStandardTab('Document',$ong,$options);
       $this->addStandardTab('Log',$ong,$options);
@@ -126,7 +125,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
       if (get_class($item) == __CLASS__) {
-         return array (1 => $LANG['title'][26]);
+         return array (1 => __("Main"));
       } elseif (get_class($item) == 'PluginOrderReference') {
          return array(1 => $LANG['plugin_order'][4]);
       }
@@ -148,7 +147,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    function showForm ($ID, $options=array()) {
       global $LANG, $DB;
       
-      if (!$this->canView()) {
+      if (!self::canView()) {
          return false;
       }
       
@@ -178,7 +177,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       
       echo "<tr class='tab_bg_1'>";
       
-      echo "<td>" . $LANG['financial'][26] . ": </td>";
+      echo "<td>" . __("Supplier") . ": </td>";
       echo "<td>";
 
       if ($ID > 0) {
@@ -254,7 +253,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       
       echo "<tr><th colspan='5'>".$LANG['plugin_order'][4]."</th></tr>";
       echo "<tr><th>&nbsp;</th>";
-      echo "<th>" . $LANG['financial'][26] . "</th>";
+      echo "<th>" . __("Supplier") . "</th>";
       echo "<th>" . $LANG['plugin_order']['reference'][1] . "</th>";
       echo "<th>" . $LANG['plugin_order']['detail'][4] . "</th>";
       echo "</tr>";
@@ -296,13 +295,13 @@ class PluginOrderReference_Supplier extends CommonDBChild {
             echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
             echo "<td class='center'>" .
                   "<a onclick= \"if ( markCheckboxes('show_supplierref$rand') ) " .
-                     "return false;\" href='#'>".$LANG['buttons'][18]."</a></td>";
+                     "return false;\" href='#'>".__("Check all")."</a></td>";
 
             echo "<td>/</td><td class='center'>" .
                   "<a onclick= \"if ( unMarkCheckboxes('show_supplierref$rand') ) " .
-                     "return false;\" href='#'>".$LANG['buttons'][19]."</a>";
+                     "return false;\" href='#'>".__("Uncheck all")."</a>";
             echo "</td><td align='left' width='80%'>";
-            echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] .
+            echo "<input type='submit' name='delete' value=\"" . __("Delete permanently") .
                   "\" class='submit' >";
             echo "</td>";
             echo "</table>";
@@ -451,8 +450,8 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr>";
-         echo "<th>".$LANG['entity'][0]."</th>";
-         echo "<th>".$LANG['common'][5]."</th>";
+         echo "<th>".__("Entity")."</th>";
+         echo "<th>".__("Manufacturer")."</th>";
          echo "<th>".$LANG['plugin_order']['reference'][1]."</th>";
          echo "<th>".$LANG['plugin_order']['detail'][2]."</th>";
          echo "<th>".$LANG['plugin_order']['reference'][1]."</th>";

@@ -104,7 +104,7 @@ function plugin_order_getDropdown() {
    if ($plugin->isActivated("order")) {
       return array ('PluginOrderOrderTaxe'     => $LANG['plugin_order'][25],
                     'PluginOrderOrderPayment'  => $LANG['plugin_order'][32],
-                    'PluginOrderOrderType'     => $LANG['common'][17],
+                    'PluginOrderOrderType'     => __("Type"),
                     'PluginOrderOrderState'    => $LANG['plugin_order']['status'][0],
                     'PluginOrderOtherType'     => $LANG['plugin_order'][9],
                     'PluginOrderDeliveryState' => $LANG['plugin_order']['status'][3],
@@ -234,7 +234,7 @@ function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,
 
 /* display custom fields in the search */
 function plugin_order_giveItem($type, $ID, $data, $num) {
-   global $CFG_GLPI, $LANG;
+   global $CFG_GLPI;
 
    $searchopt = &Search::getOptions($type);
    $table = $searchopt[$ID]["table"];
@@ -279,7 +279,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 }
 
 function plugin_order_displayConfigItem($type, $ID, $data, $num) {
-   global $CFG_GLPI, $LANG;
+   global $CFG_GLPI;
    
    $searchopt = &Search::getOptions($type);
    $table = $searchopt[$ID]["table"];
@@ -305,20 +305,18 @@ function plugin_order_MassiveActions($type) {
 
    switch ($type) {
       case 'PluginOrderOrder' :
-         return array ("plugin_order_transfert" => $LANG['buttons'][48]);
+         return array ("plugin_order_transfert" => __("Transfer"));
          break;
          
       case 'PluginOrderReference':
          return array ("plugin_order_copy_reference"     => $LANG['plugin_order']['reference'][13],
-                         "plugin_order_transfer_reference" => $LANG['buttons'][48]);
+                         "plugin_order_transfer_reference" => __("Transfer"));
          break;
    }
    return array ();
 }
 
 function plugin_order_MassiveActionsDisplay($options=array()) {
-   global $LANG;
-
    switch ($options['itemtype']) {
       case 'PluginOrderOrder' :
          switch ($options['action']) {
@@ -326,7 +324,7 @@ function plugin_order_MassiveActionsDisplay($options=array()) {
             case "plugin_order_transfert" :
                Dropdown::show('Entity');
                echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
-                  $LANG['buttons'][2] . "\" >";
+                  __("Post") . "\" >";
                break;
          }
          break;
@@ -334,13 +332,13 @@ function plugin_order_MassiveActionsDisplay($options=array()) {
          switch ($options['action']) {
             case "plugin_order_copy_reference":
                echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
-                     $LANG['buttons'][2] . "\" >";
+                     __("Post") . "\" >";
                break;
                    
             case "plugin_order_transfer_reference" :
                Dropdown::show('Entity');
                echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
-                     $LANG['buttons'][2] . "\" >";
+                     __("Post") . "\" >";
                break;
          }
          break;
@@ -349,7 +347,7 @@ function plugin_order_MassiveActionsDisplay($options=array()) {
 }
 
 function plugin_order_MassiveActionsProcess($data) {
-   global $LANG, $DB;
+   global $DB;
 
    switch ($data['action']) {
       case "plugin_order_transfert" :

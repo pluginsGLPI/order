@@ -48,25 +48,25 @@ $report = new PluginReportsAutoReport();
 new PluginReportsDateIntervalCriteria($report, 'order_date', $LANG['plugin_order'][1]);
 new PluginReportsDateIntervalCriteria($report, 'deliverydate', $LANG['plugin_order'][53]);
 new PluginReportsLocationCriteria($report, 'locations_id', $LANG['plugin_order'][40]);
-new PluginReportsSupplierCriteria($report, 'suppliers_id', $LANG['financial'][26]);
+new PluginReportsSupplierCriteria($report, 'suppliers_id', __("Supplier"));
 new PluginReportsDropdownCriteria($report, 'plugin_order_orderstates_id', 'PluginOrderOrderState',
-                                  $LANG['joblist'][0]);
+                                  __("Status"));
 $report->displayCriteriasForm();
 
 if ($report->criteriasValidated()) {
    $report->setSubNameAuto();
 
    $report->setColumns(array(new PluginReportsColumnLink('entities_id',
-                                                         $LANG['entity'][0], 'Entity'),
-                             new PluginReportsColumnLink('id', $LANG['common'][16],
+                                                         __("Entity"), 'Entity'),
+                             new PluginReportsColumnLink('id', __("Name"),
                                                          'PluginOrderOrder',
                                                          array('with_comment' => true,
                                                                'with_navigate' => true)),
                              new PluginReportsColumn('num_order', $LANG['plugin_order'][0]),
                              new PluginReportsColumnLink('suppliers_id',
-                                                         $LANG['financial'][26], 'Supplier'),
+                                                         __("Supplier"), 'Supplier'),
                              new PluginReportsColumnLink('plugin_order_orderstates_id',
-                                                         $LANG['joblist'][0],
+                                                         __("Status"),
                                                          'PluginOrderOrderState',
                                                          array('with_comment' => true)),
                              new PluginReportsColumnDateTime('order_date', $LANG['plugin_order'][1]),

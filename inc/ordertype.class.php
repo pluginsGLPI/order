@@ -35,17 +35,15 @@ if (!defined('GLPI_ROOT')) {
 // Class for a Dropdown
 class PluginOrderOrderType extends CommonDropdown {
    
-   static function getTypeName() {
-      global $LANG;
-
-      return $LANG['common'][17];
+   static function getTypeName($nb=0) {
+      return __("Type");
    }
    
-   function canCreate() {
+   static function canCreate() {
       return plugin_order_haveRight('order', 'w');
    }
 
-   function canView() {
+   static function canView() {
       return plugin_order_haveRight('order', 'r');
    } 
    
