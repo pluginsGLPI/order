@@ -482,7 +482,7 @@ class PluginOrderReference extends CommonDBTM {
             $params = array('myname'       => 'itemtype',
             'value'        => $options["item"],
             'entity'       => $_SESSION["glpiactive_entity"],
-            'ajax_page'    => GLPI_ROOT.'/plugins/order/ajax/referencespecifications.php',
+            'ajax_page'    => $CFG_GLPI["root_doc"].'/plugins/order/ajax/referencespecifications.php',
             'class'        => __CLASS__);
                    
             $this->dropdownAllItems($params);
