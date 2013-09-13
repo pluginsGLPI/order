@@ -1272,7 +1272,7 @@ class PluginOrderOrder extends CommonDBTM {
       global $CFG_GLPI;
 
       echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/export.php?id=".$ID.
-          "&display_type=".PDF_OUTPUT_LANDSCAPE."' method=\"post\">";
+          "&display_type=".Search::PDF_OUTPUT_LANDSCAPE."' method=\"post\">";
       echo "<div align=\"center\"><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".__("Order Generation", "order")."</th></tr>";
       
