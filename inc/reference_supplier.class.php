@@ -193,10 +193,9 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          while ($data = $DB->fetch_array($result))
             $suppliers[] = $data["suppliers_id"];
 
-         Dropdown::show('Supplier',
-                        array('name'   => 'suppliers_id',
-                               'used'   => $suppliers,
-                               'entity' => $PluginOrderReference->getEntityID()));
+         Supplier::Dropdown(array('name'   => 'suppliers_id',
+                                  'used'   => $suppliers,
+                                  'entity' => $PluginOrderReference->getEntityID()));
       }
       echo "</td>";
 

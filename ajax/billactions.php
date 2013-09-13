@@ -41,13 +41,12 @@ if (isset($_POST["action"])) {
       case "bill":
          echo "&nbsp;<input type='hidden' name='plugin_order_orders_id' " .
                "  value='".$_POST["plugin_order_orders_id"]."'>";
-         Dropdown::show('PluginOrderBill',
-                        array('condition' =>
+         PluginOrderBill::Dropdown(array('condition' =>
                                  "`plugin_order_orders_id`='".$_POST['plugin_order_orders_id']."'"));
          break;
    }
    
-   Dropdown::show('PluginOrderBillState', array('comments' => true));
+   PluginOrderBillState::Dropdown(array('comments' => true));
    echo"&nbsp;<input type='submit' name='action' class='submit' " .
        "   value='".__("Post")."'>";
 }

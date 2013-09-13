@@ -468,7 +468,7 @@ class PluginOrderReference extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'><td>" . __("Manufacturer") . "</td>";
       echo "<td>";
-      Dropdown::show('Manufacturer', array('value' => $this->fields['manufacturers_id']));
+      Manufacturer::Dropdown(array('value' => $this->fields['manufacturers_id']));
       echo "</td></tr>";
       
       echo "<tr class='tab_bg_1'><td>" . __("Item type") . "</td>";
@@ -692,7 +692,7 @@ class PluginOrderReference extends CommonDBTM {
                     $params['rand']."'>";
       $default .= "<option value='".$params['value']."'>$name</option></select>";
 
-      Ajax::dropdown($use_ajax, "/plugins/order/ajax/dropdownValue.php", $param, $default,  $params['rand']);
+      Ajax::Dropdown($use_ajax, "/plugins/order/ajax/dropdownValue.php", $param, $default,  $params['rand']);
 
       // Display comment
       if ($params['comments']) {

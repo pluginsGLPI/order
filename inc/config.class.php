@@ -69,11 +69,10 @@ class PluginOrderConfig extends CommonDBTM {
       echo "<input type='hidden' name='id' value='1'>";
       echo "<tr class='tab_bg_1' align='center'><td>".__("Default VAT", "order").
             "</td><td>";
-      Dropdown::show('PluginOrderOrderTaxe',
-                     array('name'                => "default_taxes",
-                           'value'               => $this->fields["default_taxes"],
-                           'display_emptychoice' => true,
-                           'emptylabel'          => __("No VAT", "order")));
+      PluginOrderOrderTaxe::Dropdown(array('name'                => "default_taxes",
+                                           'value'               => $this->fields["default_taxes"],
+                                           'display_emptychoice' => true,
+                                           'emptylabel'          => __("No VAT", "order")));
       echo "</td>";
       echo "</tr>";
       
@@ -119,28 +118,27 @@ class PluginOrderConfig extends CommonDBTM {
       
       echo "<tr class='tab_bg_1' align='center'>
                   <td>".__("Default heading when adding a document to an order", "order")."</td><td>";
-                  Dropdown::show("DocumentCategory",
-                                 array('value' => $this->fields["documentcategories_id"]));
+                  DocumentCategory::Dropdown(array('value' => $this->fields["documentcategories_id"]));
       echo "</td>";
       echo "</tr>";
       
       echo "<tr class='tab_bg_1' align='center'>
                   <td>".__("Author group", "order").' ('.__("Default values").")</td><td>";
-      Dropdown::show("Group", array('value' => $this->fields["groups_id_author"],
-                                     'name'  => 'groups_id_author'));
+      Group::Dropdown(array('value' => $this->fields["groups_id_author"],
+                            'name'  => 'groups_id_author'));
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
                   <td>".__("Recipient group", "order").' ('.__("Default values").")</td><td>";
-      Dropdown::show("Group", array('value' => $this->fields["groups_id_recipient"],
-                                     'name'  => 'groups_id_recipient'));
+      Group::Dropdown(array('value' => $this->fields["groups_id_recipient"],
+                            'name'  => 'groups_id_recipient'));
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
                   <td>".__("Recipient").' ('.__("Default values").")</td><td>";
-      User::dropdown(array('name'   => 'users_id_recipient',
+      User::Dropdown(array('name'   => 'users_id_recipient',
                             'value'  => $this->fields["users_id_recipient"],
                             'right'  => 'all',
                             'entity' => 0));
@@ -180,10 +178,9 @@ class PluginOrderConfig extends CommonDBTM {
 
          echo "<tr class='tab_bg_1' align='center'>
                   <td>".__("Default state", "order")."</td><td>";
-                  Dropdown::show('State',
-                                 array('name'   => 'default_asset_states_id',
-                                       'value'  => $this->fields["default_asset_states_id"],
-                                       'entity' => $_SESSION["glpiactiveentities"]));
+                  State::Dropdown(array('name'   => 'default_asset_states_id',
+                                        'value'  => $this->fields["default_asset_states_id"],
+                                        'entity' => $_SESSION["glpiactiveentities"]));
          echo "</td></tr>";
 
          // TICKETS
@@ -210,10 +207,9 @@ class PluginOrderConfig extends CommonDBTM {
             
             echo "<tr class='tab_bg_1' align='center'>
                      <td>".__("Default category", "order")."</td><td>";
-                     Dropdown::show('ItilCategory',
-                                    array('name'   => 'default_itilcategories_id',
-                                          'value'  => $this->fields["default_itilcategories_id"],
-                                          'entity' => $_SESSION["glpiactiveentities"]));
+                     ItilCategory::Dropdown(array('name'   => 'default_itilcategories_id',
+                                                  'value'  => $this->fields["default_itilcategories_id"],
+                                                  'entity' => $_SESSION["glpiactiveentities"]));
             echo "</td></tr>";
          }
       }
@@ -225,49 +221,49 @@ class PluginOrderConfig extends CommonDBTM {
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".__("State before validation", "order")."</td><td>";
-            Dropdown::show('PluginOrderOrderState',
+            PluginOrderOrderState::Dropdown(
                            array('name'   => 'order_status_draft',
                                  'value'  => $this->fields["order_status_draft"]));
       echo "</td></tr>";
       
       echo "<tr class='tab_bg_1' align='center'>
             <td>".__("Waiting for validation state", "order")."</td><td>";
-            Dropdown::show('PluginOrderOrderState',
+            PluginOrderOrderState::Dropdown(
                            array('name'   => 'order_status_waiting_approval',
                                  'value'  => $this->fields["order_status_waiting_approval"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".__("Validated order state", "order")."</td><td>";
-            Dropdown::show('PluginOrderOrderState',
+            PluginOrderOrderState::Dropdown(
                            array('name'   => 'order_status_approved',
                                  'value'  => $this->fields["order_status_approved"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".__("Order being delivered state", "order")."</td><td>";
-            Dropdown::show('PluginOrderOrderState',
+            PluginOrderOrderState::Dropdown(
                            array('name'   => 'order_status_partially_delivred',
                                  'value'  => $this->fields["order_status_partially_delivred"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".__("Order delivered state", "order")."</td><td>";
-            Dropdown::show('PluginOrderOrderState',
+            PluginOrderOrderState::Dropdown(
                            array('name'   => 'order_status_completly_delivered',
                                  'value'  => $this->fields["order_status_completly_delivered"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".__("Order paied state", "order")."</td><td>";
-            Dropdown::show('PluginOrderOrderState',
+            PluginOrderOrderState::Dropdown(
                            array('name'   => 'order_status_paid',
                                  'value'  => $this->fields["order_status_paid"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>
             <td>".__("Canceled order state", "order")."</td><td>";
-            Dropdown::show('PluginOrderOrderState',
+            PluginOrderOrderState::Dropdown(
                            array('name'   => 'order_status_canceled',
                                  'value'  => $this->fields["order_status_canceled"]));
       echo "</td></tr>";

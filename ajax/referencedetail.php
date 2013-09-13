@@ -55,11 +55,10 @@ if ($_POST["plugin_order_references_id"] > 0) {
          break;
       case 'taxe':
          $config = PluginOrderConfig::getConfig();
-         Dropdown::show('PluginOrderOrderTaxe',
-                        array('name'                => "plugin_order_ordertaxes_id",
-                              'value'               => $config->getDefaultTaxes(),
-                              'display_emptychoice' => true,
-                              'emptylabel'          => __("No VAT", "order")));
+         PluginOrderOrderTaxe::Dropdown(array('name'                => "plugin_order_ordertaxes_id",
+                                              'value'               => $config->getDefaultTaxes(),
+                                              'display_emptychoice' => true,
+                                              'emptylabel'          => __("No VAT", "order")));
          break;
       case 'validate':
          echo "<input type='hidden' name='itemtype' value='".

@@ -227,7 +227,7 @@ class PluginOrderReception extends CommonDBTM {
       echo "<td>" . __("Delivery status", "order") . ": </td>";
       echo "<td>";
       if ($canedit) {
-         Dropdown::show('PluginOrderDeliveryState',
+         PluginOrderDeliveryState::Dropdown(
                         array('name'  => "plugin_order_deliverystates_id",
                               'value' => $this->fields["plugin_order_deliverystates_id"]));
       } else {
@@ -239,9 +239,8 @@ class PluginOrderReception extends CommonDBTM {
       echo "<td>".__("Bill", "order")."</td>";
       echo "<td>";
       if (plugin_order_haveRight("bill", "w")) {
-         Dropdown::show('PluginOrderBill',
-                        array('name'  => "plugin_order_bills_id",
-                              'value' => $this->fields["plugin_order_bills_id"]));
+         PluginOrderBill::Dropdown(array('name'  => "plugin_order_bills_id",
+                                         'value' => $this->fields["plugin_order_bills_id"]));
       } elseif (plugin_order_haveRight("bill", "r")) {
          echo Dropdown::getDropdownName("glpi_plugin_order_bills",
                                         $this->fields["plugin_order_bills_id"]);

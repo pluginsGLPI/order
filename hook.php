@@ -315,7 +315,7 @@ function plugin_order_MassiveActionsDisplay($options=array()) {
          switch ($options['action']) {
             // No case for add_document : use GLPI core one
             case "plugin_order_transfert" :
-               Dropdown::show('Entity');
+               Entity::Dropdown();
                echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
                   __("Post") . "\" >";
                break;
@@ -329,7 +329,7 @@ function plugin_order_MassiveActionsDisplay($options=array()) {
                break;
                    
             case "plugin_order_transfer_reference" :
-               Dropdown::show('Entity');
+               Entity::Dropdown();
                echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
                      __("Post") . "\" >";
                break;

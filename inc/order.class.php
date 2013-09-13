@@ -678,9 +678,8 @@ class PluginOrderOrder extends CommonDBTM {
       /* type order */
       echo "<td>" . __("Type") . ": </td><td>";
       if ($canedit){
-         Dropdown::show('PluginOrderOrderType',
-                        array('name'  => "plugin_order_ordertypes_id",
-                              'value' => $this->fields["plugin_order_ordertypes_id"]));
+         PluginOrderOrderType::Dropdown(array('name'  => "plugin_order_ordertypes_id",
+                                              'value' => $this->fields["plugin_order_ordertypes_id"]));
       } else {
          echo Dropdown::getDropdownName("glpi_plugin_order_ordertypes",
                                         $this->fields["plugin_order_ordertypes_id"]);
@@ -697,9 +696,8 @@ class PluginOrderOrder extends CommonDBTM {
          $state = $this->fields["plugin_order_orderstates_id"];
       }
       if ($canedit) {
-         Dropdown::show('PluginOrderOrderState',
-                        array('name'   => "plugin_order_orderstates_id",
-                              'value'  => $state));
+         PluginOrderOrderState::Dropdown(array('name'   => "plugin_order_orderstates_id",
+                                               'value'  => $state));
                               
       } else {
          echo Dropdown::getDropdownName("glpi_plugin_order_orderstates",
@@ -710,10 +708,10 @@ class PluginOrderOrder extends CommonDBTM {
       /* budget */
       echo "<td>" . __("Budget") . ": </td><td>";
       if ($canedit) {
-         Dropdown::show('Budget', array('name'     => "budgets_id",
-                                        'value'    => $this->fields["budgets_id"],
-                                        'entity'   => $this->fields["entities_id"],
-                                        'comments' => true));
+         Budget::Dropdown(array('name'     => "budgets_id",
+                                'value'    => $this->fields["budgets_id"],
+                                'entity'   => $this->fields["entities_id"],
+                                'comments' => true));
                                         
       } else {
          $budget = new Budget();
@@ -730,10 +728,9 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . __("Delivery location", "order") . ": </td>";
       echo "<td>";
       if ($canedit) {
-         Dropdown::show('Location',
-                        array('name'   => "locations_id",
-                              'value'  => $this->fields["locations_id"],
-                              'entity' => $this->fields["entities_id"]));
+         Location::Dropdown(array('name'   => "locations_id",
+                                  'value'  => $this->fields["locations_id"],
+                                  'entity' => $this->fields["entities_id"]));
                               
       } else {
          echo Dropdown::getDropdownName("glpi_locations", $this->fields["locations_id"]);
@@ -743,7 +740,7 @@ class PluginOrderOrder extends CommonDBTM {
       /* payment */
       echo "<td>" . __("Payment conditions", "order") . ": </td><td>";
       if ($canedit) {
-         Dropdown::show('PluginOrderOrderPayment',
+         PluginOrderOrderPayment::Dropdown(
                         array('name'  => "plugin_order_orderpayments_id",
                               'value' => $this->fields["plugin_order_orderpayments_id"]));
       } else {
@@ -807,11 +804,10 @@ class PluginOrderOrder extends CommonDBTM {
          $taxes = $this->fields["plugin_order_ordertaxes_id"];
       }
       if ($canedit) {
-         Dropdown::show('PluginOrderOrderTaxe',
-                        array('name'                => "plugin_order_ordertaxes_id",
-                              'value'               => $taxes,
-                              'display_emptychoice' => true,
-                              'emptylabel'          => __("No VAT", "order")));
+         PluginOrderOrderTaxe::Dropdown(array('name'                => "plugin_order_ordertaxes_id",
+                                              'value'               => $taxes,
+                                              'display_emptychoice' => true,
+                                              'emptylabel'          => __("No VAT", "order")));
                               
       } else {
          echo Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $taxes);
@@ -895,7 +891,7 @@ class PluginOrderOrder extends CommonDBTM {
          } else {
             $value = $this->fields['users_id'];
          }
-         User::dropdown(array('name'   => 'users_id',
+         User::Dropdown(array('name'   => 'users_id',
          'value'  => $value,
          'right'  => 'interface',
          'entity' => $this->fields["entities_id"]));
@@ -915,7 +911,7 @@ class PluginOrderOrder extends CommonDBTM {
          } else {
             $groups_id = $this->fields['groups_id'];
          }
-         Dropdown::show('Group', array('value' => $groups_id));
+         Group::Dropdown(array('value' => $groups_id));
       } else {
          echo Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id']);
       }
@@ -927,7 +923,7 @@ class PluginOrderOrder extends CommonDBTM {
          } else {
             $users_id = 0;
          }
-         User::dropdown(array('name'   => 'users_id_delivery',
+         User::Dropdown(array('name'   => 'users_id_delivery',
                               'value'  => $users_id,
                               'right'  => 'all',
                               'entity' => $this->fields["entities_id"]));
@@ -947,8 +943,8 @@ class PluginOrderOrder extends CommonDBTM {
          } else {
             $groups_id = $this->fields['groups_id_delivery'];
          }
-         Dropdown::show('Group', array('name'  => 'groups_id_delivery',
-                                        'value' => $groups_id));
+         Group::Dropdown(array('name'  => 'groups_id_delivery',
+                               'value' => $groups_id));
       } else {
          echo Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id_delivery']);
       }

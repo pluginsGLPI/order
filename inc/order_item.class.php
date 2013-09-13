@@ -904,8 +904,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       echo "<td>" . __("VAT", "order") . ": </td>";
       echo "<td>";
       if ($canedit) {
-         Dropdown::show('PluginOrderOrderTaxe',
-                        array('value' => $this->fields['plugin_order_ordertaxes_id']));
+         PluginOrderOrderTaxe::Dropdown(array('value' => $this->fields['plugin_order_ordertaxes_id']));
       } else {
          echo Dropdown::getDropdownName('glpi_plugin_order_ordertaxes',
                                          $this->fields['plugin_order_ordertaxes_id']);

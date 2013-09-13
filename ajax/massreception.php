@@ -54,7 +54,7 @@ $nb = $PluginOrderReception->checkItemStatus($_POST['plugin_order_orders_id'],
 Dropdown::showInteger('number_reception','',1,$nb);
 echo "</td><td>";
 echo __("Delivery status", "order")."&nbsp;";
-Dropdown::show('PluginOrderDeliveryState', array('name' => "plugin_order_deliverystates_id"));
+PluginOrderDeliveryState::Dropdown(array('name' => "plugin_order_deliverystates_id"));
 echo "</td>";
 echo "<td><input type='submit' name='bulk_reception' class='submit' value='".
    __("Post")."'></td></tr></table>";

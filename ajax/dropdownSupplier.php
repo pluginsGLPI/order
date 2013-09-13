@@ -60,7 +60,7 @@ if (isset($_POST["suppliers_id"])) {
    
    $default="<select name='".$_POST["myname"]."'><option value='0'>".Dropdown::EMPTY_VALUE.
                "</option></select>";
-   Ajax::dropdown($use_ajax,"/plugins/order/ajax/dropdownContact.php", $paramssuppliers_id, $default,
+   Ajax::Dropdown($use_ajax,"/plugins/order/ajax/dropdownContact.php", $paramssuppliers_id, $default,
                   $rand);
 
 }
