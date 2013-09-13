@@ -89,17 +89,26 @@ class PluginOrderSurveySupplier extends CommonDBChild {
    
    function addNotation($field,$value) {
       
-      
-      echo "<font size='1'>".__("Really satisfied", "order")."</font>&nbsp;";
-      
-      for ($i=10 ; $i >= 1 ; $i--) {
-         echo "&nbsp;".$i."&nbsp;<input type='radio' name='".$field."' value='".$i."' ";
-         if ($i == $value)
-         echo " checked ";
-         echo ">";
-      }
-      
-      echo "&nbsp;<font size='1'>".__("Really unsatisfied", "order")."</font>";
+      $rand = mt_rand();
+      echo  "<script type='text/javascript'>\n
+            Ext.onReady(function() {
+            var md = new Ext.form.StarRate({
+                        hiddenName: '$field',
+                        starConfig: {
+                           minValue: 0,
+                           maxValue: 10,
+                           value:'$value'
+                        },
+                        applyTo : 'notation$rand'
+               });
+            })
+            </script>";
+
+      echo "<table style='font-size:0.9em; width:50%' class='tab_format'><tr>";
+      echo "<td>".__("Really unsatisfied", "order")."</td>";
+      echo "<td><input type='hidden' id='notation$rand' name='$field' value='$value'></td>";
+      echo "<td>".__("Really satisfied", "order")."</td>";
+      echo "</tr></table>";
    }
    
    function getTotalNotation($plugin_order_orders_id) {
