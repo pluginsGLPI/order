@@ -45,6 +45,10 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    static public $items_id_2 = 'items_id';
    static public $checkItem_2_Rights = self::DONT_CHECK_ITEM_RIGHTS;
    
+   static public $check_entity_coherency = false;
+
+   //TODO better right and entity menber (ex Computer_Item)
+   
    static function canCreate() {
       return plugin_order_haveRight('order', 'w');
    }
