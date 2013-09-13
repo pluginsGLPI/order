@@ -32,16 +32,16 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderOrder_Item extends CommonDBChild {
+class PluginOrderOrder_Item extends CommonDBRelation {
 
    public $dohistory = true;
 
    // From CommonDBRelation
-   public $itemtype_1 = "PluginOrderOrder";
-   public $items_id_1 = 'plugin_order_orders_id';
+   static public $itemtype_1 = "PluginOrderOrder";
+   static public $items_id_1 = 'plugin_order_orders_id';
 
-   public $itemtype_2 = 'itemtype';
-   public $items_id_2 = 'items_id';
+   static public $itemtype_2 = 'itemtype';
+   static public $items_id_2 = 'items_id';
    
    static function canCreate() {
       return plugin_order_haveRight('order', 'w');
