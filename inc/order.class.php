@@ -1345,7 +1345,6 @@ class PluginOrderOrder extends CommonDBTM {
             
             $entity = new Entity();
             $entity->getFromDB($this->fields["entities_id"]);
-            $entdata = new EntityData();
             $town    = '';
                
             if ($this->fields["entities_id"]!=0) {
@@ -1355,13 +1354,13 @@ class PluginOrderOrder extends CommonDBTM {
             }
                
             $odf->setVars('entity_name', $name_entity, true, 'UTF-8');
-            if ($entdata->getFromDB($this->fields["entities_id"])) {
-               $odf->setVars('entity_address', $entdata->fields["address"], true, 'UTF-8');
-               $odf->setVars('entity_postcode', $entdata->fields["postcode"],true, 'UTF-8');
-               $town = $entdata->fields["town"];
+            if ($entity->getFromDB($this->fields["entities_id"])) {
+               $odf->setVars('entity_address', $entity->fields["address"], true, 'UTF-8');
+               $odf->setVars('entity_postcode', $entity->fields["postcode"],true, 'UTF-8');
+               $town = $entity->fields["town"];
                $odf->setVars('entity_town', $town,true,'UTF-8');
-               $odf->setVars('entity_country', $entdata->fields["country"], true, 'UTF-8');
-               //$odf->setVars('entity_ldapdn', $entdata->fields["ldap_dn"], true, 'UTF-8');
+               $odf->setVars('entity_country', $entity->fields["country"], true, 'UTF-8');
+               //$odf->setVars('entity_ldapdn', $entity->fields["ldap_dn"], true, 'UTF-8');
             }
             
             $supplier = new Supplier();
