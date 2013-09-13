@@ -216,7 +216,7 @@ function plugin_version_order() {
    
 
    return array ('name'           => __("Orders management", "order"),
-                 'version'        => '1.7.2',
+                 'version'        => '1.8.0',
                  'author'         => 'The plugin order team',
                  'homepage'       => 'https://forge.indepnet.net/projects/show/order',
                  'minGlpiVersion' => '0.83.3',
@@ -226,7 +226,7 @@ function plugin_version_order() {
 /* check prerequisites before install : may print errors or add to message after redirect -optional- */
 function plugin_order_check_prerequisites(){
    if (version_compare(GLPI_VERSION,'0.84','lt') || version_compare(GLPI_VERSION,'0.85','ge')) {
-      echo "This plugin requires 0.83.3+";
+      echo "This plugin requires 0.84";
    } else {
       return true;
    }
