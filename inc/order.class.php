@@ -239,6 +239,7 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[3]['table']         = 'glpi_plugin_order_ordertaxes';
       $tab[3]['field']         = 'name';
       $tab[3]['name']          = __("VAT", "order") . " " . __("Postage", "order");
+      $tab[3]['datatype']      = 'dropdown';
       $tab[3]['checktype']     = 'text';
       $tab[3]['displaytype']   = 'dropdown';
       $tab[3]['injectable']    = true;
@@ -248,6 +249,7 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[4]['table']         = 'glpi_locations';
       $tab[4]['field']         = 'completename';
       $tab[4]['name']          = __("Delivery location", "order");
+      $tab[4]['datatype']      = 'itemlink';
       $tab[4]['checktype']     = 'text';
       $tab[4]['displaytype']   = 'dropdown';
       $tab[4]['injectable']    = true;
@@ -257,6 +259,7 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[5]['table']         = 'glpi_plugin_order_orderstates';
       $tab[5]['field']         = 'name';
       $tab[5]['name']          = __("Order status", "order");
+      $tab[5]['datatype']      = 'dropdown';
       $tab[5]['checktype']     = 'text';
       $tab[5]['displaytype']   = 'dropdown';
       $tab[5]['injectable']    = true;
@@ -278,6 +281,7 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[7]['table']         = 'glpi_plugin_order_orderpayments';
       $tab[7]['field']         = 'name';
       $tab[7]['name']          = __("Payment conditions", "order");
+      $tab[7]['datatype']      = 'dropdown';
       $tab[7]['checktype']     = 'text';
       $tab[7]['displaytype']   = 'dropdown';
       $tab[7]['injectable']    = true;
@@ -311,6 +315,7 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[10]['table']         = $this->getTable();
       $tab[10]['field']         = 'name';
       $tab[10]['name']          = __("Order name", "order");
+      $tab[10]['searchtype']    = 'contains';
       $tab[10]['checktype']     = 'text';
       $tab[10]['displaytype']   = 'text';
       $tab[10]['injectable']    = true;
@@ -320,6 +325,7 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[11]['table']         = 'glpi_plugin_order_ordertypes';
       $tab[11]['field']         = 'name';
       $tab[11]['name']          = __("Type");
+      $tab[11]['datatype']      = 'dropdown';
       $tab[11]['checktype']     = 'text';
       $tab[11]['displaytype']   = 'dropdown';
       $tab[11]['injectable']    = true;
@@ -385,24 +391,28 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[24]['table']         = 'glpi_users';
       $tab[24]['field']         = 'name';
       $tab[24]['linkfield']     = 'users_id';
+      $tab[24]['datatype']      = 'itemlink';
       $tab[24]['name']          = __("Author");
       $tab[24]['massiveaction'] = false;
       
       $tab[25]['table']         = 'glpi_users';
       $tab[25]['field']         = 'name';
       $tab[25]['linkfield']     = 'users_id_delivery';
+      $tab[25]['datatype']      = 'itemlink';
       $tab[25]['name']          = __("Recipient");
       $tab[25]['massiveaction'] = false;
       
       $tab[26]['table']         = 'glpi_groups';
       $tab[26]['field']         = 'name';
       $tab[26]['linkfield']     = 'groups_id';
+      $tab[26]['datatype']      = 'dropdown';
       $tab[26]['name']          = __("Author group", "order");
       $tab[26]['massiveaction'] = false;
       
       $tab[27]['table']         = 'glpi_groups';
       $tab[27]['field']         = 'name';
       $tab[27]['linkfield']     = 'groups_id_delivery';
+      $tab[27]['datatype']      = 'dropdown';
       $tab[27]['name']          = __("Recipient group", "order");
       $tab[27]['massiveaction'] = false;
       
@@ -424,6 +434,7 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
       $tab[80]['name']          = __("Entity");
+      $tab[80]['datatype']      = 'dropdown';
       $tab[80]['injectable']    = false;
       $tab[80]['massiveaction'] = false;
       
