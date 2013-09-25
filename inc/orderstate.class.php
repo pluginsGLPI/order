@@ -44,8 +44,6 @@ class PluginOrderOrderState extends CommonDropdown {
    const PAID                 = 7;
 
    static function getTypeName($nb=0) {
-      
-
       return __("Order status", "order");
    }
    

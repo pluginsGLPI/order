@@ -36,8 +36,6 @@ if (!defined('GLPI_ROOT')) {
 class PluginOrderOrderTaxe extends CommonDropdown {
    
    static function getTypeName($nb=0) {
-      
-
       return __("VAT", "order");
    }
    
