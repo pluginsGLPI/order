@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 class PluginOrderOther extends CommonDBTM {
    
    static function getTypeName($nb=0) {
-      return __("Other item");
+      return __("Other kind of items");
    }
    
    static function canCreate() {
