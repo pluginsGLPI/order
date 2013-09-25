@@ -117,7 +117,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    
    function defineTabs($options=array()) {
       $ong = array();
-      $this->addStandardTab('Document',$ong,$options);
+      $this->addStandardTab('Document_Item',$ong,$options);
       $this->addStandardTab('Log',$ong,$options);
       return $ong;
    }

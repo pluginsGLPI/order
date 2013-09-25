@@ -259,7 +259,7 @@ class PluginOrderReference extends CommonDBTM {
       if (!$this->isNewID($this->getID())) {
          $this->addStandardTab('PluginOrderReference_Supplier', $ong,$options);
          $this->addStandardTab('PluginOrderReference', $ong,$options);
-         $this->addStandardTab('Document',$ong,$options);
+         $this->addStandardTab('Document_Item',$ong,$options);
          $this->addStandardTab('Note',$ong,$options);
          $this->addStandardTab('Log',$ong,$options);
       }

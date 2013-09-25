@@ -456,7 +456,7 @@ class PluginOrderOrder extends CommonDBTM {
          $this->addStandardTab('Ticket', $ong, $options);
       }
       if (!$this->isNewID($this->fields['id'])) {
-         $this->addStandardTab('Document',$ong,$options);
+         $this->addStandardTab('Document_Item',$ong,$options);
          $this->addStandardTab('Note',$ong,$options);
          $this->addStandardTab('Log',$ong,$options);
       }
