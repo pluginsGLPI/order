@@ -44,7 +44,7 @@ $DBCONNECTION_REQUIRED=0; // Really a big SQL request
 
 include ("../../../../inc/includes.php");
 
-$report = new PluginReportsAutoReport();
+$report = new PluginReportsAutoReport(__("Orders delivery statistics", "order"));
 new PluginReportsDateIntervalCriteria($report, 'order_date', __("Date of order", "order"));
 new PluginReportsDateIntervalCriteria($report, 'deliverydate', __("Delivery date"));
 new PluginReportsLocationCriteria($report, 'locations_id', __("Delivery location", "order"));
@@ -60,8 +60,8 @@ if ($report->criteriasValidated()) {
                                                          __("Supplier"), 'Supplier'),
                              new PluginReportsColumnLink('entities_id',
                                                          __("Entity"), 'Entity'),
-                             new PluginReportsColumnInteger('total'['plugin_order']['deliveryinfos'][2]),
-                             new PluginReportsColumnInteger('late'['plugin_order']['deliveryinfos'][3]),
+                             new PluginReportsColumnInteger('total', __("Orders total", "order")),
+                             new PluginReportsColumnInteger('late', __("Late orders total", "order")),
                        ));
     //TODO : ne pas chercher dans la poublelles
                        

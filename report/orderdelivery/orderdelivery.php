@@ -44,7 +44,7 @@ $DBCONNECTION_REQUIRED=0; // Really a big SQL request
 
 include ("../../../../inc/includes.php");
 
-$report = new PluginReportsAutoReport();
+$report = new PluginReportsAutoReport(__("Orders delivery", "order"));
 new PluginReportsDateIntervalCriteria($report, 'order_date', __("Date of order", "order"));
 new PluginReportsDateIntervalCriteria($report, 'deliverydate', __("Delivery date"));
 new PluginReportsLocationCriteria($report, 'locations_id', __("Delivery location", "order"));
@@ -62,7 +62,7 @@ if ($report->criteriasValidated()) {
                                                          'PluginOrderOrder',
                                                          array('with_comment' => true,
                                                                'with_navigate' => true)),
-                             new PluginReportsColumn('num_order'['plugin_order'][0]),
+                             new PluginReportsColumn('num_order', __("Order number", "order")),
                              new PluginReportsColumnLink('suppliers_id',
                                                          __("Supplier"), 'Supplier'),
                              new PluginReportsColumnLink('plugin_order_orderstates_id',
