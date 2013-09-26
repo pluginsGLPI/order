@@ -44,7 +44,7 @@ $DBCONNECTION_REQUIRED=0; // Really a big SQL request
 
 include ("../../../../inc/includes.php");
 
-$report = new PluginReportsAutoReport(__("Orders delivery statistics", "order"));
+$report = new PluginReportsAutoReport(__("deliveryinfos_report_title", "order"));
 new PluginReportsDateIntervalCriteria($report, 'order_date', __("Date of order", "order"));
 new PluginReportsDateIntervalCriteria($report, 'deliverydate', __("Delivery date"));
 new PluginReportsLocationCriteria($report, 'locations_id', __("Delivery location", "order"));

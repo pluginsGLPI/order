@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-26 08:12+0200\n"
+"POT-Creation-Date: 2013-09-26 08:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -845,7 +845,7 @@ msgid "Average mark up to 10 (X points / 5)"
 msgstr ""
 
 #: report/deliveryinfos/deliveryinfos.php:47
-msgid "Orders delivery statistics"
+msgid "deliveryinfos_report_title"
 msgstr ""
 
 #: report/deliveryinfos/deliveryinfos.php:63
@@ -857,5 +857,5 @@ msgid "Late orders total"
 msgstr ""
 
 #: report/orderdelivery/orderdelivery.php:47
-msgid "Orders delivery"
+msgid "orderdelivery_report_title"
 msgstr ""
