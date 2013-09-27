@@ -403,7 +403,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
 
          if ($candelete) {
             echo "<div class='center'>";
-            Html::openArrowMassives("show_suppliersurvey$rand");
+            Html::openArrowMassives("show_suppliersurvey$rand", true);
             Html::closeArrowMassives(array("delete" => __("Delete permanently")));
             echo "</div>";
          }
@@ -493,7 +493,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          $config = PluginOrderConfig::getConfig();
          if ($config->canUseSupplierSatisfaction()
             && $item->getState() == PluginOrderOrderState::DELIVERED) {
-            return array(1 => __("Quality"));
+            return array(1 => __("Supplier quality", "order"));
          }
       }
    }

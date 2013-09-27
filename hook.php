@@ -317,7 +317,7 @@ function plugin_order_MassiveActionsDisplay($options=array()) {
             case "plugin_order_transfert" :
                Entity::Dropdown();
                echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
-                  __("Post") . "\" >";
+                  _sx('button', 'Post') . "\" >";
                break;
          }
          break;
@@ -325,13 +325,13 @@ function plugin_order_MassiveActionsDisplay($options=array()) {
          switch ($options['action']) {
             case "plugin_order_copy_reference":
                echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
-                     __("Post") . "\" >";
+                     _sx('button', 'Post') . "\" >";
                break;
                    
             case "plugin_order_transfer_reference" :
                Entity::Dropdown();
                echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
-                     __("Post") . "\" >";
+                     _sx('button', 'Post') . "\" >";
                break;
          }
          break;

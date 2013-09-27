@@ -57,7 +57,7 @@ echo __("Delivery status", "order")."&nbsp;";
 PluginOrderDeliveryState::Dropdown(array('name' => "plugin_order_deliverystates_id"));
 echo "</td>";
 echo "<td><input type='submit' name='bulk_reception' class='submit' value='".
-   __("Post")."'></td></tr></table>";
+   _sx('button', 'Post')."'></td></tr></table>";
 
 Html::ajaxFooter();
 

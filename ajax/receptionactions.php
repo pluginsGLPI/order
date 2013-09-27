@@ -47,7 +47,7 @@ if (isset($_POST["action"])) {
          echo __("Delivery status", "order")."&nbsp;";
          PluginOrderDeliveryState::Dropdown(array('name' => "plugin_order_deliverystates_id"));
          echo "</td><td><input type='submit' name='reception' class='submit' value='".
-            __("Post")."'></td>";
+            _sx('button', 'Post')."'></td>";
          break;
    }
 }

@@ -44,7 +44,7 @@ if (isset($_POST["action"])) {
          echo "&nbsp;<input type='hidden' name='plugin_order_references_id' " .
                "  value='".$_POST["plugin_order_references_id"]."'>"; 
          echo"<input type='submit' name='generation' class='submit' " .
-             "   value='".__("Post")."'>"; 
+             "   value='"._sx('button', 'Post')."'>"; 
          break;
       case "createLink":
          echo "&nbsp;<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>";
@@ -54,11 +54,11 @@ if (isset($_POST["action"])) {
                                             $reference->fields["types_id"],
                                             $reference->fields["models_id"]);
          echo "&nbsp;<input type='submit' name='createLinkWithItem' " .
-               "  class='submit' value='".__("Post")."'>";
+               "  class='submit' value='"._sx('button', 'Post')."'>";
          break;
       case "deleteLink":
          echo "&nbsp;<input type='submit' name='deleteLinkWithItem' " .
-               "  class='submit' value='".__("Post")."'>";
+               "  class='submit' value='"._sx('button', 'Post')."'>";
          break;
    }
 }
