@@ -35,9 +35,12 @@ if (!defined('GLPI_ROOT')){
 class PluginOrderReception extends CommonDBTM {
 
    public $dohistory = true;
-   public $table     = "glpi_plugin_order_orders_items";
    public $itemtype  = 'PluginOrderOrder';
    public $items_id  = 'plugin_order_orders_id';
+
+   static function getTable() {
+      return "glpi_plugin_order_orders_items";
+   }
    
    static function getTypeName($nb=0) {
       return __("Delivery", "order");

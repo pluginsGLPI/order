@@ -35,7 +35,6 @@ if (!defined('GLPI_ROOT')){
 class PluginOrderLink extends CommonDBChild {
 
    public $dohistory = true;
-   public $table     = "glpi_plugin_order_orders_items";
    static public $itemtype  = 'PluginOrderOrder';
    static public $items_id  = 'plugin_order_orders_id';
    
@@ -43,6 +42,10 @@ class PluginOrderLink extends CommonDBChild {
       
 
       return __("Generation", "order");
+   }
+   
+   static function getTable() {
+      return "glpi_plugin_order_orders_items";
    }
    
    static function canCreate() {
