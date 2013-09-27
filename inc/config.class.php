@@ -69,7 +69,7 @@ class PluginOrderConfig extends CommonDBTM {
       echo "<input type='hidden' name='id' value='1'>";
       echo "<tr class='tab_bg_1' align='center'><td>".__("Default VAT", "order").
             "</td><td>";
-      PluginOrderOrderTaxe::Dropdown(array('name'                => "default_taxes",
+      PluginOrderOrderTax::Dropdown(array('name'                => "default_taxes",
                                            'value'               => $this->fields["default_taxes"],
                                            'display_emptychoice' => true,
                                            'emptylabel'          => __("No VAT", "order")));

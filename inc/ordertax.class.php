@@ -33,7 +33,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Class for a Dropdown
-class PluginOrderOrderTaxe extends CommonDropdown {
+class PluginOrderOrderTax extends CommonDropdown {
    
    static function getTypeName($nb=0) {
       return __("VAT", "order");

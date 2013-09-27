@@ -30,7 +30,7 @@
 
 include ("../../../inc/includes.php");
 
-$dropdown = new PluginOrderOrderTaxe();
+$dropdown = new PluginOrderOrderTax();
 include (GLPI_ROOT . "/front/dropdown.common.form.php");
 
 ?>

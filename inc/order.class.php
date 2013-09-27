@@ -815,7 +815,7 @@ class PluginOrderOrder extends CommonDBTM {
          $taxes = $this->fields["plugin_order_ordertaxes_id"];
       }
       if ($canedit) {
-         PluginOrderOrderTaxe::Dropdown(array('name'                => "plugin_order_ordertaxes_id",
+         PluginOrderOrderTax::Dropdown(array('name'                => "plugin_order_ordertaxes_id",
                                               'value'               => $taxes,
                                               'display_emptychoice' => true,
                                               'emptylabel'          => __("No VAT", "order")));
@@ -1425,7 +1425,7 @@ class PluginOrderOrder extends CommonDBTM {
    
                $listeArticles[]=array('quantity'         => $quantity,
                                       'ref'              => utf8_decode($data["name"]),
-                                      'taxe'             => Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTaxe"),
+                                      'taxe'             => Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTax"),
                                                                                          $data["plugin_order_ordertaxes_id"]),
                                       'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier($data["id"],
                                                                                                                                    $this->fields["suppliers_id"]),

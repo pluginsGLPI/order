@@ -51,7 +51,7 @@ function plugin_order_install() {
                     'PluginOrderOrder_Supplier', 'PluginOrderBill', 'PluginOrderOrderPayment',
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                     'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
-                    'PluginOrderSurveySupplier', 'PluginOrderOrderTaxe');
+                    'PluginOrderSurveySupplier', 'PluginOrderOrderTax');
    foreach ($classes as $class) {
       if ($plug=isPluginItemType($class)) {
          $plugname=strtolower($plug['plugin']);
@@ -83,7 +83,7 @@ function plugin_order_uninstall() {
                     'PluginOrderBillType', 'PluginOrderOrderState', 'PluginOrderOrder',
                     'PluginOrderOrder_Item', 'PluginOrderReference', 'PluginOrderDeliveryState',
                     'PluginOrderNotificationTargetOrder',
-                    'PluginOrderOrder_Supplier', 'PluginOrderOrderPayment','PluginOrderOrderTaxe',
+                    'PluginOrderOrder_Supplier', 'PluginOrderOrderPayment','PluginOrderOrderTax',
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                     'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
                     'PluginOrderSurveySupplier');
@@ -99,7 +99,7 @@ function plugin_order_getDropdown() {
    /* table => name */
    $plugin = new Plugin();
    if ($plugin->isActivated("order")) {
-      return array ('PluginOrderOrderTaxe'     => __("VAT", "order"),
+      return array ('PluginOrderOrderTax'      => __("VAT", "order"),
                     'PluginOrderOrderPayment'  => __("Payment conditions", "order"),
                     'PluginOrderOrderType'     => __("Type"),
                     'PluginOrderOrderState'    => __("Order status", "order"),

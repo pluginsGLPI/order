@@ -656,7 +656,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                
                /* taxe */
                echo "<td align='center'>";
-               echo Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTaxe"),
+               echo Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTax"),
                                                                $data["plugin_order_ordertaxes_id"]);
                echo "</td>";
                /* reduction */
@@ -910,7 +910,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       echo "<td>" . __("VAT", "order") . ": </td>";
       echo "<td>";
       if ($canedit) {
-         PluginOrderOrderTaxe::Dropdown(array('value' => $this->fields['plugin_order_ordertaxes_id']));
+         PluginOrderOrderTax::Dropdown(array('value' => $this->fields['plugin_order_ordertaxes_id']));
       } else {
          echo Dropdown::getDropdownName('glpi_plugin_order_ordertaxes',
                                          $this->fields['plugin_order_ordertaxes_id']);
