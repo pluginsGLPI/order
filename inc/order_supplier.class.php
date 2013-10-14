@@ -86,7 +86,9 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    }
    
    function defineTabs($options=array()) {
-
+      
+      $ong = array();
+      
       $this->addStandardTab('PluginOrderOrder_Supplier',$ong,$options);
 
       return $ong;
