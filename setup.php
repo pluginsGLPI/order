@@ -54,18 +54,18 @@ function plugin_init_order() {
 
    Plugin::registerClass('PluginOrderProfile');
    $PLUGIN_HOOKS['csrf_compliant']['order'] = true;
-   
+
    /* load changeprofile function */
    $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile', 'changeProfile');
-   
+
    $plugin = new Plugin();
    if ($plugin->isInstalled('order')) {
       $PLUGIN_HOOKS['migratetypes']['order'] = 'plugin_order_migratetypes';
    }
-   
+
    if ($plugin->isInstalled('order') && $plugin->isActivated('order')) {
       $PLUGIN_HOOKS['assign_to_ticket']['order'] = true;
-      
+
       //Itemtypes in use for an order
       $ORDER_TYPES = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Printer',
                            'Phone', 'ConsumableItem', 'CartridgeItem', 'Contract',
@@ -78,7 +78,7 @@ function plugin_init_order() {
                  'Contract' => array('PluginOrderOrder_Item', 'updateItem'));
       $PLUGIN_HOOKS['item_add']['order']
          = array('Document' => array('PluginOrderOrder', 'addDocumentCategory'));
-      
+
       include_once(GLPI_ROOT."/plugins/order/inc/order_item.class.php");
       foreach (PluginOrderOrder_Item::getClasses(true) as $type) {
          $PLUGIN_HOOKS['item_purge']['order'][$type] = 'plugin_item_purge_order';
@@ -91,44 +91,44 @@ function plugin_init_order() {
                                                       'contract_types'               => true,
                                                       'linkuser_types'               => true,
                                                       'addtabon'                     => array('Budget')));
-   
+
       Plugin::registerClass('PluginOrderReference', array('document_types'               => true));
-      
+
       Plugin::registerClass('PluginOrderOrder_Item',
                             array('notificationtemplates_types' => true,
                                   'addtabon' => PluginOrderOrder_Item::getClasses(true)));
       Plugin::registerClass('PluginOrderProfile', array('addtabon' => array('Profile')));
-      
+
       if (plugin_order_haveRight('order', 'r')) {
          Plugin::registerClass('PluginOrderOrder_Supplier', array('addtabon' => array('Supplier')));
          Plugin::registerClass('PluginOrderPreference', array('addtabon' => array('Preference')));
       }
       /*if glpi is loaded */
       if (Session::getLoginUserID()) {
-      
+
          /* link to the config page in plugins menu */
          if (Session::haveRight("config", "w")) {
             $PLUGIN_HOOKS['config_page']['order'] = 'front/config.form.php';
          }
-      
+
          if (plugin_order_haveRight("order", "r")
             || plugin_order_haveRight("reference", "r")
                || plugin_order_haveRight("bill", "r")) {
-   
+
             $PLUGIN_HOOKS['menu_entry']['order']      = 'front/menu.php';
 
             // Manage redirects
             $PLUGIN_HOOKS['redirect_page']['order']['order']      = "front/order.form.php";
             $PLUGIN_HOOKS['redirect_page']['order']['reference']  = "front/reference.form.php";
             $PLUGIN_HOOKS['redirect_page']['order']['reception']  = "front/reception.form.php";
-   
+
             //menu
             if (plugin_order_haveRight("order","r")) {
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['menu']['title']
                   = __("Menu", "order");
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['menu']['page']
                   = '/plugins/order/front/menu.php';
-   
+
             }
             //order
             if (plugin_order_haveRight("order","r")) {
@@ -138,7 +138,7 @@ function plugin_init_order() {
                   = '/plugins/order/front/order.php';
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['search']
                   = '/plugins/order/front/order.php';
-                  
+
             }
             //references
             if (plugin_order_haveRight("reference","r")) {
@@ -150,7 +150,7 @@ function plugin_init_order() {
                   = '/plugins/order/front/reference.php';
 
             }
-            
+
             //bill
             if (plugin_order_haveRight("bill","r")) {
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['title']
@@ -159,10 +159,10 @@ function plugin_init_order() {
                   = '/plugins/order/front/bill.php';
                $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['links']['search']
                   = '/plugins/order/front/bill.php';
-   
+
             }
          }
-   
+
          if (plugin_order_haveRight("order","w")) {
             //order
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['template']
@@ -173,16 +173,16 @@ function plugin_init_order() {
                   $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['config']
                   = '/plugins/order/front/config.form.php';
             }
-   
+
          }
-   
+
          if (plugin_order_haveRight("bill","w")) {
             //order
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['links']['add']
                = '/plugins/order/front/bill.form.php';
-   
+
          }
-   
+
          if (plugin_order_haveRight("reference","w")) {
             //references
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['add']
@@ -199,7 +199,7 @@ function plugin_init_order() {
             if (Session::haveRight('config', 'w')) {
                $PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/config.form.php';
             }
-   
+
          }
          $PLUGIN_HOOKS['use_massive_action']['order'] = 1;
 
@@ -213,13 +213,13 @@ function plugin_init_order() {
 
 /* get the name and the version of the plugin - needed- */
 function plugin_version_order() {
-   
+
 
    return array ('name'           => __("Orders management", "order"),
-                 'version'        => '1.8.0',
+                 'version'        => '1.8.1',
                  'author'         => 'The plugin order team',
                  'homepage'       => 'https://forge.indepnet.net/projects/show/order',
-                 'minGlpiVersion' => '0.83.3',
+                 'minGlpiVersion' => '0.84',
                  'license'        => 'GPLv2+');
 }
 
@@ -250,4 +250,3 @@ function plugin_order_haveRight($module,$right) {
       return false;
    }
 }
-?>
