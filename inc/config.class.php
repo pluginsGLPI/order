@@ -160,6 +160,23 @@ class PluginOrderConfig extends CommonDBTM {
                   Dropdown::showYesNo("generate_assets", $this->canGenerateAsset());
       echo "</td></tr>";
       
+      echo "<tr class='tab_bg_1' align='center'>
+                  <td>".__("Default state", "order")."</td><td>";
+      State::Dropdown(array('name' => 'default_asset_states_id',
+          'value' => $this->fields["default_asset_states_id"],
+          'entity' => $_SESSION["glpiactiveentities"]));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>
+                  <td>".__("Add order location to item", "order")."</td><td>";
+      Dropdown::showYesNo("add_location", $this->canAddLocation());
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>
+                  <td>".__("Add billing details to item", "order")."</td><td>";
+      Dropdown::showYesNo("add_bill_details", $this->canAddBillDetails());
+      echo "</td></tr>";
+
       if ($this->canGenerateAsset()) {
          echo "<tr class='tab_bg_1' align='center'>
                <td>".__("Default name", "order")."</td><td>";
@@ -176,22 +193,7 @@ class PluginOrderConfig extends CommonDBTM {
                   Html::autocompletionTextField($this, "generated_otherserial");
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1' align='center'>
-                  <td>".__("Default state", "order")."</td><td>";
-                  State::Dropdown(array('name'   => 'default_asset_states_id',
-                                        'value'  => $this->fields["default_asset_states_id"],
-                                        'entity' => $_SESSION["glpiactiveentities"]));
-         echo "</td></tr>";
-         
-         echo "<tr class='tab_bg_1' align='center'>
-                  <td>".__("Add order location to item", "order")."</td><td>";
-         Dropdown::showYesNo("add_location", $this->canAddLocation());
-         echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1' align='center'>
-                  <td>".__("Add billing details to item", "order")."</td><td>";
-         Dropdown::showYesNo("add_bill_details", $this->canAddBillDetails());
-         echo "</td></tr>";
 
          // TICKETS
          echo "<tr class='tab_bg_1' align='center'>

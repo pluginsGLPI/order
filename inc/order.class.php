@@ -1397,7 +1397,9 @@ class PluginOrderOrder extends CommonDBTM {
             $odf->setVars('title_budget', __("Budget"),true,'UTF-8');
             $budget = new Budget();
             if ($budget->getFromDB($this->fields["budgets_id"])) {
-               $odf->setVars('budget', $budget->fields['value'],true,'UTF-8');
+               $odf->setVars('budget', $budget->fields['name'],true,'UTF-8');
+            } else {
+               $odf->setVars('budget', '',true,'UTF-8');
             }
             
             $output='';
