@@ -63,15 +63,18 @@ class PluginOrderLink extends CommonDBChild {
    function showItemGenerationForm($params) {
       global $CFG_GLPI;
       
+      // Retrieve configuration for generate assets feature
+      $config = PluginOrderConfig::getConfig();
+      
       echo "<a href='" . $_SERVER["HTTP_REFERER"] . "'>" . __("Back") . "</a></br><br>";
       echo "<form method='post' name='order_deviceGeneration' id='order_deviceGeneration' action=\"" .
          Toolbox::getItemTypeFormURL("PluginOrderLink")."\">";
       echo "<div class='center'>";
          
       echo "<table class='tab_cadre_fixe'>";
-      $colspan = "5";
+      $colspan = "7";
       if (Session::isMultiEntitiesMode()) {
-         $colspan = "6";
+         $colspan = "8";
       }
       echo "<tr><th colspan='$colspan'>" . __("Generate item", "order") . "</tr></th>";
       echo "<tr><th>" . __("Product reference", "order") . "</th>";
@@ -99,7 +102,6 @@ class PluginOrderLink extends CommonDBChild {
          if ($val == 1) {
             $detail = new PluginOrderOrder_Item();
             $detail->getFromDB($key);
-
             if (!$detail->fields["items_id"]) {
                echo "<tr class='tab_bg_1'><td align='center'>" . $_POST["name"][$key] . "</td>";
                $templateID = $reference->checkIfTemplateExistsInEntity($params["id"][$key],
@@ -519,10 +521,12 @@ class PluginOrderLink extends CommonDBChild {
    
    function generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, $templateID = 0) {
       global $CFG_GLPI;
-
       
       //Do not try to generate infocoms if itemtype doesn't support it (ie contracts...)
       if(in_array($itemtype, $CFG_GLPI["infocom_types"])) {
+         
+         // Retrieve configuration for generate assets feature
+         $config = PluginOrderConfig::getConfig();
 
          $fields = array ();
          
@@ -543,8 +547,6 @@ class PluginOrderLink extends CommonDBChild {
          $order_supplier = new PluginOrderOrder_Supplier();
          $order_supplier->getFromDBByOrder($detail->fields["plugin_order_orders_id"]);
 
-         $exists = false;
-   
          if ($templateID) {
             if ($ic->getFromDBforDevice($itemtype, $templateID)) {
                $fields = $ic->fields;
@@ -559,6 +561,7 @@ class PluginOrderLink extends CommonDBChild {
                }
             }
          }
+
          $fields["entities_id"]     = $entity;
          $fields["itemtype"]        = $itemtype;
          $fields["items_id"]        = $items_id;
@@ -566,28 +569,34 @@ class PluginOrderLink extends CommonDBChild {
          $fields["delivery_number"] = $detail->fields["delivery_number"];
          $fields["budgets_id"]      = $order->fields["budgets_id"];
          $fields["suppliers_id"]    = $order->fields["suppliers_id"];
-         if ($detail->fields['plugin_order_bills_id']) {
-            $bill                   = new PluginOrderBill();
-            $fileds['bill']         = $bill->getField('number');
-         }
          $fields["value"]           = $detail->fields["price_discounted"];
          $fields["order_date"]      = $order->fields["order_date"];
          if (!is_null($detail->fields["delivery_date"])) {
             $fields["delivery_date"]   = $detail->fields["delivery_date"];
          }
+
+         // Get bill data
+         if ($config->canAddBillDetails()) {
+            $bill = new PluginOrderBill();
+            if ($bill->getFromDB($detail->fields["plugin_order_bills_id"])) {
+               $fields['bill'] = $bill->fields['number'];
+               $fields['warranty_date'] = $bill->fields['billdate'];
+            }
+         }
+         
          foreach (array('warranty_date', 'buy_date', 'inventory_date') as $date) {
             if (!isset($fields[$date])) {
                $fields[$date] = 'NULL';
             }
          }
          $fields['_no_warning'] = true;
+
          if ($infocomID) {
             $fields['id']              = $infocomID;
             $ic->update($fields);
          } else {
             $ic->add($fields);
          }
-         
       }
    }
    
@@ -619,7 +628,7 @@ class PluginOrderLink extends CommonDBChild {
                        
          if ($itemtype == 'SoftwareLicense') {
             $detail->getFromDB($detailID);
-            $query = "SELECT `ID`
+            $query = "SELECT `id`
                FROM `glpi_plugin_order_orders_items`
                WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id."'
                AND `plugin_order_references_id` = '" . $detail->fields["plugin_order_references_id"] ."'
@@ -703,7 +712,7 @@ class PluginOrderLink extends CommonDBChild {
             if ($detail->update($input)) {
                $this->generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id,
                      $templateID);
-               self::copyDocuments($itemtype, $items_id, $plugin_order_orders_id, $entity);
+               
                if ($history) {
                   $order = new PluginOrderOrder();
                   $order->getFromDB($detail->fields["plugin_order_orders_id"]);
@@ -800,7 +809,7 @@ class PluginOrderLink extends CommonDBChild {
    
    function generateNewItem($params) {
       global $DB;
-
+      
       // Retrieve plugin configuration
       $config    = new PluginOrderConfig();
       $reference = new PluginOrderReference();
@@ -810,7 +819,7 @@ class PluginOrderLink extends CommonDBChild {
          if (in_array($values['itemtype'], self::getTypesThanCannotBeGenerared())) {
             continue;
          }
-         
+
          $entity = $values["entities_id"];
          //------------- Template management -----------------------//
          //Look for a template in the entity
@@ -864,18 +873,22 @@ class PluginOrderLink extends CommonDBChild {
             $input["name"]             = $values["name"];
             $input["entities_id"]      = $entity;
             $input['contracttypes_id'] = $reference->fields['types_id'];
+            
          } else {
-
             if($config->getGeneratedAssetState()) {
                $input["states_id"]     = $config->getGeneratedAssetState();
             } else {
                $input["states_id"]     = 0;
             }
-
+            
             $input["entities_id"]      = $entity;
             $input["serial"]           = $values["serial"];
             $input["otherserial"]      = $values["otherserial"];
             $input["name"]             = $values["name"];
+            // Get bill data
+            if ($config->canAddLocation()) {
+               $input['locations_id'] = $order->fields['locations_id'];
+            }
             $input["manufacturers_id"] = $reference->fields["manufacturers_id"];
             $typefield                 = getForeignKeyFieldForTable(getTableForItemType($values["itemtype"]."Type"));
             $input[$typefield]         = $reference->fields["types_id"];
@@ -885,9 +898,9 @@ class PluginOrderLink extends CommonDBChild {
          }
          $input = Toolbox::addslashes_deep($input);
          $newID = $item->add($input);
-
+         
          // Attach new ticket if option is on
-         if(isset($params['generate_ticket'])) {
+         if (isset($params['generate_ticket'])) {
             $input = array();
             $input['entities_id']         = $entity;
             $input['name']                = Toolbox::addslashes_deep($params['generate_ticket']['title']);
@@ -898,13 +911,14 @@ class PluginOrderLink extends CommonDBChild {
             $input['urgency']             = 3;
             $input['_users_id_assign']    = 0;
             $input['_groups_id_assign']   = 0;
+            $input['_users_id_requester'] = empty($order->fields['users_id']) ? Session::getLoginUserID() : $order->fields['users_id'];
             $ticket = new Ticket();
             $ticketID = $ticket->add($input);
          }
 
          //-------------- End template management ---------------------------------//
          $this->createLinkWithItem($values["id"], $newID, $values["itemtype"],
-                                   $values["plugin_order_orders_id"], $entity, $templateID,
+                                   $values["plugin_order_orders_id"], $entity, $templateID, 
                                    false, false);
 
          //Add item's history
@@ -964,28 +978,18 @@ class PluginOrderLink extends CommonDBChild {
       $config        = PluginOrderConfig::getConfig();
       
       if ($config->canCopyDocuments() && in_array($itemtype, $CFG_GLPI["document_types"])) {
-
-         $document_item = new Document_Item();
          $document      = new Document();
+
          foreach (getAllDatasFromTable('glpi_documents_items',
                                          "`itemtype`='PluginOrderOrder'
                                            AND `items_id`='$orders_id'") as $doc) {
             $document->getFromDB($doc['documents_id']);
-            $mime     = $document->fields['mime'];
             $newdocument = clone $document;
             $newdocument->fields['entities_id'] = $entity;
+            $newdocument->fields['items_id'] = $items_id;
+            $newdocument->fields['itemtype'] = $itemtype;
             unset($newdocument->fields['id']);
-            $newID               = $document->add($newdocument->fields);
-            $tmp['itemtype']     = $itemtype;
-            $tmp['items_id']     = $items_id;
-            $tmp['documents_id'] = $newID;
-            $document_item->add($tmp);
-
-            //force mimetype
-            $document->update(array(
-               'id'       => $newID,
-               'mime'     => $mime
-            ));
+            $document->add($newdocument->fields);
          }
       }
    }

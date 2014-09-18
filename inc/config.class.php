@@ -182,6 +182,16 @@ class PluginOrderConfig extends CommonDBTM {
                                         'value'  => $this->fields["default_asset_states_id"],
                                         'entity' => $_SESSION["glpiactiveentities"]));
          echo "</td></tr>";
+         
+         echo "<tr class='tab_bg_1' align='center'>
+                  <td>".__("Add order location to item", "order")."</td><td>";
+         Dropdown::showYesNo("add_location", $this->canAddLocation());
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1' align='center'>
+                  <td>".__("Add billing details to item", "order")."</td><td>";
+         Dropdown::showYesNo("add_bill_details", $this->canAddBillDetails());
+         echo "</td></tr>";
 
          // TICKETS
          echo "<tr class='tab_bg_1' align='center'>
@@ -331,6 +341,14 @@ class PluginOrderConfig extends CommonDBTM {
 
    function canGenerateTicket() {
       return $this->fields['generate_ticket'];
+   }
+   
+   function canAddLocation() {
+      return $this->fields['add_location'];
+   }
+   
+   function canAddBillDetails() {
+      return $this->fields['add_bill_details'];
    }
 
    function getGeneratedAssetName() {
@@ -503,6 +521,11 @@ class PluginOrderConfig extends CommonDBTM {
             $migration->addField($table, "groups_id_author", "integer");
             $migration->addField($table, "groups_id_recipient", "integer");
             $migration->addField($table, "users_id_recipient", "integer");
+                     
+            //1.8.2
+            $migration->addField("glpi_plugin_order_configs", "add_location", "TINYINT(1) NOT NULL DEFAULT '0'");
+            $migration->addField("glpi_plugin_order_configs", "add_bill_details", "TINYINT(1) NOT NULL DEFAULT '0'");
+         
             $migration->migrationOneTable($table);
             
       }

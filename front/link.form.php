@@ -37,10 +37,8 @@ if(!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
 }
 
-$reception  = new PluginOrderReception();
 $link       = new PluginOrderLink();
 $order_item = new PluginOrderOrder_Item();
-$plugin     = new Plugin();
 
 if (isset ($_POST["generation"])) {
    if (isset ($_POST["item"])) {
@@ -65,10 +63,12 @@ if (isset ($_POST["generation"])) {
       Session::addMessageAfterRedirect(__("No item selected", "order"), false, ERROR);
       Html::redirect($_SERVER["HTTP_REFERER"]);
    }
+   
 } elseif (isset ($_POST["generate"])) {
    $link->generateNewItem($_POST);
    Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=" .
                                     $_POST["plugin_order_orders_id"] . "");
+   
 } elseif (isset ($_POST["deleteLinkWithItem"])) {
    foreach ($_POST["item"] as $key => $val) {
       if ($val == 1)
@@ -77,6 +77,7 @@ if (isset ($_POST["generation"])) {
    }
    Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=" .
                                      $_POST["plugin_order_orders_id"] . "");
+   
 } elseif (isset ($_POST["createLinkWithItem"])) {
    if (isset($_POST["item"]) && $_POST['item']) {
       $i    = 0;

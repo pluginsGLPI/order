@@ -216,7 +216,7 @@ function plugin_version_order() {
 
 
    return array ('name'           => __("Orders management", "order"),
-                 'version'        => '1.8.1',
+                 'version'        => '1.8.2',
                  'author'         => 'The plugin order team',
                  'homepage'       => 'https://forge.indepnet.net/projects/show/order',
                  'minGlpiVersion' => '0.84',

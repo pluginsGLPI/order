@@ -47,10 +47,12 @@ if (isset($_POST["action"])) {
              "   value='"._sx('button', 'Post')."'>"; 
          break;
       case "createLink":
-         echo "&nbsp;<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>";
+      
+         echo "&nbsp;<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>
+               <input type='hidden' name='plugin_order_orders_id' value='".$_POST["plugin_order_orders_id"]."'>";
          $reference->getFromDB($_POST["plugin_order_references_id"]);
          $reference->dropdownAllItemsByType("items_id", $_POST["itemtype"], 
-                                            $_POST["entities_id"],
+                                            $_SESSION["glpiactiveentities"],
                                             $reference->fields["types_id"],
                                             $reference->fields["models_id"]);
          echo "&nbsp;<input type='submit' name='createLinkWithItem' " .

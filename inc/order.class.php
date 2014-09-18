@@ -1394,6 +1394,12 @@ class PluginOrderOrder extends CommonDBTM {
             $odf->setVars('title_sender', __("Issuer order", "order"),true,'UTF-8');
             $odf->setVars('sender', Html::clean(getUserName(Session::getLoginUserID())),true,'UTF-8');
             
+            $odf->setVars('title_budget', __("Budget"),true,'UTF-8');
+            $budget = new Budget();
+            if ($budget->getFromDB($this->fields["budgets_id"])) {
+               $odf->setVars('budget', $budget->fields['value'],true,'UTF-8');
+            }
+            
             $output='';
             $contact = new Contact();
             if ($contact->getFromDB($this->fields["contacts_id"])) {

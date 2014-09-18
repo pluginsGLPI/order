@@ -31,6 +31,9 @@
 include ("../../../inc/includes.php");
 
 if (isset($_POST['action'])) {
+   // Retrieve configuration for generate assets feature
+   $config = PluginOrderConfig::getConfig();
+   
    $order_item = new PluginOrderOrder_Item();
    switch ($_POST['chooseAction']) {
       case 'bill':
@@ -41,6 +44,20 @@ if (isset($_POST['action'])) {
                   $tmp       = $_POST;
                   $tmp['id'] = $key;
                   $order_item->update($tmp);
+                  
+                  // Update infocom
+                  $ic = new Infocom();
+                  $ic->getFromDBforDevice($order_item->fields['itemtype'], $order_item->fields['items_id']);
+
+                  if ($config->canAddBillDetails()) {
+                     $bill = new PluginOrderBill();
+                     if ($bill->getFromDB($_POST["plugin_order_bills_id"])) {
+                        $fields['id'] = $ic->fields['id'];
+                        $fields['bill'] = $bill->fields['number'];
+                        $fields['warranty_date'] = $bill->fields['billdate'];
+                     }
+                  }
+                  $ic->update($fields);
                }
             }
          }

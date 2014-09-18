@@ -496,7 +496,7 @@ class PluginOrderReception extends CommonDBTM {
 
    function updateBulkReceptionStatus($params) {
       global $DB;
-      
+
       $query = "SELECT `id`, `itemtype`, 'entities_id'
                FROM `glpi_plugin_order_orders_items`
                WHERE `plugin_order_orders_id` = '" . $params["plugin_order_orders_id"] ."'
@@ -510,6 +510,10 @@ class PluginOrderReception extends CommonDBTM {
          Session::addMessageAfterRedirect(__("Not enough items to deliver", "order"), true, ERROR);
       } else {
          for ($i = 0; $i < $params['number_reception']; $i++) {
+            $this->receptionOneItem($DB->result($result, $i, 0), $params['plugin_order_orders_id'],
+                        $params["delivery_date"], $params["delivery_number"],
+                        $params["plugin_order_deliverystates_id"]);
+            
             // Automatic generate asset
             $options = array( "itemtype"    => $DB->result($result, $i, "itemtype"),
                               "items_id"    => $DB->result($result, $i, "id"),
@@ -518,11 +522,8 @@ class PluginOrderReception extends CommonDBTM {
                                          => $params['plugin_order_orders_id'],
                               "plugin_order_references_id"
                                          => $params["plugin_order_references_id"]);
-            self::generateAsset($options);
             
-            $this->receptionOneItem($DB->result($result, $i, 0), $params['plugin_order_orders_id'],
-                                    $params["delivery_date"], $params["delivery_number"],
-                                    $params["plugin_order_deliverystates_id"]);
+            self::generateAsset($options);
             $this->updateReceptionStatus(array('item' => array($DB->result($result, $i, 0) => 'on')));
          }
          self::updateDelivryStatus($params['plugin_order_orders_id']);
@@ -573,7 +574,6 @@ class PluginOrderReception extends CommonDBTM {
    }
    
    function updateReceptionStatus($params) {
-      
 
       $detail                 = new PluginOrderOrder_Item();
       $plugin_order_orders_id = 0;
@@ -589,18 +589,6 @@ class PluginOrderReception extends CommonDBTM {
                   $plugin_order_orders_id = $params["plugin_order_orders_id"];
                } else {
                   if ($detail->getFromDB($key)) {
-
-                     // Automatic generate asset
-                     $options = array( "itemtype"    => $params["itemtype"][$key],
-                                       "items_id"    => $key,
-                                       'entities_id' => $detail->getEntityID(),
-                                       "plugin_order_orders_id"
-                                          => $detail->fields["plugin_order_orders_id"],
-                                       "plugin_order_references_id"
-                                          => $params["plugin_order_references_id"][$key]);
-
-                     self::generateAsset($options);
-                     
                      if (!$plugin_order_orders_id) {
                         $plugin_order_orders_id = $detail->fields["plugin_order_orders_id"];
                      }
@@ -612,6 +600,18 @@ class PluginOrderReception extends CommonDBTM {
                      } else {
                         Session::addMessageAfterRedirect(__("Item already taken delivery", "order"), true, ERROR);
                      }
+                     
+                     
+                     // Automatic generate asset
+                     $options = array( "itemtype"    => $params["itemtype"][$key],
+                                       "items_id"    => $key,
+                                       'entities_id' => $detail->getEntityID(),
+                                       "plugin_order_orders_id"
+                                          => $detail->fields["plugin_order_orders_id"],
+                                       "plugin_order_references_id"
+                                          => $params["plugin_order_references_id"][$key]);
+
+                     self::generateAsset($options);
                   }
                }
             }// $val == 1
@@ -689,6 +689,7 @@ class PluginOrderReception extends CommonDBTM {
 
       if ($config->canGenerateAsset()) {
          // Automatic generate assets on delivery
+         
          $rand = mt_rand();
          $item = array( "name"                     => $config->getGeneratedAssetName().$rand,
                         "serial"                   => $config->getGeneratedAssetSerial().$rand,
@@ -701,7 +702,7 @@ class PluginOrderReception extends CommonDBTM {
          $options_gen = array("plugin_order_orders_id"     => $options["plugin_order_orders_id"],
                               "plugin_order_references_id" => $options["plugin_order_references_id"],
                               "id"                         => array($item));
-         
+
          if($config->canGenerateTicket()) {
             $options_gen["generate_ticket"] =
                   array("title"                 => $config->getGeneratedTicketTitle(),

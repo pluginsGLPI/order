@@ -1052,7 +1052,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             $item     = new $itemtype();
             echo "<tr><th><ul><li>";
             echo "<a href=\"javascript:showHideDiv('generation$rand','generation_img$rand', '".
-               GLPI_ROOT."/pics/plus.png','".$CFG_GLPI['root_doc']."/pics/moins.png');\">";
+               $CFG_GLPI['root_doc']."/pics/plus.png','".$CFG_GLPI['root_doc']."/pics/moins.png');\">";
             echo "<img alt='' name='generation_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
             echo "</a>";
             echo "</li></ul></th>";
