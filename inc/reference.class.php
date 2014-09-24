@@ -335,7 +335,7 @@ class PluginOrderReference extends CommonDBTM {
                             AND `template_name`='".$item->fields['template_name']."'
                                AND `is_template`='1'";
                $result_template = $DB->query($query);
-               if ($DB->numrows($result_template) == 1) {
+               if ($DB->numrows($result_template) >= 1) {
                   return $DB->result($result_template, 0, "id");
                } else {
                   return 0;
