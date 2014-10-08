@@ -912,6 +912,7 @@ class PluginOrderLink extends CommonDBChild {
             $input['_users_id_assign']    = 0;
             $input['_groups_id_assign']   = 0;
             $input['_users_id_requester'] = empty($order->fields['users_id']) ? Session::getLoginUserID() : $order->fields['users_id'];
+            $input['type']                = Ticket::DEMAND_TYPE;
             $ticket = new Ticket();
             $ticketID = $ticket->add($input);
          }
