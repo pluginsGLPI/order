@@ -461,6 +461,8 @@ class PluginOrderConfig extends CommonDBTM {
                      `groups_id_author` int(11) NOT NULL default '0',
                      `groups_id_recipient` int(11) NOT NULL default '0',
                      `users_id_recipient` int(11) NOT NULL default '0',
+                     `add_location` tinyint(1) NOT NULL default '0',
+                     `add_bill_details` tinyint(1) NOT NULL default '0',
                      PRIMARY KEY  (`id`)
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
                $DB->query($query) or die ($DB->error());
