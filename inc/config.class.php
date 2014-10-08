@@ -449,6 +449,7 @@ class PluginOrderConfig extends CommonDBTM {
                      `generated_title` varchar(255) collate utf8_unicode_ci default NULL,
                      `generated_content` text collate utf8_unicode_ci,
                      `default_ticketcategories_id` int(11) NOT NULL default '0',
+                     `default_itilcategories_id` int(11) NOT NULL default '0',
                      `order_status_draft` int(11) NOT NULL default '0',
                      `order_status_waiting_approval` int(11) NOT NULL default '0',
                      `order_status_approved` int(11) NOT NULL default '0',
