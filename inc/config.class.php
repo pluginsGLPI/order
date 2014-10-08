@@ -413,11 +413,7 @@ class PluginOrderConfig extends CommonDBTM {
                      `generated_serial` varchar(255) collate utf8_unicode_ci default NULL,
                      `generated_otherserial` varchar(255) collate utf8_unicode_ci default NULL,
                      `default_asset_states_id` int(11) NOT NULL default '0',
-                     `generate_ticket` int(11) NOT NULL default '0',
-                     `generated_title` varchar(255) collate utf8_unicode_ci default NULL,
-                     `generated_content` text collate utf8_unicode_ci,
-                     `default_ticketcategories_id` int(11) NOT NULL default '0',
-                     `default_itilcategories_id` int(11) NOT NULL default '0',
+                     `tickettemplates_id_delivery` int(11) NOT NULL default '0',
                      `order_status_draft` int(11) NOT NULL default '0',
                      `order_status_waiting_approval` int(11) NOT NULL default '0',
                      `order_status_approved` int(11) NOT NULL default '0',
@@ -522,6 +518,10 @@ class PluginOrderConfig extends CommonDBTM {
                $tmp['value'] = $config->fields['generated_content'];
                $predefinedFied->add($tmp);
                 
+               $tmp['num'] = 14;
+               $tmp['value'] = 2;
+               $predefinedFied->add($tmp);
+
                if ($config->fields['default_itilcategories_id'] > 0) {
                   $tmp['num'] = 7;
                   $tmp['value'] = $config->fields['generated_content'];
