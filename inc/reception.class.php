@@ -705,10 +705,8 @@ class PluginOrderReception extends CommonDBTM {
 
          if($config->canGenerateTicket()) {
             $options_gen["generate_ticket"] =
-                  array("title"                 => $config->getGeneratedTicketTitle(),
-                        "content"               => $config->getGeneratedTicketContent(),
-                        "ticketcategories_id"   => $config->getGeneratedTicketCategory(),
-                        "entities_id"           => $options['entities_id']);
+               array("entities_id" => $options['entities_id'], 
+                     "tickettemplates_id" => $config->fields['tickettemplates_id_delivery']);
          }
 
          $link = new PluginOrderLink();

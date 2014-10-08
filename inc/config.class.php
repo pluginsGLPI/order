@@ -199,31 +199,11 @@ class PluginOrderConfig extends CommonDBTM {
          echo "<tr class='tab_bg_1' align='center'>
                   <th colspan='2'>".__("Ticket")."</th>
                </tr>";
-      
          echo "<tr class='tab_bg_1' align='center'>
-               <td>".__("Enable automatic generation", "order")."</td><td>";
-                     Dropdown::showYesNo("generate_ticket", $this->canGenerateTicket());
+                  <td>".TicketTemplate::getTypeName(1)."</td><td>";
+         Dropdown::show('TicketTemplate', array('name' => 'tickettemplates_id_delivery', 
+                                                'value' => $this->fields['tickettemplates_id_delivery']));
          echo "</td></tr>";
-         
-         if ($this->canGenerateTicket()) {
-            echo "<tr class='tab_bg_1' align='center'>
-                     <td>".__("Default title", "order")."</td><td>";
-                     Html::autocompletionTextField($this, "generated_title");
-            echo "</td></tr>";
-            
-            echo "<tr class='tab_bg_1' align='center'>
-                     <td>".__("Default description", "order")."</td><td>";
-            echo "<textarea cols='60' rows='4' name='generated_content'>" .
-                        $this->fields["generated_content"] . "</textarea>";
-            echo "</td></tr>";
-            
-            echo "<tr class='tab_bg_1' align='center'>
-                     <td>".__("Default category", "order")."</td><td>";
-                     ItilCategory::Dropdown(array('name'   => 'default_itilcategories_id',
-                                                  'value'  => $this->fields["default_itilcategories_id"],
-                                                  'entity' => $_SESSION["glpiactiveentities"]));
-            echo "</td></tr>";
-         }
       }
 
       /* Workflow */
@@ -342,7 +322,7 @@ class PluginOrderConfig extends CommonDBTM {
    }
 
    function canGenerateTicket() {
-      return $this->fields['generate_ticket'];
+      return ($this->fields['tickettemplates_id_delivery'] > 0);
    }
    
    function canAddLocation() {
@@ -367,18 +347,6 @@ class PluginOrderConfig extends CommonDBTM {
 
    function getGeneratedAssetOtherserial() {
       return $this->fields['generated_otherserial'];
-   }
-
-   function getGeneratedTicketTitle() {
-      return $this->fields['generated_title'];
-   }
-
-   function getGeneratedTicketContent() {
-      return $this->fields['generated_content'];
-   }
-
-   function getGeneratedTicketCategory() {
-      return $this->fields['default_itilcategories_id'];
    }
 
    function canUseSupplierSatisfaction() {
@@ -531,7 +499,47 @@ class PluginOrderConfig extends CommonDBTM {
             $migration->addField("glpi_plugin_order_configs", "add_location", "TINYINT(1) NOT NULL DEFAULT '0'");
             $migration->addField("glpi_plugin_order_configs", "add_bill_details", "TINYINT(1) NOT NULL DEFAULT '0'");
          
+            $config = new self();
+            $config->getFromDB(1);
+            $templateID = false;
+            if($config->fields['generate_ticket'] && !FieldExists("glpi_plugin_order_configs", "tickettemplates_id_delivery")) {
+               //Create template
+               $template = new TicketTemplate();
+               $tmp['name'] = 'Order plugin';
+               $tmp['entities_id'] = 0;
+               $tmp['is_recursive'] = 1;
+               $templateID = $template->add($tmp);
+               
+               //Create predefined fields
+               $predefinedFied = new TicketTemplatePredefinedField();
+               $tmp = array();
+               $tmp['tickettemplates_id'] = $templateID;
+               $tmp['num'] = 1;
+               $tmp['value'] = $config->fields['generated_title'];
+               $predefinedFied->add($tmp);
+
+               $tmp['num'] = 21;
+               $tmp['value'] = $config->fields['generated_content'];
+               $predefinedFied->add($tmp);
+                
+               if ($config->fields['default_itilcategories_id'] > 0) {
+                  $tmp['num'] = 7;
+                  $tmp['value'] = $config->fields['generated_content'];
+                  $predefinedFied->add($tmp);
+               }
+            }
+
+            $migration->addField("glpi_plugin_order_configs", "tickettemplates_id_delivery", 'integer');
             $migration->migrationOneTable($table);
+
+            $migration->dropField("glpi_plugin_order_configs", "generated_title");
+            $migration->dropField("glpi_plugin_order_configs", "generated_content");
+            $migration->dropField("glpi_plugin_order_configs", "default_itilcategories_id");
+
+            $migration->migrationOneTable($table);
+            if ($templateID) {
+               $config->update(array('id' => 1, 'tickettemplates_id_delivery' => $templateID));
+            }
             
       }
 

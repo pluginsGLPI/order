@@ -901,20 +901,26 @@ class PluginOrderLink extends CommonDBChild {
          
          // Attach new ticket if option is on
          if (isset($params['generate_ticket'])) {
-            $input = array();
-            $input['entities_id']         = $entity;
-            $input['name']                = Toolbox::addslashes_deep($params['generate_ticket']['title']);
-            $input['content']             = Toolbox::addslashes_deep($params['generate_ticket']['content']);
-            $input['ticketcategories_id'] = $params['generate_ticket']['ticketcategories_id'];
-            $input['items_id']            = $newID;
-            $input['itemtype']            = $values["itemtype"];
-            $input['urgency']             = 3;
-            $input['_users_id_assign']    = 0;
-            $input['_groups_id_assign']   = 0;
-            $input['_users_id_requester'] = empty($order->fields['users_id']) ? Session::getLoginUserID() : $order->fields['users_id'];
-            $input['type']                = Ticket::DEMAND_TYPE;
-            $ticket = new Ticket();
-            $ticketID = $ticket->add($input);
+            $tkt = new TicketTemplate();
+            if ($tkt->getFromDB($params['generate_ticket']['tickettemplates_id'])) { 
+               $input = array();
+               $input = Ticket::getDefaultValues($entity);
+               $ttp        = new TicketTemplatePredefinedField();
+               $predefined = $ttp->getPredefinedFields($params['generate_ticket']['tickettemplates_id'], true);
+               if (count($predefined)) {
+                  foreach ($predefined as $predeffield => $predefvalue) {
+                     $input[$predeffield] = $predefvalue;
+                  }
+               }
+
+               $input['entities_id']         = $entity;
+               $input['_users_id_requester'] = empty($order->fields['users_id']) ? Session::getLoginUserID() : $order->fields['users_id'];
+               $input['items_id']            = $newID;
+               $input['itemtype']            = $values["itemtype"];
+
+               $ticket = new Ticket();
+               $ticketID = $ticket->add($input);
+            }
          }
 
          //-------------- End template management ---------------------------------//
