@@ -873,3 +873,6 @@ msgstr "Total des commandes en retard"
 #: report/orderdelivery/orderdelivery.php:47
 msgid "orderdelivery_report_title"
 msgstr "Expédition des commandes"
+
+msgid "Hide inactive budgets"
+msgstr "Ne pas afficher les budgets ayant expiré"

@@ -145,6 +145,13 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
       
+      echo "<tr class='tab_bg_1' align='center'>
+                  <td>".__("Hide inactive budgets", 'order')."</td><td>";
+      Dropdown::showYesNo("hide_inactive_budgets",
+                           $this->fields["hide_inactive_budgets"]);
+      echo "</td>";
+      echo "</tr>";
+
       // Automatic actions
       echo "<tr class='tab_bg_1' align='center'>
                <th colspan='2'>".__("Automatic actions when delivery", "order")."</th>
@@ -385,6 +392,10 @@ class PluginOrderConfig extends CommonDBTM {
       return $this->fields['users_id_recipient'];
    }
    
+   function canHideInactiveBudgets() {
+      return $this->fields['hide_inactive_budgets'];
+   }
+
    //----------------- Install & uninstall -------------------//
 
    static function install(Migration $migration) {
@@ -428,6 +439,7 @@ class PluginOrderConfig extends CommonDBTM {
                      `users_id_recipient` int(11) NOT NULL default '0',
                      `add_location` tinyint(1) NOT NULL default '0',
                      `add_bill_details` tinyint(1) NOT NULL default '0',
+                     `hide_inactive_budgets` tinyint(1) NOT NULL default '0',
                      PRIMARY KEY  (`id`)
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
                $DB->query($query) or die ($DB->error());
@@ -491,7 +503,7 @@ class PluginOrderConfig extends CommonDBTM {
             $migration->addField($table, "groups_id_recipient", "integer");
             $migration->addField($table, "users_id_recipient", "integer");
                      
-            //1.8.2
+            //1.9.0
             $migration->addField("glpi_plugin_order_configs", "add_location", "TINYINT(1) NOT NULL DEFAULT '0'");
             $migration->addField("glpi_plugin_order_configs", "add_bill_details", "TINYINT(1) NOT NULL DEFAULT '0'");
          
@@ -535,6 +547,8 @@ class PluginOrderConfig extends CommonDBTM {
             $migration->dropField("glpi_plugin_order_configs", "generated_title");
             $migration->dropField("glpi_plugin_order_configs", "generated_content");
             $migration->dropField("glpi_plugin_order_configs", "default_itilcategories_id");
+
+            $migration->addField("glpi_plugin_order_configs", "hide_inactive_budgets", "bool");
 
             $migration->migrationOneTable($table);
             if ($templateID) {
