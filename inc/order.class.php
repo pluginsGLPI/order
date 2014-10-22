@@ -361,7 +361,7 @@ class PluginOrderOrder extends CommonDBTM {
       $tab[14]['injectable']    = true;
       $tab[14]['massiveaction'] = false;
       
-      $tab[15]['table']         = 'glpi_plugin_appliances_appliances';
+      $tab[15]['table']         = $this->getTable();
       $tab[15]['field']         = 'is_helpdesk_visible';
       $tab[15]['name']          = __("Associable to a ticket");
       $tab[15]['datatype']      = 'bool';
