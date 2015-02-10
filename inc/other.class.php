@@ -32,25 +32,20 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderOther extends CommonDBTM {
-   
-   static function getTypeName($nb=0) {
+class PluginOrderOther extends CommonDBTM
+{
+   public static $rightname = 'order';
+
+   public static function getTypeName($nb = 0)
+   {
       return __("Other kind of items");
    }
-   
-   static function canCreate() {
-      return plugin_order_haveRight('order', 'w');
-   }
 
-   static function canView() {
-      return plugin_order_haveRight('order', 'r');
-   }
-   
-   static function install(Migration $migration) {
+   public static function install(Migration $migration)
+   {
       global $DB;
-      
+
       //Only avaiable since 1.2.0
-      
       $table = getTableForItemType(__CLASS__);
       if (!TableExists($table)) {
          $migration->displayMessage("Installing $table");
@@ -68,13 +63,12 @@ class PluginOrderOther extends CommonDBTM {
          $DB->query($query) or die ($DB->error());
       }
    }
-   
-   static function uninstall() {
+
+   public static function uninstall()
+   {
       global $DB;
-      
+
       //Current table name
       $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
    }
 }
-
-?>

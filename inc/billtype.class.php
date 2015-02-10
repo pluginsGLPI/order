@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id$
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -32,42 +31,37 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderBillType extends CommonDropdown {
+class PluginOrderBillType extends CommonDropdown
+{
+   public static $rightname = 'bill';
 
-   static function getTypeName($nb=0) {
-      
+   public static function getTypeName($nb = 0)
+   {
       return __("Bill type", "order");
    }
 
-   static function canCreate() {
-      return plugin_order_haveRight('bill', 'w');
-   }
-
-   static function canView() {
-      return plugin_order_haveRight('bill', 'r');
-   } 
-
-   static function install(Migration $migration) {
+   public static function install(Migration $migration)
+   {
       global $DB;
-      
+
       $table = getTableForItemType(__CLASS__);
       if (!TableExists($table)) {
          $migration->displayMessage("Installing $table");
          $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_billtypes` (
-                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                 `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                 `comment` text COLLATE utf8_unicode_ci,
-                 PRIMARY KEY (`id`),
-                 KEY `name` (`name`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
+                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                    `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                    `comment` text COLLATE utf8_unicode_ci,
+                    PRIMARY KEY (`id`),
+                    KEY `name` (`name`)
+                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
          $DB->query($query) or die ($DB->error());
       }
    }
 
-   static function uninstall() {
+   public static function uninstall()
+   {
       global $DB;
-      $DB->query("DROP TABLE IF EXISTS `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
-   }
 
+      $DB->query("DROP TABLE IF EXISTS `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
+   }
 }
-?>

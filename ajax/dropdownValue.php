@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: HEADER 2011-03-23 15:41:26 tsmr $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -102,8 +101,6 @@ if (isset($_POST["on_change"]) && !empty($_POST["on_change"])) {
 
 echo ">";
 
-
-
 $query = "SELECT `gr`.`name`, `gr`.`id`, `grm`.`reference_code`
                 FROM `".$table."` AS gr, `glpi_plugin_order_references_suppliers` AS grm
                 WHERE `gr`.`itemtype` = '".$_POST["itemtype"]."'
@@ -120,18 +117,17 @@ $query .= "ORDER BY `gr`.`name` ASC";
 
 if ($result = $DB->query($query)) {
 
-   if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
-      echo "<option value='0'>--".__("Limited view")."--</option>";
+   if ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"] && $DB->numrows($result) == $NBMAX) {
+      echo "<option value='0'>--" . __("Limited view") . "--</option>";
 
    } else if (!isset($_POST['display_emptychoice']) || $_POST['display_emptychoice']) {
-      echo "<option value='0'>".$_POST["emptylabel"]."</option>";
+      echo "<option value='0'>" . $_POST["emptylabel"] . "</option>";
    }
 
    foreach ($DB->request($query) as $data) {
-      
-      echo "<option value='".$data["id"]."'>".$data['name'];
+      echo "<option value='" . $data["id"] . "'>" . $data['name'];
       if ($data['reference_code']) {
-         echo " (".$data['reference_code'].")";
+         echo " (" . $data['reference_code'] . ")";
       }
       echo "</option>\n";
    }
@@ -142,24 +138,23 @@ if (isset($_POST["comment"]) && $_POST["comment"]) {
    $paramscomment = array('value' => '__VALUE__',
                           'table' => $table);
 
-   Ajax::updateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],
-                                 "comment_".$_POST["myname"].$_POST["rand"],
-                                $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment);
+   Ajax::updateItemOnSelectEvent("dropdown_" . $_POST["myname"] . $_POST["rand"],
+                                 "comment_" . $_POST["myname"] . $_POST["rand"],
+                                $CFG_GLPI["root_doc"] . "/ajax/comments.php", $paramscomment);
 }
 
 if (isset($_POST["action"]) && $_POST["action"]) {
- 
-   $params=array($_POST['myname']         => '__VALUE__',
-                       'entity_restrict'  => $_POST['entity_restrict'],
-                       'suppliers_id'     => $_POST["suppliers_id"],
-                       'rand'             => $_POST['rand'],
-                       'itemtype'         => $_POST['itemtype']);
-                   
-   Ajax::updateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"], $_POST['span'],
+   $params = array(
+      $_POST['myname']         => '__VALUE__',
+      'entity_restrict'  => $_POST['entity_restrict'],
+      'suppliers_id'     => $_POST["suppliers_id"],
+      'rand'             => $_POST['rand'],
+      'itemtype'         => $_POST['itemtype'],
+   );
+
+   Ajax::updateItemOnSelectEvent("dropdown_" . $_POST["myname"] . $_POST["rand"], $_POST['span'],
                                      $_POST['action'],
                                      $params);
 }
 
 Ajax::commonDropdownUpdateItem($_POST);
-
-?>

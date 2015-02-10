@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -29,7 +28,9 @@
  ---------------------------------------------------------------------- */
 
 include ("../../../inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
+
 Html::header_nocache();
 
 if (!defined('GLPI_ROOT')){
@@ -38,14 +39,14 @@ if (!defined('GLPI_ROOT')){
 
 Session::checkCentralAccess();
 
-$params = array('itemtype'    => $_POST['itemtype'],
-               'orders_id'     => $_POST['orders_id'],
-               'suppliers_id'  => $_POST['suppliers_id'],
-               'entity'        => $_POST['entity_restrict'],
-               'span'          => $_POST['span'],
-               'action'        => $CFG_GLPI["root_doc"]."/plugins/order/ajax/detail.php",
-               'condition'     => '');
-$ref    = new PluginOrderReference();
+$params = array(
+   'itemtype'     => $_POST['itemtype'],
+   'orders_id'    => $_POST['orders_id'],
+   'suppliers_id' => $_POST['suppliers_id'],
+   'entity'       => $_POST['entity_restrict'],
+   'span'         => $_POST['span'],
+   'action'       => $CFG_GLPI["root_doc"] . "/plugins/order/ajax/detail.php",
+   'condition'    => ''
+);
+$ref = new PluginOrderReference();
 $ref->dropdownReferencesByEnterprise("PluginOrderReference",$params);
-
-?>

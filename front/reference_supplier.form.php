@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -30,50 +29,48 @@
 
 include ("../../../inc/includes.php");
 
-if(!isset($_GET["id"])) $_GET["id"] = "";
-if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
+if(!isset($_GET["id"]))                         $_GET["id"]                         = "";
+if(!isset($_GET["withtemplate"]))               $_GET["withtemplate"]               = "";
 if(!isset($_GET["plugin_order_references_id"])) $_GET["plugin_order_references_id"] = "";
 
 $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 
-if (isset($_POST["add"]))
-{
-   if (PluginOrderReference_Supplier::canCreate())
-   {
-      if (isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0)
-      {
+if (isset($_POST["add"])) {
+   if (PluginOrderReference_Supplier::canCreate()) {
+      if (isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0) {
          $newID=$PluginOrderReference_Supplier->add($_POST);
       }
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["update"]))
-{
-   if (PluginOrderReference_Supplier::canCreate())
+
+} elseif (isset($_POST["update"])) {
+   if (PluginOrderReference_Supplier::canCreate()) {
       $PluginOrderReference_Supplier->update($_POST);
-   Html::redirect($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["delete"]))
-{
-   if (PluginOrderReference_Supplier::canCreate())
-   {
-      foreach ($_POST["check"] as $ID => $value)
-         $PluginOrderReference_Supplier->delete(array("id"=>$ID));
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
-}
-else
-{
-   $PluginOrderReference_Supplier->checkGlobal("r");
-   
-   Html::header(__("Supplier for the reference", "order"),'',"plugins","order","reference");
-   
+
+} elseif (isset($_POST["delete"])) {
+   if (PluginOrderReference_Supplier::canCreate()) {
+      foreach ($_POST["check"] as $ID => $value) {
+         $PluginOrderReference_Supplier->delete(array("id"=>$ID));
+      }
+   }
+   Html::redirect($_SERVER['HTTP_REFERER']);
+
+} else {
+   $PluginOrderReference_Supplier->checkGlobal(READ);
+   Html::header(
+      __("Supplier for the reference", "order"),
+      $_SERVER['PHP_SELF'],
+      "management",
+      "PluginOrderMenu",
+      "references"
+   );
+
    /* load order form */
-   $PluginOrderReference_Supplier->showForm($_GET["id"], 
-                                            array('plugin_order_references_id' => 
-                                               $_GET["plugin_order_references_id"]));
+   $PluginOrderReference_Supplier->display($_GET, array(
+      'plugin_order_references_id' => $_GET["plugin_order_references_id"],
+   ));
 
    Html::footer();
 }
-
-?>

@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -29,7 +28,9 @@
  ---------------------------------------------------------------------- */
 
 include ("../../../inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
+
 Html::header_nocache();
 
 if (!defined('GLPI_ROOT')) {
@@ -37,7 +38,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 Session::checkCentralAccess();
-
 
 if ($_POST["plugin_order_references_id"] > 0) {
    $reference_supplier = new PluginOrderReference_Supplier();
@@ -48,29 +48,29 @@ if ($_POST["plugin_order_references_id"] > 0) {
          echo "<input type='text' name='quantity' size='5'>";
          break;
       case 'priceht':
-         echo "<input type='text' name='price' value=\"".Html::formatNumber($price, true)."\" size='5'>";
+         echo "<input type='text' name='price' value=\"" . Html::formatNumber($price, true) . "\" size='5'>";
          break;
       case 'pricediscounted':
          echo "<input type='text' name='discount' size='5' value='0'>";
          break;
       case 'taxe':
          $config = PluginOrderConfig::getConfig();
-         PluginOrderOrderTax::Dropdown(array('name'                => "plugin_order_ordertaxes_id",
-                                              'value'               => $config->getDefaultTaxes(),
-                                              'display_emptychoice' => true,
-                                              'emptylabel'          => __("No VAT", "order")));
+         PluginOrderOrderTax::Dropdown(array(
+            'name'                => "plugin_order_ordertaxes_id",
+            'value'               => $config->getDefaultTaxes(),
+            'display_emptychoice' => true,
+            'emptylabel'          => __("No VAT", "order"),
+         ));
          break;
       case 'validate':
-         echo "<input type='hidden' name='itemtype' value='".
-            $_POST["itemtype"]."' class='submit' >";
-         echo "<input type='hidden' name='plugin_order_references_id' value='".
-               $_POST["plugin_order_references_id"]."' class='submit' >";
-         echo "<input type='submit' name='add_item' value=\"".
-            __("Add")."\" class='submit' >";
+         echo "<input type='hidden' name='itemtype' value='"
+            . $_POST["itemtype"] . "' class='submit' >";
+         echo "<input type='hidden' name='plugin_order_references_id' value='"
+            . $_POST["plugin_order_references_id"] . "' class='submit' >";
+         echo "<input type='submit' name='add_item' value=\""
+            . __("Add") . "\" class='submit' >";
          break;
    }
 } else {
    return "";
 }
-
-?>

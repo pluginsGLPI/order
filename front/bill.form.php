@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id$
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -33,7 +32,7 @@ include ("../../../inc/includes.php");
 if (isset($_POST['action'])) {
    // Retrieve configuration for generate assets feature
    $config = PluginOrderConfig::getConfig();
-   
+
    $order_item = new PluginOrderOrder_Item();
    switch ($_POST['chooseAction']) {
       case 'bill':
@@ -44,7 +43,7 @@ if (isset($_POST['action'])) {
                   $tmp       = $_POST;
                   $tmp['id'] = $key;
                   $order_item->update($tmp);
-                  
+
                   // Update infocom
                   $ic = new Infocom();
                   $ic->getFromDBforDevice($order_item->fields['itemtype'], $order_item->fields['items_id']);
@@ -67,6 +66,12 @@ if (isset($_POST['action'])) {
    Html::redirect($_SERVER["HTTP_REFERER"]);
 }
 $dropdown = new PluginOrderBill();
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
 
-?>
+// TODO: changer les droits
+Session::checkRight("budget", READ);
+
+Html::header(PluginOrderBill::getTypeName(1), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "bill");
+$bill = new PluginOrderBill();
+$bill->show();
+
+Html::footer();

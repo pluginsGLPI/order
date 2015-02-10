@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: HEADER 2011-03-23 15:41:26 tsmr $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -32,25 +31,20 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderOtherType extends CommonDropdown {
+class PluginOrderOtherType extends CommonDropdown
+{
+   public static $rightname = 'order';
 
-   static function getTypeName($nb=0) {
+   public static function getTypeName($nb=0)
+   {
       return __("Other type of item", "order");
    }
-   
-   static function canCreate() {
-      return plugin_order_haveRight('order', 'w');
-   }
 
-   static function canView() {
-      return plugin_order_haveRight('order', 'r');
-   } 
-
-   static function install(Migration $migration) {
+   public static function install(Migration $migration)
+   {
       global $DB;
-      
+
       //Only avaiable since 1.2.0
-      
       $table = getTableForItemType(__CLASS__);
       if (!TableExists($table)) {
          $migration->displayMessage("Installing $table");
@@ -65,13 +59,12 @@ class PluginOrderOtherType extends CommonDropdown {
          $DB->query($query) or die ($DB->error());
       }
    }
-   
-   static function uninstall() {
+
+   public static function uninstall()
+   {
       global $DB;
-      
+
       //Current table name
-      $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS  `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
    }
 }
-
-?>

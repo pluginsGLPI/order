@@ -33,8 +33,8 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Class for a Dropdown
-class PluginOrderOrderState extends CommonDropdown {
-
+class PluginOrderOrderState extends CommonDropdown
+{
    const DRAFT                = 1;
    const WAITING_FOR_APPROVAL = 2;
    const VALIDATED            = 3;
@@ -43,36 +43,33 @@ class PluginOrderOrderState extends CommonDropdown {
    const CANCELED             = 6;
    const PAID                 = 7;
 
-   static function getTypeName($nb=0) {
+   public static $rightname   = 'order';
+
+   public static function getTypeName($nb = 0)
+   {
       return __("Order status", "order");
    }
-   
-   static function canCreate() {
-      return plugin_order_haveRight('order', 'w');
-   }
 
-   static function canView() {
-      return plugin_order_haveRight('order', 'r');
-   } 
-   
-   function pre_deleteItem() {
-      
+   public function pre_deleteItem()
+   {
       if ($this->getID() <= self::CANCELED ) {
-         Session::addMessageAfterRedirect(__("You cannot remove this status", "order").": ".$this->fields['name'], 
+         Session::addMessageAfterRedirect(__("You cannot remove this status", "order") . ": " . $this->fields['name'],
                                  false, ERROR);
          return false;
       } else {
          return true;
       }
    }
-   
-   static function install(Migration $migration) {
+
+   public static function install(Migration $migration)
+   {
       global $DB;
-      
+
       $table = getTableForItemType(__CLASS__);
+
       //1.2.0
       $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_status`;");
-      
+
       if (!TableExists($table)) {
          $migration->displayMessage("Installing $table");
          $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orderstates` (
@@ -84,9 +81,9 @@ class PluginOrderOrderState extends CommonDropdown {
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die ($DB->error());
       }
-      
+
       $state = new self();
-      foreach (array (1 => __("Draft", "order"), 
+      foreach (array (1 => __("Draft", "order"),
                       2 => __("Waiting for approval", "order"),
                       3 => __("Validated", "order"),
                       4 => __("Being delivered", "order"),
@@ -97,13 +94,11 @@ class PluginOrderOrderState extends CommonDropdown {
             $state->add(array('id' => $id, 'name' => Toolbox::addslashes_deep($label)));
          }
       }
-
    }
 
-   static function uninstall() {
+   public static function uninstall()
+   {
       global $DB;
-      $DB->query("DROP TABLE IF EXISTS `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
    }
 }
-
-?>

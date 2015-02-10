@@ -32,24 +32,25 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderPreference extends CommonDBTM {
-
-   
-   static function checkIfPreferenceExists($users_id) {
+class PluginOrderPreference extends CommonDBTM
+{
+   public static function checkIfPreferenceExists($users_id)
+   {
       return self::checkPreferenceValue('id', $users_id);
    }
-   
-   function addDefaultPreference($users_id) {
+
+   public function addDefaultPreference($users_id)
+   {
       $id = self::checkIfPreferenceExists($users_id);
       if (!$id) {
-         $input["users_id"]  = $users_id;
+         $input["users_id"] = $users_id;
          $input["template"] = "";
          $input["sign"]     = "";
          $id = $this->add($input);
       }
       return $id;
    }
-   
+
    /**
     *
     * Get a preference for an user
@@ -58,7 +59,8 @@ class PluginOrderPreference extends CommonDBTM {
     * @param unknown_type user ID
     * @return preference value or 0
     */
-   static function checkPreferenceValue($field, $users_id = 0) {
+   public static function checkPreferenceValue($field, $users_id = 0)
+   {
       $data = getAllDatasFromTable(getTableForItemType(__CLASS__), "`users_id`='$users_id'");
       if (!empty($data)) {
          $first = array_pop($data);
@@ -67,12 +69,14 @@ class PluginOrderPreference extends CommonDBTM {
          return 0;
       }
    }
-   
-   static function checkPreferenceSignatureValue($users_id= 0) {
+
+   public static function checkPreferenceSignatureValue($users_id= 0)
+   {
       return self::checkPreferenceValue('sign', $users_id);
    }
-   
-   static function checkPreferenceTemplateValue($users_id) {
+
+   public static function checkPreferenceTemplateValue($users_id)
+   {
       return self::checkPreferenceValue('template', $users_id);
    }
 
@@ -82,7 +86,8 @@ class PluginOrderPreference extends CommonDBTM {
     * @since 1.5.3
     * @param $value default value
     */
-   static function dropdownFileTemplates($value = '') {
+   public static function dropdownFileTemplates($value = '')
+   {
       return self::dropdownListFiles('template', PLUGIN_ORDER_TEMPLATE_EXTENSION,
                                      PLUGIN_ORDER_TEMPLATE_DIR, $value);
    }
@@ -93,11 +98,12 @@ class PluginOrderPreference extends CommonDBTM {
     * @since 1.5.3
     * @param $value default value
     */
-   static function dropdownFileSignatures($value = '', $empy_value = true) {
+   public static function dropdownFileSignatures($value = '', $empy_value = true)
+   {
       return self::dropdownListFiles('sign', PLUGIN_ORDER_SIGNATURE_EXTENSION,
                                      PLUGIN_ORDER_SIGNATURE_DIR, $value);
    }
-   
+
    /**
     *
     * Display a dropdown which contains all files of a certain type in a directory
@@ -107,9 +113,10 @@ class PluginOrderPreference extends CommonDBTM {
     * @param $directory directory in which to look for files
     * @param $value default value
     */
-   static function dropdownListFiles($name, $extension, $directory, $value = '') {
-      $files     = self::getFiles($directory, $extension);
-      $values    = array();
+   public static function dropdownListFiles($name, $extension, $directory, $value = '')
+   {
+      $files  = self::getFiles($directory, $extension);
+      $values = array();
       if (empty($files)) {
          $values[0] = Dropdown::EMPTY_VALUE;
       }
@@ -118,14 +125,15 @@ class PluginOrderPreference extends CommonDBTM {
       }
       return Dropdown::showFromArray($name, $values, array('value' => $value));
    }
-   
+
    /**
     *
     * Check if at least one template exists
     * @since 1.5.3
     * @return true if at least one template exists, false otherwise
     */
-   static function atLeastOneTemplateExists() {
+   public static function atLeastOneTemplateExists()
+   {
       $files = self::getFiles(PLUGIN_ORDER_TEMPLATE_DIR, PLUGIN_ORDER_TEMPLATE_EXTENSION);
       return (!empty($files));
    }
@@ -136,53 +144,54 @@ class PluginOrderPreference extends CommonDBTM {
     * @since 1.5.3
     * @return true if at least one signature exists, false otherwise
     */
-   static function atLeastOneSignatureExists() {
+   public static function atLeastOneSignatureExists()
+   {
       $files = self::getFiles(PLUGIN_ORDER_SIGNATURE_DIR, PLUGIN_ORDER_SIGNATURE_EXTENSION);
       return (!empty($files));
    }
-   
-   function showForm($ID){
+
+   public function showForm($ID)
+   {
       global $CFG_GLPI;
-      
+
       $version = plugin_version_order();
       $this->getFromDB($ID);
-      
-      echo "<form method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'><div align='center'>";
+
+      echo "<form method='post' action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'><div align='center'>";
       echo "<table class='tab_cadre_fixe' cellpadding='5'>";
-      echo "<tr><th colspan='2'>" . $version['name'] . " - ". $version['version'] . "</th></tr>";
-      echo "<tr class='tab_bg_2'><td align='center'>".__("Use this model", "order")."</td>";
+      echo "<tr><th colspan='2'>"  .  $version['name']  .  " - " . $version['version'] . "</th></tr>";
+      echo "<tr class='tab_bg_2'><td align='center'>" . __("Use this model", "order") . "</td>";
       echo "<td align='center'>";
       self::dropdownFileTemplates($this->fields["template"]);
       echo "</td></tr>";
-         
-      echo "<tr class='tab_bg_2'><td align='center'>".__("Use this sign", "order")."</td>";
+
+      echo "<tr class='tab_bg_2'><td align='center'>" .__("Use this sign", "order") ."</td>";
       echo "<td align='center'>";
       self::dropdownFileSignatures($this->fields["sign"]);
       echo "</td></tr>";
-         
+
       if (isset($this->fields["sign"]) && !empty($this->fields["sign"])) {
          echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
-          echo "<img src='".$CFG_GLPI["root_doc"]."/plugins/order/signatures/".
-            $this->fields["sign"]."'>";
+          echo "<img src='" . $CFG_GLPI["root_doc"] . "/plugins/order/signatures/" . $this->fields["sign"] . "'>";
          echo "</td></tr>";
       }
-         
+
       echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
-      echo "<input type='hidden' name='id' value='".$ID."'>";
-      echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>";
-      echo "<input type='submit' name='update' value='"._sx('button', 'Post')."' class='submit' ></td>";
+      echo "<input type='hidden' name='id' value='" . $ID . "'>";
+      echo "<input type='hidden' name='users_id' value='" . $this->fields['users_id'] . "'>";
+      echo "<input type='submit' name='update' value='" . _sx('button', 'Post') . "' class='submit' ></td>";
       echo "</tr>";
-         
+
       echo "</table>";
       echo "</div>";
       Html::closeForm();
    }
-   
-   static function getFiles($directory , $ext) {
-      
+
+   public static function getFiles($directory , $ext)
+   {
       $array_dir  = array();
       $array_file = array();
-      
+
       if (is_dir($directory)) {
          if ($dh = opendir($directory)) {
             while (($file = readdir($dh)) !== false) {
@@ -194,7 +203,7 @@ class PluginOrderPreference extends CommonDBTM {
                if ($filename == ".." OR $filename == ".") {
                   echo "";
                } else {
-                  if ($filetype == 'file' && $extension ==$ext) {
+                  if ($filetype == 'file' && $extension == $ext) {
                      if ($ext == PLUGIN_ORDER_SIGNATURE_EXTENSION) {
                         $name = array_shift($basename);
                         if (strtolower($name) == strtolower($_SESSION["glpiname"])) {
@@ -203,7 +212,7 @@ class PluginOrderPreference extends CommonDBTM {
                      } else {
                         $array_file[] = array($filename, $filedate, $extension);
                      }
-                     
+
                   } elseif ($filetype == "dir") {
                      $array_dir[] = $filename;
                      }
@@ -214,14 +223,15 @@ class PluginOrderPreference extends CommonDBTM {
       }
 
       rsort($array_file);
-      
+
       return $array_file;
    }
-   
-   static function install(Migration $migration) {
+
+   public static function install(Migration $migration)
+   {
       global $DB;
+
       //Only avaiable since 1.2.0
-      
       $table = getTableForItemType(__CLASS__);
       if (!TableExists($table)) {
          $migration->displayMessage("Installing $table");
@@ -236,6 +246,7 @@ class PluginOrderPreference extends CommonDBTM {
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die ($DB->error());
       } else {
+
          //1.5.3
          $migration->changeField($table, 'ID', 'id', "int(11) NOT NULL auto_increment");
          $migration->changeField($table, 'user_id', 'users_id', "INT(11) NOT NULL DEFAULT '0'");
@@ -243,17 +254,17 @@ class PluginOrderPreference extends CommonDBTM {
          $migration->migrationOneTable($table);
       }
    }
-   
-   static function uninstall() {
+
+   public static function uninstall()
+   {
       global $DB;
-      
+
       //Current table name
-      $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS  `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
    }
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      
-
+   public function getTabNameForItem(CommonGLPI $item, $withtemplate=0)
+   {
       if (get_class($item) == 'Preference') {
          return array(1 => __("Orders", "order"));
       }
@@ -261,15 +272,13 @@ class PluginOrderPreference extends CommonDBTM {
    }
 
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   public static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0)
+   {
       if (get_class($item) == 'Preference') {
          $pref = new self();
-         $id = $pref->addDefaultPreference(Session::getLoginUserID());
+         $id   = $pref->addDefaultPreference(Session::getLoginUserID());
          $pref->showForm($id);
       }
       return true;
    }
-   
 }
-
-?>

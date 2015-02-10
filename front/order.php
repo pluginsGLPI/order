@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -29,17 +28,23 @@
  ---------------------------------------------------------------------- */
 
 include ("../../../inc/includes.php");
-Html::header(__("Orders management", "order"), '', "plugins", "order", "order");
+
+Html::header(
+   __("Orders", "order"),
+   $_SERVER['PHP_SELF'],
+   "management",
+   "PluginOrderMenu",
+   "order"
+);
 
 $order = new PluginOrderOrder();
-if (PluginOrderOrder::canView() || Session::haveRight("config","w")) {
+
+if (PluginOrderOrder::canView() || Session::haveRight("config", UPDATE)) {
    Search::show("PluginOrderOrder");
 } else {
-   echo "<div align='center'><br><br><img src=\"".
-      $CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
-   echo "<b>".__("Access denied")."</b></div>";
+   echo "<div align='center'><br><br><img src=\""
+      . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
+   echo "<b>" . __("Access denied") . "</b></div>";
 }
 
 Html::footer();
-
-?>

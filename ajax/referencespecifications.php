@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -29,7 +28,9 @@
  ---------------------------------------------------------------------- */
 
 include ("../../../inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
+
 Html::header_nocache();
 
 if (!defined('GLPI_ROOT')) {
@@ -48,14 +49,14 @@ if ($_POST["itemtype"]) {
          } else {
             $file = $_POST["itemtype"];
          }
-         if (file_exists(GLPI_ROOT."/inc/".strtolower($_POST["itemtype"])."type.class.php")
-               || file_exists(GLPI_ROOT."/plugins/order/inc/".strtolower($file)."type.class.php")) {
+         if (file_exists(GLPI_ROOT . "/inc/" . strtolower($_POST["itemtype"]) . "type.class.php")
+               || file_exists(GLPI_ROOT . "/plugins/order/inc/" . strtolower($file) . "type.class.php")) {
             Dropdown::show($_POST["itemtype"]."Type", array('name' => "types_id"));
          }
          break;
       case "models_id":
-         if (file_exists(GLPI_ROOT."/inc/".strtolower($_POST["itemtype"])."model.class.php")) {
-            Dropdown::show($_POST["itemtype"]."Model", array('name' => "models_id"));
+         if (file_exists(GLPI_ROOT . "/inc/" . strtolower($_POST["itemtype"]) . "model.class.php")) {
+            Dropdown::show($_POST["itemtype"] . "Model", array('name' => "models_id"));
          } else {
             return "";
          }
@@ -64,8 +65,7 @@ if ($_POST["itemtype"]) {
          $item = new $_POST['itemtype']();
          if ($item->maybeTemplate()) {
             $table = getTableForItemType($_POST["itemtype"]);
-            $PluginOrderReference->dropdownTemplate("templates_id", $_POST["entity_restrict"],
-                                                    $table);
+            $PluginOrderReference->dropdownTemplate("templates_id", $_POST["entity_restrict"], $table);
          } else {
             return "";
          }
@@ -74,4 +74,3 @@ if ($_POST["itemtype"]) {
 } else {
    return '';
 }
-?>

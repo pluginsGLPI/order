@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -30,9 +29,9 @@
 
 include ("../../../inc/includes.php");
 
-if(!isset($_GET["id"])) $_GET["id"] = "";
-if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
-if(!isset($_GET["plugin_order_orders_id"])) $_GET["plugin_order_orders_id"] = "";
+if(!isset($_GET["id"]))                      $_GET["id"]                     = "";
+if(!isset($_GET["withtemplate"]))            $_GET["withtemplate"]           = "";
+if(!isset($_GET["plugin_order_orders_id"]))  $_GET["plugin_order_orders_id"] = "";
 
 $PluginOrderSurveySupplier=new PluginOrderSurveySupplier();
 
@@ -43,27 +42,27 @@ if (isset($_POST["add"])) {
       }
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["delete"])) {
+
+} elseif (isset($_POST["delete"])) {
    if (PluginOrderSurveySupplier::canCreate()) {
       foreach ($_POST["check"] as $ID => $value) {
          $PluginOrderSurveySupplier->delete(array("id"=>$ID),0,0);
       }
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["update"])) {
+
+} elseif (isset($_POST["update"])) {
    if (PluginOrderSurveySupplier::canCreate()) {
-      
       $PluginOrderSurveySupplier->update($_POST);
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
+
 } else {
    $PluginOrderSurveySupplier->checkGlobal("r");
    Html::header(__("Orders management", "order"),'',"plugins","order","order");
-   $PluginOrderSurveySupplier->showForm($_GET["id"], 
-                                        array('plugin_order_orders_id' => 
-                                                $_GET["plugin_order_orders_id"]));
+   $PluginOrderSurveySupplier->showForm($_GET["id"], array(
+      'plugin_order_orders_id' => $_GET["plugin_order_orders_id"],
+   ));
 
    Html::footer();
 }
-
-?>

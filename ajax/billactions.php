@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id$
  LICENSE
 
  This file is part of the order plugin.
@@ -20,16 +19,18 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
  @link      http://www.glpi-project.org/
  @since     2009
  ---------------------------------------------------------------------- */
- 
+
 include ("../../../inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
+
 Html::header_nocache();
 
 if (!defined('GLPI_ROOT')) {
@@ -39,16 +40,14 @@ if (!defined('GLPI_ROOT')) {
 if (isset($_POST["action"])) {
    switch($_POST["action"]) {
       case "bill":
-         echo "&nbsp;<input type='hidden' name='plugin_order_orders_id' " .
-               "  value='".$_POST["plugin_order_orders_id"]."'>";
-         PluginOrderBill::Dropdown(array('condition' =>
-                                 "`plugin_order_orders_id`='".$_POST['plugin_order_orders_id']."'"));
+         echo "&nbsp;<input type='hidden' name='plugin_order_orders_id' "
+            . " value='" . $_POST["plugin_order_orders_id"] . "'>";
+         PluginOrderBill::Dropdown(array(
+            'condition' => "`plugin_order_orders_id`='" . $_POST['plugin_order_orders_id'] . "'",
+         ));
          break;
    }
-   
-   PluginOrderBillState::Dropdown(array('comments' => true));
-   echo"&nbsp;<input type='submit' name='action' class='submit' " .
-       "   value='"._sx('button', 'Post')."'>";
-}
 
-?>
+   PluginOrderBillState::Dropdown(array('comments' => true));
+   echo "&nbsp;<input type='submit' name='action' class='submit' value='" . _sx('button', 'Post') . "'>";
+}

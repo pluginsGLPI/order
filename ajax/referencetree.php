@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -28,19 +27,20 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-$AJAX_INCLUDE=1;
+$AJAX_INCLUDE = 1;
+
 include ("../../../inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
+
 Html::header_nocache();
 
 Session::checkLoginUser();
 
 if (!isset($_GET['target'])) {
-   $_GET['target']=$CFG_GLPI['root_doc']."/plugins/order/front/reference.php";
+   $_GET['target'] = $CFG_GLPI['root_doc'] . "/plugins/order/front/reference.php";
 }
 
-PluginOrderReference::showSelector($_GET['target']);//
+PluginOrderReference::showSelector($_GET['target']);
 
 Html::ajaxFooter();
-
-?>

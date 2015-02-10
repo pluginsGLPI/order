@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -42,7 +41,7 @@ function plugin_order_install() {
 
    echo "<tr class='tab_bg_1'>";
    echo "<td align='center'>";
-   
+
    $migration = new Migration("1.5.1");
    $classes = array('PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',
                     'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',
@@ -133,18 +132,18 @@ function plugin_order_getDatabaseRelations() {
          "glpi_plugin_order_references" => array (
             "glpi_plugin_order_orders_items"         => "plugin_order_references_id",
             "glpi_plugin_order_references_suppliers" => "plugin_order_references_id"),
-         
+
          "glpi_entities" => array ("glpi_plugin_order_orders"     => "entities_id",
                                    "glpi_plugin_order_references" => "entities_id",
                                    "glpi_plugin_order_others"     => "entities_id",
                                    "glpi_plugin_order_bills"      => "entities_id"),
          "glpi_budgets" => array ("glpi_plugin_order_orders" => "budgets_id"),
-         
+
          "glpi_plugin_order_othertypes" => array ("glpi_plugin_order_others" => "othertypes_id"),
          "glpi_suppliers" => array ("glpi_plugin_order_orders"               => "suppliers_id",
                                     "glpi_plugin_order_orders_suppliers"     => "suppliers_id",
                                     "glpi_plugin_order_references_suppliers" => "suppliers_id"),
-                                    
+
          "glpi_manufacturers" => array ("glpi_plugin_order_references" => "manufacturers_id"),
          "glpi_contacts"      => array ("glpi_plugin_order_orders"     => "contacts_id"),
          "glpi_locations"     => array ("glpi_plugin_order_orders"     => "locations_id"),
@@ -160,7 +159,7 @@ function plugin_order_getDatabaseRelations() {
 // Define search option for types of the plugins
 function plugin_order_getAddSearchOptions($itemtype) {
    $plugin = new Plugin();
-   
+
    $sopt = array();
    if ($plugin->isInstalled('order')
       && $plugin->isActivated('order')
@@ -256,7 +255,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
          if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."model.class.php")) {
             return Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"),
                                              $data["ITEM_" . $num]);
- 
+
          } else {
             return " ";
          }
@@ -275,7 +274,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 
 function plugin_order_displayConfigItem($type, $ID, $data, $num) {
    global $CFG_GLPI;
-   
+
    $searchopt = &Search::getOptions($type);
    $table = $searchopt[$ID]["table"];
    $field = $searchopt[$ID]["field"];
@@ -300,7 +299,7 @@ function plugin_order_MassiveActions($type) {
       case 'PluginOrderOrder' :
          return array ("plugin_order_transfert" => __("Transfer"));
          break;
-         
+
       case 'PluginOrderReference':
          return array ("plugin_order_copy_reference"     => __("Copy reference", "order"),
                          "plugin_order_transfer_reference" => __("Transfer"));
@@ -327,7 +326,7 @@ function plugin_order_MassiveActionsDisplay($options=array()) {
                echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
                      _sx('button', 'Post') . "\" >";
                break;
-                   
+
             case "plugin_order_transfer_reference" :
                Entity::Dropdown();
                echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
@@ -383,7 +382,7 @@ function plugin_item_purge_order($item) {
              SET `items_id`='0'
              WHERE `itemtype`='".$item->getType()."' AND `items_id`='".$item->getField('id')."'";
    $DB->query($query);
-    
+
    return true;
 }
 
@@ -396,7 +395,7 @@ function plugin_order_migratetypes($types) {
    $types[3152] = 'PluginOrderReference_Supplier';
    $types[3153] = 'PluginOrderBudget';
    $types[3154] = 'PluginOrderReception';
-   
+
    return $types;
 }
 
@@ -412,4 +411,3 @@ function plugin_order_AssignToTicket($types) {
    }
    return $types;
 }
-?>

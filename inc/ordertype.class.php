@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: HEADER 2011-03-23 15:41:26 tsmr $
  LICENSE
 
  This file is part of the order plugin.
@@ -33,24 +32,20 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Class for a Dropdown
-class PluginOrderOrderType extends CommonDropdown {
-   
-   static function getTypeName($nb=0) {
+class PluginOrderOrderType extends CommonDropdown
+{
+   public static $rightname = 'order';
+
+   public static function getTypeName($nb=0)
+   {
       return __("Type");
    }
-   
-   static function canCreate() {
-      return plugin_order_haveRight('order', 'w');
-   }
 
-   static function canView() {
-      return plugin_order_haveRight('order', 'r');
-   } 
-   
-  static function install(Migration $migration) {
+   public static function install(Migration $migration)
+   {
       global $DB;
       //Only avaiable since 1.3.0
-      
+
       $table = getTableForItemType(__CLASS__);
 
       if (!TableExists($table)) {
@@ -65,13 +60,12 @@ class PluginOrderOrderType extends CommonDropdown {
          $DB->query($query) or die ($DB->error());
       }
    }
-   
-   static function uninstall() {
+
+   public static function uninstall()
+   {
       global $DB;
-      
+
       //Current table name
-      $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS  `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
    }
 }
-
-?>

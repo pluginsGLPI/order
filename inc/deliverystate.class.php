@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: HEADER 2011-03-23 15:41:26 tsmr $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -32,41 +31,34 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderDeliveryState extends CommonDropdown {
+class PluginOrderDeliveryState extends CommonDropdown
+{
+   public static $rightname = 'order';
 
-   static function getTypeName($nb=0) {
-      
-
+   public static function getTypeName($nb = 0)
+   {
       return __("Delivery status", "order");
    }
-   
-   static function canCreate() {
-      return plugin_order_haveRight('order', 'w');
-   }
-
-   static function canView() {
-      return plugin_order_haveRight('order', 'r');
-   } 
-   
-   static function install(Migration $migration) {
+   public static function install(Migration $migration)
+   {
       global $DB;
-      
+
       $table = getTableForItemType(__CLASS__);
       if (!TableExists($table) && !TableExists("glpi_dropdown_plugin_order_deliverystate")) {
          $migration->displayMessage("Installing $table");
 
          //Install
         $query = "CREATE TABLE `glpi_plugin_order_deliverystates` (
-               `id` int(11) NOT NULL auto_increment,
-               `name` varchar(255) collate utf8_unicode_ci default NULL,
-               `comment` text collate utf8_unicode_ci,
-               PRIMARY KEY  (`id`),
-               KEY `name` (`name`)
-            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                     `id` int(11) NOT NULL auto_increment,
+                     `name` varchar(255) collate utf8_unicode_ci default NULL,
+                     `comment` text collate utf8_unicode_ci,
+                     PRIMARY KEY  (`id`),
+                     KEY `name` (`name`)
+                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die($DB->error());
       } else {
          $migration->displayMessage("Upgrading $table");
-         
+
          //Upgrade 1.2.0
          $migration->renameTable("glpi_dropdown_plugin_order_deliverystate", $table);
          $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
@@ -75,18 +67,15 @@ class PluginOrderDeliveryState extends CommonDropdown {
          $migration->migrationOneTable($table);
       }
    }
-   
-   static function uninstall() {
+
+   public static function uninstall()
+   {
       global $DB;
-      
+
       //Old table
-      $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_deliverystate`") 
-         or die ($DB->error());
-      
+      $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_deliverystate`") or die ($DB->error());
+
       //New table
-      $DB->query("DROP TABLE IF EXISTS `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
    }
-
 }
-
-?>

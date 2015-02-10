@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -29,7 +28,9 @@
  ---------------------------------------------------------------------- */
 
 include ("../../../inc/includes.php");
+
 header("Content-Type: text/html; charset=UTF-8");
+
 Html::header_nocache();
 
 if (!defined('GLPI_ROOT')){
@@ -38,20 +39,28 @@ if (!defined('GLPI_ROOT')){
 
 Session::checkCentralAccess();
 
-$rand = $_POST["rand"];
-$paramsaction = array('plugin_order_references_id' => '__VALUE__',
-                      'entity_restrict'            => $_POST["entity_restrict"],
-                      'suppliers_id'               => $_POST["suppliers_id"],
-                      'itemtype'                   => $_POST['itemtype']);
-$fields       = array ("quantity", "priceht", "pricediscounted", "taxe", "validate");
+$rand         = $_POST["rand"];
+$paramsaction = array(
+   'plugin_order_references_id' => '__VALUE__',
+   'entity_restrict'            => $_POST["entity_restrict"],
+   'suppliers_id'               => $_POST["suppliers_id"],
+   'itemtype'                   => $_POST['itemtype'],
+);
+$fields       = array(
+   "quantity",
+   "priceht",
+   "pricediscounted",
+   "taxe",
+   "validate",
+);
 
 foreach ($fields as $field) {
    $paramsaction['update'] = $field;
-   Ajax::updateItem("show_$field", $CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",
-                  $paramsaction, "dropdown_reference$rand");
-   Ajax::updateItemOnSelectEvent("dropdown_reference$rand", "show_$field",
-                               $CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",
-                               $paramsaction);
+   Ajax::updateItem("show_$field",
+                    $CFG_GLPI["root_doc"] . "/plugins/order/ajax/referencedetail.php",
+                    $paramsaction, "dropdown_reference$rand");
+   Ajax::updateItemOnSelectEvent("dropdown_reference$rand",
+                                 "show_$field",
+                                 $CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",
+                                 $paramsaction);
 }
-
-?>

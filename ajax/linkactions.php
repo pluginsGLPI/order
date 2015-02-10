@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -41,28 +40,26 @@ $reference = new PluginOrderReference();
 if (isset($_POST["action"])) {
    switch($_POST["action"]) {
       case "generation":
-         echo "&nbsp;<input type='hidden' name='plugin_order_references_id' " .
-               "  value='".$_POST["plugin_order_references_id"]."'>"; 
-         echo"<input type='submit' name='generation' class='submit' " .
-             "   value='"._sx('button', 'Post')."'>"; 
+         echo "&nbsp;<input type='hidden' name='plugin_order_references_id' "
+            . "  value='" . $_POST["plugin_order_references_id"] . "'>";
+         echo"<input type='submit' name='generation' class='submit' "
+            . "   value='" . _sx('button', 'Post') . "'>";
          break;
       case "createLink":
-      
+
          echo "&nbsp;<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>
                <input type='hidden' name='plugin_order_orders_id' value='".$_POST["plugin_order_orders_id"]."'>";
          $reference->getFromDB($_POST["plugin_order_references_id"]);
-         $reference->dropdownAllItemsByType("items_id", $_POST["itemtype"], 
+         $reference->dropdownAllItemsByType("items_id", $_POST["itemtype"],
                                             $_SESSION["glpiactiveentities"],
                                             $reference->fields["types_id"],
                                             $reference->fields["models_id"]);
          echo "&nbsp;<input type='submit' name='createLinkWithItem' " .
-               "  class='submit' value='"._sx('button', 'Post')."'>";
+               "  class='submit' value='" . _sx('button', 'Post') . "'>";
          break;
       case "deleteLink":
-         echo "&nbsp;<input type='submit' name='deleteLinkWithItem' " .
-               "  class='submit' value='"._sx('button', 'Post')."'>";
+         echo "&nbsp;<input type='submit' name='deleteLinkWithItem' "
+            . "  class='submit' value='" . _sx('button', 'Post') . "'>";
          break;
    }
 }
-
-?>

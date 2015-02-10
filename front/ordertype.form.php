@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
  This file is part of the order plugin.
@@ -31,6 +30,5 @@
 include ("../../../inc/includes.php");
 
 $dropdown = new PluginOrderOrderType();
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
 
-?>
+include (GLPI_ROOT . "/front/dropdown.common.form.php");

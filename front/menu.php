@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -30,29 +29,29 @@
 
 include ("../../../inc/includes.php");
 
-Html::header(__("Orders management", "order"), '', "plugins", "order", "menu");
+Html::header(
+   __("Orders management", "order"),
+   $_SERVER['PHP_SELF'],
+   "management",
+   "PluginOrderMenu"
+);
 
 $PluginOrderOrder     = new PluginOrderOrder();
 $PluginOrderReference = new PluginOrderReference();
 $PluginOrderBill      = new PluginOrderBill();
 
 //If there's only one possibility, do not display menu!
-if (PluginOrderOrder::canView()
-   && !PluginOrderReference::canView()
-      && !PluginOrderBill::canView()) {
+if (PluginOrderOrder::canView() && !PluginOrderReference::canView() && !PluginOrderBill::canView()) {
    Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderOrder'));
-}elseif (!PluginOrderOrder::canView()
-   && PluginOrderReference::canView()
-      && !PluginOrderBill::canView()) {
+
+}elseif(!PluginOrderOrder::canView() && PluginOrderReference::canView() && !PluginOrderBill::canView()) {
    Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderReference'));
-} elseif (!PluginOrderOrder::canView()
-   && !PluginOrderReference::canView()
-      && PluginOrderBill::canView()) {
+
+} elseif(!PluginOrderOrder::canView() && !PluginOrderReference::canView() && PluginOrderBill::canView()) {
    Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderBill'));
 }
 
-if (PluginOrderOrder::canView()
-      || PluginOrderReference::canView()) {
+if (PluginOrderOrder::canView() || PluginOrderReference::canView()) {
    echo "<div class='center'>";
    echo "<table class='tab_cadre'>";
    echo "<tr><th colspan='2'>" . __("Orders management", "order") . "</th></tr>";
@@ -86,5 +85,3 @@ if (PluginOrderOrder::canView()
 }
 
 Html::footer();
-
-?>

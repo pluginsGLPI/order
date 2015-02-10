@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -40,13 +39,12 @@ if(!isset($_GET["withtemplate"])) {
 $link       = new PluginOrderLink();
 $order_item = new PluginOrderOrder_Item();
 
-if (isset ($_POST["generation"])) {
+if (isset($_POST["generation"])) {
    if (isset ($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($val == 1) {
             $order_item->getFromDB($_POST["id"][$key]);
-            if ($order_item->fields["states_id"] ==
-                  PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
+            if ($order_item->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
                Session::addMessageAfterRedirect(__("Cannot generate items not delivered", "order"), true, ERROR);
                Html::redirect($_SERVER["HTTP_REFERER"]);
             }
@@ -58,32 +56,27 @@ if (isset ($_POST["generation"])) {
       Html::header(__("Orders management", "order"), '', "plugins", "order", "order");
       $link->showItemGenerationForm($_POST);
       Html::footer();
-      
    } else {
       Session::addMessageAfterRedirect(__("No item selected", "order"), false, ERROR);
       Html::redirect($_SERVER["HTTP_REFERER"]);
    }
-   
-} elseif (isset ($_POST["generate"])) {
+
+} elseif(isset($_POST["generate"])) {
    $link->generateNewItem($_POST);
-   Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=" .
-                                    $_POST["plugin_order_orders_id"] . "");
-   
-} elseif (isset ($_POST["deleteLinkWithItem"])) {
+   Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder') . "?id=" . $_POST["plugin_order_orders_id"] . "");
+
+} elseif(isset($_POST["deleteLinkWithItem"])) {
    foreach ($_POST["item"] as $key => $val) {
       if ($val == 1)
-         $link->deleteLinkWithItem($key, $_POST["itemtype"][$key],
-                                              $_POST["plugin_order_orders_id"]);
+         $link->deleteLinkWithItem($key, $_POST["itemtype"][$key], $_POST["plugin_order_orders_id"]);
    }
-   Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=" .
-                                     $_POST["plugin_order_orders_id"] . "");
-   
-} elseif (isset ($_POST["createLinkWithItem"])) {
+   Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder') . "?id=" . $_POST["plugin_order_orders_id"] . "");
+
+} elseif(isset($_POST["createLinkWithItem"])) {
    if (isset($_POST["item"]) && $_POST['item']) {
       $i    = 0;
       $doit = 1;
-      if (!in_array($_POST["itemtype"],
-                    array('SoftwareLicense', 'ConsumableItem', 'CartridgeItem'))
+      if (!in_array($_POST["itemtype"], array('SoftwareLicense', 'ConsumableItem', 'CartridgeItem'))
          && count($_POST["item"]) > 1) {
          $doit = 0;
       }
@@ -92,8 +85,7 @@ if (isset ($_POST["generation"])) {
          foreach ($_POST["item"] as $key => $val) {
             if ($val == 1) {
                $order_item->getFromDB($_POST["id"][$key]);
-               if ($order_item->fields["states_id"] ==
-                     PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
+               if ($order_item->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
                   Session::addMessageAfterRedirect(__("Cannot link items not delivered", "order"), true, ERROR);
                   Html::redirect($_SERVER["HTTP_REFERER"]);
                } else {
@@ -107,9 +99,5 @@ if (isset ($_POST["generation"])) {
          Session::addMessageAfterRedirect(__("Cannot link several items to one detail line", "order"), true, ERROR);
       }
    }
-   Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=" .
-                                    $_POST["plugin_order_orders_id"] . "");
-   
+   Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder') . "?id=" . $_POST["plugin_order_orders_id"] . "");
 }
-
-?>

@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -49,32 +48,34 @@ if (isset($_POST["add"])) {
          if ($supplier->add($_POST)) {
             $new_value = __("Add"). " ";
             if ($_POST["num_quote"]) {
-               $new_value.= __("Quote number", "order")." ".$_POST["num_quote"];
+               $new_value .= __("Quote number", "order") . " " . $_POST["num_quote"];
             }
             if ($_POST["num_order"]) {
-               $new_value.= " - ".__("Order number")." : ".$_POST["num_order"];
+               $new_value .= " - " . __("Order number") . " : " . $_POST["num_order"];
             }
             $order->addHistory('PluginOrderOrder', "", $new_value, $_POST["plugin_order_orders_id"]);
          }
       }
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
+
 } elseif (isset($_POST["delete"])) {
    if (PluginOrderOrder_Supplier::canCreate()) {
       foreach ($_POST["check"] as $ID => $value) {
          if ($supplier->delete(array( "id" => $ID), 0, 0)) {
-            $new_value = __("Delete", "order"). " ".__("Supplier Detail", "order")." : ".$ID;
+            $new_value = __("Delete", "order") .  " " . __("Supplier Detail", "order") . " : " . $ID;
             $order->addHistory('PluginOrderOrder',"",$new_value, $_POST["plugin_order_orders_id"]);
          }
       }
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
-}
-elseif (isset($_POST["update"])) {
+
+} elseif (isset($_POST["update"])) {
    if (PluginOrderOrder_Supplier::canCreate()) {
       $supplier->update($_POST);
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
+
 } else {
    $supplier->checkGlobal("r");
    Html::header(__("Orders management", "order"),'',"plugins", "order", "order");
@@ -82,4 +83,3 @@ elseif (isset($_POST["update"])) {
                        array('plugin_order_orders_id' => $_GET["plugin_order_orders_id"]));
    Html::footer();
 }
-?>

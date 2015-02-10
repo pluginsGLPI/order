@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -37,32 +36,22 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownSupplier.php")) {
 Session::checkCentralAccess();
 
 // Make a select box
-
 if (isset($_POST["suppliers_id"])) {
 
-   $rand=$_POST['rand'];
+   // Make a select box
+   $query = "SELECT c.`id`, c.`name`, c.`firstname`
+             FROM `glpi_contacts` c
+             LEFT JOIN `glpi_contacts_suppliers` s ON (s.`contacts_id` = c.`id`)
+             WHERE s.`suppliers_id` = '{$_POST['suppliers_id']}'
+             ORDER BY c.`name`";
+   $result = $DB->query($query);
+   $number = $DB->numrows($result);
 
-   $use_ajax=false;
-   if ($CFG_GLPI["use_ajax"] &&
-      countElementsInTable('glpi_suppliers',
-                           "`glpi_suppliers`.`id` = '".$_POST["suppliers_id"]."' ".
-                              getEntitiesRestrictRequest("AND", "glpi_suppliers","",
-                                                         $_POST["entity_restrict"],true)) >
-                                                            $CFG_GLPI["ajax_limit_count"]){
-      $use_ajax = true;
+   $values = array(0 => Dropdown::EMPTY_VALUE);
+   if ($number) {
+      while ($data = $DB->fetch_assoc($result)) {
+         $values[$data['id']] = formatUserName('', '', $data['name'], $data['firstname']);
+      }
    }
-
-   $paramssuppliers_id=array('searchText'    => '__VALUE__',
-                             'suppliers_id'   => $_POST["suppliers_id"],
-                             'entity_restrict'=> $_POST["entity_restrict"],
-                             'rand'           => $_POST['rand'],
-                             'myname'         => $_POST['myname']);
-   
-   $default="<select name='".$_POST["myname"]."'><option value='0'>".Dropdown::EMPTY_VALUE.
-               "</option></select>";
-   Ajax::Dropdown($use_ajax,"/plugins/order/ajax/dropdownContact.php", $paramssuppliers_id, $default,
-                  $rand);
-
+   Dropdown::showFromArray($_POST['fieldname'], $values);
 }
-
-?>

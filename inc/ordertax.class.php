@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: HEADER 2011-03-23 15:41:26 tsmr $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -33,25 +32,21 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Class for a Dropdown
-class PluginOrderOrderTax extends CommonDropdown {
-   
-   static function getTypeName($nb=0) {
+class PluginOrderOrderTax extends CommonDropdown
+{
+   public static $rightname = 'order';
+
+   public static function getTypeName($nb=0)
+   {
       return __("VAT", "order");
    }
-   
-   static function canCreate() {
-      return plugin_order_haveRight('order', 'w');
-   }
 
-   static function canView() {
-      return plugin_order_haveRight('order', 'r');
-   }
-   
-   static function install(Migration $migration) {
+   public static function install(Migration $migration)
+   {
       global $DB;
 
       $table = getTableForItemType(__CLASS__);
- 
+
       if (!TableExists($table) && !TableExists("glpi_dropdown_plugin_order_taxes")) {
          $migration->displayMessage("Installing $table");
 
@@ -80,31 +75,28 @@ class PluginOrderOrderTax extends CommonDropdown {
          $migration->changeField($table, "name", "name", "varchar(255) collate utf8_unicode_ci default NULL");
          $migration->changeField($table, "comments", "comment", "text collate utf8_unicode_ci");
          $migration->migrationOneTable($table);
-                  
+
          //Remplace , by . in taxes
          foreach ($DB->request("SELECT `name` FROM `$table`") as $data) {
             if(strpos($data["name"], ',')) {
-               $name= str_replace(',', '.', $data["name"]);
+               $name  = str_replace(',', '.', $data["name"]);
                $query = "UPDATE `$table`
-                         SET `name` = '".$name."'
-                         WHERE `name`= '".$data["name"]."'";
+                         SET `name` = '" . $name . "'
+                         WHERE `name`= '" . $data["name"] . "'";
                $DB->query($query) or die($DB->error());
             }
          }
       }
-      
    }
-   
-   static function uninstall() {
+
+   public static function uninstall()
+   {
       global $DB;
-      
+
       //Old table
       $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_taxes`") or die ($DB->error());
-      
+
       //New table
       $DB->query("DROP TABLE IF EXISTS `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
-
    }
 }
-
-?>

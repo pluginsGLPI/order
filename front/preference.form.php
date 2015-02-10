@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
  LICENSE
 
  This file is part of the order plugin.
@@ -20,7 +19,7 @@
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
- @copyright Copyright (c) 2010-2011 Order plugin team
+ @copyright Copyright (c) 2010-2015 Order plugin team
  @license   GPLv2+
             http://www.gnu.org/licenses/gpl.txt
  @link      https://forge.indepnet.net/projects/order
@@ -33,11 +32,10 @@ include ("../../../inc/includes.php");
 if (!isset ($_GET["id"])) {
    $_GET["id"] = "";
 }
-   
-$PluginOrderPreference= new PluginOrderPreference();
+
+$PluginOrderPreference = new PluginOrderPreference();
 
 if (isset($_POST["update"])) {
-   
    $PluginOrderPreference->update($_POST);
    Html::redirect($_SERVER['HTTP_REFERER']);
 
@@ -45,7 +43,4 @@ if (isset($_POST["update"])) {
    Html::header(__("Orders management", "order"),'',"plugins","order","order");
    $PluginOrderPreference->showForm("./preference.form.php",$_GET["id"]);
    Html::footer();
-
 }
-
-?>
