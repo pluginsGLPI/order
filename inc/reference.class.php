@@ -1070,7 +1070,7 @@ class PluginOrderReference extends CommonDBTM
          Plugin::migrateItemType(array(3151 => 'PluginOrderReference'),
                                  array("glpi_bookmarks", "glpi_bookmarks_users",
                                        "glpi_displaypreferences", "glpi_documents_items",
-                                       "glpi_infocoms", "glpi_logs", "glpi_tickets"));
+                                       "glpi_infocoms", "glpi_logs", "glpi_items_tickets"));
 
          Plugin::migrateItemType(array(), array(), array($table));
 

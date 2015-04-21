@@ -230,14 +230,14 @@ function plugin_version_order() {
                  'version'        => '2.0b1',
                  'author'         => 'The plugin order team',
                  'homepage'       => 'https://forge.indepnet.net/projects/show/order',
-                 'minGlpiVersion' => '0.85',
+                 'minGlpiVersion' => '0.85.3',
                  'license'        => 'GPLv2+');
 }
 
 /* check prerequisites before install : may print errors or add to message after redirect -optional- */
 function plugin_order_check_prerequisites(){
-   if (version_compare(GLPI_VERSION,'0.85','lt') || version_compare(GLPI_VERSION,'0.86','ge')) {
-      echo "This plugin requires GLPI 0.85";
+   if (version_compare(GLPI_VERSION,'0.85.3','lt') || version_compare(GLPI_VERSION,'0.86','ge')) {
+      echo "This plugin requires GLPI 0.85.3";
    } else {
       return true;
    }
