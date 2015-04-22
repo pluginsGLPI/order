@@ -867,3 +867,7 @@ msgstr ""
 #: report/orderdelivery/orderdelivery.php:47
 msgid "orderdelivery_report_title"
 msgstr ""
+
+#: inc/order.class.php:519
+msgid "Purchase order"
+msgstr ""

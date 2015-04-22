@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
 // Class for a Dropdown
 class PluginOrderOrderPayment extends CommonDropdown
 {
-   public static $rightname = 'order';
+   public static $rightname = 'plugin_order_order';
 
    public static function getTypeName($nb=0)
    {

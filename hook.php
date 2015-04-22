@@ -50,7 +50,7 @@ function plugin_order_install() {
                     'PluginOrderOrder_Supplier', 'PluginOrderBill', 'PluginOrderOrderPayment',
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                     'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
-                    'PluginOrderSurveySupplier', 'PluginOrderOrderTax');
+                    'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderMenu');
    foreach ($classes as $class) {
       if ($plug=isPluginItemType($class)) {
          $plugname=strtolower($plug['plugin']);
@@ -85,7 +85,7 @@ function plugin_order_uninstall() {
                     'PluginOrderOrder_Supplier', 'PluginOrderOrderPayment','PluginOrderOrderTax',
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                     'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
-                    'PluginOrderSurveySupplier');
+                    'PluginOrderSurveySupplier', 'PluginOrderMenu');
       foreach ($classes as $class) {
          call_user_func(array($class,'uninstall'));
       }
@@ -163,7 +163,7 @@ function plugin_order_getAddSearchOptions($itemtype) {
    $sopt = array();
    if ($plugin->isInstalled('order')
       && $plugin->isActivated('order')
-         && plugin_order_haveRight("order","r")) {
+         && Session::haveRight("plugin_order_order", READ)) {
       if (in_array($itemtype, PluginOrderOrder_Item::getClasses(true))) {
          $sopt[3160]['table']         = 'glpi_plugin_order_orders';
          $sopt[3160]['field']         = 'name';
@@ -380,7 +380,8 @@ function plugin_item_purge_order($item) {
    global $DB;
    $query = "UPDATE `glpi_plugin_order_orders_items`
              SET `items_id`='0'
-             WHERE `itemtype`='".$item->getType()."' AND `items_id`='".$item->getField('id')."'";
+             WHERE `itemtype`='".$item->getType()."' 
+               AND `items_id`='".$item->getField('id')."'";
    $DB->query($query);
 
    return true;
@@ -406,7 +407,7 @@ function plugin_datainjection_populate_order() {
 }
 
 function plugin_order_AssignToTicket($types) {
-   if (plugin_order_haveRight("open_ticket", "1")) {
+   if (Session::haveRight("plugin_order_open_ticket", "1")) {
       $types['PluginOrderOrder'] = __("Order", "order");
    }
    return $types;

@@ -33,10 +33,18 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderBill extends CommonDropdown
 {
-   public static $rightname  = 'bill';
+   public static $rightname  = 'plugin_order_bill';
    public $dohistory         = true;
    public $first_level_menu  = "plugins";
    public $second_level_menu = "order";
+
+   static function canView() {
+      return true;
+   }
+
+   static function canCreate() {
+      return true;
+   }
 
    public static function getTypeName($nb = 0)
    {

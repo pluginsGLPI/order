@@ -33,7 +33,7 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderReception extends CommonDBTM
 {
-   public static $rightname = 'delivery';
+   public static $rightname = 'plugin_order_delivery';
    public $dohistory        = true;
    public $itemtype         = 'PluginOrderOrder';
    public $items_id         = 'plugin_order_orders_id';
@@ -166,7 +166,7 @@ class PluginOrderReception extends CommonDBTM
          $this->check($ID, 'r');
       } else {
          // Create item
-         $this->check(-1, 'w', $options);
+         $this->check(-1, WRITE, $options);
       }
 
       $this->showTabs($options);
@@ -238,10 +238,10 @@ class PluginOrderReception extends CommonDBTM
 
       echo "<td>".__("Bill", "order")."</td>";
       echo "<td>";
-      if (plugin_order_haveRight("bill", "w")) {
+      if (Session::haveRight("plugin_order_bill", UPDATE)) {
          PluginOrderBill::Dropdown(array('name'  => "plugin_order_bills_id",
                                          'value' => $this->fields["plugin_order_bills_id"]));
-      } elseif (plugin_order_haveRight("bill", "r")) {
+      } elseif (Session::haveRight("plugin_order_bill", UPDATE)) {
          echo Dropdown::getDropdownName("glpi_plugin_order_bills",
                                         $this->fields["plugin_order_bills_id"]);
       }
@@ -738,7 +738,7 @@ class PluginOrderReception extends CommonDBTM
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
    {
       if ($item->getType() == 'PluginOrderOrder') {
-         if (plugin_order_haveRight('delivery', 'r')
+         if (Session::haveRight('plugin_order_delivery', READ)
             && $item->getState() > PluginOrderOrderState::DRAFT) {
             return self::createTabEntry(__("Item delivered", "order"), self::countForOrder($item));
          }

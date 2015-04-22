@@ -115,7 +115,7 @@ function plugin_init_order() {
          'addtabon'                    => PluginOrderOrder_Item::getClasses(true))
       );
 
-      if (plugin_order_haveRight('order', 'r')) {
+      if (PluginOrderOrder::canView()) {
          Plugin::registerClass('PluginOrderOrder_Supplier', array('addtabon' => array('Supplier')));
          Plugin::registerClass('PluginOrderPreference', array('addtabon' => array('Preference')));
       }
@@ -128,59 +128,15 @@ function plugin_init_order() {
             $PLUGIN_HOOKS['config_page']['order'] = 'front/config.form.php';
          }
 
-         if (plugin_order_haveRight("order", "r")
-               || plugin_order_haveRight("reference", "r")
-               || plugin_order_haveRight("bill", "r")) {
+         if (PluginOrderOrder::canView()
+               || PluginOrderReference::canView()
+               || PluginOrderBill::canView()) {
 
             $PLUGIN_HOOKS['menu_toadd']['order']['management'] = 'PluginOrderMenu';
 
-            // // Manage redirects
-            // $PLUGIN_HOOKS['redirect_page']['order']['order']      = "front/order.form.php";
-            // $PLUGIN_HOOKS['redirect_page']['order']['reference']  = "front/reference.form.php";
-            // $PLUGIN_HOOKS['redirect_page']['order']['reception']  = "front/reception.form.php";
-
-            // //menu
-            // if (plugin_order_haveRight("order","r")) {
-            //    $PLUGIN_HOOKS['submenu_entry']['order']['options']['menu']['title']
-            //       = __("Menu", "order");
-            //    $PLUGIN_HOOKS['submenu_entry']['order']['options']['menu']['page']
-            //       = '/plugins/order/front/menu.php';
-
-            // }
-            // //order
-            // if (plugin_order_haveRight("order","r")) {
-            //    $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['title']
-            //       = __("Orders", "order");
-            //    $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['page']
-            //       = '/plugins/order/front/order.php';
-            //    $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['search']
-            //       = '/plugins/order/front/order.php';
-
-            // }
-            // //references
-            // if (plugin_order_haveRight("reference","r")) {
-            //    $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['title']
-            //       = __("References", "order");
-            //    $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['page']
-            //       = '/plugins/order/front/reference.php';
-            //    $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['search']
-            //       = '/plugins/order/front/reference.php';
-
-            // }
-
-            // //bill
-            // if (plugin_order_haveRight("bill","r")) {
-            //    $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['title']
-            //       = __("Bill", "order");
-            //    $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['page']
-            //       = '/plugins/order/front/bill.php';
-            //    $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['links']['search']
-            //       = '/plugins/order/front/bill.php';
-
-            // }
          }
 
-         if (plugin_order_haveRight("order","w")) {
+         if (PluginOrderOrder::canCreate()) {
             //order
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['template']
                = '/front/setup.templates.php?itemtype=PluginOrderOrder&add=0';
@@ -193,14 +149,14 @@ function plugin_init_order() {
 
          }
 
-         if (plugin_order_haveRight("bill","w")) {
+         if (PluginOrderBill::canCreate()) {
             //order
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['links']['add']
                = '/plugins/order/front/bill.form.php';
 
          }
 
-         if (plugin_order_haveRight("reference","w")) {
+         if (PluginOrderReference::canCreate()) {
             //references
             $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['add']
                = '/plugins/order/front/reference.form.php';
@@ -210,13 +166,12 @@ function plugin_init_order() {
            }
          }
          if (Session::haveRight("config", UPDATE)) {
-            $PLUGIN_HOOKS['menu_toadd']['order']['config'] = 'PluginOrderConfig';
-            // $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['title'] = __("Setup");
-            // $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['page']
-            //    = '/plugins/order/front/config.form.php';
-            // if (Session::haveRight('config', UPDATE)) {
-            //    $PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/config.form.php';
-            // }
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['title'] = __("Setup");
+            $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['page']
+               = '/plugins/order/front/config.form.php';
+            if (Session::haveRight('config', UPDATE)) {
+               $PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/config.form.php';
+            }
          }
          $PLUGIN_HOOKS['use_massive_action']['order'] = 1;
          $PLUGIN_HOOKS['plugin_datainjection_populate']['order'] = "plugin_datainjection_populate_order";
@@ -230,14 +185,14 @@ function plugin_version_order() {
                  'version'        => '2.0b1',
                  'author'         => 'The plugin order team',
                  'homepage'       => 'https://forge.indepnet.net/projects/show/order',
-                 'minGlpiVersion' => '0.85.3',
+                 'minGlpiVersion' => '0.85',
                  'license'        => 'GPLv2+');
 }
 
 /* check prerequisites before install : may print errors or add to message after redirect -optional- */
 function plugin_order_check_prerequisites(){
-   if (version_compare(GLPI_VERSION,'0.85.3','lt') || version_compare(GLPI_VERSION,'0.86','ge')) {
-      echo "This plugin requires GLPI 0.85.3";
+   if (version_compare(GLPI_VERSION,'0.85','lt') || version_compare(GLPI_VERSION,'0.86','ge')) {
+      echo "This plugin requires GLPI 0.85";
    } else {
       return true;
    }
@@ -247,17 +202,3 @@ function plugin_order_check_config() {
    return true;
 }
 
-function plugin_order_haveRight($module, $right) {
-   $matches = array(""  => array("", "r", "w"), // ne doit pas arriver normalement
-                    "r" => array("r", "w"),
-                    "w" => array("w"),
-                    "1" => array("1"),
-                    "0" => array("0", "1")); // should never happend;
-
-   if (isset($_SESSION["glpi_plugin_order_profile"][$module])
-         && in_array($_SESSION["glpi_plugin_order_profile"][$module], $matches[$right])) {
-      return true;
-   } else {
-      return false;
-   }
-}

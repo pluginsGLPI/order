@@ -42,6 +42,14 @@ class PluginOrderConfig extends CommonDBTM
       }
    }
 
+   static function canView() {
+      return Session::haveRight('config', READ);
+   }
+
+   static function canCreate() {
+      return Session::haveRight('config', UPDATE);
+   }
+
    public static function getConfig($update = false)
    {
       static $config = null;

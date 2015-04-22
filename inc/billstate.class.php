@@ -36,7 +36,7 @@ class PluginOrderBillState extends CommonDropdown
    const NOTPAID = 0;
    const PAID    = 1;
 
-   public static $rightname = 'bill';
+   public static $rightname = 'plugin_order_bill';
 
    public static function getTypeName($nb = 0)
    {
@@ -52,16 +52,6 @@ class PluginOrderBillState extends CommonDropdown
       } else {
          return true;
       }
-   }
-
-   public static function canCreate()
-   {
-      return plugin_order_haveRight('bill', 'w');
-   }
-
-   public static function canView()
-   {
-      return plugin_order_haveRight('bill', 'r');
    }
 
    public static function getStates()

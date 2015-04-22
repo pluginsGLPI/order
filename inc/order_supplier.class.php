@@ -33,7 +33,7 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderOrder_Supplier extends CommonDBChild
 {
-   public static $rightname = 'order';
+   public static $rightname = 'plugin_order_order';
    public static $itemtype  = 'PluginOrderOrder';
    public static $items_id  = 'plugin_order_orders_id';
    public $dohistory        = true;

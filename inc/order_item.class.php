@@ -33,7 +33,7 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderOrder_Item extends CommonDBRelation
 {
-   public static $rightname = 'order';
+   public static $rightname = 'plugin_order_order';
    public $dohistory        = true;
 
    // From CommonDBRelation
@@ -49,16 +49,7 @@ class PluginOrderOrder_Item extends CommonDBRelation
 
    //TODO better right and entity menber (ex Computer_Item)
 
-   public static function canCreate()
-   {
-      return plugin_order_haveRight('order', 'w');
-   }
-
-   public static function canView()
-   {
-      return plugin_order_haveRight('order', 'r');
-   }
-
+ 
    public function canUpdateItem()
    {
       return true;
@@ -292,7 +283,6 @@ class PluginOrderOrder_Item extends CommonDBRelation
                             ON s.`plugin_order_references_id` = r.`id`
                          WHERE s.`suppliers_id` = {$order->fields["suppliers_id"]}";
                $result = $DB->query($query);
-               Toolbox::logDebug();
 
                $itemtypeArray = Array('' => Dropdown::EMPTY_VALUE);
                while (list($itemtype) = $DB->fetch_array($result)) {
@@ -888,7 +878,7 @@ class PluginOrderOrder_Item extends CommonDBRelation
             $link = array_shift($result);
             $reference = new PluginOrderReference();
             $reference->getFromDB($link['plugin_order_references_id']);
-            if (plugin_order_haveRight('reference', 'r')) {
+            if (Session::haveRight('plugin_order_reference', READ)) {
                echo "<tr align='center'><td class='tab_bg_2'>" .
                      __("Reference") . "</td>";
                echo "<td class='tab_bg_2'>" . $reference->getLink(PluginOrderReference::canView()) . "</td></tr>";

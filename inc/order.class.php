@@ -33,7 +33,7 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderOrder extends CommonDBTM
 {
-   public static $rightname         = 'order';
+   public static $rightname         = 'plugin_order_order';
    public $is_template              = true;
    public $dohistory                = true;
    public static $forward_entity_to = array(
@@ -64,17 +64,17 @@ class PluginOrderOrder extends CommonDBTM
 
    public static function canCancel()
    {
-      return plugin_order_haveRight("cancel", UPDATE);
+      return Session::haveRight("plugin_order_cancel", UPDATE);
    }
 
    public static function canUndo()
    {
-      return plugin_order_haveRight("undo_validation", UPDATE);
+      return Session::haveRight("plugin_order_undo_validation", UPDATE);
    }
 
    public static function canValidate()
    {
-      return plugin_order_haveRight("validation", UPDATE);
+      return Session::haveRight("plugin_order_validation", UPDATE);
    }
 
    public function isDraft()
@@ -216,7 +216,7 @@ class PluginOrderOrder extends CommonDBTM
 
    public function canDisplayValidationTab()
    {
-      return (plugin_order_haveRight('order','w')
+      return (self::canCreate()
                && $this->canValidateOrder() || $this->canCancelOrder() || $this->canUndoValidation()
                || $this->canCancelValidationRequest() || $this->canDoValidationRequest());
    }
@@ -498,9 +498,9 @@ class PluginOrderOrder extends CommonDBTM
       } elseif ($item->getType() ==__CLASS__) {
          $ong    = array();
          $config = PluginOrderConfig::getConfig();
-         if (plugin_order_haveRight("validation", "w")
-            || plugin_order_haveRight("cancel", "w")
-            || plugin_order_haveRight("undo_validation", "w")) {
+         if (Session::haveRight("plugin_order_validation", UPDATE)
+            || Session::haveRight("plugin_order_cancel", UPDATE)
+            || Session::haveRight("plugin_order_undo_validation", UPDATE)) {
             $ong[1] = __("Validation", "order");
          }
          if ($config->canGenerateOrderPDF() && $item->getState() > PluginOrderOrderState::DRAFT) {
@@ -1677,7 +1677,7 @@ class PluginOrderOrder extends CommonDBTM
             echo "</td>";
             echo "<td>";
 
-            if (plugin_order_haveRight('order', 'r')) {
+            if (self::canView()) {
                echo "<a href=\"" . $link . "?id=" . $data["id"] . "\">" . $data["name"] . "</a>";
             } else {
                echo $data["name"];

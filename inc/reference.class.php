@@ -33,7 +33,7 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderReference extends CommonDBTM
 {
-   public static $rightname         = 'reference';
+   public static $rightname         = 'plugin_order_reference';
    public $dohistory                = true;
    public static $forward_entity_to = array('PluginOrderReference_Supplier');
 
@@ -882,6 +882,7 @@ class PluginOrderReference extends CommonDBTM
       $target = clone $source;
       unset($target->fields['id']);
       $target->fields['name'] = __("Copy of", "order") . ' ' . $target->fields['name'];
+      $target->fields = Toolbox::addslashes_deep($target->fields);
       $newID = $this->add($target->fields);
 
       foreach (getAllDatasFromTable('glpi_plugin_order_references_suppliers',
@@ -1070,7 +1071,7 @@ class PluginOrderReference extends CommonDBTM
          Plugin::migrateItemType(array(3151 => 'PluginOrderReference'),
                                  array("glpi_bookmarks", "glpi_bookmarks_users",
                                        "glpi_displaypreferences", "glpi_documents_items",
-                                       "glpi_infocoms", "glpi_logs", "glpi_items_tickets"));
+                                       "glpi_infocoms", "glpi_logs", "glpi_tickets"));
 
          Plugin::migrateItemType(array(), array(), array($table));
 

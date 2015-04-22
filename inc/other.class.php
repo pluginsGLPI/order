@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginOrderOther extends CommonDBTM
 {
-   public static $rightname = 'order';
+   public static $rightname = 'plugin_order_order';
 
    public static function getTypeName($nb = 0)
    {

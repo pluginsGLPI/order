@@ -33,7 +33,7 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderLink extends CommonDBChild
 {
-   public static $rightname = 'delivery';
+   public static $rightname = 'plugin_order_delivery';
    public $dohistory        = true;
    public static $itemtype  = 'PluginOrderOrder';
    public static $items_id  = 'plugin_order_orders_id';

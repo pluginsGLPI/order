@@ -33,10 +33,11 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderReference_Supplier extends CommonDBChild
 {
-   public static $rightname = 'reference';
+   public static $rightname = 'plugin_order_reference';
    public static $itemtype  = 'PluginOrderReference';
    public static $items_id  = 'plugin_order_references_id';
    public $dohistory        = true;
+
 
    public static function getTypeName($nb = 0)
    {
@@ -103,7 +104,8 @@ class PluginOrderReference_Supplier extends CommonDBChild
    public function prepareInputForAdd($input)
    {
       // Not attached to reference -> not added
-      if (!isset($input['plugin_order_references_id']) || $input['plugin_order_references_id'] <= 0) {
+      if (!isset($input['plugin_order_references_id']) 
+         || $input['plugin_order_references_id'] <= 0) {
          return false;
       }
       return $input;
@@ -222,10 +224,6 @@ class PluginOrderReference_Supplier extends CommonDBChild
 
       $options['candel'] = false;
       $this->showFormButtons($options);
-
-      // if (strpos($_SERVER['PHP_SELF'], "reference_supplier")) {
-      //    $this->addDivForTabs();
-      // }
       return true;
    }
 
@@ -404,7 +402,7 @@ class PluginOrderReference_Supplier extends CommonDBChild
          Plugin::migrateItemType(array(3152 => 'PluginOrderReference_Supplier'),
                                  array("glpi_bookmarks", "glpi_bookmarks_users",
                                        "glpi_displaypreferences", "glpi_documents_items",
-                                       "glpi_infocoms", "glpi_logs", "glpi_items_tickets"),
+                                       "glpi_infocoms", "glpi_logs", "glpi_tickets"),
                                  array());
 
          //1.5.0

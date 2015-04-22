@@ -35,6 +35,31 @@ class PluginOrderProfile extends CommonDBTM
 {
    public static $rightname = 'profile';
 
+   const GENERATEODT      = 1024;
+   const DELIVERY         = 2048;
+   const OPENTICKET       = 4096;
+   const VALIDATION       = 8196;
+   const UNDO_VALIDATION  = 16384;
+   const CANCEL           = 32768;
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
+
+      if ($interface == 'central') {
+         $values = parent::getRights();
+         $values[self::GENERATEODT]     = __("Order Generation", "order");
+         $values[self::DELIVERY]        = __("Take item delivery", "order");
+         $values[self::VALIDATION]      = __("Order validation", "order");
+         $values[self::CANCEL]          = __("Cancel order", "order");
+         $values[self::UNDO_VALIDATION] = __("Edit a validated order", "order");
+      }
+      $values[self::OPENTICKET]         = __("Link order to a ticket", "order");
+      return $values;
+   }
+
    public static function getTypeName($nb = 0)
    {
       return __("Rights assignment");
@@ -69,25 +94,9 @@ class PluginOrderProfile extends CommonDBTM
 
    public static function createFirstAccess($ID)
    {
-      // $myProf = new self();
-      // if (!$myProf->getFromDBByProfile($ID)) {
-      //    $myProf->add(array(
-      //       'profiles_id'        => $ID,
-      //       'order'              => UPDATE,
-      //       'reference'          => UPDATE,
-      //       'validation'         => UPDATE,
-      //       'cancel'             => UPDATE,
-      //       'undo_validation'    => UPDATE,
-      //       'bill'               => UPDATE,
-      //       'delivery'           => UPDATE,
-      //       'generate_order_odt' => UPDATE,
-      //    ));
-
-      // }
 
       self::addDefaultProfileInfos($ID, array(
-         'plugin_order'                    => 127,
-         'plugin_order_order'              => 1,
+         'plugin_order_order'              => 127,
          'plugin_order_bill'               => 1,
          'plugin_order_reference'          => 1,
          'plugin_order_delivery'           => 1,
@@ -103,7 +112,7 @@ class PluginOrderProfile extends CommonDBTM
    {
       $myProf = new self();
       if ($myProf->getFromDBByProfile($profiles_id)) {
-         $tmp = $myProf->fields;
+         $tmp         = $myProf->fields;
          $tmp[$right] = $value;
          $myProf->update($tmp);
       }
@@ -127,149 +136,22 @@ class PluginOrderProfile extends CommonDBTM
    /* profiles modification */
    public function showForm ($profiles_id = 0, $openform = TRUE, $closeform = TRUE)
    {
-      // if (!Session::haveRight("profile", READ)) {
-      //    return false;
-      // }
 
-      // $prof = new Profile();
-      // if ($ID) {
-      //    $this->getFromDBByProfile($ID);
-      //    $prof->getFromDB($ID);
-      // }
-
-      // $this->showFormHeader($options);
-
-      // echo "<tr class='tab_bg_2'>";
-
-      // echo "<th colspan='4' align='center'><strong>" .
-      //    __("Rights assignment") . " " . $prof->fields["name"] . "</strong></th>";
-
-      // echo "</tr>";
-      // echo "<tr class='tab_bg_2'>";
-
-      // echo "<td>" . __("Orders", "order") . ":</td><td>";
-      // if ($prof->fields['interface'] != 'helpdesk') {
-      //    Profile::dropdownNoneReadWrite("order",$this->fields["order"], 1, 1, 1);
-      // } else {
-      //    echo __("No access");
-      // }
-      // echo "</td>";
-
-      // echo "<td>" . __("Products references", "order") . ":</td><td>";
-      // if ($prof->fields['interface'] != 'helpdesk') {
-      //    Profile::dropdownNoneReadWrite("reference",$this->fields["reference"], 1, 1, 1);
-      // } else {
-      //    echo __("No access");
-      // }
-      // echo "</td>";
-
-      // echo "</tr>";
-      // echo "<tr class='tab_bg_2'>";
-
-      // echo "<td>" . __("Bills", "order") . ":</td><td>";
-      // if ($prof->fields['interface'] != 'helpdesk') {
-      //    Profile::dropdownNoneReadWrite("bill",$this->fields["bill"], 1, 1, 1);
-      // } else {
-      //    echo __("No access");
-      // }
-      // echo "</td>";
-
-      // echo "<td>" . __("Take item delivery", "order") . ":</td><td>";
-      // if ($prof->fields['interface'] != 'helpdesk') {
-      //    Profile::dropdownNoneReadWrite("delivery", $this->fields["delivery"], 1, 1, 1);
-      // } else {
-      //    echo __("No access");
-      // }
-      // echo "</td>";
-
-      // echo "</tr>";
-
-      // echo "<tr class='tab_bg_2'>";
-
-      // echo "<td>" . __("Order Generation", "order") . ":</td><td>";
-      // if ($prof->fields['interface'] != 'helpdesk') {
-      //    Profile::dropdownNoneReadWrite("generate_order_odt",
-      //                                   $this->fields["generate_order_odt"], 1, 0, 1);
-      // } else {
-      //    echo __("No access");
-      // }
-      // echo "</td>";
-      // echo "<td>" . __("Link order to a ticket", "order") . "</td>";
-      // echo "<td>";
-      // Dropdown::showYesNo('open_ticket', $this->fields['open_ticket']);
-      // echo "</td>";
-      // echo "</tr>";
-
-
-      // echo "<tr align='center'><th colspan='4' >" . __("Validation", "order") . "</th></tr>";
-
-      // echo "<tr class='tab_bg_2'>";
-
-      // echo "<td>" . __("Order validation", "order") . ":</td><td>";
-      // if ($prof->fields['interface'] != 'helpdesk') {
-      //    Profile::dropdownNoneReadWrite("validation", $this->fields["validation"], 1, 0, 1);
-      // } else {
-      //    echo __("No access");
-      // }
-      // echo "</td>";
-
-      // echo "<td>" . __("Cancel order", "order") . ":</td><td>";
-      // if ($prof->fields['interface'] != 'helpdesk') {
-      //    Profile::dropdownNoneReadWrite("cancel", $this->fields["cancel"], 1, 0, 1);
-      // } else {
-      //    echo __("No access");
-      // }
-      // echo "</td>";
-
-      // echo "</tr>";
-      // echo "<tr class='tab_bg_2'>";
-
-      // echo "<td>" . __("Edit a validated order", "order") . ":</td><td>";
-      // if ($prof->fields['interface'] != 'helpdesk') {
-      //    Profile::dropdownNoneReadWrite("undo_validation", $this->fields["undo_validation"], 1, 0, 1);
-      // } else {
-      //    echo __("No access");
-      // }
-      // echo "</td>";
-
-      // echo "<td colspan='2'></td>";
-
-      // echo "</tr>";
-
-      // echo "<input type='hidden' name='id' value=" . $this->fields["id"] . ">";
-
-      // $options['candel'] = false;
-      // $this->showFormButtons($options);
-
-      echo "<div class='firstbloc'>";
-      if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
-          && $openform) {
-         $profile = new Profile();
-         echo "<form method='post' action='".$profile->getFormURL()."'>";
-      }
-
+      $canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE));
       $profile = new Profile();
       $profile->getFromDB($profiles_id);
 
-      $rights = $this->getHelpdeskRights();
+      //$rights = array('rights' => self::getRights($profile->getField('interface'),);
+      $rights = array();
       if ($profile->getField('interface') == 'central') {
-         $rights = $this->getAllRights();
+         $rights = $this->getAllRights(true);
       }
+      
       $profile->displayRightsChoiceMatrix($rights, array(
          'canedit'       => $canedit,
          'default_class' => 'tab_bg_2',
          'title'         => __('Order management', 'order'),
       ));
-
-      if ($canedit
-          && $closeform) {
-         echo "<div class='center'>";
-         echo Html::hidden('id', array('value' => $profiles_id));
-         echo Html::submit(_sx('button', 'Save'), array('name' => 'update'));
-         echo "</div>\n";
-         Html::closeForm();
-      }
-      echo "</div>";
    }
 
    public static function install(Migration $migration)
@@ -377,14 +259,14 @@ class PluginOrderProfile extends CommonDBTM
 
    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
    {
-      // if (get_class($item) == 'Profile') {
-      //    $profile = new self();
-      //    if (!$profile->getFromDBByProfile($item->getField('id'))) {
-      //       $profile->createAccess($item->getField('id'));
+       if (get_class($item) == 'Profile') {
+          $profile = new self();
+          if (!$profile->getFromDBByProfile($item->getField('id'))) {
+             $profile->createAccess($item->getField('id'));
 
-      //    }
-      //    $profile->showForm($item->getField('id'));
-      // }
+          }
+          //$profile->showForm($item->getField('id'));
+       }
 
 
       if ($item->getType()=='Profile') {
@@ -433,6 +315,7 @@ class PluginOrderProfile extends CommonDBTM
       }
    }
 
+/*
    static function getHelpdeskRights($all = false) {
 
 
@@ -458,30 +341,50 @@ class PluginOrderProfile extends CommonDBTM
       }
 
       return $rights;
-   }
+   }*/
 
    static function getAllRights($all = false) {
 
-
       $rights = array(
-          array('rights'  => Profile::getRightsFor('PluginAccountsAccount', 'central'),
-                'label'     => _n('Account', 'Accounts', 2, 'accounts'),
-                'field'     => 'plugin_accounts'
+          array('rights'  => Profile::getRightsFor('PluginOrderOrder', 'central'),
+                'label'     => __("Orders", "order"),
+                'field'     => 'plugin_order_order'
           ),
       );
 
       if ($all) {
-         $rights[] = array('itemtype' => 'PluginAccountsAccount',
-                           'label'    =>  __('See accounts of my groups', 'accounts'),
-                           'field'    => 'plugin_accounts_my_groups');
+         $rights[] = array('itemtype' => 'PluginOrderReference',
+                           'label'    =>   __("Products references", "order"),
+                           'field'    => 'plugin_order_reference');
 
-         $rights[] = array('itemtype' => 'PluginAccountsAccount',
-                           'label'    =>  __('See all accounts', 'accounts'),
-                           'field'    => 'plugin_accounts_see_all_users');
+         $rights[] = array('itemtype' => 'PluginOrderBill',
+                           'label'    =>  __("Bills", "order"),
+                           'field'    => 'plugin_order_bill');
 
-         $rights[] = array('itemtype' => 'PluginAccountsAccount',
-                           'label'    =>  __('Associable items to a ticket'),
-                           'field'    => 'plugin_accounts_open_ticket');
+         $rights[] = array('itemtype' => 'PluginOrderOrder',
+                           'label'    =>  __("Take item delivery", "order"),
+                           'field'    => 'plugin_order_delivery',
+                           'rigths'   => self::DELIVERY);
+
+         $rights[] = array('itemtype' => 'PluginOrderOrder',
+                           'label'    =>  __("Order Generation", "order"),
+                           'field'    => 'plugin_order_generate_order_odt');
+
+         $rights[] = array('itemtype' => 'PluginOrderOrder',
+                           'label'    =>  __("Link order to a ticket", "order"),
+                           'field'    => 'plugin_order_open_ticket');
+
+         $rights[] = array('itemtype' => 'PluginOrderOrder',
+                           'label'    =>  __("Order validation", "order"),
+                           'field'    => 'plugin_order_validation');
+
+         $rights[] = array('itemtype' => 'PluginOrderOrder',
+                           'label'    =>  __("Cancel order", "order"),
+                           'field'    => 'plugin_order_cancel');
+
+         $rights[] = array('itemtype' => 'PluginOrderOrder',
+                           'label'    => __("Edit a validated order", "order"),
+                           'field'    => 'plugin_order_undo_validation');
       }
 
       return $rights;
@@ -515,29 +418,34 @@ class PluginOrderProfile extends CommonDBTM
    * @param $profiles_id the profile ID
    */
    static function migrateOneProfile($profiles_id) {
-      // global $DB;
-      // //Cannot launch migration if there's nothing to migrate...
-      // if (!TableExists('glpi_plugin_accounts_profiles')) {
-      // return true;
-      // }
+       global $DB;
+       //Cannot launch migration if there's nothing to migrate...
+      if (!TableExists('glpi_plugin_order_profiles')) {
+       return true;
+      }
 
-      // foreach ($DB->request('glpi_plugin_accounts_profiles',
-      //                       "`profiles_id`='$profiles_id'") as $profile_data) {
+      foreach ($DB->request('glpi_plugin_order_profiles',
+                            "`profiles_id`='$profiles_id'") as $profile_data) {
 
-      //    $matching = array('accounts'    => 'plugin_accounts',
-      //                      'all_users'   => 'plugin_accounts_see_all_users',
-      //                      'my_groups'   => 'plugin_accounts_my_groups',
-      //                      'open_ticket' => 'plugin_accounts_open_ticket');
-      //    $current_rights = ProfileRight::getProfileRights($profiles_id, array_values($matching));
-      //    foreach ($matching as $old => $new) {
-      //       if (!isset($current_rights[$old])) {
-      //          $query = "UPDATE `glpi_profilerights`
-      //                    SET `rights`='".self::translateARight($profile_data[$old])."'
-      //                    WHERE `name`='$new' AND `profiles_id`='$profiles_id'";
-      //          $DB->query($query);
-      //       }
-      //    }
-      // }
+         $matching = array('order'              => 'plugin_order_order', 
+                           'bill'               => 'plugin_order_bill', 
+                           'reference'          => 'plugin_order_reference', 
+                           'delivery'           => 'plugin_order_delivery', 
+                           'generate_order_odt' => 'plugin_order_generate_order_odt', 
+                           'open_ticket'        => 'plugin_order_open_ticket',
+                           'validation'         => 'plugin_order_validation', 
+                           'cancel'             => 'plugin_order_cancel', 
+                           'undo_validation'    => 'plugin_order_undo_validation');
+         $current_rights = ProfileRight::getProfileRights($profiles_id, array_values($matching));
+         foreach ($matching as $old => $new) {
+            if (!isset($current_rights[$old])) {
+               $query = "UPDATE `glpi_profilerights`
+                          SET `rights`='".self::translateARight($profile_data[$old])."'
+                          WHERE `name`='$new' AND `profiles_id`='$profiles_id'";
+                $DB->query($query);
+            }
+         }
+      }
    }
 
    /**
@@ -562,7 +470,7 @@ class PluginOrderProfile extends CommonDBTM
       foreach ($DB->request("SELECT *
                            FROM `glpi_profilerights`
                            WHERE `profiles_id`='".$_SESSION['glpiactiveprofile']['id']."'
-                              AND `name` LIKE '%plugin_accounts%'") as $prof) {
+                              AND `name` LIKE '%plugin_order%'") as $prof) {
          $_SESSION['glpiactiveprofile'][$prof['name']] = $prof['rights'];
       }
    }

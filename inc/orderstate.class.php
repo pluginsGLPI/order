@@ -43,7 +43,7 @@ class PluginOrderOrderState extends CommonDropdown
    const CANCELED             = 6;
    const PAID                 = 7;
 
-   public static $rightname   = 'order';
+   public static $rightname   = 'plugin_order_order';
 
    public static function getTypeName($nb = 0)
    {
