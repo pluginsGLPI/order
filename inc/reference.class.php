@@ -1174,7 +1174,7 @@ class PluginOrderReference extends CommonDBTM
 
          if (FieldExists('glpi_tickets', 'itemtype')) {
             Plugin::migrateItemType(array(3151 => 'PluginOrderReference'),
-                                 array("glpi_tickets"));
+                                 array("glpi_items_tickets"));
          }
 
          Plugin::migrateItemType(array(), array(), array($table));

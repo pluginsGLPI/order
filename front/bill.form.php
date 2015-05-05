@@ -83,8 +83,7 @@ if (isset($_POST['action'])) {
 }
 $dropdown = new PluginOrderBill();
 
-// TODO: changer les droits
-Session::checkRight("budget", READ);
+Session::checkRight("plugin_order_bill", READ);
 
 Html::header(PluginOrderBill::getTypeName(1), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "bill");
 if (isset($_REQUEST['id'])) {

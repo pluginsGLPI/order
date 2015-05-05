@@ -406,7 +406,7 @@ class PluginOrderReference_Supplier extends CommonDBChild
                                  array());
          if (FieldExists('glpi_tickets', 'itemtype')) {
             Plugin::migrateItemType(array(3152 => 'PluginOrderReference_Supplier'),
-                                 array("glpi_tickets"),
+                                 array("glpi_items_tickets"),
                                  array());
          }
 

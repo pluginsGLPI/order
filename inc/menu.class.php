@@ -3,7 +3,7 @@
 class PluginOrderMenu extends CommonGLPI {
 
    public static function getTypeName($nb = 0) {
-      return __("Orders management", "order");
+      return __("Orders", "order");
    }
 
    static function getMenuContent() {
@@ -12,13 +12,22 @@ class PluginOrderMenu extends CommonGLPI {
       $menu          = array();
       $menu['title'] = self::getTypeName(2);
       $menu['page']  = self::getSearchURL(false);
+      if (PluginOrderConfig::canView()) {
+        $menu['links']['config']= PluginOrderConfig::getFormURL(false);
+      }
 
-      $menu['options']['order']['title']                = PluginOrderOrder::getTypeName(2);
-      $menu['options']['order']['page']                 = PluginOrderOrder::getSearchURL(false);
-      $menu['options']['order']['links']['add']         = "/front/setup.templates.php?itemtype=PluginOrderOrder&add=1";
-      $menu['options']['order']['links']['search']      = PluginOrderOrder::getSearchURL(false);
-      $menu['options']['order']['links']['template']    = "/front/setup.templates.php?itemtype=PluginOrderOrder&add=0";
-      $menu['options']['order']['links']['config']      = PluginOrderConfig::getFormURL(false);
+      if (PluginOrderOrder::canView()) {
+         $menu['options']['order']['title']                = PluginOrderOrder::getTypeName(2);
+         $menu['options']['order']['page']                 = PluginOrderOrder::getSearchURL(false);
+         $menu['options']['order']['links']['add']         = "/front/setup.templates.php?itemtype=PluginOrderOrder&add=1";
+         if (PluginOrderOrder::canCreate()) {
+            $menu['options']['order']['links']['search']      = PluginOrderOrder::getSearchURL(false);
+         }
+         $menu['options']['order']['links']['template']    = "/front/setup.templates.php?itemtype=PluginOrderOrder&add=0";
+         if (PluginOrderConfig::canView()) {
+            $menu['options']['order']['links']['config']      = PluginOrderConfig::getFormURL(false);
+         }
+      }
 
       $menu['options']['bill']['title']                 = PluginOrderBill::getTypeName(2);
       $menu['options']['bill']['page']                  = PluginOrderBill::getSearchURL(false);
