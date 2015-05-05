@@ -357,7 +357,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild
             Plugin::migrateItemType(array(3154 => 'PluginOrderOrder_Supplier'),
                                     array("glpi_bookmarks", "glpi_bookmarks_users",
                                           "glpi_displaypreferences", "glpi_documents_items",
-                                          "glpi_infocoms", "glpi_logs", "glpi_tickets"),
+                                          "glpi_infocoms", "glpi_logs", "glpi_items_tickets"),
                                     array());
 
             //1.5.0
