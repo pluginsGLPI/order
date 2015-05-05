@@ -57,7 +57,7 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   Html::redirect($_SERVER['HTTP_REFERER']);
+   Html::back();
 
 } elseif (isset($_POST["delete"])) {
    if (PluginOrderOrder_Supplier::canCreate()) {
@@ -68,16 +68,16 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   Html::redirect($_SERVER['HTTP_REFERER']);
+   Html::back();
 
 } elseif (isset($_POST["update"])) {
    if (PluginOrderOrder_Supplier::canCreate()) {
       $supplier->update($_POST);
    }
-   Html::redirect($_SERVER['HTTP_REFERER']);
+   Html::back();
 
 } else {
-   $supplier->checkGlobal("r");
+   //$supplier->checkGlobal("r"); //TODO ?
    Html::header(__("Orders management", "order"),'',"plugins", "order", "order");
    $supplier->showForm($_GET["id"],
                        array('plugin_order_orders_id' => $_GET["plugin_order_orders_id"]));

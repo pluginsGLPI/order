@@ -137,21 +137,34 @@ class PluginOrderProfile extends CommonDBTM
    public function showForm ($profiles_id = 0, $openform = TRUE, $closeform = TRUE)
    {
 
-      $canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE));
       $profile = new Profile();
+
+      echo "<div class='firstbloc'>";
+      if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
+          && $openform) {
+         echo "<form method='post' action='".$profile->getFormURL()."'>";
+      }
+
       $profile->getFromDB($profiles_id);
 
-      //$rights = array('rights' => self::getRights($profile->getField('interface'),);
       $rights = array();
       if ($profile->getField('interface') == 'central') {
          $rights = $this->getAllRights(true);
       }
-      
+
       $profile->displayRightsChoiceMatrix($rights, array(
          'canedit'       => $canedit,
          'default_class' => 'tab_bg_2',
          'title'         => __('Order management', 'order'),
       ));
+
+      if ($canedit && $closeform) {
+         echo "<div class='center'>";
+         echo Html::hidden('id', array('value' => $profiles_id));
+         echo Html::submit(_sx('button', 'Save'), array('name' => 'update'));
+         echo "</div>\n";
+         Html::closeForm();
+      }
    }
 
    public static function install(Migration $migration)

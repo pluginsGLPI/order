@@ -158,23 +158,25 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
       $survey       = new self();
       $survey_table = $survey->getTable();
-      $query  = "SELECT  orders.`id`,
-                         orders.`entities_id`,
-                         orders.`name`,
-                         survey.`comment`
+
+      $restrict = getEntitiesRestrictRequest(" AND ", "glpi_plugin_order_orders", "entities_id", '', true);
+
+      $query  = "SELECT orders.`id`, orders.`entities_id`, orders.`name`, survey.`comment`
                  FROM `glpi_plugin_order_orders` orders, `$survey_table` survey
                  WHERE survey.`suppliers_id` = orders.`suppliers_id`
                  AND survey.`plugin_order_orders_id` = orders.`id`
-                 AND orders.`suppliers_id` = '$suppliers_id'"
-                 . getEntitiesRestrictRequest(" AND ", "glpi_plugin_order_orders", "entities_id", '', true);
-      $query   .= " GROUP BY `" . $survey->getTable() . "`.`id`";
+                 AND orders.`suppliers_id` = '$suppliers_id'
+                 $restrict";
+      $query .= "GROUP BY `survey`.id";
       $result   = $DB->query($query);
       $nb       = $DB->numrows($result);
       $total    = 0;
       $nb_order = 0;
 
-      echo "<br><div class='center'>";
+      echo "<br>";
+      echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
+
       echo "<tr>";
       echo "<th colspan='4'>" . __("Supplier quality", "order") . "</th>";
       echo "</tr>";
@@ -186,7 +188,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
       echo "</tr>";
 
       if ($nb) {
-         for ($i=0 ; $i <$nb ; $i++) {
+         for ($i = 0; $i < $nb; $i++) {
             $name        = $DB->result($result,$i,"name");
             $ID          = $DB->result($result,$i,"id");
             $comment     = $DB->result($result,$i,"comment");

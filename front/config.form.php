@@ -35,10 +35,11 @@ if (isset($_POST["update"])) {
    $config->update($_POST);
    //Update singelton
    PluginOrderConfig::getConfig(true);
-   Html::redirect($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else {
 
-Html::header(__("Orders management", "order"), $_SERVER['PHP_SELF'], "config", "PluginOrderConfig");
+//Html::header(__("Orders management", "order"), $_SERVER['PHP_SELF'], "config", "PluginOrderConfig");
+Html::header(__("Orders", "order"), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "order");
 
 Session::checkRight("config", UPDATE);
 $config->showForm();

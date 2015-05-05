@@ -908,6 +908,7 @@ class PluginOrderLink extends CommonDBChild
          $newID = $item->add($input);
 
          // Attach new ticket if option is on
+         /*
          if (isset($params['generate_ticket'])) {
             $tkt = new TicketTemplate();
             if ($tkt->getFromDB($params['generate_ticket']['tickettemplates_id'])) {
@@ -932,6 +933,7 @@ class PluginOrderLink extends CommonDBChild
                $ticketID = $ticket->add($input);
             }
          }
+         */
 
          //-------------- End template management ---------------------------------//
          $this->createLinkWithItem($values["id"], $newID, $values["itemtype"],

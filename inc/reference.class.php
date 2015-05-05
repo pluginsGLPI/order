@@ -33,7 +33,7 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderReference extends CommonDBTM
 {
-   public static $rightname         = 'plugin_order_reference';
+   public static $rightname         = 'config'; //'plugin_order_reference'; //TODO : A développer
    public $dohistory                = true;
    public static $forward_entity_to = array('PluginOrderReference_Supplier');
 
@@ -476,7 +476,14 @@ class PluginOrderReference extends CommonDBTM
       Manufacturer::Dropdown(array('value' => $this->fields['manufacturers_id']));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . __("Item type") . "</td>";
+      echo "<tr class='tab_bg_1'>";
+
+      echo "<td>" . __("Item type");
+      // Mandatory dropdown :
+      if ($id <= 0) {
+         echo " <span class='red'>*</span>";
+      }
+      echo "</td>";
       echo "<td>";
       if ($id > 0) {
          $itemtype = $this->fields["itemtype"];
@@ -484,16 +491,16 @@ class PluginOrderReference extends CommonDBTM
          echo $item->getTypeName();
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
       } else {
-            $params = array(
-               'myname'    => 'itemtype',
-               'value'     => $options["item"],
-               'entity'    => $_SESSION["glpiactive_entity"],
-               'ajax_page' => $CFG_GLPI["root_doc"] . '/plugins/order/ajax/referencespecifications.php',
-               'class'     => __CLASS__,
-            );
+         $params = array(
+            'myname'    => 'itemtype',
+            'value'     => $options["item"],
+            'entity'    => $_SESSION["glpiactive_entity"],
+            'ajax_page' => $CFG_GLPI["root_doc"] . '/plugins/order/ajax/referencespecifications.php',
+            'class'     => __CLASS__,
+         );
 
-            $this->dropdownAllItems($params);
-            }
+         $this->dropdownAllItems($params);
+      }
       echo "</td>";
 
       echo "<td>" . __("Type") . "</td>";
@@ -553,12 +560,13 @@ class PluginOrderReference extends CommonDBTM
       echo "<tr class='tab_bg_1'><td>" . __("Last update") . "</td>";
       echo "<td>";
       echo Html::convDateTime($this->fields["date_mod"]);
-      echo "</td><td colspan='2'></td></tr>";
+      echo "</td>";
+      echo "<td colspan='2'></td></tr>";
+
+      $options['canedit'] = true;
       $this->showFormButtons($options);
       Html::closeForm();
-
-      // $this->addDivForTabs();
-      // return true;
+      return true;
    }
 
    /**
@@ -987,6 +995,97 @@ class PluginOrderReference extends CommonDBTM
       return $out;
    }
 
+   /**
+    * Get the standard massive actions which are forbidden
+    *
+    * @since version 0.84
+    *
+    * @return an array of massive actions
+    **/
+   public function getForbiddenStandardMassiveAction() {
+
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::showMassiveActionsSubForm()
+    **/
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+      global $UNINSTALL_TYPES;
+   
+      switch ($ma->getAction()) {
+         case 'transfert':
+            Entity::dropdown();
+            echo "&nbsp;".
+                  Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
+            return true;
+         case 'copy_reference':
+            //useless ?
+            echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
+                     _sx('button', 'Post') . "\" >";
+            return true;
+      }
+      return "";
+   }
+
+      function getSpecificMassiveActions($checkitem=NULL) {
+
+      $isadmin = static::canUpdate();
+      $actions = parent::getSpecificMassiveActions($checkitem);
+
+      if ($isadmin) {
+         if (Session::haveRight('transfer', READ)
+             && Session::isMultiEntitiesMode()) {
+            $actions['PluginOrderReference:transfert'] = __('Transfer');
+         }
+         $actions['PluginOrderReference:copy_reference'] = __("Copy reference", "order");
+      }
+
+      return $actions;
+   }
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+    **/
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids) {
+      global $CFG_GLPI;
+   
+      switch ($ma->getAction()) {
+         case "transfert":
+            $input = $ma->getInput();
+            $entities_id = $input['entities_id'];
+   
+            foreach ($ids as $id) {
+               if ($item->getFromDB($id)) {
+                  $item->update(array(
+                        "id" => $id,
+                        "entities_id" => $entities_id,
+                        "update" => __('Update'),
+                  ));
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+               }
+            }
+            return;
+               break;
+         case "copy_reference":
+            foreach ($ids as $id) {
+               if ($item->getFromDB($id)) {
+                  $item->copy($id);
+               }
+               $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+            }
+            return;
+               break;
+      }
+      return;
+   }
+
    public static function install(Migration $migration)
    {
       global $DB;
@@ -1071,7 +1170,12 @@ class PluginOrderReference extends CommonDBTM
          Plugin::migrateItemType(array(3151 => 'PluginOrderReference'),
                                  array("glpi_bookmarks", "glpi_bookmarks_users",
                                        "glpi_displaypreferences", "glpi_documents_items",
-                                       "glpi_infocoms", "glpi_logs", "glpi_items_tickets"));
+                                       "glpi_infocoms", "glpi_logs"));
+
+         if (FieldExists('glpi_tickets', 'itemtype')) {
+            Plugin::migrateItemType(array(3151 => 'PluginOrderReference'),
+                                 array("glpi_tickets"));
+         }
 
          Plugin::migrateItemType(array(), array(), array($table));
 

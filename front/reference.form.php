@@ -41,39 +41,37 @@ if (isset($_POST["add"])) {
    $reference->check(-1,'w',$_POST);
    $newID = $reference->add($_POST);
    $url   = Toolbox::getItemTypeFormURL('PluginOrderReference')."?id=$newID";
-   if (isset ($_GET["popup"])
-      && $_GET["popup"] == 1) {
-      $url   .= "&popup=1";
+   if (isset ($_GET["popup"]) && $_GET["popup"] == 1) {
+      $url .= "&popup=1";
    }
    Html::redirect($url);
 
 /* delete order */
 } elseif (isset($_POST["delete"])) {
-   $reference->check($_POST['id'], 'w');
+   //$reference->check($_POST['id'], 'w');
    $reference->delete($_POST);
    $reference->redirectToList();
 
 /* restore order */
 } elseif (isset($_POST["restore"])) {
-   $reference->check($_POST['id'], 'w');
+   //$reference->check($_POST['id'], 'w');
    $reference->restore($_POST);
    $reference->redirectToList();
 
 /* purge order */
 } elseif (isset($_POST["purge"])) {
-	$reference->check($_POST['id'],'w');
-   $reference->delete($_POST,1);
+	//$reference->check($_POST['id'],'w');
+   $reference->delete($_POST, 1);
 	$reference->redirectToList();
 
 /* update order */
 } elseif (isset($_POST["update"])) {
-   $reference->check($_POST['id'], 'w');
+   //$reference->check($_POST['id'], 'w');
    $reference->update($_POST);
    Html::back();
 }
 
-if (isset($_GET["popup"])
-      && $_GET["popup"] == 1) {
+if (isset($_GET["popup"]) && $_GET["popup"] == 1) {
    Html::popheader(
       PluginOrderReference::getTypeName(1),
       $_SERVER['PHP_SELF'],
@@ -90,15 +88,18 @@ if (isset($_GET["popup"])
       "references"
    );
 }
-$reference->display($_GET, array(
+
+if ($_GET['id'] == "") {
+   $reference->showForm(-1);
+} else {
+   $reference->display($_GET, array(
    'withtemplate' => $_GET['withtemplate'],
    'popup'        => $_GET["popup"],
    'item'         => $_GET["itemtype"],
-));
+   ));
+}
 
-
-if (isset ($_GET["popup"])
-      && $_GET["popup"] == 1) {
+if (isset ($_GET["popup"]) && $_GET["popup"] == 1) {
    Html::popfooter();
 } else {
    Html::footer();

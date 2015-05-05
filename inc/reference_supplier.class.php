@@ -33,7 +33,7 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderReference_Supplier extends CommonDBChild
 {
-   public static $rightname = 'plugin_order_reference';
+   public static $rightname = 'config'; //'plugin_order_reference'; //TODO : A développer
    public static $itemtype  = 'PluginOrderReference';
    public static $items_id  = 'plugin_order_references_id';
    public $dohistory        = true;
@@ -84,10 +84,10 @@ class PluginOrderReference_Supplier extends CommonDBChild
 
       $tab[3]['table']         = 'glpi_suppliers';
       $tab[3]['field']         = 'name';
-      $tab[3]['name']          = __("Supplier");
-      $tab[3]['datatype']      ='itemlink';
-      $tab[3]['itemlink_type'] ='Supplier';
-      $tab[3]['forcegroupby']  =true;
+      $tab[3]['name']          =  __("Supplier");
+      $tab[3]['datatype']      = 'itemlink';
+      $tab[3]['itemlink_type'] = 'Supplier';
+      $tab[3]['forcegroupby']  = true;
 
       $tab[30]['table']        = $this->getTable();
       $tab[30]['field']        = 'id';
@@ -402,8 +402,13 @@ class PluginOrderReference_Supplier extends CommonDBChild
          Plugin::migrateItemType(array(3152 => 'PluginOrderReference_Supplier'),
                                  array("glpi_bookmarks", "glpi_bookmarks_users",
                                        "glpi_displaypreferences", "glpi_documents_items",
-                                       "glpi_infocoms", "glpi_logs", "glpi_items_tickets"),
+                                       "glpi_infocoms", "glpi_logs"),
                                  array());
+         if (FieldExists('glpi_tickets', 'itemtype')) {
+            Plugin::migrateItemType(array(3152 => 'PluginOrderReference_Supplier'),
+                                 array("glpi_tickets"),
+                                 array());
+         }
 
          //1.5.0
          $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_references` ";
@@ -487,7 +492,7 @@ class PluginOrderReference_Supplier extends CommonDBChild
             echo "</td>";
 
             echo "<td>";
-            echo $data["price_taxfree"];
+            echo number_format($data["price_taxfree"], 2);
             echo "</td>";
             echo "</tr>";
          }

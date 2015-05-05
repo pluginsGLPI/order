@@ -50,7 +50,7 @@ function plugin_order_install() {
                     'PluginOrderOrder_Supplier', 'PluginOrderBill', 'PluginOrderOrderPayment',
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                     'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
-                    'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderMenu');
+                    'PluginOrderSurveySupplier', 'PluginOrderOrderTax');
    foreach ($classes as $class) {
       if ($plug=isPluginItemType($class)) {
          $plugname=strtolower($plug['plugin']);
@@ -85,7 +85,7 @@ function plugin_order_uninstall() {
                     'PluginOrderOrder_Supplier', 'PluginOrderOrderPayment','PluginOrderOrderTax',
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                     'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
-                    'PluginOrderSurveySupplier', 'PluginOrderMenu');
+                    'PluginOrderSurveySupplier');
       foreach ($classes as $class) {
          call_user_func(array($class,'uninstall'));
       }
@@ -239,33 +239,33 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
    switch ($table . '.' . $field) {
       /* display associated items with order */
       case "glpi_plugin_order_references.types_id" :
-         if ($data["itemtype"] == 'PluginOrderOther') {
+         if ($data['raw']["itemtype"] == 'PluginOrderOther') {
             $file = GLPI_ROOT."/plugins/order/inc/othertype.class.php";
          } else {
-            $file = GLPI_ROOT."/inc/".strtolower($data["itemtype"])."type.class.php";
+            $file = GLPI_ROOT."/inc/".strtolower($data['raw']["itemtype"])."type.class.php";
          }
          if (file_exists($file)) {
             return Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"),
-                                             $data["ITEM_" . $num]);
+                                             $data['raw']["ITEM_" . $num]);
          } else {
             return " ";
          }
          break;
       case "glpi_plugin_order_references.models_id" :
          if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."model.class.php")) {
-            return Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"),
-                                             $data["ITEM_" . $num]);
+            return Dropdown::getDropdownName(getTableForItemType($data['raw']["itemtype"]."Model"),
+                                             $data['raw']["ITEM_" . $num]);
 
          } else {
             return " ";
          }
          break;
       case "glpi_plugin_order_references.templates_id" :
-         if (!$data["ITEM_" . $num]) {
+         if (!$data['raw']["ITEM_" . $num]) {
             return " ";
 
          } else {
-            return $reference->getTemplateName($data["itemtype"], $data["ITEM_" . $num]);
+            return $reference->getTemplateName($data['raw']["itemtype"], $data['raw']["ITEM_" . $num]);
          }
          break;
    }
@@ -281,7 +281,7 @@ function plugin_order_displayConfigItem($type, $ID, $data, $num) {
    switch ($table . '.' . $field) {
       case "glpi_plugin_order_orders.is_late":
          $message = "";
-         if ($data["ITEM_" . $num]) {
+         if ($data['raw']["ITEM_" . $num]) {
             $config = PluginOrderConfig::getConfig();
             if ($config->getShouldBeDevileredColor() != '') {
                $message.= " style=\"background-color:".$config->getShouldBeDevileredColor().";\" ";
@@ -289,89 +289,6 @@ function plugin_order_displayConfigItem($type, $ID, $data, $num) {
          }
          return $message;
 
-   }
-}
-
-////// SPECIFIC MODIF MASSIVE FUNCTIONS ///////
-
-function plugin_order_MassiveActions($type) {
-   switch ($type) {
-      case 'PluginOrderOrder' :
-         return array ("plugin_order_transfert" => __("Transfer"));
-         break;
-
-      case 'PluginOrderReference':
-         return array ("plugin_order_copy_reference"     => __("Copy reference", "order"),
-                         "plugin_order_transfer_reference" => __("Transfer"));
-         break;
-   }
-   return array ();
-}
-
-function plugin_order_MassiveActionsDisplay($options=array()) {
-   switch ($options['itemtype']) {
-      case 'PluginOrderOrder' :
-         switch ($options['action']) {
-            // No case for add_document : use GLPI core one
-            case "plugin_order_transfert" :
-               Entity::Dropdown();
-               echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
-                  _sx('button', 'Post') . "\" >";
-               break;
-         }
-         break;
-      case 'PluginOrderReference':
-         switch ($options['action']) {
-            case "plugin_order_copy_reference":
-               echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
-                     _sx('button', 'Post') . "\" >";
-               break;
-
-            case "plugin_order_transfer_reference" :
-               Entity::Dropdown();
-               echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"" .
-                     _sx('button', 'Post') . "\" >";
-               break;
-         }
-         break;
-   }
-   return "";
-}
-
-function plugin_order_MassiveActionsProcess($data) {
-   global $DB;
-
-   switch ($data['action']) {
-      case "plugin_order_transfert" :
-         if ($data['itemtype'] == 'PluginOrderOrder') {
-            $order = new PluginOrderOrder();
-            foreach ($data["item"] as $key => $val) {
-               if ($val == 1) {
-                  $order->transfer($key,$data['entities_id']);
-               }
-            }
-         }
-         break;
-      case "plugin_order_copy_reference" :
-         if ($data['itemtype'] == 'PluginOrderReference') {
-             $reference = new PluginOrderReference();
-             foreach ($data["item"] as $key => $val) {
-               if ($val == 1) {
-                  $reference->copy($key);
-               }
-            }
-         }
-         break;
-      case "plugin_order_transfer_reference" :
-         if ($data['itemtype'] == 'PluginOrderReference') {
-            $reference = new PluginOrderReference();
-            foreach ($data["item"] as $key => $val) {
-               if ($val == 1) {
-                  $reference->transfer($key, $data['entities_id']);
-               }
-            }
-         }
-         break;
    }
 }
 

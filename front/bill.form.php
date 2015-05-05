@@ -29,9 +29,25 @@
 
 include ("../../../inc/includes.php");
 
+$bill = new PluginOrderBill();
+
+if (isset($_REQUEST['add'])) {
+   $bill->add($_REQUEST);
+   Html::back();
+}
+
+if (isset($_REQUEST['update'])) {
+   $bill->update($_REQUEST);
+   Html::back();
+}
+
+if (isset($_REQUEST['purge'])) {
+   $bill->delete($_REQUEST);
+   $bill->redirectToList();
+}
+
 if (isset($_POST['action'])) {
    // Retrieve configuration for generate assets feature
-   $config = PluginOrderConfig::getConfig();
 
    $order_item = new PluginOrderOrder_Item();
    switch ($_POST['chooseAction']) {
@@ -48,8 +64,8 @@ if (isset($_POST['action'])) {
                   $ic = new Infocom();
                   $ic->getFromDBforDevice($order_item->fields['itemtype'], $order_item->fields['items_id']);
 
+                  $config = PluginOrderConfig::getConfig();
                   if ($config->canAddBillDetails()) {
-                     $bill = new PluginOrderBill();
                      if ($bill->getFromDB($_POST["plugin_order_bills_id"])) {
                         $fields['id'] = $ic->fields['id'];
                         $fields['bill'] = $bill->fields['number'];
@@ -63,15 +79,18 @@ if (isset($_POST['action'])) {
          break;
    }
    PluginOrderOrder::updateBillState($order_item->fields['plugin_order_orders_id']);
-   Html::redirect($_SERVER["HTTP_REFERER"]);
+   Html::back();
 }
 $dropdown = new PluginOrderBill();
 
 // TODO: changer les droits
-Session::checkRight("plugin_order_bill", READ);
+Session::checkRight("budget", READ);
 
 Html::header(PluginOrderBill::getTypeName(1), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "bill");
-$bill = new PluginOrderBill();
-$bill->show();
+if (isset($_REQUEST['id'])) {
+   $bill->display($_REQUEST);
+} else {
+   $bill->show();
+}
 
 Html::footer();

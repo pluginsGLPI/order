@@ -1,26 +1,17 @@
 <?php
 
-class PluginOrderMenu extends CommonGLPI
-{
-   public static function canView()
-   {
-      return true;
-      //return Session::haveRight('order', READ);
-   }
+class PluginOrderMenu extends CommonGLPI {
 
    public static function getTypeName($nb = 0) {
       return __("Orders management", "order");
    }
 
-   public static function getMenuContent() {
+   static function getMenuContent() {
       global $CFG_GLPI;
 
-      $menu  = parent::getMenuContent();
-      $menu['title']                                    = PluginOrderMenu::getTypeName(2);
-      $menu['page']                                     = PluginOrderMenu::getSearchURL(false);
-      $menu['links']['add']                             = null;
-      $menu['links']['search']                          = null;
-      $menu['links']['config']                          = PluginOrderConfig::getFormURL(false);
+      $menu          = array();
+      $menu['title'] = self::getTypeName(2);
+      $menu['page']  = self::getSearchURL(false);
 
       $menu['options']['order']['title']                = PluginOrderOrder::getTypeName(2);
       $menu['options']['order']['page']                 = PluginOrderOrder::getSearchURL(false);
@@ -43,8 +34,5 @@ class PluginOrderMenu extends CommonGLPI
 
       return $menu;
    }
-   
-   public static function install(Migration $migration)
-   {
-   }
+
 }

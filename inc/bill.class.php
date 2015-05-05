@@ -68,6 +68,7 @@ class PluginOrderBill extends CommonDropdown
 
    public function getAdditionalFields()
    {
+      //$this->showTabs(); //hack
       return array(array('name'  =>'suppliers_id',
                          'label' => __("Supplier"),
                          'type'  => 'dropdownValue'),
@@ -75,8 +76,9 @@ class PluginOrderBill extends CommonDropdown
                          'label' => __("Value"),
                          'type'  => 'text'),
                    array('name'  => 'number',
-                         'label' => __("Number"),
-                         'type'  => 'text'),
+                         'label' => _x("phone", "Number")." <span class='red'>*</span>",
+                         'type'  => 'text',
+                         'mandatory' => true),
                    array('name'  => 'billdate',
                          'label' => __("Date"),
                          'type'  => 'date'),
@@ -96,14 +98,38 @@ class PluginOrderBill extends CommonDropdown
                          'label' => __("Approval date"),
                          'type'  => 'date'));
    }
-
+/*
    public function title()
    {
+   }
+*/
+   public function showForm($ID, $options=array()) {
+
+      if (!self::canView()) {
+         return false;
+      }
+
+      if ($ID > 0) {
+         $this->check($ID, READ);
+      } else {
+         // Create item
+         $this->check(-1, UPDATE);
+         $this->getEmpty();
+      }
+
+      $options['canedit'] = self::canEdit($this->fields["id"]);
+      $options['candel']  = self::canDelete();
+
+      parent::showForm($ID, $options);
+
+      return true;
+
    }
 
    public function defineTabs($options = array())
    {
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__,$ong,$options);
       $this->addStandardTab('Document_Item',$ong,$options);
       $this->addStandardTab('Note',$ong,$options);
@@ -121,7 +147,7 @@ class PluginOrderBill extends CommonDropdown
       /* order_number */
       $tab[1]['table']          = $this->getTable();
       $tab[1]['field']          = 'number';
-      $tab[1]['name']           = __("Number");
+      $tab[1]['name']           = _x("phone", "Number");
       $tab[1]['datatype']       = 'itemlink';
 
       $tab[2]['table']          = $this->getTable();
@@ -201,11 +227,13 @@ class PluginOrderBill extends CommonDropdown
       echo "</th></tr>";
 
       $bills_id = $bill->getID();
-      $query  = "SELECT * FROM `" . getTableForItemType("PluginOrderOrder_Item");
-      $query .= "` WHERE `plugin_order_bills_id` = '$bills_id'";
-      $query .= getEntitiesRestrictRequest(" AND", getTableForItemType("PluginOrderOrder_Item"),
-                                          "entities_id", $bill->getEntityID(), true);
+      $table = getTableForItemType("PluginOrderOrder_Item");
+      
+      $query  = "SELECT * FROM `" . $table . "`";
+      $query .= " WHERE `plugin_order_bills_id` = '$bills_id'";
+      $query .= getEntitiesRestrictRequest(" AND", $table, "entities_id", $bill->getEntityID(), true);
       $query .= "GROUP BY `itemtype`";
+      
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
@@ -247,15 +275,17 @@ class PluginOrderBill extends CommonDropdown
 
                $reference = new PluginOrderReference();
                $reference->getFromDB($data["plugin_order_references_id"]);
+               echo "<td class='center'>";
                if (PluginOrderReference::canView()) {
-                  echo "<td class='center'><a href='" . $reference->getLinkURL() . "'>";
-                  echo $reference->getName() . "</a></td>";
+                  echo $reference->getLink();
                } else {
-                  echo "<td class='center'>" . $reference->getName(true) . "</td>";
+                  echo $reference->getName(true);
                }
                echo "</td>";
-               echo "<td class='center'>" . Dropdown::getDropdownName("glpi_plugin_order_deliverystates",
-                                                                      $data["plugin_order_deliverystates_id"]);
+               echo "<td class='center'>";
+               Dropdown::getDropdownName("glpi_plugin_order_deliverystates",
+                                            $data["plugin_order_deliverystates_id"]);
+               echo "</td>";
                echo "</tr>";
             }
          }
@@ -263,9 +293,10 @@ class PluginOrderBill extends CommonDropdown
       echo "</table></div>";
    }
 
+   //can display nothing
    public static function showOrdersItems(PluginOrderBill $bill)
    {
-      global $DB,$CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $reference = new PluginOrderReference();
       $order     = new PluginOrderOrder();
@@ -494,12 +525,14 @@ class PluginOrderBill extends CommonDropdown
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
    {
       if (!$withtemplate) {
-         if ($item->getType()=='PluginOrderOrder') {
-            return self::getTypeName();
-         } elseif ($item->getType() == __CLASS__) {
-            $ong[1] = __("Orders", "order");
-            $ong[2] = _n("Associated item", "Associated items", 2);
-            return $ong;
+         switch ($item->getType()) {
+            case 'PluginOrderOrder':
+               return self::getTypeName();
+               break;
+            case __CLASS__:
+               $ong[1] = __("Orders", "order");
+               $ong[2] = _n("Associated item", "Associated items", 2);
+               return $ong;
          }
       }
       return '';
@@ -507,14 +540,12 @@ class PluginOrderBill extends CommonDropdown
 
    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
    {
-      global $CFG_GLPI;
 
-      if ($item->getType()=='PluginOrderOrder') {
-
-         $order_item     = new PluginOrderOrder_Item();
+      if ($item->getType() == 'PluginOrderOrder') {
+         $order_item = new PluginOrderOrder_Item();
          $order_item->showBillsItems($item);
 
-      } elseif ($item->getType()==__CLASS__) {
+      } elseif ($item->getType() == __CLASS__) {
          switch ($tabnum) {
             case 1 :
                self::showOrdersItems($item);

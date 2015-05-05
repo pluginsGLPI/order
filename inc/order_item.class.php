@@ -261,21 +261,22 @@ class PluginOrderOrder_Item extends CommonDBRelation
                . Toolbox::getItemTypeFormURL('PluginOrderOrder') . "\">";
             echo "<input type='hidden' name='plugin_order_orders_id' value=\"$plugin_order_orders_id\">";
             echo "<div class='center'>";
-            echo"<table class='tab_cadre_fixe'>";
+            echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th colspan='7'>" . __("Add to the order", "order") . "</th></tr>";
 
             if ($order->fields["suppliers_id"]) {
-               echo "<tr>";
-               echo "<th align='center'>" . __("Type") . "</th>";
-               echo "<th align='center'>" . __("Product reference", "order") . "</th>";
-               echo "<th align='center'>" . __("Quantity", "order") . "</th>";
-               echo "<th align='center'>" . __("Unit price tax free", "order") . "</th>";
-               echo "<th align='center'>" . __("VAT", "order") . "</th>";
-               echo "<th align='center'>" . __("Discount (%)", "order") . "</th>";
+               echo "<tr align='center'>";
+               echo "<th>" . __("Type") . "</th>";
+               echo "<th>" . __("Product reference", "order") . "</th>";
+               echo "<th>" . __("Quantity", "order") . "</th>";
+               echo "<th>" . __("Unit price tax free", "order") . "</th>";
+               echo "<th>" . __("VAT", "order") . "</th>";
+               echo "<th>" . __("Discount (%)", "order") . "</th>";
                echo "<th></th>";
                echo"</tr>";
-               echo "<tr>";
-               echo "<td class='tab_bg_1' align='center'>";
+
+               echo "<tr align='center'>";
+               echo "<td class='tab_bg_1'>";
 
                $query = "SELECT DISTINCT r.`itemtype`
                          FROM `glpi_plugin_order_references` r
@@ -304,19 +305,19 @@ class PluginOrderOrder_Item extends CommonDBRelation
                                              '../ajax/dropdownReference.php',
                                              $params);
                echo "</td>";
-               echo "<td class='tab_bg_1' align='center'><span id='show_reference'>";
+               echo "<td class='tab_bg_1'><span id='show_reference'>";
                Dropdown::showFromArray('plugin_order_references_id', array(0 => Dropdown::EMPTY_VALUE), array('rand' => $rand));
                echo "</span></td>";
 
-               echo "<td class='tab_bg_1' align='center'><span id='show_quantity'>";
+               echo "<td class='tab_bg_1'><span id='show_quantity'>";
                echo '<input type="text" name="quantity" value="0" style="text-align:center" size="10" />';
                echo "</span></td>";
 
-               echo "<td class='tab_bg_1' align='center'><span id='show_priceht'>";
+               echo "<td class='tab_bg_1'><span id='show_priceht'>";
                echo '<input type="text" name="price" value="0.00" style="text-align:center" size="10" />';
                echo "</span></td>";
 
-               echo "<td class='tab_bg_1' align='center'><span id='show_taxe'>";
+               echo "<td class='tab_bg_1'><span id='show_taxe'>";
                $config = PluginOrderConfig::getConfig();
                PluginOrderOrderTax::Dropdown(array(
                   'name'                => "plugin_order_ordertaxes_id",
@@ -326,12 +327,12 @@ class PluginOrderOrder_Item extends CommonDBRelation
                ));
                echo "</span></td>";
 
-               echo "<td class='tab_bg_1' align='center'><span id='show_pricediscounted'>";
+               echo "<td class='tab_bg_1'><span id='show_pricediscounted'>";
                echo '<input type="text" name="discount" value="0" style="text-align:center" size="10" />';
                echo "</span></td>";
 
-               echo "<td class='tab_bg_1' align='center'><span id='show_validate'>";
-               echo "<input type='submit' name='add_item' value=\"" . __("Add") . "\" class='submit' >";
+               echo "<td class='tab_bg_1'><span id='show_validate'>";
+               echo "<input type='submit' name='add_item' value=\"" . __("Add") . "\" class='submit'>";
                echo "</span></td>";
                echo "</tr>";
             } else {

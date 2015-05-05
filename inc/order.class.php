@@ -33,7 +33,7 @@ if (!defined('GLPI_ROOT')){
 
 class PluginOrderOrder extends CommonDBTM
 {
-   public static $rightname         = 'plugin_order_order';
+   public static $rightname         = 'config'; //'plugin_order_order'; //TODO : à développer (a priori)
    public $is_template              = true;
    public $dohistory                = true;
    public static $forward_entity_to = array(
@@ -301,7 +301,7 @@ class PluginOrderOrder extends CommonDBTM
 
       /* contact */
       $tab[8]['table']         = 'glpi_contacts';
-      $tab[8]['field']         = 'completename';
+      $tab[8]['field']         = 'name';
       $tab[8]['name']          = __("Alternate username");
       $tab[8]['datatype']      = 'itemlink';
       $tab[8]['itemlink_type'] = 'Contact';
@@ -493,22 +493,23 @@ class PluginOrderOrder extends CommonDBTM
 
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
    {
-      if ($item->getType() == 'Budget') {
-         return __("Orders", "order");
-      } elseif ($item->getType() ==__CLASS__) {
-         $ong    = array();
-         $config = PluginOrderConfig::getConfig();
-         if (Session::haveRight("plugin_order_validation", UPDATE)
-            || Session::haveRight("plugin_order_cancel", UPDATE)
-            || Session::haveRight("plugin_order_undo_validation", UPDATE)) {
-            $ong[1] = __("Validation", "order");
-         }
-         if ($config->canGenerateOrderPDF() && $item->getState() > PluginOrderOrderState::DRAFT) {
-         // generation
-            $ong[2] = __("Purchase order", "order");
-         }
+      switch ($item->getType()) {
+         case 'Budget':
+            return __("Orders", "order");
+         case __CLASS__:
+            $ong    = array();
+            $config = PluginOrderConfig::getConfig();
+            if (Session::haveRight("plugin_order_validation", UPDATE)
+               || Session::haveRight("plugin_order_cancel", UPDATE)
+               || Session::haveRight("plugin_order_undo_validation", UPDATE)) {
+               $ong[1] = __("Validation", "order");
+            }
+            if ($config->canGenerateOrderPDF() && $item->getState() > PluginOrderOrderState::DRAFT) {
+            // generation
+               $ong[2] = __("Purchase order", "order");
+            }
 
-         return $ong;
+            return $ong;
       }
    }
 
@@ -593,7 +594,6 @@ class PluginOrderOrder extends CommonDBTM
          }
       }
 
-      //Check is order is late or not
       if (!isset($input['is_late']) && $this->shouldBeAlreadyDelivered()) {
          $this->setIsLate();
       }
@@ -695,7 +695,13 @@ class PluginOrderOrder extends CommonDBTM
       echo "</td></tr>";
 
       /* num order */
-      echo "<tr class='tab_bg_1'><td>" . __("Order number", "order") . "*: </td>";
+      echo "<tr class='tab_bg_1'><td>" . __("Order number", "order");
+      if ($ID > 0) {
+         echo "*";
+      } else {
+         echo " <span class='red'>*</span>";
+      }
+      echo ": </td>";
       echo "<td>";
       if ($canedit) {
          $objectOrder = autoName($this->fields["num_order"], "num_order", ($template === "newcomp"),
@@ -733,7 +739,8 @@ class PluginOrderOrder extends CommonDBTM
       echo "</td>";
 
       /* budget */
-      echo "<td>" . __("Budget") . ": </td><td>";
+      echo "<td>" . __("Budget") . ": </td>";
+      echo "<td>";
       if ($canedit) {
          if ($config->canHideInactiveBudgets()) {
             $restrict = " (`end_date` IS NULL) OR (`end_date`> '".date("Y-m-d")."')";
@@ -747,12 +754,13 @@ class PluginOrderOrder extends CommonDBTM
             'entity'    => $this->fields["entities_id"],
             'comments'  => true,
             'condition' => $restrict,
+            'width'     => '150px',
          ));
       } else {
          $budget = new Budget();
          if ($this->fields["budgets_id"] > 0
             && $budget->can($this->fields["budgets_id"], READ)) {
-            echo "<a href='" . $budget->getLinkURL() . "'>" . $budget->getName(1) . "</a>";
+            echo $budget->getLink();
          } else {
             echo Dropdown::getDropdownName("glpi_budgets", $this->fields["budgets_id"]);
          }
@@ -948,7 +956,7 @@ class PluginOrderOrder extends CommonDBTM
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2'>";
       echo "<table class='format'>";
-      echo "<tr class='tab_bg_1'><td>" . __("Author") . ":</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . __("Author") . ":</td><td style='width: 170px;'>";
       if ($canedit) {
          if ($template == 'newcomp') {
             $value = Session::getLoginUserID();
@@ -960,6 +968,7 @@ class PluginOrderOrder extends CommonDBTM
             'value'  => $value,
             'right'  => 'interface',
             'entity' => $this->fields["entities_id"],
+            'width'  => '150px',
          ));
       } else {
          if ($this->fields['users_id']) {
@@ -970,19 +979,22 @@ class PluginOrderOrder extends CommonDBTM
          }
       }
       echo "</td>";
-      echo "<td>" . __("Author group", "order") . ":</td><td>";
+      echo "<td>" . __("Author group", "order") . ":</td><td style='width: 180px;'>";
       if ($canedit) {
          if (empty ($ID) || $ID < 0) {
             $groups_id = $config->getDefaultAuthorGroup();
          } else {
             $groups_id = $this->fields['groups_id'];
          }
-         Group::Dropdown(array('value' => $groups_id));
+         Group::Dropdown(array(
+            'value' => $groups_id,
+            'width'  => '150px',
+         ));
       } else {
          echo Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id']);
       }
       echo "</td></tr>";
-      echo "<tr class='tab_bg_1'><td>" . __("Recipient") . ":</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . __("Recipient") . ":</td><td style='width: 170px;'>";
       if ($canedit) {
          if (empty ($ID) || $ID < 0) {
             $users_id = $config->getDefaultRecipient();
@@ -994,6 +1006,7 @@ class PluginOrderOrder extends CommonDBTM
             'value'  => $users_id,
             'right'  => 'all',
             'entity' => $this->fields["entities_id"],
+            'width'  => '150px',
          ));
       } else {
          if ($this->fields['users_id_delivery']) {
@@ -1004,7 +1017,7 @@ class PluginOrderOrder extends CommonDBTM
          }
       }
       echo "</td>";
-      echo "<td>" . __("Recipient group", "order") . ":</td><td>";
+      echo "<td>" . __("Recipient group", "order") . ":</td><td style='width: 180px;'>";
       if ($canedit) {
          if (empty ($ID) || $ID < 0) {
             $groups_id = $config->getDefaultRecipientGroup();
@@ -1014,6 +1027,7 @@ class PluginOrderOrder extends CommonDBTM
          Group::Dropdown(array(
             'name'  => 'groups_id_delivery',
             'value' => $groups_id,
+            'width'  => '150px',
          ));
       } else {
          echo Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id_delivery']);
@@ -1557,7 +1571,7 @@ class PluginOrderOrder extends CommonDBTM
 
             $odf->setVars('title_price_port', __("Postage", "order"), true, 'UTF-8');
             $odf->setVars('price_port_tva', " ("
-               . Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $this->fields["plugin_order_ordertaxes_id"])
+               . Html::clean(Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $this->fields["plugin_order_ordertaxes_id"]))
                . "%)", true, 'UTF-8');
             $odf->setVars('port_price', Html::clean(Html::formatNumber($postagewithTVA)), true, 'UTF-8');
 
@@ -1577,10 +1591,8 @@ class PluginOrderOrder extends CommonDBTM
             }
 
             $odf->setVars('title_conditions',__("Payment conditions", "order"),true,'UTF-8');
-            $odf->setVars('payment_conditions',
-                          Dropdown::getDropdownName("glpi_plugin_order_orderpayments",
-                                                    $this->fields["plugin_order_orderpayments_id"]),
-                                                    true,'UTF-8');
+            $name = Html::clean(Dropdown::getDropdownName("glpi_plugin_order_orderpayments", $this->fields["plugin_order_orderpayments_id"]));
+            $odf->setVars('payment_conditions', $name, true,'UTF-8');
          }
 
          $message = "_";
@@ -1929,6 +1941,83 @@ class PluginOrderOrder extends CommonDBTM
          }
       }
    }
+
+   /**
+    * Get the standard massive actions which are forbidden
+    *
+    * @since version 0.84
+    *
+    * @return an array of massive actions
+    **/
+   public function getForbiddenStandardMassiveAction() {
+
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::showMassiveActionsSubForm()
+    **/
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+      global $UNINSTALL_TYPES;
+   
+      switch ($ma->getAction()) {
+         case 'transfert':
+            Entity::dropdown();
+            echo "&nbsp;".
+                  Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
+            return true;
+      }
+      return "";
+   }
+
+      function getSpecificMassiveActions($checkitem=NULL) {
+
+      $isadmin = static::canUpdate();
+      $actions = parent::getSpecificMassiveActions($checkitem);
+
+      if ($isadmin) {
+         if (Session::haveRight('transfer', READ)
+             && Session::isMultiEntitiesMode()) {
+            $actions['PluginOrderOrder:transfert'] = __('Transfer');
+         }
+      }
+
+      return $actions;
+   }
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+    **/
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids) {
+      global $CFG_GLPI;
+   
+      switch ($ma->getAction()) {
+         case "transfert":
+            $input = $ma->getInput();
+            $entities_id = $input['entities_id'];
+   
+            foreach ($ids as $id) {
+               if ($item->getFromDB($id)) {
+                  $item->update(array(
+                        "id" => $id,
+                        "entities_id" => $entities_id,
+                        "update" => __('Update'),
+                  ));
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+               }
+            }
+            return;
+               break;
+      }
+      return;
+   }
+
 
    //------------------------------------------------------------
    //--------------------Install / uninstall --------------------

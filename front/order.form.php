@@ -51,6 +51,9 @@ if (isset ($_POST["add"])) {
    $newID = $pluginOrderOrder->add($_POST);
 
    $url = Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=$newID";
+   if (isset($_REQUEST['is_template'])) {
+      $url .= "&withtemplate=1";
+   }
    Html::redirect($url);
 
 /* delete order */
@@ -66,7 +69,7 @@ if (isset ($_POST["add"])) {
    $pluginOrderOrder->redirectToList();
 
 /* purge order */
-} elseif (isset($_POST["purge"]) || isset($_GET["purge"])) {
+} elseif (isset($_REQUEST["purge"])) {
    if (isset($_POST['id'])) {
       $id = $_POST['id'];
    } else {
@@ -80,7 +83,7 @@ if (isset ($_POST["add"])) {
 } elseif (isset($_POST["update"])) {
    $pluginOrderOrder->check($_POST['id'], UPDATE);
    $pluginOrderOrder->update($_POST);
-   Html::redirect($_SERVER['HTTP_REFERER']);
+   Html::back();
 
 //Status update & order workflow
 /* validate order */
@@ -90,7 +93,7 @@ if (isset ($_POST["add"])) {
       PluginOrderReception::updateDelivryStatus($_POST["id"]);
       Session::addMessageAfterRedirect(__("Order is validated", "order"));
    }
-   Html::redirect($_SERVER['HTTP_REFERER']);
+   Html::back();
 
 } elseif (isset($_POST["waiting_for_approval"])) {
    if (pluginOrderOrder::canCreate()) {
@@ -100,7 +103,7 @@ if (isset ($_POST["add"])) {
       Session::addMessageAfterRedirect(__("Order validation successfully requested", "order"));
 
    }
-   Html::redirect($_SERVER['HTTP_REFERER']);
+   Html::back();
 
 } elseif (isset($_POST["cancel_waiting_for_approval"])) {
    if (pluginOrderOrder::canView() && pluginOrderOrder::canCancel()) {
@@ -110,7 +113,7 @@ if (isset ($_POST["add"])) {
       Session::addMessageAfterRedirect(__("Validation query is now canceled", "order"));
    }
 
-   Html::redirect($_SERVER['HTTP_REFERER']);
+   Html::back();
 } elseif (isset($_POST["cancel_order"])) {
    if (pluginOrderOrder::canView() && pluginOrderOrder::canCancel()) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"],
@@ -121,7 +124,7 @@ if (isset ($_POST["add"])) {
 
    }
 
-   Html::redirect($_SERVER['HTTP_REFERER']);
+   Html::back();
 
 } elseif (isset($_POST["undovalidation"])) {
    if (pluginOrderOrder::canView() && pluginOrderOrder::canUndo()) {
@@ -132,7 +135,7 @@ if (isset ($_POST["add"])) {
 
    }
 
-   Html::redirect($_SERVER['HTTP_REFERER']);
+   Html::back();
 
 } elseif (isset($_POST["add_item"])) {
    //Details management
@@ -153,7 +156,7 @@ if (isset ($_POST["add"])) {
                                          $_POST["price"], $_POST["discount"],
                                          $_POST["plugin_order_ordertaxes_id"]);
    }
-   Html::redirect($_SERVER['HTTP_REFERER']);
+   Html::back();
 
 } elseif (isset($_POST["delete_item"])) {
    if (isset($_POST["plugin_order_orders_id"]) && ($_POST["plugin_order_orders_id"] > 0) && isset($_POST["item"])) {
@@ -166,9 +169,8 @@ if (isset ($_POST["add"])) {
                                                         $pluginOrderOrder_Item->fields["plugin_order_references_id"],
                                                         $pluginOrderOrder_Item->fields["price_taxfree"],
                                                         $pluginOrderOrder_Item->fields["discount"]);
-               $nb = $DB->numrows($result);
 
-               if ($nb) {
+               if ($nb = $DB->numrows($result)) {
                   for ($i = 0; $i < $nb; $i++) {
                      $ID       = $DB->result($result, $i, 'id');
                      $items_id = $DB->result($result, $i, 'items_id');
@@ -203,7 +205,7 @@ if (isset ($_POST["add"])) {
       Session::addMessageAfterRedirect(__("No item selected", "order"), false, ERROR);
    }
 
-   Html::redirect($_SERVER['HTTP_REFERER']);
+   Html::back();
 
 } elseif (isset($_POST["update_item"])) {
    if(isset($_POST['quantity'])) {
@@ -244,7 +246,7 @@ if (isset ($_POST["add"])) {
       }
    }
 
-   Html::redirect($_SERVER['HTTP_REFERER']);
+   Html::back();
 
 } elseif (isset($_POST["update_detail_item"])) {
    if(isset($_POST['detail_price_taxfree'])) {
@@ -271,11 +273,11 @@ if (isset ($_POST["add"])) {
       }
    }
 
-   Html::redirect($_SERVER['HTTP_REFERER']);
+   Html::back();
 } elseif (isset($_GET['unlink_order'])) {
    $pluginOrderOrder->check($_GET['id'], UPDATE);
    $pluginOrderOrder->unlinkBudget($_GET['id']);
-   Html::redirect($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else {
    $pluginOrderOrder->checkGlobal(READ);
 
@@ -287,6 +289,10 @@ if (isset ($_POST["add"])) {
       "order"
    );
 
-   $pluginOrderOrder->display($_GET);
+   if ($_GET['id'] == "") {
+      $pluginOrderOrder->showForm(-1, array('withtemplate' => $_GET["withtemplate"]));
+   } else {
+      $pluginOrderOrder->display($_GET);
+   }
    Html::footer();
 }
