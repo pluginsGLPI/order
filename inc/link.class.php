@@ -31,30 +31,25 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderLink extends CommonDBChild
-{
+class PluginOrderLink extends CommonDBChild {
    public static $rightname = 'plugin_order_delivery';
    public $dohistory        = true;
    public static $itemtype  = 'PluginOrderOrder';
    public static $items_id  = 'plugin_order_orders_id';
 
-   public static function getTypeName($nb = 0)
-   {
+   public static function getTypeName($nb = 0) {
       return __("Generation", "order");
    }
 
-   public static function getTable()
-   {
+   public static function getTable() {
       return "glpi_plugin_order_orders_items";
    }
 
-   public static function getTypesThanCannotBeGenerared()
-   {
+   public static function getTypesThanCannotBeGenerared() {
       return array('ConsumableItem', 'CartridgeItem', 'SoftwareLicense', 'Contract');
    }
 
-   public function showItemGenerationForm($params)
-   {
+   public function showItemGenerationForm($params) {
       global $CFG_GLPI;
 
       // Retrieve configuration for generate assets feature
@@ -180,8 +175,7 @@ class PluginOrderLink extends CommonDBChild
       Html::closeForm();
    }
 
-   public function showOrderLink($plugin_order_orders_id)
-   {
+   public function showOrderLink($plugin_order_orders_id) {
       global $DB, $CFG_GLPI;
 
       $PluginOrderOrder      = new PluginOrderOrder();
@@ -343,8 +337,7 @@ class PluginOrderLink extends CommonDBChild
       }
    }
 
-   public function getLinkedItemDetails($itemtype, $items_id)
-   {
+   public function getLinkedItemDetails($itemtype, $items_id) {
       $comments = "";
 
       switch ($itemtype) {
@@ -430,8 +423,7 @@ class PluginOrderLink extends CommonDBChild
       return ($comments);
    }
 
-   public function getReceptionItemName($items_id, $itemtype)
-   {
+   public function getReceptionItemName($items_id, $itemtype) {
       global $CFG_GLPI;
 
       if ($items_id == 0) {
@@ -458,8 +450,7 @@ class PluginOrderLink extends CommonDBChild
       }
    }
 
-   public function dropdownLinkActions($itemtype,$plugin_order_references_id,$plugin_order_orders_id, $entities_id)
-   {
+   public function dropdownLinkActions($itemtype,$plugin_order_references_id,$plugin_order_orders_id, $entities_id) {
       global $CFG_GLPI;
 
       $rand       = mt_rand();
@@ -512,8 +503,7 @@ class PluginOrderLink extends CommonDBChild
       }
    }
 
-   public function isItemLinkedToOrder($itemtype, $items_id)
-   {
+   public function isItemLinkedToOrder($itemtype, $items_id) {
       global $DB;
 
       $query = "SELECT `id`
@@ -526,8 +516,7 @@ class PluginOrderLink extends CommonDBChild
       else                                         return 0;
    }
 
-   public function generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, $templateID = 0)
-   {
+   public function generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, $templateID = 0) {
       global $CFG_GLPI;
 
       //Do not try to generate infocoms if itemtype doesn't support it (ie contracts...)
@@ -608,8 +597,7 @@ class PluginOrderLink extends CommonDBChild
       }
    }
 
-   public function removeInfoComRelatedToOrder($itemtype, $items_id)
-   {
+   public function removeInfoComRelatedToOrder($itemtype, $items_id) {
       $infocom = new InfoCom();
       $infocom->getFromDBforDevice($itemtype, $items_id);
       $input["id"]              = $infocom->fields["id"];
@@ -747,8 +735,7 @@ class PluginOrderLink extends CommonDBChild
 
    }
 
-   public function deleteLinkWithItem($detailID, $itemtype, $plugin_order_orders_id)
-   {
+   public function deleteLinkWithItem($detailID, $itemtype, $plugin_order_orders_id) {
       global $DB;
 
       if ($itemtype == 'SoftWareLicense') {
@@ -815,8 +802,7 @@ class PluginOrderLink extends CommonDBChild
       }
    }
 
-   public function generateNewItem($params)
-   {
+   public function generateNewItem($params) {
       global $DB;
 
       // Retrieve plugin configuration
@@ -956,15 +942,13 @@ class PluginOrderLink extends CommonDBChild
       }
    }
 
-   public static function countForOrder(PluginOrderOrder $item)
-   {
+   public static function countForOrder(PluginOrderOrder $item) {
       return countElementsInTable('glpi_plugin_order_orders_items',
                                   "`plugin_order_orders_id` = '" . $item->getID() . "' " .
                                   "AND `states_id` = '" . PluginOrderOrder::ORDER_DEVICE_DELIVRED . "'");
    }
 
-   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
-   {
+   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if ($item->getType()=='PluginOrderOrder') {
          if ($item->checkIfDetailExists($item->getID(), true)) {
             return self::createTabEntry(_n("Associated item", "Associated items", 2),
@@ -973,8 +957,7 @@ class PluginOrderLink extends CommonDBChild
       }
    }
 
-   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
-   {
+   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       if ($item->getType() == 'PluginOrderOrder') {
          $link = new self();
          $link->showOrderLink($item->getID());
@@ -990,8 +973,7 @@ class PluginOrderLink extends CommonDBChild
     * @param unknown_type $orders_id
     * @param unknown_type $entity
     */
-   public static function copyDocuments($itemtype, $items_id, $orders_id, $entity)
-   {
+   public static function copyDocuments($itemtype, $items_id, $orders_id, $entity) {
       global $CFG_GLPI;
 
       $config = PluginOrderConfig::getConfig();

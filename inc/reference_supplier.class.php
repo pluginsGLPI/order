@@ -31,21 +31,18 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderReference_Supplier extends CommonDBChild
-{
-   public static $rightname = 'config'; //'plugin_order_reference'; //TODO : A développer
+class PluginOrderReference_Supplier extends CommonDBChild {
+   public static $rightname = 'plugin_order_reference'; 
    public static $itemtype  = 'PluginOrderReference';
    public static $items_id  = 'plugin_order_references_id';
    public $dohistory        = true;
 
 
-   public static function getTypeName($nb = 0)
-   {
+   public static function getTypeName($nb = 0) {
       return __("Supplier for the reference", "order");
    }
 
-   public function getFromDBByReference($plugin_order_references_id)
-   {
+   public function getFromDBByReference($plugin_order_references_id) {
       global $DB;
 
       $table = $this->getTable();
@@ -66,8 +63,7 @@ class PluginOrderReference_Supplier extends CommonDBChild
       return false;
    }
 
-   public function getSearchOptions()
-   {
+   public function getSearchOptions() {
       $tab                     = array();
 
       $tab['common']           = __("Supplier for the reference", "order");
@@ -101,8 +97,7 @@ class PluginOrderReference_Supplier extends CommonDBChild
       return $tab;
    }
 
-   public function prepareInputForAdd($input)
-   {
+   public function prepareInputForAdd($input) {
       // Not attached to reference -> not added
       if (!isset($input['plugin_order_references_id']) 
          || $input['plugin_order_references_id'] <= 0) {
@@ -111,8 +106,7 @@ class PluginOrderReference_Supplier extends CommonDBChild
       return $input;
    }
 
-   public function defineTabs($options = array())
-   {
+   public function defineTabs($options = array()) {
       $ong = array();
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Document_Item',$ong,$options);
@@ -120,8 +114,7 @@ class PluginOrderReference_Supplier extends CommonDBChild
       return $ong;
    }
 
-   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
-   {
+   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if (get_class($item) == __CLASS__) {
          return array (1 => __("Main"));
       } elseif (get_class($item) == 'PluginOrderReference') {
@@ -130,8 +123,7 @@ class PluginOrderReference_Supplier extends CommonDBChild
       return '';
    }
 
-   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
-   {
+   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       $reference_supplier = new self();
       if ($item->getType()=='PluginOrderReference') {
          $reference_supplier->showReferenceManufacturers($item->getID());
@@ -143,30 +135,15 @@ class PluginOrderReference_Supplier extends CommonDBChild
       return true;
    }
 
-   public function showForm ($ID, $options = array())
-   {
+   public function showForm ($ID, $options = array()) {
       global $DB;
-
-      if (!self::canView()) {
-         return false;
-      }
 
       $plugin_order_references_id = -1;
       if (isset($options['plugin_order_references_id'])) {
          $plugin_order_references_id = $options['plugin_order_references_id'];
       }
 
-      if ($ID > 0) {
-         $this->check($ID, READ);
-      } else {
-         // Create item
-         $input = array('plugin_order_references_id' => $options['plugin_order_references_id']);
-         $this->check(-1, CREATE, $input);
-      }
-
-      if (strpos($_SERVER['PHP_SELF'], "reference_supplier")) {
-         $this->showTabs($options);
-      }
+      $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
       $PluginOrderReference = new PluginOrderReference();
@@ -227,8 +204,7 @@ class PluginOrderReference_Supplier extends CommonDBChild
       return true;
    }
 
-   public function showReferenceManufacturers($ID)
-   {
+   public function showReferenceManufacturers($ID) {
       global $DB, $CFG_GLPI;
 
       $ref = new PluginOrderReference();
@@ -312,8 +288,7 @@ class PluginOrderReference_Supplier extends CommonDBChild
       echo "</div>";
    }
 
-   public function getPriceByReferenceAndSupplier($plugin_order_references_id, $suppliers_id)
-   {
+   public function getPriceByReferenceAndSupplier($plugin_order_references_id, $suppliers_id) {
       global $DB;
 
       $table = $this->getTable();
@@ -330,8 +305,7 @@ class PluginOrderReference_Supplier extends CommonDBChild
       }
    }
 
-   public function getReferenceCodeByReferenceAndSupplier($plugin_order_references_id, $suppliers_id)
-   {
+   public function getReferenceCodeByReferenceAndSupplier($plugin_order_references_id, $suppliers_id) {
       global $DB;
 
       $table = $this->getTable();
@@ -406,7 +380,7 @@ class PluginOrderReference_Supplier extends CommonDBChild
                                  array());
          if (FieldExists('glpi_tickets', 'itemtype')) {
             Plugin::migrateItemType(array(3152 => 'PluginOrderReference_Supplier'),
-                                 array("glpi_items_tickets"),
+                                 array("glpi_tickets"),
                                  array());
          }
 
@@ -421,8 +395,7 @@ class PluginOrderReference_Supplier extends CommonDBChild
       }
    }
 
-   public static function uninstall()
-   {
+   public static function uninstall() {
       global $DB;
 
       //Old table name
@@ -432,8 +405,7 @@ class PluginOrderReference_Supplier extends CommonDBChild
       $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`");
    }
 
-   public static function showReferencesFromSupplier($ID)
-   {
+   public static function showReferencesFromSupplier($ID) {
       global $DB, $CFG_GLPI;
 
       if (isset($_POST["start"])) {

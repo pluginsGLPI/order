@@ -32,8 +32,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 // Class NotificationTarget
-class PluginOrderNotificationTargetOrder extends NotificationTarget
-{
+class PluginOrderNotificationTargetOrder extends NotificationTarget {
    const AUTHOR                    = 30;
    const AUTHOR_GROUP              = 31;
    const DELIVERY_USER             = 32;
@@ -41,8 +40,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
    const SUPERVISOR_AUTHOR_GROUP   = 34;
    const SUPERVISOR_DELIVERY_GROUP = 35;
 
-   public function getEvents()
-   {
+   public function getEvents() {
       return array (
          'ask'            => __("Request order validation", "order"),
          'validation'     => __("Order validated", "order"),
@@ -53,8 +51,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
       );
    }
 
-   public function getDatasForTemplate($event,$options=array())
-   {
+   public function getDatasForTemplate($event,$options=array()) {
       global $CFG_GLPI;
 
       $events = $this->getAllEvents();
@@ -144,8 +141,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
       }
    }
 
-   public function getTags()
-   {
+   public function getTags() {
       $tags = array(
          'ordervalidation.name'        => __("Name"),
          'ordervalidation.numorder'    => __("Order number"),
@@ -191,8 +187,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
       asort($this->tag_descriptions);
    }
 
-   public static function install(Migration $migration)
-   {
+   public static function install(Migration $migration) {
       global $DB;
 
       $migration->displayMessage("Migrate PluginOrderOrder notifications");
@@ -408,8 +403,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
       }
    }
 
-   public static function uninstall()
-   {
+   public static function uninstall() {
       global $DB;
 
       $notif = new Notification();
@@ -444,8 +438,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
    /**
     * Get additionnals targets for Tickets
    **/
-   public function getAdditionalTargets($event='')
-   {
+   public function getAdditionalTargets($event='') {
       $this->addTarget(self::AUTHOR, __("Author"));
       $this->addTarget(self::AUTHOR_GROUP, __("Author group", "order"));
       $this->addTarget(self::DELIVERY_USER, __("Recipient"));
@@ -454,8 +447,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
       $this->addTarget(self::SUPERVISOR_DELIVERY_GROUP, __("Manager") . " " . __("Recipient group", "order"));
    }
 
-   public function getSpecificTargets($data, $options)
-   {
+   public function getSpecificTargets($data, $options) {
       switch ($data['items_id']) {
          case self::AUTHOR:
             $this->getUserByField ("users_id");

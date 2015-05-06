@@ -32,17 +32,14 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Class for a Dropdown
-class PluginOrderOrderTax extends CommonDropdown
-{
+class PluginOrderOrderTax extends CommonDropdown {
    public static $rightname = 'plugin_order_order';
 
-   public static function getTypeName($nb=0)
-   {
+   public static function getTypeName($nb=0) {
       return __("VAT", "order");
    }
 
-   public static function install(Migration $migration)
-   {
+   public static function install(Migration $migration) {
       global $DB;
 
       $table = getTableForItemType(__CLASS__);
@@ -89,8 +86,7 @@ class PluginOrderOrderTax extends CommonDropdown
       }
    }
 
-   public static function uninstall()
-   {
+   public static function uninstall() {
       global $DB;
 
       //Old table

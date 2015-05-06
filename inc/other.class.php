@@ -32,17 +32,14 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderOther extends CommonDBTM
-{
+class PluginOrderOther extends CommonDBTM {
    public static $rightname = 'plugin_order_order';
 
-   public static function getTypeName($nb = 0)
-   {
+   public static function getTypeName($nb = 0) {
       return __("Other kind of items");
    }
 
-   public static function install(Migration $migration)
-   {
+   public static function install(Migration $migration) {
       global $DB;
 
       //Only avaiable since 1.2.0
@@ -64,8 +61,7 @@ class PluginOrderOther extends CommonDBTM
       }
    }
 
-   public static function uninstall()
-   {
+   public static function uninstall() {
       global $DB;
 
       //Current table name

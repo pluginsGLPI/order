@@ -28,10 +28,7 @@
  ---------------------------------------------------------------------- */
 
 include ("../../../inc/includes.php");
-
 $item = new PluginOrderOrder_Item();
-
-$item->checkGlobal("r");
 
 if (isset($_POST['update'])) {
    $item->update($_POST);
@@ -39,8 +36,13 @@ if (isset($_POST['update'])) {
    Html::redirect($_SERVER['HTTP_REFERER']);
 }
 
-Html::header(__("Orders management", "order"),'',"plugins", "order", "order");
+Html::header(__("Orders management", "order"),
+   $_SERVER['PHP_SELF'],
+   "management",
+   "PluginOrderMenu",
+   "order"
+);
 
-$item->showForm($_GET["id"]);
+$item->display($_REQUEST);
 
 Html::footer();

@@ -44,7 +44,7 @@ $PluginOrderBill      = new PluginOrderBill();
 if (PluginOrderOrder::canView() && !PluginOrderReference::canView() && !PluginOrderBill::canView()) {
    Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderOrder'));
 
-}elseif(!PluginOrderOrder::canView() && PluginOrderReference::canView() && !PluginOrderBill::canView()) {
+} elseif(!PluginOrderOrder::canView() && PluginOrderReference::canView() && !PluginOrderBill::canView()) {
    Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderReference'));
 
 } elseif(!PluginOrderOrder::canView() && !PluginOrderReference::canView() && PluginOrderBill::canView()) {

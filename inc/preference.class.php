@@ -32,15 +32,12 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderPreference extends CommonDBTM
-{
-   public static function checkIfPreferenceExists($users_id)
-   {
+class PluginOrderPreference extends CommonDBTM {
+   public static function checkIfPreferenceExists($users_id) {
       return self::checkPreferenceValue('id', $users_id);
    }
 
-   public function addDefaultPreference($users_id)
-   {
+   public function addDefaultPreference($users_id) {
       $id = self::checkIfPreferenceExists($users_id);
       if (!$id) {
          $input["users_id"] = $users_id;
@@ -59,8 +56,7 @@ class PluginOrderPreference extends CommonDBTM
     * @param unknown_type user ID
     * @return preference value or 0
     */
-   public static function checkPreferenceValue($field, $users_id = 0)
-   {
+   public static function checkPreferenceValue($field, $users_id = 0) {
       $data = getAllDatasFromTable(getTableForItemType(__CLASS__), "`users_id`='$users_id'");
       if (!empty($data)) {
          $first = array_pop($data);
@@ -70,13 +66,11 @@ class PluginOrderPreference extends CommonDBTM
       }
    }
 
-   public static function checkPreferenceSignatureValue($users_id= 0)
-   {
+   public static function checkPreferenceSignatureValue($users_id= 0) {
       return self::checkPreferenceValue('sign', $users_id);
    }
 
-   public static function checkPreferenceTemplateValue($users_id)
-   {
+   public static function checkPreferenceTemplateValue($users_id) {
       return self::checkPreferenceValue('template', $users_id);
    }
 
@@ -86,8 +80,7 @@ class PluginOrderPreference extends CommonDBTM
     * @since 1.5.3
     * @param $value default value
     */
-   public static function dropdownFileTemplates($value = '')
-   {
+   public static function dropdownFileTemplates($value = '') {
       return self::dropdownListFiles('template', PLUGIN_ORDER_TEMPLATE_EXTENSION,
                                      PLUGIN_ORDER_TEMPLATE_DIR, $value);
    }
@@ -98,8 +91,7 @@ class PluginOrderPreference extends CommonDBTM
     * @since 1.5.3
     * @param $value default value
     */
-   public static function dropdownFileSignatures($value = '', $empy_value = true)
-   {
+   public static function dropdownFileSignatures($value = '', $empy_value = true) {
       return self::dropdownListFiles('sign', PLUGIN_ORDER_SIGNATURE_EXTENSION,
                                      PLUGIN_ORDER_SIGNATURE_DIR, $value);
    }
@@ -113,8 +105,7 @@ class PluginOrderPreference extends CommonDBTM
     * @param $directory directory in which to look for files
     * @param $value default value
     */
-   public static function dropdownListFiles($name, $extension, $directory, $value = '')
-   {
+   public static function dropdownListFiles($name, $extension, $directory, $value = '') {
       $files  = self::getFiles($directory, $extension);
       $values = array();
       if (empty($files)) {
@@ -132,8 +123,7 @@ class PluginOrderPreference extends CommonDBTM
     * @since 1.5.3
     * @return true if at least one template exists, false otherwise
     */
-   public static function atLeastOneTemplateExists()
-   {
+   public static function atLeastOneTemplateExists() {
       $files = self::getFiles(PLUGIN_ORDER_TEMPLATE_DIR, PLUGIN_ORDER_TEMPLATE_EXTENSION);
       return (!empty($files));
    }
@@ -144,14 +134,12 @@ class PluginOrderPreference extends CommonDBTM
     * @since 1.5.3
     * @return true if at least one signature exists, false otherwise
     */
-   public static function atLeastOneSignatureExists()
-   {
+   public static function atLeastOneSignatureExists() {
       $files = self::getFiles(PLUGIN_ORDER_SIGNATURE_DIR, PLUGIN_ORDER_SIGNATURE_EXTENSION);
       return (!empty($files));
    }
 
-   public function showForm($ID)
-   {
+   public function showForm($ID) {
       global $CFG_GLPI;
 
       $version = plugin_version_order();
@@ -187,8 +175,7 @@ class PluginOrderPreference extends CommonDBTM
       Html::closeForm();
    }
 
-   public static function getFiles($directory , $ext)
-   {
+   public static function getFiles($directory , $ext) {
       $array_dir  = array();
       $array_file = array();
 
@@ -227,8 +214,7 @@ class PluginOrderPreference extends CommonDBTM
       return $array_file;
    }
 
-   public static function install(Migration $migration)
-   {
+   public static function install(Migration $migration) {
       global $DB;
 
       //Only avaiable since 1.2.0
@@ -255,16 +241,14 @@ class PluginOrderPreference extends CommonDBTM
       }
    }
 
-   public static function uninstall()
-   {
+   public static function uninstall() {
       global $DB;
 
       //Current table name
       $DB->query("DROP TABLE IF EXISTS  `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
    }
 
-   public function getTabNameForItem(CommonGLPI $item, $withtemplate=0)
-   {
+   public function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       if (get_class($item) == 'Preference') {
          return array(1 => __("Orders", "order"));
       }
@@ -272,8 +256,7 @@ class PluginOrderPreference extends CommonDBTM
    }
 
 
-   public static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0)
-   {
+   public static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       if (get_class($item) == 'Preference') {
          $pref = new self();
          $id   = $pref->addDefaultPreference(Session::getLoginUserID());

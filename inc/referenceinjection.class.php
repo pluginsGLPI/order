@@ -31,20 +31,16 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderReferenceInjection extends PluginOrderReference implements PluginDatainjectionInjectionInterface
-{
-   public function __construct()
-   {
+class PluginOrderReferenceInjection extends PluginOrderReference implements PluginDatainjectionInjectionInterface {
+   public function __construct() {
       $this->table = getTableForItemType(get_parent_class($this));
    }
 
-   public function isPrimaryType()
-   {
+   public function isPrimaryType() {
       return true;
    }
 
-   public function connectedTo()
-   {
+   public function connectedTo() {
       return array();
    }
 
@@ -56,20 +52,17 @@ class PluginOrderReferenceInjection extends PluginOrderReference implements Plug
     * @return an array of IDs of newly created objects : for example array(Computer=>1, Networkport=>10)
     *
    **/
-   public function addOrUpdateObject($values=array(), $options=array())
-   {
+   public function addOrUpdateObject($values=array(), $options=array()) {
       $lib = new PluginDatainjectionCommonInjectionLib($this, $values, $options);
       $lib->processAddOrUpdate();
       return $lib->getInjectionResults();
    }
 
-   public function getOptions($primary_type = '')
-   {
+   public function getOptions($primary_type = '') {
       return Search::getOptions(get_parent_class($this));
    }
 
-   public function getSpecificFieldValue($itemtype, $searchOption, $field, &$values)
-   {
+   public function getSpecificFieldValue($itemtype, $searchOption, $field, &$values) {
       global $DB;
 
       $value  = $values[$itemtype][$field];

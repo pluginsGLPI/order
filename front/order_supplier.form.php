@@ -77,7 +77,6 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   //$supplier->checkGlobal("r"); //TODO ?
    Html::header(__("Orders management", "order"),'',"plugins", "order", "order");
    $supplier->showForm($_GET["id"],
                        array('plugin_order_orders_id' => $_GET["plugin_order_orders_id"]));

@@ -31,20 +31,17 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderBillState extends CommonDropdown
-{
+class PluginOrderBillState extends CommonDropdown {
    const NOTPAID = 0;
    const PAID    = 1;
 
    public static $rightname = 'plugin_order_bill';
 
-   public static function getTypeName($nb = 0)
-   {
+   public static function getTypeName($nb = 0) {
       return __("Bill status", "order");
    }
 
-   public function pre_deleteItem()
-   {
+   public function pre_deleteItem() {
       if ($this->getID() <= self::PAID ) {
          Session::addMessageAfterRedirect(__("You cannot remove this status", "order") . ": " . $this->fields['name'],
                                  false, ERROR);
@@ -54,14 +51,12 @@ class PluginOrderBillState extends CommonDropdown
       }
    }
 
-   public static function getStates()
-   {
+   public static function getStates() {
       return array(self::NOTPAID => __("Being paid", "order"),
                    self::PAID    => __("Paid", "order"),);
    }
 
-   public static function getState($states_id)
-   {
+   public static function getState($states_id) {
       $states = self::getStates();
       if (isset($states[$states_id])) {
          return $states[$states_id];
@@ -70,8 +65,7 @@ class PluginOrderBillState extends CommonDropdown
       }
    }
 
-   public static function install(Migration $migration)
-   {
+   public static function install(Migration $migration) {
       global $DB;
 
       $table = getTableForItemType(__CLASS__);
@@ -96,8 +90,7 @@ class PluginOrderBillState extends CommonDropdown
       }
    }
 
-   public static function uninstall()
-   {
+   public static function uninstall() {
       global $DB;
 
       $DB->query("DROP TABLE IF EXISTS `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());

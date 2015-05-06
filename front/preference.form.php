@@ -40,7 +40,7 @@ if (isset($_POST["update"])) {
    Html::redirect($_SERVER['HTTP_REFERER']);
 
 } else {
-   Html::header(__("Orders management", "order"),'',"plugins","order","order");
+   Html::header(__("Orders", "order"), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu");
    $PluginOrderPreference->showForm("./preference.form.php",$_GET["id"]);
    Html::footer();
 }

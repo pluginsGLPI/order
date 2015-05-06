@@ -46,18 +46,15 @@ class PluginOrderBill extends CommonDropdown
       return true;
    }
 
-   public static function getTypeName($nb = 0)
-   {
+   public static function getTypeName($nb = 0) {
       return __("Bill", "order");
    }
 
-   public function post_getEmpty()
-   {
+   public function post_getEmpty() {
       $this->fields['value'] = 0;
    }
 
-   public function prepareInputForAdd($input)
-   {
+   public function prepareInputForAdd($input) {
       if (!isset ($input["number"]) || $input["number"] == '') {
          Session::addMessageAfterRedirect(__("A bill number is mandatory", "order"), false, ERROR);
          return array ();
@@ -66,8 +63,7 @@ class PluginOrderBill extends CommonDropdown
       return $input;
    }
 
-   public function getAdditionalFields()
-   {
+   public function getAdditionalFields() {
       //$this->showTabs(); //hack
       return array(array('name'  =>'suppliers_id',
                          'label' => __("Supplier"),
@@ -98,36 +94,8 @@ class PluginOrderBill extends CommonDropdown
                          'label' => __("Approval date"),
                          'type'  => 'date'));
    }
-/*
-   public function title()
-   {
-   }
-*/
-   public function showForm($ID, $options=array()) {
 
-      if (!self::canView()) {
-         return false;
-      }
-
-      if ($ID > 0) {
-         $this->check($ID, READ);
-      } else {
-         // Create item
-         $this->check(-1, UPDATE);
-         $this->getEmpty();
-      }
-
-      $options['canedit'] = self::canEdit($this->fields["id"]);
-      $options['candel']  = self::canDelete();
-
-      parent::showForm($ID, $options);
-
-      return true;
-
-   }
-
-   public function defineTabs($options = array())
-   {
+   public function defineTabs($options = array()) {
       $ong = array();
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__,$ong,$options);
@@ -138,8 +106,7 @@ class PluginOrderBill extends CommonDropdown
       return $ong;
    }
 
-   public function getSearchOptions()
-   {
+   public function getSearchOptions() {
       $tab = array();
 
       $tab['common']            = __("Bill", "order");
@@ -215,8 +182,7 @@ class PluginOrderBill extends CommonDropdown
       return $tab;
    }
 
-   public static function showItems(PluginOrderBill $bill)
-   {
+   public static function showItems(PluginOrderBill $bill) {
       global $DB;
 
       echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
@@ -293,9 +259,7 @@ class PluginOrderBill extends CommonDropdown
       echo "</table></div>";
    }
 
-   //can display nothing
-   public static function showOrdersItems(PluginOrderBill $bill)
-   {
+   public static function showOrdersItems(PluginOrderBill $bill) {
       global $DB, $CFG_GLPI;
 
       $reference = new PluginOrderReference();
@@ -444,8 +408,7 @@ class PluginOrderBill extends CommonDropdown
       echo "<br>";
    }
 
-   public static function install(Migration $migration)
-   {
+   public static function install(Migration $migration) {
       global $DB;
 
       $table = getTableForItemType(__CLASS__);
@@ -510,8 +473,7 @@ class PluginOrderBill extends CommonDropdown
       $migration->migrationOneTable("glpi_plugin_order_orders_suppliers");
    }
 
-   public static function uninstall()
-   {
+   public static function uninstall() {
       global $DB;
 
       $table = getTableForItemType(__CLASS__);
@@ -522,8 +484,7 @@ class PluginOrderBill extends CommonDropdown
       $DB->query("DROP TABLE IF EXISTS`" . $table . "`") or die ($DB->error());
    }
 
-   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
-   {
+   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'PluginOrderOrder':
@@ -538,8 +499,7 @@ class PluginOrderBill extends CommonDropdown
       return '';
    }
 
-   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
-   {
+   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
       if ($item->getType() == 'PluginOrderOrder') {
          $order_item = new PluginOrderOrder_Item();

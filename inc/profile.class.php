@@ -31,8 +31,7 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderProfile extends CommonDBTM
-{
+class PluginOrderProfile extends CommonDBTM {
    public static $rightname = 'profile';
 
    const GENERATEODT      = 1024;
@@ -60,20 +59,17 @@ class PluginOrderProfile extends CommonDBTM
       return $values;
    }
 
-   public static function getTypeName($nb = 0)
-   {
+   public static function getTypeName($nb = 0) {
       return __("Rights assignment");
    }
 
    //if profile deleted
-   public static function purgeProfiles(Profile $prof)
-   {
+   public static function purgeProfiles(Profile $prof) {
       $plugprof = new self();
       $plugprof->deleteByCriteria(array('profiles_id' => $prof->getField("id")));
    }
 
-   public function getFromDBByProfile($profiles_id)
-   {
+   public function getFromDBByProfile($profiles_id) {
       global $DB;
 
       $query = "SELECT * FROM `" . $this->getTable() . "`
@@ -92,8 +88,7 @@ class PluginOrderProfile extends CommonDBTM
       return false;
    }
 
-   public static function createFirstAccess($ID)
-   {
+   public static function createFirstAccess($ID) {
 
       self::addDefaultProfileInfos($ID, array(
          'plugin_order_order'              => 127,
@@ -108,8 +103,7 @@ class PluginOrderProfile extends CommonDBTM
       ));
    }
 
-   public static function addRightToProfile($profiles_id, $right, $value = '')
-   {
+   public static function addRightToProfile($profiles_id, $right, $value = '') {
       $myProf = new self();
       if ($myProf->getFromDBByProfile($profiles_id)) {
          $tmp         = $myProf->fields;
@@ -118,13 +112,11 @@ class PluginOrderProfile extends CommonDBTM
       }
    }
 
-   public function createAccess($ID)
-   {
+   public function createAccess($ID) {
       $this->add(array('profiles_id' => $ID));
    }
 
-   public static function changeProfile()
-   {
+   public static function changeProfile() {
       $prof = new self();
       if ($prof->getFromDBByProfile($_SESSION['glpiactiveprofile']['id'])) {
          $_SESSION["glpi_plugin_order_profile"] = $prof->fields;
@@ -134,8 +126,7 @@ class PluginOrderProfile extends CommonDBTM
    }
 
    /* profiles modification */
-   public function showForm ($profiles_id = 0, $openform = TRUE, $closeform = TRUE)
-   {
+   public function showForm ($profiles_id = 0, $openform = TRUE, $closeform = TRUE) {
 
       $profile = new Profile();
 
@@ -167,8 +158,7 @@ class PluginOrderProfile extends CommonDBTM
       }
    }
 
-   public static function install(Migration $migration)
-   {
+   public static function install(Migration $migration) {
       global $DB;
 
       $table = getTableForItemType(__CLASS__);
@@ -250,16 +240,14 @@ class PluginOrderProfile extends CommonDBTM
       self::changeProfile();
    }
 
-   public static function uninstall()
-   {
+   public static function uninstall() {
       global $DB;
 
       //Current table name
       $DB->query("DROP TABLE IF EXISTS  `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
    }
 
-   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
-   {
+   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       $type = get_class($item);
       if ($type == 'Profile') {
          if ($item->getField('id') && $item->getField('interface')!='helpdesk') {
@@ -270,8 +258,7 @@ class PluginOrderProfile extends CommonDBTM
    }
 
 
-   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
-   {
+   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
        if (get_class($item) == 'Profile') {
           $profile = new self();
           if (!$profile->getFromDBByProfile($item->getField('id'))) {

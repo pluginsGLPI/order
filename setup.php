@@ -108,8 +108,8 @@ function plugin_init_order() {
          'addtabon'                    => array('Budget'))
       );
 
-      Plugin::registerClass('PluginOrderReference', array('document_types' => true));
-      Plugin::registerClass('PluginOrderProfile', array('addtabon' => array('Profile')));
+      Plugin::registerClass('PluginOrderReference',  array('document_types' => true));
+      Plugin::registerClass('PluginOrderProfile',    array('addtabon' => array('Profile')));
       Plugin::registerClass('PluginOrderOrder_Item', array(
          'notificationtemplates_types' => true,
          'addtabon'                    => PluginOrderOrder_Item::getClasses(true))
@@ -131,48 +131,9 @@ function plugin_init_order() {
          if (PluginOrderOrder::canView()
                || PluginOrderReference::canView()
                || PluginOrderBill::canView()) {
-
             $PLUGIN_HOOKS['menu_toadd']['order']['management'] = 'PluginOrderMenu';
-
          }
-
-         if (PluginOrderOrder::canCreate()) {
-            //order
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['template']
-               = '/front/setup.templates.php?itemtype=PluginOrderOrder&add=0';
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['add']
-               = '/front/setup.templates.php?itemtype=PluginOrderOrder&add=1';
-            if (Session::haveRight('config', UPDATE)) {
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['order']['links']['config']
-                  = '/plugins/order/front/config.form.php';
-            }
-
-         }
-
-         if (PluginOrderBill::canCreate()) {
-            //order
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['PluginOrderBill']['links']['add']
-               = '/plugins/order/front/bill.form.php';
-
-         }
-
-         if (PluginOrderReference::canCreate()) {
-            //references
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['add']
-               = '/plugins/order/front/reference.form.php';
-           if (Session::haveRight('config', UPDATE)) {
-               $PLUGIN_HOOKS['submenu_entry']['order']['options']['reference']['links']['config']
-                  = '/plugins/order/front/config.form.php';
-           }
-         }
-         if (Session::haveRight("config", UPDATE)) {
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['title'] = __("Setup");
-            $PLUGIN_HOOKS['submenu_entry']['order']['options']['config']['page']
-               = '/plugins/order/front/config.form.php';
-            if (Session::haveRight('config', UPDATE)) {
-               $PLUGIN_HOOKS['submenu_entry']['order']['config'] = 'front/config.form.php';
-            }
-         }
+         
          $PLUGIN_HOOKS['use_massive_action']['order'] = 1;
          $PLUGIN_HOOKS['plugin_datainjection_populate']['order'] = "plugin_datainjection_populate_order";
       }

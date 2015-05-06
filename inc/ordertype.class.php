@@ -32,17 +32,14 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Class for a Dropdown
-class PluginOrderOrderType extends CommonDropdown
-{
+class PluginOrderOrderType extends CommonDropdown {
    public static $rightname = 'plugin_order_order';
 
-   public static function getTypeName($nb=0)
-   {
+   public static function getTypeName($nb=0) {
       return __("Type");
    }
 
-   public static function install(Migration $migration)
-   {
+   public static function install(Migration $migration) {
       global $DB;
       //Only avaiable since 1.3.0
 
@@ -61,8 +58,7 @@ class PluginOrderOrderType extends CommonDropdown
       }
    }
 
-   public static function uninstall()
-   {
+   public static function uninstall() {
       global $DB;
 
       //Current table name

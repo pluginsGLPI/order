@@ -32,24 +32,14 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Class for a Dropdown
-class PluginOrderOrderPayment extends CommonDropdown
-{
+class PluginOrderOrderPayment extends CommonDropdown {
    public static $rightname = 'config'; //'plugin_order_order';
 
-   /*
-   public function canEdit($ID) {
-      echo "canEdit()";
-      return true;
-   }
-   */
-
-   public static function getTypeName($nb=0)
-   {
+   public static function getTypeName($nb=0) {
       return __("Payment conditions", "order");
    }
 
-   public static function install(Migration $migration)
-   {
+   public static function install(Migration $migration) {
       global $DB;
 
       $table = getTableForItemType(__CLASS__);
@@ -77,8 +67,7 @@ class PluginOrderOrderPayment extends CommonDropdown
       }
    }
 
-   public static function uninstall()
-   {
+   public static function uninstall() {
       global $DB;
 
       //Old table name

@@ -33,8 +33,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Class for a Dropdown
-class PluginOrderOrderState extends CommonDropdown
-{
+class PluginOrderOrderState extends CommonDropdown {
    const DRAFT                = 1;
    const WAITING_FOR_APPROVAL = 2;
    const VALIDATED            = 3;
@@ -45,13 +44,11 @@ class PluginOrderOrderState extends CommonDropdown
 
    public static $rightname   = 'plugin_order_order';
 
-   public static function getTypeName($nb = 0)
-   {
+   public static function getTypeName($nb = 0) {
       return __("Order status", "order");
    }
 
-   public function pre_deleteItem()
-   {
+   public function pre_deleteItem() {
       if ($this->getID() <= self::CANCELED ) {
          Session::addMessageAfterRedirect(__("You cannot remove this status", "order") . ": " . $this->fields['name'],
                                  false, ERROR);
@@ -61,8 +58,7 @@ class PluginOrderOrderState extends CommonDropdown
       }
    }
 
-   public static function install(Migration $migration)
-   {
+   public static function install(Migration $migration) {
       global $DB;
 
       $table = getTableForItemType(__CLASS__);
@@ -96,8 +92,7 @@ class PluginOrderOrderState extends CommonDropdown
       }
    }
 
-   public static function uninstall()
-   {
+   public static function uninstall() {
       global $DB;
       $DB->query("DROP TABLE IF EXISTS `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
    }

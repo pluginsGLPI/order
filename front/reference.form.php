@@ -48,25 +48,25 @@ if (isset($_POST["add"])) {
 
 /* delete order */
 } elseif (isset($_POST["delete"])) {
-   //$reference->check($_POST['id'], 'w');
+   $reference->check($_POST['id'],  UPDATE);
    $reference->delete($_POST);
    $reference->redirectToList();
 
 /* restore order */
 } elseif (isset($_POST["restore"])) {
-   //$reference->check($_POST['id'], 'w');
+   $reference->check($_POST['id'],  UPDATE);
    $reference->restore($_POST);
    $reference->redirectToList();
 
 /* purge order */
 } elseif (isset($_POST["purge"])) {
-	//$reference->check($_POST['id'],'w');
+	$reference->check($_POST['id'], UPDATE);
    $reference->delete($_POST, 1);
 	$reference->redirectToList();
 
 /* update order */
 } elseif (isset($_POST["update"])) {
-   //$reference->check($_POST['id'], 'w');
+   $reference->check($_POST['id'],  UPDATE);
    $reference->update($_POST);
    Html::back();
 }

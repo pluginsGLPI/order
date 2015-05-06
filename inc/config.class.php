@@ -31,12 +31,10 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderConfig extends CommonDBTM
-{
+class PluginOrderConfig extends CommonDBTM {
    static $rightname = 'config';
 
-   public function __construct()
-   {
+   public function __construct() {
       if (TableExists($this->getTable())) {
          $this->getFromDB(1);
       }
@@ -50,8 +48,7 @@ class PluginOrderConfig extends CommonDBTM
       return Session::haveRight('config', UPDATE);
    }
 
-   public static function getConfig($update = false)
-   {
+   public static function getConfig($update = false) {
       static $config = null;
 
       if (is_null($config))   $config = new self();
@@ -60,8 +57,7 @@ class PluginOrderConfig extends CommonDBTM
       return $config;
    }
 
-   public static function getTypeName($nb = 0)
-   {
+   public static function getTypeName($nb = 0) {
       return __("Orders management", "order");
    }
 
@@ -77,8 +73,7 @@ class PluginOrderConfig extends CommonDBTM
       return $menu;
    }
 
-   public function showForm()
-   {
+   public function showForm() {
       $this->getFromDB(1);
 
       echo "<div class='center'>";
@@ -356,151 +351,123 @@ class PluginOrderConfig extends CommonDBTM
 
    //----------------- Getters and setters -------------------//
 
-   public function useValidation()
-   {
+   public function useValidation() {
       return $this->fields['use_validation'];
    }
 
-   public function getDraftState()
-   {
+   public function getDraftState() {
       return $this->fields['order_status_draft'];
 
    }
 
-   public function getWaitingForApprovalState()
-   {
+   public function getWaitingForApprovalState() {
       return $this->fields['order_status_waiting_approval'];
 
    }
 
-   public function getApprovedState()
-   {
+   public function getApprovedState() {
       return $this->fields['order_status_approved'];
 
    }
 
-   public function getPartiallyDeliveredState()
-   {
+   public function getPartiallyDeliveredState() {
       return $this->fields['order_status_partially_delivred'];
 
    }
 
-   public function getDeliveredState()
-   {
+   public function getDeliveredState() {
       return $this->fields['order_status_completly_delivered'];
 
    }
 
-   public function getCanceledState()
-   {
+   public function getCanceledState() {
       return $this->fields['order_status_canceled'];
 
    }
 
-   public function getPaidState()
-   {
+   public function getPaidState() {
       return $this->fields['order_status_paid'];
 
    }
 
-   public function getDefaultTaxes()
-   {
+   public function getDefaultTaxes() {
       return $this->fields['default_taxes'];
    }
 
-   public function canGenerateAsset()
-   {
+   public function canGenerateAsset() {
       return $this->fields['generate_assets'];
    }
 
-   public function canGenerateTicket()
-   {
+   public function canGenerateTicket() {
       return ($this->fields['tickettemplates_id_delivery'] > 0);
    }
 
-   public function canAddLocation()
-   {
+   public function canAddLocation() {
       return $this->fields['add_location'];
    }
 
-   public function canAddBillDetails()
-   {
+   public function canAddBillDetails() {
       return $this->fields['add_bill_details'];
    }
 
-   public function getGeneratedAssetName()
-   {
+   public function getGeneratedAssetName() {
       return $this->fields['generated_name'];
    }
 
-   public function getGeneratedAssetSerial()
-   {
+   public function getGeneratedAssetSerial() {
       return $this->fields['generated_serial'];
    }
 
-   public function getGeneratedAssetState()
-   {
+   public function getGeneratedAssetState() {
       return $this->fields['default_asset_states_id'];
    }
 
-   public function getGeneratedAssetOtherserial()
-   {
+   public function getGeneratedAssetOtherserial() {
       return $this->fields['generated_otherserial'];
    }
 
-   public function canUseSupplierSatisfaction()
-   {
+   public function canUseSupplierSatisfaction() {
       return $this->fields['use_supplier_satisfaction'];
    }
 
-   public function canUseSupplierInformations()
-   {
+   public function canUseSupplierInformations() {
       return $this->fields['use_supplier_informations'];
    }
 
-   public function canGenerateOrderPDF()
-   {
+   public function canGenerateOrderPDF() {
       return $this->fields['generate_order_pdf'];
    }
 
-   public function canCopyDocuments()
-   {
+   public function canCopyDocuments() {
       return $this->fields['copy_documents'];
    }
 
-   public function getShouldBeDevileredColor()
-   {
+   public function getShouldBeDevileredColor() {
       return $this->fields['shoudbedelivered_color'];
    }
 
-   public function getDefaultDocumentCategory()
-   {
+   public function getDefaultDocumentCategory() {
       return $this->fields['documentcategories_id'];
    }
 
-   public function getDefaultAuthorGroup()
-   {
+   public function getDefaultAuthorGroup() {
       return $this->fields['groups_id_author'];
    }
 
-   public function getDefaultRecipientGroup()
-   {
+   public function getDefaultRecipientGroup() {
       return $this->fields['groups_id_recipient'];
    }
 
-   public function getDefaultRecipient()
-   {
+   public function getDefaultRecipient() {
       return $this->fields['users_id_recipient'];
    }
 
-   public function canHideInactiveBudgets()
-   {
+   public function canHideInactiveBudgets() {
       return $this->fields['hide_inactive_budgets'];
    }
 
    //----------------- Install & uninstall -------------------//
-   public static function install(Migration $migration)
-   {
+   public static function install(Migration $migration) {
       global $DB;
 
       $table  = getTableForItemType(__CLASS__);
@@ -676,8 +643,7 @@ class PluginOrderConfig extends CommonDBTM
 
    }
 
-   public static function uninstall()
-   {
+   public static function uninstall() {
       global $DB;
 
       //Old table

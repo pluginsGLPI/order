@@ -32,27 +32,23 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderSurveySupplier extends CommonDBChild
-{
-   public static $rightname = 'order';
+class PluginOrderSurveySupplier extends CommonDBChild {
+   public static $rightname = 'plugin_order_order';
    public static $itemtype  = 'PluginOrderOrder';
    public static $items_id  = 'plugin_order_orders_id';
 
-   public static function getTypeName($nb=0)
-   {
+   public static function getTypeName($nb=0) {
       return __("Supplier quality", "order");
    }
 
-   public function defineTabs($options=array())
-   {
+   public function defineTabs($options=array()) {
       /* principal */
       $ong[1] = __("Main");
 
       return $ong;
    }
 
-   public function prepareInputForAdd($input)
-   {
+   public function prepareInputForAdd($input) {
       // Not attached to reference -> not added
       if (!isset($input['plugin_order_orders_id']) || $input['plugin_order_orders_id'] <= 0) {
          return false;
@@ -60,8 +56,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
       return $input;
    }
 
-   public function getFromDBByOrder($plugin_order_orders_id)
-   {
+   public function getFromDBByOrder($plugin_order_orders_id) {
       global $DB;
 
       $table = $this->getTable();
@@ -83,8 +78,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
       return false;
    }
 
-   public function addNotation($field,$value)
-   {
+   public function addNotation($field,$value) {
 
       $rand = mt_rand();
       echo  "<script type='text/javascript'>\n
@@ -109,8 +103,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
       echo "</tr></table>";
    }
 
-   public function getTotalNotation($plugin_order_orders_id)
-   {
+   public function getTotalNotation($plugin_order_orders_id) {
       global $DB;
 
       $table = $this->getTable();
@@ -125,8 +118,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
       }
    }
 
-   public function getNotation($suppliers_id,$field)
-   {
+   public function getNotation($suppliers_id,$field) {
       global $DB;
 
       $table = $this->getTable();
@@ -147,8 +139,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
       }
    }
 
-   public static function showGlobalNotation($suppliers_id)
-   {
+   public static function showGlobalNotation($suppliers_id) {
       global $DB;
 
       $config = PluginOrderConfig::getConfig();
@@ -254,8 +245,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
       echo "</div>";
    }
 
-   public function showForm ($ID, $options=array())
-   {
+   public function showForm ($ID, $options=array()) {
       if (!self::canView())
          return false;
 
@@ -346,8 +336,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
       return true;
    }
 
-   public static function showOrderSupplierSurvey($ID)
-   {
+   public static function showOrderSupplierSurvey($ID) {
       global $DB, $CFG_GLPI;
 
       $order = new PluginOrderOrder;
@@ -416,8 +405,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
       echo "</div>";
    }
 
-   public function checkIfSupplierSurveyExists($orders_id)
-   {
+   public function checkIfSupplierSurveyExists($orders_id) {
       if ($orders_id) {
          return (countElementsInTable(getTableForItemType(__CLASS__),
                                          "`plugin_order_orders_id` = '$orders_id' "));
@@ -484,16 +472,14 @@ class PluginOrderSurveySupplier extends CommonDBChild
       }
    }
 
-   public static function uninstall()
-   {
+   public static function uninstall() {
       global $DB;
 
       //Current table name
       $DB->query("DROP TABLE IF EXISTS  `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
    }
 
-   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
-   {
+   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if (get_class($item) == 'PluginOrderOrder') {
          $config = PluginOrderConfig::getConfig();
          if ($config->canUseSupplierSatisfaction() && $item->getState() == PluginOrderOrderState::DELIVERED) {
@@ -502,8 +488,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
       }
    }
 
-   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
-   {
+   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       if ($item->getType() == 'PluginOrderOrder') {
          $survey = new self();
          self::showOrderSupplierSurvey($item->getID());

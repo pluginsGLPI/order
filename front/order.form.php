@@ -159,7 +159,10 @@ if (isset ($_POST["add"])) {
    Html::back();
 
 } elseif (isset($_POST["delete_item"])) {
-   if (isset($_POST["plugin_order_orders_id"]) && ($_POST["plugin_order_orders_id"] > 0) && isset($_POST["item"])) {
+   if (isset($_POST["plugin_order_orders_id"]) 
+       && ($_POST["plugin_order_orders_id"] > 0) 
+       && isset($_POST["item"])) {
+      
       foreach ($_POST["item"] as $ID => $val) {
          if ($val == 1) {
             $pluginOrderOrder_Item->getFromDB($ID);
@@ -278,6 +281,7 @@ if (isset ($_POST["add"])) {
    $pluginOrderOrder->check($_GET['id'], UPDATE);
    $pluginOrderOrder->unlinkBudget($_GET['id']);
    Html::back();
+
 } else {
    $pluginOrderOrder->checkGlobal(READ);
 

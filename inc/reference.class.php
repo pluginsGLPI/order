@@ -31,25 +31,21 @@ if (!defined('GLPI_ROOT')){
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderReference extends CommonDBTM
-{
+class PluginOrderReference extends CommonDBTM {
    public static $rightname         = 'config'; //'plugin_order_reference'; //TODO : A développer
    public $dohistory                = true;
    public static $forward_entity_to = array('PluginOrderReference_Supplier');
 
-   public static function getTypeName($nb=0)
-   {
+   public static function getTypeName($nb=0) {
       return __("Product reference", "order");
    }
 
-   public function cleanDBonPurge()
-   {
+   public function cleanDBonPurge() {
       $temp = new PluginOrderReference_Supplier();
       $temp->deleteByCriteria(array('plugin_order_references_id' => $this->fields['id']));
    }
 
-   public function getSearchOptions()
-   {
+   public function getSearchOptions() {
       $tab['common']           = __("Product reference", "order");
 
       $tab[1]['table']          = $this->getTable();
@@ -176,13 +172,11 @@ class PluginOrderReference extends CommonDBTM
       return $tab;
    }
 
-   public function post_getEmpty()
-   {
+   public function post_getEmpty() {
       $this->fields['is_active'] = 1;
    }
 
-   public function prepareInputForAdd($input)
-   {
+   public function prepareInputForAdd($input) {
       global $DB;
 
       if (!isset($input["name"]) || $input["name"] == '') {
@@ -206,8 +200,7 @@ class PluginOrderReference extends CommonDBTM
       return $input;
    }
 
-   public function pre_deleteItem()
-   {
+   public function pre_deleteItem() {
       if (!$this->referenceInUse()) {
          return true;
       } else {
@@ -216,8 +209,7 @@ class PluginOrderReference extends CommonDBTM
       }
    }
 
-   public function referenceInUse()
-   {
+   public function referenceInUse() {
       global $DB;
 
       $number = countElementsInTable("glpi_plugin_order_orders_items",
@@ -229,8 +221,7 @@ class PluginOrderReference extends CommonDBTM
       }
    }
 
-   public function getReceptionReferenceLink($data)
-   {
+   public function getReceptionReferenceLink($data) {
       $link = Toolbox::getItemTypeFormURL($this->getType());
 
       if (self::canView()) {
@@ -240,8 +231,7 @@ class PluginOrderReference extends CommonDBTM
       }
    }
 
-   public function defineTabs($options=array())
-   {
+   public function defineTabs($options=array()) {
       $ong = array();
       if (!$this->isNewID($this->getID())) {
          $this->addDefaultFormTab($ong);
@@ -254,24 +244,21 @@ class PluginOrderReference extends CommonDBTM
       return $ong;
    }
 
-   public function getTabNameForItem(CommonGLPI $item, $withtemplate=0)
-   {
+   public function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       if (get_class($item) == __CLASS__) {
          return array (1 => __("Linked orders", "order"));
       }
       return '';
    }
 
-   public static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0)
-   {
+   public static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       if ($item->getType() == __CLASS__) {
          $item->showOrders($item);
       }
       return true;
    }
 
-   public function dropdownTemplate($name, $entity, $table, $value = 0)
-   {
+   public function dropdownTemplate($name, $entity, $table, $value = 0) {
       global $DB;
 
       $query = "SELECT `template_name`, `id`
@@ -289,8 +276,7 @@ class PluginOrderReference extends CommonDBTM
       return Dropdown::showFromArray($name, $option, array('value'  => $value));
    }
 
-   public function getTemplateName($itemtype, $ID)
-   {
+   public function getTemplateName($itemtype, $ID) {
       if ($ID) {
          $item = new $itemtype();
          $item->getFromDB($ID);
@@ -300,8 +286,7 @@ class PluginOrderReference extends CommonDBTM
       }
    }
 
-   public function checkIfTemplateExistsInEntity($detailID, $itemtype, $entity)
-   {
+   public function checkIfTemplateExistsInEntity($detailID, $itemtype, $entity) {
       global $DB;
 
       $table = $this->getTable();
@@ -343,8 +328,7 @@ class PluginOrderReference extends CommonDBTM
       }
    }
 
-   public function dropdownAllItems($options = array())
-   {
+   public function dropdownAllItems($options = array()) {
       global $DB, $CFG_GLPI;
 
       $p['myname']       = '';
@@ -425,25 +409,10 @@ class PluginOrderReference extends CommonDBTM
       }
    }
 
-   public function showForm($id, $options = array())
-   {
+   public function showForm($id, $options = array()) {
       global $CFG_GLPI;
 
-      // TODO: Vérifier les droits
-
-      // if (!self::canView()) {
-      //    return false;
-      // }
-
-      if ($id > 0) {
-         // $this->check($id,'r');
-         $this->getFromDB($id);
-      } else {
-         // Create item
-         // $this->check(-1,'w');
-         $this->getEmpty();
-      }
-
+      $this->initForm($id, $options);
       $reference_in_use = (!$id?false:$this->referenceInUse());
 
       // $this->showTabs($options);
@@ -575,8 +544,7 @@ class PluginOrderReference extends CommonDBTM
     * @static
     * @param array ($itemtype,$options)
     */
-   public static function dropdownReferencesByEnterprise($itemtype, $options=array())
-   {
+   public static function dropdownReferencesByEnterprise($itemtype, $options=array()) {
       global $DB,$CFG_GLPI;
 
       $item = getItemForItemtype($itemtype);
@@ -732,8 +700,7 @@ class PluginOrderReference extends CommonDBTM
       return $params['rand'];
    }
 
-   public function dropdownAllItemsByType($name, $itemtype, $entity=0,$types_id=0,$models_id=0)
-   {
+   public function dropdownAllItemsByType($name, $itemtype, $entity=0,$types_id=0,$models_id=0) {
       switch ($itemtype) {
          case 'CartridgeItem':
          case 'ConsumableItem':
@@ -783,8 +750,7 @@ class PluginOrderReference extends CommonDBTM
       return $rand;
    }
 
-   public function showOrders($ref)
-   {
+   public function showOrders($ref) {
       global $DB;
 
       $order = new PluginOrderOrder();
@@ -839,8 +805,7 @@ class PluginOrderReference extends CommonDBTM
       echo "</div>";
    }
 
-   public function transfer($ID, $entity)
-   {
+   public function transfer($ID, $entity) {
       global $DB;
 
       if ($ID<=0 || !$this->getFromDB($ID)) {
@@ -882,8 +847,7 @@ class PluginOrderReference extends CommonDBTM
       }
    }
 
-   public function copy($ID)
-   {
+   public function copy($ID) {
       $source = new self();
       $source->getFromDB($ID);
 
@@ -909,8 +873,7 @@ class PluginOrderReference extends CommonDBTM
    * @param $myname select name
     * @param $target target for entity change action
     */
-   public static function showSelector($target)
-   {
+   public static function showSelector($target) {
       global $CFG_GLPI;
 
       $rand=mt_rand();
@@ -962,8 +925,7 @@ class PluginOrderReference extends CommonDBTM
    }
 
 
-   public function title()
-   {
+   public function title() {
       global $CFG_GLPI;
 
       echo "<div align='center'>";
@@ -975,8 +937,7 @@ class PluginOrderReference extends CommonDBTM
 
    }
 
-   public static function getPerTypeJavascriptCode()
-   {
+   public static function getPerTypeJavascriptCode() {
       global $CFG_GLPI;
 
       $out  = "<script type='text/javascript'>";
@@ -1086,8 +1047,7 @@ class PluginOrderReference extends CommonDBTM
       return;
    }
 
-   public static function install(Migration $migration)
-   {
+   public static function install(Migration $migration) {
       global $DB;
 
       $table = getTableForItemType(__CLASS__);
@@ -1174,7 +1134,7 @@ class PluginOrderReference extends CommonDBTM
 
          if (FieldExists('glpi_tickets', 'itemtype')) {
             Plugin::migrateItemType(array(3151 => 'PluginOrderReference'),
-                                 array("glpi_items_tickets"));
+                                 array("glpi_tickets"));
          }
 
          Plugin::migrateItemType(array(), array(), array($table));
@@ -1204,8 +1164,7 @@ class PluginOrderReference extends CommonDBTM
       }
    }
 
-   public static function uninstall()
-   {
+   public static function uninstall() {
       global $DB;
 
       $table  = getTableForItemType(__CLASS__);
