@@ -38,14 +38,6 @@ class PluginOrderBill extends CommonDropdown
    public $first_level_menu  = "plugins";
    public $second_level_menu = "order";
 
-   static function canView() {
-      return true;
-   }
-
-   static function canCreate() {
-      return true;
-   }
-
    public static function getTypeName($nb = 0) {
       return __("Bill", "order");
    }

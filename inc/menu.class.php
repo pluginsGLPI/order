@@ -43,5 +43,9 @@ class PluginOrderMenu extends CommonGLPI {
 
       return $menu;
    }
+   
+   function install(){
+      
+   }
 
 }

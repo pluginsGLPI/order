@@ -60,18 +60,23 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
    public static function canCancel() {
-      return Session::haveRight("plugin_order_cancel", UPDATE);
+      return Session::haveRight("plugin_order_cancel", 1);
    }
 
    public static function canUndo() {
-      return Session::haveRight("plugin_order_undo_validation", UPDATE);
+      return Session::haveRight("plugin_order_undo_validation", 1);
    }
 
    public static function canValidate() {
-      return Session::haveRight("plugin_order_validation", UPDATE);
+      return Session::haveRight("plugin_order_validation", 1);
    }
-
-   public function isDraft() {
+   
+   static function canGenerateWithoutValidation() {
+      return Session::haveRight("plugin_order_generate_order_without_validation", 1);
+   }
+   
+   public function isDraft()
+   {
       $config = PluginOrderConfig::getConfig();
       return ($this->getState() == $config->getDraftState());
    }
@@ -470,21 +475,23 @@ class PluginOrderOrder extends CommonDBTM {
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       switch ($item->getType()) {
          case 'Budget':
-            return __("Orders", "order");
+         return __("Orders", "order");
          case __CLASS__:
-            $ong    = array();
-            $config = PluginOrderConfig::getConfig();
-            if (Session::haveRight("plugin_order_validation", UPDATE)
-               || Session::haveRight("plugin_order_cancel", UPDATE)
-               || Session::haveRight("plugin_order_undo_validation", UPDATE)) {
-               $ong[1] = __("Validation", "order");
-            }
-            if ($config->canGenerateOrderPDF() && $item->getState() > PluginOrderOrderState::DRAFT) {
-            // generation
-               $ong[2] = __("Purchase order", "order");
-            }
+         $ong    = array();
+         $config = PluginOrderConfig::getConfig();
+         if (Session::haveRight("plugin_order_validation", UPDATE)
+            || Session::haveRight("plugin_order_cancel", UPDATE)
+            || Session::haveRight("plugin_order_undo_validation", UPDATE)) {
+            $ong[1] = __("Validation", "order");
+         }
+         
+         if ($config->canGenerateOrderPDF() 
+               && ($item->getState() > PluginOrderOrderState::DRAFT || $this->canGenerateWithoutValidation())) {
+         // generation
+            $ong[2] = __("Purchase order", "order");
+         }
 
-            return $ong;
+         return $ong;
       }
    }
 
@@ -1314,7 +1321,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<tr><th colspan='2'>" . __("Order Generation", "order") . "</th></tr>";
 
       if (PluginOrderPreference::atLeastOneTemplateExists()) {
-         if ($this->getState() > PluginOrderOrderState::DRAFT) {
+         if ($this->getState() > PluginOrderOrderState::DRAFT || $this->canGenerateWithoutValidation()) {
             $template = PluginOrderPreference::checkPreferenceTemplateValue(Session::getLoginUserID());
             echo "<tr class='tab_bg_1'>";
             echo "<td>" . __("Use this model", "order") . "</td>";
@@ -1863,10 +1870,13 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
    public static function addDocumentCategory(Document $document) {
+      
+      $config   = PluginOrderConfig::getConfig();
+      
       if (isset($document->input['itemtype'])
             && $document->input['itemtype'] == __CLASS__
             && !$document->input['documentcategories_id']) {
-         $config   = PluginOrderConfig::getConfig();
+        
          $category = $config->getDefaultDocumentCategory();
          if ($category) {
             $document->update(array(
@@ -1875,8 +1885,34 @@ class PluginOrderOrder extends CommonDBTM {
             ));
          }
       }
+      
+      // Fomrat document name
+      if (isset($document->input['itemtype'])
+         && $document->input['itemtype'] == __CLASS__
+         && $document->input['documentcategories_id'] 
+         && $config->canRenameDocuments()) {
+         
+         // Get document category
+         $documentCategory = new PluginOrderDocumentCategory();
+         if (!$documentCategory->getFromDBByQuery(" WHERE `documentcategories_id` = '".$document->input['documentcategories_id']."'")) {
+            $documentCategory->getEmpty();
+         }
+         // Get order linked to document
+         $document_item = new Document_Item();
+         if ($document_item->getFromDBByQuery(" WHERE `documents_id` = '".$document->fields['id']."' AND `itemtype` = '".self::getType()."'")) {
+            // Update document name
+            $order = new self();
+            $order->getFromDB($document_item->fields['items_id']);
+            $extension = explode('.',$document->fields['filename']);
+            if (!empty($documentCategory->fields['documentcategories_prefix'])) {
+               $tag = $documentCategory->fields['documentcategories_prefix']."-";
+            }
+            $document->fields['filename'] = $tag.$order->fields['num_order'].".".$extension[1];
+            $document->updateInDB(array('filename'));
+         }
+      }
    }
-
+      
    /**
     * Get the standard massive actions which are forbidden
     *
@@ -1909,7 +1945,7 @@ class PluginOrderOrder extends CommonDBTM {
       return "";
    }
 
-      function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);

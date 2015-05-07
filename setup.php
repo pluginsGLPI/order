@@ -81,9 +81,11 @@ function plugin_init_order() {
          'SoftwareLicense',
       );
 
-      $PLUGIN_HOOKS['pre_item_purge']['order'] = array(
-         'Profile'  => array('PluginOrderProfile', 'purgeProfiles'),
+      $PLUGIN_HOOKS['pre_item_purge']['order']  = array(
+         'Profile'          => array('PluginOrderProfile', 'purgeProfiles'),
+         'DocumentCategory' => array('PluginOrderDocumentCategory', 'purgeItem'),
       );
+      
       $PLUGIN_HOOKS['pre_item_update']['order'] = array(
          'Infocom'  => array('PluginOrderOrder_Item', 'updateItem'),
          'Contract' => array('PluginOrderOrder_Item', 'updateItem'),
@@ -108,14 +110,15 @@ function plugin_init_order() {
          'addtabon'                    => array('Budget'))
       );
 
-      Plugin::registerClass('PluginOrderReference',  array('document_types' => true));
-      Plugin::registerClass('PluginOrderProfile',    array('addtabon' => array('Profile')));
+      Plugin::registerClass('PluginOrderReference', array('document_types' => true));
+      Plugin::registerClass('PluginOrderProfile', array('addtabon' => array('Profile')));
       Plugin::registerClass('PluginOrderOrder_Item', array(
          'notificationtemplates_types' => true,
          'addtabon'                    => PluginOrderOrder_Item::getClasses(true))
       );
 
       if (PluginOrderOrder::canView()) {
+         Plugin::registerClass('PluginOrderDocumentCategory', array('addtabon' => array('DocumentCategory')));
          Plugin::registerClass('PluginOrderOrder_Supplier', array('addtabon' => array('Supplier')));
          Plugin::registerClass('PluginOrderPreference', array('addtabon' => array('Preference')));
       }
@@ -133,7 +136,7 @@ function plugin_init_order() {
                || PluginOrderBill::canView()) {
             $PLUGIN_HOOKS['menu_toadd']['order']['management'] = 'PluginOrderMenu';
          }
-         
+
          $PLUGIN_HOOKS['use_massive_action']['order'] = 1;
          $PLUGIN_HOOKS['plugin_datainjection_populate']['order'] = "plugin_datainjection_populate_order";
       }

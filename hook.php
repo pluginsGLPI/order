@@ -42,7 +42,7 @@ function plugin_order_install() {
    echo "<tr class='tab_bg_1'>";
    echo "<td align='center'>";
 
-   $migration = new Migration("1.5.1");
+   $migration = new Migration("1.5.2");
    $classes = array('PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',
                     'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',
                     'PluginOrderReference', 'PluginOrderDeliveryState',
@@ -50,7 +50,7 @@ function plugin_order_install() {
                     'PluginOrderOrder_Supplier', 'PluginOrderBill', 'PluginOrderOrderPayment',
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                     'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
-                    'PluginOrderSurveySupplier', 'PluginOrderOrderTax');
+                    'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderMenu', 'PluginOrderDocumentCategory');
    foreach ($classes as $class) {
       if ($plug=isPluginItemType($class)) {
          $plugname=strtolower($plug['plugin']);
@@ -85,7 +85,7 @@ function plugin_order_uninstall() {
                     'PluginOrderOrder_Supplier', 'PluginOrderOrderPayment','PluginOrderOrderTax',
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                     'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
-                    'PluginOrderSurveySupplier');
+                    'PluginOrderSurveySupplier', 'PluginOrderMenu', 'PluginOrderDocumentCategory');
       foreach ($classes as $class) {
          call_user_func(array($class,'uninstall'));
       }
@@ -98,14 +98,15 @@ function plugin_order_getDropdown() {
    /* table => name */
    $plugin = new Plugin();
    if ($plugin->isActivated("order")) {
-      return array ('PluginOrderOrderTax'      => __("VAT", "order"),
-                    'PluginOrderOrderPayment'  => __("Payment conditions", "order"),
-                    'PluginOrderOrderType'     => __("Type"),
-                    'PluginOrderOrderState'    => __("Order status", "order"),
-                    'PluginOrderOtherType'     => __("Other type of item", "order"),
-                    'PluginOrderDeliveryState' => __("Delivery status", "order"),
-                    'PluginOrderBillState'     => __("Bill status", "order"),
-                    'PluginOrderBillType'      => __("Bill type", "order"));
+      return array ('PluginOrderOrderTax'         => __("VAT", "order"),
+                    'PluginOrderOrderPayment'     => __("Payment conditions", "order"),
+                    'PluginOrderOrderType'        => __("Type"),
+                    'PluginOrderOrderState'       => __("Order status", "order"),
+                    'PluginOrderOtherType'        => __("Other type of item", "order"),
+                    'PluginOrderDeliveryState'    => __("Delivery status", "order"),
+                    'PluginOrderBillState'        => __("Bill status", "order"),
+                    'PluginOrderBillType'         => __("Bill type", "order"),
+                    'PluginOrderDocumentCategory' => __("Orders", "order"));
    } else {
       return array ();
    }
