@@ -136,7 +136,7 @@ msgstr "Impossible de lier le même matériel à plusieurs lignes détail"
 
 #: front/menu.php:71 inc/profile.class.php:143
 msgid "Products references"
-msgstr "Catalogue de références produits"
+msgstr "Références produits"
 
 #: front/menu.php:78 inc/order_item.class.php:986 inc/profile.class.php:154
 msgid "Bills"
