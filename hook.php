@@ -50,7 +50,7 @@ function plugin_order_install() {
                     'PluginOrderOrder_Supplier', 'PluginOrderBill', 'PluginOrderOrderPayment',
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                     'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
-                    'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderMenu', 'PluginOrderDocumentCategory');
+                    'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderDocumentCategory');
    foreach ($classes as $class) {
       if ($plug=isPluginItemType($class)) {
          $plugname=strtolower($plug['plugin']);
@@ -85,7 +85,7 @@ function plugin_order_uninstall() {
                     'PluginOrderOrder_Supplier', 'PluginOrderOrderPayment','PluginOrderOrderTax',
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                     'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
-                    'PluginOrderSurveySupplier', 'PluginOrderMenu', 'PluginOrderDocumentCategory');
+                    'PluginOrderSurveySupplier', 'PluginOrderDocumentCategory');
       foreach ($classes as $class) {
          call_user_func(array($class,'uninstall'));
       }
