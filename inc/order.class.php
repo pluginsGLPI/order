@@ -222,14 +222,14 @@ class PluginOrderOrder extends CommonDBTM {
 
       if ($interface == 'central') {
          $values = parent::getRights();
-         $values[self::GENERATEODT]     = __("Order Generation", "order");
-         $values[self::DELIVERY]        = __("Take item delivery", "order");
-         $values[self::VALIDATION]      = __("Order validation", "order");
-         $values[self::CANCEL]          = __("Cancel order", "order");
-         $values[self::UNDO_VALIDATION] = __("Edit a validated order", "order");
+         $values[self::RIGHT_GENERATEODT]     = __("Order Generation", "order");
+         $values[self::RIGHT_DELIVERY]        = __("Take item delivery", "order");
+         $values[self::RIGHT_VALIDATION]      = __("Order validation", "order");
+         $values[self::RIGHT_CANCEL]          = __("Cancel order", "order");
+         $values[self::RIGHT_UNDO_VALIDATION] = __("Edit a validated order", "order");
       }
 
-      $values[self::OPENTICKET]         = __("Link order to a ticket", "order");
+      $values[self::RIGHT_OPENTICKET]         = __("Link order to a ticket", "order");
 
       return $values;
    }
