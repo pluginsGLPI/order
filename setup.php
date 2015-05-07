@@ -55,8 +55,8 @@ function plugin_init_order() {
    Plugin::registerClass('PluginOrderProfile');
    $PLUGIN_HOOKS['csrf_compliant']['order'] = true;
 
-   /* load changeprofile function */
-   $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile', 'changeProfile');
+   /* Init current profile */
+   $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile', 'initProfile');
 
    $plugin = new Plugin();
    if ($plugin->isInstalled('order')) {
@@ -132,8 +132,8 @@ function plugin_init_order() {
          }
 
          if (PluginOrderOrder::canView()
-               || PluginOrderReference::canView()
-               || PluginOrderBill::canView()) {
+            || PluginOrderReference::canView()
+            || PluginOrderBill::canView()) {
             $PLUGIN_HOOKS['menu_toadd']['order']['management'] = 'PluginOrderMenu';
          }
 

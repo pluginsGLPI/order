@@ -32,7 +32,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginOrderDeliveryState extends CommonDropdown {
-   public static $rightname = 'plugin_order_delivery';
 
    public static function getTypeName($nb = 0) {
       return __("Delivery status", "order");

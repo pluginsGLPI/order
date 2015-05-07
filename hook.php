@@ -325,7 +325,7 @@ function plugin_datainjection_populate_order() {
 }
 
 function plugin_order_AssignToTicket($types) {
-   if (Session::haveRight("plugin_order_open_ticket", "1")) {
+   if (Session::haveRight("plugin_order_order", PluginOrderOrder::RIGHT_OPENTICKET)) {
       $types['PluginOrderOrder'] = __("Order", "order");
    }
    return $types;

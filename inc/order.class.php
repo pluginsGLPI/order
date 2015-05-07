@@ -49,6 +49,15 @@ class PluginOrderOrder extends CommonDBTM {
    const ORDER_IS_EQUAL_BUDGET     = 2;
    const ORDER_IS_UNDER_BUDGET     = 3;
 
+   // additionnals rights
+   const RIGHT_GENERATEODT      = 32;
+   const RIGHT_DELIVERY         = 64;
+   const RIGHT_OPENTICKET       = 128;
+   const RIGHT_VALIDATION       = 256;
+   const RIGHT_UNDO_VALIDATION  = 512;
+   const RIGHT_CANCEL           = 1024;
+ 
+
    public static function getTypeName($nb = 0) {
       return ($nb > 1)
          ? __("Orders", "order")
@@ -60,15 +69,15 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
    public static function canCancel() {
-      return Session::haveRight("plugin_order_cancel", 1);
+      return Session::haveRight("plugin_order_order", self::RIGHT_CANCEL);
    }
 
    public static function canUndo() {
-      return Session::haveRight("plugin_order_undo_validation", 1);
+      return Session::haveRight("plugin_order_order", self::RIGHT_UNDO_VALIDATION);
    }
 
    public static function canValidate() {
-      return Session::haveRight("plugin_order_validation", 1);
+      return Session::haveRight("plugin_order_order", self::RIGHT_VALIDATION);
    }
    
    static function canGenerateWithoutValidation() {
@@ -202,6 +211,27 @@ class PluginOrderOrder extends CommonDBTM {
       return (self::canCreate()
                && $this->canValidateOrder() || $this->canCancelOrder() || $this->canUndoValidation()
                || $this->canCancelValidationRequest() || $this->canDoValidationRequest());
+   }
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
+
+      if ($interface == 'central') {
+         $values = parent::getRights();
+         $values[self::GENERATEODT]     = __("Order Generation", "order");
+         $values[self::DELIVERY]        = __("Take item delivery", "order");
+         $values[self::VALIDATION]      = __("Order validation", "order");
+         $values[self::CANCEL]          = __("Cancel order", "order");
+         $values[self::UNDO_VALIDATION] = __("Edit a validated order", "order");
+      }
+
+      $values[self::OPENTICKET]         = __("Link order to a ticket", "order");
+
+      return $values;
    }
 
    public function getSearchOptions() {
@@ -477,19 +507,17 @@ class PluginOrderOrder extends CommonDBTM {
          case 'Budget':
          return __("Orders", "order");
          case __CLASS__:
-         $ong    = array();
-         $config = PluginOrderConfig::getConfig();
-         if (Session::haveRight("plugin_order_validation", UPDATE)
-            || Session::haveRight("plugin_order_cancel", UPDATE)
-            || Session::haveRight("plugin_order_undo_validation", UPDATE)) {
-            $ong[1] = __("Validation", "order");
-         }
-         
-         if ($config->canGenerateOrderPDF() 
-               && ($item->getState() > PluginOrderOrderState::DRAFT || $this->canGenerateWithoutValidation())) {
-         // generation
-            $ong[2] = __("Purchase order", "order");
-         }
+            $ong    = array();
+            $config = PluginOrderConfig::getConfig();
+            if (Session::haveRight("plugin_order_order", self::RIGHT_VALIDATION)
+               || Session::haveRight("plugin_order_order", self::RIGHT_CANCEL)
+               || Session::haveRight("plugin_order_order", self::RIGHT_UNDO_VALIDATION)) {
+               $ong[1] = __("Validation", "order");
+            }
+            if ($config->canGenerateOrderPDF() && $item->getState() > PluginOrderOrderState::DRAFT) {
+            // generation
+               $ong[2] = __("Purchase order", "order");
+            }
 
          return $ong;
       }

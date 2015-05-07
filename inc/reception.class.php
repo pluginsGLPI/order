@@ -32,7 +32,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 class PluginOrderReception extends CommonDBChild {
-   public static $rightname = 'plugin_order_delivery';
+   public static $rightname = 'plugin_order_order';
    public $dohistory        = true;
    public static $itemtype         = 'PluginOrderOrder';
    public static $items_id         = 'plugin_order_orders_id';
@@ -46,11 +46,12 @@ class PluginOrderReception extends CommonDBChild {
    }
 
    public function canUpdateItem() {
-      return true;
+      return Session::haveRight('plugin_order_order', PluginOrderOrder::RIGHT_DELIVERY);
    }
 
    public function canViewItem() {
-      return true;
+      return Session::haveRight('plugin_order_order', PluginOrderOrder::RIGHT_DELIVERY)
+         &&  Session::haveRight('plugin_order_order', READ);
    }
 
    public function getOrdersID() {
@@ -702,7 +703,7 @@ class PluginOrderReception extends CommonDBChild {
 
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if ($item->getType() == 'PluginOrderOrder') {
-         if (Session::haveRight('plugin_order_delivery', READ)
+         if (Session::haveRight('plugin_order_order', PluginOrderOrder::RIGHT_DELIVERY)
             && $item->getState() > PluginOrderOrderState::DRAFT) {
             return self::createTabEntry(__("Item delivered", "order"), self::countForOrder($item));
          }
