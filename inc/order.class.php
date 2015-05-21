@@ -993,7 +993,7 @@ class PluginOrderOrder extends CommonDBTM {
          if (empty ($ID) || $ID < 0) {
             $users_id = $config->getDefaultRecipient();
          } else {
-            $users_id = 0;
+            $users_id = $this->fields["users_id_delivery"];
          }
          User::Dropdown(array(
             'name'   => 'users_id_delivery',

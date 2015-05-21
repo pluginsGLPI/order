@@ -286,6 +286,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                $params = array(
                   'itemtype'  => '__VALUE__',
                   'fieldname' => 'plugin_order_references_id',
+                  'suppliers_id' => $order->fields["suppliers_id"],
                   'rand'      => $rand,
                );
                Ajax::updateItemOnSelectEvent('dropdown_itemtype' . $rand,
