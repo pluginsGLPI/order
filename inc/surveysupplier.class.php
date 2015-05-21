@@ -33,19 +33,13 @@ if (!defined('GLPI_ROOT')){
 }
 
 class PluginOrderSurveySupplier extends CommonDBChild {
+   
    public static $rightname = 'plugin_order_order';
    public static $itemtype  = 'PluginOrderOrder';
    public static $items_id  = 'plugin_order_orders_id';
 
    public static function getTypeName($nb=0) {
       return __("Supplier quality", "order");
-   }
-
-   public function defineTabs($options=array()) {
-      /* principal */
-      $ong[1] = __("Main");
-
-      return $ong;
    }
 
    public function prepareInputForAdd($input) {
@@ -81,26 +75,30 @@ class PluginOrderSurveySupplier extends CommonDBChild {
    public function addNotation($field,$value) {
 
       $rand = mt_rand();
-      echo  "<script type='text/javascript'>\n
-            public Ext.onReady(function()
-            {
-            var md = new Ext.form.StarRate({
-                        hiddenName: '$field',
-                        starConfig: {
-                           minValue: 0,
-                           maxValue: 10,
-                           value:'$value'
-                        },
-                        applyTo : 'notation$rand'
-               });
-            })
-            </script>";
 
-      echo "<table style='font-size:0.9em; width:50%' class='tab_format'><tr>";
-      echo "<td>" . __("Really unsatisfied", "order") . "</td>";
-      echo "<td><input type='hidden' id='notation$rand' name='$field' value='$value'></td>";
-      echo "<td>" . __("Really satisfied", "order") . "</td>";
-      echo "</tr></table>";
+      echo "<table style='font-size:0.9em; width:50%' class='tab_format'>";
+      echo "<tr>";
+      echo "<td>";
+      echo "<select id='$field$rand' name='$field'>";
+      for ($i = 0; $i <= 5; $i++) {
+         echo "<option value='$i' ".(($i == $value) ? 'selected' : '').
+         ">$i</option>";
+      }
+      echo "</select>";
+      echo "<div class='rateit' id='notation$rand'></div>";
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
+            
+      echo  "<script type='text/javascript'>\n";
+      echo "$('#notation$rand').rateit({value: '".$value."',
+                                min : 0,
+                                max : 5,
+                                step: 1,
+                                backingfld: '#$field$rand',
+                                ispreset: true,
+                                resetable: false});";
+      echo "</script>";
    }
 
    public function getTotalNotation($plugin_order_orders_id) {
@@ -255,16 +253,15 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       }
 
       if ($ID > 0) {
-         $this->check($ID,'r');
+         $this->check($ID,READ);
       } else {
          // Create item
          $input=array('plugin_order_orders_id' => $options['plugin_order_orders_id']);
-         $this->check(-1,'w',$input);
+         $this->check(-1,UPDATE,$input);
       }
 
-      if (strpos($_SERVER['PHP_SELF'],"surveysupplier")) {
-         $this->showTabs($options);
-      }
+      $this->initForm($ID, $options);
+      
       $options['colspan'] = 1;
       $this->showFormHeader($options);
 
@@ -329,10 +326,6 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       }
 
       $this->showFormButtons($options);
-
-      if (strpos($_SERVER['PHP_SELF'], "surveysupplier")) {
-         $this->addDivForTabs();
-      }
       return true;
    }
 

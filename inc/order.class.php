@@ -32,7 +32,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 class PluginOrderOrder extends CommonDBTM {
-   public static $rightname         = 'config'; //'plugin_order_order'; //TODO : à développer (a priori)
+   public static $rightname         = 'plugin_order_order';
    public $is_template              = true;
    public $dohistory                = true;
    public static $forward_entity_to = array(

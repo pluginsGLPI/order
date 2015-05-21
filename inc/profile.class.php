@@ -93,7 +93,7 @@ class PluginOrderProfile extends CommonDBTM {
       $profile->displayRightsChoiceMatrix($rights, array(
          'canedit'       => $canedit,
          'default_class' => 'tab_bg_2',
-         'title'         => __('Order management', 'order'),
+         'title'         => __('Orders', 'order'),
       ));
       
       echo "<table class='tab_cadre_fixehov'>";

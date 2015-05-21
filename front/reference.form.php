@@ -38,7 +38,7 @@ if (!isset($_GET["itemtype"]))      $_GET["itemtype"]     = "";
 $reference = new PluginOrderReference();
 
 if (isset($_POST["add"])) {
-   $reference->check(-1,'w',$_POST);
+   $reference->check(-1,UPDATE,$_POST);
    $newID = $reference->add($_POST);
    $url   = Toolbox::getItemTypeFormURL('PluginOrderReference')."?id=$newID";
    if (isset ($_GET["popup"]) && $_GET["popup"] == 1) {

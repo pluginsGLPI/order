@@ -58,11 +58,14 @@ if (isset($_POST["add"])) {
    Html::redirect($_SERVER['HTTP_REFERER']);
 
 } else {
-   $PluginOrderSurveySupplier->checkGlobal("r");
-   Html::header(__("Orders management", "order"),'',"plugins","order","order");
-   $PluginOrderSurveySupplier->showForm($_GET["id"], array(
-      'plugin_order_orders_id' => $_GET["plugin_order_orders_id"],
-   ));
-
+   $PluginOrderSurveySupplier->checkGlobal(READ);
+   Html::header(
+      __("Orders management", "order"),
+      $_SERVER['PHP_SELF'],
+      "management",
+      "PluginOrderMenu",
+      "order"
+   );
+   $PluginOrderSurveySupplier->display($_GET);
    Html::footer();
 }
