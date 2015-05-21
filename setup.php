@@ -59,11 +59,9 @@ function plugin_init_order() {
    $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile', 'initProfile');
 
    $plugin = new Plugin();
-   if ($plugin->isInstalled('order')) {
+   if ($plugin->isActivated('order')) {
       $PLUGIN_HOOKS['migratetypes']['order'] = 'plugin_order_migratetypes';
-   }
 
-   if ($plugin->isInstalled('order') && $plugin->isActivated('order')) {
       $PLUGIN_HOOKS['assign_to_ticket']['order'] = true;
 
       //Itemtypes in use for an order
@@ -146,7 +144,7 @@ function plugin_init_order() {
 /* get the name and the version of the plugin - needed- */
 function plugin_version_order() {
    return array ('name'           => __("Orders management", "order"),
-                 'version'        => '2.0',
+                 'version'        => '2.0.0',
                  'author'         => 'The plugin order team',
                  'homepage'       => 'https://forge.indepnet.net/projects/show/order',
                  'minGlpiVersion' => '0.85',
