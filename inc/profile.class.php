@@ -288,7 +288,7 @@ class PluginOrderProfile extends CommonDBTM {
       global $DB;
       //Cannot launch migration if there's nothing to migrate...
       if (!TableExists('glpi_plugin_order_profiles')) {
-      return true;
+         return true;
       }
 
       foreach ($DB->request('glpi_plugin_order_profiles',
@@ -305,6 +305,7 @@ class PluginOrderProfile extends CommonDBTM {
                            'open_ticket'        => 'plugin_order_open_ticket'
                            );
          $current_rights = ProfileRight::getProfileRights($profiles_id, array_values($matching));
+
          foreach ($matching as $old => $new) {
             if (!isset($current_rights[$old])) {
                $query = "UPDATE `glpi_profilerights`
@@ -336,6 +337,20 @@ class PluginOrderProfile extends CommonDBTM {
       foreach ($DB->request("SELECT `id` FROM `glpi_profiles`") as $prof) {
          self::migrateOneProfile($prof['id']);
       }
+      foreach ($DB->request("SELECT *
+                           FROM `glpi_profilerights`
+                           WHERE `profiles_id`='".$_SESSION['glpiactiveprofile']['id']."'
+                              AND `name` LIKE '%plugin_order%'") as $prof) {
+         $_SESSION['glpiactiveprofile'][$prof['name']] = $prof['rights'];
+      }
+   }
+   
+  /**
+   * Initialize profiles, and migrate it necessary
+   */
+   static function changeProfile() {
+      global $DB;
+
       foreach ($DB->request("SELECT *
                            FROM `glpi_profilerights`
                            WHERE `profiles_id`='".$_SESSION['glpiactiveprofile']['id']."'

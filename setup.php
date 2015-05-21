@@ -56,7 +56,7 @@ function plugin_init_order() {
    $PLUGIN_HOOKS['csrf_compliant']['order'] = true;
 
    /* Init current profile */
-   $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile', 'initProfile');
+   $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile', 'changeProfile');
 
    $plugin = new Plugin();
    if ($plugin->isActivated('order')) {
