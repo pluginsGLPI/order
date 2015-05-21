@@ -63,7 +63,7 @@ if (isset($_POST["itemtype"])) {
 } elseif (isset($_POST['reference_id'])) {
    $query = "SELECT `price_taxfree`
              FROM `glpi_plugin_order_references_suppliers`
-             WHERE `id` = '{$_POST['reference_id']}'";
+             WHERE `plugin_order_references_id` = '{$_POST['reference_id']}'";
    $result = $DB->query($query);
    $price = $DB->result($result, 0, 'price_taxfree');
    $price = Html::formatNumber($price);
