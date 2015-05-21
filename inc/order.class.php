@@ -50,13 +50,13 @@ class PluginOrderOrder extends CommonDBTM {
    const ORDER_IS_UNDER_BUDGET     = 3;
 
    // additionnals rights
-   const RIGHT_GENERATEODT      = 32;
-   const RIGHT_DELIVERY         = 64;
-   const RIGHT_OPENTICKET       = 128;
-   const RIGHT_VALIDATION       = 256;
-   const RIGHT_UNDO_VALIDATION  = 512;
-   const RIGHT_CANCEL           = 1024;
- 
+   const RIGHT_GENERATEODT                      = 32;
+   const RIGHT_DELIVERY                         = 64;
+   const RIGHT_OPENTICKET                       = 128;
+   const RIGHT_VALIDATION                       = 256;
+   const RIGHT_UNDO_VALIDATION                  = 512;
+   const RIGHT_CANCEL                           = 1024;
+   const RIGHT_GENERATEODT_WITHOUT_VALIDATION   = 2048;
 
    public static function getTypeName($nb = 0) {
       return ($nb > 1)
@@ -81,7 +81,7 @@ class PluginOrderOrder extends CommonDBTM {
    }
    
    static function canGenerateWithoutValidation() {
-      return Session::haveRight("plugin_order_generate_order_without_validation", 1);
+      return Session::haveRight("plugin_order_order", self::RIGHT_GENERATEODT_WITHOUT_VALIDATION);
    }
    
    public function isDraft()
@@ -211,6 +211,28 @@ class PluginOrderOrder extends CommonDBTM {
       return (self::canCreate()
                && $this->canValidateOrder() || $this->canCancelOrder() || $this->canUndoValidation()
                || $this->canCancelValidationRequest() || $this->canDoValidationRequest());
+   }
+
+      /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+   **/
+   function getRights($interface='central') {
+ 
+      if ($interface == 'central') {
+         $values = parent::getRights();
+         $values[self::RIGHT_GENERATEODT]     = __("Order Generation", "order");
+         $values[self::RIGHT_DELIVERY]        = __("Take item delivery", "order");
+         $values[self::RIGHT_VALIDATION]      = __("Order validation", "order");
+         $values[self::RIGHT_CANCEL]          = __("Cancel order", "order");
+         $values[self::RIGHT_UNDO_VALIDATION] = __("Edit a validated order", "order");
+         $values[self::RIGHT_GENERATEODT_WITHOUT_VALIDATION] = __("Generate order without validation", "order");
+      }
+
+      $values[self::RIGHT_OPENTICKET]         = __("Link order to a ticket", "order");
+
+      return $values;
    }
 
 

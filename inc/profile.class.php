@@ -38,16 +38,9 @@ class PluginOrderProfile extends CommonDBTM {
 
    public static function createFirstAccess($ID) {
       self::addDefaultProfileInfos($ID, array(
-         'plugin_order_order'                             => 127, // All rights : CREATE + READ + ...
+         'plugin_order_order'                             => 4095, // All rights : CREATE + READ + ...
          'plugin_order_bill'                              => 127,
-         'plugin_order_reference'                         => 127,
-         'plugin_order_delivery'                          => 1,
-         'plugin_order_generate_order_odt'                => 1,
-         'plugin_order_validation'                        => 1,
-         'plugin_order_undo_validation'                   => 1,
-         'plugin_order_cancel'                            => 1,
-         'plugin_order_generate_order_without_validation' => 1,
-         'plugin_order_open_ticket'                       => 1, true
+         'plugin_order_reference'                         => 127, true
       ));
    }
 
@@ -100,64 +93,6 @@ class PluginOrderProfile extends CommonDBTM {
          'title'         => __('Orders', 'order'),
       ));
 
-      echo "<table class='tab_cadre_fixehov'>";
-      $effective_rights = ProfileRight::getProfileRights($profiles_id, array('plugin_order_delivery',
-               'plugin_order_generate_order_odt',
-               'plugin_order_open_ticket',
-               'plugin_order_validation',
-               'plugin_order_undo_validation',
-               'plugin_order_cancel',
-               'plugin_order_generate_order_without_validation'));
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='20%'>".__("Take item delivery", "order")."</td>";
-      echo "<td colspan='5'>";
-      Html::showCheckbox(array('name'    => '_plugin_order_delivery[1_0]',
-         'checked' => $effective_rights['plugin_order_delivery']));
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='20%'>".__("Order Generation", "order")."</td>";
-      echo "<td colspan='5'>";
-      Html::showCheckbox(array('name'    => '_plugin_order_generate_order_odt[1_0]',
-         'checked' => $effective_rights['plugin_order_generate_order_odt']));
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='20%'>".__("Link order to a ticket", "order")."</td>";
-      echo "<td colspan='5'>";
-      Html::showCheckbox(array('name'    => '_plugin_order_open_ticket[1_0]',
-         'checked' => $effective_rights['plugin_order_open_ticket']));
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='20%'>".__("Order validation", "order")."</td>";
-      echo "<td colspan='5'>";
-      Html::showCheckbox(array('name'    => '_plugin_order_validation[1_0]',
-         'checked' => $effective_rights['plugin_order_validation']));
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='20%'>".__("Cancel order", "order")."</td>";
-      echo "<td colspan='5'>";
-      Html::showCheckbox(array('name'    => '_plugin_order_undo_validation[1_0]',
-         'checked' => $effective_rights['plugin_order_undo_validation']));
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='20%'>".__("Edit a validated order", "order")."</td>";
-      echo "<td colspan='5'>";
-      Html::showCheckbox(array('name'    => '_plugin_order_cancel[1_0]',
-         'checked' => $effective_rights['plugin_order_cancel']));
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td width='20%'>".__("Generate order without validation", "order")."</td>";
-      echo "<td colspan='5'>";
-      Html::showCheckbox(array('name'    => '_plugin_order_generate_order_without_validation[1_0]',
-         'checked' => $effective_rights['plugin_order_generate_order_without_validation']));
-      echo "</td></tr>\n";
-      echo "</table>";
 
       if ($canedit && $closeform) {
          echo "<div class='center'>";
@@ -206,14 +141,7 @@ class PluginOrderProfile extends CommonDBTM {
          self::addDefaultProfileInfos($item->getID(), array(
             'plugin_order_order'                             => 0, // All rights : CREATE + READ + ...
             'plugin_order_bill'                              => 0,
-            'plugin_order_reference'                         => 0,
-            'plugin_order_delivery'                          => 0,
-            'plugin_order_generate_order_odt'                => 0,
-            'plugin_order_validation'                        => 0,
-            'plugin_order_undo_validation'                   => 0,
-            'plugin_order_cancel'                            => 0,
-            'plugin_order_generate_order_without_validation' => 0,
-            'plugin_order_open_ticket'                       => 0
+            'plugin_order_reference'                         => 0
          ));
          $prof->showForm($item->getID());
       }
@@ -236,32 +164,6 @@ class PluginOrderProfile extends CommonDBTM {
             'field'    => 'plugin_order_bill'
          )
       );
-
-      if ($all) {
-         $rights[] = array('itemtype' => 'PluginOrderOrder',
-            'label'    => __("Link order to a ticket", "order"),
-            'field'    => 'plugin_order_open_ticket');
-
-         $rights[] = array('itemtype' => 'PluginOrderOrder',
-            'label'    => __("Take item delivery", "order"),
-            'field'    => 'plugin_order_delivery');
-
-         $rights[] = array('itemtype' => 'PluginOrderOrder',
-            'label'    => __("Order Generation", "order"),
-            'field'    => 'plugin_order_generate_order_odt');
-
-         $rights[] = array('itemtype' => 'PluginOrderOrder',
-            'label'    => __("Order validation", "order"),
-            'field'    => 'plugin_order_validation');
-
-         $rights[] = array('itemtype' => 'PluginOrderOrder',
-            'label'    => __("Cancel order", "order"),
-            'field'    => 'plugin_order_undo_validation');
-
-         $rights[] = array('itemtype' => 'PluginOrderOrder',
-            'label'    => __("Generate order without validation", "order"),
-            'field'    => 'plugin_order_generate_order_without_validation');
-      }
 
       return $rights;
    }
@@ -305,8 +207,24 @@ class PluginOrderProfile extends CommonDBTM {
          $current_rights = ProfileRight::getProfileRights($profiles_id, array_values($matching));
          foreach ($matching as $old => $new) {
             if (!isset($current_rights[$old])) {
+               $right = self::translateARight($profile_data[$old]);
+               switch ($new) {
+                  case 'plugin_order_delivery' :
+                  case 'plugin_order_validation' :
+                  case 'plugin_order_cancel' :
+                  case 'plugin_order_undo_validation' :
+                  case 'plugin_order_generate_order_without_validation' :
+                  case 'plugin_order_generate_order_odt' :
+                  case 'plugin_order_open_ticket' :
+                     $right = 0;
+                     if ($profile_data[$old] == 'w') {
+                        $right = 1;
+                     }
+                     break;
+               
+               }
                $query = "UPDATE `glpi_profilerights`
-                         SET `rights`='".self::translateARight($profile_data[$old])."'
+                         SET `rights`='".$right."'
                          WHERE `name`='$new' AND `profiles_id`='$profiles_id'";
                $DB->query($query);
             }
