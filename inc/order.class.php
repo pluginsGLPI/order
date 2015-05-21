@@ -35,6 +35,7 @@ class PluginOrderOrder extends CommonDBTM {
    public static $rightname         = 'plugin_order_order';
    public $is_template              = true;
    public $dohistory                = true;
+   protected $usenotepadrights      = true;
    public static $forward_entity_to = array(
       "PluginOrderOrder_Item",
       "PluginOrderOrder_Supplier",
@@ -497,7 +498,7 @@ class PluginOrderOrder extends CommonDBTM {
       if (!$this->isNewID($this->fields['id'])) {
          $this->addDefaultFormTab($ong);
          $this->addStandardTab('Document_Item', $ong, $options);
-         $this->addStandardTab('Note', $ong, $options);
+         $this->addStandardTab('Notepad', $ong, $options);
          $this->addStandardTab('Log', $ong, $options);
       }
 

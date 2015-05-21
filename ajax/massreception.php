@@ -48,7 +48,7 @@ echo "<input type='hidden' name='plugin_order_references_id' value='"
    .  $_POST['plugin_order_references_id'] . "'>";
 echo "<input type='hidden' name='plugin_order_orders_id' value='"
    .  $_POST['plugin_order_orders_id'] . "'>";
-echo __("Number to deliver", "order") . "</td><td>";
+echo __("Number to deliver", "order") . "</td><td width='10%'>";
 $nb = $PluginOrderReception->checkItemStatus($_POST['plugin_order_orders_id'],
                                              $_POST['plugin_order_references_id'],
                                              PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED);
