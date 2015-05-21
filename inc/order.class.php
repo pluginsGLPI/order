@@ -213,26 +213,6 @@ class PluginOrderOrder extends CommonDBTM {
                || $this->canCancelValidationRequest() || $this->canDoValidationRequest());
    }
 
-   /**
-    * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-   **/
-   function getRights($interface='central') {
-
-      if ($interface == 'central') {
-         $values = parent::getRights();
-         $values[self::RIGHT_GENERATEODT]     = __("Order Generation", "order");
-         $values[self::RIGHT_DELIVERY]        = __("Take item delivery", "order");
-         $values[self::RIGHT_VALIDATION]      = __("Order validation", "order");
-         $values[self::RIGHT_CANCEL]          = __("Cancel order", "order");
-         $values[self::RIGHT_UNDO_VALIDATION] = __("Edit a validated order", "order");
-      }
-
-      $values[self::RIGHT_OPENTICKET]         = __("Link order to a ticket", "order");
-
-      return $values;
-   }
 
    public function getSearchOptions() {
       $tab = array();
