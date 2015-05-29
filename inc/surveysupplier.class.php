@@ -120,13 +120,13 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       global $DB;
 
       $table = $this->getTable();
-      $query = "SELECT  SUM(supplier.`$field`) AS total,
-                        COUNT(supplier.`id`) AS nb
-                FROM `glpi_plugin_order_orders` order,`$table` supplier
-                WHERE supplier.`suppliers_id` = order.`suppliers_id`
-                AND supplier.`plugin_order_orders_id` = order.`id`
-                AND order.`suppliers_id` = '$suppliers_id'"
-               . getEntitiesRestrictRequest(" AND ","glpi_plugin_order_orders","entities_id",'',true);
+      $query = "SELECT  SUM(survey.`$field`) AS total,
+                        COUNT(survey.`id`) AS nb
+                FROM `glpi_plugin_order_orders` orders, `$table` survey
+                 WHERE survey.`suppliers_id` = orders.`suppliers_id`
+                 AND survey.`plugin_order_orders_id` = orders.`id`
+                 AND orders.`suppliers_id` = '$suppliers_id'"
+               . getEntitiesRestrictRequest(" AND ","orders","entities_id",'',true);
       $result = $DB->query($query);
       $nb     = $DB->numrows($result);
 
@@ -148,7 +148,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       $survey       = new self();
       $survey_table = $survey->getTable();
 
-      $restrict = getEntitiesRestrictRequest(" AND ", "glpi_plugin_order_orders", "entities_id", '', true);
+      $restrict = getEntitiesRestrictRequest(" AND ", "orders", "entities_id", '', true);
 
       $query  = "SELECT orders.`id`, orders.`entities_id`, orders.`name`, survey.`comment`
                  FROM `glpi_plugin_order_orders` orders, `$survey_table` survey

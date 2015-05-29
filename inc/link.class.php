@@ -71,7 +71,7 @@ class PluginOrderLink extends CommonDBChild {
       echo "<tr>";
       echo "<th>" . __("Product reference", "order") . "</th>";
       echo "<th>" . __("Name") . "</th>";
-      echo "<th>" . __("Serial Number") . "</th>";
+      echo "<th>" . __("Serial number") . "</th>";
       echo "<th>" . __("Inventory number") . "</th>";
       echo "<th>" . __("Template name") . "</th>";
       if (Session::isMultiEntitiesMode() && count($_SESSION['glpiactiveentities']) > 1) {
@@ -400,7 +400,7 @@ class PluginOrderLink extends CommonDBChild {
             }
 
             if ($item->getField("serial") != '') {
-               $comments .= "<br><strong>" . __("Serial Number") . ":</strong> ";
+               $comments .= "<br><strong>" . __("Serial number") . ":</strong> ";
                $comments .= $item->getField("serial");
             }
 
