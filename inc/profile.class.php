@@ -40,8 +40,8 @@ class PluginOrderProfile extends CommonDBTM {
       self::addDefaultProfileInfos($ID, array(
          'plugin_order_order'                             => 4095, // All rights : CREATE + READ + ...
          'plugin_order_bill'                              => 127,
-         'plugin_order_reference'                         => 127, true
-      ));
+         'plugin_order_reference'                         => 127), true
+      );
    }
 
    /**
@@ -107,16 +107,18 @@ class PluginOrderProfile extends CommonDBTM {
    public static function install(Migration $migration) {
       global $DB;
 
-      if (TableExists("glpi_plugin_order_profiles") && !FieldExists("glpi_plugin_order_profiles", "plugin_order_generate_order_without_validation")) {
+      if (TableExists("glpi_plugin_order_profiles") 
+         && !FieldExists("glpi_plugin_order_profiles", "plugin_order_generate_order_without_validation")) {
          $DB->query("ALTER TABLE `glpi_plugin_order_profiles` ADD `plugin_order_generate_order_without_validation` char(1) default NULL;");
       }
       
       self::initProfile();
       self::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
       
-      if (TableExists("glpi_plugin_order_profiles")){
-         $DB->query("DROP TABLE `glpi_plugin_order_profiles`;");
-      }
+      $migration->dropTable('glpi_plugin_order_profiles');
+      //if (TableExists("glpi_plugin_order_profiles")){
+      //   $DB->query("DROP TABLE `glpi_plugin_order_profiles`;");
+      //}
    }
 
    public static function uninstall() {
