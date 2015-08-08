@@ -883,3 +883,7 @@ msgstr "Bon de commande"
 
 msgid "Rename documents added in order"
 msgstr "Renommer les documents ajoutés à la commande"
+
+msgid "Order type"
+msgstr "Type de commande"
+

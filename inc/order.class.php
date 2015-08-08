@@ -351,7 +351,7 @@ class PluginOrderOrder extends CommonDBTM {
       /* type */
       $tab[11]['table']         = 'glpi_plugin_order_ordertypes';
       $tab[11]['field']         = 'name';
-      $tab[11]['name']          = __("Type");
+      $tab[11]['name']          = __("Order type", "order");
       $tab[11]['datatype']      = 'dropdown';
       $tab[11]['checktype']     = 'text';
       $tab[11]['displaytype']   = 'dropdown';
@@ -706,7 +706,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
       echo "</td>";
       /* type order */
-      echo "<td>" . __("Type") . ": </td><td>";
+      echo "<td>" . __("Order type", "order") . ": </td><td>";
       if ($canedit){
          PluginOrderOrderType::Dropdown(array('name'  => "plugin_order_ordertypes_id",
                                               'value' => $this->fields["plugin_order_ordertypes_id"]));

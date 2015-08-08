@@ -882,3 +882,5 @@ msgstr "Purchase order"
 msgid "Rename documents added in order"
 msgstr "Rename documents added to the order"
 
+msgid "Order type"
+msgstr "Order type"
