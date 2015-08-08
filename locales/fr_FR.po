@@ -880,3 +880,6 @@ msgstr "Ne pas afficher les budgets ayant expiré"
 #: inc/order.class.php:519
 msgid "Purchase order"
 msgstr "Bon de commande"
+
+msgid "Rename documents added in order"
+msgstr "Renommer les documents ajoutés à la commande"

@@ -878,3 +878,7 @@ msgstr "Do not display expired budgets"
 #: inc/order.class.php:519
 msgid "Purchase order"
 msgstr "Purchase order"
+
+msgid "Rename documents added in order"
+msgstr "Rename documents added to the order"
+
