@@ -144,7 +144,7 @@ function plugin_init_order() {
 /* get the name and the version of the plugin - needed- */
 function plugin_version_order() {
    return array ('name'           => __("Orders management", "order"),
-                 'version'        => '2.0.0',
+                 'version'        => '0.85+1.0',
                  'author'         => 'The plugin order team',
                  'homepage'       => 'https://forge.indepnet.net/projects/show/order',
                  'minGlpiVersion' => '0.85',
@@ -153,8 +153,8 @@ function plugin_version_order() {
 
 /* check prerequisites before install : may print errors or add to message after redirect -optional- */
 function plugin_order_check_prerequisites(){
-   if (version_compare(GLPI_VERSION,'0.85','lt') || version_compare(GLPI_VERSION,'0.86','ge')) {
-      echo "This plugin requires GLPI 0.85";
+   if (version_compare(GLPI_VERSION,'0.85','lt') || version_compare(GLPI_VERSION,'0.91','ge')) {
+      echo "This plugin requires GLPI 0.85 or higher";
    } else {
       return true;
    }
