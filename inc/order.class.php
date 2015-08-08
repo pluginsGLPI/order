@@ -1833,7 +1833,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       $cron_status = 1;
       if ($CFG_GLPI["use_mailing"]) {
-         $message = array();
+         $message = __("Order is late", "order");
          $alert   = new Alert();
          $config  = PluginOrderConfig::getConfig();
 
@@ -2079,6 +2079,10 @@ class PluginOrderOrder extends CommonDBTM {
                KEY date_mod (date_mod)
             ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
             $DB->query($query) or die ($DB->error());
+
+            Crontask::Register(__CLASS__, 'computeLateOrders', HOUR_TIMESTAMP,
+                               array('param' => 24, 'mode' => CronTask::MODE_EXTERNAL));
+
       } else {
          //Upgrade
          $migration->displayMessage("Upgrading $table");
