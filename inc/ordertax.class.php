@@ -58,7 +58,7 @@ class PluginOrderOrderTax extends CommonDropdown {
          $DB->query($query) or die($DB->error());
 
          $taxes = new self();
-         foreach (array('5.5', '19.6') as $tax) {
+         foreach (array('20', '5.5', '19.6') as $tax) {
             $taxes->add(array('name' => $tax));
          }
       } else {
