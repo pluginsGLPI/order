@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+   <name>Order Management</name>
+   <key>order</key>
+   <state>stable</state>
+   <logo>https://raw.githubusercontent.com/pluginsGLPI/order/master/order.png</logo>
+   <description>
+      <short>
+         <fr><![CDATA[Gestion des commandes de matériels]]></fr>
+         <en><![CDATA[Order management]]></en>
+         <de><![CDATA[Bestellverwaltung]]></de>
+      </short>
+      <long>
+         <fr><![CDATA[Cette extension vous permet de gérer le processus de commande de matériels à l'intérieur de GLPI :<br /> - Gestion des références produits<br /> - Gestion des commandes (avec workflow de soumission)<br /> - Gestion des budgets]]></fr>
+         <en><![CDATA[This plugin allows you to manage order management within GLPI :<br /> - Products references management<br /> - Order management (with approval workflow)<br > - Budgets management]]></en>
+         <de><![CDATA[Dieses Plugin ergänzt GLPI mit einer Bestellverwaltung:<br /> - Verwaltung der Produktreferenzen<br /> - Bestellverwaltung mit Freigabeprozedur<br > - Budgetverwaltung]]></de>
+      </long>
+   </description>
+   <homepage>https://github.com/pluginsGLPI/order/</homepage>
+   <download>https://github.com/pluginsGLPI/order/releases</download>
+   <issues>https://github.com/pluginsGLPI/order/issues</issues>
+   <authors>
+      <author>Walid Nouh</author>
+      <author>Xavier Caillaud / Infotel</author>
+      <author>François Legastelois</author>
+      <author>Benjamin Fontan</author>
+   </authors>
+   <versions>
+     <version>
+          <num>0.85+1.0</num>
+          <compatibility>0.85</compatibility>
+          <compatibility>0.90</compatibility>
+      </version>
+     <version>
+          <num>1.9.0</num>
+          <compatibility>0.84</compatibility>
+      </version>
+     <version>
+          <num>1.8.1</num>
+          <compatibility>0.84</compatibility>
+      </version>
+     <version>
+          <num>1.8.0</num>
+          <compatibility>0.84</compatibility>
+      </version>
+     <version>
+          <num>1.7.1</num>
+          <compatibility>0.83.3+</compatibility>
+      </version>
+     <version>
+          <num>1.7.0</num>
+          <compatibility>0.83.3+</compatibility>
+      </version>
+     <version>
+          <num>1.6.0</num>
+          <compatibility>0.83</compatibility>
+      </version>
+     <version>
+          <num>1.5.4</num>
+          <compatibility>0.80</compatibility>
+      </version>
+     <version>
+          <num>1.5.3</num>
+          <compatibility>0.80</compatibility>
+      </version>
+     <version>
+          <num>1.5.2</num>
+          <compatibility>0.80</compatibility>
+      </version>
+     <version>
+          <num>1.5.1</num>
+          <compatibility>0.80</compatibility>
+      </version>
+      <version>
+          <num>1.5.0</num>
+          <compatibility>0.80</compatibility>
+      </version>
+      <version>
+          <num>1.4.0</num>
+          <compatibility>0.80</compatibility>
+      </version>
+      <version>
+          <num>1.3.0</num>
+          <compatibility>0.78.3+</compatibility>
+      </version>
+      <version>
+          <num>1.2.0</num>
+          <compatibility>0.78.x</compatibility>
+      </version>
+      <version>
+          <num>1.1.2</num>
+          <compatibility>0.72.x</compatibility>
+      </version>
+      <version>
+          <num>1.1.1</num>
+          <compatibility>0.72.x</compatibility>
+      </version>
+      <version>
+          <num>1.1.0</num>
+          <compatibility>0.72.x</compatibility>
+      </version>
+      <version>
+          <num>1.0.0</num>
+          <compatibility>0.72.x</compatibility>
+      </version>
+   </versions>
+   <langs>
+      <lang>fr_FR</lang>
+      <lang>en_GB</lang>
+      <lang>de_DE</lang>
+   </langs>
+   <license><![CDATA[GPL v2+]]></license>
+   <category></category>
+   <tags>
+         <fr>
+            <tag>commandes</tag>
+            <tag>achats</tag>
+            <tag>inventaire</tag>
+            <tag>budgets</tag>
+            <tag>produits</tag>
+            <tag>catalogue</tag>
+         </fr>
+         <en>
+            <tag>orders</tag>
+            <tag>buying</tag>
+            <tag>inventory</tag>
+            <tag>budgets</tag>
+            <tag>products</tag>
+            <tag>catalog</tag>
+         </en>
+   </tags>
+   <license>GPL v2+</license>
+</root>
