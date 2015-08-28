@@ -126,7 +126,7 @@ class PluginOrderConfig extends CommonDBTM {
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td>" . __("Color to be displayed when order due date is overtaken", "order") . "</td>";
       echo "<td>";
-      echo "<input type='text' name='shoudbedelivered_color'
+      echo "<input type='color' name='shoudbedelivered_color'
                value='" . $this->fields['shoudbedelivered_color'] . "'>";
       echo "</td>";
       echo "</tr>";
