@@ -455,15 +455,15 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             if($canedit) {
                echo "<script type='text/javascript' >\n";
                echo "function hideForm$rand() {\n";
-               echo "Ext.get('quantity$rand').setDisplayed('block');";
-               echo "Ext.get('pricetaxfree$rand').setDisplayed('block');";
-               echo "Ext.get('discount$rand').setDisplayed('block');";
+               echo "$('#quantity$rand').show();";
+               echo "$('#pricetaxfree$rand').show();";
+               echo "$('#discount$rand').show();";
 
-               echo "Ext.select('#viewquantity$rand input').remove();";
-               echo "Ext.select('#viewpricetaxfree$rand input').remove();";
-               echo "Ext.select('#viewdiscount$rand input').remove();";
+               echo "$('#viewquantity$rand input').remove();";
+               echo "$('#viewpricetaxfree$rand input').remove();";
+               echo "$('#viewdiscount$rand input').remove();";
 
-               echo "Ext.get('viewaccept$rand').setDisplayed('none');";
+               echo "$('#viewaccept$rand').hide();";
                echo "}\n";
                echo "</script>\n";
             }
@@ -475,8 +475,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "<td align='center'>";
                echo "<script type='text/javascript' >\n";
                echo "function showQuantity$rand() {\n";
-               echo "Ext.get('quantity$rand').setDisplayed('none');";
-               echo "Ext.get('viewaccept$rand').setDisplayed('block');";
+               echo "$('#quantity$rand').hide();";
+               echo "$('#viewaccept$rand').show();";
                $params = array('maxlength' => 15,
                                'size'      => 8,
                                'name'      => 'quantity',
@@ -528,8 +528,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "<input type='hidden' name='old_price_taxfree' value='" . $price_taxfree . "'>";
                echo "<script type='text/javascript' >\n";
                echo "function showPricetaxfree$rand() {\n";
-               echo "Ext.get('pricetaxfree$rand').setDisplayed('none');";
-               echo "Ext.get('viewaccept$rand').setDisplayed('block');";
+               echo "$('#pricetaxfree$rand').hide();";
+               echo "$('#viewaccept$rand').show();";
                $params = array('maxlength' => 15,
                                'size'      => 8,
                                'name'      => 'price_taxfree',
@@ -553,8 +553,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "<input type='hidden' name='old_discount' value='" . $discount . "'>";
                echo "<script type='text/javascript' >\n";
                echo "function showDiscount$rand() {\n";
-               echo "Ext.get('discount$rand').setDisplayed('none');";
-               echo "Ext.get('viewaccept$rand').setDisplayed('block');";
+               echo "$('#discount$rand').hide();";
+               echo "$('#viewaccept$rand').show();";
                $params = array('maxlength' => 15,
                                'size'      => 8,
                                'name'      => 'discount',
@@ -662,10 +662,10 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                Session::addToNavigateListItems($this->getType(), $data['IDD']);
 
                // Compute for detail_hideForm javascript function
-               $hideForm.="Ext.get('detail_pricetaxfree$rand_line').setDisplayed('block');\n";
-               $hideForm.="Ext.select('#detail_viewpricetaxfree$rand_line input').remove();\n";
-               $hideForm.="Ext.get('detail_discount$rand_line').setDisplayed('block');\n";
-               $hideForm.="Ext.select('#detail_viewdiscount$rand_line input').remove();\n";
+               $hideForm.="$('#detail_pricetaxfree$rand_line').show();\n";
+               $hideForm.="$('#detail_viewpricetaxfree$rand_line input').remove();\n";
+               $hideForm.="$('#detail_discount$rand_line').show();\n";
+               $hideForm.="$('#detail_viewdiscount$rand_line input').remove();\n";
 
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
@@ -699,8 +699,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                               value='" . $data["price_taxfree"] . "'>";
                   echo "<script type='text/javascript' >\n";
                   echo "function showDetailPricetaxfree$rand_line() {\n";
-                  echo "Ext.get('detail_pricetaxfree$rand_line').setDisplayed('none');";
-                  echo "Ext.get('detail_viewaccept$global_rand').setDisplayed('block');";
+                  echo "$('#detail_pricetaxfree$rand_line').hide();";
+                  echo "$('#detail_viewaccept$global_rand').show();";
                   $params = array('maxlength' => 15,
                                   'size'      => 8,
                                   'name'      => 'detail_price_taxfree['.$data["IDD"].']',
@@ -732,8 +732,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                               value='" . $data["discount"] . "'>";
                   echo "<script type='text/javascript' >\n";
                   echo "function showDetailDiscount$rand_line() {\n";
-                  echo "Ext.get('detail_discount$rand_line').setDisplayed('none');";
-                  echo "Ext.get('detail_viewaccept$global_rand').setDisplayed('block');";
+                  echo "$('#detail_discount$rand_line').hide();";
+                  echo "$('#detail_viewaccept$global_rand').show();";
                   $params = array('maxlength' => 15,
                                   'size'      => 8,
                                   'name'      => 'detail_discount['.$data["IDD"].']',
@@ -767,7 +767,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "<script type='text/javascript' >\n";
                echo "function detail_hideForm$global_rand() {\n";
                echo $hideForm;
-               echo "Ext.get('detail_viewaccept$global_rand').setDisplayed('none');";
+               echo "$('#detail_viewaccept$global_rand').hide();";
                echo "}\n";
                echo "</script>\n";
             }
