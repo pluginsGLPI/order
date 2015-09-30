@@ -44,9 +44,8 @@ if (isset($_POST["itemtype"])) {
    $values = array(0 => Dropdown::EMPTY_VALUE);
    if ($number) {
       while ($data = $DB->fetch_assoc($result)) {
-         $values[$data['id']] = !empty($data['reference_code'])
-                                 ? $data['reference_code']
-                                 : $data['name'];
+         $values[$data['id']] = $data['name'].
+                                (!empty($data['reference_code'])?" (".$data['reference_code'].")":"");
       }
    }
    Dropdown::showFromArray($_POST['fieldname'], $values, array('rand' => $_POST['rand']));
