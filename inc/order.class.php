@@ -1296,6 +1296,8 @@ class PluginOrderOrder extends CommonDBTM {
             echo "<td align='center'>";
             echo "<input type='hidden' name='id' value=\"$orders_id\">\n";
 
+            $link = "";
+
             if ($this->canCancelOrder()) {
                echo "<input type='submit' onclick=\"return confirm('"
                   . __("Do you really want to cancel this order ? This option is irreversible !", "order")
