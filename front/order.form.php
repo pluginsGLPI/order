@@ -152,8 +152,8 @@ if (isset ($_POST["add"])) {
       $pluginOrderOrder->addHistory("PluginOrderOrder", "",
                                     $new_value,$_POST["plugin_order_orders_id"]);
       $pluginOrderOrder_Item->addDetails($_POST["plugin_order_references_id"], $_POST["itemtype"],
-                                         $_POST["plugin_order_orders_id"], $_POST["quantity"],
-                                         $_POST["price"], $_POST["discount"],
+                                         $_POST["plugin_order_orders_id"], intval($_POST["quantity"]),
+                                         floatval($_POST["price"]), floatval($_POST["discount"]),
                                          $_POST["plugin_order_ordertaxes_id"]);
    }
    Html::back();
