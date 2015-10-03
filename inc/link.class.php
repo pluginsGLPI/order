@@ -441,11 +441,11 @@ class PluginOrderLink extends CommonDBChild {
                $item->getFromDB($items_id);
                $item_type = new $itemtype();
                $item_type->getFromDB($item->fields[getForeignKeyFieldForTable($table)]);
-               return $item_type->getLink(true);
+               return $item_type->getLink(array('comments' => 1));
             default :
                $item = new $itemtype();
                $item->getFromDB($items_id);
-               return $item->getLink(true);
+               return $item->getLink(array('comments' => 1));
          }
       }
    }
