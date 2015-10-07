@@ -147,7 +147,7 @@ function plugin_version_order() {
    return array ('name'           => __("Orders management", "order"),
                  'version'        => '0.85+1.0',
                  'author'         => 'The plugin order team',
-                 'homepage'       => 'https://forge.indepnet.net/projects/show/order',
+                 'homepage'       => 'https://github.com/pluginsGLPI/order',
                  'minGlpiVersion' => '0.85',
                  'license'        => 'GPLv2+');
 }
