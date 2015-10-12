@@ -973,13 +973,19 @@ class PluginOrderOrder extends CommonDBTM {
          }
       }
       echo "</td>";
-      echo "<td>" . __("Author group", "order") . ":</td><td style='width: 180px;'>";
+      echo "<td>" . __("Author group", "order") . ":</td>";
+      echo "<td style='width: 180px;'>";
       if ($canedit) {
          if (empty ($ID) || $ID < 0) {
-            $groups_id = $config->getDefaultAuthorGroup();
+            if (! empty($this->fields['groups_id'])) {
+               $groups_id = $this->fields['groups_id'];
+            } else {
+               $groups_id = $config->getDefaultAuthorGroup();
+            }
          } else {
             $groups_id = $this->fields['groups_id'];
          }
+
          Group::Dropdown(array(
             'value' => $groups_id,
             'width'  => '150px',
@@ -988,12 +994,18 @@ class PluginOrderOrder extends CommonDBTM {
          echo Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id']);
       }
       echo "</td></tr>";
-      echo "<tr class='tab_bg_1'><td>" . __("Recipient") . ":</td><td style='width: 170px;'>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __("Recipient") . ":</td>";
+      echo "<td style='width: 170px;'>";
       if ($canedit) {
          if (empty ($ID) || $ID < 0) {
-            $users_id = $config->getDefaultRecipient();
+            if (! empty($this->fields['users_id_delivery'])) {
+               $users_id = $this->fields['users_id_delivery'];
+            } else {
+               $users_id = $config->getDefaultRecipient();
+            }
          } else {
-            $users_id = $this->fields["users_id_delivery"];
+            $users_id = $this->fields['users_id_delivery'];
          }
          User::Dropdown(array(
             'name'   => 'users_id_delivery',
@@ -1011,10 +1023,15 @@ class PluginOrderOrder extends CommonDBTM {
          }
       }
       echo "</td>";
-      echo "<td>" . __("Recipient group", "order") . ":</td><td style='width: 180px;'>";
+      echo "<td>" . __("Recipient group", "order") . ":</td>";
+      echo "<td style='width: 180px;'>";
       if ($canedit) {
          if (empty ($ID) || $ID < 0) {
-            $groups_id = $config->getDefaultRecipientGroup();
+            if (! empty($this->fields['groups_id_delivery'])) {
+               $groups_id = $this->fields['groups_id_delivery'];
+            } else {
+               $groups_id = $config->getDefaultRecipientGroup();
+            }
          } else {
             $groups_id = $this->fields['groups_id_delivery'];
          }
