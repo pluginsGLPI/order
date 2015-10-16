@@ -517,7 +517,8 @@ class PluginOrderOrder extends CommonDBTM {
                || Session::haveRight("plugin_order_order", self::RIGHT_UNDO_VALIDATION)) {
                $ong[1] = __("Validation", "order");
             }
-            if ($config->canGenerateOrderPDF() && $item->getState() > PluginOrderOrderState::DRAFT) {
+            if ($config->canGenerateOrderPDF() 
+               && ($item->getState() > PluginOrderOrderState::DRAFT || $this->canGenerateWithoutValidation())) {
             // generation
                $ong[2] = __("Purchase order", "order");
             }
