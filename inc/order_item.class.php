@@ -281,13 +281,14 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                asort($itemtypeArray);
 
                $rand = mt_rand();
-               Dropdown::showFromArray('itemtype', $itemtypeArray, array('rand' => $rand));
+               Dropdown::showFromArray('itemtype', $itemtypeArray, array('rand' => $rand, 'width' => 125));
 
                $params = array(
-                  'itemtype'  => '__VALUE__',
-                  'fieldname' => 'plugin_order_references_id',
+                  'itemtype'     => '__VALUE__',
+                  'fieldname'    => 'plugin_order_references_id',
                   'suppliers_id' => $order->fields["suppliers_id"],
-                  'rand'      => $rand,
+                  'entities_id'  => $order->fields["entities_id"],
+                  'rand'         => $rand,
                );
                Ajax::updateItemOnSelectEvent('dropdown_itemtype' . $rand,
                                              'show_reference',
@@ -295,7 +296,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                                              $params);
                echo "</td>";
                echo "<td class='tab_bg_1'><span id='show_reference'>";
-               Dropdown::showFromArray('plugin_order_references_id', array(0 => Dropdown::EMPTY_VALUE), array('rand' => $rand));
+               Dropdown::showFromArray('plugin_order_references_id', array(0 => Dropdown::EMPTY_VALUE), array('rand' => $rand, 'width' => 200));
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_quantity'>";

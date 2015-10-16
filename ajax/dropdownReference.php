@@ -39,7 +39,7 @@ if (isset($_POST["itemtype"])) {
                ON (s.`plugin_order_references_id` = r.`id`)
                AND  r.`is_active` = 1
                AND  r.`is_deleted` = 0
-             WHERE r.`itemtype` = '{$_POST['itemtype']}' AND s.`suppliers_id` = '{$_POST['suppliers_id']}'
+             WHERE r.`itemtype` = '{$_POST['itemtype']}' AND s.`suppliers_id` = '{$_POST['suppliers_id']}' AND r.entities_id = '{$_POST['entities_id']}'
              ORDER BY s.`reference_code`";
    $result = $DB->query($query);
    $number = $DB->numrows($result);
@@ -68,6 +68,7 @@ if (isset($_POST["itemtype"])) {
              WHERE `plugin_order_references_id` = '{$_POST['reference_id']}'";
    $result = $DB->query($query);
    $price = $DB->result($result, 0, 'price_taxfree');
+   $price = Html::formatNumber($price);
 
    echo '<input type="text" name="price" value="' . $price . '" style="text-align:center" size="10" />';
 }

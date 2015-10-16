@@ -635,6 +635,8 @@ class PluginOrderOrder extends CommonDBTM {
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
+      $rand = mt_rand();
+
       $config = PluginOrderConfig::getConfig();
       $user   = new User();
 
@@ -835,7 +837,6 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . __("Contact") . ": </td>";
       echo "<td><span id='show_contacts_id'>";
       if ($canedit) {
-         $rand = mt_rand();
          echo "<span id='show_contacts_id$rand'>";
          // Make a select box
          $query = "SELECT c.`id`, c.`name`, c.`firstname`
@@ -1365,7 +1366,7 @@ class PluginOrderOrder extends CommonDBTM {
       global $CFG_GLPI;
 
       echo "<form action='" . $CFG_GLPI["root_doc"] . "/plugins/order/front/export.php?id=" . $ID
-         . "&display_type=" . Search::PDF_OUTPUT_LANDSCAPE . "' method=\"post\">";
+      ."&display_type=".Search::PDF_OUTPUT_LANDSCAPE."' method=\"GET\" target='_blank'>";
       echo "<div align=\"center\">";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>" . __("Order Generation", "order") . "</th></tr>";
@@ -1434,10 +1435,14 @@ class PluginOrderOrder extends CommonDBTM {
             $PluginOrderOrder_Item         = new PluginOrderOrder_Item();
             $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 
-            $odf->setImage('logo', PLUGIN_ORDER_TEMPLATE_LOGO_DIR . '/logo.jpg');
-            $odf->setVars('title_order',           __("Order number", "order"),     true, 'UTF-8');
-            $odf->setVars('num_order',             $this->fields["num_order"],      true, 'UTF-8');
-            $odf->setVars('title_invoice_address', __("Invoice address", "order"),  true, 'UTF-8');
+            try{$odf->setImage('logo', PLUGIN_ORDER_TEMPLATE_LOGO_DIR.'/logo.jpg');} catch(OdfException $e){}
+
+            $values = array();
+
+            $values['title_order']           = __("Order number", "order");
+            $values['num_order']             = $this->fields["num_order"];
+            $values['title_invoice_address'] = __("Invoice address", "order");
+            $values['comment_order']         = $this->fields["comment"];
 
             $entity = new Entity();
             $entity->getFromDB($this->fields["entities_id"]);
@@ -1449,46 +1454,49 @@ class PluginOrderOrder extends CommonDBTM {
                $name_entity = __("Root entity");
             }
 
-            $odf->setVars('entity_name', $name_entity, true, 'UTF-8');
+
+            $values['entity_name'] = $name_entity;
             if ($entity->getFromDB($this->fields["entities_id"])) {
-               $odf->setVars('entity_address',     $entity->fields["address"],      true, 'UTF-8');
-               $odf->setVars('entity_postcode',    $entity->fields["postcode"],     true, 'UTF-8');
                $town = $entity->fields["town"];
-               $odf->setVars('entity_town',        $entity->fields["town"],         true, 'UTF-8');
-               $odf->setVars('entity_country',     $entity->fields["country"],      true, 'UTF-8');
+               
+               $values['entity_address']  = $entity->fields["address"];
+               $values['entity_postcode'] = $entity->fields["postcode"];
+               $values['entity_town']     = $entity->fields["town"];
+               $values['entity_country']  = $entity->fields["country"];
             }
 
             $supplier = new Supplier();
             if ($supplier->getFromDB($this->fields["suppliers_id"])) {
-               $odf->setVars('supplier_name',      $supplier->fields["name"],       true, 'UTF-8');
-               $odf->setVars('supplier_address',   $supplier->fields["address"],    true, 'UTF-8');
-               $odf->setVars('supplier_postcode',  $supplier->fields["postcode"],   true, 'UTF-8');
-               $odf->setVars('supplier_town',      $supplier->fields["town"],       true, 'UTF-8');
-               $odf->setVars('supplier_country',   $supplier->fields["country"],    true, 'UTF-8');
+               $values['supplier_name']     = $supplier->fields["name"];
+               $values['supplier_address']  = $supplier->fields["address"];
+               $values['supplier_postcode'] = $supplier->fields["postcode"];
+               $values['supplier_town']     = $supplier->fields["town"];
+               $values['supplier_country']  = $supplier->fields["country"];
             }
 
-            $odf->setVars('title_delivery_address', __("Delivery address", "order"), true, 'UTF-8');
-
-            $tmpname = Dropdown::getDropdownName("glpi_locations", $this->fields["locations_id"], 1);
-            $comment = $tmpname["comment"];
-            $odf->setVars('comment_delivery_address', Html::clean($comment),        true, 'UTF-8');
+            $location = new Location();
+            if ($location->getFromDB($this->fields["locations_id"])) {
+               $values['title_delivery_address']   = __("Delivery address", "order");
+               $values['comment_delivery_address'] = $location->fields['comment'];
+            }
 
             if ($town) {
                $town = $town . ", ";
             }
             $order_date = Html::convDate($this->fields["order_date"]);
             $username   = Html::clean(getUserName(Session::getLoginUserID()));
-            $odf->setVars('title_date_order',   $town . __("The", "order") . " ",   true, 'UTF-8');
-            $odf->setVars('date_order',         $order_date,                        true, 'UTF-8');
-            $odf->setVars('title_sender',       __("Issuer order", "order"),        true, 'UTF-8');
-            $odf->setVars('sender',             $username,                          true, 'UTF-8');
-            $odf->setVars('title_budget',       __("Budget"),                       true, 'UTF-8');
+
+            $values['title_date_order'] = $town.__("The", "order")." ";
+            $values['date_order']       = $order_date;
+            $values['title_sender']     = __("Issuer order", "order");
+            $values['sender']           = $username;
+            $values['title_budget']     = __("Budget");
 
             $budget = new Budget();
             if ($budget->getFromDB($this->fields["budgets_id"])) {
-               $odf->setVars('budget',          $budget->fields['name'],            true, 'UTF-8');
+               $values['budget'] = $budget->fields['name'];
             } else {
-               $odf->setVars('budget',          '',                                 true, 'UTF-8');
+               $values['budget'] = '';
             }
 
             $output = '';
@@ -1497,16 +1505,17 @@ class PluginOrderOrder extends CommonDBTM {
                $output=formatUserName($contact->fields["id"], "", $contact->fields["name"],
                                       $contact->fields["firstname"]);
             }
-            $odf->setVars('title_recipient',    __("Recipient",  "order"),          true, 'UTF-8');
-            $odf->setVars('recipient',          Html::clean($output),               true, 'UTF-8');
-            $odf->setVars('nb',                 __("Quantity",  "order"),           true, 'UTF-8');
-            $odf->setVars('title_item',         __("Designation",  "order"),        true, 'UTF-8');
-            $odf->setVars('title_ref',          __("Reference"),                    true, 'UTF-8');
-            $odf->setVars('HTPrice_item',       __("Unit price",  "order"),         true, 'UTF-8');
-            $odf->setVars('TVA_item',           __("VAT",  "order"),                true, 'UTF-8');
-            $odf->setVars('title_discount',     __("Discount rate",  "order"),      true, 'UTF-8');
-            $odf->setVars('HTPriceTotal_item',  __("Sum tax free",  "order"),       true, 'UTF-8');
-            $odf->setVars('ATIPriceTotal_item', __("Price ATI",  "order"),          true, 'UTF-8');
+
+            $values['title_recipient']    = __("Recipient", "order");
+            $values['recipient']          = Html::clean($output);
+            $values['nb']                 = __("Quantity", "order");
+            $values['title_item']         = __("Designation", "order");
+            $values['title_ref']          = __("Reference");
+            $values['HTPrice_item']       = __("Unit price", "order");
+            $values['TVA_item']           = __("VAT", "order");
+            $values['title_discount']     = __("Discount rate", "order");
+            $values['HTPriceTotal_item']  = __("Sum tax free", "order");
+            $values['ATIPriceTotal_item'] = __("Price ATI", "order");
 
             $listeArticles = array();
 
@@ -1533,14 +1542,14 @@ class PluginOrderOrder extends CommonDBTM {
             }
 
             $article = $odf->setSegment('articles');
-            foreach($listeArticles AS $element) {
+            foreach ($listeArticles AS $element) {
                $article->nbA($element['quantity']);
                $article->titleArticle($element['ref']);
                $article->refArticle($element['refnumber']);
                $article->TVAArticle($element['taxe']);
                $article->HTPriceArticle(Html::clean(Html::formatNumber($element['price_taxfree'])));
                if ($element['discount'] != 0) {
-                  $article->discount(Html::clean(Html::formatNumber($element['discount'])) . " %");
+                  $article->discount(Html::clean(Html::formatNumber($element['discount']))." %");
                } else {
                   $article->discount("");
                }
@@ -1560,40 +1569,42 @@ class PluginOrderOrder extends CommonDBTM {
                                                                    Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
                                                                    $this->fields["plugin_order_ordertaxes_id"]));
 
-            $total_HT  = $prices["priceHT"]  + $this->fields["port_price"];
+            $total_HT  = $prices["priceHT"] + $this->fields["port_price"];
             $total_TVA = $prices["priceTVA"] + $postagewithTVA - $this->fields["port_price"];
             $total_TTC = $prices["priceTTC"] + $postagewithTVA;
 
-            $odf->setVars('title_totalht',__("Price tax free", "order"),true,'UTF-8');
-            $odf->setVars('totalht',      Html::clean(Html::formatNumber($prices['priceHT'])), true, 'UTF-8');
-
-            $odf->setVars('title_port',      __("Price tax free with postage", "order"),true,'UTF-8');
-            $odf->setVars('totalht_port_price', Html::clean(Html::formatNumber($total_HT)), true, 'UTF-8');
-
-            $odf->setVars('title_price_port', __("Postage", "order"), true, 'UTF-8');
-            $odf->setVars('price_port_tva', " ("
-               . Html::clean(Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $this->fields["plugin_order_ordertaxes_id"]))
-               . "%)", true, 'UTF-8');
-            $odf->setVars('port_price', Html::clean(Html::formatNumber($postagewithTVA)), true, 'UTF-8');
-
-            $odf->setVars('title_tva', __("VAT",  "order"), true, 'UTF-8');
-            $odf->setVars('totaltva', Html::clean(Html::formatNumber($total_TVA)), true, 'UTF-8');
-
-            $odf->setVars('title_totalttc', __("Price ATI",  "order"), true, 'UTF-8');
-            $odf->setVars('totalttc', Html::clean(Html::formatNumber($total_TTC)), true, 'UTF-8');
-
-            $odf->setVars('title_money', __("€",  "order"), true, 'UTF-8');
-            $odf->setVars('title_sign', __("Signature of issuing order", "order"), true, 'UTF-8');
-
             if ($signature) {
-               $odf->setImage('sign', PLUGIN_ORDER_SIGNATURE_DIR.$signature);
+               try{$odf->setImage('sign', PLUGIN_ORDER_SIGNATURE_DIR.$signature);} catch(OdfException $e){}
             } else {
-               $odf->setImage('sign', '../pics/nothing.gif');
+               try{$odf->setImage('sign', '../pics/nothing.gif');} catch(OdfException $e){}
             }
 
-            $odf->setVars('title_conditions',__("Payment conditions", "order"),true,'UTF-8');
             $name = Dropdown::getDropdownName("glpi_plugin_order_orderpayments", $this->fields["plugin_order_orderpayments_id"]);
-            $odf->setVars('payment_conditions', $name, true,'UTF-8');
+
+            $values['title_totalht']      = __("Price tax free", "order");
+            $values['totalht']            = Html::clean(Html::formatNumber($prices['priceHT']));
+            $values['title_port']         = __("Price tax free with postage", "order");
+            $values['totalht_port_price'] = Html::clean(Html::formatNumber($total_HT));
+            $values['title_price_port']   = __("Postage", "order");
+            $values['price_port_tva']     = " (".Html::clean(Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $this->fields["plugin_order_ordertaxes_id"]))."%)";
+            $values['port_price']         = Html::clean(Html::formatNumber($postagewithTVA));
+            $values['title_tva']          = __("VAT", "order");
+            $values['totaltva']           = Html::clean(Html::formatNumber($total_TVA));
+            $values['title_totalttc']     = __("Price ATI", "order");
+            $values['totalttc']           = Html::clean(Html::formatNumber($total_TTC));
+            $values['title_money']        = __("€", "order");
+            $values['title_sign']         = __("Signature of issuing order", "order");
+            $values['title_conditions']   = __("Payment conditions", "order");
+            $values['payment_conditions'] = $name;
+
+            // Set variables in odt template
+            foreach ($values as $field => $val) {
+               try {
+                  $odf->setVars($field, $val, true, 'UTF-8');
+               } catch (OdfException $e) {
+                  
+               }
+            }
          }
 
          $message = "_";
