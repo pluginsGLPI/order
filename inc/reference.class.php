@@ -429,8 +429,8 @@ class PluginOrderReference extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='3'>".__("Comments") . "</td>";
-      echo "<td align='center' rowspan='3'>";
+      echo "<td rowspan='2'>".__("Comments") . "</td>";
+      echo "<td rowspan='2'>";
       echo "<textarea cols='50' rows='3' name='comment'>" . $this->fields["comment"] .
             "</textarea>";
       echo "</td></tr>";
@@ -443,7 +443,12 @@ class PluginOrderReference extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . __("Manufacturer") . "</td>";
       echo "<td>";
       Manufacturer::Dropdown(array('value' => $this->fields['manufacturers_id']));
-      echo "</td></tr>";
+      echo "</td>";
+      echo "<td>" . __("Manufacturer reference", "order") . "</td>";
+      echo "<td>";
+      echo Html::autocompletionTextField($this, 'manufacturer_reference');
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
 
@@ -1061,6 +1066,7 @@ class PluginOrderReference extends CommonDBTM {
                `is_recursive` tinyint(1) NOT NULL default '0',
                `name` varchar(255) collate utf8_unicode_ci default NULL,
                `manufacturers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)',
+               `manufacturers_reference` varchar(255) collate utf8_unicode_ci NOT NULL,
                `types_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtypes tables (id)',
                `models_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemmodels tables (id)',
                `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file',
@@ -1160,6 +1166,12 @@ class PluginOrderReference extends CommonDBTM {
                $DB->query("INSERT INTO glpi_displaypreferences
                            VALUES (NULL,'PluginOrderReference','$num','$rank','0');");
             }
+         }
+         
+         //2.0.1
+         if (!FieldExists('glpi_plugin_order_references', 'manufacturer_reference')) {
+            $migration->addField('glpi_plugin_order_references', "manufacturer_reference", "string");
+            $migration->migrationOneTable('glpi_plugin_order_references');
          }
       }
    }

@@ -35,11 +35,13 @@ Session::checkCentralAccess();
 if (isset($_POST["itemtype"])) {
    $query = "SELECT s.`plugin_order_references_id` as id, s.`price_taxfree`, s.`reference_code`, r.`name`
              FROM `glpi_plugin_order_references_suppliers` s
-             INNER JOIN `glpi_plugin_order_references` r 
-               ON (s.`plugin_order_references_id` = r.`id`)
+             LEFT JOIN `glpi_plugin_order_references` r 
+             ON (s.`plugin_order_references_id` = r.`id`                
                AND  r.`is_active` = 1
-               AND  r.`is_deleted` = 0
-             WHERE r.`itemtype` = '{$_POST['itemtype']}' AND s.`suppliers_id` = '{$_POST['suppliers_id']}'
+               AND  r.`is_deleted` = 0)
+             WHERE s.`suppliers_id` = '{$_POST['suppliers_id']}'
+             AND r.`itemtype` = '{$_POST['itemtype']}'
+             AND r.entities_id = '{$_POST['entities_id']}'
              ORDER BY s.`reference_code`";
    $result = $DB->query($query);
    $number = $DB->numrows($result);
@@ -47,8 +49,7 @@ if (isset($_POST["itemtype"])) {
    $values = array(0 => Dropdown::EMPTY_VALUE);
    if ($number) {
       while ($data = $DB->fetch_assoc($result)) {
-         $values[$data['id']] = $data['name'].
-                                (!empty($data['reference_code'])?" (".$data['reference_code'].")":"");
+         $values[$data['id']] = $data['name']." - ".$data['reference_code'];
       }
    }
    Dropdown::showFromArray($_POST['fieldname'], $values, array('rand' => $_POST['rand']));
