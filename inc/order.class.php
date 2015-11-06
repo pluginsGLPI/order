@@ -35,6 +35,7 @@ class PluginOrderOrder extends CommonDBTM {
    public static $rightname         = 'plugin_order_order';
    public $is_template              = true;
    public $dohistory                = true;
+   protected $usenotepadrights      = true;
    protected $usenotepad            = true;
    public static $forward_entity_to = array(
       "PluginOrderOrder_Item",
