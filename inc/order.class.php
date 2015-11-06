@@ -35,7 +35,7 @@ class PluginOrderOrder extends CommonDBTM {
    public static $rightname         = 'plugin_order_order';
    public $is_template              = true;
    public $dohistory                = true;
-   protected $usenotepadrights      = true;
+   protected $usenotepad            = true;
    public static $forward_entity_to = array(
       "PluginOrderOrder_Item",
       "PluginOrderOrder_Supplier",
@@ -51,14 +51,14 @@ class PluginOrderOrder extends CommonDBTM {
    const ORDER_IS_UNDER_BUDGET     = 3;
 
    // additionnals rights
-   const RIGHT_GENERATEODT                      = 32;
-   const RIGHT_DELIVERY                         = 64;
    const RIGHT_OPENTICKET                       = 128;
    const RIGHT_VALIDATION                       = 256;
    const RIGHT_UNDO_VALIDATION                  = 512;
    const RIGHT_CANCEL                           = 1024;
    const RIGHT_GENERATEODT_WITHOUT_VALIDATION   = 2048;
-
+   const RIGHT_GENERATEODT                      = 4096;
+   const RIGHT_DELIVERY                         = 8192;
+    
    public static function getTypeName($nb = 0) {
       return ($nb > 1)
          ? __("Orders", "order")
