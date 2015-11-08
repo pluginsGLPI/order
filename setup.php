@@ -83,7 +83,7 @@ function plugin_init_order() {
          'Profile'          => array('PluginOrderProfile', 'purgeProfiles'),
          'DocumentCategory' => array('PluginOrderDocumentCategory', 'purgeItem'),
       );
-      
+
       $PLUGIN_HOOKS['pre_item_update']['order'] = array(
          'Infocom'  => array('PluginOrderOrder_Item', 'updateItem'),
          'Contract' => array('PluginOrderOrder_Item', 'updateItem'),
@@ -145,7 +145,7 @@ function plugin_init_order() {
 /* get the name and the version of the plugin - needed- */
 function plugin_version_order() {
    return array ('name'           => __("Orders management", "order"),
-                 'version'        => '0.90+1.0',
+                 'version'        => '0.85+1.1',
                  'author'         => 'The plugin order team',
                  'homepage'       => 'https://github.com/pluginsGLPI/order',
                  'minGlpiVersion' => '0.85',
@@ -164,4 +164,3 @@ function plugin_order_check_prerequisites(){
 function plugin_order_check_config() {
    return true;
 }
-
