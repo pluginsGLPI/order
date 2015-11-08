@@ -35,8 +35,8 @@ Session::checkCentralAccess();
 if (isset($_POST["itemtype"])) {
    $query = "SELECT s.`plugin_order_references_id` as id, s.`price_taxfree`, s.`reference_code`, r.`name`
              FROM `glpi_plugin_order_references_suppliers` s
-             LEFT JOIN `glpi_plugin_order_references` r 
-             ON (s.`plugin_order_references_id` = r.`id`                
+             LEFT JOIN `glpi_plugin_order_references` r
+             ON (s.`plugin_order_references_id` = r.`id`
                AND  r.`is_active` = 1
                AND  r.`is_deleted` = 0)
              WHERE s.`suppliers_id` = '{$_POST['suppliers_id']}'
@@ -69,6 +69,6 @@ if (isset($_POST["itemtype"])) {
              WHERE `plugin_order_references_id` = '{$_POST['reference_id']}'";
    $result = $DB->query($query);
    $price = $DB->result($result, 0, 'price_taxfree');
-
+   $price = Html::formatNumber($price);
    echo '<input type="text" name="price" value="' . $price . '" style="text-align:center" size="10" />';
 }
