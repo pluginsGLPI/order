@@ -1453,6 +1453,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
    public function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       if (in_array(get_class($item), PluginOrderOrder_Item::getClasses(true))) {
+
+         $orderlink = new PluginOrderLink();
+         if (!$orderlink->isItemLinkedToOrder(get_class($item), $item->getID())) {
+            return '';
+         }
+
          if ($item->getField('id') && !$withtemplate) {
 
             if ($_SESSION['glpishow_count_on_tabs']) {
