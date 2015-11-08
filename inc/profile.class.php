@@ -52,10 +52,14 @@ class PluginOrderProfile extends CommonDBTM {
 
       $profileRight = new ProfileRight();
       foreach ($rights as $right => $value) {
-         if (countElementsInTable('glpi_profilerights', "`profiles_id`='$profiles_id' AND `name`='$right'") && $drop_existing) {
+         if (countElementsInTable('glpi_profilerights',
+                                  "`profiles_id`='$profiles_id'
+                                     AND `name`='$right'") && $drop_existing) {
             $profileRight->deleteByCriteria(array('profiles_id' => $profiles_id, 'name' => $right));
          }
-         if (!countElementsInTable('glpi_profilerights', "`profiles_id`='$profiles_id' AND `name`='$right'")) {
+         if (!countElementsInTable('glpi_profilerights',
+                                   "`profiles_id`='$profiles_id'
+                                      AND `name`='$right'")) {
             $myright['profiles_id'] = $profiles_id;
             $myright['name']        = $right;
             $myright['rights']      = $value;
@@ -107,18 +111,17 @@ class PluginOrderProfile extends CommonDBTM {
    public static function install(Migration $migration) {
       global $DB;
 
-      if (TableExists("glpi_plugin_order_profiles") 
-         && !FieldExists("glpi_plugin_order_profiles", "plugin_order_generate_order_without_validation")) {
-         $DB->query("ALTER TABLE `glpi_plugin_order_profiles` ADD `plugin_order_generate_order_without_validation` char(1) default NULL;");
+      if (TableExists("glpi_plugin_order_profiles")
+         && !FieldExists("glpi_plugin_order_profiles",
+                         "plugin_order_generate_order_without_validation")) {
+         $DB->query("ALTER TABLE `glpi_plugin_order_profiles`
+                     ADD `plugin_order_generate_order_without_validation` char(1) default NULL;");
       }
-      
+
       self::initProfile();
       self::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
-      
+
       $migration->dropTable('glpi_plugin_order_profiles');
-      //if (TableExists("glpi_plugin_order_profiles")){
-      //   $DB->query("DROP TABLE `glpi_plugin_order_profiles`;");
-      //}
    }
 
    public static function uninstall() {
@@ -194,7 +197,8 @@ class PluginOrderProfile extends CommonDBTM {
          return true;
       }
 
-      foreach ($DB->request('glpi_plugin_order_profiles', "`profiles_id`='$profiles_id'") as $profile_data) {
+      foreach ($DB->request('glpi_plugin_order_profiles',
+                            "`profiles_id`='$profiles_id'") as $profile_data) {
 
          $matching       = array('order'              => 'plugin_order_order',
             'bill'               => 'plugin_order_bill',
@@ -223,7 +227,7 @@ class PluginOrderProfile extends CommonDBTM {
                         $right = 1;
                      }
                      break;
-               
+
                }
                $query = "UPDATE `glpi_profilerights`
                          SET `rights`='".$right."'
