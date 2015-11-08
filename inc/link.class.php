@@ -663,12 +663,14 @@ class PluginOrderLink extends CommonDBChild {
             if ($itemtype == 'ConsumableItem') {
                $item = new Consumable();
                $type = 'Consumable';
+               $pkey = 'consumableitems_id';
             } elseif ($itemtype == 'CartridgeItem') {
                $item = new Cartridge();
                $type = 'Cartridge';
+               $pkey = 'cartridgeitems_id';
             }
             $detail->getFromDB($detailID);
-            $input["tID"]     = $items_id;
+            $input[$pkey]     = $items_id;
             $input["date_in"] = $detail->fields["delivery_date"];
             $newID            = $item->add($input);
 
