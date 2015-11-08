@@ -982,7 +982,7 @@ class PluginOrderReference extends CommonDBTM {
     **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $UNINSTALL_TYPES;
-   
+
       switch ($ma->getAction()) {
          case 'transfert':
             Entity::dropdown();
@@ -1021,12 +1021,12 @@ class PluginOrderReference extends CommonDBTM {
     **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids) {
       global $CFG_GLPI;
-   
+
       switch ($ma->getAction()) {
          case "transfert":
             $input = $ma->getInput();
             $entities_id = $input['entities_id'];
-   
+
             foreach ($ids as $id) {
                if ($item->getFromDB($id)) {
                   $item->update(array(
@@ -1066,7 +1066,7 @@ class PluginOrderReference extends CommonDBTM {
                `is_recursive` tinyint(1) NOT NULL default '0',
                `name` varchar(255) collate utf8_unicode_ci default NULL,
                `manufacturers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)',
-               `manufacturers_reference` varchar(255) collate utf8_unicode_ci NOT NULL,
+               `manufacturers_reference` varchar(255) collate utf8_unicode_ci NOT NULL DEFAULT '',
                `types_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtypes tables (id)',
                `models_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemmodels tables (id)',
                `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file',
@@ -1167,7 +1167,7 @@ class PluginOrderReference extends CommonDBTM {
                            VALUES (NULL,'PluginOrderReference','$num','$rank','0');");
             }
          }
-         
+
          //2.0.1
          if (!FieldExists('glpi_plugin_order_references', 'manufacturer_reference')) {
             $migration->addField('glpi_plugin_order_references', "manufacturer_reference", "string");
