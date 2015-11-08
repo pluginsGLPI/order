@@ -44,7 +44,11 @@ if (isset($_POST["add"])) {
    if (isset ($_GET["popup"]) && $_GET["popup"] == 1) {
       $url .= "&popup=1";
    }
-   Html::redirect($url);
+   if ($_SESSION['glpibackcreated']) {
+      Html::redirect($reference->getFormURL()."?id=".$newID);
+   } else {
+      Html::redirect($url);
+   }
 
 /* delete order */
 } elseif (isset($_POST["delete"])) {
