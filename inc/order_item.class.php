@@ -48,7 +48,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
    //TODO better right and entity menber (ex Computer_Item)
 
- 
+
    public function canUpdateItem() {
       return true;
    }
@@ -156,7 +156,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                         }
 
                         foreach ($unset_fields as $field) {
-                           if (isset ($item->input[$field])) {
+                           if (isset ($item->input[$field])
+                              && $item->input[$field] != $value[$field]) {
                               $field_set           = true;
                               $item->input[$field] = $value[$field];
                            }
