@@ -478,9 +478,8 @@ class PluginOrderLink extends CommonDBChild {
       echo "<span id='show_generationActions$rand'>&nbsp;</span>";
    }
 
-   public function itemAlreadyLinkedToAnOrder($itemtype, $items_id, $plugin_order_orders_i
-      ,
-                                       $detailID = 0) {
+   public function itemAlreadyLinkedToAnOrder($itemtype, $items_id, $plugin_order_orders_id,
+                                              $detailID = 0) {
       global $DB;
       if (!in_array($itemtype, self::getTypesThanCannotBeGenerared())) {
          $query = "SELECT COUNT(*) AS cpt
