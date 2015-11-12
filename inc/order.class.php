@@ -59,7 +59,7 @@ class PluginOrderOrder extends CommonDBTM {
    const RIGHT_GENERATEODT_WITHOUT_VALIDATION   = 2048;
    const RIGHT_GENERATEODT                      = 4096;
    const RIGHT_DELIVERY                         = 8192;
-    
+
    public static function getTypeName($nb = 0) {
       return ($nb > 1)
          ? __("Orders", "order")
@@ -81,11 +81,15 @@ class PluginOrderOrder extends CommonDBTM {
    public static function canValidate() {
       return Session::haveRight("plugin_order_order", self::RIGHT_VALIDATION);
    }
-   
+
    static function canGenerateWithoutValidation() {
       return Session::haveRight("plugin_order_order", self::RIGHT_GENERATEODT_WITHOUT_VALIDATION);
    }
-   
+
+   public static function canDeliver() {
+      return Session::haveRight("plugin_order_order", self::RIGHT_DELIVERY);
+   }
+
    public function isDraft()
    {
       $config = PluginOrderConfig::getConfig();
@@ -221,7 +225,7 @@ class PluginOrderOrder extends CommonDBTM {
     * @see commonDBTM::getRights()
    **/
    function getRights($interface='central') {
- 
+
       if ($interface == 'central') {
          $values = parent::getRights();
          $values[self::RIGHT_GENERATEODT]     = __("Order Generation", "order");
@@ -518,7 +522,7 @@ class PluginOrderOrder extends CommonDBTM {
                || Session::haveRight("plugin_order_order", self::RIGHT_UNDO_VALIDATION)) {
                $ong[1] = __("Validation", "order");
             }
-            if ($config->canGenerateOrderPDF() 
+            if ($config->canGenerateOrderPDF()
                && ($item->getState() > PluginOrderOrderState::DRAFT || $this->canGenerateWithoutValidation())) {
             // generation
                $ong[2] = __("Purchase order", "order");
@@ -1460,7 +1464,7 @@ class PluginOrderOrder extends CommonDBTM {
             $values['entity_name'] = $name_entity;
             if ($entity->getFromDB($this->fields["entities_id"])) {
                $town = $entity->fields["town"];
-               
+
                $values['entity_address']  = $entity->fields["address"];
                $values['entity_postcode'] = $entity->fields["postcode"];
                $values['entity_town']     = $entity->fields["town"];
@@ -1604,7 +1608,7 @@ class PluginOrderOrder extends CommonDBTM {
                try {
                   $odf->setVars($field, $val, true, 'UTF-8');
                } catch (OdfException $e) {
-                  
+
                }
             }
          }
@@ -1933,13 +1937,13 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
    public static function addDocumentCategory(Document $document) {
-      
+
       $config   = PluginOrderConfig::getConfig();
-      
+
       if (isset($document->input['itemtype'])
             && $document->input['itemtype'] == __CLASS__
             && !$document->input['documentcategories_id']) {
-        
+
          $category = $config->getDefaultDocumentCategory();
          if ($category) {
             $document->update(array(
@@ -1948,13 +1952,13 @@ class PluginOrderOrder extends CommonDBTM {
             ));
          }
       }
-      
+
       // Fomrat document name
       if (isset($document->input['itemtype'])
          && $document->input['itemtype'] == __CLASS__
-         && $document->input['documentcategories_id'] 
+         && $document->input['documentcategories_id']
          && $config->canRenameDocuments()) {
-         
+
          // Get document category
          $documentCategory = new PluginOrderDocumentCategory();
          if (!$documentCategory->getFromDBByQuery(" WHERE `documentcategories_id` = '".$document->input['documentcategories_id']."'")) {
@@ -1975,7 +1979,7 @@ class PluginOrderOrder extends CommonDBTM {
          }
       }
    }
-      
+
    /**
     * Get the standard massive actions which are forbidden
     *
@@ -1997,7 +2001,7 @@ class PluginOrderOrder extends CommonDBTM {
     **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       global $UNINSTALL_TYPES;
-   
+
       switch ($ma->getAction()) {
          case 'transfert':
             Entity::dropdown();
@@ -2030,12 +2034,12 @@ class PluginOrderOrder extends CommonDBTM {
     **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids) {
       global $CFG_GLPI;
-   
+
       switch ($ma->getAction()) {
          case "transfert":
             $input = $ma->getInput();
             $entities_id = $input['entities_id'];
-   
+
             foreach ($ids as $id) {
                if ($item->getFromDB($id)) {
                   $item->update(array(

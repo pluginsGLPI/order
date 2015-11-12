@@ -355,7 +355,7 @@ class PluginOrderReception extends CommonDBChild {
                                                        PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED);
                }
 
-               if ($canedit && $status) {
+               if ($order_order->canDeliver() && $status) {
                   echo "<td width='15' align='left'>";
                   $sel = "";
                   if (isset ($_GET["select"]) && $_GET["select"] == "all") {
@@ -398,7 +398,7 @@ class PluginOrderReception extends CommonDBChild {
 
             }
             echo "</table>";
-            if ($canedit && $this->checkItemStatus($orders_id,
+            if ($order_order->canDeliver() && $this->checkItemStatus($orders_id,
                                                    $references_id,
                                                    PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED)) {
                               Html::openArrowMassives("order_reception_form$rand", true);
