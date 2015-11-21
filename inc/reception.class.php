@@ -497,7 +497,7 @@ class PluginOrderReception extends CommonDBChild {
             $options = array(
                "itemtype"                   => $DB->result($result, $i, "itemtype"),
                "items_id"                   => $DB->result($result, $i, "id"),
-               "entities_id"                => $DB->result($result, $i, "entities_id"),
+               "entities_id"                => $_SESSION['glpiactive_entity'],
                "plugin_order_orders_id"     => $params['plugin_order_orders_id'],
                "plugin_order_references_id" => $params["plugin_order_references_id"],
             );
@@ -682,14 +682,13 @@ class PluginOrderReception extends CommonDBChild {
             "id"                         => array($item),
          );
 
-/*
+
          if($config->canGenerateTicket()) {
             $options_gen["generate_ticket"] = array(
                   "entities_id"        => $options['entities_id'],
                   "tickettemplates_id" => $config->fields['tickettemplates_id_delivery'],
                );
          }
-*/
 
          $link = new PluginOrderLink();
          $link->generateNewItem($options_gen);

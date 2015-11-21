@@ -183,14 +183,15 @@ class PluginOrderConfig extends CommonDBTM {
       Dropdown::showYesNo("hide_inactive_budgets", $this->fields["hide_inactive_budgets"]);
       echo "</td>";
       echo "</tr>";
-      
+      /*
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td>" . __("Rename documents added in order", 'order') . "</td>";
       echo "<td>";
       Dropdown::showYesNo("rename_documents", $this->fields["rename_documents"]);
       echo "</td>";
       echo "</tr>";
-
+      */
+      
       // Automatic actions
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<th colspan='2'>" . __("Automatic actions when delivery", "order") . "</th>";
@@ -477,7 +478,7 @@ class PluginOrderConfig extends CommonDBTM {
    {
       return $this->fields['rename_documents'];
    }
-   
+
    //----------------- Install & uninstall -------------------//
    public static function install(Migration $migration) {
       global $DB;

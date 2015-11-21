@@ -895,7 +895,6 @@ class PluginOrderLink extends CommonDBChild {
          $newID = $item->add($input);
 
          // Attach new ticket if option is on
-         /*
          if (isset($params['generate_ticket'])) {
             $tkt = new TicketTemplate();
             if ($tkt->getFromDB($params['generate_ticket']['tickettemplates_id'])) {
@@ -920,7 +919,6 @@ class PluginOrderLink extends CommonDBChild {
                $ticketID = $ticket->add($input);
             }
          }
-         */
 
          //-------------- End template management ---------------------------------//
          $this->createLinkWithItem($values["id"], $newID, $values["itemtype"],
@@ -981,16 +979,45 @@ class PluginOrderLink extends CommonDBChild {
 
       if ($config->canCopyDocuments() && in_array($itemtype, $CFG_GLPI["document_types"])) {
          $document = new Document();
+         $docitem  = new Document_Item();
+
+         $item = new $itemtype();
+         $item->getFromDB($items_id);
+         $is_recursive = 0;
 
          foreach (getAllDatasFromTable('glpi_documents_items',
-                                       "`itemtype`='PluginOrderOrder' AND `items_id`='$orders_id'") as $doc) {
+                                       "`itemtype`='PluginOrderOrder'
+                                          AND `items_id`='$orders_id'") as $doc) {
+
+            //Create a new document
             $document->getFromDB($doc['documents_id']);
-            $newdocument = clone $document;
-            $newdocument->fields['entities_id'] = $entity;
-            $newdocument->fields['items_id']    = $items_id;
-            $newdocument->fields['itemtype']    = $itemtype;
-            unset($newdocument->fields['id']);
-            $document->add($newdocument->fields);
+            if (($document->getEntityID() != $entity && !$document->fields['is_recursive'])
+               || !in_array($entity, getSonsOf('glpi_entities', $document->getEntityID()))){
+               $found_docs = getAllDatasFromTable('glpi_documents', "`entities_id`='$entity'
+                                                 AND `sha1sum`='".$document->fields['sha1sum']."'");
+               if (empty($found_docs)) {
+                  $tmpdoc                = $document->fields;
+                  $tmpdoc['entities_id'] = $entity;
+                  unset($tmpdoc['id']);
+                  $documents_id = $document->add($tmpdoc);
+                  $is_recursive = $document->fields['is_recursive'];
+               } else {
+                  $found_doc = array_pop($found_docs);
+                  $documents_id = $found_doc['id'];
+                  $is_recursive = $found_doc['is_recursive'];
+               }
+            } else {
+               $documents_id = $document->getID();
+               $is_recursive = $document->fields['is_recursive'];
+
+            }
+            //Link the document to the newly generated item
+            $fields['documents_id'] = $documents_id;
+            $fields['entities_id']  = $entity;
+            $fields['items_id']     = $items_id;
+            $fields['itemtype']     = $itemtype;
+            $fields['is_recursive'] = $is_recursive;
+            $newID = $docitem->add($fields);
          }
       }
    }
