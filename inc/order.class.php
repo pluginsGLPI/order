@@ -60,7 +60,7 @@ class PluginOrderOrder extends CommonDBTM {
    const RIGHT_GENERATEODT                      = 4096;
    const RIGHT_DELIVERY                         = 8192;
    const ALLRIGHTS                              = 16383;
-   
+
    public static function getTypeName($nb = 0) {
       return ($nb > 1)
          ? __("Orders", "order")
