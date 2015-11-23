@@ -33,6 +33,13 @@ Session::checkCentralAccess();
 
 // Make a select box for references
 if (isset($_POST["itemtype"])) {
+   if ($_POST['is_recursive'] == 1) {
+      $sons = getSonsOf('glpi_entities', $_POST['entities_id']);
+   } else {
+      $sons = $_POST['entities_id'];
+   }
+
+   $entity_restrict = "AND `r`.`entities_id` IN (".implode(',', $sons).")";
    $query = "SELECT s.`plugin_order_references_id` as id, s.`price_taxfree`, s.`reference_code`, r.`name`
              FROM `glpi_plugin_order_references_suppliers` s
              LEFT JOIN `glpi_plugin_order_references` r
@@ -41,7 +48,7 @@ if (isset($_POST["itemtype"])) {
                AND  r.`is_deleted` = 0)
              WHERE s.`suppliers_id` = '{$_POST['suppliers_id']}'
              AND r.`itemtype` = '{$_POST['itemtype']}'
-             AND r.entities_id = '{$_POST['entities_id']}'
+             $entity_restrict
              ORDER BY s.`reference_code`";
    $result = $DB->query($query);
    $number = $DB->numrows($result);

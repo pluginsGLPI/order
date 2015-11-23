@@ -289,6 +289,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   'fieldname'    => 'plugin_order_references_id',
                   'suppliers_id' => $order->fields["suppliers_id"],
                   'entities_id'  => $order->fields["entities_id"],
+                  'is_recursive' => $order->fields["is_recursive"],
                   'rand'         => $rand,
                );
                Ajax::updateItemOnSelectEvent('dropdown_itemtype' . $rand,
