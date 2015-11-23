@@ -38,7 +38,7 @@ class PluginOrderProfile extends CommonDBTM {
 
    public static function createFirstAccess($ID) {
       self::addDefaultProfileInfos($ID, array(
-         'plugin_order_order'                             => 4095, // All rights : CREATE + READ + ...
+         'plugin_order_order'                             => PluginOrderOrder::ALLRIGHTS, // All rights : CREATE + READ + ...
          'plugin_order_bill'                              => 127,
          'plugin_order_reference'                         => 127), true
       );
@@ -180,7 +180,7 @@ class PluginOrderProfile extends CommonDBTM {
          case 'r' :
             return READ;
          case 'w':
-            return ALLSTANDARDRIGHT + READNOTE + UPDATENOTE;
+            return PluginOrderOrder::ALLRIGHTS;
          case '0':
          case '1':
             return $old_right;
