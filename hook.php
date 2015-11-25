@@ -298,7 +298,7 @@ function plugin_item_purge_order($item) {
    global $DB;
    $query = "UPDATE `glpi_plugin_order_orders_items`
              SET `items_id`='0'
-             WHERE `itemtype`='".$item->getType()."' 
+             WHERE `itemtype`='".$item->getType()."'
                AND `items_id`='".$item->getField('id')."'";
    $DB->query($query);
 

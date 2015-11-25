@@ -401,7 +401,7 @@ class PluginOrderReception extends CommonDBChild {
             if ($order_order->canDeliver() && $this->checkItemStatus($orders_id,
                                                    $references_id,
                                                    PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED)) {
-                              Html::openArrowMassives("order_reception_form$rand", true);
+               Html::openArrowMassives("order_reception_form$rand", true);
                echo "<input type='hidden' name='plugin_order_orders_id' value='$orders_id'>";
                $this->dropdownReceptionActions($typeRef, $references_id,
                                                $orders_id);

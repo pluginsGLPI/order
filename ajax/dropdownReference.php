@@ -36,7 +36,7 @@ if (isset($_POST["itemtype"])) {
    if ($_POST['is_recursive'] == 1) {
       $sons = getSonsOf('glpi_entities', $_POST['entities_id']);
    } else {
-      $sons = $_POST['entities_id'];
+      $sons = array($_POST['entities_id']);
    }
 
    $entity_restrict = "AND `r`.`entities_id` IN (".implode(',', $sons).")";

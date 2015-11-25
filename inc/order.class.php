@@ -131,7 +131,7 @@ class PluginOrderOrder extends CommonDBTM {
    public function cleanDBonPurge() {
       foreach (self::$forward_entity_to as $itemtype) {
          $temp = new $itemtype();
-         $temp->deleteByCriteria(array('plugin_order_orders_id' => $this->fields['id']));
+         $temp->deleteByCriteria(array('plugin_order_orders_id' => $this->getID()));
       }
    }
 
@@ -1279,12 +1279,8 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
    public function deleteAllLinkWithItem($orders_id) {
-      $detail  = new PluginOrderOrder_Item;
-      $devices = getAllDatasFromTable("glpi_plugin_order_orders_items",
-                                      "`plugin_order_orders_id`='$orders_id'");
-      foreach ($devices as $deviceID => $device) {
-         $detail->delete(array("id" => $deviceID));
-      }
+      $detail  = new PluginOrderOrder_Item();
+      $detail->deleteByCriteria(array('plugin_order_orders_id' => $orders_id));
    }
 
    public function checkIfDetailExists($orders_id, $only_delivered = false) {

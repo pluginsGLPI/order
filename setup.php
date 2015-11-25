@@ -116,9 +116,12 @@ function plugin_init_order() {
       );
 
       if (PluginOrderOrder::canView()) {
-         Plugin::registerClass('PluginOrderDocumentCategory', array('addtabon' => array('DocumentCategory')));
-         Plugin::registerClass('PluginOrderOrder_Supplier', array('addtabon' => array('Supplier')));
-         Plugin::registerClass('PluginOrderPreference', array('addtabon' => array('Preference')));
+         Plugin::registerClass('PluginOrderDocumentCategory',
+                               array('addtabon' => array('DocumentCategory')));
+         Plugin::registerClass('PluginOrderOrder_Supplier',
+                               array('addtabon' => array('Supplier')));
+         Plugin::registerClass('PluginOrderPreference',
+                               array('addtabon' => array('Preference')));
       }
 
       /*if glpi is loaded */
