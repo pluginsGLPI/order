@@ -1162,7 +1162,7 @@ class PluginOrderReference extends CommonDBTM {
          foreach ($prefs as $num => $rank) {
             if (!countElementsInTable("glpi_displaypreferences",
                                        "`itemtype`='PluginOrderReference' AND `num`='$num'
-                                          AND `rank`='$rank' AND `users_id`='0'")) {
+                                          AND `users_id`='0'")) {
                $DB->query("INSERT INTO glpi_displaypreferences
                            VALUES (NULL,'PluginOrderReference','$num','$rank','0');");
             }
