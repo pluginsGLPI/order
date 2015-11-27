@@ -32,10 +32,12 @@ if (!defined('GLPI_ROOT')){
 }
 
 class PluginOrderReception extends CommonDBChild {
-   public static $rightname = 'plugin_order_order';
-   public $dohistory        = true;
-   public static $itemtype         = 'PluginOrderOrder';
-   public static $items_id         = 'plugin_order_orders_id';
+   
+   public static $rightname          = 'plugin_order_order';
+   public $dohistory                 = true;
+   public static $itemtype           = 'PluginOrderOrder';
+   public static $items_id           = 'plugin_order_orders_id';
+   public static $checkParentRights  = self::DONT_CHECK_ITEM_RIGHTS;
 
    public static function getTable() {
       return "glpi_plugin_order_orders_items";

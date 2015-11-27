@@ -49,7 +49,31 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    //TODO better right and entity menber (ex Computer_Item)
 
 
+   static function canCreate() {
+      return true;
+   }
+
+   static function canPurge() {
+      return true;
+   }
+
+   static function canDelete() {
+      return true;
+   }
+
+   public function canCreateItem() {
+      return true;
+   }
+
    public function canUpdateItem() {
+      return true;
+   }
+
+   public function canDeleteItem() {
+      return true;
+   }
+
+   public function canPurgeItem() {
       return true;
    }
 

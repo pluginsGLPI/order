@@ -36,6 +36,7 @@ class PluginOrderLink extends CommonDBChild {
    public $dohistory        = true;
    public static $itemtype  = 'PluginOrderOrder';
    public static $items_id  = 'plugin_order_orders_id';
+   public static $checkParentRights  = self::DONT_CHECK_ITEM_RIGHTS;
 
    public static function getTypeName($nb = 0) {
       return __("Generation", "order");
@@ -184,7 +185,7 @@ class PluginOrderLink extends CommonDBChild {
       $PluginOrderReception  = new PluginOrderReception();
 
       $PluginOrderOrder->getFromDB($plugin_order_orders_id);
-      $canedit = self::canCreate()
+      $canedit = $PluginOrderOrder->canDeliver()
                   && !$PluginOrderOrder->canUpdateOrder()
                   && !$PluginOrderOrder->isCanceled();
 
@@ -950,7 +951,7 @@ class PluginOrderLink extends CommonDBChild {
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if ($item->getType()=='PluginOrderOrder'
          && $item->checkIfDetailExists($item->getID(), true)
-         && Session::haveRight('plugin_order_order', PluginOrderOrder::RIGHT_DELIVERY)) {
+         && Session::haveRight('plugin_order_order', READ)) {
          return self::createTabEntry(_n("Associated item", "Associated items", 2),
                                      self::countForOrder($item));
       }
