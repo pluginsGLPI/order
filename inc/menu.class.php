@@ -29,11 +29,17 @@ class PluginOrderMenu extends CommonGLPI {
          }
       }
 
-      $menu['options']['bill']['title']                 = PluginOrderBill::getTypeName(2);
-      $menu['options']['bill']['page']                  = PluginOrderBill::getSearchURL(false);
-      $menu['options']['bill']['links']['search']       = PluginOrderBill::getSearchURL(false);
-      $menu['options']['bill']['links']['add']          = PluginOrderBill::getFormURL(false);
-      $menu['options']['bill']['links']['config']       = PluginOrderConfig::getFormURL(false);
+      if (PluginOrderBill::canView()) {
+         $menu['options']['bill']['title']                 = PluginOrderBill::getTypeName(2);
+         $menu['options']['bill']['page']                  = PluginOrderBill::getSearchURL(false);
+         $menu['options']['bill']['links']['search']       = PluginOrderBill::getSearchURL(false);
+         if (PluginOrderBill::canCreate()) {
+            $menu['options']['bill']['links']['add']          = PluginOrderBill::getFormURL(false);
+         }
+         if (PluginOrderConfig::canView()) {
+            $menu['options']['bill']['links']['config']       = PluginOrderConfig::getFormURL(false);
+         }
+      }
 
       if (PluginOrderReference::canView()) {
          $menu['options']['references']['title']           = PluginOrderReference::getTypeName(2);
