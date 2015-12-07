@@ -35,12 +35,17 @@ class PluginOrderMenu extends CommonGLPI {
       $menu['options']['bill']['links']['add']          = PluginOrderBill::getFormURL(false);
       $menu['options']['bill']['links']['config']       = PluginOrderConfig::getFormURL(false);
 
-      $menu['options']['references']['title']           = PluginOrderReference::getTypeName(2);
-      $menu['options']['references']['page']            = PluginOrderReference::getSearchURL(false);
-      $menu['options']['references']['links']['search'] = PluginOrderReference::getSearchURL(false);
-      $menu['options']['references']['links']['add']    = PluginOrderReference::getFormURL(false);
-      $menu['options']['references']['links']['config'] = PluginOrderConfig::getFormURL(false);
-
+      if (PluginOrderReference::canView()) {
+         $menu['options']['references']['title']           = PluginOrderReference::getTypeName(2);
+         $menu['options']['references']['page']            = PluginOrderReference::getSearchURL(false);
+         $menu['options']['references']['links']['search'] = PluginOrderReference::getSearchURL(false);
+         if (PluginOrderReference::canCreate()) {
+            $menu['options']['references']['links']['add']    = PluginOrderReference::getFormURL(false);
+         }
+         if (PluginOrderConfig::canView()) { 
+            $menu['options']['references']['links']['config'] = PluginOrderConfig::getFormURL(false);
+         } 
+      }
       return $menu;
    }
    
