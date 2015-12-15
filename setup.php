@@ -130,6 +130,7 @@ function plugin_init_order() {
 
       /*if glpi is loaded */
       if (Session::getLoginUserID()) {
+         $PLUGIN_HOOKS['add_css']['order'][]= 'order.css';
 
          /* link to the config page in plugins menu */
          if (Session::haveRight("config", UPDATE)) {

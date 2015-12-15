@@ -191,7 +191,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       echo "<td>" . __("Unit price tax free", "order") . ": </td>";
       echo "<td>";
       echo "<input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price_taxfree' value=\""
-         . Html::formatNumber($this->fields["price_taxfree"],true) . "\" size='7'>";
+         . Html::formatNumber($this->fields["price_taxfree"],true) . "\" class='decimal'>";
       echo "</td>";
 
       echo "<td></td>";

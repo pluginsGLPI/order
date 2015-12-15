@@ -35,11 +35,10 @@
 * @brief
 */
 
-include ('../inc/includes.php');
+include ('../../../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
-
 Session::checkLoginUser();
 
 if (isset($_POST['name'])) {
@@ -48,10 +47,13 @@ if (isset($_POST['name'])) {
       $step = PLUGIN_ORDER_NUMBER_STEP;
    }
 
-   echo "<input type='number' step='$step' ".(isset($_POST["size"])?" size='".$_POST["size"]."' ":"")." ".
-         (isset($_POST["maxlength"])?"maxlength='".$_POST["maxlength"]."' ":"")." name='".
-         $_POST['name']."' value=\"".
-         Html::cleanInputText(Toolbox::clean_cross_side_scripting_deep(rawurldecode(stripslashes($_POST["data"])))).
-        "\">";
+   $class="";
+   if (isset($_REQUEST['class'])) {
+      $class="class='".$_REQUEST['class']."'";
+   }
+
+   $data = Html::cleanInputText(Toolbox::clean_cross_side_scripting_deep(rawurldecode(stripslashes($_POST["data"]))));
+
+   echo "<input type='number' step='$step' name='".$_POST['name']."' value='$data' $class>";
 }
 ?>

@@ -326,11 +326,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_quantity'>";
-               echo "<input type='number' name='quantity' value='0' style='text-align:center' size='10' />";
+               echo "<input type='number' name='quantity' value='0' class='quantity' />";
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_priceht'>";
-               echo "<input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price' value='0.00' style='text-align:center' size='10' />";
+               echo "<input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price' value='0.00' class='decimal' />";
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_taxe'>";
@@ -344,7 +344,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_pricediscounted'>";
-               echo "<input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount' value='0' style='text-align:center' size='10' />";
+               echo "<input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount' value='0' class='smalldecimal' />";
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_validate'>";
@@ -507,6 +507,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                $params = array('maxlength'     => 15,
                                'size'          => 8,
                                'name'          => 'quantity',
+                               'class'         => 'quantity',
                                'force_integer' => true,
                                'data'          => rawurlencode($quantity));
                Ajax::updateItemJsCode("viewquantity$rand", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php",
@@ -561,6 +562,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                $params = array('maxlength' => 15,
                                'size'      => 8,
                                'name'      => 'price_taxfree',
+                               'class'     => 'decimal',
                                'data'      => rawurlencode($price_taxfree));
                Ajax::updateItemJsCode("viewpricetaxfree$rand",
                                     $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", $params, false);
@@ -586,6 +588,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                $params = array('maxlength' => 15,
                                'size'      => 8,
                                'name'      => 'discount',
+                               'class'     => 'smalldecimal',
                                'data'      => rawurlencode($discount));
                Ajax::updateItemJsCode("viewdiscount$rand",
                                     $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", $params, false);
@@ -732,6 +735,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   $params = array('maxlength' => 15,
                                   'size'      => 8,
                                   'name'      => 'detail_price_taxfree['.$data["IDD"].']',
+                                  'class'     => 'decimal',
                                   'data'      => rawurlencode($data["price_taxfree"]));
                   Ajax::updateItemJsCode("detail_viewpricetaxfree$rand_line",
                                        $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", $params, false);
@@ -765,6 +769,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   $params = array('maxlength' => 15,
                                   'size'      => 8,
                                   'name'      => 'detail_discount['.$data["IDD"].']',
+                                  'class'     => 'smalldecimal',
                                   'data'      => rawurlencode($data["discount"]));
                   Ajax::updateItemJsCode("detail_viewdiscount$rand_line",
                                        $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", $params, false);
@@ -982,7 +987,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __("Unit price tax free", "order") . ": </td>";
       if ($canedit) {
-         echo "<td><input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price_taxfree' value='" . $this->fields['price_taxfree'] . "'>";
+         echo "<td><input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price_taxfree' value='" . $this->fields['price_taxfree'] . "' class='decimal'>";
       } else {
          echo "<td>" . Html::formatNumber($this->fields['price_taxfree']) . "</td>";
       }
@@ -1002,7 +1007,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       echo "<td>" . __("Discount (%)", "order") . ": </td>";
       if ($canedit) {
          echo "<td><input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount' 
-                          value='".$this->fields['discount']."'>";
+                          value='".$this->fields['discount']."' class='decimal'>";
       } else {
          echo "<td>".Html::formatNumber($this->fields['discount'])."</td>";
       }
