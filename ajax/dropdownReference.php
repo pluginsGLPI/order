@@ -69,6 +69,6 @@ if (isset($_POST["itemtype"])) {
              WHERE `plugin_order_references_id` = '{$_POST['reference_id']}'";
    $result = $DB->query($query);
    $price = $DB->result($result, 0, 'price_taxfree');
-   $price = Html::formatNumber($price);
-   echo '<input type="text" name="price" value="' . $price . '" style="text-align:center" size="10" />';
+   $price = Html::formatNumber($price, true);
+   echo "<input value='$price' type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price' />";
 }

@@ -832,7 +832,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<td>" . __("Postage", "order") . ": </td>";
       echo "<td>";
       if ($canedit) {
-         echo "<input type='text' name='port_price' size='5'"
+         echo "<input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='port_price' size='5'"
             ." value=\"" . Html::formatNumber($this->fields["port_price"], true) . "\">";
       } else {
          echo Html::formatNumber($this->fields["port_price"]);
