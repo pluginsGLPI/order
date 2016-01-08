@@ -415,7 +415,7 @@ class PluginOrderBill extends CommonDropdown
                     `validationdate` datetime DEFAULT NULL,
                     `comment` text COLLATE utf8_unicode_ci,
                     `plugin_order_billstates_id` int(11) NOT NULL DEFAULT '0',
-                    `value` decimal(20,4) NOT NULL DEFAULT '0.0000',
+                    `value` decimal(20,6) NOT NULL DEFAULT '0.000000',
                     `plugin_order_billtypes_id` int(11) NOT NULL DEFAULT '0',
                     `suppliers_id` int(11) NOT NULL DEFAULT '0',
                     `plugin_order_orders_id` int(11) NOT NULL DEFAULT '0',
@@ -458,7 +458,7 @@ class PluginOrderBill extends CommonDropdown
                }
             }
           }
-         $migration->changeField($table, "value", "value", "decimal(20,4) NOT NULL DEFAULT '0.0000'");
+         $migration->changeField($table, "value", "value", "decimal(20,6) NOT NULL DEFAULT '0.000000'");
          $migration->migrationOneTable($table);
        }
       $migration->dropField("glpi_plugin_order_orders_suppliers", "num_bill");

@@ -1348,10 +1348,10 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                `plugin_order_ordertaxes_id` float NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)',
                `delivery_number` varchar(255) collate utf8_unicode_ci default NULL,
                `delivery_comment` text collate utf8_unicode_ci,
-               `price_taxfree` decimal(20,4) NOT NULL DEFAULT '0.0000',
-               `price_discounted` decimal(20,4) NOT NULL DEFAULT '0.0000',
-               `discount` decimal(20,4) NOT NULL DEFAULT '0.0000',
-               `price_ati` decimal(20,4) NOT NULL DEFAULT '0.0000',
+               `price_taxfree` decimal(20,6) NOT NULL DEFAULT '0.000000',
+               `price_discounted` decimal(20,6) NOT NULL DEFAULT '0.000000',
+               `discount` decimal(20,6) NOT NULL DEFAULT '0.000000',
+               `price_ati` decimal(20,6) NOT NULL DEFAULT '0.000000',
                `states_id` int(11) NOT NULL default 1,
                `delivery_date` date default NULL,
                `plugin_order_bills_id` INT( 11 ) NOT NULL DEFAULT '0',
@@ -1432,13 +1432,13 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
          //Change format for prices : from float to decimal
          $migration->changeField($table, "price_taxfree", "price_taxfree",
-                                 "decimal(20,4) NOT NULL DEFAULT '0.0000'");
+                                 "decimal(20,6) NOT NULL DEFAULT '0.000000'");
          $migration->changeField($table, "price_discounted", "price_discounted",
-                                 "decimal(20,4) NOT NULL DEFAULT '0.0000'");
+                                 "decimal(20,6) NOT NULL DEFAULT '0.000000'");
          $migration->changeField($table, "price_ati", "price_ati",
-                                 "decimal(20,4) NOT NULL DEFAULT '0.0000'");
+                                 "decimal(20,6) NOT NULL DEFAULT '0.000000'");
          $migration->changeField($table, "discount", "discount",
-                                 "decimal(20,4) NOT NULL DEFAULT '0.0000'");
+                                 "decimal(20,6) NOT NULL DEFAULT '0.000000'");
 
          //Drop unused fields from previous migration
          $migration->dropField($table, "price_taxfree2");
