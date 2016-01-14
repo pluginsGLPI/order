@@ -1968,6 +1968,7 @@ class PluginOrderOrder extends CommonDBTM {
             $order = new self();
             $order->getFromDB($document_item->fields['items_id']);
             $extension = explode('.',$document->fields['filename']);
+            $tag="";
             if (!empty($documentCategory->fields['documentcategories_prefix'])) {
                $tag = $documentCategory->fields['documentcategories_prefix']."-";
             }
