@@ -110,7 +110,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
                  WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'";
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
-         return $DB->result($result, 0, "total") /5;
+         return $DB->result($result, 0, "total") /5*2;
       } else {
          return 0;
       }
