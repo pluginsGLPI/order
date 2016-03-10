@@ -69,8 +69,12 @@ class PluginOrderReference extends CommonDBTM {
       $tab[3]['name']           = __("Item type");
       $tab[3]['datatype']       = 'itemtypename';
       $tab[3]['massiveaction']  = false;
+      $tab[3]['additionalfields'] = array('itemtype');
+      $tab[3]['itemtype_list']  = 'plugin_order_types';
       $tab[3]['checktype']      = 'itemtype';
       $tab[3]['displaytype']    = 'reference_itemtype';
+      $tab[3]['joinparams']     = array('jointype'   => 'child');
+      $tab[3]['searchtype']     = 'equals';
       $tab[3]['injectable']     = true;
 
       $tab[4]['table']          = $this->getTable();
@@ -84,6 +88,7 @@ class PluginOrderReference extends CommonDBTM {
       $tab[5]['table']          = 'glpi_manufacturers';
       $tab[5]['field']          = 'name';
       $tab[5]['name']           = __("Manufacturer");
+      $tab[5]['datatype']       = 'dropdown';
       $tab[5]['checktype']      = 'text';
       $tab[5]['displaytype']    = 'dropdown';
       $tab[5]['injectable']     = true;

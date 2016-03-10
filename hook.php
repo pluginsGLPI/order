@@ -227,6 +227,41 @@ function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,
    return "";
 }
 
+function plugin_order_addWhere($link, $nott, $itemtype, $ID, $val, $searchtype) {
+   global $ORDER_TYPES;
+
+   $out = "";
+   if ($ID == 6) {
+      switch ($searchtype) {
+         case 'contains':
+            $comparison = "`name` " . Search::makeTextSearch($val, $nott);
+      }
+
+      $assetTypesType = array();
+      foreach ($ORDER_TYPES as $assetType) {
+         if ($itemtype == 'PluginOrderReference') {
+            $table = strtolower("glpi_" . $assetType::getType()."types");
+            if (TableExists($table)) {
+               $assetTypestype[] = "SELECT `id` FROM `$table` WHERE `itemtype`='$assetType' AND `types_id`=`$table`.`id` AND $comparison";
+            }
+         }
+      }
+      if (count($assetTypestype)) {
+         $out = "`types_id` IN (" . implode(" UNION ", $assetTypestype) . ")";
+      }
+   }
+   if ($ID == 3) {
+      $table = $itemtype::getTable();
+      if ($nott) {
+         $out = "`itemtype`<>'$val'";
+      } else {
+         $out = "`$table`.`itemtype`='$val'";
+      }
+   }
+
+   return $out;
+}
+
 /* display custom fields in the search */
 function plugin_order_giveItem($type, $ID, $data, $num) {
    global $CFG_GLPI;
