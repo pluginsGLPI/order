@@ -73,7 +73,6 @@ class PluginOrderReference extends CommonDBTM {
       $tab[3]['itemtype_list']  = 'plugin_order_types';
       $tab[3]['checktype']      = 'itemtype';
       $tab[3]['displaytype']    = 'reference_itemtype';
-      $tab[3]['joinparams']     = array('jointype'   => 'child');
       $tab[3]['searchtype']     = 'equals';
       $tab[3]['injectable']     = true;
 
