@@ -69,7 +69,6 @@ class PluginOrderReference extends CommonDBTM {
       $tab[3]['name']           = __("Item type");
       $tab[3]['datatype']       = 'itemtypename';
       $tab[3]['massiveaction']  = false;
-      $tab[3]['additionalfields'] = array('itemtype');
       $tab[3]['itemtype_list']  = 'plugin_order_types';
       $tab[3]['checktype']      = 'itemtype';
       $tab[3]['displaytype']    = 'reference_itemtype';
