@@ -230,7 +230,7 @@ function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,
 function plugin_order_addWhere($link, $nott, $itemtype, $ID, $val, $searchtype) {
    global $ORDER_TYPES;
 
-   $out = " AND ";
+   $out = "";
 
    if ($ID == 6) {
       Toolbox::logDebug($link, $nott, $itemtype, $ID, $val, $searchtype, $out);
@@ -253,7 +253,7 @@ function plugin_order_addWhere($link, $nott, $itemtype, $ID, $val, $searchtype) 
          }
       }
       if (count($assetTypestype)) {
-         $out= "$link `types_id` IN (" . implode(" UNION ", $assetTypestype) . ")";
+         $out = "$link `types_id` IN (" . implode(" UNION ", $assetTypestype) . ")";
       }
    }
    if ($ID == 3) {
