@@ -47,6 +47,10 @@ if (!defined('PLUGIN_ORDER_TEMPLATE_EXTENSION')) {
 if (!defined('PLUGIN_ORDER_SIGNATURE_EXTENSION')) {
    define ("PLUGIN_ORDER_SIGNATURE_EXTENSION", "png");
 }
+global $CFG_GLPI;
+if (!defined('PLUGIN_ORDER_NUMBER_STEP')) {
+   define ("PLUGIN_ORDER_NUMBER_STEP", 1 / pow(10, $CFG_GLPI["decimal_number"]));
+}
 
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
@@ -126,6 +130,7 @@ function plugin_init_order() {
 
       /*if glpi is loaded */
       if (Session::getLoginUserID()) {
+         $PLUGIN_HOOKS['add_css']['order'][]= 'order.css';
 
          /* link to the config page in plugins menu */
          if (Session::haveRight("config", UPDATE)) {

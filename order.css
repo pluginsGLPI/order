@@ -1,0 +1,22 @@
+input[type=number].decimal,
+input[type=number].smalldecimal,
+input[type=number].quantity {
+   text-align:center;
+   padding: 0;
+   position: relative;
+   margin: 0 0 1rem;
+}
+input[type=number].decimal{
+   width: 70px;
+}
+input[type=number].smalldecimal {
+   width: 60px;
+}
+input[type=number].quantity {
+   width: 40px;
+}
+
+input[type=number].decimal::-webkit-inner-spin-button,
+input[type=number].quantity::-webkit-inner-spin-button {
+    opacity: 1
+}

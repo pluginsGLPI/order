@@ -518,8 +518,7 @@ msgid "Validation process"
 msgstr "Circuit de validation d'une commande"
 
 #: inc/order.class.php:1309
-msgid ""
-"Do you really want to cancel this order ? This option is irreversible !"
+msgid "Do you really want to cancel this order ? This option is irreversible !"
 msgstr "Voulez vous vraiment annuler cette commande ? Cette option est irréversible!"
 
 #: inc/order.class.php:1310 inc/profile.class.php:58 inc/profile.class.php:206
@@ -537,11 +536,11 @@ msgstr "Voulez vous vraiment annuler la demande de validation ?"
 
 #: inc/order.class.php:1324
 msgid "Cancel ask for validation"
-msgstr "Annuler la demande de validation"
+msgstr "Retour à la préparation de la commande"
 
 #: inc/order.class.php:1330
 msgid "Ask for validation"
-msgstr "Faire valider la commande"
+msgstr "Traitement de la commande"
 
 #: inc/order.class.php:1336
 msgid "Do you really want to edit the order ?"
@@ -558,7 +557,7 @@ msgstr "Merci d'ajouter au moins un équipement à votre commande."
 #: inc/order.class.php:1361 inc/order.class.php:1387 inc/profile.class.php:55
 #: inc/profile.class.php:185 inc/profile.class.php:454
 msgid "Order Generation"
-msgstr "Génération du bon de commande"
+msgstr "Génération du document"
 
 #: inc/order.class.php:1367 inc/preference.class.php:163
 msgid "Use this model"

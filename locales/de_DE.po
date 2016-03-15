@@ -517,8 +517,7 @@ msgid "Validation process"
 msgstr "Freigabeprozedur einer Bestellung"
 
 #: inc/order.class.php:1309
-msgid ""
-"Do you really want to cancel this order ? This option is irreversible !"
+msgid "Do you really want to cancel this order ? This option is irreversible !"
 msgstr "Wollen Sie diese Bestellung wirklich stornieren? Dies kann nicht rückgängig gemacht werden!"
 
 #: inc/order.class.php:1310 inc/profile.class.php:58 inc/profile.class.php:206
