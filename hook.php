@@ -253,9 +253,9 @@ function plugin_order_addWhere($link, $nott, $itemtype, $ID, $val, $searchtype) 
    if ($ID == 3) {
       $table = $itemtype::getTable();
       if ($nott) {
-         $out .= "$link `itemtype`<>'$val'";
+         $out = "$link `itemtype`<>'$val'";
       } else {
-         $out .= "$link `$table`.`itemtype`='$val'";
+         $out = "$link `$table`.`itemtype`='$val'";
       }
    }
 
