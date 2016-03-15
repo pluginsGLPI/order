@@ -46,7 +46,7 @@ function plugin_order_install() {
    $classes = array('PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',
                     'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',
                     'PluginOrderReference', 'PluginOrderDeliveryState',
-                    'PluginOrderNotificationTargetOrder',
+                    'PluginOrderNotificationTargetOrder','PluginOrderBillOrder',
                     'PluginOrderOrder_Supplier', 'PluginOrderBill', 'PluginOrderOrderPayment',
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                     'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
@@ -81,7 +81,7 @@ function plugin_order_uninstall() {
    $classes = array('PluginOrderConfig', 'PluginOrderBill', 'PluginOrderBillState',
                     'PluginOrderBillType', 'PluginOrderOrderState', 'PluginOrderOrder',
                     'PluginOrderOrder_Item', 'PluginOrderReference', 'PluginOrderDeliveryState',
-                    'PluginOrderNotificationTargetOrder',
+                    'PluginOrderNotificationTargetOrder','PluginOrderBillOrder',
                     'PluginOrderOrder_Supplier', 'PluginOrderOrderPayment','PluginOrderOrderTax',
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                     'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
@@ -225,47 +225,6 @@ function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,
    }
 
    return "";
-}
-
-function plugin_order_addWhere($link, $nott, $itemtype, $ID, $val, $searchtype) {
-   global $ORDER_TYPES;
-
-   $out = " AND ";
-
-   if ($ID == 6) {
-      Toolbox::logDebug($link, $nott, $itemtype, $ID, $val, $searchtype, $out);
-      switch ($searchtype) {
-         case 'contains':
-            $comparison = "`name` " . Search::makeTextSearch($val, $nott);
-      }
-
-      $assetTypesType = array();
-      foreach ($ORDER_TYPES as $assetType) {
-         if ($itemtype == 'PluginOrderReference') {
-            $table = strtolower("glpi_" . $assetType::getType()."types");
-            if (TableExists($table)) {
-               $assetTypestype[] = "SELECT `id`
-                                    FROM `$table`
-                                    WHERE `itemtype`='$assetType'
-                                       AND `types_id`=`$table`.`id`
-                                       AND $comparison";
-            }
-         }
-      }
-      if (count($assetTypestype)) {
-         $out= "$link `types_id` IN (" . implode(" UNION ", $assetTypestype) . ")";
-      }
-   }
-   if ($ID == 3) {
-      $table = $itemtype::getTable();
-      if ($nott) {
-         $out = "$link `itemtype`<>'$val'";
-      } else {
-         $out = "$link `$table`.`itemtype`='$val'";
-      }
-   }
-
-   return $out;
 }
 
 /* display custom fields in the search */
