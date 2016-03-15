@@ -422,8 +422,7 @@ $random=$rand + $order->getID();
 
             $req_orders_add = "SELECT id, concat(name,' ', order_date) from glpi_plugin_order_orders " .
                     "where id in ( SELECT plugin_order_orders_id FROM `glpi_plugin_order_orders_items` " .
-                    "where plugin_order_bills_id=0 ".
-                    "OR plugin_order_bills_id='" . $bill_id . "' GROUP BY plugin_order_orders_id) " .
+                    "where plugin_order_bills_id=0 GROUP BY plugin_order_orders_id) " .
                     "AND id not in (SELECT glpi_plugin_order_orders_id FROM glpi_plugin_order_billsorder) " .
                     "AND suppliers_id='" . $bill_supplier . "'";
             $result_req_orders_add = $DB->query($req_orders_add);
