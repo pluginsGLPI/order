@@ -231,7 +231,9 @@ function plugin_order_addWhere($link, $nott, $itemtype, $ID, $val, $searchtype) 
    global $ORDER_TYPES;
 
    $out = "";
+
    if ($ID == 6) {
+      Toolbox::logDebug($link, $nott, $itemtype, $ID, $val, $searchtype, $out);
       switch ($searchtype) {
          case 'contains':
             $comparison = "`name` " . Search::makeTextSearch($val, $nott);
@@ -242,7 +244,11 @@ function plugin_order_addWhere($link, $nott, $itemtype, $ID, $val, $searchtype) 
          if ($itemtype == 'PluginOrderReference') {
             $table = strtolower("glpi_" . $assetType::getType()."types");
             if (TableExists($table)) {
-               $assetTypestype[] = "SELECT `id` FROM `$table` WHERE `itemtype`='$assetType' AND `types_id`=`$table`.`id` AND $comparison";
+               $assetTypestype[] = "SELECT `id`
+                                    FROM `$table`
+                                    WHERE `itemtype`='$assetType'
+                                       AND `types_id`=`$table`.`id`
+                                       AND $comparison";
             }
          }
       }
