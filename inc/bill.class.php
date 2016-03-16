@@ -213,7 +213,7 @@ class PluginOrderBill extends CommonDropdown {
                 if ($data['itemtype']::canView()) {
                     
                     $order = new PluginOrderOrder();
-                    $order->getFromDB($data["id"]);
+                    $order->getFromDB($data["plugin_order_orders_id"]);
                     echo "<tr class='tab_bg_1'>";
 
                     $ID = "";
@@ -392,10 +392,7 @@ $random=$rand + $order->getID();
             echo "</table>";
 
             echo "</div>";
-        } else {
-            echo "<div class='center'><table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
-        }
+        
 
         if ($canedit) {
             echo "<div class='center'>";
@@ -418,7 +415,16 @@ $random=$rand + $order->getID();
             echo "</td></tr>";
 
 
-            echo "<tr><td>";
+            
+            
+        }
+        } else {
+            echo "<div class='center'><table class='tab_cadre_fixe'>";
+            echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
+        }
+        
+        echo "<div class='center'><table class='tab_cadre_fixe'>";
+echo "<tr><td>";
 
             $req_orders_add = "SELECT id, concat(name,' ', order_date) from glpi_plugin_order_orders " .
                     "where id in ( SELECT plugin_order_orders_id FROM `glpi_plugin_order_orders_items` " .
@@ -442,8 +448,6 @@ $random=$rand + $order->getID();
                 echo "</td></tr></table>";
                 echo "</div>";
             }
-        }
-
         Html::closeForm();
 
 
