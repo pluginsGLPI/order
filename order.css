@@ -18,5 +18,9 @@ input[type=number].quantity {
 
 input[type=number].decimal::-webkit-inner-spin-button,
 input[type=number].quantity::-webkit-inner-spin-button {
-    opacity: 1
+    opacity: 1;
+}
+
+.layout_vsplit #show_reference .select2-container .select2-choice {
+   max-width: 200px;
 }
