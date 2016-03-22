@@ -82,7 +82,7 @@ function plugin_init_order() {
          'PluginOrderOther',
          'SoftwareLicense',
       );
-      
+
       $CFG_GLPI['plugin_order_types'] = $ORDER_TYPES;
 
       $PLUGIN_HOOKS['pre_item_purge']['order']  = array(
@@ -164,7 +164,7 @@ function plugin_version_order() {
 
 /* check prerequisites before install : may print errors or add to message after redirect -optional- */
 function plugin_order_check_prerequisites(){
-   if (version_compare(GLPI_VERSION,'0.85','lt') || version_compare(GLPI_VERSION,'0.91','ge')) {
+   if (version_compare(GLPI_VERSION,'0.85','lt')) {
       echo "This plugin requires GLPI 0.85 or higher";
    } else {
       return true;
