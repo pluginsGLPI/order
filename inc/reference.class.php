@@ -71,8 +71,8 @@ class PluginOrderReference extends CommonDBTM {
       $tab[3]['massiveaction']  = false;
       $tab[3]['itemtype_list']  = 'plugin_order_types';
       $tab[3]['checktype']      = 'itemtype';
-      $tab[3]['displaytype']    = 'reference_itemtype';
-      $tab[3]['searchtype']     = 'equals';
+      //$tab[3]['displaytype']    = 'reference_itemtype';
+      $tab[3]['searchtype']     = array('equals');
       $tab[3]['injectable']     = true;
 
       $tab[4]['table']          = $this->getTable();
@@ -100,6 +100,8 @@ class PluginOrderReference extends CommonDBTM {
       $tab[6]['checktype']      = 'text';
       $tab[6]['displaytype']    = 'reference_type';
       $tab[6]['injectable']     = true;
+      $tab[6]['searchtype']     = array('equals');
+      $tab[6]['additionalfields'] = array('itemtype');
 
       $tab[7]['table']          = $this->getTable();
       $tab[7]['field']          = 'templates_id';
@@ -1060,6 +1062,16 @@ class PluginOrderReference extends CommonDBTM {
       }
       return;
    }
+
+/*   function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = array()) {
+      if (isset($field_id_or_search_options['displaytype'])
+         && $field_id_or_search_options['displaytype'] == 'reference_type') {
+            Toolbox::logDebug($field_id_or_search_options['displaytype'],
+                              $field_id_or_search_options, $name, $values, $options);
+
+      }
+      return false;
+   }*/
 
    public static function install(Migration $migration) {
       global $DB;
