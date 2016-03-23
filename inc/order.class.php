@@ -600,6 +600,23 @@ class PluginOrderOrder extends CommonDBTM {
       }
    }
 
+   public function post_updateItem($history = 1) {
+      global $DB;
+      $config = PluginOrderConfig::getConfig();
+
+      if ($config->fields['transmit_budget_change'] && in_array('budgets_id', $this->updates)) {
+         $infocom = new Infocom();
+         $query = "SELECT `items_id`, `itemtype`
+                   FROM `glpi_plugin_order_orders_items`
+                   WHERE `plugin_order_orders_id`='".$this->getID()."'";
+         foreach ($DB->request($query) as $infos) {
+            $infocom->getFromDBforDevice ($infos['itemtype'], $infos['items_id']);
+            $infocom->update(array('id' => $infocom->getID(),
+                                   'budgets_id' => $this->fields['budgets_id']));
+         }
+      }
+   }
+
    public function prepareInputForUpdate($input) {
       if ((isset($input['budgets_id']) && $input['budgets_id'] > 0)
             || (isset($input['budgets_id'])

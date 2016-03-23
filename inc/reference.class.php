@@ -71,7 +71,6 @@ class PluginOrderReference extends CommonDBTM {
       $tab[3]['massiveaction']  = false;
       $tab[3]['itemtype_list']  = 'plugin_order_types';
       $tab[3]['checktype']      = 'itemtype';
-      //$tab[3]['displaytype']    = 'reference_itemtype';
       $tab[3]['searchtype']     = array('equals');
       $tab[3]['injectable']     = true;
 
@@ -98,10 +97,9 @@ class PluginOrderReference extends CommonDBTM {
       $tab[6]['name']           = __("Type");
       $tab[6]['massiveaction']  = false;
       $tab[6]['checktype']      = 'text';
-      $tab[6]['displaytype']    = 'reference_type';
       $tab[6]['injectable']     = true;
       $tab[6]['searchtype']     = array('equals');
-      $tab[6]['additionalfields'] = array('itemtype');
+      $tab[6]['nosearch']       = true;
 
       $tab[7]['table']          = $this->getTable();
       $tab[7]['field']          = 'templates_id';
