@@ -52,7 +52,9 @@ if (isset($_POST["itemtype"])) {
          $values[$data['id']] = $data['name']." - ".$data['reference_code'];
       }
    }
-   Dropdown::showFromArray($_POST['fieldname'], $values, array('rand' => $_POST['rand']));
+   Dropdown::showFromArray($_POST['fieldname'], $values,
+                           array('rand'  => $_POST['rand'],
+                                 'width' => '100%'));
 
    $params = array(
       'reference_id' => '__VALUE__',
@@ -70,5 +72,5 @@ if (isset($_POST["itemtype"])) {
    $result = $DB->query($query);
    $price = $DB->result($result, 0, 'price_taxfree');
    $price = Html::formatNumber($price, true);
-   echo "<input value='$price' type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price' />";
+   echo "<input value='$price' type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price' class='decimal' />";
 }

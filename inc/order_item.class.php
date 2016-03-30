@@ -274,8 +274,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                . Toolbox::getItemTypeFormURL('PluginOrderOrder') . "\">";
             echo "<input type='hidden' name='plugin_order_orders_id' value=\"$plugin_order_orders_id\">";
             echo "<div class='center'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='7'>" . __("Add to the order", "order") . "</th></tr>";
+            echo "<hr>";
+            echo "<h3>".__("Add to the order", "order")."</h3>";
+            echo "<table class='tab_cadre_fixe tab_order_fixed tab_order_add_items'>";
 
             if ($order->fields["suppliers_id"]) {
                echo "<tr align='center'>";
@@ -306,7 +307,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                asort($itemtypeArray);
 
                $rand = mt_rand();
-               Dropdown::showFromArray('itemtype', $itemtypeArray, array('rand' => $rand, 'width' => 125));
+               Dropdown::showFromArray('itemtype', $itemtypeArray, array('rand' => $rand,
+                                                                         'width' => '100%'));
 
                $params = array(
                   'itemtype'     => '__VALUE__',
@@ -322,7 +324,10 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                                              $params);
                echo "</td>";
                echo "<td class='tab_bg_1'><span id='show_reference'>";
-               Dropdown::showFromArray('plugin_order_references_id', array(0 => Dropdown::EMPTY_VALUE), array('rand' => $rand, 'width' => 200));
+               Dropdown::showFromArray('plugin_order_references_id',
+                                       array(0 => Dropdown::EMPTY_VALUE),
+                                       array('rand' => $rand,
+                                             'width' => '100%'));
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_quantity'>";
