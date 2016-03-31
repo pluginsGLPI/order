@@ -53,7 +53,10 @@ if (isset($_POST["generation"])) {
    }
 
    if (isset ($_POST["item"])) {
-      Html::header(__("Orders management", "order"), '', "plugins", "order", "order");
+      Html::header(__("Orders", "order"), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu",
+                   "order"
+      );
+
       $link->showItemGenerationForm($_POST);
       Html::footer();
    } else {
