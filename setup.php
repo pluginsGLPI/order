@@ -113,6 +113,13 @@ function plugin_init_order() {
          'linkuser_types'              => true,
          'addtabon'                    => array('Budget'))
       );
+      
+      array_push($CFG_GLPI["itemdevices_types"], 'PluginOrderReference');
+      array_push($CFG_GLPI["itemdevicesmemory_types"], 'PluginOrderReference');
+      array_push($CFG_GLPI["itemdevicepowersupply_types"], 'PluginOrderReference');
+      array_push($CFG_GLPI["itemdevicenetworkcard_types"], 'PluginOrderReference');
+      array_push($CFG_GLPI["itemdevices_itemaffinity"], 'PluginOrderReference');
+      
 
       Plugin::registerClass('PluginOrderReference', array('document_types' => true));
       Plugin::registerClass('PluginOrderProfile', array('addtabon' => array('Profile')));
