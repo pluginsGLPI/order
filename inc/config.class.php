@@ -183,15 +183,15 @@ class PluginOrderConfig extends CommonDBTM {
       Dropdown::showYesNo("hide_inactive_budgets", $this->fields["hide_inactive_budgets"]);
       echo "</td>";
       echo "</tr>";
-      /*
+
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Rename documents added in order", 'order') . "</td>";
+      echo "<td>" . __("Transmit budget change to linked assets", 'order') . "</td>";
       echo "<td>";
-      Dropdown::showYesNo("rename_documents", $this->fields["rename_documents"]);
+      Dropdown::showYesNo("transmit_budget_change", $this->fields["transmit_budget_change"]);
       echo "</td>";
       echo "</tr>";
-      */
-      
+
+
       // Automatic actions
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<th colspan='2'>" . __("Automatic actions when delivery", "order") . "</th>";
@@ -522,6 +522,7 @@ class PluginOrderConfig extends CommonDBTM {
                         `add_bill_details` tinyint(1) NOT NULL default '0',
                         `hide_inactive_budgets` tinyint(1) NOT NULL default '0',
                         `rename_documents` tinyint(1) NOT NULL default '0',
+                        `transmit_budget_change` tinyint(1) NOT NULL default '0',
                         PRIMARY KEY  (`id`)
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
                $DB->query($query) or die ($DB->error());
@@ -578,59 +579,29 @@ class PluginOrderConfig extends CommonDBTM {
             $migration->addField($table, "groups_id_recipient", "integer");
             $migration->addField($table, "users_id_recipient", "integer");
 
-            $migration->changeField($table, "default_ticketcategories_id", "default_itilcategories_id", "INTEGER");
+            $migration->changeField($table, "default_ticketcategories_id",
+                                    "default_itilcategories_id", "integer");
 
             //1.9.0
-            $migration->addField("glpi_plugin_order_configs", "add_location", "TINYINT(1) NOT NULL DEFAULT '0'");
-            $migration->addField("glpi_plugin_order_configs", "add_bill_details", "TINYINT(1) NOT NULL DEFAULT '0'");
+            $migration->addField($table, "add_location", "TINYINT(1) NOT NULL DEFAULT '0'");
+            $migration->addField($table, "add_bill_details", "TINYINT(1) NOT NULL DEFAULT '0'");
 
             $config = new self();
             $config->getFromDB(1);
             $templateID = false;
-            /*
-            if($config->fields['generate_ticket']
-               && !FieldExists("glpi_plugin_order_configs", "tickettemplates_id_delivery")) {
 
-               //Create template
-               $template                  = new TicketTemplate();
-               $tmp['name']               = 'Order plugin';
-               $tmp['entities_id']        = 0;
-               $tmp['is_recursive']       = 1;
-               $templateID                = $template->add($tmp);
-
-               //Create predefined fields
-               $predefinedFied            = new TicketTemplatePredefinedField();
-               $tmp                       = array();
-               $tmp['tickettemplates_id'] = $templateID;
-               $tmp['num']                = 1;
-               $tmp['value']              = $config->fields['generated_title'];
-               $predefinedFied->add($tmp);
-
-               $tmp['num']                = 21;
-               $tmp['value']              = $config->fields['generated_content'];
-               $predefinedFied->add($tmp);
-
-               $tmp['num']                = 14;
-               $tmp['value']              = 2;
-               $predefinedFied->add($tmp);
-
-               if ($config->fields['default_itilcategories_id'] > 0) {
-                  $tmp['num']   = 7;
-                  $tmp['value'] = $config->fields['generated_content'];
-                  $predefinedFied->add($tmp);
-               }
-            }
-            */
-
-            $migration->addField("glpi_plugin_order_configs", "tickettemplates_id_delivery", 'integer');
+            $migration->addField($table, "tickettemplates_id_delivery", 'integer');
             $migration->migrationOneTable($table);
 
-            $migration->dropField("glpi_plugin_order_configs", "generated_title");
-            $migration->dropField("glpi_plugin_order_configs", "generated_content");
-            $migration->dropField("glpi_plugin_order_configs", "default_itilcategories_id");
+            $migration->dropField($table, "generated_title");
+            $migration->dropField($table, "generated_content");
+            $migration->dropField($table, "default_itilcategories_id");
 
-            $migration->addField("glpi_plugin_order_configs", "hide_inactive_budgets", "bool");
-            $migration->addField("glpi_plugin_order_configs", "rename_documents", "bool");
+            $migration->addField($table, "hide_inactive_budgets", "bool");
+            $migration->addField($table, "rename_documents", "bool");
+
+            //0.85+1.2
+            $migration->addField($table, "transmit_budget_change", "bool");
 
             $migration->migrationOneTable($table);
             if ($templateID) {

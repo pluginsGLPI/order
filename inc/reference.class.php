@@ -69,9 +69,9 @@ class PluginOrderReference extends CommonDBTM {
       $tab[3]['name']           = __("Item type");
       $tab[3]['datatype']       = 'specific';
       $tab[3]['massiveaction']  = false;
-      $tab[3]['searchtype']     = 'equals';
+      $tab[3]['itemtype_list']  = 'plugin_order_types';
       $tab[3]['checktype']      = 'itemtype';
-      $tab[3]['displaytype']    = 'reference_itemtype';
+      $tab[3]['searchtype']     = array('equals');
       $tab[3]['injectable']     = true;
 
       $tab[4]['table']          = $this->getTable();
@@ -81,10 +81,13 @@ class PluginOrderReference extends CommonDBTM {
       $tab[4]['checktype']      = 'text';
       $tab[4]['displaytype']    = 'reference_model';
       $tab[4]['injectable']     = true;
+      $tab[4]['massiveaction']  = false;
+      $tab[4]['nosearch']       = true;
 
       $tab[5]['table']          = 'glpi_manufacturers';
       $tab[5]['field']          = 'name';
       $tab[5]['name']           = __("Manufacturer");
+      $tab[5]['datatype']       = 'dropdown';
       $tab[5]['checktype']      = 'text';
       $tab[5]['displaytype']    = 'dropdown';
       $tab[5]['injectable']     = true;
@@ -94,8 +97,9 @@ class PluginOrderReference extends CommonDBTM {
       $tab[6]['name']           = __("Type");
       $tab[6]['massiveaction']  = false;
       $tab[6]['checktype']      = 'text';
-      $tab[6]['displaytype']    = 'reference_type';
       $tab[6]['injectable']     = true;
+      $tab[6]['searchtype']     = array('equals');
+      $tab[6]['nosearch']       = true;
 
       $tab[7]['table']          = $this->getTable();
       $tab[7]['field']          = 'templates_id';
@@ -104,6 +108,8 @@ class PluginOrderReference extends CommonDBTM {
       $tab[7]['checktype']      = 'text';
       $tab[7]['displaytype']    = 'dropdown';
       $tab[7]['injectable']     = true;
+      $tab[7]['massiveaction'] = false;
+      $tab[7]['nosearch']       = true;
 
       $tab[30]['table']         = $this->getTable();
       $tab[30]['field']         = 'id';
@@ -118,6 +124,7 @@ class PluginOrderReference extends CommonDBTM {
       $tab[31]['checktype']     = 'bool';
       $tab[31]['displaytype']   = 'bool';
       $tab[31]['injectable']    = true;
+      $tab[31]['searchtype']    = array('equals');
 
       $tab[32]['table']         = 'glpi_plugin_order_references_suppliers';
       $tab[32]['field']         = 'price_taxfree';
@@ -158,8 +165,8 @@ class PluginOrderReference extends CommonDBTM {
       /* entity */
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = __("Entity");
-      $tab[80]['massiveaction'] = false;
+      $tab[80]['name']           = __('Entity');
+      $tab[80]['datatype']       = 'dropdown';
       $tab[80]['injectable']    = false;
 
       $tab[86]['table']         = $this->getTable();
@@ -169,6 +176,7 @@ class PluginOrderReference extends CommonDBTM {
       $tab[86]['checktype']     = 'text';
       $tab[86]['displaytype']   = 'dropdown';
       $tab[86]['injectable']    = true;
+      $tab[86]['searchtype']    = array('equals');
 
       return $tab;
    }
@@ -1092,6 +1100,16 @@ class PluginOrderReference extends CommonDBTM {
       }
       return;
    }
+
+/*   function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = array()) {
+      if (isset($field_id_or_search_options['displaytype'])
+         && $field_id_or_search_options['displaytype'] == 'reference_type') {
+            Toolbox::logDebug($field_id_or_search_options['displaytype'],
+                              $field_id_or_search_options, $name, $values, $options);
+
+      }
+      return false;
+   }*/
 
    public static function install(Migration $migration) {
       global $DB;
