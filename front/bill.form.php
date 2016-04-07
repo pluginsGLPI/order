@@ -70,9 +70,10 @@ if (isset($_POST['action'])) {
                         $fields['id'] = $ic->fields['id'];
                         $fields['bill'] = $bill->fields['number'];
                         $fields['warranty_date'] = $bill->fields['billdate'];
+                        $ic->update($fields);
                      }
                   }
-                  $ic->update($fields);
+                 
                }
             }
          }

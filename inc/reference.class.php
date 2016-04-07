@@ -67,8 +67,9 @@ class PluginOrderReference extends CommonDBTM {
       $tab[3]['table']          = $this->getTable();
       $tab[3]['field']          = 'itemtype';
       $tab[3]['name']           = __("Item type");
-      $tab[3]['datatype']       = 'itemtypename';
+      $tab[3]['datatype']       = 'specific';
       $tab[3]['massiveaction']  = false;
+      $tab[3]['searchtype']     = 'equals';
       $tab[3]['checktype']      = 'itemtype';
       $tab[3]['displaytype']    = 'reference_itemtype';
       $tab[3]['injectable']     = true;
@@ -170,6 +171,46 @@ class PluginOrderReference extends CommonDBTM {
       $tab[86]['injectable']    = true;
 
       return $tab;
+   }
+   
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'itemtype' :
+            $item     = new $values['itemtype']();
+            return $item->getTypeName();
+            break;
+      }
+   }
+   
+  /**
+    * @since version 2.3.0
+    *
+    * @param $field
+    * @param $name               (default '')
+    * @param $values             (defaut '')
+    * @param $options   array
+   **/
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = array()) {
+      global $CFG_GLPI;
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'itemtype':
+            $types = PluginOrderOrder_Item::getClasses();
+            $itemtype = array();
+            foreach ($types as $key => $type){
+               $item     = new $type();
+               $itemtype[$type] =  $item->getTypeName();
+            }
+            $options['display'] = false;
+            return Dropdown::showFromArray($name, $itemtype, $options);
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
 
    public function post_getEmpty() {
@@ -1188,4 +1229,4 @@ class PluginOrderReference extends CommonDBTM {
 
       $DB->query("DROP TABLE IF EXISTS `$table`") or die ($DB->error());
    }
-}
+      }
