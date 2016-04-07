@@ -168,19 +168,19 @@ class PluginOrderLink extends CommonDBChild {
                }
                echo "<td>";
                echo "<span id='show_location_by_entity_id_$i'>";
-               Location::dropdown(array('name' => "id[$i][locations_id]", 'entity' => $entity));
+               Location::dropdown(array('name' => "id[$i][locations_id]", 'entity' => isset($entity)?$entity:0));
                echo "</span>";
                echo "</td>";
                echo "<td>";
                echo "<span id='show_group_by_entity_id_$i'>";
                Group::dropdown(array('name'      => "id[$i][groups_id]",
-                  'entity'    => $entity));
+                  'entity'    => isset($entity)?$entity:0));
                echo "</span>";
                echo "</td>";
                echo "<td>";
                echo "<span id='show_state_by_entity_id_$i'>";
                $condition = self::getCondition($params['itemtype'][$key]);
-               State::dropdown(array('name' => "id[$i][states_id]", 'entity'    => $entity,
+               State::dropdown(array('name' => "id[$i][states_id]", 'entity'    => isset($entity)?$entity:0,
                'condition' => $condition));           
                echo "</span>";
                echo "</td>";
