@@ -657,10 +657,10 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                      value='" . $refID . "'>";
 
          if($table == 'glpi_plugin_order_referencefrees'){
-               echo $data_ref['name'];
-            }else{
-               echo $reference->getReceptionReferenceLink($data_ref);
-            }
+            echo $data_ref['name'];
+         }else{
+            echo $reference->getReceptionReferenceLink($data_ref);
+         }
          echo "</td>";
          /* type */
          echo "<td align='center'>";
@@ -1288,7 +1288,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "<td align='center'>";
          echo Dropdown::getDropdownName('glpi_entities', $this->getEntityID());
          echo "</td>";
-         echo "<td>" . $reference->getReceptionReferenceLink($data_ref) . "</td>";
+         if($table == 'glpi_plugin_order_referencefrees'){
+            echo "<td>" .$data_ref['name'] . "</td>";
+         }else{
+            echo "<td>" . $reference->getReceptionReferenceLink($data_ref) . "</td>";
+         }
          echo "</tr></table>";
 
          echo "<div class='center' id='generation$rand' style='display:none'>";
@@ -1324,7 +1328,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
             //Reference
             echo "<td align='center'>";
-            echo $reference->getReceptionReferenceLink($data);
+            if($table == 'glpi_plugin_order_referencefrees'){
+               echo $data['name'];
+            }else{
+               echo $reference->getReceptionReferenceLink($data);
+            }
             echo "</td>";
 
             //Type

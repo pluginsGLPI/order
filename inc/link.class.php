@@ -275,6 +275,11 @@ class PluginOrderLink extends CommonDBChild {
                        AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = '$plugin_order_references_id'
                        AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = ref.`id`
                        AND `glpi_plugin_order_orders_items`.`states_id` = '" . PluginOrderOrder::ORDER_DEVICE_DELIVRED . "'";
+         if($table == 'glpi_plugin_order_referencefrees'){
+            $query .= "AND `glpi_plugin_order_orders_items`.`itemtype` LIKE 'PluginOrderReferenceFree'";
+         }else{
+            $query .= "AND `glpi_plugin_order_orders_items`.`itemtype` NOT LIKE 'PluginOrderReferenceFree'";
+         }
          if ($itemtype == 'SoftwareLicense') {
             $query .= " GROUP BY `glpi_plugin_order_orders_items`.`price_taxfree`,
                                     `glpi_plugin_order_orders_items`.`discount`";
@@ -300,7 +305,11 @@ class PluginOrderLink extends CommonDBChild {
          echo "<td align='center'>" . $item->getTypeName() . "</td>";
          echo "<td align='center'>"
          . Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]) . "</td>";
-         echo "<td>" . $PluginOrderReference->getReceptionReferenceLink($data_ref) . "&nbsp;($num)</td>";
+         if($table == 'glpi_plugin_order_referencefrees'){
+            echo "<td>" . $data_ref['name'] . "&nbsp;($num)</td>";
+         }else{
+            echo "<td>" . $PluginOrderReference->getReceptionReferenceLink($data_ref) . "&nbsp;($num)</td>";
+         }
          echo "</tr>";
 
          echo "</table>";
@@ -349,7 +358,11 @@ class PluginOrderLink extends CommonDBChild {
                echo $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($plugin_order_orders_id, $plugin_order_references_id, $data["price_taxfree"], $data["discount"]);
                echo "</td>";
             }
-            echo "<td align='center'>" . $PluginOrderReference->getReceptionReferenceLink($data) . "</td>";
+            if($table == 'glpi_plugin_order_referencefrees'){
+               echo "<td align='center'>" . $data['name']."</td>";
+            }else{
+               echo "<td align='center'>" . $PluginOrderReference->getReceptionReferenceLink($data) . "</td>";
+            }
             echo "<td align='center'>" . $PluginOrderReception->getReceptionStatus($detailID) . "</td>";
             echo "<td align='center'>" . Html::convDate($data["delivery_date"]) . "</td>";
             echo "<td align='center'>" . $this->getReceptionItemName($data["items_id"], $data["itemtype"]);

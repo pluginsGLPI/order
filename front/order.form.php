@@ -235,6 +235,13 @@ if (isset ($_POST["add"])) {
                                          $_POST["plugin_order_orders_id"], $_POST["quantity"],
                                          $_POST["price"], $_POST["discount"],
                                          $_POST["plugin_order_ordertaxes_id"]);
+         //liaison supplier
+         $reference_supplier = new PluginOrderReference_Supplier();
+         $reference_supplier->add(array('entities_id' => $pluginOrderOrder->fields['entities_id'], 
+                                        'is_recursive' => $pluginOrderOrder->fields['is_recursive'], 
+                                        'plugin_order_references_id' => $id_reference, 
+                                        'suppliers_id' => $pluginOrderOrder->fields['suppliers_id'],
+                                        'price_taxfree' => $_POST["price"]));
       }else{
          //create reference free
          $reference_free    = new PluginOrderReferenceFree();

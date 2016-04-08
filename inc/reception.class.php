@@ -168,10 +168,14 @@ class PluginOrderReception extends CommonDBChild {
 
       echo "<td>" . __("Reference") . ": </td>";
       echo "<td>";
-      $data         = array();
-      $data["id"]   = $this->fields["plugin_order_references_id"];
-      $data["name"] = $order_reference->fields["name"];
-      echo $order_reference->getReceptionReferenceLink($data);
+      if($this->fields['itemtype'] == 'PluginOrderReferenceFree'){
+         echo $order_reference->fields["name"];
+      }else{
+         $data         = array();
+         $data["id"]   = $this->fields["plugin_order_references_id"];
+         $data["name"] = $order_reference->fields["name"];
+         echo $order_reference->getReceptionReferenceLink($data);
+      }
       echo "</td>";
 
       echo "<td>".__("Taken delivery", "order")."</td>";
@@ -305,7 +309,11 @@ class PluginOrderReception extends CommonDBChild {
          echo "<td></td>";
          echo "<td align='center'>" . $item->getTypeName() . "</td>";
          echo "<td align='center'>" . Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]) . "</td>";
-         echo "<td>" . $reference->getReceptionReferenceLink($data_ref) . "</td>";
+          if($table == 'glpi_plugin_order_referencefrees'){
+            echo "<td>" . $data_ref['name'] . "</td>";
+         }else{
+            echo "<td>" . $reference->getReceptionReferenceLink($data_ref) . "</td>";
+         }
          $total = $order_item->getTotalQuantityByRefAndDiscount($orders_id, $references_id, $data_ref["price_taxfree"], $data_ref["discount"]);
          echo "<td>" . $order_item->getDeliveredQuantity($orders_id, $references_id, $data_ref["price_taxfree"], $data_ref["discount"])
          . " / " . $total . "</td>";
@@ -381,7 +389,11 @@ class PluginOrderReception extends CommonDBChild {
                Html::showTooltip($data['comment']);
                echo "</td>";
             }
-            echo "<td align='center'>" . $reference->getReceptionReferenceLink($data) . "</td>";
+            if($table == 'glpi_plugin_order_referencefrees'){
+               echo "<td align='center'>" . $data['name'] . "</td>";
+            }else{
+               echo "<td align='center'>" . $reference->getReceptionReferenceLink($data) . "</td>";
+            }
             echo "<td align='center'>";
             $link = Toolbox::getItemTypeFormURL($this->getType());
             if ($canedit && $data["states_id"] == PluginOrderOrder::ORDER_DEVICE_DELIVRED) {

@@ -315,7 +315,11 @@ class PluginOrderBill extends CommonDropdown
          echo "<td align='center'>";
          echo Dropdown::getDropdownName('glpi_entities', $order->getEntityID());
          echo "</td>";
-         echo "<td>" . $reference->getReceptionReferenceLink($data_ref) . "</td>";
+         if($table == 'glpi_plugin_order_referencefrees'){
+            echo "<td>" . $data_ref['name'] . "</td>";
+         }else{
+            echo "<td>" . $reference->getReceptionReferenceLink($data_ref) . "</td>";
+         }
          echo "</tr></table>";
 
          echo "<div class='center' id='generation$rand' style='display:none'>";
@@ -351,7 +355,11 @@ class PluginOrderBill extends CommonDropdown
 
             //Reference
             echo "<td align='center'>";
-            echo $reference->getReceptionReferenceLink($data);
+            if($table == 'glpi_plugin_order_referencefrees'){
+               echo $data['name'];
+            }else{
+               echo $reference->getReceptionReferenceLink($data);
+            }
             echo "</td>";
 
             //Type
