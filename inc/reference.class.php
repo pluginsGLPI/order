@@ -313,7 +313,7 @@ class PluginOrderReference extends CommonDBTM {
          if ($item->getField('entities_id') == $entity
                || ($item->maybeRecursive()
                && $item->fields['is_recursive']
-               && haveAccessToEntity($entity, true))) {
+               && Session::haveAccessToEntity($entity, true))) {
             return $item->getField('id');
          } else {
             //Workaround when templates are not recursive (ie computers, monitors, etc.)
