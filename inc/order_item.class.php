@@ -373,6 +373,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $query = "SELECT item.`id` AS IDD,
                        ref.`id`,
                        ref.`itemtype`,
+                       othertype.`name` as othertypename,
                        ref.`types_id`,
                        ref.`models_id`,
                        ref.`manufacturers_id`,
@@ -381,9 +382,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                        item.`price_discounted`,
                        item.`discount`,
                        item.`plugin_order_ordertaxes_id`
-               FROM $table item, `glpi_plugin_order_references` ref
-               WHERE item.`plugin_order_references_id` = ref.`id`
-               AND item.`plugin_order_orders_id` = '$ID'
+               FROM $table item
+               LEFT JOIN `glpi_plugin_order_references` ref
+                  ON item.`plugin_order_references_id` = ref.`id`
+               LEFT JOIN `glpi_plugin_order_othertypes` othertype
+                  ON ref.`itemtype` = 'PluginOrderOther' AND ref.`types_id` = `othertype`.`id`
+               WHERE item.`plugin_order_orders_id` = '$ID'
                GROUP BY ref.`id`, item.`price_taxfree`, item.`discount`
                ORDER BY ref.`name` ";
       return $DB->query($query);
@@ -548,6 +552,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             if (file_exists(GLPI_ROOT."/inc/".strtolower($data_ref["itemtype"])."type.class.php")) {
                echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Type"),
                                                                   $data_ref["types_id"]);
+            } else if ($data_ref["itemtype"] == "PluginOrderOther") {
+               echo  $data_ref['othertypename'];
             }
             echo "</td>";
             /* modele */
