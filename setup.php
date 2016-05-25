@@ -55,7 +55,6 @@ if (!defined('PLUGIN_ORDER_NUMBER_STEP')) {
 // Autoload
 include_once( GLPI_ROOT . "/plugins/order/inc/autoload.php");
 $options = array(
-   GLPI_ROOT . "/plugins/order/inc/",
    GLPI_ROOT . "/plugins/order/lib/"
 );
 $go_autoloader = new PluginOrderAutoloader($options);

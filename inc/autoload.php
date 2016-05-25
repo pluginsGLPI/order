@@ -43,7 +43,6 @@ class PluginOrderAutoloader implements SplAutoloader
    {
       foreach ($this->paths as $path) {
          $file = $path . str_replace('\\', '/', $classname) . '.php';
-         Toolbox::logDebug($file);
          if (file_exists($file)) {
             return include($file);
          }
