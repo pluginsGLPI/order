@@ -52,6 +52,15 @@ if (!defined('PLUGIN_ORDER_NUMBER_STEP')) {
    define ("PLUGIN_ORDER_NUMBER_STEP", 1 / pow(10, $CFG_GLPI["decimal_number"]));
 }
 
+// Autoload
+include_once( GLPI_ROOT . "/plugins/order/inc/autoload.php");
+$options = array(
+   GLPI_ROOT . "/plugins/order/inc/",
+   GLPI_ROOT . "/plugins/order/lib/"
+);
+$go_autoloader = new PluginOrderAutoloader($options);
+$go_autoloader->register();
+
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
    global $PLUGIN_HOOKS, $CFG_GLPI, $ORDER_TYPES;

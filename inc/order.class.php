@@ -1442,7 +1442,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       if ($template) {
          $config = array('PATH_TO_TMP' => GLPI_DOC_DIR . '/_tmp');
-         $odf    = new odf(PLUGIN_ORDER_TEMPLATE_DIR."$template", $config);
+         $odf = new Odtphp\Odf(PLUGIN_ORDER_TEMPLATE_DIR."$template", $config);
          $this->getFromDB($ID);
 
          if(file_exists(PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR . "custom.php")) {
