@@ -127,7 +127,7 @@ class Odf
      * @throws OdfException
      * @return odf
      */
-    public function setImage($key, $value, $page = null, $width = null, $height = null, $offsetX = null, $offsetY = null)
+    public function setImage($key, $value, $page = -1, $width = null, $height = null, $offsetX = null, $offsetY = null)
     {
         $filename = strtok(strrchr($value, '/'), '/.');
         $file = substr(strrchr($value, '/'), 1);
