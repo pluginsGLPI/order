@@ -42,12 +42,11 @@ if (isset($_POST["action"])) {
       case "reception":
          echo "</td><td>";
          Html::showDateFormItem("delivery_date", date("Y-m-d"), true, 1);
-         echo "</td><td>";
          echo __("Delivery form") . "&nbsp;";
-         echo "<input type='text' name='delivery_number' size='20'>";
+         echo "<input type='text' name='delivery_number' size='20'><br>";
          echo __("Delivery status", "order") . "&nbsp;";
          PluginOrderDeliveryState::Dropdown(array('name' => "plugin_order_deliverystates_id"));
-         echo "</td><td><input type='submit' name='reception' class='submit' value='"
+         echo "<br><input type='submit' name='reception' class='submit' value='"
             .  _sx('button', 'Post') . "'></td>";
          break;
    }
