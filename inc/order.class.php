@@ -991,9 +991,12 @@ class PluginOrderOrder extends CommonDBTM {
          ));
       } else {
          if ($this->fields['users_id']) {
-            $user->getFromDB($this->fields['users_id']);
-            $output = formatUserName($this->fields['users_id'], $user->fields['name'],
-                                     $user->fields['realname'], $user->fields['firstname']);
+            $output = "";
+
+            if($user->getFromDB($this->fields['users_id'])) {
+               $output = formatUserName($this->fields['users_id'], $user->fields['name'],
+                                        $user->fields['realname'], $user->fields['firstname']);
+            }
             echo $output;
          }
       }
@@ -1809,7 +1812,10 @@ class PluginOrderOrder extends CommonDBTM {
 
       // Get BUDGET
       $budget = new Budget();
-      $budget->getFromDB($this->fields['budgets_id']);
+      if (!$budget->getFromDB($this->fields['budgets_id'])) {
+         return false;
+      }
+      Toolbox::logDebug($budget);
       if ($budget->fields['value'] == 0) {
          return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
       }
@@ -1832,6 +1838,7 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
    public function displayAlertOverBudget($type) {
+      $message = "";
       switch($type) {
          case PluginOrderOrder::ORDER_IS_OVER_BUDGET :
             $message = "<h3><span class='red'>"
