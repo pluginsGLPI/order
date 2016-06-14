@@ -1699,7 +1699,9 @@ class PluginOrderOrder extends CommonDBTM {
          echo "<tr>";
          echo "<th style='width:15%;'>" . _n("Action", "Actions", 2) . "</th>";
          echo "<th>" . __("Name") . "</th>";
+         echo "<th>" . __("Order status", "order") . "</th>";
          echo "<th>" . __("Entity") . "</th>";
+         echo "<th>" . __("Price tax free", "order") . "</th>";
          echo "<th>" . __("Price ATI", "order") . "</th>";
          echo "</tr>";
 
@@ -1730,7 +1732,16 @@ class PluginOrderOrder extends CommonDBTM {
             echo "</td>";
 
             echo "<td>";
+            echo Dropdown::getDropdownName(getTableForItemType('PluginOrderOrderState'),
+                                             $data["plugin_order_orderstates_id"]);
+            echo "</td>";
+
+            echo "<td>";
             echo Dropdown::getDropdownName("glpi_entities",$data["entities_id"]);
+            echo "</td>";
+
+            echo "<td>";
+            echo Html::formatNumber($prices["priceHT"]);
             echo "</td>";
 
             echo "<td>";
