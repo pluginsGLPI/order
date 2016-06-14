@@ -455,7 +455,7 @@ class PluginOrderReference extends CommonDBTM {
       echo "</td>";
       echo "<td>" . __("Manufacturer reference", "order") . "</td>";
       echo "<td>";
-      echo Html::autocompletionTextField($this, 'manufacturer_reference');
+      echo Html::autocompletionTextField($this, 'manufacturers_reference');
       echo "</td>";
       echo "</tr>";
 
@@ -1187,10 +1187,18 @@ class PluginOrderReference extends CommonDBTM {
             }
          }
 
+         //Fix error naming field
+         if (FieldExists($table, 'manufacturer_reference')) {
+            $migration->changeField($table, "manufacturer_reference", "manufacturers_reference",
+                                    "varchar(255) collate utf8_unicode_ci NOT NULL DEFAULT ''");
+            $migration->migrationOneTable($table);
+         }
+
          //2.0.1
-         if (!FieldExists('glpi_plugin_order_references', 'manufacturer_reference')) {
-            $migration->addField('glpi_plugin_order_references', "manufacturer_reference", "string");
-            $migration->migrationOneTable('glpi_plugin_order_references');
+         if (!FieldExists($table, 'manufacturers_reference')) {
+            $migration->addField($table, "manufacturers_reference",
+                                    "varchar(255) collate utf8_unicode_ci NOT NULL DEFAULT ''");
+            $migration->migrationOneTable($table);
          }
       }
    }
