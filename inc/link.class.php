@@ -932,7 +932,7 @@ class PluginOrderLink extends CommonDBChild {
             $input['contracttypes_id'] = $reference->fields['types_id'];
 
          } else {
-            if(isset($values["states_id"])){
+            if(isset($values["states_id"]) && $values["states_id"] != 0){
                $input['states_id']     = $values['states_id'];
             }else{
                if($config->getGeneratedAssetState()) {
