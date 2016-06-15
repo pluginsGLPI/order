@@ -901,7 +901,14 @@ class PluginOrderLink extends CommonDBChild {
                }
             }
             $input['groups_id'] = $values['groups_id'];
-            $input['locations_id'] = $values['locations_id'];
+			if (isset($values["locations_id"]) && $values["locations_id"] != 0) {
+               $input['locations_id'] = $values['locations_id'];
+            } else {
+               // Get bill data
+               if ($config->canAddLocation()) {
+                  $input['locations_id'] = $order->fields['locations_id'];
+               }
+            }
 
             $input["entities_id"] = $entity;
             $input["serial"]      = $values["serial"];
@@ -922,10 +929,6 @@ class PluginOrderLink extends CommonDBChild {
                }
             }
 
-            if ($config->canAddLocation()) {
-               $input['locations_id'] = $order->fields['locations_id'];
-            }
-
          } elseif($values["itemtype"] == 'Contract') {
             $input["name"]             = $values["name"];
             $input["entities_id"]      = $entity;
@@ -942,16 +945,20 @@ class PluginOrderLink extends CommonDBChild {
                }
             }
             $input['groups_id']        = $values['groups_id'];
-            $input['locations_id']     = $values['locations_id'];
+            if (isset($values["locations_id"]) && $values["locations_id"] != 0) {
+               $input['locations_id'] = $values['locations_id'];
+            } else {
+               // Get bill data
+               if ($config->canAddLocation()) {
+                  $input['locations_id'] = $order->fields['locations_id'];
+               }
+            }
 
             $input["entities_id"]      = $entity;
             $input["serial"]           = $values["serial"];
             $input["otherserial"]      = $values["otherserial"];
             $input["name"]             = $values["name"];
-            // Get bill data
-            if ($config->canAddLocation()) {
-               $input['locations_id'] = $order->fields['locations_id'];
-            }
+
             $input["manufacturers_id"] = $reference->fields["manufacturers_id"];
             $typefield                 = getForeignKeyFieldForTable(getTableForItemType($values["itemtype"]."Type"));
             $input[$typefield]         = $reference->fields["types_id"];
