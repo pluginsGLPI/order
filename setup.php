@@ -116,10 +116,15 @@ function plugin_init_order() {
 
       Plugin::registerClass('PluginOrderReference', array('document_types' => true));
       Plugin::registerClass('PluginOrderProfile', array('addtabon' => array('Profile')));
-      Plugin::registerClass('PluginOrderOrder_Item', array(
-         'notificationtemplates_types' => true,
-         'addtabon'                    => PluginOrderOrder_Item::getClasses(true))
-      );
+
+      $values['notificationtemplates_types'] = true;
+      //If the new infocom display hook (introduced in 9.1) is available, use it !
+      if (method_exists('Infocom', 'addPluginInfos')) {
+         $PLUGIN_HOOKS['infocom']['order'] = array('PluginOrderOrder_Item', 'showForInfocom');
+      } else {
+         $values['addtabon'] = PluginOrderOrder_Item::getClasses(true);
+      }
+      Plugin::registerClass('PluginOrderOrder_Item', $values);
 
       if (PluginOrderOrder::canView()) {
          Plugin::registerClass('PluginOrderDocumentCategory',

@@ -1017,7 +1017,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __("Discount (%)", "order") . ": </td>";
       if ($canedit) {
-         echo "<td><input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount' 
+         echo "<td><input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount'
                           value='".$this->fields['discount']."' class='decimal'>";
       } else {
          echo "<td>".Html::formatNumber($this->fields['discount'])."</td>";
@@ -1529,6 +1529,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          $order_item->showPluginFromItems(get_class($item), $item->getField('id'));
       }
       return true;
+   }
+
+   public static function showForInfocom(CommonDBTM $item) {
+      $order_item = new self();
+      $order_item->showPluginFromItems(get_class($item), $item->getField('id'));
    }
 
    public static function uninstallOrderItemNotification() {
