@@ -29,7 +29,5 @@
 
 include ("../../../inc/includes.php");
 
-require_once('../lib/odtphp/odf.php');
-
 $PluginOrderOrder = new PluginOrderOrder();
 $PluginOrderOrder->generateOrder($_GET);
