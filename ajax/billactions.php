@@ -42,9 +42,10 @@ if (isset($_POST["action"])) {
       case "bill":
          echo "&nbsp;<input type='hidden' name='plugin_order_orders_id' "
             . " value='" . $_POST["plugin_order_orders_id"] . "'>";
-         PluginOrderBill::Dropdown(array(
+          echo "<input type='hidden' name='plugin_order_bills_id' value='" . $_POST["plugin_order_bills_id"] . "'>";
+         /*PluginOrderBill::Dropdown(array(
             'condition' => "`plugin_order_orders_id`='" . $_POST['plugin_order_orders_id'] . "'",
-         ));
+         ));*/
          break;
    }
 
