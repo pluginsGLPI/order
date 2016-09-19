@@ -1458,7 +1458,7 @@ class PluginOrderOrder extends CommonDBTM {
             $PluginOrderOrder_Item         = new PluginOrderOrder_Item();
             $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 
-            try{$odf->setImage('logo', PLUGIN_ORDER_TEMPLATE_LOGO_DIR.'/logo.jpg');} catch(OdfException $e){}
+            try{$odf->setImage('logo', PLUGIN_ORDER_TEMPLATE_LOGO_DIR.'/logo.jpg');} catch(\Odtphp\Exceptions\OdfException $e){}
 
             $values = array();
 
@@ -1597,9 +1597,9 @@ class PluginOrderOrder extends CommonDBTM {
             $total_TTC = $prices["priceTTC"] + $postagewithTVA;
 
             if ($signature) {
-               try{$odf->setImage('sign', PLUGIN_ORDER_SIGNATURE_DIR.$signature);} catch(OdfException $e){}
+               try{$odf->setImage('sign', PLUGIN_ORDER_SIGNATURE_DIR.$signature);} catch(\Odtphp\Exceptions\OdfException $e){}
             } else {
-               try{$odf->setImage('sign', '../pics/nothing.gif');} catch(OdfException $e){}
+               try{$odf->setImage('sign', '../pics/nothing.gif');} catch(\Odtphp\Exceptions\OdfException $e){}
             }
 
             $name = Dropdown::getDropdownName("glpi_plugin_order_orderpayments", $this->fields["plugin_order_orderpayments_id"]);
