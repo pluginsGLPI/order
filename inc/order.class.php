@@ -775,6 +775,7 @@ class PluginOrderOrder extends CommonDBTM {
             'comments'  => true,
             'condition' => $restrict,
             'width'     => '150px',
+            'rand'   => $rand,
          ));
       } else {
          $budget = new Budget();
@@ -786,6 +787,84 @@ class PluginOrderOrder extends CommonDBTM {
          }
       }
       echo "</td></tr>";
+
+      // Payment address
+      echo "<tr><td>" . __("Invoice address", "order") . ":</td><td>";
+      if ($canedit) {
+         Location::Dropdown(array(
+            'name'   => "payment_address_id",
+            'value'  => $this->fields["payment_address_id"],
+            'entity' => $this->fields["entities_id"],
+         ));
+      }
+      else {
+         echo Dropdown::getDropdownName("glpi_locations", $this->fields["locations_id"]);
+      }
+      echo '</td>';
+      // Payment location (production site)
+      echo "<td>" . __("Invoice location", "order");
+      if ($ID > 0) {
+         echo "*";
+      } else {
+         echo "<span class='red'>*</span>";
+      }
+      echo ":</td><td><span id='dropdown_location'>";
+      //     If a budget is selected display location name from budget's locations_id...
+      // ... Else, if no budget was selected and a payment_locations_id is set,
+      //     display locations list with location's name pre-selected from payment_locations_id ...
+      // ... Else, display locations list with EMPTY_VALUE pre-selected
+      if (isset($this->fields['payment_locations_id']) && $this->fields['payment_locations_id'] !== '' &&
+                $this->fields['payment_locations_id'] !== '0') {
+
+         Location::Dropdown(array(
+            'name'   => "payment_locations_id",
+            'value'  => $this->fields['payment_locations_id'],
+            'entity' => $this->fields['entities_id'],
+            'rand'   => $rand,
+         ));
+      } elseif (isset($this->fields['budgets_id']) && $this->fields['budgets_id'] !== '' &&
+                $this->fields['budgets_id'] > 0) {
+
+         $budget = new Budget();
+         $budget->getFromDB($this->fields['budgets_id']);
+         // Get selected budget's location
+         $locations_id = $budget->fields["locations_id"];
+         Location::Dropdown(array(
+            'name'   => "payment_locations_id",
+            'value'  => $locations_id,
+            'entity' => $this->fields['entities_id'],
+            'rand'   => $rand,
+         ));
+
+      } else {
+        Location::Dropdown(array(
+           'name'   => "payment_locations_id",
+           'value'  => Dropdown::EMPTY_VALUE,
+           'entity' => 0,
+           'rand'   => $rand,
+        ));
+      }
+      
+      // AJAX listener params
+      $params = array(
+         'fieldname'             => 'payment_locations_id',
+         'payment_locations_id'  => $this->fields["payment_locations_id"],
+         'entities_id'           => $this->fields["entities_id"],
+         'is_recursive'          => $this->fields["is_recursive"],
+         'budgets_id'            => '__VALUE__', // Get budget's id from select
+         'rand'                  => $rand,
+      );
+      // AJAX listener:
+      // Listen to "dropdown_budgets_id",
+      // Update "dropdown_location",
+      // Execute script "dropdownLocation.php",
+      // With "$params" as parameters
+      Ajax::updateItemOnSelectEvent("dropdown_budgets_id$rand",
+                                    "dropdown_location",
+                                    '../ajax/dropdownLocation.php',
+                                    $params);
+      echo "</span></td></tr>";
+
 
       /* location */
       echo "<tr class='tab_bg_1'><td>" . __("Delivery location", "order") . ": </td>";

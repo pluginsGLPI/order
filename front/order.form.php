@@ -45,6 +45,12 @@ $pluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
 if (isset ($_POST["add"])) {
    $pluginOrderOrder->check(-1, CREATE, $_POST);
 
+    if(isset($_POST['payment_locations_id']) && $_POST['payment_locations_id'] <= 0){
+      Session::addMessageAfterRedirect(__("Please select an invoice location", "order"),false,ERROR);
+      Html::back();
+    }
+
+
    /* FORCE Status */
    $_POST['plugin_order_orderstates_id'] = $config->getDraftState();
 
@@ -81,6 +87,12 @@ if (isset ($_POST["add"])) {
 
 /* update order */
 } elseif (isset($_POST["update"])) {
+
+   if(isset($_POST['payment_locations_id']) && $_POST['payment_locations_id'] <= 0){
+      Session::addMessageAfterRedirect(__("Please select an invoice location", "order"),false,ERROR);
+      Html::back();
+   }
+
    $pluginOrderOrder->check($_POST['id'], UPDATE);
    $pluginOrderOrder->update($_POST);
    Html::back();
