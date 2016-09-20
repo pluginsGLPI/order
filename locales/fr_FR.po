@@ -885,3 +885,11 @@ msgstr "Total des commandes en retard"
 #: report/orderdelivery/orderdelivery.php:47
 msgid "orderdelivery_report_title"
 msgstr "Expédition des commandes"
+
+#: inc/order.class.php:805
+msgid "Invoice location"
+msgstr "Lieu de facturation"
+
+#: front/orderform.php:49 #: front/orderform.php:92
+msgid "Please select an invoice location"
+msgstr "Merci de selectionner un lieu de facturation"

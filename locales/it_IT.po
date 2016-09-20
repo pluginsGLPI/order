@@ -884,3 +884,11 @@ msgstr "Ordini tardivi totali"
 #: report/orderdelivery/orderdelivery.php:47
 msgid "orderdelivery_report_title"
 msgstr ""
+
+#: inc/order.class.php:805
+msgid "Invoice location"
+msgstr ""
+
+#: front/orderform.php:49 #: front/orderform.php:92
+msgid "Please select an invoice location"
+msgstr ""
