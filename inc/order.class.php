@@ -2212,6 +2212,8 @@ class PluginOrderOrder extends CommonDBTM {
                `plugin_order_ordertypes_id` int (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)',
                `date_mod` datetime default NULL,
                `is_helpdesk_visible` tinyint(1) NOT NULL default '1',
+               `payment_address_id` int(11) NOT NULL,
+               `payment_locations_id` int(11) NOT NULL,
                PRIMARY KEY  (`id`),
                KEY `name` (`name`),
                KEY `entities_id` (`entities_id`),
@@ -2300,6 +2302,14 @@ class PluginOrderOrder extends CommonDBTM {
          $migration->addKey($table, "locations_id");
          $migration->addKey($table, "is_deleted");
          $migration->migrationOneTable($table);
+
+
+
+         if (TableExists("glpi_plugin_order_orders")) {
+            $migration->addField('glpi_plugin_order_orders', 'payment_address_id' ,'integer');
+            $migration->addField('glpi_plugin_order_orders', 'payment_locations_id','integer');
+            $migration->migrationOneTable('glpi_plugin_order_orders');
+         }
 
          //Only migrate itemtypes when it's only necessary, otherwise it breaks upgrade procedure !
          if ($domigration_itemtypes) {
