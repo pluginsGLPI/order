@@ -921,14 +921,13 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       $infos = $this->getOrderInfosByItem($itemtype, $ID);
       if ($infos) {
-         echo "<div class='center'>";
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr align='center'><th colspan='2'>" . __("Order informations", "order") . "</th></tr>";
-         echo "<tr align='center'><td class='tab_bg_2'>" . __("Order name", "order") . "</td>";
-         echo "<td class='tab_bg_2'>";
+         echo "<tr align='center'><th colspan='5'>" . __("Order informations", "order") . "</th></tr>";
+         echo "<tr align='center'><td colspan='2' class='tab_bg_2'>" . __("Order name", "order") . "</td>";
+         echo "<td colspan='2' class='tab_bg_2'>";
          $order = new PluginOrderOrder();
          $order->getFromDB($infos['id']);
          echo $order->getLink(PluginOrderOrder::canView());
+         echo "</td>";
 
          $result = getAllDatasFromTable($this->getTable(),
                                         "`plugin_order_orders_id`='".$infos['id']."'
@@ -939,18 +938,17 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             $reference = new PluginOrderReference();
             $reference->getFromDB($link['plugin_order_references_id']);
             if (Session::haveRight('plugin_order_reference', READ)) {
-               echo "<tr align='center'><td class='tab_bg_2'>" .
+               echo "<tr align='center'><td colspan='2' class='tab_bg_2'>" .
                      __("Reference") . "</td>";
-               echo "<td class='tab_bg_2'>" . $reference->getLink(PluginOrderReference::canView()) . "</td></tr>";
+               echo "<td colspan='2' class='tab_bg_2'>" . $reference->getLink(PluginOrderReference::canView()) . "</td></tr>";
             }
-            echo "<tr align='center'><td class='tab_bg_2'>" .
+            echo "<tr align='center'><td colspan='2' class='tab_bg_2'>" .
                   __("Delivery date") . "</td>";
-            echo "<td class='tab_bg_2'>" . Html::convDate($link["delivery_date"]) . "</td></tr>";
+            echo "<td colspan='2' class='tab_bg_2'>" . Html::convDate($link["delivery_date"]) . "</td></tr>";
 
          }
-         echo "</table></div>";
-       }
-    }
+      }
+   }
 
    public function defineTabs($options=array()) {
       $ong = array();
