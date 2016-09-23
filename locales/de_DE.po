@@ -822,7 +822,7 @@ msgstr "Liste der Referenzen"
 #: inc/surveysupplier.class.php:43 inc/surveysupplier.class.php:179
 #: inc/surveysupplier.class.php:369 inc/surveysupplier.class.php:498
 msgid "Supplier quality"
-msgstr "Lieferqualität
+msgstr "Lieferqualität"
 
 #: inc/surveysupplier.class.php:106
 msgid "Really unsatisfied"
