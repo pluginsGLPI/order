@@ -58,6 +58,7 @@ if (isset($_POST["itemtype"])) {
 
    $params = array(
       'reference_id' => '__VALUE__',
+      'suppliers_id' => $_POST['suppliers_id'],
    );
    Ajax::updateItemOnSelectEvent('dropdown_plugin_order_references_id' . $_POST['rand'],
                                  'show_priceht',
@@ -68,7 +69,7 @@ if (isset($_POST["itemtype"])) {
 } elseif (isset($_POST['reference_id'])) {
    $query = "SELECT `price_taxfree`
              FROM `glpi_plugin_order_references_suppliers`
-             WHERE `plugin_order_references_id` = '{$_POST['reference_id']}'";
+             WHERE `plugin_order_references_id` = '{$_POST['reference_id']}' AND suppliers_id = '{$_POST['suppliers_id']}'";
    $result = $DB->query($query);
    $price = $DB->result($result, 0, 'price_taxfree');
    $price = Html::formatNumber($price, true);
