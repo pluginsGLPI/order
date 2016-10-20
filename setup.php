@@ -52,6 +52,14 @@ if (!defined('PLUGIN_ORDER_NUMBER_STEP')) {
    define ("PLUGIN_ORDER_NUMBER_STEP", 1 / pow(10, $CFG_GLPI["decimal_number"]));
 }
 
+// Autoload
+include_once( GLPI_ROOT . "/plugins/order/inc/autoload.php");
+$options = array(
+   GLPI_ROOT . "/plugins/order/lib/"
+);
+$go_autoloader = new PluginOrderAutoloader($options);
+$go_autoloader->register();
+
 /* init the hooks of the plugins -needed- */
 function plugin_init_order() {
    global $PLUGIN_HOOKS, $CFG_GLPI, $ORDER_TYPES;
@@ -116,10 +124,15 @@ function plugin_init_order() {
 
       Plugin::registerClass('PluginOrderReference', array('document_types' => true));
       Plugin::registerClass('PluginOrderProfile', array('addtabon' => array('Profile')));
-      Plugin::registerClass('PluginOrderOrder_Item', array(
-         'notificationtemplates_types' => true,
-         'addtabon'                    => PluginOrderOrder_Item::getClasses(true))
-      );
+
+      $values['notificationtemplates_types'] = true;
+      //If the new infocom display hook (introduced in 9.1) is available, use it !
+      if (method_exists('Infocom', 'addPluginInfos')) {
+         $PLUGIN_HOOKS['infocom']['order'] = array('PluginOrderOrder_Item', 'showForInfocom');
+      } else {
+         $values['addtabon'] = PluginOrderOrder_Item::getClasses(true);
+      }
+      Plugin::registerClass('PluginOrderOrder_Item', $values);
 
       if (PluginOrderOrder::canView()) {
          Plugin::registerClass('PluginOrderDocumentCategory',
@@ -155,7 +168,7 @@ function plugin_init_order() {
 /* get the name and the version of the plugin - needed- */
 function plugin_version_order() {
    return array ('name'           => __("Orders management", "order"),
-                 'version'        => '0.85+1.2',
+                 'version'        => '0.85+1.3.1',
                  'author'         => 'The plugin order team',
                  'homepage'       => 'https://github.com/pluginsGLPI/order',
                  'minGlpiVersion' => '0.85',

@@ -399,10 +399,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
             break;
          case 'PluginOrderOrder':
             $order_supplier = new self();
-            //self::showOrderSupplierInfos($item->getID()); //doublon
-            //TODO : A gérer
-            if (/*!$order_supplier->checkIfSupplierInfosExists($item->getID()) 
-               && */ $item->can($item->getID(), UPDATE)) {
+            if ($item->can($item->getID(), READ)) {
                self::showOrderSupplierInfos($item->getID());
                $order_supplier->showForm("", array('plugin_order_orders_id' => $item->getID()));
             }

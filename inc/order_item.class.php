@@ -442,6 +442,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          $query = "SELECT item.`id` AS IDD,
                        ref.`id`,
                        ref.`itemtype`,
+                       othertype.`name` as othertypename,
                        ref.`types_id`,
                        ref.`models_id`,
                        ref.`manufacturers_id`,
@@ -450,9 +451,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                        item.`price_discounted`,
                        item.`discount`,
                        item.`plugin_order_ordertaxes_id`
-               FROM $table item, `" . $tableRef . "` ref
-               WHERE item.`plugin_order_references_id` = ref.`id`
-               AND item.`plugin_order_orders_id` = '$ID'
+               FROM $table item
+               LEFT JOIN `glpi_plugin_order_references` ref
+                  ON item.`plugin_order_references_id` = ref.`id`
+               LEFT JOIN `glpi_plugin_order_othertypes` othertype
+                  ON ref.`itemtype` = 'PluginOrderOther' AND ref.`types_id` = `othertype`.`id`
+               WHERE item.`plugin_order_orders_id` = '$ID'
                AND item.`itemtype` NOT LIKE 'PluginOrderReferenceFree'
                GROUP BY ref.`id`, item.`price_taxfree`, item.`discount`
                ORDER BY ref.`name` ";
@@ -666,6 +670,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "<td align='center'>";
          if (file_exists(GLPI_ROOT . "/inc/" . strtolower($data_ref["itemtype"]) . "type.class.php")) {
             echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"] . "Type"), $data_ref["types_id"]);
+            } else if ($data_ref["itemtype"] == "PluginOrderOther") {
+               echo  $data_ref['othertypename'];
          }
          echo "</td>";
          /* modele */
@@ -1034,14 +1040,13 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       $infos = $this->getOrderInfosByItem($itemtype, $ID);
       if ($infos) {
-         echo "<div class='center'>";
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr align='center'><th colspan='2'>" . __("Order informations", "order") . "</th></tr>";
-         echo "<tr align='center'><td class='tab_bg_2'>" . __("Order name", "order") . "</td>";
-         echo "<td class='tab_bg_2'>";
+         echo "<tr align='center'><th colspan='5'>" . __("Order informations", "order") . "</th></tr>";
+         echo "<tr align='center'><td colspan='2' class='tab_bg_2'>" . __("Order name", "order") . "</td>";
+         echo "<td colspan='2' class='tab_bg_2'>";
          $order = new PluginOrderOrder();
          $order->getFromDB($infos['id']);
          echo $order->getLink(PluginOrderOrder::canView());
+         echo "</td>";
 
          $result = getAllDatasFromTable($this->getTable(),
                                         "`plugin_order_orders_id`='".$infos['id']."'
@@ -1052,16 +1057,15 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             $reference = new PluginOrderReference();
             $reference->getFromDB($link['plugin_order_references_id']);
             if (Session::haveRight('plugin_order_reference', READ)) {
-               echo "<tr align='center'><td class='tab_bg_2'>" .
+               echo "<tr align='center'><td colspan='2' class='tab_bg_2'>" .
                      __("Reference") . "</td>";
-               echo "<td class='tab_bg_2'>" . $reference->getLink(PluginOrderReference::canView()) . "</td></tr>";
+               echo "<td colspan='2' class='tab_bg_2'>" . $reference->getLink(PluginOrderReference::canView()) . "</td></tr>";
             }
-            echo "<tr align='center'><td class='tab_bg_2'>" .
+            echo "<tr align='center'><td colspan='2' class='tab_bg_2'>" .
                   __("Delivery date") . "</td>";
-            echo "<td class='tab_bg_2'>" . Html::convDate($link["delivery_date"]) . "</td></tr>";
+            echo "<td colspan='2' class='tab_bg_2'>" . Html::convDate($link["delivery_date"]) . "</td></tr>";
 
          }
-         echo "</table></div>";
        }
     }
 
@@ -1682,6 +1686,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          $order_item->showPluginFromItems(get_class($item), $item->getField('id'));
       }
       return true;
+   }
+
+   public static function showForInfocom(CommonDBTM $item) {
+      $order_item = new self();
+      $order_item->showPluginFromItems(get_class($item), $item->getField('id'));
    }
 
    public static function uninstallOrderItemNotification() {

@@ -991,9 +991,12 @@ class PluginOrderOrder extends CommonDBTM {
          ));
       } else {
          if ($this->fields['users_id']) {
-            $user->getFromDB($this->fields['users_id']);
-            $output = formatUserName($this->fields['users_id'], $user->fields['name'],
-                                     $user->fields['realname'], $user->fields['firstname']);
+            $output = "";
+
+            if($user->getFromDB($this->fields['users_id'])) {
+               $output = formatUserName($this->fields['users_id'], $user->fields['name'],
+                                        $user->fields['realname'], $user->fields['firstname']);
+            }
             echo $output;
          }
       }
@@ -1442,7 +1445,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       if ($template) {
          $config = array('PATH_TO_TMP' => GLPI_DOC_DIR . '/_tmp');
-         $odf    = new odf(PLUGIN_ORDER_TEMPLATE_DIR."$template", $config);
+         $odf = new Odtphp\Odf(PLUGIN_ORDER_TEMPLATE_DIR."$template", $config);
          $this->getFromDB($ID);
 
          if(file_exists(PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR . "custom.php")) {
@@ -1455,7 +1458,7 @@ class PluginOrderOrder extends CommonDBTM {
             $PluginOrderOrder_Item         = new PluginOrderOrder_Item();
             $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 
-            try{$odf->setImage('logo', PLUGIN_ORDER_TEMPLATE_LOGO_DIR.'/logo.jpg');} catch(OdfException $e){}
+            try{$odf->setImage('logo', PLUGIN_ORDER_TEMPLATE_LOGO_DIR.'/logo.jpg');} catch(\Odtphp\Exceptions\OdfException $e){}
 
             $values = array();
 
@@ -1616,9 +1619,9 @@ class PluginOrderOrder extends CommonDBTM {
             $total_TTC = $prices["priceTTC"] + $postagewithTVA;
 
             if ($signature) {
-               try{$odf->setImage('sign', PLUGIN_ORDER_SIGNATURE_DIR.$signature);} catch(OdfException $e){}
+               try{$odf->setImage('sign', PLUGIN_ORDER_SIGNATURE_DIR.$signature);} catch(\Odtphp\Exceptions\OdfException $e){}
             } else {
-               try{$odf->setImage('sign', '../pics/nothing.gif');} catch(OdfException $e){}
+               try{$odf->setImage('sign', '../pics/nothing.gif');} catch(\Odtphp\Exceptions\OdfException $e){}
             }
 
             $name = Dropdown::getDropdownName("glpi_plugin_order_orderpayments", $this->fields["plugin_order_orderpayments_id"]);
@@ -1643,7 +1646,7 @@ class PluginOrderOrder extends CommonDBTM {
             foreach ($values as $field => $val) {
                try {
                   $odf->setVars($field, $val, true, 'UTF-8');
-               } catch (OdfException $e) {
+               } catch (\Odtphp\Exceptions\OdfException $e) {
 
                }
             }
@@ -1718,7 +1721,9 @@ class PluginOrderOrder extends CommonDBTM {
          echo "<tr>";
          echo "<th style='width:15%;'>" . _n("Action", "Actions", 2) . "</th>";
          echo "<th>" . __("Name") . "</th>";
+         echo "<th>" . __("Order status", "order") . "</th>";
          echo "<th>" . __("Entity") . "</th>";
+         echo "<th>" . __("Price tax free", "order") . "</th>";
          echo "<th>" . __("Price ATI", "order") . "</th>";
          echo "</tr>";
 
@@ -1749,7 +1754,16 @@ class PluginOrderOrder extends CommonDBTM {
             echo "</td>";
 
             echo "<td>";
+            echo Dropdown::getDropdownName(getTableForItemType('PluginOrderOrderState'),
+                                             $data["plugin_order_orderstates_id"]);
+            echo "</td>";
+
+            echo "<td>";
             echo Dropdown::getDropdownName("glpi_entities",$data["entities_id"]);
+            echo "</td>";
+
+            echo "<td>";
+            echo Html::formatNumber($prices["priceHT"]);
             echo "</td>";
 
             echo "<td>";
@@ -1831,7 +1845,10 @@ class PluginOrderOrder extends CommonDBTM {
 
       // Get BUDGET
       $budget = new Budget();
-      $budget->getFromDB($this->fields['budgets_id']);
+      if (!$budget->getFromDB($this->fields['budgets_id'])) {
+         return false;
+      }
+      Toolbox::logDebug($budget);
       if ($budget->fields['value'] == 0) {
          return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
       }
@@ -1854,6 +1871,7 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
    public function displayAlertOverBudget($type) {
+      $message = "";
       switch($type) {
          case PluginOrderOrder::ORDER_IS_OVER_BUDGET :
             $message = "<h3><span class='red'>"

@@ -537,7 +537,6 @@ class PluginOrderConfig extends CommonDBTM {
                   'generated_serial'            => $tobefilled,
                   'generated_otherserial'       => $tobefilled,
                   'default_asset_states_id'     => 0,
-                  //'generate_ticket'             => 0,
                   'generated_title'             => $tobefilled,
                   'generated_content'           => $tobefilled,
                   'default_ticketcategories_id' => 0,
@@ -565,7 +564,6 @@ class PluginOrderConfig extends CommonDBTM {
             $migration->addField($table, "generated_otherserial", "varchar(255) collate utf8_unicode_ci default NULL");
             $migration->addField($table, "default_asset_entities_id", "int(11) NOT NULL default '0'");
             $migration->addField($table, "default_asset_states_id", "int(11) NOT NULL default '0'");
-            //$migration->addField($table, "generate_ticket", "tinyint(1) NOT NULL default '0'");
             $migration->addField($table, "generated_title", "varchar(255) collate utf8_unicode_ci default NULL");
             $migration->addField($table, "generated_content", "text collate utf8_unicode_ci");
             $migration->addField($table, "default_ticketcategories_id", "int(11) NOT NULL default '0'");
