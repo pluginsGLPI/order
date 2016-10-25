@@ -28,6 +28,8 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
+define ('PLUGIN_ORDER_VERSION', '1.3.2');
+
 if (!defined('PLUGIN_ORDER_TEMPLATE_DIR')) {
    define ("PLUGIN_ORDER_TEMPLATE_DIR",  GLPI_ROOT."/plugins/order/templates/");
 }
@@ -168,7 +170,7 @@ function plugin_init_order() {
 /* get the name and the version of the plugin - needed- */
 function plugin_version_order() {
    return array ('name'           => __("Orders management", "order"),
-                 'version'        => '0.85+1.3.1',
+                 'version'        => PLUGIN_ORDER_VERSION,
                  'author'         => 'The plugin order team',
                  'homepage'       => 'https://github.com/pluginsGLPI/order',
                  'minGlpiVersion' => '0.85',
