@@ -32,7 +32,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginOrderReferenceInjection extends PluginOrderReference implements PluginDatainjectionInjectionInterface {
-   function __construct() {
+   public function __construct() {
       $this->table = getTableForItemType(get_parent_class($this));
    }
 
@@ -42,11 +42,11 @@ class PluginOrderReferenceInjection extends PluginOrderReference implements Plug
       return $parenttype::getTable();
    } 
  
-   function isPrimaryType() {
+   public function isPrimaryType() {
       return true;
    }
 
-   function connectedTo() {
+   public function connectedTo() {
       return array();
    }
 
@@ -58,17 +58,17 @@ class PluginOrderReferenceInjection extends PluginOrderReference implements Plug
     * @return an array of IDs of newly created objects : for example array(Computer=>1, Networkport=>10)
     *
    **/
-   function addOrUpdateObject($values=array(), $options=array()) {
+   public function addOrUpdateObject($values=array(), $options=array()) {
       $lib = new PluginDatainjectionCommonInjectionLib($this, $values, $options);
       $lib->processAddOrUpdate();
       return $lib->getInjectionResults();
    }
 
-   function getOptions($primary_type = '') {
+   public function getOptions($primary_type = '') {
       return Search::getOptions(get_parent_class($this));
    }
 
-   function getSpecificFieldValue($itemtype, $searchOption, $field, &$values) {
+   public function getSpecificFieldValue($itemtype, $searchOption, $field, &$values) {
       global $DB;
 
       $value  = $values[$itemtype][$field];
