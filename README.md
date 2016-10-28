@@ -6,7 +6,7 @@ This plugin allows you to manage order management within GLPIi:
 - Order management (with approval workflow)
 - Budgets management
 
-iContributing
+Contributing
 ------------
 
 * Open a ticket for each bug/feature so it can be discussed
