@@ -112,3 +112,5 @@ class PluginOrderReferenceInjection extends PluginOrderReference implements Plug
       return $value;
    }
 }
+
+?>
