@@ -1,6 +1,12 @@
 <?php
 /*
- * @version $Id: bill.tabs.php 530 2011-06-30 11:30:17Z walid $
+ -------------------------------------------------------------------------
+ {NAME} plugin for GLPI
+ Copyright (C) 2011-2017 by the Order Development Team.
+
+ https://github.com/pluginsGLPI/order
+ -------------------------------------------------------------------------
+
  LICENSE
 
  This file is part of the order plugin.
@@ -16,7 +22,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; along with Order. If not, see <http://www.gnu.org/licenses/>.
+ along with Order. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
@@ -62,7 +68,12 @@ $options = array(
 $go_autoloader = new PluginOrderAutoloader($options);
 $go_autoloader->register();
 
-/* init the hooks of the plugins -needed- */
+/**
+ * Init hooks of the plugin.
+ * REQUIRED
+ *
+ * @return void
+ */
 function plugin_init_order() {
    global $PLUGIN_HOOKS, $CFG_GLPI, $ORDER_TYPES;
 
@@ -167,7 +178,12 @@ function plugin_init_order() {
    }
 }
 
-/* get the name and the version of the plugin - needed- */
+/**
+ * Get the name and the version of the plugin
+ * REQUIRED
+ *
+ * @return array
+ */
 function plugin_version_order() {
    return array ('name'           => __("Orders management", "order"),
                  'version'        => PLUGIN_ORDER_VERSION,
@@ -177,15 +193,27 @@ function plugin_version_order() {
                  'license'        => 'GPLv2+');
 }
 
-/* check prerequisites before install : may print errors or add to message after redirect -optional- */
+/**
+ * Check pre-requisites before install
+ * OPTIONNAL, but recommanded
+ *
+ * @return boolean
+ */
 function plugin_order_check_prerequisites(){
    if (version_compare(GLPI_VERSION,'0.85','lt')) {
       echo "This plugin requires GLPI 0.85 or higher";
-   } else {
-      return true;
+      return false;
    }
+   return true;
 }
 
+/**
+ * Check configuration process
+ *
+ * @param boolean $verbose Whether to display message on failure. Defaults to false
+ *
+ * @return boolean
+ */
 function plugin_order_check_config() {
    return true;
 }

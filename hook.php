@@ -15,7 +15,7 @@
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with GLPI; along with Order. If not, see <http://www.gnu.org/licenses/>.
+ along with Order. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
  @package   order
  @author    the order plugin team
@@ -27,6 +27,11 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
+/**
+ * Plugin install process
+ *
+ * @return boolean
+ */
 function plugin_order_install() {
    foreach (glob(GLPI_ROOT . '/plugins/order/inc/*.php') as $file) {
       //Do not load datainjection files (not needed and avoid missing class error message)
@@ -70,6 +75,11 @@ function plugin_order_install() {
    return true;
 }
 
+/**
+ * Plugin uninstall process
+ *
+ * @return boolean
+ */
 function plugin_order_uninstall() {
    foreach (glob(GLPI_ROOT . '/plugins/order/inc/*.php') as $file) {
       //Do not load datainjection files (not needed and avoid missing class error message)
