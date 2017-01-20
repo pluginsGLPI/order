@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-05 14:54+0200\n"
-"PO-Revision-Date: 2015-12-02 07:30+0000\n"
-"Last-Translator: Ryszard Jeziorski <ryszard.jeziorski@gmail.com>\n"
+"POT-Creation-Date: 2017-01-19 09:22+0100\n"
+"PO-Revision-Date: 2016-10-24 14:09+0000\n"
+"Last-Translator: Johan Cwiklinski <trasher@x-tnd.be>\n"
 "Language-Team: Polish (Poland) (http://www.transifex.com/teclib/glpi-plugin-order/language/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,862 +20,26 @@ msgstr ""
 "Language: pl_PL\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: hook.php:40
-msgid "Plugin installation or upgrade"
-msgstr "Instalacja lub aktualizacja wtyczki"
-
-#: hook.php:101 inc/order.class.php:257 inc/order.class.php:870
-#: inc/order.class.php:1062 inc/order.class.php:1497 inc/order.class.php:1570
-#: inc/order_item.class.php:273 inc/order_item.class.php:605
-#: inc/order_item.class.php:958 inc/ordertax.class.php:41
-msgid "VAT"
-msgstr "VAT"
-
-#: hook.php:102 inc/order.class.php:299 inc/order.class.php:783
-#: inc/order.class.php:1585 inc/orderpayment.class.php:41
-msgid "Payment conditions"
-msgstr "Rodzaj płatności"
-
-#: hook.php:104 inc/order.class.php:277 inc/order.class.php:726
-#: inc/orderstate.class.php:50
-msgid "Order status"
-msgstr "Status zamówienia"
-
-#: hook.php:105 inc/othertype.class.php:40
-msgid "Other type of item"
-msgstr "Inny typ elementu"
-
-#: hook.php:106 ajax/massreception.php:57 ajax/receptionactions.php:48
-#: inc/deliverystate.class.php:40 inc/order_item.class.php:118
-#: inc/reception.class.php:227 inc/reception.class.php:343
-msgid "Delivery status"
-msgstr "Status dostawy"
-
-#: hook.php:107 inc/bill.class.php:336 inc/billstate.class.php:43
-#: inc/order_item.class.php:1138
-msgid "Bill status"
-msgstr "Status faktury"
-
-#: hook.php:108 inc/billtype.class.php:40
-msgid "Bill type"
-msgstr "Typ faktury"
-
-#: hook.php:109 front/menu.php:63 front/order.form.php:283 front/order.php:33
-#: inc/bill.class.php:500 inc/documentcategory.class.php:47
-#: inc/order.class.php:56 inc/order.class.php:501
-#: inc/order_item.class.php:1465 inc/order_item.class.php:1467
-#: inc/order_supplier.class.php:398 inc/preference.class.php:269
-#: inc/profile.class.php:336 inc/profile.class.php:434
-msgid "Orders"
-msgstr "Zamówienia"
-
-#: hook.php:172 inc/order.class.php:333 inc/order.class.php:680
-#: inc/order_item.class.php:867 inc/surveysupplier.class.php:183
-msgid "Order name"
-msgstr "Nazwa zamówienia"
-
-#: hook.php:180 inc/order.class.php:237 inc/order.class.php:704
-#: inc/order.class.php:1429 report/orderdelivery/orderdelivery.php:65
-msgid "Order number"
-msgstr "Numer zamówienia"
-
-#: hook.php:305
-msgid "Copy reference"
-msgstr "Kopiuj oznaczenie"
-
-#: hook.php:412 inc/bill.class.php:90 inc/bill.class.php:158
-#: inc/order.class.php:57 inc/order_item.class.php:423
-#: inc/order_item.class.php:935 inc/order_item.class.php:1473
-#: inc/order_supplier.class.php:191 inc/reception.class.php:280
-#: inc/surveysupplier.class.php:357
-msgid "Order"
-msgstr "Zamówienie"
-
-#: setup.php:187 front/config.form.php:41 front/link.form.php:56
-#: front/menu.php:33 front/menu.php:57 front/order_item.form.php:42
-#: front/order_supplier.form.php:81 front/preference.form.php:43
-#: front/reception.form.php:88 front/surveysupplier.form.php:62
-#: inc/config.class.php:65 inc/menu.class.php:12 inc/order.class.php:232
-#: inc/order_item.class.php:72
-msgid "Orders management"
-msgstr "Zarządzanie zamówieniami"
-
-#: ajax/massreception.php:51
-msgid "Number to deliver"
-msgstr "Numer do dostawcy"
-
-#: ajax/referencedetail.php:62 inc/config.class.php:100
-#: inc/order.class.php:883 inc/order_item.class.php:325
-msgid "No VAT"
-msgstr "bez VAT"
-
-#: front/link.form.php:48
-msgid "Cannot generate items not delivered"
-msgstr "Nie można generować przedmiotów nie dostarczonych"
-
-#: front/link.form.php:60 front/order.form.php:203 inc/reception.class.php:627
-msgid "No item selected"
-msgstr "Nie wybrano żadnego elementu"
-
-#: front/link.form.php:89
-msgid "Cannot link items not delivered"
-msgstr ""
-
-#: front/link.form.php:99
-msgid "Cannot link several items to one detail line"
-msgstr ""
-
-#: front/menu.php:70 inc/profile.class.php:440
-msgid "Products references"
-msgstr "Oznaczenia produktów"
-
-#: front/menu.php:77 inc/order_item.class.php:1036 inc/profile.class.php:444
-msgid "Bills"
-msgstr "Faktury"
-
-#: front/order.form.php:91 inc/notificationtargetorder.class.php:119
-msgid "Order is validated"
-msgstr "Zamówienie jest akceptowane"
-
-#: front/order.form.php:100
-msgid "Order validation successfully requested"
-msgstr "Zamówienie pomyślnie przesłane do akceptacji"
-
-#: front/order.form.php:110
-msgid "Validation query is now canceled"
-msgstr "Prośba o akceptacje została anulowana"
-
-#: front/order.form.php:120 inc/notificationtargetorder.class.php:49
-#: inc/notificationtargetorder.class.php:123
-msgid "Order canceled"
-msgstr "Zamówienie anulowano"
-
-#: front/order.form.php:131 inc/notificationtargetorder.class.php:50
-msgid "Order currently edited"
-msgstr "Zamówienie aktualne modyfikowane"
-
-#: front/order.form.php:140 front/order.form.php:229
-msgid "The discount pourcentage must be between 0 and 100"
-msgstr "Wysokość procentowa rabatu musi zawierać się w przedziale od 0 do 100"
-
-#: front/order.form.php:144
-msgid "Add reference"
-msgstr "Dodaj oznaczenie"
-
-#: front/order.form.php:147 inc/link.class.php:283 inc/order.class.php:1493
-#: inc/order_item.class.php:271 inc/order_item.class.php:449
-msgid "Quantity"
-msgstr "Ilość"
-
-#: front/order.form.php:148 inc/order_item.class.php:82
-#: inc/order_item.class.php:87 inc/order_item.class.php:274
-#: inc/order_item.class.php:456 inc/order_item.class.php:606
-#: inc/order_item.class.php:970
-msgid "Discount (%)"
-msgstr "Rabat (%)"
-
-#: front/order.form.php:188 front/order.form.php:194
-msgid "Remove reference"
-msgstr "Usuń oznaczenie"
-
-#: front/order_supplier.form.php:51 inc/order_supplier.class.php:54
-#: inc/order_supplier.class.php:161 inc/order_supplier.class.php:207
-msgid "Quote number"
-msgstr "Numer zapytania"
-
-#: front/order_supplier.form.php:66
-msgid "Delete"
-msgstr "Usuń"
-
-#: front/order_supplier.form.php:66 inc/order_supplier.class.php:43
-#: inc/order_supplier.class.php:50 inc/order_supplier.class.php:204
-#: inc/order_supplier.class.php:402 inc/reference_supplier.class.php:128
-#: inc/reference_supplier.class.php:253
-msgid "Supplier Detail"
-msgstr "Szczegóły dostawcy"
-
-#: front/reference_supplier.form.php:63 inc/reference_supplier.class.php:44
-#: inc/reference_supplier.class.php:73
-msgid "Supplier for the reference"
-msgstr "Dostawca dla oznaczenia"
-
-#: inc/bill.class.php:51 inc/bill.class.php:119 inc/bill.class.php:335
-#: inc/order_item.class.php:1137 inc/order_item.class.php:1225
-#: inc/reception.class.php:239
-msgid "Bill"
-msgstr "Faktura"
-
-#: inc/bill.class.php:62
-msgid "A bill number is mandatory"
-msgstr "Numer faktury jest obowiązkowy"
-
-#: inc/bill.class.php:293 inc/link.class.php:217 inc/order_item.class.php:436
-#: inc/order_item.class.php:1097 inc/reception.class.php:292
-msgid "No item to take delivery of"
-msgstr "Brak pozycji do odbioru"
-
-#: inc/bill.class.php:309 inc/link.class.php:77 inc/link.class.php:258
-#: inc/order_item.class.php:270 inc/order_item.class.php:1111
-#: inc/reception.class.php:309 inc/reference.class.php:42
-#: inc/reference.class.php:53 inc/reference_supplier.class.php:239
-#: inc/reference_supplier.class.php:256 inc/reference_supplier.class.php:460
-#: inc/reference_supplier.class.php:462
-msgid "Product reference"
-msgstr "Oznaczenie produktu"
-
-#: inc/billstate.class.php:49 inc/orderstate.class.php:56
-msgid "You cannot remove this status"
-msgstr "Nie możesz usunąć tego statusu"
-
-#: inc/billstate.class.php:59
-msgid "Being paid"
-msgstr "Płacone"
-
-#: inc/billstate.class.php:60 inc/billstate.class.php:91
-#: inc/orderstate.class.php:92
-msgid "Paid"
-msgstr "Zapłacony"
-
-#: inc/billstate.class.php:92
-msgid "Not paid"
-msgstr "Nie zapłacony"
-
-#: inc/config.class.php:91
-msgid "Plugin configuration"
-msgstr "Konfiguracja wtyczki"
-
-#: inc/config.class.php:94
-msgid "Default VAT"
-msgstr "Domyślny VAT"
-
-#: inc/config.class.php:106
-msgid "Use validation process"
-msgstr "Użyj procesu zatwierdzania"
-
-#: inc/config.class.php:113
-msgid "Order generation in ODT"
-msgstr "Generuj zamówienie w ODT"
-
-#: inc/config.class.php:119
-msgid "Activate suppliers quality satisfaction"
-msgstr "Aktywuj jakość dostawców"
-
-#: inc/config.class.php:126
-msgid "Display order's suppliers informations"
-msgstr "Pokaż informacje o dostawcy"
-
-#: inc/config.class.php:132
-msgid "Color to be displayed when order due date is overtaken"
-msgstr "Kolor, który ma być wyświetlony gdy zamówienie przeterminuje się"
-
-#: inc/config.class.php:140
-msgid "Copy order documents when a new item is created"
-msgstr ""
-
-#: inc/config.class.php:147
-msgid "Default heading when adding a document to an order"
-msgstr "Domyślny nagłówek przy dodawaniu dokument do zamówienia"
-
-#: inc/config.class.php:154 inc/notificationtargetorder.class.php:450
-#: inc/notificationtargetorder.class.php:453 inc/order.class.php:425
-#: inc/order.class.php:979
-msgid "Author group"
-msgstr "Grupa autora"
-
-#: inc/config.class.php:164 inc/notificationtargetorder.class.php:452
-#: inc/notificationtargetorder.class.php:454 inc/order.class.php:432
-#: inc/order.class.php:1013
-msgid "Recipient group"
-msgstr "Grupa odbiorcy"
-
-#: inc/config.class.php:186
-msgid "Hide inactive budgets"
-msgstr "Ukryj niedostępny budżet"
-
-#: inc/config.class.php:193
-msgid "Rename documents added in order"
-msgstr "Zmień nazwy dokumentów w zamówieniu"
-
-#: inc/config.class.php:201
-msgid "Automatic actions when delivery"
-msgstr "Automatyczne działania podczas dostawy"
-
-#: inc/config.class.php:210
-msgid "Enable automatic generation"
-msgstr "Włącz automatyczne generowanie"
-
-#: inc/config.class.php:217
-msgid "Default state"
-msgstr "Domyślny stan"
-
-#: inc/config.class.php:228
-msgid "Add order location to item"
-msgstr "Dodaj lokalizację zamówienia do pozycji"
-
-#: inc/config.class.php:235
-msgid "Add billing details to item"
-msgstr "Dodaj informacje finansowe do pozycji"
-
-#: inc/config.class.php:242
-msgid "Default name"
-msgstr "Domyślna nazwa"
-
-#: inc/config.class.php:249
-msgid "Default serial number"
-msgstr "Domyślny numer seryjny"
-
-#: inc/config.class.php:256
-msgid "Default inventory number"
-msgstr "Domyślny numer inwentarzowy"
-
-#: inc/config.class.php:280
-msgid "Order lifecycle"
-msgstr "Cykl życia zamówienia"
-
-#: inc/config.class.php:284
-msgid "State before validation"
-msgstr "Stan przed zatwierdzeniem"
-
-#: inc/config.class.php:294
-msgid "Waiting for validation state"
-msgstr "Czekan na zatwierdzenie"
-
-#: inc/config.class.php:304
-msgid "Validated order state"
-msgstr "Stan za"
-
-#: inc/config.class.php:314
-msgid "Order being delivered state"
-msgstr "Stan zamówienia dostarczanego"
-
-#: inc/config.class.php:324
-msgid "Order delivered state"
-msgstr "Stan dostawy zamówienia"
-
-#: inc/config.class.php:334
-msgid "Order paied state"
-msgstr "Stan płatności zamówienia"
-
-#: inc/config.class.php:344
-msgid "Canceled order state"
-msgstr ""
-
-#: inc/documentcategory.class.php:39
-msgid "Document category"
-msgstr "Kategoria dokumentu"
-
-#: inc/documentcategory.class.php:82 inc/documentcategory.class.php:87
-msgid "Document category prefix"
-msgstr ""
-
-#: inc/link.class.php:43
-msgid "Generation"
-msgstr "Generowanie"
-
-#: inc/link.class.php:74 inc/link.class.php:471
-msgid "Generate item"
-msgstr "Generuj pozycję"
-
-#: inc/link.class.php:172
-msgid "Generate"
-msgstr "Generuj"
-
-#: inc/link.class.php:175 inc/notificationtargetorder.class.php:52
-#: inc/notificationtargetorder.class.php:131
-msgid "No item to generate"
-msgstr "Brak pozycji do wygenerowania"
-
-#: inc/link.class.php:438
-msgid "No associated item"
-msgstr "Brak połączonych pozycji"
-
-#: inc/link.class.php:474
-msgid "Link to an existing item"
-msgstr "Połącz z istniejącą pozycją"
-
-#: inc/link.class.php:475
-msgid "Delete item link"
-msgstr "Usuń powiązanie do pozycji"
-
-#: inc/link.class.php:669 inc/link.class.php:731 inc/link.class.php:739
-#: inc/link.class.php:743
-msgid "Item linked to order"
-msgstr "Pozycja połączona z zamówieniem"
-
-#: inc/link.class.php:745
-msgid "Item already linked to another one"
-msgstr "Pozycja już połączona z innym"
-
-#: inc/link.class.php:783 inc/link.class.php:788 inc/link.class.php:808
-#: inc/link.class.php:813
-msgid "Item unlink form order"
-msgstr "Rozłącz pozycję z zamówieniem"
-
-#: inc/link.class.php:806
-msgid "One or several selected rows haven't linked items"
-msgstr "Jeden lub więcej zaznaczonych wierszy nie są powiązane z pozycjami"
-
-#: inc/link.class.php:942 inc/link.class.php:946
-msgid "Item generated by using order"
-msgstr "Pozycje generowane za pomocą zamówienia"
-
-#: inc/link.class.php:953
-msgid "Item successfully selected"
-msgstr "Pozycje pomyślne zaznaczone"
-
-#: inc/notificationtargetorder.class.php:47
-#: inc/notificationtargetorder.class.php:115
-msgid "Request order validation"
-msgstr "Zażądaj zatwierdzenia zamówienia"
-
-#: inc/notificationtargetorder.class.php:48
-msgid "Order validated"
-msgstr "Zamówienie zatwierdzone"
-
-#: inc/notificationtargetorder.class.php:51
-#: inc/notificationtargetorder.class.php:186
-msgid "Late orders"
-msgstr "Opóźnione dostawy"
-
-#: inc/notificationtargetorder.class.php:101
-#: inc/notificationtargetorder.class.php:152
-#: inc/notificationtargetorder.class.php:160 inc/order.class.php:247
-#: inc/order.class.php:691 report/deliveryinfos/deliveryinfos.php:48
-#: report/orderdelivery/orderdelivery.php:48
-#: report/orderdelivery/orderdelivery.php:72
-msgid "Date of order"
-msgstr "Data zamówienia"
-
-#: inc/notificationtargetorder.class.php:108
-#: inc/notificationtargetorder.class.php:154
-msgid "Comment of validation"
-msgstr "Komentarz zatwierdzającego"
-
-#: inc/notificationtargetorder.class.php:127
-msgid "Validation canceled successfully"
-msgstr "Zatwierdzenie anulowane poprawnie"
-
-#: inc/notificationtargetorder.class.php:155
-msgid "Editor of validation"
-msgstr "Zatwierdzający"
-
-#: inc/notificationtargetorder.class.php:161 inc/order.class.php:353
-#: inc/order.class.php:900 report/orderdelivery/orderdelivery.php:73
-msgid "Estimated due date"
-msgstr "Planowany termin dostawy"
-
-#: inc/order.class.php:257 inc/order.class.php:400 inc/order.class.php:827
-#: inc/order.class.php:870 inc/order.class.php:1564
-msgid "Postage"
-msgstr "Koszty dostawy"
-
-#: inc/order.class.php:267 inc/order.class.php:769
-#: report/deliveryinfos/deliveryinfos.php:50
-#: report/orderdelivery/orderdelivery.php:50
-#: report/orderdelivery/orderdelivery.php:76
-msgid "Delivery location"
-msgstr "Lokalizacja dostawy"
-
-#: inc/order.class.php:373
-msgid "Order is late"
-msgstr "Zamówienie jest opóźnione"
-
-#: inc/order.class.php:508
-msgid "Validation"
-msgstr "Zatwierdzenie"
-
-#: inc/order.class.php:514
-msgid "Purchase order"
-msgstr "Wydruk zamówienia"
-
-#: inc/order.class.php:552
-msgid "An order number is mandatory !"
-msgstr "Numer zamówienia jest obowiązkowy!"
-
-#: inc/order.class.php:560 inc/order.class.php:598
-msgid ""
-"The order date must be within the dates entered for the selected budget."
-msgstr "Data zamówienie musi zawierać się pomiędzy datami zaznaczonego budżetu."
-
-#: inc/order.class.php:915
-msgid "Due date overtaken"
-msgstr "Termin wyprzedzenia"
-
-#: inc/order.class.php:1038 inc/order.class.php:1558
-msgid "Price tax free"
-msgstr "Razem netto"
-
-#: inc/order.class.php:1048 inc/order.class.php:1561
-msgid "Price tax free with postage"
-msgstr "Razem netto z kosztami dostawy"
-
-#: inc/order.class.php:1055 inc/order.class.php:1500 inc/order.class.php:1573
-#: inc/order.class.php:1664 inc/order_item.class.php:608
-#: inc/order_item.class.php:982
-msgid "Price ATI"
-msgstr "Wartość brutto"
-
-#: inc/order.class.php:1292
-msgid "Validation process"
-msgstr "Proces zatwiedzania"
-
-#: inc/order.class.php:1309
-msgid ""
-"Do you really want to cancel this order ? This option is irreversible !"
-msgstr "Czy na pewno chcesz usunąć to zamówienie? Proces jest nieodwracalny!"
-
-#: inc/order.class.php:1310 inc/profile.class.php:58 inc/profile.class.php:206
-#: inc/profile.class.php:466
-msgid "Cancel order"
-msgstr "Anuluj zamówienie"
-
-#: inc/order.class.php:1316
-msgid "Validate order"
-msgstr "Zatwierdź zamówienie"
-
-#: inc/order.class.php:1322
-msgid "Do you want to cancel the validation approval ?"
-msgstr "Czy chcesz anulować proces zatwierdzania?"
-
-#: inc/order.class.php:1324
-msgid "Cancel ask for validation"
-msgstr "Anuluj prośbę o akceptację"
-
-#: inc/order.class.php:1330
-msgid "Ask for validation"
-msgstr "Poproś o zatwierdzenie"
-
-#: inc/order.class.php:1336
-msgid "Do you really want to edit the order ?"
-msgstr "Czy na pewno chce edytować zamówienie?"
-
-#: inc/order.class.php:1338
-msgid "Edit order"
-msgstr "Edytuj zamówienie"
-
-#: inc/order.class.php:1346
-msgid "Thanks to add at least one equipment on your order."
-msgstr "Musisz dodać co najmniej jedną pozycję do zamówienia."
-
-#: inc/order.class.php:1361 inc/order.class.php:1387 inc/profile.class.php:55
-#: inc/profile.class.php:185 inc/profile.class.php:454
-msgid "Order Generation"
-msgstr "Generowanie zamówienia"
-
-#: inc/order.class.php:1367 inc/preference.class.php:163
-msgid "Use this model"
-msgstr "Użyj tego modelu"
-
-#: inc/order.class.php:1376 inc/preference.class.php:168
-msgid "Use this sign"
-msgstr "Użyj tego znaku"
-
-#: inc/order.class.php:1395
-msgid "Thanks to select a model into your preferences"
-msgstr ""
-
-#: inc/order.class.php:1431
-msgid "Invoice address"
-msgstr "Dane do faktury"
-
-#: inc/order.class.php:1461
-msgid "Delivery address"
-msgstr "Adres dostawy"
-
-#: inc/order.class.php:1472
-msgid "The"
-msgstr "Ten"
-
-#: inc/order.class.php:1474
-msgid "Issuer order"
-msgstr ""
-
-#: inc/order.class.php:1491
-msgid "Recipient"
-msgstr "Odbiorca"
-
-#: inc/order.class.php:1494
-msgid "Designation"
-msgstr "Oznaczenia"
-
-#: inc/order.class.php:1496
-msgid "Unit price"
-msgstr "Cena jednostkowa"
-
-#: inc/order.class.php:1498
-msgid "Discount rate"
-msgstr "Rabat"
-
-#: inc/order.class.php:1499
-msgid "Sum tax free"
-msgstr "Wartość netto"
-
-#: inc/order.class.php:1576
-msgid "€"
-msgstr "zł"
-
-#: inc/order.class.php:1577
-msgid "Signature of issuing order"
-msgstr "Numer zamówienia"
-
-#: inc/order.class.php:1657 inc/reference.class.php:260
-#: inc/reference.class.php:804
-msgid "Linked orders"
-msgstr "Połączone zamówienia"
-
-#: inc/order.class.php:1682
-msgid "Unlink"
-msgstr "Rozłącz"
-
-#: inc/order.class.php:1806
-msgid "Total orders related with this budget is greater than its value."
-msgstr ""
-
-#: inc/order.class.php:1811
-msgid "Total orders related with this budget is equal to its value."
-msgstr ""
-
-#: inc/order_item.class.php:65 inc/order_item.class.php:1471
-msgid "Order item"
-msgstr "Pozycje zamówienia"
-
-#: inc/order_item.class.php:77 inc/order_item.class.php:272
-#: inc/order_item.class.php:455 inc/order_item.class.php:604
-#: inc/order_item.class.php:951 inc/reference.class.php:127
-#: inc/reference_supplier.class.php:82 inc/reference_supplier.class.php:214
-#: inc/reference_supplier.class.php:257 inc/reference_supplier.class.php:463
-msgid "Unit price tax free"
-msgstr "Cena jednostkowa netto"
-
-#: inc/order_item.class.php:172
-msgid "Some fields cannont be modified because they belong to an order"
-msgstr "Niektóre pola nie mogą być modyfikowane bo należą do zamówienia"
-
-#: inc/order_item.class.php:265
-msgid "Add to the order"
-msgstr "Dodaj do zamówienia"
-
-#: inc/order_item.class.php:338
-msgid "Please select a supplier"
-msgstr "Proszę wybrać dostawcę"
-
-#: inc/order_item.class.php:450
-msgid "Equipment"
-msgstr "Rodzaj"
-
-#: inc/order_item.class.php:462 inc/order_item.class.php:774
-msgid "Do you really want to update this item ?"
-msgstr "Czy na pewno chcesz zaktualizować tą pozycję?"
-
-#: inc/order_item.class.php:607 inc/order_item.class.php:977
-msgid "Discounted price tax free"
-msgstr "Wysokość rabatu netto"
-
-#: inc/order_item.class.php:765
-msgid ""
-"Do you really want to delete these details ? Delivered items will not be "
-"linked to order !"
-msgstr ""
-
-#: inc/order_item.class.php:866
-msgid "Order informations"
-msgstr "Informacje o zamówieniu"
-
-#: inc/order_item.class.php:1037
-msgid "Payment status"
-msgstr "Status płatności"
-
-#: inc/order_item.class.php:1049
-msgid "Paid value"
-msgstr "Do zapłaty"
-
-#: inc/orderstate.class.php:86
-msgid "Draft"
-msgstr "Szkic"
-
-#: inc/orderstate.class.php:87
-msgid "Waiting for approval"
-msgstr "Czeka na zatwierzenie"
-
-#: inc/orderstate.class.php:88
-msgid "Validated"
-msgstr "Zatwierdzone"
-
-#: inc/orderstate.class.php:89
-msgid "Being delivered"
-msgstr "W dostawie"
-
-#: inc/orderstate.class.php:90
-msgid "Delivered"
-msgstr "Dostarczone"
-
-#: inc/orderstate.class.php:91
-msgid "Canceled"
-msgstr "Anulowane"
-
-#: inc/order_supplier.class.php:281
-msgid "Delivery statistics"
-msgstr "Statystyki dostawy"
-
-#: inc/order_supplier.class.php:297
-msgid "No specified status"
-msgstr "Nie określono stanu"
-
-#: inc/profile.class.php:56 inc/profile.class.php:178
-#: inc/profile.class.php:449 inc/reception.class.php:469
-msgid "Take item delivery"
-msgstr "Odbiór dostawy"
-
-#: inc/profile.class.php:57 inc/profile.class.php:199
-#: inc/profile.class.php:462
-msgid "Order validation"
-msgstr "Akceptacja zamówienia"
-
-#: inc/profile.class.php:59 inc/profile.class.php:213
-#: inc/profile.class.php:470
-msgid "Edit a validated order"
-msgstr "Modyfikuj zatwierdzone zamówienie"
-
-#: inc/profile.class.php:61 inc/profile.class.php:192
-#: inc/profile.class.php:458
-msgid "Link order to a ticket"
-msgstr "Połącz zamówienie ze zgłoszeniem"
-
-#: inc/profile.class.php:62 inc/profile.class.php:220
-#: inc/profile.class.php:474
-msgid "Generate order without validation"
-msgstr "Generuj zamówienie bez akceptacji"
-
-#: inc/profile.class.php:164
-msgid "Order management"
-msgstr "Zarządzaj zamówieniem"
-
-#: inc/reception.class.php:48
-msgid "Delivery"
-msgstr "Dostawa"
-
-#: inc/reception.class.php:197 inc/reception.class.php:495
-msgid "Taken delivery"
-msgstr "Dostawa zrealizowana"
-
-#: inc/reception.class.php:310
-msgid "Delivered items"
-msgstr "Dostarczone pozycje"
-
-#: inc/reception.class.php:451
-msgid "Take item delivery (bulk)"
-msgstr "Odbiór dostawy (pojedyńczo)"
-
-#: inc/reception.class.php:492
-msgid "Waiting for delivery"
-msgstr "Czeka na dostawę"
-
-#: inc/reception.class.php:516
-msgid "Not enough items to deliver"
-msgstr "Brak pozycji do dostawy"
-
-#: inc/reception.class.php:551 inc/reception.class.php:578
-msgid "Item successfully taken delivery"
-msgstr "Pozycja pomyślnie odebrana"
-
-#: inc/reception.class.php:607
-msgid "Item already taken delivery"
-msgstr "Pozycja już odebrana"
-
-#: inc/reception.class.php:743
-msgid "Item delivered"
-msgstr "Dostarczone pozycje"
-
-#: inc/reference.class.php:136 inc/reference_supplier.class.php:77
-#: inc/reference_supplier.class.php:205
-msgid "Manufacturer's product reference"
-msgstr "Oznaczenie produktu wg producenta"
-
-#: inc/reference.class.php:189
-msgid "Cannot create reference without a name"
-msgstr "Nie można utworzyć oznaczenia z pustą nazwą"
-
-#: inc/reference.class.php:194
-msgid "Cannot create reference without a type"
-msgstr "Nie można utworzyć oznaczenia z pustym typem"
-
-#: inc/reference.class.php:202
-msgid "A reference with the same name still exists"
-msgstr "Oznaczenie produktu o podanej nazwie już istnieje"
-
-#: inc/reference.class.php:214
-msgid "Reference(s) in use"
-msgstr "Oznaczenia w użyciu"
-
-#: inc/reference.class.php:884
-msgid "Copy of"
-msgstr "Kopia"
-
-#: inc/reference.class.php:910
-msgid "Select the wanted item type"
-msgstr "Zaznacz żądany typ pozycji"
-
-#: inc/reference.class.php:964 inc/reference.class.php:965
-#: inc/reference.class.php:983
-msgid "View by item type"
-msgstr "Pokaż wg typu pozycji"
-
-#: inc/reference_supplier.class.php:454
-msgid "List references"
-msgstr "Pokaż oznaczenia"
-
-#: inc/surveysupplier.class.php:43 inc/surveysupplier.class.php:179
-#: inc/surveysupplier.class.php:369 inc/surveysupplier.class.php:498
-msgid "Supplier quality"
-msgstr "Jakość dostawcy"
-
-#: inc/surveysupplier.class.php:106
-msgid "Really unsatisfied"
-msgstr "Bardzo nie zadowolony"
-
-#: inc/surveysupplier.class.php:108
-msgid "Really satisfied"
-msgstr "Bardzo zadowolony"
-
-#: inc/surveysupplier.class.php:184 inc/surveysupplier.class.php:372
-msgid "Note"
-msgstr "Notatka"
-
-#: inc/surveysupplier.class.php:185 inc/surveysupplier.class.php:373
-msgid "Comment on survey"
-msgstr ""
-
-#: inc/surveysupplier.class.php:213 inc/surveysupplier.class.php:297
-msgid "Administrative followup quality (contracts, bills, mail, etc.)"
-msgstr ""
-
-#: inc/surveysupplier.class.php:219 inc/surveysupplier.class.php:302
-msgid "Commercial followup quality, visits, responseness"
-msgstr ""
-
-#: inc/surveysupplier.class.php:225 inc/surveysupplier.class.php:307
-msgid "Contacts availability"
-msgstr ""
-
-#: inc/surveysupplier.class.php:231 inc/surveysupplier.class.php:312
-msgid "Quality of supplier intervention"
-msgstr ""
-
-#: inc/surveysupplier.class.php:237 inc/surveysupplier.class.php:317
-msgid "Reliability about annouced delays"
-msgstr ""
-
-#: inc/surveysupplier.class.php:247
-msgid "Final supplier note"
-msgstr ""
-
-#: inc/surveysupplier.class.php:331
-msgid "Average mark up to 10 (X points / 5)"
-msgstr ""
-
 #: report/deliveryinfos/deliveryinfos.php:47
 msgid "deliveryinfos_report_title"
 msgstr ""
+
+#: report/deliveryinfos/deliveryinfos.php:48
+#: report/orderdelivery/orderdelivery.php:48
+#: report/orderdelivery/orderdelivery.php:72
+#: inc/notificationtargetorder.class.php:98
+#: inc/notificationtargetorder.class.php:148
+#: inc/notificationtargetorder.class.php:156 inc/order.class.php:264
+#: inc/order.class.php:705
+msgid "Date of order"
+msgstr "Data zamówienia"
+
+#: report/deliveryinfos/deliveryinfos.php:50
+#: report/orderdelivery/orderdelivery.php:50
+#: report/orderdelivery/orderdelivery.php:76 inc/order.class.php:284
+#: inc/order.class.php:791
+msgid "Delivery location"
+msgstr "Lokalizacja dostawy"
 
 #: report/deliveryinfos/deliveryinfos.php:63
 msgid "Orders total"
@@ -888,3 +52,829 @@ msgstr "Zamówienia przeterminowane"
 #: report/orderdelivery/orderdelivery.php:47
 msgid "orderdelivery_report_title"
 msgstr ""
+
+#: report/orderdelivery/orderdelivery.php:65 hook.php:190
+#: inc/order.class.php:254 inc/order.class.php:718 inc/order.class.php:1465
+msgid "Order number"
+msgstr "Numer zamówienia"
+
+#: report/orderdelivery/orderdelivery.php:73
+#: inc/notificationtargetorder.class.php:157 inc/order.class.php:370
+#: inc/order.class.php:921
+msgid "Estimated due date"
+msgstr "Planowany termin dostawy"
+
+#: front/reception.form.php:88 front/menu.php:33 front/menu.php:57
+#: front/surveysupplier.form.php:63 front/order_item.form.php:39
+#: front/order_supplier.form.php:80 inc/order_item.class.php:91
+#: inc/config.class.php:61 inc/order.class.php:249 setup.php:188
+msgid "Orders management"
+msgstr "Zarządzanie zamówieniami"
+
+#: front/order.php:33 front/link.form.php:56 front/menu.php:63
+#: front/config.form.php:41 front/preference.form.php:43
+#: front/order.form.php:289 hook.php:119 inc/bill.class.php:486
+#: inc/order_item.class.php:1506 inc/order_item.class.php:1508
+#: inc/documentcategory.class.php:47 inc/order.class.php:66
+#: inc/order.class.php:517 inc/profile.class.php:97 inc/profile.class.php:137
+#: inc/profile.class.php:160 inc/menu.class.php:6 inc/preference.class.php:253
+#: inc/order_supplier.class.php:380
+msgid "Orders"
+msgstr "Zamówienia"
+
+#: front/link.form.php:48
+msgid "Cannot generate items not delivered"
+msgstr "Nie można generować przedmiotów nie dostarczonych"
+
+#: front/link.form.php:63 front/order.form.php:208 inc/reception.class.php:599
+msgid "No item selected"
+msgstr "Nie wybrano żadnego elementu"
+
+#: front/link.form.php:92
+msgid "Cannot link items not delivered"
+msgstr ""
+
+#: front/link.form.php:102
+msgid "Cannot link several items to one detail line"
+msgstr ""
+
+#: front/menu.php:70 inc/profile.class.php:164
+msgid "Products references"
+msgstr "Oznaczenia produktów"
+
+#: front/menu.php:77 inc/order_item.class.php:1080 inc/profile.class.php:168
+msgid "Bills"
+msgstr "Faktury"
+
+#: front/order_supplier.form.php:51 inc/order_supplier.class.php:51
+#: inc/order_supplier.class.php:146 inc/order_supplier.class.php:198
+msgid "Quote number"
+msgstr "Numer zapytania"
+
+#: front/order_supplier.form.php:66
+msgid "Delete"
+msgstr "Usuń"
+
+#: front/order_supplier.form.php:66 inc/reference_supplier.class.php:121
+#: inc/reference_supplier.class.php:229 inc/order_supplier.class.php:41
+#: inc/order_supplier.class.php:47 inc/order_supplier.class.php:194
+#: inc/order_supplier.class.php:385
+msgid "Supplier Detail"
+msgstr "Szczegóły dostawcy"
+
+#: front/reference_supplier.form.php:63 inc/reference_supplier.class.php:42
+#: inc/reference_supplier.class.php:69
+msgid "Supplier for the reference"
+msgstr "Dostawca dla oznaczenia"
+
+#: front/order.form.php:94 inc/notificationtargetorder.class.php:116
+msgid "Order is validated"
+msgstr "Zamówienie jest akceptowane"
+
+#: front/order.form.php:103
+msgid "Order validation successfully requested"
+msgstr "Zamówienie pomyślnie przesłane do akceptacji"
+
+#: front/order.form.php:113
+msgid "Validation query is now canceled"
+msgstr "Prośba o akceptacje została anulowana"
+
+#: front/order.form.php:123 inc/notificationtargetorder.class.php:47
+#: inc/notificationtargetorder.class.php:120
+msgid "Order canceled"
+msgstr "Zamówienie anulowano"
+
+#: front/order.form.php:134 inc/notificationtargetorder.class.php:48
+msgid "Order currently edited"
+msgstr "Zamówienie aktualne modyfikowane"
+
+#: front/order.form.php:143 front/order.form.php:234
+msgid "The discount pourcentage must be between 0 and 100"
+msgstr "Wysokość procentowa rabatu musi zawierać się w przedziale od 0 do 100"
+
+#: front/order.form.php:147
+msgid "Add reference"
+msgstr "Dodaj oznaczenie"
+
+#: front/order.form.php:150 inc/order_item.class.php:285
+#: inc/order_item.class.php:472 inc/order.class.php:1534
+#: inc/link.class.php:278
+msgid "Quantity"
+msgstr "Ilość"
+
+#: front/order.form.php:151 inc/order_item.class.php:101
+#: inc/order_item.class.php:106 inc/order_item.class.php:288
+#: inc/order_item.class.php:479 inc/order_item.class.php:670
+#: inc/order_item.class.php:1016
+msgid "Discount (%)"
+msgstr "Rabat (%)"
+
+#: front/order.form.php:193 front/order.form.php:199
+msgid "Remove reference"
+msgstr "Usuń oznaczenie"
+
+#: hook.php:45
+msgid "Plugin installation or upgrade"
+msgstr "Instalacja lub aktualizacja wtyczki"
+
+#: hook.php:111 inc/order_item.class.php:287 inc/order_item.class.php:669
+#: inc/order_item.class.php:1004 inc/ordertax.class.php:39
+#: inc/order.class.php:274 inc/order.class.php:891 inc/order.class.php:1109
+#: inc/order.class.php:1538 inc/order.class.php:1614
+msgid "VAT"
+msgstr "VAT"
+
+#: hook.php:112 inc/orderpayment.class.php:39 inc/order.class.php:316
+#: inc/order.class.php:805 inc/order.class.php:1620
+msgid "Payment conditions"
+msgstr "Rodzaj płatności"
+
+#: hook.php:114 inc/orderstate.class.php:48 inc/order.class.php:294
+#: inc/order.class.php:746 inc/order.class.php:1702
+msgid "Order status"
+msgstr "Status zamówienia"
+
+#: hook.php:115 inc/othertype.class.php:38
+msgid "Other type of item"
+msgstr "Inny typ elementu"
+
+#: hook.php:116 ajax/receptionactions.php:47 ajax/massreception.php:57
+#: inc/deliverystate.class.php:37 inc/order_item.class.php:137
+#: inc/reception.class.php:207 inc/reception.class.php:321
+msgid "Delivery status"
+msgstr "Status dostawy"
+
+#: hook.php:117 inc/bill.class.php:323 inc/order_item.class.php:1182
+#: inc/billstate.class.php:41
+msgid "Bill status"
+msgstr "Status faktury"
+
+#: hook.php:118 inc/billtype.class.php:38
+msgid "Bill type"
+msgstr "Typ faktury"
+
+#: hook.php:182 inc/order_item.class.php:925 inc/surveysupplier.class.php:174
+#: inc/order.class.php:350 inc/order.class.php:694
+msgid "Order name"
+msgstr "Nazwa zamówienia"
+
+#: hook.php:339 inc/bill.class.php:80 inc/bill.class.php:143
+#: inc/order_item.class.php:446 inc/order_item.class.php:981
+#: inc/order_item.class.php:1514 inc/reception.class.php:258
+#: inc/surveysupplier.class.php:341 inc/order.class.php:67
+#: inc/order_supplier.class.php:176
+msgid "Order"
+msgstr "Zamówienie"
+
+#: ajax/referencedetail.php:62 inc/order_item.class.php:347
+#: inc/config.class.php:95 inc/order.class.php:904
+msgid "No VAT"
+msgstr "bez VAT"
+
+#: ajax/massreception.php:51
+msgid "Number to deliver"
+msgstr "Numer do dostawcy"
+
+#: inc/bill.class.php:42 inc/bill.class.php:104 inc/bill.class.php:322
+#: inc/order_item.class.php:1181 inc/order_item.class.php:1268
+#: inc/reception.class.php:219
+msgid "Bill"
+msgstr "Faktura"
+
+#: inc/bill.class.php:51
+msgid "A bill number is mandatory"
+msgstr "Numer faktury jest obowiązkowy"
+
+#: inc/bill.class.php:280 inc/order_item.class.php:459
+#: inc/order_item.class.php:1141 inc/reception.class.php:270
+#: inc/link.class.php:212
+msgid "No item to take delivery of"
+msgstr "Brak pozycji do odbioru"
+
+#: inc/bill.class.php:296 inc/reference.class.php:40
+#: inc/reference.class.php:49 inc/order_item.class.php:284
+#: inc/order_item.class.php:1155 inc/reception.class.php:287
+#: inc/reference_supplier.class.php:215 inc/reference_supplier.class.php:232
+#: inc/reference_supplier.class.php:437 inc/reference_supplier.class.php:439
+#: inc/link.class.php:73 inc/link.class.php:253
+msgid "Product reference"
+msgstr "Oznaczenie produktu"
+
+#: inc/reference.class.php:131 inc/order_item.class.php:96
+#: inc/order_item.class.php:286 inc/order_item.class.php:478
+#: inc/order_item.class.php:668 inc/order_item.class.php:997
+#: inc/reference_supplier.class.php:78 inc/reference_supplier.class.php:191
+#: inc/reference_supplier.class.php:233 inc/reference_supplier.class.php:440
+msgid "Unit price tax free"
+msgstr "Cena jednostkowa netto"
+
+#: inc/reference.class.php:140 inc/reference_supplier.class.php:73
+#: inc/reference_supplier.class.php:182
+msgid "Manufacturer's product reference"
+msgstr "Oznaczenie produktu wg producenta"
+
+#: inc/reference.class.php:192
+msgid "Cannot create reference without a name"
+msgstr "Nie można utworzyć oznaczenia z pustą nazwą"
+
+#: inc/reference.class.php:197
+msgid "Cannot create reference without a type"
+msgstr "Nie można utworzyć oznaczenia z pustym typem"
+
+#: inc/reference.class.php:205
+msgid "A reference with the same name still exists"
+msgstr "Oznaczenie produktu o podanej nazwie już istnieje"
+
+#: inc/reference.class.php:216
+msgid "Reference(s) in use"
+msgstr "Oznaczenia w użyciu"
+
+#: inc/reference.class.php:258 inc/reference.class.php:792
+#: inc/order.class.php:1696
+msgid "Linked orders"
+msgstr "Połączone zamówienia"
+
+#: inc/reference.class.php:456
+msgid "Manufacturer reference"
+msgstr ""
+
+#: inc/reference.class.php:870
+msgid "Copy of"
+msgstr "Kopia"
+
+#: inc/reference.class.php:895
+msgid "Select the wanted item type"
+msgstr "Zaznacz żądany typ pozycji"
+
+#: inc/reference.class.php:948 inc/reference.class.php:949
+#: inc/reference.class.php:966
+msgid "View by item type"
+msgstr "Pokaż wg typu pozycji"
+
+#: inc/reference.class.php:1020
+msgid "Copy reference"
+msgstr "Kopiuj oznaczenie"
+
+#: inc/notificationtargetorder.class.php:45
+#: inc/notificationtargetorder.class.php:112
+msgid "Request order validation"
+msgstr "Zażądaj zatwierdzenia zamówienia"
+
+#: inc/notificationtargetorder.class.php:46
+msgid "Order validated"
+msgstr "Zamówienie zatwierdzone"
+
+#: inc/notificationtargetorder.class.php:49
+#: inc/notificationtargetorder.class.php:182
+msgid "Late orders"
+msgstr "Opóźnione dostawy"
+
+#: inc/notificationtargetorder.class.php:50
+#: inc/notificationtargetorder.class.php:128 inc/link.class.php:171
+msgid "No item to generate"
+msgstr "Brak pozycji do wygenerowania"
+
+#: inc/notificationtargetorder.class.php:105
+#: inc/notificationtargetorder.class.php:150
+msgid "Comment of validation"
+msgstr "Komentarz zatwierdzającego"
+
+#: inc/notificationtargetorder.class.php:124
+msgid "Validation canceled successfully"
+msgstr "Zatwierdzenie anulowane poprawnie"
+
+#: inc/notificationtargetorder.class.php:151
+msgid "Editor of validation"
+msgstr "Zatwierdzający"
+
+#: inc/notificationtargetorder.class.php:443
+#: inc/notificationtargetorder.class.php:446 inc/config.class.php:149
+#: inc/order.class.php:442 inc/order.class.php:1004
+msgid "Author group"
+msgstr "Grupa autora"
+
+#: inc/notificationtargetorder.class.php:445
+#: inc/notificationtargetorder.class.php:447 inc/config.class.php:159
+#: inc/order.class.php:449 inc/order.class.php:1054
+msgid "Recipient group"
+msgstr "Grupa odbiorcy"
+
+#: inc/order_item.class.php:85 inc/order_item.class.php:1512
+msgid "Order item"
+msgstr "Pozycje zamówienia"
+
+#: inc/order_item.class.php:190
+msgid "Some fields cannont be modified because they belong to an order"
+msgstr "Niektóre pola nie mogą być modyfikowane bo należą do zamówienia"
+
+#: inc/order_item.class.php:278
+msgid "Add to the order"
+msgstr "Dodaj do zamówienia"
+
+#: inc/order_item.class.php:360
+msgid "Please select a supplier"
+msgstr "Proszę wybrać dostawcę"
+
+#: inc/order_item.class.php:473
+msgid "Equipment"
+msgstr "Rodzaj"
+
+#: inc/order_item.class.php:485 inc/order_item.class.php:645
+#: inc/order_item.class.php:840
+msgid "Do you really want to update this item ?"
+msgstr "Czy na pewno chcesz zaktualizować tą pozycję?"
+
+#: inc/order_item.class.php:636 inc/order_item.class.php:831
+msgid ""
+"Do you really want to delete these details ? Delivered items will not be "
+"linked to order !"
+msgstr ""
+
+#: inc/order_item.class.php:671 inc/order_item.class.php:1024
+msgid "Discounted price tax free"
+msgstr "Wysokość rabatu netto"
+
+#: inc/order_item.class.php:672 inc/order_item.class.php:1029
+#: inc/order.class.php:1102 inc/order.class.php:1541 inc/order.class.php:1616
+#: inc/order.class.php:1705
+msgid "Price ATI"
+msgstr "Wartość brutto"
+
+#: inc/order_item.class.php:924
+msgid "Order informations"
+msgstr "Informacje o zamówieniu"
+
+#: inc/order_item.class.php:1081
+msgid "Payment status"
+msgstr "Status płatności"
+
+#: inc/order_item.class.php:1093
+msgid "Paid value"
+msgstr "Do zapłaty"
+
+#: inc/config.class.php:86
+msgid "Plugin configuration"
+msgstr "Konfiguracja wtyczki"
+
+#: inc/config.class.php:89
+msgid "Default VAT"
+msgstr "Domyślny VAT"
+
+#: inc/config.class.php:101
+msgid "Use validation process"
+msgstr "Użyj procesu zatwierdzania"
+
+#: inc/config.class.php:108
+msgid "Order generation in ODT"
+msgstr "Generuj zamówienie w ODT"
+
+#: inc/config.class.php:114
+msgid "Activate suppliers quality satisfaction"
+msgstr "Aktywuj jakość dostawców"
+
+#: inc/config.class.php:121
+msgid "Display order's suppliers informations"
+msgstr "Pokaż informacje o dostawcy"
+
+#: inc/config.class.php:127
+msgid "Color to be displayed when order due date is overtaken"
+msgstr "Kolor, który ma być wyświetlony gdy zamówienie przeterminuje się"
+
+#: inc/config.class.php:135
+msgid "Copy order documents when a new item is created"
+msgstr ""
+
+#: inc/config.class.php:142
+msgid "Default heading when adding a document to an order"
+msgstr "Domyślny nagłówek przy dodawaniu dokument do zamówienia"
+
+#: inc/config.class.php:181
+msgid "Hide inactive budgets"
+msgstr "Ukryj niedostępny budżet"
+
+#: inc/config.class.php:188
+msgid "Transmit budget change to linked assets"
+msgstr ""
+
+#: inc/config.class.php:197
+msgid "Automatic actions when delivery"
+msgstr "Automatyczne działania podczas dostawy"
+
+#: inc/config.class.php:206
+msgid "Enable automatic generation"
+msgstr "Włącz automatyczne generowanie"
+
+#: inc/config.class.php:213
+msgid "Default state"
+msgstr "Domyślny stan"
+
+#: inc/config.class.php:224
+msgid "Add order location to item"
+msgstr "Dodaj lokalizację zamówienia do pozycji"
+
+#: inc/config.class.php:231
+msgid "Add billing details to item"
+msgstr "Dodaj informacje finansowe do pozycji"
+
+#: inc/config.class.php:238
+msgid "Default name"
+msgstr "Domyślna nazwa"
+
+#: inc/config.class.php:245
+msgid "Default serial number"
+msgstr "Domyślny numer seryjny"
+
+#: inc/config.class.php:252
+msgid "Default inventory number"
+msgstr "Domyślny numer inwentarzowy"
+
+#: inc/config.class.php:276
+msgid "Order lifecycle"
+msgstr "Cykl życia zamówienia"
+
+#: inc/config.class.php:280
+msgid "State before validation"
+msgstr "Stan przed zatwierdzeniem"
+
+#: inc/config.class.php:290
+msgid "Waiting for validation state"
+msgstr "Czekan na zatwierdzenie"
+
+#: inc/config.class.php:300
+msgid "Validated order state"
+msgstr "Stan za"
+
+#: inc/config.class.php:310
+msgid "Order being delivered state"
+msgstr "Stan zamówienia dostarczanego"
+
+#: inc/config.class.php:320
+msgid "Order delivered state"
+msgstr "Stan dostawy zamówienia"
+
+#: inc/config.class.php:330
+msgid "Order paied state"
+msgstr "Stan płatności zamówienia"
+
+#: inc/config.class.php:340
+msgid "Canceled order state"
+msgstr ""
+
+#: inc/reception.class.php:47
+msgid "Delivery"
+msgstr "Dostawa"
+
+#: inc/reception.class.php:177 inc/reception.class.php:471
+msgid "Taken delivery"
+msgstr "Dostawa zrealizowana"
+
+#: inc/reception.class.php:288
+msgid "Delivered items"
+msgstr "Dostarczone pozycje"
+
+#: inc/reception.class.php:429
+msgid "Take item delivery (bulk)"
+msgstr "Odbiór dostawy (pojedyńczo)"
+
+#: inc/reception.class.php:446 inc/order.class.php:233
+msgid "Take item delivery"
+msgstr "Odbiór dostawy"
+
+#: inc/reception.class.php:468
+msgid "Waiting for delivery"
+msgstr "Czeka na dostawę"
+
+#: inc/reception.class.php:491
+msgid "Not enough items to deliver"
+msgstr "Brak pozycji do dostawy"
+
+#: inc/reception.class.php:525 inc/reception.class.php:551
+msgid "Item successfully taken delivery"
+msgstr "Pozycja pomyślnie odebrana"
+
+#: inc/reception.class.php:579
+msgid "Item already taken delivery"
+msgstr "Pozycja już odebrana"
+
+#: inc/reception.class.php:709
+msgid "Item delivered"
+msgstr "Dostarczone pozycje"
+
+#: inc/orderstate.class.php:53 inc/billstate.class.php:46
+msgid "You cannot remove this status"
+msgstr "Nie możesz usunąć tego statusu"
+
+#: inc/orderstate.class.php:82
+msgid "Draft"
+msgstr "Szkic"
+
+#: inc/orderstate.class.php:83
+msgid "Waiting for approval"
+msgstr "Czeka na zatwierzenie"
+
+#: inc/orderstate.class.php:84
+msgid "Validated"
+msgstr "Zatwierdzone"
+
+#: inc/orderstate.class.php:85
+msgid "Being delivered"
+msgstr "W dostawie"
+
+#: inc/orderstate.class.php:86
+msgid "Delivered"
+msgstr "Dostarczone"
+
+#: inc/orderstate.class.php:87
+msgid "Canceled"
+msgstr "Anulowane"
+
+#: inc/orderstate.class.php:88 inc/billstate.class.php:56
+#: inc/billstate.class.php:85
+msgid "Paid"
+msgstr "Zapłacony"
+
+#: inc/documentcategory.class.php:39
+msgid "Document category"
+msgstr "Kategoria dokumentu"
+
+#: inc/documentcategory.class.php:82 inc/documentcategory.class.php:87
+msgid "Document category prefix"
+msgstr ""
+
+#: inc/surveysupplier.class.php:42 inc/surveysupplier.class.php:170
+#: inc/surveysupplier.class.php:353 inc/surveysupplier.class.php:479
+msgid "Supplier quality"
+msgstr "Jakość dostawcy"
+
+#: inc/surveysupplier.class.php:175 inc/surveysupplier.class.php:356
+msgid "Note"
+msgstr "Notatka"
+
+#: inc/surveysupplier.class.php:176 inc/surveysupplier.class.php:357
+msgid "Comment on survey"
+msgstr ""
+
+#: inc/surveysupplier.class.php:204 inc/surveysupplier.class.php:286
+msgid "Administrative followup quality (contracts, bills, mail, etc.)"
+msgstr ""
+
+#: inc/surveysupplier.class.php:210 inc/surveysupplier.class.php:291
+msgid "Commercial followup quality, visits, responseness"
+msgstr ""
+
+#: inc/surveysupplier.class.php:216 inc/surveysupplier.class.php:296
+msgid "Contacts availability"
+msgstr ""
+
+#: inc/surveysupplier.class.php:222 inc/surveysupplier.class.php:301
+msgid "Quality of supplier intervention"
+msgstr ""
+
+#: inc/surveysupplier.class.php:228 inc/surveysupplier.class.php:306
+msgid "Reliability about annouced delays"
+msgstr ""
+
+#: inc/surveysupplier.class.php:238
+msgid "Final supplier note"
+msgstr ""
+
+#: inc/surveysupplier.class.php:320
+msgid "Average mark up to 10 (X points / 5)"
+msgstr ""
+
+#: inc/order.class.php:232 inc/order.class.php:1395 inc/order.class.php:1421
+msgid "Order Generation"
+msgstr "Generowanie zamówienia"
+
+#: inc/order.class.php:234
+msgid "Order validation"
+msgstr "Akceptacja zamówienia"
+
+#: inc/order.class.php:235 inc/order.class.php:1345
+msgid "Cancel order"
+msgstr "Anuluj zamówienie"
+
+#: inc/order.class.php:236
+msgid "Edit a validated order"
+msgstr "Modyfikuj zatwierdzone zamówienie"
+
+#: inc/order.class.php:237
+msgid "Generate order without validation"
+msgstr "Generuj zamówienie bez akceptacji"
+
+#: inc/order.class.php:240
+msgid "Link order to a ticket"
+msgstr "Połącz zamówienie ze zgłoszeniem"
+
+#: inc/order.class.php:274 inc/order.class.php:417 inc/order.class.php:849
+#: inc/order.class.php:891 inc/order.class.php:1611
+msgid "Postage"
+msgstr "Koszty dostawy"
+
+#: inc/order.class.php:390 inc/order.class.php:1904
+msgid "Order is late"
+msgstr "Zamówienie jest opóźnione"
+
+#: inc/order.class.php:524
+msgid "Validation"
+msgstr "Zatwierdzenie"
+
+#: inc/order.class.php:529
+msgid "Purchase order"
+msgstr "Wydruk zamówienia"
+
+#: inc/order.class.php:565
+msgid "An order number is mandatory !"
+msgstr "Numer zamówienia jest obowiązkowy!"
+
+#: inc/order.class.php:573 inc/order.class.php:626
+msgid ""
+"The order date must be within the dates entered for the selected budget."
+msgstr "Data zamówienie musi zawierać się pomiędzy datami zaznaczonego budżetu."
+
+#: inc/order.class.php:936
+msgid "Due date overtaken"
+msgstr "Termin wyprzedzenia"
+
+#: inc/order.class.php:1085 inc/order.class.php:1607 inc/order.class.php:1704
+msgid "Price tax free"
+msgstr "Razem netto"
+
+#: inc/order.class.php:1095 inc/order.class.php:1609
+msgid "Price tax free with postage"
+msgstr "Razem netto z kosztami dostawy"
+
+#: inc/order.class.php:1325
+msgid "Validation process"
+msgstr "Proces zatwiedzania"
+
+#: inc/order.class.php:1344
+msgid ""
+"Do you really want to cancel this order ? This option is irreversible !"
+msgstr "Czy na pewno chcesz usunąć to zamówienie? Proces jest nieodwracalny!"
+
+#: inc/order.class.php:1351
+msgid "Validate order"
+msgstr "Zatwierdź zamówienie"
+
+#: inc/order.class.php:1357
+msgid "Do you want to cancel the validation approval ?"
+msgstr "Czy chcesz anulować proces zatwierdzania?"
+
+#: inc/order.class.php:1359
+msgid "Cancel ask for validation"
+msgstr "Anuluj prośbę o akceptację"
+
+#: inc/order.class.php:1365
+msgid "Ask for validation"
+msgstr "Poproś o zatwierdzenie"
+
+#: inc/order.class.php:1371
+msgid "Do you really want to edit the order ?"
+msgstr "Czy na pewno chce edytować zamówienie?"
+
+#: inc/order.class.php:1373
+msgid "Edit order"
+msgstr "Edytuj zamówienie"
+
+#: inc/order.class.php:1381
+msgid "Thanks to add at least one equipment on your order."
+msgstr "Musisz dodać co najmniej jedną pozycję do zamówienia."
+
+#: inc/order.class.php:1401 inc/preference.class.php:151
+msgid "Use this model"
+msgstr "Użyj tego modelu"
+
+#: inc/order.class.php:1410 inc/preference.class.php:156
+msgid "Use this sign"
+msgstr "Użyj tego znaku"
+
+#: inc/order.class.php:1429
+msgid "Thanks to select a model into your preferences"
+msgstr ""
+
+#: inc/order.class.php:1467
+msgid "Invoice address"
+msgstr "Dane do faktury"
+
+#: inc/order.class.php:1502
+msgid "Delivery address"
+msgstr "Adres dostawy"
+
+#: inc/order.class.php:1512
+msgid "The"
+msgstr "Ten"
+
+#: inc/order.class.php:1514
+msgid "Issuer order"
+msgstr ""
+
+#: inc/order.class.php:1532
+msgid "Recipient"
+msgstr "Odbiorca"
+
+#: inc/order.class.php:1535
+msgid "Designation"
+msgstr "Oznaczenia"
+
+#: inc/order.class.php:1537
+msgid "Unit price"
+msgstr "Cena jednostkowa"
+
+#: inc/order.class.php:1539
+msgid "Discount rate"
+msgstr "Rabat"
+
+#: inc/order.class.php:1540
+msgid "Sum tax free"
+msgstr "Wartość netto"
+
+#: inc/order.class.php:1618
+msgid "€"
+msgstr "zł"
+
+#: inc/order.class.php:1619
+msgid "Signature of issuing order"
+msgstr "Numer zamówienia"
+
+#: inc/order.class.php:1723
+msgid "Unlink"
+msgstr "Rozłącz"
+
+#: inc/order.class.php:1856
+msgid "Total orders related with this budget is greater than its value."
+msgstr ""
+
+#: inc/order.class.php:1861
+msgid "Total orders related with this budget is equal to its value."
+msgstr ""
+
+#: inc/reference_supplier.class.php:431
+msgid "List references"
+msgstr "Pokaż oznaczenia"
+
+#: inc/billstate.class.php:55
+msgid "Being paid"
+msgstr "Płacone"
+
+#: inc/billstate.class.php:86
+msgid "Not paid"
+msgstr "Nie zapłacony"
+
+#: inc/link.class.php:42
+msgid "Generation"
+msgstr "Generowanie"
+
+#: inc/link.class.php:70 inc/link.class.php:463
+msgid "Generate item"
+msgstr "Generuj pozycję"
+
+#: inc/link.class.php:168
+msgid "Generate"
+msgstr "Generuj"
+
+#: inc/link.class.php:431
+msgid "No associated item"
+msgstr "Brak połączonych pozycji"
+
+#: inc/link.class.php:466
+msgid "Link to an existing item"
+msgstr "Połącz z istniejącą pozycją"
+
+#: inc/link.class.php:467
+msgid "Delete item link"
+msgstr "Usuń powiązanie do pozycji"
+
+#: inc/link.class.php:657 inc/link.class.php:721 inc/link.class.php:729
+#: inc/link.class.php:733
+msgid "Item linked to order"
+msgstr "Pozycja połączona z zamówieniem"
+
+#: inc/link.class.php:735
+msgid "Item already linked to another one"
+msgstr "Pozycja już połączona z innym"
+
+#: inc/link.class.php:772 inc/link.class.php:777 inc/link.class.php:797
+#: inc/link.class.php:802
+msgid "Item unlink form order"
+msgstr "Rozłącz pozycję z zamówieniem"
+
+#: inc/link.class.php:795
+msgid "One or several selected rows haven't linked items"
+msgstr "Jeden lub więcej zaznaczonych wierszy nie są powiązane z pozycjami"
+
+#: inc/link.class.php:934 inc/link.class.php:938
+msgid "Item generated by using order"
+msgstr "Pozycje generowane za pomocą zamówienia"
+
+#: inc/link.class.php:945
+msgid "Item successfully selected"
+msgstr "Pozycje pomyślne zaznaczone"
+
+#: inc/order_supplier.class.php:266
+msgid "Delivery statistics"
+msgstr "Statystyki dostawy"
+
+#: inc/order_supplier.class.php:282
+msgid "No specified status"
+msgstr "Nie określono stanu"
