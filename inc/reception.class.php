@@ -32,7 +32,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 class PluginOrderReception extends CommonDBChild {
-   
+
    public static $rightname          = 'plugin_order_order';
    public $dohistory                 = true;
    public static $itemtype           = 'PluginOrderOrder';
@@ -504,6 +504,12 @@ class PluginOrderReception extends CommonDBChild {
                "plugin_order_references_id" => $params["plugin_order_references_id"],
             );
 
+            $config = new PluginOrderConfig();
+            if ($config->canGenerateAsset() == 2) {
+               $options['name']        = $params['generated_name'];
+               $options['serial']      = $params['generated_serial'];
+               $options['otherserial'] = $params['generated_otherserial'];
+            }
             self::generateAsset($options);
             $this->updateReceptionStatus(array('item' => array($DB->result($result, $i, 0) => 'on')));
          }
@@ -589,6 +595,12 @@ class PluginOrderReception extends CommonDBChild {
                         "plugin_order_references_id" => $params["plugin_order_references_id"][$key],
                      );
 
+                     $config = new PluginOrderConfig();
+                     if ($config->canGenerateAsset() == 2) {
+                        $options['name']        = $params['generated_name'];
+                        $options['serial']      = $params['generated_serial'];
+                        $options['otherserial'] = $params['generated_otherserial'];
+                     }
                      self::generateAsset($options);
                   }
                }
@@ -677,6 +689,13 @@ class PluginOrderReception extends CommonDBChild {
             "id"                     => $options["items_id"],
             "plugin_order_orders_id" => $options["plugin_order_orders_id"],
          );
+
+         $config = new PluginOrderConfig();
+         if ($config->canGenerateAsset() == 2) {
+            $item['name']        = $options['name'].$rand;
+            $item['serial']      = $options['serial'].$rand;
+            $item['otherserial'] = $options['otherserial'].$rand;
+         }
 
          $options_gen = array(
             "plugin_order_orders_id"     => $options["plugin_order_orders_id"],
