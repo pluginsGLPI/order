@@ -59,9 +59,12 @@ PluginOrderDeliveryState::Dropdown(array('name' => "plugin_order_deliverystates_
 echo "</td></tr>";
 
 echo "<tr class='tab_bg_2'>";
-$config = new PluginOrderConfig();
+$config = PluginOrderConfig::getConfig();
 if ($config->canGenerateAsset() == 2) {
-   echo "<td>" . __("Default name", "order") . "</td>";
+   echo "<td>". __("Enable automatic generation", "order") . "</td>";
+   echo "<td>";
+   Dropdown::showYesNo("manual_generate", $config->canGenerateAsset());
+   echo "</td><td>" . __("Default name", "order") . "</td>";
    echo "<td>&nbsp;";
    Html::autocompletionTextField($config, "generated_name");
    echo "</td>&nbsp;&nbsp;";
