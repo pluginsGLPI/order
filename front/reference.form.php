@@ -29,16 +29,25 @@
 
 include ("../../../inc/includes.php");
 
-if (!isset($_GET["id"]))            $_GET["id"]           = "";
-if (!isset($_GET["withtemplate"]))  $_GET["withtemplate"] = "";
-if (isset($_POST["popup"]))         $_GET["popup"]        = $_POST["popup"];
-else                                $_GET["popup"]        = "";
-if (!isset($_GET["itemtype"]))      $_GET["itemtype"]     = "";
+if (!isset($_GET["id"])) {
+   $_GET["id"]           = "";
+}
+if (!isset($_GET["withtemplate"])) {
+   $_GET["withtemplate"] = "";
+}
+if (isset($_POST["popup"])) {
+   $_GET["popup"]        = $_POST["popup"];
+} else {
+   $_GET["popup"]        = "";
+}
+if (!isset($_GET["itemtype"])) {
+   $_GET["itemtype"]     = "";
+}
 
 $reference = new PluginOrderReference();
 
 if (isset($_POST["add"])) {
-   $reference->check(-1,UPDATE,$_POST);
+   $reference->check(-1, UPDATE, $_POST);
    $newID = $reference->add($_POST);
    $url   = Toolbox::getItemTypeFormURL('PluginOrderReference')."?id=$newID";
    if (isset ($_GET["popup"]) && $_GET["popup"] == 1) {
@@ -50,27 +59,27 @@ if (isset($_POST["add"])) {
       Html::redirect($url);
    }
 
-/* delete order */
-} elseif (isset($_POST["delete"])) {
-   $reference->check($_POST['id'],  UPDATE);
+   /* delete order */
+} else if (isset($_POST["delete"])) {
+   $reference->check($_POST['id'], UPDATE);
    $reference->delete($_POST);
    $reference->redirectToList();
 
-/* restore order */
-} elseif (isset($_POST["restore"])) {
-   $reference->check($_POST['id'],  UPDATE);
+   /* restore order */
+} else if (isset($_POST["restore"])) {
+   $reference->check($_POST['id'], UPDATE);
    $reference->restore($_POST);
    $reference->redirectToList();
 
-/* purge order */
-} elseif (isset($_POST["purge"])) {
-	$reference->check($_POST['id'], UPDATE);
+   /* purge order */
+} else if (isset($_POST["purge"])) {
+    $reference->check($_POST['id'], UPDATE);
    $reference->delete($_POST, 1);
-	$reference->redirectToList();
+    $reference->redirectToList();
 
-/* update order */
-} elseif (isset($_POST["update"])) {
-   $reference->check($_POST['id'],  UPDATE);
+   /* update order */
+} else if (isset($_POST["update"])) {
+   $reference->check($_POST['id'], UPDATE);
    $reference->update($_POST);
    Html::back();
 }

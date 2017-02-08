@@ -27,7 +27,7 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -91,8 +91,7 @@ class PluginOrderOrder extends CommonDBTM {
       return Session::haveRight("plugin_order_order", self::RIGHT_DELIVERY);
    }
 
-   public function isDraft()
-   {
+   public function isDraft() {
       $config = PluginOrderConfig::getConfig();
       return ($this->getState() == $config->getDraftState());
    }
@@ -491,8 +490,8 @@ class PluginOrderOrder extends CommonDBTM {
             || !isset($options['withtemplate'])
             || !$options['withtemplate']) {
          $this->addDefaultFormTab($ong);
-         $this->addStandardTab('PluginOrderOrder_Item', $ong,$options);
-         $this->addStandardTab('PluginOrderOrder', $ong,$options);
+         $this->addStandardTab('PluginOrderOrder_Item', $ong, $options);
+         $this->addStandardTab('PluginOrderOrder', $ong, $options);
          $this->addStandardTab('PluginOrderOrder_Supplier', $ong, $options);
          $this->addStandardTab('PluginOrderReception', $ong, $options);
          $this->addStandardTab('PluginOrderLink', $ong, $options);
@@ -525,7 +524,7 @@ class PluginOrderOrder extends CommonDBTM {
             }
             if ($config->canGenerateOrderPDF()
                && ($item->getState() > PluginOrderOrderState::DRAFT || $this->canGenerateWithoutValidation())) {
-            // generation
+               // generation
                $ong[2] = __("Purchase order", "order");
             }
 
@@ -536,7 +535,7 @@ class PluginOrderOrder extends CommonDBTM {
    public static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       if ($item->getType() == 'Budget') {
          self::showForBudget($item->getField('id'));
-      } elseif ($item->getType() == __CLASS__) {
+      } else if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
             case 1 :
                $item->showValidationForm($item->getID());
@@ -564,12 +563,12 @@ class PluginOrderOrder extends CommonDBTM {
          if (!isset ($input["num_order"]) || $input["num_order"] == '') {
             Session::addMessageAfterRedirect(__("An order number is mandatory !", "order"), false, ERROR);
             return array ();
-         } elseif (!isset ($input["name"]) || $input["name"] == '') {
+         } else if (!isset ($input["name"]) || $input["name"] == '') {
             $input["name"] = $input["num_order"];
          }
 
-         if( isset($input['budgets_id']) && $input['budgets_id'] > 0) {
-            if( !self::canStillUseBudget($input) ) {
+         if (isset($input['budgets_id']) && $input['budgets_id'] > 0) {
+            if (!self::canStillUseBudget($input)) {
                Session::addMessageAfterRedirect(__("The order date must be within the dates entered for the selected budget.", "order"), false, ERROR);
             }
          }
@@ -622,7 +621,7 @@ class PluginOrderOrder extends CommonDBTM {
             || (isset($input['budgets_id'])
                && $input['budgets_id'] > 0
                && $this->fields['budgets_id'] != $input['budgets_id'])) {
-         if(!self::canStillUseBudget($input) && !isset($input['_unlink_budget'])) {
+         if (!self::canStillUseBudget($input) && !isset($input['_unlink_budget'])) {
             Session::addMessageAfterRedirect(__("The order date must be within the dates entered for the selected budget.", "order"), false, ERROR);
          }
       }
@@ -667,7 +666,7 @@ class PluginOrderOrder extends CommonDBTM {
       if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
          $template   = "newcomp";
          $datestring = sprintf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
-      } elseif (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
+      } else if (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
          $template   = "newtemplate";
          $datestring = sprintf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
       } else {
@@ -685,7 +684,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
 
       // Displaying OVER BUDGET ALERT
-      if( $this->fields['budgets_id'] > 0 ) {
+      if ($this->fields['budgets_id'] > 0) {
             self::displayAlertOverBudget(self::isOverBudget($ID));
       }
 
@@ -703,7 +702,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</td>";
       /* date of order */
       echo "<td>" . __("Date of order", "order") . ":</td><td>";
-      if ($canedit)  {
+      if ($canedit) {
          if ($this->fields["order_date"] == NULL) {
             Html::showDateFormItem("order_date", date("Y-m-d"), true, true);
          } else {
@@ -733,7 +732,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</td>";
       /* type order */
       echo "<td>" . __("Type") . ": </td><td>";
-      if ($canedit){
+      if ($canedit) {
          PluginOrderOrderType::Dropdown(array('name'  => "plugin_order_ordertypes_id",
                                               'value' => $this->fields["plugin_order_ordertypes_id"]));
       } else {
@@ -912,7 +911,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __("Associable to a ticket") . "&nbsp;:</td><td>";
       if ($canedit) {
-         Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
+         Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
       } else {
          echo Dropdown::getYesNo($this->fields['is_helpdesk_visible']);
       }
@@ -923,7 +922,7 @@ class PluginOrderOrder extends CommonDBTM {
          echo "<br/>" . __("Delivery date") . ":";
       }
       echo " </td><td>";
-      if ($canedit)  {
+      if ($canedit) {
          if ($this->fields["duedate"] == NULL) {
             Html::showDateFormItem("duedate", '', true, true);
          } else {
@@ -993,7 +992,7 @@ class PluginOrderOrder extends CommonDBTM {
          if ($this->fields['users_id']) {
             $output = "";
 
-            if($user->getFromDB($this->fields['users_id'])) {
+            if ($user->getFromDB($this->fields['users_id'])) {
                $output = formatUserName($this->fields['users_id'], $user->fields['name'],
                                         $user->fields['realname'], $user->fields['firstname']);
             }
@@ -1045,7 +1044,7 @@ class PluginOrderOrder extends CommonDBTM {
       } else {
          if ($this->fields['users_id_delivery']) {
             $user->getFromDB($this->fields['users_id_delivery']);
-            $output = formatUserName($this->fields['users_id'],$user->fields['name'],
+            $output = formatUserName($this->fields['users_id'], $user->fields['name'],
                                      $user->fields['realname'], $user->fields['firstname']);
             echo $output;
          }
@@ -1154,7 +1153,7 @@ class PluginOrderOrder extends CommonDBTM {
             echo "<optgroup label=\"" . Dropdown::getDropdownName("glpi_entities", $prev) . "\">";
          }
          $output = $data["name"];
-         if($_SESSION["glpiis_ids_visible"]||empty($output)){
+         if ($_SESSION["glpiis_ids_visible"]||empty($output)) {
             $output .= " (" . $data["id"] . ")";
          }
          echo "<option value='" . $data["id"] . "' " . ($value == $data["id"] ? " selected " : "")
@@ -1208,8 +1207,8 @@ class PluginOrderOrder extends CommonDBTM {
                $prev = $data["entities_id"];
                echo "<optgroup label=\"" . Dropdown::getDropdownName("glpi_entities", $prev) . "\">";
             }
-            $output = formatUserName($data["id"], "",$data["name"], $data["firstname"]);
-            if($_SESSION["glpiis_ids_visible"] || empty($output)) {
+            $output = formatUserName($data["id"], "", $data["name"], $data["firstname"]);
+            if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
                $output .= " (" . $data["id"] . ")";
             }
             echo "<option value='" . $data["id"] . "' " . ($value == $data["id"] ? " selected " : "")
@@ -1448,7 +1447,7 @@ class PluginOrderOrder extends CommonDBTM {
          $odf = new Odtphp\Odf(PLUGIN_ORDER_TEMPLATE_DIR."$template", $config);
          $this->getFromDB($ID);
 
-         if(file_exists(PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR . "custom.php")) {
+         if (file_exists(PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR . "custom.php")) {
             include_once (PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR . "custom.php");
          }
 
@@ -1460,16 +1459,16 @@ class PluginOrderOrder extends CommonDBTM {
 
             try{$odf->setImage('logo', PLUGIN_ORDER_TEMPLATE_LOGO_DIR.'/logo.jpg');} catch(\Odtphp\Exceptions\OdfException $e){}
 
-            $values = array();
+               $values = array();
 
-            $values['title_order']           = __("Order number", "order");
-            $values['num_order']             = $this->fields["num_order"];
-            $values['title_invoice_address'] = __("Invoice address", "order");
-            $values['comment_order']         = $this->fields["comment"];
+               $values['title_order']           = __("Order number", "order");
+               $values['num_order']             = $this->fields["num_order"];
+               $values['title_invoice_address'] = __("Invoice address", "order");
+               $values['comment_order']         = $this->fields["comment"];
 
-            $entity = new Entity();
-            $entity->getFromDB($this->fields["entities_id"]);
-            $town   = '';
+               $entity = new Entity();
+               $entity->getFromDB($this->fields["entities_id"]);
+               $town   = '';
 
             if ($this->fields["entities_id"] != 0) {
                $name_entity = $entity->fields["name"];
@@ -1477,8 +1476,7 @@ class PluginOrderOrder extends CommonDBTM {
                $name_entity = __("Root entity");
             }
 
-
-            $values['entity_name'] = $name_entity;
+               $values['entity_name'] = $name_entity;
             if ($entity->getFromDB($this->fields["entities_id"])) {
                $town = $entity->fields["town"];
 
@@ -1488,7 +1486,7 @@ class PluginOrderOrder extends CommonDBTM {
                $values['entity_country']  = $entity->fields["country"];
             }
 
-            $supplier = new Supplier();
+               $supplier = new Supplier();
             if ($supplier->getFromDB($this->fields["suppliers_id"])) {
                $values['supplier_name']     = $supplier->fields["name"];
                $values['supplier_address']  = $supplier->fields["address"];
@@ -1497,7 +1495,7 @@ class PluginOrderOrder extends CommonDBTM {
                $values['supplier_country']  = $supplier->fields["country"];
             }
 
-            $location = new Location();
+               $location = new Location();
             if ($location->getFromDB($this->fields["locations_id"])) {
                $values['title_delivery_address']   = __("Delivery address", "order");
                $values['comment_delivery_address'] = $location->fields['comment'];
@@ -1506,65 +1504,65 @@ class PluginOrderOrder extends CommonDBTM {
             if ($town) {
                $town = $town . ", ";
             }
-            $order_date = Html::convDate($this->fields["order_date"]);
-            $username   = Html::clean(getUserName(Session::getLoginUserID()));
+               $order_date = Html::convDate($this->fields["order_date"]);
+               $username   = Html::clean(getUserName(Session::getLoginUserID()));
 
-            $values['title_date_order'] = $town.__("The", "order")." ";
-            $values['date_order']       = $order_date;
-            $values['title_sender']     = __("Issuer order", "order");
-            $values['sender']           = $username;
-            $values['title_budget']     = __("Budget");
+               $values['title_date_order'] = $town.__("The", "order")." ";
+               $values['date_order']       = $order_date;
+               $values['title_sender']     = __("Issuer order", "order");
+               $values['sender']           = $username;
+               $values['title_budget']     = __("Budget");
 
-            $budget = new Budget();
+               $budget = new Budget();
             if ($budget->getFromDB($this->fields["budgets_id"])) {
                $values['budget'] = $budget->fields['name'];
             } else {
                $values['budget'] = '';
             }
 
-            $output = '';
-            $contact = new Contact();
+               $output = '';
+               $contact = new Contact();
             if ($contact->getFromDB($this->fields["contacts_id"])) {
                $output=formatUserName($contact->fields["id"], "", $contact->fields["name"],
-                                      $contact->fields["firstname"]);
+                                $contact->fields["firstname"]);
             }
 
-            $values['title_recipient']    = __("Recipient", "order");
-            $values['recipient']          = Html::clean($output);
-            $values['nb']                 = __("Quantity", "order");
-            $values['title_item']         = __("Designation", "order");
-            $values['title_ref']          = __("Reference");
-            $values['HTPrice_item']       = __("Unit price", "order");
-            $values['TVA_item']           = __("VAT", "order");
-            $values['title_discount']     = __("Discount rate", "order");
-            $values['HTPriceTotal_item']  = __("Sum tax free", "order");
-            $values['ATIPriceTotal_item'] = __("Price ATI", "order");
+               $values['title_recipient']    = __("Recipient", "order");
+               $values['recipient']          = Html::clean($output);
+               $values['nb']                 = __("Quantity", "order");
+               $values['title_item']         = __("Designation", "order");
+               $values['title_ref']          = __("Reference");
+               $values['HTPrice_item']       = __("Unit price", "order");
+               $values['TVA_item']           = __("VAT", "order");
+               $values['title_discount']     = __("Discount rate", "order");
+               $values['HTPriceTotal_item']  = __("Sum tax free", "order");
+               $values['ATIPriceTotal_item'] = __("Price ATI", "order");
 
-            $listeArticles = array();
+               $listeArticles = array();
 
-            $result = $PluginOrderOrder_Item->queryDetail($ID);
-            $num    = $DB->numrows($result);
+               $result = $PluginOrderOrder_Item->queryDetail($ID);
+               $num    = $DB->numrows($result);
 
             while ($data=$DB->fetch_array($result)) {
                $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID, $data["id"],
-                                                                                   $data["price_taxfree"],
-                                                                                   $data["discount"]);
+                                                                             $data["price_taxfree"],
+                                                                             $data["discount"]);
 
                $listeArticles[] = array(
-                  'quantity'         => $quantity,
-                  'ref'              => utf8_decode($data["name"]),
-                  'taxe'             => Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTax"),
-                                                                  $data["plugin_order_ordertaxes_id"]),
-                  'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier(
-                                          $data["id"],
-                                          $this->fields["suppliers_id"]),
-                  'price_taxfree'    => $data["price_taxfree"],
-                  'discount'         => $data["discount"], false, 0,
-                  'price_discounted' => $data["price_discounted"] * $quantity,
-                  'price_ati'        => $data["price_ati"]);
+               'quantity'         => $quantity,
+               'ref'              => utf8_decode($data["name"]),
+               'taxe'             => Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTax"),
+                                                            $data["plugin_order_ordertaxes_id"]),
+               'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier(
+                                    $data["id"],
+                                    $this->fields["suppliers_id"]),
+               'price_taxfree'    => $data["price_taxfree"],
+               'discount'         => $data["discount"], false, 0,
+               'price_discounted' => $data["price_discounted"] * $quantity,
+               'price_ati'        => $data["price_ati"]);
             }
 
-            $article = $odf->setSegment('articles');
+               $article = $odf->setSegment('articles');
             foreach ($listeArticles AS $element) {
                $article->nbA($element['quantity']);
                $article->titleArticle($element['ref']);
@@ -1583,12 +1581,12 @@ class PluginOrderOrder extends CommonDBTM {
                $article->merge();
             }
 
-            $odf->mergeSegment($article);
+               $odf->mergeSegment($article);
 
-            $prices = $PluginOrderOrder_Item->getAllPrices($ID);
+               $prices = $PluginOrderOrder_Item->getAllPrices($ID);
 
-            // total price (with postage)
-            $postagewithTVA = $PluginOrderOrder_Item->getPricesATI($this->fields["port_price"],
+               // total price (with postage)
+               $postagewithTVA = $PluginOrderOrder_Item->getPricesATI($this->fields["port_price"],
                                                                    Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
                                                                    $this->fields["plugin_order_ordertaxes_id"]));
 
@@ -1656,7 +1654,7 @@ class PluginOrderOrder extends CommonDBTM {
       $input["entities_id"] = $entity;
       $this->update($input);
 
-      if($supplier->getFromDBByOrder($ID)) {
+      if ($supplier->getFromDBByOrder($ID)) {
          $input["id"]          = $supplier->fields["id"];
          $input["entities_id"] = $entity;
          $supplier->update($input);
@@ -1737,7 +1735,7 @@ class PluginOrderOrder extends CommonDBTM {
             echo "</td>";
 
             echo "<td>";
-            echo Dropdown::getDropdownName("glpi_entities",$data["entities_id"]);
+            echo Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
             echo "</td>";
 
             echo "<td>";
@@ -1776,7 +1774,7 @@ class PluginOrderOrder extends CommonDBTM {
          return true;
       } else {
          //There's a begin date and order date is prior to it
-         if($input['order_date'] < $budget->getField('begin_date')) {
+         if ($input['order_date'] < $budget->getField('begin_date')) {
             return false;
          }
          //There's an end date and order date is above it
@@ -1801,7 +1799,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       $order = new self();
       $order->getFromDB($ID);
-      if($all_paid) {
+      if ($all_paid) {
          $state = PluginOrderBillState::PAID;
       } else {
          $state = PluginOrderBillState::NOTPAID;
@@ -1832,25 +1830,25 @@ class PluginOrderOrder extends CommonDBTM {
       }
 
       $total_HT = 0;
-      foreach($DB->request($query) as $data) {
+      foreach ($DB->request($query) as $data) {
          $item      = new PluginOrderOrder_Item();
          $prices    = $item->getAllPrices($data['id']);
          $total_HT += $prices["priceHT"] + $data['port_price'];
       }
 
       // Compare BUDGET value to TOTAL_HT value
-      if ($total_HT > $budget->getField('value') ) {
+      if ($total_HT > $budget->getField('value')) {
          return PluginOrderOrder::ORDER_IS_OVER_BUDGET;
-      } elseif( $total_HT == $budget->getField('value') ) {
+      } else if ($total_HT == $budget->getField('value')) {
          return PluginOrderOrder::ORDER_IS_EQUAL_BUDGET;
-      } else{
+      } else {
          return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
       }
    }
 
    public function displayAlertOverBudget($type) {
       $message = "";
-      switch($type) {
+      switch ($type) {
          case PluginOrderOrder::ORDER_IS_OVER_BUDGET :
             $message = "<h3><span class='red'>"
                         . __("Total orders related with this budget is greater than its value.", "order")
@@ -1863,7 +1861,7 @@ class PluginOrderOrder extends CommonDBTM {
             break;
       }
 
-      if( $type != PluginOrderOrder::ORDER_IS_UNDER_BUDGET ){
+      if ($type != PluginOrderOrder::ORDER_IS_UNDER_BUDGET) {
          echo "<div class='box' style='margin-bottom:20px;'>";
          echo "<div class='box-tleft'><div class='box-tright'><div class='box-tcenter'>";
          echo "</div></div></div>";
@@ -1927,39 +1925,39 @@ class PluginOrderOrder extends CommonDBTM {
                             WHERE `$table`.`entities_id` = '" . $entity . "'
                                    AND (`glpi_alerts`.`date` IS NULL) AND `$table`.`is_late`='1'
                                       AND `plugin_order_orderstates_id`!='" . $config->getDeliveredState() . "';";
-         $orders = array();
-         foreach ($DB->request($query_alert) as $order) {
-            $orders[$order['id']] = $order;
-         }
+            $orders = array();
+            foreach ($DB->request($query_alert) as $order) {
+               $orders[$order['id']] = $order;
+            }
 
-         if (!empty($orders)) {
-            $options['entities_id'] = $entity;
-            $options['orders']      = $orders;
-            if (NotificationEvent::raiseEvent('duedate', new PluginOrderOrder(), $options)) {
-               if ($task) {
-                  $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
+            if (!empty($orders)) {
+               $options['entities_id'] = $entity;
+               $options['orders']      = $orders;
+               if (NotificationEvent::raiseEvent('duedate', new PluginOrderOrder(), $options)) {
+                  if ($task) {
+                     $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
                             . "&nbsp;:  $message\n");
-                  $task->addVolume(1);
-               } else {
-                  Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity)
+                     $task->addVolume(1);
+                  } else {
+                     Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity)
                                          ."&nbsp;:  $message");
-               }
-               $input["type"]     = Alert::THRESHOLD;
-               $input["itemtype"] = 'PluginOrderOrder';
+                  }
+                  $input["type"]     = Alert::THRESHOLD;
+                  $input["itemtype"] = 'PluginOrderOrder';
 
-               // add alerts
-               foreach ($orders as $ID=>$tmp) {
-                  $input["items_id"] = $ID;
-                  $alert->add($input);
-                  unset($alert->fields['id']);
-                }
-             } else {
-               if ($task) {
-                  $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
-                            ."&nbsp;: Send order alert failed\n");
+                  // add alerts
+                  foreach ($orders as $ID=>$tmp) {
+                     $input["items_id"] = $ID;
+                     $alert->add($input);
+                     unset($alert->fields['id']);
+                  }
                } else {
-                  Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity)
-                                         ."&nbsp;: Send order alert failed", false, ERROR);
+                  if ($task) {
+                     $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
+                        ."&nbsp;: Send order alert failed\n");
+                  } else {
+                      Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity)
+                                     ."&nbsp;: Send order alert failed", false, ERROR);
                   }
                }
             }
@@ -2002,7 +2000,7 @@ class PluginOrderOrder extends CommonDBTM {
             // Update document name
             $order = new self();
             $order->getFromDB($document_item->fields['items_id']);
-            $extension = explode('.',$document->fields['filename']);
+            $extension = explode('.', $document->fields['filename']);
             $tag="";
             if (!empty($documentCategory->fields['documentcategories_prefix'])) {
                $tag = $documentCategory->fields['documentcategories_prefix']."-";
@@ -2039,7 +2037,7 @@ class PluginOrderOrder extends CommonDBTM {
          case 'transfert':
             Entity::dropdown();
             echo "&nbsp;".
-                  Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
+                  Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'));
             return true;
       }
       return "";
@@ -2320,7 +2318,6 @@ class PluginOrderOrder extends CommonDBTM {
          if (TableExists("glpi_dropdown_plugin_order_status")) {
             $DB->query("DROP TABLE `glpi_dropdown_plugin_order_status`") or die($DB->error());
          }
-
 
          if (TableExists("glpi_plugin_order_mailing")) {
             $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_mailing`;") or die($DB->error());

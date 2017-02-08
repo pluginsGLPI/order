@@ -21,7 +21,7 @@ Copyright (C) 2013 by the Order Development Team.
 
  You should have received a copy of the GNU General Public License
  along with Order. If not, see <http://www.gnu.org/licenses/>.
- -------------------------------------------------------------------------- 
+ --------------------------------------------------------------------------
 */
 
 include ('../../../inc/includes.php');
@@ -37,5 +37,4 @@ if (isset($_POST["update"])) {
    }
 
    Html::back();
-} 
-?>
+}

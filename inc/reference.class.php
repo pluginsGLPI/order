@@ -27,7 +27,7 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -198,7 +198,7 @@ class PluginOrderReference extends CommonDBTM {
          return false;
       }
 
-       if (!isset($input["transfert"])
+      if (!isset($input["transfert"])
             && countElementsInTable($this->getTable(),
                                     "`name` = '" . $input["name"] . "'
                                        AND `entities_id` = '" . $input["entities_id"] . "'")) {
@@ -244,11 +244,11 @@ class PluginOrderReference extends CommonDBTM {
       $ong = array();
       if (!$this->isNewID($this->getID())) {
          $this->addDefaultFormTab($ong);
-         $this->addStandardTab('PluginOrderReference_Supplier', $ong,$options);
+         $this->addStandardTab('PluginOrderReference_Supplier', $ong, $options);
          // $this->addStandardTab('PluginOrderReference', $ong,$options);
-         $this->addStandardTab('Document_Item',$ong,$options);
-         $this->addStandardTab('Note',$ong,$options);
-         $this->addStandardTab('Log',$ong,$options);
+         $this->addStandardTab('Document_Item', $ong, $options);
+         $this->addStandardTab('Note', $ong, $options);
+         $this->addStandardTab('Log', $ong, $options);
       }
       return $ong;
    }
@@ -378,7 +378,7 @@ class PluginOrderReference extends CommonDBTM {
          }
 
          foreach ($types as $tmp => $itemtype) {
-            if(!in_array($itemtype, $used)) {
+            if (!in_array($itemtype, $used)) {
                unset($types[$tmp]);
             }
          }
@@ -427,10 +427,10 @@ class PluginOrderReference extends CommonDBTM {
       // $this->showTabs($options);
       $this->showFormHeader($options);
 
-      if(isset($options['popup'])) {
+      if (isset($options['popup'])) {
          echo "<input type='hidden' name='popup' value='".$options['popup']."'>";
       }
-      if(!isset($options['item']) || empty($options['item'])) {
+      if (!isset($options['item']) || empty($options['item'])) {
          $options['item'] = $this->fields["itemtype"];
       }
 
@@ -507,7 +507,7 @@ class PluginOrderReference extends CommonDBTM {
                   'name'  => "types_id",
                   'value' => $this->fields["types_id"],
                ));
-            } else{
+            } else {
                echo Dropdown::getDropdownName(getTableForItemType($itemtypeclass), $this->fields["types_id"]);
             }
          }
@@ -630,7 +630,7 @@ class PluginOrderReference extends CommonDBTM {
          if (is_array($params['entity'])) {
             echo "entity_sons options is not available with array of entity";
          } else {
-            $params['entity'] = getSonsOf('glpi_entities',$params['entity']);
+            $params['entity'] = getSonsOf('glpi_entities', $params['entity']);
          }
       }
 
@@ -686,7 +686,7 @@ class PluginOrderReference extends CommonDBTM {
       $default  = "<select name='" . $params['name'] . "' id='dropdown_" . $params['name'] . $params['rand'] . "'>";
       $default .= "<option value='" . $params['value'] . "'>$name</option></select>";
 
-      Ajax::Dropdown($use_ajax, "/plugins/order/ajax/dropdownValue.php", $param, $default,  $params['rand']);
+      Ajax::Dropdown($use_ajax, "/plugins/order/ajax/dropdownValue.php", $param, $default, $params['rand']);
 
       // Display comment
       if ($params['comments']) {
@@ -699,7 +699,7 @@ class PluginOrderReference extends CommonDBTM {
             $options_tooltip['linktarget'] = '_blank';
          }
 
-         Html::showToolTip($comment,$options_tooltip);
+         Html::showToolTip($comment, $options_tooltip);
 
          if ($itemtype::canCreate() && !isset($_GET['popup'])) {
             echo "<img alt='' title=\"" . __("Add") . "\" src='" . $CFG_GLPI["root_doc"] . "
@@ -773,7 +773,7 @@ class PluginOrderReference extends CommonDBTM {
                 LEFT JOIN `glpi_plugin_order_references`
                    ON (`glpi_plugin_order_references`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_references_id`)
                 WHERE `plugin_order_references_id` = '" . $ref->getID() . "'";
-      $query.= getEntitiesRestrictRequest(" AND ", "glpi_plugin_order_references", "entities_id", $ref->fields["entities_id"],true);
+      $query.= getEntitiesRestrictRequest(" AND ", "glpi_plugin_order_references", "entities_id", $ref->fields["entities_id"], true);
       $query.= " GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_orders_id`
                ORDER BY `entities_id`, `name` ";
 
@@ -804,7 +804,7 @@ class PluginOrderReference extends CommonDBTM {
             echo "</td>";
 
             echo "<td>";
-            echo Dropdown::getDropdownName("glpi_entities",$order->fields["entities_id"]);
+            echo Dropdown::getDropdownName("glpi_entities", $order->fields["entities_id"]);
             echo "</td>";
 
             echo "</tr>";
@@ -827,7 +827,7 @@ class PluginOrderReference extends CommonDBTM {
       }
 
       //If reference is not visible in the target entity : transfer it!
-      if(!countElementsInTableForEntity($this->getTable(), $entity, "`id`='" . $this->getID() . "'")) {
+      if (!countElementsInTableForEntity($this->getTable(), $entity, "`id`='" . $this->getID() . "'")) {
          $input                = $this->fields;
          $input['entities_id'] = $entity;
          $oldref               = $input['id'];
@@ -895,7 +895,7 @@ class PluginOrderReference extends CommonDBTM {
       echo "<div class='center' ><span class='b'>" . __("Select the wanted item type", "order")
          . "</span><br>";
       echo "<a style='font-size:14px;' href='" . $target . "?reset=reset' title=\""
-         . __("Show all") . "\">" . str_replace(" ","&nbsp;",__("Show all")) . "</a></div>";
+         . __("Show all") . "\">" . str_replace(" ", "&nbsp;", __("Show all")) . "</a></div>";
 
       echo "<div class='left' style='width:100%'>";
 
@@ -996,7 +996,7 @@ class PluginOrderReference extends CommonDBTM {
          case 'transfert':
             Entity::dropdown();
             echo "&nbsp;".
-                  Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
+                  Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'));
             return true;
          case 'copy_reference':
             //useless ?
@@ -1007,7 +1007,7 @@ class PluginOrderReference extends CommonDBTM {
       return "";
    }
 
-      function getSpecificMassiveActions($checkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -1061,7 +1061,7 @@ class PluginOrderReference extends CommonDBTM {
       return;
    }
 
-/*   function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = array()) {
+   /*   function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = array()) {
       if (isset($field_id_or_search_options['displaytype'])
          && $field_id_or_search_options['displaytype'] == 'reference_type') {
             Toolbox::logDebug($field_id_or_search_options['displaytype'],

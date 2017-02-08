@@ -29,9 +29,15 @@
 
 include ("../../../inc/includes.php");
 
-if(!isset($_GET["id"]))                         $_GET["id"]                         = "";
-if(!isset($_GET["withtemplate"]))               $_GET["withtemplate"]               = "";
-if(!isset($_GET["plugin_order_references_id"])) $_GET["plugin_order_references_id"] = "";
+if (!isset($_GET["id"])) {
+   $_GET["id"]                         = "";
+}
+if (!isset($_GET["withtemplate"])) {
+   $_GET["withtemplate"]               = "";
+}
+if (!isset($_GET["plugin_order_references_id"])) {
+   $_GET["plugin_order_references_id"] = "";
+}
 
 $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 
@@ -43,13 +49,13 @@ if (isset($_POST["add"])) {
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
 
-} elseif (isset($_POST["update"])) {
+} else if (isset($_POST["update"])) {
    if (PluginOrderReference_Supplier::canCreate()) {
       $PluginOrderReference_Supplier->update($_POST);
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
 
-} elseif (isset($_POST["delete"])) {
+} else if (isset($_POST["delete"])) {
    if (PluginOrderReference_Supplier::canCreate()) {
       foreach ($_POST["check"] as $ID => $value) {
          $PluginOrderReference_Supplier->delete(array("id"=>$ID));

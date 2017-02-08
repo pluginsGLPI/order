@@ -35,7 +35,7 @@
 function plugin_order_install() {
    foreach (glob(GLPI_ROOT . '/plugins/order/inc/*.php') as $file) {
       //Do not load datainjection files (not needed and avoid missing class error message)
-      if (!preg_match('/injection.class.php/', $file) ) {
+      if (!preg_match('/injection.class.php/', $file)) {
          include_once ($file);
       }
    }
@@ -63,7 +63,7 @@ function plugin_order_install() {
          $item=strtolower($plug['class']);
          if (file_exists("$dir$item.class.php")) {
             include_once ("$dir$item.class.php");
-            call_user_func(array($class,'install'),$migration);
+            call_user_func(array($class,'install'), $migration);
          }
       }
    }
@@ -83,7 +83,7 @@ function plugin_order_install() {
 function plugin_order_uninstall() {
    foreach (glob(GLPI_ROOT . '/plugins/order/inc/*.php') as $file) {
       //Do not load datainjection files (not needed and avoid missing class error message)
-      if (!preg_match('/injection.class.php/', $file) ) {
+      if (!preg_match('/injection.class.php/', $file)) {
          include_once ($file);
       }
    }
@@ -96,9 +96,9 @@ function plugin_order_uninstall() {
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                     'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
                     'PluginOrderSurveySupplier', 'PluginOrderDocumentCategory');
-      foreach ($classes as $class) {
-         call_user_func(array($class,'uninstall'));
-      }
+   foreach ($classes as $class) {
+      call_user_func(array($class,'uninstall'));
+   }
 
    return true;
 }
@@ -213,7 +213,7 @@ function plugin_order_addSelect($type, $ID, $num) {
 function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield,
                                        &$already_link_tables) {
 
-   switch ($new_table){
+   switch ($new_table) {
       case "glpi_plugin_order_orders" : // From items
          $out = " LEFT JOIN `glpi_plugin_order_orders_items` " .
                   "ON (`$ref_table`.`id` = `glpi_plugin_order_orders_items`.`items_id` " .

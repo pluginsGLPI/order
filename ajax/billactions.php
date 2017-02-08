@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 if (isset($_POST["action"])) {
-   switch($_POST["action"]) {
+   switch ($_POST["action"]) {
       case "bill":
          echo "&nbsp;<input type='hidden' name='plugin_order_orders_id' "
             . " value='" . $_POST["plugin_order_orders_id"] . "'>";

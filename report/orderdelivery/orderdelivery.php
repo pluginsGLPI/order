@@ -76,7 +76,7 @@ if ($report->criteriasValidated()) {
                                                          __("Delivery location", "order"), 'Location',
                                                          array('with_comment' => true))
                        ));
-   
+
     //TODO : ne pas chercher dans la poublelles
    $query = "SELECT * FROM `glpi_plugin_order_orders`";
    $query.= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");
@@ -87,4 +87,3 @@ if ($report->criteriasValidated()) {
    $report->setSqlRequest($query);
    $report->execute();
 }
-?>

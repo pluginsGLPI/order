@@ -13,7 +13,7 @@ class PluginOrderMenu extends CommonGLPI {
       $menu['title'] = self::getTypeName(2);
       $menu['page']  = self::getSearchURL(false);
       if (PluginOrderConfig::canView()) {
-        $menu['links']['config']= PluginOrderConfig::getFormURL(false);
+         $menu['links']['config']= PluginOrderConfig::getFormURL(false);
       }
 
       if (PluginOrderOrder::canView()) {
@@ -48,15 +48,15 @@ class PluginOrderMenu extends CommonGLPI {
          if (PluginOrderReference::canCreate()) {
             $menu['options']['references']['links']['add']    = PluginOrderReference::getFormURL(false);
          }
-         if (PluginOrderConfig::canView()) { 
+         if (PluginOrderConfig::canView()) {
             $menu['options']['references']['links']['config'] = PluginOrderConfig::getFormURL(false);
-         } 
+         }
       }
       return $menu;
    }
-   
-   function install(){
-      
+
+   function install() {
+
    }
 
 }

@@ -27,7 +27,7 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -56,8 +56,12 @@ class PluginOrderConfig extends CommonDBTM {
    public static function getConfig($update = false) {
       static $config = null;
 
-      if (is_null($config))   $config = new self();
-      if ($update)            $config->getFromDB(1);
+      if (is_null($config)) {
+         $config = new self();
+      }
+      if ($update) {
+         $config->getFromDB(1);
+      }
 
       return $config;
    }
@@ -195,7 +199,6 @@ class PluginOrderConfig extends CommonDBTM {
       Dropdown::showYesNo("transmit_budget_change", $this->fields["transmit_budget_change"]);
       echo "</td>";
       echo "</tr>";
-
 
       // Automatic actions
       echo "<tr class='tab_bg_1' align='center'>";
@@ -482,8 +485,7 @@ class PluginOrderConfig extends CommonDBTM {
       return $this->fields['hide_inactive_budgets'];
    }
 
-   public function canRenameDocuments()
-   {
+   public function canRenameDocuments() {
       return $this->fields['rename_documents'];
    }
 
@@ -551,68 +553,68 @@ class PluginOrderConfig extends CommonDBTM {
                   'shoudbedelivered_color'      => '#ff5555',
                   );
                $config->add($tmp);
-         } else {
-            //Upgrade
-            $migration->displayMessage("Upgrading $table");
+      } else {
+         //Upgrade
+         $migration->displayMessage("Upgrading $table");
 
-            //1.2.0
-            $migration->renameTable("glpi_plugin_order_config", $table);
+         //1.2.0
+         $migration->renameTable("glpi_plugin_order_config", $table);
 
-            if (!countElementsInTable("glpi_plugin_order_configs")) {
-               $query = "INSERT INTO `glpi_plugin_order_configs`(`id`,`use_validation`,`default_taxes`) VALUES (1,0,0);";
-               $DB->query($query) or die($DB->error());
-            }
+         if (!countElementsInTable("glpi_plugin_order_configs")) {
+            $query = "INSERT INTO `glpi_plugin_order_configs`(`id`,`use_validation`,`default_taxes`) VALUES (1,0,0);";
+            $DB->query($query) or die($DB->error());
+         }
 
-            $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
+         $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
 
-            //1.3.0
-            $migration->addField($table, "generate_assets", "tinyint(1) NOT NULL default '0'");
-            $migration->addField($table, "generated_name", "varchar(255) collate utf8_unicode_ci default NULL");
-            $migration->addField($table, "generated_serial", "varchar(255) collate utf8_unicode_ci default NULL");
-            $migration->addField($table, "generated_otherserial", "varchar(255) collate utf8_unicode_ci default NULL");
-            $migration->addField($table, "default_asset_entities_id", "int(11) NOT NULL default '0'");
-            $migration->addField($table, "default_asset_states_id", "int(11) NOT NULL default '0'");
-            $migration->addField($table, "generated_title", "varchar(255) collate utf8_unicode_ci default NULL");
-            $migration->addField($table, "generated_content", "text collate utf8_unicode_ci");
-            $migration->addField($table, "default_ticketcategories_id", "int(11) NOT NULL default '0'");
-            $migration->addField($table, "use_supplier_satisfaction", "tinyint(1) NOT NULL default '0'");
-            $migration->addField($table, "generate_order_pdf", "tinyint(1) NOT NULL default '0'");
-            $migration->addField($table, "use_supplier_informations", "tinyint(1) NOT NULL default '1'");
-            $migration->addField($table, "shoudbedelivered_color", "char(20) collate utf8_unicode_ci default '#ff5555'");
-            $migration->addField($table, "copy_documents", "tinyint(1) NOT NULL DEFAULT '0'");
-            $migration->addField($table, "documentcategories_id", "integer");
-            $migration->addField($table, "groups_id_author", "integer");
-            $migration->addField($table, "groups_id_recipient", "integer");
-            $migration->addField($table, "users_id_recipient", "integer");
+         //1.3.0
+         $migration->addField($table, "generate_assets", "tinyint(1) NOT NULL default '0'");
+         $migration->addField($table, "generated_name", "varchar(255) collate utf8_unicode_ci default NULL");
+         $migration->addField($table, "generated_serial", "varchar(255) collate utf8_unicode_ci default NULL");
+         $migration->addField($table, "generated_otherserial", "varchar(255) collate utf8_unicode_ci default NULL");
+         $migration->addField($table, "default_asset_entities_id", "int(11) NOT NULL default '0'");
+         $migration->addField($table, "default_asset_states_id", "int(11) NOT NULL default '0'");
+         $migration->addField($table, "generated_title", "varchar(255) collate utf8_unicode_ci default NULL");
+         $migration->addField($table, "generated_content", "text collate utf8_unicode_ci");
+         $migration->addField($table, "default_ticketcategories_id", "int(11) NOT NULL default '0'");
+         $migration->addField($table, "use_supplier_satisfaction", "tinyint(1) NOT NULL default '0'");
+         $migration->addField($table, "generate_order_pdf", "tinyint(1) NOT NULL default '0'");
+         $migration->addField($table, "use_supplier_informations", "tinyint(1) NOT NULL default '1'");
+         $migration->addField($table, "shoudbedelivered_color", "char(20) collate utf8_unicode_ci default '#ff5555'");
+         $migration->addField($table, "copy_documents", "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($table, "documentcategories_id", "integer");
+         $migration->addField($table, "groups_id_author", "integer");
+         $migration->addField($table, "groups_id_recipient", "integer");
+         $migration->addField($table, "users_id_recipient", "integer");
 
-            $migration->changeField($table, "default_ticketcategories_id",
-                                    "default_itilcategories_id", "integer");
+         $migration->changeField($table, "default_ticketcategories_id",
+                              "default_itilcategories_id", "integer");
 
-            //1.9.0
-            $migration->addField($table, "add_location", "TINYINT(1) NOT NULL DEFAULT '0'");
-            $migration->addField($table, "add_bill_details", "TINYINT(1) NOT NULL DEFAULT '0'");
+         //1.9.0
+         $migration->addField($table, "add_location", "TINYINT(1) NOT NULL DEFAULT '0'");
+         $migration->addField($table, "add_bill_details", "TINYINT(1) NOT NULL DEFAULT '0'");
 
-            $config = new self();
-            $config->getFromDB(1);
-            $templateID = false;
+         $config = new self();
+         $config->getFromDB(1);
+         $templateID = false;
 
-            $migration->addField($table, "tickettemplates_id_delivery", 'integer');
-            $migration->migrationOneTable($table);
+         $migration->addField($table, "tickettemplates_id_delivery", 'integer');
+         $migration->migrationOneTable($table);
 
-            $migration->dropField($table, "generated_title");
-            $migration->dropField($table, "generated_content");
-            $migration->dropField($table, "default_itilcategories_id");
+         $migration->dropField($table, "generated_title");
+         $migration->dropField($table, "generated_content");
+         $migration->dropField($table, "default_itilcategories_id");
 
-            $migration->addField($table, "hide_inactive_budgets", "bool");
-            $migration->addField($table, "rename_documents", "bool");
+         $migration->addField($table, "hide_inactive_budgets", "bool");
+         $migration->addField($table, "rename_documents", "bool");
 
-            //0.85+1.2
-            $migration->addField($table, "transmit_budget_change", "bool");
+         //0.85+1.2
+         $migration->addField($table, "transmit_budget_change", "bool");
 
-            $migration->migrationOneTable($table);
-            if ($templateID) {
-               $config->update(array('id' => 1, 'tickettemplates_id_delivery' => $templateID));
-            }
+         $migration->migrationOneTable($table);
+         if ($templateID) {
+            $config->update(array('id' => 1, 'tickettemplates_id_delivery' => $templateID));
+         }
 
       }
 
