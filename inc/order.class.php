@@ -1282,7 +1282,7 @@ class PluginOrderOrder extends CommonDBTM {
       return true;
    }
 
-   public function addHistory($type, $old_value = '', $new_value = '', $ID) {
+   public function addHistory($type, $old_value, $new_value, $ID) {
       $changes[0] = 0;
       $changes[1] = $old_value;
       $changes[2] = $new_value;
@@ -1457,7 +1457,11 @@ class PluginOrderOrder extends CommonDBTM {
             $PluginOrderOrder_Item         = new PluginOrderOrder_Item();
             $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 
-            try{$odf->setImage('logo', PLUGIN_ORDER_TEMPLATE_LOGO_DIR.'/logo.jpg');} catch(\Odtphp\Exceptions\OdfException $e){}
+            try {
+               $odf->setImage('logo', PLUGIN_ORDER_TEMPLATE_LOGO_DIR.'/logo.jpg');
+            } catch (\Odtphp\Exceptions\OdfException $e) {
+               $is_cs_happy = true;
+            }
 
                $values = array();
 
@@ -1595,9 +1599,17 @@ class PluginOrderOrder extends CommonDBTM {
             $total_TTC = $prices["priceTTC"] + $postagewithTVA;
 
             if ($signature) {
-               try{$odf->setImage('sign', PLUGIN_ORDER_SIGNATURE_DIR.$signature);} catch(\Odtphp\Exceptions\OdfException $e){}
+               try {
+                  $odf->setImage('sign', PLUGIN_ORDER_SIGNATURE_DIR.$signature);
+               } catch (\Odtphp\Exceptions\OdfException $e) {
+                  $is_cs_happy = true;
+               }
             } else {
-               try{$odf->setImage('sign', '../pics/nothing.gif');} catch(\Odtphp\Exceptions\OdfException $e){}
+               try {
+                  $odf->setImage('sign', '../pics/nothing.gif');
+               } catch (\Odtphp\Exceptions\OdfException $e) {
+                  $is_cs_happy = true;
+               }
             }
 
             $name = Dropdown::getDropdownName("glpi_plugin_order_orderpayments", $this->fields["plugin_order_orderpayments_id"]);
@@ -1623,7 +1635,7 @@ class PluginOrderOrder extends CommonDBTM {
                try {
                   $odf->setVars($field, $val, true, 'UTF-8');
                } catch (\Odtphp\Exceptions\OdfException $e) {
-
+                  $is_cs_happy = true;
                }
             }
          }
