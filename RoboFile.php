@@ -5,9 +5,10 @@
  * @see http://robo.li/
  */
 
-require_once 'RoboFilePlugin.php';
+require_once 'vendor/autoload.php';
 
-class RoboFile extends RoboFilePlugin
+class RoboFile extends Glpi\Tools\RoboFile
 {
-    //Own plugin's robo stuff
+   protected $csignore = ['/vendor/', '/lib/'];
+   //Own plugin's robo stuff
 }
