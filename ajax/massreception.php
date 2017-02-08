@@ -56,8 +56,30 @@ Dropdown::showInteger('number_reception','',1,$nb);
 echo "</td><td>";
 echo __("Delivery status", "order") . "&nbsp;";
 PluginOrderDeliveryState::Dropdown(array('name' => "plugin_order_deliverystates_id"));
-echo "</td>";
+echo "</td></tr>";
+
+echo "<tr class='tab_bg_2'>";
+$config = PluginOrderConfig::getConfig();
+if ($config->canGenerateAsset() == Config::CONFIG_ASK) {
+   echo "<td>". __("Enable automatic generation", "order") . "</td>";
+   echo "<td>";
+   Dropdown::showYesNo("manual_generate", $config->canGenerateAsset());
+   echo "</td><td>" . __("Default name", "order") . "</td>";
+   echo "<td>&nbsp;";
+   Html::autocompletionTextField($config, "generated_name");
+   echo "</td>&nbsp;&nbsp;";
+
+   echo "<td>" . __("Default serial number", "order") . "</td>";
+   echo "<td>&nbsp;";
+   Html::autocompletionTextField($config, "generated_serial");
+   echo "</td>&nbsp;&nbsp;";
+
+   echo "<td>" . __("Default inventory number", "order") . "</td>";
+   echo "<td>&nbsp;";
+   Html::autocompletionTextField($config, "generated_otherserial");
+   echo "</td>";
+}
 echo "<td><input type='submit' name='bulk_reception' class='submit' value='"
-   . _sx('button', 'Post') . "'></td></tr></table>";
+      . _sx('button', 'Post') . "'></td></tr></table>";
 
 Html::ajaxFooter();

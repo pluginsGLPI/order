@@ -42,11 +42,30 @@ if (isset($_POST["action"])) {
       case "reception":
          echo "</td><td>";
          Html::showDateFormItem("delivery_date", date("Y-m-d"), true, 1);
-         echo __("Delivery form") . "&nbsp;";
-         echo "<input type='text' name='delivery_number' size='20'><br>";
-         echo __("Delivery status", "order") . "&nbsp;";
+         echo "<table><tr><td>".__("Delivery form") . "</td>";
+         echo "<td><input type='text' name='delivery_number' size='20'></td></tr>";
+         echo "<tr><td>".__("Delivery status", "order") . "</td><td>";
          PluginOrderDeliveryState::Dropdown(array('name' => "plugin_order_deliverystates_id"));
-         echo "<br><input type='submit' name='reception' class='submit' value='"
+         echo "</td></tr>";
+         $config = PluginOrderConfig::getConfig();
+         if ($config->canGenerateAsset() == Config::CONFIG_ASK) {
+            echo "<tr><td>". __("Enable automatic generation", "order") . "</td>";
+            echo "<td>";
+            $tab = array(PluginOrderConfig::CONFIG_NEVER => __('No'),
+                         PluginOrderConfig::CONFIG_YES   => __('Yes'));
+            Dropdown::showFromArray('manual_generate', $tab);
+            echo "</td></tr>";
+            echo "<tr><td>" . __("Default name", "order") . "</td><td>";
+            Html::autocompletionTextField($config, "generated_name");
+            echo "</td></tr>";
+            echo "<tr><td>" . __("Default serial number", "order") . "</td><td>";
+            Html::autocompletionTextField($config, "generated_serial");
+            echo "</td></tr>";
+            echo "<tr><td>" . __("Default inventory number", "order") . "</td><td>";
+            Html::autocompletionTextField($config, "generated_otherserial");
+            echo "</td></tr>";
+         }
+         echo "</table><br /><input type='submit' name='reception' class='submit' value='"
             .  _sx('button', 'Post') . "'></td>";
          break;
    }
