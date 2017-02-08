@@ -48,7 +48,7 @@ if (isset($_POST["action"])) {
          PluginOrderDeliveryState::Dropdown(array('name' => "plugin_order_deliverystates_id"));
          echo "</td></tr>";
          $config = PluginOrderConfig::getConfig();
-         if ($config->canGenerateAsset() == 2) {
+         if ($config->canGenerateAsset() == Config::CONFIG_ASK) {
             echo "<tr><td>". __("Enable automatic generation", "order") . "</td>";
             echo "<td>";
             $tab = array(PluginOrderConfig::CONFIG_NEVER => __('No'),
