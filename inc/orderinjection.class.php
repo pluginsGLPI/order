@@ -35,18 +35,18 @@ class PluginOrderOrderInjection extends PluginOrderOrder implements PluginDatain
    public function __construct() {
       $this->table = getTableForItemType(get_parent_class($this));
    }
-   
+
    /**
-    * Returns the name of the table used to store this object parent
+    * Returns the name of the table used to store this object parent
     *
     * @return string (table name)
    **/
-    static function getTable() {
-     
-       $parenttype = get_parent_class();
-       return $parenttype::getTable();
-    }
- 
+   static function getTable() {
+
+      $parenttype = get_parent_class();
+      return $parenttype::getTable();
+   }
+
    public function isPrimaryType() {
       return true;
    }
