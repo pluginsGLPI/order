@@ -849,7 +849,7 @@ class PluginOrderLink extends CommonDBChild {
             $input["entities_id"] = $entity;
             $input["serial"]      = $values["serial"];
 
-            if (isset($item->fields['name']) && $item->fields['name']) {
+            if ($item->fields['name']) {
                $input["name"] = autoName($item->fields["name"], "name", $templateID,
                                          $values["itemtype"], $entity);
             } else {

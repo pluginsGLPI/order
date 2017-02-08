@@ -32,7 +32,7 @@ if (!defined('GLPI_ROOT')){
 }
 
 class PluginOrderReception extends CommonDBChild {
-
+   
    public static $rightname          = 'plugin_order_order';
    public $dohistory                 = true;
    public static $itemtype           = 'PluginOrderOrder';
@@ -504,16 +504,6 @@ class PluginOrderReception extends CommonDBChild {
                "plugin_order_references_id" => $params["plugin_order_references_id"],
             );
 
-            $config =PluginOrderConfig::getConfig();
-            if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
-               $options['manual_generate'] = $params['manual_generate'];
-               if ($params['manual_generate'] == 1) {
-                  $options['name']            = $params['generated_name'];
-                  $options['serial']          = $params['generated_serial'];
-                  $options['otherserial']     = $params['generated_otherserial'];
-                  $options['generate_assets'] = $params['generate_assets'];
-               }
-            }
             self::generateAsset($options);
             $this->updateReceptionStatus(array('item' => array($DB->result($result, $i, 0) => 'on')));
          }
@@ -562,7 +552,6 @@ class PluginOrderReception extends CommonDBChild {
    }
 
    public function updateReceptionStatus($params) {
-
       $detail                 = new PluginOrderOrder_Item();
       $plugin_order_orders_id = 0;
 
@@ -600,15 +589,6 @@ class PluginOrderReception extends CommonDBChild {
                         "plugin_order_references_id" => $params["plugin_order_references_id"][$key],
                      );
 
-                     $config =  PluginOrderConfig::getConfig(true);
-                     if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
-                        $options['manual_generate'] = $params['manual_generate'];
-                        if ($params['manual_generate'] == 1) {
-                           $options['name']            = $params['generated_name'];
-                           $options['serial']          = $params['generated_serial'];
-                           $options['otherserial']     = $params['generated_otherserial'];
-                        }
-                     }
                      self::generateAsset($options);
                   }
                }
@@ -684,9 +664,8 @@ class PluginOrderReception extends CommonDBChild {
    public static function generateAsset($options = array()) {
       // Retrieve configuration for generate assets feature
       $config = PluginOrderConfig::getConfig();
-      if (($config->canGenerateAsset() == PluginOrderConfig::CONFIG_YES)
-          || (($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK)
-              && ($options['manual_generate'] == 1))) {
+
+      if ($config->canGenerateAsset()) {
          // Automatic generate assets on delivery
          $rand = mt_rand();
          $item = array(
@@ -699,13 +678,6 @@ class PluginOrderReception extends CommonDBChild {
             "plugin_order_orders_id" => $options["plugin_order_orders_id"],
          );
 
-         if (($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK)
-             && ($options['manual_generate'] == 1)) {
-            $item['name']        = $options['name'].$rand;
-            $item['serial']      = $options['serial'].$rand;
-            $item['otherserial'] = $options['otherserial'].$rand;
-         }
-
          $options_gen = array(
             "plugin_order_orders_id"     => $options["plugin_order_orders_id"],
             "plugin_order_references_id" => $options["plugin_order_references_id"],
@@ -713,7 +685,7 @@ class PluginOrderReception extends CommonDBChild {
          );
 
 
-         if ($config->canGenerateTicket()) {
+         if($config->canGenerateTicket()) {
             $options_gen["generate_ticket"] = array(
                   "entities_id"        => $options['entities_id'],
                   "tickettemplates_id" => $config->fields['tickettemplates_id_delivery'],
