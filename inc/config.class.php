@@ -34,6 +34,11 @@ if (!defined('GLPI_ROOT')){
 class PluginOrderConfig extends CommonDBTM {
    static $rightname = 'config';
 
+   const CONFIG_NEVER   = 0;
+   const CONFIG_YES     = 1;
+   const CONFIG_ASK     = 2;
+
+
    public function __construct() {
       if (TableExists($this->getTable())) {
          $this->getFromDB(1);
@@ -202,10 +207,13 @@ class PluginOrderConfig extends CommonDBTM {
       echo "<th colspan='2'>" . __('Item') . "</th>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1' align='center'>";
+      echo "<tr class='tab_bg_1 center'>";
       echo "<td>" . __("Enable automatic generation", "order") . "</td>";
       echo "<td>";
-      Dropdown::showYesNo("generate_assets", $this->canGenerateAsset());
+      $tab = array(self::CONFIG_NEVER => __('No'),
+                   self::CONFIG_YES   => __('Yes'),
+                   self::CONFIG_ASK   => __('Asked', 'order'));
+      Dropdown::showFromArray('generate_assets', $tab, array('value' => $this->canGenerateAsset()));
       echo "</td>";
       echo "</tr>";
 
