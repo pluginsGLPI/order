@@ -56,20 +56,20 @@ if (isset ($_POST["add"])) {
    }
    Html::redirect($url);
 
-   /* delete order */
 } else if (isset($_POST["delete"])) {
+   /* delete order */
    $pluginOrderOrder->check($_POST['id'], DELETE);
    $pluginOrderOrder->delete($_POST);
    $pluginOrderOrder->redirectToList();
 
-   /* restore order */
 } else if (isset($_POST["restore"])) {
+   /* restore order */
    $pluginOrderOrder->check($_POST['id'], CREATE);
    $pluginOrderOrder->restore($_POST);
    $pluginOrderOrder->redirectToList();
 
-   /* purge order */
 } else if (isset($_REQUEST["purge"])) {
+   /* purge order */
    if (isset($_POST['id'])) {
       $id = $_POST['id'];
    } else {
@@ -79,15 +79,15 @@ if (isset ($_POST["add"])) {
    $pluginOrderOrder->delete(array('id' => $id), 1);
    $pluginOrderOrder->redirectToList();
 
-   /* update order */
 } else if (isset($_POST["update"])) {
+   /* update order */
    $pluginOrderOrder->check($_POST['id'], UPDATE);
    $pluginOrderOrder->update($_POST);
    Html::back();
 
    //Status update & order workflow
-   /* validate order */
 } else if (isset($_POST["validate"])) {
+   /* validate order */
    if (PluginOrderOrder::canView() && (PluginOrderOrder::canValidate() || !$config->useValidation())) {
       $pluginOrderOrder->updateOrderStatus($_POST["id"], $config->getApprovedState(), $_POST["comment"]);
       PluginOrderReception::updateDelivryStatus($_POST["id"]);

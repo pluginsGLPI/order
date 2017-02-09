@@ -359,28 +359,28 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          $migration->addKey($table, "suppliers_id");
          $migration->addKey($table, "plugin_order_references_id");
          $migration->changeField($table, "ID", "id",
-                               "int(11) NOT NULL auto_increment");
+                                 "int(11) NOT NULL auto_increment");
          $migration->changeField($table, "FK_entities", "entities_id",
-                               "int(11) NOT NULL default '0'");
+                                 "int(11) NOT NULL default '0'");
          $migration->changeField($table, "FK_reference", "plugin_order_references_id",
-                               "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'");
+                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'");
          $migration->changeField($table, "FK_enterprise", "suppliers_id",
-                               "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
+                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
          $migration->changeField($table, "reference_code", "reference_code",
-                               "varchar(255) collate utf8_unicode_ci default NULL");
+                                 "varchar(255) collate utf8_unicode_ci default NULL");
          $migration->changeField($table, "price_taxfree", "price_taxfree",
-                               "decimal(20,6) NOT NULL DEFAULT '0.000000'");
+                                 "decimal(20,6) NOT NULL DEFAULT '0.000000'");
          $migration->migrationOneTable($table);
 
          Plugin::migrateItemType(array(3152 => 'PluginOrderReference_Supplier'),
-                               array("glpi_bookmarks", "glpi_bookmarks_users",
+                                 array("glpi_bookmarks", "glpi_bookmarks_users",
                                      "glpi_displaypreferences", "glpi_documents_items",
                                      "glpi_infocoms", "glpi_logs"),
-                               array());
+                                 array());
          if (FieldExists('glpi_tickets', 'itemtype')) {
             Plugin::migrateItemType(array(3152 => 'PluginOrderReference_Supplier'),
-                                 array("glpi_tickets"),
-                                 array());
+                                    array("glpi_tickets"),
+                                    array());
          }
 
          //1.5.0

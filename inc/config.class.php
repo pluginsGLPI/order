@@ -588,7 +588,7 @@ class PluginOrderConfig extends CommonDBTM {
          $migration->addField($table, "users_id_recipient", "integer");
 
          $migration->changeField($table, "default_ticketcategories_id",
-                              "default_itilcategories_id", "integer");
+                                 "default_itilcategories_id", "integer");
 
          //1.9.0
          $migration->addField($table, "add_location", "TINYINT(1) NOT NULL DEFAULT '0'");

@@ -571,9 +571,9 @@ class PluginOrderReception extends CommonDBChild {
             if ($val == 1) {
                if ($params["itemtype"][$key] == 'SoftwareLicense') {
                   $this->receptionAllItem($key, $params["plugin_order_references_id"][$key],
-                                       $params["plugin_order_orders_id"],
-                                       $params["delivery_date"], $params["delivery_number"],
-                                       $params["plugin_order_deliverystates_id"]);
+                                          $params["plugin_order_orders_id"],
+                                          $params["delivery_date"], $params["delivery_number"],
+                                          $params["plugin_order_deliverystates_id"]);
 
                   $plugin_order_orders_id = $params["plugin_order_orders_id"];
                } else {

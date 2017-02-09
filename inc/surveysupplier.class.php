@@ -443,11 +443,11 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          //1.2.0
          $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
          $migration->changeField($table, "FK_order", "plugin_order_orders_id",
-                               "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'");
+                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'");
          $migration->changeField($table, "FK_enterprise", "suppliers_id",
-                               "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
+                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
          $migration->changeField($table, "comment", "comment",
-                               "text collate utf8_unicode_ci");
+                                 "text collate utf8_unicode_ci");
          $migration->addField($table, "entities_id", "int(11) NOT NULL default '0'");
          $migration->addField($table, "is_recursive", "tinyint(1) NOT NULL default '0'");
          $migration->addKey($table, "plugin_order_orders_id");

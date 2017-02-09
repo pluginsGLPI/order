@@ -65,8 +65,8 @@ if (isset($_POST["itemtype"])) {
                                  '../ajax/dropdownReference.php',
                                  $params);
 
-   // Get price
 } else if (isset($_POST['reference_id'])) {
+   // Get price
    $query = "SELECT `price_taxfree`
              FROM `glpi_plugin_order_references_suppliers`
              WHERE `plugin_order_references_id` = '{$_POST['reference_id']}' AND suppliers_id = '{$_POST['suppliers_id']}'";

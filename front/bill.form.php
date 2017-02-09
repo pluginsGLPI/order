@@ -73,7 +73,6 @@ if (isset($_POST['action'])) {
                         $ic->update($fields);
                      }
                   }
-
                }
             }
          }
