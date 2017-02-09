@@ -61,5 +61,18 @@ if (isset($_POST["action"])) {
          echo "&nbsp;<input type='submit' name='deleteLinkWithItem' "
             . "  class='submit' value='" . _sx('button', 'Post') . "'>";
          break;
+       case "show_location_by_entity":
+         Location::dropdown(array('name' => "id[".$_POST['id']."][locations_id]", 'entity' => $_POST['entities']));
+         break;
+      case "show_group_by_entity":
+         Group::dropdown(array('name'      => "id[".$_POST['id']."][groups_id]",
+            'entity'    => $_POST['entities'],
+            'condition' => '`is_assign`'));
+         break;
+      case "show_state_by_entity":
+         $condition = PluginOrderLink::getCondition($_POST["itemtype"]);
+         State::dropdown(array('name' => "id[".$_POST['id']."][states_id]", 'entity'    => $_POST['entities'],
+            'condition' => $condition));  
+         break;
    }
 }
