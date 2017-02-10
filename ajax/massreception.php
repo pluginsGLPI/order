@@ -60,7 +60,7 @@ echo "</td></tr>";
 
 echo "<tr class='tab_bg_2'>";
 $config = PluginOrderConfig::getConfig();
-if ($config->canGenerateAsset() == Config::CONFIG_ASK) {
+if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
    echo "<td>". __("Enable automatic generation", "order") . "</td>";
    echo "<td>";
    Dropdown::showYesNo("manual_generate", $config->canGenerateAsset());
