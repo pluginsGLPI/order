@@ -37,16 +37,16 @@
 define ('PLUGIN_ORDER_VERSION', '1.9.5');
 
 if (!defined('PLUGIN_ORDER_TEMPLATE_DIR')) {
-   define ("PLUGIN_ORDER_TEMPLATE_DIR",  GLPI_ROOT."/plugins/order/templates/");
+   define ("PLUGIN_ORDER_TEMPLATE_DIR", GLPI_ROOT."/plugins/order/templates/");
 }
 if (!defined('PLUGIN_ORDER_SIGNATURE_DIR')) {
    define ("PLUGIN_ORDER_SIGNATURE_DIR", GLPI_ROOT."/plugins/order/signatures/");
 }
 if (!defined('PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR')) {
-   define ("PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR",  GLPI_ROOT."/plugins/order/generate/");
+   define ("PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR", GLPI_ROOT."/plugins/order/generate/");
 }
 if (!defined('PLUGIN_ORDER_TEMPLATE_LOGO_DIR')) {
-   define ("PLUGIN_ORDER_TEMPLATE_LOGO_DIR",  GLPI_ROOT."/plugins/order/logo/");
+   define ("PLUGIN_ORDER_TEMPLATE_LOGO_DIR", GLPI_ROOT."/plugins/order/logo/");
 }
 
 if (!defined('PLUGIN_ORDER_TEMPLATE_EXTENSION')) {
@@ -199,8 +199,8 @@ function plugin_version_order() {
  *
  * @return boolean
  */
-function plugin_order_check_prerequisites(){
-   if (version_compare(GLPI_VERSION,'0.85','lt')) {
+function plugin_order_check_prerequisites() {
+   if (version_compare(GLPI_VERSION, '0.85', 'lt')) {
       echo "This plugin requires GLPI 0.85 or higher";
       return false;
    }

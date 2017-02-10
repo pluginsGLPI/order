@@ -27,7 +27,7 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -92,15 +92,15 @@ class PluginOrderLink extends CommonDBChild {
       $i         = 0;
       $found     = false;
 
-      foreach ($params["item"] as $key => $val)
+      foreach ($params["item"] as $key => $val) {
          if ($val == 1) {
             $detail = new PluginOrderOrder_Item();
             $detail->getFromDB($key);
             if (!$detail->fields["items_id"]) {
                echo "<tr class='tab_bg_1'><td align='center'>" . $_POST["name"][$key] . "</td>";
                $templateID = $reference->checkIfTemplateExistsInEntity($params["id"][$key],
-                                                                       $params['itemtype'][$key],
-                                                                       $order->fields["entities_id"]);
+                                                                    $params['itemtype'][$key],
+                                                                    $order->fields["entities_id"]);
 
                if ($templateID) {
                   $item = new $params['itemtype'][$key]();
@@ -140,27 +140,28 @@ class PluginOrderLink extends CommonDBChild {
                if (Session::isMultiEntitiesMode() && count($_SESSION['glpiactiveentities']) > 1) {
                   echo "<td>";
                   $entity_restrict = ($order->fields["is_recursive"]
-                                       ? getSonsOf('glpi_entities',$order->fields["entities_id"])
-                                       : $order->fields["entities_id"]);
+                                 ? getSonsOf('glpi_entities', $order->fields["entities_id"])
+                                 : $order->fields["entities_id"]);
                   Entity::Dropdown(array(
-                     'name'   => "id[$i][entities_id]",
-                     'value'  => $order->fields["entities_id"],
-                     'entity' => $entity_restrict,
+                  'name'   => "id[$i][entities_id]",
+                  'value'  => $order->fields["entities_id"],
+                  'entity' => $entity_restrict,
                   ));
                   echo "</td>";
                } else {
                   echo "<input type='hidden' name='id[$i][entities_id]' value="
-                     . $_SESSION["glpiactive_entity"] . ">";
+                  . $_SESSION["glpiactive_entity"] . ">";
                }
                echo "</tr>";
                echo "<input type='hidden' name='id[$i][itemtype]' value=" . $params['itemtype'][$key] . ">";
                echo "<input type='hidden' name='id[$i][id]' value=" . $params["id"][$key] . ">";
                echo "<input type='hidden' name='id[$i][plugin_order_orders_id]'"
-                  ." value=" . $params["plugin_order_orders_id"] . ">";
+               ." value=" . $params["plugin_order_orders_id"] . ">";
                $found = true;
             }
             $i++;
          }
+      }
 
       if ($found) {
          echo "<tr><td align='center' colspan='$colspan' class='tab_bg_2'>";
@@ -206,7 +207,7 @@ class PluginOrderLink extends CommonDBChild {
       $result_ref = $DB->query($query_ref);
       $numref     = $DB->numrows($result_ref);
 
-      while ($data_ref = $DB->fetch_array($result_ref)){
+      while ($data_ref = $DB->fetch_array($result_ref)) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          if (!$numref) {
             echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
@@ -282,7 +283,7 @@ class PluginOrderLink extends CommonDBChild {
             echo "<th>" . __("Delivery date") . "</th>";
             echo "<th>" . _n("Associated item", "Associated items", 2) . "</th></tr>";
 
-            while ($data = $DB->fetch_array($result)){
+            while ($data = $DB->fetch_array($result)) {
                $random   = mt_rand();
                $detailID = $data["IDD"];
 
@@ -491,15 +492,21 @@ class PluginOrderLink extends CommonDBChild {
 
          $result = $DB->query($query);
 
-         if ($DB->result($result, 0, "cpt") > 0)   return true;
-         else                                      return false;
+         if ($DB->result($result, 0, "cpt") > 0) {
+            return true;
+         } else {
+            return false;
+         }
 
       } else {
          $detail = new PluginOrderOrder_Item();
          $detail->getFromDB($detailID);
 
-         if (!$detail->fields['items_id'])         return false;
-         else                                      return true;
+         if (!$detail->fields['items_id']) {
+            return false;
+         } else {
+            return true;
+         }
       }
    }
 
@@ -512,15 +519,18 @@ class PluginOrderLink extends CommonDBChild {
                 AND `items_id` = '$items_id'";
       $result = $DB->query($query);
 
-      if ($DB->numrows($result))                   return ($DB->result($result, 0, 'id'));
-      else                                         return 0;
+      if ($DB->numrows($result)) {
+         return ($DB->result($result, 0, 'id'));
+      } else {
+         return 0;
+      }
    }
 
    public function generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, $templateID = 0) {
       global $CFG_GLPI;
 
       //Do not try to generate infocoms if itemtype doesn't support it (ie contracts...)
-      if(in_array($itemtype, $CFG_GLPI["infocom_types"])) {
+      if (in_array($itemtype, $CFG_GLPI["infocom_types"])) {
 
          // Retrieve configuration for generate assets feature
          $config = PluginOrderConfig::getConfig();
@@ -659,12 +669,12 @@ class PluginOrderLink extends CommonDBChild {
                }
             }
 
-         } elseif (in_array($itemtype, $restricted)) {
+         } else if (in_array($itemtype, $restricted)) {
             if ($itemtype == 'ConsumableItem') {
                $item = new Consumable();
                $type = 'Consumable';
                $pkey = 'consumableitems_id';
-            } elseif ($itemtype == 'CartridgeItem') {
+            } else if ($itemtype == 'CartridgeItem') {
                $item = new Cartridge();
                $type = 'Cartridge';
                $pkey = 'cartridgeitems_id';
@@ -681,7 +691,7 @@ class PluginOrderLink extends CommonDBChild {
                $this->generateInfoComRelatedToOrder($entity, $detailID, $type, $newID, 0);
             }
 
-         } elseif ($itemtype == 'Contract') {
+         } else if ($itemtype == 'Contract') {
             $input["id"]       = $detailID;
             $input["items_id"] = $items_id;
             $input["itemtype"] = $itemtype;
@@ -791,8 +801,9 @@ class PluginOrderLink extends CommonDBChild {
             $input = $detail->fields;
             $input["items_id"] = 0;
             $detail->update($input);
-         } else
+         } else {
             Session::addMessageAfterRedirect(__("One or several selected rows haven't linked items", "order"), TRUE, ERROR);
+         }
 
          $new_value = __("Item unlink form order", "order") . ' : ' . $order->fields["name"];
          $order->addHistory($itemtype, '', $new_value, $items_id);
@@ -824,11 +835,11 @@ class PluginOrderLink extends CommonDBChild {
                                                                  $entity);
 
          $item  = new $values["itemtype"]();
-         if ($values['itemtype'])
-         $order = new PluginOrderOrder();
+         if ($values['itemtype']) {
+            $order = new PluginOrderOrder();
+         }
          $order->getFromDB($values["plugin_order_orders_id"]);
          $reference->getFromDB($params["plugin_order_references_id"]);
-
 
          if ($templateID) {
             $item->getFromDB($templateID);
@@ -838,11 +849,12 @@ class PluginOrderLink extends CommonDBChild {
             $fields = array ();
             foreach ($item->fields as $key => $value) {
                if ($value != ''
-                  && (!isset ($fields[$key]) || $fields[$key] == '' || $fields[$key] == 0))
+                  && (!isset ($fields[$key]) || $fields[$key] == '' || $fields[$key] == 0)) {
                   $input[$key] = $value;
+               }
             }
 
-            if($config->getGeneratedAssetState()) {
+            if ($config->getGeneratedAssetState()) {
                $input["states_id"] = $config->getGeneratedAssetState();
             }
 
@@ -869,13 +881,13 @@ class PluginOrderLink extends CommonDBChild {
                $input['locations_id'] = $order->fields['locations_id'];
             }
 
-         } elseif($values["itemtype"] == 'Contract') {
+         } else if ($values["itemtype"] == 'Contract') {
             $input["name"]             = $values["name"];
             $input["entities_id"]      = $entity;
             $input['contracttypes_id'] = $reference->fields['types_id'];
 
          } else {
-            if($config->getGeneratedAssetState()) {
+            if ($config->getGeneratedAssetState()) {
                $input["states_id"]     = $config->getGeneratedAssetState();
             } else {
                $input["states_id"]     = 0;
@@ -997,7 +1009,7 @@ class PluginOrderLink extends CommonDBChild {
             //Create a new document
             $document->getFromDB($doc['documents_id']);
             if (($document->getEntityID() != $entity && !$document->fields['is_recursive'])
-               || !in_array($entity, getSonsOf('glpi_entities', $document->getEntityID()))){
+               || !in_array($entity, getSonsOf('glpi_entities', $document->getEntityID()))) {
                $found_docs = getAllDatasFromTable('glpi_documents', "`entities_id`='$entity'
                                                  AND `sha1sum`='".$document->fields['sha1sum']."'");
                if (empty($found_docs)) {

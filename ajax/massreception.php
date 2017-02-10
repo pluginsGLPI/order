@@ -39,7 +39,7 @@ $PluginOrderReception = new PluginOrderReception();
 
 echo "<table width='950px' class='tab_cadre_fixe'>";
 echo "<tr class='tab_bg_2'><td>" . __("Delivery date") . "</td><td>";
-Html::showDateFormItem("delivery_date",date("Y-m-d"),true,1);
+Html::showDateFormItem("delivery_date", date("Y-m-d"), true, 1);
 echo "</td><td>";
 echo __("Delivery form") . "</td><td>";
 echo "<input type='text' name='delivery_number' size='20'>";
@@ -52,7 +52,7 @@ echo __("Number to deliver", "order") . "</td><td width='10%'>";
 $nb = $PluginOrderReception->checkItemStatus($_POST['plugin_order_orders_id'],
                                              $_POST['plugin_order_references_id'],
                                              PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED);
-Dropdown::showInteger('number_reception','',1,$nb);
+Dropdown::showInteger('number_reception', '', 1, $nb);
 echo "</td><td>";
 echo __("Delivery status", "order") . "&nbsp;";
 PluginOrderDeliveryState::Dropdown(array('name' => "plugin_order_deliverystates_id"));

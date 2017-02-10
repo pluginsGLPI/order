@@ -29,9 +29,15 @@
 
 include ("../../../inc/includes.php");
 
-if(!isset($_GET["id"]))                      $_GET["id"]                     = "";
-if(!isset($_GET["withtemplate"]))            $_GET["withtemplate"]           = "";
-if(!isset($_GET["plugin_order_orders_id"]))  $_GET["plugin_order_orders_id"] = "";
+if (!isset($_GET["id"])) {
+   $_GET["id"]                     = "";
+}
+if (!isset($_GET["withtemplate"])) {
+   $_GET["withtemplate"]           = "";
+}
+if (!isset($_GET["plugin_order_orders_id"])) {
+   $_GET["plugin_order_orders_id"] = "";
+}
 
 $PluginOrderSurveySupplier=new PluginOrderSurveySupplier();
 
@@ -43,15 +49,15 @@ if (isset($_POST["add"])) {
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
 
-} elseif (isset($_POST["delete"])) {
+} else if (isset($_POST["delete"])) {
    if (PluginOrderSurveySupplier::canCreate()) {
       foreach ($_POST["check"] as $ID => $value) {
-         $PluginOrderSurveySupplier->delete(array("id"=>$ID),0,0);
+         $PluginOrderSurveySupplier->delete(array("id"=>$ID), 0, 0);
       }
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
 
-} elseif (isset($_POST["update"])) {
+} else if (isset($_POST["update"])) {
    if (PluginOrderSurveySupplier::canCreate()) {
       $PluginOrderSurveySupplier->update($_POST);
    }

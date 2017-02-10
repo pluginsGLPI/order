@@ -49,7 +49,7 @@ class PluginOrderOrderState extends CommonDropdown {
    }
 
    public function pre_deleteItem() {
-      if ($this->getID() <= self::CANCELED ) {
+      if ($this->getID() <= self::CANCELED) {
          Session::addMessageAfterRedirect(__("You cannot remove this status", "order") . ": " . $this->fields['name'],
                                  false, ERROR);
          return false;

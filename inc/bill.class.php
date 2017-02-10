@@ -27,7 +27,7 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -90,10 +90,10 @@ class PluginOrderBill extends CommonDropdown
    public function defineTabs($options = array()) {
       $ong = array();
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab(__CLASS__,$ong,$options);
-      $this->addStandardTab('Document_Item',$ong,$options);
-      $this->addStandardTab('Note',$ong,$options);
-      $this->addStandardTab('Log',$ong,$options);
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
+      $this->addStandardTab('Note', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -186,12 +186,12 @@ class PluginOrderBill extends CommonDropdown
 
       $bills_id = $bill->getID();
       $table = getTableForItemType("PluginOrderOrder_Item");
-      
+
       $query  = "SELECT * FROM `" . $table . "`";
       $query .= " WHERE `plugin_order_bills_id` = '$bills_id'";
       $query .= getEntitiesRestrictRequest(" AND", $table, "entities_id", $bill->getEntityID(), true);
       $query .= "GROUP BY `itemtype`";
-      
+
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
@@ -326,7 +326,7 @@ class PluginOrderBill extends CommonDropdown
             $results = $order_item->queryBills($order->getID(), $data_ref['id']);
             while ($data = $DB->fetch_array($results)) {
                echo "<tr class='tab_bg_1'>";
-               if ($canedit){
+               if ($canedit) {
                   echo "<td width='10'>";
                   $sel = "";
                   if (isset($_GET["select"]) && $_GET["select"] == "all") {
@@ -457,10 +457,10 @@ class PluginOrderBill extends CommonDropdown
                   $DB->query($query);
                }
             }
-          }
+         }
          $migration->changeField($table, "value", "value", "decimal(20,6) NOT NULL DEFAULT '0.000000'");
          $migration->migrationOneTable($table);
-       }
+      }
       $migration->dropField("glpi_plugin_order_orders_suppliers", "num_bill");
       $migration->migrationOneTable("glpi_plugin_order_orders_suppliers");
    }
@@ -497,7 +497,7 @@ class PluginOrderBill extends CommonDropdown
          $order_item = new PluginOrderOrder_Item();
          $order_item->showBillsItems($item);
 
-      } elseif ($item->getType() == __CLASS__) {
+      } else if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
             case 1 :
                self::showOrdersItems($item);

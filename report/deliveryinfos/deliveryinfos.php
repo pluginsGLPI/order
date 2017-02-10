@@ -64,7 +64,7 @@ if ($report->criteriasValidated()) {
                              new PluginReportsColumnInteger('late', __("Late orders total", "order")),
                        ));
     //TODO : ne pas chercher dans la poublelles
-                       
+
    $query_total = "SELECT count(*) FROM `glpi_plugin_order_orders`";
    $query_total.= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");
    $query_total.= $report->addSqlCriteriasRestriction();
@@ -73,8 +73,8 @@ if ($report->criteriasValidated()) {
 
    $supplier = "JOIN `glpi_suppliers`as suppliers
                                  ON (`glpi_plugin_order_orders`.`suppliers_id` = suppliers.`id`)";
-   
-   
+
+
    $query = "SELECT DISTINCT `suppliers_id`, ($query_total) AS `total`, ($query_late) AS `late`
             FROM `glpi_plugin_order_orders` $supplier";
    $query.= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");
@@ -83,4 +83,3 @@ if ($report->criteriasValidated()) {
    $report->setSqlRequest($query);
    $report->execute();
 }
-?>

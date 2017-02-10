@@ -38,11 +38,11 @@ if (isset($_POST["update"])) {
    Html::back();
 } else {
 
-Html::header(__("Orders", "order"), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "order");
+   Html::header(__("Orders", "order"), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "order");
 
-Session::checkRight("config", UPDATE);
-$config->showForm();
+   Session::checkRight("config", UPDATE);
+   $config->showForm();
 
-Html::footer();
+   Html::footer();
 
 }
