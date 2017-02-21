@@ -43,6 +43,9 @@ class PluginOrderReference extends CommonDBTM {
    public function cleanDBonPurge() {
       $temp = new PluginOrderReference_Supplier();
       $temp->deleteByCriteria(array('plugin_order_references_id' => $this->fields['id']));
+      
+      Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'], (!empty($this->input['keep_devices'])));
+
    }
 
    public function getSearchOptions() {
@@ -177,6 +180,157 @@ class PluginOrderReference extends CommonDBTM {
       $tab[86]['displaytype']   = 'dropdown';
       $tab[86]['injectable']    = true;
       $tab[86]['searchtype']    = array('equals');
+      
+      $tab += Notepad::getSearchOptionsToAdd();
+
+      $tab['periph']             = _n('Component', 'Components', Session::getPluralNumber());
+
+      $items_device_joinparams   = array('jointype'          => 'itemtype_item',
+                                         'specific_itemtype' => 'PluginOrderReference');
+
+      $tab[17]['table']          = 'glpi_deviceprocessors';
+      $tab[17]['field']          = 'designation';
+      $tab[17]['name']           = __('Processor');
+      $tab[17]['forcegroupby']   = true;
+      $tab[17]['usehaving']      = true;
+      $tab[17]['massiveaction']  = false;
+      $tab[17]['datatype']       = 'string';
+      $tab[17]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_items_deviceprocessors',
+                                                   'joinparams' => $items_device_joinparams));
+
+      $tab[36]['table']          = 'glpi_items_deviceprocessors';
+      $tab[36]['field']          = 'frequency';
+      $tab[36]['name']           = __('Processor frequency');
+      $tab[36]['unit']           = __('MHz');
+      $tab[36]['forcegroupby']   = true;
+      $tab[36]['usehaving']      = true;
+      $tab[36]['datatype']       = 'number';
+      $tab[36]['width']          = 100;
+      $tab[36]['massiveaction']  = false;
+      $tab[36]['joinparams']     = $items_device_joinparams;
+      $tab[36]['computation']    = "SUM(TABLE.`frequency`) / COUNT(TABLE.`id`)";
+
+      $tab[10]['table']          = 'glpi_devicememories';
+      $tab[10]['field']          = 'designation';
+      $tab[10]['name']           = __('Memory type');
+      $tab[10]['forcegroupby']   = true;
+      $tab[10]['usehaving']      = true;
+      $tab[10]['massiveaction']  = false;
+      $tab[10]['datatype']       = 'string';
+      $tab[10]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_items_devicememories',
+                                                   'joinparams' => $items_device_joinparams));
+
+      $tab[35]['table']          = 'glpi_items_devicememories';
+      $tab[35]['field']          = 'size';
+      $tab[35]['unit']           = __('Mio');
+      $tab[35]['name']           = sprintf(__('%1$s (%2$s)'),__('Memory'),__('Mio'));
+      $tab[35]['forcegroupby']   = true;
+      $tab[35]['usehaving']      = true;
+      $tab[35]['datatype']       = 'number';
+      $tab[35]['width']          = 100;
+      $tab[35]['massiveaction']  = false;
+      $tab[35]['joinparams']     = $items_device_joinparams;
+      $tab[35]['computation']    = "(SUM(TABLE.`size`) / COUNT(TABLE.`id`))
+                                    * COUNT(DISTINCT TABLE.`id`)";
+
+
+      $tab[11]['table']          = 'glpi_devicenetworkcards';
+      $tab[11]['field']          = 'designation';
+      $tab[11]['name']           = _n('Network interface', 'Network interfaces', 1);
+      $tab[11]['forcegroupby']   = true;
+      $tab[11]['massiveaction']  = false;
+      $tab[11]['datatype']       = 'string';
+      $tab[11]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_items_devicenetworkcards',
+                                                   'joinparams' => $items_device_joinparams));
+
+      $tab[20]['table']          = 'glpi_items_devicenetworkcards';
+      $tab[20]['field']          = 'mac';
+      $tab[20]['name']           = __('MAC address');
+      $tab[20]['forcegroupby']   = true;
+      $tab[20]['massiveaction']  = false;
+      $tab[20]['datatype']       = 'string';
+      $tab[20]['joinparams']     = $items_device_joinparams;
+
+      $tab[12]['table']          = 'glpi_devicesoundcards';
+      $tab[12]['field']          = 'designation';
+      $tab[12]['name']           = __('Soundcard');
+      $tab[12]['forcegroupby']   = true;
+      $tab[12]['massiveaction']  = false;
+      $tab[12]['datatype']       = 'string';
+      $tab[12]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_items_devicesoundcards',
+                                                   'joinparams' => $items_device_joinparams));
+
+      $tab[13]['table']          = 'glpi_devicegraphiccards';
+      $tab[13]['field']          = 'designation';
+      $tab[13]['name']           = __('Graphics card');
+      $tab[13]['forcegroupby']   = true;
+      $tab[13]['massiveaction']  = false;
+      $tab[13]['datatype']       = 'string';
+      $tab[13]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_items_devicegraphiccards',
+                                                   'joinparams' => $items_device_joinparams));
+
+      $tab[14]['table']          = 'glpi_devicemotherboards';
+      $tab[14]['field']          = 'designation';
+      $tab[14]['name']           = __('System board');
+      $tab[14]['forcegroupby']   = true;
+      $tab[14]['massiveaction']  = false;
+      $tab[14]['datatype']       = 'string';
+      $tab[14]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_items_devicemotherboards',
+                                                   'joinparams' => $items_device_joinparams));
+
+
+      $tab[15]['table']          = 'glpi_deviceharddrives';
+      $tab[15]['field']          = 'designation';
+      $tab[15]['name']           = __('Hard drive type');
+      $tab[15]['forcegroupby']   = true;
+      $tab[15]['usehaving']      = true;
+      $tab[15]['massiveaction']  = false;
+      $tab[15]['datatype']       = 'string';
+      $tab[15]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_items_deviceharddrives',
+                                                   'joinparams' => $items_device_joinparams));
+
+      $tab[34]['table']          = 'glpi_items_deviceharddrives';
+      $tab[34]['field']          = 'capacity';
+      $tab[34]['name']           = __('Hard drive size');
+      $tab[34]['unit']           = __('Mio');
+      $tab[34]['forcegroupby']   = true;
+      $tab[34]['usehaving']      = true;
+      $tab[34]['datatype']       = 'number';
+      $tab[34]['width']          = 1000;
+      $tab[34]['massiveaction']  = false;
+      $tab[34]['joinparams']     = $items_device_joinparams;
+      $tab[34]['computation']    = "(SUM(TABLE.`capacity`) / COUNT(TABLE.`id`))
+                                       * COUNT(DISTINCT TABLE.`id`)";
+
+      $tab[39]['table']          = 'glpi_devicepowersupplies';
+      $tab[39]['field']          = 'designation';
+      $tab[39]['name']           = __('Power supply');
+      $tab[39]['forcegroupby']   = true;
+      $tab[39]['usehaving']      = true;
+      $tab[39]['massiveaction']  = false;
+      $tab[39]['datatype']       = 'string';
+      $tab[39]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_items_devicepowersupplies',
+                                                   'joinparams' => $items_device_joinparams));
+
+      $tab[95]['table']          = 'glpi_devicepcis';
+      $tab[95]['field']          = 'designation';
+      $tab[95]['name']           = __('Other component');
+      $tab[95]['forcegroupby']   = true;
+      $tab[95]['usehaving']      = true;
+      $tab[95]['massiveaction']  = false;
+      $tab[95]['datatype']       = 'string';
+      $tab[95]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_items_devicepcis',
+                                                   'joinparams' => $items_device_joinparams));
+
 
       return $tab;
    }
@@ -244,6 +398,7 @@ class PluginOrderReference extends CommonDBTM {
       $ong = array();
       if (!$this->isNewID($this->getID())) {
          $this->addDefaultFormTab($ong);
+         $this->addStandardTab('PluginOrderItem_Devices', $ong, $options);
          $this->addStandardTab('PluginOrderReference_Supplier', $ong,$options);
          // $this->addStandardTab('PluginOrderReference', $ong,$options);
          $this->addStandardTab('Document_Item',$ong,$options);
