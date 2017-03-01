@@ -61,12 +61,8 @@ if (!defined('PLUGIN_ORDER_NUMBER_STEP')) {
 }
 
 // Autoload
-include_once( GLPI_ROOT . "/plugins/order/inc/autoload.php");
-$options = array(
-   GLPI_ROOT . "/plugins/order/lib/"
-);
-$go_autoloader = new PluginOrderAutoloader($options);
-$go_autoloader->register();
+define('PCLZIP_TEMPORARY_DIR', GLPI_DOC_DIR . '/_tmp/pclzip');
+include_once GLPI_ROOT . "/plugins/order/vendor/autoload.php";
 
 /**
  * Init hooks of the plugin.
