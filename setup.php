@@ -34,7 +34,7 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-define ('PLUGIN_ORDER_VERSION', '1.9.5');
+define ('PLUGIN_ORDER_VERSION', '1.9.6');
 
 if (!defined('PLUGIN_ORDER_TEMPLATE_DIR')) {
    define ("PLUGIN_ORDER_TEMPLATE_DIR", GLPI_ROOT."/plugins/order/templates/");
