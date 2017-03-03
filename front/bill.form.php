@@ -89,7 +89,7 @@ Html::header(PluginOrderBill::getTypeName(1), $_SERVER['PHP_SELF'], "management"
 if (isset($_REQUEST['id'])) {
    $bill->display($_REQUEST);
 } else {
-   $bill->show();
+   $bill->display([]);
 }
 
 Html::footer();
