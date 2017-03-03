@@ -28,7 +28,7 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -200,10 +200,10 @@ class PluginOrderPreference extends CommonDBTM {
                         $array_file[] = array($filename, $filedate, $extension);
                      }
 
-                  } elseif ($filetype == "dir") {
+                  } else if ($filetype == "dir") {
                      $array_dir[] = $filename;
-                     }
                   }
+               }
             }
             closedir($dh);
          }

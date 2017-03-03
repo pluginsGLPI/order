@@ -27,7 +27,7 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -42,7 +42,7 @@ class PluginOrderBillState extends CommonDropdown {
    }
 
    public function pre_deleteItem() {
-      if ($this->getID() <= self::PAID ) {
+      if ($this->getID() <= self::PAID) {
          Session::addMessageAfterRedirect(__("You cannot remove this status", "order") . ": " . $this->fields['name'],
                                  false, ERROR);
          return false;

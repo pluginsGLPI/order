@@ -41,7 +41,7 @@ $reference = new PluginOrderReference();
 if (PluginOrderReference::canView()) {
    Search::show("PluginOrderReference");
 } else {
-   echo "<div align='center'><br><br><img src=\""
+   echo "<div class='center'><br><br><img src=\""
       . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
    echo "<b>" . __("Access denied") . "</b></div>";
 }

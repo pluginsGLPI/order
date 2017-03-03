@@ -29,13 +29,13 @@
 
 include ("../../../inc/includes.php");
 
-if(!isset($_GET["id"])) {
+if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-if(!isset($_GET["withtemplate"])) {
+if (!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
 }
-if(!isset($_GET["plugin_order_orders_id"])) {
+if (!isset($_GET["plugin_order_orders_id"])) {
    $_GET["plugin_order_orders_id"] = "";
 }
 
@@ -59,25 +59,25 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} elseif (isset($_POST["delete"])) {
+} else if (isset($_POST["delete"])) {
    if (PluginOrderOrder_Supplier::canCreate()) {
       foreach ($_POST["check"] as $ID => $value) {
          if ($supplier->delete(array( "id" => $ID), 0, 0)) {
             $new_value = __("Delete", "order") .  " " . __("Supplier Detail", "order") . " : " . $ID;
-            $order->addHistory('PluginOrderOrder',"",$new_value, $_POST["plugin_order_orders_id"]);
+            $order->addHistory('PluginOrderOrder', "", $new_value, $_POST["plugin_order_orders_id"]);
          }
       }
    }
    Html::back();
 
-} elseif (isset($_POST["update"])) {
+} else if (isset($_POST["update"])) {
    if (PluginOrderOrder_Supplier::canCreate()) {
       $supplier->update($_POST);
    }
    Html::back();
 
 } else {
-   Html::header(__("Orders management", "order"),'',"plugins", "order", "order");
+   Html::header(__("Orders management", "order"), '', "plugins", "order", "order");
    $supplier->showForm($_GET["id"],
                        array('plugin_order_orders_id' => $_GET["plugin_order_orders_id"]));
    Html::footer();

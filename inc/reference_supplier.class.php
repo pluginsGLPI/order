@@ -27,12 +27,12 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
 class PluginOrderReference_Supplier extends CommonDBChild {
-   public static $rightname = 'plugin_order_reference'; 
+   public static $rightname = 'plugin_order_reference';
    public static $itemtype  = 'PluginOrderReference';
    public static $items_id  = 'plugin_order_references_id';
    public $dohistory        = true;
@@ -99,7 +99,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
    public function prepareInputForAdd($input) {
       // Not attached to reference -> not added
-      if (!isset($input['plugin_order_references_id']) 
+      if (!isset($input['plugin_order_references_id'])
          || $input['plugin_order_references_id'] <= 0) {
          return false;
       }
@@ -109,15 +109,15 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    public function defineTabs($options = array()) {
       $ong = array();
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab('Document_Item',$ong,$options);
-      $this->addStandardTab('Log',$ong,$options);
+      $this->addStandardTab('Document_Item', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
       return $ong;
    }
 
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if (get_class($item) == __CLASS__) {
          return array (1 => __("Main"));
-      } elseif (get_class($item) == 'PluginOrderReference') {
+      } else if (get_class($item) == 'PluginOrderReference') {
          return array(1 => __("Supplier Detail", "order"));
       }
       return '';
@@ -181,7 +181,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
       echo "<td>" . __("Manufacturer's product reference", "order") . ": </td>";
       echo "<td>";
-      Html::autocompletionTextField($this,"reference_code");
+      Html::autocompletionTextField($this, "reference_code");
       echo "</td></tr>";
 
       echo "</tr>";
@@ -191,7 +191,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       echo "<td>" . __("Unit price tax free", "order") . ": </td>";
       echo "<td>";
       echo "<input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price_taxfree' value=\""
-         . Html::formatNumber($this->fields["price_taxfree"],true) . "\" class='decimal'>";
+         . Html::formatNumber($this->fields["price_taxfree"], true) . "\" class='decimal'>";
       echo "</td>";
 
       echo "<td></td>";
@@ -238,7 +238,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          echo "<input type='hidden' name='plugin_order_references_id' value='" . $ID . "'>";
 
          while ($data = $DB->fetch_array($result)) {
-            Session::addToNavigateListItems($this->getType(),$data['id']);
+            Session::addToNavigateListItems($this->getType(), $data['id']);
             echo "<input type='hidden' name='item[" . $data["id"] . "]' value='" . $ID . "'>";
             echo "<tr class='tab_bg_1 center'>";
             echo "<td>";
@@ -322,8 +322,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       }
    }
 
-  public static function install(Migration $migration)
-  {
+   public static function install(Migration $migration) {
       global $DB;
 
       $table = getTableForItemType(__CLASS__);
@@ -349,9 +348,9 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
          //1.1.0
          if (TableExists("glpi_plugin_order_references_manufacturers")) {
-         $migration->addField("glpi_plugin_order_references_manufacturers", "reference_code",
+            $migration->addField("glpi_plugin_order_references_manufacturers", "reference_code",
                               "varchar(255) NOT NULL collate utf8_unicode_ci default ''");
-         $migration->migrationOneTable("glpi_plugin_order_references_manufacturers");
+            $migration->migrationOneTable("glpi_plugin_order_references_manufacturers");
          }
 
          //1.2.0
@@ -375,13 +374,13 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
          Plugin::migrateItemType(array(3152 => 'PluginOrderReference_Supplier'),
                                  array("glpi_bookmarks", "glpi_bookmarks_users",
-                                       "glpi_displaypreferences", "glpi_documents_items",
-                                       "glpi_infocoms", "glpi_logs"),
+                                     "glpi_displaypreferences", "glpi_documents_items",
+                                     "glpi_infocoms", "glpi_logs"),
                                  array());
          if (FieldExists('glpi_tickets', 'itemtype')) {
             Plugin::migrateItemType(array(3152 => 'PluginOrderReference_Supplier'),
-                                 array("glpi_tickets"),
-                                 array());
+                                    array("glpi_tickets"),
+                                    array());
          }
 
          //1.5.0

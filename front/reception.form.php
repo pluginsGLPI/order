@@ -29,10 +29,10 @@
 
 include ("../../../inc/includes.php");
 
-if(!isset($_GET["id"])) {
+if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-if(!isset($_GET["withtemplate"])) {
+if (!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
 }
 
@@ -69,17 +69,17 @@ if (isset ($_POST["update"])) {
    $reception->updateReceptionStatus(array('item' => array($_POST['id'] => 'on')));
    Html::redirect($_SERVER['HTTP_REFERER']);
 
-} elseif (isset ($_POST["delete"])) {
+} else if (isset ($_POST["delete"])) {
    $reception->deleteDelivery($_POST["id"]);
    $reception->updateReceptionStatus(array('item' => array($_POST['id'] => 'on')));
    Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=".$_POST["plugin_order_orders_id"]);
 
-} elseif (isset ($_POST["reception"])) {
+} else if (isset ($_POST["reception"])) {
    //A new item is delivered
    $reception->updateReceptionStatus($_POST);
    Html::redirect($_SERVER["HTTP_REFERER"]);
 
-} elseif (isset ($_POST["bulk_reception"])) {
+} else if (isset ($_POST["bulk_reception"])) {
    //Several new items are delivered
    $reception->updateBulkReceptionStatus($_POST);
    Html::redirect($_SERVER["HTTP_REFERER"]);
