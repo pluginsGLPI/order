@@ -1836,7 +1836,7 @@ class PluginOrderOrder extends CommonDBTM {
       if (!$budget->getFromDB($this->fields['budgets_id'])) {
          return false;
       }
-      Toolbox::logDebug($budget);
+
       if ($budget->fields['value'] == 0) {
          return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
       }
