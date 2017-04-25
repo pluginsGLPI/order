@@ -37,16 +37,16 @@
 define ('PLUGIN_ORDER_VERSION', '1.9.6');
 
 if (!defined('PLUGIN_ORDER_TEMPLATE_DIR')) {
-   define ("PLUGIN_ORDER_TEMPLATE_DIR", GLPI_ROOT."/plugins/order/templates/");
+   define ("PLUGIN_ORDER_TEMPLATE_DIR",  GLPI_PLUGIN_DOC_DIR."/order/templates/");
 }
 if (!defined('PLUGIN_ORDER_SIGNATURE_DIR')) {
-   define ("PLUGIN_ORDER_SIGNATURE_DIR", GLPI_ROOT."/plugins/order/signatures/");
+   define ("PLUGIN_ORDER_SIGNATURE_DIR", GLPI_PLUGIN_DOC_DIR."/order/signatures/");
 }
 if (!defined('PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR')) {
-   define ("PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR", GLPI_ROOT."/plugins/order/generate/");
+   define ("PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR", GLPI_PLUGIN_DOC_DIR."/order/generate/");
 }
 if (!defined('PLUGIN_ORDER_TEMPLATE_LOGO_DIR')) {
-   define ("PLUGIN_ORDER_TEMPLATE_LOGO_DIR", GLPI_ROOT."/plugins/order/logo/");
+   define ("PLUGIN_ORDER_TEMPLATE_LOGO_DIR", GLPI_PLUGIN_DOC_DIR."/order/logo/");
 }
 
 if (!defined('PLUGIN_ORDER_TEMPLATE_EXTENSION')) {
