@@ -45,7 +45,7 @@ if (isset($_REQUEST['node'])) {
    if ($_REQUEST['node'] == -1) {
       $pos      = 0;
       $entity   = $_SESSION['glpiactive_entity'];
-      $entities = getEntitiesRestrictRequest("AND","glpi_plugin_order_references");
+      $entities = getEntitiesRestrictRequest("AND", "glpi_plugin_order_references");
 
       $query = "SELECT DISTINCT `itemtype`
                 FROM `glpi_plugin_order_references`
@@ -66,11 +66,11 @@ if (isset($_REQUEST['node'])) {
                $pos++;
                $path['draggable'] = false;
 
-               if($entity == 0) {
+               if ($entity == 0) {
                   $link = "&link[1]=AND&searchtype[1]=contains&contains[1]=NULL&field[1]=80";
                } else {
                   $link = "&link[1]=AND&searchtype[1]=contains&contains[1]="
-                     . Dropdown::getDropdownName("glpi_entities",$entity) . "&field[1]=80";
+                     . Dropdown::getDropdownName("glpi_entities", $entity) . "&field[1]=80";
                }
 
                $path['href'] = $CFG_GLPI["root_doc"].

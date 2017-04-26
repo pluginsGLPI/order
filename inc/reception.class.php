@@ -27,12 +27,12 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
 class PluginOrderReception extends CommonDBChild {
-   
+
    public static $rightname          = 'plugin_order_order';
    public $dohistory                 = true;
    public static $itemtype           = 'PluginOrderOrder';
@@ -189,7 +189,7 @@ class PluginOrderReception extends CommonDBChild {
       echo "<td>" . __("Delivery form") . ": </td>";
       echo "<td>";
       if ($canedit) {
-         Html::autocompletionTextField($this,"delivery_number");
+         Html::autocompletionTextField($this, "delivery_number");
       } else {
          echo $this->fields["delivery_number"];
       }
@@ -225,7 +225,7 @@ class PluginOrderReception extends CommonDBChild {
       if (Session::haveRight("plugin_order_bill", UPDATE)) {
          PluginOrderBill::Dropdown(array('name'  => "plugin_order_bills_id",
                                          'value' => $this->fields["plugin_order_bills_id"]));
-      } elseif (Session::haveRight("plugin_order_bill", UPDATE)) {
+      } else if (Session::haveRight("plugin_order_bill", UPDATE)) {
          echo Dropdown::getDropdownName("glpi_plugin_order_bills",
                                         $this->fields["plugin_order_bills_id"]);
       }
@@ -361,15 +361,16 @@ class PluginOrderReception extends CommonDBChild {
          $result = $DB->query($query);
          $num    = $DB->numrows($result);
 
-         while ($data = $DB->fetch_array($result)) {
-            $random   = mt_rand();
-            $detailID = $data["IDD"];
-            Session::addToNavigateListItems($this->getType(), $detailID);
-            echo "<tr class='tab_bg_2'>";
-            $status   = 1;
-            if ($typeRef != 'SoftwareLicense') {
-               $status = $this->checkThisItemStatus($detailID, PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED);
-            }
+            while ($data=$DB->fetch_array($result)) {
+               $random   = mt_rand();
+               $detailID = $data["IDD"];
+               Session::addToNavigateListItems($this->getType(), $detailID);
+               echo "<tr class='tab_bg_2'>";
+               $status    = 1;
+               if ($typeRef != 'SoftwareLicense') {
+                  $status = $this->checkThisItemStatus($detailID,
+                                                       PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED);
+               }
 
             if ($order_order->canDeliver() && $status) {
                echo "<td width='15' align='left'>";
@@ -514,6 +515,16 @@ class PluginOrderReception extends CommonDBChild {
                "plugin_order_references_id" => $params["plugin_order_references_id"],
             );
 
+            $config =PluginOrderConfig::getConfig();
+            if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
+               $options['manual_generate'] = $params['manual_generate'];
+               if ($params['manual_generate'] == 1) {
+                  $options['name']            = $params['generated_name'];
+                  $options['serial']          = $params['generated_serial'];
+                  $options['otherserial']     = $params['generated_otherserial'];
+                  $options['generate_assets'] = $params['generate_assets'];
+               }
+            }
             self::generateAsset($options);
             $this->updateReceptionStatus(array('item' => array($DB->result($result, $i, 0) => 'on')));
          }
@@ -562,14 +573,15 @@ class PluginOrderReception extends CommonDBChild {
    }
 
    public function updateReceptionStatus($params) {
+
       $detail                 = new PluginOrderOrder_Item();
       $plugin_order_orders_id = 0;
 
       if (isset ($params["item"])) {
-         foreach ($params["item"] as $key => $val)
+         foreach ($params["item"] as $key => $val) {
             if ($val == 1) {
                if ($params["itemtype"][$key] == 'SoftwareLicense') {
-                  $this->receptionAllItem($key,$params["plugin_order_references_id"][$key],
+                  $this->receptionAllItem($key, $params["plugin_order_references_id"][$key],
                                           $params["plugin_order_orders_id"],
                                           $params["delivery_date"], $params["delivery_number"],
                                           $params["plugin_order_deliverystates_id"]);
@@ -583,26 +595,35 @@ class PluginOrderReception extends CommonDBChild {
 
                      if ($detail->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
                         $this->receptionOneItem($key, $plugin_order_orders_id,
-                                                $params["delivery_date"], $params["delivery_number"],
-                                                $params["plugin_order_deliverystates_id"]);
+                                             $params["delivery_date"], $params["delivery_number"],
+                                             $params["plugin_order_deliverystates_id"]);
                      } else {
                         Session::addMessageAfterRedirect(__("Item already taken delivery", "order"), true, ERROR);
                      }
 
-
                      // Automatic generate asset
                      $options = array(
-                        "itemtype"                   => $params["itemtype"][$key],
-                        "items_id"                   => $key,
-                        'entities_id'                => $detail->getEntityID(),
-                        "plugin_order_orders_id"     => $detail->fields["plugin_order_orders_id"],
-                        "plugin_order_references_id" => $params["plugin_order_references_id"][$key],
+                     "itemtype"                   => $params["itemtype"][$key],
+                     "items_id"                   => $key,
+                     'entities_id'                => $detail->getEntityID(),
+                     "plugin_order_orders_id"     => $detail->fields["plugin_order_orders_id"],
+                     "plugin_order_references_id" => $params["plugin_order_references_id"][$key],
                      );
 
+                     $config =  PluginOrderConfig::getConfig(true);
+                     if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
+                        $options['manual_generate'] = $params['manual_generate'];
+                        if ($params['manual_generate'] == 1) {
+                           $options['name']            = $params['generated_name'];
+                           $options['serial']          = $params['generated_serial'];
+                           $options['otherserial']     = $params['generated_otherserial'];
+                        }
+                     }
                      self::generateAsset($options);
                   }
                }
             }// $val == 1
+         }
 
          self::updateDelivryStatus($plugin_order_orders_id);
       } else {
@@ -674,8 +695,9 @@ class PluginOrderReception extends CommonDBChild {
    public static function generateAsset($options = array()) {
       // Retrieve configuration for generate assets feature
       $config = PluginOrderConfig::getConfig();
-
-      if ($config->canGenerateAsset()) {
+      if (($config->canGenerateAsset() == PluginOrderConfig::CONFIG_YES)
+          || (($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK)
+              && ($options['manual_generate'] == 1))) {
          // Automatic generate assets on delivery
          $rand = mt_rand();
          $item = array(
@@ -688,14 +710,20 @@ class PluginOrderReception extends CommonDBChild {
             "plugin_order_orders_id" => $options["plugin_order_orders_id"],
          );
 
+         if (($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK)
+             && ($options['manual_generate'] == 1)) {
+            $item['name']        = $options['name'].$rand;
+            $item['serial']      = $options['serial'].$rand;
+            $item['otherserial'] = $options['otherserial'].$rand;
+         }
+
          $options_gen = array(
             "plugin_order_orders_id"     => $options["plugin_order_orders_id"],
             "plugin_order_references_id" => $options["plugin_order_references_id"],
             "id"                         => array($item),
          );
 
-
-         if($config->canGenerateTicket()) {
+         if ($config->canGenerateTicket()) {
             $options_gen["generate_ticket"] = array(
                   "entities_id"        => $options['entities_id'],
                   "tickettemplates_id" => $config->fields['tickettemplates_id_delivery'],

@@ -28,39 +28,39 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
 class PluginOrderDocumentCategory extends CommonDBTM {
-   
+
    static function getTypeName($nb=0) {
-      
+
       return __("Document category", "order");
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      
+
       $config = PluginOrderConfig::getConfig();
-      
+
       if ($item->getType() == "DocumentCategory" && $config->canRenameDocuments()) {
          return __("Orders", "order");
-      } 
-      
+      }
+
       return '';
    }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      
+
       $config = PluginOrderConfig::getConfig();
-      
+
       if ($item->getType() == "DocumentCategory" && $config->canRenameDocuments()) {
          self::showForDocumentCategory($item);
-      } 
-      
+      }
+
       return true;
    }
-   
+
    static function purgeItem($item) {
       $temp = new self();
       $temp->deleteByCriteria(array(
@@ -69,7 +69,7 @@ class PluginOrderDocumentCategory extends CommonDBTM {
    }
 
    static function showForDocumentCategory($item) {
-      
+
       $documentCategory = new self();
       if (!$documentCategory->getFromDBByQuery(" WHERE `documentcategories_id` = ".$item->fields['id'])) {
          $documentCategory->getEmpty();
@@ -100,12 +100,12 @@ class PluginOrderDocumentCategory extends CommonDBTM {
       echo "</table></div>";
       Html::closeForm();
    }
-   
-      
+
+
    //------------------------------------------------------------
    //--------------------Install / uninstall --------------------
    //------------------------------------------------------------
-   
+
    static function install(Migration $migration) {
       global $DB;
 
@@ -125,11 +125,10 @@ class PluginOrderDocumentCategory extends CommonDBTM {
          $DB->query($query) or die ($DB->error());
       }
    }
-   
+
    static function uninstall() {
       global $DB;
       //Current table name
       $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
    }
 }
-?>

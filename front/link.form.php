@@ -29,10 +29,10 @@
 
 include ("../../../inc/includes.php");
 
-if(!isset($_GET["id"])) {
+if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-if(!isset($_GET["withtemplate"])) {
+if (!isset($_GET["withtemplate"])) {
    $_GET["withtemplate"] = "";
 }
 
@@ -64,18 +64,19 @@ if (isset($_POST["generation"])) {
       Html::redirect($_SERVER["HTTP_REFERER"]);
    }
 
-} elseif(isset($_POST["generate"])) {
+} else if (isset($_POST["generate"])) {
    $link->generateNewItem($_POST);
    Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder') . "?id=" . $_POST["plugin_order_orders_id"] . "");
 
-} elseif(isset($_POST["deleteLinkWithItem"])) {
+} else if (isset($_POST["deleteLinkWithItem"])) {
    foreach ($_POST["item"] as $key => $val) {
-      if ($val == 1)
+      if ($val == 1) {
          $link->deleteLinkWithItem($key, $_POST["itemtype"][$key], $_POST["plugin_order_orders_id"]);
+      }
    }
    Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder') . "?id=" . $_POST["plugin_order_orders_id"] . "");
 
-} elseif(isset($_POST["createLinkWithItem"])) {
+} else if (isset($_POST["createLinkWithItem"])) {
    if (isset($_POST["item"]) && $_POST['item']) {
       $i    = 0;
       $doit = 1;

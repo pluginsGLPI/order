@@ -33,7 +33,7 @@ Session::checkCentralAccess();
 
 // Make a select box for references
 if (isset($_POST["itemtype"])) {
-   $entity_restrict = getEntitiesRestrictRequest("AND", 'r', '', $_POST['entities_id'], 1); 
+   $entity_restrict = getEntitiesRestrictRequest("AND", 'r', '', $_POST['entities_id'], 1);
    $query = "SELECT s.`plugin_order_references_id` as id, s.`price_taxfree`, s.`reference_code`, r.`name`
              FROM `glpi_plugin_order_references_suppliers` s
              LEFT JOIN `glpi_plugin_order_references` r
@@ -65,8 +65,8 @@ if (isset($_POST["itemtype"])) {
                                  '../ajax/dropdownReference.php',
                                  $params);
 
-// Get price
-} elseif (isset($_POST['reference_id'])) {
+} else if (isset($_POST['reference_id'])) {
+   // Get price
    $query = "SELECT `price_taxfree`
              FROM `glpi_plugin_order_references_suppliers`
              WHERE `plugin_order_references_id` = '{$_POST['reference_id']}' AND suppliers_id = '{$_POST['suppliers_id']}'";

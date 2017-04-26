@@ -27,7 +27,7 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-if (!defined('GLPI_ROOT')){
+if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
@@ -115,9 +115,9 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          $plugin_order_orders_id = $options['plugin_order_orders_id'];
       }
 
-     $this->initForm($ID, $options);
+      $this->initForm($ID, $options);
 
-      if (strpos($_SERVER['PHP_SELF'],"order_supplier")) {
+      if (strpos($_SERVER['PHP_SELF'], "order_supplier")) {
          echo "showTabs()";
          $this->showTabs($options);
       }
@@ -144,7 +144,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 
       /* number of quote */
       echo "<td>" . __("Quote number", "order") . ": </td><td>";
-      Html::autocompletionTextField($this,"num_quote");
+      Html::autocompletionTextField($this, "num_quote");
       echo "</td>";
 
       echo "</tr>";
@@ -154,8 +154,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 
       /* num order supplier */
       echo "<td>" . __("Order number") . ": </td><td>";
-      Html::autocompletionTextField($this,"num_order");
-
+      Html::autocompletionTextField($this, "num_order");
 
       echo "</tr>";
 
@@ -164,7 +163,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       return true;
    }
 
-   public static function showOrderSupplierInfos($ID) { //TODO : en cours
+   public static function showOrderSupplierInfos($ID) {
+      //TODO : en cours
       global $DB;
 
       $order = new PluginOrderOrder();
@@ -253,7 +253,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
                      ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`)
                   WHERE `glpi_plugin_order_orders`.`suppliers_id` = '".$suppliers_id."'
                   AND `glpi_plugin_order_orders_items`.`states_id` = '".PluginOrderOrder::ORDER_DEVICE_DELIVRED."' "
-                  .getEntitiesRestrictRequest(" AND ","glpi_plugin_order_orders",'','',true);
+                  .getEntitiesRestrictRequest(" AND ", "glpi_plugin_order_orders", '', '', true);
       $query .= "GROUP BY `glpi_plugin_order_orders`.`entities_id`,
                          `glpi_plugin_order_orders_items`.`plugin_order_deliverystates_id`";
       $result = $DB->query($query);
@@ -267,9 +267,9 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo "</tr>";
 
       if ($nb) {
-         for ($i = 0 ; $i < $nb ; $i++) {
-            $ref               = $DB->result($result,$i,"ref");
-            $entities_id       = $DB->result($result,$i,"entities_id");
+         for ($i = 0; $i < $nb; $i++) {
+            $ref               = $DB->result($result, $i, "ref");
+            $entities_id       = $DB->result($result, $i, "entities_id");
             $deliverystates_id = $DB->result($result, $i, "sid");
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
@@ -325,7 +325,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
             $migration->addField($table, "is_recursive", "tinyint(1) NOT NULL default '0'");
             $migration->addField($table, "suppliers_id",
                                  "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
-            $migration->changeField($table, "ID", "id",  "int(11) NOT NULL auto_increment");
+            $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
             $migration->changeField($table, "FK_order", "plugin_order_orders_id",
                                     "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'");
             $migration->changeField($table, "numquote", "num_quote",

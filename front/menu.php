@@ -44,10 +44,10 @@ $PluginOrderBill      = new PluginOrderBill();
 if (PluginOrderOrder::canView() && !PluginOrderReference::canView() && !PluginOrderBill::canView()) {
    Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderOrder'));
 
-} elseif(!PluginOrderOrder::canView() && PluginOrderReference::canView() && !PluginOrderBill::canView()) {
+} else if (!PluginOrderOrder::canView() && PluginOrderReference::canView() && !PluginOrderBill::canView()) {
    Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderReference'));
 
-} elseif(!PluginOrderOrder::canView() && !PluginOrderReference::canView() && PluginOrderBill::canView()) {
+} else if (!PluginOrderOrder::canView() && !PluginOrderReference::canView() && PluginOrderBill::canView()) {
    Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderBill'));
 }
 
@@ -57,21 +57,21 @@ if (PluginOrderOrder::canView() || PluginOrderReference::canView()) {
    echo "<tr><th colspan='2'>" . __("Orders management", "order") . "</th></tr>";
 
    if (PluginOrderOrder::canView()) {
-      echo "<tr class='tab_bg_1' align='center'>";
+      echo "<tr class='tab_bg_1 center'>";
       echo "<td><img src='../pics/order-icon.png'></td>";
       echo "<td><a href='".Toolbox::getItemTypeSearchURL('PluginOrderOrder')."'>" .
          __("Orders", "order") . "</a></td></tr>";
    }
 
    if (PluginOrderReference::canView()) {
-      echo "<tr class='tab_bg_1' align='center'>";
+      echo "<tr class='tab_bg_1 center'>";
       echo "<td><img src='../pics/reference-icon.png'></td>";
       echo "<td><a href='".Toolbox::getItemTypeSearchURL('PluginOrderReference')."'>" .
          __("Products references", "order") . "</a></td></tr>";
    }
 
    if (PluginOrderBill::canView()) {
-      echo "<tr class='tab_bg_1' align='center'>";
+      echo "<tr class='tab_bg_1 center'>";
       echo "<td><img src='../pics/bill-icon.png'></td>";
       echo "<td><a href='".Toolbox::getItemTypeSearchURL('PluginOrderBill')."'>" .
          __("Bills", "order") . "</a></td></tr>";
@@ -79,7 +79,7 @@ if (PluginOrderOrder::canView() || PluginOrderReference::canView()) {
 
    echo "</table></div>";
 } else {
-   echo "<div align='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] .
+   echo "<div class='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] .
          "/pics/warning.png\" alt=\"warning\"><br><br>";
    echo "<b>" . __("Access denied") . "</b></div>";
 }

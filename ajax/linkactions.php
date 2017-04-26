@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 $reference = new PluginOrderReference();
 
 if (isset($_POST["action"])) {
-   switch($_POST["action"]) {
+   switch ($_POST["action"]) {
       case "generation":
          echo "&nbsp;<input type='hidden' name='plugin_order_references_id' "
             . "  value='" . $_POST["plugin_order_references_id"] . "'>";

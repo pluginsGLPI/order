@@ -64,7 +64,7 @@ class PluginOrderOrderTax extends CommonDropdown {
       } else {
          //Update
 
-        $migration->displayMessage("Migrating $table");
+         $migration->displayMessage("Migrating $table");
 
          //1.2.0
          $migration->renameTable("glpi_dropdown_plugin_order_taxes", $table);
@@ -75,7 +75,7 @@ class PluginOrderOrderTax extends CommonDropdown {
 
          //Remplace , by . in taxes
          foreach ($DB->request("SELECT `name` FROM `$table`") as $data) {
-            if(strpos($data["name"], ',')) {
+            if (strpos($data["name"], ',')) {
                $name  = str_replace(',', '.', $data["name"]);
                $query = "UPDATE `$table`
                          SET `name` = '" . $name . "'

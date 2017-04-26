@@ -97,7 +97,6 @@ class PluginOrderProfile extends CommonDBTM {
          'title'         => __('Orders', 'order'),
       ));
 
-
       if ($canedit && $closeform) {
          echo "<div class='center'>";
          echo Html::hidden('id', array('value' => $profiles_id));

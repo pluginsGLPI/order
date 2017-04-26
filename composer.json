@@ -1,0 +1,16 @@
+{
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require-dev": {
+        "glpi-project/tools": "^0.1.0"
+    },
+    "require": {
+        "masnathan/odtphp": "dev-teclib"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "https://github.com/teclib/odtphp/"
+        }
+    ]
+}

@@ -44,7 +44,7 @@ class PluginOrderDeliveryState extends CommonDropdown {
          $migration->displayMessage("Installing $table");
 
          //Install
-        $query = "CREATE TABLE `glpi_plugin_order_deliverystates` (
+         $query = "CREATE TABLE `glpi_plugin_order_deliverystates` (
                      `id` int(11) NOT NULL auto_increment,
                      `name` varchar(255) collate utf8_unicode_ci default NULL,
                      `comment` text collate utf8_unicode_ci,

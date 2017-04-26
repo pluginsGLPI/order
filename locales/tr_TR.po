@@ -1,0 +1,885 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Kaya Zeren <kayazeren@gmail.com>, 2015-2017
+msgid ""
+msgstr ""
+"Project-Id-Version: GLPI Plugin - Order\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-03-01 22:17+0100\n"
+"PO-Revision-Date: 2017-03-02 05:20+0000\n"
+"Last-Translator: Kaya Zeren <kayazeren@gmail.com>\n"
+"Language-Team: Turkish (Turkey) (http://www.transifex.com/teclib/glpi-plugin-order/language/tr_TR/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr_TR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: hook.php:45
+msgid "Plugin installation or upgrade"
+msgstr "Uygulama eki yükleme ya da güncelleme"
+
+#: hook.php:111 inc/ordertax.class.php:39 inc/order.class.php:273
+#: inc/order.class.php:890 inc/order.class.php:1108 inc/order.class.php:1540
+#: inc/order.class.php:1624 inc/order_item.class.php:287
+#: inc/order_item.class.php:669 inc/order_item.class.php:1004
+msgid "VAT"
+msgstr "KDV"
+
+#: hook.php:112 inc/order.class.php:315 inc/order.class.php:804
+#: inc/order.class.php:1630 inc/orderpayment.class.php:39
+msgid "Payment conditions"
+msgstr "Ödeme koşulları"
+
+#: hook.php:114 inc/order.class.php:293 inc/order.class.php:745
+#: inc/order.class.php:1712 inc/orderstate.class.php:48
+msgid "Order status"
+msgstr "Sipariş durumu"
+
+#: hook.php:115 inc/othertype.class.php:38
+msgid "Other type of item"
+msgstr "Diğer öge tipi"
+
+#: hook.php:116 ajax/massreception.php:57 ajax/receptionactions.php:47
+#: inc/deliverystate.class.php:37 inc/reception.class.php:207
+#: inc/reception.class.php:321 inc/order_item.class.php:137
+msgid "Delivery status"
+msgstr "Kargo durumu"
+
+#: hook.php:117 inc/billstate.class.php:41 inc/bill.class.php:323
+#: inc/order_item.class.php:1182
+msgid "Bill status"
+msgstr "Faturalama durumu"
+
+#: hook.php:118 inc/billtype.class.php:38
+msgid "Bill type"
+msgstr "Faturalama tipi"
+
+#: hook.php:119 inc/preference.class.php:253 inc/profile.class.php:97
+#: inc/profile.class.php:136 inc/profile.class.php:159
+#: inc/order_supplier.class.php:380 inc/menu.class.php:6
+#: inc/documentcategory.class.php:47 inc/bill.class.php:486
+#: inc/order.class.php:66 inc/order.class.php:516
+#: inc/order_item.class.php:1506 inc/order_item.class.php:1508
+#: front/link.form.php:56 front/order.form.php:289 front/config.form.php:41
+#: front/order.php:33 front/preference.form.php:43 front/menu.php:63
+msgid "Orders"
+msgstr "Siparişler"
+
+#: hook.php:182 inc/surveysupplier.class.php:174 inc/order.class.php:349
+#: inc/order.class.php:693 inc/order_item.class.php:925
+msgid "Order name"
+msgstr "Sipariş adı"
+
+#: hook.php:190 inc/order.class.php:253 inc/order.class.php:717
+#: inc/order.class.php:1468 report/orderdelivery/orderdelivery.php:65
+msgid "Order number"
+msgstr "Sipariş numarası"
+
+#: hook.php:339 inc/order_supplier.class.php:176
+#: inc/surveysupplier.class.php:342 inc/bill.class.php:80
+#: inc/bill.class.php:143 inc/order.class.php:67 inc/reception.class.php:258
+#: inc/order_item.class.php:446 inc/order_item.class.php:981
+#: inc/order_item.class.php:1514
+msgid "Order"
+msgstr "Sipariş"
+
+#: ajax/massreception.php:51
+msgid "Number to deliver"
+msgstr "Kargolanacak adet"
+
+#: ajax/massreception.php:64 ajax/receptionactions.php:52
+#: inc/config.class.php:214
+msgid "Enable automatic generation"
+msgstr "Otomatik oluşturma kullanılsın"
+
+#: ajax/massreception.php:67 ajax/receptionactions.php:58
+#: inc/config.class.php:249
+msgid "Default name"
+msgstr "Varsayılan ad"
+
+#: ajax/massreception.php:72 ajax/receptionactions.php:61
+#: inc/config.class.php:256
+msgid "Default serial number"
+msgstr "Varsayılan seri numarası"
+
+#: ajax/massreception.php:77 ajax/receptionactions.php:64
+#: inc/config.class.php:263
+msgid "Default inventory number"
+msgstr "Varsayılan stok numarası"
+
+#: ajax/referencedetail.php:62 inc/config.class.php:104
+#: inc/order.class.php:903 inc/order_item.class.php:347
+msgid "No VAT"
+msgstr "KDV yok"
+
+#: inc/preference.class.php:151 inc/order.class.php:1400
+msgid "Use this model"
+msgstr "Şu model kullanılsın"
+
+#: inc/preference.class.php:156 inc/order.class.php:1409
+msgid "Use this sign"
+msgstr "Şu imza kullanılsın"
+
+#: inc/profile.class.php:163 front/menu.php:70
+msgid "Products references"
+msgstr "Ürün referansları"
+
+#: inc/profile.class.php:167 inc/order_item.class.php:1080 front/menu.php:77
+msgid "Bills"
+msgstr "Faturalar"
+
+#: inc/order_supplier.class.php:41 inc/order_supplier.class.php:47
+#: inc/order_supplier.class.php:194 inc/order_supplier.class.php:385
+#: inc/reference_supplier.class.php:121 inc/reference_supplier.class.php:229
+#: front/order_supplier.form.php:66
+msgid "Supplier Detail"
+msgstr "Tedarikçi Ayrıntısı"
+
+#: inc/order_supplier.class.php:51 inc/order_supplier.class.php:146
+#: inc/order_supplier.class.php:198 front/order_supplier.form.php:51
+msgid "Quote number"
+msgstr "Teklif numarası"
+
+#: inc/order_supplier.class.php:266
+msgid "Delivery statistics"
+msgstr "Kargo istatistikleri"
+
+#: inc/order_supplier.class.php:282
+msgid "No specified status"
+msgstr "Bir durum belirtilmemiş"
+
+#: inc/billstate.class.php:46 inc/orderstate.class.php:53
+msgid "You cannot remove this status"
+msgstr "Bu durumu silemezsiniz"
+
+#: inc/billstate.class.php:55
+msgid "Being paid"
+msgstr "Ödeniyor"
+
+#: inc/billstate.class.php:56 inc/billstate.class.php:85
+#: inc/orderstate.class.php:88
+msgid "Paid"
+msgstr "Ödendi"
+
+#: inc/billstate.class.php:86
+msgid "Not paid"
+msgstr "Ödenmedi"
+
+#: inc/surveysupplier.class.php:42 inc/surveysupplier.class.php:170
+#: inc/surveysupplier.class.php:354 inc/surveysupplier.class.php:480
+msgid "Supplier quality"
+msgstr "Tedarikçi kalitesi"
+
+#: inc/surveysupplier.class.php:175 inc/surveysupplier.class.php:357
+msgid "Note"
+msgstr "Not"
+
+#: inc/surveysupplier.class.php:176 inc/surveysupplier.class.php:358
+msgid "Comment on survey"
+msgstr "Anket açıklaması"
+
+#: inc/surveysupplier.class.php:204 inc/surveysupplier.class.php:287
+msgid "Administrative followup quality (contracts, bills, mail, etc.)"
+msgstr "İdari kalite takibi (sözleşme, fatura, posta gibi)"
+
+#: inc/surveysupplier.class.php:210 inc/surveysupplier.class.php:292
+msgid "Commercial followup quality, visits, responseness"
+msgstr "Ticari kalite takibi (ziyaret, iletişim, geri dönüş gibi)"
+
+#: inc/surveysupplier.class.php:216 inc/surveysupplier.class.php:297
+msgid "Contacts availability"
+msgstr "Kişilere erişebilme"
+
+#: inc/surveysupplier.class.php:222 inc/surveysupplier.class.php:302
+msgid "Quality of supplier intervention"
+msgstr "Tedarikçi iletişiminin kalitesi"
+
+#: inc/surveysupplier.class.php:228 inc/surveysupplier.class.php:307
+msgid "Reliability about annouced delays"
+msgstr "Bildirilen gecikmelerin güvenirliği"
+
+#: inc/surveysupplier.class.php:238
+msgid "Final supplier note"
+msgstr "Son tedarikçi notu"
+
+#: inc/surveysupplier.class.php:321
+msgid "Average mark up to 10 (X points / 5)"
+msgstr "10 üzerinden ortalama değerlendirme ( X puan / 5)"
+
+#: inc/config.class.php:70 inc/order.class.php:248 inc/order_item.class.php:91
+#: setup.php:184 front/order_supplier.form.php:80
+#: front/surveysupplier.form.php:69 front/order_item.form.php:39
+#: front/menu.php:33 front/menu.php:57 front/reception.form.php:88
+msgid "Orders management"
+msgstr "Sipariş yönetimi"
+
+#: inc/config.class.php:95
+msgid "Plugin configuration"
+msgstr "Uygulama eki ayarları"
+
+#: inc/config.class.php:98
+msgid "Default VAT"
+msgstr "Varsayılan KDV"
+
+#: inc/config.class.php:110
+msgid "Use validation process"
+msgstr "Doğrulama yapılsın"
+
+#: inc/config.class.php:117
+msgid "Order generation in ODT"
+msgstr "ODT üzerinde sipariş oluşturma"
+
+#: inc/config.class.php:123
+msgid "Activate suppliers quality satisfaction"
+msgstr "Etkin tedarikçi memnuniyeti"
+
+#: inc/config.class.php:130
+msgid "Display order's suppliers informations"
+msgstr "Sipariş tedarikçisinin bilgileri görüntülensin"
+
+#: inc/config.class.php:136
+msgid "Color to be displayed when order due date is overtaken"
+msgstr "Sipariş teslim tarihi geçen ögelerin görüntülenme rengi"
+
+#: inc/config.class.php:144
+msgid "Copy order documents when a new item is created"
+msgstr "Yeni öge oluşturulduğundan sipariş belgeleri kopyalansın"
+
+#: inc/config.class.php:151
+msgid "Default heading when adding a document to an order"
+msgstr "Bir belge bir siparişe eklendiğinde kullanılacak varsayılan üstbilgi"
+
+#: inc/config.class.php:158 inc/order.class.php:441 inc/order.class.php:1003
+#: inc/notificationtargetorder.class.php:443
+#: inc/notificationtargetorder.class.php:446
+msgid "Author group"
+msgstr "Yetkili grup"
+
+#: inc/config.class.php:168 inc/order.class.php:448 inc/order.class.php:1053
+#: inc/notificationtargetorder.class.php:445
+#: inc/notificationtargetorder.class.php:447
+msgid "Recipient group"
+msgstr "Alıcı grup"
+
+#: inc/config.class.php:190
+msgid "Hide inactive budgets"
+msgstr "Etkin olmayan bütçeler gizlensin"
+
+#: inc/config.class.php:197
+msgid "Transmit budget change to linked assets"
+msgstr "Bütçe değişimini ilgili varlıklara aktar"
+
+#: inc/config.class.php:205
+msgid "Automatic actions when delivery"
+msgstr "Kargolandığından otomatik yapılacak işlemler"
+
+#: inc/config.class.php:218
+msgid "Asked"
+msgstr "Soruldu"
+
+#: inc/config.class.php:224
+msgid "Default state"
+msgstr "Varsayılan durum"
+
+#: inc/config.class.php:235
+msgid "Add order location to item"
+msgstr "Ögeye sipariş konumu ekle"
+
+#: inc/config.class.php:242
+msgid "Add billing details to item"
+msgstr "Ögeye faturalama bilgileri ekle"
+
+#: inc/config.class.php:287
+msgid "Order lifecycle"
+msgstr "Sipariş ömrü"
+
+#: inc/config.class.php:291
+msgid "State before validation"
+msgstr "Doğrulama öncesi durum"
+
+#: inc/config.class.php:301
+msgid "Waiting for validation state"
+msgstr "Doğrulama bekleniyor durumu"
+
+#: inc/config.class.php:311
+msgid "Validated order state"
+msgstr "Doğrulanmış sipariş durumu"
+
+#: inc/config.class.php:321
+msgid "Order being delivered state"
+msgstr "Sipariş kargolanıyor durumu"
+
+#: inc/config.class.php:331
+msgid "Order delivered state"
+msgstr "Sipariş kargolandı durumu"
+
+#: inc/config.class.php:341
+msgid "Order paied state"
+msgstr "Sipariş ödendi durumu"
+
+#: inc/config.class.php:351
+msgid "Canceled order state"
+msgstr "Sipariş iptal edildi durumu"
+
+#: inc/reference.class.php:40 inc/reference.class.php:49
+#: inc/reference_supplier.class.php:215 inc/reference_supplier.class.php:232
+#: inc/reference_supplier.class.php:436 inc/reference_supplier.class.php:438
+#: inc/bill.class.php:296 inc/reception.class.php:287 inc/link.class.php:73
+#: inc/link.class.php:254 inc/order_item.class.php:284
+#: inc/order_item.class.php:1155
+msgid "Product reference"
+msgstr "Ürün referansı"
+
+#: inc/reference.class.php:131 inc/reference_supplier.class.php:78
+#: inc/reference_supplier.class.php:191 inc/reference_supplier.class.php:233
+#: inc/reference_supplier.class.php:439 inc/order_item.class.php:96
+#: inc/order_item.class.php:286 inc/order_item.class.php:478
+#: inc/order_item.class.php:668 inc/order_item.class.php:997
+msgid "Unit price tax free"
+msgstr "Vergisiz birim fiyat"
+
+#: inc/reference.class.php:140 inc/reference_supplier.class.php:73
+#: inc/reference_supplier.class.php:182
+msgid "Manufacturer's product reference"
+msgstr "Üreticinin ürün referansı"
+
+#: inc/reference.class.php:192
+msgid "Cannot create reference without a name"
+msgstr "Adı olmayan bir referans oluşturulamaz"
+
+#: inc/reference.class.php:197
+msgid "Cannot create reference without a type"
+msgstr "Tipi olmayan bir referans oluşturulamaz"
+
+#: inc/reference.class.php:205
+msgid "A reference with the same name still exists"
+msgstr "Aynı adlı bir referans zaten var"
+
+#: inc/reference.class.php:216
+msgid "Reference(s) in use"
+msgstr "Referanslar kulanılıyor"
+
+#: inc/reference.class.php:258 inc/reference.class.php:792
+#: inc/order.class.php:1706
+msgid "Linked orders"
+msgstr "İlişkili siparişler"
+
+#: inc/reference.class.php:456
+msgid "Manufacturer reference"
+msgstr "Üretici referansı"
+
+#: inc/reference.class.php:870
+msgid "Copy of"
+msgstr "Kopya"
+
+#: inc/reference.class.php:895
+msgid "Select the wanted item type"
+msgstr "İstenen öge tipini seçin"
+
+#: inc/reference.class.php:948 inc/reference.class.php:949
+#: inc/reference.class.php:966
+msgid "View by item type"
+msgstr "Öge tipine göre görünüm"
+
+#: inc/reference.class.php:1020
+msgid "Copy reference"
+msgstr "Referansı kopyala"
+
+#: inc/reference_supplier.class.php:42 inc/reference_supplier.class.php:69
+#: front/reference_supplier.form.php:69
+msgid "Supplier for the reference"
+msgstr "Referans için tedarikçi"
+
+#: inc/reference_supplier.class.php:430
+msgid "List references"
+msgstr "Referans listesi"
+
+#: inc/documentcategory.class.php:39
+msgid "Document category"
+msgstr "Belge kategorisi"
+
+#: inc/documentcategory.class.php:82 inc/documentcategory.class.php:87
+msgid "Document category prefix"
+msgstr "Belge kategorisi öneki"
+
+#: inc/bill.class.php:42 inc/bill.class.php:104 inc/bill.class.php:322
+#: inc/reception.class.php:219 inc/order_item.class.php:1181
+#: inc/order_item.class.php:1268
+msgid "Bill"
+msgstr "Fatura"
+
+#: inc/bill.class.php:51
+msgid "A bill number is mandatory"
+msgstr "Fatura numarası zorunludur"
+
+#: inc/bill.class.php:280 inc/reception.class.php:270 inc/link.class.php:213
+#: inc/order_item.class.php:459 inc/order_item.class.php:1141
+msgid "No item to take delivery of"
+msgstr "Kargolanacak bir öge yok"
+
+#: inc/order.class.php:231 inc/order.class.php:1394 inc/order.class.php:1420
+msgid "Order Generation"
+msgstr "Sipariş Oluşturma"
+
+#: inc/order.class.php:232 inc/reception.class.php:446
+msgid "Take item delivery"
+msgstr "Ögeyi kargola"
+
+#: inc/order.class.php:233
+msgid "Order validation"
+msgstr "Sipariş doğrulama"
+
+#: inc/order.class.php:234 inc/order.class.php:1344
+msgid "Cancel order"
+msgstr "Siparişi iptal et"
+
+#: inc/order.class.php:235
+msgid "Edit a validated order"
+msgstr "Doğrulanmış bir siparişi düzenle"
+
+#: inc/order.class.php:236
+msgid "Generate order without validation"
+msgstr "Doğrulamasız sipariş oluştur"
+
+#: inc/order.class.php:239
+msgid "Link order to a ticket"
+msgstr "Siparişi bir çağrı ile ilişkilendir"
+
+#: inc/order.class.php:263 inc/order.class.php:704
+#: inc/notificationtargetorder.class.php:98
+#: inc/notificationtargetorder.class.php:148
+#: inc/notificationtargetorder.class.php:156
+#: report/orderdelivery/orderdelivery.php:48
+#: report/orderdelivery/orderdelivery.php:72
+#: report/deliveryinfos/deliveryinfos.php:48
+msgid "Date of order"
+msgstr "Sipariş tarihi"
+
+#: inc/order.class.php:273 inc/order.class.php:416 inc/order.class.php:848
+#: inc/order.class.php:890 inc/order.class.php:1621
+msgid "Postage"
+msgstr "Posta"
+
+#: inc/order.class.php:283 inc/order.class.php:790
+#: report/orderdelivery/orderdelivery.php:50
+#: report/orderdelivery/orderdelivery.php:76
+#: report/deliveryinfos/deliveryinfos.php:50
+msgid "Delivery location"
+msgstr "Kargo konumu"
+
+#: inc/order.class.php:369 inc/order.class.php:920
+#: inc/notificationtargetorder.class.php:157
+#: report/orderdelivery/orderdelivery.php:73
+msgid "Estimated due date"
+msgstr "Öngörülen bitiş tarihi"
+
+#: inc/order.class.php:389 inc/order.class.php:1914
+msgid "Order is late"
+msgstr "Sipariş gecikmiş"
+
+#: inc/order.class.php:523
+msgid "Validation"
+msgstr "Doğrulama"
+
+#: inc/order.class.php:528
+msgid "Purchase order"
+msgstr "Satınalma siparişi"
+
+#: inc/order.class.php:564
+msgid "An order number is mandatory !"
+msgstr "Sipariş numarası zorunludur !"
+
+#: inc/order.class.php:572 inc/order.class.php:625
+msgid ""
+"The order date must be within the dates entered for the selected budget."
+msgstr "Sipariş tarihi seçilmiş bütçe için belirtilen tarih aralığında olmalıdır."
+
+#: inc/order.class.php:935
+msgid "Due date overtaken"
+msgstr "Bitiş tarihi geçti"
+
+#: inc/order.class.php:1084 inc/order.class.php:1617 inc/order.class.php:1714
+msgid "Price tax free"
+msgstr "Fiyat vergiden muaf"
+
+#: inc/order.class.php:1094 inc/order.class.php:1619
+msgid "Price tax free with postage"
+msgstr "Fiyat vergiden muaf ve kargo dahil"
+
+#: inc/order.class.php:1101 inc/order.class.php:1543 inc/order.class.php:1626
+#: inc/order.class.php:1715 inc/order_item.class.php:672
+#: inc/order_item.class.php:1029
+msgid "Price ATI"
+msgstr "Fiyat ATI"
+
+#: inc/order.class.php:1324
+msgid "Validation process"
+msgstr "Doğrulama işlemi"
+
+#: inc/order.class.php:1343
+msgid ""
+"Do you really want to cancel this order ? This option is irreversible !"
+msgstr "Bu siparişi iptal etmek istediğinize emin misiniz? Bu işlem geri alınamaz !"
+
+#: inc/order.class.php:1350
+msgid "Validate order"
+msgstr "Siparişi doğrula"
+
+#: inc/order.class.php:1356
+msgid "Do you want to cancel the validation approval ?"
+msgstr "Sipariş onayını iptal etmek ister misiniz ?"
+
+#: inc/order.class.php:1358
+msgid "Cancel ask for validation"
+msgstr "Doğrulama iptali isteği"
+
+#: inc/order.class.php:1364
+msgid "Ask for validation"
+msgstr "Doğrulama isteği"
+
+#: inc/order.class.php:1370
+msgid "Do you really want to edit the order ?"
+msgstr "Siparişi düzenlemek istediğinize emin misiniz ?"
+
+#: inc/order.class.php:1372
+msgid "Edit order"
+msgstr "Siparişi düzenle"
+
+#: inc/order.class.php:1380
+msgid "Thanks to add at least one equipment on your order."
+msgstr "Siparişinize en az bir aygıt eklediğiniz için teşekkürler."
+
+#: inc/order.class.php:1428
+msgid "Thanks to select a model into your preferences"
+msgstr "Ayarlarınıza bir model seçtiğiniz için teşekkürler"
+
+#: inc/order.class.php:1470
+msgid "Invoice address"
+msgstr "Fatura adresi"
+
+#: inc/order.class.php:1504
+msgid "Delivery address"
+msgstr "Kargo adresi"
+
+#: inc/order.class.php:1514
+msgid "The"
+msgstr "Öge"
+
+#: inc/order.class.php:1516
+msgid "Issuer order"
+msgstr "Yayınlayıcı siparişi"
+
+#: inc/order.class.php:1534
+msgid "Recipient"
+msgstr "Alıcı"
+
+#: inc/order.class.php:1536 inc/link.class.php:279
+#: inc/order_item.class.php:285 inc/order_item.class.php:472
+#: front/order.form.php:150
+msgid "Quantity"
+msgstr "Adet"
+
+#: inc/order.class.php:1537
+msgid "Designation"
+msgstr "Tahsis"
+
+#: inc/order.class.php:1539
+msgid "Unit price"
+msgstr "Birim fiyatı"
+
+#: inc/order.class.php:1541
+msgid "Discount rate"
+msgstr "İndirim oranı"
+
+#: inc/order.class.php:1542
+msgid "Sum tax free"
+msgstr "Vergi hariç toplam"
+
+#: inc/order.class.php:1628
+msgid "€"
+msgstr "€"
+
+#: inc/order.class.php:1629
+msgid "Signature of issuing order"
+msgstr "Yayınlanmış siparişin imzası"
+
+#: inc/order.class.php:1733
+msgid "Unlink"
+msgstr "İlişkiyi sil"
+
+#: inc/order.class.php:1866
+msgid "Total orders related with this budget is greater than its value."
+msgstr "Bu bütçe ile ilişkilendirilmiş siparişler bütçeyi aşıyor."
+
+#: inc/order.class.php:1871
+msgid "Total orders related with this budget is equal to its value."
+msgstr "Bu bütçe ile ilişkilendirilmiş siparişler bütçeye denk."
+
+#: inc/notificationtargetorder.class.php:45
+#: inc/notificationtargetorder.class.php:112
+msgid "Request order validation"
+msgstr "Sipariş doğrulaması isteği"
+
+#: inc/notificationtargetorder.class.php:46
+msgid "Order validated"
+msgstr "Sipariş doğrulandı"
+
+#: inc/notificationtargetorder.class.php:47
+#: inc/notificationtargetorder.class.php:120 front/order.form.php:123
+msgid "Order canceled"
+msgstr "Sipariş iptal edildi"
+
+#: inc/notificationtargetorder.class.php:48 front/order.form.php:134
+msgid "Order currently edited"
+msgstr "Sipariş şu anda düzenleniyor"
+
+#: inc/notificationtargetorder.class.php:49
+#: inc/notificationtargetorder.class.php:182
+msgid "Late orders"
+msgstr "Gecikmiş siparişler"
+
+#: inc/notificationtargetorder.class.php:50
+#: inc/notificationtargetorder.class.php:128 inc/link.class.php:172
+msgid "No item to generate"
+msgstr "Oluşturulacak bir öge yok"
+
+#: inc/notificationtargetorder.class.php:105
+#: inc/notificationtargetorder.class.php:150
+msgid "Comment of validation"
+msgstr "Doğrulama açıklaması"
+
+#: inc/notificationtargetorder.class.php:116 front/order.form.php:94
+msgid "Order is validated"
+msgstr "Sipariş doğrulandı"
+
+#: inc/notificationtargetorder.class.php:124
+msgid "Validation canceled successfully"
+msgstr "Doğrulama iptal edildi"
+
+#: inc/notificationtargetorder.class.php:151
+msgid "Editor of validation"
+msgstr "Doğrulamayı düzenleyen"
+
+#: inc/reception.class.php:47
+msgid "Delivery"
+msgstr "Kargo"
+
+#: inc/reception.class.php:177 inc/reception.class.php:471
+msgid "Taken delivery"
+msgstr "Kargolandı"
+
+#: inc/reception.class.php:288
+msgid "Delivered items"
+msgstr "Kargolanan ögeler"
+
+#: inc/reception.class.php:429
+msgid "Take item delivery (bulk)"
+msgstr "Öge kargosu (toplu)"
+
+#: inc/reception.class.php:468
+msgid "Waiting for delivery"
+msgstr "Kargo bekliyor"
+
+#: inc/reception.class.php:491
+msgid "Not enough items to deliver"
+msgstr "Kargolanacak sayıda öge yok"
+
+#: inc/reception.class.php:535 inc/reception.class.php:561
+msgid "Item successfully taken delivery"
+msgstr "Kargolandı"
+
+#: inc/reception.class.php:590
+msgid "Item already taken delivery"
+msgstr "Öge zaten kargolanmış"
+
+#: inc/reception.class.php:619 front/link.form.php:63 front/order.form.php:208
+msgid "No item selected"
+msgstr "Henüz bir öge seçilmemiş"
+
+#: inc/reception.class.php:736
+msgid "Item delivered"
+msgstr "Öge kargolandı"
+
+#: inc/link.class.php:42
+msgid "Generation"
+msgstr "Oluşturulma"
+
+#: inc/link.class.php:70 inc/link.class.php:464
+msgid "Generate item"
+msgstr "Öge oluştur"
+
+#: inc/link.class.php:169
+msgid "Generate"
+msgstr "Oluştur"
+
+#: inc/link.class.php:432
+msgid "No associated item"
+msgstr "İlişkilendirilmiş bir öge yok"
+
+#: inc/link.class.php:467
+msgid "Link to an existing item"
+msgstr "Varolan bir öge ile ilişkilendir"
+
+#: inc/link.class.php:468
+msgid "Delete item link"
+msgstr "Öge ilişkisini sil"
+
+#: inc/link.class.php:667 inc/link.class.php:731 inc/link.class.php:739
+#: inc/link.class.php:743
+msgid "Item linked to order"
+msgstr "Öge siparişle ilişkilendirildi"
+
+#: inc/link.class.php:745
+msgid "Item already linked to another one"
+msgstr "Öge zaten başka bir öge ile ilişkilendirilmiş"
+
+#: inc/link.class.php:782 inc/link.class.php:787 inc/link.class.php:808
+#: inc/link.class.php:813
+msgid "Item unlink form order"
+msgstr "Ögenin form siparişi ile ilişkisi silindi"
+
+#: inc/link.class.php:805
+msgid "One or several selected rows haven't linked items"
+msgstr "Bir ya da birkaç seçilmiş satır ögeler ile ilişkilendirilmemiş"
+
+#: inc/link.class.php:946 inc/link.class.php:950
+msgid "Item generated by using order"
+msgstr "Öge sipariş kullanılarak oluşturuldu"
+
+#: inc/link.class.php:957
+msgid "Item successfully selected"
+msgstr "Öge seçildi"
+
+#: inc/order_item.class.php:85 inc/order_item.class.php:1512
+msgid "Order item"
+msgstr "Öge siparişi"
+
+#: inc/order_item.class.php:101 inc/order_item.class.php:106
+#: inc/order_item.class.php:288 inc/order_item.class.php:479
+#: inc/order_item.class.php:670 inc/order_item.class.php:1016
+#: front/order.form.php:151
+msgid "Discount (%)"
+msgstr "İndirim (%)"
+
+#: inc/order_item.class.php:190
+msgid "Some fields cannont be modified because they belong to an order"
+msgstr "Bir siparişe ait olduğundan bazı alanlar değiştirilemez"
+
+#: inc/order_item.class.php:278
+msgid "Add to the order"
+msgstr "Siparişe ekle"
+
+#: inc/order_item.class.php:360
+msgid "Please select a supplier"
+msgstr "Lütfen bir tedarikçi seçin"
+
+#: inc/order_item.class.php:473
+msgid "Equipment"
+msgstr "Aygıt"
+
+#: inc/order_item.class.php:485 inc/order_item.class.php:645
+#: inc/order_item.class.php:840
+msgid "Do you really want to update this item ?"
+msgstr "Bu ögeyi güncellemek istediğinize emin misiniz?"
+
+#: inc/order_item.class.php:636 inc/order_item.class.php:831
+msgid ""
+"Do you really want to delete these details ? Delivered items will not be "
+"linked to order !"
+msgstr "Bu ayrıntıları silmek istediğinize emin misiniz ? Kargolanan ögeler sipariş ile ilişkilendirilmeyecek !"
+
+#: inc/order_item.class.php:671 inc/order_item.class.php:1024
+msgid "Discounted price tax free"
+msgstr "Vergisiz indirimli fiyat"
+
+#: inc/order_item.class.php:924
+msgid "Order informations"
+msgstr "Sipariş bilgileri"
+
+#: inc/order_item.class.php:1081
+msgid "Payment status"
+msgstr "Ödeme durumu"
+
+#: inc/order_item.class.php:1093
+msgid "Paid value"
+msgstr "Ödenen değer"
+
+#: inc/orderstate.class.php:82
+msgid "Draft"
+msgstr "Taslak"
+
+#: inc/orderstate.class.php:83
+msgid "Waiting for approval"
+msgstr "Onay bekleyen"
+
+#: inc/orderstate.class.php:84
+msgid "Validated"
+msgstr "Doğrulanmış"
+
+#: inc/orderstate.class.php:85
+msgid "Being delivered"
+msgstr "Kargolanıyor"
+
+#: inc/orderstate.class.php:86
+msgid "Delivered"
+msgstr "Kargolanmış"
+
+#: inc/orderstate.class.php:87
+msgid "Canceled"
+msgstr "İptal edilmiş"
+
+#: report/orderdelivery/orderdelivery.php:47
+msgid "orderdelivery_report_title"
+msgstr "sipariskargo_rapor_basligi"
+
+#: report/deliveryinfos/deliveryinfos.php:47
+msgid "deliveryinfos_report_title"
+msgstr "kargobilgileri_rapor_basligi"
+
+#: report/deliveryinfos/deliveryinfos.php:63
+msgid "Orders total"
+msgstr "Sipariş toplamı"
+
+#: report/deliveryinfos/deliveryinfos.php:64
+msgid "Late orders total"
+msgstr "Gecikmiş sipariş toplamı"
+
+#: front/link.form.php:48
+msgid "Cannot generate items not delivered"
+msgstr "Kargolanmayacak ögeler oluşturulamaz"
+
+#: front/link.form.php:93
+msgid "Cannot link items not delivered"
+msgstr "Kargolanmayacak ögeler bağlanamaz"
+
+#: front/link.form.php:103
+msgid "Cannot link several items to one detail line"
+msgstr "Bir ayrıntı satırına birkaç öge bağlanamaz"
+
+#: front/order.form.php:103
+msgid "Order validation successfully requested"
+msgstr "Siparişin doğrulanması istendi"
+
+#: front/order.form.php:113
+msgid "Validation query is now canceled"
+msgstr "Doğrulama isteği iptal edildi"
+
+#: front/order.form.php:143 front/order.form.php:234
+msgid "The discount pourcentage must be between 0 and 100"
+msgstr "İndirim yüzdesi 0 ile 100 arasında bir değer olmalıdır"
+
+#: front/order.form.php:147
+msgid "Add reference"
+msgstr "Referans ekle"
+
+#: front/order.form.php:193 front/order.form.php:199
+msgid "Remove reference"
+msgstr "Referansı sil"
+
+#: front/order_supplier.form.php:66
+msgid "Delete"
+msgstr "Sil"
