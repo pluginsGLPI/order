@@ -73,3 +73,5 @@ class PluginOrderOrderInjection extends PluginOrderOrder implements PluginDatain
       return Search::getOptions(get_parent_class($this));
    }
 }
+
+?>
