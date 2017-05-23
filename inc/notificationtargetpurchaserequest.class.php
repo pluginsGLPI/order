@@ -107,7 +107,6 @@ class PluginOrderNotificationTargetPurchaseRequest extends NotificationTarget {
       }
       $this->datas['##purchaserequest.users_validation##'] = Html::clean(getUserName( $this->obj->getField('users_id_validation')));
 
-
       $this->datas['##lang.purchaserequest.url##'] = "URL";
 
       $url                                    = $CFG_GLPI["url_base"] . "/index.php?redirect=PluginOrderPurchaserequest_" . $this->obj->getField("id");
@@ -135,7 +134,6 @@ class PluginOrderNotificationTargetPurchaseRequest extends NotificationTarget {
                                 'value' => true,
                              ));
       }
-
 
       asort($this->tag_descriptions);
    }

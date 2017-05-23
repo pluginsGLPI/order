@@ -115,12 +115,11 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
     * @return array|bool|\datas
     */
    public function prepareInputForAdd($input) {
-      if(!$this->checkMandatoryFields($input)){
+      if (!$this->checkMandatoryFields($input)) {
          return false;
       }
 
       $input['status'] = CommonITILValidation::WAITING;
-
 
       return $input;
    }
@@ -143,10 +142,10 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
             $purchase_request->fields['status']             = $input['status'];
             $purchase_request->fields['comment_validation'] = $input['comment_validation'];
 
-            if(isset($input['status'])
+            if (isset($input['status'])
                && $input['status'] == CommonITILValidation::ACCEPTED) {
                NotificationEvent::raiseEvent('validation_purchaserequest', $purchase_request);
-            } else if(isset($input['status'])
+            } else if (isset($input['status'])
                && $input['status']== CommonITILValidation::REFUSED) {
                NotificationEvent::raiseEvent('no_validation_purchaserequest', $purchase_request);
             }
@@ -193,12 +192,12 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       foreach($input as $key => $value){
          if (array_key_exists($key, $mandatory_fields)) {
             if (empty($value)) {
-               if(($key == 'item' && $input['type'] == 'dropdown')
-                  || ($key == 'label2' && $input['type'] == 'datetime_interval')){
+               if (($key == 'item' && $input['type'] == 'dropdown')
+                  || ($key == 'label2' && $input['type'] == 'datetime_interval')) {
 
                   $msg[] = $mandatory_fields[$key];
                   $checkKo = true;
-               } elseif($key != 'item' && $key != 'label2') {
+               } else if ($key != 'item' && $key != 'label2') {
                   $msg[] = $mandatory_fields[$key];
                   $checkKo = true;
                }
@@ -390,8 +389,8 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       $options['canedit'] = $canedit;
 
       // Data saved in session
-      if(isset($_SESSION['glpi_plugin_orders_fields'])){
-         foreach($_SESSION['glpi_plugin_orders_fields'] as $key => $value){
+      if (isset($_SESSION['glpi_plugin_orders_fields'])) {
+         foreach ($_SESSION['glpi_plugin_orders_fields'] as $key => $value) {
             $this->fields[$key] = $value;
          }
          unset($_SESSION['glpi_plugin_orders_fields']);
@@ -495,13 +494,13 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
                            'right'  => 'plugin_order_purchaserequest'));
       echo "</td></tr>";
 
-      if((isset($this->fields['plugin_order_orders_id'])
-         && $this->fields['plugin_order_orders_id'])
-            || (isset($this->fields['tickets_id'])
-                && $this->fields['tickets_id'])) {
+      if ((isset($this->fields['plugin_order_orders_id'])
+           && $this->fields['plugin_order_orders_id'])
+          || (isset($this->fields['tickets_id'])
+              && $this->fields['tickets_id'])) {
          echo "<tr class='tab_bg_1'>";
          $order = new PluginOrderOrder();
-         if($order->getFromDB($this->fields['plugin_order_orders_id'])) {
+         if ($order->getFromDB($this->fields['plugin_order_orders_id'])) {
             echo "<tr class='tab_bg_1'><td>" . __("Linked to the order", "order") . "</td>";
             echo "<td>";
             echo $order->getLink();
@@ -527,7 +526,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
    /**
     * @param $item
     */
-   static function showForTicket($item){
+   static function showForTicket($item) {
 
       $purchaserequest = new self();
 
@@ -570,7 +569,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       $purchaserequest->fields['entities_id'] = $ticket->fields['entities_id'];
 
       $ticket_user = new Ticket_User();
-      if($ticket_user->getFromDBByQuery("WHERE `tickets_id` = $tickets_id AND `type` = ".CommonITILActor::REQUESTER)) {
+      if ($ticket_user->getFromDBByQuery("WHERE `tickets_id` = $tickets_id AND `type` = " . CommonITILActor::REQUESTER)) {
          $purchaserequest->fields['users_id'] = $ticket_user->fields['users_id'];
       }
 
@@ -610,8 +609,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       echo "<td>" . __("Requester group");
       echo "</td><td id='plugin_order_group'>";
 
-      
-      if($purchaserequest->fields['users_id']) {
+      if ($purchaserequest->fields['users_id']) {
          self::displayGroup($purchaserequest->fields['users_id']);
       }
 
@@ -622,7 +620,6 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
                                     $CFG_GLPI["root_doc"]."/plugins/order/ajax/dropdownGroup.php", $params, 'dropdown_users_id'.$rand_user, false);
       $JS .= "}";
       echo Html::scriptBlock($JS);
-
 
       echo "</td></tr>";
 
@@ -707,7 +704,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
     * @param bool $canedit
     * @param int $start
     */
-   private function listItems($data, $canedit, $start, $rows){
+   private function listItems($data, $canedit, $start, $rows) {
 
       $rand = mt_rand();
 
@@ -737,7 +734,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       echo "<th>".PluginOrderOrder::getTypeName()."</th>";
       echo "</tr>";
 
-      foreach($data as $field){
+      foreach ($data as $field) {
          echo "<tr class='tab_bg_1'>";
          echo "<td width='10'>";
          if ($canedit) {
@@ -747,27 +744,27 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
          // Name
          $purchase_request = new PluginOrderPurchaseRequest();
          $purchase_request->getFromDB($field['id']);
-         echo "<td>".$purchase_request->getLink()."</td>";
+         echo "<td>" . $purchase_request->getLink() . "</td>";
          // requester
-         echo "<td>".getUserName($field['users_id'])."</td>";
+         echo "<td>" . getUserName($field['users_id']) . "</td>";
          // requester group
-         echo "<td>".Dropdown::getDropdownName('glpi_groups', $field['groups_id'])."</td>";
+         echo "<td>" . Dropdown::getDropdownName('glpi_groups', $field['groups_id']) . "</td>";
          // item type
-         $item     = new $field["itemtype"]();
-         echo "<td>". $item->getTypeName()."</td>";
+         $item = new $field["itemtype"]();
+         echo "<td>" . $item->getTypeName() . "</td>";
          // Model name
-         $itemtypeclass       = $field['itemtype'] . "Type";
-         echo "<td>". Dropdown::getDropdownName(getTableForItemType($itemtypeclass), $field["types_id"])."</td>";
-          //due date
-         echo "<td>".Html::convDate($field['due_date'])."</td>";
+         $itemtypeclass = $field['itemtype'] . "Type";
+         echo "<td>" . Dropdown::getDropdownName(getTableForItemType($itemtypeclass), $field["types_id"]) . "</td>";
+         //due date
+         echo "<td>" . Html::convDate($field['due_date']) . "</td>";
          // validation
-         echo "<td>".getUserName($field['users_id_validate'])."</td>";
+         echo "<td>" . getUserName($field['users_id_validate']) . "</td>";
          //status
-         echo "<td>".CommonITILValidation::getStatus($field['status'])."</td>";
+         echo "<td>" . CommonITILValidation::getStatus($field['status']) . "</td>";
          //link with order
          $order = new PluginOrderOrder();
          $order->getFromDB($field['plugin_order_orders_id']);
-         echo "<td>".$order->getLink()."</td>";
+         echo "<td>" . $order->getLink() . "</td>";
          echo "</tr>";
       }
 
@@ -802,12 +799,12 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       $output = array();
 
       $query = "SELECT *
-          FROM ".$this->getTable()."
-          WHERE `".$this->getTable()."`.`tickets_id` = $tickets_id";
+          FROM " . $this->getTable() . "
+          WHERE `" . $this->getTable() . "`.`tickets_id` = $tickets_id";
 
-            if ($params['addLimit']) {
-               $query .= " LIMIT " . intval($params['start']) . "," . intval($params['limit']);
-            }
+      if ($params['addLimit']) {
+         $query .= " LIMIT " . intval($params['start']) . "," . intval($params['limit']);
+      }
 
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
@@ -838,7 +835,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
 
       $rows = count($data);
 
-      if(!$rows) {
+      if (!$rows) {
          echo __('No item to display');
       } else {
          $canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE));
@@ -928,8 +925,8 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       }
    }
 
-   public function dropdownPurchaseRequestItemsActions(){
-      
+   public function dropdownPurchaseRequestItemsActions() {
+
       $action['delete_link'] = __("Delete link with order", "order");
       Dropdown::showFromArray('chooseAction', $action);
 
@@ -970,8 +967,8 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
               $item->fields["comment_validation"] . "</textarea>";
          echo "</td></tr>";
          echo "<tr><th colspan='2'>";
-         echo "<input type='hidden' name='id' value='".$item->fields['id']."'>";
-         echo "<input type='submit' name='update_status' value='".__("Save")."' class='submit'>";
+         echo "<input type='hidden' name='id' value='" . $item->fields['id'] . "'>";
+         echo "<input type='submit' name='update_status' value='" . __("Save") . "' class='submit'>";
          echo "</th></tr>";
       } else {
          echo "<tr class='tab_bg_2'><td colspan='2'>&nbsp;</td></tr>";
@@ -1038,13 +1035,13 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
 
       switch ($ma->getAction()) {
          case "link":
-            $input = $ma->getInput();
+            $input    = $ma->getInput();
             $order_id = $input['plugin_order_orders_id'];
 
             foreach ($ids as $id) {
                if ($item->getFromDB($id)) {
                   //Possible connection with an order if purchase request is validated
-                  if($item->fields['status'] == CommonITILValidation::ACCEPTED) {
+                  if ($item->fields['status'] == CommonITILValidation::ACCEPTED) {
                      $item->update(array(
                                       "id"                     => $id,
                                       "plugin_order_orders_id" => $order_id,
@@ -1062,19 +1059,19 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
 
    /**
     * Users groups dropdown list
-    * 
+    *
     * @param $users_id
     */
    static function displayGroup($users_id) {
       //list of groups
       $group_users = Group_User::getUserGroups($users_id);
-      $groups = array();
+      $groups      = array();
 
       foreach ($group_users as $item) {
          $groups[] = $item['id'];
       }
 
-      if(count($groups) > 0) {
+      if (count($groups) > 0) {
          Group::dropdown(array('condition' => "`id` IN (" . implode(",", $groups) . ")"));
       } else {
          echo __('No groups for this user', 'order');

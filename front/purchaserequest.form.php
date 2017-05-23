@@ -59,10 +59,10 @@ if (isset($_POST["add"])) {
       Html::redirect($url);
    }
 
-}else if (isset($_POST["add_tickets"])) {
-      $purchase->check(-1, CREATE, $_POST);
-      $newID = $purchase->add($_POST);
-      Html::back();
+} else if (isset($_POST["add_tickets"])) {
+   $purchase->check(-1, CREATE, $_POST);
+   $newID = $purchase->add($_POST);
+   Html::back();
 
    /* delete order */
 } else if (isset($_POST["delete"])) {
