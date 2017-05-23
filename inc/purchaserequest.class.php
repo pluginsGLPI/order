@@ -179,7 +179,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
     *
     * @return bool
     */
-   function checkMandatoryFields($input){
+   function checkMandatoryFields($input) {
       $msg     = array();
       $checkKo = false;
 
@@ -189,7 +189,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
                                 'types_id'          => __('Type'),
                                 'users_id_validate' => __('To be validated by', 'order'));
 
-      foreach($input as $key => $value){
+      foreach ($input as $key => $value) {
          if (array_key_exists($key, $mandatory_fields)) {
             if (empty($value)) {
                if (($key == 'item' && $input['type'] == 'dropdown')
@@ -952,7 +952,6 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . __('Approver') . "</td>";
       echo "<td>" . getUserName($item->fields["users_id_validate"]) . "</td></tr>";
       echo "</td></tr>";
-
 
       if ($validator) {
          echo "<tr class='tab_bg_1'>";
