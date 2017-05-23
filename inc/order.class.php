@@ -498,6 +498,7 @@ class PluginOrderOrder extends CommonDBTM {
          $this->addStandardTab('PluginOrderBill', $ong, $options);
          $this->addStandardTab('PluginOrderSurveySupplier', $ong, $options);
          $this->addStandardTab('Ticket', $ong, $options);
+         $this->addStandardTab('PluginOrderPurchaseRequest', $ong, $options);
       }
 
       if (!$this->isNewID($this->fields['id'])) {

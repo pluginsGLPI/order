@@ -51,11 +51,12 @@ function plugin_order_install() {
    $classes = array('PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',
                     'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',
                     'PluginOrderReference', 'PluginOrderDeliveryState',
-                    'PluginOrderNotificationTargetOrder',
+                    'PluginOrderNotificationTargetOrder', 'PluginOrderNotificationTargetPurchaseRequest',
                     'PluginOrderOrder_Supplier', 'PluginOrderBill', 'PluginOrderOrderPayment',
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                     'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
-                    'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderDocumentCategory');
+                    'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderDocumentCategory',
+                    'PluginOrderPurchaseRequest');
    foreach ($classes as $class) {
       if ($plug=isPluginItemType($class)) {
          $plugname=strtolower($plug['plugin']);
@@ -91,11 +92,12 @@ function plugin_order_uninstall() {
    $classes = array('PluginOrderConfig', 'PluginOrderBill', 'PluginOrderBillState',
                     'PluginOrderBillType', 'PluginOrderOrderState', 'PluginOrderOrder',
                     'PluginOrderOrder_Item', 'PluginOrderReference', 'PluginOrderDeliveryState',
-                    'PluginOrderNotificationTargetOrder',
+                    'PluginOrderNotificationTargetOrder', 'PluginOrderNotificationTargetPurchaseRequest',
                     'PluginOrderOrder_Supplier', 'PluginOrderOrderPayment','PluginOrderOrderTax',
                     'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                     'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
-                    'PluginOrderSurveySupplier', 'PluginOrderDocumentCategory');
+                    'PluginOrderSurveySupplier', 'PluginOrderDocumentCategory',
+                    'PluginOrderPurchaseRequest');
    foreach ($classes as $class) {
       call_user_func(array($class,'uninstall'));
    }
@@ -144,10 +146,11 @@ function plugin_order_getDatabaseRelations() {
             "glpi_plugin_order_orders_items"         => "plugin_order_references_id",
             "glpi_plugin_order_references_suppliers" => "plugin_order_references_id"),
 
-         "glpi_entities" => array ("glpi_plugin_order_orders"     => "entities_id",
-                                   "glpi_plugin_order_references" => "entities_id",
-                                   "glpi_plugin_order_others"     => "entities_id",
-                                   "glpi_plugin_order_bills"      => "entities_id"),
+         "glpi_entities" => array("glpi_plugin_order_orders"           => "entities_id",
+                                  "glpi_plugin_order_references"       => "entities_id",
+                                  "glpi_plugin_order_others"           => "entities_id",
+                                  "glpi_plugin_order_purchaserequests" => "entities_id",
+                                  "glpi_plugin_order_bills"            => "entities_id"),
          "glpi_budgets" => array ("glpi_plugin_order_orders" => "budgets_id"),
 
          "glpi_plugin_order_othertypes" => array ("glpi_plugin_order_others" => "othertypes_id"),
@@ -155,10 +158,17 @@ function plugin_order_getDatabaseRelations() {
                                     "glpi_plugin_order_orders_suppliers"     => "suppliers_id",
                                     "glpi_plugin_order_references_suppliers" => "suppliers_id"),
 
-         "glpi_manufacturers" => array ("glpi_plugin_order_references" => "manufacturers_id"),
-         "glpi_contacts"      => array ("glpi_plugin_order_orders"     => "contacts_id"),
-         "glpi_locations"     => array ("glpi_plugin_order_orders"     => "locations_id"),
-         "glpi_profiles"      => array ("glpi_plugin_order_profiles"   => "profiles_id"));
+         "glpi_manufacturers" => array("glpi_plugin_order_references" => "manufacturers_id"),
+         "glpi_contacts"      => array("glpi_plugin_order_orders" => "contacts_id"),
+         "glpi_locations"     => array("glpi_plugin_order_orders" => "locations_id"),
+         "glpi_profiles"      => array("glpi_plugin_order_profiles" => "profiles_id"),
+         "glpi_users"         => array("glpi_plugin_order_purchaserequests" => "users_id",
+                                       "glpi_plugin_order_purchaserequests" => "users_id_validate",
+                                       "glpi_plugin_order_purchaserequests" => "users_id_creator"),
+         "glpi_groups"        => array("glpi_plugin_order_purchaserequests" => "groups_id"),
+         "glpi_tickets"       => array("glpi_plugin_order_purchaserequests" => "tickets_id"),
+         "glpi_plugin_order_orders" => array (
+            "glpi_plugin_order_purchaserequests" => "plugin_order_orders_id"));
 
    } else {
       return array ();

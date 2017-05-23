@@ -40,7 +40,8 @@ class PluginOrderProfile extends CommonDBTM {
       self::addDefaultProfileInfos($ID, array(
          'plugin_order_order'                             => PluginOrderOrder::ALLRIGHTS, // All rights : CREATE + READ + ...
          'plugin_order_bill'                              => 127,
-         'plugin_order_reference'                         => 127), true
+         'plugin_order_reference'                         => 127,
+         'plugin_order_purchaserequest'                   => 127 + PluginOrderPurchaseRequest::RIGHT_VALIDATION), true
       );
    }
 
@@ -145,7 +146,8 @@ class PluginOrderProfile extends CommonDBTM {
          self::addDefaultProfileInfos($item->getID(), array(
             'plugin_order_order'                             => 0, // All rights : CREATE + READ + ...
             'plugin_order_bill'                              => 0,
-            'plugin_order_reference'                         => 0
+            'plugin_order_reference'                         => 0,
+            'plugin_order_purchaserequest'                   => 0
          ));
          $prof->showForm($item->getID());
       }
@@ -166,6 +168,10 @@ class PluginOrderProfile extends CommonDBTM {
          array('itemtype' => 'PluginOrderBill',
             'label'    => __("Bills", "order"),
             'field'    => 'plugin_order_bill'
+         ),
+         array('itemtype' => 'PluginOrderPurchaseRequest',
+            'label'    => __("Purchase request", "order"),
+            'field'    => 'plugin_order_purchaserequest'
          )
       );
 

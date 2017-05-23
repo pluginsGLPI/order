@@ -56,6 +56,13 @@ if (PluginOrderOrder::canView() || PluginOrderReference::canView()) {
    echo "<table class='tab_cadre'>";
    echo "<tr><th colspan='2'>" . __("Orders management", "order") . "</th></tr>";
 
+   if (PluginOrderPurchaseRequest::canView()) {
+      echo "<tr class='tab_bg_1 center'>";
+      echo "<td><img src='../pics/purchase-icon.png'></td>";
+      echo "<td><a href='".Toolbox::getItemTypeSearchURL('PluginOrderPurchaseRequest')."'>" .
+           __("Purchase request", "order") . "</a></td></tr>";
+   }
+
    if (PluginOrderOrder::canView()) {
       echo "<tr class='tab_bg_1 center'>";
       echo "<td><img src='../pics/order-icon.png'></td>";
