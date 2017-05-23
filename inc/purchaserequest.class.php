@@ -489,7 +489,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       echo "<td>" . __("To be validated by", "order")."&nbsp;<span class='red'>*</span></td>";
       echo "<td>";
       User::dropdown(array('name'   => "users_id_validate",
-                           'value'  => $this->fields["users_id"],
+                           'value'  => $this->fields["users_id_validate"],
                            'entity' => $this->fields["entities_id"],
                            'right'  => 'plugin_order_purchaserequest'));
       echo "</td></tr>";
@@ -682,7 +682,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       echo "<td>" . __("To be validated by", "order") . "&nbsp;<span class='red'>*</span></td>";
       echo "<td>";
       User::dropdown(array('name'   => "users_id_validate",
-                           'value'  => $purchaserequest->fields["users_id"],
+                           'value'  => $purchaserequest->fields["users_id_validate"],
                            'entity' => $purchaserequest->fields["entities_id"],
                            'right'  => 'plugin_order_purchaserequest'));
       echo "</td>";
@@ -690,6 +690,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       echo "<td class='tab_bg_2 center' colspan='6'>";
       echo "<input type='submit' name='add_tickets' class='submit' value='"._sx('button', 'Add')."' >";
       echo "<input type='hidden' name='tickets_id' value='".$tickets_id."' >";
+      echo "<input type='hidden' name='entities_id' value='".$purchaserequest->fields['entities_id']."' >";
       echo "<input type='hidden' name='users_id_creator' value='".$_SESSION['glpiID']."'>";
       echo "</td>";
       echo "</tr>";
@@ -947,7 +948,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Approval requester') . "</td>";
-      echo "<td>" . getUserName($item->fields["users_id"]) . "</td></tr>";
+      echo "<td>" . getUserName($item->fields["users_id_creator"]) . "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Approver') . "</td>";
       echo "<td>" . getUserName($item->fields["users_id_validate"]) . "</td></tr>";
