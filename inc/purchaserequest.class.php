@@ -38,10 +38,6 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
    public static $rightname  = 'plugin_order_purchaserequest';
    public $dohistory         = true;
 
-
-   // additionnals rights
-   const RIGHT_VALIDATION  = 32768;
-
    /**
     * @param int $nb
     *
@@ -55,7 +51,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
     * @return bool
     */
    public static function canValidation() {
-      return Session::haveRight("plugin_order_purchaserequest", self::RIGHT_VALIDATION);
+      return Session::haveRight("plugin_order_purchaserequest_validate", UPDATE);
    }
 
    /**
@@ -211,23 +207,6 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
          return false;
       }
       return true;
-   }
-
-   /**
-    * @since version 0.85
-    *
-    * @see commonDBTM::getRights()
-    **/
-   function getRights($interface='central') {
-
-      $values = array();
-
-      if ($interface == 'central') {
-         $values                         = parent::getRights();
-         $values[self::RIGHT_VALIDATION] = __("Purchase request validation", "order");
-      }
-
-      return $values;
    }
 
    /**
@@ -398,7 +377,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
 
       /* title */
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __("Name") . ":</td><td>";
+      echo "<td>" . __("Name") . "</td><td>";
       if ($canedit) {
          Html::autocompletionTextField($this, "name");
       } else {
@@ -410,10 +389,11 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       /* requester */
       echo "<tr class='tab_bg_1'><td>" . __("Requester") . "&nbsp;<span class='red'>*</span></td><td>";
       if ($canedit) {
-         User::dropdown(array('name' => "users_id",
-                              'value' => $this->fields["users_id"],
-                              'entity' => $this->fields["entities_id"],
-                              'right' => 'interface'));
+         $rand_user = User::dropdown(array('name'      => "users_id",
+                                           'value'     => $this->fields["users_id"],
+                                           'entity'    => $this->fields["entities_id"],
+                                           'on_change' => "pluginPurchaserequestLoadGroups();",
+                                           'right'     => 'all'));
       } else {
          echo Dropdown::getDropdownName(getTableForItemType('User'));
       }
@@ -421,12 +401,21 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
 
       /* requester group */
       echo "<td>" . __("Requester group");
-      echo "</td><td>";
+      echo "</td><td id='plugin_purchaserequest_group'>";
+
       if ($canedit) {
-         Group::dropdown(array('name' => "groups_id",
-                              'value' => $this->fields["groups_id"],
-                              'entity' => $this->fields["entities_id"],
-                              'right' => 'interface'));
+         if($this->fields['users_id']) {
+            self::displayGroup($this->fields['users_id']);
+         }
+
+         $JS  = "function pluginPurchaserequestLoadGroups(){";
+         $params = array('users_id' => '__VALUE__',
+                         'entity' => $this->fields["entities_id"]);
+         $JS .= Ajax::updateItemJsCode("plugin_purchaserequest_group",
+                                       $CFG_GLPI["root_doc"]."/plugins/purchaserequest/ajax/dropdownGroup.php",
+                                       $params, 'dropdown_users_id'.$rand_user, false);
+         $JS .= "}";
+         echo Html::scriptBlock($JS);
       } else {
          echo Dropdown::getDropdownName(getTableForItemType('Group'));
       }
@@ -491,7 +480,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       User::dropdown(array('name'   => "users_id_validate",
                            'value'  => $this->fields["users_id_validate"],
                            'entity' => $this->fields["entities_id"],
-                           'right'  => 'plugin_order_purchaserequest'));
+                           'right'  => 'plugin_order_purchaserequest_validate'));
       echo "</td></tr>";
 
       if ((isset($this->fields['plugin_order_orders_id'])
@@ -579,7 +568,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       echo "<tr><th colspan='6'>" . __('Add a purchase request', 'order') . "</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __("Name") . ":</td><td>";
+      echo "<td>" . __("Name") . "</td><td>";
       Html::autocompletionTextField($purchaserequest, "name");
 
       //Ticket validator
@@ -591,7 +580,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
          $users_validations[] = getUserName($validation['users_id_validate']);
       }
 
-      echo "</td><td>" . __("Validated by", "order") . ":</td><td>";
+      echo "</td><td>" . __("Validated by", "order") . "</td><td>";
       echo implode(', ', $users_validations);
       echo "</td></tr>";
 
@@ -601,7 +590,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
                            'value'  => $purchaserequest->fields["users_id"],
                            'entity' => $purchaserequest->fields["entities_id"],
                            'on_change' => "pluginOrderLoadGroups();",
-                           'right'  => 'interface'));
+                           'right'  => 'all'));
 
       echo "</td>";
 
@@ -684,7 +673,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       User::dropdown(array('name'   => "users_id_validate",
                            'value'  => $purchaserequest->fields["users_id_validate"],
                            'entity' => $purchaserequest->fields["entities_id"],
-                           'right'  => 'plugin_order_purchaserequest'));
+                           'right'  => 'plugin_order_purchaserequest_validate'));
       echo "</td>";
       echo "<tr>";
       echo "<td class='tab_bg_2 center' colspan='6'>";
@@ -987,8 +976,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
          }
       }
       echo "</table></div>";
-      echo "</form>";
-
+      Html::closeForm();
    }
 
    /**
@@ -1021,7 +1009,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
     **/
    function getSpecificMassiveActions($checkitem=NULL) {
 
-      $actions['PluginOrderPurchaseRequest:link'] = __("Linked to an order", "order");
+      $actions['PluginOrderPurchaseRequest:link'] = __("Link to an order", "order");
 
       return $actions;
    }

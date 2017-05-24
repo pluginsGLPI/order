@@ -31,7 +31,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTarget
+// Class PluginOrderNotificationTargetPurchaseRequest
 class PluginOrderNotificationTargetPurchaseRequest extends NotificationTarget {
    const PURCHASE_VALIDATOR        = 30;
    const PURCHASE_AUTHOR           = 31;
@@ -41,7 +41,7 @@ class PluginOrderNotificationTargetPurchaseRequest extends NotificationTarget {
       return array (
          'ask_purchaserequest'           => __("Request for validation of the purchase request", "order"),
          'no_validation_purchaserequest' => __("Refusal of validation request", "order"),
-         'validation_purchaserequest'    => __("Validation of the validation request", "order"),
+         'validation_purchaserequest'    => __("Purchase request validation", "order"),
       );
    }
 
@@ -68,8 +68,8 @@ class PluginOrderNotificationTargetPurchaseRequest extends NotificationTarget {
       $this->datas['##purchaserequest.group##']      = Html::clean(Dropdown::getDropdownName('glpi_groups',
                                                                                              $this->obj->getField('groups_id')));
 
-      $this->datas['##lang.purchaserequest.due_date##'] = __("Due date", "order");
-      $this->datas['##purchaserequest.due_date##']      = Html::convDate($this->obj->getField("due_date"));
+      $this->datas['##lang.purchaserequest.duedate##'] = __("Due date", "order");
+      $this->datas['##purchaserequest.duedate##']      = Html::convDate($this->obj->getField("due_date"));
 
       $this->datas['##lang.purchaserequest.comment##'] = __("Description");
 
@@ -119,7 +119,7 @@ class PluginOrderNotificationTargetPurchaseRequest extends NotificationTarget {
          'purchaserequest.name'             => __("Name"),
          'purchaserequest.requester'        => __("Requester"),
          'purchaserequest.group'            => __("Requester group"),
-         'purchaserequest.due_date'         => __("Due date", "order"),
+         'purchaserequest.duedate'         => __("Due date", "order"),
          'purchaserequest.comment'          => __("Description"),
          'purchaserequest.itemtype'         => __("Item type"),
          'purchaserequest.type'             => __("Type"),
@@ -178,7 +178,7 @@ class PluginOrderNotificationTargetPurchaseRequest extends NotificationTarget {
                ##ENDIFpurchaserequest.requester##               
                ##IFpurchaserequest.group####lang.purchaserequest.group## : ##purchaserequest.group##
                ##ENDIFpurchaserequest.group##
-               ##IFpurchaserequest.due_date####lang.purchaserequest.due_date##  : ##purchaserequest.due_date####ENDIFpurchaserequest.due_date##
+               ##IFpurchaserequest.duedate####lang.purchaserequest.duedate##  : ##purchaserequest.duedate####ENDIFpurchaserequest.duedate##
                ##IFpurchaserequest.itemtype####lang.purchaserequest.itemtype## : ##purchaserequest.itemtype####ENDIFpurchaserequest.itemtype##
                ##IFpurchaserequest.type####lang.purchaserequest.type## : ##purchaserequest.type####ENDIFpurchaserequest.type##
 
@@ -193,8 +193,8 @@ class PluginOrderNotificationTargetPurchaseRequest extends NotificationTarget {
                                                ' : ##purchaserequest.requester####ENDIFpurchaserequest.requester##&lt;br /&gt;'.
                                                '##IFpurchaserequest.group##&lt;strong&gt;##lang.purchaserequest.group##&lt;/strong&gt;' .
                                                ' : ##purchaserequest.group####ENDIFpurchaserequest.group##&lt;br /&gt;'.
-                                               '##IFpurchaserequest.due_date##&lt;strong&gt;##lang.purchaserequest.due_date##&lt;/strong&gt;' .
-                                               ' : ##purchaserequest.due_date####ENDIFpurchaserequest.due_date##&lt;br /&gt;' .
+                                               '##IFpurchaserequest.duedate##&lt;strong&gt;##lang.purchaserequest.duedate##&lt;/strong&gt;' .
+                                               ' : ##purchaserequest.duedate####ENDIFpurchaserequest.duedate##&lt;br /&gt;' .
                                                '##IFpurchaserequest.itemtype##&lt;strong&gt;##lang.purchaserequest.itemtype##&lt;/strong&gt;' .
                                                ' : ##purchaserequest.itemtype####ENDIFpurchaserequest.itemtype##&lt;br /&gt;' .
                                                '##IFpurchaserequest.type##&lt;strong&gt;##lang.purchaserequest.type##&lt;/strong&gt;' .

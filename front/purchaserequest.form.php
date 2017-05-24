@@ -32,17 +32,6 @@ include ("../../../inc/includes.php");
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = "";
-}
-if (isset($_POST["popup"])) {
-   $_GET["popup"] = $_POST["popup"];
-} else {
-   $_GET["popup"] = "";
-}
-if (!isset($_GET["itemtype"])) {
-   $_GET["itemtype"] = "";
-}
 
 $purchase = new PluginOrderPurchaseRequest();
 
@@ -50,9 +39,6 @@ if (isset($_POST["add"])) {
    $purchase->check(-1, CREATE, $_POST);
    $newID = $purchase->add($_POST);
    $url   = Toolbox::getItemTypeFormURL('PluginOrderPurchaseRequest') . "?id=$newID";
-   if (isset ($_GET["popup"]) && $_GET["popup"] == 1) {
-      $url .= "&popup=1";
-   }
    if ($_SESSION['glpibackcreated']) {
       Html::redirect($purchase->getFormURL() . "?id=" . $newID);
    } else {
@@ -64,21 +50,9 @@ if (isset($_POST["add"])) {
    $newID = $purchase->add($_POST);
    Html::back();
 
-   /* delete order */
-} else if (isset($_POST["delete"])) {
-   $purchase->check($_POST['id'], UPDATE);
-   $purchase->delete($_POST);
-   $purchase->redirectToList();
-
-   /* restore order */
-} else if (isset($_POST["restore"])) {
-   $purchase->check($_POST['id'], UPDATE);
-   $purchase->restore($_POST);
-   $purchase->redirectToList();
-
-   /* purge order */
+   /* purge purchaserequest */
 } else if (isset($_POST["purge"])) {
-   $purchase->check($_POST['id'], UPDATE);
+   $purchase->check($_POST['id'], PURGE);
    $purchase->delete($_POST, 1);
    $purchase->redirectToList();
 
@@ -110,36 +84,13 @@ if (isset($_POST['action'])) {
    Html::back();
 }
 
-if (isset($_GET["popup"]) && $_GET["popup"] == 1) {
-   Html::popheader(
-      PluginOrderPurchaseRequest::getTypeName(1),
-      $_SERVER['PHP_SELF'],
-      "management",
-      "PluginOrderMenu",
-      "purchaserequest"
-   );
-} else {
-   Html::header(
-      PluginOrderPurchaseRequest::getTypeName(1),
-      $_SERVER['PHP_SELF'],
-      "management",
-      "PluginOrderMenu",
-      "purchaserequest"
-   );
-}
+Html::header(PluginOrderPurchaseRequest::getTypeName(1),
+             $_SERVER['PHP_SELF'],
+             "management",
+             "PluginOrderMenu",
+             "purchaserequest"
+);
 
-if ($_GET['id'] == "") {
-   $purchase->showForm(-1);
-} else {
-   $purchase->display($_GET, array(
-      'withtemplate' => $_GET['withtemplate'],
-      'popup'        => $_GET["popup"],
-      'item'         => $_GET["itemtype"],
-   ));
-}
+$purchase->display($_GET);
 
-if (isset ($_GET["popup"]) && $_GET["popup"] == 1) {
-   Html::popfooter();
-} else {
-   Html::footer();
-}
+Html::footer();
