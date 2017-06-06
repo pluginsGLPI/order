@@ -29,7 +29,7 @@
 include ("../../../inc/includes.php");
 
 Html::header(
-   PluginOrderPurchaseRequest::getTypeName(),
+   PluginOrderPurchaseRequest::getTypeName(2),
    $_SERVER['PHP_SELF'],
    "management",
    "PluginOrderMenu",

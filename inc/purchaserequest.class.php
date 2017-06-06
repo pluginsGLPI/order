@@ -77,12 +77,34 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       if ($item->getType() == "PluginOrderPurchaseRequest") {
          return __('Approval');
       } else if ($item->getType() == "Ticket") {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry(self::getTypeName(2), self::countForTicket($item));
+         }
          return self::getTypeName();
       } else if ($item->getType() == "PluginOrderOrder") {
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            return self::createTabEntry(self::getTypeName(2), self::countForPluginOrderOrder($item));
+         }
          return self::getTypeName();
       }
 
       return '';
+   }
+
+   static function countForTicket(Ticket $item) {
+
+      $restrict = "`tickets_id` = '".$item->getField('id')."' ";
+      $nb = countElementsInTable(array('glpi_plugin_order_purchaserequests'), $restrict);
+
+      return $nb ;
+   }
+
+   static function countForPluginOrderOrder(PluginOrderOrder $item) {
+
+      $restrict = "`plugin_order_orders_id` = '".$item->getField('id')."' ";
+      $nb = countElementsInTable(array('glpi_plugin_order_purchaserequests'), $restrict);
+
+      return $nb ;
    }
 
    /**
@@ -404,7 +426,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       echo "</td><td id='plugin_purchaserequest_group'>";
 
       if ($canedit) {
-         if($this->fields['users_id']) {
+         if ($this->fields['users_id']) {
             self::displayGroup($this->fields['users_id']);
          }
 
