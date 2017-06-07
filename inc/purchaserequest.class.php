@@ -93,11 +93,11 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
 
    static function countForTicket(Ticket $item) {
 
-   $restrict = "`tickets_id` = '" . $item->getField('id') . "' ";
-   $nb       = countElementsInTable(array('glpi_plugin_order_purchaserequests'), $restrict);
+      $restrict = "`tickets_id` = '" . $item->getField('id') . "' ";
+      $nb       = countElementsInTable(array('glpi_plugin_order_purchaserequests'), $restrict);
 
-   return $nb;
-}
+      return $nb;
+   }
 
    static function countForPluginOrderOrder(PluginOrderOrder $item) {
 
