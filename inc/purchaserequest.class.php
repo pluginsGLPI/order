@@ -505,22 +505,27 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
                            'right'  => 'plugin_order_purchaserequest_validate'));
       echo "</td></tr>";
 
-      if ((isset($this->fields['plugin_order_orders_id'])
-           && $this->fields['plugin_order_orders_id'])
-          || (isset($this->fields['tickets_id'])
-              && $this->fields['tickets_id'])) {
-         echo "<tr class='tab_bg_1'>";
-         $order = new PluginOrderOrder();
-         if ($order->getFromDB($this->fields['plugin_order_orders_id'])) {
-            echo "<tr class='tab_bg_1'><td>" . __("Linked to the order", "order") . "</td>";
-            echo "<td>";
-            echo $order->getLink();
-            echo "</td>";
+      echo "<tr class='tab_bg_1'>";
+      $order = new PluginOrderOrder();
+      echo "<td>" . __("Linked to the order", "purchaserequest") . "</td>";
+      echo "<td>";
 
-            echo "<td colspan='2'>";
-            echo "</td></tr>";
-         }
+      $options = array();
+      if ($order->getFromDB($this->fields['plugin_order_orders_id'])) {
+         $options['value'] = $this->fields['plugin_order_orders_id'];
       }
+      PluginOrderOrder::dropdown($options);
+      echo "</td>";
+      $ticket = new Ticket();
+      echo "<td>" . __("Linked to ticket", "purchaserequest") . "</td>";
+      echo "<td>";
+      $options = array();
+      if ($ticket->getFromDB($this->fields['tickets_id'])) {
+         $options['value'] = $this->fields['tickets_id'];
+      }
+      Ticket::dropdown($options);
+      echo "</td>";
+      echo "</tr>";
 
       echo "<input type='hidden' name='users_id_creator' value='".$_SESSION['glpiID']."'/>";
 
@@ -1014,6 +1019,10 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
             echo "&nbsp;".
                  Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'));
             return true;
+
+         case 'delete_link':
+            Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'));
+            return true;
       }
       return "";
    }
@@ -1032,6 +1041,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
    function getSpecificMassiveActions($checkitem=NULL) {
 
       $actions['PluginOrderPurchaseRequest:link'] = __("Link to an order", "order");
+      $actions['PluginOrderPurchaseRequest:delete_link'] = __("Delete link to order", "order");
 
       return $actions;
    }
