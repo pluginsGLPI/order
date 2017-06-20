@@ -1500,8 +1500,9 @@ class PluginOrderOrder extends CommonDBTM {
             }
 
                $location = new Location();
+            $values['title_delivery_address']   = __("Delivery address", "order");
+            $values['comment_delivery_address'] = __("Same as invoice address", "order");
             if ($location->getFromDB($this->fields["locations_id"])) {
-               $values['title_delivery_address']   = __("Delivery address", "order");
                $values['comment_delivery_address'] = $location->fields['comment'];
             }
 
@@ -1555,8 +1556,8 @@ class PluginOrderOrder extends CommonDBTM {
                $listeArticles[] = array(
                'quantity'         => $quantity,
                'ref'              => utf8_decode($data["name"]),
-               'taxe'             => Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTax"),
-                                                            $data["plugin_order_ordertaxes_id"]),
+               'taxe'             => Html::clean(Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTax"),
+                                                            $data["plugin_order_ordertaxes_id"])),
                'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier(
                                     $data["id"],
                                     $this->fields["suppliers_id"]),
@@ -1612,7 +1613,7 @@ class PluginOrderOrder extends CommonDBTM {
                }
             }
 
-            $name = Dropdown::getDropdownName("glpi_plugin_order_orderpayments", $this->fields["plugin_order_orderpayments_id"]);
+            $name = Html::clean(Dropdown::getDropdownName("glpi_plugin_order_orderpayments", $this->fields["plugin_order_orderpayments_id"]));
 
             $values['title_totalht']      = __("Price tax free", "order");
             $values['totalht']            = Html::clean(Html::formatNumber($prices['priceHT']));
