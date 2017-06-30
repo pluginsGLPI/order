@@ -1100,7 +1100,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
                $validation = $input['status'];
                foreach ($ids as $id) {
                   if ($item->getFromDB($id)) {
-                     if($item->fields['users_id_validate'] == Session::getLoginUserID()) {
+                     if ($item->fields['users_id_validate'] == Session::getLoginUserID()) {
                         $item->update(array(
                                          "id"     => $id,
                                          "status" => $validation,
