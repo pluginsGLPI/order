@@ -51,7 +51,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
     * @return bool
     */
    public static function canValidation() {
-      return Session::haveRight("plugin_order_purchaserequest_validate", UPDATE);
+      return Session::haveRight("plugin_order_purchaserequest_validate", 1);
    }
 
    /**
@@ -918,6 +918,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
             echo "</tr>";
          }
 
+         echo "</table>";
          if ($canedit) {
             echo "<div class='center'>";
             echo "<table width='950px' class='tab_glpi'>";
@@ -932,22 +933,24 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
             echo "</td><td align='left' width='80%'>";
             echo "<input type='hidden' name='plugin_order_orders_id' value='" . $item->getID() . "'>";
             $purchase_request->dropdownPurchaseRequestItemsActions();
+            echo "&nbsp;<input type='submit' name='action' class='submit' value='" . _sx('button', 'Post') . "'>";
             echo "</td>";
             echo "</table>";
-            echo "</div>";
-            Html::closeForm();
+
          }
-         echo "</table>";
+         Html::closeForm();
          echo "</div>";
       }
    }
 
+   /**
+    *
+    */
    public function dropdownPurchaseRequestItemsActions() {
 
       $action['delete_link'] = __("Delete link with order", "order");
       Dropdown::showFromArray('chooseAction', $action);
 
-      echo "&nbsp;<input type='submit' name='action' class='submit' value='" . _sx('button', 'Post') . "'>";
    }
 
    /**
@@ -1040,8 +1043,11 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
     **/
    function getSpecificMassiveActions($checkitem=NULL) {
 
-      $actions['PluginOrderPurchaseRequest:link'] = __("Link to an order", "order");
+      $actions['PluginOrderPurchaseRequest:link']        = __("Link to an order", "order");
       $actions['PluginOrderPurchaseRequest:delete_link'] = __("Delete link to order", "order");
+      if (self::canValidation()) {
+         $actions['PluginPurchaserequestPurchaseRequest:validate'] = __("Validation of purchase request", "order");
+      }
 
       return $actions;
    }
@@ -1072,6 +1078,43 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
                }
             }
             return;
+            break;
+
+         case "delete_link":
+
+            foreach ($ids as $id) {
+               if ($item->getFromDB($id)) {
+                  $item->update(array(
+                                   "id"                     => $id,
+                                   "plugin_order_orders_id" => 0,
+                                   "update"                 => __('Update'),
+                                ));
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+               }
+            }
+            return;
+            break;
+         case "validate":
+            if (self::canValidation()) {
+               $input = $ma->getInput();
+               $validation = $input['status'];
+               foreach ($ids as $id) {
+                  if ($item->getFromDB($id)) {
+                     if($item->fields['users_id_validate'] == Session::getLoginUserID()) {
+                        $item->update(array(
+                                         "id"     => $id,
+                                         "status" => $validation,
+                                         "update" => __('Update'),
+                                      ));
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                     } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     }
+                  }
+               }
+            } else {
+               $ma->itemDone($item->getType(), 0, MassiveAction::ACTION_NORIGHT);
+            }
             break;
       }
       return;
