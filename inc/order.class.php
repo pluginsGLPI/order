@@ -704,9 +704,13 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<td>" . __("Date of order", "order") . ":</td><td>";
       if ($canedit) {
          if ($this->fields["order_date"] == NULL) {
-            Html::showDateFormItem("order_date", date("Y-m-d"), true, true);
+            Html::showDateField("order_date", ['value'      => date("Y-m-d"),
+                                               'maybeempty' => true,
+                                               'canedit'    => true]);
          } else {
-            Html::showDateFormItem("order_date", $this->fields["order_date"], true, true);
+            Html::showDateField("order_date", ['value'      => $this->fields["order_date"],
+                                               'maybeempty' => true,
+                                               'canedit'    => true]);
          }
       } else {
          echo Html::convDate($this->fields["order_date"]);
@@ -924,9 +928,13 @@ class PluginOrderOrder extends CommonDBTM {
       echo " </td><td>";
       if ($canedit) {
          if ($this->fields["duedate"] == NULL) {
-            Html::showDateFormItem("duedate", '', true, true);
+            Html::showDateField("duedate", ['value'      => '',
+                                            'maybeempty' => true,
+                                            'canedit'    => true]);
          } else {
-            Html::showDateFormItem("duedate", $this->fields["duedate"], true, true);
+            Html::showDateField("duedate", ['value'      => $this->fields["duedate"],
+                                            'maybeempty' => true,
+                                            'canedit'    => true]);
          }
       } else {
          echo Html::convDate($this->fields["duedate"]);

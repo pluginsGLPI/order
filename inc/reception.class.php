@@ -194,7 +194,9 @@ class PluginOrderReception extends CommonDBChild {
       echo "<td>" . __("Delivery date") . ": </td>";
       echo "<td>";
       if ($canedit) {
-         Html::showDateFormItem("delivery_date", $this->fields["delivery_date"], true, 1);
+         Html::showDateField("delivery_date", ['value'      => $this->fields["delivery_date"],
+                                               'maybeempty' => true,
+                                               'canedit'    => true]);
       } else {
          echo Html::convDate($this->fields["delivery_date"]);
       }
