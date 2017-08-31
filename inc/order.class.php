@@ -703,15 +703,14 @@ class PluginOrderOrder extends CommonDBTM {
       /* date of order */
       echo "<td>" . __("Date of order", "order") . ":</td><td>";
       if ($canedit) {
-         if ($this->fields["order_date"] == NULL) {
-            Html::showDateField("order_date", ['value'      => date("Y-m-d"),
-                                               'maybeempty' => true,
-                                               'canedit'    => true]);
-         } else {
-            Html::showDateField("order_date", ['value'      => $this->fields["order_date"],
-                                               'maybeempty' => true,
-                                               'canedit'    => true]);
-         }
+         $value = ($this->fields["order_date"] == null) ? date('Y-m-d') : $this->fields["order_date"];
+         Html::showDateField(
+            'order_date', [
+               'value'        => $value,
+               'maybeempty'   => true,
+               'canedit'      => true
+            ]
+         );
       } else {
          echo Html::convDate($this->fields["order_date"]);
       }
@@ -927,15 +926,14 @@ class PluginOrderOrder extends CommonDBTM {
       }
       echo " </td><td>";
       if ($canedit) {
-         if ($this->fields["duedate"] == NULL) {
-            Html::showDateField("duedate", ['value'      => '',
-                                            'maybeempty' => true,
-                                            'canedit'    => true]);
-         } else {
-            Html::showDateField("duedate", ['value'      => $this->fields["duedate"],
-                                            'maybeempty' => true,
-                                            'canedit'    => true]);
-         }
+         $value = ($this->fields["duedate"] == null) ? '' : $this->fields["duedate"];
+         Html::showDateField(
+            'duedate', [
+               'value'        => $value,
+               'maybeempty'   => true,
+               'canedit'      => true
+            ]
+         );
       } else {
          echo Html::convDate($this->fields["duedate"]);
       }
