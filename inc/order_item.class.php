@@ -1341,7 +1341,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       $table = getTableForItemType(__CLASS__);
 
-      if (!TableExists($table) && !TableExists("glpi_plugin_order_detail")) {
+      if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order_detail")) {
          $migration->displayMessage("Installing $table");
 
          //install
@@ -1380,7 +1380,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          $migration->displayMessage("Upgrading $table");
 
          //1.1.2
-         if (TableExists("glpi_plugin_order_detail")) {
+         if ($DB->tableExists("glpi_plugin_order_detail")) {
             $migration->addField("glpi_plugin_order_detail", "delivery_status",
                                  "int(1) NOT NULL default '0'");
             $migration->addField("glpi_plugin_order_detail", "delivery_comments", "TEXT");

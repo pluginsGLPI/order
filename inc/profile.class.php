@@ -110,7 +110,7 @@ class PluginOrderProfile extends CommonDBTM {
    public static function install(Migration $migration) {
       global $DB;
 
-      if (TableExists("glpi_plugin_order_profiles")
+      if ($DB->tableExists("glpi_plugin_order_profiles")
          && !FieldExists("glpi_plugin_order_profiles",
                          "plugin_order_generate_order_without_validation")) {
          $DB->query("ALTER TABLE `glpi_plugin_order_profiles`
@@ -192,7 +192,7 @@ class PluginOrderProfile extends CommonDBTM {
    static function migrateOneProfile($profiles_id) {
       global $DB;
       //Cannot launch migration if there's nothing to migrate...
-      if (!TableExists('glpi_plugin_order_profiles')) {
+      if (!$DB->tableExists('glpi_plugin_order_profiles')) {
          return true;
       }
 

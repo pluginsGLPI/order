@@ -294,8 +294,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 
       $table = getTableForItemType(__CLASS__);
 
-      if (!TableExists($table)) {
-         if (!TableExists("glpi_plugin_order_suppliers")) {
+      if (!$DB->tableExists($table)) {
+         if (!$DB->tableExists("glpi_plugin_order_suppliers")) {
             $migration->displayMessage("Installing $table");
 
             //install

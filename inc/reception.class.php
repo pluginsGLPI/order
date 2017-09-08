@@ -39,7 +39,7 @@ class PluginOrderReception extends CommonDBChild {
    public static $items_id           = 'plugin_order_orders_id';
    public static $checkParentRights  = self::DONT_CHECK_ITEM_RIGHTS;
 
-   public static function getTable() {
+   public static function getTable($classname = NULL) {
       return "glpi_plugin_order_orders_items";
    }
 

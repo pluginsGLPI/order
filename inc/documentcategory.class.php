@@ -111,7 +111,7 @@ class PluginOrderDocumentCategory extends CommonDBTM {
 
       $table = getTableForItemType(__CLASS__);
       //Installation
-      if (!TableExists($table) && !TableExists("glpi_plugin_order_documentcategories")) {
+      if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order_documentcategories")) {
          $migration->displayMessage("Installing $table");
 
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_documentcategories` (

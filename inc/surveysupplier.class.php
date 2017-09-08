@@ -414,7 +414,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       //Only avaiable since 1.3.0
 
       $table = getTableForItemType(__CLASS__);
-      if (!TableExists("glpi_plugin_order_surveysuppliers")) {
+      if (!$DB->tableExists("glpi_plugin_order_surveysuppliers")) {
          $migration->displayMessage("Installing $table");
 
          //Installation

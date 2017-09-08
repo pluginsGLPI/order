@@ -34,7 +34,7 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-define ('PLUGIN_ORDER_VERSION', '1.9.7');
+define ('PLUGIN_ORDER_VERSION', '2.0.0');
 
 if (!defined('PLUGIN_ORDER_TEMPLATE_DIR')) {
    define ("PLUGIN_ORDER_TEMPLATE_DIR", GLPI_PLUGIN_DOC_DIR."/order/templates/");
@@ -64,7 +64,7 @@ if (!defined('PLUGIN_ORDER_NUMBER_STEP')) {
 if (!defined('PCLZIP_TEMPORARY_DIR')) {
    define('PCLZIP_TEMPORARY_DIR', GLPI_DOC_DIR . '/_tmp/pclzip');
 }
-include_once GLPI_ROOT . "/plugins/order/vendor/autoload.php";
+//include_once GLPI_ROOT . "/plugins/order/vendor/autoload.php";
 
 /**
  * Init hooks of the plugin.
@@ -183,12 +183,19 @@ function plugin_init_order() {
  * @return array
  */
 function plugin_version_order() {
-   return array ('name'           => __("Orders management", "order"),
-                 'version'        => PLUGIN_ORDER_VERSION,
-                 'author'         => 'The plugin order team',
-                 'homepage'       => 'https://github.com/pluginsGLPI/order',
-                 'minGlpiVersion' => '0.85',
-                 'license'        => 'GPLv2+');
+   return ['name'           => __("Orders management", "order"),
+            'version'        => PLUGIN_ORDER_VERSION,
+            'author'         => 'The plugin order team',
+            'homepage'       => 'https://github.com/pluginsGLPI/order',
+            'minGlpiVersion' => '0.85',
+            'license'        => 'GPLv2+',
+            'requirements'   => [
+               'glpi' => [
+                  'min' => '9.2',
+                  'dev' => true
+               ]
+            ]
+         ];
 }
 
 /**
@@ -198,10 +205,12 @@ function plugin_version_order() {
  * @return boolean
  */
 function plugin_order_check_prerequisites() {
-   if (version_compare(GLPI_VERSION, '0.85', 'lt')) {
-      echo "This plugin requires GLPI 0.85 or higher";
+   $version = rtrim(GLPI_VERSION, '-dev');
+   if (version_compare($version, '9.2', 'lt')) {
+      echo "This plugin requires GLPI 9.2";
       return false;
    }
+
    return true;
 }
 

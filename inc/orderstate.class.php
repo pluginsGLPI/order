@@ -66,7 +66,7 @@ class PluginOrderOrderState extends CommonDropdown {
       //1.2.0
       $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_status`;");
 
-      if (!TableExists($table)) {
+      if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
          $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orderstates` (
                   `id` int(11) NOT NULL auto_increment,

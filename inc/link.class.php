@@ -42,7 +42,7 @@ class PluginOrderLink extends CommonDBChild {
       return __("Generation", "order");
    }
 
-   public static function getTable() {
+   public static function getTable($classname = NULL) {
       return "glpi_plugin_order_orders_items";
    }
 

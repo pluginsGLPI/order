@@ -44,7 +44,7 @@ class PluginOrderOrderTax extends CommonDropdown {
 
       $table = getTableForItemType(__CLASS__);
 
-      if (!TableExists($table) && !TableExists("glpi_dropdown_plugin_order_taxes")) {
+      if (!$DB->tableExists($table) && !$DB->tableExists("glpi_dropdown_plugin_order_taxes")) {
          $migration->displayMessage("Installing $table");
 
          //Install

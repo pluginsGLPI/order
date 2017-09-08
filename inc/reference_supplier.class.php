@@ -326,7 +326,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       global $DB;
 
       $table = getTableForItemType(__CLASS__);
-      if (!TableExists($table) && !TableExists("glpi_plugin_order_references_manufacturers")) {
+      if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order_references_manufacturers")) {
          $migration->displayMessage("Installing $table");
 
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_suppliers` (
@@ -347,7 +347,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          $migration->displayMessage("Upgrading $table");
 
          //1.1.0
-         if (TableExists("glpi_plugin_order_references_manufacturers")) {
+         if ($DB->tableExists("glpi_plugin_order_references_manufacturers")) {
             $migration->addField("glpi_plugin_order_references_manufacturers", "reference_code",
                               "varchar(255) NOT NULL collate utf8_unicode_ci default ''");
             $migration->migrationOneTable("glpi_plugin_order_references_manufacturers");

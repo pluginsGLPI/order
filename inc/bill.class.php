@@ -405,7 +405,7 @@ class PluginOrderBill extends CommonDropdown
 
       $table = getTableForItemType(__CLASS__);
 
-      if (!TableExists($table)) {
+      if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
          $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_bills` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -427,7 +427,7 @@ class PluginOrderBill extends CommonDropdown
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
          $DB->query($query) or die ($DB->error());
       } else {
-         if (FieldExists("glpi_plugin_order_orders_suppliers", "num_bill")) {
+         if ($DB->fieldExists("glpi_plugin_order_orders_suppliers", "num_bill")) {
             //Migrate bills
             $bill  = new PluginOrderBill();
             $query = "SELECT * FROM `glpi_plugin_order_orders_suppliers`";
@@ -469,7 +469,7 @@ class PluginOrderBill extends CommonDropdown
       global $DB;
 
       $table = getTableForItemType(__CLASS__);
-      foreach (array("displaypreferences", "documents_items", "bookmarks", "logs") as $t) {
+      foreach (array("displaypreferences", "documents_items", "savedsearches", "logs") as $t) {
          $query = "DELETE FROM `glpi_$t` WHERE `itemtype` = '" . __CLASS__ . "'";
          $DB->query($query);
       }

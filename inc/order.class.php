@@ -703,7 +703,9 @@ class PluginOrderOrder extends CommonDBTM {
       /* date of order */
       echo "<td>" . __("Date of order", "order") . ":</td><td>";
       if ($canedit) {
-         $value = ($this->fields["order_date"] == null) ? date('Y-m-d') : $this->fields["order_date"];
+         $value = ($this->fields["order_date"] == null)
+            ? date('Y-m-d')
+            : $this->fields["order_date"];
          Html::showDateField(
             'order_date', [
                'value'        => $value,
@@ -926,7 +928,9 @@ class PluginOrderOrder extends CommonDBTM {
       }
       echo " </td><td>";
       if ($canedit) {
-         $value = ($this->fields["duedate"] == null) ? '' : $this->fields["duedate"];
+         $value = ($this->fields["duedate"] == null)
+            ? ''
+            : $this->fields["duedate"];
          Html::showDateField(
             'duedate', [
                'value'        => $value,
@@ -2115,7 +2119,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       $table = getTableForItemType(__CLASS__);
       //Installation
-      if (!TableExists($table) && !TableExists("glpi_plugin_order")) {
+      if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order")) {
          $migration->displayMessage("Installing $table");
 
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders` (
@@ -2172,7 +2176,7 @@ class PluginOrderOrder extends CommonDBTM {
          //Upgrade
          $migration->displayMessage("Upgrading $table");
 
-         if (TableExists('glpi_plugin_order')) {
+         if ($DB->tableExists('glpi_plugin_order')) {
             //Update to 1.1.0
             $migration->addField('glpi_plugin_order', "port_price", "FLOAT NOT NULL default '0'");
             $migration->addField('glpi_plugin_order', "taxes", "FLOAT NOT NULL default '0'");
@@ -2247,7 +2251,7 @@ class PluginOrderOrder extends CommonDBTM {
                                     array());
          }
 
-         if (TableExists("glpi_plugin_order_budgets")) {
+         if ($DB->tableExists("glpi_plugin_order_budgets")) {
             //Manage budgets (here because class has been remove since 1.4.0)
             $migration->changeField("glpi_plugin_order_budgets", "ID", "id", " int(11) NOT NULL auto_increment");
             $migration->changeField("glpi_plugin_order_budgets", "FK_entities", "entities_id",
@@ -2333,11 +2337,11 @@ class PluginOrderOrder extends CommonDBTM {
          $migration->migrationOneTable($table);
 
          //1.5.0
-         if (TableExists("glpi_dropdown_plugin_order_status")) {
+         if ($DB->tableExists("glpi_dropdown_plugin_order_status")) {
             $DB->query("DROP TABLE `glpi_dropdown_plugin_order_status`") or die($DB->error());
          }
 
-         if (TableExists("glpi_plugin_order_mailing")) {
+         if ($DB->tableExists("glpi_plugin_order_mailing")) {
             $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_mailing`;") or die($DB->error());
          }
 
@@ -2392,7 +2396,7 @@ class PluginOrderOrder extends CommonDBTM {
    public static function uninstall() {
       global $DB;
 
-      $tables = array ("glpi_displaypreferences", "glpi_documents_items", "glpi_bookmarks",
+      $tables = array ("glpi_displaypreferences", "glpi_documents_items", "glpi_savedsearches",
                        "glpi_logs");
       foreach ($tables as $table) {
          $query = "DELETE FROM `$table` WHERE `itemtype`='" . __CLASS__ . "'";

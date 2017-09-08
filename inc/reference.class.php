@@ -1072,7 +1072,7 @@ class PluginOrderReference extends CommonDBTM {
       global $DB;
 
       $table = getTableForItemType(__CLASS__);
-      if (!TableExists($table)) {
+      if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
          //Install
@@ -1204,7 +1204,7 @@ class PluginOrderReference extends CommonDBTM {
       global $DB;
 
       $table  = getTableForItemType(__CLASS__);
-      foreach (array ("glpi_displaypreferences", "glpi_documents_items", "glpi_bookmarks",
+      foreach (array ("glpi_displaypreferences", "glpi_documents_items", "glpi_savedsearches",
                        "glpi_logs") as $t) {
          $query = "DELETE FROM `$t` WHERE `itemtype`='" . __CLASS__ . "'";
          $DB->query($query);

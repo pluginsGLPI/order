@@ -42,7 +42,7 @@ class PluginOrderBillType extends CommonDropdown {
       global $DB;
 
       $table = getTableForItemType(__CLASS__);
-      if (!TableExists($table)) {
+      if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
          $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_billtypes` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,

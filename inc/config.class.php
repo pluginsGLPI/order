@@ -40,7 +40,8 @@ class PluginOrderConfig extends CommonDBTM {
 
 
    public function __construct() {
-      if (TableExists($this->getTable())) {
+      global $DB;
+      if ($DB->tableExists($this->getTable())) {
          $this->getFromDB(1);
       }
    }
@@ -497,7 +498,7 @@ class PluginOrderConfig extends CommonDBTM {
       $config = new self();
 
       //This class is available since version 1.3.0
-      if (!TableExists($table) && !TableExists("glpi_plugin_order_config")) {
+      if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order_config")) {
             $migration->displayMessage("Installing $table");
 
             //Install

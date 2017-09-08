@@ -40,7 +40,7 @@ class PluginOrderDeliveryState extends CommonDropdown {
       global $DB;
 
       $table = getTableForItemType(__CLASS__);
-      if (!TableExists($table) && !TableExists("glpi_dropdown_plugin_order_deliverystate")) {
+      if (!$DB->tableExists($table) && !$DB->tableExists("glpi_dropdown_plugin_order_deliverystate")) {
          $migration->displayMessage("Installing $table");
 
          //Install
