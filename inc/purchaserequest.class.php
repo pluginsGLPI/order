@@ -301,14 +301,17 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       $tab[9]['massiveaction']  = false;
       $tab[9]['name']           = PluginOrderOrder::getTypeName();
 
-      $tab[10]['table']         = 'glpi_tickets';
-      $tab[10]['field']         = 'name';
+      $tab[10]['table']         = $this->getTable();
+      $tab[10]['field']         = 'tickets_id';
       $tab[10]['datatype']      = 'itemlink';
       $tab[10]['massiveaction'] = false;
       $tab[10]['name']          = Ticket::getTypeName(Session::getPluralNumber());
-      $tab[10]['joinparams']    = array('beforejoin'
-                                        => array('table'      => $this->getTable(),
-                                                 'joinparams' => array('jointype' => 'child')));
+
+      $tab[11]['table']          = getTableForItemType('Location');
+      $tab[11]['field']          = 'name';
+      $tab[11]['name']           = __("Location");
+      $tab[11]['linkfield']      = 'locations_id';
+      $tab[11]['datatype']       = 'dropdown';
 
       /* comments */
       $tab[16]['table']         = $this->getTable();
@@ -441,6 +444,14 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       } else {
          echo Dropdown::getDropdownName(getTableForItemType('Group'));
       }
+      echo "</td></tr>";
+
+      /* location */
+      echo "<tr class='tab_bg_1'><td>" . __("Location") . "&nbsp;</td>";
+      echo "<td>";
+      Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
+                                       'entity' => $this->fields["entities_id"]));
+      echo "</td><td colspan='2'>";
       echo "</td></tr>";
 
       /* description */
@@ -639,6 +650,14 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
 
       echo "</td></tr>";
 
+      /* location */
+      echo "<tr class='tab_bg_1'><td>" . __("Location") . "&nbsp;</td>";
+      echo "<td>";
+      Dropdown::show('Location', array('value'  => $purchaserequest->fields["locations_id"],
+                                       'entity' => $purchaserequest->fields["entities_id"]));
+      echo "</td><td colspan='2'>";
+      echo "</td></tr>";
+
       /* description */
       echo "<tr class='tab_bg_1'><td>" . __("Description") . "&nbsp;<span class='red'>*</span></td>";
       echo "<td colspan='3'>";
@@ -743,6 +762,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Requester')."</th>";
       echo "<th>".__('Requester group')."</th>";
+      echo "<th>".__('Location')."</th>";
       echo "<th>".__('Item type')."</th>";
       echo "<th>".__('Type')."</th>";
       echo "<th>".__('Due date')."</th>";
@@ -766,6 +786,8 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
          echo "<td>" . getUserName($field['users_id']) . "</td>";
          // requester group
          echo "<td>" . Dropdown::getDropdownName('glpi_groups', $field['groups_id']) . "</td>";
+         // location
+         echo "<td>".Dropdown::getDropdownName('glpi_locations', $field['locations_id'])."</td>";
          // item type
          $item = new $field["itemtype"]();
          echo "<td>" . $item->getTypeName() . "</td>";
@@ -870,6 +892,7 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
          echo "<th>" . __('Name') . "</th>";
          echo "<th>" . __('Requester') . "</th>";
          echo "<th>" . __('Requester group') . "</th>";
+         echo "<th>" . __('Location') . "</th>";
          echo "<th>" . __('Item type') . "</th>";
          echo "<th>" . __('Type') . "</th>";
          echo "<th>" . __('Due date') . "</th>";
@@ -899,6 +922,8 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
             echo "<td>" . getUserName($field['users_id']) . "</td>";
             // requester group
             echo "<td>" . Dropdown::getDropdownName('glpi_groups', $field['groups_id']) . "</td>";
+            // location
+            echo "<td>" . Dropdown::getDropdownName('glpi_locations', $field['locations_id']) . "</td>";
             // item type
             $item = new $field["itemtype"]();
             echo "<td>" . $item->getTypeName() . "</td>";
@@ -1178,7 +1203,9 @@ class PluginOrderPurchaseRequest extends CommonDBTM {
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
          $DB->query($query) or die ($DB->error());
 
-         $DB->query($query) or die ($DB->error());
+      } else if (!FieldExists($table, 'locations_id')) {
+         $DB->query("ALTER TABLE `glpi_plugin_order_purchaserequests`
+                     ADD `locations_id` int(11) NOT NULL DEFAULT '0';");
       }
 
    }
