@@ -236,7 +236,7 @@ class PluginOrderNotificationTargetPurchaseRequest extends NotificationTarget {
 
       $notif = new Notification();
 
-      foreach (array('ask', 'validation', 'no_validation') as $event) {
+      foreach (array('ask_purchaserequest', 'validation_purchaserequest', 'no_validation_purchaserequest') as $event) {
          $options = array(
             'itemtype' => 'PluginOrderPurchaseRequest',
             'event'    => $event,
