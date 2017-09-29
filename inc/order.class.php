@@ -1550,8 +1550,8 @@ class PluginOrderOrder extends CommonDBTM {
 
                $listeArticles = array();
 
-               $result = $PluginOrderOrder_Item->queryDetail($ID);
-               $num    = $DB->numrows($result);
+            $result = $PluginOrderOrder_Item->queryDetail($ID, 'glpi_plugin_order_references');
+            $num    = $DB->numrows($result);
 
             while ($data=$DB->fetch_array($result)) {
                $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID, $data["id"],
@@ -1571,8 +1571,30 @@ class PluginOrderOrder extends CommonDBTM {
                'price_discounted' => $data["price_discounted"] * $quantity,
                'price_ati'        => $data["price_ati"]);
             }
+            
+            $result = $PluginOrderOrder_Item->queryDetail($ID, 'glpi_plugin_order_referencefrees');
+            $num    = $DB->numrows($result);
 
-               $article = $odf->setSegment('articles');
+            while ($data=$DB->fetch_array($result)) {
+               $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID, $data["id"],
+                                                                                   $data["price_taxfree"],
+                                                                                   $data["discount"]);
+
+               $listeArticles[] = array(
+                  'quantity'         => $quantity,
+                  'ref'              => utf8_decode($data["name"]),
+                  'taxe'             => Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTax"),
+                                                                  $data["plugin_order_ordertaxes_id"]),
+                  'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier(
+                                          $data["id"],
+                                          $this->fields["suppliers_id"]),
+                  'price_taxfree'    => $data["price_taxfree"],
+                  'discount'         => $data["discount"], false, 0,
+                  'price_discounted' => $data["price_discounted"] * $quantity,
+                  'price_ati'        => $data["price_ati"]);
+            }
+
+            $article = $odf->setSegment('articles');
             foreach ($listeArticles AS $element) {
                $article->nbA($element['quantity']);
                $article->titleArticle($element['ref']);
