@@ -40,14 +40,14 @@ if (!defined('GLPI_ROOT')) {
 if (isset($_POST["action"])) {
    switch ($_POST["action"]) {
       case "bill":
-         echo "&nbsp;<input type='hidden' name='plugin_order_orders_id' "
-            . " value='" . $_POST["plugin_order_orders_id"] . "'>";
-         PluginOrderBill::Dropdown(array(
-            'condition' => "`plugin_order_orders_id`='" . $_POST['plugin_order_orders_id'] . "'",
-         ));
+         echo "&nbsp;";
+         echo Html::hidden('plugin_order_orders_id', ['value' => $_POST["plugin_order_orders_id"]])
+         PluginOrderBill::Dropdown([
+            'condition' => "`plugin_order_orders_id`='".$_POST['plugin_order_orders_id']."'",
+         ]);
          break;
    }
 
-   PluginOrderBillState::Dropdown(array('comments' => true));
-   echo "&nbsp;<input type='submit' name='action' class='submit' value='" . _sx('button', 'Post') . "'>";
+   PluginOrderBillState::Dropdown(['comments' => true]);
+   echo "&nbsp;<input type='submit' name='action' class='submit' value='"._sx('button', 'Post')."'>";
 }

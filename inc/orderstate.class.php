@@ -50,8 +50,9 @@ class PluginOrderOrderState extends CommonDropdown {
 
    public function pre_deleteItem() {
       if ($this->getID() <= self::CANCELED) {
-         Session::addMessageAfterRedirect(__("You cannot remove this status", "order") . ": " . $this->fields['name'],
-                                 false, ERROR);
+         Session::addMessageAfterRedirect(__("You cannot remove this status", "order").": "
+                                          .$this->fields['name'],
+                                          false, ERROR);
          return false;
       } else {
          return true;
@@ -61,7 +62,7 @@ class PluginOrderOrderState extends CommonDropdown {
    public static function install(Migration $migration) {
       global $DB;
 
-      $table = getTableForItemType(__CLASS__);
+      $table = self::getTable();
 
       //1.2.0
       $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_status`;");
@@ -79,21 +80,26 @@ class PluginOrderOrderState extends CommonDropdown {
       }
 
       $state = new self();
-      foreach (array (1 => __("Draft", "order"),
-                      2 => __("Waiting for approval", "order"),
-                      3 => __("Validated", "order"),
-                      4 => __("Being delivered", "order"),
-                      5 => __("Delivered", "order"),
-                      6 => __("Canceled", "order"),
-                      7 => __("Paid", "order")) as $id => $label) {
-         if (!countElementsInTable($table, "`id`='$id'")) {
-            $state->add(array('id' => $id, 'name' => Toolbox::addslashes_deep($label)));
+      foreach ([
+         1 => __("Draft", "order"),
+         2 => __("Waiting for approval", "order"),
+         3 => __("Validated", "order"),
+         4 => __("Being delivered", "order"),
+         5 => __("Delivered", "order"),
+         6 => __("Canceled", "order"),
+         7 => __("Paid", "order")
+      ] as $id => $label) {
+         if (!countElementsInTable($table, "`id` = '$id'")) {
+            $state->add([
+               'id'   => $id,
+               'name' => Toolbox::addslashes_deep($label)
+            ]);
          }
       }
    }
 
    public static function uninstall() {
       global $DB;
-      $DB->query("DROP TABLE IF EXISTS `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
    }
 }

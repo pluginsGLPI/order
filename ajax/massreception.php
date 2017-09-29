@@ -39,17 +39,17 @@ $PluginOrderReception = new PluginOrderReception();
 
 echo "<table width='950px' class='tab_cadre_fixe'>";
 echo "<tr class='tab_bg_2'><td>" . __("Delivery date") . "</td><td>";
-Html::showDateField("delivery_date", ['value'      => date("Y-m-d"),
-                                      'maybeempty' => true,
-                                      'canedit'    => true]);
+Html::showDateField("delivery_date", [
+   'value'      => date("Y-m-d"),
+   'maybeempty' => true,
+   'canedit'    => true
+]);
 echo "</td><td>";
 echo __("Delivery form") . "</td><td>";
 echo "<input type='text' name='delivery_number' size='20'>";
 echo "</td><td>";
-echo "<input type='hidden' name='plugin_order_references_id' value='"
-   .  $_POST['plugin_order_references_id'] . "'>";
-echo "<input type='hidden' name='plugin_order_orders_id' value='"
-   .  $_POST['plugin_order_orders_id'] . "'>";
+echo Html::hidden('plugin_order_references_id', ['value' => $_POST["plugin_order_references_id"]]);
+echo Html::hidden('plugin_order_orders_id', ['value' => $_POST["plugin_order_orders_id"]]);
 echo __("Number to deliver", "order") . "</td><td width='10%'>";
 $nb = $PluginOrderReception->checkItemStatus($_POST['plugin_order_orders_id'],
                                              $_POST['plugin_order_references_id'],
@@ -57,7 +57,7 @@ $nb = $PluginOrderReception->checkItemStatus($_POST['plugin_order_orders_id'],
 Dropdown::showInteger('number_reception', '', 1, $nb);
 echo "</td><td>";
 echo __("Delivery status", "order") . "&nbsp;";
-PluginOrderDeliveryState::Dropdown(array('name' => "plugin_order_deliverystates_id"));
+PluginOrderDeliveryState::Dropdown(['name' => "plugin_order_deliverystates_id"]);
 echo "</td></tr>";
 
 echo "<tr class='tab_bg_2'>";

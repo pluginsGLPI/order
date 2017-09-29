@@ -105,8 +105,8 @@ $query = "SELECT `gr`.`name`, `gr`.`id`, `grm`.`reference_code`
                 FROM `".$table."` AS gr, `glpi_plugin_order_references_suppliers` AS grm
                 WHERE `gr`.`itemtype` = '".$_POST["itemtype"]."'
                    AND `grm`.`suppliers_id` = '".$_POST["suppliers_id"]."'
-                     AND `grm`.`plugin_order_references_id` = `gr`.`id`
-                         AND `gr`.`is_active`='1' AND `gr`.`is_deleted`='0'";
+                   AND `grm`.`plugin_order_references_id` = `gr`.`id`
+                   AND `gr`.`is_active`='1' AND `gr`.`is_deleted`='0'";
 
 if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
    $search = Search::makeTextSearch($_POST['searchText']);
@@ -129,32 +129,32 @@ if ($result = $DB->query($query)) {
       if ($data['reference_code']) {
          echo " (" . $data['reference_code'] . ")";
       }
-      echo "</option>\n";
+      echo "</option>";
    }
 }
 echo "</select>";
 
 if (isset($_POST["comment"]) && $_POST["comment"]) {
-   $paramscomment = array('value' => '__VALUE__',
-                          'table' => $table);
-
    Ajax::updateItemOnSelectEvent("dropdown_" . $_POST["myname"] . $_POST["rand"],
                                  "comment_" . $_POST["myname"] . $_POST["rand"],
-                                $CFG_GLPI["root_doc"] . "/ajax/comments.php", $paramscomment);
+                                $CFG_GLPI["root_doc"] . "/ajax/comments.php", [
+      'value' => '__VALUE__',
+      'table' => $table
+   ]);
 }
 
 if (isset($_POST["action"]) && $_POST["action"]) {
-   $params = array(
-      $_POST['myname']         => '__VALUE__',
+   $params = [
+      $_POST['myname']   => '__VALUE__',
       'entity_restrict'  => $_POST['entity_restrict'],
       'suppliers_id'     => $_POST["suppliers_id"],
       'rand'             => $_POST['rand'],
       'itemtype'         => $_POST['itemtype'],
-   );
+   ];
 
    Ajax::updateItemOnSelectEvent("dropdown_" . $_POST["myname"] . $_POST["rand"], $_POST['span'],
-                                     $_POST['action'],
-                                     $params);
+                                 $_POST['action'],
+                                 $params);
 }
 
 Ajax::commonDropdownUpdateItem($_POST);

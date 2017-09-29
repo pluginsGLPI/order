@@ -40,15 +40,17 @@ $reference = new PluginOrderReference();
 if (isset($_POST["action"])) {
    switch ($_POST["action"]) {
       case "generation":
-         echo "&nbsp;<input type='hidden' name='plugin_order_references_id' "
-            . "  value='" . $_POST["plugin_order_references_id"] . "'>";
+         echo "&nbsp;";
+         echo Html::hidden('plugin_order_references_id',
+                           ['value' => $_POST["plugin_order_references_id"]]);
          echo"<input type='submit' name='generation' class='submit' "
             . "   value='" . _sx('button', 'Post') . "'>";
          break;
       case "createLink":
 
-         echo "&nbsp;<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>
-               <input type='hidden' name='plugin_order_orders_id' value='".$_POST["plugin_order_orders_id"]."'>";
+         echo "&nbsp;";
+         echo Html::hidden('itemtype', ['value' => $_POST["itemtype"]]);
+         echo Html::hidden('plugin_order_orders_id', ['value' => $_POST["plugin_order_orders_id"]]);
          $reference->getFromDB($_POST["plugin_order_references_id"]);
          $reference->dropdownAllItemsByType("items_id", $_POST["itemtype"],
                                             $_SESSION["glpiactiveentities"],

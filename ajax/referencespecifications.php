@@ -50,12 +50,12 @@ if ($_POST["itemtype"]) {
             $file = $_POST["itemtype"];
          }
          if (class_exists($_POST["itemtype"].'Type')) {
-            Dropdown::show($_POST["itemtype"]."Type", array('name' => "types_id"));
+            Dropdown::show($_POST["itemtype"]."Type", ['name' => "types_id"]);
          }
          break;
       case "models_id":
          if (class_exists($_POST["itemtype"].'Model')) {
-            Dropdown::show($_POST["itemtype"] . "Model", array('name' => "models_id"));
+            Dropdown::show($_POST["itemtype"] . "Model", ['name' => "models_id"]);
          } else {
             return "";
          }

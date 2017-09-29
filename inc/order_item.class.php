@@ -32,8 +32,8 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginOrderOrder_Item extends CommonDBRelation {
-   public static $rightname = 'plugin_order_order';
-   public $dohistory        = true;
+   public static $rightname              = 'plugin_order_order';
+   public $dohistory                     = true;
 
    // From CommonDBRelation
    public static $itemtype_1             = "PluginOrderOrder";
@@ -86,28 +86,28 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    }
 
    public function getSearchOptions() {
-      $tab = array();
+      $tab = [];
 
       $tab['common']          = __("Orders management", "order");
 
       /* order_number */
-      $tab[1]['table']        = $this->getTable();
+      $tab[1]['table']        = self::getTable();
       $tab[1]['field']        = 'price_ati';
       $tab[1]['name']         = __("Unit price tax free", "order");
       $tab[1]['datatype']     = 'decimal';
 
-      $tab[2]['table']        = $this->getTable();
+      $tab[2]['table']        = self::getTable();
       $tab[2]['field']        = 'discount';
       $tab[2]['name']         = __("Discount (%)", "order");
       $tab[2]['datatype']     = 'decimal';
 
-      $tab[3]['table']        = $this->getTable();
+      $tab[3]['table']        = self::getTable();
       $tab[3]['field']        = 'price_taxfree';
       $tab[3]['name']         = __("Discount (%)", "order");
       $tab[3]['datatype']     = 'decimal';
 
       /* order_number */
-      $tab[4]['table']        = $this->getTable();
+      $tab[4]['table']        = self::getTable();
       $tab[4]['field']        = 'delivery_number';
       $tab[4]['name']         = __("Delivery form");
       $tab[4]['checktype']    = 'text';
@@ -115,7 +115,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $tab[4]['injectable']   = true;
 
       /* order_date */
-      $tab[5]['table']        = $this->getTable();
+      $tab[5]['table']        = self::getTable();
       $tab[5]['field']        = 'delivery_date';
       $tab[5]['name']         = __("Delivery date");
       $tab[5]['datatype']     = 'date';
@@ -124,7 +124,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $tab[5]['injectable']   = true;
 
       /* comments */
-      $tab[16]['table']       = $this->getTable();
+      $tab[16]['table']       = self::getTable();
       $tab[16]['field']       = 'comment';
       $tab[16]['name']        = __("Description");
       $tab[16]['datatype']    = 'text';
@@ -270,9 +270,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       if ($order->getFromDB($plugin_order_orders_id)
          && $order->canUpdateOrder()) {
          if ($order->can($plugin_order_orders_id, UPDATE)) {
-            echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\""
-            . Toolbox::getItemTypeFormURL('PluginOrderOrder') . "\">";
-            echo "<input type='hidden' name='plugin_order_orders_id' value=\"$plugin_order_orders_id\">";
+            echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\"".
+            Toolbox::getItemTypeFormURL('PluginOrderOrder')."\">";
+            echo Html::hidden('plugin_order_orders_id', ['value' => $plugin_order_orders_id]);
             echo "<div class='center'>";
             echo "<hr>";
             echo "<h3>".__("Add to the order", "order")."</h3>";
@@ -280,12 +280,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
             if ($order->fields["suppliers_id"]) {
                echo "<tr align='center'>";
-               echo "<th>" . __("Type") . "</th>";
-               echo "<th>" . __("Product reference", "order") . "</th>";
-               echo "<th>" . __("Quantity", "order") . "</th>";
-               echo "<th>" . __("Unit price tax free", "order") . "</th>";
-               echo "<th>" . __("VAT", "order") . "</th>";
-               echo "<th>" . __("Discount (%)", "order") . "</th>";
+               echo "<th>".__("Type")."</th>";
+               echo "<th>".__("Product reference", "order")."</th>";
+               echo "<th>".__("Quantity", "order")."</th>";
+               echo "<th>".__("Unit price tax free", "order")."</th>";
+               echo "<th>".__("VAT", "order")."</th>";
+               echo "<th>".__("Discount (%)", "order")."</th>";
                echo "<th></th>";
                echo"</tr>";
 
@@ -299,7 +299,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                          WHERE s.`suppliers_id` = {$order->fields["suppliers_id"]}";
                $result = $DB->query($query);
 
-               $itemtypeArray = Array('' => Dropdown::EMPTY_VALUE);
+               $itemtypeArray =  ['' => Dropdown::EMPTY_VALUE];
                while (list($itemtype) = $DB->fetch_array($result)) {
                   $type                     = new $itemtype();
                   $itemtypeArray[$itemtype] = $type->getTypeName();
@@ -307,27 +307,28 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                asort($itemtypeArray);
 
                $rand = mt_rand();
-               Dropdown::showFromArray('itemtype', $itemtypeArray, array('rand' => $rand,
-                                                                         'width' => '100%'));
+               Dropdown::showFromArray('itemtype', $itemtypeArray, [
+                  'rand' => $rand,
+                  'width' => '100%'
+               ]);
 
-               $params = array(
-                  'itemtype'     => '__VALUE__',
-                  'fieldname'    => 'plugin_order_references_id',
-                  'suppliers_id' => $order->fields["suppliers_id"],
-                  'entities_id'  => $order->fields["entities_id"],
-                  'is_recursive' => $order->fields["is_recursive"],
-                  'rand'         => $rand,
-               );
-               Ajax::updateItemOnSelectEvent('dropdown_itemtype' . $rand,
+               Ajax::updateItemOnSelectEvent('dropdown_itemtype'.$rand,
                                              'show_reference',
                                              '../ajax/dropdownReference.php',
-                                             $params);
+                                             [
+                                                'itemtype'     => '__VALUE__',
+                                                'fieldname'    => 'plugin_order_references_id',
+                                                'suppliers_id' => $order->fields["suppliers_id"],
+                                                'entities_id'  => $order->fields["entities_id"],
+                                                'is_recursive' => $order->fields["is_recursive"],
+                                                'rand'         => $rand,
+                                             ]);
                echo "</td>";
                echo "<td class='tab_bg_1'><span id='show_reference'>";
-               Dropdown::showFromArray('plugin_order_references_id',
-                                       array(0 => Dropdown::EMPTY_VALUE),
-                                       array('rand' => $rand,
-                                             'width' => '100%'));
+               Dropdown::showFromArray('plugin_order_references_id', [0 => Dropdown::EMPTY_VALUE], [
+                  'rand'  => $rand,
+                  'width' => '100%'
+               ]);
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_quantity'>";
@@ -340,12 +341,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
                echo "<td class='tab_bg_1'><span id='show_taxe'>";
                $config = PluginOrderConfig::getConfig();
-               PluginOrderOrderTax::Dropdown(array(
+               PluginOrderOrderTax::Dropdown([
                   'name'                => "plugin_order_ordertaxes_id",
                   'value'               => $config->getDefaultTaxes(),
                   'display_emptychoice' => true,
                   'emptylabel'          => __("No VAT", "order"),
-               ));
+               ]);
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_pricediscounted'>";
@@ -353,11 +354,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_validate'>";
-               echo "<input type='submit' name='add_item' value=\"" . __("Add") . "\" class='submit'>";
+               echo "<input type='submit' name='add_item' value=\"".__("Add")."\" class='submit'>";
                echo "</span></td>";
                echo "</tr>";
             } else {
-               echo "<tr class='tab_bg_1'><td align='center'>" . __("Please select a supplier", "order") . "</td></tr>";
+               echo "<tr class='tab_bg_1'><td align='center'>".__("Please select a supplier", "order")."</td></tr>";
             }
 
             echo "</table></div>";
@@ -369,7 +370,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    public function queryDetail($ID) {
       global $DB;
 
-      $table = $this->getTable();
+      $table = self::getTable();
       $query = "SELECT item.`id` AS IDD,
                        ref.`id`,
                        ref.`itemtype`,
@@ -396,7 +397,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    public function queryBills($orders_id, $references_id) {
       global $DB;
 
-      $table = $this->getTable();
+      $table = self::getTable();
       $query = "SELECT item.`id` AS IDD,
                        ref.`id`,
                        ref.`itemtype`,
@@ -425,7 +426,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                 AND CAST(`discount` AS CHAR) = '$discount'";
 
       if ($states_id) {
-         $query .= "AND `states_id` = '" . $states_id . "' ";
+         $query .= "AND `states_id` = '".$states_id."' ";
       }
 
       return $DB->query($query);
@@ -449,14 +450,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "<div class='center'>";
          echo "<form method='post' name='order_updatedetail_form$rand' " .
                   "id='order_updatedetail_form$rand'  " .
-                  "action='" . Toolbox::getItemTypeFormURL('PluginOrderOrder') . "'>";
-         echo "<input type='hidden' name='plugin_order_orders_id'
-                  value='" . $plugin_order_orders_id . "'>";
-         echo "<input type='hidden' name='plugin_order_order_items_id'
-                  value='" . $data_ref['IDD'] . "'>";
+                  "action='".Toolbox::getItemTypeFormURL('PluginOrderOrder')."'>";
+         echo Html::hidden('plugin_order_orders_id', ['value' => $plugin_order_orders_id]);
+         echo Html::hidden('plugin_order_order_items_id', ['value' => $data_ref['IDD']]);
          echo "<table class='tab_cadre_fixe'>";
          if (!$numref) {
-            echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
+            echo "<tr><th>".__("No item to take delivery of", "order")."</th></tr></table></div>";
          } else {
             $refID         = $data_ref["id"];
             $price_taxfree = $data_ref["price_taxfree"];
@@ -464,33 +463,33 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             $rand          = mt_rand();
             echo "<tr><th><ul><li>";
             echo "<a href=\"javascript:showHideDiv('detail$rand','detail_img$rand', '"
-               . $CFG_GLPI['root_doc'] . "/pics/plus.png','"
-               . $CFG_GLPI['root_doc'] . "/pics/moins.png');\">";
+              .$CFG_GLPI['root_doc']."/pics/plus.png','"
+              .$CFG_GLPI['root_doc']."/pics/moins.png');\">";
             echo "<img alt='' name='detail_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
             echo "</a>";
             echo "</li></ul></th>";
-            echo "<th>" . __("Quantity", "order") . "</th>";
-            echo "<th>" . __("Equipment", "order") . "</th>";
-            echo "<th>" . __("Manufacturer") . "</th>";
-            echo "<th>" . __("Reference") . "</th>";
-            echo "<th>" . __("Type") . "</th>";
-            echo "<th>" . __("Model") . "</th>";
-            echo "<th>" . __("Unit price tax free", "order") . "</th>";
-            echo "<th>" . __("Discount (%)", "order") . "</th>";
+            echo "<th>".__("Quantity", "order")."</th>";
+            echo "<th>".__("Equipment", "order")."</th>";
+            echo "<th>".__("Manufacturer")."</th>";
+            echo "<th>".__("Reference")."</th>";
+            echo "<th>".__("Type")."</th>";
+            echo "<th>".__("Model")."</th>";
+            echo "<th>".__("Unit price tax free", "order")."</th>";
+            echo "<th>".__("Discount (%)", "order")."</th>";
             echo "</tr>";
             echo "<tr class='tab_bg_1 center'>";
 
             echo "<td><div id='viewaccept$rand' style='display:none;'>";
             echo "<p><input type='submit' onclick=\"return confirm('"
-               . __("Do you really want to update this item ?", "order") . "');\" name='update_item' value=\""
-               . _sx("button", "Update")."\" class='submit'></p>";
+              .__("Do you really want to update this item ?", "order")."');\" name='update_item' value=\""
+              ._sx("button", "Update")."\" class='submit'></p>";
             echo "<br /><p><input type='button' onclick=\"hideForm$rand();\" value=\""
                ._sx("button", "Cancel")."\" class='submit'></p>";
             echo "</div></td>";
 
             if ($canedit) {
-               echo "<script type='text/javascript' >\n";
-               echo "function hideForm$rand() {\n";
+               echo "<script type='text/javascript' >";
+               echo "function hideForm$rand() {";
                echo "$('#quantity$rand').show();";
                echo "$('#pricetaxfree$rand').show();";
                echo "$('#discount$rand').show();";
@@ -500,8 +499,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "$('#viewdiscount$rand input').remove();";
 
                echo "$('#viewaccept$rand').hide();";
-               echo "}\n";
-               echo "</script>\n";
+               echo "}";
+               echo "</script>";
             }
 
             /* quantity */
@@ -509,25 +508,25 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                                                                 $price_taxfree, $discount);
             if ($canedit) {
                echo "<td align='center'>";
-               echo "<script type='text/javascript' >\n";
-               echo "function showQuantity$rand() {\n";
+               echo "<script type='text/javascript' >";
+               echo "function showQuantity$rand() {";
                echo "$('#quantity$rand').hide();";
                echo "$('#viewaccept$rand').show();";
-               $params = array('maxlength'     => 15,
-                               'size'          => 8,
-                               'name'          => 'quantity',
-                               'class'         => 'quantity',
-                               'force_integer' => true,
-                               'data'          => rawurlencode($quantity));
-               Ajax::updateItemJsCode("viewquantity$rand", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php",
-                                    $params, false);
+               Ajax::updateItemJsCode("viewquantity$rand", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
+                  'maxlength'     => 15,
+                  'size'          => 8,
+                  'name'          => 'quantity',
+                  'class'         => 'quantity',
+                  'force_integer' => true,
+                  'data'          => rawurlencode($quantity)
+               ], false);
                echo "}";
-               echo "</script>\n";
-               echo "<div id='quantity$rand' class='center' onClick='showQuantity$rand()'>\n";
+               echo "</script>";
+               echo "<div id='quantity$rand' class='center' onClick='showQuantity$rand()'>";
                echo $quantity;
-               echo "</div>\n";
-               echo "<div id='viewquantity$rand'>\n";
-               echo "</div>\n";
+               echo "</div>";
+               echo "<div id='viewquantity$rand'>";
+               echo "</div>";
                echo "</td>";
             } else {
                echo "<td align='center'>".$quantity."</td>";
@@ -542,8 +541,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             /* reference */
             echo "<td align='center'>";
 
-            echo "<input type='hidden' name='old_plugin_order_references_id'
-                     value='" . $refID . "'>";
+            echo Html::hidden('old_plugin_order_references_id', ['value' => $refID]);
 
             echo $reference->getReceptionReferenceLink($data_ref);
             echo "</td>";
@@ -565,61 +563,61 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             echo "</td>";
             if ($canedit) {
                echo "<td align='center'>";
-               echo "<input type='hidden' name='old_price_taxfree' value='" . $price_taxfree . "'>";
-               echo "<script type='text/javascript' >\n";
-               echo "function showPricetaxfree$rand() {\n";
+               echo Html::hidden('old_price_taxfree', ['value' => $price_taxfree]);
+               echo "<script type='text/javascript' >";
+               echo "function showPricetaxfree$rand() {";
                echo "$('#pricetaxfree$rand').hide();";
                echo "$('#viewaccept$rand').show();";
-               $params = array('maxlength' => 15,
-                               'size'      => 8,
-                               'name'      => 'price_taxfree',
-                               'class'     => 'decimal',
-                               'data'      => rawurlencode($price_taxfree));
-               Ajax::updateItemJsCode("viewpricetaxfree$rand",
-                                    $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", $params, false);
+               Ajax::updateItemJsCode("viewpricetaxfree$rand", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
+                  'maxlength' => 15,
+                  'size'      => 8,
+                  'name'      => 'price_taxfree',
+                  'class'     => 'decimal',
+                  'data'      => rawurlencode($price_taxfree)
+               ], false);
                echo "}";
-               echo "</script>\n";
-               echo "<div id='pricetaxfree$rand' class='center' onClick='showPricetaxfree$rand()'>\n";
+               echo "</script>";
+               echo "<div id='pricetaxfree$rand' class='center' onClick='showPricetaxfree$rand()'>";
                echo Html::formatNumber($price_taxfree);
-               echo "</div>\n";
-               echo "<div id='viewpricetaxfree$rand'>\n";
-               echo "</div>\n";
+               echo "</div>";
+               echo "<div id='viewpricetaxfree$rand'>";
+               echo "</div>";
                echo "</td>";
             } else {
-               echo "<td align='center'>" . Html::formatNumber($price_taxfree) . "</td>";
+               echo "<td align='center'>".Html::formatNumber($price_taxfree)."</td>";
             }
             /* reduction */
             if ($canedit) {
                echo "<td align='center'>";
-               echo "<input type='hidden' name='old_discount' value='" . $discount . "'>";
-               echo "<script type='text/javascript' >\n";
-               echo "function showDiscount$rand() {\n";
+               echo Html::hidden('old_discount', ['value' => $discount]);
+               echo "<script type='text/javascript'>";
+               echo "function showDiscount$rand() {";
                echo "$('#discount$rand').hide();";
                echo "$('#viewaccept$rand').show();";
-               $params = array('maxlength' => 15,
-                               'size'      => 8,
-                               'name'      => 'discount',
-                               'class'     => 'smalldecimal',
-                               'data'      => rawurlencode($discount));
-               Ajax::updateItemJsCode("viewdiscount$rand",
-                                    $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", $params, false);
+               Ajax::updateItemJsCode("viewdiscount$rand", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
+                  'maxlength' => 15,
+                  'size'      => 8,
+                  'name'      => 'discount',
+                  'class'     => 'smalldecimal',
+                  'data'      => rawurlencode($discount)
+               ], false);
                echo "}";
-               echo "</script>\n";
-               echo "<div id='discount$rand' class='center' onClick='showDiscount$rand()'>\n";
+               echo "</script>";
+               echo "<div id='discount$rand' class='center' onClick='showDiscount$rand()'>";
                echo Html::formatNumber($discount);
-               echo "</div>\n";
-               echo "<div id='viewdiscount$rand'>\n";
-               echo "</div>\n";
+               echo "</div>";
+               echo "<div id='viewdiscount$rand'>";
+               echo "</div>";
                echo "</td>";
             } else {
-               echo "<td align='center'>" . Html::formatNumber($discount) . "</td>";
+               echo "<td align='center'>".Html::formatNumber($discount)."</td>";
             }
             echo "</tr></table>";
             Html::closeForm();
 
             echo "<div class='center' id='detail$rand' style='display:none'>";
             echo "<form method='post' name='order_detail_form$rand' id='order_detail_form$rand'  " .
-                  "action=\"" . Toolbox::getItemTypeFormURL('PluginOrderOrder')."\">";
+                  "action=\"".Toolbox::getItemTypeFormURL('PluginOrderOrder')."\">";
 
             if ($canedit) {
                echo "<div class='center'>";
@@ -633,7 +631,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                 " return false;\" href='#'>".__("Uncheck all")."</a>";
                echo "</td><td align='left'>";
                echo "<input type='submit' onclick=\"return confirm('" .
-               __("Do you really want to delete these details ? Delivered items will not be linked to order !", "order") . "')\" name='delete_item' value=\"".
+               __("Do you really want to delete these details ? Delivered items will not be linked to order !", "order")."')\" name='delete_item' value=\"".
                __("Delete permanently")."\" class='submit'>";
                echo "</td>";
 
@@ -642,11 +640,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "<div id='detail_viewaccept$global_rand' style='display:none;'>";
 
                echo "&nbsp;<input type='submit' onclick=\"return confirm('" .
-               __("Do you really want to update this item ?", "order") . "');\" name='update_detail_item'
-                     value=\"". _sx("button", "Update") . "\" class='submit'>&nbsp;";
+                    __("Do you really want to update this item ?", "order")."');\" name='update_detail_item'
+                    value=\"". _sx("button", "Update")."\" class='submit'>&nbsp;";
 
                echo "&nbsp;<input type='button' onclick=\"detail_hideForm$global_rand();\"
-                     value=\"" . _sx("button", "Cancel") . "\" class='submit'>";
+                     value=\""._sx("button", "Cancel")."\" class='submit'>";
 
                echo "</div>";
                echo "</td>";
@@ -662,34 +660,34 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "<th></th>";
             }
             if ($data_ref["itemtype"] != 'SoftwareLicense') {
-               echo "<th>" . __("ID") . "</th>";
+               echo "<th>".__("ID")."</th>";
             }
-            echo "<th>" . __("Reference") . "</th>";
-            echo "<th>" . __("Unit price tax free", "order") . "</th>";
-            echo "<th>" . __("VAT", "order") . "</th>";
-            echo "<th>" . __("Discount (%)", "order") . "</th>";
-            echo "<th>" . __("Discounted price tax free", "order") . "</th>";
-            echo "<th>" . __("Price ATI", "order") . "</th>";
-            echo "<th>" . __("Status") . "</th></tr>";
+            echo "<th>".__("Reference")."</th>";
+            echo "<th>".__("Unit price tax free", "order")."</th>";
+            echo "<th>".__("VAT", "order")."</th>";
+            echo "<th>".__("Discount (%)", "order")."</th>";
+            echo "<th>".__("Discounted price tax free", "order")."</th>";
+            echo "<th>".__("Price ATI", "order")."</th>";
+            echo "<th>".__("Status")."</th></tr>";
 
-            $query = "SELECT `" . $this->getTable() . "`.`id` AS IDD, `glpi_plugin_order_references`.`id`,
+            $table = self::getTable();
+            $query = "SELECT `$table`.`id` AS IDD, `glpi_plugin_order_references`.`id`,
                            `glpi_plugin_order_references`.`name`,
-                           `" . $this->getTable() . "`.`comment`,
-                           `" . $this->getTable() . "`.`price_taxfree`,
-                           `" . $this->getTable() . "`.`price_discounted`,
-                           `" . $this->getTable() . "`.`discount`,
-                           `" . $this->getTable() . "`.`plugin_order_ordertaxes_id`,
-                           `" . $this->getTable() . "`.`price_ati`
-                    FROM `" . $this->getTable() . "`, `glpi_plugin_order_references`
-                    WHERE `" . $this->getTable() . "`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`
-                      AND `" . $this->getTable() . "`.`plugin_order_references_id` = '" . $refID . "'
-                         AND `" . $this->getTable() . "`.`price_taxfree` LIKE '" . $price_taxfree . "'
-                            AND `" . $this->getTable() . "`.`discount` LIKE '" . $discount . "'
-                                AND `" . $this->getTable() . "`.`plugin_order_orders_id` = '$plugin_order_orders_id'";
+                           `$table`.`comment`,
+                           `$table`.`price_taxfree`,
+                           `$table`.`price_discounted`,
+                           `$table`.`discount`,
+                           `$table`.`plugin_order_ordertaxes_id`,
+                           `$table`.`price_ati`
+                     FROM `$table`, `glpi_plugin_order_references`
+                     WHERE `$table`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`
+                        AND `$table`.`plugin_order_references_id` = '$refID'
+                        AND `$table`.`price_taxfree` LIKE '$price_taxfree'
+                        AND `$table`.`discount` LIKE '$discount'
+                        AND `$table`.`plugin_order_orders_id` = '$plugin_order_orders_id'";
 
             if ($data_ref["itemtype"] == 'SoftwareLicense') {
                $query.=" GROUP BY `glpi_plugin_order_references`.`name` ";
-
             }
             $query .= " ORDER BY `glpi_plugin_order_references`.`name` ";
 
@@ -704,10 +702,10 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                Session::addToNavigateListItems($this->getType(), $data['IDD']);
 
                // Compute for detail_hideForm javascript function
-               $hideForm.="$('#detail_pricetaxfree$rand_line').show();\n";
-               $hideForm.="$('#detail_viewpricetaxfree$rand_line input').remove();\n";
-               $hideForm.="$('#detail_discount$rand_line').show();\n";
-               $hideForm.="$('#detail_viewdiscount$rand_line input').remove();\n";
+               $hideForm.="$('#detail_pricetaxfree$rand_line').show();";
+               $hideForm.="$('#detail_viewpricetaxfree$rand_line input').remove();";
+               $hideForm.="$('#detail_discount$rand_line').show();";
+               $hideForm.="$('#detail_viewdiscount$rand_line input').remove();";
 
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
@@ -717,8 +715,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                      $sel = "checked";
                   }
                   echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
-                  echo "<input type='hidden' name='plugin_order_orders_id' value='" .
-                     $plugin_order_orders_id . "'>";
+                  echo Html::hidden('plugin_order_orders_id', ['value' => $plugin_order_orders_id]);
                   echo "</td>";
                }
                if ($data_ref["itemtype"] != 'SoftwareLicense') {
@@ -730,37 +727,38 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
                /* reference */
                echo "<td align='center'>";
-               echo "<input type='hidden' name='detail_old_plugin_order_references_id[".$data["IDD"]."]'
-                           value='" . $data["id"] . "'>";
+               echo Html::hidden("detail_old_plugin_order_references_id[".$data["IDD"]."]",
+                                 ['value' => $data["id"]]);
                echo $reference->getReceptionReferenceLink($data);
                echo "</td>";
 
                if ($canedit) {
                   echo "<td align='center'>";
-                  echo "<input type='hidden' name='detail_old_price_taxfree[".$data["IDD"]."]'
-                              value='" . $data["price_taxfree"] . "'>";
-                  echo "<script type='text/javascript' >\n";
-                  echo "function showDetailPricetaxfree$rand_line() {\n";
+                  echo Html::hidden("detail_old_price_taxfree[".$data["IDD"]."]", [
+                     'value' => $data["price_taxfree"]
+                  ]);
+                  echo "<script type='text/javascript' >";
+                  echo "function showDetailPricetaxfree$rand_line() {";
                   echo "$('#detail_pricetaxfree$rand_line').hide();";
                   echo "$('#detail_viewaccept$global_rand').show();";
-                  $params = array('maxlength' => 15,
-                                  'size'      => 8,
-                                  'name'      => 'detail_price_taxfree['.$data["IDD"].']',
-                                  'class'     => 'decimal',
-                                  'data'      => rawurlencode($data["price_taxfree"]));
-                  Ajax::updateItemJsCode("detail_viewpricetaxfree$rand_line",
-                                       $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", $params, false);
+                  Ajax::updateItemJsCode("detail_viewpricetaxfree$rand_line", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
+                     'maxlength' => 15,
+                     'size'      => 8,
+                     'name'      => 'detail_price_taxfree['.$data["IDD"].']',
+                     'class'     => 'decimal',
+                     'data'      => rawurlencode($data["price_taxfree"])
+                  ], false);
                   echo "}";
-                  echo "</script>\n";
+                  echo "</script>";
                   echo "<div id='detail_pricetaxfree$rand_line' class='center'
-                           onClick='showDetailPricetaxfree$rand_line()'>\n";
+                             onClick='showDetailPricetaxfree$rand_line()'>";
                   echo Html::formatNumber($data["price_taxfree"]);
-                  echo "</div>\n";
-                  echo "<div id='detail_viewpricetaxfree$rand_line'>\n";
-                  echo "</div>\n";
+                  echo "</div>";
+                  echo "<div id='detail_viewpricetaxfree$rand_line'>";
+                  echo "</div>";
                   echo "</td>";
                } else {
-                  echo "<td align='center'>" . Html::formatNumber($data["price_taxfree"]) . "</td>";
+                  echo "<td align='center'>".Html::formatNumber($data["price_taxfree"])."</td>";
                }
 
                /* taxe */
@@ -771,30 +769,31 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                /* reduction */
                if ($canedit) {
                   echo "<td align='center'>";
-                  echo "<input type='hidden' name='detail_old_discount[".$data["IDD"]."]'
-                              value='" . $data["discount"] . "'>";
-                  echo "<script type='text/javascript' >\n";
-                  echo "function showDetailDiscount$rand_line() {\n";
+                  echo Html::hidden("detail_old_discount[".$data["IDD"]."]", [
+                     'value' => $data["discount"]
+                  ]);
+                  echo "<script type='text/javascript' >";
+                  echo "function showDetailDiscount$rand_line() {";
                   echo "$('#detail_discount$rand_line').hide();";
                   echo "$('#detail_viewaccept$global_rand').show();";
-                  $params = array('maxlength' => 15,
-                                  'size'      => 8,
-                                  'name'      => 'detail_discount['.$data["IDD"].']',
-                                  'class'     => 'smalldecimal',
-                                  'data'      => rawurlencode($data["discount"]));
-                  Ajax::updateItemJsCode("detail_viewdiscount$rand_line",
-                                       $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", $params, false);
+                  Ajax::updateItemJsCode("detail_viewdiscount$rand_line", CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
+                     'maxlength' => 15,
+                     'size'      => 8,
+                     'name'      => 'detail_discount['.$data["IDD"].']',
+                     'class'     => 'smalldecimal',
+                     'data'      => rawurlencode($data["discount"])
+                  ], false);
                   echo "}";
-                  echo "</script>\n";
+                  echo "</script>";
                   echo "<div id='detail_discount$rand_line' class='center'
-                           onClick='showDetailDiscount$rand_line()'>\n";
+                             onClick='showDetailDiscount$rand_line()'>";
                   echo Html::formatNumber($data["discount"]);
-                  echo "</div>\n";
-                  echo "<div id='detail_viewdiscount$rand_line'>\n";
-                  echo "</div>\n";
+                  echo "</div>";
+                  echo "<div id='detail_viewdiscount$rand_line'>";
+                  echo "</div>";
                   echo "</td>";
                } else {
-                  echo "<td align='center'>" . Html::formatNumber($data["discount"]) . "</td>";
+                  echo "<td align='center'>".Html::formatNumber($data["discount"])."</td>";
                }
                /* price with reduction */
                echo "<td align='center'>".Html::formatNumber($data["price_discounted"])."</td>";
@@ -808,12 +807,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             echo "</table>";
 
             if ($canedit) {
-               echo "<script type='text/javascript' >\n";
-               echo "function detail_hideForm$global_rand() {\n";
+               echo "<script type='text/javascript' >";
+               echo "function detail_hideForm$global_rand() {";
                echo $hideForm;
                echo "$('#detail_viewaccept$global_rand').hide();";
-               echo "}\n";
-               echo "</script>\n";
+               echo "}";
+               echo "</script>";
             }
 
             if ($canedit) {
@@ -828,7 +827,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                       " return false;\" href='#'>".__("Uncheck all")."</a>";
                echo "</td><td align='left'>";
                echo "<input type='submit' onclick=\"return confirm('" .
-                  __("Do you really want to delete these details ? Delivered items will not be linked to order !", "order") . "')\" name='delete_item' value=\"".
+                  __("Do you really want to delete these details ? Delivered items will not be linked to order !", "order")."')\" name='delete_item' value=\"".
                      __("Delete permanently")."\" class='submit'>";
                echo "</td>";
 
@@ -837,11 +836,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "<div id='detail_viewaccept$global_rand' style='display:none;'>";
 
                echo "&nbsp;<input type='submit' onclick=\"return confirm('" .
-                  __("Do you really want to update this item ?", "order") . "');\" name='update_detail_item'
-                     value=\"". _sx("button", "Update") . "\" class='submit'>&nbsp;";
+                  __("Do you really want to update this item ?", "order")."');\" name='update_detail_item'
+                     value=\"". _sx("button", "Update")."\" class='submit'>&nbsp;";
 
                echo "&nbsp;<input type='button' onclick=\"detail_hideForm$global_rand();\"
-                     value=\"" . _sx("button", "Cancel") . "\" class='submit'>";
+                     value=\""._sx("button", "Cancel")."\" class='submit'>";
 
                echo "</div>";
                echo "</td>";
@@ -860,11 +859,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       global $DB;
 
       $query = "SELECT COUNT(*) AS quantity
-                FROM `".$this->getTable()."`
+                FROM `".self::getTable()."`
                 WHERE  `plugin_order_orders_id` = '$orders_id'
                   AND `plugin_order_references_id` = '$references_id'
-                     AND CAST(`price_taxfree` AS CHAR) = '$price_taxfree'
-                        AND CAST(`discount` AS CHAR) = '$discount'";
+                  AND CAST(`price_taxfree` AS CHAR) = '$price_taxfree'
+                  AND CAST(`discount` AS CHAR) = '$discount'";
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'quantity'));
    }
@@ -873,7 +872,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       global $DB;
 
       $query = "SELECT COUNT(*) AS quantity
-                FROM `".$this->getTable()."`
+                FROM `".self::getTable()."`
                 WHERE `plugin_order_orders_id` = '$orders_id'
                    AND `plugin_order_references_id` = '$references_id' ";
       $result = $DB->query($query);
@@ -881,12 +880,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    }
 
    public function getDeliveredQuantity($orders_id, $references_id, $price_taxfree, $discount) {
-      return countElementsInTable($this->getTable(),
+      return countElementsInTable(self::getTable(),
                                   "`plugin_order_orders_id` = '$orders_id'
                                     AND `plugin_order_references_id` = '$references_id'
-                                       AND `price_taxfree` LIKE '$price_taxfree'
-                                          AND `discount` LIKE '$discount'
-                                             AND `states_id` != '0' ");
+                                    AND `price_taxfree` LIKE '$price_taxfree'
+                                    AND `discount` LIKE '$discount'
+                                    AND `states_id` != '0' ");
    }
 
    public function getAllPrices($orders_id) {
@@ -894,7 +893,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       $query = "SELECT SUM(`price_ati`) AS priceTTC, SUM(`price_discounted`) AS priceHT,
                      SUM(`price_ati` - `price_discounted`) as priceTVA
-                FROM `".$this->getTable()."`
+                FROM `".self::getTable()."`
                 WHERE `plugin_order_orders_id` = '$orders_id' ";
       $result = $DB->query($query);
       return $DB->fetch_array($result);
@@ -902,12 +901,13 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
    public function getOrderInfosByItem($itemtype, $items_id) {
       global $DB;
+
+      $table = self::getTable();
       $query = "SELECT `glpi_plugin_order_orders`.*
-                FROM `glpi_plugin_order_orders`, `".$this->getTable()."`
-                WHERE `glpi_plugin_order_orders`.`id` = `".$this->getTable().
-                   "`.`plugin_order_orders_id`
-                   AND `".$this->getTable()."`.`itemtype` = '$itemtype'
-                     AND `".$this->getTable()."`.`items_id` = '$items_id' ";
+                FROM `glpi_plugin_order_orders`, `$table`
+                WHERE `glpi_plugin_order_orders`.`id` = `$table`.`plugin_order_orders_id`
+                  AND `$table`.`itemtype` = '$itemtype'
+                  AND `$table`.`items_id` = '$items_id' ";
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
          return $DB->fetch_array($result);
@@ -921,48 +921,49 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       $infos = $this->getOrderInfosByItem($itemtype, $ID);
       if ($infos) {
-         echo "<tr align='center'><th colspan='5'>" . __("Order informations", "order") . "</th></tr>";
-         echo "<tr align='center'><td colspan='2' class='tab_bg_2'>" . __("Order name", "order") . "</td>";
+         echo "<tr align='center'><th colspan='5'>".__("Order informations", "order")."</th></tr>";
+         echo "<tr align='center'><td colspan='2' class='tab_bg_2'>".__("Order name", "order")."</td>";
          echo "<td colspan='2' class='tab_bg_2'>";
          $order = new PluginOrderOrder();
          $order->getFromDB($infos['id']);
          echo $order->getLink(PluginOrderOrder::canView());
          echo "</td>";
 
-         $result = getAllDatasFromTable($this->getTable(),
+         $result = getAllDatasFromTable(self::getTable(),
                                         "`plugin_order_orders_id`='".$infos['id']."'
-                                           AND `itemtype`='$itemtype'
-                                              AND `items_id`='$ID'");
+                                          AND `itemtype`='$itemtype'
+                                          AND `items_id`='$ID'");
          if (!empty($result)) {
             $link = array_shift($result);
             $reference = new PluginOrderReference();
             $reference->getFromDB($link['plugin_order_references_id']);
             if (Session::haveRight('plugin_order_reference', READ)) {
                echo "<tr align='center'><td colspan='2' class='tab_bg_2'>" .
-                     __("Reference") . "</td>";
-               echo "<td colspan='2' class='tab_bg_2'>" . $reference->getLink(PluginOrderReference::canView()) . "</td></tr>";
+                     __("Reference")."</td>";
+               echo "<td colspan='2' class='tab_bg_2'>".
+                    $reference->getLink(PluginOrderReference::canView())."</td></tr>";
             }
             echo "<tr align='center'><td colspan='2' class='tab_bg_2'>" .
-                  __("Delivery date") . "</td>";
-            echo "<td colspan='2' class='tab_bg_2'>" . Html::convDate($link["delivery_date"]) . "</td></tr>";
+                  __("Delivery date")."</td>";
+            echo "<td colspan='2' class='tab_bg_2'>".Html::convDate($link["delivery_date"])."</td></tr>";
 
          }
       }
    }
 
-   public function defineTabs($options=array()) {
-      $ong = array();
+   public function defineTabs($options = array()) {
+      $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
 
-   public function showForm ($ID, $options=array()) {
+   public function showForm ($ID, $options = array()) {
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
-      $order_order     = new PluginOrderOrder();
+      $order_order = new PluginOrderOrder();
       $order_order->getFromDB($this->fields['plugin_order_orders_id']);
 
       $order_reference = new PluginOrderReference();
@@ -973,19 +974,19 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $canedit_comment = $order_order->can($this->fields['plugin_order_orders_id'], UPDATE)
                           && !$order_order->isCanceled();
 
-      echo "<input type='hidden' name='plugin_order_orders_id' value='" .
-         $this->fields['plugin_order_orders_id'] . "'>";
+      echo Html::hidden('plugin_order_orders_id',
+                        ['value' => $this->fields['plugin_order_orders_id']]);
 
       echo "<tr class='tab_bg_1'>";
 
-      echo "<td>" . __("Order", "order") . ": </td>";
+      echo "<td>".__("Order", "order").": </td>";
       echo "<td>";
       echo $order_order->getLink(true);
       echo "</td>";
 
-      echo "<td>" . __("Reference") . ": </td>";
+      echo "<td>".__("Reference").": </td>";
       echo "<td>";
-      $data         = array();
+      $data         = [];
       $data["id"]   = $this->fields["plugin_order_references_id"];
       $data["name"] = $order_reference->fields["name"];
       echo $order_reference->getReceptionReferenceLink($data);
@@ -994,26 +995,26 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __("Unit price tax free", "order") . ": </td>";
+      echo "<td>".__("Unit price tax free", "order").": </td>";
       if ($canedit) {
-         echo "<td><input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price_taxfree' value='" . $this->fields['price_taxfree'] . "' class='decimal'>";
+         echo "<td><input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price_taxfree' value='".$this->fields['price_taxfree']."' class='decimal'>";
       } else {
-         echo "<td>" . Html::formatNumber($this->fields['price_taxfree']) . "</td>";
+         echo "<td>".Html::formatNumber($this->fields['price_taxfree'])."</td>";
       }
 
-      echo "<td>" . __("VAT", "order") . ": </td>";
+      echo "<td>".__("VAT", "order").": </td>";
       echo "<td>";
       if ($canedit) {
-         PluginOrderOrderTax::Dropdown(array('value' => $this->fields['plugin_order_ordertaxes_id']));
+         PluginOrderOrderTax::Dropdown(['value' => $this->fields['plugin_order_ordertaxes_id']]);
       } else {
          echo Dropdown::getDropdownName('glpi_plugin_order_ordertaxes',
-                                         $this->fields['plugin_order_ordertaxes_id']);
+                                        $this->fields['plugin_order_ordertaxes_id']);
       }
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __("Discount (%)", "order") . ": </td>";
+      echo "<td>".__("Discount (%)", "order").": </td>";
       if ($canedit) {
          echo "<td><input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount'
                           value='".$this->fields['discount']."' class='decimal'>";
@@ -1021,15 +1022,15 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "<td>".Html::formatNumber($this->fields['discount'])."</td>";
       }
 
-      echo "<td>" . __("Discounted price tax free", "order") . ": </td>";
+      echo "<td>".__("Discounted price tax free", "order").": </td>";
       echo "<td>".Html::formatNumber($this->fields['price_discounted'])."</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __("Price ATI", "order") . ": </td>";
+      echo "<td>".__("Price ATI", "order").": </td>";
       echo "<td>".Html::formatNumber($this->fields['price_ati'])."</td>";
 
-      echo "<td>" . __("Status") . ": </td>";
+      echo "<td>".__("Status").": </td>";
       echo "<td>";
       echo Dropdown::getDropdownName('glpi_plugin_order_deliverystates',
                                       $this->fields['plugin_order_deliverystates_id']);
@@ -1039,17 +1040,19 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       echo "<tr class='tab_bg_1'><td>";
 
       //comments of order
-      echo __("Description") . ":  </td>";
+      echo __("Description").":  </td>";
       echo "<td colspan='3'>";
       if ($canedit_comment) {
-         echo "<textarea cols='50' rows='4' name='comment'>" . $this->fields["comment"] . "</textarea>";
+         echo "<textarea cols='50' rows='4' name='comment'>".$this->fields["comment"]."</textarea>";
       } else {
          echo $this->fields['comment'];
       }
       echo "</td></tr>";
 
-      $this->showFormButtons(array('canedit' => ($canedit || $canedit_comment),
-                                    'candel' => $canedit));
+      $this->showFormButtons([
+         'canedit' => ($canedit || $canedit_comment),
+         'candel' => $canedit
+      ]);
 
       return true;
    }
@@ -1064,9 +1067,10 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                                   $this->fields['price_taxfree'],
                                   $this->fields['discount']);
          while ($item=$DB->fetch_array($datas)) {
-            $input = array( 'item_id'       => $item['id'],
-                            'price_taxfree'  => $this->fields['price_taxfree']);
-            $this->updatePrice_taxfree($input);
+            $this->updatePrice_taxfree([
+               'item_id'       => $item['id'],
+               'price_taxfree'  => $this->fields['price_taxfree']
+            ]);
          }
       }
    }
@@ -1077,25 +1081,24 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $reference  = new PluginOrderReference();
 
       echo "<div class='center'><table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='2'>" . __("Bills", "order") . "</th></tr>";
-      echo "<tr class='tab_bg_1'><td class='center'>" . __("Payment status", "order") . ": </td>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>".__("Bills", "order")."</th></tr>";
+      echo "<tr class='tab_bg_1'><td class='center'>".__("Payment status", "order").": </td>";
       echo "<td>";
       echo PluginOrderBillState::getState($order->fields['plugin_order_billstates_id']);
       echo "</td></tr></table>";
 
-      if (countElementsInTable(getTableForItemType(__CLASS__),
-                           "`plugin_order_orders_id`='".$order->getID().
-                              "' GROUP BY `plugin_order_bills_id`")) {
+      $table = self::getTable();
+      if (countElementsInTable($table, "`plugin_order_orders_id`='".$order->getID().
+                                       "' GROUP BY `plugin_order_bills_id`")) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th>" . __("Name") . "</th>";
-         echo "<th>" . __("Status") . "</th>";
-         echo "<th>" . __("Value") . "</th>";
-         echo "<th>" . __("Paid value", "order") . "</th></tr>";
+         echo "<tr class='tab_bg_1'><th>".__("Name")."</th>";
+         echo "<th>".__("Status")."</th>";
+         echo "<th>".__("Value")."</th>";
+         echo "<th>".__("Paid value", "order")."</th></tr>";
 
          $bill = new PluginOrderBill();
-         foreach ($DB->request(getTableForItemType(__CLASS__),
-                              "`plugin_order_orders_id`='".$order->getID().
-                                 "' GROUP BY `plugin_order_bills_id`") as $item) {
+         foreach ($DB->request($table, "`plugin_order_orders_id`='".$order->getID().
+                                       "' GROUP BY `plugin_order_bills_id`") as $item) {
             if (isset($item->fields['plugin_order_bills_id'])
             && $item->fields['plugin_order_bills_id']) {
                echo "<tr class='tab_bg_1'><td class='center'>";
@@ -1107,8 +1110,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
                   echo "</td>";
                   echo "<td>";
-                  echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBillState'),
-                                           $bill->fields['plugin_order_billstates_id']);
+                  echo Dropdown::getDropdownName(PluginOrderBillState::getTable(),
+                                                 $bill->fields['plugin_order_billstates_id']);
                   echo "</td></tr>";
 
             }
@@ -1121,24 +1124,24 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       //Can write orders, and order is not already paid
       $canedit = $order->can($order->getID(), UPDATE)
-                   && !$order->isPaid() && !$order->isCanceled();
+                 && !$order->isPaid() && !$order->isCanceled();
 
-      $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
-                     "`glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, " .
-                     "`glpi_plugin_order_references`.`name`, " .
-                     "`glpi_plugin_order_references`.`itemtype`, " .
-                     "`glpi_plugin_order_references`.`manufacturers_id` " .
-                   "FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references` " .
-                   "WHERE `plugin_order_orders_id` = '".$order->getID()."' " .
-                     "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id` " .
-                  "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
-                  "ORDER BY `glpi_plugin_order_references`.`name`";
+      $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD,
+                     `glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id,
+                     `glpi_plugin_order_references`.`name`,
+                     `glpi_plugin_order_references`.`itemtype`,
+                     `glpi_plugin_order_references`.`manufacturers_id`
+                    FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references`
+                    WHERE `plugin_order_orders_id` = '".$order->getID()."'
+                     AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`
+                    GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id`
+                    ORDER BY `glpi_plugin_order_references`.`name`";
       $result_ref = $DB->query($query_ref);
 
       while ($data_ref = $DB->fetch_array($result_ref)) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          if (!$DB->numrows($result_ref)) {
-            echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
+            echo "<tr><th>".__("No item to take delivery of", "order")."</th></tr></table></div>";
 
          } else {
             $rand     = mt_rand();
@@ -1150,36 +1153,35 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             echo "<img alt='' name='generation_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
             echo "</a>";
             echo "</li></ul></th>";
-            echo "<th>" . __("Type") . "</th>";
-            echo "<th>" . __("Manufacturer") . "</th>";
-            echo "<th>" . __("Product reference", "order") . "</th>";
+            echo "<th>".__("Type")."</th>";
+            echo "<th>".__("Manufacturer")."</th>";
+            echo "<th>".__("Product reference", "order")."</th>";
             echo "</tr>";
 
             echo "<tr class='tab_bg_1 center'>";
             echo "<td></td>";
-            echo "<td align='center'>" . $item->getTypeName() . "</td>";
+            echo "<td align='center'>".$item->getTypeName()."</td>";
 
             //Entity
             echo "<td align='center'>";
             echo Dropdown::getDropdownName('glpi_entities', $this->getEntityID());
             echo "</td>";
-            echo "<td>" . $reference->getReceptionReferenceLink($data_ref) . "</td>";
+            echo "<td>".$reference->getReceptionReferenceLink($data_ref)."</td>";
             echo "</tr></table>";
 
             echo "<div class='center' id='generation$rand' style='display:none'>";
             echo "<form method='post' name='bills_form$rand' id='bills_form$rand'  " .
-                     "action='" . Toolbox::getItemTypeFormURL('PluginOrderBill') . "'>";
+                     "action='".Toolbox::getItemTypeFormURL('PluginOrderBill')."'>";
 
-            echo "<input type='hidden' name='plugin_order_orders_id'
-                     value='" . $order->getID() . "'>";
+            echo Html::hidden('plugin_order_orders_id', ['value' => $order->getID()]);
             echo "<table class='tab_cadre_fixe'>";
 
             echo "<th></th>";
-            echo "<th>" . __("Reference") . "</th>";
-            echo "<th>" . __("Type") . "</th>";
-            echo "<th>" . __("Model") . "</th>";
-            echo "<th>" . __("Bill", "order") . "</th>";
-            echo "<th>" . __("Bill status", "order") . "</th>";
+            echo "<th>".__("Reference")."</th>";
+            echo "<th>".__("Type")."</th>";
+            echo "<th>".__("Model")."</th>";
+            echo "<th>".__("Bill", "order")."</th>";
+            echo "<th>".__("Bill status", "order")."</th>";
             echo "</tr>";
 
             $results = $this->queryBills($order->getID(), $data_ref['id']);
@@ -1192,8 +1194,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                      $sel = "checked";
                   }
                   echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
-                  echo "<input type='hidden' name='plugin_order_orders_id' value='" .
-                      $order->getID() . "'>";
+                  echo Html::hidden('plugin_order_orders_id', ['value' => $order->getID()]);
                   echo "</td>";
                }
 
@@ -1249,7 +1250,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             echo "<a onclick= \"if ( unMarkCheckboxes('bills_form$rand') ) " .
                   "return false;\" href='#'>".__("Uncheck all")."</a>";
             echo "</td><td align='left' width='80%'>";
-            echo "<input type='hidden' name='plugin_order_orders_id' value='".$order->getID()."'>";
+            echo Html::hidden('plugin_order_orders_id', ['value' => $order->getID()]);
             $this->dropdownBillItemsActions($order->getID());
             echo "</td>";
             echo "</table>";
@@ -1268,10 +1269,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $action['bill'] = __("Bill", "order");
       $rand           = Dropdown::showFromArray('chooseAction', $action);
 
-      $params = array ('action' => '__VALUE__', 'plugin_order_orders_id' => $orders_id);
       Ajax::updateItemOnSelectEvent("dropdown_chooseAction$rand", "show_billsActions$rand",
-                                  $CFG_GLPI["root_doc"] . "/plugins/order/ajax/billactions.php",
-                                  $params);
+                                  $CFG_GLPI["root_doc"]."/plugins/order/ajax/billactions.php", [
+          'action'                 => '__VALUE__',
+          'plugin_order_orders_id' => $orders_id
+       ]);
        echo "<span id='show_billsActions$rand'>&nbsp;</span>";
 
    }
@@ -1339,7 +1341,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    public static function install(Migration $migration) {
       global $DB;
 
-      $table = getTableForItemType(__CLASS__);
+      $table = self::getTable();
 
       if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order_detail")) {
          $migration->displayMessage("Installing $table");
@@ -1408,14 +1410,14 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                                  "text collate utf8_unicode_ci");
          $migration->changeField($table, "status", "states_id", "int(11) NOT NULL default 1");
          $migration->changeField($table, "date", "delivery_date", "date default NULL");
-         $migration->addKey($table, array("items_id", "itemtype"), "FK_device" );
-         $migration->addKey($table, array("itemtype", "items_id"), "item");
+         $migration->addKey($table, ["items_id", "itemtype"], "FK_device" );
+         $migration->addKey($table, ["itemtype", "items_id"], "item");
          $migration->addKey($table, "plugin_order_references_id");
          $migration->addKey($table, "plugin_order_deliverystates_id");
          $migration->addKey($table, "states_id");
          $migration->migrationOneTable($table);
 
-         Plugin::migrateItemType(array(), array(), array($table));
+         Plugin::migrateItemType([], [], [$table]);
           //1.4.0
          $migration->addField($table, "plugin_order_ordertaxes_id",
                               "INT (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)'");
@@ -1424,8 +1426,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          /* Migrate VAT */
          foreach ($DB->request("glpi_plugin_order_orders") as $data) {
             $query  = "UPDATE `glpi_plugin_order_orders_items`
-                       SET `plugin_order_ordertaxes_id` = '" . $data["plugin_order_ordertaxes_id"] . "'
-                       WHERE `plugin_order_orders_id` = '" . $data["id"] . "'";
+                       SET `plugin_order_ordertaxes_id` = '".$data["plugin_order_ordertaxes_id"]."'
+                       WHERE `plugin_order_orders_id` = '".$data["id"]."'";
             $result = $DB->query($query) or die($DB->error());
          }
           //1.5.0
@@ -1477,7 +1479,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       //Old table name
       $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_detail`") or die ($DB->error());
       //Current table name
-      $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS  `".self::getTable()."`") or die ($DB->error());
       self::uninstallOrderItemNotification();
    }
 
@@ -1492,7 +1494,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                                    AND `items_id` = '".$item->getID()."'");
    }
 
-   public function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if (in_array(get_class($item), PluginOrderOrder_Item::getClasses(true))) {
 
          $orderlink = new PluginOrderLink();
@@ -1501,7 +1503,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          }
 
          if ($item->getField('id') && !$withtemplate) {
-
             if ($_SESSION['glpishow_count_on_tabs']) {
                return self::createTabEntry(__("Orders", "order"), self::countForItem($item));
             }
@@ -1516,7 +1517,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       return '';
    }
 
-   public static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       if (get_class($item) == 'PluginOrderOrder') {
          if (!$item->fields['is_template']) {
             $order_item = new self();
@@ -1538,9 +1539,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       global $DB;
 
       $notif   = new Notification();
-      $options = array('itemtype' => 'PluginOrderOrder_Item',
-                    'event'    => 'delivered',
-                    'FIELDS'   => 'id');
+      $options = [
+         'itemtype' => 'PluginOrderOrder_Item',
+         'event'    => 'delivered',
+         'FIELDS'   => 'id'
+      ];
       foreach ($DB->request('glpi_notifications', $options) as $data) {
          $notif->delete($data);
       }
@@ -1549,10 +1552,15 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $translation = new NotificationTemplateTranslation();
 
       //templates
-      $options = array('itemtype' => 'PluginOrderOrder_Item', 'FIELDS'   => 'id');
+      $options = [
+         'itemtype' => 'PluginOrderOrder_Item',
+         'FIELDS'   => 'id'
+      ];
       foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
-         $options_template = array('notificationtemplates_id' => $data['id'], 'FIELDS'   => 'id');
-
+         $options_template = [
+            'notificationtemplates_id' => $data['id'],
+            'FIELDS'                   => 'id'
+         ];
          foreach ($DB->request('glpi_notificationtemplatetranslations',
                                   $options_template) as $data_template) {
             $translation->delete($data_template);

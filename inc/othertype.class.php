@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
 class PluginOrderOtherType extends CommonDropdown {
    public static $rightname = 'plugin_order_order';
 
-   public static function getTypeName($nb=0) {
+   public static function getTypeName($nb = 0) {
       return __("Other type of item", "order");
    }
 
@@ -42,11 +42,11 @@ class PluginOrderOtherType extends CommonDropdown {
       global $DB;
 
       //Only avaiable since 1.2.0
-      $table = getTableForItemType(__CLASS__);
+      $table = self::getTable();
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
-         $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_othertypes` (
+         $query = "CREATE TABLE IF NOT EXISTS `$table` (
                   `id` int(11) NOT NULL auto_increment,
                   `name` varchar(255) collate utf8_unicode_ci default NULL,
                   `comment` text collate utf8_unicode_ci,
@@ -61,6 +61,6 @@ class PluginOrderOtherType extends CommonDropdown {
       global $DB;
 
       //Current table name
-      $DB->query("DROP TABLE IF EXISTS  `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
    }
 }

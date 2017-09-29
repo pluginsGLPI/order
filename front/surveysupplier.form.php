@@ -52,7 +52,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    if (PluginOrderSurveySupplier::canCreate()) {
       foreach ($_POST["check"] as $ID => $value) {
-         $PluginOrderSurveySupplier->delete(array("id"=>$ID), 0, 0);
+         $PluginOrderSurveySupplier->delete(["id" => $ID], 0, 0);
       }
    }
    Html::redirect($_SERVER['HTTP_REFERER']);

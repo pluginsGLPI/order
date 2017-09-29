@@ -40,19 +40,19 @@ if (!defined('GLPI_ROOT')) {
 Session::checkCentralAccess();
 
 $rand         = $_POST["rand"];
-$paramsaction = array(
+$paramsaction = [
    'plugin_order_references_id' => '__VALUE__',
    'entity_restrict'            => $_POST["entity_restrict"],
    'suppliers_id'               => $_POST["suppliers_id"],
    'itemtype'                   => $_POST['itemtype'],
-);
-$fields       = array(
+];
+$fields = [
    "quantity",
    "priceht",
    "pricediscounted",
    "taxe",
    "validate",
-);
+];
 
 foreach ($fields as $field) {
    $paramsaction['update'] = $field;

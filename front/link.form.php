@@ -80,7 +80,7 @@ if (isset($_POST["generation"])) {
    if (isset($_POST["item"]) && $_POST['item']) {
       $i    = 0;
       $doit = 1;
-      if (!in_array($_POST["itemtype"], array('SoftwareLicense', 'ConsumableItem', 'CartridgeItem'))
+      if (!in_array($_POST["itemtype"], ['SoftwareLicense', 'ConsumableItem', 'CartridgeItem'])
          && count($_POST["item"]) > 1) {
          $doit = 0;
       }

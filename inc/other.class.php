@@ -43,7 +43,7 @@ class PluginOrderOther extends CommonDBTM {
       global $DB;
 
       //Only avaiable since 1.2.0
-      $table = getTableForItemType(__CLASS__);
+      $table = self::getTable();
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
@@ -65,6 +65,6 @@ class PluginOrderOther extends CommonDBTM {
       global $DB;
 
       //Current table name
-      $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
    }
 }

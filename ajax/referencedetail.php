@@ -48,27 +48,27 @@ if ($_POST["plugin_order_references_id"] > 0) {
          echo "<input type='number' name='quantity' class='quantity'>";
          break;
       case 'priceht':
-         echo "<input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price' value='".Html::formatNumber($price, true)."' class='decimal'>";
+         echo "<input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."'
+                      name='price' value='".Html::formatNumber($price, true)."' class='decimal'>";
          break;
       case 'pricediscounted':
-         echo "<input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount' class='smalldecimal' value='0'>";
+         echo "<input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."'
+                      name='discount' class='smalldecimal' value='0'>";
          break;
       case 'taxe':
          $config = PluginOrderConfig::getConfig();
-         PluginOrderOrderTax::Dropdown(array(
+         PluginOrderOrderTax::Dropdown([
             'name'                => "plugin_order_ordertaxes_id",
             'value'               => $config->getDefaultTaxes(),
             'display_emptychoice' => true,
             'emptylabel'          => __("No VAT", "order"),
-         ));
+         ]);
          break;
       case 'validate':
-         echo "<input type='hidden' name='itemtype' value='"
-            . $_POST["itemtype"] . "' class='submit' >";
-         echo "<input type='hidden' name='plugin_order_references_id' value='"
-            . $_POST["plugin_order_references_id"] . "' class='submit' >";
-         echo "<input type='submit' name='add_item' value=\""
-            . __("Add") . "\" class='submit' >";
+         echo Html::hidden('itemtype', ['value' => $_POST["itemtype"]]);
+         echo Html::hidden('plugin_order_references_id',
+                           ['value' => $_POST["plugin_order_references_id"]]);
+         echo "<input type='submit' name='add_item' value=\"". __("Add")."\" class='submit' >";
          break;
    }
 } else {

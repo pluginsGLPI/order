@@ -67,10 +67,11 @@ if (isset($_POST['action'])) {
                   $config = PluginOrderConfig::getConfig();
                   if ($config->canAddBillDetails()) {
                      if ($bill->getFromDB($_POST["plugin_order_bills_id"])) {
-                        $fields['id'] = $ic->fields['id'];
-                        $fields['bill'] = $bill->fields['number'];
-                        $fields['warranty_date'] = $bill->fields['billdate'];
-                        $ic->update($fields);
+                        $ic->update([
+                           'id'            => $ic->fields['id'],
+                           'bill'          => $bill->fields['number'],
+                           'warranty_date' => $bill->fields['billdate'],
+                        ]);
                      }
                   }
                }
@@ -85,7 +86,7 @@ $dropdown = new PluginOrderBill();
 
 Session::checkRight("plugin_order_bill", READ);
 
-Html::header(PluginOrderBill::getTypeName(1), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "bill");
+Html::header(PluginOrderBill::getTypeName(), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "bill");
 if (isset($_REQUEST['id'])) {
    $bill->display($_REQUEST);
 } else {

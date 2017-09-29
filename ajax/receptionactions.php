@@ -47,15 +47,16 @@ if (isset($_POST["action"])) {
          echo "<table><tr><td>".__("Delivery form") . "</td>";
          echo "<td><input type='text' name='delivery_number' size='20'></td></tr>";
          echo "<tr><td>".__("Delivery status", "order") . "</td><td>";
-         PluginOrderDeliveryState::Dropdown(array('name' => "plugin_order_deliverystates_id"));
+         PluginOrderDeliveryState::Dropdown(['name' => "plugin_order_deliverystates_id"]);
          echo "</td></tr>";
          $config = PluginOrderConfig::getConfig();
          if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
             echo "<tr><td>". __("Enable automatic generation", "order") . "</td>";
             echo "<td>";
-            $tab = array(PluginOrderConfig::CONFIG_NEVER => __('No'),
-                         PluginOrderConfig::CONFIG_YES   => __('Yes'));
-            Dropdown::showFromArray('manual_generate', $tab);
+            Dropdown::showFromArray('manual_generate', [
+               PluginOrderConfig::CONFIG_NEVER => __('No'),
+               PluginOrderConfig::CONFIG_YES   => __('Yes')
+            ]);
             echo "</td></tr>";
             echo "<tr><td>" . __("Default name", "order") . "</td><td>";
             Html::autocompletionTextField($config, "generated_name");

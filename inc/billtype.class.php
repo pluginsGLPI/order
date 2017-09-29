@@ -41,7 +41,7 @@ class PluginOrderBillType extends CommonDropdown {
    public static function install(Migration $migration) {
       global $DB;
 
-      $table = getTableForItemType(__CLASS__);
+      $table = self::getTable();
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
          $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_billtypes` (
@@ -58,6 +58,6 @@ class PluginOrderBillType extends CommonDropdown {
    public static function uninstall() {
       global $DB;
 
-      $DB->query("DROP TABLE IF EXISTS `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
    }
 }

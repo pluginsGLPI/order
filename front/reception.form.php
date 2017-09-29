@@ -54,24 +54,25 @@ if (isset ($_POST["update"])) {
          if ($nb) {
             for ($i = 0; $i < $nb; $i++) {
                $ID = $DB->result($result, $i, 'id');
-               $input["id"]                             = $ID;
-               $input["delivery_date"]                  = $_POST["delivery_date"];
-               $input["delivery_number"]                = $_POST["delivery_number"];
-               $input["plugin_order_deliverystates_id"] = $_POST["plugin_order_deliverystates_id"];
-               $input["delivery_comment"]               = $_POST["delivery_comment"];
-               $reception->update($input);
+               $reception->update([
+                  "id"                             => $ID,
+                  "delivery_date"                  => $_POST["delivery_date"],
+                  "delivery_number"                => $_POST["delivery_number"],
+                  "plugin_order_deliverystates_id" => $_POST["plugin_order_deliverystates_id"],
+                  "delivery_comment"               => $_POST["delivery_comment"],
+               ]);
             }
          }
       } else {
          $reception->update($_POST);
       }
    }
-   $reception->updateReceptionStatus(array('item' => array($_POST['id'] => 'on')));
+   $reception->updateReceptionStatus(['item' => [$_POST['id'] => 'on']]);
    Html::redirect($_SERVER['HTTP_REFERER']);
 
 } else if (isset ($_POST["delete"])) {
    $reception->deleteDelivery($_POST["id"]);
-   $reception->updateReceptionStatus(array('item' => array($_POST['id'] => 'on')));
+   $reception->updateReceptionStatus(['item' => [$_POST['id'] => 'on']]);
    Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=".$_POST["plugin_order_orders_id"]);
 
 } else if (isset ($_POST["reception"])) {
