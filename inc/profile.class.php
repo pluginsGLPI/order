@@ -40,7 +40,9 @@ class PluginOrderProfile extends CommonDBTM {
       self::addDefaultProfileInfos($ID, array(
          'plugin_order_order'                             => PluginOrderOrder::ALLRIGHTS, // All rights : CREATE + READ + ...
          'plugin_order_bill'                              => 127,
-         'plugin_order_reference'                         => 127), true
+         'plugin_order_reference'                         => 127,
+         'plugin_order_purchaserequest'                   => 127,
+         'plugin_order_purchaserequest_validate'          => 1), true
       );
    }
 
@@ -97,6 +99,18 @@ class PluginOrderProfile extends CommonDBTM {
          'title'         => __('Orders', 'order'),
       ));
 
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr class='tab_bg_1'><th colspan='4'>" . __('Helpdesk') . "</th></tr>\n";
+
+      $effective_rights = ProfileRight::getProfileRights($profiles_id, array('plugin_order_purchaserequest_validate'));
+      echo "<tr class='tab_bg_2'>";
+      echo "<td width='20%'>" . __("Purchase request validation", "order") . "</td>";
+      echo "<td colspan='5'>";
+      Html::showCheckbox(array('name' => '_plugin_order_purchaserequest_validate',
+                               'checked' => $effective_rights['plugin_order_purchaserequest_validate']));
+      echo "</td></tr>\n";
+      echo "</table>";
+
       if ($canedit && $closeform) {
          echo "<div class='center'>";
          echo Html::hidden('id', array('value' => $profiles_id));
@@ -145,7 +159,9 @@ class PluginOrderProfile extends CommonDBTM {
          self::addDefaultProfileInfos($item->getID(), array(
             'plugin_order_order'                             => 0, // All rights : CREATE + READ + ...
             'plugin_order_bill'                              => 0,
-            'plugin_order_reference'                         => 0
+            'plugin_order_reference'                         => 0,
+            'plugin_order_purchaserequest'                   => 0,
+            'plugin_order_purchaserequest_validate'          => 0
          ));
          $prof->showForm($item->getID());
       }
@@ -166,8 +182,18 @@ class PluginOrderProfile extends CommonDBTM {
          array('itemtype' => 'PluginOrderBill',
             'label'    => __("Bills", "order"),
             'field'    => 'plugin_order_bill'
+         ),
+         array('itemtype' => 'PluginOrderPurchaseRequest',
+            'label'    => __("Purchase request", "order"),
+            'field'    => 'plugin_order_purchaserequest'
          )
       );
+
+      if ($all) {
+         $rights[] = array('itemtype' => 'PluginOrderPurchaseRequest',
+                           'label' => __("Purchase request validation", "order"),
+                           'field' => 'plugin_order_purchaserequest_validate');
+      }
 
       return $rights;
    }

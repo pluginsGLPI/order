@@ -152,6 +152,12 @@ function plugin_init_order() {
                                array('addtabon' => array('Preference')));
       }
 
+      if (PluginOrderPurchaseRequest::canView()) {
+         Plugin::registerClass('PluginOrderPurchaseRequest',
+                               array('notificationtemplates_types' => true,
+                                     'addtabon'                    => array('Ticket')));
+      }
+
       /*if glpi is loaded */
       if (Session::getLoginUserID()) {
          $PLUGIN_HOOKS['add_css']['order'][]= 'order.css';
