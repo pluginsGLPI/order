@@ -49,13 +49,12 @@ if ($_POST["itemtype"]) {
          } else {
             $file = $_POST["itemtype"];
          }
-         if (file_exists(GLPI_ROOT . "/inc/" . strtolower($_POST["itemtype"]) . "type.class.php")
-               || file_exists(GLPI_ROOT . "/plugins/order/inc/" . strtolower($file) . "type.class.php")) {
+         if (class_exists($_POST["itemtype"].'Type')) {
             Dropdown::show($_POST["itemtype"]."Type", array('name' => "types_id"));
          }
          break;
       case "models_id":
-         if (file_exists(GLPI_ROOT . "/inc/" . strtolower($_POST["itemtype"]) . "model.class.php")) {
+         if (class_exists($_POST["itemtype"].'Model')) {
             Dropdown::show($_POST["itemtype"] . "Model", array('name' => "models_id"));
          } else {
             return "";

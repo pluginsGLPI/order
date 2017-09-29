@@ -41,7 +41,9 @@ if (isset($_POST["action"])) {
    switch ($_POST["action"]) {
       case "reception":
          echo "</td><td>";
-         Html::showDateFormItem("delivery_date", date("Y-m-d"), true, 1);
+         Html::showDateField("delivery_date", ['value'      => date("Y-m-d"),
+                                               'maybeempty' => true,
+                                               'canedit'    => true]);
          echo "<table><tr><td>".__("Delivery form") . "</td>";
          echo "<td><input type='text' name='delivery_number' size='20'></td></tr>";
          echo "<tr><td>".__("Delivery status", "order") . "</td><td>";

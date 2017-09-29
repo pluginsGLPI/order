@@ -495,18 +495,14 @@ class PluginOrderReference extends CommonDBTM {
          } else {
             $file = $options['item'];
          }
-         $core_typefilename   = GLPI_ROOT . "/inc/" . strtolower($file) . "type.class.php";
-         $plugin_typefilename = GLPI_ROOT . "/plugins/order/inc/" . strtolower($file) . "type.class.php";
-         $itemtypeclass       = $options['item'] . "Type";
 
-         if (file_exists($core_typefilename)
-               || file_exists($plugin_typefilename)) {
+         $itemtypeclass = $options['item'] . "Type";
+         if (class_exists($itemtypeclass)) {
             if (!$reference_in_use) {
                Dropdown::show($itemtypeclass,
-               array(
-                  'name'  => "types_id",
-                  'value' => $this->fields["types_id"],
-               ));
+                              ['name'  => "types_id",
+                               'value' => $this->fields["types_id"],
+                              ]);
             } else {
                echo Dropdown::getDropdownName(getTableForItemType($itemtypeclass), $this->fields["types_id"]);
             }
@@ -519,11 +515,11 @@ class PluginOrderReference extends CommonDBTM {
       echo "<td>";
       echo "<span id='show_models_id'>";
       if ($options['item']) {
-         if (file_exists(GLPI_ROOT . "/inc/" . strtolower($options['item']) . "model.class.php")) {
-            Dropdown::show($options['item'] . "Model", array(
-               'name'  => "models_id",
-               'value' => $this->fields["models_id"],
-            ));
+         if (class_exists($itemtypeclass)) {
+            Dropdown::show($options['item'] . "Model",
+                           ['name'  => "models_id",
+                            'value' => $this->fields["models_id"],
+                           ]);
          }
       }
       echo "</span>";
@@ -532,7 +528,8 @@ class PluginOrderReference extends CommonDBTM {
       echo "<td>" . __("Template name") . "</td>";
       echo "<td>";
       echo "<span id='show_templates_id'>";
-      if (!empty($options['item']) && FieldExists(getTableForItemType($options['item']), 'is_template')) {
+      if (!empty($options['item'])
+         && FieldExists(getTableForItemType($options['item']), 'is_template')) {
          $this->dropdownTemplate('templates_id', $this->fields['entities_id'],
                                  getTableForItemType($options['item']),
                                  $this->fields['templates_id']);

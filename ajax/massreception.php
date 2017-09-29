@@ -39,7 +39,9 @@ $PluginOrderReception = new PluginOrderReception();
 
 echo "<table width='950px' class='tab_cadre_fixe'>";
 echo "<tr class='tab_bg_2'><td>" . __("Delivery date") . "</td><td>";
-Html::showDateFormItem("delivery_date", date("Y-m-d"), true, 1);
+Html::showDateField("delivery_date", ['value'      => date("Y-m-d"),
+                                      'maybeempty' => true,
+                                      'canedit'    => true]);
 echo "</td><td>";
 echo __("Delivery form") . "</td><td>";
 echo "<input type='text' name='delivery_number' size='20'>";
