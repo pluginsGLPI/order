@@ -54,7 +54,7 @@ class PluginOrderProfile extends CommonDBTM {
       foreach ($rights as $right => $value) {
          if (countElementsInTable('glpi_profilerights',
                                   "`profiles_id`='$profiles_id'
-                                     AND `name`='$right'") && $drop_existing) {
+                                   AND `name`='$right'") && $drop_existing) {
             $profileRight->deleteByCriteria([
                'profiles_id' => $profiles_id,
                'name'        => $right
@@ -62,7 +62,7 @@ class PluginOrderProfile extends CommonDBTM {
          }
          if (!countElementsInTable('glpi_profilerights',
                                    "`profiles_id`='$profiles_id'
-                                      AND `name`='$right'")) {
+                                    AND `name`='$right'")) {
             $profileRight->add([
                'profiles_id' => $profiles_id,
                'name'        => $right,
@@ -115,8 +115,8 @@ class PluginOrderProfile extends CommonDBTM {
       global $DB;
 
       if ($DB->tableExists("glpi_plugin_order_profiles")
-         && !FieldExists("glpi_plugin_order_profiles",
-                         "plugin_order_generate_order_without_validation")) {
+         && !$DB->fieldExists("glpi_plugin_order_profiles",
+                              "plugin_order_generate_order_without_validation")) {
          $DB->query("ALTER TABLE `glpi_plugin_order_profiles`
                      ADD `plugin_order_generate_order_without_validation` char(1) default NULL;");
       }

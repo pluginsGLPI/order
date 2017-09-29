@@ -434,7 +434,7 @@ class PluginOrderLink extends CommonDBChild {
          switch ($itemtype) {
             case 'ConsumableItem' :
             case 'CartridgeItem' :
-               $table = getTableForItemType($itemtype);
+               $table = $itemtype::getTable();
                if ($itemtype == 'ConsumableItem') {
                   $item = new Consumable();
                } else {

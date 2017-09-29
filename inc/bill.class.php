@@ -123,59 +123,59 @@ class PluginOrderBill extends CommonDropdown
       $tab['common']            = __("Bill", "order");
 
       /* order_number */
-      $tab[1]['table']          = $this->getTable();
+      $tab[1]['table']          = self::getTable();
       $tab[1]['field']          = 'number';
       $tab[1]['name']           = _x("phone", "Number");
       $tab[1]['datatype']       = 'itemlink';
 
-      $tab[2]['table']          = $this->getTable();
+      $tab[2]['table']          = self::getTable();
       $tab[2]['field']          = 'billdate';
       $tab[2]['name']           = __("Date");
       $tab[2]['datatype']       = 'datetime';
 
-      $tab[3]['table']          = $this->getTable();
+      $tab[3]['table']          = self::getTable();
       $tab[3]['field']          = 'validationdate';
       $tab[3]['name']           = __("Approval date");
       $tab[3]['datatype']       = 'datetime';
 
-      $tab[4]['table']          = getTableForItemType('User');
+      $tab[4]['table']          = User::getTable();
       $tab[4]['field']          = 'name';
       $tab[4]['linkfield']      = 'users_id_validation';
       $tab[4]['name']           = __("Approver");
 
-      $tab[5]['table']          = getTableForItemType('PluginOrderBillType');
+      $tab[5]['table']          = PluginOrderBillType::getTable();
       $tab[5]['field']          = 'name';
       $tab[5]['name']           = __("Type");
 
-      $tab[6]['table']          = getTableForItemType('PluginOrderBillState');
+      $tab[6]['table']          = PluginOrderBillState::getTable();
       $tab[6]['field']          = 'name';
       $tab[6]['name']           = __("Status");
 
-      $tab[7]['table']          = getTableForItemType('Supplier');
+      $tab[7]['table']          = Supplier::getTable();
       $tab[7]['field']          = 'name';
       $tab[7]['name']           = __("Supplier");
       $tab[7]['datatype']       = 'itemlink';
       $tab[7]['itemlink_type']  = 'Supplier';
 
-      $tab[8]['table']          = getTableForItemType('PluginOrderOrder');
+      $tab[8]['table']          = PluginOrderOrder::getTable();
       $tab[8]['field']          = 'name';
       $tab[8]['name']           = __("Order", "order");
       $tab[8]['datatype']       = 'itemlink';
       $tab[8]['itemlink_type']  = 'PluginOrderOrder';
 
-      $tab[9]['table']          = $this->getTable();
+      $tab[9]['table']          = self::getTable();
       $tab[9]['field']          = 'name';
       $tab[9]['name']           = __("Name");
       $tab[9]['datatype']       = 'itemlink';
 
       /* comments */
-      $tab[16]['table']         = $this->getTable();
+      $tab[16]['table']         = self::getTable();
       $tab[16]['field']         = 'comment';
       $tab[16]['name']          = __("Description");
       $tab[16]['datatype']      = 'text';
 
       /* ID */
-      $tab[30]['table']         = $this->getTable();
+      $tab[30]['table']         = self::getTable();
       $tab[30]['field']         = 'id';
       $tab[30]['name']          = __("ID");
 
@@ -184,7 +184,7 @@ class PluginOrderBill extends CommonDropdown
       $tab[80]['field']         = 'completename';
       $tab[80]['name']          = __("Entity");
 
-      $tab[86]['table']         = $this->getTable();
+      $tab[86]['table']         = self::getTable();
       $tab[86]['field']         = 'is_recursive';
       $tab[86]['name']          = __("Child entities");
       $tab[86]['datatype']      = 'bool';
@@ -204,7 +204,7 @@ class PluginOrderBill extends CommonDropdown
       echo "</th></tr>";
 
       $bills_id = $bill->getID();
-      $table = getTableForItemType("PluginOrderOrder_Item");
+      $table = PluginOrderOrder_Item::getTable();
 
       $query  = "SELECT * FROM `$table`";
       $query .= " WHERE `plugin_order_bills_id` = '$bills_id'";
@@ -366,7 +366,7 @@ class PluginOrderBill extends CommonDropdown
                echo "<td align='center'>";
                if (file_exists($CFG_GLPI['root_doc']."/inc/".strtolower($data["itemtype"])."type.class.php")) {
                   echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"),
-                                                                     $data["types_id"]);
+                                                 $data["types_id"]);
                }
                echo "</td>";
 
@@ -387,8 +387,8 @@ class PluginOrderBill extends CommonDropdown
                }
                echo "</td>";
                echo "<td align='center'>";
-               echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBillState'),
-                                                                  $data['plugin_order_billstates_id']);
+               echo Dropdown::getDropdownName(PluginOrderBillState::getTable(),
+                                              $data['plugin_order_billstates_id']);
                echo "</td>";
                echo "</tr>";
             }

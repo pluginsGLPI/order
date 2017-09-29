@@ -549,7 +549,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             echo "<td align='center'>";
             if (file_exists(GLPI_ROOT."/inc/".strtolower($data_ref["itemtype"])."type.class.php")) {
                echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Type"),
-                                                                  $data_ref["types_id"]);
+                                              $data_ref["types_id"]);
             } else if ($data_ref["itemtype"] == "PluginOrderOther") {
                echo  $data_ref['othertypename'];
             }
@@ -764,7 +764,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                /* taxe */
                echo "<td align='center'>";
                echo Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTax"),
-                                                               $data["plugin_order_ordertaxes_id"]);
+                                              $data["plugin_order_ordertaxes_id"]);
                echo "</td>";
                /* reduction */
                if ($canedit) {
@@ -1062,11 +1062,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $this->getFromDB($order_items_id);
       if (isset($this->input['price_taxfree'])
          || isset($this->input['plugin_order_ordertaxes_id'])) {
-         $datas = $this->queryRef($this->fields['plugin_order_orders_id'],
-                                  $this->fields['plugin_order_references_id'],
-                                  $this->fields['price_taxfree'],
-                                  $this->fields['discount']);
-         while ($item=$DB->fetch_array($datas)) {
+         $data = $this->queryRef($this->fields['plugin_order_orders_id'],
+                                 $this->fields['plugin_order_references_id'],
+                                 $this->fields['price_taxfree'],
+                                 $this->fields['discount']);
+         while ($item=$DB->fetch_array($data)) {
             $this->updatePrice_taxfree([
                'item_id'       => $item['id'],
                'price_taxfree'  => $this->fields['price_taxfree']
@@ -1089,7 +1089,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       $table = self::getTable();
       if (countElementsInTable($table, "`plugin_order_orders_id`='".$order->getID().
-                                       "' GROUP BY `plugin_order_bills_id`")) {
+                               "' GROUP BY `plugin_order_bills_id`")) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th>".__("Name")."</th>";
          echo "<th>".__("Status")."</th>";
@@ -1229,8 +1229,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                }
                echo "</td>";
                echo "<td align='center'>";
-               echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBillState'),
-                                                                  $data['plugin_order_billstates_id']);
+               echo Dropdown::getDropdownName(PluginOrderBillState::getTable(),
+                                              $data['plugin_order_billstates_id']);
                echo "</td>";
                echo "</tr>";
 
@@ -1287,11 +1287,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       if ($post['quantity'] > $quantity) {
 
-         $datas = $this->queryRef($post['plugin_order_orders_id'],
-                                  $post['old_plugin_order_references_id'],
-                                  $post['old_price_taxfree'],
-                                  $post['old_discount']);
-         $item = $DB->fetch_array($datas);
+         $data = $this->queryRef($post['plugin_order_orders_id'],
+                                 $post['old_plugin_order_references_id'],
+                                 $post['old_price_taxfree'],
+                                 $post['old_discount']);
+         $item = $DB->fetch_array($data);
 
          $this->getFromDB($item['id']);
          $to_add  = $post['quantity'] - $quantity;

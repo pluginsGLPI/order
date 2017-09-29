@@ -116,7 +116,7 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
       $listeArticles[] = [
          'quantity'         => $quantity,
          'ref'              => utf8_decode($data["name"]),
-         'taxe'             => Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTax"),
+         'taxe'             => Dropdown::getDropdownName(PluginOrderOrderTax::getTable(),
                                                          $data["plugin_order_ordertaxes_id"]),
          'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier($data["id"],
                                                                                                       $order->fields["suppliers_id"]),

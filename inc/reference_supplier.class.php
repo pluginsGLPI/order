@@ -376,7 +376,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
                                   "glpi_displaypreferences", "glpi_documents_items",
                                   "glpi_infocoms", "glpi_logs"],
                                  []);
-         if (FieldExists('glpi_tickets', 'itemtype')) {
+         if ($DB->fieldExists('glpi_tickets', 'itemtype')) {
             Plugin::migrateItemType([3152 => 'PluginOrderReference_Supplier'],
                                     ["glpi_tickets"],
                                     []);

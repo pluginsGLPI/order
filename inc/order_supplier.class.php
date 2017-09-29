@@ -116,11 +116,6 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       }
 
       $this->initForm($ID, $options);
-
-      if (strpos($_SERVER['PHP_SELF'], "order_supplier")) {
-         echo "showTabs()";
-         $this->showTabs($options);
-      }
       $this->showFormHeader($options);
       $PluginOrderOrder = new PluginOrderOrder();
       $PluginOrderOrder->getFromDB($plugin_order_orders_id);
@@ -185,8 +180,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo "<div class='center'>";
       echo Html::hidden('plugin_order_orders_id', ['value' => $ID]);
 
-      $table = getTableForItemType(__CLASS__);
-
+      $table = self::getTable();
       $nb_elements = countElementsInTable($table, "`plugin_order_orders_id` = '$ID'");
 
       if ($nb_elements > 0) {
@@ -199,24 +193,24 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          echo "<th>".__("Order number")."</th>";
          echo "</tr>";
 
-         $datas = getAllDatasFromTable($table, "`plugin_order_orders_id` = '$ID'");
-         foreach ($datas as $data) {
-            Session::addToNavigateListItems(__CLASS__, $data['id']);
-            echo Html::hidden("item[".$data["id"]."]", ['value' => $ID]);
+         $data = getAllDatasFromTable($table, "`plugin_order_orders_id` = '$ID'");
+         foreach ($data as $cur) {
+            Session::addToNavigateListItems(__CLASS__, $cur['id']);
+            echo Html::hidden("item[".$cur["id"]."]", ['value' => $ID]);
             echo "<tr class='tab_bg_1 center'>";
             echo "<td>";
             if ($candelete) {
-               echo "<input type='checkbox' name='check[".$data["id"]."]'";
+               echo "<input type='checkbox' name='check[".$cur["id"]."]'";
                if (isset($_POST['check']) && $_POST['check'] == 'all') {
                   echo " checked ";
                }
                echo ">";
             }
             echo "</td>";
-            echo "<td><a href='".$link."?id=".$data["id"]."&plugin_order_orders_id=".$ID."'>"
-              .Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"])."</a></td>";
-            echo "<td>".$data["num_quote"]."</td>";
-            echo "<td>".$data["num_order"]."</td>";
+            echo "<td><a href='".$link."?id=".$cur["id"]."&plugin_order_orders_id=".$ID."'>"
+              .Dropdown::getDropdownName("glpi_suppliers", $cur["suppliers_id"])."</a></td>";
+            echo "<td>".$cur["num_quote"]."</td>";
+            echo "<td>".$cur["num_order"]."</td>";
             echo "</tr>";
          }
          echo "</table></div>";

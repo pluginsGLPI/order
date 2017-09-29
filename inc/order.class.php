@@ -1558,8 +1558,8 @@ class PluginOrderOrder extends CommonDBTM {
                $output = '';
                $contact = new Contact();
             if ($contact->getFromDB($this->fields["contacts_id"])) {
-               $output=formatUserName($contact->fields["id"], "", $contact->fields["name"],
-                                $contact->fields["firstname"]);
+               $output = formatUserName($contact->fields["id"], "", $contact->fields["name"],
+                                        $contact->fields["firstname"]);
             }
 
                $values['title_recipient']    = __("Recipient", "order");
@@ -1586,7 +1586,7 @@ class PluginOrderOrder extends CommonDBTM {
                $listeArticles[] = [
                   'quantity'         => $quantity,
                   'ref'              => utf8_decode($data["name"]),
-                  'taxe'             => Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTax"),
+                  'taxe'             => Dropdown::getDropdownName(PluginOrderOrderTax::getTable(),
                                                                   $data["plugin_order_ordertaxes_id"]),
                   'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier(
                                           $data["id"],
@@ -1773,8 +1773,8 @@ class PluginOrderOrder extends CommonDBTM {
             echo "</td>";
 
             echo "<td>";
-            echo Dropdown::getDropdownName(getTableForItemType('PluginOrderOrderState'),
-                                             $data["plugin_order_orderstates_id"]);
+            echo Dropdown::getDropdownName(PluginOrderOrderState::getTable(),
+                                           $data["plugin_order_orderstates_id"]);
             echo "</td>";
 
             echo "<td>";
@@ -1832,7 +1832,7 @@ class PluginOrderOrder extends CommonDBTM {
 
    public static function updateBillState($ID) {
       $all_paid    = true;
-      $order_items = getAllDatasFromTable(getTableForItemType('PluginOrderOrder_Item'),
+      $order_items = getAllDatasFromTable(PluginOrderOrder_Item::getTable(),
                                           "`plugin_order_orders_id`='$ID'");
       foreach ($order_items as $item) {
          if ($item['plugin_order_billstates_id'] == PluginOrderBillState::NOTPAID) {
@@ -1935,7 +1935,7 @@ class PluginOrderOrder extends CommonDBTM {
       global $CFG_GLPI, $DB;
 
       $nblate = 0;
-      $table  = getTableForItemType(__CLASS__);
+      $table  = self::getTable();
 
       foreach (getAllDatasFromTable($table, "`is_template`='0'") as $values) {
          $order = new self();
@@ -2211,7 +2211,7 @@ class PluginOrderOrder extends CommonDBTM {
             //Update to 1.1.0
             $migration->addField('glpi_plugin_order', "port_price", "FLOAT NOT NULL default '0'");
             $migration->addField('glpi_plugin_order', "taxes", "FLOAT NOT NULL default '0'");
-            if (FieldExists("glpi_plugin_order", "numordersupplier")) {
+            if ($DB->fieldExists("glpi_plugin_order", "numordersupplier")) {
                foreach ($DB->request("glpi_plugin_order") as $data) {
                   $query = "INSERT INTO  `glpi_plugin_order_suppliers`
                               (`ID`, `FK_order`, `numorder`, `numbill`) VALUES
@@ -2414,7 +2414,7 @@ class PluginOrderOrder extends CommonDBTM {
          foreach ($prefs as $num => $rank) {
             if (!countElementsInTable("glpi_displaypreferences",
                                        "`itemtype`='PluginOrderOrder' AND `num`='$num'
-                                           AND `users_id`='0'")) {
+                                        AND `users_id`='0'")) {
                $DB->query("INSERT INTO glpi_displaypreferences
                            VALUES (NULL,'PluginOrderOrder','$num','$rank','0');");
             }

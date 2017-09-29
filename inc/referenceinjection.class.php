@@ -104,7 +104,7 @@ class PluginOrderReferenceInjection extends PluginOrderReference
             if (isset($values[$itemtype]['itemtype']) && class_exists($values[$itemtype]['itemtype'])) {
                $itemtype_formodel = $values[$itemtype]['itemtype'].$type_prefix;
                if (class_exists($itemtype_formodel)) {
-                  $values[$itemtype][$field] = Dropdown::getDropdownName(getTableForItemType($itemtype_formodel), $value);
+                  $values[$itemtype][$field] = Dropdown::getDropdownName($itemtype_formodel::getTable(), $value);
                }
             }
             break;

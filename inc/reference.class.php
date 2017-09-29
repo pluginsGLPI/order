@@ -205,7 +205,7 @@ class PluginOrderReference extends CommonDBTM {
       if (!isset($input["transfert"])
             && countElementsInTable(self::getTable(),
                                     "`name` = '".$input["name"]."'
-                                       AND `entities_id` = '".$input["entities_id"]."'")) {
+                                     AND `entities_id` = '".$input["entities_id"]."'")) {
          Session::addMessageAfterRedirect(__("A reference with the same name still exists", "order"), false, ERROR);
          return false;
       }
@@ -508,7 +508,7 @@ class PluginOrderReference extends CommonDBTM {
                   'value' => $this->fields["types_id"],
                ]);
             } else {
-               echo Dropdown::getDropdownName(getTableForItemType($itemtypeclass), $this->fields["types_id"]);
+               echo Dropdown::getDropdownName($itemtypeclass::getTable(), $this->fields["types_id"]);
             }
          }
       }
@@ -533,9 +533,9 @@ class PluginOrderReference extends CommonDBTM {
       echo "<td>";
       echo "<span id='show_templates_id'>";
       if (!empty($options['item'])
-         && FieldExists(getTableForItemType($options['item']), 'is_template')) {
+         && $DB->fieldExists($options['item']::getTable(), 'is_template')) {
          $this->dropdownTemplate('templates_id', $this->fields['entities_id'],
-                                 getTableForItemType($options['item']),
+                                 $options['item']::getTable(),
                                  $this->fields['templates_id']);
       }
       echo "</span>";
@@ -562,7 +562,6 @@ class PluginOrderReference extends CommonDBTM {
    public static function dropdownReferencesByEnterprise($itemtype, $options = array()) {
       global $DB,$CFG_GLPI;
 
-      $item = getItemForItemtype($itemtype);
       if ($itemtype && !($item = getItemForItemtype($itemtype))) {
          return false;
       }
@@ -753,8 +752,7 @@ class PluginOrderReference extends CommonDBTM {
                $and .= " AND `is_deleted` = 0 ";
             }
 
-            $table = getTableForItemType($itemtype);
-
+            $table = $itemtype::getTable();
             $condition  = "1 $and AND `$table`.`id` NOT IN ";
             $condition .= "(SELECT `items_id` FROM `glpi_plugin_order_orders_items`
                            WHERE `itemtype`='$itemtype' AND `items_id`!='0')";
@@ -1163,7 +1161,7 @@ class PluginOrderReference extends CommonDBTM {
                                   "glpi_displaypreferences", "glpi_documents_items",
                                   "glpi_infocoms", "glpi_logs"]);
 
-         if (FieldExists('glpi_tickets', 'itemtype')) {
+         if ($DB->fieldExists('glpi_tickets', 'itemtype')) {
             Plugin::migrateItemType([3151 => 'PluginOrderReference'], ["glpi_tickets"]);
          }
 
@@ -1193,14 +1191,14 @@ class PluginOrderReference extends CommonDBTM {
          }
 
          //Fix error naming field
-         if (FieldExists($table, 'manufacturer_reference')) {
+         if ($DB->fieldExists($table, 'manufacturer_reference')) {
             $migration->changeField($table, "manufacturer_reference", "manufacturers_reference",
                                     "varchar(255) collate utf8_unicode_ci NOT NULL DEFAULT ''");
             $migration->migrationOneTable($table);
          }
 
          //2.0.1
-         if (!FieldExists($table, 'manufacturers_reference')) {
+         if (!$DB->fieldExists($table, 'manufacturers_reference')) {
             $migration->addField($table, "manufacturers_reference",
                                     "varchar(255) collate utf8_unicode_ci NOT NULL DEFAULT ''");
             $migration->migrationOneTable($table);
