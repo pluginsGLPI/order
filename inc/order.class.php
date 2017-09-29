@@ -2276,7 +2276,7 @@ class PluginOrderOrder extends CommonDBTM {
          //Only migrate itemtypes when it's only necessary, otherwise it breaks upgrade procedure !
          if ($domigration_itemtypes) {
             Plugin::migrateItemType([3150 => 'PluginOrderOrder'],
-                                    ["glpi_bookmarks", "glpi_bookmarks_users",
+                                    ["glpi_savedsearches", "glpi_savedsearches_users",
                                      "glpi_displaypreferences", "glpi_documents_items",
                                      "glpi_infocoms", "glpi_logs", "glpi_tickets"],
                                     []);
@@ -2304,7 +2304,7 @@ class PluginOrderOrder extends CommonDBTM {
             $migration->migrationOneTable("glpi_plugin_order_budgets");
 
             Plugin::migrateItemType([3153 => 'PluginOrderBudget'],
-                                    ["glpi_bookmarks", "glpi_bookmarks_users",
+                                    ["glpi_savedsearches", "glpi_savedsearches_users",
                                      "glpi_displaypreferences", "glpi_documents_items",
                                      "glpi_infocoms", "glpi_logs", "glpi_tickets"],
                                     []);
@@ -2345,7 +2345,7 @@ class PluginOrderOrder extends CommonDBTM {
 
             $DB->query("DROP TABLE `glpi_plugin_order_budgets`");
 
-            foreach (['glpi_displaypreferences', 'glpi_documents_items', 'glpi_bookmarks',
+            foreach (['glpi_displaypreferences', 'glpi_documents_items', 'glpi_savedsearches',
                       'glpi_logs'] as $t) {
                $DB->query("DELETE FROM `$t` WHERE `itemtype` = 'PluginOrderBudget'");
             }

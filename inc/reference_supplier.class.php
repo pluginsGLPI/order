@@ -372,7 +372,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          $migration->migrationOneTable($table);
 
          Plugin::migrateItemType([3152 => 'PluginOrderReference_Supplier'],
-                                 ["glpi_bookmarks", "glpi_bookmarks_users",
+                                 ["glpi_savedsearches", "glpi_savedsearches_users",
                                   "glpi_displaypreferences", "glpi_documents_items",
                                   "glpi_infocoms", "glpi_logs"],
                                  []);
