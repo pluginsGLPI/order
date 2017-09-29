@@ -703,11 +703,14 @@ class PluginOrderOrder extends CommonDBTM {
       /* date of order */
       echo "<td>" . __("Date of order", "order") . ":</td><td>";
       if ($canedit) {
-         if ($this->fields["order_date"] == NULL) {
-            Html::showDateFormItem("order_date", date("Y-m-d"), true, true);
-         } else {
-            Html::showDateFormItem("order_date", $this->fields["order_date"], true, true);
-         }
+         $value = ($this->fields["order_date"] == null) ? date('Y-m-d') : $this->fields["order_date"];
+         Html::showDateField(
+            'order_date', [
+               'value'        => $value,
+               'maybeempty'   => true,
+               'canedit'      => true
+            ]
+         );
       } else {
          echo Html::convDate($this->fields["order_date"]);
       }
@@ -923,11 +926,14 @@ class PluginOrderOrder extends CommonDBTM {
       }
       echo " </td><td>";
       if ($canedit) {
-         if ($this->fields["duedate"] == NULL) {
-            Html::showDateFormItem("duedate", '', true, true);
-         } else {
-            Html::showDateFormItem("duedate", $this->fields["duedate"], true, true);
-         }
+         $value = ($this->fields["duedate"] == null) ? '' : $this->fields["duedate"];
+         Html::showDateField(
+            'duedate', [
+               'value'        => $value,
+               'maybeempty'   => true,
+               'canedit'      => true
+            ]
+         );
       } else {
          echo Html::convDate($this->fields["duedate"]);
       }
@@ -1836,7 +1842,7 @@ class PluginOrderOrder extends CommonDBTM {
       if (!$budget->getFromDB($this->fields['budgets_id'])) {
          return false;
       }
-      Toolbox::logDebug($budget);
+
       if ($budget->fields['value'] == 0) {
          return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
       }
