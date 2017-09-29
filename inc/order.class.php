@@ -576,8 +576,8 @@ class PluginOrderOrder extends CommonDBTM {
              || $input["num_order"] == '') {
             Session::addMessageAfterRedirect(__("An order number is mandatory !", "order"), false, ERROR);
             return [];
-         } elseif (!isset ($input["name"])
-                   || $input["name"] == '') {
+         } else if (!isset ($input["name"])
+                    || $input["name"] == '') {
             $input["name"] = $input["num_order"];
          }
 
@@ -1494,16 +1494,16 @@ class PluginOrderOrder extends CommonDBTM {
                $is_cs_happy = true;
             }
 
-               $values = [
-                  'title_order'           => __("Order number", "order"),
-                  'num_order'             => $this->fields["num_order"],
-                  'title_invoice_address' => __("Invoice address", "order"),
-                  'comment_order'         => $this->fields["comment"],
-               ];
+            $values = [
+               'title_order'           => __("Order number", "order"),
+               'num_order'             => $this->fields["num_order"],
+               'title_invoice_address' => __("Invoice address", "order"),
+               'comment_order'         => $this->fields["comment"],
+            ];
 
-               $entity = new Entity();
-               $entity->getFromDB($this->fields["entities_id"]);
-               $town   = '';
+            $entity = new Entity();
+            $entity->getFromDB($this->fields["entities_id"]);
+            $town   = '';
 
             if ($this->fields["entities_id"] != 0) {
                $name_entity = $entity->fields["name"];
@@ -1511,7 +1511,7 @@ class PluginOrderOrder extends CommonDBTM {
                $name_entity = __("Root entity");
             }
 
-               $values['entity_name'] = $name_entity;
+            $values['entity_name'] = $name_entity;
             if ($entity->getFromDB($this->fields["entities_id"])) {
                $town = $entity->fields["town"];
 
@@ -1521,7 +1521,7 @@ class PluginOrderOrder extends CommonDBTM {
                $values['entity_country']  = $entity->fields["country"];
             }
 
-               $supplier = new Supplier();
+            $supplier = new Supplier();
             if ($supplier->getFromDB($this->fields["suppliers_id"])) {
                $values['supplier_name']     = $supplier->fields["name"];
                $values['supplier_address']  = $supplier->fields["address"];
@@ -1530,7 +1530,7 @@ class PluginOrderOrder extends CommonDBTM {
                $values['supplier_country']  = $supplier->fields["country"];
             }
 
-               $location = new Location();
+            $location = new Location();
             if ($location->getFromDB($this->fields["locations_id"])) {
                $values['title_delivery_address']   = __("Delivery address", "order");
                $values['comment_delivery_address'] = $location->fields['comment'];
@@ -1539,44 +1539,44 @@ class PluginOrderOrder extends CommonDBTM {
             if ($town) {
                $town = $town.", ";
             }
-               $order_date = Html::convDate($this->fields["order_date"]);
-               $username   = Html::clean(getUserName(Session::getLoginUserID()));
+            $order_date = Html::convDate($this->fields["order_date"]);
+            $username   = Html::clean(getUserName(Session::getLoginUserID()));
 
-               $values['title_date_order'] = $town.__("The", "order")." ";
-               $values['date_order']       = $order_date;
-               $values['title_sender']     = __("Issuer order", "order");
-               $values['sender']           = $username;
-               $values['title_budget']     = __("Budget");
+            $values['title_date_order'] = $town.__("The", "order")." ";
+            $values['date_order']       = $order_date;
+            $values['title_sender']     = __("Issuer order", "order");
+            $values['sender']           = $username;
+            $values['title_budget']     = __("Budget");
 
-               $budget = new Budget();
+            $budget = new Budget();
             if ($budget->getFromDB($this->fields["budgets_id"])) {
                $values['budget'] = $budget->fields['name'];
             } else {
                $values['budget'] = '';
             }
 
-               $output = '';
-               $contact = new Contact();
+            $output = '';
+            $contact = new Contact();
             if ($contact->getFromDB($this->fields["contacts_id"])) {
                $output = formatUserName($contact->fields["id"], "", $contact->fields["name"],
                                         $contact->fields["firstname"]);
             }
 
-               $values['title_recipient']    = __("Recipient", "order");
-               $values['recipient']          = Html::clean($output);
-               $values['nb']                 = __("Quantity", "order");
-               $values['title_item']         = __("Designation", "order");
-               $values['title_ref']          = __("Reference");
-               $values['HTPrice_item']       = __("Unit price", "order");
-               $values['TVA_item']           = __("VAT", "order");
-               $values['title_discount']     = __("Discount rate", "order");
-               $values['HTPriceTotal_item']  = __("Sum tax free", "order");
-               $values['ATIPriceTotal_item'] = __("Price ATI", "order");
+            $values['title_recipient']    = __("Recipient", "order");
+            $values['recipient']          = Html::clean($output);
+            $values['nb']                 = __("Quantity", "order");
+            $values['title_item']         = __("Designation", "order");
+            $values['title_ref']          = __("Reference");
+            $values['HTPrice_item']       = __("Unit price", "order");
+            $values['TVA_item']           = __("VAT", "order");
+            $values['title_discount']     = __("Discount rate", "order");
+            $values['HTPriceTotal_item']  = __("Sum tax free", "order");
+            $values['ATIPriceTotal_item'] = __("Price ATI", "order");
 
-               $listeArticles = [];
+            $listeArticles = [];
 
-               $result = $PluginOrderOrder_Item->queryDetail($ID);
-               $num    = $DB->numrows($result);
+            $result = $PluginOrderOrder_Item->queryDetail($ID);
+            $num    = $DB->numrows($result);
 
             while ($data=$DB->fetch_array($result)) {
                $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID, $data["id"],
@@ -1617,14 +1617,14 @@ class PluginOrderOrder extends CommonDBTM {
                $article->merge();
             }
 
-               $odf->mergeSegment($article);
+            $odf->mergeSegment($article);
 
-               $prices = $PluginOrderOrder_Item->getAllPrices($ID);
+            $prices = $PluginOrderOrder_Item->getAllPrices($ID);
 
-               // total price (with postage)
-               $postagewithTVA = $PluginOrderOrder_Item->getPricesATI($this->fields["port_price"],
-                                                                      Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
-                                                                      $this->fields["plugin_order_ordertaxes_id"]));
+            // total price (with postage)
+            $postagewithTVA = $PluginOrderOrder_Item->getPricesATI($this->fields["port_price"],
+                                                                   Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
+                                                                   $this->fields["plugin_order_ordertaxes_id"]));
 
             $total_HT  = $prices["priceHT"] + $this->fields["port_price"];
             $total_TVA = $prices["priceTVA"] + $postagewithTVA - $this->fields["port_price"];

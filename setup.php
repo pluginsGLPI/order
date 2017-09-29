@@ -147,8 +147,8 @@ function plugin_init_order() {
 
       if (PluginOrderOrder::canView()) {
          Plugin::registerClass('PluginOrderDocumentCategory', ['addtabon' => ['DocumentCategory']]);
-         Plugin::registerClass('PluginOrderOrder_Supplier',   ['addtabon' => ['Supplier']]);
-         Plugin::registerClass('PluginOrderPreference',       ['addtabon' => ['Preference']]);
+         Plugin::registerClass('PluginOrderOrder_Supplier', ['addtabon' => ['Supplier']]);
+         Plugin::registerClass('PluginOrderPreference', ['addtabon' => ['Preference']]);
       }
 
       /*if glpi is loaded */

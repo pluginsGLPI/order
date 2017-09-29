@@ -117,7 +117,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if (get_class($item) == __CLASS__) {
          return [1 => __("Main")];
-      } elseif ($item instanceof PluginOrderReference) {
+      } else if ($item instanceof PluginOrderReference) {
          return [1 => __("Supplier Detail", "order")];
       }
       return '';

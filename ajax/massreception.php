@@ -54,7 +54,7 @@ echo __("Number to deliver", "order") . "</td><td width='10%'>";
 $nb = $PluginOrderReception->checkItemStatus($_POST['plugin_order_orders_id'],
                                              $_POST['plugin_order_references_id'],
                                              PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED);
-Dropdown::showNumber('number_reception',  [
+Dropdown::showNumber('number_reception', [
    'value' => '',
    'min'   => 1,
    'max'   => $nb

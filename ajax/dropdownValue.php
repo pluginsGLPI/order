@@ -137,10 +137,11 @@ echo "</select>";
 if (isset($_POST["comment"]) && $_POST["comment"]) {
    Ajax::updateItemOnSelectEvent("dropdown_" . $_POST["myname"] . $_POST["rand"],
                                  "comment_" . $_POST["myname"] . $_POST["rand"],
-                                $CFG_GLPI["root_doc"] . "/ajax/comments.php", [
-      'value' => '__VALUE__',
-      'table' => $table
-   ]);
+                                 $CFG_GLPI["root_doc"] . "/ajax/comments.php",
+                                 [
+                                    'value' => '__VALUE__',
+                                    'table' => $table
+                                 ]);
 }
 
 if (isset($_POST["action"]) && $_POST["action"]) {

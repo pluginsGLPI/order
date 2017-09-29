@@ -1270,10 +1270,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $rand           = Dropdown::showFromArray('chooseAction', $action);
 
       Ajax::updateItemOnSelectEvent("dropdown_chooseAction$rand", "show_billsActions$rand",
-                                  $CFG_GLPI["root_doc"]."/plugins/order/ajax/billactions.php", [
-          'action'                 => '__VALUE__',
-          'plugin_order_orders_id' => $orders_id
-       ]);
+                                    $CFG_GLPI["root_doc"]."/plugins/order/ajax/billactions.php",
+                                    [
+                                       'action'                 => '__VALUE__',
+                                       'plugin_order_orders_id' => $orders_id
+                                    ]);
        echo "<span id='show_billsActions$rand'>&nbsp;</span>";
 
    }

@@ -64,7 +64,7 @@ if ($report->criteriasValidated()) {
                                   [
                                     'with_comment'  => true,
                                     'with_navigate' => true
-                                 ]),
+                                  ]),
       new PluginReportsColumn('num_order', __("Order number", "order")),
       new PluginReportsColumnLink('suppliers_id',
                                   __("Supplier"), 'Supplier'),
