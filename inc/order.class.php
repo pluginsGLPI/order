@@ -523,7 +523,7 @@ class PluginOrderOrder extends CommonDBTM {
          case __CLASS__:
             $ong    = [];
             $config = PluginOrderConfig::getConfig();
-            if (Session::haveRightOR("plugin_order_order", [
+            if (Session::haveRightsOr("plugin_order_order", [
                                        self::RIGHT_VALIDATION,
                                        self::RIGHT_CANCEL,
                                        self::RIGHT_UNDO_VALIDATION

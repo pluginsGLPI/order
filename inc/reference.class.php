@@ -423,7 +423,7 @@ class PluginOrderReference extends CommonDBTM {
    }
 
    public function showForm($id, $options = array()) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       $this->initForm($id, $options);
       $reference_in_use = !$id

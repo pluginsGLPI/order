@@ -776,7 +776,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   echo "function showDetailDiscount$rand_line() {";
                   echo "$('#detail_discount$rand_line').hide();";
                   echo "$('#detail_viewaccept$global_rand').show();";
-                  Ajax::updateItemJsCode("detail_viewdiscount$rand_line", CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
+                  Ajax::updateItemJsCode("detail_viewdiscount$rand_line", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
                      'maxlength' => 15,
                      'size'      => 8,
                      'name'      => 'detail_discount['.$data["IDD"].']',

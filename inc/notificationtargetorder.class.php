@@ -439,7 +439,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
    /**
     * Get additionnals targets for Tickets
    **/
-   public function getAdditionalTargets($event='') {
+   public function addAdditionalTargets($event='') {
       $this->addTarget(self::AUTHOR, __("Author"));
       $this->addTarget(self::AUTHOR_GROUP, __("Author group", "order"));
       $this->addTarget(self::DELIVERY_USER, __("Recipient"));
@@ -448,7 +448,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       $this->addTarget(self::SUPERVISOR_DELIVERY_GROUP, __("Manager")." ".__("Recipient group", "order"));
    }
 
-   public function getSpecificTargets($data, $options) {
+   public function addSpecificTargets($data, $options) {
       switch ($data['items_id']) {
          case self::AUTHOR:
             $this->getUserByField("users_id");
