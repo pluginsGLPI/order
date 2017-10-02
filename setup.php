@@ -64,7 +64,7 @@ if (!defined('PLUGIN_ORDER_NUMBER_STEP')) {
 if (!defined('PCLZIP_TEMPORARY_DIR')) {
    define('PCLZIP_TEMPORARY_DIR', GLPI_DOC_DIR . '/_tmp/pclzip');
 }
-//include_once GLPI_ROOT . "/plugins/order/vendor/autoload.php";
+include_once GLPI_ROOT . "/plugins/order/vendor/autoload.php";
 
 /**
  * Init hooks of the plugin.
