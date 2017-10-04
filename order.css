@@ -50,3 +50,9 @@ input[type=number].quantity::-webkit-inner-spin-button {
 .tab_order_add_items td:nth-child(7) {
    width: 40px;
 }
+
+/* Massive actions */
+label.order_ma {
+   display: block;
+   margin-top: 10px;
+}

@@ -67,18 +67,25 @@ if (isset ($_POST["update"])) {
          $reception->update($_POST);
       }
    }
-   $reception->updateReceptionStatus(['item' => [$_POST['id'] => 'on']]);
+   $reception->updateReceptionStatus([
+      'items' => [
+         'PluginOrderReception' => [
+            $_POST['id'] => 'on'
+         ]
+      ]]
+   );
    Html::redirect($_SERVER['HTTP_REFERER']);
 
 } else if (isset ($_POST["delete"])) {
    $reception->deleteDelivery($_POST["id"]);
-   $reception->updateReceptionStatus(['item' => [$_POST['id'] => 'on']]);
+   $reception->updateReceptionStatus([
+      'items' => [
+         'PluginOrderReception' => [
+            $_POST['id'] => 'on'
+         ]
+      ]
+   ]);
    Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=".$_POST["plugin_order_orders_id"]);
-
-} else if (isset ($_POST["reception"])) {
-   //A new item is delivered
-   $reception->updateReceptionStatus($_POST);
-   Html::redirect($_SERVER["HTTP_REFERER"]);
 
 } else if (isset ($_POST["bulk_reception"])) {
    //Several new items are delivered

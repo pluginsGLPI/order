@@ -276,19 +276,33 @@ class PluginOrderReception extends CommonDBChild {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
 
          if (!$numref) {
-            echo "<tr><th>".__("No item to take delivery of", "order")."</th></tr></table></div>";
+            echo "<tr><th>".__("No item to take delivery of", "order")."</th></tr>";
+            echo "</table></div>";
          } else {
             $references_id  = $data_ref["id"];
             $typeRef        = $data_ref["itemtype"];
             $price_taxfree  = $data_ref["price_taxfree"];
             $discount       = $data_ref["discount"];
+            $canmassive     = $order_order->canDeliver()
+                              && $this->checkItemStatus($orders_id,
+                                                        $references_id,
+                                                        PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED);
+            $massiveactionparams = [
+               'extraparams' => [
+                  'massive_action_fields' => [
+                     'plugin_order_orders_id',
+                     'plugin_order_references_id',
+                     'add_items'
+                  ]
+               ]
+            ];
 
             $item = new $typeRef();
             $rand = mt_rand();
             echo "<tr><th><ul><li>";
             echo "<a href=\"javascript:showHideDiv('reception$rand','reception_img$rand', '".
                $CFG_GLPI['root_doc']."/pics/plus.png','".$CFG_GLPI['root_doc']."/pics/moins.png');\">";
-            echo "<img alt='' name='reception_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
+            echo "<img name='reception_img$rand' src='".$CFG_GLPI['root_doc']."/pics/plus.png'>";
             echo "</a>";
             echo "</li></ul></th>";
             echo "<th>".__("Type")."</th>";
@@ -307,19 +321,65 @@ class PluginOrderReception extends CommonDBChild {
                                                                    $data_ref["price_taxfree"],
                                                                    $data_ref["discount"]);
             echo "<td>".$order_item->getDeliveredQuantity($orders_id,
-                                                            $references_id,
-                                                            $data_ref["price_taxfree"],
-                                                            $data_ref["discount"])
-                                                           ." / ".$total."</td>";
+                                                          $references_id,
+                                                          $data_ref["price_taxfree"],
+                                                          $data_ref["discount"])." / ".$total."</td>";
             echo "</tr></table>";
 
             echo "<div class='center' id='reception$rand' style='display:none'>";
-            echo "<form method='post' name='order_reception_form$rand' id='order_reception_form$rand'"
-              ." action=\"".Toolbox::getItemTypeFormURL("PluginOrderReception")."\">";
-            echo "<table class='tab_cadre_fixe'>";
 
+            $query = "SELECT items.`id` AS IDD,
+                             ref.`id` AS id,
+                             ref.`templates_id`,
+                             items.`states_id`,
+                             items.`comment`,
+                             items.`plugin_order_deliverystates_id`,
+                             items.`delivery_date`,
+                             items.`delivery_number`,
+                             ref.`name`,
+                             ref.`itemtype`,
+                             items.`items_id`
+                    FROM `glpi_plugin_order_orders_items` as items,
+                         `glpi_plugin_order_references` as ref
+                    WHERE `plugin_order_orders_id` = '$orders_id'
+                    AND items.`plugin_order_references_id` = '$references_id'
+                    AND items.`plugin_order_references_id` = ref.`id`
+                    AND items.`discount` LIKE '$discount'
+                    AND items.`price_taxfree` LIKE '$price_taxfree' ";
+            if ($typeRef == 'SoftwareLicense') {
+               $query .= " GROUP BY ref.`name` ";
+            }
+            $query .= " ORDER BY ref.`name` ";
+            $result = $DB->query($query);
+            $num    = $DB->numrows($result);
+
+            $all_data = [];
+            while ($data = $DB->fetch_array($result)) {
+               $all_data[] = $data;
+               $massiveactionparams['extraparams']['add_items'][$data["IDD"]] = [
+                  'id'                         => $data["IDD"],
+                  'name'                       => $data["name"],
+                  'plugin_order_references_id' => $data["id"],
+                  'itemtype'                   => $data["itemtype"],
+                  'templates_id'               => $data["templates_id"],
+                  'states_id'                  => $data["states_id"],
+               ];
+            }
+
+            if ($canmassive && $num) {
+               Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+               $massiveactionparams['container']   = 'mass'.__CLASS__.$rand;
+               $massiveactionparams['item']        = $order_order;
+               $massiveactionparams['rand']        = $rand;
+               $massiveactionparams['extraparams']['plugin_order_orders_id']     = $orders_id;
+               $massiveactionparams['extraparams']['plugin_order_references_id'] = $references_id;
+               Html::showMassiveActions($massiveactionparams);
+            }
+            echo "<table class='tab_cadre_fixe'>";
             echo "<tr>";
-            echo "<th width='15'></th>";
+            if ($canedit && $num) {
+               echo "<th width='15'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
+            }
             if ($typeRef != 'SoftwareLicense') {
                echo "<th>".__("ID")."</th>";
             }
@@ -330,32 +390,7 @@ class PluginOrderReception extends CommonDBChild {
             echo "<th>".__("Delivery status", "order")."</th>";
             echo "</tr>";
 
-            $query = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD,
-                             `glpi_plugin_order_references`.`id` AS id,
-                             `glpi_plugin_order_references`.`templates_id`,
-                             `glpi_plugin_order_orders_items`.`states_id`,
-                             `glpi_plugin_order_orders_items`.`comment`,
-                             `glpi_plugin_order_orders_items`.`plugin_order_deliverystates_id`,
-                             `glpi_plugin_order_orders_items`.`delivery_date`,
-                             `glpi_plugin_order_orders_items`.`delivery_number`,
-                             `glpi_plugin_order_references`.`name`,
-                             `glpi_plugin_order_references`.`itemtype`,
-                             `glpi_plugin_order_orders_items`.`items_id`
-                    FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references`
-                    WHERE `plugin_order_orders_id` = '$orders_id'
-                    AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = '".$references_id."'
-                    AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`
-                    AND `glpi_plugin_order_orders_items`.`discount` LIKE '".$discount."'
-                    AND `glpi_plugin_order_orders_items`.`price_taxfree` LIKE '".$price_taxfree."' ";
-            if ($typeRef == 'SoftwareLicense') {
-               $query.=" GROUP BY `glpi_plugin_order_references`.`name` ";
-            }
-            $query.=" ORDER BY `glpi_plugin_order_references`.`name` ";
-
-            $result = $DB->query($query);
-            $num    = $DB->numrows($result);
-
-            while ($data=$DB->fetch_array($result)) {
+            foreach ($all_data as $data) {
                $random   = mt_rand();
                $detailID = $data["IDD"];
                Session::addToNavigateListItems($this->getType(), $detailID);
@@ -368,12 +403,7 @@ class PluginOrderReception extends CommonDBChild {
 
                if ($order_order->canDeliver() && $status) {
                   echo "<td width='15' align='left'>";
-                  $sel = "";
-                  if (isset ($_GET["select"]) && $_GET["select"] == "all") {
-                     $sel = "checked";
-                  }
-
-                  echo "<input type='checkbox' name='item[".$detailID."]' value='1' $sel>";
+                  Html::showMassiveActionCheckBox(__CLASS__, $detailID);
                   echo "</td>";
                } else {
                   echo "<td width='15' align='left'></td>";
@@ -415,39 +445,113 @@ class PluginOrderReception extends CommonDBChild {
                                  ['value' => $data["states_id"]]);
             }
             echo "</table>";
-            if ($order_order->canDeliver() && $this->checkItemStatus($orders_id,
-                                                   $references_id,
-                                                   PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED)) {
-               Html::openArrowMassives("order_reception_form$rand", true);
-               echo Html::hidden('plugin_order_orders_id', ['value' => $orders_id]);
-               $this->dropdownReceptionActions($typeRef, $references_id,
-                                               $orders_id);
-               Html::closeArrowMassives([]);
 
-               $rand = mt_rand();
+            if ($canmassive) {
+               if ($num > 10) {
+                  $massiveactionparams['ontop'] = false;
+                  Html::showMassiveActions($massiveactionparams);
+               }
+               Html::closeForm();
+            }
+
+            if ($order_order->canDeliver()
+                && $this->checkItemStatus($orders_id,
+                                          $references_id,
+                                          PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED)) {
 
                if ($typeRef != 'SoftwareLicense') {
-                  echo "<div id='massreception".$orders_id.$rand."'></div>";
-
-                  echo "<script type='text/javascript' >";
-                  echo "function viewmassreception".$orders_id."$rand(){";
-                  $params = [
-                     'plugin_order_orders_id'     => $orders_id,
-                     'plugin_order_references_id' => $references_id,
-                  ];
-                  Ajax::updateItemJsCode("massreception".$orders_id.$rand,
-                                         $CFG_GLPI["root_doc"]."/plugins/order/ajax/massreception.php",
-                                         $params, false);
-                  echo "};";
-                  echo "</script>";
+                  echo "<form method='post' name='order_reception_form$rand'
+                              action='".Toolbox::getItemTypeFormURL("PluginOrderReception")."'>";
+                  echo "<div id='massreception$orders_id$rand'></div>";
+                  echo Html::scriptBlock("function viewmassreception".$orders_id."$rand() {".
+                     Ajax::updateItemJsCode("massreception".$orders_id.$rand,
+                                            $CFG_GLPI["root_doc"]."/plugins/order/ajax/massreception.php",
+                                            [
+                                               'plugin_order_orders_id'     => $orders_id,
+                                               'plugin_order_references_id' => $references_id,
+                                            ],
+                                            false, false)."
+                  }");
                   echo "<p><a href='javascript:viewmassreception".$orders_id."$rand();'>";
                   echo __("Take item delivery (bulk)", "order")."</a></p><br>";
+                  Html::closeForm();
                }
             }
-            Html::closeForm();
             echo "</div>";
          }
          echo "<br>";
+      }
+   }
+
+   function getForbiddenStandardMassiveAction() {
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      $forbidden[] = 'purge';
+      $forbidden[] = 'ObjectLock:unlock';
+      return $forbidden;
+   }
+
+   function getSpecificMassiveActions($checkitem = null) {
+      $isadmin = static::canUpdate();
+      $actions = parent::getSpecificMassiveActions($checkitem);
+      $sep     = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
+
+      $actions[$sep.'reception'] = __("Take item delivery", "order");
+
+      return $actions;
+   }
+
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+      $reception = new self;
+      switch ($ma->getAction()) {
+         case 'reception':
+            $reception->showReceptionForm($ma->POST);
+            break;
+      }
+
+      return parent::showMassiveActionsSubForm($ma);
+   }
+
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      $reception  = new PluginOrderReception();
+      switch ($ma->getAction()) {
+         case 'reception':
+            $reception->updateReceptionStatus($ma);
+            break;
+      }
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+   }
+
+
+   public function showReceptionForm($params = array()) {
+      echo "<label class='order_ma'>" . __("Delivery date") . "</label>";
+      Html::showDateField("delivery_date", ['value'      => date("Y-m-d"),
+                                            'maybeempty' => true,
+                                            'canedit'    => true]);
+
+      echo "<label class='order_ma'>".__("Delivery form") . "</label>";
+      echo "<input type='text' name='delivery_number' size='20'>";
+
+      echo "<label class='order_ma'>".__("Delivery status", "order") . "</label>";
+      PluginOrderDeliveryState::Dropdown(['name' => "plugin_order_deliverystates_id"]);
+
+      $config = PluginOrderConfig::getConfig();
+      if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
+         echo "<label class='order_ma'>". __("Enable automatic generation", "order") . "</label>";
+         Dropdown::showFromArray('manual_generate', [
+            PluginOrderConfig::CONFIG_NEVER => __('No'),
+            PluginOrderConfig::CONFIG_YES   => __('Yes')
+         ]);
+
+         echo "<label class='order_ma'>" . __("Default name", "order") . "</label>";
+         Html::autocompletionTextField($config, "generated_name");
+
+         echo "<label class='order_ma'>" . __("Default serial number", "order") . "</label>";
+         Html::autocompletionTextField($config, "generated_serial");
+
+         echo "<label class='order_ma'>" . __("Default inventory number", "order") . "<label>";
+         Html::autocompletionTextField($config, "generated_otherserial");
       }
    }
 
@@ -530,7 +634,13 @@ class PluginOrderReception extends CommonDBChild {
                }
             }
             self::generateAsset($options);
-            $this->updateReceptionStatus(['item' => [$DB->result($result, $i, 0) => 'on']]);
+            $this->updateReceptionStatus([
+               'items' => [
+                  __CLASS__ => [
+                     $DB->result($result, $i, 0) => 'on'
+                  ]
+               ]
+            ]);
          }
          self::updateDelivryStatus($params['plugin_order_orders_id']);
       }
@@ -582,16 +692,24 @@ class PluginOrderReception extends CommonDBChild {
       $detail                 = new PluginOrderOrder_Item();
       $plugin_order_orders_id = 0;
 
-      if (isset($params["item"])) {
-         foreach ($params["item"] as $key => $val) {
-            if ($val == 1) {
-               if ($params["itemtype"][$key] == 'SoftwareLicense') {
-                  $this->receptionAllItem($key, $params["plugin_order_references_id"][$key],
-                                          $params["plugin_order_orders_id"],
-                                          $params["delivery_date"], $params["delivery_number"],
-                                          $params["plugin_order_deliverystates_id"]);
+      // from MassiveAction process, we get ma object, so convert it into array
+      if (is_object($params)) {
+         $params = (array) $params;
+      }
 
-                  $plugin_order_orders_id = $params["plugin_order_orders_id"];
+      if (isset($params['items'][__CLASS__])) {
+         foreach ($params['items'][__CLASS__] as $key => $val) {
+            if ($val > 1) {
+               $add_item = $params['POST']['add_items'][$key];
+               if ($add_item["itemtype"] == 'SoftwareLicense') {
+                  $this->receptionAllItem($key,
+                                          $add_item["plugin_order_references_id"],
+                                          $params['POST']["plugin_order_orders_id"],
+                                          $params['POST']["delivery_date"],
+                                          $params['POST']["delivery_number"],
+                                          $params['POST']["plugin_order_deliverystates_id"]);
+
+                  $plugin_order_orders_id = $params['POST']["plugin_order_orders_id"];
                } else {
                   if ($detail->getFromDB($key)) {
                      if (!$plugin_order_orders_id) {
@@ -600,28 +718,29 @@ class PluginOrderReception extends CommonDBChild {
 
                      if ($detail->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
                         $this->receptionOneItem($key, $plugin_order_orders_id,
-                                                $params["delivery_date"], $params["delivery_number"],
-                                                $params["plugin_order_deliverystates_id"]);
+                                                $params['POST']["delivery_date"],
+                                                $params['POST']["delivery_number"],
+                                                $params['POST']["plugin_order_deliverystates_id"]);
                      } else {
                         Session::addMessageAfterRedirect(__("Item already taken delivery", "order"), true, ERROR);
                      }
 
                      // Automatic generate asset
                      $options = [
-                        "itemtype"                   => $params["itemtype"][$key],
+                        "itemtype"                   => $add_item["itemtype"],
                         "items_id"                   => $key,
                         'entities_id'                => $detail->getEntityID(),
                         "plugin_order_orders_id"     => $detail->fields["plugin_order_orders_id"],
-                        "plugin_order_references_id" => $params["plugin_order_references_id"][$key],
+                        "plugin_order_references_id" => $add_item["plugin_order_references_id"],
                      ];
 
                      $config =  PluginOrderConfig::getConfig(true);
                      if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
-                        $options['manual_generate'] = $params['manual_generate'];
+                        $options['manual_generate'] = $params['POST']['manual_generate'];
                         if ($params['manual_generate'] == 1) {
-                           $options['name']            = $params['generated_name'];
-                           $options['serial']          = $params['generated_serial'];
-                           $options['otherserial']     = $params['generated_otherserial'];
+                           $options['name']            = $params['POST']['generated_name'];
+                           $options['serial']          = $params['POST']['generated_serial'];
+                           $options['otherserial']     = $params['POST']['generated_otherserial'];
                         }
                      }
                      self::generateAsset($options);

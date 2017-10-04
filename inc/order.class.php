@@ -1282,7 +1282,7 @@ class PluginOrderOrder extends CommonDBTM {
       $notify          = true;
       $event           = "";
 
-      if ($CFG_GLPI["use_mailing"]) {
+      if ($CFG_GLPI["use_notifications"]) {
          switch ($status) {
             case $config->getApprovedState():
                $event = "validation";
