@@ -377,7 +377,7 @@ class PluginOrderReception extends CommonDBChild {
             }
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr>";
-            if ($canedit && $num) {
+            if ($order_order->canDeliver()) {
                echo "<th width='15'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
             }
             if ($typeRef != 'SoftwareLicense') {
