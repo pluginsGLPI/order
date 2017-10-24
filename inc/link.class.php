@@ -338,9 +338,11 @@ class PluginOrderLink extends CommonDBChild {
             }
             echo "</tr>";
             echo "</table>";
-            if ($canedit && $canuse && $num > 10) {
-               $massiveactionparams['ontop'] = false;
-               Html::showMassiveActions($massiveactionparams);
+            if ($canedit && $canuse) {
+               if ($num > 10) {
+                  $massiveactionparams['ontop'] = false;
+                  Html::showMassiveActions($massiveactionparams);
+               }
                Html::closeForm();
             }
             echo "</div>";
