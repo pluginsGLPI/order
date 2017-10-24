@@ -398,7 +398,15 @@ class PluginOrderLink extends CommonDBChild {
       $link = new self;
       switch ($ma->getAction()) {
          case 'generation':
-            $link->generateNewItem($ma->POST);
+            $newIDs = $link->generateNewItem($ma->POST);
+            foreach ($ma->items[__CLASS__] as $key => $val) {
+               if (isset($newIDs[$key]) && $newIDs[$key]) {
+                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+               } else {
+                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+               }
+            }
+
             break;
 
          case 'createLink':
@@ -421,8 +429,10 @@ class PluginOrderLink extends CommonDBChild {
                                             $ma->POST["items_id"],
                                             $ma->POST['add_items'][$key]['itemtype'],
                                             $ma->POST['plugin_order_orders_id']);
+                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                }
             }
+            break;
 
          case 'deleteLink':
             foreach ($ma->items[__CLASS__] as $key => $val) {
@@ -921,6 +931,8 @@ class PluginOrderLink extends CommonDBChild {
    public function generateNewItem($params) {
       global $DB;
 
+      $newIDs = [];
+
       // Retrieve plugin configuration
       $config    = new PluginOrderConfig();
       $reference = new PluginOrderReference();
@@ -1020,6 +1032,7 @@ class PluginOrderLink extends CommonDBChild {
          }
          $input = Toolbox::addslashes_deep($input);
          $newID = $item->add($input);
+         $newIDs[$values["id"]] = $newID;
 
          // Attach new ticket if option is on
          if (isset($params['generate_ticket'])) {
@@ -1066,6 +1079,8 @@ class PluginOrderLink extends CommonDBChild {
 
          Session::addMessageAfterRedirect(__("Item successfully selected", "order"), true);
       }
+
+      return $newIDs;
    }
 
    public static function countForOrder(PluginOrderOrder $item) {
