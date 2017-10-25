@@ -263,7 +263,9 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
    $field     = $searchopt[$ID]["field"];
    $reference = new PluginOrderReference();
    $itemnum   = $data['raw']["ITEM_".$num];
-   $itemtype  = $data['raw']["itemtype"];
+   $itemtype  = isset($data['raw']["itemtype"])
+                  ? $data['raw']["itemtype"]
+                  : "";
 
    switch ($table.'.'.$field) {
       /* display associated items with order */
