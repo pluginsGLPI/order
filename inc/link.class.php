@@ -126,44 +126,44 @@ class PluginOrderLink extends CommonDBChild {
                echo "<td><input type='text' size='20' name='id[$i][otherserial]'></td>";
             }
 
-               if (Session::isMultiEntitiesMode()
+            if (Session::isMultiEntitiesMode()
                   && count($_SESSION['glpiactiveentities']) > 1) {
-                  echo "<td>";
-                  $rand = Entity::Dropdown([
-                     'name'   => "id[$i][entities_id]",
-                     'value'  => $order->fields["entities_id"],
-                     'entity' => $order->fields["is_recursive"]
-                        ? getSonsOf('glpi_entities', $order->fields["entities_id"])
-                           : $order->fields["entities_id"]]
-                  );
-                  Ajax::updateItemOnSelectEvent("dropdown_id[$i][entities_id]$rand",
-                                                "show_location_by_entity_id_$i",
-                                                $CFG_GLPI["root_doc"] . "/plugins/order/ajax/linkactions.php",
-                                                ['entities' => '__VALUE__',
-                                                 'action'   => 'show_location_by_entity',
-                                                 'id'       => $i
-                                                ]);
-                  Ajax::updateItemOnSelectEvent("dropdown_id[$i][entities_id]$rand",
-                                                "show_group_by_entity_id_$i",
-                                                $CFG_GLPI["root_doc"] . "/plugins/order/ajax/linkactions.php",
-                                                ['entities' => '__VALUE__',
-                                                 'action'   => 'show_group_by_entity',
-                                                 'id'       => $i
-                                                ]);
-                  Ajax::updateItemOnSelectEvent("dropdown_id[$i][entities_id]$rand",
-                                                "show_state_by_entity_id_$i",
-                                                $CFG_GLPI["root_doc"] . "/plugins/order/ajax/linkactions.php",
-                                                ['entities' => '__VALUE__',
-                                                 'action'   => 'show_state_by_entity',
-                                                 'id'       => $i
-                                                ]);
-                  $entity = $order->fields["entities_id"];
-                  echo "</td>";
-               } else {
-                  $entity = $_SESSION["glpiactive_entity"];
-                  echo "<input type='hidden' name='id[$i][entities_id]' value="
-                     . $entity . ">";
-               }
+               echo "<td>";
+               $rand = Entity::Dropdown([
+               'name'   => "id[$i][entities_id]",
+               'value'  => $order->fields["entities_id"],
+               'entity' => $order->fields["is_recursive"]
+                  ? getSonsOf('glpi_entities', $order->fields["entities_id"])
+                     : $order->fields["entities_id"]]
+               );
+               Ajax::updateItemOnSelectEvent("dropdown_id[$i][entities_id]$rand",
+                                          "show_location_by_entity_id_$i",
+                                          $CFG_GLPI["root_doc"] . "/plugins/order/ajax/linkactions.php",
+                                          ['entities' => '__VALUE__',
+                                           'action'   => 'show_location_by_entity',
+                                           'id'       => $i
+                                          ]);
+               Ajax::updateItemOnSelectEvent("dropdown_id[$i][entities_id]$rand",
+                                          "show_group_by_entity_id_$i",
+                                          $CFG_GLPI["root_doc"] . "/plugins/order/ajax/linkactions.php",
+                                          ['entities' => '__VALUE__',
+                                           'action'   => 'show_group_by_entity',
+                                           'id'       => $i
+                                          ]);
+               Ajax::updateItemOnSelectEvent("dropdown_id[$i][entities_id]$rand",
+                                          "show_state_by_entity_id_$i",
+                                          $CFG_GLPI["root_doc"] . "/plugins/order/ajax/linkactions.php",
+                                          ['entities' => '__VALUE__',
+                                           'action'   => 'show_state_by_entity',
+                                           'id'       => $i
+                                          ]);
+               $entity = $order->fields["entities_id"];
+               echo "</td>";
+            } else {
+               $entity = $_SESSION["glpiactive_entity"];
+               echo "<input type='hidden' name='id[$i][entities_id]' value="
+               . $entity . ">";
+            }
                echo "<td>";
 
               echo "<span id='show_location_by_entity_id_$i'>";
@@ -194,7 +194,7 @@ class PluginOrderLink extends CommonDBChild {
                echo Html::hidden("id[$i][plugin_order_orders_id]",
                                  ['value' => $params["plugin_order_orders_id"]]);
                $found = true;
-            }
+         }
          $i++;
       }
 
@@ -217,9 +217,9 @@ class PluginOrderLink extends CommonDBChild {
             return "`is_visible_computer`";
          case 'Monitor' :
             return "`is_visible_monitor`";
-            case 'Printer' :
+         case 'Printer' :
             return "`is_visible_printer`";
-               case 'Phone' :
+         case 'Phone' :
             return "`is_visible_phone`";
          case 'NetworkEquipment' :
             return "`is_visible_networkequipment`";
@@ -1047,7 +1047,7 @@ class PluginOrderLink extends CommonDBChild {
                }
             }
             $input['groups_id'] = $values['groups_id'];
-			if (isset($values["locations_id"]) && $values["locations_id"] != 0) {
+            if (isset($values["locations_id"]) && $values["locations_id"] != 0) {
                $input['locations_id'] = $values['locations_id'];
             } else {
                // Get bill data
@@ -1061,7 +1061,7 @@ class PluginOrderLink extends CommonDBChild {
 
             if (isset($item->fields['name']) && $item->fields['name']) {
                $input["name"] = autoName($item->fields["name"], "name", $templateID,
-                                         $values["itemtype"], $entity);
+                                $values["itemtype"], $entity);
             } else {
                $input["name"] = $values["name"];
             }
@@ -1069,7 +1069,7 @@ class PluginOrderLink extends CommonDBChild {
             if ($item->getField('otherserial') != NOT_AVAILABLE) {
                if ($item->fields['otherserial']) {
                   $input["otherserial"] = autoName($item->fields["otherserial"], "otherserial",
-                                                   $templateID, $values["itemtype"], $entity);
+                                          $templateID, $values["itemtype"], $entity);
                } else {
                   $input["otherserial"] = $values["otherserial"];
                }
@@ -1085,7 +1085,7 @@ class PluginOrderLink extends CommonDBChild {
             $input['contracttypes_id'] = $reference->fields['types_id'];
 
          } else {
-            if(isset($values["states_id"]) && $values["states_id"] != 0){
+            if (isset($values["states_id"]) && $values["states_id"] != 0) {
                $input['states_id']     = $values['states_id'];
             } else {
                if ($config->getGeneratedAssetState()) {

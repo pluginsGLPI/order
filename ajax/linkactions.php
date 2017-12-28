@@ -67,10 +67,10 @@ if (isset($_POST["action"])) {
          echo Html::submit(_sx('button', 'Post'), ['name' => 'deleteLinkWithItem']);
          break;
 
-       case "show_location_by_entity":
+      case "show_location_by_entity":
          Location::dropdown(['name'   => "id[".$_POST['id']."][locations_id]",
-                             'entity' => $_POST['entities']
-                            ]);
+                           'entity' => $_POST['entities']
+                          ]);
          break;
 
       case "show_group_by_entity":
