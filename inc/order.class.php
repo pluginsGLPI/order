@@ -1755,10 +1755,9 @@ class PluginOrderOrder extends CommonDBTM {
                $PluginOrderOrder_Item->getPricesATI($data["port_price"],
                                                     Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
                                                                               $data["plugin_order_ordertaxes_id"]));
-
             //if state is cancel do not decremente total already use
             if ($data['plugin_order_orderstates_id'] < 5) {
-             $total +=  $prices["priceHT"];
+               $total +=  $prices["priceHT"];
             }
             $link   = Toolbox::getItemTypeFormURL(__CLASS__);
 
