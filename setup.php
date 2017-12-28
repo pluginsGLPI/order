@@ -100,6 +100,7 @@ function plugin_init_order() {
          'Contract',
          'PluginOrderOther',
          'SoftwareLicense',
+         'Certificate'
       ];
 
       $CFG_GLPI['plugin_order_types'] = $ORDER_TYPES;
