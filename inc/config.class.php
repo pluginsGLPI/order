@@ -38,9 +38,9 @@ class PluginOrderConfig extends CommonDBTM {
    const CONFIG_YES     = 1;
    const CONFIG_ASK     = 2;
 
-
    public function __construct() {
-      if (TableExists($this->getTable())) {
+      global $DB;
+      if ($DB->tableExists(self::getTable())) {
          $this->getFromDB(1);
       }
    }
@@ -86,115 +86,115 @@ class PluginOrderConfig extends CommonDBTM {
       $this->getFromDB(1);
 
       echo "<div class='center'>";
-      echo "<form name='form' method='post' action='" . $this->getFormURL() . "'>";
+      echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
 
-      echo "<input type='hidden' name='id' value='1'>";
+      echo Html::hidden('id', ['value' => 1]);
 
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='2'>" . __("Plugin configuration", "order") . "</th></tr>";
+      echo "<tr><th colspan='2'>".__("Plugin configuration", "order")."</th></tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Default VAT", "order") . "</td>";
+      echo "<td>".__("Default VAT", "order")."</td>";
       echo "<td>";
-      PluginOrderOrderTax::Dropdown(array(
+      PluginOrderOrderTax::Dropdown([
          'name'                => "default_taxes",
          'value'               => $this->fields["default_taxes"],
          'display_emptychoice' => true,
-         'emptylabel'          => __("No VAT", "order"))
-      );
+         'emptylabel'          => __("No VAT", "order")
+      ]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Use validation process", "order") . "</td>";
+      echo "<td>".__("Use validation process", "order")."</td>";
       echo "<td>";
       Dropdown::showYesNo("use_validation", $this->fields["use_validation"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Order generation in ODT", "order") . "</td><td>";
+      echo "<td>".__("Order generation in ODT", "order")."</td><td>";
       Dropdown::showYesNo("generate_order_pdf", $this->fields["generate_order_pdf"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Activate suppliers quality satisfaction", "order") . "</td>";
+      echo "<td>".__("Activate suppliers quality satisfaction", "order")."</td>";
       echo "<td>";
       Dropdown::showYesNo("use_supplier_satisfaction", $this->fields["use_supplier_satisfaction"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Display order's suppliers informations", "order") . "</td><td>";
+      echo "<td>".__("Display order's suppliers informations", "order")."</td><td>";
       Dropdown::showYesNo("use_supplier_informations", $this->fields["use_supplier_informations"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Color to be displayed when order due date is overtaken", "order") . "</td>";
+      echo "<td>".__("Color to be displayed when order due date is overtaken", "order")."</td>";
       echo "<td>";
       echo "<input type='color' name='shoudbedelivered_color'
-               value='" . $this->fields['shoudbedelivered_color'] . "'>";
+               value='".$this->fields['shoudbedelivered_color']."'>";
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Copy order documents when a new item is created", "order") . "</td>";
+      echo "<td>".__("Copy order documents when a new item is created", "order")."</td>";
       echo "<td>";
       Dropdown::showYesNo("copy_documents", $this->fields["copy_documents"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Default heading when adding a document to an order", "order") . "</td>";
+      echo "<td>".__("Default heading when adding a document to an order", "order")."</td>";
       echo "<td>";
-      DocumentCategory::Dropdown(array('value' => $this->fields["documentcategories_id"]));
+      DocumentCategory::Dropdown(['value' => $this->fields["documentcategories_id"]]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Author group", "order") . ' (' . __("Default values") . ")</td>";
+      echo "<td>".__("Author group", "order").' ('.__("Default values").")</td>";
       echo "<td>";
-      Group::Dropdown(array(
+      Group::Dropdown([
          'value' => $this->fields["groups_id_author"],
          'name'  => 'groups_id_author',
-      ));
+      ]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Recipient group", "order") . ' (' . __("Default values") . ")</td>";
+      echo "<td>".__("Recipient group", "order").' ('.__("Default values").")</td>";
       echo "<td>";
-      Group::Dropdown(array(
+      Group::Dropdown([
          'value' => $this->fields["groups_id_recipient"],
          'name'  => 'groups_id_recipient',
-      ));
+      ]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Recipient") . ' (' . __("Default values") . ")</td>";
+      echo "<td>".__("Recipient").' ('.__("Default values").")</td>";
       echo "<td>";
-      User::Dropdown(array(
+      User::Dropdown([
          'name'   => 'users_id_recipient',
          'value'  => $this->fields["users_id_recipient"],
          'right'  => 'all',
          'entity' => 0,
-      ));
+      ]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Hide inactive budgets", 'order') . "</td>";
+      echo "<td>".__("Hide inactive budgets", 'order')."</td>";
       echo "<td>";
       Dropdown::showYesNo("hide_inactive_budgets", $this->fields["hide_inactive_budgets"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Transmit budget change to linked assets", 'order') . "</td>";
+      echo "<td>".__("Transmit budget change to linked assets", 'order')."</td>";
       echo "<td>";
       Dropdown::showYesNo("transmit_budget_change", $this->fields["transmit_budget_change"]);
       echo "</td>";
@@ -202,65 +202,66 @@ class PluginOrderConfig extends CommonDBTM {
 
       // Automatic actions
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<th colspan='2'>" . __("Automatic actions when delivery", "order") . "</th>";
+      echo "<th colspan='2'>".__("Automatic actions when delivery", "order")."</th>";
       echo "</tr>";
 
       // ASSETS
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<th colspan='2'>" . __('Item') . "</th>";
+      echo "<th colspan='2'>".__('Item')."</th>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1 center'>";
-      echo "<td>" . __("Enable automatic generation", "order") . "</td>";
+      echo "<td>".__("Enable automatic generation", "order")."</td>";
       echo "<td>";
-      $tab = array(self::CONFIG_NEVER => __('No'),
-                   self::CONFIG_YES   => __('Yes'),
-                   self::CONFIG_ASK   => __('Asked', 'order'));
-      Dropdown::showFromArray('generate_assets', $tab, array('value' => $this->canGenerateAsset()));
+      Dropdown::showFromArray('generate_assets',
+                              [self::CONFIG_NEVER => __('No'),
+                               self::CONFIG_YES   => __('Yes'),
+                               self::CONFIG_ASK   => __('Asked', 'order')],
+                              ['value' => $this->canGenerateAsset()]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Default state", "order") . "</td>";
+      echo "<td>".__("Default state", "order")."</td>";
       echo "<td>";
-      State::Dropdown(array(
+      State::Dropdown([
          'name'   => 'default_asset_states_id',
          'value'  => $this->fields["default_asset_states_id"],
          'entity' => $_SESSION["glpiactiveentities"],
-      ));
+      ]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Add order location to item", "order") . "</td>";
+      echo "<td>".__("Add order location to item", "order")."</td>";
       echo "<td>";
       Dropdown::showYesNo("add_location", $this->canAddLocation());
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Add billing details to item", "order") . "</td><td>";
+      echo "<td>".__("Add billing details to item", "order")."</td><td>";
       Dropdown::showYesNo("add_bill_details", $this->canAddBillDetails());
       echo "</td>";
       echo "</tr>";
 
       if ($this->canGenerateAsset()) {
          echo "<tr class='tab_bg_1' align='center'>";
-         echo "<td>" . __("Default name", "order") . "</td>";
+         echo "<td>".__("Default name", "order")."</td>";
          echo "<td>";
          Html::autocompletionTextField($this, "generated_name");
          echo "</td>";
          echo "</tr>";
 
          echo "<tr class='tab_bg_1' align='center'>";
-         echo "<td>" . __("Default serial number", "order") . "</td>";
+         echo "<td>".__("Default serial number", "order")."</td>";
          echo "<td>";
          Html::autocompletionTextField($this, "generated_serial");
          echo "</td>";
          echo "</tr>";
 
          echo "<tr class='tab_bg_1' align='center'>";
-         echo "<td>" . __("Default inventory number", "order") . "</td>";
+         echo "<td>".__("Default inventory number", "order")."</td>";
          echo "<td>";
          Html::autocompletionTextField($this, "generated_otherserial");
          echo "</td>";
@@ -268,98 +269,98 @@ class PluginOrderConfig extends CommonDBTM {
 
          // TICKETS
          echo "<tr class='tab_bg_1' align='center'>";
-         echo "<th colspan='2'>" . __("Ticket") . "</th>";
+         echo "<th colspan='2'>".__("Ticket")."</th>";
          echo "</tr>";
 
          echo "<tr class='tab_bg_1' align='center'>";
-         echo "<td>" . TicketTemplate::getTypeName(1) . "</td>";
+         echo "<td>".TicketTemplate::getTypeName(1)."</td>";
          echo "<td>";
-         Dropdown::show('TicketTemplate', array(
+         Dropdown::show('TicketTemplate', [
             'name'  => 'tickettemplates_id_delivery',
             'value' => $this->fields['tickettemplates_id_delivery'],
-         ));
+         ]);
          echo "</td>";
          echo "</tr>";
       }
 
       /* Workflow */
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<th colspan='2'>" . __("Order lifecycle", "order") . "</th>";
+      echo "<th colspan='2'>".__("Order lifecycle", "order")."</th>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("State before validation", "order") . "</td>";
+      echo "<td>".__("State before validation", "order")."</td>";
       echo "<td>";
-      PluginOrderOrderState::Dropdown(array(
+      PluginOrderOrderState::Dropdown([
          'name'   => 'order_status_draft',
          'value'  => $this->fields["order_status_draft"],
-      ));
+      ]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Waiting for validation state", "order") . "</td>";
+      echo "<td>".__("Waiting for validation state", "order")."</td>";
       echo "<td>";
-      PluginOrderOrderState::Dropdown(array(
+      PluginOrderOrderState::Dropdown([
          'name'   => 'order_status_waiting_approval',
          'value'  => $this->fields["order_status_waiting_approval"],
-      ));
+      ]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Validated order state", "order") . "</td>";
+      echo "<td>".__("Validated order state", "order")."</td>";
       echo "<td>";
-      PluginOrderOrderState::Dropdown(array(
+      PluginOrderOrderState::Dropdown([
          'name'   => 'order_status_approved',
          'value'  => $this->fields["order_status_approved"],
-      ));
+      ]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Order being delivered state", "order") . "</td>";
+      echo "<td>".__("Order being delivered state", "order")."</td>";
       echo "<td>";
-      PluginOrderOrderState::Dropdown(array(
+      PluginOrderOrderState::Dropdown([
          'name'   => 'order_status_partially_delivred',
          'value'  => $this->fields["order_status_partially_delivred"],
-      ));
+      ]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Order delivered state", "order") . "</td>";
+      echo "<td>".__("Order delivered state", "order")."</td>";
       echo "<td>";
-      PluginOrderOrderState::Dropdown(array(
+      PluginOrderOrderState::Dropdown([
          'name'   => 'order_status_completly_delivered',
          'value'  => $this->fields["order_status_completly_delivered"],
-      ));
+      ]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Order paied state", "order") . "</td>";
+      echo "<td>".__("Order paied state", "order")."</td>";
       echo "<td>";
-      PluginOrderOrderState::Dropdown(array(
+      PluginOrderOrderState::Dropdown([
          'name'   => 'order_status_paid',
          'value'  => $this->fields["order_status_paid"],
-      ));
+      ]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
-      echo "<td>" . __("Canceled order state", "order") . "</td>";
+      echo "<td>".__("Canceled order state", "order")."</td>";
       echo "<td>";
-      PluginOrderOrderState::Dropdown(array(
+      PluginOrderOrderState::Dropdown([
          'name'   => 'order_status_canceled',
          'value'  => $this->fields["order_status_canceled"],
-      ));
+      ]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<td colspan='2' align='center'>";
-      echo "<input type='submit' name='update' value=\"" . _sx("button", "Post") . "\" class='submit' >";
+      echo "<input type='submit' name='update' value=\""._sx("button", "Post")."\" class='submit' >";
       echo"</td>";
       echo "</tr>";
 
@@ -493,11 +494,12 @@ class PluginOrderConfig extends CommonDBTM {
    public static function install(Migration $migration) {
       global $DB;
 
-      $table  = getTableForItemType(__CLASS__);
+      $table  = self::getTable();
       $config = new self();
 
       //This class is available since version 1.3.0
-      if (!TableExists($table) && !TableExists("glpi_plugin_order_config")) {
+      if (!$DB->tableExists($table)
+          && !$DB->tableExists("glpi_plugin_order_config")) {
             $migration->displayMessage("Installing $table");
 
             //Install
@@ -538,7 +540,7 @@ class PluginOrderConfig extends CommonDBTM {
                $DB->query($query) or die ($DB->error());
 
                $tobefilled = "TOBEFILLED";
-               $tmp = array(
+               $config->add([
                   'id'                          => 1,
                   'use_validation'              => 0,
                   'default_taxes'               => 0,
@@ -551,8 +553,7 @@ class PluginOrderConfig extends CommonDBTM {
                   'generated_content'           => $tobefilled,
                   'default_ticketcategories_id' => 0,
                   'shoudbedelivered_color'      => '#ff5555',
-                  );
-               $config->add($tmp);
+               ]);
       } else {
          //Upgrade
          $migration->displayMessage("Upgrading $table");
@@ -613,19 +614,19 @@ class PluginOrderConfig extends CommonDBTM {
 
          $migration->migrationOneTable($table);
          if ($templateID) {
-            $config->update(array('id' => 1, 'tickettemplates_id_delivery' => $templateID));
+            $config->update(['id' => 1, 'tickettemplates_id_delivery' => $templateID]);
          }
 
       }
 
       $migration->displayMessage("Add default order state workflow");
-      $new_states = array('order_status_draft'               => 1,
-                          'order_status_waiting_approval'    => 2,
-                          'order_status_approved'            => 3,
-                          'order_status_partially_delivred'  => 4,
-                          'order_status_completly_delivered' => 5,
-                          'order_status_canceled'            => 6,
-                          'order_status_paid'                => 7);
+      $new_states = ['order_status_draft'               => 1,
+                     'order_status_waiting_approval'    => 2,
+                     'order_status_approved'            => 3,
+                     'order_status_partially_delivred'  => 4,
+                     'order_status_completly_delivered' => 5,
+                     'order_status_canceled'            => 6,
+                     'order_status_paid'                => 7];
 
       foreach ($new_states as $field => $value) {
          $migration->addField($table, $field, "int(11) NOT NULL default '0'");
@@ -644,6 +645,6 @@ class PluginOrderConfig extends CommonDBTM {
       $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_config`");
 
       //New table
-      $DB->query("DROP TABLE IF EXISTS `" . getTableForItemType(__CLASS__) . "`");
+      $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`");
    }
 }

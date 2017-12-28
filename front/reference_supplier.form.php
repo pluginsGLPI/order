@@ -58,7 +58,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    if (PluginOrderReference_Supplier::canCreate()) {
       foreach ($_POST["check"] as $ID => $value) {
-         $PluginOrderReference_Supplier->delete(array("id"=>$ID));
+         $PluginOrderReference_Supplier->delete(["id"=>$ID]);
       }
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
@@ -74,9 +74,9 @@ if (isset($_POST["add"])) {
    );
 
    /* load order form */
-   $PluginOrderReference_Supplier->display($_GET, array(
+   $PluginOrderReference_Supplier->display($_GET, [
       'plugin_order_references_id' => $_GET["plugin_order_references_id"],
-   ));
+   ]);
 
    Html::footer();
 }

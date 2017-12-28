@@ -42,16 +42,16 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    }
 
    public function getSearchOptions() {
-      $tab                     = array();
+      $tab                     = [];
 
       $tab['common']           = __("Supplier Detail", "order");
 
-      $tab[1]['table']         = $this->getTable();
+      $tab[1]['table']         = self::getTable();
       $tab[1]['field']         = 'num_quote';
       $tab[1]['name']          = __("Quote number", "order");
       $tab[1]['datatype']      = 'text';
 
-      $tab[2]['table']         = $this->getTable();
+      $tab[2]['table']         = self::getTable();
       $tab[2]['field']         = 'num_order';
       $tab[2]['name']          = __("Order number");
       $tab[2]['datatype']      = 'text';
@@ -63,7 +63,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       $tab[4]['itemlink_type'] ='Supplier';
       $tab[4]['forcegroupby']  =true;
 
-      $tab[30]['table']        = $this->getTable();
+      $tab[30]['table']        = self::getTable();
       $tab[30]['field']        = 'id';
       $tab[30]['name']         =__("ID");
 
@@ -75,8 +75,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       return $tab;
    }
 
-   public function defineTabs($options=array()) {
-      $ong = array();
+   public function defineTabs($options = array()) {
+      $ong = [];
       $this->addStandardTab('PluginOrderOrder_Supplier', $ong, $options);
 
       return $ong;
@@ -93,8 +93,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    public function getFromDBByOrder($plugin_order_orders_id) {
       global $DB;
 
-      $query = "SELECT * FROM `" . $this->getTable() . "`
-               WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id . "' ";
+      $query = "SELECT * FROM `".self::getTable()."`
+               WHERE `plugin_order_orders_id` = '".$plugin_order_orders_id."' ";
       if ($result = $DB->query($query)) {
          if (!$DB->numrows($result)) {
             return false;
@@ -109,27 +109,22 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       return false;
    }
 
-   public function showForm ($ID, $options=array()) {
+   public function showForm ($ID, $options = array()) {
       $plugin_order_orders_id = -1;
       if (isset($options['plugin_order_orders_id'])) {
          $plugin_order_orders_id = $options['plugin_order_orders_id'];
       }
 
       $this->initForm($ID, $options);
-
-      if (strpos($_SERVER['PHP_SELF'], "order_supplier")) {
-         echo "showTabs()";
-         $this->showTabs($options);
-      }
       $this->showFormHeader($options);
       $PluginOrderOrder = new PluginOrderOrder();
       $PluginOrderOrder->getFromDB($plugin_order_orders_id);
-      echo "<input type='hidden' name='plugin_order_orders_id' value='$plugin_order_orders_id'>";
-      echo "<input type='hidden' name='entities_id' value='" . $PluginOrderOrder->getEntityID() . "'>";
-      echo "<input type='hidden' name='is_recursive' value='" . $PluginOrderOrder->isRecursive() . "'>";
+      echo Html::hidden('plugin_order_orders_id', ['value' => $plugin_order_orders_id]);
+      echo Html::hidden('entities_id', ['value' => $PluginOrderOrder->getEntityID()]);
+      echo Html::hidden('is_recursive', ['value' => $PluginOrderOrder->isRecursive()]);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __("Supplier") . ": </td>";
+      echo "<td>".__("Supplier").": </td>";
       $supplier = $PluginOrderOrder->fields["suppliers_id"];
       if ($ID > 0) {
          $supplier = $this->fields["suppliers_id"];
@@ -137,13 +132,13 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 
       echo "<td>";
       $link = Toolbox::getItemTypeFormURL('Supplier');
-      echo "<a href=\"" . $link. "?id=" . $supplier . "\">" .
-         Dropdown::getDropdownName("glpi_suppliers", $supplier) . "</a></td>";
-      echo "<input type='hidden' name='suppliers_id' value='".$supplier."'>";
+      echo "<a href=\"".$link. "?id=".$supplier."\">" .
+         Dropdown::getDropdownName("glpi_suppliers", $supplier)."</a></td>";
+      echo Html::hidden('suppliers_id', ['value' => $supplier]);
       echo "</td>";
 
       /* number of quote */
-      echo "<td>" . __("Quote number", "order") . ": </td><td>";
+      echo "<td>".__("Quote number", "order").": </td><td>";
       Html::autocompletionTextField($this, "num_quote");
       echo "</td>";
 
@@ -153,7 +148,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo "</td><td colspan='2'></td>";
 
       /* num order supplier */
-      echo "<td>" . __("Order number") . ": </td><td>";
+      echo "<td>".__("Order number").": </td><td>";
       Html::autocompletionTextField($this, "num_order");
 
       echo "</tr>";
@@ -183,10 +178,9 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo "<form method='post' name='show_supplierinfos$rand' id='show_supplierinfos$rand' " .
             "action=\"".$link."\">";
       echo "<div class='center'>";
-      echo "<input type='hidden' name='plugin_order_orders_id' value='" . $ID . "'>";
+      echo Html::hidden('plugin_order_orders_id', ['value' => $ID]);
 
-      $table = getTableForItemType(__CLASS__);
-
+      $table = self::getTable();
       $nb_elements = countElementsInTable($table, "`plugin_order_orders_id` = '$ID'");
 
       if ($nb_elements > 0) {
@@ -194,36 +188,36 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          echo "<tr><th colspan='4'>".__("Supplier Detail", "order")."</th></tr>";
          echo "<tr>";
          echo "<th>&nbsp;</th>";
-         echo "<th>" . __("Supplier") . "</th>";
-         echo "<th>" . __("Quote number", "order") . "</th>";
-         echo "<th>" . __("Order number") . "</th>";
+         echo "<th>".__("Supplier")."</th>";
+         echo "<th>".__("Quote number", "order")."</th>";
+         echo "<th>".__("Order number")."</th>";
          echo "</tr>";
 
-         $datas = getAllDatasFromTable($table, "`plugin_order_orders_id` = '$ID'");
-         foreach ($datas as $data) {
-            Session::addToNavigateListItems(__CLASS__, $data['id']);
-            echo "<input type='hidden' name='item[" . $data["id"] . "]' value='" . $ID . "'>";
+         $data = getAllDatasFromTable($table, "`plugin_order_orders_id` = '$ID'");
+         foreach ($data as $cur) {
+            Session::addToNavigateListItems(__CLASS__, $cur['id']);
+            echo Html::hidden("item[".$cur["id"]."]", ['value' => $ID]);
             echo "<tr class='tab_bg_1 center'>";
             echo "<td>";
             if ($candelete) {
-               echo "<input type='checkbox' name='check[" . $data["id"] . "]'";
+               echo "<input type='checkbox' name='check[".$cur["id"]."]'";
                if (isset($_POST['check']) && $_POST['check'] == 'all') {
                   echo " checked ";
                }
                echo ">";
             }
             echo "</td>";
-            echo "<td><a href='" . $link . "?id=" . $data["id"] . "&plugin_order_orders_id=" . $ID . "'>"
-               . Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
-            echo "<td>" . $data["num_quote"] . "</td>";
-            echo "<td>" . $data["num_order"] . "</td>";
+            echo "<td><a href='".$link."?id=".$cur["id"]."&plugin_order_orders_id=".$ID."'>"
+              .Dropdown::getDropdownName("glpi_suppliers", $cur["suppliers_id"])."</a></td>";
+            echo "<td>".$cur["num_quote"]."</td>";
+            echo "<td>".$cur["num_order"]."</td>";
             echo "</tr>";
          }
          echo "</table></div>";
 
          if ($candelete) {
             Html::openArrowMassives("show_supplierinfos$rand", true);
-            Html::closeArrowMassives(array('delete' => __("Delete permanently")));
+            Html::closeArrowMassives(['delete' => __("Delete permanently")]);
          }
 
       }
@@ -233,7 +227,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    public function checkIfSupplierInfosExists($plugin_order_orders_id) {
 
       if ($plugin_order_orders_id) {
-         $devices = getAllDatasFromTable($this->getTable(), "`plugin_order_orders_id` = '$plugin_order_orders_id'");
+         $devices = getAllDatasFromTable(self::getTable(),
+                                         "`plugin_order_orders_id` = '$plugin_order_orders_id'");
          if (!empty($devices)) {
             return true;
          } else {
@@ -262,8 +257,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo "<br><div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
-      echo "<th>" . __("Entity") . "</th>";
-      echo "<th>" . __("Delivery statistics", "order") . "</th>";
+      echo "<th>".__("Entity")."</th>";
+      echo "<th>".__("Delivery statistics", "order")."</th>";
       echo "</tr>";
 
       if ($nb) {
@@ -281,7 +276,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
             } else {
                $name = __("No specified status", "order");
             }
-            echo "<td>" . $name . "&nbsp;:" . $ref . "</td>";
+            echo "<td>".$name."&nbsp;:".$ref."</td>";
             echo "</tr>";
          }
       }
@@ -292,10 +287,10 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    public static function install(Migration $migration) {
       global $DB;
 
-      $table = getTableForItemType(__CLASS__);
+      $table = self::getTable();
 
-      if (!TableExists($table)) {
-         if (!TableExists("glpi_plugin_order_suppliers")) {
+      if (!$DB->tableExists($table)) {
+         if (!$DB->tableExists("glpi_plugin_order_suppliers")) {
             $migration->displayMessage("Installing $table");
 
             //install
@@ -338,11 +333,11 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
             $migration->addKey($table, "suppliers_id");
             $migration->migrationOneTable($table);
 
-            Plugin::migrateItemType(array(3154 => 'PluginOrderOrder_Supplier'),
-                                    array("glpi_bookmarks", "glpi_bookmarks_users",
-                                          "glpi_displaypreferences", "glpi_documents_items",
-                                          "glpi_infocoms", "glpi_logs", "glpi_items_tickets"),
-                                    array());
+            Plugin::migrateItemType([3154 => 'PluginOrderOrder_Supplier'],
+                                    ["glpi_savedsearches", "glpi_savedsearches_users",
+                                     "glpi_displaypreferences", "glpi_documents_items",
+                                     "glpi_infocoms", "glpi_logs", "glpi_items_tickets"],
+                                    []);
 
             //1.5.0
             $query = "SELECT `suppliers_id`, `entities_id`,`is_recursive`,`id`
@@ -370,19 +365,19 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_detail`") or die ($DB->error());
 
       //Current table name
-      $DB->query("DROP TABLE IF EXISTS  `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
 
    }
 
    public function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       switch (get_class($item)) {
          case 'Supplier':
-            return array(1 => __("Orders", "order"));
+            return [1 => __("Orders", "order")];
             break;
          case 'PluginOrderOrder':
             $config = PluginOrderConfig::getConfig();
             if ($config->canUseSupplierInformations() && $item->fields['suppliers_id']) {
-               return array(1 => __("Supplier Detail", "order"));
+               return [1 => __("Supplier Detail", "order")];
             }
             break;
          default:
@@ -401,7 +396,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
             $order_supplier = new self();
             if ($item->can($item->getID(), READ)) {
                self::showOrderSupplierInfos($item->getID());
-               $order_supplier->showForm("", array('plugin_order_orders_id' => $item->getID()));
+               $order_supplier->showForm("", ['plugin_order_orders_id' => $item->getID()]);
             }
             break;
       }

@@ -34,13 +34,11 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginOrderDocumentCategory extends CommonDBTM {
 
-   static function getTypeName($nb=0) {
-
+   static function getTypeName($nb = 0) {
       return __("Document category", "order");
    }
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-
+   function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       $config = PluginOrderConfig::getConfig();
 
       if ($item->getType() == "DocumentCategory" && $config->canRenameDocuments()) {
@@ -50,26 +48,23 @@ class PluginOrderDocumentCategory extends CommonDBTM {
       return '';
    }
 
-   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       $config = PluginOrderConfig::getConfig();
 
       if ($item->getType() == "DocumentCategory" && $config->canRenameDocuments()) {
          self::showForDocumentCategory($item);
       }
-
       return true;
    }
 
    static function purgeItem($item) {
       $temp = new self();
-      $temp->deleteByCriteria(array(
+      $temp->deleteByCriteria([
          'documentcategories_id' => $item->getField("id")
-      ));
+      ]);
    }
 
    static function showForDocumentCategory($item) {
-
       $documentCategory = new self();
       if (!$documentCategory->getFromDBByQuery(" WHERE `documentcategories_id` = ".$item->fields['id'])) {
          $documentCategory->getEmpty();
@@ -94,7 +89,7 @@ class PluginOrderDocumentCategory extends CommonDBTM {
       echo "<tr>";
       echo "<td class='tab_bg_2 center' colspan='6'>";
       echo "<input type='submit' name='update' class='submit' value='"._sx('button', 'Save')."' >";
-      echo "<input type='hidden' name='documentcategories_id' class='submit' value='".$item->fields['id']."' >";
+      echo Html::hidden('documentcategories_id', ['value' => $item->getID()]);
       echo "</td>";
       echo "</tr>";
       echo "</table></div>";
@@ -109,9 +104,10 @@ class PluginOrderDocumentCategory extends CommonDBTM {
    static function install(Migration $migration) {
       global $DB;
 
-      $table = getTableForItemType(__CLASS__);
+      $table = self::getTable();
       //Installation
-      if (!TableExists($table) && !TableExists("glpi_plugin_order_documentcategories")) {
+      if (!$DB->tableExists($table)
+          && !$DB->tableExists("glpi_plugin_order_documentcategories")) {
          $migration->displayMessage("Installing $table");
 
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_documentcategories` (
@@ -129,6 +125,6 @@ class PluginOrderDocumentCategory extends CommonDBTM {
    static function uninstall() {
       global $DB;
       //Current table name
-      $DB->query("DROP TABLE IF EXISTS  `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS  `".self::getTable()."`") or die ($DB->error());
    }
 }

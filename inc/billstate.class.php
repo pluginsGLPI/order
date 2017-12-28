@@ -43,8 +43,9 @@ class PluginOrderBillState extends CommonDropdown {
 
    public function pre_deleteItem() {
       if ($this->getID() <= self::PAID) {
-         Session::addMessageAfterRedirect(__("You cannot remove this status", "order") . ": " . $this->fields['name'],
-                                 false, ERROR);
+         Session::addMessageAfterRedirect(__("You cannot remove this status", "order").
+                                          ": ".$this->fields['name'],
+                                          false, ERROR);
          return false;
       } else {
          return true;
@@ -52,8 +53,8 @@ class PluginOrderBillState extends CommonDropdown {
    }
 
    public static function getStates() {
-      return array(self::NOTPAID => __("Being paid", "order"),
-                   self::PAID    => __("Paid", "order"),);
+      return [self::NOTPAID => __("Being paid", "order"),
+              self::PAID    => __("Paid", "order")];
    }
 
    public static function getState($states_id) {
@@ -68,8 +69,8 @@ class PluginOrderBillState extends CommonDropdown {
    public static function install(Migration $migration) {
       global $DB;
 
-      $table = getTableForItemType(__CLASS__);
-      if (!TableExists($table)) {
+      $table = self::getTable();
+      if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_billstates` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -82,10 +83,10 @@ class PluginOrderBillState extends CommonDropdown {
       }
       if (countElementsInTable($table) < 2) {
          $state = new self();
-         foreach (array(self::PAID     => __("Paid", "order"),
-                        self::NOTPAID  => __("Not paid", "order"))
-                  as $id => $label) {
-            $state->add(array('id' => $id, 'name' => Toolbox::addslashes_deep($label)));
+         foreach ([self::PAID     => __("Paid", "order"),
+                   self::NOTPAID  => __("Not paid", "order")] as $id => $label) {
+            $state->add(['id'   => $id,
+                         'name' => Toolbox::addslashes_deep($label)]);
          }
       }
    }
@@ -93,6 +94,6 @@ class PluginOrderBillState extends CommonDropdown {
    public static function uninstall() {
       global $DB;
 
-      $DB->query("DROP TABLE IF EXISTS `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
    }
 }

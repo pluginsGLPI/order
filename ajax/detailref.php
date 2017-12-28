@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 
 Session::checkCentralAccess();
 
-$params = array(
+$params = [
    'itemtype'     => $_POST['itemtype'],
    'orders_id'    => $_POST['orders_id'],
    'suppliers_id' => $_POST['suppliers_id'],
@@ -47,6 +47,6 @@ $params = array(
    'span'         => $_POST['span'],
    'action'       => $CFG_GLPI["root_doc"] . "/plugins/order/ajax/detail.php",
    'condition'    => ''
-);
+];
 $ref = new PluginOrderReference();
 $ref->dropdownReferencesByEnterprise("PluginOrderReference", $params);

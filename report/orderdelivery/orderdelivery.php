@@ -56,28 +56,31 @@ $report->displayCriteriasForm();
 if ($report->criteriasValidated()) {
    $report->setSubNameAuto();
 
-   $report->setColumns(array(new PluginReportsColumnLink('entities_id',
-                                                         __("Entity"), 'Entity'),
-                             new PluginReportsColumnLink('id', __("Name"),
-                                                         'PluginOrderOrder',
-                                                         array('with_comment' => true,
-                                                               'with_navigate' => true)),
-                             new PluginReportsColumn('num_order', __("Order number", "order")),
-                             new PluginReportsColumnLink('suppliers_id',
-                                                         __("Supplier"), 'Supplier'),
-                             new PluginReportsColumnLink('plugin_order_orderstates_id',
-                                                         __("Status"),
-                                                         'PluginOrderOrderState',
-                                                         array('with_comment' => true)),
-                             new PluginReportsColumnDateTime('order_date', __("Date of order", "order")),
-                             new PluginReportsColumnDateTime('duedate', __("Estimated due date", "order")),
-                             new PluginReportsColumnDateTime('deliverydate', __("Delivery date")),
-                             new PluginReportsColumnLink('locations_id',
-                                                         __("Delivery location", "order"), 'Location',
-                                                         array('with_comment' => true))
-                       ));
+   $report->setColumns([
+      new PluginReportsColumnLink('entities_id',
+                                  __("Entity"), 'Entity'),
+      new PluginReportsColumnLink('id', __("Name"),
+                                  'PluginOrderOrder',
+                                  [
+                                    'with_comment'  => true,
+                                    'with_navigate' => true
+                                  ]),
+      new PluginReportsColumn('num_order', __("Order number", "order")),
+      new PluginReportsColumnLink('suppliers_id',
+                                  __("Supplier"), 'Supplier'),
+      new PluginReportsColumnLink('plugin_order_orderstates_id',
+                                  __("Status"),
+                                  'PluginOrderOrderState',
+                                  ['with_comment' => true]),
+      new PluginReportsColumnDateTime('order_date', __("Date of order", "order")),
+      new PluginReportsColumnDateTime('duedate', __("Estimated due date", "order")),
+      new PluginReportsColumnDateTime('deliverydate', __("Delivery date")),
+      new PluginReportsColumnLink('locations_id',
+                                  __("Delivery location", "order"), 'Location',
+                                  ['with_comment' => true])
+   ]);
 
-    //TODO : ne pas chercher dans la poublelles
+   //TODO : ne pas chercher dans la poublelles
    $query = "SELECT * FROM `glpi_plugin_order_orders`";
    $query.= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");
    $query.= $report->addSqlCriteriasRestriction();

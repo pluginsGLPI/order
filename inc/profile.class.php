@@ -37,11 +37,11 @@ class PluginOrderProfile extends CommonDBTM {
    public static $rightname = 'profile';
 
    public static function createFirstAccess($ID) {
-      self::addDefaultProfileInfos($ID, array(
-         'plugin_order_order'                             => PluginOrderOrder::ALLRIGHTS, // All rights : CREATE + READ + ...
-         'plugin_order_bill'                              => 127,
-         'plugin_order_reference'                         => 127), true
-      );
+      self::addDefaultProfileInfos($ID, [
+         'plugin_order_order'     => PluginOrderOrder::ALLRIGHTS, // All rights : CREATE + READ + ...
+         'plugin_order_bill'      => 127,
+         'plugin_order_reference' => 127
+      ], true);
    }
 
    /**
@@ -54,16 +54,20 @@ class PluginOrderProfile extends CommonDBTM {
       foreach ($rights as $right => $value) {
          if (countElementsInTable('glpi_profilerights',
                                   "`profiles_id`='$profiles_id'
-                                     AND `name`='$right'") && $drop_existing) {
-            $profileRight->deleteByCriteria(array('profiles_id' => $profiles_id, 'name' => $right));
+                                   AND `name`='$right'") && $drop_existing) {
+            $profileRight->deleteByCriteria([
+               'profiles_id' => $profiles_id,
+               'name'        => $right
+            ]);
          }
          if (!countElementsInTable('glpi_profilerights',
                                    "`profiles_id`='$profiles_id'
-                                      AND `name`='$right'")) {
-            $myright['profiles_id'] = $profiles_id;
-            $myright['name']        = $right;
-            $myright['rights']      = $value;
-            $profileRight->add($myright);
+                                    AND `name`='$right'")) {
+            $profileRight->add([
+               'profiles_id' => $profiles_id,
+               'name'        => $right,
+               'rights'      => $value,
+            ]);
 
             //Add right to the current session
             $_SESSION['glpiactiveprofile'][$right] = $value;
@@ -77,7 +81,7 @@ class PluginOrderProfile extends CommonDBTM {
 
       echo "<div class='firstbloc'>";
 
-      if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE))) && $openform) {
+      if ($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]) && $openform) {
          $profile = new Profile();
          echo "<form method='post' action='".$profile->getFormURL()."'>";
       }
@@ -85,23 +89,23 @@ class PluginOrderProfile extends CommonDBTM {
       $profile = new Profile();
       $profile->getFromDB($profiles_id);
 
-      //$rights = array('rights' => self::getRights($profile->getField('interface'),);
-      $rights = array();
+      //$rights = ['rights' => self::getRights($profile->getField('interface'),];
+      $rights = [];
       if ($profile->getField('interface') == 'central') {
          $rights = $this->getAllRights();
       }
 
-      $profile->displayRightsChoiceMatrix($rights, array(
+      $profile->displayRightsChoiceMatrix($rights, [
          'canedit'       => $canedit,
          'default_class' => 'tab_bg_2',
          'title'         => __('Orders', 'order'),
-      ));
+      ]);
 
       if ($canedit && $closeform) {
          echo "<div class='center'>";
-         echo Html::hidden('id', array('value' => $profiles_id));
-         echo Html::submit(_sx('button', 'Save'), array('name' => 'update'));
-         echo "</div>\n";
+         echo Html::hidden('id', ['value' => $profiles_id]);
+         echo Html::submit(_sx('button', 'Save'), ['name' => 'update']);
+         echo "</div>";
          Html::closeForm();
       }
       echo "</div>";
@@ -110,9 +114,9 @@ class PluginOrderProfile extends CommonDBTM {
    public static function install(Migration $migration) {
       global $DB;
 
-      if (TableExists("glpi_plugin_order_profiles")
-         && !FieldExists("glpi_plugin_order_profiles",
-                         "plugin_order_generate_order_without_validation")) {
+      if ($DB->tableExists("glpi_plugin_order_profiles")
+         && !$DB->fieldExists("glpi_plugin_order_profiles",
+                              "plugin_order_generate_order_without_validation")) {
          $DB->query("ALTER TABLE `glpi_plugin_order_profiles`
                      ADD `plugin_order_generate_order_without_validation` char(1) default NULL;");
       }
@@ -133,7 +137,7 @@ class PluginOrderProfile extends CommonDBTM {
       $type = get_class($item);
       if ($type == 'Profile') {
          if ($item->getField('id') && $item->getField('interface') != 'helpdesk') {
-            return array(1 => __("Orders", "order"));
+            return [1 => __("Orders", "order")];
          }
       }
       return '';
@@ -142,11 +146,11 @@ class PluginOrderProfile extends CommonDBTM {
    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       if ($item->getType() == 'Profile') {
          $prof = new self();
-         self::addDefaultProfileInfos($item->getID(), array(
-            'plugin_order_order'                             => 0, // All rights : CREATE + READ + ...
-            'plugin_order_bill'                              => 0,
-            'plugin_order_reference'                         => 0
-         ));
+         self::addDefaultProfileInfos($item->getID(), [
+            'plugin_order_order'     => 0, // All rights : CREATE + READ + ...
+            'plugin_order_bill'      => 0,
+            'plugin_order_reference' => 0
+         ]);
          $prof->showForm($item->getID());
       }
       return true;
@@ -154,20 +158,19 @@ class PluginOrderProfile extends CommonDBTM {
 
    static function getAllRights($all = false) {
 
-      $rights = array(
-         array('itemtype' => 'PluginOrderOrder',
-            'label'    => __("Orders", "order"),
-            'field'    => 'plugin_order_order'
-         ),
-         array('itemtype' => 'PluginOrderReference',
-            'label'    => __("Products references", "order"),
-            'field'    => 'plugin_order_reference'
-         ),
-         array('itemtype' => 'PluginOrderBill',
-            'label'    => __("Bills", "order"),
-            'field'    => 'plugin_order_bill'
-         )
-      );
+      $rights = [[
+         'itemtype' => 'PluginOrderOrder',
+         'label'    => __("Orders", "order"),
+         'field'    => 'plugin_order_order'
+      ], [
+         'itemtype' => 'PluginOrderReference',
+         'label'    => __("Products references", "order"),
+         'field'    => 'plugin_order_reference'
+      ], [
+         'itemtype' => 'PluginOrderBill',
+         'label'    => __("Bills", "order"),
+         'field'    => 'plugin_order_bill'
+      ]];
 
       return $rights;
    }
@@ -192,14 +195,15 @@ class PluginOrderProfile extends CommonDBTM {
    static function migrateOneProfile($profiles_id) {
       global $DB;
       //Cannot launch migration if there's nothing to migrate...
-      if (!TableExists('glpi_plugin_order_profiles')) {
+      if (!$DB->tableExists('glpi_plugin_order_profiles')) {
          return true;
       }
 
       foreach ($DB->request('glpi_plugin_order_profiles',
                             "`profiles_id`='$profiles_id'") as $profile_data) {
 
-         $matching       = array('order'              => 'plugin_order_order',
+         $matching = [
+            'order'              => 'plugin_order_order',
             'bill'               => 'plugin_order_bill',
             'reference'          => 'plugin_order_reference',
             'validation'         => 'plugin_order_validation',
@@ -208,7 +212,7 @@ class PluginOrderProfile extends CommonDBTM {
             'delivery'           => 'plugin_order_delivery',
             'generate_order_odt' => 'plugin_order_generate_order_odt',
             'open_ticket'        => 'plugin_order_open_ticket'
-         );
+         ];
          $current_rights = ProfileRight::getProfileRights($profiles_id, array_values($matching));
          foreach ($matching as $old => $new) {
             if (!isset($current_rights[$old])) {
@@ -247,7 +251,7 @@ class PluginOrderProfile extends CommonDBTM {
       //Add new rights in glpi_profilerights table
       foreach ($profile->getAllRights(true) as $data) {
          if (countElementsInTable("glpi_profilerights", "`name` = '".$data['field']."'") == 0) {
-            ProfileRight::addProfileRights(array($data['field']));
+            ProfileRight::addProfileRights([$data['field']]);
          }
       }
 
@@ -256,8 +260,8 @@ class PluginOrderProfile extends CommonDBTM {
          self::migrateOneProfile($prof['id']);
       }
       foreach ($DB->request("SELECT *
-                           FROM `glpi_profilerights`
-                           WHERE `profiles_id`='".$_SESSION['glpiactiveprofile']['id']."'
+                             FROM `glpi_profilerights`
+                             WHERE `profiles_id`='".$_SESSION['glpiactiveprofile']['id']."'
                               AND `name` LIKE '%plugin_order%'") as $prof) {
          $_SESSION['glpiactiveprofile'][$prof['name']] = $prof['rights'];
       }

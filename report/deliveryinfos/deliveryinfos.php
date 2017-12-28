@@ -56,14 +56,15 @@ $report->displayCriteriasForm();
 if ($report->criteriasValidated()) {
    $report->setSubNameAuto();
 
-   $report->setColumns(array(new PluginReportsColumnLink('suppliers_id',
-                                                         __("Supplier"), 'Supplier'),
-                             new PluginReportsColumnLink('entities_id',
-                                                         __("Entity"), 'Entity'),
-                             new PluginReportsColumnInteger('total', __("Orders total", "order")),
-                             new PluginReportsColumnInteger('late', __("Late orders total", "order")),
-                       ));
-    //TODO : ne pas chercher dans la poublelles
+   $report->setColumns([
+      new PluginReportsColumnLink('suppliers_id',
+                                  __("Supplier"), 'Supplier'),
+      new PluginReportsColumnLink('entities_id',
+                                  __("Entity"), 'Entity'),
+      new PluginReportsColumnInteger('total', __("Orders total", "order")),
+      new PluginReportsColumnInteger('late', __("Late orders total", "order")),
+   ]);
+   //TODO : ne pas chercher dans la poublelles
 
    $query_total = "SELECT count(*) FROM `glpi_plugin_order_orders`";
    $query_total.= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");

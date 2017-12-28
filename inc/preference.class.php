@@ -57,7 +57,7 @@ class PluginOrderPreference extends CommonDBTM {
     * @return preference value or 0
     */
    public static function checkPreferenceValue($field, $users_id = 0) {
-      $data = getAllDatasFromTable(getTableForItemType(__CLASS__), "`users_id`='$users_id'");
+      $data = getAllDatasFromTable(self::getTable(), "`users_id` = '$users_id'");
       if (!empty($data)) {
          $first = array_pop($data);
          return $first[$field];
@@ -66,7 +66,7 @@ class PluginOrderPreference extends CommonDBTM {
       }
    }
 
-   public static function checkPreferenceSignatureValue($users_id= 0) {
+   public static function checkPreferenceSignatureValue($users_id = 0) {
       return self::checkPreferenceValue('sign', $users_id);
    }
 
@@ -107,14 +107,14 @@ class PluginOrderPreference extends CommonDBTM {
     */
    public static function dropdownListFiles($name, $extension, $directory, $value = '') {
       $files  = self::getFiles($directory, $extension);
-      $values = array();
+      $values = [];
       if (empty($files)) {
          $values[0] = Dropdown::EMPTY_VALUE;
       }
       foreach ($files as $file) {
          $values[$file[0]] = $file[0];
       }
-      return Dropdown::showFromArray($name, $values, array('value' => $value));
+      return Dropdown::showFromArray($name, $values, ['value' => $value]);
    }
 
    /**
@@ -145,10 +145,10 @@ class PluginOrderPreference extends CommonDBTM {
       $version = plugin_version_order();
       $this->getFromDB($ID);
 
-      echo "<form method='post' action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'><div align='center'>";
+      echo "<form method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'><div align='center'>";
       echo "<table class='tab_cadre_fixe' cellpadding='5'>";
-      echo "<tr><th colspan='2'>"  .  $version['name']  .  " - " . $version['version'] . "</th></tr>";
-      echo "<tr class='tab_bg_2'><td align='center'>" . __("Use this model", "order") . "</td>";
+      echo "<tr><th colspan='2'>" . $version['name'] . " - ".$version['version']."</th></tr>";
+      echo "<tr class='tab_bg_2'><td align='center'>".__("Use this model", "order")."</td>";
       echo "<td align='center'>";
       self::dropdownFileTemplates($this->fields["template"]);
       echo "</td></tr>";
@@ -160,14 +160,14 @@ class PluginOrderPreference extends CommonDBTM {
 
       if (isset($this->fields["sign"]) && !empty($this->fields["sign"])) {
          echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
-          echo "<img src='" . $CFG_GLPI["root_doc"] . "/plugins/order/signatures/" . $this->fields["sign"] . "'>";
+          echo "<img src='".$CFG_GLPI["root_doc"]."/plugins/order/signatures/".$this->fields["sign"]."'>";
          echo "</td></tr>";
       }
 
       echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
-      echo "<input type='hidden' name='id' value='" . $ID . "'>";
-      echo "<input type='hidden' name='users_id' value='" . $this->fields['users_id'] . "'>";
-      echo "<input type='submit' name='update' value='" . _sx('button', 'Post') . "' class='submit' ></td>";
+      echo Html::hidden('id', ['value' => $ID]);
+      echo Html::hidden('users_id', ['value' => $this->fields['users_id']]);
+      echo "<input type='submit' name='update' value='"._sx('button', 'Post')."' class='submit' ></td>";
       echo "</tr>";
 
       echo "</table>";
@@ -176,15 +176,15 @@ class PluginOrderPreference extends CommonDBTM {
    }
 
    public static function getFiles($directory , $ext) {
-      $array_dir  = array();
-      $array_file = array();
+      $array_dir  = [];
+      $array_file = [];
 
       if (is_dir($directory)) {
          if ($dh = opendir($directory)) {
             while (($file = readdir($dh)) !== false) {
                $filename  = $file;
                $filetype  = filetype($directory. $file);
-               $filedate  = Html::convDate(date ("Y-m-d", filemtime($directory . $file)));
+               $filedate  = Html::convDate(date ("Y-m-d", filemtime($directory.$file)));
                $basename  = explode('.', basename($filename));
                $extension = array_pop($basename);
                if ($filename == ".." OR $filename == ".") {
@@ -194,10 +194,10 @@ class PluginOrderPreference extends CommonDBTM {
                      if ($ext == PLUGIN_ORDER_SIGNATURE_EXTENSION) {
                         $name = array_shift($basename);
                         if (strtolower($name) == strtolower($_SESSION["glpiname"])) {
-                           $array_file[] = array($filename, $filedate, $extension);
+                           $array_file[] = [$filename, $filedate, $extension];
                         }
                      } else {
-                        $array_file[] = array($filename, $filedate, $extension);
+                        $array_file[] = [$filename, $filedate, $extension];
                      }
 
                   } else if ($filetype == "dir") {
@@ -218,11 +218,11 @@ class PluginOrderPreference extends CommonDBTM {
       global $DB;
 
       //Only avaiable since 1.2.0
-      $table = getTableForItemType(__CLASS__);
-      if (!TableExists($table)) {
+      $table = self::getTable();
+      if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
-         $query = "CREATE TABLE `glpi_plugin_order_preferences` (
+         $query = "CREATE TABLE `$table` (
                   `id` int(11) NOT NULL auto_increment,
                   `users_id` int(11) NOT NULL default 0,
                   `template` varchar(255) collate utf8_unicode_ci default NULL,
@@ -245,18 +245,18 @@ class PluginOrderPreference extends CommonDBTM {
       global $DB;
 
       //Current table name
-      $DB->query("DROP TABLE IF EXISTS  `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
    }
 
    public function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       if (get_class($item) == 'Preference') {
-         return array(1 => __("Orders", "order"));
+         return [1 => __("Orders", "order")];
       }
       return '';
    }
 
 
-   public static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       if (get_class($item) == 'Preference') {
          $pref = new self();
          $id   = $pref->addDefaultPreference(Session::getLoginUserID());

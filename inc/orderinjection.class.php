@@ -52,7 +52,7 @@ class PluginOrderOrderInjection extends PluginOrderOrder implements PluginDatain
    }
 
    public function connectedTo() {
-      return array();
+      return [];
    }
 
    /**
@@ -63,7 +63,7 @@ class PluginOrderOrderInjection extends PluginOrderOrder implements PluginDatain
     * @return an array of IDs of newly created objects : for example array(Computer=>1, Networkport=>10)
     *
    **/
-   public function addOrUpdateObject($values=array(), $options=array()) {
+   public function addOrUpdateObject($values = array(), $options = array()) {
       $lib = new PluginDatainjectionCommonInjectionLib($this, $values, $options);
       $lib->processAddOrUpdate();
       return $lib->getInjectionResults();

@@ -48,10 +48,10 @@ if (isset($_POST["add"])) {
          if ($supplier->add($_POST)) {
             $new_value = __("Add"). " ";
             if ($_POST["num_quote"]) {
-               $new_value .= __("Quote number", "order") . " " . $_POST["num_quote"];
+               $new_value .= __("Quote number", "order")." ".$_POST["num_quote"];
             }
             if ($_POST["num_order"]) {
-               $new_value .= " - " . __("Order number") . " : " . $_POST["num_order"];
+               $new_value .= " - ".__("Order number")." : ".$_POST["num_order"];
             }
             $order->addHistory('PluginOrderOrder', "", $new_value, $_POST["plugin_order_orders_id"]);
          }
@@ -62,8 +62,8 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    if (PluginOrderOrder_Supplier::canCreate()) {
       foreach ($_POST["check"] as $ID => $value) {
-         if ($supplier->delete(array( "id" => $ID), 0, 0)) {
-            $new_value = __("Delete", "order") .  " " . __("Supplier Detail", "order") . " : " . $ID;
+         if ($supplier->delete(["id" => $ID], 0, 0)) {
+            $new_value = __("Delete", "order")." ".__("Supplier Detail", "order")." : ".$ID;
             $order->addHistory('PluginOrderOrder', "", $new_value, $_POST["plugin_order_orders_id"]);
          }
       }
@@ -79,6 +79,6 @@ if (isset($_POST["add"])) {
 } else {
    Html::header(__("Orders management", "order"), '', "plugins", "order", "order");
    $supplier->showForm($_GET["id"],
-                       array('plugin_order_orders_id' => $_GET["plugin_order_orders_id"]));
+                       ['plugin_order_orders_id' => $_GET["plugin_order_orders_id"]]);
    Html::footer();
 }
