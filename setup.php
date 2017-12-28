@@ -136,14 +136,15 @@ function plugin_init_order() {
       Plugin::registerClass('PluginOrderReference', ['document_types' => true]);
       Plugin::registerClass('PluginOrderProfile', ['addtabon' => ['Profile']]);
 
-      $values['notificationtemplates_types'] = true;
-      //If the new infocom display hook (introduced in 9.1) is available, use it !
-      if (method_exists('Infocom', 'addPluginInfos')) {
-         $PLUGIN_HOOKS['infocom']['order'] = ['PluginOrderOrder_Item', 'showForInfocom'];
-      } else {
-         $values['addtabon'] = PluginOrderOrder_Item::getClasses(true);
-      }
-      Plugin::registerClass('PluginOrderOrder_Item', $values);
+      array_push($CFG_GLPI["itemdevices_types"], 'PluginOrderReference');
+      array_push($CFG_GLPI["itemdevicememory_types"], 'PluginOrderReference');
+      array_push($CFG_GLPI["itemdevicepowersupply_types"], 'PluginOrderReference');
+      array_push($CFG_GLPI["itemdevicenetworkcard_types"], 'PluginOrderReference');
+      array_push($CFG_GLPI["itemdevices_itemaffinity"], 'PluginOrderReference');
+
+      $PLUGIN_HOOKS['infocom']['order'] = ['PluginOrderOrder_Item', 'showForInfocom'];
+      Plugin::registerClass('PluginOrderOrder_Item',
+                            ['notificationtemplates_types' => true]);
 
       if (PluginOrderOrder::canView()) {
          Plugin::registerClass('PluginOrderDocumentCategory', ['addtabon' => ['DocumentCategory']]);
