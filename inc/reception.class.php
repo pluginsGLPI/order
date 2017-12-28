@@ -745,7 +745,7 @@ class PluginOrderReception extends CommonDBChild {
                      $config =  PluginOrderConfig::getConfig(true);
                      if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
                         $options['manual_generate'] = $params2['POST']['manual_generate'];
-                        if ($params2['manual_generate'] == 1) {
+                        if ($params2['POST']['manual_generate'] == 1) {
                            $options['name']            = $params2['POST']['generated_name'];
                            $options['serial']          = $params2['POST']['generated_serial'];
                            $options['otherserial']     = $params2['POST']['generated_otherserial'];
