@@ -32,14 +32,20 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginOrderOrder_Supplier extends CommonDBChild {
+
    public static $rightname = 'plugin_order_order';
+
    public static $itemtype  = 'PluginOrderOrder';
+
    public static $items_id  = 'plugin_order_orders_id';
+
    public $dohistory        = true;
+
 
    public static function getTypeName($nb = 0) {
       return __("Supplier Detail", "order");
    }
+
 
    public function getSearchOptions() {
       $tab                     = [];
@@ -59,13 +65,13 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       $tab[4]['table']         = 'glpi_suppliers';
       $tab[4]['field']         = 'name';
       $tab[4]['name']          = __("Supplier");
-      $tab[4]['datatype']      ='itemlink';
-      $tab[4]['itemlink_type'] ='Supplier';
-      $tab[4]['forcegroupby']  =true;
+      $tab[4]['datatype']      = 'itemlink';
+      $tab[4]['itemlink_type'] = 'Supplier';
+      $tab[4]['forcegroupby']  = true;
 
       $tab[30]['table']        = self::getTable();
       $tab[30]['field']        = 'id';
-      $tab[30]['name']         =__("ID");
+      $tab[30]['name']         = __("ID");
 
       /* entity */
       $tab[80]['table']        = 'glpi_entities';
@@ -75,12 +81,14 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       return $tab;
    }
 
+
    public function defineTabs($options = array()) {
       $ong = [];
       $this->addStandardTab('PluginOrderOrder_Supplier', $ong, $options);
 
       return $ong;
    }
+
 
    public function prepareInputForAdd($input) {
       // Not attached to reference -> not added
@@ -89,6 +97,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       }
       return $input;
    }
+
 
    public function getFromDBByOrder($plugin_order_orders_id) {
       global $DB;
@@ -108,6 +117,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       }
       return false;
    }
+
 
    public function showForm ($ID, $options = array()) {
       $plugin_order_orders_id = -1;
@@ -157,6 +167,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       $this->showFormButtons($options);
       return true;
    }
+
 
    public static function showOrderSupplierInfos($ID) {
       //TODO : en cours
@@ -224,6 +235,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       Html::closeForm();
    }
 
+
    public function checkIfSupplierInfosExists($plugin_order_orders_id) {
 
       if ($plugin_order_orders_id) {
@@ -236,6 +248,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          }
       }
    }
+
 
    public static function showDeliveries($suppliers_id) {
       global $DB;
@@ -283,6 +296,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo "</table>";
       echo "</div>";
    }
+
 
    public static function install(Migration $migration) {
       global $DB;
@@ -358,6 +372,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       }
    }
 
+
    public static function uninstall() {
       global $DB;
 
@@ -368,6 +383,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
 
    }
+
 
    public function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       switch (get_class($item)) {
@@ -384,6 +400,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
             return '';
       }
    }
+
 
    public static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       switch (get_class($item)) {
@@ -402,4 +419,6 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       }
       return true;
    }
+
+
 }

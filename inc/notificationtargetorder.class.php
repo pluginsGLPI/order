@@ -40,6 +40,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
    const SUPERVISOR_AUTHOR_GROUP   = 34;
    const SUPERVISOR_DELIVERY_GROUP = 35;
 
+
    public function getEvents() {
       return [
          'ask'            => __("Request order validation", "order"),
@@ -50,6 +51,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          'delivered'      => __("No item to generate", "order")
       ];
    }
+
 
    public function getDatasForTemplate($event, $options = array()) {
       global $CFG_GLPI;
@@ -141,6 +143,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       }
    }
 
+
    public function getTags() {
       $tags = [
          'ordervalidation.name'        => __("Name"),
@@ -186,6 +189,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
       asort($this->tag_descriptions);
    }
+
 
    public static function install(Migration $migration) {
       global $DB;
@@ -400,6 +404,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       }
    }
 
+
    public static function uninstall() {
       global $DB;
 
@@ -436,6 +441,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       }
    }
 
+
    /**
     * Get additionnals targets for Tickets
    **/
@@ -447,6 +453,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       $this->addTarget(self::SUPERVISOR_AUTHOR_GROUP, __("Manager")." ".__("Author group", "order"));
       $this->addTarget(self::SUPERVISOR_DELIVERY_GROUP, __("Manager")." ".__("Recipient group", "order"));
    }
+
 
    public function addSpecificTargets($data, $options) {
       switch ($data['items_id']) {
@@ -470,4 +477,6 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
             break;
       }
    }
+
+
 }

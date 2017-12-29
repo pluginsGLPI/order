@@ -32,15 +32,20 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginOrderReference_Supplier extends CommonDBChild {
+
    public static $rightname = 'plugin_order_reference';
+
    public static $itemtype  = 'PluginOrderReference';
+
    public static $items_id  = 'plugin_order_references_id';
+
    public $dohistory        = true;
 
 
    public static function getTypeName($nb = 0) {
       return __("Supplier for the reference", "order");
    }
+
 
    public function getFromDBByReference($plugin_order_references_id) {
       global $DB;
@@ -63,6 +68,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       return false;
    }
 
+
    public function getSearchOptions() {
       $tab                     = [];
 
@@ -80,7 +86,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
       $tab[3]['table']         = 'glpi_suppliers';
       $tab[3]['field']         = 'name';
-      $tab[3]['name']          =  __("Supplier");
+      $tab[3]['name']          = __("Supplier");
       $tab[3]['datatype']      = 'itemlink';
       $tab[3]['itemlink_type'] = 'Supplier';
       $tab[3]['forcegroupby']  = true;
@@ -97,6 +103,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       return $tab;
    }
 
+
    public function prepareInputForAdd($input) {
       // Not attached to reference -> not added
       if (!isset($input['plugin_order_references_id'])
@@ -106,6 +113,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       return $input;
    }
 
+
    public function defineTabs($options = array()) {
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -113,6 +121,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       $this->addStandardTab('Log', $ong, $options);
       return $ong;
    }
+
 
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if (get_class($item) == __CLASS__) {
@@ -123,9 +132,10 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       return '';
    }
 
+
    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       $reference_supplier = new self();
-      if ($item->getType()=='PluginOrderReference') {
+      if ($item->getType() == 'PluginOrderReference') {
          $reference_supplier->showReferenceManufacturers($item->getID());
          if ($item->can($item->getID(), UPDATE)) {
             $reference_supplier->showForm(0, ['plugin_order_references_id' => $item->getID()]);
@@ -134,6 +144,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
       return true;
    }
+
 
    public function showForm ($ID, $options = array()) {
       global $DB;
@@ -202,6 +213,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       $this->showFormButtons($options);
       return true;
    }
+
 
    public function showReferenceManufacturers($ID) {
       global $DB, $CFG_GLPI;
@@ -287,6 +299,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       echo "</div>";
    }
 
+
    public function getPriceByReferenceAndSupplier($plugin_order_references_id, $suppliers_id) {
       global $DB;
 
@@ -304,6 +317,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       }
    }
 
+
    public function getReferenceCodeByReferenceAndSupplier($plugin_order_references_id, $suppliers_id) {
       global $DB;
 
@@ -320,6 +334,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          return 0;
       }
    }
+
 
    public static function install(Migration $migration) {
       global $DB;
@@ -393,6 +408,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       }
    }
 
+
    public static function uninstall() {
       global $DB;
 
@@ -402,6 +418,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       //Current table name
       $DB->query("DROP TABLE IF EXISTS  `".self::getTable()."`");
    }
+
 
    public static function showReferencesFromSupplier($ID) {
       global $DB, $CFG_GLPI;
@@ -476,4 +493,6 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       echo "</table>";
       echo "</div>";
    }
+
+
 }

@@ -2,9 +2,11 @@
 
 class PluginOrderMenu extends CommonGLPI {
 
+
    public static function getTypeName($nb = 0) {
       return __("Orders", "order");
    }
+
 
    static function getMenuContent() {
       global $CFG_GLPI;
@@ -14,7 +16,7 @@ class PluginOrderMenu extends CommonGLPI {
          'page'  => self::getSearchURL(false),
       ];
       if (PluginOrderConfig::canView()) {
-         $menu['links']['config']= PluginOrderConfig::getFormURL(false);
+         $menu['links']['config'] = PluginOrderConfig::getFormURL(false);
       }
 
       if (PluginOrderOrder::canView()) {
@@ -53,7 +55,7 @@ class PluginOrderMenu extends CommonGLPI {
       if (PluginOrderReference::canView()) {
          $menu['options']['references'] = [
             'title' => PluginOrderReference::getTypeName(2),
-            'page'  =>  PluginOrderReference::getSearchURL(false),
+            'page'  => PluginOrderReference::getSearchURL(false),
             'links' => [
                'search' => PluginOrderReference::getSearchURL(false)
             ]
@@ -68,7 +70,10 @@ class PluginOrderMenu extends CommonGLPI {
       return $menu;
    }
 
+
    function install() {
 
    }
+
+
 }

@@ -32,11 +32,13 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginOrderConfig extends CommonDBTM {
+
    static $rightname = 'config';
 
    const CONFIG_NEVER   = 0;
    const CONFIG_YES     = 1;
    const CONFIG_ASK     = 2;
+
 
    public function __construct() {
       global $DB;
@@ -45,13 +47,16 @@ class PluginOrderConfig extends CommonDBTM {
       }
    }
 
+
    static function canView() {
       return Session::haveRight('config', READ);
    }
 
+
    static function canCreate() {
       return Session::haveRight('config', UPDATE);
    }
+
 
    public static function getConfig($update = false) {
       static $config = null;
@@ -66,9 +71,11 @@ class PluginOrderConfig extends CommonDBTM {
       return $config;
    }
 
+
    public static function getTypeName($nb = 0) {
       return __("Orders management", "order");
    }
+
 
    public static function getMenuContent() {
       global $CFG_GLPI;
@@ -81,6 +88,7 @@ class PluginOrderConfig extends CommonDBTM {
 
       return $menu;
    }
+
 
    public function showForm() {
       $this->getFromDB(1);
@@ -369,126 +377,155 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</div>";
    }
 
+
    //----------------- Getters and setters -------------------//
 
    public function useValidation() {
       return $this->fields['use_validation'];
    }
 
+
    public function getDraftState() {
       return $this->fields['order_status_draft'];
 
    }
+
 
    public function getWaitingForApprovalState() {
       return $this->fields['order_status_waiting_approval'];
 
    }
 
+
    public function getApprovedState() {
       return $this->fields['order_status_approved'];
 
    }
+
 
    public function getPartiallyDeliveredState() {
       return $this->fields['order_status_partially_delivred'];
 
    }
 
+
    public function getDeliveredState() {
       return $this->fields['order_status_completly_delivered'];
 
    }
+
 
    public function getCanceledState() {
       return $this->fields['order_status_canceled'];
 
    }
 
+
    public function getPaidState() {
       return $this->fields['order_status_paid'];
 
    }
 
+
    public function getDefaultTaxes() {
       return $this->fields['default_taxes'];
    }
+
 
    public function canGenerateAsset() {
       return $this->fields['generate_assets'];
    }
 
+
    public function canGenerateTicket() {
       return ($this->fields['tickettemplates_id_delivery'] > 0);
    }
+
 
    public function canAddLocation() {
       return $this->fields['add_location'];
    }
 
+
    public function canAddBillDetails() {
       return $this->fields['add_bill_details'];
    }
+
 
    public function getGeneratedAssetName() {
       return $this->fields['generated_name'];
    }
 
+
    public function getGeneratedAssetSerial() {
       return $this->fields['generated_serial'];
    }
+
 
    public function getGeneratedAssetState() {
       return $this->fields['default_asset_states_id'];
    }
 
+
    public function getGeneratedAssetOtherserial() {
       return $this->fields['generated_otherserial'];
    }
+
 
    public function canUseSupplierSatisfaction() {
       return $this->fields['use_supplier_satisfaction'];
    }
 
+
    public function canUseSupplierInformations() {
       return $this->fields['use_supplier_informations'];
    }
+
 
    public function canGenerateOrderPDF() {
       return $this->fields['generate_order_pdf'];
    }
 
+
    public function canCopyDocuments() {
       return $this->fields['copy_documents'];
    }
+
 
    public function getShouldBeDevileredColor() {
       return $this->fields['shoudbedelivered_color'];
    }
 
+
    public function getDefaultDocumentCategory() {
       return $this->fields['documentcategories_id'];
    }
+
 
    public function getDefaultAuthorGroup() {
       return $this->fields['groups_id_author'];
    }
 
+
    public function getDefaultRecipientGroup() {
       return $this->fields['groups_id_recipient'];
    }
+
 
    public function getDefaultRecipient() {
       return $this->fields['users_id_recipient'];
    }
 
+
    public function canHideInactiveBudgets() {
       return $this->fields['hide_inactive_budgets'];
    }
 
+
    public function canRenameDocuments() {
       return $this->fields['rename_documents'];
    }
+
 
    //----------------- Install & uninstall -------------------//
    public static function install(Migration $migration) {
@@ -638,6 +675,7 @@ class PluginOrderConfig extends CommonDBTM {
 
    }
 
+
    public static function uninstall() {
       global $DB;
 
@@ -647,4 +685,6 @@ class PluginOrderConfig extends CommonDBTM {
       //New table
       $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`");
    }
+
+
 }

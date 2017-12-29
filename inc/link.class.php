@@ -32,23 +32,32 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginOrderLink extends CommonDBChild {
+
    public static $rightname         = 'plugin_order_order';
+
    public $dohistory                = true;
+
    public static $itemtype          = 'PluginOrderOrder';
+
    public static $items_id          = 'plugin_order_orders_id';
+
    public static $checkParentRights = self::DONT_CHECK_ITEM_RIGHTS;
+
 
    public static function getTypeName($nb = 0) {
       return __("Generation", "order");
    }
 
-   public static function getTable($classname = NULL) {
+
+   public static function getTable($classname = null) {
       return "glpi_plugin_order_orders_items";
    }
+
 
    public static function getTypesThanCannotBeGenerared() {
       return ['ConsumableItem', 'CartridgeItem', 'SoftwareLicense', 'Contract'];
    }
+
 
    public function showItemGenerationForm($params) {
       global $CFG_GLPI;
@@ -132,9 +141,7 @@ class PluginOrderLink extends CommonDBChild {
                $rand = Entity::Dropdown([
                'name'   => "id[$i][entities_id]",
                'value'  => $order->fields["entities_id"],
-               'entity' => $order->fields["is_recursive"]
-                  ? getSonsOf('glpi_entities', $order->fields["entities_id"])
-                     : $order->fields["entities_id"]]
+               'entity' => $order->fields["is_recursive"] ? getSonsOf('glpi_entities', $order->fields["entities_id"]) : $order->fields["entities_id"]]
                );
                Ajax::updateItemOnSelectEvent("dropdown_id[$i][entities_id]$rand",
                                           "show_location_by_entity_id_$i",
@@ -211,6 +218,7 @@ class PluginOrderLink extends CommonDBChild {
       }
    }
 
+
    public static function getCondition($itemtype) {
       switch ($itemtype) {
          case 'Computer' :
@@ -229,6 +237,7 @@ class PluginOrderLink extends CommonDBChild {
             return "`is_visible_softwareversion`";
       }
    }
+
 
    public function showOrderLink($plugin_order_orders_id) {
       global $DB, $CFG_GLPI;
@@ -415,6 +424,7 @@ class PluginOrderLink extends CommonDBChild {
       }
    }
 
+
    function getForbiddenStandardMassiveAction() {
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
@@ -422,6 +432,7 @@ class PluginOrderLink extends CommonDBChild {
       $forbidden[] = 'ObjectLock:unlock';
       return $forbidden;
    }
+
 
    function getSpecificMassiveActions($checkitem = null) {
       $isadmin = static::canUpdate();
@@ -434,6 +445,7 @@ class PluginOrderLink extends CommonDBChild {
 
       return $actions;
    }
+
 
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       $link = new self;
@@ -455,6 +467,7 @@ class PluginOrderLink extends CommonDBChild {
 
       return parent::showMassiveActionsSubForm($ma);
    }
+
 
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
@@ -499,7 +512,7 @@ class PluginOrderLink extends CommonDBChild {
 
          case 'deleteLink':
             foreach ($ma->items[__CLASS__] as $key => $val) {
-               $ret =  $link->deleteLinkWithItem($key,
+               $ret = $link->deleteLinkWithItem($key,
                                                  $ma->POST['add_items'][$key]['itemtype'],
                                                  $ma->POST['plugin_order_orders_id']);
                $ma->itemDone($item->getType(), $val, MassiveAction::ACTION_OK);
@@ -508,6 +521,7 @@ class PluginOrderLink extends CommonDBChild {
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
+
 
    public function getLinkedItemDetails($itemtype, $items_id) {
       $comments = "";
@@ -527,9 +541,7 @@ class PluginOrderLink extends CommonDBChild {
                $comments .= '<br><strong>'.__("Manufacturer").' : </strong>';
                $comments .= Dropdown::getDropdownName('glpi_manufacturers', $ct->fields['manufacturers_id']);
                $comments .= '<br><strong>'.__("State").' : </strong>';
-               $comments .= (!$ci->fields['users_id']
-                              ? __("In stock")
-                              : __("Used"));
+               $comments .= (!$ci->fields['users_id'] ? __("In stock") : __("Used"));
                if ($ci->fields['users_id']) {
                   $comments .= '<br><strong>'.__("User").' : </strong>';
                   $comments .= Dropdown::getDropdownName('glpi_users', $ci->fields['users_id']);
@@ -595,6 +607,7 @@ class PluginOrderLink extends CommonDBChild {
       return ($comments);
    }
 
+
    public function getReceptionItemName($items_id, $itemtype) {
       global $CFG_GLPI;
 
@@ -621,6 +634,7 @@ class PluginOrderLink extends CommonDBChild {
          }
       }
    }
+
 
    /*public function dropdownLinkActions($itemtype, $plugin_order_references_id,
                                        $plugin_order_orders_id, $entities_id) {
@@ -680,6 +694,7 @@ class PluginOrderLink extends CommonDBChild {
       }
    }
 
+
    public function isItemLinkedToOrder($itemtype, $items_id) {
       global $DB;
 
@@ -696,6 +711,7 @@ class PluginOrderLink extends CommonDBChild {
       }
    }
 
+
    public function generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, $templateID = 0) {
       global $CFG_GLPI;
 
@@ -709,9 +725,7 @@ class PluginOrderLink extends CommonDBChild {
 
          //Create empty infocom, in order to forward entities_id and is_recursive
          $ic = new Infocom();
-         $infocomID = !$ic->getFromDBforDevice($itemtype, $items_id)
-                        ? false
-                        : $ic->fields["id"];
+         $infocomID = !$ic->getFromDBforDevice($itemtype, $items_id) ? false : $ic->fields["id"];
 
          $detail = new PluginOrderOrder_Item();
          $detail->getFromDB($detailID);
@@ -777,6 +791,7 @@ class PluginOrderLink extends CommonDBChild {
       }
    }
 
+
    public function removeInfoComRelatedToOrder($itemtype, $items_id) {
       $infocom = new InfoCom();
       $infocom->getFromDBforDevice($itemtype, $items_id);
@@ -788,10 +803,11 @@ class PluginOrderLink extends CommonDBChild {
          "suppliers_id"    => 0,
          "bill"            => "",
          "value"           => 0,
-         "order_date"      => NULL,
-         "delivery_date"   => NULL,
+         "order_date"      => null,
+         "delivery_date"   => null,
       ]);
    }
+
 
    public function createLinkWithItem($detailID = 0, $items_id = 0, $itemtype = 0,
                                       $plugin_order_orders_id = 0, $entity = 0, $templateID = 0,
@@ -828,7 +844,7 @@ class PluginOrderLink extends CommonDBChild {
                   $lic              = new SoftwareLicense();
                   $lic->getFromDB($items_id);
                   $values["id"]     = $lic->fields["id"];
-                  $values["number"] = $lic->fields["number"]+1;
+                  $values["number"] = $lic->fields["number"] + 1;
                   $lic->update($values);
 
                }
@@ -924,6 +940,7 @@ class PluginOrderLink extends CommonDBChild {
 
    }
 
+
    public function deleteLinkWithItem($detailID, $itemtype, $plugin_order_orders_id) {
       global $DB;
 
@@ -949,7 +966,7 @@ class PluginOrderLink extends CommonDBChild {
                $lic = new SoftwareLicense();
                $lic->getFromDB($license);
                $values["id"]     = $lic->fields["id"];
-               $values["number"] = $lic->fields["number"]-1;
+               $values["number"] = $lic->fields["number"] - 1;
                $lic->update($values);
             }
 
@@ -978,7 +995,7 @@ class PluginOrderLink extends CommonDBChild {
             $input["items_id"] = 0;
             $detail->update($input);
          } else {
-            Session::addMessageAfterRedirect(__("One or several selected rows haven't linked items", "order"), TRUE, ERROR);
+            Session::addMessageAfterRedirect(__("One or several selected rows haven't linked items", "order"), true, ERROR);
          }
 
          $new_value = __("Item unlink form order", "order").' : '.$order->fields["name"];
@@ -990,6 +1007,7 @@ class PluginOrderLink extends CommonDBChild {
          $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
       }
    }
+
 
    public function generateNewItem($params) {
       global $DB;
@@ -1135,9 +1153,7 @@ class PluginOrderLink extends CommonDBChild {
                }
 
                $input['entities_id']         = $entity;
-               $input['_users_id_requester'] = empty($order->fields['users_id'])
-                                                ? Session::getLoginUserID()
-                                                : $order->fields['users_id'];
+               $input['_users_id_requester'] = empty($order->fields['users_id']) ? Session::getLoginUserID() : $order->fields['users_id'];
                $input['items_id']            = $newID;
                $input['itemtype']            = $values["itemtype"];
 
@@ -1169,20 +1185,23 @@ class PluginOrderLink extends CommonDBChild {
       return $newIDs;
    }
 
+
    public static function countForOrder(PluginOrderOrder $item) {
       return countElementsInTable('glpi_plugin_order_orders_items',
                                   "`plugin_order_orders_id` = '".$item->getID()."' " .
                                   "AND `states_id` = '".PluginOrderOrder::ORDER_DEVICE_DELIVRED."'");
    }
 
+
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      if ($item->getType()=='PluginOrderOrder'
+      if ($item->getType() == 'PluginOrderOrder'
          && $item->checkIfDetailExists($item->getID(), true)
          && Session::haveRight('plugin_order_order', READ)) {
          return self::createTabEntry(_n("Associated item", "Associated items", 2),
                                      self::countForOrder($item));
       }
    }
+
 
    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       if ($item->getType() == 'PluginOrderOrder') {
@@ -1191,6 +1210,7 @@ class PluginOrderLink extends CommonDBChild {
       }
       return true;
    }
+
 
    /**
     * Copy order documents into the newly generated item
@@ -1250,4 +1270,6 @@ class PluginOrderLink extends CommonDBChild {
          }
       }
    }
+
+
 }

@@ -33,18 +33,25 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginOrderBill extends CommonDropdown
 {
+
    public static $rightname  = 'plugin_order_bill';
+
    public $dohistory         = true;
+
    public $first_level_menu  = "plugins";
+
    public $second_level_menu = "order";
+
 
    public static function getTypeName($nb = 0) {
       return __("Bill", "order");
    }
 
+
    public function post_getEmpty() {
       $this->fields['value'] = 0;
    }
+
 
    public function prepareInputForAdd($input) {
       if (!isset ($input["number"])
@@ -55,10 +62,11 @@ class PluginOrderBill extends CommonDropdown
       return $input;
    }
 
+
    public function getAdditionalFields() {
       return [
          [
-            'name'  =>'suppliers_id',
+            'name'  => 'suppliers_id',
             'label' => __("Supplier"),
             'type'  => 'dropdownValue'
          ],
@@ -106,6 +114,7 @@ class PluginOrderBill extends CommonDropdown
       ];
    }
 
+
    public function defineTabs($options = array()) {
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -116,6 +125,7 @@ class PluginOrderBill extends CommonDropdown
 
       return $ong;
    }
+
 
    public function getSearchOptions() {
       $tab = [];
@@ -192,6 +202,7 @@ class PluginOrderBill extends CommonDropdown
 
       return $tab;
    }
+
 
    public static function showItems(PluginOrderBill $bill) {
       global $DB;
@@ -270,6 +281,7 @@ class PluginOrderBill extends CommonDropdown
       }
       echo "</table></div>";
    }
+
 
    public static function showOrdersItems(PluginOrderBill $bill) {
       global $DB, $CFG_GLPI;
@@ -419,6 +431,7 @@ class PluginOrderBill extends CommonDropdown
       echo "<br>";
    }
 
+
    public static function install(Migration $migration) {
       global $DB;
 
@@ -426,7 +439,7 @@ class PluginOrderBill extends CommonDropdown
 
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
-         $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_bills` (
+         $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_bills` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
                     `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
                     `number` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
@@ -484,6 +497,7 @@ class PluginOrderBill extends CommonDropdown
       $migration->migrationOneTable("glpi_plugin_order_orders_suppliers");
    }
 
+
    public static function uninstall() {
       global $DB;
 
@@ -494,6 +508,7 @@ class PluginOrderBill extends CommonDropdown
       }
       $DB->query("DROP TABLE IF EXISTS`".$table."`") or die ($DB->error());
    }
+
 
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if (!$withtemplate) {
@@ -509,6 +524,7 @@ class PluginOrderBill extends CommonDropdown
       }
       return '';
    }
+
 
    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
 
@@ -528,4 +544,6 @@ class PluginOrderBill extends CommonDropdown
       }
       return true;
    }
+
+
 }

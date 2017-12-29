@@ -39,8 +39,8 @@
  */
 
 //Options for GLPI 0.71 and newer : need slave db to access the report
-$USEDBREPLICATE=1;
-$DBCONNECTION_REQUIRED=0; // Really a big SQL request
+$USEDBREPLICATE = 1;
+$DBCONNECTION_REQUIRED = 0; // Really a big SQL request
 
 include ("../../../../inc/includes.php");
 
@@ -82,10 +82,10 @@ if ($report->criteriasValidated()) {
 
    //TODO : ne pas chercher dans la poublelles
    $query = "SELECT * FROM `glpi_plugin_order_orders`";
-   $query.= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");
-   $query.= $report->addSqlCriteriasRestriction();
-   $query.= " AND `is_deleted`='0' AND `is_template`='0' ";
-   $query.="GROUP BY `entities_id`, `plugin_order_orderstates_id`, `num_order`, `order_date`";
+   $query .= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");
+   $query .= $report->addSqlCriteriasRestriction();
+   $query .= " AND `is_deleted`='0' AND `is_template`='0' ";
+   $query .= "GROUP BY `entities_id`, `plugin_order_orderstates_id`, `num_order`, `order_date`";
    $report->setGroupBy("entities_id", "plugin_order_orderstates_id", "num_order", "order_date");
    $report->setSqlRequest($query);
    $report->execute();

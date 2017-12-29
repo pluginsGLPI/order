@@ -35,12 +35,16 @@ if (!defined('GLPI_ROOT')) {
 class PluginOrderSurveySupplier extends CommonDBChild {
 
    public static $rightname = 'plugin_order_order';
+
    public static $itemtype  = 'PluginOrderOrder';
+
    public static $items_id  = 'plugin_order_orders_id';
+
 
    public static function getTypeName($nb = 0) {
       return __("Supplier quality", "order");
    }
+
 
    public function prepareInputForAdd($input) {
       // Not attached to reference -> not added
@@ -49,6 +53,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       }
       return $input;
    }
+
 
    public function getFromDBByOrder($plugin_order_orders_id) {
       global $DB;
@@ -71,6 +76,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       }
       return false;
    }
+
 
    public function addNotation($field,$value) {
 
@@ -101,6 +107,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       echo "</script>";
    }
 
+
    public function getTotalNotation($plugin_order_orders_id) {
       global $DB;
 
@@ -110,11 +117,12 @@ class PluginOrderSurveySupplier extends CommonDBChild {
                  WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'";
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
-         return $DB->result($result, 0, "total") /5*2;
+         return $DB->result($result, 0, "total") / 5 * 2;
       } else {
          return 0;
       }
    }
+
 
    public function getNotation($suppliers_id,$field) {
       global $DB;
@@ -131,11 +139,12 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       $nb     = $DB->numrows($result);
 
       if ($nb) {
-         return $DB->result($result, 0, "total")/$DB->result($result, 0, "nb");
+         return $DB->result($result, 0, "total") / $DB->result($result, 0, "nb");
       } else {
          return 0;
       }
    }
+
 
    public static function showGlobalNotation($suppliers_id) {
       global $DB;
@@ -192,7 +201,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
             echo "<td>".$note." / 10</td>";
             echo "<td>".nl2br($comment)."</td>";
             echo "</tr>";
-            $total+= $survey->getTotalNotation($ID);
+            $total += $survey->getTotalNotation($ID);
             $nb_order++;
          }
          echo "<tr>";
@@ -246,12 +255,13 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          echo "<tr class='tab_bg_1 b'>";
          echo "<td colspan='2'></td>";
          echo "<td><div align='left'>".__("Final supplier note", "order")."</div></td>";
-         echo "<td><div align='left'>".Html::formatNumber($total/$nb_order)."&nbsp;/ 10</div></td>";
+         echo "<td><div align='left'>".Html::formatNumber($total / $nb_order)."&nbsp;/ 10</div></td>";
          echo "</tr>";
       }
       echo "</table>";
       echo "</div>";
    }
+
 
    public function showForm ($ID, $options = array()) {
       if (!self::canView()) {
@@ -288,7 +298,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       if ($ID > 0) {
          $suppliers_id = $this->fields["suppliers_id"];
       }
-      $link=Toolbox::getItemTypeFormURL('Supplier');
+      $link = Toolbox::getItemTypeFormURL('Supplier');
       echo "<a href=\"".$link."?id=".$suppliers_id."\">" .
          Dropdown::getDropdownName("glpi_suppliers", $suppliers_id)."</a>";
       echo Html::hidden('suppliers_id', ['value' => $suppliers_id]);
@@ -333,7 +343,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       echo "</td>";
       echo "</tr>";
 
-      if ($ID>0) {
+      if ($ID > 0) {
          echo "<tr><th><div align='left'>".__("Average mark up to 10 (X points / 5)", "order")
            .": </div></th><th><div align='left'>";
          $total = $this->getTotalNotation($this->fields["plugin_order_orders_id"]);
@@ -345,6 +355,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       $this->showFormButtons($options);
       return true;
    }
+
 
    public static function showOrderSupplierSurvey($ID) {
       global $DB, $CFG_GLPI;
@@ -416,6 +427,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       echo "</div>";
    }
 
+
    public function checkIfSupplierSurveyExists($orders_id) {
       if ($orders_id) {
          return (countElementsInTable(self::getTable(),
@@ -424,6 +436,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          return false;
       }
    }
+
 
    public static function install(Migration $migration) {
       global $DB;
@@ -482,12 +495,14 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       }
    }
 
+
    public static function uninstall() {
       global $DB;
 
       //Current table name
       $DB->query("DROP TABLE IF EXISTS  `".self::getTable()."`") or die ($DB->error());
    }
+
 
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if ($item instanceof PluginOrderOrder) {
@@ -498,6 +513,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          }
       }
    }
+
 
    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       if ($item instanceof PluginOrderOrder) {
@@ -511,4 +527,6 @@ class PluginOrderSurveySupplier extends CommonDBChild {
 
       return true;
    }
+
+
 }

@@ -92,7 +92,7 @@ if ($DB->numrows($result)) {
       echo "<option value=\"".$data["id"]."\" title=\"$output\">"
         .substr($output, 0, $CFG_GLPI["dropdown_chars_limit"])."</option>";
    }
-   if ($prev>=0) {
+   if ($prev >= 0) {
       echo "</optgroup>";
    }
 }

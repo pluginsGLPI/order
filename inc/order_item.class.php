@@ -32,16 +32,22 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginOrderOrder_Item extends CommonDBRelation {
+
    public static $rightname              = 'plugin_order_order';
+
    public $dohistory                     = true;
 
    // From CommonDBRelation
    public static $itemtype_1             = "PluginOrderOrder";
+
    public static $items_id_1             = 'plugin_order_orders_id';
+
    public static $checkItem_1_Rights     = self::DONT_CHECK_ITEM_RIGHTS;
 
    public static $itemtype_2             = 'itemtype';
+
    public static $items_id_2             = 'items_id';
+
    public static $checkItem_2_Rights     = self::DONT_CHECK_ITEM_RIGHTS;
 
    public static $check_entity_coherency = false;
@@ -53,37 +59,46 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       return true;
    }
 
+
    static function canPurge() {
       return true;
    }
+
 
    static function canDelete() {
       return true;
    }
 
+
    public function canCreateItem() {
       return true;
    }
+
 
    public function canUpdateItem() {
       return true;
    }
 
+
    public function canDeleteItem() {
       return true;
    }
+
 
    public function canPurgeItem() {
       return true;
    }
 
+
    public function canViewItem() {
       return true;
    }
 
+
    public static function getTypeName($nb = 0) {
       return __("Order item", "order");
    }
+
 
    public function getSearchOptions() {
       $tab = [];
@@ -139,6 +154,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       return $tab;
    }
+
 
    public static function updateItem($item) {
 
@@ -202,6 +218,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       }
    }
 
+
    public static function getClasses($all = false) {
       global $ORDER_TYPES;
 
@@ -210,7 +227,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       }
 
       $types = $ORDER_TYPES;
-      foreach ($types as $key=>$type) {
+      foreach ($types as $key => $type) {
          if (!class_exists($type)) {
             continue;
          }
@@ -221,15 +238,18 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       return $types;
    }
 
+
    public function getPricesATI($priceHT, $taxes) {
-      return (!$priceHT?0:$priceHT + (($priceHT * $taxes) / 100));
+      return (!$priceHT ? 0 : $priceHT + (($priceHT * $taxes) / 100));
    }
+
 
    public function checkIFReferenceExistsInOrder($orders_id, $ref_id) {
       return  (countElementsInTable($this->getTable(),
                                     "`plugin_order_orders_id` = '$orders_id'
                                        AND `plugin_order_references_id` = '$ref_id' "));
    }
+
 
    public function addDetails($ref_id, $itemtype, $orders_id, $quantity, $price, $discounted_price, $taxes_id) {
       $order = new PluginOrderOrder();
@@ -255,11 +275,13 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       }
    }
 
+
    /* show details of orders */
    public function showItem($ID) {
       $this->showFormDetail($ID);
       $this->showAddForm($ID);
    }
+
 
    public function showAddForm($plugin_order_orders_id) {
       global  $CFG_GLPI,$DB;
@@ -299,7 +321,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                          WHERE s.`suppliers_id` = {$order->fields["suppliers_id"]}";
                $result = $DB->query($query);
 
-               $itemtypeArray =  ['' => Dropdown::EMPTY_VALUE];
+               $itemtypeArray = ['' => Dropdown::EMPTY_VALUE];
                while (list($itemtype) = $DB->fetch_array($result)) {
                   $type                     = new $itemtype();
                   $itemtypeArray[$itemtype] = $type->getTypeName();
@@ -367,6 +389,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       }
    }
 
+
    public function queryDetail($ID) {
       global $DB;
 
@@ -394,6 +417,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       return $DB->query($query);
    }
 
+
    public function queryBills($orders_id, $references_id) {
       global $DB;
 
@@ -415,6 +439,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       return $DB->query($query);
    }
 
+
    public function queryRef($orders_id, $ref_id, $price_taxfree, $discount, $states_id = false) {
       global $DB;
 
@@ -431,6 +456,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       return $DB->query($query);
    }
+
 
    public function showFormDetail($plugin_order_orders_id) {
       global  $CFG_GLPI,$DB;
@@ -687,7 +713,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                         AND `$table`.`plugin_order_orders_id` = '$plugin_order_orders_id'";
 
             if ($data_ref["itemtype"] == 'SoftwareLicense') {
-               $query.=" GROUP BY `glpi_plugin_order_references`.`name` ";
+               $query .= " GROUP BY `glpi_plugin_order_references`.`name` ";
             }
             $query .= " ORDER BY `glpi_plugin_order_references`.`name` ";
 
@@ -702,10 +728,10 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                Session::addToNavigateListItems($this->getType(), $data['IDD']);
 
                // Compute for detail_hideForm javascript function
-               $hideForm.="$('#detail_pricetaxfree$rand_line').show();";
-               $hideForm.="$('#detail_viewpricetaxfree$rand_line input').remove();";
-               $hideForm.="$('#detail_discount$rand_line').show();";
-               $hideForm.="$('#detail_viewdiscount$rand_line input').remove();";
+               $hideForm .= "$('#detail_pricetaxfree$rand_line').show();";
+               $hideForm .= "$('#detail_viewpricetaxfree$rand_line input').remove();";
+               $hideForm .= "$('#detail_discount$rand_line').show();";
+               $hideForm .= "$('#detail_viewdiscount$rand_line input').remove();";
 
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
@@ -855,6 +881,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       }
    }
 
+
    public function getTotalQuantityByRefAndDiscount($orders_id, $references_id, $price_taxfree, $discount) {
       global $DB;
 
@@ -868,6 +895,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       return ($DB->result($result, 0, 'quantity'));
    }
 
+
    public function getTotalQuantityByRef($orders_id, $references_id) {
       global $DB;
 
@@ -879,6 +907,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       return ($DB->result($result, 0, 'quantity'));
    }
 
+
    public function getDeliveredQuantity($orders_id, $references_id, $price_taxfree, $discount) {
       return countElementsInTable(self::getTable(),
                                   "`plugin_order_orders_id` = '$orders_id'
@@ -887,6 +916,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                                     AND `discount` LIKE '$discount'
                                     AND `states_id` != '0' ");
    }
+
 
    public function getAllPrices($orders_id) {
       global $DB;
@@ -898,6 +928,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $result = $DB->query($query);
       return $DB->fetch_array($result);
    }
+
 
    public function getOrderInfosByItem($itemtype, $items_id) {
       global $DB;
@@ -915,6 +946,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          return false;
       }
    }
+
 
    public function showPluginFromItems($itemtype, $ID) {
       global $CFG_GLPI;
@@ -951,6 +983,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       }
    }
 
+
    public function defineTabs($options = array()) {
       $ong = [];
       $this->addDefaultFormTab($ong);
@@ -958,6 +991,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       return $ong;
    }
+
 
    public function showForm ($ID, $options = array()) {
       $this->initForm($ID, $options);
@@ -970,7 +1004,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $order_reference->getFromDB($this->fields["plugin_order_references_id"]);
 
       $canedit         = $order_order->can($this->fields['plugin_order_orders_id'], UPDATE)
-                          && $order_order->canUpdateOrder()  && !$order_order->isCanceled();
+                          && $order_order->canUpdateOrder() && !$order_order->isCanceled();
       $canedit_comment = $order_order->can($this->fields['plugin_order_orders_id'], UPDATE)
                           && !$order_order->isCanceled();
 
@@ -1057,6 +1091,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       return true;
    }
 
+
    public function updatePrices($order_items_id) {
       global $DB;
       $this->getFromDB($order_items_id);
@@ -1066,7 +1101,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                                  $this->fields['plugin_order_references_id'],
                                  $this->fields['price_taxfree'],
                                  $this->fields['discount']);
-         while ($item=$DB->fetch_array($data)) {
+         while ($item = $DB->fetch_array($data)) {
             $this->updatePrice_taxfree([
                'item_id'       => $item['id'],
                'price_taxfree'  => $this->fields['price_taxfree']
@@ -1074,6 +1109,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          }
       }
    }
+
 
    public function showBillsItems(PluginOrderOrder $order) {
       global $DB, $CFG_GLPI;
@@ -1263,6 +1299,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       echo "<br>";
    }
 
+
    public function dropdownBillItemsActions($orders_id) {
       global $CFG_GLPI;
       $action['']     = Dropdown::EMPTY_VALUE;
@@ -1278,6 +1315,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
        echo "<span id='show_billsActions$rand'>&nbsp;</span>";
 
    }
+
 
    public function updateQuantity($post) {
       global $DB;
@@ -1306,6 +1344,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       }
    }
 
+
    public function updatePrice_taxfree($post) {
       global $DB;
 
@@ -1323,6 +1362,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $this->update($input);
    }
 
+
    public function updateDiscount($post) {
       global $DB;
 
@@ -1338,6 +1378,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $input["price_ati"]  = $this->getPricesATI($input["price_discounted"], $taxe_name);
       $this->update($input);
    }
+
 
    public static function install(Migration $migration) {
       global $DB;
@@ -1467,12 +1508,13 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                        SET `entities_id`='".$data['entities_id']."'
                           AND `is_recursive`='".$data['is_recursive']."'
                        WHERE `id`='".$data['items_id']."'";
-            $DB->query($update)  or die($DB->error());
+            $DB->query($update) or die($DB->error());
          }
 
          $migration->executeMigration();
       }
    }
+
 
    public static function uninstall() {
       global $DB;
@@ -1484,16 +1526,19 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       self::uninstallOrderItemNotification();
    }
 
+
    public static function countForOrder(PluginOrderOrder $item) {
       return countElementsInTable('glpi_plugin_order_orders_items',
                                   "`plugin_order_orders_id` = '".$item->getID()."'");
    }
+
 
    public static function countForItem(CommonDBTM $item) {
       return countElementsInTable('glpi_plugin_order_orders_items',
                                   "`itemtype`='".$item->getType()."'
                                    AND `items_id` = '".$item->getID()."'");
    }
+
 
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if (in_array(get_class($item), PluginOrderOrder_Item::getClasses(true))) {
@@ -1518,6 +1563,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       return '';
    }
 
+
    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       if (get_class($item) == 'PluginOrderOrder') {
          if (!$item->fields['is_template']) {
@@ -1531,10 +1577,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       return true;
    }
 
+
    public static function showForInfocom(CommonDBTM $item) {
       $order_item = new self();
       $order_item->showPluginFromItems(get_class($item), $item->getField('id'));
    }
+
 
    public static function uninstallOrderItemNotification() {
       global $DB;
@@ -1569,4 +1617,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          $template->delete($data);
       }
    }
+
+
 }

@@ -34,31 +34,41 @@ if (!defined('GLPI_ROOT')) {
 class PluginOrderReception extends CommonDBChild {
 
    public static $rightname          = 'plugin_order_order';
+
    public $dohistory                 = true;
+
    public static $itemtype           = 'PluginOrderOrder';
+
    public static $items_id           = 'plugin_order_orders_id';
+
    public static $checkParentRights  = self::DONT_CHECK_ITEM_RIGHTS;
 
-   public static function getTable($classname = NULL) {
+
+   public static function getTable($classname = null) {
       return "glpi_plugin_order_orders_items";
    }
+
 
    public static function getTypeName($nb = 0) {
       return __("Delivery", "order");
    }
 
+
    public function canUpdateItem() {
       return Session::haveRight('plugin_order_order', PluginOrderOrder::RIGHT_DELIVERY);
    }
 
+
    public function canViewItem() {
       return Session::haveRight('plugin_order_order', PluginOrderOrder::RIGHT_DELIVERY)
-         &&  Session::haveRight('plugin_order_order', READ);
+         && Session::haveRight('plugin_order_order', READ);
    }
+
 
    public function getOrdersID() {
       return $this->fields["plugin_order_orders_id"];
    }
+
 
    public function getFromDBByOrder($plugin_order_orders_id) {
       global $DB;
@@ -79,6 +89,7 @@ class PluginOrderReception extends CommonDBChild {
       return false;
    }
 
+
    public function checkThisItemStatus($detailID, $states_id) {
       global $DB;
 
@@ -93,12 +104,14 @@ class PluginOrderReception extends CommonDBChild {
       }
    }
 
+
    public function checkItemStatus($plugin_order_orders_id, $plugin_order_references_id, $states_id) {
       return countElementsInTable("glpi_plugin_order_orders_items",
                                   "`plugin_order_orders_id` = '$plugin_order_orders_id'
                                    AND `plugin_order_references_id` = '$plugin_order_references_id'
                                    AND `states_id` = '$states_id'");
    }
+
 
    public function deleteDelivery($detailID) {
       global $DB;
@@ -141,6 +154,7 @@ class PluginOrderReception extends CommonDBChild {
       }
    }
 
+
    public function defineTabs($options = array()) {
       $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
@@ -148,6 +162,7 @@ class PluginOrderReception extends CommonDBChild {
 
       return $ong;
    }
+
 
    public function showForm ($ID, $options = array()) {
       $this->initForm($ID, $options);
@@ -254,6 +269,7 @@ class PluginOrderReception extends CommonDBChild {
       return true;
    }
 
+
    public function showOrderReception($orders_id) {
       global $DB, $CFG_GLPI;
 
@@ -272,7 +288,7 @@ class PluginOrderReception extends CommonDBChild {
       $result_ref = $order_item->queryDetail($orders_id);
       $numref     = $DB->numrows($result_ref);
 
-      while ($data_ref=$DB->fetch_array($result_ref)) {
+      while ($data_ref = $DB->fetch_array($result_ref)) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
 
          if (!$numref) {
@@ -416,7 +432,7 @@ class PluginOrderReception extends CommonDBChild {
                }
                echo "<td align='center'>".$reference->getReceptionReferenceLink($data)."</td>";
                echo "<td align='center'>";
-               $link=Toolbox::getItemTypeFormURL($this->getType());
+               $link = Toolbox::getItemTypeFormURL($this->getType());
                if ($canedit && $data["states_id"] == PluginOrderOrder::ORDER_DEVICE_DELIVRED) {
                   echo "<a href=\"".$link."?id=".$data["IDD"]."\">";
                }
@@ -483,6 +499,7 @@ class PluginOrderReception extends CommonDBChild {
       }
    }
 
+
    function getForbiddenStandardMassiveAction() {
       $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
@@ -490,6 +507,7 @@ class PluginOrderReception extends CommonDBChild {
       $forbidden[] = 'ObjectLock:unlock';
       return $forbidden;
    }
+
 
    function getSpecificMassiveActions($checkitem = null) {
       $isadmin = static::canUpdate();
@@ -501,6 +519,7 @@ class PluginOrderReception extends CommonDBChild {
       return $actions;
    }
 
+
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       $reception = new self;
       switch ($ma->getAction()) {
@@ -511,6 +530,7 @@ class PluginOrderReception extends CommonDBChild {
 
       return parent::showMassiveActionsSubForm($ma);
    }
+
 
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
@@ -555,6 +575,7 @@ class PluginOrderReception extends CommonDBChild {
       }
    }
 
+
    public function dropdownReceptionActions($itemtype, $plugin_order_references_id, $plugin_order_orders_id) {
       global $CFG_GLPI;
 
@@ -576,6 +597,7 @@ class PluginOrderReception extends CommonDBChild {
       echo "<span id='show_receptionActions$rand'>&nbsp;</span>";
    }
 
+
    public function getReceptionStatus($ID) {
       global $DB;
 
@@ -593,6 +615,7 @@ class PluginOrderReception extends CommonDBChild {
             return "";
       }
    }
+
 
    public function updateBulkReceptionStatus($params) {
       global $DB;
@@ -623,7 +646,7 @@ class PluginOrderReception extends CommonDBChild {
                "plugin_order_references_id" => $params["plugin_order_references_id"],
             ];
 
-            $config =PluginOrderConfig::getConfig();
+            $config = PluginOrderConfig::getConfig();
             if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
                $options['manual_generate'] = $params['manual_generate'];
                if ($params['manual_generate'] == 1) {
@@ -646,6 +669,7 @@ class PluginOrderReception extends CommonDBChild {
       }
    }
 
+
    public function receptionOneItem($detailID, $orders_id, $delivery_date, $delivery_nb, $state_id) {
       global $CFG_GLPI;
 
@@ -660,6 +684,7 @@ class PluginOrderReception extends CommonDBChild {
 
       Session::addMessageAfterRedirect(__("Item successfully taken delivery", "order"), true);
    }
+
 
    public function receptionAllItem($detailID, $ref_id, $orders_id, $delivery_date, $delivery_nb, $state_id) {
       global $DB;
@@ -687,6 +712,7 @@ class PluginOrderReception extends CommonDBChild {
       }
       Session::addMessageAfterRedirect(__("Item successfully taken delivery", "order"), true);
    }
+
 
    public function updateReceptionStatus($params) {
       $detail                 = new PluginOrderOrder_Item();
@@ -742,7 +768,7 @@ class PluginOrderReception extends CommonDBChild {
                         "plugin_order_references_id" => $add_item["plugin_order_references_id"],
                      ];
 
-                     $config =  PluginOrderConfig::getConfig(true);
+                     $config = PluginOrderConfig::getConfig(true);
                      if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
                         $options['manual_generate'] = $params2['POST']['manual_generate'];
                         if ($params2['POST']['manual_generate'] == 1) {
@@ -762,6 +788,7 @@ class PluginOrderReception extends CommonDBChild {
          Session::addMessageAfterRedirect(__("No item selected", "order"), false, ERROR);
       }
    }
+
 
    public static function updateDelivryStatus($orders_id) {
       global $DB;
@@ -801,6 +828,7 @@ class PluginOrderReception extends CommonDBChild {
       }
    }
 
+
    public function prepareInputForUpdate($input) {
       if (isset($input['states_id']) && !$input['states_id']) {
          $input['delivery_date']                  = null;
@@ -810,13 +838,16 @@ class PluginOrderReception extends CommonDBChild {
       return $input;
    }
 
+
    public function post_updateItem($history = 1) {
       self::updateDelivryStatus($this->fields['plugin_order_orders_id']);
    }
 
+
    public function post_purgeItem() {
       self::updateDelivryStatus($this->fields['plugin_order_orders_id']);
    }
+
 
    /**
    *
@@ -867,10 +898,12 @@ class PluginOrderReception extends CommonDBChild {
       }
    }
 
+
    public static function countForOrder(PluginOrderOrder $item) {
       return countElementsInTable('glpi_plugin_order_orders_items',
                                   "`plugin_order_orders_id` = '".$item->getID()."'");
    }
+
 
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if ($item->getType() == 'PluginOrderOrder'
@@ -880,6 +913,7 @@ class PluginOrderReception extends CommonDBChild {
       }
    }
 
+
    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       if ($item->getType() == 'PluginOrderOrder') {
          $reception = new self();
@@ -888,4 +922,6 @@ class PluginOrderReception extends CommonDBChild {
 
       return true;
    }
+
+
 }

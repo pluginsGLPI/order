@@ -33,9 +33,12 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginOrderReferenceInjection extends PluginOrderReference
                                     implements PluginDatainjectionInjectionInterface {
+
+
    public function __construct() {
       $this->table = getTableForItemType(get_parent_class($this));
    }
+
 
    /**
     * Returns the name of the table used to store this object parent
@@ -48,13 +51,16 @@ class PluginOrderReferenceInjection extends PluginOrderReference
       return $parenttype::getTable();
    }
 
+
    public function isPrimaryType() {
       return true;
    }
 
+
    public function connectedTo() {
       return [];
    }
+
 
    /**
     * Standard method to add an object into glpi
@@ -70,9 +76,11 @@ class PluginOrderReferenceInjection extends PluginOrderReference
       return $lib->getInjectionResults();
    }
 
+
    public function getOptions($primary_type = '') {
       return Search::getOptions(get_parent_class($this));
    }
+
 
    public function getSpecificFieldValue($itemtype, $searchOption, $field, &$values) {
       global $DB;
@@ -111,4 +119,6 @@ class PluginOrderReferenceInjection extends PluginOrderReference
       }
       return $value;
    }
+
+
 }

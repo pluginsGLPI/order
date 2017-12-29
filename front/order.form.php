@@ -168,7 +168,7 @@ if (isset ($_POST["add"])) {
             $pluginOrderOrder_Item->getFromDB($ID);
 
             if ($pluginOrderOrder_Item->fields["itemtype"] == 'SoftwareLicense') {
-               $result=$pluginOrderOrder_Item->queryRef($_POST["plugin_order_orders_id"],
+               $result = $pluginOrderOrder_Item->queryRef($_POST["plugin_order_orders_id"],
                                                         $pluginOrderOrder_Item->fields["plugin_order_references_id"],
                                                         $pluginOrderOrder_Item->fields["price_taxfree"],
                                                         $pluginOrderOrder_Item->fields["discount"]);
@@ -182,13 +182,13 @@ if (isset ($_POST["add"])) {
                         $lic = new SoftwareLicense;
                         $lic->getFromDB($items_id);
                         $values["id"]     = $lic->fields["id"];
-                        $values["number"] = $lic->fields["number"]-1;
+                        $values["number"] = $lic->fields["number"] - 1;
                         $lic->update($values);
 
                      }
                      $input["id"] = $ID;
 
-                     $pluginOrderOrder_Item->delete(['id'=>$input["id"]]);
+                     $pluginOrderOrder_Item->delete(['id' => $input["id"]]);
                   }
                   $new_value  = __("Remove reference", "order") . " ";
                   $new_value .= Dropdown::getDropdownName("glpi_plugin_order_references",
@@ -222,7 +222,7 @@ if (isset ($_POST["add"])) {
                                                $_POST['old_plugin_order_references_id'],
                                                $_POST['old_price_taxfree'],
                                                $_POST['old_discount']);
-      while ($item=$DB->fetch_array($data)) {
+      while ($item = $DB->fetch_array($data)) {
          $pluginOrderOrder_Item->updatePrice_taxfree([
             'item_id'       => $item['id'],
             'price_taxfree' => $_POST['price_taxfree'],
@@ -235,15 +235,13 @@ if (isset ($_POST["add"])) {
          Session::addMessageAfterRedirect(__("The discount pourcentage must be between 0 and 100", "order"), false, ERROR);
       } else {
 
-         $price = isset($_POST['price_taxfree'])
-            ? $_POST['price_taxfree']
-            : $_POST['old_price_taxfree'];
+         $price = isset($_POST['price_taxfree']) ? $_POST['price_taxfree'] : $_POST['old_price_taxfree'];
 
          $data = $pluginOrderOrder_Item->queryRef($_POST['plugin_order_orders_id'],
                                                   $_POST['old_plugin_order_references_id'],
                                                   $price,
                                                   $_POST['old_discount']);
-         while ($item=$DB->fetch_array($data)) {
+         while ($item = $DB->fetch_array($data)) {
             $pluginOrderOrder_Item->updateDiscount([
                'item_id'  => $item['id'],
                'discount' => $_POST['discount'],
@@ -270,9 +268,7 @@ if (isset ($_POST["add"])) {
          $pluginOrderOrder_Item->updateDiscount([
             'item_id'  => $item_id,
             'discount' => $discount,
-            'price'    => isset($_POST['detail_price_taxfree'])
-               ? $_POST['detail_price_taxfree'][$item_id]
-               : $_POST['detail_old_price_taxfree'][$item_id]
+            'price'    => isset($_POST['detail_price_taxfree']) ? $_POST['detail_price_taxfree'][$item_id] : $_POST['detail_old_price_taxfree'][$item_id]
          ]);
       }
    }

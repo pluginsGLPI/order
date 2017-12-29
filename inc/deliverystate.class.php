@@ -33,9 +33,12 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginOrderDeliveryState extends CommonDropdown {
 
+
    public static function getTypeName($nb = 0) {
       return __("Delivery status", "order");
    }
+
+
    public static function install(Migration $migration) {
       global $DB;
 
@@ -65,6 +68,7 @@ class PluginOrderDeliveryState extends CommonDropdown {
       }
    }
 
+
    public static function uninstall() {
       global $DB;
 
@@ -74,4 +78,6 @@ class PluginOrderDeliveryState extends CommonDropdown {
       //New table
       $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
    }
+
+
 }

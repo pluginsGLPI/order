@@ -34,9 +34,11 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginOrderDocumentCategory extends CommonDBTM {
 
+
    static function getTypeName($nb = 0) {
       return __("Document category", "order");
    }
+
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       $config = PluginOrderConfig::getConfig();
@@ -48,6 +50,7 @@ class PluginOrderDocumentCategory extends CommonDBTM {
       return '';
    }
 
+
    static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       $config = PluginOrderConfig::getConfig();
 
@@ -57,12 +60,14 @@ class PluginOrderDocumentCategory extends CommonDBTM {
       return true;
    }
 
+
    static function purgeItem($item) {
       $temp = new self();
       $temp->deleteByCriteria([
          'documentcategories_id' => $item->getField("id")
       ]);
    }
+
 
    static function showForDocumentCategory($item) {
       $documentCategory = new self();
@@ -122,9 +127,12 @@ class PluginOrderDocumentCategory extends CommonDBTM {
       }
    }
 
+
    static function uninstall() {
       global $DB;
       //Current table name
       $DB->query("DROP TABLE IF EXISTS  `".self::getTable()."`") or die ($DB->error());
    }
+
+
 }

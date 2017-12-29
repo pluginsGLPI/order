@@ -36,6 +36,7 @@ class PluginOrderProfile extends CommonDBTM {
 
    public static $rightname = 'profile';
 
+
    public static function createFirstAccess($ID) {
       self::addDefaultProfileInfos($ID, [
          'plugin_order_order'     => PluginOrderOrder::ALLRIGHTS, // All rights : CREATE + READ + ...
@@ -43,6 +44,7 @@ class PluginOrderProfile extends CommonDBTM {
          'plugin_order_reference' => 127
       ], true);
    }
+
 
    /**
     * @param $profile
@@ -75,9 +77,10 @@ class PluginOrderProfile extends CommonDBTM {
       }
    }
 
+
    /* profiles modification */
 
-   public function showForm($profiles_id = 0, $openform = TRUE, $closeform = TRUE) {
+   public function showForm($profiles_id = 0, $openform = true, $closeform = true) {
 
       echo "<div class='firstbloc'>";
 
@@ -111,6 +114,7 @@ class PluginOrderProfile extends CommonDBTM {
       echo "</div>";
    }
 
+
    public static function install(Migration $migration) {
       global $DB;
 
@@ -127,11 +131,13 @@ class PluginOrderProfile extends CommonDBTM {
       $migration->dropTable('glpi_plugin_order_profiles');
    }
 
+
    public static function uninstall() {
       global $DB;
       $DB->query("DELETE FROM glpi_profilerights WHERE name LIKE 'plugin_order_%'");
       self::removeRightsFromSession();
    }
+
 
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       $type = get_class($item);
@@ -142,6 +148,7 @@ class PluginOrderProfile extends CommonDBTM {
       }
       return '';
    }
+
 
    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       if ($item->getType() == 'Profile') {
@@ -155,6 +162,7 @@ class PluginOrderProfile extends CommonDBTM {
       }
       return true;
    }
+
 
    static function getAllRights($all = false) {
 
@@ -175,6 +183,7 @@ class PluginOrderProfile extends CommonDBTM {
       return $rights;
    }
 
+
    static function translateARight($old_right) {
       switch ($old_right) {
          case '':
@@ -191,6 +200,7 @@ class PluginOrderProfile extends CommonDBTM {
             return 0;
       }
    }
+
 
    static function migrateOneProfile($profiles_id) {
       global $DB;
@@ -241,6 +251,7 @@ class PluginOrderProfile extends CommonDBTM {
       }
    }
 
+
    /**
     * Initialize profiles, and migrate it necessary
     */
@@ -267,6 +278,7 @@ class PluginOrderProfile extends CommonDBTM {
       }
    }
 
+
    static function removeRightsFromSession() {
       foreach (self::getAllRights(true) as $right) {
          if (isset($_SESSION['glpiactiveprofile'][$right['field']])) {
@@ -274,5 +286,6 @@ class PluginOrderProfile extends CommonDBTM {
          }
       }
    }
+
 
 }

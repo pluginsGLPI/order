@@ -88,7 +88,7 @@ $NBMAX = $CFG_GLPI["dropdown_max"];
 $LIMIT = "LIMIT 0,$NBMAX";
 
 
-if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
+if ($_POST['searchText'] == $CFG_GLPI["ajax_wildcard"]) {
    $LIMIT = "";
 }
 
@@ -108,9 +108,9 @@ $query = "SELECT `gr`.`name`, `gr`.`id`, `grm`.`reference_code`
                    AND `grm`.`plugin_order_references_id` = `gr`.`id`
                    AND `gr`.`is_active`='1' AND `gr`.`is_deleted`='0'";
 
-if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
+if ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"]) {
    $search = Search::makeTextSearch($_POST['searchText']);
-   $query .=" AND  `gr`.`name` ".$search;
+   $query .= " AND  `gr`.`name` ".$search;
 }
 
 $query .= "ORDER BY `gr`.`name` ASC";

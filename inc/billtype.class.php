@@ -32,11 +32,14 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginOrderBillType extends CommonDropdown {
+
    public static $rightname = 'plugin_order_bill';
+
 
    public static function getTypeName($nb = 0) {
       return __("Bill type", "order");
    }
+
 
    public static function install(Migration $migration) {
       global $DB;
@@ -44,7 +47,7 @@ class PluginOrderBillType extends CommonDropdown {
       $table = self::getTable();
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
-         $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_billtypes` (
+         $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_billtypes` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
                     `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                     `comment` text COLLATE utf8_unicode_ci,
@@ -55,9 +58,12 @@ class PluginOrderBillType extends CommonDropdown {
       }
    }
 
+
    public static function uninstall() {
       global $DB;
 
       $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
    }
+
+
 }

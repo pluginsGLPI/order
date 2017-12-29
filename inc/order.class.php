@@ -32,11 +32,17 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginOrderOrder extends CommonDBTM {
+
    public static $rightname         = 'plugin_order_order';
+
    public $is_template              = true;
+
    public $dohistory                = true;
+
    protected $usenotepadrights      = true;
+
    protected $usenotepad            = true;
+
    public static $forward_entity_to = [
       "PluginOrderOrder_Item",
       "PluginOrderOrder_Supplier",
@@ -61,55 +67,65 @@ class PluginOrderOrder extends CommonDBTM {
    const RIGHT_DELIVERY                         = 8192;
    const ALLRIGHTS                              = 16383;
 
+
    public static function getTypeName($nb = 0) {
-      return $nb > 1
-         ? __("Orders", "order")
-         : __("Order", "order");
+      return $nb > 1 ? __("Orders", "order") : __("Order", "order");
    }
+
 
    public function getState() {
       return $this->fields["plugin_order_orderstates_id"];
    }
 
+
    public static function canCancel() {
       return Session::haveRight("plugin_order_order", self::RIGHT_CANCEL);
    }
+
 
    public static function canUndo() {
       return Session::haveRight("plugin_order_order", self::RIGHT_UNDO_VALIDATION);
    }
 
+
    public static function canValidate() {
       return Session::haveRight("plugin_order_order", self::RIGHT_VALIDATION);
    }
+
 
    static function canGenerateWithoutValidation() {
       return Session::haveRight("plugin_order_order", self::RIGHT_GENERATEODT_WITHOUT_VALIDATION);
    }
 
+
    public static function canDeliver() {
       return Session::haveRight("plugin_order_order", self::RIGHT_DELIVERY);
    }
+
 
    public function isDraft() {
       $config = PluginOrderConfig::getConfig();
       return $this->getState() == $config->getDraftState();
    }
 
+
    public function isWaitingForApproval() {
       $config = PluginOrderConfig::getConfig();
       return $this->getState() == $config->getWaitingForApprovalState();
    }
+
 
    public function isApproved() {
       $config = PluginOrderConfig::getConfig();
       return $this->getState() == $config->getApprovedState();
    }
 
+
    public function isPartiallyDelivered() {
       $config = PluginOrderConfig::getConfig();
       return $this->getState() == $config->getPartiallyDeliveredState();
    }
+
 
    public function isDelivered() {
       $config = PluginOrderConfig::getConfig();
@@ -117,15 +133,18 @@ class PluginOrderOrder extends CommonDBTM {
              && $this->getState() == $config->getDeliveredState();
    }
 
+
    public function isCanceled() {
       $config = PluginOrderConfig::getConfig();
       return $this->getState() == $config->getCanceledState();
    }
 
+
    public function isPaid() {
       $config = PluginOrderConfig::getConfig();
       return $this->getState() == $config->getPaidState();
    }
+
 
    public function cleanDBonPurge() {
       foreach (self::$forward_entity_to as $itemtype) {
@@ -133,6 +152,7 @@ class PluginOrderOrder extends CommonDBTM {
          $temp->deleteByCriteria(['plugin_order_orders_id' => $this->getID()]);
       }
    }
+
 
    public function canUpdateOrder() {
       if ($this->isNewID($this->getID())) {
@@ -142,6 +162,7 @@ class PluginOrderOrder extends CommonDBTM {
                 || $this->isWaitingForApproval();
       }
    }
+
 
    public function canDisplayValidationForm($orders_id) {
       //If it's an order creation -> do not display form
@@ -153,6 +174,7 @@ class PluginOrderOrder extends CommonDBTM {
                 || $this->canCancelOrder();
       }
    }
+
 
    public function canValidateOrder() {
       $config = PluginOrderConfig::getConfig();
@@ -178,6 +200,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
    }
 
+
    public function canCancelOrder() {
       //If order is canceled or if no right to cancel!
       if ($this->isCanceled()
@@ -186,6 +209,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
       return true;
    }
+
 
    public function canDoValidationRequest() {
       $config = PluginOrderConfig::getConfig();
@@ -196,9 +220,11 @@ class PluginOrderOrder extends CommonDBTM {
       }
    }
 
+
    public function canCancelValidationRequest() {
       return $this->isWaitingForApproval();
    }
+
 
    public function canUndoValidation() {
       //If order is canceled, cannot validate !
@@ -216,6 +242,7 @@ class PluginOrderOrder extends CommonDBTM {
       return (self::canUndo());
    }
 
+
    public function canDisplayValidationTab() {
       return self::canCreate()
              && $this->canValidateOrder()
@@ -224,6 +251,7 @@ class PluginOrderOrder extends CommonDBTM {
                 || $this->canCancelValidationRequest()
                 || $this->canDoValidationRequest();
    }
+
 
       /**
     * @since version 0.85
@@ -489,6 +517,7 @@ class PluginOrderOrder extends CommonDBTM {
       return $tab;
    }
 
+
    public function defineTabs($options = array()) {
       $ong = [];
 
@@ -516,6 +545,7 @@ class PluginOrderOrder extends CommonDBTM {
       return $ong;
    }
 
+
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       switch ($item->getType()) {
          case 'Budget':
@@ -541,6 +571,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
    }
 
+
    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1,
                                                    $withtemplate = 0) {
       if ($item->getType() == 'Budget') {
@@ -560,6 +591,7 @@ class PluginOrderOrder extends CommonDBTM {
       return true;
    }
 
+
    public function prepareInputForAdd($input) {
       if (isset($input['is_template'])
           && $input['is_template'] == 1) {
@@ -567,7 +599,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
 
       if (isset($input["id"])
-          && $input["id"]>0) {
+          && $input["id"] > 0) {
          $input["_oldID"] = $input["id"];
          unset($input['id']);
          unset($input['withtemplate']);
@@ -592,6 +624,7 @@ class PluginOrderOrder extends CommonDBTM {
       return $input;
    }
 
+
    public function post_addItem() {
       global $CFG_GLPI;
 
@@ -614,6 +647,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
    }
 
+
    public function post_updateItem($history = 1) {
       global $DB;
       $config = PluginOrderConfig::getConfig();
@@ -631,6 +665,7 @@ class PluginOrderOrder extends CommonDBTM {
          }
       }
    }
+
 
    public function prepareInputForUpdate($input) {
       if (isset($input['budgets_id']) && $input['budgets_id'] > 0
@@ -650,12 +685,14 @@ class PluginOrderOrder extends CommonDBTM {
       return $input;
    }
 
+
    public function setIsLate() {
       $this->update([
          'id'      => $this->getID(),
          'is_late' => 1
       ]);
    }
+
 
    /**
     *
@@ -672,6 +709,7 @@ class PluginOrderOrder extends CommonDBTM {
          return false;
       }
    }
+
 
    public function showForm ($ID, $options = array()) {
       global $CFG_GLPI, $DB;
@@ -700,7 +738,7 @@ class PluginOrderOrder extends CommonDBTM {
       $options['candel']  = $cancancel;
 
       if ($template) {
-         $this->fields['order_date'] = NULL;
+         $this->fields['order_date'] = null;
       }
 
       // Displaying OVER BUDGET ALERT
@@ -723,9 +761,7 @@ class PluginOrderOrder extends CommonDBTM {
       /* date of order */
       echo "<td>".__("Date of order", "order").":</td><td>";
       if ($canedit) {
-         $value = $this->fields["order_date"] == null
-            ? date('Y-m-d')
-            : $this->fields["order_date"];
+         $value = $this->fields["order_date"] == null ? date('Y-m-d') : $this->fields["order_date"];
          Html::showDateField(
             'order_date', [
                'value'        => $value,
@@ -920,9 +956,7 @@ class PluginOrderOrder extends CommonDBTM {
       $PluginOrderConfig = new PluginOrderConfig();
       $default_taxes     = $PluginOrderConfig->getDefaultTaxes();
 
-      $taxes = (empty($ID) || ($ID < 0))
-               ? $default_taxes
-               : $this->fields["plugin_order_ordertaxes_id"];
+      $taxes = (empty($ID) || ($ID < 0)) ? $default_taxes : $this->fields["plugin_order_ordertaxes_id"];
 
       if ($canedit) {
          PluginOrderOrderTax::Dropdown([
@@ -952,9 +986,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
       echo " </td><td>";
       if ($canedit) {
-         $value = $this->fields["duedate"] == null
-            ? ''
-            : $this->fields["duedate"];
+         $value = $this->fields["duedate"] == null ? '' : $this->fields["duedate"];
          Html::showDateField('duedate', [
             'value'        => $value,
             'maybeempty'   => true,
@@ -1135,7 +1167,7 @@ class PluginOrderOrder extends CommonDBTM {
          echo "</tr>";
 
          // total TVA
-         $total_tva = $prices["priceTVA"] + ($postagewithTVA- $this->fields["port_price"]);
+         $total_tva = $prices["priceTVA"] + ($postagewithTVA - $this->fields["port_price"]);
          echo "<tr>";
          echo "<td>".__("VAT", "order")."</td>";
          echo "<td>".Html::formatNumber($total_tva)."</td>";
@@ -1155,6 +1187,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       return true;
    }
+
 
    public function dropdownSuppliers($myname, $value = 0, $entity_restrict = '') {
       global $DB,$CFG_GLPI;
@@ -1185,7 +1218,7 @@ class PluginOrderOrder extends CommonDBTM {
             echo "<optgroup label=\"".Dropdown::getDropdownName("glpi_entities", $prev)."\">";
          }
          $output = $data["name"];
-         if ($_SESSION["glpiis_ids_visible"]||empty($output)) {
+         if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
             $output .= " (".$data["id"].")";
          }
          echo "<option value='".$data["id"]."' ".($value == $data["id"] ? " selected " : "").
@@ -1207,6 +1240,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       return $rand;
    }
+
 
    public function dropdownContacts($suppliers_id, $value = 0, $entity_restrict = '') {
       global $DB,$CFG_GLPI;
@@ -1244,12 +1278,13 @@ class PluginOrderOrder extends CommonDBTM {
               ." title=\"".Html::cleanInputText($output)."\">"
               .substr($output, 0, $CFG_GLPI["dropdown_chars_limit"])."</option>";
          }
-         if ($prev>=0) {
+         if ($prev >= 0) {
             echo "</optgroup>";
          }
       }
       echo "</select>";
    }
+
 
    public function addStatusLog($orders_id, $status, $comments = '') {
       $changes = Dropdown::getDropdownName("glpi_plugin_order_orderstates", $status);
@@ -1261,6 +1296,7 @@ class PluginOrderOrder extends CommonDBTM {
       $this->addHistory($this->getType(), '', $changes, $orders_id);
 
    }
+
 
    public function updateOrderStatus($orders_id, $status, $comments = '') {
       global $CFG_GLPI;
@@ -1311,12 +1347,14 @@ class PluginOrderOrder extends CommonDBTM {
       return true;
    }
 
+
    public function addHistory($type, $old_value, $new_value, $ID) {
       $changes[0] = 0;
       $changes[1] = $old_value;
       $changes[2] = $new_value;
       Log::history($ID, $type, $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
    }
+
 
    public function needValidation($ID) {
       if ($ID > 0 && $this->getFromDB($ID)) {
@@ -1326,12 +1364,14 @@ class PluginOrderOrder extends CommonDBTM {
       }
    }
 
+
    public function deleteAllLinkWithItem($orders_id) {
       $detail  = new PluginOrderOrder_Item();
       $detail->deleteByCriteria([
          'plugin_order_orders_id' => $orders_id
       ]);
    }
+
 
    public function checkIfDetailExists($orders_id, $only_delivered = false) {
       if ($orders_id) {
@@ -1345,6 +1385,7 @@ class PluginOrderOrder extends CommonDBTM {
          return false;
       }
    }
+
 
    public function showValidationForm($orders_id) {
       $this->getFromDB($orders_id);
@@ -1415,6 +1456,7 @@ class PluginOrderOrder extends CommonDBTM {
       Html::closeForm();
    }
 
+
    public function showGenerationForm($ID) {
       global $CFG_GLPI;
 
@@ -1465,6 +1507,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</div>";
       Html::closeForm();
    }
+
 
    public function generateOrder($params) {
       global $DB;
@@ -1578,7 +1621,7 @@ class PluginOrderOrder extends CommonDBTM {
             $result = $PluginOrderOrder_Item->queryDetail($ID);
             $num    = $DB->numrows($result);
 
-            while ($data=$DB->fetch_array($result)) {
+            while ($data = $DB->fetch_array($result)) {
                $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID, $data["id"],
                                                                              $data["price_taxfree"],
                                                                              $data["discount"]);
@@ -1676,7 +1719,7 @@ class PluginOrderOrder extends CommonDBTM {
          if (Session::isMultiEntitiesMode()) {
             $entity = new Entity;
             $entity->getFromDB($this->fields['entities_id']);
-            $message.= $entity->getName();
+            $message .= $entity->getName();
          }
          $message   .= "_".$this->fields['num_order']."_";
          $message   .= Html::convDateTime($_SESSION['glpi_currenttime']);
@@ -1686,6 +1729,7 @@ class PluginOrderOrder extends CommonDBTM {
          $odf->exportAsAttachedFile($outputfile);
       }
    }
+
 
    public function transfer($ID, $entity) {
       global $DB;
@@ -1712,11 +1756,12 @@ class PluginOrderOrder extends CommonDBTM {
                 GROUP BY plugin_order_references_id";
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
-         while ($detail=$DB->fetch_array($result)) {
+         while ($detail = $DB->fetch_array($result)) {
             $ref = $reference->transfer($detail["plugin_order_references_id"], $entity);
          }
       }
    }
+
 
    public static function showForBudget($budgets_id) {
       global $DB,$CFG_GLPI;
@@ -1751,13 +1796,12 @@ class PluginOrderOrder extends CommonDBTM {
 
             $PluginOrderOrder_Item = new PluginOrderOrder_Item();
             $prices                = $PluginOrderOrder_Item->getAllPrices($data["id"]);
-            $postagewithTVA        =
-               $PluginOrderOrder_Item->getPricesATI($data["port_price"],
+            $postagewithTVA        = $PluginOrderOrder_Item->getPricesATI($data["port_price"],
                                                     Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
                                                                               $data["plugin_order_ordertaxes_id"]));
             //if state is cancel do not decremente total already use
             if ($data['plugin_order_orderstates_id'] < 5) {
-               $total +=  $prices["priceHT"];
+               $total += $prices["priceHT"];
             }
             $link   = Toolbox::getItemTypeFormURL(__CLASS__);
 
@@ -1811,6 +1855,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
    }
 
+
    public function canStillUseBudget($input) {
       $budget = new Budget();
       $budget->getFromDB($input['budgets_id']);
@@ -1832,6 +1877,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       return true;
    }
+
 
    public static function updateBillState($ID) {
       $all_paid    = true;
@@ -1855,6 +1901,7 @@ class PluginOrderOrder extends CommonDBTM {
          'plugin_order_billstates_id' => $state
       ]);
    }
+
 
    public function isOverBudget($ID) {
       global $DB;
@@ -1895,6 +1942,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
    }
 
+
    public function displayAlertOverBudget($type) {
       $message = "";
       switch ($type) {
@@ -1923,6 +1971,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
    }
 
+
    public function unlinkBudget($ID) {
       $order = new self();
       $order->getFromDB($ID);
@@ -1933,6 +1982,7 @@ class PluginOrderOrder extends CommonDBTM {
       ]);
 
    }
+
 
    public static function cronComputeLateOrders($task) {
       global $CFG_GLPI, $DB;
@@ -2000,7 +2050,7 @@ class PluginOrderOrder extends CommonDBTM {
                   $input["itemtype"] = 'PluginOrderOrder';
 
                   // add alerts
-                  foreach ($orders as $ID=>$tmp) {
+                  foreach ($orders as $ID => $tmp) {
                      $input["items_id"] = $ID;
                      $alert->add($input);
                      unset($alert->fields['id']);
@@ -2019,6 +2069,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
       return true;
    }
+
 
    public static function addDocumentCategory(Document $document) {
 
@@ -2055,7 +2106,7 @@ class PluginOrderOrder extends CommonDBTM {
             $order = new self();
             $order->getFromDB($document_item->fields['items_id']);
             $extension = explode('.', $document->fields['filename']);
-            $tag="";
+            $tag = "";
             if (!empty($documentCategory->fields['documentcategories_prefix'])) {
                $tag = $documentCategory->fields['documentcategories_prefix']."-";
             }
@@ -2064,6 +2115,7 @@ class PluginOrderOrder extends CommonDBTM {
          }
       }
    }
+
 
    /**
     * Get the standard massive actions which are forbidden
@@ -2078,6 +2130,7 @@ class PluginOrderOrder extends CommonDBTM {
       $forbidden[] = 'update';
       return $forbidden;
    }
+
 
    /**
     * @since version 0.85
@@ -2097,7 +2150,8 @@ class PluginOrderOrder extends CommonDBTM {
       return "";
    }
 
-   function getSpecificMassiveActions($checkitem=NULL) {
+
+   function getSpecificMassiveActions($checkitem=null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -2111,6 +2165,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       return $actions;
    }
+
 
    /**
     * @since version 0.85
@@ -2429,6 +2484,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
    }
 
+
    public static function uninstall() {
       global $DB;
 
@@ -2445,4 +2501,6 @@ class PluginOrderOrder extends CommonDBTM {
       //Current table name
       $DB->query("DROP TABLE IF EXISTS  `".self::getTable()."`") or die ($DB->error());
    }
+
+
 }
