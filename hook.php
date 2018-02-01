@@ -81,7 +81,7 @@ function plugin_order_install() {
                   ];
    foreach ($directories as $new_directory => $old_directory) {
       if (!is_dir($new_directory)) {
-                  @mkdir($new_directory, 0777, true)
+                  @mkdir($new_directory, 0755, true)
                      or die(sprintf(__('%1$s %2$s'), __("Can't create folder", 'order'),
                                     $new_directory));
          $base_directory = GLPI_ROOT.'/plugins/order/';
