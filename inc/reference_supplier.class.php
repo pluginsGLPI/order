@@ -114,7 +114,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    }
 
 
-   public function defineTabs($options = array()) {
+   public function defineTabs($options = []) {
       $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Document_Item', $ong, $options);
@@ -146,7 +146,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    }
 
 
-   public function showForm ($ID, $options = array()) {
+   public function showForm ($ID, $options = []) {
       global $DB;
 
       $plugin_order_references_id = -1;

@@ -261,7 +261,7 @@ function plugin_order_addSelect($type, $ID, $num) {
 }
 
 
-function plugin_order_addLeftJoin($type,$ref_table,$new_table,$linkfield, &$already_link_tables) {
+function plugin_order_addLeftJoin($type, $ref_table, $new_table, $linkfield, &$already_link_tables) {
    $out = "";
    switch ($new_table) {
       case "glpi_plugin_order_orders": // From items

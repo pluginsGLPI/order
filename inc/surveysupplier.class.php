@@ -78,7 +78,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
    }
 
 
-   public function addNotation($field,$value) {
+   public function addNotation($field, $value) {
 
       $rand = mt_rand();
 
@@ -124,7 +124,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
    }
 
 
-   public function getNotation($suppliers_id,$field) {
+   public function getNotation($suppliers_id, $field) {
       global $DB;
 
       $table = self::getTable();
@@ -263,7 +263,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
    }
 
 
-   public function showForm ($ID, $options = array()) {
+   public function showForm ($ID, $options = []) {
       if (!self::canView()) {
          return false;
       }

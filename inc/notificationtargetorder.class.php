@@ -53,7 +53,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
    }
 
 
-   public function getDatasForTemplate($event, $options = array()) {
+   public function getDatasForTemplate($event, $options = []) {
       global $CFG_GLPI;
 
       $events = $this->getAllEvents();
@@ -445,7 +445,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
    /**
     * Get additionnals targets for Tickets
    **/
-   public function addAdditionalTargets($event='') {
+   public function addAdditionalTargets($event = '') {
       $this->addTarget(self::AUTHOR, __("Author"));
       $this->addTarget(self::AUTHOR_GROUP, __("Author group", "order"));
       $this->addTarget(self::DELIVERY_USER, __("Recipient"));

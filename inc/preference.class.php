@@ -188,7 +188,7 @@ class PluginOrderPreference extends CommonDBTM {
    }
 
 
-   public static function getFiles($directory , $ext) {
+   public static function getFiles($directory, $ext) {
       $array_dir  = [];
       $array_file = [];
 
@@ -264,7 +264,7 @@ class PluginOrderPreference extends CommonDBTM {
    }
 
 
-   public function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if (get_class($item) == 'Preference') {
          return [1 => __("Orders", "order")];
       }

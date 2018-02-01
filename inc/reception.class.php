@@ -155,7 +155,7 @@ class PluginOrderReception extends CommonDBChild {
    }
 
 
-   public function defineTabs($options = array()) {
+   public function defineTabs($options = []) {
       $ong = [];
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -164,7 +164,7 @@ class PluginOrderReception extends CommonDBChild {
    }
 
 
-   public function showForm ($ID, $options = array()) {
+   public function showForm ($ID, $options = []) {
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
@@ -544,7 +544,7 @@ class PluginOrderReception extends CommonDBChild {
    }
 
 
-   public function showReceptionForm($params = array()) {
+   public function showReceptionForm($params = []) {
       echo "<label class='order_ma'>" . __("Delivery date") . "</label>";
       Html::showDateField("delivery_date", ['value'      => date("Y-m-d"),
                                             'maybeempty' => true,
@@ -855,7 +855,7 @@ class PluginOrderReception extends CommonDBChild {
    *
    * return nothing
    */
-   public static function generateAsset($options = array()) {
+   public static function generateAsset($options = []) {
       // Retrieve configuration for generate assets feature
       $config = PluginOrderConfig::getConfig();
       if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_YES

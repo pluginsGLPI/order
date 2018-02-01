@@ -115,7 +115,7 @@ class PluginOrderBill extends CommonDropdown
    }
 
 
-   public function defineTabs($options = array()) {
+   public function defineTabs($options = []) {
       $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);

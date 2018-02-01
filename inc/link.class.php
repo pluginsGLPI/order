@@ -774,7 +774,7 @@ class PluginOrderLink extends CommonDBChild {
             }
          }
 
-         foreach (array('warranty_date', 'buy_date', 'inventory_date') as $date) {
+         foreach (['warranty_date', 'buy_date', 'inventory_date'] as $date) {
             if (!isset($fields[$date])) {
                $fields[$date] = 'NULL';
             }

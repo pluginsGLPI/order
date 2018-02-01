@@ -258,7 +258,7 @@ class PluginOrderOrder extends CommonDBTM {
     *
     * @see commonDBTM::getRights()
    **/
-   function getRights($interface='central') {
+   function getRights($interface = 'central') {
 
       if ($interface == 'central') {
          $values = parent::getRights();
@@ -518,7 +518,7 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
 
-   public function defineTabs($options = array()) {
+   public function defineTabs($options = []) {
       $ong = [];
 
       if (!$this->fields['is_template']
@@ -711,7 +711,7 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
 
-   public function showForm ($ID, $options = array()) {
+   public function showForm ($ID, $options = []) {
       global $CFG_GLPI, $DB;
 
       $this->initForm($ID, $options);
@@ -2151,7 +2151,7 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
 
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);

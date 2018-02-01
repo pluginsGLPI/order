@@ -177,8 +177,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   switch ($item->fields["itemtype"]) {
                      default:
                         $field_set    = false;
-                        $unset_fields = array ("order_number", "delivery_number", "budgets_id",
-                                               "suppliers_id", "value", "buy_date");
+                        $unset_fields = ["order_number", "delivery_number", "budgets_id",
+                                         "suppliers_id", "value", "buy_date"];
                         $orderitem->getFromDB($detail_id);
                         $order->getFromDB($orderitem->fields["plugin_order_orders_id"]);
                         $order_supplier->getFromDBByOrder($orderitem->fields["plugin_order_orders_id"]);
@@ -984,7 +984,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    }
 
 
-   public function defineTabs($options = array()) {
+   public function defineTabs($options = []) {
       $ong = [];
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Log', $ong, $options);
@@ -993,7 +993,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    }
 
 
-   public function showForm ($ID, $options = array()) {
+   public function showForm ($ID, $options = []) {
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 

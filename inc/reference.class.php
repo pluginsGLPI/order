@@ -256,7 +256,7 @@ class PluginOrderReference extends CommonDBTM {
    }
 
 
-   public function defineTabs($options = array()) {
+   public function defineTabs($options = []) {
       $ong = [];
       if (!$this->isNewItem()) {
          $this->addDefaultFormTab($ong);
@@ -270,7 +270,7 @@ class PluginOrderReference extends CommonDBTM {
    }
 
 
-   public function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if (get_class($item) == __CLASS__) {
          return [1 => __("Linked orders", "order")];
       }
@@ -359,7 +359,7 @@ class PluginOrderReference extends CommonDBTM {
    }
 
 
-   public function dropdownAllItems($options = array()) {
+   public function dropdownAllItems($options = []) {
       global $DB, $CFG_GLPI;
 
       $p['myname']       = '';
@@ -441,7 +441,7 @@ class PluginOrderReference extends CommonDBTM {
    }
 
 
-   public function showForm($id, $options = array()) {
+   public function showForm($id, $options = []) {
       global $CFG_GLPI, $DB;
 
       $this->initForm($id, $options);
@@ -577,7 +577,7 @@ class PluginOrderReference extends CommonDBTM {
     * @static
     * @param array ($itemtype,$options)
     */
-   public static function dropdownReferencesByEnterprise($itemtype, $options = array()) {
+   public static function dropdownReferencesByEnterprise($itemtype, $options = []) {
       global $DB,$CFG_GLPI;
 
       if ($itemtype && !($item = getItemForItemtype($itemtype))) {
@@ -1034,7 +1034,7 @@ class PluginOrderReference extends CommonDBTM {
    }
 
 
-   function getSpecificMassiveActions($checkitem=null) {
+   function getSpecificMassiveActions($checkitem = null) {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -1090,7 +1090,7 @@ class PluginOrderReference extends CommonDBTM {
    }
 
 
-   /*   function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = array()) {
+   /*   function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = []) {
       if (isset($field_id_or_search_options['displaytype'])
          && $field_id_or_search_options['displaytype'] == 'reference_type') {
             Toolbox::logDebug($field_id_or_search_options['displaytype'],

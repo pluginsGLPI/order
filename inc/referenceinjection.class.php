@@ -70,7 +70,7 @@ class PluginOrderReferenceInjection extends PluginOrderReference
     * @return an array of IDs of newly created objects : for example [Computer => 1, Networkport => 10]
     *
    **/
-   public function addOrUpdateObject($values = array(), $options = array()) {
+   public function addOrUpdateObject($values = [], $options = []) {
       $lib = new PluginDatainjectionCommonInjectionLib($this, $values, $options);
       $lib->processAddOrUpdate();
       return $lib->getInjectionResults();

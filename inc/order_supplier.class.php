@@ -82,7 +82,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    }
 
 
-   public function defineTabs($options = array()) {
+   public function defineTabs($options = []) {
       $ong = [];
       $this->addStandardTab('PluginOrderOrder_Supplier', $ong, $options);
 
@@ -119,7 +119,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    }
 
 
-   public function showForm ($ID, $options = array()) {
+   public function showForm ($ID, $options = []) {
       $plugin_order_orders_id = -1;
       if (isset($options['plugin_order_orders_id'])) {
          $plugin_order_orders_id = $options['plugin_order_orders_id'];
@@ -385,7 +385,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    }
 
 
-   public function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       switch (get_class($item)) {
          case 'Supplier':
             return [1 => __("Orders", "order")];
@@ -402,7 +402,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    }
 
 
-   public static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       switch (get_class($item)) {
          case 'Supplier':
             PluginOrderReference_Supplier::showReferencesFromSupplier($item->getField('id'));
