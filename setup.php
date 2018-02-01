@@ -66,6 +66,7 @@ if (!defined('PCLZIP_TEMPORARY_DIR')) {
 }
 include_once GLPI_ROOT . "/plugins/order/vendor/autoload.php";
 
+
 /**
  * Init hooks of the plugin.
  * REQUIRED
@@ -154,7 +155,7 @@ function plugin_init_order() {
 
       /*if glpi is loaded */
       if (Session::getLoginUserID()) {
-         $PLUGIN_HOOKS['add_css']['order'][]= 'order.css';
+         $PLUGIN_HOOKS['add_css']['order'][] = 'order.css';
 
          /* link to the config page in plugins menu */
          if (Session::haveRight("config", UPDATE)) {
@@ -173,6 +174,7 @@ function plugin_init_order() {
       }
    }
 }
+
 
 /**
  * Get the name and the version of the plugin
@@ -196,6 +198,7 @@ function plugin_version_order() {
          ];
 }
 
+
 /**
  * Check pre-requisites before install
  * OPTIONNAL, but recommanded
@@ -211,6 +214,7 @@ function plugin_order_check_prerequisites() {
 
    return true;
 }
+
 
 /**
  * Check configuration process

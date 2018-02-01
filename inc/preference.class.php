@@ -33,9 +33,12 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginOrderPreference extends CommonDBTM {
+
+
    public static function checkIfPreferenceExists($users_id) {
       return self::checkPreferenceValue('id', $users_id);
    }
+
 
    public function addDefaultPreference($users_id) {
       $id = self::checkIfPreferenceExists($users_id);
@@ -47,6 +50,7 @@ class PluginOrderPreference extends CommonDBTM {
       }
       return $id;
    }
+
 
    /**
     *
@@ -66,13 +70,16 @@ class PluginOrderPreference extends CommonDBTM {
       }
    }
 
+
    public static function checkPreferenceSignatureValue($users_id = 0) {
       return self::checkPreferenceValue('sign', $users_id);
    }
 
+
    public static function checkPreferenceTemplateValue($users_id) {
       return self::checkPreferenceValue('template', $users_id);
    }
+
 
    /**
     *
@@ -85,6 +92,7 @@ class PluginOrderPreference extends CommonDBTM {
                                      PLUGIN_ORDER_TEMPLATE_DIR, $value);
    }
 
+
    /**
     *
     * Display a dropdown of all PNG signatures files available
@@ -95,6 +103,7 @@ class PluginOrderPreference extends CommonDBTM {
       return self::dropdownListFiles('sign', PLUGIN_ORDER_SIGNATURE_EXTENSION,
                                      PLUGIN_ORDER_SIGNATURE_DIR, $value);
    }
+
 
    /**
     *
@@ -117,6 +126,7 @@ class PluginOrderPreference extends CommonDBTM {
       return Dropdown::showFromArray($name, $values, ['value' => $value]);
    }
 
+
    /**
     *
     * Check if at least one template exists
@@ -128,6 +138,7 @@ class PluginOrderPreference extends CommonDBTM {
       return (!empty($files));
    }
 
+
    /**
     *
     * Check if at least one signature exists
@@ -138,6 +149,7 @@ class PluginOrderPreference extends CommonDBTM {
       $files = self::getFiles(PLUGIN_ORDER_SIGNATURE_DIR, PLUGIN_ORDER_SIGNATURE_EXTENSION);
       return (!empty($files));
    }
+
 
    public function showForm($ID) {
       global $CFG_GLPI;
@@ -175,7 +187,8 @@ class PluginOrderPreference extends CommonDBTM {
       Html::closeForm();
    }
 
-   public static function getFiles($directory , $ext) {
+
+   public static function getFiles($directory, $ext) {
       $array_dir  = [];
       $array_file = [];
 
@@ -214,6 +227,7 @@ class PluginOrderPreference extends CommonDBTM {
       return $array_file;
    }
 
+
    public static function install(Migration $migration) {
       global $DB;
 
@@ -241,6 +255,7 @@ class PluginOrderPreference extends CommonDBTM {
       }
    }
 
+
    public static function uninstall() {
       global $DB;
 
@@ -248,7 +263,8 @@ class PluginOrderPreference extends CommonDBTM {
       $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
    }
 
-   public function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if (get_class($item) == 'Preference') {
          return [1 => __("Orders", "order")];
       }
@@ -264,4 +280,6 @@ class PluginOrderPreference extends CommonDBTM {
       }
       return true;
    }
+
+
 }

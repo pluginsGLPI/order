@@ -37,9 +37,11 @@ class PluginOrderBillState extends CommonDropdown {
 
    public static $rightname = 'plugin_order_bill';
 
+
    public static function getTypeName($nb = 0) {
       return __("Bill status", "order");
    }
+
 
    public function pre_deleteItem() {
       if ($this->getID() <= self::PAID) {
@@ -52,10 +54,12 @@ class PluginOrderBillState extends CommonDropdown {
       }
    }
 
+
    public static function getStates() {
       return [self::NOTPAID => __("Being paid", "order"),
               self::PAID    => __("Paid", "order")];
    }
+
 
    public static function getState($states_id) {
       $states = self::getStates();
@@ -65,6 +69,7 @@ class PluginOrderBillState extends CommonDropdown {
          return '';
       }
    }
+
 
    public static function install(Migration $migration) {
       global $DB;
@@ -91,9 +96,12 @@ class PluginOrderBillState extends CommonDropdown {
       }
    }
 
+
    public static function uninstall() {
       global $DB;
 
       $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
    }
+
+
 }

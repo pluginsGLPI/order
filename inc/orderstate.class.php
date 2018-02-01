@@ -44,9 +44,11 @@ class PluginOrderOrderState extends CommonDropdown {
 
    public static $rightname   = 'plugin_order_order';
 
+
    public static function getTypeName($nb = 0) {
       return __("Order status", "order");
    }
+
 
    public function pre_deleteItem() {
       if ($this->getID() <= self::CANCELED) {
@@ -59,6 +61,7 @@ class PluginOrderOrderState extends CommonDropdown {
       }
    }
 
+
    public static function install(Migration $migration) {
       global $DB;
 
@@ -69,7 +72,7 @@ class PluginOrderOrderState extends CommonDropdown {
 
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
-         $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orderstates` (
+         $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orderstates` (
                   `id` int(11) NOT NULL auto_increment,
                   `name` varchar(255) collate utf8_unicode_ci default NULL,
                   `comment` text collate utf8_unicode_ci,
@@ -98,8 +101,11 @@ class PluginOrderOrderState extends CommonDropdown {
       }
    }
 
+
    public static function uninstall() {
       global $DB;
       $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
    }
+
+
 }
