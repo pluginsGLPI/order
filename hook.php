@@ -73,6 +73,29 @@ function plugin_order_install() {
    echo "</table>";
    echo "</center>";
 
+   //Create directories for the plugin's files
+   $directories = [PLUGIN_ORDER_TEMPLATE_DIR        => 'templates',
+                   PLUGIN_ORDER_SIGNATURE_DIR       => 'signatures',
+                   PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR => 'generate',
+                   PLUGIN_ORDER_TEMPLATE_LOGO_DIR   => 'logo'
+                  ];
+   foreach ($directories as $new_directory => $old_directory) {
+      if (!is_dir($new_directory)) {
+                  @mkdir($new_directory, 0755, true)
+                     or die(sprintf(__('%1$s %2$s'), __("Can't create folder", 'order'),
+                                    $new_directory));
+         $base_directory = GLPI_ROOT.'/plugins/order/';
+         //Copy files from the old directories to the new ones
+         foreach (glob($base_directory.$old_directory.'/*') as $file) {
+            $new_file = str_replace($base_directory.$old_directory, $new_directory, $file);
+            if (!file_exists($new_directory.$file)) {
+               copy($file, $new_file)
+                  or die (sprintf(__('Cannot copy file %1$s to %2$s', 'order'),
+                           $file, $new_file));
+            }
+         }
+      }
+   }
    return true;
 }
 
