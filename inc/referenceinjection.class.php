@@ -31,10 +31,14 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderReferenceInjection extends PluginOrderReference implements PluginDatainjectionInjectionInterface {
+class PluginOrderReferenceInjection extends PluginOrderReference
+                                    implements PluginDatainjectionInjectionInterface {
+
+
    public function __construct() {
       $this->table = getTableForItemType(get_parent_class($this));
    }
+
 
    /**
     * Returns the name of the table used to store this object parent
@@ -47,37 +51,41 @@ class PluginOrderReferenceInjection extends PluginOrderReference implements Plug
       return $parenttype::getTable();
    }
 
+
    public function isPrimaryType() {
       return true;
    }
 
+
    public function connectedTo() {
-      return array();
+      return [];
    }
+
 
    /**
     * Standard method to add an object into glpi
     *
     * @param values fields to add into glpi
     * @param options options used during creation
-    * @return an array of IDs of newly created objects : for example array(Computer=>1, Networkport=>10)
+    * @return an array of IDs of newly created objects : for example [Computer => 1, Networkport => 10]
     *
    **/
-   public function addOrUpdateObject($values=array(), $options=array()) {
+   public function addOrUpdateObject($values = [], $options = []) {
       $lib = new PluginDatainjectionCommonInjectionLib($this, $values, $options);
       $lib->processAddOrUpdate();
       return $lib->getInjectionResults();
    }
 
+
    public function getOptions($primary_type = '') {
       return Search::getOptions(get_parent_class($this));
    }
 
+
    public function getSpecificFieldValue($itemtype, $searchOption, $field, &$values) {
       global $DB;
 
-      $value  = $values[$itemtype][$field];
-
+      $value = $values[$itemtype][$field];
       switch ($searchOption['displaytype']) {
          case "reference_itemtype":
             unset($values[$itemtype]['itemtype']);
@@ -86,7 +94,7 @@ class PluginOrderReferenceInjection extends PluginOrderReference implements Plug
                $value[$itemtype]['itemtype'] = $value;
             } else {
                foreach ($classes as $class) {
-                  if (call_user_func(array($class, 'getTypeName')) == $value) {
+                  if (call_user_func([$class, 'getTypeName']) == $value) {
                      $values[$itemtype]['itemtype'] = $class;
                      break;
                   }
@@ -104,11 +112,13 @@ class PluginOrderReferenceInjection extends PluginOrderReference implements Plug
             if (isset($values[$itemtype]['itemtype']) && class_exists($values[$itemtype]['itemtype'])) {
                $itemtype_formodel = $values[$itemtype]['itemtype'].$type_prefix;
                if (class_exists($itemtype_formodel)) {
-                  $values[$itemtype][$field] = Dropdown::getDropdownName(getTableForItemType($itemtype_formodel), $value);
+                  $values[$itemtype][$field] = Dropdown::getDropdownName($itemtype_formodel::getTable(), $value);
                }
             }
             break;
       }
       return $value;
    }
+
+
 }

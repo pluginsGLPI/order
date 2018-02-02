@@ -46,24 +46,21 @@ if (isset($_POST["itemtype"])) {
              ORDER BY s.`reference_code`";
    $result = $DB->query($query);
    $number = $DB->numrows($result);
-   $values = array(0 => Dropdown::EMPTY_VALUE);
+   $values = [0 => Dropdown::EMPTY_VALUE];
    if ($number) {
       while ($data = $DB->fetch_assoc($result)) {
          $values[$data['id']] = $data['name']." - ".$data['reference_code'];
       }
    }
    Dropdown::showFromArray($_POST['fieldname'], $values,
-                           array('rand'  => $_POST['rand'],
-                                 'width' => '100%'));
-
-   $params = array(
-      'reference_id' => '__VALUE__',
-      'suppliers_id' => $_POST['suppliers_id'],
-   );
+                           ['rand'  => $_POST['rand'], 'width' => '100%']);
    Ajax::updateItemOnSelectEvent('dropdown_plugin_order_references_id' . $_POST['rand'],
                                  'show_priceht',
                                  '../ajax/dropdownReference.php',
-                                 $params);
+                                 [
+                                    'reference_id' => '__VALUE__',
+                                    'suppliers_id' => $_POST['suppliers_id'],
+                                 ]);
 
 } else if (isset($_POST['reference_id'])) {
    // Get price

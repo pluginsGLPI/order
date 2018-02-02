@@ -47,9 +47,9 @@ if (isset($_POST['name'])) {
       $step = PLUGIN_ORDER_NUMBER_STEP;
    }
 
-   $class="";
+   $class = "";
    if (isset($_REQUEST['class'])) {
-      $class="class='".$_REQUEST['class']."'";
+      $class = "class='".$_REQUEST['class']."'";
    }
 
    $data = Html::cleanInputText(Toolbox::clean_cross_side_scripting_deep(rawurldecode(stripslashes($_POST["data"]))));

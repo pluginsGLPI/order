@@ -33,19 +33,22 @@ if (!defined('GLPI_ROOT')) {
 
 // Class for a Dropdown
 class PluginOrderOrderType extends CommonDropdown {
+
    public static $rightname = 'plugin_order_order';
 
-   public static function getTypeName($nb=0) {
+
+   public static function getTypeName($nb = 0) {
       return __("Type");
    }
+
 
    public static function install(Migration $migration) {
       global $DB;
       //Only avaiable since 1.3.0
 
-      $table = getTableForItemType(__CLASS__);
+      $table = self::getTable();
 
-      if (!TableExists($table)) {
+      if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
          $query = "CREATE TABLE `glpi_plugin_order_ordertypes` (
                   `id` int(11) NOT NULL auto_increment,
@@ -58,10 +61,13 @@ class PluginOrderOrderType extends CommonDropdown {
       }
    }
 
+
    public static function uninstall() {
       global $DB;
 
       //Current table name
-      $DB->query("DROP TABLE IF EXISTS  `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
    }
+
+
 }

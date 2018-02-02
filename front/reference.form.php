@@ -105,11 +105,11 @@ if (isset($_GET["popup"]) && $_GET["popup"] == 1) {
 if ($_GET['id'] == "") {
    $reference->showForm(-1);
 } else {
-   $reference->display($_GET, array(
-   'withtemplate' => $_GET['withtemplate'],
-   'popup'        => $_GET["popup"],
-   'item'         => $_GET["itemtype"],
-   ));
+   $reference->display($_GET, [
+      'withtemplate' => $_GET['withtemplate'],
+      'popup'        => $_GET["popup"],
+      'item'         => $_GET["itemtype"],
+   ]);
 }
 
 if (isset ($_GET["popup"]) && $_GET["popup"] == 1) {

@@ -34,35 +34,38 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-define ('PLUGIN_ORDER_VERSION', '1.9.7');
+define('PLUGIN_ORDER_VERSION', '2.0.0');
 
 if (!defined('PLUGIN_ORDER_TEMPLATE_DIR')) {
-   define ("PLUGIN_ORDER_TEMPLATE_DIR", GLPI_PLUGIN_DOC_DIR."/order/templates/");
+   define("PLUGIN_ORDER_TEMPLATE_DIR", GLPI_PLUGIN_DOC_DIR."/order/templates/");
 }
 if (!defined('PLUGIN_ORDER_SIGNATURE_DIR')) {
-   define ("PLUGIN_ORDER_SIGNATURE_DIR", GLPI_PLUGIN_DOC_DIR."/order/signatures/");
+   define("PLUGIN_ORDER_SIGNATURE_DIR", GLPI_PLUGIN_DOC_DIR."/order/signatures/");
 }
 if (!defined('PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR')) {
-   define ("PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR", GLPI_PLUGIN_DOC_DIR."/order/generate/");
+   define("PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR", GLPI_PLUGIN_DOC_DIR."/order/generate/");
 }
 if (!defined('PLUGIN_ORDER_TEMPLATE_LOGO_DIR')) {
-   define ("PLUGIN_ORDER_TEMPLATE_LOGO_DIR", GLPI_PLUGIN_DOC_DIR."/order/logo/");
+   define("PLUGIN_ORDER_TEMPLATE_LOGO_DIR", GLPI_PLUGIN_DOC_DIR."/order/logo/");
 }
 
 if (!defined('PLUGIN_ORDER_TEMPLATE_EXTENSION')) {
-   define ("PLUGIN_ORDER_TEMPLATE_EXTENSION", "odt");
+   define("PLUGIN_ORDER_TEMPLATE_EXTENSION", "odt");
 }
 if (!defined('PLUGIN_ORDER_SIGNATURE_EXTENSION')) {
-   define ("PLUGIN_ORDER_SIGNATURE_EXTENSION", "png");
+   define("PLUGIN_ORDER_SIGNATURE_EXTENSION", "png");
 }
 global $CFG_GLPI;
 if (!defined('PLUGIN_ORDER_NUMBER_STEP')) {
-   define ("PLUGIN_ORDER_NUMBER_STEP", 1 / pow(10, $CFG_GLPI["decimal_number"]));
+   define("PLUGIN_ORDER_NUMBER_STEP", 1 / pow(10, $CFG_GLPI["decimal_number"]));
 }
 
 // Autoload
-define('PCLZIP_TEMPORARY_DIR', GLPI_DOC_DIR . '/_tmp/pclzip');
+if (!defined('PCLZIP_TEMPORARY_DIR')) {
+   define('PCLZIP_TEMPORARY_DIR', GLPI_DOC_DIR . '/_tmp/pclzip');
+}
 include_once GLPI_ROOT . "/plugins/order/vendor/autoload.php";
+
 
 /**
  * Init hooks of the plugin.
@@ -77,7 +80,7 @@ function plugin_init_order() {
    $PLUGIN_HOOKS['csrf_compliant']['order'] = true;
 
    /* Init current profile */
-   $PLUGIN_HOOKS['change_profile']['order'] = array('PluginOrderProfile', 'initProfile');
+   $PLUGIN_HOOKS['change_profile']['order'] = ['PluginOrderProfile', 'initProfile'];
 
    $plugin = new Plugin();
    if ($plugin->isActivated('order')) {
@@ -86,7 +89,7 @@ function plugin_init_order() {
       $PLUGIN_HOOKS['assign_to_ticket']['order'] = true;
 
       //Itemtypes in use for an order
-      $ORDER_TYPES = array(
+      $ORDER_TYPES = [
          'Computer',
          'Monitor',
          'NetworkEquipment',
@@ -98,29 +101,30 @@ function plugin_init_order() {
          'Contract',
          'PluginOrderOther',
          'SoftwareLicense',
-      );
+         'Certificate'
+      ];
 
       $CFG_GLPI['plugin_order_types'] = $ORDER_TYPES;
 
-      $PLUGIN_HOOKS['pre_item_purge']['order']  = array(
-         'Profile'          => array('PluginOrderProfile', 'purgeProfiles'),
-         'DocumentCategory' => array('PluginOrderDocumentCategory', 'purgeItem'),
-      );
+      $PLUGIN_HOOKS['pre_item_purge']['order'] = [
+         'Profile'          => ['PluginOrderProfile', 'purgeProfiles'],
+         'DocumentCategory' => ['PluginOrderDocumentCategory', 'purgeItem'],
+      ];
 
-      $PLUGIN_HOOKS['pre_item_update']['order'] = array(
-         'Infocom'  => array('PluginOrderOrder_Item', 'updateItem'),
-         'Contract' => array('PluginOrderOrder_Item', 'updateItem'),
-      );
-      $PLUGIN_HOOKS['item_add']['order'] = array(
-         'Document' => array('PluginOrderOrder', 'addDocumentCategory')
-      );
+      $PLUGIN_HOOKS['pre_item_update']['order'] = [
+         'Infocom'  => ['PluginOrderOrder_Item', 'updateItem'],
+         'Contract' => ['PluginOrderOrder_Item', 'updateItem'],
+      ];
+      $PLUGIN_HOOKS['item_add']['order'] = [
+         'Document' => ['PluginOrderOrder', 'addDocumentCategory']
+      ];
 
       include_once(GLPI_ROOT . "/plugins/order/inc/order_item.class.php");
       foreach (PluginOrderOrder_Item::getClasses(true) as $type) {
          $PLUGIN_HOOKS['item_purge']['order'][$type] = 'plugin_item_purge_order';
       }
 
-      Plugin::registerClass('PluginOrderOrder', array(
+      Plugin::registerClass('PluginOrderOrder', [
          'document_types'              => true,
          'unicity_types'               => true,
          'notificationtemplates_types' => true,
@@ -128,33 +132,30 @@ function plugin_init_order() {
          'ticket_types'                => true,
          'contract_types'              => true,
          'linkuser_types'              => true,
-         'addtabon'                    => array('Budget'))
-      );
+         'addtabon'                    => ['Budget']
+      ]);
 
-      Plugin::registerClass('PluginOrderReference', array('document_types' => true));
-      Plugin::registerClass('PluginOrderProfile', array('addtabon' => array('Profile')));
+      Plugin::registerClass('PluginOrderReference', ['document_types' => true]);
+      Plugin::registerClass('PluginOrderProfile', ['addtabon' => ['Profile']]);
 
       $values['notificationtemplates_types'] = true;
       //If the new infocom display hook (introduced in 9.1) is available, use it !
       if (method_exists('Infocom', 'addPluginInfos')) {
-         $PLUGIN_HOOKS['infocom']['order'] = array('PluginOrderOrder_Item', 'showForInfocom');
+         $PLUGIN_HOOKS['infocom']['order'] = ['PluginOrderOrder_Item', 'showForInfocom'];
       } else {
          $values['addtabon'] = PluginOrderOrder_Item::getClasses(true);
       }
       Plugin::registerClass('PluginOrderOrder_Item', $values);
 
       if (PluginOrderOrder::canView()) {
-         Plugin::registerClass('PluginOrderDocumentCategory',
-                               array('addtabon' => array('DocumentCategory')));
-         Plugin::registerClass('PluginOrderOrder_Supplier',
-                               array('addtabon' => array('Supplier')));
-         Plugin::registerClass('PluginOrderPreference',
-                               array('addtabon' => array('Preference')));
+         Plugin::registerClass('PluginOrderDocumentCategory', ['addtabon' => ['DocumentCategory']]);
+         Plugin::registerClass('PluginOrderOrder_Supplier', ['addtabon' => ['Supplier']]);
+         Plugin::registerClass('PluginOrderPreference', ['addtabon' => ['Preference']]);
       }
 
       /*if glpi is loaded */
       if (Session::getLoginUserID()) {
-         $PLUGIN_HOOKS['add_css']['order'][]= 'order.css';
+         $PLUGIN_HOOKS['add_css']['order'][] = 'order.css';
 
          /* link to the config page in plugins menu */
          if (Session::haveRight("config", UPDATE)) {
@@ -174,6 +175,7 @@ function plugin_init_order() {
    }
 }
 
+
 /**
  * Get the name and the version of the plugin
  * REQUIRED
@@ -181,13 +183,21 @@ function plugin_init_order() {
  * @return array
  */
 function plugin_version_order() {
-   return array ('name'           => __("Orders management", "order"),
-                 'version'        => PLUGIN_ORDER_VERSION,
-                 'author'         => 'The plugin order team',
-                 'homepage'       => 'https://github.com/pluginsGLPI/order',
-                 'minGlpiVersion' => '0.85',
-                 'license'        => 'GPLv2+');
+   return ['name'           => __("Orders management", "order"),
+            'version'        => PLUGIN_ORDER_VERSION,
+            'author'         => 'The plugin order team',
+            'homepage'       => 'https://github.com/pluginsGLPI/order',
+            'minGlpiVersion' => '0.85',
+            'license'        => 'GPLv2+',
+            'requirements'   => [
+               'glpi' => [
+                  'min' => '9.2',
+                  'dev' => true
+               ]
+            ]
+         ];
 }
+
 
 /**
  * Check pre-requisites before install
@@ -196,12 +206,15 @@ function plugin_version_order() {
  * @return boolean
  */
 function plugin_order_check_prerequisites() {
-   if (version_compare(GLPI_VERSION, '0.85', 'lt')) {
-      echo "This plugin requires GLPI 0.85 or higher";
+   $version = rtrim(GLPI_VERSION, '-dev');
+   if (version_compare($version, '9.2', 'lt')) {
+      echo "This plugin requires GLPI 9.2";
       return false;
    }
+
    return true;
 }
+
 
 /**
  * Check configuration process

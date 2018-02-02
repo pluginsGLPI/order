@@ -40,9 +40,9 @@ if (!defined('GLPI_ROOT')) {
 Session::checkCentralAccess();
 
 // Make a select box with all glpi users
-$where = " WHERE `glpi_contacts_suppliers`.`contacts_id` = `glpi_contacts`.`id` "
-         . " AND (`glpi_contacts_suppliers`.`suppliers_id` = '" . $_POST['suppliers_id'] . "' "
-         . " AND `glpi_contacts`.`is_deleted` = '0' ) ";
+$where = " WHERE `glpi_contacts_suppliers`.`contacts_id` = `glpi_contacts`.`id`
+           AND (`glpi_contacts_suppliers`.`suppliers_id` = '".$_POST['suppliers_id']."'
+           AND `glpi_contacts`.`is_deleted` = '0' ) ";
 
 
 if (isset($_POST["entity_restrict"])) {
@@ -55,11 +55,10 @@ if (isset($_POST["entity_restrict"])) {
 }
 
 if ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"]) {
-   $where .= " AND `glpi_contacts`.`name` " . makeTextSearch($_POST['searchText']);
+   $where .= " AND `glpi_contacts`.`name` ".makeTextSearch($_POST['searchText']);
 }
 
-$NBMAX = $CFG_GLPI["dropdown_max"];
-$LIMIT = "LIMIT 0,$NBMAX";
+$LIMIT = "LIMIT 0, ".$CFG_GLPI["dropdown_max"];
 if ($_POST['searchText'] == $CFG_GLPI["ajax_wildcard"]) {
    $LIMIT = "";
 }
@@ -72,28 +71,28 @@ $query = "SELECT `glpi_contacts`.*
 //error_log($query);
 $result = $DB->query($query);
 
-echo "<select name=\"contacts_id\">";
+echo "<select name='contacts_id'>";
 
-echo "<option value=\"0\">".Dropdown::EMPTY_VALUE."</option>";
+echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 
 if ($DB->numrows($result)) {
    $prev = -1;
    while ($data = $DB->fetch_array($result)) {
       if ($data["entities_id"] != $prev) {
-         if ($prev>=0) {
+         if ($prev > 0) {
             echo "</optgroup>";
          }
          $prev = $data["entities_id"];
-         echo "<optgroup label=\"" . Dropdown::getDropdownName("glpi_entities", $prev) . "\">";
+         echo "<optgroup label=\"".Dropdown::getDropdownName("glpi_entities", $prev)."\">";
       }
       $output = formatUserName($data["id"], "", $data["name"], $data["firstname"]);
       if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
-         $output .= " (" . $data["id"] . ")";
+         $output .= " (".$data["id"].")";
       }
-      echo "<option value=\"" . $data["id"] . "\" title=\"$output\">"
-         . substr($output, 0, $CFG_GLPI["dropdown_chars_limit"]) . "</option>";
+      echo "<option value=\"".$data["id"]."\" title=\"$output\">"
+        .substr($output, 0, $CFG_GLPI["dropdown_chars_limit"])."</option>";
    }
-   if ($prev>=0) {
+   if ($prev >= 0) {
       echo "</optgroup>";
    }
 }

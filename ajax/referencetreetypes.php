@@ -39,7 +39,7 @@ Session::checkLoginUser();
 
 if (isset($_REQUEST['node'])) {
    $target = "reference.php";
-   $nodes  = array();
+   $nodes  = [];
 
    // Root node
    if ($_REQUEST['node'] == -1) {
@@ -69,13 +69,13 @@ if (isset($_REQUEST['node'])) {
                if ($entity == 0) {
                   $link = "&link[1]=AND&searchtype[1]=contains&contains[1]=NULL&field[1]=80";
                } else {
-                  $link = "&link[1]=AND&searchtype[1]=contains&contains[1]="
-                     . Dropdown::getDropdownName("glpi_entities", $entity) . "&field[1]=80";
+                  $link = "&link[1]=AND&searchtype[1]=contains&contains[1]=".
+                          Dropdown::getDropdownName("glpi_entities", $entity)."&field[1]=80";
                }
 
                $path['href'] = $CFG_GLPI["root_doc"].
-                  "/plugins/order/front/$target?is_deleted=0&field[0]=3&searchtype[0]=equals&contains[0]="
-                     . rawurlencode($class)."&$link&itemtype=PluginOrderReference&start=0";
+                  "/plugins/order/front/$target?is_deleted=0&field[0]=3&searchtype[0]=equals&contains[0]=".
+                  rawurlencode($class)."&$link&itemtype=PluginOrderReference&start=0";
 
                // Check if node is a leaf or a folder.
                $path['leaf'] = true;

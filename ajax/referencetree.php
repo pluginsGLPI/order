@@ -38,7 +38,7 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (!isset($_GET['target'])) {
-   $_GET['target'] = $CFG_GLPI['root_doc'] . "/plugins/order/front/reference.php";
+   $_GET['target'] = $CFG_GLPI['root_doc']."/plugins/order/front/reference.php";
 }
 
 PluginOrderReference::showSelector($_GET['target']);

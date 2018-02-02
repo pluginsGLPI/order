@@ -33,18 +33,21 @@ if (!defined('GLPI_ROOT')) {
 
 // Class for a Dropdown
 class PluginOrderOrderTax extends CommonDropdown {
+
    public static $rightname = 'plugin_order_order';
 
-   public static function getTypeName($nb=0) {
+
+   public static function getTypeName($nb = 0) {
       return __("VAT", "order");
    }
+
 
    public static function install(Migration $migration) {
       global $DB;
 
-      $table = getTableForItemType(__CLASS__);
+      $table = self::getTable();
 
-      if (!TableExists($table) && !TableExists("glpi_dropdown_plugin_order_taxes")) {
+      if (!$DB->tableExists($table) && !$DB->tableExists("glpi_dropdown_plugin_order_taxes")) {
          $migration->displayMessage("Installing $table");
 
          //Install
@@ -58,8 +61,8 @@ class PluginOrderOrderTax extends CommonDropdown {
          $DB->query($query) or die($DB->error());
 
          $taxes = new self();
-         foreach (array('20', '5.5', '19.6') as $tax) {
-            $taxes->add(array('name' => $tax));
+         foreach (['20', '5.5', '19.6'] as $tax) {
+            $taxes->add(['name' => $tax]);
          }
       } else {
          //Update
@@ -86,6 +89,7 @@ class PluginOrderOrderTax extends CommonDropdown {
       }
    }
 
+
    public static function uninstall() {
       global $DB;
 
@@ -93,6 +97,8 @@ class PluginOrderOrderTax extends CommonDropdown {
       $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_taxes`") or die ($DB->error());
 
       //New table
-      $DB->query("DROP TABLE IF EXISTS `".getTableForItemType(__CLASS__)."`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
    }
+
+
 }

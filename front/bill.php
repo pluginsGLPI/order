@@ -31,7 +31,7 @@ include ("../../../inc/includes.php");
 
 Session::checkRight("plugin_order_bill", READ);
 
-Html::header(PluginOrderBill::getTypeName(1), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "bill");
+Html::header(PluginOrderBill::getTypeName(), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "bill");
 
 Search::show('PluginOrderBill');
 

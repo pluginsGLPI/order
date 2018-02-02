@@ -32,9 +32,12 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginOrderOrderInjection extends PluginOrderOrder implements PluginDatainjectionInjectionInterface {
+
+
    public function __construct() {
       $this->table = getTableForItemType(get_parent_class($this));
    }
+
 
    /**
     * Returns the name of the table used to store this object parent
@@ -47,13 +50,16 @@ class PluginOrderOrderInjection extends PluginOrderOrder implements PluginDatain
       return $parenttype::getTable();
    }
 
+
    public function isPrimaryType() {
       return true;
    }
 
+
    public function connectedTo() {
-      return array();
+      return [];
    }
+
 
    /**
     * Standard method to add an object into glpi
@@ -63,13 +69,16 @@ class PluginOrderOrderInjection extends PluginOrderOrder implements PluginDatain
     * @return an array of IDs of newly created objects : for example array(Computer=>1, Networkport=>10)
     *
    **/
-   public function addOrUpdateObject($values=array(), $options=array()) {
+   public function addOrUpdateObject($values = [], $options = []) {
       $lib = new PluginDatainjectionCommonInjectionLib($this, $values, $options);
       $lib->processAddOrUpdate();
       return $lib->getInjectionResults();
    }
 
+
    public function getOptions($primary_type = '') {
       return Search::getOptions(get_parent_class($this));
    }
+
+
 }

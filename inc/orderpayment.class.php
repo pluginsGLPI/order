@@ -33,17 +33,19 @@ if (!defined('GLPI_ROOT')) {
 
 // Class for a Dropdown
 class PluginOrderOrderPayment extends CommonDropdown {
+
    public static $rightname = 'config'; //'plugin_order_order';
 
-   public static function getTypeName($nb=0) {
+   public static function getTypeName($nb = 0) {
       return __("Payment conditions", "order");
    }
+
 
    public static function install(Migration $migration) {
       global $DB;
 
-      $table = getTableForItemType(__CLASS__);
-      if (!TableExists($table) && !TableExists("glpi_dropdown_plugin_order_payment")) {
+      $table = self::getTable();
+      if (!$DB->tableExists($table) && !$DB->tableExists("glpi_dropdown_plugin_order_payment")) {
          $migration->displayMessage("Installing $table");
 
          $query = "CREATE TABLE `glpi_plugin_order_orderpayments` (
@@ -67,12 +69,15 @@ class PluginOrderOrderPayment extends CommonDropdown {
       }
    }
 
+
    public static function uninstall() {
       global $DB;
 
       //Old table name
       $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_payment`") or die ($DB->error());
       //Current table name
-      $DB->query("DROP TABLE IF EXISTS  `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
+      $DB->query("DROP TABLE IF EXISTS  `" . self::getTable() . "`") or die ($DB->error());
    }
+
+
 }
