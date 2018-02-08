@@ -490,9 +490,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                if (file_exists($core_typefilename)
                    || file_exists($plugin_typefilename)) {
                   Dropdown::show($itemtypeclass,
-                                 array(
-                                    'name'  => "types_id",
-                                 ));
+                                 ['name'  => "types_id"]);
                }
                echo "</span>";
                echo "</td>";

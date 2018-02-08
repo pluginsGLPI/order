@@ -276,7 +276,7 @@ if (isset ($_POST["add"])) {
    }
    Html::back();
 
-} elseif (isset($_POST["delete_itemfree"])) {
+} else if (isset($_POST["delete_itemfree"])) {
    if (isset($_POST["plugin_order_orders_id"])
        && ($_POST["plugin_order_orders_id"] > 0)
        && isset($_POST["item"])) {
@@ -306,7 +306,7 @@ if (isset ($_POST["add"])) {
                      }
                      $input["id"] = $ID;
 
-                     $pluginOrderOrder_Item->delete(array('id' => $input["id"]));
+                     $pluginOrderOrder_Item->delete(['id' => $input["id"]]);
                   }
                   $new_value = __("Remove reference", "order") . " ";
                   $new_value .= Dropdown::getDropdownName("glpi_plugin_order_references", $ID);
@@ -318,7 +318,7 @@ if (isset ($_POST["add"])) {
                $new_value .= Dropdown::getDropdownName("glpi_plugin_order_references", $ID);
                $pluginOrderOrder->addHistory("PluginOrderOrder", "",
                                              $new_value, $_POST["plugin_order_orders_id"]);
-               $pluginOrderOrder_Item->delete(array('id' => $ID));
+               $pluginOrderOrder_Item->delete(['id' => $ID]);
             }
          }
       }
