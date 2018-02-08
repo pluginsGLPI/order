@@ -351,9 +351,9 @@ class PluginOrderReception extends CommonDBChild {
          echo "<td align='center'>" . $item->getTypeName() . "</td>";
          echo "<td align='center'>" . Dropdown::getDropdownName("glpi_manufacturers",
                                                                 $data_ref["manufacturers_id"]) . "</td>";
-         if($table == 'glpi_plugin_order_referencefrees'){
+         if ($table == 'glpi_plugin_order_referencefrees') {
             echo "<td>" . $data_ref['name'] . "</td>";
-         }else{
+         } else {
             echo "<td>" . $reference->getReceptionReferenceLink($data_ref) . "</td>";
          }
          $total = $order_item->getTotalQuantityByRefAndDiscount($orders_id,
@@ -455,9 +455,9 @@ class PluginOrderReception extends CommonDBChild {
                Html::showTooltip($data['comment']);
                echo "</td>";
             }
-            if($table == 'glpi_plugin_order_referencefrees'){
+            if ($table == 'glpi_plugin_order_referencefrees') {
                echo "<td align='center'>" . $data['name'] . "</td>";
-            }else{
+            } else {
                echo "<td align='center'>" . $reference->getReceptionReferenceLink($data) . "</td>";
             }
             echo "<td align='center'>";

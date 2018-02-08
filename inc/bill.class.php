@@ -262,10 +262,10 @@ class PluginOrderBill extends CommonDropdown
                echo "<td class='center top'>";
                echo Dropdown::getDropdownName('glpi_entities', $item->getEntityID())."</td>";
 
-               if($data['itemtype'] == 'PluginOrderReferenceFree'){
+               if ($data['itemtype'] == 'PluginOrderReferenceFree') {
                   $reference = new PluginOrderReferenceFree();
                   $reference->getFromDB($data["plugin_order_references_id"]);
-               }else{
+               } else {
                   $reference = new PluginOrderReference();
                   $reference->getFromDB($data["plugin_order_references_id"]);
                }
@@ -371,7 +371,7 @@ class PluginOrderBill extends CommonDropdown
          $results = $order_item->queryBills($order->getID(), $data_ref['id'], $table);
          while ($data = $DB->fetch_array($results)) {
             echo "<tr class='tab_bg_1'>";
-            if ($canedit){
+            if ($canedit) {
                echo "<td width='10'>";
                $sel = "";
                if (isset($_GET["select"]) && $_GET["select"] == "all") {

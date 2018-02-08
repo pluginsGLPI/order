@@ -211,7 +211,7 @@ if (isset ($_POST["add"])) {
    }
 
    Html::back();
-} elseif (isset($_POST["add_itemfree"])) {
+} else if (isset($_POST["add_itemfree"])) {
    //Details management
    if ($_POST["discount"] < 0 || $_POST["discount"] > 100) {
       Session::addMessageAfterRedirect(__("The discount pourcentage must be between 0 and 100", "order"), false, ERROR);
@@ -225,20 +225,20 @@ if (isset ($_POST["add"])) {
          $itemtype = (isset($_POST['itemtype'])) ? $_POST['itemtype'] : 'PluginOrderOther';
          $types_id = (isset($_POST['types_id'])) ? $_POST['types_id'] : 0;
 
-         $reference    = new PluginOrderReference();
-         if($id_reference = $reference->add(array('entities_id'      => $_POST["entities_id"],
-                                                  'manufacturers_id' => $_POST['manufacturers_id'],
-                                                  'name'             => $_POST['name'],
-                                                  'itemtype'         => $itemtype,
-                                                  'types_id'         => $types_id))) {
+         $reference = new PluginOrderReference();
+         if ($id_reference = $reference->add(['entities_id'      => $_POST["entities_id"],
+                                                   'manufacturers_id' => $_POST['manufacturers_id'],
+                                                   'name'             => $_POST['name'],
+                                                   'itemtype'         => $itemtype,
+                                                   'types_id'         => $types_id])) {
 
             //add link
             $reference_supplier = new PluginOrderReference_Supplier();
-            $reference_supplier->add(array('entities_id'                => $_POST["entities_id"],
+            $reference_supplier->add(['entities_id'                => $_POST["entities_id"],
                                            'plugin_order_references_id' => $id_reference,
                                            'suppliers_id'               => $pluginOrderOrder->fields['suppliers_id'],
                                            'price_taxfree'              => $_POST['price'],
-                                           'reference_code'             => $_POST['reference_code']));
+                                           'reference_code'             => $_POST['reference_code']]);
 
 
             $new_value = __("Add reference", "order") . " ";
@@ -251,14 +251,14 @@ if (isset ($_POST["add"])) {
                                                $_POST["price"], $_POST["discount"],
                                                $_POST["plugin_order_ordertaxes_id"]);
          }
-      }else{
+      } else {
          //create reference free
-         $reference_free    = new PluginOrderReferenceFree();
-         $id_reference = $reference_free->add(array('entities_id'      => $_POST["entities_id"],
-                                                    'manufacturers_id' => $_POST['manufacturers_id'],
-                                                    'name'             => $_POST['name'],
-                                                    'itemtype'         => 'PluginOrderReferenceFree',
-                                                    'plugin_order_orders_id' => $_POST["plugin_order_orders_id"]));
+         $reference_free = new PluginOrderReferenceFree();
+         $id_reference   = $reference_free->add(['entities_id'            => $_POST["entities_id"],
+                                                      'manufacturers_id'       => $_POST['manufacturers_id'],
+                                                      'name'                   => $_POST['name'],
+                                                      'itemtype'               => 'PluginOrderReferenceFree',
+                                                      'plugin_order_orders_id' => $_POST["plugin_order_orders_id"]]);
 
          $new_value = __("Add reference", "order") . " ";
          $new_value .= Dropdown::getDropdownName("glpi_plugin_order_references", $id_reference);
@@ -286,10 +286,10 @@ if (isset ($_POST["add"])) {
             $pluginOrderOrder_Item->getFromDB($ID);
 
             if ($pluginOrderOrder_Item->fields["itemtype"] == 'SoftwareLicense') {
-               $result=$pluginOrderOrder_Item->queryRef($_POST["plugin_order_orders_id"],
-                                                        $pluginOrderOrder_Item->fields["plugin_order_references_id"],
-                                                        $pluginOrderOrder_Item->fields["price_taxfree"],
-                                                        $pluginOrderOrder_Item->fields["discount"]);
+               $result = $pluginOrderOrder_Item->queryRef($_POST["plugin_order_orders_id"],
+                                                          $pluginOrderOrder_Item->fields["plugin_order_references_id"],
+                                                          $pluginOrderOrder_Item->fields["price_taxfree"],
+                                                          $pluginOrderOrder_Item->fields["discount"]);
 
                if ($nb = $DB->numrows($result)) {
                   for ($i = 0; $i < $nb; $i++) {
@@ -300,21 +300,21 @@ if (isset ($_POST["add"])) {
                         $lic = new SoftwareLicense;
                         $lic->getFromDB($items_id);
                         $values["id"]     = $lic->fields["id"];
-                        $values["number"] = $lic->fields["number"]-1;
+                        $values["number"] = $lic->fields["number"] - 1;
                         $lic->update($values);
 
                      }
                      $input["id"] = $ID;
 
-                     $pluginOrderOrder_Item->delete(array('id'=>$input["id"]));
+                     $pluginOrderOrder_Item->delete(array('id' => $input["id"]));
                   }
-                  $new_value  = __("Remove reference", "order") . " ";
+                  $new_value = __("Remove reference", "order") . " ";
                   $new_value .= Dropdown::getDropdownName("glpi_plugin_order_references", $ID);
                   $pluginOrderOrder->addHistory("PluginOrderOrder", "", $new_value,
                                                 $_POST["plugin_order_orders_id"]);
                }
             } else {
-               $new_value  = __("Remove reference", "order") . " ";
+               $new_value = __("Remove reference", "order") . " ";
                $new_value .= Dropdown::getDropdownName("glpi_plugin_order_references", $ID);
                $pluginOrderOrder->addHistory("PluginOrderOrder", "",
                                              $new_value, $_POST["plugin_order_orders_id"]);

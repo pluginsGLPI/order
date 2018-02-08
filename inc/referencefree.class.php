@@ -52,7 +52,6 @@ class PluginOrderReferenceFree extends CommonDBTM {
             $input["price_discounted"]           = $price - ($price * ($discounted_price / 100));
             $input["states_id"]                  = PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED;
 
-
             $input["price_ati"] = $this->getPricesATI($input["price_discounted"], Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $taxes_id));
             $input["discount"]  = $discounted_price;
 
@@ -111,8 +110,8 @@ class PluginOrderReferenceFree extends CommonDBTM {
       global $DB;
 
       $table  = getTableForItemType(__CLASS__);
-      foreach (array ("glpi_displaypreferences", "glpi_documents_items", "glpi_savedsearches",
-                      "glpi_logs") as $t) {
+      foreach (["glpi_displaypreferences", "glpi_documents_items", "glpi_savedsearches",
+                      "glpi_logs"] as $t) {
          $query = "DELETE FROM `$t` WHERE `itemtype`='" . __CLASS__ . "'";
          $DB->query($query);
       }

@@ -418,7 +418,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
                echo "<td class='tab_bg_1'>";
                $rand = mt_rand();
-               Manufacturer::dropdown(array('rand' => $rand, 'width' => 200));
+               Manufacturer::dropdown(['rand' => $rand, 'width' => 200]);
                echo "</td>";
 
                echo "<td class='tab_bg_1'><span id='show_quantity'>";
@@ -431,12 +431,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
                echo "<td class='tab_bg_1'><span id='show_taxe'>";
                $config = PluginOrderConfig::getConfig();
-               PluginOrderOrderTax::Dropdown(array(
+               PluginOrderOrderTax::Dropdown([
                                                 'name'                => "plugin_order_ordertaxes_id",
                                                 'value'               => $config->getDefaultTaxes(),
                                                 'display_emptychoice' => true,
                                                 'emptylabel'          => __("No VAT", "order"),
-                                             ));
+                                             ]);
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_pricediscounted'>";
@@ -467,13 +467,13 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "</span></td>";
 
                echo "<td class='tab_bg_1' name='add_reference' style='display: none;'><span id='show_addreference'>";
-               $params = array(
+               $params = [
                   'myname'    => 'itemtype',
                   'value'     => 'PluginOrderOther',
                   'entity'    => $_SESSION["glpiactive_entity"],
                   'ajax_page' => $CFG_GLPI["root_doc"] . '/plugins/order/ajax/referencespecifications.php',
                   //                     'class'     => __CLASS__,
-               );
+               ];
                $reference = new PluginOrderReference();
                $reference->dropdownAllItems($params);
 
@@ -568,7 +568,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       global $DB;
 
       $table = self::getTable();
-      if($tabRef == 'glpi_plugin_order_references') {
+      if ($tabRef == 'glpi_plugin_order_references') {
          $query = "SELECT item.`id` AS IDD,
                        ref.`id`,
                        ref.`itemtype`,
@@ -585,7 +585,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                 AND item.`itemtype` NOT LIKE 'PluginOrderReferenceFree'
                 ORDER BY `ref`.`name` ";
          return $DB->query($query);
-      }else {
+      } else {
          $query = "SELECT item.`id` AS IDD,
                        ref.`id`,
                        ref.`itemtype`,
@@ -644,7 +644,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       $result_ref_free       = $this->queryDetail($plugin_order_orders_id, 'glpi_plugin_order_referencefrees');
       $numref_free           = $DB->numrows($result_ref_free);
-      while ($data_ref_free = $DB->fetch_array($result_ref_free)){
+      while ($data_ref_free = $DB->fetch_array($result_ref_free)) {
          self::getItems($rand, $data_ref_free, $plugin_order_orders_id, $numref_free, $canedit, $reference, $reception,
                         'glpi_plugin_order_referencefrees');
       }
@@ -750,9 +750,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
          echo Html::hidden('old_plugin_order_references_id', ['value' => $refID]);
 
-         if($table_ref == 'glpi_plugin_order_referencefrees'){
+         if ($table_ref == 'glpi_plugin_order_referencefrees') {
             echo $data_ref['name'];
-         }else{
+         } else {
             echo $reference->getReceptionReferenceLink($data_ref);
          }
          echo "</td>";
@@ -942,9 +942,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             echo Html::hidden("detail_old_plugin_order_references_id[".$data["IDD"]."]",
                               ['value' => $data["id"]]);
 
-            if($table_ref == 'glpi_plugin_order_referencefrees'){
+            if ($table_ref == 'glpi_plugin_order_referencefrees') {
                echo $data_ref['name'];
-            }else{
+            } else {
                echo $reference->getReceptionReferenceLink($data);
             }
             echo "</td>";
@@ -1189,10 +1189,10 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $order_order = new PluginOrderOrder();
       $order_order->getFromDB($this->fields['plugin_order_orders_id']);
 
-      if($this->fields['itemtype'] == 'PluginOrderReferenceFree'){
+      if ($this->fields['itemtype'] == 'PluginOrderReferenceFree') {
          $order_reference = new PluginOrderReferenceFree();
          $order_reference->getFromDB($this->fields["plugin_order_references_id"]);
-      }else{
+      } else {
          $order_reference = new PluginOrderReference();
          $order_reference->getFromDB($this->fields["plugin_order_references_id"]);
       }
@@ -1214,9 +1214,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       echo "<td>".__("Reference").": </td>";
       echo "<td>";
-      if($this->fields['itemtype'] == 'PluginOrderReferenceFree'){
+      if ($this->fields['itemtype'] == 'PluginOrderReferenceFree') {
          echo $order_reference->fields["name"];
-      }else{
+      } else {
          $data         = [];
          $data["id"]   = $this->fields["plugin_order_references_id"];
          $data["name"] = $order_reference->fields["name"];
@@ -1434,9 +1434,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "<td align='center'>";
          echo Dropdown::getDropdownName('glpi_entities', $this->getEntityID());
          echo "</td>";
-         if($table == 'glpi_plugin_order_referencefrees'){
-            echo "<td>" .$data_ref['name'] . "</td>";
-         }else{
+         if ($table == 'glpi_plugin_order_referencefrees') {
+            echo "<td>" . $data_ref['name'] . "</td>";
+         } else {
             echo "<td>" . $reference->getReceptionReferenceLink($data_ref) . "</td>";
          }
          echo "</tr></table>";
@@ -1472,9 +1472,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
             //Reference
             echo "<td align='center'>";
-            if($table == 'glpi_plugin_order_referencefrees'){
+            if ($table == 'glpi_plugin_order_referencefrees') {
                echo $data['name'];
-            }else{
+            } else {
                echo $reference->getReceptionReferenceLink($data);
             }
             echo "</td>";

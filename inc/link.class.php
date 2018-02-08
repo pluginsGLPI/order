@@ -296,7 +296,7 @@ class PluginOrderLink extends CommonDBChild {
 
       $result_reffree = $this->queryRef($plugin_order_orders_id, 'glpi_plugin_order_referencefrees');
       $numreffree     = $DB->numrows($result_reffree);
-      while ($data_reffree = $DB->fetch_array($result_reffree)){
+      while ($data_reffree = $DB->fetch_array($result_reffree)) {
          $link = new self();
          $link->showOrderLinkItem($numreffree, $data_reffree, $canedit, $plugin_order_orders_id, $PluginOrderOrder,
                                   'glpi_plugin_order_referencefrees');
@@ -305,7 +305,6 @@ class PluginOrderLink extends CommonDBChild {
 
    public function showOrderLinkItem($numref, $data_ref, $canedit, $plugin_order_orders_id, $PluginOrderOrder, $table) {
       global $DB, $CFG_GLPI;
-
 
       $PluginOrderOrder_Item = new PluginOrderOrder_Item();
       $PluginOrderReference  = new PluginOrderReference();
@@ -353,9 +352,9 @@ class PluginOrderLink extends CommonDBChild {
                         AND items.`plugin_order_references_id` = '$plugin_order_references_id'
                         AND items.`plugin_order_references_id` = ref.`id`
                         AND items.`states_id` = '".PluginOrderOrder::ORDER_DEVICE_DELIVRED."'";
-         if($table == 'glpi_plugin_order_referencefrees'){
+         if ($table == 'glpi_plugin_order_referencefrees') {
             $query .= "AND items.`itemtype` LIKE 'PluginOrderReferenceFree'";
-         }else{
+         } else {
             $query .= "AND items.`itemtype` NOT LIKE 'PluginOrderReferenceFree'";
          }
          if ($itemtype == 'SoftwareLicense') {
@@ -395,9 +394,9 @@ class PluginOrderLink extends CommonDBChild {
          echo "<td align='center'>" . $item->getTypeName() . "</td>";
          echo "<td align='center'>"
               . Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]) . "</td>";
-         if($table == 'glpi_plugin_order_referencefrees'){
+         if ($table == 'glpi_plugin_order_referencefrees') {
             echo "<td>" . $data_ref['name'] . "&nbsp;($num)</td>";
-         }else{
+         } else {
             echo "<td>" . $PluginOrderReference->getReceptionReferenceLink($data_ref) . "&nbsp;($num)</td>";
          }
          echo "</tr>";
@@ -453,9 +452,9 @@ class PluginOrderLink extends CommonDBChild {
                                                                              $data["discount"]);
                echo "</td>";
             }
-            if($table == 'glpi_plugin_order_referencefrees'){
-               echo "<td align='center'>" . $data['name']."</td>";
-            }else{
+            if ($table == 'glpi_plugin_order_referencefrees') {
+               echo "<td align='center'>" . $data['name'] . "</td>";
+            } else {
                echo "<td align='center'>" . $PluginOrderReference->getReceptionReferenceLink($data) . "</td>";
             }
             echo "<td align='center'>" . $PluginOrderReception->getReceptionStatus($detailID) . "</td>";

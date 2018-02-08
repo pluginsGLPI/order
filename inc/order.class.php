@@ -1649,7 +1649,7 @@ class PluginOrderOrder extends CommonDBTM {
                                                                                     $data["price_taxfree"],
                                                                                     $data["discount"]);
 
-               $listeArticles[] = array(
+               $listeArticles[] = [
                   'quantity'         => $quantity,
                   'ref'              => utf8_decode($data["name"]),
                   'taxe'             => Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTax"),
@@ -1660,7 +1660,7 @@ class PluginOrderOrder extends CommonDBTM {
                   'price_taxfree'    => $data["price_taxfree"],
                   'discount'         => $data["discount"], false, 0,
                   'price_discounted' => $data["price_discounted"] * $quantity,
-                  'price_ati'        => $data["price_ati"]);
+                  'price_ati'        => $data["price_ati"]];
             }
 
             $article = $odf->setSegment('articles');
