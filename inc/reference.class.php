@@ -88,7 +88,7 @@ class PluginOrderReference extends CommonDBTM {
          'table'         => self::getTable(),
          'field'         => 'itemtype',
          'name'          => __('Item type'),
-         'datatype'      => 'itemtypename',
+         'datatype'      => 'specific',
          'itemtype_list' => 'plugin_order_types',
          'checktype'     => 'itemtype',
          'searchtype'    => ['equals'],
@@ -238,6 +238,45 @@ class PluginOrderReference extends CommonDBTM {
       return $tab;
    }
 
+   static function getSpecificValueToDisplay($field, $values, array $options = []) {
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      switch ($field) {
+         case 'itemtype' :
+            $item = new $values['itemtype']();
+            return $item->getTypeName();
+            break;
+      }
+   }
+
+   /**
+    * @since version 2.3.0
+    *
+    * @param $field
+    * @param $name               (default '')
+    * @param $values             (defaut '')
+    * @param $options   array
+    **/
+   static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
+      global $CFG_GLPI;
+
+      if (!is_array($values)) {
+         $values = [$field => $values];
+      }
+      switch ($field) {
+         case 'itemtype':
+            $types    = PluginOrderOrder_Item::getClasses();
+            $itemtype = [];
+            foreach ($types as $key => $type) {
+               $item            = new $type();
+               $itemtype[$type] = $item->getTypeName();
+            }
+            $options['display'] = false;
+            return Dropdown::showFromArray($name, $itemtype, $options);
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
 
    public function post_getEmpty() {
       $this->fields['is_active'] = 1;
