@@ -398,7 +398,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
             if ($order->fields["suppliers_id"]) {
                echo "<tr align='center'>";
-               echo "<th>" . __("Product reference", "order") . "</th>";
+               echo "<th>" . __("Product name", "order") . "</th>";
                echo "<th>" . __("Manufacturer") . "</th>";
                echo "<th>" . __("Quantity", "order") . "</th>";
                echo "<th>" . __("Unit price tax free", "order") . "</th>";
