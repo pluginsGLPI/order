@@ -1454,7 +1454,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "<th>" . __("Bill status", "order") . "</th>";
          echo "</tr>";
 
-         $results = $this->queryBills($order->getID(), $data_ref['id']);
+         $results = $this->queryBills($order->getID(), $data_ref['id'], $table);
          while ($data = $DB->fetch_array($results)) {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
