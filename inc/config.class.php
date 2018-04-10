@@ -208,6 +208,13 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
+      echo "<tr class='tab_bg_1' align='center'>";
+      echo "<td>".__("Use free references", 'order')."</td>";
+      echo "<td>";
+      Dropdown::showYesNo("use_free_reference", $this->fields["use_free_reference"]);
+      echo "</td>";
+      echo "</tr>";
+
       // Automatic actions
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<th colspan='2'>".__("Automatic actions when delivery", "order")."</th>";
@@ -521,6 +528,9 @@ class PluginOrderConfig extends CommonDBTM {
       return $this->fields['hide_inactive_budgets'];
    }
 
+   public function useFreeReference() {
+      return $this->fields['use_free_reference'];
+   }
 
    public function canRenameDocuments() {
       return $this->fields['rename_documents'];
@@ -572,6 +582,7 @@ class PluginOrderConfig extends CommonDBTM {
                         `hide_inactive_budgets` tinyint(1) NOT NULL default '0',
                         `rename_documents` tinyint(1) NOT NULL default '0',
                         `transmit_budget_change` tinyint(1) NOT NULL default '0',
+                        `use_free_reference` tinyint(1) NOT NULL default '0'
                         PRIMARY KEY  (`id`)
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
                $DB->query($query) or die ($DB->error());
@@ -653,6 +664,9 @@ class PluginOrderConfig extends CommonDBTM {
          if ($templateID) {
             $config->update(['id' => 1, 'tickettemplates_id_delivery' => $templateID]);
          }
+
+         //version 2.0.1
+         $migration->addField($table, "use_free_reference", "bool");
 
       }
 

@@ -387,65 +387,66 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             echo "</table></div>";
             Html::closeForm();
 
-            echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\""
-                 . Toolbox::getItemTypeFormURL('PluginOrderOrder') . "\">";
-            echo Html::hidden('plugin_order_orders_id', ['value' => $plugin_order_orders_id]);
-            echo Html::hidden('entities_id', ['value' => $order->fields['entities_id']]);
-            echo "<div class='center'>";
-            echo "<hr>";
-            echo "<h3>".__("Add to the order free items", "order")."</h3>";
-            echo "<table class='tab_cadre_fixe'>";
+            if ($config->useFreeReference()) {
+               echo "<form method='post' name='order_detail_form' id='order_detail_form'  action=\""
+                    . Toolbox::getItemTypeFormURL('PluginOrderOrder') . "\">";
+               echo Html::hidden('plugin_order_orders_id', ['value' => $plugin_order_orders_id]);
+               echo Html::hidden('entities_id', ['value' => $order->fields['entities_id']]);
+               echo "<div class='center'>";
+               echo "<hr>";
+               echo "<h3>" . __("Add to the order free items", "order") . "</h3>";
+               echo "<table class='tab_cadre_fixe'>";
 
-            if ($order->fields["suppliers_id"]) {
-               echo "<tr align='center'>";
-               echo "<th>" . __("Product name", "order") . "</th>";
-               echo "<th>" . __("Manufacturer") . "</th>";
-               echo "<th>" . __("Quantity", "order") . "</th>";
-               echo "<th>" . __("Unit price tax free", "order") . "</th>";
-               echo "<th>" . __("VAT", "order") . "</th>";
-               echo "<th>" . __("Discount (%)", "order") . "</th>";
-               echo "<th>" . __("Add the reference", "order") . "</th>";
-               echo "<th name='add_reference' style='display: none;'>".__("Item type")."</th>";
-               echo "<th name='add_reference' style='display: none;'>" . __("Type") . "</th>";
-               echo "<th name='add_reference' style='display: none;'>" . __("Manufacturer's product reference", "order") . "</th>";
-               echo "<th></th>";
-               echo "</tr>";
+               if ($order->fields["suppliers_id"]) {
+                  echo "<tr align='center'>";
+                  echo "<th>" . __("Product name", "order") . "</th>";
+                  echo "<th>" . __("Manufacturer") . "</th>";
+                  echo "<th>" . __("Quantity", "order") . "</th>";
+                  echo "<th>" . __("Unit price tax free", "order") . "</th>";
+                  echo "<th>" . __("VAT", "order") . "</th>";
+                  echo "<th>" . __("Discount (%)", "order") . "</th>";
+                  echo "<th>" . __("Add the reference", "order") . "</th>";
+                  echo "<th name='add_reference' style='display: none;'>" . __("Item type") . "</th>";
+                  echo "<th name='add_reference' style='display: none;'>" . __("Type") . "</th>";
+                  echo "<th name='add_reference' style='display: none;'>" . __("Manufacturer's product reference", "order") . "</th>";
+                  echo "<th></th>";
+                  echo "</tr>";
 
-               echo "<tr align='center'>";
-               echo "<td class='tab_bg_1'>";
-               Html::autocompletionTextField($this, "name");
-               echo "</td>";
+                  echo "<tr align='center'>";
+                  echo "<td class='tab_bg_1'>";
+                  Html::autocompletionTextField($this, "name");
+                  echo "</td>";
 
-               echo "<td class='tab_bg_1'>";
-               $rand = mt_rand();
-               Manufacturer::dropdown(['rand' => $rand, 'width' => 200]);
-               echo "</td>";
+                  echo "<td class='tab_bg_1'>";
+                  $rand = mt_rand();
+                  Manufacturer::dropdown(['rand' => $rand, 'width' => 200]);
+                  echo "</td>";
 
-               echo "<td class='tab_bg_1'><span id='show_quantity'>";
-               echo "<input type='number' name='quantity' value='0' class='quantity' />";
-               echo "</span></td>";
+                  echo "<td class='tab_bg_1'><span id='show_quantity'>";
+                  echo "<input type='number' name='quantity' value='0' class='quantity' />";
+                  echo "</span></td>";
 
-               echo "<td class='tab_bg_1'><span id='show_priceht'>";
-               echo "<input type='number' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='price' value='0.00' class='decimal' />";
-               echo "</span></td>";
+                  echo "<td class='tab_bg_1'><span id='show_priceht'>";
+                  echo "<input type='number' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='price' value='0.00' class='decimal' />";
+                  echo "</span></td>";
 
-               echo "<td class='tab_bg_1'><span id='show_taxe'>";
-               $config = PluginOrderConfig::getConfig();
-               PluginOrderOrderTax::Dropdown([
-                                                'name'                => "plugin_order_ordertaxes_id",
-                                                'value'               => $config->getDefaultTaxes(),
-                                                'display_emptychoice' => true,
-                                                'emptylabel'          => __("No VAT", "order"),
-                                             ]);
-               echo "</span></td>";
+                  echo "<td class='tab_bg_1'><span id='show_taxe'>";
+                  $config = PluginOrderConfig::getConfig();
+                  PluginOrderOrderTax::Dropdown([
+                                                   'name'                => "plugin_order_ordertaxes_id",
+                                                   'value'               => $config->getDefaultTaxes(),
+                                                   'display_emptychoice' => true,
+                                                   'emptylabel'          => __("No VAT", "order"),
+                                                ]);
+                  echo "</span></td>";
 
-               echo "<td class='tab_bg_1'><span id='show_pricediscounted'>";
-               echo "<input type='number' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='discount' value='0' class='smalldecimal' />";
-               echo "</span></td>";
+                  echo "<td class='tab_bg_1'><span id='show_pricediscounted'>";
+                  echo "<input type='number' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='discount' value='0' class='smalldecimal' />";
+                  echo "</span></td>";
 
-               echo "<td class='tab_bg_1'><span id='show_addreference'>";
+                  echo "<td class='tab_bg_1'><span id='show_addreference'>";
 
-               echo Html::scriptBlock("function plugin_order_checkboxAction() {
+                  echo Html::scriptBlock("function plugin_order_checkboxAction() {
                                 if ($('#addreference').is(':checked')) {
                                     $(\"td[name='add_reference']\").each(function () {
                                         $(this).show();
@@ -463,52 +464,53 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                                 }
 
                         };");
-               echo "<input type='checkbox' id='addreference' onclick='plugin_order_checkboxAction()' name='addreference' value='0' />";
-               echo "</span></td>";
+                  echo "<input type='checkbox' id='addreference' onclick='plugin_order_checkboxAction()' name='addreference' value='0' />";
+                  echo "</span></td>";
 
-               echo "<td class='tab_bg_1' name='add_reference' style='display: none;'><span id='show_addreference'>";
-               $params = [
-                  'myname'    => 'itemtype',
-                  'value'     => 'PluginOrderOther',
-                  'entity'    => $_SESSION["glpiactive_entity"],
-                  'ajax_page' => $CFG_GLPI["root_doc"] . '/plugins/order/ajax/referencespecifications.php',
-                  //                     'class'     => __CLASS__,
-               ];
-               $reference = new PluginOrderReference();
-               $reference->dropdownAllItems($params);
+                  echo "<td class='tab_bg_1' name='add_reference' style='display: none;'><span id='show_addreference'>";
+                  $params    = [
+                     'myname'    => 'itemtype',
+                     'value'     => 'PluginOrderOther',
+                     'entity'    => $_SESSION["glpiactive_entity"],
+                     'ajax_page' => $CFG_GLPI["root_doc"] . '/plugins/order/ajax/referencespecifications.php',
+                     //                     'class'     => __CLASS__,
+                  ];
+                  $reference = new PluginOrderReference();
+                  $reference->dropdownAllItems($params);
 
-               echo "</span></td>";
+                  echo "</span></td>";
 
-               echo "<td class='tab_bg_1' name='add_reference' style='display: none;'>";
-               echo "<span id='show_types_id'>";
-               $file = 'other';
+                  echo "<td class='tab_bg_1' name='add_reference' style='display: none;'>";
+                  echo "<span id='show_types_id'>";
+                  $file = 'other';
 
-               $core_typefilename   = GLPI_ROOT . "/inc/" . strtolower($file) . "type.class.php";
-               $plugin_typefilename = GLPI_ROOT . "/plugins/order/inc/" . strtolower($file) . "type.class.php";
-               $itemtypeclass       = "PluginOrderOtherType";
+                  $core_typefilename   = GLPI_ROOT . "/inc/" . strtolower($file) . "type.class.php";
+                  $plugin_typefilename = GLPI_ROOT . "/plugins/order/inc/" . strtolower($file) . "type.class.php";
+                  $itemtypeclass       = "PluginOrderOtherType";
 
-               if (file_exists($core_typefilename)
-                   || file_exists($plugin_typefilename)) {
-                  Dropdown::show($itemtypeclass,
-                                 ['name'  => "types_id"]);
+                  if (file_exists($core_typefilename)
+                      || file_exists($plugin_typefilename)) {
+                     Dropdown::show($itemtypeclass,
+                                    ['name' => "types_id"]);
+                  }
+                  echo "</span>";
+                  echo "</td>";
+
+                  echo "<td class='tab_bg_1' name='add_reference' style='display: none;'>";
+                  Html::autocompletionTextField($this, "reference_code");
+                  echo "</td>";
+
+                  echo "<td class='tab_bg_1'><span id='show_validate'>";
+                  echo "<input type='submit' name='add_itemfree' value=\"" . __("Add") . "\" class='submit'>";
+                  echo "</span></td>";
+                  echo "</tr>";
+               } else {
+                  echo "<tr class='tab_bg_1'><td align='center'>" . __("Please select a supplier", "order") . "</td></tr>";
                }
-               echo "</span>";
-               echo "</td>";
 
-               echo "<td class='tab_bg_1' name='add_reference' style='display: none;'>";
-               Html::autocompletionTextField($this, "reference_code");
-               echo "</td>";
-
-               echo "<td class='tab_bg_1'><span id='show_validate'>";
-               echo "<input type='submit' name='add_itemfree' value=\"" . __("Add") . "\" class='submit'>";
-               echo "</span></td>";
-               echo "</tr>";
-            } else {
-               echo "<tr class='tab_bg_1'><td align='center'>" . __("Please select a supplier", "order") . "</td></tr>";
+               echo "</table></div>";
+               Html::closeForm();
             }
-
-            echo "</table></div>";
-            Html::closeForm();
          }
       }
    }
