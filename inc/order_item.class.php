@@ -395,7 +395,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "<div class='center'>";
                echo "<hr>";
                echo "<h3>" . __("Add to the order free items", "order") . "</h3>";
-               echo "<table class='tab_cadre_fixe'>";
+               echo "<table class='tab_cadre_fixe tab_order_fixed tab_order_add_items'>";
 
                if ($order->fields["suppliers_id"]) {
                   echo "<tr align='center'>";
@@ -419,7 +419,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
                   echo "<td class='tab_bg_1'>";
                   $rand = mt_rand();
-                  Manufacturer::dropdown(['rand' => $rand, 'width' => 200]);
+                  Manufacturer::dropdown(['rand' => $rand]);
                   echo "</td>";
 
                   echo "<td class='tab_bg_1'><span id='show_quantity'>";
