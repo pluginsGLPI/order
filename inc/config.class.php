@@ -582,7 +582,7 @@ class PluginOrderConfig extends CommonDBTM {
                         `hide_inactive_budgets` tinyint(1) NOT NULL default '0',
                         `rename_documents` tinyint(1) NOT NULL default '0',
                         `transmit_budget_change` tinyint(1) NOT NULL default '0',
-                        `use_free_reference` tinyint(1) NOT NULL default '0'
+                        `use_free_reference` tinyint(1) NOT NULL default '0',
                         PRIMARY KEY  (`id`)
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
                $DB->query($query) or die ($DB->error());
