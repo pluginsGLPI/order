@@ -99,58 +99,78 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       return __("Order item", "order");
    }
 
+   public function rawSearchOptions() {
 
-   public function getSearchOptions() {
       $tab = [];
 
-      $tab['common']          = __("Orders management", "order");
+      $tab[] = [
+         'id'            => 'common',
+         'name'          => __('Orders management', 'order'),
+      ];
 
-      /* order_number */
-      $tab[1]['table']        = self::getTable();
-      $tab[1]['field']        = 'price_ati';
-      $tab[1]['name']         = __("Unit price tax free", "order");
-      $tab[1]['datatype']     = 'decimal';
+      $tab[] = [
+         'id'            => 1,
+         'table'         => self::getTable(),
+         'field'         => 'price_ati',
+         'name'          => __('Unit price tax free', 'order'),
+         'datatype'      => 'decimal',
+      ];
 
-      $tab[2]['table']        = self::getTable();
-      $tab[2]['field']        = 'discount';
-      $tab[2]['name']         = __("Discount (%)", "order");
-      $tab[2]['datatype']     = 'decimal';
+      $tab[] = [
+         'id'            => 2,
+         'table'         => self::getTable(),
+         'field'         => 'discount',
+         'name'          => __('Discount (%)', 'order'),
+         'datatype'      => 'decimal',
+      ];
 
-      $tab[3]['table']        = self::getTable();
-      $tab[3]['field']        = 'price_taxfree';
-      $tab[3]['name']         = __("Discount (%)", "order");
-      $tab[3]['datatype']     = 'decimal';
+      $tab[] = [
+         'id'            => 3,
+         'table'         => self::getTable(),
+         'field'         => 'price_taxfree',
+         'name'          => __('Discount (%)', 'order'),
+         'datatype'      => 'decimal',
+      ];
 
-      /* order_number */
-      $tab[4]['table']        = self::getTable();
-      $tab[4]['field']        = 'delivery_number';
-      $tab[4]['name']         = __("Delivery form");
-      $tab[4]['checktype']    = 'text';
-      $tab[4]['displaytype']  = 'text';
-      $tab[4]['injectable']   = true;
+      $tab[] = [
+         'id'            => 4,
+         'table'         => self::getTable(),
+         'field'         => 'delivery_number',
+         'name'          => __('Delivery form'),
+         'checktype'     => 'text',
+         'displaytype'   => 'text',
+         'injectable'    => true,
+      ];
 
-      /* order_date */
-      $tab[5]['table']        = self::getTable();
-      $tab[5]['field']        = 'delivery_date';
-      $tab[5]['name']         = __("Delivery date");
-      $tab[5]['datatype']     = 'date';
-      $tab[5]['checktype']    = 'date';
-      $tab[5]['displaytype']  = 'date';
-      $tab[5]['injectable']   = true;
+      $tab[] = [
+         'id'            => 5,
+         'table'         => self::getTable(),
+         'field'         => 'delivery_date',
+         'name'          => __('Delivery date'),
+         'datatype'      => 'date',
+         'checktype'     => 'date',
+         'displaytype'   => 'date',
+         'injectable'    => true,
+      ];
 
-      /* comments */
-      $tab[16]['table']       = self::getTable();
-      $tab[16]['field']       = 'comment';
-      $tab[16]['name']        = __("Description");
-      $tab[16]['datatype']    = 'text';
-      $tab[16]['checktype']   = 'text';
-      $tab[16]['displaytype'] = 'multiline_text';
-      $tab[16]['injectable']  = true;
+      $tab[] = [
+         'id'            => 16,
+         'table'         => self::getTable(),
+         'field'         => 'comment',
+         'name'          => __('Description'),
+         'datatype'      => 'text',
+         'checktype'     => 'text',
+         'displaytype'   => 'multiline_text',
+         'injectable'    => true,
+      ];
 
-      $tab[86]['table']       = 'glpi_plugin_order_deliverystates';
-      $tab[86]['field']       = 'name';
-      $tab[86]['name']        = __("Delivery status", "order");
-      $tab[86]['injectable']  = true;
+      $tab[] = [
+         'id'            => 86,
+         'table'         => 'glpi_plugin_order_deliverystates',
+         'field'         => 'name',
+         'name'          => __('Delivery status', 'order'),
+         'injectable'    => true,
+      ];
 
       return $tab;
    }
