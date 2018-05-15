@@ -187,11 +187,10 @@ function plugin_version_order() {
             'version'        => PLUGIN_ORDER_VERSION,
             'author'         => 'The plugin order team',
             'homepage'       => 'https://github.com/pluginsGLPI/order',
-            'minGlpiVersion' => '0.85',
             'license'        => 'GPLv2+',
             'requirements'   => [
                'glpi' => [
-                  'min' => '9.2',
+                  'min' => '9.3',
                   'dev' => true
                ]
             ]
@@ -207,8 +206,8 @@ function plugin_version_order() {
  */
 function plugin_order_check_prerequisites() {
    $version = rtrim(GLPI_VERSION, '-dev');
-   if (version_compare($version, '9.2', 'lt')) {
-      echo "This plugin requires GLPI 9.2";
+   if (version_compare($version, '9.3', 'lt')) {
+      echo "This plugin requires GLPI 9.3";
       return false;
    }
 
