@@ -126,79 +126,117 @@ class PluginOrderBill extends CommonDropdown
       return $ong;
    }
 
+   public function rawSearchOptions() {
 
-   public function getSearchOptions() {
       $tab = [];
 
-      $tab['common']            = __("Bill", "order");
+      $tab[] = [
+         'id'            => 'common',
+         'name'          => __('Bill', 'order'),
+      ];
 
-      /* order_number */
-      $tab[1]['table']          = self::getTable();
-      $tab[1]['field']          = 'number';
-      $tab[1]['name']           = _x("phone", "Number");
-      $tab[1]['datatype']       = 'itemlink';
+      $tab[] = [
+         'id'            => 1,
+         'table'         => self::getTable(),
+         'field'         => 'number',
+         'name'          => _x('phone', 'Number'),
+         'datatype'      => 'itemlink',
+      ];
 
-      $tab[2]['table']          = self::getTable();
-      $tab[2]['field']          = 'billdate';
-      $tab[2]['name']           = __("Date");
-      $tab[2]['datatype']       = 'datetime';
+      $tab[] = [
+         'id'            => 2,
+         'table'         => self::getTable(),
+         'field'         => 'billdate',
+         'name'          => __('Date'),
+         'datatype'      => 'datetime',
+      ];
 
-      $tab[3]['table']          = self::getTable();
-      $tab[3]['field']          = 'validationdate';
-      $tab[3]['name']           = __("Approval date");
-      $tab[3]['datatype']       = 'datetime';
+      $tab[] = [
+         'id'            => 3,
+         'table'         => self::getTable(),
+         'field'         => 'validationdate',
+         'name'          => __('Approval date'),
+         'datatype'      => 'datetime',
+      ];
 
-      $tab[4]['table']          = User::getTable();
-      $tab[4]['field']          = 'name';
-      $tab[4]['linkfield']      = 'users_id_validation';
-      $tab[4]['name']           = __("Approver");
+      $tab[] = [
+         'id'            => 4,
+         'table'         => User::getTable(),
+         'field'         => 'name',
+         'linkfield'     => 'users_id_validation',
+         'name'          => __('Approver'),
+      ];
 
-      $tab[5]['table']          = PluginOrderBillType::getTable();
-      $tab[5]['field']          = 'name';
-      $tab[5]['name']           = __("Type");
+      $tab[] = [
+         'id'            => 5,
+         'table'         => PluginOrderBillType::getTable(),
+         'field'         => 'name',
+         'name'          => __('Type'),
+      ];
 
-      $tab[6]['table']          = PluginOrderBillState::getTable();
-      $tab[6]['field']          = 'name';
-      $tab[6]['name']           = __("Status");
+      $tab[] = [
+         'id'            => 6,
+         'table'         => PluginOrderBillState::getTable(),
+         'field'         => 'name',
+         'name'          => __('Status'),
+      ];
 
-      $tab[7]['table']          = Supplier::getTable();
-      $tab[7]['field']          = 'name';
-      $tab[7]['name']           = __("Supplier");
-      $tab[7]['datatype']       = 'itemlink';
-      $tab[7]['itemlink_type']  = 'Supplier';
+      $tab[] = [
+         'id'            => 7,
+         'table'         => Supplier::getTable(),
+         'field'         => 'name',
+         'name'          => __('Supplier'),
+         'datatype'      => 'itemlink',
+         'itemlink_type' => 'Supplier',
+      ];
 
-      $tab[8]['table']          = PluginOrderOrder::getTable();
-      $tab[8]['field']          = 'name';
-      $tab[8]['name']           = __("Order", "order");
-      $tab[8]['datatype']       = 'itemlink';
-      $tab[8]['itemlink_type']  = 'PluginOrderOrder';
+      $tab[] = [
+         'id'            => 8,
+         'table'         => PluginOrderOrder::getTable(),
+         'field'         => 'name',
+         'name'          => __('Order', 'order'),
+         'datatype'      => 'itemlink',
+         'itemlink_type' => 'PluginOrderOrder',
+      ];
 
-      $tab[9]['table']          = self::getTable();
-      $tab[9]['field']          = 'name';
-      $tab[9]['name']           = __("Name");
-      $tab[9]['datatype']       = 'itemlink';
+      $tab[] = [
+         'id'            => 9,
+         'table'         => self::getTable(),
+         'field'         => 'name',
+         'name'          => __('Name'),
+         'datatype'      => 'itemlink',
+      ];
 
-      /* comments */
-      $tab[16]['table']         = self::getTable();
-      $tab[16]['field']         = 'comment';
-      $tab[16]['name']          = __("Description");
-      $tab[16]['datatype']      = 'text';
+      $tab[] = [
+         'id'            => 16,
+         'table'         => self::getTable(),
+         'field'         => 'comment',
+         'name'          => __('Description'),
+         'datatype'      => 'text',
+      ];
 
-      /* ID */
-      $tab[30]['table']         = self::getTable();
-      $tab[30]['field']         = 'id';
-      $tab[30]['name']          = __("ID");
+      $tab[] = [
+         'id'            => 30,
+         'table'         => self::getTable(),
+         'field'         => 'id',
+         'name'          => __('ID'),
+      ];
 
-      /* entity */
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = __("Entity");
+      $tab[] = [
+         'id'            => 80,
+         'table'         => 'glpi_entities',
+         'field'         => 'completename',
+         'name'          => __('Entity'),
+      ];
 
-      $tab[86]['table']         = self::getTable();
-      $tab[86]['field']         = 'is_recursive';
-      $tab[86]['name']          = __("Child entities");
-      $tab[86]['datatype']      = 'bool';
-      $tab[86]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 86,
+         'table'         => self::getTable(),
+         'field'         => 'is_recursive',
+         'name'          => __('Child entities'),
+         'datatype'      => 'bool',
+         'massiveaction' => false,
+      ];
 
       return $tab;
    }

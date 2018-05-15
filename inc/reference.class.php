@@ -52,141 +52,188 @@ class PluginOrderReference extends CommonDBTM {
       ]);
    }
 
+   public function rawSearchOptions() {
 
-   public function getSearchOptions() {
-      $tab['common']            = __("Product reference", "order");
+      $tab = [];
 
-      $tab[1]['table']          = self::getTable();
-      $tab[1]['field']          = 'name';
-      $tab[1]['name']           = __("Reference");
-      $tab[1]['datatype']       = 'itemlink';
-      $tab[1]['checktype']      = 'text';
-      $tab[1]['displaytype']    = 'text';
-      $tab[1]['injectable']     = true;
-
-      $tab[2]['table']          = self::getTable();
-      $tab[2]['field']          = 'comment';
-      $tab[2]['name']           = __("Comments");
-      $tab[2]['datatype']       = 'text';
-      $tab[2]['checktype']      = 'text';
-      $tab[2]['displaytype']    = 'multiline_text';
-      $tab[2]['injectable']     = true;
-
-      $tab[3]['table']          = self::getTable();
-      $tab[3]['field']          = 'itemtype';
-      $tab[3]['name']           = __("Item type");
-      $tab[3]['datatype']       = 'itemtypename';
-      $tab[3]['massiveaction']  = false;
-      $tab[3]['itemtype_list']  = 'plugin_order_types';
-      $tab[3]['checktype']      = 'itemtype';
-      $tab[3]['searchtype']     = ['equals'];
-      $tab[3]['injectable']     = true;
-
-      $tab[4]['table']          = self::getTable();
-      $tab[4]['field']          = 'models_id';
-      $tab[4]['name']           = __("Model");
-      $tab[4]['massiveaction']  = false;
-      $tab[4]['checktype']      = 'text';
-      $tab[4]['displaytype']    = 'reference_model';
-      $tab[4]['injectable']     = true;
-      $tab[4]['massiveaction']  = false;
-      $tab[4]['nosearch']       = true;
-
-      $tab[5]['table']          = 'glpi_manufacturers';
-      $tab[5]['field']          = 'name';
-      $tab[5]['name']           = __("Manufacturer");
-      $tab[5]['datatype']       = 'dropdown';
-      $tab[5]['checktype']      = 'text';
-      $tab[5]['displaytype']    = 'dropdown';
-      $tab[5]['injectable']     = true;
-
-      $tab[6]['table']          = self::getTable();
-      $tab[6]['field']          = 'types_id';
-      $tab[6]['name']           = __("Type");
-      $tab[6]['massiveaction']  = false;
-      $tab[6]['checktype']      = 'text';
-      $tab[6]['injectable']     = true;
-      $tab[6]['searchtype']     = ['equals'];
-      $tab[6]['nosearch']       = true;
-
-      $tab[7]['table']          = self::getTable();
-      $tab[7]['field']          = 'templates_id';
-      $tab[7]['name']           = __("Template name");
-      $tab[7]['massiveaction']  = false;
-      $tab[7]['checktype']      = 'text';
-      $tab[7]['displaytype']    = 'dropdown';
-      $tab[7]['injectable']     = true;
-      $tab[7]['massiveaction'] = false;
-      $tab[7]['nosearch']       = true;
-
-      $tab[30]['table']         = self::getTable();
-      $tab[30]['field']         = 'id';
-      $tab[30]['name']          = __("ID");
-      $tab[30]['massiveaction'] = false;
-      $tab[30]['injectable']    = false;
-
-      $tab[31]['table']         = self::getTable();
-      $tab[31]['field']         = 'is_active';
-      $tab[31]['name']          = __("Active");
-      $tab[31]['datatype']      = 'bool';
-      $tab[31]['checktype']     = 'bool';
-      $tab[31]['displaytype']   = 'bool';
-      $tab[31]['injectable']    = true;
-      $tab[31]['searchtype']    = ['equals'];
-
-      $tab[32]['table']         = 'glpi_plugin_order_references_suppliers';
-      $tab[32]['field']         = 'price_taxfree';
-      $tab[32]['name']          = __("Unit price tax free", "order");
-      $tab[32]['forcegroupby']  = true;
-      $tab[32]['usehaving']     = true;
-      $tab[32]['massiveaction'] = false;
-      $tab[32]['joinparams']    = ['jointype' => 'child'];
-      $tab[32]['datatype']      = 'decimal';
-
-      $tab[33]['table']         = 'glpi_plugin_order_references_suppliers';
-      $tab[33]['field']         = 'reference_code';
-      $tab[33]['name']          = __("Manufacturer's product reference", "order");
-      $tab[33]['forcegroupby']  = true;
-      $tab[33]['usehaving']     = true;
-      $tab[33]['massiveaction'] = false;
-      $tab[33]['joinparams']    = ['jointype' => 'child'];
-
-      $tab[34]['table']         = 'glpi_suppliers';
-      $tab[34]['field']         = 'name';
-      $tab[34]['name']          = __("Supplier");
-      $tab[34]['datatype']      = 'itemlink';
-      $tab[34]['itemlink_type'] = 'Supplier';
-      $tab[34]['forcegroupby']  = true;
-      $tab[34]['usehaving']     = true;
-      $tab[34]['massiveaction'] = false;
-      $tab[34]['joinparams']    = [
-         'beforejoin' => [
-            'table'      => 'glpi_plugin_order_references_suppliers',
-            'joinparams' => ['jointype' => 'child']
-         ]
+      $tab[] = [
+         'id'            => 'common',
+         'name'          => __('Product reference', 'order'),
       ];
 
-      $tab[35]['table']         = self::getTable();
-      $tab[35]['field']         = 'date_mod';
-      $tab[35]['massiveaction'] = false;
-      $tab[35]['name']          = __("Last update");
-      $tab[35]['datatype']      = 'datetime';
+      $tab[] = [
+         'id'            => 1,
+         'table'         => self::getTable(),
+         'field'         => 'name',
+         'name'          => __('Reference'),
+         'datatype'      => 'itemlink',
+         'checktype'     => 'text',
+         'displaytype'   => 'text',
+         'injectable'    => true,
+      ];
 
-      /* entity */
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = __('Entity');
-      $tab[80]['datatype']       = 'dropdown';
-      $tab[80]['injectable']    = false;
+      $tab[] = [
+         'id'            => 2,
+         'table'         => self::getTable(),
+         'field'         => 'comment',
+         'name'          => __('Comments'),
+         'datatype'      => 'text',
+         'checktype'     => 'text',
+         'displaytype'   => 'multiline_text',
+         'injectable'    => true,
+      ];
 
-      $tab[86]['table']         = self::getTable();
-      $tab[86]['field']         = 'is_recursive';
-      $tab[86]['name']          = __("Child entities");
-      $tab[86]['datatype']      = 'bool';
-      $tab[86]['checktype']     = 'text';
-      $tab[86]['displaytype']   = 'dropdown';
-      $tab[86]['injectable']    = true;
-      $tab[86]['searchtype']    = ['equals'];
+      $tab[] = [
+         'id'            => 3,
+         'table'         => self::getTable(),
+         'field'         => 'itemtype',
+         'name'          => __('Item type'),
+         'datatype'      => 'itemtypename',
+         'itemtype_list' => 'plugin_order_types',
+         'checktype'     => 'itemtype',
+         'searchtype'    => ['equals'],
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
+
+      $tab[] = [
+         'id'            => 4,
+         'table'         => self::getTable(),
+         'field'         => 'models_id',
+         'name'          => __('Model'),
+         'checktype'     => 'text',
+         'displaytype'   => 'reference_model',
+         'injectable'    => true,
+         'massiveaction' => false,
+         'nosearch'      => true,
+      ];
+
+      $tab[] = [
+         'id'            => 5,
+         'table'         => 'glpi_manufacturers',
+         'field'         => 'name',
+         'name'          => __('Manufacturer'),
+         'datatype'      => 'dropdown',
+         'checktype'     => 'text',
+         'displaytype'   => 'dropdown',
+         'injectable'    => true,
+      ];
+
+      $tab[] = [
+         'id'            => 6,
+         'table'         => self::getTable(),
+         'field'         => 'types_id',
+         'name'          => __('Type'),
+         'checktype'     => 'text',
+         'injectable'    => true,
+         'massiveaction' => false,
+         'searchtype'    => ['equals'],
+         'nosearch'      => true,
+      ];
+
+      $tab[] = [
+         'id'            => 7,
+         'table'         => self::getTable(),
+         'field'         => 'templates_id',
+         'name'          => __('Template name'),
+         'checktype'     => 'text',
+         'displaytype'   => 'dropdown',
+         'injectable'    => true,
+         'massiveaction' => false,
+         'nosearch'      => true,
+      ];
+
+      $tab[] = [
+         'id'            => 30,
+         'table'         => self::getTable(),
+         'field'         => 'id',
+         'name'          => __('ID'),
+         'injectable'    => false,
+         'massiveaction' => false,
+      ];
+
+      $tab[] = [
+         'id'            => 31,
+         'table'         => self::getTable(),
+         'field'         => 'is_active',
+         'name'          => __('Active'),
+         'datatype'      => 'bool',
+         'checktype'     => 'bool',
+         'displaytype'   => 'bool',
+         'injectable'    => true,
+         'searchtype'    => ['equals'],
+      ];
+
+      $tab[] = [
+         'id'            => 32,
+         'table'         => 'glpi_plugin_order_references_suppliers',
+         'field'         => 'price_taxfree',
+         'name'          => __('Unit price tax free', 'order'),
+         'datatype'      => 'decimal',
+         'forcegroupby'  => true,
+         'usehaving'     => true,
+         'massiveaction' => false,
+         'joinparams'    => ['jointype' => 'child'],
+      ];
+
+      $tab[] = [
+         'id'            => 33,
+         'table'         => 'glpi_plugin_order_references_suppliers',
+         'field'         => 'reference_code',
+         'name'          => __('Manufacturer\'s product reference', 'order'),
+         'forcegroupby'  => true,
+         'usehaving'     => true,
+         'massiveaction' => false,
+         'joinparams'    => ['jointype' => 'child'],
+      ];
+
+      $tab[] = [
+         'id'            => 34,
+         'table'         => 'glpi_suppliers',
+         'field'         => 'name',
+         'name'          => __('Supplier'),
+         'datatype'      => 'itemlink',
+         'itemlink_type' => 'Supplier',
+         'forcegroupby'  => true,
+         'usehaving'     => true,
+         'massiveaction' => false,
+         'joinparams'    => [
+            'beforejoin' => [
+               'table'      => 'glpi_plugin_order_references_suppliers',
+               'joinparams' => ['jointype' => 'child']
+            ]
+         ],
+      ];
+
+      $tab[] = [
+         'id'            => 35,
+         'table'         => self::getTable(),
+         'field'         => 'date_mod',
+         'name'          => __('Last update'),
+         'datatype'      => 'datetime',
+         'massiveaction' => false,
+      ];
+
+      $tab[] = [
+         'id'            => 80,
+         'table'         => 'glpi_entities',
+         'field'         => 'completename',
+         'name'          => __('Entity'),
+         'datatype'      => 'dropdown',
+         'injectable'    => false,
+      ];
+
+      $tab[] = [
+         'id'            => 86,
+         'table'         => self::getTable(),
+         'field'         => 'is_recursive',
+         'name'          => __('Child entities'),
+         'datatype'      => 'bool',
+         'checktype'     => 'text',
+         'displaytype'   => 'dropdown',
+         'injectable'    => true,
+         'searchtype'    => ['equals'],
+      ];
 
       return $tab;
    }

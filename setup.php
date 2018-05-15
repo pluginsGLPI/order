@@ -37,9 +37,9 @@
 define('PLUGIN_ORDER_VERSION', '2.0.2');
 
 // Minimal GLPI version, inclusive
-define("PLUGIN_ORDER_MIN_GLPI", "9.2");
+define("PLUGIN_ORDER_MIN_GLPI", "9.3");
 // Maximum GLPI version, exclusive
-define("PLUGIN_ORDER_MAX_GLPI", "9.3");
+define("PLUGIN_ORDER_MAX_GLPI", "9.4");
 
 if (!defined('PLUGIN_ORDER_TEMPLATE_DIR')) {
    define("PLUGIN_ORDER_TEMPLATE_DIR", GLPI_PLUGIN_DOC_DIR."/order/templates/");
