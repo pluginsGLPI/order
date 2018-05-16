@@ -71,7 +71,7 @@ class PluginOrderDocumentCategory extends CommonDBTM {
 
    static function showForDocumentCategory($item) {
       $documentCategory = new self();
-      if (!$documentCategory->getFromDBByQuery(" WHERE `documentcategories_id` = ".$item->fields['id'])) {
+      if (!$documentCategory->getFromDBByCrit(['documentcategories_id' => $item->fields['id']])) {
          $documentCategory->getEmpty();
       }
 

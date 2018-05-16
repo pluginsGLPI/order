@@ -29,7 +29,7 @@ include ('../../../inc/includes.php');
 $documentCategory = new PluginOrderDocumentCategory();
 
 if (isset($_POST["update"])) {
-   if (!$documentCategory->getFromDBByQuery(" WHERE `documentcategories_id` = ".$_POST['documentcategories_id'])) {
+   if (!$documentCategory->getFromDBByCrit(['documentcategories_id' => $_POST['documentcategories_id']])) {
       $documentCategory->add($_POST);
    } else {
       $_POST['id'] = $documentCategory->fields['id'];
