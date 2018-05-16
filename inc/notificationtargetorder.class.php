@@ -197,6 +197,10 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       $migration->displayMessage("Migrate PluginOrderOrder notifications");
 
       $template     = new NotificationTemplate();
+      $translation  = new NotificationTemplateTranslation();
+      $notification = new Notification();
+      $n_n_template = new Notification_NotificationTemplate();
+
       $templates_id = false;
       $query_id     = "SELECT `id`
                        FROM `glpi_notificationtemplates`
@@ -218,7 +222,6 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       }
 
       if ($templates_id) {
-         $translation = new NotificationTemplateTranslation();
          if (!countElementsInTable($translation->getTable(), "`notificationtemplates_id`='$templates_id'")) {
             $tmp = [];
             $tmp['notificationtemplates_id'] = $templates_id;
@@ -257,21 +260,26 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
             'Cancel Order Validation'  => 'undovalidation',
             'Cancel Order'             => 'cancel',
          ];
-         $notification = new Notification();
          foreach ($notifs as $label => $name) {
             if (!countElementsInTable("glpi_notifications", "`itemtype`='PluginOrderOrder' AND `event`='$name'")) {
-               $notification->add([
+               $notification_id = $notification->add([
                   'name'                     => $label,
                   'entities_id'              => 0,
                   'itemtype'                 => 'PluginOrderOrder',
                   'event'                    => $name,
-                  'mode'                     => 'mail',
                   'comment'                  => '',
                   'is_recursive'             => 1,
                   'is_active'                => 1,
                   'date_mod'                 => $_SESSION['glpi_currenttime'],
-                  'notificationtemplates_id' => $templates_id,
                ]);
+
+               $n_n_template->add(
+                  [
+                     'notifications_id'         => $notification_id,
+                     'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                     'notificationtemplates_id' => $templates_id,
+                  ]
+               );
             }
          }
       }
@@ -295,7 +303,6 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       }
 
       if ($templates_id) {
-         $translation = new NotificationTemplateTranslation();
          if (!countElementsInTable($translation->getTable(), "`notificationtemplates_id`='$templates_id'")) {
             $tmp = [];
             $tmp['notificationtemplates_id'] = $templates_id;
@@ -321,26 +328,30 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          }
 
          $notifs       = ['Due date overtaken' => 'duedate'];
-         $notification = new Notification();
          foreach ($notifs as $label => $name) {
             if (!countElementsInTable("glpi_notifications", "`itemtype`='PluginOrderOrder' AND `event`='$name'")) {
-               $notification->add([
+               $notification_id = $notification->add([
                   'name'                     => $label,
                   'entities_id'              => 0,
                   'itemtype'                 => 'PluginOrderOrder',
                   'event'                    => $name,
-                  'mode'                     => 'mail',
                   'comment'                  => '',
                   'is_recursive'             => 1,
                   'is_active'                => 1,
                   'date_mod'                 => $_SESSION['glpi_currenttime'],
-                  'notificationtemplates_id' => $templates_id,
                ]);
+
+               $n_n_template->add(
+                  [
+                     'notifications_id'         => $notification_id,
+                     'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                     'notificationtemplates_id' => $templates_id,
+                  ]
+               );
             }
          }
       }
 
-      $template     = new NotificationTemplate();
       $templates_id = false;
       $query_id     = "SELECT `id`
                        FROM `glpi_notificationtemplates`
@@ -361,7 +372,6 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       }
 
       if ($templates_id) {
-         $translation = new NotificationTemplateTranslation();
          if (!countElementsInTable($translation->getTable(), "`notificationtemplates_id`='$templates_id'")) {
             $tmp = [];
             $tmp['notificationtemplates_id'] = $templates_id;
@@ -382,24 +392,29 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                 ##lang.ordervalidation.entity## : &lt;br /&gt;&#160;##ordervalidation.entity##&lt;/p&gt;';
             $translation->add($tmp);
          }
-      }
 
-      $notifs = ['Order Delivered' => 'delivered'];
-      $notification = new Notification();
-      foreach ($notifs as $label => $name) {
-         if (!countElementsInTable("glpi_notifications", "`itemtype`='PluginOrderOrder' AND `event` = '$name'")) {
-            $notification->add([
-               'name'                     => $label,
-               'entities_id'              => 0,
-               'itemtype'                 => 'PluginOrderOrder',
-               'event'                    => $name,
-               'mode'                     => 'mail',
-               'comment'                  => '',
-               'is_recursive'             => 1,
-               'is_active'                => 1,
-               'date_mod'                 => $_SESSION['glpi_currenttime'],
-               'notificationtemplates_id' => $templates_id,
-            ]);
+         $notifs = ['Order Delivered' => 'delivered'];
+         foreach ($notifs as $label => $name) {
+            if (!countElementsInTable("glpi_notifications", "`itemtype`='PluginOrderOrder' AND `event` = '$name'")) {
+               $notification_id = $notification->add([
+                  'name'                     => $label,
+                  'entities_id'              => 0,
+                  'itemtype'                 => 'PluginOrderOrder',
+                  'event'                    => $name,
+                  'comment'                  => '',
+                  'is_recursive'             => 1,
+                  'is_active'                => 1,
+                  'date_mod'                 => $_SESSION['glpi_currenttime'],
+               ]);
+
+               $n_n_template->add(
+                  [
+                     'notifications_id'         => $notification_id,
+                     'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                     'notificationtemplates_id' => $templates_id,
+                  ]
+               );
+            }
          }
       }
    }
