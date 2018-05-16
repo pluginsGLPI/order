@@ -2168,12 +2168,12 @@ class PluginOrderOrder extends CommonDBTM {
 
          // Get document category
          $documentCategory = new PluginOrderDocumentCategory();
-         if (!$documentCategory->getFromDBByQuery(" WHERE `documentcategories_id` = '".$document->input['documentcategories_id']."'")) {
+         if (!$documentCategory->getFromDBByCrit(['documentcategories_id' => $document->input['documentcategories_id']])) {
             $documentCategory->getEmpty();
          }
          // Get order linked to document
          $document_item = new Document_Item();
-         if ($document_item->getFromDBByQuery(" WHERE `documents_id` = '".$document->fields['id']."' AND `itemtype` = '".self::getType()."'")) {
+         if ($document_item->getFromDBByCrit(['documents_id' => $document->fields['id'], 'itemtype' => self::getType()])) {
             // Update document name
             $order = new self();
             $order->getFromDB($document_item->fields['items_id']);
