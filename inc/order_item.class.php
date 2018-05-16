@@ -252,8 +252,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
 
    public function addDetails($ref_id, $itemtype, $orders_id, $quantity, $price, $discounted_price, $taxes_id) {
+
       $order = new PluginOrderOrder();
       if ($quantity > 0 && $order->getFromDB($orders_id)) {
+         $tax = new PluginOrderOrderTax();
+         $tax->getFromDB($taxes_id);
+
          for ($i = 0; $i < $quantity; $i++) {
             $input["plugin_order_orders_id"]     = $orders_id;
             $input["plugin_order_references_id"] = $ref_id;
@@ -264,10 +268,10 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             $input["price_taxfree"]              = $price;
             $input["price_discounted"]           = $price - ($price * ($discounted_price / 100));
             $input["states_id"]                  = PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED;;
-
-            $input["price_ati"]                  = $this->getPricesATI($input["price_discounted"],
-                                                                       Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
-                                                                                                 $taxes_id));
+            $input["price_ati"]                  = $this->getPricesATI(
+               $input["price_discounted"],
+               $tax->getRate()
+            );
             $input["discount"]                   = $discounted_price;
 
             $this->add($input);
@@ -1357,8 +1361,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $input["price_taxfree"]     = $post['price_taxfree'];
       $input["price_discounted"]  = $input["price_taxfree"] - ($input["price_taxfree"] * ($discount / 100));
 
-      $taxe_name                  = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $plugin_order_ordertaxes_id);
-      $input["price_ati"]         = $this->getPricesATI($input["price_discounted"], $taxe_name);
+      $tax = new PluginOrderOrderTax();
+      $tax->getFromDB($plugin_order_ordertaxes_id);
+
+      $input["price_ati"]         = $this->getPricesATI($input["price_discounted"], $tax->getRate());
+
       $this->update($input);
    }
 
@@ -1374,8 +1381,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $input["discount"]            = $post['discount'];
       $input["price_discounted"]    = $post['price'] - ($post['price'] * ($input['discount'] / 100));
 
-      $taxe_name = Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $plugin_order_ordertaxes_id);
-      $input["price_ati"]  = $this->getPricesATI($input["price_discounted"], $taxe_name);
+      $tax = new PluginOrderOrderTax();
+      $tax->getFromDB($plugin_order_ordertaxes_id);
+
+      $input["price_ati"]  = $this->getPricesATI($input["price_discounted"], $tax->getRate());
+
       $this->update($input);
    }
 

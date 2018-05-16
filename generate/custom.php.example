@@ -148,11 +148,14 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
    $odf->mergeSegment($article);
    $prices = $PluginOrderOrder_Item->getAllPrices($ID);
 
-    // total price (with postage)
-   $postagewithTVA =
-   $PluginOrderOrder_Item->getPricesATI($order->fields["port_price"],
-                                         Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
-                                                                   $order->fields["plugin_order_ordertaxes_id"]));
+   // total price (with postage)
+   $tax = new PluginOrderOrderTax();
+   $tax->getFromDB($order->fields["plugin_order_ordertaxes_id"]);
+
+   $postagewithTVA = $PluginOrderOrder_Item->getPricesATI(
+      $order->fields["port_price"],
+      $tax->getRate()
+   );
 
    $total_HT  = $prices["priceHT"] + $order->fields["port_price"];
    $total_TVA = $prices["priceTVA"] + $postagewithTVA - $order->fields["port_price"];

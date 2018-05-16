@@ -100,5 +100,17 @@ class PluginOrderOrderTax extends CommonDropdown {
       $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
    }
 
+   /**
+    * Get the tax rate of loaded item.
+    *
+    * @return number
+    */
+   public function getRate() {
 
+      if (array_key_exists('name', $this->fields) && !empty($this->fields['name'])) {
+         return floatval($this->fields['name']);
+      }
+
+      return 0;
+   }
 }
