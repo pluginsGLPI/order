@@ -1150,8 +1150,13 @@ class PluginOrderOrder extends CommonDBTM {
          echo "</tr>";
 
          // total price (with postage)
-         $postagewithTVA = $PluginOrderOrder_Item->getPricesATI($this->fields["port_price"],
-            Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $this->fields["plugin_order_ordertaxes_id"]));
+         $tax = new PluginOrderOrderTax();
+         $tax->getFromDB($this->fields["plugin_order_ordertaxes_id"]);
+
+         $postagewithTVA = $PluginOrderOrder_Item->getPricesATI(
+            $this->fields["port_price"],
+            $tax->getRate()
+         );
 
          $priceHTwithpostage = $prices["priceHT"] + $this->fields["port_price"];
          echo "<tr>";
@@ -1665,9 +1670,13 @@ class PluginOrderOrder extends CommonDBTM {
             $prices = $PluginOrderOrder_Item->getAllPrices($ID);
 
             // total price (with postage)
-            $postagewithTVA = $PluginOrderOrder_Item->getPricesATI($this->fields["port_price"],
-                                                                   Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
-                                                                   $this->fields["plugin_order_ordertaxes_id"]));
+            $tax = new PluginOrderOrderTax();
+            $tax->getFromDB($this->fields["plugin_order_ordertaxes_id"]);
+
+            $postagewithTVA = $PluginOrderOrder_Item->getPricesATI(
+               $this->fields["port_price"],
+               $tax->getRate()
+            );
 
             $total_HT  = $prices["priceHT"] + $this->fields["port_price"];
             $total_TVA = $prices["priceTVA"] + $postagewithTVA - $this->fields["port_price"];
@@ -1793,12 +1802,17 @@ class PluginOrderOrder extends CommonDBTM {
 
          $total = 0;
          foreach ($DB->request($query_limit) as $data) {
-
             $PluginOrderOrder_Item = new PluginOrderOrder_Item();
             $prices                = $PluginOrderOrder_Item->getAllPrices($data["id"]);
-            $postagewithTVA        = $PluginOrderOrder_Item->getPricesATI($data["port_price"],
-                                                    Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
-                                                                              $data["plugin_order_ordertaxes_id"]));
+
+            $tax = new PluginOrderOrderTax();
+            $tax->getFromDB($data["plugin_order_ordertaxes_id"]);
+
+            $postagewithTVA        = $PluginOrderOrder_Item->getPricesATI(
+               $data["port_price"],
+               $tax->getRate()
+            );
+
             //if state is cancel do not decremente total already use
             if ($data['plugin_order_orderstates_id'] < 5) {
                $total += $prices["priceHT"];
