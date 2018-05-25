@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Thomas Spranger <thspranger@yahoo.de>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-02 09:09+0100\n"
-"PO-Revision-Date: 2018-02-02 08:15+0000\n"
-"Last-Translator: Alexandre Delaunay <delaunay.alexandre@gmail.com>\n"
+"PO-Revision-Date: 2018-05-10 07:00+0000\n"
+"Last-Translator: Thomas Spranger <thspranger@yahoo.de>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/teclib/glpi-plugin-order/language/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -312,7 +313,7 @@ msgstr "Verbundene Bestellungen"
 
 #: inc/reference.class.php:479
 msgid "Manufacturer reference"
-msgstr ""
+msgstr "Herstellerverweis"
 
 #: inc/reference.class.php:892
 msgid "Copy of"
@@ -329,7 +330,7 @@ msgstr ""
 
 #: inc/reference.class.php:1047
 msgid "Copy reference"
-msgstr ""
+msgstr "Verweis kopieren"
 
 #: inc/orderstate.class.php:49 inc/order.class.php:327 inc/order.class.php:808
 #: inc/order.class.php:1788 hook.php:141
@@ -602,7 +603,7 @@ msgstr "Informationen über die Bestellung"
 
 #: inc/order_item.class.php:1121
 msgid "Payment status"
-msgstr ""
+msgstr "Bezahlstatus"
 
 #: inc/order_item.class.php:1133
 msgid "Paid value"
@@ -626,16 +627,16 @@ msgstr "Freigegebene Bestellung ändern"
 
 #: inc/order.class.php:270
 msgid "Generate order without validation"
-msgstr ""
+msgstr "Bestellung ohne Bestätigung erstellen"
 
 #: inc/order.class.php:273
 msgid "Link order to a ticket"
-msgstr ""
+msgstr "Bestellung mit Ticket verbinden"
 
 #: inc/order.class.php:307 inc/order.class.php:450 inc/order.class.php:913
 #: inc/order.class.php:955 inc/order.class.php:1696
 msgid "Postage"
-msgstr ""
+msgstr "Versand"
 
 #: inc/order.class.php:423 inc/order.class.php:2005
 msgid "Order is late"
@@ -664,11 +665,11 @@ msgstr "Due date overtaken"
 
 #: inc/order.class.php:1148 inc/order.class.php:1692 inc/order.class.php:1790
 msgid "Price tax free"
-msgstr ""
+msgstr "Preis ohne Steuern"
 
 #: inc/order.class.php:1158 inc/order.class.php:1694
 msgid "Price tax free with postage"
-msgstr ""
+msgstr "Preis ohne Steuern mit Versand"
 
 #: inc/order.class.php:1396
 msgid "Validation process"
@@ -729,7 +730,7 @@ msgstr "Auftraggeber"
 
 #: inc/order.class.php:1608
 msgid "Recipient"
-msgstr ""
+msgstr "Empfänger"
 
 #: inc/order.class.php:1611
 msgid "Designation"
@@ -809,11 +810,11 @@ msgstr "Bearbeiter der Validierung"
 
 #: inc/order_supplier.class.php:274
 msgid "Delivery statistics"
-msgstr ""
+msgstr "Versandstatistik"
 
 #: inc/order_supplier.class.php:290
 msgid "No specified status"
-msgstr ""
+msgstr "Nicht spezifizierter Status"
 
 #: inc/link.class.php:48
 msgid "Generation"
@@ -875,7 +876,7 @@ msgstr "Plugin installation oder upgrade"
 
 #: hook.php:86
 msgid "Can't create folder"
-msgstr ""
+msgstr "Ordner kann nicht angelegt werden"
 
 #: hook.php:94
 #, php-format

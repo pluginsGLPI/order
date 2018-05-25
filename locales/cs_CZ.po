@@ -4,19 +4,20 @@
 # 
 # Translators:
 # David Stepan <stepand@tiscali.cz>, 2015-2017
+# Pavel Borecki <pavel.borecki@gmail.com>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-02 09:09+0100\n"
-"PO-Revision-Date: 2018-02-02 08:15+0000\n"
-"Last-Translator: Alexandre Delaunay <delaunay.alexandre@gmail.com>\n"
+"PO-Revision-Date: 2018-03-21 08:48+0000\n"
+"Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.com/teclib/glpi-plugin-order/language/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs_CZ\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
 #: report/orderdelivery/orderdelivery.php:47
 msgid "orderdelivery_report_title"
@@ -106,7 +107,7 @@ msgstr "Objednávka byla upravena"
 
 #: front/order.form.php:143 front/order.form.php:235
 msgid "The discount pourcentage must be between 0 and 100"
-msgstr "Výše slevy musí být procento mezi 0 a 100"
+msgstr "Je třeba, aby výše slevy byla procento z rozmezí 0 až 100"
 
 #: front/order.form.php:147
 msgid "Add reference"
@@ -147,7 +148,7 @@ msgstr "Smazat"
 #: inc/order_supplier.class.php:53 inc/order_supplier.class.php:199
 #: inc/order_supplier.class.php:396
 msgid "Supplier Detail"
-msgstr "Detail dodavatele"
+msgstr "Podrobnosti o dodavateli"
 
 #: front/menu.php:70 inc/profile.class.php:175
 msgid "Products references"
@@ -170,7 +171,7 @@ msgstr "Stav dodání"
 #: ajax/massreception.php:70 inc/reception.class.php:561
 #: inc/config.class.php:222
 msgid "Enable automatic generation"
-msgstr "Aktivovat automatické generování"
+msgstr "Zapnout automatické vytváření"
 
 #: ajax/massreception.php:73 inc/reception.class.php:567
 #: inc/config.class.php:258
@@ -198,7 +199,7 @@ msgstr "Kategorie dokumentu"
 
 #: inc/documentcategory.class.php:82 inc/documentcategory.class.php:87
 msgid "Document category prefix"
-msgstr "Prefix kategorie dokumentu"
+msgstr "Předpona kategorie dokumentu"
 
 #: inc/reception.class.php:53
 msgid "Delivery"
@@ -262,7 +263,7 @@ msgstr "Položka byla úspěšně převzata"
 
 #: inc/reception.class.php:756
 msgid "Item already taken delivery"
-msgstr "Položka již byla převzata"
+msgstr "Položka už byla převzata"
 
 #: inc/reception.class.php:912
 msgid "Item delivered"
@@ -300,7 +301,7 @@ msgstr "Nelze vytvořit referenci bez typu"
 
 #: inc/reference.class.php:217
 msgid "A reference with the same name still exists"
-msgstr "Reference s tímto názvem již existuje"
+msgstr "Reference s tímto názvem už existuje"
 
 #: inc/reference.class.php:229
 msgid "Reference(s) in use"
@@ -455,11 +456,11 @@ msgstr "Použít ověřovací proces"
 
 #: inc/config.class.php:125
 msgid "Order generation in ODT"
-msgstr "Generovat objednávku ve formátu ODT"
+msgstr "Vytvořit objednávku ve formátu ODT"
 
 #: inc/config.class.php:131
 msgid "Activate suppliers quality satisfaction"
-msgstr "Aktivovat hodnocení kvality dodavatele"
+msgstr "Zapnout hodnocení kvality dodavatele"
 
 #: inc/config.class.php:138
 msgid "Display order's suppliers informations"
@@ -570,7 +571,7 @@ msgstr "DPH"
 
 #: inc/order_item.class.php:383
 msgid "Please select a supplier"
-msgstr "Prosím vyberte dodavatele"
+msgstr "Vyberte dodavatele"
 
 #: inc/order_item.class.php:498
 msgid "Equipment"
@@ -585,7 +586,7 @@ msgstr "Opravdu chcete aktualizovat tuto položku ?"
 msgid ""
 "Do you really want to delete these details ? Delivered items will not be "
 "linked to order !"
-msgstr "Opravdu chcete smazat tyto údaje ? Dodané položky nebudou propojeny s objednávkou !"
+msgstr "Opravdu chcete smazat tyto údaje? Dodané položky nebudou propojeny s objednávkou!"
 
 #: inc/order_item.class.php:695 inc/order_item.class.php:1059
 msgid "Discounted price tax free"
@@ -611,7 +612,7 @@ msgstr "Zaplacená hodnota"
 
 #: inc/order.class.php:265 inc/order.class.php:1467 inc/order.class.php:1493
 msgid "Order Generation"
-msgstr "Generování objednávky"
+msgstr "Vytváření objednávky"
 
 #: inc/order.class.php:267
 msgid "Order validation"
@@ -627,7 +628,7 @@ msgstr "Upravit ověřenou objednávku"
 
 #: inc/order.class.php:270
 msgid "Generate order without validation"
-msgstr "Vygenerovat objednávku bez ověření"
+msgstr "Vytvořit objednávku bez ověření"
 
 #: inc/order.class.php:273
 msgid "Link order to a ticket"
@@ -652,7 +653,7 @@ msgstr "Nákupní objednávka"
 
 #: inc/order.class.php:609
 msgid "An order number is mandatory !"
-msgstr "Číslo objednávky je povinné !"
+msgstr "Číslo objednávky je povinné!"
 
 #: inc/order.class.php:619 inc/order.class.php:677
 msgid ""
@@ -678,7 +679,7 @@ msgstr "Ověřovací proces"
 #: inc/order.class.php:1415
 msgid ""
 "Do you really want to cancel this order ? This option is irreversible !"
-msgstr "Opravdu chcete zrušit tuto objednávku ? Tato možnost je nevratná !"
+msgstr "Opravdu chcete zrušit tuto objednávku? Tato možnost je nevratná!"
 
 #: inc/order.class.php:1422
 msgid "Validate order"
@@ -686,7 +687,7 @@ msgstr "Ověření objednávky"
 
 #: inc/order.class.php:1428
 msgid "Do you want to cancel the validation approval ?"
-msgstr "Chcete zrušit již schválené ověření ?"
+msgstr "Chcete zrušit už schválené ověření?"
 
 #: inc/order.class.php:1430
 msgid "Cancel ask for validation"
@@ -710,7 +711,7 @@ msgstr "Díky přidání alespoň jednoho zařízení na vaší objednávku."
 
 #: inc/order.class.php:1501
 msgid "Thanks to select a model into your preferences"
-msgstr "Děkuji za výběr modelu do vaších preferencí"
+msgstr "Díky výběru modelu do vašich předvoleb"
 
 #: inc/order.class.php:1543
 msgid "Invoice address"
@@ -793,7 +794,7 @@ msgstr "Zpožděné objednávky"
 #: inc/notificationtargetorder.class.php:51
 #: inc/notificationtargetorder.class.php:130 inc/link.class.php:210
 msgid "No item to generate"
-msgstr "Žádná položka ke generování"
+msgstr "Žádná položka k vytvoření"
 
 #: inc/notificationtargetorder.class.php:107
 #: inc/notificationtargetorder.class.php:153
@@ -814,15 +815,15 @@ msgstr "Statistika dodávky"
 
 #: inc/order_supplier.class.php:290
 msgid "No specified status"
-msgstr "Nespecifikovaný stav"
+msgstr "Neurčený stav"
 
 #: inc/link.class.php:48
 msgid "Generation"
-msgstr "Generování"
+msgstr "Vytváření"
 
 #: inc/link.class.php:75 inc/link.class.php:442
 msgid "Generate item"
-msgstr "Generovat položku"
+msgstr "Vytvořit položku"
 
 #: inc/link.class.php:443
 msgid "Link to an existing item"
@@ -834,7 +835,7 @@ msgstr "Smazat propojení položky"
 
 #: inc/link.class.php:490
 msgid "Cannot link several items to one detail line"
-msgstr "Nelze propojit více položek k jedné řádce detailu"
+msgstr "Nelze propojit více položek k jedné řádce podrobností"
 
 #: inc/link.class.php:501
 msgid "Cannot link items not delivered"
@@ -851,7 +852,7 @@ msgstr "Položka byla propojena s objednávkou"
 
 #: inc/link.class.php:938
 msgid "Item already linked to another one"
-msgstr "Položka je již propojena s jinou"
+msgstr "Položka je už propojená s jinou"
 
 #: inc/link.class.php:975 inc/link.class.php:980 inc/link.class.php:1001
 #: inc/link.class.php:1006
@@ -864,7 +865,7 @@ msgstr "Jeden nebo několik vybraných řádků nemá připojené položky"
 
 #: inc/link.class.php:1171 inc/link.class.php:1175
 msgid "Item generated by using order"
-msgstr "Položka byla generována objednávkou"
+msgstr "Položka byla vytvořena objednávkou"
 
 #: inc/link.class.php:1182
 msgid "Item successfully selected"
@@ -876,9 +877,9 @@ msgstr "Instalace nebo aktualizace doplňku"
 
 #: hook.php:86
 msgid "Can't create folder"
-msgstr ""
+msgstr "Složku se nepodařilo vytvořit"
 
 #: hook.php:94
 #, php-format
 msgid "Cannot copy file %1$s to %2$s"
-msgstr ""
+msgstr "Nepodařilo se zkopírovat soubor %1$s do %2$s"
