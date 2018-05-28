@@ -53,7 +53,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
    }
 
 
-   public function getDatasForTemplate($event, $options = []) {
+   public function addDataForTemplate($event, $options = []) {
       global $CFG_GLPI;
 
       $events = $this->getAllEvents();
