@@ -349,7 +349,11 @@ class PluginOrderBill extends CommonDropdown
          echo "<td align='center'>";
          echo Dropdown::getDropdownName('glpi_entities', $order->getEntityID());
          echo "</td>";
-         echo "<td>" . $reference->getReceptionReferenceLink($data_ref) . "</td>";
+         if ($table == 'glpi_plugin_order_referencefrees') {
+            echo "<td>" . $data_ref['name'] . "</td>";
+         } else {
+            echo "<td>" . $reference->getReceptionReferenceLink($data_ref) . "</td>";
+         }
          echo "</tr></table>";
 
          echo "<div class='center' id='generation$rand' style='display:none'>";
@@ -444,32 +448,23 @@ class PluginOrderBill extends CommonDropdown
 
    public function queryRef($ID, $table) {
       if ($table == 'glpi_plugin_order_references') {
-         $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
-                      "`glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, " .
-                      "ref.`name`, " .
-                      "ref.`itemtype`, " .
-                      "ref.`manufacturers_id` " .
-                      "FROM `glpi_plugin_order_orders_items`, `" . $table . "` ref " .
-                      "WHERE `glpi_plugin_order_orders_items`.`plugin_order_orders_id` = '" . $ID . "' " .
-                      "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = ref.`id` " .
-                      "AND `glpi_plugin_order_orders_items`.`itemtype` NOT LIKE 'PluginOrderReferenceFree' " .
-                      "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
-                      "ORDER BY ref.`name`";
-         return $query_ref;
+         $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` NOT LIKE 'PluginOrderReferenceFree' ";
       } else {
-         $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
-                      "`glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, " .
-                      "ref.`name`, " .
-                      "ref.`itemtype`, " .
-                      "ref.`manufacturers_id` " .
-                      "FROM `glpi_plugin_order_orders_items`, `" . $table . "` ref " .
-                      "WHERE `glpi_plugin_order_orders_items`.`plugin_order_orders_id` = '" . $ID . "' " .
-                      "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = ref.`id` " .
-                      "AND `glpi_plugin_order_orders_items`.`itemtype` LIKE 'PluginOrderReferenceFree' " .
-                      "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
-                      "ORDER BY ref.`name`";
-         return $query_ref;
+         $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` LIKE 'PluginOrderReferenceFree' ";
       }
+
+      $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
+                   "`glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, " .
+                   "ref.`name`, " .
+                   "ref.`itemtype`, " .
+                   "ref.`manufacturers_id` " .
+                   "FROM `glpi_plugin_order_orders_items`, `" . $table . "` ref " .
+                   "WHERE `glpi_plugin_order_orders_items`.`plugin_order_orders_id` = '" . $ID . "' " .
+                   "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = ref.`id` " .
+                   $condition .
+                   "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
+                   "ORDER BY ref.`name`";
+      return $query_ref;
    }
 
 

@@ -1374,33 +1374,26 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
    public static function queryBillsItems($ID, $table) {
       global $DB;
+
       if ($table == 'glpi_plugin_order_references') {
-         $query = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
-                  "`glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, " .
-                  "`glpi_plugin_order_references`.`name`, " .
-                  "`glpi_plugin_order_references`.`itemtype`, " .
-                  "`glpi_plugin_order_references`.`manufacturers_id` " .
-                  "FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references` " .
-                  "WHERE `glpi_plugin_order_orders_items`.`plugin_order_orders_id` = '" . $ID . "' " .
-                  "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id` " .
-                  "AND `glpi_plugin_order_orders_items`.`itemtype` NOT LIKE 'PluginOrderReferenceFree' " .
-                  "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
-                  "ORDER BY `glpi_plugin_order_references`.`name`";
-         return $DB->query($query);
+         $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` NOT LIKE 'PluginOrderReferenceFree' ";
       } else {
-         $query = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
-                  "`glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, " .
-                  "`glpi_plugin_order_references`.`name`, " .
-                  "`glpi_plugin_order_references`.`itemtype`, " .
-                  "`glpi_plugin_order_references`.`manufacturers_id` " .
-                  "FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references` " .
-                  "WHERE `glpi_plugin_order_orders_items`.`plugin_order_orders_id` = '" . $ID . "' " .
-                  "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id` " .
-                  "AND `glpi_plugin_order_orders_items`.`itemtype` LIKE 'PluginOrderReferenceFree' " .
-                  "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
-                  "ORDER BY `glpi_plugin_order_references`.`name`";
-         return $DB->query($query);
+         $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` LIKE 'PluginOrderReferenceFree' ";
       }
+
+      $query = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
+               "`glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, " .
+               "ref.`name`, " .
+               "ref.`itemtype`, " .
+               "ref.`manufacturers_id` " .
+               "FROM `glpi_plugin_order_orders_items`, `" . $table . "` ref " .
+               "WHERE `glpi_plugin_order_orders_items`.`plugin_order_orders_id` = '" . $ID . "' " .
+               "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = ref.`id` " .
+               $condition .
+               "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
+               "ORDER BY ref.`name`";
+      return $DB->query($query);
+
    }
 
    public function showBillsItemsDetail($data_ref, $result_ref, $canedit, $order, $table) {

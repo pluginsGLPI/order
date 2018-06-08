@@ -221,23 +221,11 @@ class PluginOrderLink extends CommonDBChild {
    public function queryRef($ID, $table) {
       global $DB;
       if ($table == 'glpi_plugin_order_references') {
-         $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD,
-                           `glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id,
-                           ref.`name`,
-                           ref.`itemtype`,
-                           ref.`manufacturers_id`,
-                           `glpi_plugin_order_orders_items`.`price_taxfree`,
-                           `glpi_plugin_order_orders_items`.`discount`
-                    FROM `glpi_plugin_order_orders_items`, `" . $table . "` ref
-                    WHERE `glpi_plugin_order_orders_items`.`plugin_order_orders_id` = '$ID'
-                    AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = ref.`id`
-                    AND `glpi_plugin_order_orders_items`.`states_id` = '" . PluginOrderOrder::ORDER_DEVICE_DELIVRED . "'
-                    AND `glpi_plugin_order_orders_items`.`itemtype` NOT LIKE 'PluginOrderReferenceFree'
-                    GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id`
-                    ORDER BY ref.`name`";
-         return $DB->query($query_ref);
+         $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` NOT LIKE 'PluginOrderReferenceFree'";
       } else {
-         $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD,
+         $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` LIKE 'PluginOrderReferenceFree'";
+      }
+      $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD,
                            `glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id,
                            ref.`name`,
                            ref.`itemtype`,
@@ -248,11 +236,11 @@ class PluginOrderLink extends CommonDBChild {
                     WHERE `glpi_plugin_order_orders_items`.`plugin_order_orders_id` = '$ID'
                     AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = ref.`id`
                     AND `glpi_plugin_order_orders_items`.`states_id` = '" . PluginOrderOrder::ORDER_DEVICE_DELIVRED . "'
-                    AND `glpi_plugin_order_orders_items`.`itemtype` LIKE 'PluginOrderReferenceFree'
+                    $condition
                     GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id`
                     ORDER BY ref.`name`";
-         return $DB->query($query_ref);
-      }
+      return $DB->query($query_ref);
+
    }
 
 
@@ -347,8 +335,8 @@ class PluginOrderLink extends CommonDBChild {
                               items.`price_taxfree`,
                               items.`discount`
                        FROM `glpi_plugin_order_orders_items` as items,
-                            `glpi_plugin_order_references` as ref
-                       WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
+                            `".$table."` ref
+                       WHERE items.`plugin_order_orders_id` = '$plugin_order_orders_id'
                         AND items.`plugin_order_references_id` = '$plugin_order_references_id'
                         AND items.`plugin_order_references_id` = ref.`id`
                         AND items.`states_id` = '".PluginOrderOrder::ORDER_DEVICE_DELIVRED."'";
