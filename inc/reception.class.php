@@ -300,7 +300,7 @@ class PluginOrderReception extends CommonDBChild {
       $result_reffree = $order_item->queryDetail($orders_id, 'glpi_plugin_order_referencefrees');
       $numreffree     = $DB->numrows($result_reffree);
 
-      while ($data_reffree=$DB->fetch_array($result_reffree)) {
+      while ($data_reffree = $DB->fetch_array($result_reffree)) {
          self::showOrderReceptionItem($data_reffree, $numreffree, $canedit, $reference, $order_item, $orders_id,
                                       $order_order, 'glpi_plugin_order_referencefrees');
       }
@@ -381,8 +381,8 @@ class PluginOrderReception extends CommonDBChild {
                              ref.`itemtype`,
                              items.`items_id`
                     FROM `glpi_plugin_order_orders_items` as items, 
-                         `glpi_plugin_order_references` as ref
-                    WHERE `plugin_order_orders_id` = '$orders_id'
+                         `".$table."` as ref
+                    WHERE items.`plugin_order_orders_id` = '$orders_id'
                     AND items.`plugin_order_references_id` = '" . $references_id . "'
                     AND items.`plugin_order_references_id` = ref.`id`
                     AND items.`discount` LIKE '" . $discount . "'

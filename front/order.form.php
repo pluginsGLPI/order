@@ -246,7 +246,7 @@ if (isset ($_POST["add"])) {
             $new_value .= " (" . __("Quantity", "order") . " : " . $_POST["quantity"];
             $new_value .= " " . __("Discount (%)", "order") . " : " . $_POST["discount"] . ")";
             $pluginOrderOrder->addHistory("PluginOrderOrder", "", $new_value, $_POST["plugin_order_orders_id"]);
-            $pluginOrderOrder_Item->addDetails($id_reference, 'PluginOrderOther',
+            $pluginOrderOrder_Item->addDetails($id_reference, $itemtype,
                                                $_POST["plugin_order_orders_id"], $_POST["quantity"],
                                                $_POST["price"], $_POST["discount"],
                                                $_POST["plugin_order_ordertaxes_id"]);

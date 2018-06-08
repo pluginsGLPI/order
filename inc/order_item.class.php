@@ -288,6 +288,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       $order     = new PluginOrderOrder();
       $reference = new PluginOrderReference();
+      $config    = PluginOrderConfig::getConfig();
 
       if ($order->getFromDB($plugin_order_orders_id)
          && $order->canUpdateOrder()) {
@@ -363,7 +364,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_taxe'>";
-               $config = PluginOrderConfig::getConfig();
+
                PluginOrderOrderTax::Dropdown([
                   'name'                => "plugin_order_ordertaxes_id",
                   'value'               => $config->getDefaultTaxes(),
