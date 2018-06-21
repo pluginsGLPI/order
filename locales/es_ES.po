@@ -4,7 +4,7 @@
 # 
 # Translators:
 # Alexander J. Salas B. <inactive+alexandersalas@transifex.com>, 2016
-# Johan Cwiklinski <trasher@x-tnd.be>, 2016
+# Johan Cwiklinski <jcwiklinski@teclib.com>, 2016
 # Miguel López <miguel.lopez@inelcom.com>, 2016
 msgid ""
 msgstr ""

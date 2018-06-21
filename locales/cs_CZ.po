@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-02 09:09+0100\n"
-"PO-Revision-Date: 2018-03-21 08:48+0000\n"
+"PO-Revision-Date: 2018-06-14 14:35+0000\n"
 "Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.com/teclib/glpi-plugin-order/language/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: report/orderdelivery/orderdelivery.php:47
 msgid "orderdelivery_report_title"
-msgstr "orderdelivery_report_title"
+msgstr "Doručení objednávky"
 
 #: report/orderdelivery/orderdelivery.php:48
 #: report/orderdelivery/orderdelivery.php:75
@@ -37,7 +37,7 @@ msgstr "Datum objednávky"
 #: report/deliveryinfos/deliveryinfos.php:50 inc/order.class.php:317
 #: inc/order.class.php:855
 msgid "Delivery location"
-msgstr "Umístění dodávky"
+msgstr "Místo dodání"
 
 #: report/orderdelivery/orderdelivery.php:68 inc/order.class.php:287
 #: inc/order.class.php:778 inc/order.class.php:1541 hook.php:240
@@ -47,11 +47,11 @@ msgstr "Číslo objednávky"
 #: report/orderdelivery/orderdelivery.php:76 inc/order.class.php:403
 #: inc/order.class.php:983 inc/notificationtargetorder.class.php:160
 msgid "Estimated due date"
-msgstr "Odhadovaná doba splatnosti"
+msgstr "Odhadovaný termín"
 
 #: report/deliveryinfos/deliveryinfos.php:47
 msgid "deliveryinfos_report_title"
-msgstr "deliveryinfos_report_title"
+msgstr "Informace o doručení"
 
 #: report/deliveryinfos/deliveryinfos.php:64
 msgid "Orders total"
@@ -107,7 +107,7 @@ msgstr "Objednávka byla upravena"
 
 #: front/order.form.php:143 front/order.form.php:235
 msgid "The discount pourcentage must be between 0 and 100"
-msgstr "Je třeba, aby výše slevy byla procento z rozmezí 0 až 100"
+msgstr "Je třeba, aby procenta výše slevy bylo z rozmezí 0 až 100"
 
 #: front/order.form.php:147
 msgid "Add reference"
@@ -242,12 +242,12 @@ msgstr "Dodané položky"
 
 #: inc/reception.class.php:492
 msgid "Take item delivery (bulk)"
-msgstr "Dodávka převzata (hromadně)"
+msgstr "Převzít dodávku položky (hromadně)"
 
 #: inc/reception.class.php:517 inc/reception.class.php:586
 #: inc/order.class.php:266
 msgid "Take item delivery"
-msgstr "Převzít položku dodávky"
+msgstr "Převzít dodávku položky"
 
 #: inc/reception.class.php:609
 msgid "Waiting for delivery"
@@ -395,7 +395,7 @@ msgstr "Komentář k průzkumu"
 
 #: inc/surveysupplier.class.php:214 inc/surveysupplier.class.php:309
 msgid "Administrative followup quality (contracts, bills, mail, etc.)"
-msgstr "Kvalita administrativy (smlouvy, platby, pošta, atd."
+msgstr "Kvalita administrativy (smlouvy, platby, pošta, atd.)"
 
 #: inc/surveysupplier.class.php:223 inc/surveysupplier.class.php:316
 msgid "Commercial followup quality, visits, responseness"
@@ -411,7 +411,7 @@ msgstr "Kvalita zásahu dodavatele"
 
 #: inc/surveysupplier.class.php:245 inc/surveysupplier.class.php:333
 msgid "Reliability about annouced delays"
-msgstr "Spolehlivost hlášených zpoždění"
+msgstr "Spolehlivost ohlášení zpoždění"
 
 #: inc/surveysupplier.class.php:257
 msgid "Final supplier note"
@@ -444,7 +444,7 @@ msgstr "Použít tento znak"
 
 #: inc/config.class.php:103
 msgid "Plugin configuration"
-msgstr "Nastavení doplňku"
+msgstr "Nastavení zásuvného modulu"
 
 #: inc/config.class.php:106
 msgid "Default VAT"
@@ -464,7 +464,7 @@ msgstr "Zapnout hodnocení kvality dodavatele"
 
 #: inc/config.class.php:138
 msgid "Display order's suppliers informations"
-msgstr "Zobrazit informace o objednávkách dodavatelů"
+msgstr "Zobrazit informace o dodavatelích objednávky"
 
 #: inc/config.class.php:144
 msgid "Color to be displayed when order due date is overtaken"
