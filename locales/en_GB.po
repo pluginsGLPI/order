@@ -4,7 +4,7 @@
 # 
 # Translators:
 # Jérémy MOREAU <jmoreau.dev@gmail.com>, 2015
-# Johan Cwiklinski <trasher@x-tnd.be>, 2016
+# Johan Cwiklinski <jcwiklinski@teclib.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"

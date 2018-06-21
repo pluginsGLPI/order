@@ -34,7 +34,12 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-define('PLUGIN_ORDER_VERSION', '2.0.1');
+define('PLUGIN_ORDER_VERSION', '2.0.2');
+
+// Minimal GLPI version, inclusive
+define("PLUGIN_ORDER_MIN_GLPI", "9.2");
+// Maximum GLPI version, exclusive
+define("PLUGIN_ORDER_MAX_GLPI", "9.3");
 
 if (!defined('PLUGIN_ORDER_TEMPLATE_DIR')) {
    define("PLUGIN_ORDER_TEMPLATE_DIR", GLPI_PLUGIN_DOC_DIR."/order/templates/");
@@ -183,19 +188,20 @@ function plugin_init_order() {
  * @return array
  */
 function plugin_version_order() {
-   return ['name'           => __("Orders management", "order"),
-            'version'        => PLUGIN_ORDER_VERSION,
-            'author'         => 'The plugin order team',
-            'homepage'       => 'https://github.com/pluginsGLPI/order',
-            'minGlpiVersion' => '0.85',
-            'license'        => 'GPLv2+',
-            'requirements'   => [
-               'glpi' => [
-                  'min' => '9.2',
-                  'dev' => true
-               ]
-            ]
-         ];
+   return [
+      'name'           => __("Orders management", "order"),
+      'version'        => PLUGIN_ORDER_VERSION,
+      'author'         => 'The plugin order team',
+      'homepage'       => 'https://github.com/pluginsGLPI/order',
+      'license'        => 'GPLv2+',
+      'requirements'   => [
+         'glpi' => [
+            'min' => PLUGIN_ORDER_MIN_GLPI,
+            'max' => PLUGIN_ORDER_MAX_GLPI,
+            'dev' => true, //Required to allow 9.2-dev
+         ]
+      ]
+   ];
 }
 
 
@@ -206,10 +212,23 @@ function plugin_version_order() {
  * @return boolean
  */
 function plugin_order_check_prerequisites() {
-   $version = rtrim(GLPI_VERSION, '-dev');
-   if (version_compare($version, '9.2', 'lt')) {
-      echo "This plugin requires GLPI 9.2";
-      return false;
+
+   //Version check is not done by core in GLPI < 9.2 but has to be delegated to core in GLPI >= 9.2.
+   if (!method_exists('Plugin', 'checkGlpiVersion')) {
+      $version = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
+      $matchMinGlpiReq = version_compare($version, PLUGIN_ORDER_MIN_GLPI, '>=');
+      $matchMaxGlpiReq = version_compare($version, PLUGIN_ORDER_MAX_GLPI, '<');
+
+      if (!$matchMinGlpiReq || !$matchMaxGlpiReq) {
+         echo vsprintf(
+            'This plugin requires GLPI >= %1$s and < %2$s.',
+            [
+               PLUGIN_ORDER_MIN_GLPI,
+               PLUGIN_ORDER_MAX_GLPI,
+            ]
+         );
+         return false;
+      }
    }
 
    return true;
