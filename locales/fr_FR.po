@@ -5,7 +5,7 @@
 # Translators:
 # Alexandre Delaunay <delaunay.alexandre@gmail.com>, 2018
 # Jérémy MOREAU <jmoreau.dev@gmail.com>, 2015
-# Johan Cwiklinski <trasher@x-tnd.be>, 2016
+# Johan Cwiklinski <jcwiklinski@teclib.com>, 2016
 # Walid Nouh, 2017
 msgid ""
 msgstr ""

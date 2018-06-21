@@ -53,7 +53,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
    }
 
 
-   public function getDatasForTemplate($event, $options = []) {
+   public function addDataForTemplate($event, $options = []) {
       global $CFG_GLPI;
 
       $events = $this->getAllEvents();
@@ -473,22 +473,22 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
    public function addSpecificTargets($data, $options) {
       switch ($data['items_id']) {
          case self::AUTHOR:
-            $this->getUserByField("users_id");
+            $this->addUserByField("users_id");
             break;
          case self::DELIVERY_USER:
-            $this->getUserByField("users_id_delivery");
+            $this->addUserByField("users_id_delivery");
             break;
          case self::AUTHOR_GROUP:
-            $this->getAddressesByGroup(0, $this->obj->fields['groups_id']);
+            $this->addForGroup(0, $this->obj->fields['groups_id']);
             break;
          case self::DELIVERY_GROUP:
-            $this->getAddressesByGroup(0, $this->obj->fields['groups_id_delivery']);
+            $this->addForGroup(0, $this->obj->fields['groups_id_delivery']);
             break;
          case self::SUPERVISOR_AUTHOR_GROUP:
-            $this->getAddressesByGroup(1, $this->obj->fields['groups_id']);
+            $this->addForGroup(1, $this->obj->fields['groups_id']);
             break;
          case self::SUPERVISOR_DELIVERY_GROUP:
-            $this->getAddressesByGroup(1, $this->obj->fields['groups_id_delivery']);
+            $this->addForGroup(1, $this->obj->fields['groups_id_delivery']);
             break;
       }
    }

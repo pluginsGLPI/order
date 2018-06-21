@@ -2015,7 +2015,7 @@ class PluginOrderOrder extends CommonDBTM {
       $task->addVolume($nblate);
 
       $cron_status = 1;
-      if ($CFG_GLPI["use_mailing"]) {
+      if ($CFG_GLPI["use_notifications"]) {
          $message = __("Order is late", "order");
          $alert   = new Alert();
          $config  = PluginOrderConfig::getConfig();

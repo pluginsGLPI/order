@@ -3,26 +3,24 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Alexander J. Salas B. <inactive+alexandersalas@transifex.com>, 2016
-# Johan Cwiklinski <jcwiklinski@teclib.com>, 2016
-# Miguel López <miguel.lopez@inelcom.com>, 2016
+# Markku Vepsä, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-02 09:09+0100\n"
-"PO-Revision-Date: 2018-02-02 08:15+0000\n"
-"Last-Translator: Alexandre Delaunay <delaunay.alexandre@gmail.com>\n"
-"Language-Team: Spanish (Spain) (http://www.transifex.com/teclib/glpi-plugin-order/language/es_ES/)\n"
+"PO-Revision-Date: 2018-06-18 04:22+0000\n"
+"Last-Translator: Markku Vepsä\n"
+"Language-Team: Finnish (Finland) (http://www.transifex.com/teclib/glpi-plugin-order/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: es_ES\n"
+"Language: fi_FI\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: report/orderdelivery/orderdelivery.php:47
 msgid "orderdelivery_report_title"
-msgstr "ordendeentrega_reporte_título"
+msgstr "tilausraportin_otsikko"
 
 #: report/orderdelivery/orderdelivery.php:48
 #: report/orderdelivery/orderdelivery.php:75
@@ -31,43 +29,43 @@ msgstr "ordendeentrega_reporte_título"
 #: inc/notificationtargetorder.class.php:151
 #: inc/notificationtargetorder.class.php:159
 msgid "Date of order"
-msgstr "Fecha de pedido"
+msgstr "Tilauspäivä"
 
 #: report/orderdelivery/orderdelivery.php:50
 #: report/orderdelivery/orderdelivery.php:79
 #: report/deliveryinfos/deliveryinfos.php:50 inc/order.class.php:317
 #: inc/order.class.php:855
 msgid "Delivery location"
-msgstr "Lugar de entrega"
+msgstr "Toimituskohde"
 
 #: report/orderdelivery/orderdelivery.php:68 inc/order.class.php:287
 #: inc/order.class.php:778 inc/order.class.php:1541 hook.php:240
 msgid "Order number"
-msgstr "Número de pedido"
+msgstr "Tilausnumero"
 
 #: report/orderdelivery/orderdelivery.php:76 inc/order.class.php:403
 #: inc/order.class.php:983 inc/notificationtargetorder.class.php:160
 msgid "Estimated due date"
-msgstr "Estimated due date"
+msgstr "Arvioitu toimituspäivä"
 
 #: report/deliveryinfos/deliveryinfos.php:47
 msgid "deliveryinfos_report_title"
-msgstr "informacióndeentrega_reporte_título"
+msgstr "toimitustietoraportin_otsikko"
 
 #: report/deliveryinfos/deliveryinfos.php:64
 msgid "Orders total"
-msgstr "El total de pedidos"
+msgstr "Tilausten yhteisarvo"
 
 #: report/deliveryinfos/deliveryinfos.php:65
 msgid "Late orders total"
-msgstr "Órdenes tardías en total"
+msgstr "Jälkitoimitusten yhteisarvo"
 
 #: setup.php:186 front/order_item.form.php:39 front/surveysupplier.form.php:69
 #: front/reception.form.php:96 front/order_supplier.form.php:80
 #: front/menu.php:33 front/menu.php:57 inc/config.class.php:76
 #: inc/order_item.class.php:106 inc/order.class.php:282
 msgid "Orders management"
-msgstr "Gestión de Pedidos"
+msgstr "Tilausten hallinta"
 
 #: front/order.php:33 front/preference.form.php:43 front/order.form.php:286
 #: front/config.form.php:41 front/menu.php:63
@@ -78,155 +76,155 @@ msgstr "Gestión de Pedidos"
 #: inc/order.class.php:72 inc/order.class.php:552 inc/bill.class.php:520
 #: inc/order_supplier.class.php:391 hook.php:146
 msgid "Orders"
-msgstr "Gestionar pedidos"
+msgstr "Tilaukset"
 
 #: front/reference_supplier.form.php:69 inc/reference_supplier.class.php:46
 #: inc/reference_supplier.class.php:75
 msgid "Supplier for the reference"
-msgstr "Proveedor para la referencia"
+msgstr "Toimittajan viite"
 
 #: front/order.form.php:94 inc/notificationtargetorder.class.php:118
 msgid "Order is validated"
-msgstr "El pedido está validado"
+msgstr "Tilaus vahvistettu"
 
 #: front/order.form.php:103
 msgid "Order validation successfully requested"
-msgstr "Validación de pedido solicitada correctamente"
+msgstr ""
 
 #: front/order.form.php:113
 msgid "Validation query is now canceled"
-msgstr "Se ha cancelado al solicitud de validación"
+msgstr ""
 
 #: front/order.form.php:123 inc/notificationtargetorder.class.php:48
 #: inc/notificationtargetorder.class.php:122
 msgid "Order canceled"
-msgstr "Pedido cancelado"
+msgstr "Tilaus peruutettu"
 
 #: front/order.form.php:134 inc/notificationtargetorder.class.php:49
 msgid "Order currently edited"
-msgstr "Pedido en proceso de edición"
+msgstr ""
 
 #: front/order.form.php:143 front/order.form.php:235
 msgid "The discount pourcentage must be between 0 and 100"
-msgstr "El porcentaje de descuento debe estar entre 0 y 100"
+msgstr "Alennusprosentin täytyy olla väliltä 0-100"
 
 #: front/order.form.php:147
 msgid "Add reference"
-msgstr "Añadir referencia"
+msgstr "Lisää viite"
 
 #: front/order.form.php:150 inc/order_item.class.php:307
 #: inc/order_item.class.php:497 inc/order.class.php:1610
 #: inc/link.class.php:378
 msgid "Quantity"
-msgstr "Cantidad"
+msgstr "Määrä"
 
 #: front/order.form.php:151 inc/order_item.class.php:116
 #: inc/order_item.class.php:121 inc/order_item.class.php:310
 #: inc/order_item.class.php:504 inc/order_item.class.php:694
 #: inc/order_item.class.php:1051
 msgid "Discount (%)"
-msgstr "Descuento (%)"
+msgstr "Alennus (%)"
 
 #: front/order.form.php:193 front/order.form.php:200
 msgid "Remove reference"
-msgstr "Borrar referencia"
+msgstr "Poista viite"
 
 #: front/order.form.php:210 inc/reception.class.php:788
 msgid "No item selected"
-msgstr "No hay ítems seleccionados"
+msgstr "Kohdetta ei ole valittu"
 
 #: front/order_supplier.form.php:51 inc/order_supplier.class.php:57
 #: inc/order_supplier.class.php:151 inc/order_supplier.class.php:203
 msgid "Quote number"
-msgstr "Número de presupuesto"
+msgstr ""
 
 #: front/order_supplier.form.php:66
 msgid "Delete"
-msgstr "Suprimir"
+msgstr "Poista"
 
 #: front/order_supplier.form.php:66 inc/reference_supplier.class.php:130
 #: inc/reference_supplier.class.php:240 inc/order_supplier.class.php:46
 #: inc/order_supplier.class.php:53 inc/order_supplier.class.php:199
 #: inc/order_supplier.class.php:396
 msgid "Supplier Detail"
-msgstr "Detalle de proveedor"
+msgstr "Toimittajan tiedot"
 
 #: front/menu.php:70 inc/profile.class.php:175
 msgid "Products references"
-msgstr "Gestionar referencias de productos"
+msgstr ""
 
 #: front/menu.php:77 inc/profile.class.php:179 inc/order_item.class.php:1120
 msgid "Bills"
-msgstr "Facturas"
+msgstr "Laskut"
 
 #: ajax/massreception.php:53
 msgid "Number to deliver"
-msgstr "Cantidad a recibir"
+msgstr "Toimitettava määrä"
 
 #: ajax/massreception.php:63 inc/reception.class.php:227
 #: inc/reception.class.php:406 inc/reception.class.php:556
 #: inc/order_item.class.php:152 inc/deliverystate.class.php:38 hook.php:143
 msgid "Delivery status"
-msgstr "Estado de entrega"
+msgstr "Toimituksen tila"
 
 #: ajax/massreception.php:70 inc/reception.class.php:561
 #: inc/config.class.php:222
 msgid "Enable automatic generation"
-msgstr "Activar generación automática"
+msgstr "Ota automaattinen generointi käyttöön"
 
 #: ajax/massreception.php:73 inc/reception.class.php:567
 #: inc/config.class.php:258
 msgid "Default name"
-msgstr "Nombre predeterminado"
+msgstr "Oletusnimi"
 
 #: ajax/massreception.php:78 inc/reception.class.php:570
 #: inc/config.class.php:265
 msgid "Default serial number"
-msgstr "Número de serie predeterminado"
+msgstr "Oletus sarjanumero"
 
 #: ajax/massreception.php:83 inc/reception.class.php:573
 #: inc/config.class.php:272
 msgid "Default inventory number"
-msgstr "Número de inventario predeterminado"
+msgstr "Oletus inventointinumero"
 
 #: ajax/referencedetail.php:64 inc/config.class.php:112
 #: inc/order_item.class.php:370 inc/order.class.php:966
 msgid "No VAT"
-msgstr "No IVA"
+msgstr "Ei arvonlisäveroa"
 
 #: inc/documentcategory.class.php:39
 msgid "Document category"
-msgstr "Categoría del documento"
+msgstr "Asiakirjaluokka"
 
 #: inc/documentcategory.class.php:82 inc/documentcategory.class.php:87
 msgid "Document category prefix"
-msgstr "Prefijo de la categoría del documento"
+msgstr "Asiakirjaluokan etuliite"
 
 #: inc/reception.class.php:53
 msgid "Delivery"
-msgstr "Entrega"
+msgstr "Toimitus"
 
 #: inc/reception.class.php:193 inc/reception.class.php:612
 msgid "Taken delivery"
-msgstr "Recibido"
+msgstr "Toimitetaan"
 
 #: inc/reception.class.php:240 inc/order_item.class.php:1219
 #: inc/order_item.class.php:1306 inc/bill.class.php:47 inc/bill.class.php:133
 #: inc/bill.class.php:354
 msgid "Bill"
-msgstr "Factura"
+msgstr "Lasku"
 
 #: inc/reception.class.php:282 inc/surveysupplier.class.php:369
 #: inc/order_item.class.php:473 inc/order_item.class.php:1016
 #: inc/order_item.class.php:1561 inc/order.class.php:72 inc/bill.class.php:101
 #: inc/bill.class.php:172 inc/order_supplier.class.php:182 hook.php:391
 msgid "Order"
-msgstr "Pedido"
+msgstr "Tilaus"
 
 #: inc/reception.class.php:295 inc/order_item.class.php:484
 #: inc/order_item.class.php:1180 inc/bill.class.php:313 inc/link.class.php:276
 msgid "No item to take delivery of"
-msgstr "No hay ítems para recibir"
+msgstr ""
 
 #: inc/reception.class.php:326 inc/reference.class.php:44
 #: inc/reference.class.php:57 inc/reference_supplier.class.php:226
@@ -235,49 +233,49 @@ msgstr "No hay ítems para recibir"
 #: inc/order_item.class.php:1194 inc/bill.class.php:328 inc/link.class.php:78
 #: inc/link.class.php:344
 msgid "Product reference"
-msgstr "Referencia del producto"
+msgstr ""
 
 #: inc/reception.class.php:327
 msgid "Delivered items"
-msgstr "Ítems entregados"
+msgstr "Toimitetut tuotteet"
 
 #: inc/reception.class.php:492
 msgid "Take item delivery (bulk)"
-msgstr "Recibir materiales (masivamente)"
+msgstr ""
 
 #: inc/reception.class.php:517 inc/reception.class.php:586
 #: inc/order.class.php:266
 msgid "Take item delivery"
-msgstr "Recibir material"
+msgstr ""
 
 #: inc/reception.class.php:609
 msgid "Waiting for delivery"
-msgstr "Pendiente de entrega"
+msgstr "Odottaa toimitusta"
 
 #: inc/reception.class.php:633
 msgid "Not enough items to deliver"
-msgstr "No hay suficientes ítems para entregar"
+msgstr ""
 
 #: inc/reception.class.php:685 inc/reception.class.php:713
 msgid "Item successfully taken delivery"
-msgstr "Item recibido con éxito"
+msgstr "Tuote onnistuneesti vastaanotettu"
 
 #: inc/reception.class.php:756
 msgid "Item already taken delivery"
-msgstr "Item ya recibido"
+msgstr "Tuote on jo vastaanotettu"
 
 #: inc/reception.class.php:912
 msgid "Item delivered"
-msgstr "Material entregado"
+msgstr "Tuote toimitettu"
 
 #: inc/orderpayment.class.php:40 inc/order.class.php:349
 #: inc/order.class.php:869 inc/order.class.php:1705 hook.php:139
 msgid "Payment conditions"
-msgstr "Condiciones de pago"
+msgstr "Maksuehdot"
 
 #: inc/billtype.class.php:40 hook.php:145
 msgid "Bill type"
-msgstr "Tipo de factura"
+msgstr "Laskun tyyppi"
 
 #: inc/reference.class.php:139 inc/reference_supplier.class.php:84
 #: inc/reference_supplier.class.php:201 inc/reference_supplier.class.php:244
@@ -285,215 +283,215 @@ msgstr "Tipo de factura"
 #: inc/order_item.class.php:308 inc/order_item.class.php:503
 #: inc/order_item.class.php:692 inc/order_item.class.php:1032
 msgid "Unit price tax free"
-msgstr "Precio unitario sin IVA"
+msgstr "Veroton yksikköhinta"
 
 #: inc/reference.class.php:148 inc/reference_supplier.class.php:79
 #: inc/reference_supplier.class.php:192
 msgid "Manufacturer's product reference"
-msgstr "Referencia del fabricante del producto"
+msgstr "Valmistajan tuotenumero"
 
 #: inc/reference.class.php:204
 msgid "Cannot create reference without a name"
-msgstr "No se puede crear una referencia sin nombre"
+msgstr "Viittausta ei voi luoda ilman nimeä"
 
 #: inc/reference.class.php:209
 msgid "Cannot create reference without a type"
-msgstr "No se puede crear una referencia sin tipo"
+msgstr "Viittausta ei voi luoda ilman tyyppiä"
 
 #: inc/reference.class.php:217
 msgid "A reference with the same name still exists"
-msgstr "Ya existe una referencia con ese nombre"
+msgstr "Samanniminen viittaus on olemassa"
 
 #: inc/reference.class.php:229
 msgid "Reference(s) in use"
-msgstr "Referencia(s) usada"
+msgstr "Viite/viitteet käytössä"
 
 #: inc/reference.class.php:275 inc/reference.class.php:812
 #: inc/order.class.php:1782
 msgid "Linked orders"
-msgstr ""
+msgstr "Linkitetyt tilaukset"
 
 #: inc/reference.class.php:479
 msgid "Manufacturer reference"
-msgstr ""
+msgstr "Valmistajan viite"
 
 #: inc/reference.class.php:892
 msgid "Copy of"
-msgstr ""
+msgstr "Kopio"
 
 #: inc/reference.class.php:918
 msgid "Select the wanted item type"
-msgstr "Seleccionar el tipo de ítem deseado"
+msgstr "Valitse haluttu kohteen tyyppi"
 
 #: inc/reference.class.php:971 inc/reference.class.php:972
 #: inc/reference.class.php:990
 msgid "View by item type"
-msgstr "Ver por tipo de ítem"
+msgstr "Näytä tyypin mukaan"
 
 #: inc/reference.class.php:1047
 msgid "Copy reference"
-msgstr ""
+msgstr "Kopioi viite"
 
 #: inc/orderstate.class.php:49 inc/order.class.php:327 inc/order.class.php:808
 #: inc/order.class.php:1788 hook.php:141
 msgid "Order status"
-msgstr "Estado del pedido"
+msgstr "Tilauksen tila"
 
 #: inc/orderstate.class.php:55 inc/billstate.class.php:48
 msgid "You cannot remove this status"
-msgstr ""
+msgstr "Et voi poistaa tätä tilaa"
 
 #: inc/orderstate.class.php:87
 msgid "Draft"
-msgstr "Borrador"
+msgstr "Luonnos"
 
 #: inc/orderstate.class.php:88
 msgid "Waiting for approval"
-msgstr "Esperando aprobación"
+msgstr "Odottaa hyväksyntää"
 
 #: inc/orderstate.class.php:89
 msgid "Validated"
-msgstr "Validado"
+msgstr "Vahvistettu"
 
 #: inc/orderstate.class.php:90
 msgid "Being delivered"
-msgstr "En proceso de entrega"
+msgstr "Toimitetaan"
 
 #: inc/orderstate.class.php:91
 msgid "Delivered"
-msgstr "Entregado"
+msgstr "Toimitettu"
 
 #: inc/orderstate.class.php:92
 msgid "Canceled"
-msgstr "Cancelado"
+msgstr "Peruttu"
 
 #: inc/orderstate.class.php:93 inc/billstate.class.php:60
 #: inc/billstate.class.php:91
 msgid "Paid"
-msgstr "Pagado"
+msgstr "Maksettu"
 
 #: inc/reference_supplier.class.php:452
 msgid "List references"
-msgstr "Listar referencias"
+msgstr "Luettelo viitteistä"
 
 #: inc/surveysupplier.class.php:45 inc/surveysupplier.class.php:179
 #: inc/surveysupplier.class.php:381 inc/surveysupplier.class.php:512
 msgid "Supplier quality"
-msgstr "Calidad del proveedor"
+msgstr "Toimittajan laatu"
 
 #: inc/surveysupplier.class.php:183 inc/order_item.class.php:957
 #: inc/order.class.php:383 inc/order.class.php:751 hook.php:232
 msgid "Order name"
-msgstr "Nombre del pedido"
+msgstr "Tilauksen nimi"
 
 #: inc/surveysupplier.class.php:184 inc/surveysupplier.class.php:384
 msgid "Note"
-msgstr "Nota"
+msgstr "Huomautus"
 
 #: inc/surveysupplier.class.php:185 inc/surveysupplier.class.php:385
 msgid "Comment on survey"
-msgstr "Comentario de evaluación"
+msgstr ""
 
 #: inc/surveysupplier.class.php:214 inc/surveysupplier.class.php:309
 msgid "Administrative followup quality (contracts, bills, mail, etc.)"
-msgstr "Calidad del servicio administrativo (contrato, facturas, correo...)"
+msgstr ""
 
 #: inc/surveysupplier.class.php:223 inc/surveysupplier.class.php:316
 msgid "Commercial followup quality, visits, responseness"
-msgstr "Calidad del servicio comercial, frecuencia de visitas, reactividad"
+msgstr ""
 
 #: inc/surveysupplier.class.php:230 inc/surveysupplier.class.php:321
 msgid "Contacts availability"
-msgstr "Disponibilidad de los interlocutores"
+msgstr "Yhteystietojen saatavuus"
 
 #: inc/surveysupplier.class.php:238 inc/surveysupplier.class.php:327
 msgid "Quality of supplier intervention"
-msgstr "Calidad de los colaboradores del proveedor"
+msgstr ""
 
 #: inc/surveysupplier.class.php:245 inc/surveysupplier.class.php:333
 msgid "Reliability about annouced delays"
-msgstr "Fiabilidad de los plazos de entrega anunciados"
+msgstr ""
 
 #: inc/surveysupplier.class.php:257
 msgid "Final supplier note"
-msgstr "Nota global del proveedor"
+msgstr ""
 
 #: inc/surveysupplier.class.php:347
 msgid "Average mark up to 10 (X points / 5)"
-msgstr "Nota media sobre 10 (X puntos / 5)"
+msgstr ""
 
 #: inc/billstate.class.php:42 inc/order_item.class.php:1220
 #: inc/bill.class.php:355 hook.php:144
 msgid "Bill status"
-msgstr "Estado de la factura"
+msgstr "Laskun tila"
 
 #: inc/billstate.class.php:59
 msgid "Being paid"
-msgstr "Siendo pagado"
+msgstr "Maksettu"
 
 #: inc/billstate.class.php:92
 msgid "Not paid"
-msgstr "No pagado"
+msgstr "Maksamaton"
 
 #: inc/preference.class.php:163 inc/order.class.php:1473
 msgid "Use this model"
-msgstr "Usar este modelo"
+msgstr "Käytä tätä mallia"
 
 #: inc/preference.class.php:168 inc/order.class.php:1482
 msgid "Use this sign"
-msgstr "Utilizar esta firma"
+msgstr "Käytä tätä merkkiä"
 
 #: inc/config.class.php:103
 msgid "Plugin configuration"
-msgstr "Configuración del plugin"
+msgstr "Liitännäisen asetukset"
 
 #: inc/config.class.php:106
 msgid "Default VAT"
-msgstr "IVA predeterminado"
+msgstr "Oletus ALV"
 
 #: inc/config.class.php:118
 msgid "Use validation process"
-msgstr "Utilizar proceso de validación"
+msgstr "Käytä vahvistusprosessia"
 
 #: inc/config.class.php:125
 msgid "Order generation in ODT"
-msgstr "Generación de pedido en ODT"
+msgstr ""
 
 #: inc/config.class.php:131
 msgid "Activate suppliers quality satisfaction"
-msgstr "Activar encuesta de calidad a proveedores"
+msgstr ""
 
 #: inc/config.class.php:138
 msgid "Display order's suppliers informations"
-msgstr "Visualización de información de pedidos"
+msgstr ""
 
 #: inc/config.class.php:144
 msgid "Color to be displayed when order due date is overtaken"
-msgstr "Color que se muestra cuando es superada la fecha límite"
+msgstr ""
 
 #: inc/config.class.php:152
 msgid "Copy order documents when a new item is created"
-msgstr "Copiar documentos del pedido cuando un nuevo item ha sido creado"
+msgstr ""
 
 #: inc/config.class.php:159
 msgid "Default heading when adding a document to an order"
-msgstr "Default heading when adding a document to an order"
+msgstr ""
 
 #: inc/config.class.php:166 inc/order.class.php:475 inc/order.class.php:1067
 #: inc/notificationtargetorder.class.php:450
 #: inc/notificationtargetorder.class.php:453
 msgid "Author group"
-msgstr "Grupo de autor"
+msgstr "Tekijäryhmä"
 
 #: inc/config.class.php:176 inc/order.class.php:482 inc/order.class.php:1117
 #: inc/notificationtargetorder.class.php:452
 #: inc/notificationtargetorder.class.php:454
 msgid "Recipient group"
-msgstr "Grupo de destinatarios"
+msgstr "Vastaanottajaryhmä"
 
 #: inc/config.class.php:198
 msgid "Hide inactive budgets"
-msgstr "Ocultar los presupuestos inactivos"
+msgstr "Piilota passiiviset budjetit"
 
 #: inc/config.class.php:205
 msgid "Transmit budget change to linked assets"
@@ -501,7 +499,7 @@ msgstr ""
 
 #: inc/config.class.php:213
 msgid "Automatic actions when delivery"
-msgstr "Acciones automáticas a la entrega"
+msgstr "Toimituksen automaattiset toimet"
 
 #: inc/config.class.php:227
 msgid "Asked"
@@ -509,35 +507,35 @@ msgstr ""
 
 #: inc/config.class.php:233
 msgid "Default state"
-msgstr "Estado predeterminado"
+msgstr "Oletustila"
 
 #: inc/config.class.php:244
 msgid "Add order location to item"
-msgstr "Añadir ubicación para el punto"
+msgstr ""
 
 #: inc/config.class.php:251
 msgid "Add billing details to item"
-msgstr "Añadir los datos de facturación a la fracción"
+msgstr "Lisää tuotteelle laskutustiedot"
 
 #: inc/config.class.php:296
 msgid "Order lifecycle"
-msgstr "Ciclo de vida del pedido"
+msgstr "Tilauksen elinkaari"
 
 #: inc/config.class.php:300
 msgid "State before validation"
-msgstr "Estado antes de la validación"
+msgstr "Tila ennen vahvistusta"
 
 #: inc/config.class.php:310
 msgid "Waiting for validation state"
-msgstr "A la espera de la validación"
+msgstr "Odottaa vahvistuksen tilaa"
 
 #: inc/config.class.php:320
 msgid "Validated order state"
-msgstr "Pedido validado"
+msgstr ""
 
 #: inc/config.class.php:330
 msgid "Order being delivered state"
-msgstr "El pedido está entregado"
+msgstr ""
 
 #: inc/config.class.php:340
 msgid "Order delivered state"
@@ -549,7 +547,7 @@ msgstr ""
 
 #: inc/config.class.php:360
 msgid "Canceled order state"
-msgstr "Canceled order state"
+msgstr ""
 
 #: inc/order_item.class.php:99 inc/order_item.class.php:1559
 msgid "Order item"
@@ -557,26 +555,26 @@ msgstr ""
 
 #: inc/order_item.class.php:206
 msgid "Some fields cannont be modified because they belong to an order"
-msgstr "Algunos campos no se pueden modificar porque pertenecen a un pedido"
+msgstr ""
 
 #: inc/order_item.class.php:300
 msgid "Add to the order"
-msgstr "Añadir al pedido"
+msgstr "Lisää tilaukseen"
 
 #: inc/order_item.class.php:309 inc/order_item.class.php:693
 #: inc/order_item.class.php:1039 inc/ordertax.class.php:41
 #: inc/order.class.php:307 inc/order.class.php:955 inc/order.class.php:1172
 #: inc/order.class.php:1614 inc/order.class.php:1699 hook.php:138
 msgid "VAT"
-msgstr "IVA"
+msgstr "ALV"
 
 #: inc/order_item.class.php:383
 msgid "Please select a supplier"
-msgstr "Por favor elija un proveedor"
+msgstr "Ole hyvä ja valitse toimittaja"
 
 #: inc/order_item.class.php:498
 msgid "Equipment"
-msgstr "Equipamiento"
+msgstr ""
 
 #: inc/order_item.class.php:510 inc/order_item.class.php:669
 #: inc/order_item.class.php:865
@@ -587,21 +585,21 @@ msgstr ""
 msgid ""
 "Do you really want to delete these details ? Delivered items will not be "
 "linked to order !"
-msgstr "¿Realmente quiere borrar las líneas de detalle? Los ítems entregados no se asociarán al pedido !"
+msgstr ""
 
 #: inc/order_item.class.php:695 inc/order_item.class.php:1059
 msgid "Discounted price tax free"
-msgstr "Precio con descuento sin IVA"
+msgstr ""
 
 #: inc/order_item.class.php:696 inc/order_item.class.php:1064
 #: inc/order.class.php:1165 inc/order.class.php:1617 inc/order.class.php:1701
 #: inc/order.class.php:1791
 msgid "Price ATI"
-msgstr "Precio con IVA"
+msgstr ""
 
 #: inc/order_item.class.php:956
 msgid "Order informations"
-msgstr "Información del pedido"
+msgstr "Tilaustiedot"
 
 #: inc/order_item.class.php:1121
 msgid "Payment status"
@@ -613,23 +611,23 @@ msgstr ""
 
 #: inc/order.class.php:265 inc/order.class.php:1467 inc/order.class.php:1493
 msgid "Order Generation"
-msgstr "Generar el pedido"
+msgstr ""
 
 #: inc/order.class.php:267
 msgid "Order validation"
-msgstr "Validar pedido"
+msgstr ""
 
 #: inc/order.class.php:268 inc/order.class.php:1416
 msgid "Cancel order"
-msgstr "Cancelar pedido"
+msgstr "Peruuta tilaus"
 
 #: inc/order.class.php:269
 msgid "Edit a validated order"
-msgstr "Editar un pedido validado"
+msgstr ""
 
 #: inc/order.class.php:270
 msgid "Generate order without validation"
-msgstr "Generar orden sin validación"
+msgstr ""
 
 #: inc/order.class.php:273
 msgid "Link order to a ticket"
@@ -638,97 +636,97 @@ msgstr ""
 #: inc/order.class.php:307 inc/order.class.php:450 inc/order.class.php:913
 #: inc/order.class.php:955 inc/order.class.php:1696
 msgid "Postage"
-msgstr "Portes"
+msgstr ""
 
 #: inc/order.class.php:423 inc/order.class.php:2005
 msgid "Order is late"
-msgstr ""
+msgstr "Tilaus on myöhässä"
 
 #: inc/order.class.php:561
 msgid "Validation"
-msgstr "Validación"
+msgstr ""
 
 #: inc/order.class.php:567
 msgid "Purchase order"
-msgstr "Orden de compra"
+msgstr ""
 
 #: inc/order.class.php:609
 msgid "An order number is mandatory !"
-msgstr "El número de pedido es obligatorio!"
+msgstr "Tilausnumero on pakollinen !"
 
 #: inc/order.class.php:619 inc/order.class.php:677
 msgid ""
 "The order date must be within the dates entered for the selected budget."
-msgstr "The order date must be within the dates entered for the selected budget."
+msgstr ""
 
 #: inc/order.class.php:999
 msgid "Due date overtaken"
-msgstr "Due date overtaken"
+msgstr ""
 
 #: inc/order.class.php:1148 inc/order.class.php:1692 inc/order.class.php:1790
 msgid "Price tax free"
-msgstr "Precio sin IVA"
+msgstr "Hinta ilman veroa"
 
 #: inc/order.class.php:1158 inc/order.class.php:1694
 msgid "Price tax free with postage"
-msgstr "Precio + portes sin IVA"
+msgstr ""
 
 #: inc/order.class.php:1396
 msgid "Validation process"
-msgstr "Proceso de validación"
+msgstr ""
 
 #: inc/order.class.php:1415
 msgid ""
 "Do you really want to cancel this order ? This option is irreversible !"
-msgstr "¿Quiere realmente cancelar el pedido? ¡Esta opción es irreversible!"
+msgstr ""
 
 #: inc/order.class.php:1422
 msgid "Validate order"
-msgstr "Validar pedido"
+msgstr ""
 
 #: inc/order.class.php:1428
 msgid "Do you want to cancel the validation approval ?"
-msgstr "¿Quiere cancelar la validación de la aprobación?"
+msgstr ""
 
 #: inc/order.class.php:1430
 msgid "Cancel ask for validation"
-msgstr "Cancelar solicitud de validación"
+msgstr ""
 
 #: inc/order.class.php:1436
 msgid "Ask for validation"
-msgstr "Solicitar validación"
+msgstr ""
 
 #: inc/order.class.php:1442
 msgid "Do you really want to edit the order ?"
-msgstr "¿Quiere realmente editar el pedido? "
+msgstr "Haluatko varmasti muokata tilausta ?"
 
 #: inc/order.class.php:1444
 msgid "Edit order"
-msgstr "Editar pedido"
+msgstr "Muokkaa tilausta"
 
 #: inc/order.class.php:1452
 msgid "Thanks to add at least one equipment on your order."
-msgstr "Por favor, añada al menos un equipamiento a su pedido."
+msgstr ""
 
 #: inc/order.class.php:1501
 msgid "Thanks to select a model into your preferences"
-msgstr "Por favor, seleccione un modelo en sus preferencias"
+msgstr ""
 
 #: inc/order.class.php:1543
 msgid "Invoice address"
-msgstr "Dirección de facturación"
+msgstr "Laskutusosoite"
 
 #: inc/order.class.php:1578
 msgid "Delivery address"
-msgstr "Dirección de entrega"
+msgstr "Toimitusosoite"
 
 #: inc/order.class.php:1588
 msgid "The"
-msgstr "El"
+msgstr ""
 
 #: inc/order.class.php:1590
 msgid "Issuer order"
-msgstr "Emitir pedido"
+msgstr ""
 
 #: inc/order.class.php:1608
 msgid "Recipient"
@@ -740,15 +738,15 @@ msgstr ""
 
 #: inc/order.class.php:1613
 msgid "Unit price"
-msgstr "Precio unitario"
+msgstr "Yksikköhinta"
 
 #: inc/order.class.php:1615
 msgid "Discount rate"
-msgstr "Porcentaje de descuento"
+msgstr "Alennus"
 
 #: inc/order.class.php:1616
 msgid "Sum tax free"
-msgstr "Total sin IVA"
+msgstr "Yhteensä ilman veroja"
 
 #: inc/order.class.php:1703
 msgid "€"
@@ -756,7 +754,7 @@ msgstr "€"
 
 #: inc/order.class.php:1704
 msgid "Signature of issuing order"
-msgstr "Firma para emitir el pedido"
+msgstr ""
 
 #: inc/order.class.php:1811
 msgid "Unlink"
@@ -772,109 +770,109 @@ msgstr ""
 
 #: inc/othertype.class.php:40 hook.php:142
 msgid "Other type of item"
-msgstr "Tipo de otros materiales"
+msgstr ""
 
 #: inc/bill.class.php:59
 msgid "A bill number is mandatory"
-msgstr "Es obligatorio un número de factura"
+msgstr "Laskun numero on pakollinen"
 
 #: inc/notificationtargetorder.class.php:46
 #: inc/notificationtargetorder.class.php:114
 msgid "Request order validation"
-msgstr "Solicitar validación de pedido"
+msgstr ""
 
 #: inc/notificationtargetorder.class.php:47
 msgid "Order validated"
-msgstr "Pedido validado"
+msgstr ""
 
 #: inc/notificationtargetorder.class.php:50
 #: inc/notificationtargetorder.class.php:185
 msgid "Late orders"
-msgstr "Late orders"
+msgstr ""
 
 #: inc/notificationtargetorder.class.php:51
 #: inc/notificationtargetorder.class.php:130 inc/link.class.php:210
 msgid "No item to generate"
-msgstr "No hay materiales para generar"
+msgstr ""
 
 #: inc/notificationtargetorder.class.php:107
 #: inc/notificationtargetorder.class.php:153
 msgid "Comment of validation"
-msgstr "Comentario de validación"
+msgstr ""
 
 #: inc/notificationtargetorder.class.php:126
 msgid "Validation canceled successfully"
-msgstr "Validación cancelada satisfactoriamente"
+msgstr ""
 
 #: inc/notificationtargetorder.class.php:154
 msgid "Editor of validation"
-msgstr "Editor de validación"
+msgstr ""
 
 #: inc/order_supplier.class.php:274
 msgid "Delivery statistics"
-msgstr "Estadísticas de entrega"
+msgstr "Toimitustiedot"
 
 #: inc/order_supplier.class.php:290
 msgid "No specified status"
-msgstr "Estado no definido"
+msgstr ""
 
 #: inc/link.class.php:48
 msgid "Generation"
-msgstr "Generación"
+msgstr ""
 
 #: inc/link.class.php:75 inc/link.class.php:442
 msgid "Generate item"
-msgstr "Generar material"
+msgstr ""
 
 #: inc/link.class.php:443
 msgid "Link to an existing item"
-msgstr "Vincular con material ya existente"
+msgstr ""
 
 #: inc/link.class.php:444
 msgid "Delete item link"
-msgstr "Borrar vínculo con material"
+msgstr ""
 
 #: inc/link.class.php:490
 msgid "Cannot link several items to one detail line"
-msgstr "No se pueden asociar varios ítems a una sola línea de detalle"
+msgstr ""
 
 #: inc/link.class.php:501
 msgid "Cannot link items not delivered"
-msgstr "No se pueden asociar ítems no entregados"
+msgstr ""
 
 #: inc/link.class.php:615
 msgid "No associated item"
-msgstr "Item no asociado"
+msgstr ""
 
 #: inc/link.class.php:854 inc/link.class.php:924 inc/link.class.php:932
 #: inc/link.class.php:936
 msgid "Item linked to order"
-msgstr "Material vinculado a un pedido"
+msgstr "Tuote liitetty tilaukseen"
 
 #: inc/link.class.php:938
 msgid "Item already linked to another one"
-msgstr "Material ya enlazado a otro"
+msgstr ""
 
 #: inc/link.class.php:975 inc/link.class.php:980 inc/link.class.php:1001
 #: inc/link.class.php:1006
 msgid "Item unlink form order"
-msgstr "Desvincular material del pedido"
+msgstr "Tuote poistettu tilauksesta"
 
 #: inc/link.class.php:998
 msgid "One or several selected rows haven't linked items"
-msgstr "Una o varias filas seleccionadas no tienen ítems asociados"
+msgstr ""
 
 #: inc/link.class.php:1171 inc/link.class.php:1175
 msgid "Item generated by using order"
-msgstr "Material generado mediante un pedido"
+msgstr ""
 
 #: inc/link.class.php:1182
 msgid "Item successfully selected"
-msgstr "Item seleccionado con éxito"
+msgstr ""
 
 #: hook.php:46
 msgid "Plugin installation or upgrade"
-msgstr "Instalación o actualización del Plugin"
+msgstr "Liitännäisen asennus tai päivitys"
 
 #: hook.php:86
 msgid "Can't create folder"
