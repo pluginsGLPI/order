@@ -275,244 +275,302 @@ class PluginOrderOrder extends CommonDBTM {
       return $values;
    }
 
+   public function rawSearchOptions() {
 
-   public function getSearchOptions() {
       $tab = [];
 
-      $tab['common'] = __("Orders management", "order");
+      $tab[] = [
+         'id'            => 'common',
+         'name'          => __('Orders management', 'order'),
+      ];
 
-      /* order_number */
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'num_order';
-      $tab[1]['name']          = __("Order number", "order");
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['checktype']     = 'text';
-      $tab[1]['displaytype']   = 'text';
-      $tab[1]['injectable']    = true;
-      $tab[1]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 1,
+         'table'         => self::getTable(),
+         'field'         => 'num_order',
+         'name'          => __('Order number', 'order'),
+         'datatype'      => 'itemlink',
+         'checktype'     => 'text',
+         'displaytype'   => 'text',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
-      /* order_date */
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'order_date';
-      $tab[2]['name']          = __("Date of order", "order");
-      $tab[2]['datatype']      = 'date';
-      $tab[2]['checktype']     = 'date';
-      $tab[2]['displaytype']   = 'date';
-      $tab[2]['injectable']    = true;
-      $tab[2]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 2,
+         'table'         => self::getTable(),
+         'field'         => 'order_date',
+         'name'          => __('Date of order', 'order'),
+         'datatype'      => 'date',
+         'checktype'     => 'date',
+         'displaytype'   => 'date',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
-      /* taxes*/
-      $tab[3]['table']         = 'glpi_plugin_order_ordertaxes';
-      $tab[3]['field']         = 'name';
-      $tab[3]['name']          = __("VAT", "order")." ".__("Postage", "order");
-      $tab[3]['datatype']      = 'dropdown';
-      $tab[3]['checktype']     = 'text';
-      $tab[3]['displaytype']   = 'dropdown';
-      $tab[3]['injectable']    = true;
-      $tab[3]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 3,
+         'table'         => 'glpi_plugin_order_ordertaxes',
+         'field'         => 'name',
+         'name'          => __('VAT', 'order') . ' ' . __('Postage', 'order'),
+         'datatype'      => 'dropdown',
+         'checktype'     => 'text',
+         'displaytype'   => 'dropdown',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
-      /* location */
-      $tab[4]['table']         = 'glpi_locations';
-      $tab[4]['field']         = 'completename';
-      $tab[4]['name']          = __("Delivery location", "order");
-      $tab[4]['datatype']      = 'itemlink';
-      $tab[4]['checktype']     = 'text';
-      $tab[4]['displaytype']   = 'dropdown';
-      $tab[4]['injectable']    = true;
-      $tab[4]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 4,
+         'table'         => 'glpi_locations',
+         'field'         => 'completename',
+         'name'          => __('Delivery location', 'order'),
+         'datatype'      => 'itemlink',
+         'checktype'     => 'text',
+         'displaytype'   => 'dropdown',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
-      /* status */
-      $tab[5]['table']         = 'glpi_plugin_order_orderstates';
-      $tab[5]['field']         = 'name';
-      $tab[5]['name']          = __("Order status", "order");
-      $tab[5]['datatype']      = 'dropdown';
-      $tab[5]['checktype']     = 'text';
-      $tab[5]['displaytype']   = 'dropdown';
-      $tab[5]['injectable']    = true;
-      $tab[5]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 5,
+         'table'         => 'glpi_plugin_order_orderstates',
+         'field'         => 'name',
+         'name'          => __('Order status', 'order'),
+         'datatype'      => 'dropdown',
+         'checktype'     => 'text',
+         'displaytype'   => 'dropdown',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
-      /* supplier */
-      $tab[6]['table']         = 'glpi_suppliers';
-      $tab[6]['field']         = 'name';
-      $tab[6]['name']          = __("Supplier");
-      $tab[6]['datatype']      = 'itemlink';
-      $tab[6]['itemlink_type'] = 'Supplier';
-      $tab[6]['forcegroupby']  = true;
-      $tab[6]['checktype']     = 'text';
-      $tab[6]['displaytype']   = 'dropdown';
-      $tab[6]['injectable']    = true;
-      $tab[6]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 6,
+         'table'         => 'glpi_suppliers',
+         'field'         => 'name',
+         'name'          => __('Supplier'),
+         'datatype'      => 'itemlink',
+         'itemlink_type' => 'Supplier',
+         'forcegroupby'  => true,
+         'checktype'     => 'text',
+         'displaytype'   => 'dropdown',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
-      /* payment */
-      $tab[7]['table']         = 'glpi_plugin_order_orderpayments';
-      $tab[7]['field']         = 'name';
-      $tab[7]['name']          = __("Payment conditions", "order");
-      $tab[7]['datatype']      = 'dropdown';
-      $tab[7]['checktype']     = 'text';
-      $tab[7]['displaytype']   = 'dropdown';
-      $tab[7]['injectable']    = true;
-      $tab[7]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 7,
+         'table'         => 'glpi_plugin_order_orderpayments',
+         'field'         => 'name',
+         'name'          => __('Payment conditions', 'order'),
+         'datatype'      => 'dropdown',
+         'checktype'     => 'text',
+         'displaytype'   => 'dropdown',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
-      /* contact */
-      $tab[8]['table']         = 'glpi_contacts';
-      $tab[8]['field']         = 'name';
-      $tab[8]['name']          = __("Alternate username");
-      $tab[8]['datatype']      = 'itemlink';
-      $tab[8]['itemlink_type'] = 'Contact';
-      $tab[8]['forcegroupby']  = true;
-      $tab[8]['checktype']     = 'text';
-      $tab[8]['displaytype']   = 'dropdown';
-      $tab[8]['injectable']    = true;
-      $tab[8]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 8,
+         'table'         => 'glpi_contacts',
+         'field'         => 'name',
+         'name'          => __('Alternate username'),
+         'datatype'      => 'itemlink',
+         'itemlink_type' => 'Contact',
+         'forcegroupby'  => true,
+         'checktype'     => 'text',
+         'displaytype'   => 'dropdown',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
-      /* budget */
-      $tab[9]['table']         = 'glpi_budgets';
-      $tab[9]['field']         = 'name';
-      $tab[9]['name']          = __("Budget");
-      $tab[9]['datatype']      = 'itemlink';
-      $tab[9]['itemlink_type'] = 'Budget';
-      $tab[9]['forcegroupby']  = true;
-      $tab[9]['checktype']     = 'text';
-      $tab[9]['displaytype']   = 'dropdown';
-      $tab[9]['injectable']    = true;
-      $tab[9]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 9,
+         'table'         => 'glpi_budgets',
+         'field'         => 'name',
+         'name'          => __('Budget'),
+         'datatype'      => 'itemlink',
+         'itemlink_type' => 'Budget',
+         'forcegroupby'  => true,
+         'checktype'     => 'text',
+         'displaytype'   => 'dropdown',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
-      /* title */
-      $tab[10]['table']         = $this->getTable();
-      $tab[10]['field']         = 'name';
-      $tab[10]['name']          = __("Order name", "order");
-      $tab[10]['searchtype']    = 'contains';
-      $tab[10]['checktype']     = 'text';
-      $tab[10]['displaytype']   = 'text';
-      $tab[10]['injectable']    = true;
-      $tab[10]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 10,
+         'table'         => self::getTable(),
+         'field'         => 'name',
+         'name'          => __('Order name', 'order'),
+         'searchtype'    => 'contains',
+         'checktype'     => 'text',
+         'displaytype'   => 'text',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
-      /* type */
-      $tab[11]['table']         = 'glpi_plugin_order_ordertypes';
-      $tab[11]['field']         = 'name';
-      $tab[11]['name']          = __("Type");
-      $tab[11]['datatype']      = 'dropdown';
-      $tab[11]['checktype']     = 'text';
-      $tab[11]['displaytype']   = 'dropdown';
-      $tab[11]['injectable']    = true;
-      $tab[11]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 11,
+         'table'         => 'glpi_plugin_order_ordertypes',
+         'field'         => 'name',
+         'name'          => __('Type'),
+         'datatype'      => 'dropdown',
+         'checktype'     => 'text',
+         'displaytype'   => 'dropdown',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
-      /* order_date */
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'duedate';
-      $tab[12]['name']          = __("Estimated due date", "order");
-      $tab[12]['datatype']      = 'date';
-      $tab[12]['checktype']     = 'date';
-      $tab[12]['displaytype']   = 'date';
-      $tab[12]['injectable']    = true;
-      $tab[12]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 12,
+         'table'         => self::getTable(),
+         'field'         => 'duedate',
+         'name'          => __('Estimated due date', 'order'),
+         'datatype'      => 'date',
+         'checktype'     => 'date',
+         'displaytype'   => 'date',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
-      /* order_date */
-      $tab[13]['table']         = $this->getTable();
-      $tab[13]['field']         = 'deliverydate';
-      $tab[13]['name']          = __("Delivery date");
-      $tab[13]['datatype']      = 'date';
-      $tab[13]['checktype']     = 'date';
-      $tab[13]['displaytype']   = 'date';
-      $tab[13]['injectable']    = true;
-      $tab[13]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 13,
+         'table'         => self::getTable(),
+         'field'         => 'deliverydate',
+         'name'          => __('Delivery due date'),
+         'datatype'      => 'date',
+         'checktype'     => 'date',
+         'displaytype'   => 'date',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
-      /* order_date */
-      $tab[14]['table']         = $this->getTable();
-      $tab[14]['field']         = 'is_late';
-      $tab[14]['name']          = __("Order is late", "order");
-      $tab[14]['datatype']      = 'bool';
-      $tab[14]['checktype']     = 'bool';
-      $tab[14]['displaytype']   = 'bool';
-      $tab[14]['injectable']    = true;
-      $tab[14]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 14,
+         'table'         => self::getTable(),
+         'field'         => 'is_late',
+         'name'          => __('Order is late', 'order'),
+         'datatype'      => 'bool',
+         'checktype'     => 'bool',
+         'displaytype'   => 'bool',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
-      $tab[15]['table']         = $this->getTable();
-      $tab[15]['field']         = 'is_helpdesk_visible';
-      $tab[15]['name']          = __("Associable to a ticket");
-      $tab[15]['datatype']      = 'bool';
-      $tab[15]['injectable']    = true;
-      $tab[15]['massiveaction'] = true;
+      $tab[] = [
+         'id'            => 15,
+         'table'         => self::getTable(),
+         'field'         => 'is_helpdesk_visible',
+         'name'          => __('Associable to a ticket'),
+         'datatype'      => 'bool',
+         'injectable'    => true,
+         'massiveaction' => true,
+      ];
 
-      /* comments */
-      $tab[16]['table']         = $this->getTable();
-      $tab[16]['field']         = 'comment';
-      $tab[16]['name']          = __("Description");
-      $tab[16]['datatype']      = 'text';
-      $tab[16]['checktype']     = 'text';
-      $tab[16]['displaytype']   = 'multiline_text';
-      $tab[16]['injectable']    = true;
-      $tab[16]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 16,
+         'table'         => self::getTable(),
+         'field'         => 'comment',
+         'name'          => __('Description'),
+         'datatype'      => 'text',
+         'checktype'     => 'text',
+         'displaytype'   => 'multiline_text',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
-      /* port price */
-      $tab[17]['table']         = $this->getTable();
-      $tab[17]['field']         = 'port_price';
-      $tab[17]['name']          = __("Postage", "order");
-      $tab[17]['datatype']      = 'decimal';
-      $tab[17]['checktype']     = 'text';
-      $tab[17]['displaytype']   = 'text';
-      $tab[17]['injectable']    = true;
-      $tab[17]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 17,
+         'table'         => self::getTable(),
+         'field'         => 'port_price',
+         'name'          => __('Postage', 'order'),
+         'datatype'      => 'decimal',
+         'checktype'     => 'text',
+         'displaytype'   => 'text',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
-      $tab[24]['table']         = 'glpi_users';
-      $tab[24]['field']         = 'name';
-      $tab[24]['linkfield']     = 'users_id';
-      $tab[24]['datatype']      = 'itemlink';
-      $tab[24]['name']          = __("Author");
-      $tab[24]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 24,
+         'table'         => 'glpi_users',
+         'field'         => 'name',
+         'name'          => __('Author'),
+         'linkfield'     => 'users_id',
+         'datatype'      => 'itemlink',
+         'massiveaction' => false,
+      ];
 
-      $tab[25]['table']         = 'glpi_users';
-      $tab[25]['field']         = 'name';
-      $tab[25]['linkfield']     = 'users_id_delivery';
-      $tab[25]['datatype']      = 'itemlink';
-      $tab[25]['name']          = __("Recipient");
-      $tab[25]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 25,
+         'table'         => 'glpi_users',
+         'field'         => 'name',
+         'name'          => __('Recipient'),
+         'linkfield'     => 'users_id_delivery',
+         'datatype'      => 'itemlink',
+         'massiveaction' => false,
+      ];
 
-      $tab[26]['table']         = 'glpi_groups';
-      $tab[26]['field']         = 'name';
-      $tab[26]['linkfield']     = 'groups_id';
-      $tab[26]['datatype']      = 'dropdown';
-      $tab[26]['name']          = __("Author group", "order");
-      $tab[26]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 26,
+         'table'         => 'glpi_groups',
+         'field'         => 'name',
+         'name'          => __('Author group', 'order'),
+         'linkfield'     => 'groups_id',
+         'datatype'      => 'dropdown',
+         'massiveaction' => false,
+      ];
 
-      $tab[27]['table']         = 'glpi_groups';
-      $tab[27]['field']         = 'name';
-      $tab[27]['linkfield']     = 'groups_id_delivery';
-      $tab[27]['datatype']      = 'dropdown';
-      $tab[27]['name']          = __("Recipient group", "order");
-      $tab[27]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 27,
+         'table'         => 'glpi_groups',
+         'field'         => 'name',
+         'name'          => __('Recipient group', 'order'),
+         'linkfield'     => 'groups_id_delivery',
+         'datatype'      => 'dropdown',
+         'massiveaction' => false,
+      ];
 
-      /* id */
-      $tab[30]['table']         = $this->getTable();
-      $tab[30]['field']         = 'id';
-      $tab[30]['name']          = __("ID");
-      $tab[30]['injectable']    = false;
-      $tab[30]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 30,
+         'table'         => self::getTable(),
+         'field'         => 'id',
+         'name'          => __('ID'),
+         'injectable'    => false,
+         'massiveaction' => false,
+      ];
 
-      $tab[35]['table']         = $this->getTable();
-      $tab[35]['field']         = 'date_mod';
-      $tab[35]['massiveaction'] = false;
-      $tab[35]['name']          = __("Last update");
-      $tab[35]['datatype']      = 'datetime';
-      $tab[35]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 35,
+         'table'         => self::getTable(),
+         'field'         => 'date_mod',
+         'name'          => __('Last update'),
+         'datatype'      => 'datetime',
+         'massiveaction' => false,
+      ];
 
-      /* entity */
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = __("Entity");
-      $tab[80]['datatype']      = 'dropdown';
-      $tab[80]['injectable']    = false;
-      $tab[80]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 80,
+         'table'         => 'glpi_entities',
+         'field'         => 'completename',
+         'name'          => __('Entity'),
+         'datatype'      => 'dropdown',
+         'injectable'    => false,
+         'massiveaction' => false,
+      ];
 
-      $tab[86]['table']         = $this->getTable();
-      $tab[86]['field']         = 'is_recursive';
-      $tab[86]['name']          = __("Child entities");
-      $tab[86]['datatype']      = 'bool';
-      $tab[86]['massiveaction'] = false;
-      $tab[86]['checktype']     = 'bool';
-      $tab[86]['displaytype']   = 'bool';
-      $tab[86]['injectable']    = true;
-      $tab[86]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 86,
+         'table'         => self::getTable(),
+         'field'         => 'is_recursive',
+         'name'          => __('Child entities'),
+         'datatype'      => 'bool',
+         'checktype'     => 'bool',
+         'displaytype'   => 'bool',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
 
       return $tab;
    }
@@ -1623,7 +1681,7 @@ class PluginOrderOrder extends CommonDBTM {
 
             $listeArticles = [];
 
-            $result = $PluginOrderOrder_Item->queryDetail($ID);
+            $result = $PluginOrderOrder_Item->queryDetail($ID, 'glpi_plugin_order_references');
             $num    = $DB->numrows($result);
 
             while ($data = $DB->fetch_array($result)) {
@@ -1644,6 +1702,28 @@ class PluginOrderOrder extends CommonDBTM {
                   'price_discounted' => $data["price_discounted"] * $quantity,
                   'price_ati'        => $data["price_ati"]
                ];
+            }
+
+            $result = $PluginOrderOrder_Item->queryDetail($ID, 'glpi_plugin_order_referencefrees');
+            $num    = $DB->numrows($result);
+
+            while ($data=$DB->fetch_array($result)) {
+               $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID, $data["id"],
+                                                                                    $data["price_taxfree"],
+                                                                                    $data["discount"]);
+
+               $listeArticles[] = [
+                  'quantity'         => $quantity,
+                  'ref'              => utf8_decode($data["name"]),
+                  'taxe'             => Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTax"),
+                                                                  $data["plugin_order_ordertaxes_id"]),
+                  'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier(
+                     $data["id"],
+                     $this->fields["suppliers_id"]),
+                  'price_taxfree'    => $data["price_taxfree"],
+                  'discount'         => $data["discount"], false, 0,
+                  'price_discounted' => $data["price_discounted"] * $quantity,
+                  'price_ati'        => $data["price_ati"]];
             }
 
             $article = $odf->setSegment('articles');
@@ -2110,12 +2190,12 @@ class PluginOrderOrder extends CommonDBTM {
 
          // Get document category
          $documentCategory = new PluginOrderDocumentCategory();
-         if (!$documentCategory->getFromDBByQuery(" WHERE `documentcategories_id` = '".$document->input['documentcategories_id']."'")) {
+         if (!$documentCategory->getFromDBByCrit(['documentcategories_id' => $document->input['documentcategories_id']])) {
             $documentCategory->getEmpty();
          }
          // Get order linked to document
          $document_item = new Document_Item();
-         if ($document_item->getFromDBByQuery(" WHERE `documents_id` = '".$document->fields['id']."' AND `itemtype` = '".self::getType()."'")) {
+         if ($document_item->getFromDBByCrit(['documents_id' => $document->fields['id'], 'itemtype' => self::getType()])) {
             // Update document name
             $order = new self();
             $order->getFromDB($document_item->fields['items_id']);

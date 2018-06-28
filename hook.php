@@ -56,7 +56,8 @@ function plugin_order_install() {
                'PluginOrderOrder_Supplier', 'PluginOrderBill', 'PluginOrderOrderPayment',
                'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
-               'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderDocumentCategory'];
+               'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderDocumentCategory',
+               'PluginOrderReferenceFree'];
    foreach ($classes as $class) {
       if ($plug = isPluginItemType($class)) {
          $plugname = strtolower($plug['plugin']);

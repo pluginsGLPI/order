@@ -126,79 +126,117 @@ class PluginOrderBill extends CommonDropdown
       return $ong;
    }
 
+   public function rawSearchOptions() {
 
-   public function getSearchOptions() {
       $tab = [];
 
-      $tab['common']            = __("Bill", "order");
+      $tab[] = [
+         'id'            => 'common',
+         'name'          => __('Bill', 'order'),
+      ];
 
-      /* order_number */
-      $tab[1]['table']          = self::getTable();
-      $tab[1]['field']          = 'number';
-      $tab[1]['name']           = _x("phone", "Number");
-      $tab[1]['datatype']       = 'itemlink';
+      $tab[] = [
+         'id'            => 1,
+         'table'         => self::getTable(),
+         'field'         => 'number',
+         'name'          => _x('phone', 'Number'),
+         'datatype'      => 'itemlink',
+      ];
 
-      $tab[2]['table']          = self::getTable();
-      $tab[2]['field']          = 'billdate';
-      $tab[2]['name']           = __("Date");
-      $tab[2]['datatype']       = 'datetime';
+      $tab[] = [
+         'id'            => 2,
+         'table'         => self::getTable(),
+         'field'         => 'billdate',
+         'name'          => __('Date'),
+         'datatype'      => 'datetime',
+      ];
 
-      $tab[3]['table']          = self::getTable();
-      $tab[3]['field']          = 'validationdate';
-      $tab[3]['name']           = __("Approval date");
-      $tab[3]['datatype']       = 'datetime';
+      $tab[] = [
+         'id'            => 3,
+         'table'         => self::getTable(),
+         'field'         => 'validationdate',
+         'name'          => __('Approval date'),
+         'datatype'      => 'datetime',
+      ];
 
-      $tab[4]['table']          = User::getTable();
-      $tab[4]['field']          = 'name';
-      $tab[4]['linkfield']      = 'users_id_validation';
-      $tab[4]['name']           = __("Approver");
+      $tab[] = [
+         'id'            => 4,
+         'table'         => User::getTable(),
+         'field'         => 'name',
+         'linkfield'     => 'users_id_validation',
+         'name'          => __('Approver'),
+      ];
 
-      $tab[5]['table']          = PluginOrderBillType::getTable();
-      $tab[5]['field']          = 'name';
-      $tab[5]['name']           = __("Type");
+      $tab[] = [
+         'id'            => 5,
+         'table'         => PluginOrderBillType::getTable(),
+         'field'         => 'name',
+         'name'          => __('Type'),
+      ];
 
-      $tab[6]['table']          = PluginOrderBillState::getTable();
-      $tab[6]['field']          = 'name';
-      $tab[6]['name']           = __("Status");
+      $tab[] = [
+         'id'            => 6,
+         'table'         => PluginOrderBillState::getTable(),
+         'field'         => 'name',
+         'name'          => __('Status'),
+      ];
 
-      $tab[7]['table']          = Supplier::getTable();
-      $tab[7]['field']          = 'name';
-      $tab[7]['name']           = __("Supplier");
-      $tab[7]['datatype']       = 'itemlink';
-      $tab[7]['itemlink_type']  = 'Supplier';
+      $tab[] = [
+         'id'            => 7,
+         'table'         => Supplier::getTable(),
+         'field'         => 'name',
+         'name'          => __('Supplier'),
+         'datatype'      => 'itemlink',
+         'itemlink_type' => 'Supplier',
+      ];
 
-      $tab[8]['table']          = PluginOrderOrder::getTable();
-      $tab[8]['field']          = 'name';
-      $tab[8]['name']           = __("Order", "order");
-      $tab[8]['datatype']       = 'itemlink';
-      $tab[8]['itemlink_type']  = 'PluginOrderOrder';
+      $tab[] = [
+         'id'            => 8,
+         'table'         => PluginOrderOrder::getTable(),
+         'field'         => 'name',
+         'name'          => __('Order', 'order'),
+         'datatype'      => 'itemlink',
+         'itemlink_type' => 'PluginOrderOrder',
+      ];
 
-      $tab[9]['table']          = self::getTable();
-      $tab[9]['field']          = 'name';
-      $tab[9]['name']           = __("Name");
-      $tab[9]['datatype']       = 'itemlink';
+      $tab[] = [
+         'id'            => 9,
+         'table'         => self::getTable(),
+         'field'         => 'name',
+         'name'          => __('Name'),
+         'datatype'      => 'itemlink',
+      ];
 
-      /* comments */
-      $tab[16]['table']         = self::getTable();
-      $tab[16]['field']         = 'comment';
-      $tab[16]['name']          = __("Description");
-      $tab[16]['datatype']      = 'text';
+      $tab[] = [
+         'id'            => 16,
+         'table'         => self::getTable(),
+         'field'         => 'comment',
+         'name'          => __('Description'),
+         'datatype'      => 'text',
+      ];
 
-      /* ID */
-      $tab[30]['table']         = self::getTable();
-      $tab[30]['field']         = 'id';
-      $tab[30]['name']          = __("ID");
+      $tab[] = [
+         'id'            => 30,
+         'table'         => self::getTable(),
+         'field'         => 'id',
+         'name'          => __('ID'),
+      ];
 
-      /* entity */
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = __("Entity");
+      $tab[] = [
+         'id'            => 80,
+         'table'         => 'glpi_entities',
+         'field'         => 'completename',
+         'name'          => __('Entity'),
+      ];
 
-      $tab[86]['table']         = self::getTable();
-      $tab[86]['field']         = 'is_recursive';
-      $tab[86]['name']          = __("Child entities");
-      $tab[86]['datatype']      = 'bool';
-      $tab[86]['massiveaction'] = false;
+      $tab[] = [
+         'id'            => 86,
+         'table'         => self::getTable(),
+         'field'         => 'is_recursive',
+         'name'          => __('Child entities'),
+         'datatype'      => 'bool',
+         'massiveaction' => false,
+      ];
 
       return $tab;
    }
@@ -262,8 +300,14 @@ class PluginOrderBill extends CommonDropdown
                echo "<td class='center top'>";
                echo Dropdown::getDropdownName('glpi_entities', $item->getEntityID())."</td>";
 
-               $reference = new PluginOrderReference();
-               $reference->getFromDB($data["plugin_order_references_id"]);
+               if ($data['itemtype'] == 'PluginOrderReferenceFree') {
+                  $reference = new PluginOrderReferenceFree();
+                  $reference->getFromDB($data["plugin_order_references_id"]);
+               } else {
+                  $reference = new PluginOrderReference();
+                  $reference->getFromDB($data["plugin_order_references_id"]);
+               }
+
                echo "<td class='center'>";
                if (PluginOrderReference::canView()) {
                   echo $reference->getLink();
@@ -295,140 +339,170 @@ class PluginOrderBill extends CommonDropdown
                  && !$order->isPaid()
                  && !$order->isCanceled();
 
-      $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD,
-                     `glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id,
-                     `glpi_plugin_order_references`.`name`,
-                     `glpi_plugin_order_references`.`itemtype`,
-                     `glpi_plugin_order_references`.`manufacturers_id`
-                    FROM `glpi_plugin_order_orders_items`, `glpi_plugin_order_references`
-                    WHERE `plugin_order_orders_id` = '".$order->getID()."'
-                     AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`
-                    GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id`
-                    ORDER BY `glpi_plugin_order_references`.`name`";
+      $bill = new self();
+      $query_ref = $bill->queryRef($order->getID(), 'glpi_plugin_order_references');
       $result_ref = $DB->query($query_ref);
 
       while ($data_ref = $DB->fetch_array($result_ref)) {
-         echo "<div class='center'><table class='tab_cadre_fixe'>";
-         if (!$DB->numrows($result_ref)) {
-            echo "<tr><th>".__("No item to take delivery of", "order")."</th></tr></table></div>";
-         } else {
-            $order_item = new PluginOrderOrder_Item();
+         self::showOrder($data_ref, $result_ref, $canedit, $order, $reference, 'glpi_plugin_order_references');
+      }
 
-            $rand     = mt_rand();
-            $itemtype = $data_ref["itemtype"];
-            $item     = new $itemtype();
-            echo "<tr><th><ul><li>";
-            echo "<a href=\"javascript:showHideDiv('generation$rand','generation_img$rand', '"
-              .$CFG_GLPI['root_doc']."/pics/plus.png','".$CFG_GLPI['root_doc']."/pics/moins.png');\">";
-            echo "<img alt='' name='generation_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
-            echo "</a>";
-            echo "</li></ul></th>";
-            echo "<th>".__("Type")."</th>";
-            echo "<th>".__("Manufacturer")."</th>";
-            echo "<th>".__("Product reference", "order")."</th>";
-            echo "</tr>";
+      $query_reffree = $bill->queryRef($order->getID(), 'glpi_plugin_order_referencefrees');
+      $result_reffree = $DB->query($query_reffree);
 
-            echo "<tr class='tab_bg_1 center'>";
-            echo "<td></td>";
-            echo "<td align='center'>".$item->getTypeName()."</td>";
-
-            //Entity
-            echo "<td align='center'>";
-            echo Dropdown::getDropdownName('glpi_entities', $order->getEntityID());
-            echo "</td>";
-            echo "<td>".$reference->getReceptionReferenceLink($data_ref)."</td>";
-            echo "</tr></table>";
-
-            echo "<div class='center' id='generation$rand' style='display:none'>";
-            echo "<form method='post' name='bills_form$rand' id='bills_form$rand'
-                     action='".Toolbox::getItemTypeFormURL('PluginOrderBill')."'>";
-
-            echo Html::hidden('plugin_order_references_id', ['value' => $order->getID()]);
-
-            echo "<table class='tab_cadre_fixe'>";
-
-            echo "<th></th>";
-            echo "<th>".__("Reference")."</th>";
-            echo "<th>".__("Type")."</th>";
-            echo "<th>".__("Model")."</th>";
-            echo "<th>".__("Bill", "order")."</th>";
-            echo "<th>".__("Bill status", "order")."</th>";
-            echo "</tr>";
-
-            $results = $order_item->queryBills($order->getID(), $data_ref['id']);
-            while ($data = $DB->fetch_array($results)) {
-               echo "<tr class='tab_bg_1'>";
-               if ($canedit) {
-                  echo "<td width='10'>";
-                  $sel = "";
-                  if (isset($_GET["select"]) && $_GET["select"] == "all") {
-                     $sel = "checked";
-                  }
-                  echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
-                  echo Html::hidden('plugin_order_orders_id', ['value' => $order->getID()]);
-                  echo "</td>";
-               }
-
-               //Reference
-               echo "<td align='center'>";
-               echo $reference->getReceptionReferenceLink($data);
-               echo "</td>";
-
-               //Type
-               echo "<td align='center'>";
-               if (file_exists($CFG_GLPI['root_doc']."/inc/".strtolower($data["itemtype"])."type.class.php")) {
-                  echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"),
-                                                 $data["types_id"]);
-               }
-               echo "</td>";
-
-               //Model
-               echo "<td align='center'>";
-               if (file_exists($CFG_GLPI['root_doc']."/inc/".strtolower($data["itemtype"])."model.class.php")) {
-                  echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"),
-                                                 $data["models_id"]);
-               }
-               $bill = new PluginOrderBill();
-               echo "<td align='center'>";
-               if ($data["plugin_order_bills_id"] > 0) {
-                  if ($bill->can($data['plugin_order_bills_id'], READ)) {
-                     echo "<a href='".$bill->getLinkURL()."'>".$bill->getName(true)."</a>";
-                  } else {
-                     echo $bill->getName();
-                  }
-               }
-               echo "</td>";
-               echo "<td align='center'>";
-               echo Dropdown::getDropdownName(PluginOrderBillState::getTable(),
-                                              $data['plugin_order_billstates_id']);
-               echo "</td>";
-               echo "</tr>";
-            }
-         }
-         echo "</table>";
-
-         if ($canedit) {
-            echo "<div class='center'>";
-            echo "<table width='950px' class='tab_glpi'>";
-            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"].
-                 "/pics/arrow-left.png\" alt=''></td><td class='center'>";
-            echo "<a onclick= \"if (markCheckboxes('bills_form$rand')) ".
-                 "return false;\" href='#'>".__("Check all")."</a></td>";
-
-            echo "<td>/</td><td class='center'>";
-            echo "<a onclick= \"if (unMarkCheckboxes('bills_form$rand')) ".
-                 "return false;\" href='#'>".__("Uncheck all")."</a>";
-            echo "</td><td align='left' width='80%'>";
-            echo Html::hidden('plugin_order_orders_id', ['value' => $order->getID()]);
-            $order_item->dropdownBillItemsActions($order->getID());
-            echo "</td>";
-            echo "</table>";
-            echo "</div>";
-         }
-         Html::closeForm();
-         echo "</div>";
+      while ($data_reffree = $DB->fetch_array($result_reffree)) {
+         self::showOrder($data_reffree, $result_reffree, $canedit, $order, $reference, 'glpi_plugin_order_referencefrees');
       }
       echo "<br>";
+   }
+
+   public static function showOrder($data_ref, $result_ref, $canedit, $order, $reference, $table) {
+      global $DB, $CFG_GLPI;
+      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      if (!$DB->numrows($result_ref)) {
+         echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
+
+      } else {
+         $order_item = new PluginOrderOrder_Item();
+
+         $rand     = mt_rand();
+         $itemtype = $data_ref["itemtype"];
+         $item     = new $itemtype();
+         echo "<tr><th><ul><li>";
+         echo "<a href=\"javascript:showHideDiv('generation$rand','generation_img$rand', '"
+              . $CFG_GLPI['root_doc'] . "/pics/plus.png','" . $CFG_GLPI['root_doc'] . "/pics/moins.png');\">";
+         echo "<img alt='' name='generation_img$rand' src=\"" . $CFG_GLPI['root_doc'] . "/pics/plus.png\">";
+         echo "</a>";
+         echo "</li></ul></th>";
+         echo "<th>" . __("Type") . "</th>";
+         echo "<th>" . __("Manufacturer") . "</th>";
+         echo "<th>" . __("Product reference", "order") . "</th>";
+         echo "</tr>";
+
+         echo "<tr class='tab_bg_1 center'>";
+         echo "<td></td>";
+         echo "<td align='center'>" . $item->getTypeName() . "</td>";
+
+         //Entity
+         echo "<td align='center'>";
+         echo Dropdown::getDropdownName('glpi_entities', $order->getEntityID());
+         echo "</td>";
+         if ($table == 'glpi_plugin_order_referencefrees') {
+            echo "<td>" . $data_ref['name'] . "</td>";
+         } else {
+            echo "<td>" . $reference->getReceptionReferenceLink($data_ref) . "</td>";
+         }
+         echo "</tr></table>";
+
+         echo "<div class='center' id='generation$rand' style='display:none'>";
+         echo "<form method='post' name='bills_form$rand' id='bills_form$rand'
+                     action='" . Toolbox::getItemTypeFormURL('PluginOrderBill') . "'>";
+
+         echo Html::hidden('plugin_order_orders_id', ['value' => $order->getID()]);
+
+         echo "<table class='tab_cadre_fixe'>";
+
+         echo "<th></th>";
+         echo "<th>" . __("Reference") . "</th>";
+         echo "<th>" . __("Type") . "</th>";
+         echo "<th>" . __("Model") . "</th>";
+         echo "<th>" . __("Bill", "order") . "</th>";
+         echo "<th>" . __("Bill status", "order") . "</th>";
+         echo "</tr>";
+
+         $results = $order_item->queryBills($order->getID(), $data_ref['id'], $table);
+         while ($data = $DB->fetch_array($results)) {
+            echo "<tr class='tab_bg_1'>";
+            if ($canedit) {
+               echo "<td width='10'>";
+               $sel = "";
+               if (isset($_GET["select"]) && $_GET["select"] == "all") {
+                  $sel = "checked";
+               }
+               echo "<input type='checkbox' name='item[" . $data["IDD"] . "]' value='1' $sel>";
+               echo Html::hidden('plugin_order_orders_id', ['value' => $order->getID()]);
+               echo "</td>";
+            }
+
+            //Reference
+            echo "<td align='center'>";
+            echo $reference->getReceptionReferenceLink($data);
+            echo "</td>";
+
+            //Type
+            echo "<td align='center'>";
+            if (file_exists($CFG_GLPI['root_doc']."/inc/".strtolower($data["itemtype"])."type.class.php")) {
+               echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"),
+                                              $data["types_id"]);
+            }
+            echo "</td>";
+
+            //Model
+            echo "<td align='center'>";
+            if (file_exists($CFG_GLPI['root_doc']."/inc/".strtolower($data["itemtype"])."model.class.php")) {
+               echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"),
+                                              $data["models_id"]);
+            }
+            $bill = new PluginOrderBill();
+            echo "<td align='center'>";
+            if ($data["plugin_order_bills_id"] > 0) {
+               if ($bill->can($data['plugin_order_bills_id'], READ)) {
+                  echo "<a href='" . $bill->getLinkURL() . "'>" . $bill->getName(true) . "</a>";
+               } else {
+                  echo $bill->getName();
+               }
+            }
+            echo "</td>";
+            echo "<td align='center'>";
+            echo Dropdown::getDropdownName(getTableForItemType('PluginOrderBillState'),
+                                           $data['plugin_order_billstates_id']);
+            echo "</td>";
+            echo "</tr>";
+         }
+      }
+      echo "</table>";
+
+      if ($canedit) {
+         echo "<div class='center'>";
+         echo "<table width='950px' class='tab_glpi'>";
+         echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"]
+              . "/pics/arrow-left.png\" alt=''></td><td class='center'>";
+         echo "<a onclick= \"if ( markCheckboxes('bills_form$rand') ) "
+              . "return false;\" href='#'>" . __("Check all") . "</a></td>";
+
+         echo "<td>/</td><td class='center'>";
+         echo "<a onclick= \"if ( unMarkCheckboxes('bills_form$rand') ) "
+              . "return false;\" href='#'>" . __("Uncheck all") . "</a>";
+         echo "</td><td align='left' width='80%'>";
+         echo Html::hidden('plugin_order_orders_id', ['value' => $order->getID()]);
+         $order_item->dropdownBillItemsActions($order->getID());
+         echo "</td>";
+         echo "</table>";
+         echo "</div>";
+      }
+      Html::closeForm();
+      echo "</div>";
+   }
+
+   public function queryRef($ID, $table) {
+      if ($table == 'glpi_plugin_order_references') {
+         $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` NOT LIKE 'PluginOrderReferenceFree' ";
+      } else {
+         $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` LIKE 'PluginOrderReferenceFree' ";
+      }
+
+      $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
+                   "`glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, " .
+                   "ref.`name`, " .
+                   "ref.`itemtype`, " .
+                   "ref.`manufacturers_id` " .
+                   "FROM `glpi_plugin_order_orders_items`, `" . $table . "` ref " .
+                   "WHERE `glpi_plugin_order_orders_items`.`plugin_order_orders_id` = '" . $ID . "' " .
+                   "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = ref.`id` " .
+                   $condition .
+                   "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
+                   "ORDER BY ref.`name`";
+      return $query_ref;
    }
 
 

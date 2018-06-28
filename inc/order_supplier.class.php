@@ -46,37 +46,54 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       return __("Supplier Detail", "order");
    }
 
+   public function rawSearchOptions() {
 
-   public function getSearchOptions() {
-      $tab                     = [];
+      $tab = [];
 
-      $tab['common']           = __("Supplier Detail", "order");
+      $tab[] = [
+         'id'            => 'common',
+         'name'          => __('Supplier Detail', 'order'),
+      ];
 
-      $tab[1]['table']         = self::getTable();
-      $tab[1]['field']         = 'num_quote';
-      $tab[1]['name']          = __("Quote number", "order");
-      $tab[1]['datatype']      = 'text';
+      $tab[] = [
+         'id'            => 1,
+         'table'         => self::getTable(),
+         'field'         => 'num_quote',
+         'name'          => __('Quote number', 'order'),
+         'datatype'      => 'text',
+      ];
 
-      $tab[2]['table']         = self::getTable();
-      $tab[2]['field']         = 'num_order';
-      $tab[2]['name']          = __("Order number");
-      $tab[2]['datatype']      = 'text';
+      $tab[] = [
+         'id'            => 2,
+         'table'         => self::getTable(),
+         'field'         => 'num_order',
+         'name'          => __('Order number'),
+         'datatype'      => 'text',
+      ];
 
-      $tab[4]['table']         = 'glpi_suppliers';
-      $tab[4]['field']         = 'name';
-      $tab[4]['name']          = __("Supplier");
-      $tab[4]['datatype']      = 'itemlink';
-      $tab[4]['itemlink_type'] = 'Supplier';
-      $tab[4]['forcegroupby']  = true;
+      $tab[] = [
+         'id'            => 4,
+         'table'         => 'glpi_suppliers',
+         'field'         => 'name',
+         'name'          => __('Supplier'),
+         'datatype'      => 'itemlink',
+         'itemlink_type' => 'Supplier',
+         'forcegroupby'  => true,
+      ];
 
-      $tab[30]['table']        = self::getTable();
-      $tab[30]['field']        = 'id';
-      $tab[30]['name']         = __("ID");
+      $tab[] = [
+         'id'            => 30,
+         'table'         => self::getTable(),
+         'field'         => 'id',
+         'name'          => __('ID'),
+      ];
 
-      /* entity */
-      $tab[80]['table']        = 'glpi_entities';
-      $tab[80]['field']        = 'completename';
-      $tab[80]['name']         = __("Entity");
+      $tab[] = [
+         'id'            => 80,
+         'table'         => 'glpi_entities',
+         'field'         => 'completename',
+         'name'          => __('Entity'),
+      ];
 
       return $tab;
    }
