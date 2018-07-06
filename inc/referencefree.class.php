@@ -64,7 +64,7 @@ class PluginOrderReferenceFree extends CommonDBTM {
       global $DB;
 
       $table = getTableForItemType(__CLASS__);
-      if (!TableExists($table)) {
+      if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
          //Install
