@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Cédric Anne, 2018
 # Jérémy MOREAU <jmoreau.dev@gmail.com>, 2015
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-28 08:54+0000\n"
-"PO-Revision-Date: 2018-06-26 08:54+0000\n"
+"POT-Creation-Date: 2018-07-06 10:06+0000\n"
+"PO-Revision-Date: 2018-07-06 10:08+0000\n"
 "Last-Translator: Cédric Anne\n"
 "Language-Team: English (United Kingdom) (http://www.transifex.com/teclib/glpi-plugin-order/language/en_GB/)\n"
 "MIME-Version: 1.0\n"
@@ -205,12 +206,12 @@ msgstr "Plugin installation or upgrade"
 
 #: hook.php:87
 msgid "Can't create folder"
-msgstr ""
+msgstr "Can't create folder"
 
 #: hook.php:95
 #, php-format
 msgid "Cannot copy file %1$s to %2$s"
-msgstr ""
+msgstr "Cannot copy file %1$s to %2$s"
 
 #: hook.php:139 inc/ordertax.class.php:41 inc/order_item.class.php:335
 #: inc/order_item.class.php:431 inc/order_item.class.php:903
@@ -257,7 +258,7 @@ msgstr "Order"
 
 #: inc/referencefree.class.php:39
 msgid "Reference free"
-msgstr ""
+msgstr "Reference free"
 
 #: inc/config.class.php:103
 msgid "Plugin configuration"
@@ -317,7 +318,7 @@ msgstr "Transmit budget change to linked assets"
 
 #: inc/config.class.php:212
 msgid "Use free references"
-msgstr ""
+msgstr "Use free references"
 
 #: inc/config.class.php:220
 msgid "Automatic actions when delivery"
@@ -325,7 +326,7 @@ msgstr "Automatic actions when delivery"
 
 #: inc/config.class.php:234
 msgid "Asked"
-msgstr ""
+msgstr "Asked"
 
 #: inc/config.class.php:240
 msgid "Default state"
@@ -555,7 +556,7 @@ msgstr "Some fields cannont be modified because they belong to an order"
 
 #: inc/order_item.class.php:326
 msgid "Add to the order from the catalog"
-msgstr ""
+msgstr "Add to the order from the catalog"
 
 #: inc/order_item.class.php:409 inc/order_item.class.php:533
 msgid "Please select a supplier"
@@ -563,15 +564,15 @@ msgstr "Please select a supplier"
 
 #: inc/order_item.class.php:422
 msgid "Add to the order free items"
-msgstr ""
+msgstr "Add to the order free items"
 
 #: inc/order_item.class.php:427
 msgid "Product name"
-msgstr ""
+msgstr "Product name"
 
 #: inc/order_item.class.php:433
 msgid "Add the reference"
-msgstr ""
+msgstr "Add the reference"
 
 #: inc/order_item.class.php:704
 msgid "Equipment"
