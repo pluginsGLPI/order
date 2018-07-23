@@ -48,7 +48,7 @@ function plugin_order_install() {
    echo "<tr class='tab_bg_1'>";
    echo "<td align='center'>";
 
-   $migration = new Migration("1.5.2");
+   $migration = new Migration(PLUGIN_ORDER_VERSION);
    $classes = ['PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',
                'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',
                'PluginOrderReference', 'PluginOrderDeliveryState',
@@ -388,8 +388,6 @@ function plugin_datainjection_populate_order() {
 
 
 function plugin_order_AssignToTicket($types) {
-   if (Session::haveRight("plugin_order_order", PluginOrderOrder::RIGHT_OPENTICKET)) {
-      $types['PluginOrderOrder'] = __("Order", "order");
-   }
+   $types['PluginOrderOrder'] = __("Order", "order");
    return $types;
 }
