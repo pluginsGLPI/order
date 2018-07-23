@@ -1689,11 +1689,13 @@ class PluginOrderOrder extends CommonDBTM {
                                                                              $data["price_taxfree"],
                                                                              $data["discount"]);
 
+               $tax = new PluginOrderOrderTax();
+               $tax->getFromDB($data["plugin_order_ordertaxes_id"]);
+
                $listeArticles[] = [
                   'quantity'         => $quantity,
                   'ref'              => utf8_decode($data["name"]),
-                  'taxe'             => Dropdown::getDropdownName(PluginOrderOrderTax::getTable(),
-                                                                  $data["plugin_order_ordertaxes_id"]),
+                  'taxe'             => $tax->getRate(),
                   'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier(
                                           $data["id"],
                                           $this->fields["suppliers_id"]),
@@ -1712,11 +1714,13 @@ class PluginOrderOrder extends CommonDBTM {
                                                                                     $data["price_taxfree"],
                                                                                     $data["discount"]);
 
+               $tax = new PluginOrderOrderTax();
+               $tax->getFromDB($data["plugin_order_ordertaxes_id"]);
+
                $listeArticles[] = [
                   'quantity'         => $quantity,
                   'ref'              => utf8_decode($data["name"]),
-                  'taxe'             => Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTax"),
-                                                                  $data["plugin_order_ordertaxes_id"]),
+                  'taxe'             => $tax->getRate(),
                   'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier(
                      $data["id"],
                      $this->fields["suppliers_id"]),
