@@ -215,6 +215,13 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
+      echo "<tr class='tab_bg_1' align='center'>";
+      echo "<td>" . __("Rename documents added in order", 'order') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("rename_documents", $this->fields["rename_documents"]);
+      echo "</td>";
+      echo "</tr>";
+
       // Automatic actions
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<th colspan='2'>".__("Automatic actions when delivery", "order")."</th>";
