@@ -1691,7 +1691,7 @@ class PluginOrderOrder extends CommonDBTM {
 
                $listeArticles[] = [
                   'quantity'         => $quantity,
-                  'ref'              => utf8_decode($data["name"]),
+                  'ref'              => $data["name"],
                   'taxe'             => Dropdown::getDropdownName(PluginOrderOrderTax::getTable(),
                                                                   $data["plugin_order_ordertaxes_id"]),
                   'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier(
@@ -1714,7 +1714,7 @@ class PluginOrderOrder extends CommonDBTM {
 
                $listeArticles[] = [
                   'quantity'         => $quantity,
-                  'ref'              => utf8_decode($data["name"]),
+                  'ref'              => $data["name"],
                   'taxe'             => Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTax"),
                                                                   $data["plugin_order_ordertaxes_id"]),
                   'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier(
@@ -1728,20 +1728,30 @@ class PluginOrderOrder extends CommonDBTM {
 
             $article = $odf->setSegment('articles');
             foreach ($listeArticles AS $element) {
-               $article->nbA($element['quantity']);
-               $article->titleArticle($element['ref']);
-               $article->refArticle($element['refnumber']);
-               $article->TVAArticle($element['taxe']);
-               $article->HTPriceArticle(Html::clean(Html::formatNumber($element['price_taxfree'])));
+               $articleValues = [];
+               $articleValues['nbA'] = $element['quantity'];
+               $articleValues['titleArticle'] = $element['ref'];
+               $articleValues['refArticle'] = $element['refnumber'];
+               $articleValues['TVAArticle'] = $element['taxe'];
+               $articleValues['HTPriceArticle'] = Html::clean(Html::formatNumber($element['price_taxfree']));
                if ($element['discount'] != 0) {
-                  $article->discount(Html::clean(Html::formatNumber($element['discount']))." %");
+                  $articleValues['discount'] = Html::clean(Html::formatNumber($element['discount']))." %";
                } else {
-                  $article->discount("");
+                  $articleValues['discount'] = "";
                }
-               $article->HTPriceTotalArticle(Html::clean(Html::formatNumber($element['price_discounted'])));
+               $articleValues['HTPriceTotalArticle'] = Html::clean(Html::formatNumber($element['price_discounted']));
 
                $total_TTC_Article = $element['price_discounted'] * (1 + ($element['taxe'] / 100));
-               $article->ATIPriceTotalArticle(Html::clean(Html::formatNumber($total_TTC_Article)));
+               $articleValues['ATIPriceTotalArticle'] = Html::clean(Html::formatNumber($total_TTC_Article));
+
+               // Set variables in odt segment
+               foreach ($articleValues as $field => $val) {
+                  try {
+                     $article->setVars($field, $val, true, 'UTF-8');
+                  } catch (\Odtphp\Exceptions\OdfException $e) {
+                     $is_cs_happy = true;
+                  }
+               }
                $article->merge();
             }
 
