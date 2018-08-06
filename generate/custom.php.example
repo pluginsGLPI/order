@@ -32,12 +32,11 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
    global $DB;
 
    $order = new PluginOrderOrder();
-   $odf->setImage('logo', '../logo/logo.jpg');
    $order->getFromDB($ID);
    $PluginOrderOrder_Item         = new PluginOrderOrder_Item();
    $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 
-   $odf->setImage('logo', '../logo/logo.jpg');
+   $odf->setImage('logo', PLUGIN_ORDER_TEMPLATE_LOGO_DIR.'/logo.jpg');
 
    $odf->setVars('title_order', __("Order number", "order"), true, 'UTF-8');
    $odf->setVars('num_order', $order->fields["num_order"], true, 'UTF-8');
@@ -193,7 +192,7 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
    $odf->setVars('title_sign',__("Signature of issuing order", "order"),true,'UTF-8');
 
    if ($signature) {
-      $odf->setImage('sign', '../signatures/'.$signature);
+      $odf->setImage('sign', PLUGIN_ORDER_SIGNATURE_DIR . $signature);
    } else {
       $odf->setImage('sign', '../pics/nothing.gif');
    }
