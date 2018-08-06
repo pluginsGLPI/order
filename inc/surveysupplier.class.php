@@ -277,9 +277,10 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          $this->check($ID, READ);
       } else {
          // Create item
-         $this->check(-1, UPDATE, [
+         $input = [
             'plugin_order_orders_id' => $options['plugin_order_orders_id']
-         ]);
+         ];
+         $this->check(-1, UPDATE, $input);
       }
 
       $this->initForm($ID, $options);
