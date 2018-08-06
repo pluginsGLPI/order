@@ -380,7 +380,7 @@ class PluginOrderReception extends CommonDBChild {
                              ref.`name`,
                              ref.`itemtype`,
                              items.`items_id`
-                    FROM `glpi_plugin_order_orders_items` as items, 
+                    FROM `glpi_plugin_order_orders_items` as items,
                          `".$table."` as ref
                     WHERE items.`plugin_order_orders_id` = '$orders_id'
                     AND items.`plugin_order_references_id` = '" . $references_id . "'
@@ -884,6 +884,12 @@ class PluginOrderReception extends CommonDBChild {
    * return nothing
    */
    public static function generateAsset($options = []) {
+      // No asset should be generated for PluginOrderOther and PluginOrderReferenceFree items.
+      if (array_key_exists('itemtype', $options)
+          && (in_array($options['itemtype'], [PluginOrderOther::class, PluginOrderReferenceFree::class]))) {
+         return;
+      }
+
       // Retrieve configuration for generate assets feature
       $config = PluginOrderConfig::getConfig();
       if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_YES
