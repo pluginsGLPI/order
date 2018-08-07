@@ -57,15 +57,20 @@ class PluginOrderOrder extends CommonDBTM {
    const ORDER_IS_EQUAL_BUDGET     = 2;
    const ORDER_IS_UNDER_BUDGET     = 3;
 
-   // additionnals rights
+   /**
+    * @var integer
+    * @deprecated 2.1.2 Useless right. Update process will remove it from profiles rights.
+    */
    const RIGHT_OPENTICKET                       = 128;
+
+   // additionnals rights
    const RIGHT_VALIDATION                       = 256;
    const RIGHT_UNDO_VALIDATION                  = 512;
    const RIGHT_CANCEL                           = 1024;
    const RIGHT_GENERATEODT_WITHOUT_VALIDATION   = 2048;
    const RIGHT_GENERATEODT                      = 4096;
    const RIGHT_DELIVERY                         = 8192;
-   const ALLRIGHTS                              = 16383;
+   const ALLRIGHTS                              = 16255;
 
 
    public static function getTypeName($nb = 0) {
@@ -269,8 +274,6 @@ class PluginOrderOrder extends CommonDBTM {
          $values[self::RIGHT_UNDO_VALIDATION] = __("Edit a validated order", "order");
          $values[self::RIGHT_GENERATEODT_WITHOUT_VALIDATION] = __("Generate order without validation", "order");
       }
-
-      $values[self::RIGHT_OPENTICKET]         = __("Link order to a ticket", "order");
 
       return $values;
    }
@@ -2590,6 +2593,13 @@ class PluginOrderOrder extends CommonDBTM {
          $notification = new Notification();
          $notification->deleteByCriteria("`itemtype`='PluginOrderOrder_Item'");
       }
+
+      // Remove RIGHT_OPENTICKET
+      $DB->update(
+         ProfileRight::getTable(),
+         ['rights' => new QueryExpression(DB::quoteName('rights') . ' & ~' . self::RIGHT_OPENTICKET)],
+         ['name' => self::$rightname]
+      );
    }
 
 
