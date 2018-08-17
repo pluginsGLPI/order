@@ -933,7 +933,7 @@ class PluginOrderLink extends CommonDBChild {
                   $order->getFromDB($plugin_order_orders_id);
                   if (!countElementsInTable(
                      'glpi_contracts_suppliers',
-                     "`contracts_id`='$items_id' AND `suppliers_id`='".$order->fields['suppliers_id']."'")) {
+                     ['contracts_id' => $items_id, 'suppliers_id' => $order->fields['suppliers_id']])) {
 
                      $contract_supplier = new Contract_Supplier();
                      $contract_supplier->add([
@@ -1226,9 +1226,13 @@ class PluginOrderLink extends CommonDBChild {
 
 
    public static function countForOrder(PluginOrderOrder $item) {
-      return countElementsInTable('glpi_plugin_order_orders_items',
-                                  "`plugin_order_orders_id` = '".$item->getID()."' " .
-                                  "AND `states_id` = '".PluginOrderOrder::ORDER_DEVICE_DELIVRED."'");
+      return countElementsInTable(
+         'glpi_plugin_order_orders_items',
+         [
+            'plugin_order_orders_id' => $item->getID(),
+            'states_id' => PluginOrderOrder::ORDER_DEVICE_DELIVRED,
+         ]
+      );
    }
 
 
@@ -1273,15 +1277,20 @@ class PluginOrderLink extends CommonDBChild {
          $is_recursive = 0;
 
          foreach (getAllDatasFromTable('glpi_documents_items',
-                                       "`itemtype`='PluginOrderOrder'
-                                          AND `items_id`='$orders_id'") as $doc) {
+                                       ['itemtype' => 'PluginOrderOrder',
+                                        'items_id' => $orders_id]) as $doc) {
 
             //Create a new document
             $document->getFromDB($doc['documents_id']);
             if (($document->getEntityID() != $entity && !$document->fields['is_recursive'])
                || !in_array($entity, getSonsOf('glpi_entities', $document->getEntityID()))) {
-               $found_docs = getAllDatasFromTable('glpi_documents', "`entities_id`='$entity'
-                                                 AND `sha1sum`='".$document->fields['sha1sum']."'");
+               $found_docs = getAllDatasFromTable(
+                  'glpi_documents',
+                  [
+                     'entities_id' => $entity,
+                     'sha1sum' => $document->fields['sha1sum'],
+                  ]
+               );
                if (empty($found_docs)) {
                   $tmpdoc                = $document->fields;
                   $tmpdoc['entities_id'] = $entity;

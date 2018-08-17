@@ -431,8 +431,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
 
    public function checkIfSupplierSurveyExists($orders_id) {
       if ($orders_id) {
-         return (countElementsInTable(self::getTable(),
-                                      "`plugin_order_orders_id` = '$orders_id' "));
+         return (countElementsInTable(self::getTable(), ['plugin_order_orders_id' => $orders_id]));
       } else {
          return false;
       }

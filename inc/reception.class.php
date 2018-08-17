@@ -106,10 +106,14 @@ class PluginOrderReception extends CommonDBChild {
 
 
    public function checkItemStatus($plugin_order_orders_id, $plugin_order_references_id, $states_id) {
-      return countElementsInTable("glpi_plugin_order_orders_items",
-                                  "`plugin_order_orders_id` = '$plugin_order_orders_id'
-                                   AND `plugin_order_references_id` = '$plugin_order_references_id'
-                                   AND `states_id` = '$states_id'");
+      return countElementsInTable(
+         "glpi_plugin_order_orders_items",
+         [
+            'plugin_order_orders_id' => $plugin_order_orders_id,
+            'plugin_order_references_id' => $plugin_order_references_id,
+            'states_id' => $states_id,
+         ]
+      );
    }
 
 
@@ -935,7 +939,7 @@ class PluginOrderReception extends CommonDBChild {
 
    public static function countForOrder(PluginOrderOrder $item) {
       return countElementsInTable('glpi_plugin_order_orders_items',
-                                  "`plugin_order_orders_id` = '".$item->getID()."'");
+                                  ['plugin_order_orders_id' => $item->getID()]);
    }
 
 

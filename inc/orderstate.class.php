@@ -92,7 +92,7 @@ class PluginOrderOrderState extends CommonDropdown {
          6 => __("Canceled", "order"),
          7 => __("Paid", "order")
       ] as $id => $label) {
-         if (!countElementsInTable($table, "`id` = '$id'")) {
+         if (!countElementsInTable($table, ['id' => $id])) {
             $state->add([
                'id'   => $id,
                'name' => Toolbox::addslashes_deep($label)

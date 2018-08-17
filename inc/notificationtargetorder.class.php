@@ -222,7 +222,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       }
 
       if ($templates_id) {
-         if (!countElementsInTable($translation->getTable(), "`notificationtemplates_id`='$templates_id'")) {
+         if (!countElementsInTable($translation->getTable(), ['notificationtemplates_id' => $templates_id])) {
             $tmp = [];
             $tmp['notificationtemplates_id'] = $templates_id;
             $tmp['language']                 = '';
@@ -261,7 +261,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
             'Cancel Order'             => 'cancel',
          ];
          foreach ($notifs as $label => $name) {
-            if (!countElementsInTable("glpi_notifications", "`itemtype`='PluginOrderOrder' AND `event`='$name'")) {
+            if (!countElementsInTable("glpi_notifications", ['itemtype' => 'PluginOrderOrder', 'event' => $name])) {
                $notification_id = $notification->add([
                   'name'                     => $label,
                   'entities_id'              => 0,
@@ -303,7 +303,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       }
 
       if ($templates_id) {
-         if (!countElementsInTable($translation->getTable(), "`notificationtemplates_id`='$templates_id'")) {
+         if (!countElementsInTable($translation->getTable(), ['notificationtemplates_id' => $templates_id])) {
             $tmp = [];
             $tmp['notificationtemplates_id'] = $templates_id;
             $tmp['language']     = '';
@@ -329,7 +329,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
          $notifs       = ['Due date overtaken' => 'duedate'];
          foreach ($notifs as $label => $name) {
-            if (!countElementsInTable("glpi_notifications", "`itemtype`='PluginOrderOrder' AND `event`='$name'")) {
+            if (!countElementsInTable("glpi_notifications", ['itemtype' => 'PluginOrderOrder', 'event' => $name])) {
                $notification_id = $notification->add([
                   'name'                     => $label,
                   'entities_id'              => 0,
@@ -372,7 +372,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       }
 
       if ($templates_id) {
-         if (!countElementsInTable($translation->getTable(), "`notificationtemplates_id`='$templates_id'")) {
+         if (!countElementsInTable($translation->getTable(), ['notificationtemplates_id' => $templates_id])) {
             $tmp = [];
             $tmp['notificationtemplates_id'] = $templates_id;
             $tmp['language']                 = '';
@@ -395,7 +395,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
          $notifs = ['Order Delivered' => 'delivered'];
          foreach ($notifs as $label => $name) {
-            if (!countElementsInTable("glpi_notifications", "`itemtype`='PluginOrderOrder' AND `event` = '$name'")) {
+            if (!countElementsInTable("glpi_notifications", ['itemtype' => 'PluginOrderOrder', 'event' => $name])) {
                $notification_id = $notification->add([
                   'name'                     => $label,
                   'entities_id'              => 0,

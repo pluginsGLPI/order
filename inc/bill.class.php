@@ -541,7 +541,7 @@ class PluginOrderBill extends CommonDropdown
                if (!is_null($data['num_bill'])
                   && $data['num_bill'] != ''
                      && !countElementsInTable('glpi_plugin_order_bills',
-                                              "`number`='".$data['num_bill']."'")) {
+                                              ['number' => $data['num_bill']])) {
                   //create new bill and link it to the order
                   $tmp['name']                   = $tmp['number'] = $data['num_bill'];
 
