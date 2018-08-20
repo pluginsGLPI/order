@@ -298,8 +298,8 @@ class PluginOrderReference extends CommonDBTM {
 
       if (!isset($input["transfert"])
             && countElementsInTable(self::getTable(),
-                                    "`name` = '".$input["name"]."'
-                                     AND `entities_id` = '".$input["entities_id"]."'")) {
+                                    ['name' => $input["name"],
+                                     'entities_id' => $input["entities_id"]])) {
          Session::addMessageAfterRedirect(__("A reference with the same name still exists", "order"), false, ERROR);
          return false;
       }
@@ -322,7 +322,7 @@ class PluginOrderReference extends CommonDBTM {
       global $DB;
 
       $number = countElementsInTable("glpi_plugin_order_orders_items",
-                                     "`plugin_order_references_id` = '".$this->fields["id"]."'");
+                                     ['plugin_order_references_id' => $this->fields["id"]]);
       if ($number > 0) {
          return true;
       } else {
@@ -934,7 +934,7 @@ class PluginOrderReference extends CommonDBTM {
       }
 
       //If reference is not visible in the target entity : transfer it!
-      if (!countElementsInTableForEntity(self::getTable(), $entity, "`id`='".$this->getID()."'")) {
+      if (!countElementsInTableForEntity(self::getTable(), $entity, ['id' => $this->getID()])) {
          $input                = $this->fields;
          $input['entities_id'] = $entity;
          $oldref               = $input['id'];
@@ -980,7 +980,7 @@ class PluginOrderReference extends CommonDBTM {
       $newID = $this->add($target->fields);
 
       foreach (getAllDatasFromTable('glpi_plugin_order_references_suppliers',
-                                     "`plugin_order_references_id`='$ID'") as $refsup) {
+                                    ['plugin_order_references_id' => $ID]) as $refsup) {
          $reference_supplier = new  PluginOrderReference_Supplier();
          $refsup['plugin_order_references_id'] = $newID;
          unset($refsup['id']);
@@ -1294,8 +1294,9 @@ class PluginOrderReference extends CommonDBTM {
          $prefs = [1 => 1, 2 => 4, 4 => 5, 5 => 9, 6 => 6, 7 => 7];
          foreach ($prefs as $num => $rank) {
             if (!countElementsInTable("glpi_displaypreferences",
-                                       "`itemtype`='PluginOrderReference' AND `num`='$num'
-                                          AND `users_id`='0'")) {
+                                      ['itemtype' => 'PluginOrderReference',
+                                       'num'      => $num,
+                                       'users_id' => 0])) {
                $DB->query("INSERT INTO glpi_displaypreferences
                            VALUES (NULL,'PluginOrderReference','$num','$rank','0');");
             }

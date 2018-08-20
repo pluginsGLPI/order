@@ -55,16 +55,15 @@ class PluginOrderProfile extends CommonDBTM {
       $profileRight = new ProfileRight();
       foreach ($rights as $right => $value) {
          if (countElementsInTable('glpi_profilerights',
-                                  "`profiles_id`='$profiles_id'
-                                   AND `name`='$right'") && $drop_existing) {
+                                  ['profiles_id' => $profiles_id,
+                                   'name' => $right]) && $drop_existing) {
             $profileRight->deleteByCriteria([
                'profiles_id' => $profiles_id,
                'name'        => $right
             ]);
          }
          if (!countElementsInTable('glpi_profilerights',
-                                   "`profiles_id`='$profiles_id'
-                                    AND `name`='$right'")) {
+                                   ['profiles_id' => $profiles_id, 'name' => $right])) {
             $profileRight->add([
                'profiles_id' => $profiles_id,
                'name'        => $right,
@@ -261,7 +260,7 @@ class PluginOrderProfile extends CommonDBTM {
 
       //Add new rights in glpi_profilerights table
       foreach ($profile->getAllRights(true) as $data) {
-         if (countElementsInTable("glpi_profilerights", "`name` = '".$data['field']."'") == 0) {
+         if (!countElementsInTable("glpi_profilerights", ['name' => $data['field']])) {
             ProfileRight::addProfileRights([$data['field']]);
          }
       }

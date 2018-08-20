@@ -265,9 +265,13 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
 
    public function checkIFReferenceExistsInOrder($orders_id, $ref_id) {
-      return  (countElementsInTable($this->getTable(),
-                                    "`plugin_order_orders_id` = '$orders_id'
-                                       AND `plugin_order_references_id` = '$ref_id' "));
+      return (countElementsInTable(
+         $this->getTable(),
+         [
+            'plugin_order_orders_id' => $orders_id,
+            'plugin_order_references_id' => $ref_id,
+         ]
+      ));
    }
 
 
@@ -1123,12 +1127,16 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
 
    public function getDeliveredQuantity($orders_id, $references_id, $price_taxfree, $discount) {
-      return countElementsInTable(self::getTable(),
-                                  "`plugin_order_orders_id` = '$orders_id'
-                                    AND `plugin_order_references_id` = '$references_id'
-                                    AND `price_taxfree` LIKE '$price_taxfree'
-                                    AND `discount` LIKE '$discount'
-                                    AND `states_id` != '0' ");
+      return countElementsInTable(
+         self::getTable(),
+         [
+            'plugin_order_orders_id'     => $orders_id,
+            'plugin_order_references_id' => $references_id,
+            'price_taxfree'              => ['LIKE', $price_taxfree],
+            'discount'                   => ['LIKE', $discount],
+            'states_id'                  => ['!=', 0],
+         ]
+      );
    }
 
 
@@ -1175,10 +1183,14 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo $order->getLink(PluginOrderOrder::canView());
          echo "</td>";
 
-         $result = getAllDatasFromTable(self::getTable(),
-                                        "`plugin_order_orders_id`='".$infos['id']."'
-                                          AND `itemtype`='$itemtype'
-                                          AND `items_id`='$ID'");
+         $result = getAllDatasFromTable(
+            self::getTable(),
+            [
+               'plugin_order_orders_id' => $infos['id'],
+               'itemtype' => $itemtype,
+               'items_id' => $ID,
+            ]
+         );
          if (!empty($result)) {
             $link = array_shift($result);
             $reference = new PluginOrderReference();
@@ -1345,8 +1357,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       echo "</td></tr></table>";
 
       $table = self::getTable();
-      if (countElementsInTable($table, "`plugin_order_orders_id`='".$order->getID().
-                               "' GROUP BY `plugin_order_bills_id`")) {
+      if (countElementsInTable($table,
+                               ['WHERE' => ['plugin_order_orders_id' => $order->getID()],
+                                'GROUPBY' => 'plugin_order_bills_id'])) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th>".__("Name")."</th>";
          echo "<th>".__("Status")."</th>";
@@ -1790,14 +1803,18 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
    public static function countForOrder(PluginOrderOrder $item) {
       return countElementsInTable('glpi_plugin_order_orders_items',
-                                  "`plugin_order_orders_id` = '".$item->getID()."'");
+                                  ['plugin_order_orders_id' => $item->getID()]);
    }
 
 
    public static function countForItem(CommonDBTM $item) {
-      return countElementsInTable('glpi_plugin_order_orders_items',
-                                  "`itemtype`='".$item->getType()."'
-                                   AND `items_id` = '".$item->getID()."'");
+      return countElementsInTable(
+         'glpi_plugin_order_orders_items',
+         [
+            'itemtype' => $item->getType(),
+            'items_id' => $item->getID(),
+         ]
+      );
    }
 
 

@@ -694,8 +694,13 @@ class PluginOrderOrder extends CommonDBTM {
 
          // ADD Documents
          $docitem  = new Document_Item();
-         $restrict = "`items_id` = '".$this->input["_oldID"]."' AND `itemtype` = '".$this->getType()."'";
-         $docs     = getAllDatasFromTable("glpi_documents_items", $restrict);
+         $docs     = getAllDatasFromTable(
+            "glpi_documents_items",
+            [
+               'items_id' => $this->input["_oldID"],
+               'itemtype' => $this->getType(),
+            ]
+         );
          if (!empty($docs)) {
             foreach ($docs as $doc) {
                $docitem->add([
@@ -1442,9 +1447,9 @@ class PluginOrderOrder extends CommonDBTM {
    public function checkIfDetailExists($orders_id, $only_delivered = false) {
       if ($orders_id) {
          $detail = new PluginOrderOrder_Item();
-         $where  = "`plugin_order_orders_id`='$orders_id'";
+         $where  = ['plugin_order_orders_id' => $orders_id];
          if ($only_delivered) {
-            $where .= " AND `states_id` > 0";
+            $where['states_id'] = ['>', 0];
          }
          return (countElementsInTable("glpi_plugin_order_orders_items", $where));
       } else {
@@ -1993,7 +1998,7 @@ class PluginOrderOrder extends CommonDBTM {
    public static function updateBillState($ID) {
       $all_paid    = true;
       $order_items = getAllDatasFromTable(PluginOrderOrder_Item::getTable(),
-                                          "`plugin_order_orders_id`='$ID'");
+                                          ['plugin_order_orders_id' => $ID]);
       foreach ($order_items as $item) {
          if ($item['plugin_order_billstates_id'] == PluginOrderBillState::NOTPAID) {
             $all_paid = false;
@@ -2101,7 +2106,7 @@ class PluginOrderOrder extends CommonDBTM {
       $nblate = 0;
       $table  = self::getTable();
 
-      foreach (getAllDatasFromTable($table, "`is_template`='0'") as $values) {
+      foreach (getAllDatasFromTable($table, ['is_template' => 0]) as $values) {
          $order = new self();
          $order->fields = $values;
          if (!$order->fields['is_late'] && $order->shouldBeAlreadyDelivered(true)) {
@@ -2551,7 +2556,7 @@ class PluginOrderOrder extends CommonDBTM {
          $migration->addField($table, 'deliverydate', "DATETIME NULL");
          $migration->addField($table, "is_late", "TINYINT(1) NOT NULL DEFAULT '0'");
          $migration->addKey($table, "is_late");
-         if (!countElementsInTable('glpi_crontasks', "`name`='computeLateOrders'")) {
+         if (!countElementsInTable('glpi_crontasks', ['name' => 'computeLateOrders'])) {
             Crontask::Register(__CLASS__, 'computeLateOrders', HOUR_TIMESTAMP, [
                'param' => 24,
                'mode'  => CronTask::MODE_EXTERNAL
@@ -2582,8 +2587,9 @@ class PluginOrderOrder extends CommonDBTM {
          $prefs = [1 => 1, 2 => 2, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 10 => 10];
          foreach ($prefs as $num => $rank) {
             if (!countElementsInTable("glpi_displaypreferences",
-                                       "`itemtype`='PluginOrderOrder' AND `num`='$num'
-                                        AND `users_id`='0'")) {
+                                      ['itemtype' => 'PluginOrderOrder',
+                                       'num' => $num,
+                                       'users_id' => 0])) {
                $DB->query("INSERT INTO glpi_displaypreferences
                            VALUES (NULL,'PluginOrderOrder','$num','$rank','0');");
             }
