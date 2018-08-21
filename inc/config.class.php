@@ -591,7 +591,7 @@ class PluginOrderConfig extends CommonDBTM {
                         `transmit_budget_change` tinyint(1) NOT NULL default '0',
                         `use_free_reference` tinyint(1) NOT NULL default '0',
                         PRIMARY KEY  (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                     ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
                $DB->query($query) or die ($DB->error());
 
                $tobefilled = "TOBEFILLED";

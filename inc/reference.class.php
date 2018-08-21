@@ -1220,7 +1220,7 @@ class PluginOrderReference extends CommonDBTM {
                KEY `is_active` (`is_active`),
                KEY `is_deleted` (`is_deleted`),
                KEY date_mod (date_mod)
-            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
             $DB->query($query) or die ($DB->error());
 
       } else {

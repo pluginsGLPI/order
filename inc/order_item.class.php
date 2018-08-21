@@ -1691,7 +1691,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                KEY `plugin_order_references_id` (`plugin_order_references_id`),
                KEY `plugin_order_deliverystates_id` (`plugin_order_deliverystates_id`),
                KEY `states_id` (`states_id`)
-            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
             $DB->query($query) or die ($DB->error());
       } else {
          //Upgrade

@@ -59,7 +59,7 @@ class PluginOrderOther extends CommonDBTM {
                   KEY `name` (`name`),
                   KEY `entities_id` (`entities_id`),
                   KEY `othertypes_id` (`othertypes_id`)
-               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die ($DB->error());
       }
    }

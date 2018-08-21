@@ -243,7 +243,7 @@ class PluginOrderPreference extends CommonDBTM {
                   `sign` varchar(255) collate utf8_unicode_ci default NULL,
                   PRIMARY KEY  (`id`),
                   KEY `users_id` (`users_id`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+               ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die ($DB->error());
       } else {
 

@@ -530,7 +530,7 @@ class PluginOrderBill extends CommonDropdown
                     `is_recursive` int(11) NOT NULL DEFAULT '0',
                     `notepad` text COLLATE utf8_unicode_ci,
                     PRIMARY KEY (`id`)
-                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
+                  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
          $DB->query($query) or die ($DB->error());
       } else {
          if ($DB->fieldExists("glpi_plugin_order_orders_suppliers", "num_bill")) {

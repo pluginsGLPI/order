@@ -463,7 +463,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
                   KEY `plugin_order_orders_id` (`plugin_order_orders_id`),
                   KEY `entities_id` (`entities_id`),
                   KEY `suppliers_id` (`suppliers_id`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+               ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die($DB->error());
       } else {
          //upgrade
