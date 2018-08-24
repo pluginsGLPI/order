@@ -687,13 +687,9 @@ class PluginOrderConfig extends CommonDBTM {
                      'order_status_paid'                => 7];
 
       foreach ($new_states as $field => $value) {
-         $migration->addField($table, $field, "int(11) NOT NULL default '0'");
+         $migration->addField($table, $field, "int(11) NOT NULL default '0'", ['update' => $value]);
       }
       $migration->migrationOneTable($table);
-
-      $new_states['id'] = 1;
-      $config->update($new_states);
-
    }
 
 
