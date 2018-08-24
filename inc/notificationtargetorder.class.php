@@ -39,6 +39,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
    const DELIVERY_GROUP            = 33;
    const SUPERVISOR_AUTHOR_GROUP   = 34;
    const SUPERVISOR_DELIVERY_GROUP = 35;
+   const SUPPLIER                  = 36;
+   const CONTACT                   = 37;
 
 
    public function getEvents() {
@@ -164,6 +166,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          'order.author.phone'          => __("Author").' - '.__("Phone"),
          'order.deliveryuser.name'     => __("Recipient"),
          'order.deliveryuser.phone'    => __("Recipient").' - '.__("Phone"),
+
       ];
 
       foreach ($tags as $tag => $label) {
@@ -467,6 +470,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       $this->addTarget(self::DELIVERY_GROUP, __("Recipient group", "order"));
       $this->addTarget(self::SUPERVISOR_AUTHOR_GROUP, __("Manager")." ".__("Author group", "order"));
       $this->addTarget(self::SUPERVISOR_DELIVERY_GROUP, __("Manager")." ".__("Recipient group", "order"));
+      $this->addTarget(self::SUPPLIER, __('Supplier'));
+      $this->addTarget(self::CONTACT, __('Contact'));
    }
 
 
@@ -490,6 +495,33 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          case self::SUPERVISOR_DELIVERY_GROUP:
             $this->addForGroup(1, $this->obj->fields['groups_id_delivery']);
             break;
+        case self::SUPPLIER:
+            $this->getAddressByType("suppliers", $this->obj->fields['id']);
+            break;
+        case self::CONTACT:
+            $this->getAddressByType("contacts", $this->obj->fields['id']);
+            break;
+      }
+   }
+
+      /**
+    * Get supplier or contact related to the order
+    *
+    * @param $recipient_type  recipient type(suppliers or contacts)
+    *
+    * @param $order_id        order id
+    *
+   **/
+   function getAddressByType($recipient_type, $order_id) {
+      global $DB;
+      $query = "SELECT glpi_".$recipient_type.".email AS email,glpi_".$recipient_type.".name AS name
+                FROM glpi_plugin_order_orders
+                LEFT JOIN glpi_".$recipient_type."
+                ON (glpi_plugin_order_orders.".$recipient_type."_id = glpi_".$recipient_type.".id)
+                WHERE glpi_plugin_order_orders.id = $order_id";
+
+      foreach ($DB->request($query) as $data) {
+        $this->addToRecipientsList($data);
       }
    }
 
