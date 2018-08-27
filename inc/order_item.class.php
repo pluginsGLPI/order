@@ -705,7 +705,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "</a>";
          echo "</li></ul></th>";
          echo "<th>" . __("Quantity", "order") . "</th>";
-         echo "<th>" . __("Equipment", "order") . "</th>";
+         echo "<th>" . __("Assets") . "</th>";
          echo "<th>" . __("Manufacturer") . "</th>";
          echo "<th>" . __("Reference") . "</th>";
          echo "<th>" . __("Type") . "</th>";
@@ -1452,7 +1452,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "<img alt='' name='generation_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
          echo "</a>";
          echo "</li></ul></th>";
-         echo "<th>" . __("Type") . "</th>";
+         echo "<th>" . __("Assets") . "</th>";
          echo "<th>" . __("Manufacturer") . "</th>";
          echo "<th>" . __("Product reference", "order") . "</th>";
          echo "</tr>";

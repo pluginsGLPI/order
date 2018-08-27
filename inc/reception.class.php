@@ -345,7 +345,7 @@ class PluginOrderReception extends CommonDBChild {
          echo "<img alt='' name='reception_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
          echo "</a>";
          echo "</li></ul></th>";
-         echo "<th>" . __("Type") . "</th>";
+         echo "<th>" . __("Assets") . "</th>";
          echo "<th>" . __("Manufacturer") . "</th>";
          echo "<th>" . __("Product reference", "order") . "</th>";
          echo "<th>" . __("Delivered items", "order") . "</th>";
