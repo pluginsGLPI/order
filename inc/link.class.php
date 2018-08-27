@@ -417,7 +417,8 @@ class PluginOrderLink extends CommonDBChild {
          echo "<th>" . __("Reference") . "</th>";
          echo "<th>" . __("Status") . "</th>";
          echo "<th>" . __("Delivery date") . "</th>";
-         echo "<th>" . _n("Associated item", "Associated items", 2) . "</th></tr>";
+         echo "<th>" . _n("Associated item", "Associated items", 2) . "</th>";
+         echo "<th>" . __("Serial number") . "</th></tr>";
 
          foreach ($all_data as $data) {
             $detailID = $data["IDD"];
@@ -448,6 +449,7 @@ class PluginOrderLink extends CommonDBChild {
             echo "<td align='center'>" . $PluginOrderReception->getReceptionStatus($detailID) . "</td>";
             echo "<td align='center'>" . Html::convDate($data["delivery_date"]) . "</td>";
             echo "<td align='center'>" . $this->getReceptionItemName($data["items_id"], $data["itemtype"]);
+            echo "<td align='center'>" . $this->getItemSerialNumber($data["items_id"], $data["itemtype"]) . "</td>";
          }
          echo "</tr>";
          echo "</table>";
@@ -462,6 +464,30 @@ class PluginOrderLink extends CommonDBChild {
          echo "</div>";
       }
       echo "<br>";
+   }
+
+   /**
+    * Returns serial number of associated item.
+    *
+    * @param integer $items_id
+    * @param string  $itemtype
+    * @return string
+    */
+   protected function getItemSerialNumber($items_id, $itemtype) {
+
+      global $DB;
+
+      if ($itemtype == 'PluginOrderOther' || $itemtype == 'PluginOrderReferenceFree') {
+         return '';
+      }
+
+      $result = $DB->request([
+         'SELECT' => 'serial',
+         'FROM'   => $itemtype::getTable(),
+         'WHERE'  => ['id' => $items_id]
+      ]);
+      $data = $result->next();
+      return $data['serial'];
    }
 
    function getForbiddenStandardMassiveAction() {

@@ -710,6 +710,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "<th>" . __("Reference") . "</th>";
          echo "<th>" . __("Type") . "</th>";
          echo "<th>" . __("Model") . "</th>";
+         echo "<th>" . __("Manufacturer reference", "order") . "</th>";
          echo "<th>" . __("Unit price tax free", "order") . "</th>";
          echo "<th>" . __("Discount (%)", "order") . "</th>";
          echo "</tr>";
@@ -801,6 +802,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                                            $data_ref["models_id"]);
          }
          echo "</td>";
+         /* Manufacturer Reference*/
+         echo "<td align='center'>" . $this->getManufacturersReference($refID) . "</td>";
          if ($canedit) {
             echo "<td align='center'>";
             echo Html::hidden('old_price_taxfree', ['value' => $price_taxfree]);
@@ -1896,5 +1899,23 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       }
    }
 
+   /**
+    * Returns manufacturer's reference number.
+    *
+    * @param integer $reference_id
+    * @return string
+    */
+   protected function getManufacturersReference($reference_id) {
 
+      global $DB;
+
+      $result = $DB->request([
+         'SELECT' => 'manufacturers_reference',
+         'FROM'   => 'glpi_plugin_order_references',
+         'WHERE'  => ['id' => $reference_id]
+      ]);
+
+      $data = $result->next();
+      return $data['manufacturers_reference'];
+   }
 }
