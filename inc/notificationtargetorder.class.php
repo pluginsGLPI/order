@@ -329,9 +329,9 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
                $n_n_template->add(
                   [
-                    'notifications_id'         => $notification_id,
-                    'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
-                    'notificationtemplates_id' => $templates_id,
+                     'notifications_id'         => $notification_id,
+                     'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                     'notificationtemplates_id' => $templates_id,
                   ]
                );
             }
@@ -397,9 +397,9 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
                $n_n_template->add(
                   [
-                    'notifications_id'         => $notification_id,
-                    'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
-                    'notificationtemplates_id' => $templates_id,
+                     'notifications_id'         => $notification_id,
+                     'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                     'notificationtemplates_id' => $templates_id,
                   ]
                );
             }
@@ -463,9 +463,9 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
                $n_n_template->add(
                   [
-                    'notifications_id'         => $notification_id,
-                    'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
-                    'notificationtemplates_id' => $templates_id,
+                     'notifications_id'         => $notification_id,
+                     'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                     'notificationtemplates_id' => $templates_id,
                   ]
                );
             }
