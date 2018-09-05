@@ -33,23 +33,23 @@ if (!defined('GLPI_ROOT')) {
 
 // Class NotificationTarget
 class PluginOrderNotificationTargetOrder extends NotificationTarget {
-    const AUTHOR                    = 30;
-    const AUTHOR_GROUP              = 31;
-    const DELIVERY_USER             = 32;
-    const DELIVERY_GROUP            = 33;
-    const SUPERVISOR_AUTHOR_GROUP   = 34;
-    const SUPERVISOR_DELIVERY_GROUP = 35;
+   const AUTHOR                    = 30;
+   const AUTHOR_GROUP              = 31;
+   const DELIVERY_USER             = 32;
+   const DELIVERY_GROUP            = 33;
+   const SUPERVISOR_AUTHOR_GROUP   = 34;
+   const SUPERVISOR_DELIVERY_GROUP = 35;
 
 
    public function getEvents() {
       return [
-        'ask'            => __("Request order validation", "order"),
-        'validation'     => __("Order validated", "order"),
-        'cancel'         => __("Order canceled", "order"),
-        'undovalidation' => __("Order currently edited", "order"),
-        'duedate'        => __("Late orders", "order"),
-        'delivered'      => __("No item to generate", "order")
-       ];
+         'ask'            => __("Request order validation", "order"),
+         'validation'     => __("Order validated", "order"),
+         'cancel'         => __("Order canceled", "order"),
+         'undovalidation' => __("Order currently edited", "order"),
+         'duedate'        => __("Late orders", "order"),
+         'delivered'      => __("No item to generate", "order")
+      ];
    }
 
 
@@ -214,40 +214,32 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
        ];
 
        foreach ($tags as $tag => $label) {
-           $this->addTagToList(
-               [
-               'tag'   => $tag,
-               'label' => $label,
-               'value' => true,
-               ]
-           );
-         }
+          $this->addTagToList([
+             'tag'   => $tag,
+             'label' => $label,
+             'value' => true,
+          ]);
+       }
 
-         $this->addTagToList(
-           [
-           'tag'   => 'order.action',
-           'label' => __("Action"),
-           'value' => false,
-           ]
-       );
+       $this->addTagToList([
+         'tag'   => 'order.action',
+         'label' => __("Action"),
+         'value' => false,
+       ]);
 
-       $this->addTagToList(
-           [
-           'tag'     => 'orders',
-           'label'   => __("Late orders", "order"),
-           'value'   => false,
-           'foreach' => true,
-           ]
-       );
+       $this->addTagToList([
+          'tag'     => 'orders',
+          'label'   => __("Late orders", "order"),
+          'value'   => false,
+          'foreach' => true,
+       ]);
 
-       $this->addTagToList(
-           [
-           'tag'     => 'orderitems',
-           'label'   => __("Order items"),
-           'value'   => false,
-           'foreach' => true,
-           ]
-       );
+       $this->addTagToList([
+          'tag'     => 'orderitems',
+          'label'   => __("Order items"),
+          'value'   => false,
+          'foreach' => true,
+       ]);
 
        asort($this->tag_descriptions);
    }
@@ -268,7 +260,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                        FROM `glpi_notificationtemplates`
                        WHERE `itemtype`='PluginOrderOrder'
                        AND `name` = 'Order Validation'";
-      $result       = $DB->query($query_id) or die($DB->error());
+      $result       = $DB->query($query_id) or die ($DB->error());
 
       if ($DB->numrows($result) > 0) {
          $templates_id = $DB->result($result, 0, 'id');
@@ -301,18 +293,18 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
                ##IFordervalidation.comment####lang.ordervalidation.comment## : ##ordervalidation.comment####ENDIFordervalidation.comment##';
             $tmp['content_html']             = '&lt;p&gt;&lt;strong&gt;##lang.ordervalidation.url##&lt;/strong&gt; : ' .
-               '&lt;a href=\"##ordervalidation.url##\"&gt;##ordervalidation.url##&lt;/a&gt;&lt;br /&gt;' .
-               '&lt;br /&gt;&lt;strong&gt;##lang.ordervalidation.entity##&lt;/strong&gt; : ##ordervalidation.entity##&lt;br /&gt;' .
-               ' ##IFordervalidation.name##&lt;strong&gt;##lang.ordervalidation.name##&lt;/strong&gt;' .
-               ' : ##ordervalidation.name####ENDIFordervalidation.name##&lt;br /&gt;' .
-               '##IFordervalidation.numorder##&lt;strong&gt;##lang.ordervalidation.numorder##&lt;/strong&gt;' .
-               ' : ##ordervalidation.numorder####ENDIFordervalidation.numorder##&lt;br /&gt;##IFordervalidation.orderdate##&lt;strong&gt;##lang.ordervalidation.orderdate##&lt;/strong&gt;' .
-               ' : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##&lt;br /&gt;' .
-               '##IFordervalidation.state##&lt;strong&gt;##lang.ordervalidation.state##&lt;/strong&gt;' .
-               ' : ##ordervalidation.state####ENDIFordervalidation.state##&lt;br /&gt;' .
-               '##IFordervalidation.users##&lt;strong&gt;##lang.ordervalidation.users##&lt;/strong&gt;' .
-               ' : ##ordervalidation.users####ENDIFordervalidation.users##&lt;br /&gt;&lt;br /&gt;' .
-               '##IFordervalidation.comment##&lt;strong&gt;##lang.ordervalidation.comment##&lt;/strong&gt; : ##ordervalidation.comment####ENDIFordervalidation.comment##&lt;/p&gt;';
+                  '&lt;a href=\"##ordervalidation.url##\"&gt;##ordervalidation.url##&lt;/a&gt;&lt;br /&gt;' .
+                  '&lt;br /&gt;&lt;strong&gt;##lang.ordervalidation.entity##&lt;/strong&gt; : ##ordervalidation.entity##&lt;br /&gt;' .
+                  ' ##IFordervalidation.name##&lt;strong&gt;##lang.ordervalidation.name##&lt;/strong&gt;' .
+                  ' : ##ordervalidation.name####ENDIFordervalidation.name##&lt;br /&gt;' .
+                  '##IFordervalidation.numorder##&lt;strong&gt;##lang.ordervalidation.numorder##&lt;/strong&gt;' .
+                  ' : ##ordervalidation.numorder####ENDIFordervalidation.numorder##&lt;br /&gt;##IFordervalidation.orderdate##&lt;strong&gt;##lang.ordervalidation.orderdate##&lt;/strong&gt;' .
+                  ' : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##&lt;br /&gt;' .
+                  '##IFordervalidation.state##&lt;strong&gt;##lang.ordervalidation.state##&lt;/strong&gt;' .
+                  ' : ##ordervalidation.state####ENDIFordervalidation.state##&lt;br /&gt;' .
+                  '##IFordervalidation.users##&lt;strong&gt;##lang.ordervalidation.users##&lt;/strong&gt;' .
+                  ' : ##ordervalidation.users####ENDIFordervalidation.users##&lt;br /&gt;&lt;br /&gt;' .
+                  '##IFordervalidation.comment##&lt;strong&gt;##lang.ordervalidation.comment##&lt;/strong&gt; : ##ordervalidation.comment####ENDIFordervalidation.comment##&lt;/p&gt;';
             $translation->add($tmp);
          }
 
@@ -324,24 +316,24 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          ];
          foreach ($notifs as $label => $name) {
             if (!countElementsInTable("glpi_notifications", ['itemtype' => 'PluginOrderOrder', 'event' => $name])) {
-                $notification_id = $notification->add([
-                    'name'                     => $label,
-                    'entities_id'              => 0,
-                    'itemtype'                 => 'PluginOrderOrder',
-                    'event'                    => $name,
-                    'comment'                  => '',
-                    'is_recursive'             => 1,
-                    'is_active'                => 1,
-                    'date_mod'                 => $_SESSION['glpi_currenttime'],
-                    ]);
+               $notification_id = $notification->add([
+                  'name'                     => $label,
+                  'entities_id'              => 0,
+                  'itemtype'                 => 'PluginOrderOrder',
+                  'event'                    => $name,
+                  'comment'                  => '',
+                  'is_recursive'             => 1,
+                  'is_active'                => 1,
+                  'date_mod'                 => $_SESSION['glpi_currenttime'],
+               ]);
 
-                $n_n_template->add(
-                    [
+               $n_n_template->add(
+                  [
                     'notifications_id'         => $notification_id,
                     'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                     'notificationtemplates_id' => $templates_id,
-                    ]
-                );
+                  ]
+               );
             }
          }
       }
@@ -350,18 +342,18 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                        FROM `glpi_notificationtemplates`
                        WHERE `itemtype`='PluginOrderOrder'
                        AND `name` = 'Due date overtaken'";
-      $result       = $DB->query($query_id) or die($DB->error());
+      $result       = $DB->query($query_id) or die ($DB->error());
 
       if ($DB->numrows($result) > 0) {
          $templates_id = $DB->result($result, 0, 'id');
       } else {
          $templates_id = $template->add([
-             'name'     => 'Due date overtaken',
-             'itemtype' => 'PluginOrderOrder',
-             'date_mod' => $_SESSION['glpi_currenttime'],
-             'comment'  => '',
-             'css'      => '',
-             ]);
+            'name'     => 'Due date overtaken',
+            'itemtype' => 'PluginOrderOrder',
+            'date_mod' => $_SESSION['glpi_currenttime'],
+            'comment'  => '',
+            'css'      => '',
+         ]);
       }
 
       if ($templates_id) {
@@ -371,45 +363,45 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
             $tmp['language']     = '';
             $tmp['subject']      = '##order.action## ##order.entity##';
             $tmp['content_text'] = '##lang.order.entity## : ##order.entity##\n' .
-                                ' \n##FOREACHorders##\n' .
-                                '##lang.order.item.name## : ##order.item.name##\n ' .
-                                '##lang.order.item.numorder## : ##order.item.numorder##\n ' .
-                                '##lang.order.item.orderdate## : ##order.item.orderdate##\n ' .
-                                '##lang.order.item.duedate## : ##order.item.duedate##\n ' .
-                                '##lang.order.item.deliverydate## : ##order.item.deliverydate##\n ' .
-                                '##order.item.url## \n ##ENDFOREACHorders##';
+                                   ' \n##FOREACHorders##\n' .
+                                   '##lang.order.item.name## : ##order.item.name##\n ' .
+                                   '##lang.order.item.numorder## : ##order.item.numorder##\n ' .
+                                   '##lang.order.item.orderdate## : ##order.item.orderdate##\n ' .
+                                   '##lang.order.item.duedate## : ##order.item.duedate##\n ' .
+                                   '##lang.order.item.deliverydate## : ##order.item.deliverydate##\n ' .
+                                   '##order.item.url## \n ##ENDFOREACHorders##';
             $tmp['content_html'] = "##lang.order.entity## : ##order.entity##&lt;br /&gt; " .
-                                "&lt;br /&gt;##FOREACHorders##&lt;br /&gt;" .
-                                "##lang.order.item.name## : ##order.item.name##&lt;br /&gt; " .
-                                "##lang.order.item.numorder## : ##order.item.numorder##&lt;br /&gt; " .
-                                "##lang.order.item.orderdate## : ##order.item.orderdate##&lt;br /&gt; &lt;a&gt;" .
-                                "##lang.order.item.duedate## : ##order.item.duedate##&lt;br /&gt; &lt;/a&gt;&lt;a&gt;" .
-                                "##lang.order.item.deliverydate## : ##order.item.deliverydate##&lt;br /&gt; &lt;/a&gt;&lt;a&gt;" .
-                                "##order.item.url##&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHorders##";
+                                   "&lt;br /&gt;##FOREACHorders##&lt;br /&gt;" .
+                                   "##lang.order.item.name## : ##order.item.name##&lt;br /&gt; " .
+                                   "##lang.order.item.numorder## : ##order.item.numorder##&lt;br /&gt; " .
+                                   "##lang.order.item.orderdate## : ##order.item.orderdate##&lt;br /&gt; &lt;a&gt;" .
+                                   "##lang.order.item.duedate## : ##order.item.duedate##&lt;br /&gt; &lt;/a&gt;&lt;a&gt;" .
+                                   "##lang.order.item.deliverydate## : ##order.item.deliverydate##&lt;br /&gt; &lt;/a&gt;&lt;a&gt;" .
+                                   "##order.item.url##&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHorders##";
             $translation->add($tmp);
          }
 
          $notifs       = ['Due date overtaken' => 'duedate'];
          foreach ($notifs as $label => $name) {
             if (!countElementsInTable("glpi_notifications", ['itemtype' => 'PluginOrderOrder', 'event' => $name])) {
-                $notification_id = $notification->add([
-                    'name'                     => $label,
-                    'entities_id'              => 0,
-                    'itemtype'                 => 'PluginOrderOrder',
-                    'event'                    => $name,
-                    'comment'                  => '',
-                    'is_recursive'             => 1,
-                    'is_active'                => 1,
-                    'date_mod'                 => $_SESSION['glpi_currenttime'],
-                    ]);
+               $notification_id = $notification->add([
+                  'name'                     => $label,
+                  'entities_id'              => 0,
+                  'itemtype'                 => 'PluginOrderOrder',
+                  'event'                    => $name,
+                  'comment'                  => '',
+                  'is_recursive'             => 1,
+                  'is_active'                => 1,
+                  'date_mod'                 => $_SESSION['glpi_currenttime'],
+               ]);
 
-                $n_n_template->add(
-                    [
+               $n_n_template->add(
+                  [
                     'notifications_id'         => $notification_id,
                     'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                     'notificationtemplates_id' => $templates_id,
-                    ]
-                );
+                  ]
+               );
             }
          }
       }
@@ -419,18 +411,18 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                        FROM `glpi_notificationtemplates`
                        WHERE `itemtype`='PluginOrderOrder'
                        AND `name` = 'Order Delivered'";
-      $result       = $DB->query($query_id) or die($DB->error());
+      $result       = $DB->query($query_id) or die ($DB->error());
 
       if ($DB->numrows($result) > 0) {
          $templates_id = $DB->result($result, 0, 'id');
       } else {
          $templates_id = $template->add([
-             'name'     => 'Order Delivered',
-             'itemtype' => 'PluginOrderOrder',
-             'date_mod' => $_SESSION['glpi_currenttime'],
-             'comment'  => '',
-             'css'      => '',
-             ]);
+            'name'     => 'Order Delivered',
+            'itemtype' => 'PluginOrderOrder',
+            'date_mod' => $_SESSION['glpi_currenttime'],
+            'comment'  => '',
+            'css'      => '',
+         ]);
       }
 
       if ($templates_id) {
@@ -458,24 +450,24 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          $notifs = ['Order Delivered' => 'delivered'];
          foreach ($notifs as $label => $name) {
             if (!countElementsInTable("glpi_notifications", ['itemtype' => 'PluginOrderOrder', 'event' => $name])) {
-                $notification_id = $notification->add([
-                    'name'                     => $label,
-                    'entities_id'              => 0,
-                    'itemtype'                 => 'PluginOrderOrder',
-                    'event'                    => $name,
-                    'comment'                  => '',
-                    'is_recursive'             => 1,
-                    'is_active'                => 1,
-                    'date_mod'                 => $_SESSION['glpi_currenttime'],
-                    ]);
+               $notification_id = $notification->add([
+                  'name'                     => $label,
+                  'entities_id'              => 0,
+                  'itemtype'                 => 'PluginOrderOrder',
+                  'event'                    => $name,
+                  'comment'                  => '',
+                  'is_recursive'             => 1,
+                  'is_active'                => 1,
+                  'date_mod'                 => $_SESSION['glpi_currenttime'],
+               ]);
 
-                $n_n_template->add(
-                    [
+               $n_n_template->add(
+                  [
                     'notifications_id'         => $notification_id,
                     'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                     'notificationtemplates_id' => $templates_id,
-                    ]
-                );
+                  ]
+               );
             }
          }
       }
@@ -489,9 +481,9 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
       foreach (['ask', 'validation', 'cancel', 'undovalidation', 'duedate', 'delivered'] as $event) {
          $options = [
-          'itemtype' => 'PluginOrderOrder',
-          'event'    => $event,
-          'FIELDS'   => 'id',
+            'itemtype' => 'PluginOrderOrder',
+            'event'    => $event,
+            'FIELDS'   => 'id',
          ];
          foreach ($DB->request('glpi_notifications', $options) as $data) {
             $notif->delete($data);
