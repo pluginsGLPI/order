@@ -39,6 +39,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
    const DELIVERY_GROUP            = 33;
    const SUPERVISOR_AUTHOR_GROUP   = 34;
    const SUPERVISOR_DELIVERY_GROUP = 35;
+   const SUPPLIER                  = 36;
+   const CONTACT                   = 37;
 
 
    public function getEvents() {
@@ -164,6 +166,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          'order.author.phone'          => __("Author").' - '.__("Phone"),
          'order.deliveryuser.name'     => __("Recipient"),
          'order.deliveryuser.phone'    => __("Recipient").' - '.__("Phone"),
+
       ];
 
       foreach ($tags as $tag => $label) {
@@ -467,6 +470,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       $this->addTarget(self::DELIVERY_GROUP, __("Recipient group", "order"));
       $this->addTarget(self::SUPERVISOR_AUTHOR_GROUP, __("Manager")." ".__("Author group", "order"));
       $this->addTarget(self::SUPERVISOR_DELIVERY_GROUP, __("Manager")." ".__("Recipient group", "order"));
+      $this->addTarget(self::SUPPLIER, __('Supplier'));
+      $this->addTarget(self::CONTACT, __('Contact'));
    }
 
 
@@ -490,8 +495,43 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          case self::SUPERVISOR_DELIVERY_GROUP:
             $this->addForGroup(1, $this->obj->fields['groups_id_delivery']);
             break;
+         case self::SUPPLIER:
+            $this->addAddressesByType("suppliers", $this->obj->fields['id']);
+            break;
+         case self::CONTACT:
+            $this->addAddressesByType("contacts", $this->obj->fields['id']);
+            break;
       }
    }
 
+      /**
+    * Get supplier or contact related to the order
+    *
+    * @param $recipient_type  recipient type(suppliers or contacts)
+    *
+    * @param $order_id        order id
+    *
+   **/
+   protected function addAddressesByType($recipient_type, $order_id) {
+      global $DB;
+      $table="glpi_".$recipient_type;
+      $req=$DB->request([
+         'SELECT'=>[$table.'.email',$table.'.name'],
+         'FROM'=>'glpi_plugin_order_orders',
+         'LEFT JOIN'=>[
+            $table=>[
+               'FKEY'=>[
+                  'glpi_plugin_order_orders'=>$recipient_type."_id",
+                  $table=>'id'
+               ]
+            ]
+         ],
+         'WHERE'=>['glpi_plugin_order_orders.id'=>$order_id]
+       ]);
+
+      foreach ($req as $data) {
+         $this->addToRecipientsList($data);
+      }
+   }
 
 }
