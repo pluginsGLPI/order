@@ -495,11 +495,11 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          case self::SUPERVISOR_DELIVERY_GROUP:
             $this->addForGroup(1, $this->obj->fields['groups_id_delivery']);
             break;
-        case self::SUPPLIER:
-            $this->getAddressByType("suppliers", $this->obj->fields['id']);
+         case self::SUPPLIER:
+            $this->addAddressesByType("suppliers", $this->obj->fields['id']);
             break;
-        case self::CONTACT:
-            $this->getAddressByType("contacts", $this->obj->fields['id']);
+         case self::CONTACT:
+            $this->addAddressesByType("contacts", $this->obj->fields['id']);
             break;
       }
    }
@@ -512,18 +512,26 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
     * @param $order_id        order id
     *
    **/
-   function getAddressByType($recipient_type, $order_id) {
+   protected function addAddressesByType($recipient_type, $order_id) {
       global $DB;
-      $query = "SELECT glpi_".$recipient_type.".email AS email,glpi_".$recipient_type.".name AS name
-                FROM glpi_plugin_order_orders
-                LEFT JOIN glpi_".$recipient_type."
-                ON (glpi_plugin_order_orders.".$recipient_type."_id = glpi_".$recipient_type.".id)
-                WHERE glpi_plugin_order_orders.id = $order_id";
+      $table="glpi_".$recipient_type;
+      $req=$DB->request([
+         'SELECT'=>[$table.'.email',$table.'.name'],
+         'FROM'=>'glpi_plugin_order_orders',
+         'LEFT JOIN'=>[
+            $table=>[
+               'FKEY'=>[
+                  'glpi_plugin_order_orders'=>$recipient_type."_id",
+                  $table=>'id'
+               ]
+            ]
+         ],
+         'WHERE'=>['glpi_plugin_order_orders.id'=>$order_id]
+       ]);
 
-      foreach ($DB->request($query) as $data) {
-        $this->addToRecipientsList($data);
+      foreach ($req as $data) {
+         $this->addToRecipientsList($data);
       }
    }
-
 
 }
