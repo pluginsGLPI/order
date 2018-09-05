@@ -502,11 +502,11 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          $options_template = [
             'notificationtemplates_id' => $data['id'],
             'FIELDS'                   => 'id'
-            ];
+         ];
          foreach ($DB->request('glpi_notificationtemplatetranslations', $options_template) as $data_template) {
-             $translation->delete($data_template);
+            $translation->delete($data_template);
          }
-            $template->delete($data);
+         $template->delete($data);
       }
    }
 
