@@ -1134,7 +1134,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             'plugin_order_references_id' => $references_id,
             'price_taxfree'              => ['LIKE', $price_taxfree],
             'discount'                   => ['LIKE', $discount],
-            'states_id'                  => ['!=', 0],
+            'states_id'                  => ['<>', 0],
          ]
       );
    }
