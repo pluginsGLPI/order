@@ -293,18 +293,18 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
                ##IFordervalidation.comment####lang.ordervalidation.comment## : ##ordervalidation.comment####ENDIFordervalidation.comment##';
             $tmp['content_html']             = '&lt;p&gt;&lt;strong&gt;##lang.ordervalidation.url##&lt;/strong&gt; : ' .
-               '&lt;a href=\"##ordervalidation.url##\"&gt;##ordervalidation.url##&lt;/a&gt;&lt;br /&gt;' .
-               '&lt;br /&gt;&lt;strong&gt;##lang.ordervalidation.entity##&lt;/strong&gt; : ##ordervalidation.entity##&lt;br /&gt;' .
-               ' ##IFordervalidation.name##&lt;strong&gt;##lang.ordervalidation.name##&lt;/strong&gt;' .
-               ' : ##ordervalidation.name####ENDIFordervalidation.name##&lt;br /&gt;' .
-               '##IFordervalidation.numorder##&lt;strong&gt;##lang.ordervalidation.numorder##&lt;/strong&gt;' .
-               ' : ##ordervalidation.numorder####ENDIFordervalidation.numorder##&lt;br /&gt;##IFordervalidation.orderdate##&lt;strong&gt;##lang.ordervalidation.orderdate##&lt;/strong&gt;' .
-               ' : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##&lt;br /&gt;' .
-               '##IFordervalidation.state##&lt;strong&gt;##lang.ordervalidation.state##&lt;/strong&gt;' .
-               ' : ##ordervalidation.state####ENDIFordervalidation.state##&lt;br /&gt;' .
-               '##IFordervalidation.users##&lt;strong&gt;##lang.ordervalidation.users##&lt;/strong&gt;' .
-               ' : ##ordervalidation.users####ENDIFordervalidation.users##&lt;br /&gt;&lt;br /&gt;' .
-               '##IFordervalidation.comment##&lt;strong&gt;##lang.ordervalidation.comment##&lt;/strong&gt; : ##ordervalidation.comment####ENDIFordervalidation.comment##&lt;/p&gt;';
+                  '&lt;a href=\"##ordervalidation.url##\"&gt;##ordervalidation.url##&lt;/a&gt;&lt;br /&gt;' .
+                  '&lt;br /&gt;&lt;strong&gt;##lang.ordervalidation.entity##&lt;/strong&gt; : ##ordervalidation.entity##&lt;br /&gt;' .
+                  ' ##IFordervalidation.name##&lt;strong&gt;##lang.ordervalidation.name##&lt;/strong&gt;' .
+                  ' : ##ordervalidation.name####ENDIFordervalidation.name##&lt;br /&gt;' .
+                  '##IFordervalidation.numorder##&lt;strong&gt;##lang.ordervalidation.numorder##&lt;/strong&gt;' .
+                  ' : ##ordervalidation.numorder####ENDIFordervalidation.numorder##&lt;br /&gt;##IFordervalidation.orderdate##&lt;strong&gt;##lang.ordervalidation.orderdate##&lt;/strong&gt;' .
+                  ' : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##&lt;br /&gt;' .
+                  '##IFordervalidation.state##&lt;strong&gt;##lang.ordervalidation.state##&lt;/strong&gt;' .
+                  ' : ##ordervalidation.state####ENDIFordervalidation.state##&lt;br /&gt;' .
+                  '##IFordervalidation.users##&lt;strong&gt;##lang.ordervalidation.users##&lt;/strong&gt;' .
+                  ' : ##ordervalidation.users####ENDIFordervalidation.users##&lt;br /&gt;&lt;br /&gt;' .
+                  '##IFordervalidation.comment##&lt;strong&gt;##lang.ordervalidation.comment##&lt;/strong&gt; : ##ordervalidation.comment####ENDIFordervalidation.comment##&lt;/p&gt;';
             $translation->add($tmp);
          }
 
@@ -400,7 +400,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                      'notifications_id'         => $notification_id,
                      'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                      'notificationtemplates_id' => $templates_id,
-                ]
+                  ]
                );
             }
          }
@@ -439,11 +439,11 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 ##lang.ordervalidation.entity## :
 ##ordervalidation.entity##';
             $tmp['content_html']             = '&lt;p&gt;##order.action## &lt;br /&gt;&lt;br /&gt;&#160;
-               ##lang.ordervalidation.name## : &lt;br /&gt;&#160;
-               ##ordervalidation.name## &lt;br /&gt;&#160;
-               ##lang.ordervalidation.orderdate## : &lt;br /&gt;&#160;
-               ##ordervalidation.orderdate## &lt;br /&gt;&#160; &lt;br /&gt;&#160;
-               ##lang.ordervalidation.entity## : &lt;br /&gt;&#160;##ordervalidation.entity##&lt;/p&gt;';
+                ##lang.ordervalidation.name## : &lt;br /&gt;&#160;
+                ##ordervalidation.name## &lt;br /&gt;&#160;
+                ##lang.ordervalidation.orderdate## : &lt;br /&gt;&#160;
+                ##ordervalidation.orderdate## &lt;br /&gt;&#160; &lt;br /&gt;&#160;
+                ##lang.ordervalidation.entity## : &lt;br /&gt;&#160;##ordervalidation.entity##&lt;/p&gt;';
             $translation->add($tmp);
          }
 
@@ -451,14 +451,14 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          foreach ($notifs as $label => $name) {
             if (!countElementsInTable("glpi_notifications", ['itemtype' => 'PluginOrderOrder', 'event' => $name])) {
                $notification_id = $notification->add([
-                  'name'                    => $label,
-                  'entities_id'             => 0,
-                  'itemtype'                => 'PluginOrderOrder',
-                  'event'                   => $name,
-                  'comment'                 => '',
-                  'is_recursive'            => 1,
-                  'is_active'               => 1,
-                  'date_mod'                => $_SESSION['glpi_currenttime'],
+                  'name'                     => $label,
+                  'entities_id'              => 0,
+                  'itemtype'                 => 'PluginOrderOrder',
+                  'event'                    => $name,
+                  'comment'                  => '',
+                  'is_recursive'             => 1,
+                  'is_active'                => 1,
+                  'date_mod'                 => $_SESSION['glpi_currenttime'],
                ]);
 
                $n_n_template->add(
