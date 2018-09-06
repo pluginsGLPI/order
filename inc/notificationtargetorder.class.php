@@ -54,116 +54,163 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
 
    public function addDataForTemplate($event, $options = []) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       $events = $this->getAllEvents();
       $this->data['##order.action##'] = $events[$event];
-      if ($event == 'duedate') {
-         $this->data['##order.entity##'] = Dropdown::getDropdownName('glpi_entities',
-                                                                      $options['entities_id']);
 
-         foreach ($options['orders'] as $id => $order) {
-            $this->data['orders'][] = [
-               '##order.item.name##'         => $order['name'],
-               '##order.item.numorder##'     => $order['num_order'],
-               '##order.item.url##'          => rawurldecode($CFG_GLPI["url_base"]
-                                                ."/index.php?redirect=plugin_order_order_".$id),
-               '##order.item.orderdate##'    => Html::convDate($order["order_date"]),
-               '##order.item.duedate##'      => Html::convDate($order["duedate"]),
+      $this->data['##order.comment##']=$this->obj->getField('comment');
+      $this->data['##order.duedate##']=$this->obj->getField('duedate');
+      $this->data['##order.budget##']=$this->getBudgetsName($this->obj->getField('budgets_id'));
+
+      $query = "SELECT ref.id as references_id, ref.name, ref.itemtype, ref.models_id, ref.manufacturers_id,TRUNCATE(item.price_taxfree, 2) as price_taxfree, TRUNCATE(item.discount, 2) as discount, TRUNCATE(item.price_discounted, 2) as price_discounted, count(*) as quantity, TRUNCATE(SUM(price_discounted), 2) as total_item FROM glpi_plugin_order_orders_items item LEFT JOIN glpi_plugin_order_references ref ON item.plugin_order_references_id=ref.id WHERE item.plugin_order_orders_id = ".$this->obj->getField('id')." GROUP BY ref.id, price_taxfree, discount,item.price_discounted";
+      $data_orderitems = $DB->query($query);
+      $this->data["orderitems"] = [];
+      $total_price = 0;
+      foreach ($data_orderitems as $id => $orderitem) {
+         $tmp = [];
+         $tmp['##order.item.type##'] = $orderitem['itemtype'];
+         $tmp['##order.item.price##'] = $orderitem['price_discounted'];
+         $tmp['##order.item.quantity##'] = $orderitem['quantity'];
+         $tmp['##order.item.manufacturer##'] = Dropdown::getDropdownName("glpi_manufacturers", $orderitem["manufacturers_id"]);
+         $tmp['##order.item.model##'] = Dropdown::getDropdownName(getTableForItemType($orderitem["itemtype"]."models"), $orderitem["models_id"]);
+         $tmp['##order.item.totalprice##'] = $orderitem['total_item'];
+         $references_data = $this->getReferenceData($orderitem['references_id']);
+         $tmp['##order.itemreference.name##'] = $references_data['name'];
+         $tmp['##order.itemreference.itemtype##'] = $references_data['itemtype'];
+         $tmp['##order.itemreference.manufacturer_ref##'] = $references_data['manufacturers_reference'];
+         $tmp['##order.itemreference.model##'] = Dropdown::getDropdownName(getTableForItemType($orderitem["itemtype"]."models"), $references_data["models_id"]);
+         $tmp['##order.itemreference.type##'] = Dropdown::getDropdownName(getTableForItemType($references_data['itemtype']."types"), $references_data["types_id"]);
+         $this->data['orderitems'][] = $tmp;
+         $total_price += $orderitem['total_item'];
+      }
+      $this->data['##order.totalprice##'] = number_format($total_price, 2);
+      $this->data['##order.location##'] = Dropdown::getDropdownName("glpi_locations", $this->obj->getField('locations_id'));
+
+      $this->data['##lang.ordervalidation.title##']    = $events[$event];
+      $this->data['##lang.ordervalidation.entity##']   = __("Entity");
+      $this->data['##ordervalidation.entity##']       = Dropdown::getDropdownName('glpi_entities', $this->obj->getField('entities_id'));
+      $this->data['##lang.ordervalidation.name##']     = __("Name");
+      $this->data['##ordervalidation.name##']         = $this->obj->getField("name");
+      $this->data['##lang.ordervalidation.numorder##']  = __("Order number");
+      $this->data['##ordervalidation.numorder##']      = $this->obj->getField("num_order");
+      $this->data['##lang.ordervalidation.orderdate##'] = __("Date of order", "order");
+      $this->data['##ordervalidation.orderdate##']     = Html::convDate($this->obj->getField("order_date"));
+      $this->data['##lang.ordervalidation.state##']    = __("Status");
+      $this->data['##ordervalidation.state##']        = Dropdown::getDropdownName("glpi_plugin_order_orderstates", $this->obj->getField("plugin_order_orderstates_id"));
+
+      $this->data['##order.supplier##']               = $this->getSupplierName($this->obj->getField('id'));
+
+      $this->data['##lang.ordervalidation.comment##']= __("Comment of validation", "order");
+      switch ($event) {
+         case "ask" :
+            $this->data['##lang.ordervalidation.users##'] = __("Request order validation", "order").
+                                                " ".__("By");
+            $comment = Toolbox::stripslashes_deep(str_replace(['\r\n', '\n', '\r'], "<br/>", $options['comments']));
+            $this->data['##ordervalidation.comment##']      = nl2br($comment);
+          break;
+         case "validation" :
+            $this->data['##lang.ordervalidation.users##'] = __("Order is validated", "order").
+                                                " ".__("By");
+            $comment = Toolbox::stripslashes_deep(str_replace(['\r\n', '\n', '\r'], "<br/>", $options['comments']));
+            $this->data['##ordervalidation.comment##']      = nl2br($comment);
+          break;
+         case "cancel" :
+            $this->data['##lang.ordervalidation.users##'] = __("Order canceled", "order").
+                                                " ".__("By");
+            $comment = Toolbox::stripslashes_deep(str_replace(['\r\n', '\n', '\r'], "<br/>", $options['comments']));
+            $this->data['##ordervalidation.comment##']      = nl2br($comment);
+          break;
+         case "undovalidation" :
+            $this->data['##lang.ordervalidation.users##'] = __("Validation canceled successfully", "order").
+                                                " ".__("By");
+            $comment = Toolbox::stripslashes_deep(str_replace(['\r\n', '\n', '\r'], "<br/>", $options['comments']));
+            $this->data['##ordervalidation.comment##']      = nl2br($comment);
+          break;
+         case "delivered" :
+            $this->data['##lang.ordervalidation.users##'] = __("No item to generate", "order");
+            $comment = Toolbox::stripslashes_deep(str_replace(['\r\n', '\n', '\r'], "<br/>", $options['comments']));
+            $this->data['##ordervalidation.comment##']      = nl2br($comment);
+          break;
+         case "duedate" :
+            $this->data['##order.entity##'] = Dropdown::getDropdownName(
+            'glpi_entities',
+            $options['entities_id']
+            );
+            foreach ($options['orders'] as $id => $order) {
+               $this->data['orders'][] = [
+                '##order.item.name##'       => $order['name'],
+                '##order.item.numorder##'    => $order['num_order'],
+                '##order.item.url##'        => rawurldecode(
+                $CFG_GLPI["url_base"]
+                ."/index.php?redirect=plugin_order_order_".$id
+               ),
+               '##order.item.orderdate##'   => Html::convDate($order["order_date"]),
+               '##order.item.duedate##'     => Html::convDate($order["duedate"]),
                '##order.item.deliverydate##' => Html::convDate($order["deliverydate"]),
-               '##order.item.comment##'      => Html::clean($order["comment"]),
-               '##order.item.state##'        => Dropdown::getDropdownName('glpi_plugin_order_orderstates',
-                                                                          $order["plugin_order_orderstates_id"]),
-            ];
-         }
-
-         $this->getTags();
-         foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-            if (!isset($this->data[$tag])) {
-               $this->data[$tag] = $values['label'];
+               '##order.item.comment##'     => Html::clean($order["comment"]),
+               '##order.item.state##'      => Dropdown::getDropdownName(
+                 'glpi_plugin_order_orderstates',
+                 $order["plugin_order_orderstates_id"]
+               ),
+               ];
             }
+          break;
+      }
+      $this->data['##ordervalidation.users##']   = Html::clean(getUserName(Session::getLoginUserID()));
+      $this->data['##order.author.name##']      = Html::clean(getUserName($this->obj->getField('users_id')));
+      $this->data['##order.deliveryuser.name##']  = Html::clean(getUserName($this->obj->getField('users_id_delivery')));
+      $this->data['##lang.ordervalidation.url##'] = "URL";
+      $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_order_".$this->obj->getField("id");
+      $this->data['##ordervalidation.url##']     = urldecode($url);
+
+      $this->getTags();
+      foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
+         if (!isset($this->data[$tag])) {
+            $this->data[$tag] = $values['label'];
          }
-
-      } else {
-         $this->data['##lang.ordervalidation.title##']     = $events[$event];
-
-         $this->data['##lang.ordervalidation.entity##']    = __("Entity");
-         $this->data['##ordervalidation.entity##']         = Dropdown::getDropdownName('glpi_entities',
-                                                               $this->obj->getField('entities_id'));
-
-         $this->data['##lang.ordervalidation.name##']      = __("Name");
-         $this->data['##ordervalidation.name##']           = $this->obj->getField("name");
-
-         $this->data['##lang.ordervalidation.numorder##']  = __("Order number");
-         $this->data['##ordervalidation.numorder##']       = $this->obj->getField("num_order");
-
-         $this->data['##lang.ordervalidation.orderdate##'] = __("Date of order", "order");
-         $this->data['##ordervalidation.orderdate##']      = Html::convDate($this->obj->getField("order_date"));
-
-         $this->data['##lang.ordervalidation.state##']     = __("Status");
-         $this->data['##ordervalidation.state##']          = Dropdown::getDropdownName("glpi_plugin_order_orderstates",
-                                                               $this->obj->getField("plugin_order_orderstates_id"));
-
-         $this->data['##lang.ordervalidation.comment##']   = __("Comment of validation", "order");
-
-         $comment = Toolbox::stripslashes_deep(str_replace(['\r\n', '\n', '\r'], "<br/>", $options['comments']));
-         $this->data['##ordervalidation.comment##']        = nl2br($comment);
-
-         switch ($event) {
-            case "ask" :
-               $this->data['##lang.ordervalidation.users##'] = __("Request order validation", "order").
-                                                                " ".__("By");
-               break;
-            case "validation" :
-               $this->data['##lang.ordervalidation.users##'] = __("Order is validated", "order").
-                                                                " ".__("By");
-               break;
-            case "cancel" :
-               $this->data['##lang.ordervalidation.users##'] = __("Order canceled", "order").
-                                                                " ".__("By");
-               break;
-            case "undovalidation" :
-               $this->data['##lang.ordervalidation.users##'] = __("Validation canceled successfully", "order").
-                                                                " ".__("By");
-               break;
-            case "delivered" :
-               $this->data['##lang.ordervalidation.users##'] = __("No item to generate", "order");
-               break;
-         }
-         $this->data['##ordervalidation.users##']    = Html::clean(getUserName(Session::getLoginUserID()));
-
-         $this->data['##order.author.name##']        = Html::clean(getUserName($this->obj->getField('users_id')));
-         $this->data['##order.deliveryuser.name##']  = Html::clean(getUserName($this->obj->getField('users_id_delivery')));
-
-         $this->data['##lang.ordervalidation.url##'] = "URL";
-
-         $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_order_".$this->obj->getField("id");
-         $this->data['##ordervalidation.url##']      = urldecode($url);
-
       }
    }
 
 
    public function getTags() {
       $tags = [
-         'ordervalidation.name'        => __("Name"),
-         'ordervalidation.numorder'    => __("Order number"),
-         'ordervalidation.orderdate'   => __("Date of order", "order"),
-         'ordervalidation.state'       => __("Status"),
-         'ordervalidation.comment'     => __("Comment of validation", "order"),
-         'ordervalidation.users'       => __("Editor of validation", "order"),
-         'order.entity'                => __("Delivery date"),
-         'order.item.name'             => __("Name"),
-         'order.item.state'            => __("Status"),
-         'order.item.numorder'         => __("Order number"),
-         'order.item.orderdate'        => __("Date of order", "order"),
-         'order.item.duedate'          => __("Estimated due date", "order"),
-         'order.item.deliverydate'     => __("Delivery date"),
-         'order.item.comment'          => __("Comments"),
-         'order.author.name'           => __("Author"),
-         'order.author.phone'          => __("Author").' - '.__("Phone"),
-         'order.deliveryuser.name'     => __("Recipient"),
-         'order.deliveryuser.phone'    => __("Recipient").' - '.__("Phone"),
+         'ordervalidation.name'       => __("Name"),
+         'ordervalidation.numorder'   => __("Order number"),
+         'ordervalidation.orderdate'  => __("Date of order", "order"),
+         'ordervalidation.state'      => __("Status"),
+         'ordervalidation.comment'    => __("Comment of validation", "order"),
+         'ordervalidation.users'      => __("Editor of validation", "order"),
+         'order.entity'               => __("Delivery date"),
+         'order.item.name'            => __("Name"),
+         'order.item.state'           => __("Status"),
+         'order.item.numorder'        => __("Order number"),
+         'order.item.orderdate'       => __("Date of order", "order"),
+         'order.item.duedate'         => __("Estimated due date", "order"),
+         'order.item.deliverydate'    => __("Delivery date"),
+         'order.item.comment'         => __("Comments"),
+         'order.author.name'          => __("Author"),
+         'order.author.phone'         => __("Author").' - '.__("Phone"),
+         'order.deliveryuser.name'    => __("Recipient"),
+         'order.deliveryuser.phone'   => __("Recipient").' - '.__("Phone"),
+
+         'order.comment'                        =>__("Comments"),
+         'order.budget'                         =>__("Budget"),
+         'order.duedate'                        => __("Estimated due date", "order"),
+         'order.item.type'                      => __("Item type"),
+         'order.item.price'                     =>__("Item price"),
+         'order.item.quantity'                  => __("quantity"),
+         'order.item.manufacturer'              => __("Manufacturer"),
+         'order.item.model'                     => __("Model"),
+         'order.item.totalprice'                => __("Total price for item"),
+         'order.totalprice'                     => __("Total price"),
+         'order.location'                       => __('Delivery location'),
+         'order.supplier'                       => __("Supplier"),
+         'order.itemreference.name'             => __("References name"),
+         'order.itemreference.itemtype'         => __("References itemtype"),
+         'order.itemreference.manufacturer_ref' => __("References manufacturer ref"),
+         'order.itemreference.model'            => __("References model"),
+         'order.itemreference.type'             => __("References type"),
       ];
 
       foreach ($tags as $tag => $label) {
@@ -183,6 +230,13 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       $this->addTagToList([
          'tag'     => 'orders',
          'label'   => __("Late orders", "order"),
+         'value'   => false,
+         'foreach' => true,
+      ]);
+
+      $this->addTagToList([
+         'tag'     => 'orderitems',
+         'label'   => __("Order items"),
          'value'   => false,
          'foreach' => true,
       ]);
@@ -491,6 +545,44 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
             $this->addForGroup(1, $this->obj->fields['groups_id_delivery']);
             break;
       }
+   }
+
+   function getBudgetsName($references_id) {
+      global $DB;
+      $query = "SELECT name FROM glpi_budgets WHERE id = '$references_id'";
+      $result = $DB->query($query);
+      $data = $DB->fetch_assoc($result);
+      return $data['name'];
+   }
+
+   /**
+    * Get supplier name
+    *
+    * @param $order_id          order id
+    **/
+   function getSupplierName($order_id) {
+      global $DB;
+      $query = "SELECT glpi_suppliers.name AS name
+            FROM glpi_suppliers
+            LEFT JOIN glpi_plugin_order_orders
+            ON glpi_plugin_order_orders.suppliers_id = glpi_suppliers.id
+            WHERE glpi_plugin_order_orders.id = $order_id";
+
+      $result = $DB->request($query)->next();
+      return $result["name"];
+   }
+
+   /**
+    * Get order references data
+    **/
+   public function getReferenceData($reference_id) {
+      global $DB;
+      $id_order = $this->obj->fields['id'];
+      $query = "SELECT name, itemtype, models_id, manufacturers_reference, types_id
+            FROM glpi_plugin_order_references WHERE id = $reference_id;";
+      $result = $DB->query($query);
+      $data = $DB->fetch_assoc($result);
+      return $data;
    }
 
 
