@@ -274,8 +274,8 @@ class PluginOrderOrder extends CommonDBTM {
          $values[self::RIGHT_UNDO_VALIDATION] = __("Edit a validated order", "order");
          $values[self::RIGHT_GENERATEODT_WITHOUT_VALIDATION] = __("Generate order without validation", "order");
       }
+    
       return $values;
-
    }
 
    public function rawSearchOptions() {
@@ -2107,11 +2107,11 @@ class PluginOrderOrder extends CommonDBTM {
       $table  = self::getTable();
 
       foreach (getAllDatasFromTable($table, ['is_template' => 0]) as $values) {
-          $order = new self();
-          $order->fields = $values;
+         $order = new self();
+         $order->fields = $values;
          if (!$order->fields['is_late'] && $order->shouldBeAlreadyDelivered(true)) {
-             $order->setIsLate();
-             $nblate++;
+            $order->setIsLate();
+            $nblate++;
          }
       }
       $task->addVolume($nblate);
@@ -2124,10 +2124,10 @@ class PluginOrderOrder extends CommonDBTM {
 
          $entities[] = 0;
          foreach ($DB->request("SELECT `id` FROM `glpi_entities` ORDER BY `id` ASC") as $entity) {
-             $entities[] = $entity['id'];
+            $entities[] = $entity['id'];
          }
          foreach ($entities as $entity) {
-             $query_alert = "SELECT `$table`.`id` AS id,
+            $query_alert = "SELECT `$table`.`id` AS id,
                                    `$table`.`name` AS name,
                                    `$table`.`num_order` AS num_order,
                                    `$table`.`order_date` AS order_date,
@@ -2145,13 +2145,13 @@ class PluginOrderOrder extends CommonDBTM {
                               AND `glpi_alerts`.`date` IS NULL
                               AND `$table`.`is_late`='1'
                               AND `plugin_order_orderstates_id`!='".$config->getDeliveredState()."';";
-             $orders = [];
+            $orders = [];
             foreach ($DB->request($query_alert) as $order) {
-                $orders[$order['id']] = $order;
+               $orders[$order['id']] = $order;
             }
 
             if (!empty($orders)) {
-                $options['entities_id'] = $entity;
+               $options['entities_id'] = $entity;
 
                foreach ($orders as $id_order=>$tmp) {
                    $pluginOrderOrder= new PluginOrderOrder();
@@ -2168,7 +2168,7 @@ class PluginOrderOrder extends CommonDBTM {
                         $task->addVolume(1);
                      } else {
                         Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity).
-                             "&nbsp;:  $message"
+                                                         "&nbsp;:  $message"
                          );
                      }
                      $input["type"]     = Alert::THRESHOLD;
@@ -2180,11 +2180,11 @@ class PluginOrderOrder extends CommonDBTM {
                   } else {
                      if ($task) {
                         $task->log(Dropdown::getDropdownName("glpi_entities", $entity).
-                             "&nbsp;: Send order alert failed\n"
+                                   "&nbsp;: Send order alert failed\n"
                          );
                      } else {
                         Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity).
-                             "&nbsp;: Send order alert failed", false, ERROR
+                                                         "&nbsp;: Send order alert failed", false, ERROR
                          );
                      }
                   }
