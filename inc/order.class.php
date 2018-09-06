@@ -274,7 +274,7 @@ class PluginOrderOrder extends CommonDBTM {
          $values[self::RIGHT_UNDO_VALIDATION] = __("Edit a validated order", "order");
          $values[self::RIGHT_GENERATEODT_WITHOUT_VALIDATION] = __("Generate order without validation", "order");
       }
-    
+
       return $values;
    }
 
