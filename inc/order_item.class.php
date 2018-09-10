@@ -265,9 +265,13 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
 
    public function checkIFReferenceExistsInOrder($orders_id, $ref_id) {
-      return  (countElementsInTable($this->getTable(),
-                                    "`plugin_order_orders_id` = '$orders_id'
-                                       AND `plugin_order_references_id` = '$ref_id' "));
+      return (countElementsInTable(
+         $this->getTable(),
+         [
+            'plugin_order_orders_id' => $orders_id,
+            'plugin_order_references_id' => $ref_id,
+         ]
+      ));
    }
 
 
@@ -701,11 +705,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "</a>";
          echo "</li></ul></th>";
          echo "<th>" . __("Quantity", "order") . "</th>";
-         echo "<th>" . __("Equipment", "order") . "</th>";
+         echo "<th>" . __("Assets") . "</th>";
          echo "<th>" . __("Manufacturer") . "</th>";
          echo "<th>" . __("Reference") . "</th>";
          echo "<th>" . __("Type") . "</th>";
          echo "<th>" . __("Model") . "</th>";
+         echo "<th>" . __("Manufacturer reference", "order") . "</th>";
          echo "<th>" . __("Unit price tax free", "order") . "</th>";
          echo "<th>" . __("Discount (%)", "order") . "</th>";
          echo "</tr>";
@@ -797,6 +802,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                                            $data_ref["models_id"]);
          }
          echo "</td>";
+         /* Manufacturer Reference*/
+         echo "<td align='center'>" . $this->getManufacturersReference($refID) . "</td>";
          if ($canedit) {
             echo "<td align='center'>";
             echo Html::hidden('old_price_taxfree', ['value' => $price_taxfree]);
@@ -1123,12 +1130,16 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
 
    public function getDeliveredQuantity($orders_id, $references_id, $price_taxfree, $discount) {
-      return countElementsInTable(self::getTable(),
-                                  "`plugin_order_orders_id` = '$orders_id'
-                                    AND `plugin_order_references_id` = '$references_id'
-                                    AND `price_taxfree` LIKE '$price_taxfree'
-                                    AND `discount` LIKE '$discount'
-                                    AND `states_id` != '0' ");
+      return countElementsInTable(
+         self::getTable(),
+         [
+            'plugin_order_orders_id'     => $orders_id,
+            'plugin_order_references_id' => $references_id,
+            'price_taxfree'              => ['LIKE', $price_taxfree],
+            'discount'                   => ['LIKE', $discount],
+            'states_id'                  => ['<>', 0],
+         ]
+      );
    }
 
 
@@ -1175,10 +1186,14 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo $order->getLink(PluginOrderOrder::canView());
          echo "</td>";
 
-         $result = getAllDatasFromTable(self::getTable(),
-                                        "`plugin_order_orders_id`='".$infos['id']."'
-                                          AND `itemtype`='$itemtype'
-                                          AND `items_id`='$ID'");
+         $result = getAllDatasFromTable(
+            self::getTable(),
+            [
+               'plugin_order_orders_id' => $infos['id'],
+               'itemtype' => $itemtype,
+               'items_id' => $ID,
+            ]
+         );
          if (!empty($result)) {
             $link = array_shift($result);
             $reference = new PluginOrderReference();
@@ -1345,8 +1360,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       echo "</td></tr></table>";
 
       $table = self::getTable();
-      if (countElementsInTable($table, "`plugin_order_orders_id`='".$order->getID().
-                               "' GROUP BY `plugin_order_bills_id`")) {
+      if (countElementsInTable($table,
+                               ['WHERE' => ['plugin_order_orders_id' => $order->getID()],
+                                'GROUPBY' => 'plugin_order_bills_id'])) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th>".__("Name")."</th>";
          echo "<th>".__("Status")."</th>";
@@ -1439,7 +1455,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "<img alt='' name='generation_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
          echo "</a>";
          echo "</li></ul></th>";
-         echo "<th>" . __("Type") . "</th>";
+         echo "<th>" . __("Assets") . "</th>";
          echo "<th>" . __("Manufacturer") . "</th>";
          echo "<th>" . __("Product reference", "order") . "</th>";
          echo "</tr>";
@@ -1678,7 +1694,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                KEY `plugin_order_references_id` (`plugin_order_references_id`),
                KEY `plugin_order_deliverystates_id` (`plugin_order_deliverystates_id`),
                KEY `states_id` (`states_id`)
-            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
             $DB->query($query) or die ($DB->error());
       } else {
          //Upgrade
@@ -1790,14 +1806,18 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
    public static function countForOrder(PluginOrderOrder $item) {
       return countElementsInTable('glpi_plugin_order_orders_items',
-                                  "`plugin_order_orders_id` = '".$item->getID()."'");
+                                  ['plugin_order_orders_id' => $item->getID()]);
    }
 
 
    public static function countForItem(CommonDBTM $item) {
-      return countElementsInTable('glpi_plugin_order_orders_items',
-                                  "`itemtype`='".$item->getType()."'
-                                   AND `items_id` = '".$item->getID()."'");
+      return countElementsInTable(
+         'glpi_plugin_order_orders_items',
+         [
+            'itemtype' => $item->getType(),
+            'items_id' => $item->getID(),
+         ]
+      );
    }
 
 
@@ -1879,5 +1899,23 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       }
    }
 
+   /**
+    * Returns manufacturer's reference number.
+    *
+    * @param integer $reference_id
+    * @return string
+    */
+   protected function getManufacturersReference($reference_id) {
 
+      global $DB;
+
+      $result = $DB->request([
+         'SELECT' => 'manufacturers_reference',
+         'FROM'   => 'glpi_plugin_order_references',
+         'WHERE'  => ['id' => $reference_id]
+      ]);
+
+      $data = $result->next();
+      return $data['manufacturers_reference'];
+   }
 }

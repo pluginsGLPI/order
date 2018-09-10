@@ -34,7 +34,7 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-define('PLUGIN_ORDER_VERSION', '2.1.1');
+define('PLUGIN_ORDER_VERSION', '2.2.0');
 
 // Minimal GLPI version, inclusive
 define("PLUGIN_ORDER_MIN_GLPI", "9.3");
@@ -106,7 +106,10 @@ function plugin_init_order() {
          'Contract',
          'PluginOrderOther',
          'SoftwareLicense',
-         'Certificate'
+         'Certificate',
+         'Rack',
+         'Enclosure',
+         'Pdu',
       ];
 
       $CFG_GLPI['plugin_order_types'] = $ORDER_TYPES;

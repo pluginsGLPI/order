@@ -106,10 +106,14 @@ class PluginOrderReception extends CommonDBChild {
 
 
    public function checkItemStatus($plugin_order_orders_id, $plugin_order_references_id, $states_id) {
-      return countElementsInTable("glpi_plugin_order_orders_items",
-                                  "`plugin_order_orders_id` = '$plugin_order_orders_id'
-                                   AND `plugin_order_references_id` = '$plugin_order_references_id'
-                                   AND `states_id` = '$states_id'");
+      return countElementsInTable(
+         "glpi_plugin_order_orders_items",
+         [
+            'plugin_order_orders_id' => $plugin_order_orders_id,
+            'plugin_order_references_id' => $plugin_order_references_id,
+            'states_id' => $states_id,
+         ]
+      );
    }
 
 
@@ -341,7 +345,7 @@ class PluginOrderReception extends CommonDBChild {
          echo "<img alt='' name='reception_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
          echo "</a>";
          echo "</li></ul></th>";
-         echo "<th>" . __("Type") . "</th>";
+         echo "<th>" . __("Assets") . "</th>";
          echo "<th>" . __("Manufacturer") . "</th>";
          echo "<th>" . __("Product reference", "order") . "</th>";
          echo "<th>" . __("Delivered items", "order") . "</th>";
@@ -380,7 +384,7 @@ class PluginOrderReception extends CommonDBChild {
                              ref.`name`,
                              ref.`itemtype`,
                              items.`items_id`
-                    FROM `glpi_plugin_order_orders_items` as items, 
+                    FROM `glpi_plugin_order_orders_items` as items,
                          `".$table."` as ref
                     WHERE items.`plugin_order_orders_id` = '$orders_id'
                     AND items.`plugin_order_references_id` = '" . $references_id . "'
@@ -884,6 +888,12 @@ class PluginOrderReception extends CommonDBChild {
    * return nothing
    */
    public static function generateAsset($options = []) {
+      // No asset should be generated for PluginOrderOther and PluginOrderReferenceFree items.
+      if (array_key_exists('itemtype', $options)
+          && (in_array($options['itemtype'], [PluginOrderOther::class, PluginOrderReferenceFree::class]))) {
+         return;
+      }
+
       // Retrieve configuration for generate assets feature
       $config = PluginOrderConfig::getConfig();
       if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_YES
@@ -896,6 +906,9 @@ class PluginOrderReception extends CommonDBChild {
             "serial"                 => $config->getGeneratedAssetSerial().$rand,
             "otherserial"            => $config->getGeneratedAssetOtherserial().$rand,
             "entities_id"            => $options['entities_id'],
+            "locations_id"           => '0',
+            "groups_id"              => '0',
+            "states_id"              => '0',
             "itemtype"               => $options["itemtype"],
             "id"                     => $options["items_id"],
             "plugin_order_orders_id" => $options["plugin_order_orders_id"],
@@ -929,7 +942,7 @@ class PluginOrderReception extends CommonDBChild {
 
    public static function countForOrder(PluginOrderOrder $item) {
       return countElementsInTable('glpi_plugin_order_orders_items',
-                                  "`plugin_order_orders_id` = '".$item->getID()."'");
+                                  ['plugin_order_orders_id' => $item->getID()]);
    }
 
 

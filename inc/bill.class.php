@@ -530,7 +530,7 @@ class PluginOrderBill extends CommonDropdown
                     `is_recursive` int(11) NOT NULL DEFAULT '0',
                     `notepad` text COLLATE utf8_unicode_ci,
                     PRIMARY KEY (`id`)
-                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
+                  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
          $DB->query($query) or die ($DB->error());
       } else {
          if ($DB->fieldExists("glpi_plugin_order_orders_suppliers", "num_bill")) {
@@ -541,7 +541,7 @@ class PluginOrderBill extends CommonDropdown
                if (!is_null($data['num_bill'])
                   && $data['num_bill'] != ''
                      && !countElementsInTable('glpi_plugin_order_bills',
-                                              "`number`='".$data['num_bill']."'")) {
+                                              ['number' => $data['num_bill']])) {
                   //create new bill and link it to the order
                   $tmp['name']                   = $tmp['number'] = $data['num_bill'];
 

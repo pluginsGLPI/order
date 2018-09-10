@@ -78,7 +78,7 @@ class PluginOrderOrderState extends CommonDropdown {
                   `comment` text collate utf8_unicode_ci,
                   PRIMARY KEY  (`id`),
                   KEY `name` (`name`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+               ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die ($DB->error());
       }
 
@@ -92,7 +92,7 @@ class PluginOrderOrderState extends CommonDropdown {
          6 => __("Canceled", "order"),
          7 => __("Paid", "order")
       ] as $id => $label) {
-         if (!countElementsInTable($table, "`id` = '$id'")) {
+         if (!countElementsInTable($table, ['id' => $id])) {
             $state->add([
                'id'   => $id,
                'name' => Toolbox::addslashes_deep($label)

@@ -9,11 +9,13 @@
          <fr><![CDATA[Gestion des commandes de matériels]]></fr>
          <en><![CDATA[Order management]]></en>
          <de><![CDATA[Bestellverwaltung]]></de>
+         <cs><![CDATA[Správa objednávek]]></cs>
       </short>
       <long>
          <fr><![CDATA[Cette extension vous permet de gérer le processus de commande de matériels à l'intérieur de GLPI :<br /> - Gestion des références produits<br /> - Gestion des commandes (avec workflow de soumission)<br /> - Gestion des budgets]]></fr>
          <en><![CDATA[This plugin allows you to manage order management within GLPI :<br /> - Products references management<br /> - Order management (with approval workflow)<br > - Budgets management]]></en>
          <de><![CDATA[Dieses Plugin ergänzt GLPI mit einer Bestellverwaltung:<br /> - Verwaltung der Produktreferenzen<br /> - Bestellverwaltung mit Freigabeprozedur<br > - Budgetverwaltung]]></de>
+         <cs><![CDATA[Tento zásuvný modul umožňuje spravovat objednávky pomocí GLPI :<br /> - Správa odkazů na produkty<br /> - Správa objednávek (s procesem schvalování)<br > - Správa rozpočtů]]></cs>
       </long>
    </description>
    <homepage>https://github.com/pluginsGLPI/order/</homepage>
@@ -26,6 +28,10 @@
       <author>Benjamin Fontan</author>
    </authors>
    <versions>
+     <version>
+          <num>2.2.0</num>
+          <compatibility>9.3</compatibility>
+     </version>
      <version>
           <num>2.1.1</num>
           <compatibility>9.3</compatibility>
@@ -165,6 +171,7 @@
       </version>
    </versions>
    <langs>
+      <lang>cs_CZ</lang>
       <lang>fr_FR</lang>
       <lang>en_GB</lang>
       <lang>de_DE</lang>
@@ -187,6 +194,14 @@
             <tag>products</tag>
             <tag>catalog</tag>
          </en>
+         <cs>
+            <tag>objednávky</tag>
+            <tag>nakupování</tag>
+            <tag>inventář</tag>
+            <tag>rozpočty</tag>
+            <tag>produkty</tag>
+            <tag>katalog</tag>
+         </cs>
    </tags>
    <license>GPL v2+</license>
 </root>

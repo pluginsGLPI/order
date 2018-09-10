@@ -372,7 +372,7 @@ class PluginOrderLink extends CommonDBChild {
          echo "<img alt='' name='generation_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
          echo "</a>";
          echo "</li></ul></th>";
-         echo "<th>".__("Type")."</th>";
+         echo "<th>".__("Assets")."</th>";
          echo "<th>".__("Manufacturer")."</th>";
          echo "<th>".__("Product reference", "order")."</th>";
          echo "</tr>";
@@ -417,7 +417,8 @@ class PluginOrderLink extends CommonDBChild {
          echo "<th>" . __("Reference") . "</th>";
          echo "<th>" . __("Status") . "</th>";
          echo "<th>" . __("Delivery date") . "</th>";
-         echo "<th>" . _n("Associated item", "Associated items", 2) . "</th></tr>";
+         echo "<th>" . _n("Associated item", "Associated items", 2) . "</th>";
+         echo "<th>" . __("Serial number") . "</th></tr>";
 
          foreach ($all_data as $data) {
             $detailID = $data["IDD"];
@@ -448,6 +449,7 @@ class PluginOrderLink extends CommonDBChild {
             echo "<td align='center'>" . $PluginOrderReception->getReceptionStatus($detailID) . "</td>";
             echo "<td align='center'>" . Html::convDate($data["delivery_date"]) . "</td>";
             echo "<td align='center'>" . $this->getReceptionItemName($data["items_id"], $data["itemtype"]);
+            echo "<td align='center'>" . $this->getItemSerialNumber($data["items_id"], $data["itemtype"]) . "</td>";
          }
          echo "</tr>";
          echo "</table>";
@@ -462,6 +464,30 @@ class PluginOrderLink extends CommonDBChild {
          echo "</div>";
       }
       echo "<br>";
+   }
+
+   /**
+    * Returns serial number of associated item.
+    *
+    * @param integer $items_id
+    * @param string  $itemtype
+    * @return string
+    */
+   protected function getItemSerialNumber($items_id, $itemtype) {
+
+      global $DB;
+
+      if ($itemtype == 'PluginOrderOther' || $itemtype == 'PluginOrderReferenceFree') {
+         return '';
+      }
+
+      $result = $DB->request([
+         'SELECT' => 'serial',
+         'FROM'   => $itemtype::getTable(),
+         'WHERE'  => ['id' => $items_id]
+      ]);
+      $data = $result->next();
+      return $data['serial'];
    }
 
    function getForbiddenStandardMassiveAction() {
@@ -933,7 +959,7 @@ class PluginOrderLink extends CommonDBChild {
                   $order->getFromDB($plugin_order_orders_id);
                   if (!countElementsInTable(
                      'glpi_contracts_suppliers',
-                     "`contracts_id`='$items_id' AND `suppliers_id`='".$order->fields['suppliers_id']."'")) {
+                     ['contracts_id' => $items_id, 'suppliers_id' => $order->fields['suppliers_id']])) {
 
                      $contract_supplier = new Contract_Supplier();
                      $contract_supplier->add([
@@ -1226,9 +1252,13 @@ class PluginOrderLink extends CommonDBChild {
 
 
    public static function countForOrder(PluginOrderOrder $item) {
-      return countElementsInTable('glpi_plugin_order_orders_items',
-                                  "`plugin_order_orders_id` = '".$item->getID()."' " .
-                                  "AND `states_id` = '".PluginOrderOrder::ORDER_DEVICE_DELIVRED."'");
+      return countElementsInTable(
+         'glpi_plugin_order_orders_items',
+         [
+            'plugin_order_orders_id' => $item->getID(),
+            'states_id' => PluginOrderOrder::ORDER_DEVICE_DELIVRED,
+         ]
+      );
    }
 
 
@@ -1273,15 +1303,20 @@ class PluginOrderLink extends CommonDBChild {
          $is_recursive = 0;
 
          foreach (getAllDatasFromTable('glpi_documents_items',
-                                       "`itemtype`='PluginOrderOrder'
-                                          AND `items_id`='$orders_id'") as $doc) {
+                                       ['itemtype' => 'PluginOrderOrder',
+                                        'items_id' => $orders_id]) as $doc) {
 
             //Create a new document
             $document->getFromDB($doc['documents_id']);
             if (($document->getEntityID() != $entity && !$document->fields['is_recursive'])
                || !in_array($entity, getSonsOf('glpi_entities', $document->getEntityID()))) {
-               $found_docs = getAllDatasFromTable('glpi_documents', "`entities_id`='$entity'
-                                                 AND `sha1sum`='".$document->fields['sha1sum']."'");
+               $found_docs = getAllDatasFromTable(
+                  'glpi_documents',
+                  [
+                     'entities_id' => $entity,
+                     'sha1sum' => $document->fields['sha1sum'],
+                  ]
+               );
                if (empty($found_docs)) {
                   $tmpdoc                = $document->fields;
                   $tmpdoc['entities_id'] = $entity;

@@ -215,6 +215,13 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
+      echo "<tr class='tab_bg_1' align='center'>";
+      echo "<td>" . __("Rename documents added in order", 'order') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("rename_documents", $this->fields["rename_documents"]);
+      echo "</td>";
+      echo "</tr>";
+
       // Automatic actions
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<th colspan='2'>".__("Automatic actions when delivery", "order")."</th>";
@@ -584,7 +591,7 @@ class PluginOrderConfig extends CommonDBTM {
                         `transmit_budget_change` tinyint(1) NOT NULL default '0',
                         `use_free_reference` tinyint(1) NOT NULL default '0',
                         PRIMARY KEY  (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                     ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
                $DB->query($query) or die ($DB->error());
 
                $tobefilled = "TOBEFILLED";
@@ -680,13 +687,9 @@ class PluginOrderConfig extends CommonDBTM {
                      'order_status_paid'                => 7];
 
       foreach ($new_states as $field => $value) {
-         $migration->addField($table, $field, "int(11) NOT NULL default '0'");
+         $migration->addField($table, $field, "int(11) NOT NULL default '0'", ['update' => $value]);
       }
       $migration->migrationOneTable($table);
-
-      $new_states['id'] = 1;
-      $config->update($new_states);
-
    }
 
 

@@ -209,7 +209,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
       echo Html::hidden('plugin_order_orders_id', ['value' => $ID]);
 
       $table = self::getTable();
-      $nb_elements = countElementsInTable($table, "`plugin_order_orders_id` = '$ID'");
+      $nb_elements = countElementsInTable($table, ['plugin_order_orders_id' => $ID]);
 
       if ($nb_elements > 0) {
          echo "<table class='tab_cadre_fixe'>";
@@ -221,7 +221,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          echo "<th>".__("Order number")."</th>";
          echo "</tr>";
 
-         $data = getAllDatasFromTable($table, "`plugin_order_orders_id` = '$ID'");
+         $data = getAllDatasFromTable($table, ['plugin_order_orders_id' => $ID]);
          foreach ($data as $cur) {
             Session::addToNavigateListItems(__CLASS__, $cur['id']);
             echo Html::hidden("item[".$cur["id"]."]", ['value' => $ID]);
@@ -257,7 +257,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 
       if ($plugin_order_orders_id) {
          $devices = getAllDatasFromTable(self::getTable(),
-                                         "`plugin_order_orders_id` = '$plugin_order_orders_id'");
+                                         ['plugin_order_orders_id' => $plugin_order_orders_id]);
          if (!empty($devices)) {
             return true;
          } else {
@@ -338,7 +338,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
                      KEY `plugin_order_orders_id` (`plugin_order_orders_id`),
                      KEY `entities_id` (`entities_id`),
                      KEY `suppliers_id` (`suppliers_id`)
-                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
             $DB->query($query) or die ($DB->error());
          } else {
             //Upgrade

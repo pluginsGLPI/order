@@ -122,7 +122,7 @@ class PluginOrderDocumentCategory extends CommonDBTM {
                      PRIMARY KEY  (`id`),
                      KEY `documentcategories_id` (`documentcategories_id`),
                      UNIQUE KEY `unicity` (`documentcategories_id`, `documentcategories_prefix`)
-                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die ($DB->error());
       }
    }

@@ -57,15 +57,20 @@ class PluginOrderOrder extends CommonDBTM {
    const ORDER_IS_EQUAL_BUDGET     = 2;
    const ORDER_IS_UNDER_BUDGET     = 3;
 
-   // additionnals rights
+   /**
+    * @var integer
+    * @deprecated 2.1.2 Useless right. Update process will remove it from profiles rights.
+    */
    const RIGHT_OPENTICKET                       = 128;
+
+   // additionnals rights
    const RIGHT_VALIDATION                       = 256;
    const RIGHT_UNDO_VALIDATION                  = 512;
    const RIGHT_CANCEL                           = 1024;
    const RIGHT_GENERATEODT_WITHOUT_VALIDATION   = 2048;
    const RIGHT_GENERATEODT                      = 4096;
    const RIGHT_DELIVERY                         = 8192;
-   const ALLRIGHTS                              = 16383;
+   const ALLRIGHTS                              = 16255;
 
 
    public static function getTypeName($nb = 0) {
@@ -269,8 +274,6 @@ class PluginOrderOrder extends CommonDBTM {
          $values[self::RIGHT_UNDO_VALIDATION] = __("Edit a validated order", "order");
          $values[self::RIGHT_GENERATEODT_WITHOUT_VALIDATION] = __("Generate order without validation", "order");
       }
-
-      $values[self::RIGHT_OPENTICKET]         = __("Link order to a ticket", "order");
 
       return $values;
    }
@@ -691,8 +694,13 @@ class PluginOrderOrder extends CommonDBTM {
 
          // ADD Documents
          $docitem  = new Document_Item();
-         $restrict = "`items_id` = '".$this->input["_oldID"]."' AND `itemtype` = '".$this->getType()."'";
-         $docs     = getAllDatasFromTable("glpi_documents_items", $restrict);
+         $docs     = getAllDatasFromTable(
+            "glpi_documents_items",
+            [
+               'items_id' => $this->input["_oldID"],
+               'itemtype' => $this->getType(),
+            ]
+         );
          if (!empty($docs)) {
             foreach ($docs as $doc) {
                $docitem->add([
@@ -1439,9 +1447,9 @@ class PluginOrderOrder extends CommonDBTM {
    public function checkIfDetailExists($orders_id, $only_delivered = false) {
       if ($orders_id) {
          $detail = new PluginOrderOrder_Item();
-         $where  = "`plugin_order_orders_id`='$orders_id'";
+         $where  = ['plugin_order_orders_id' => $orders_id];
          if ($only_delivered) {
-            $where .= " AND `states_id` > 0";
+            $where['states_id'] = ['>', 0];
          }
          return (countElementsInTable("glpi_plugin_order_orders_items", $where));
       } else {
@@ -1689,11 +1697,13 @@ class PluginOrderOrder extends CommonDBTM {
                                                                              $data["price_taxfree"],
                                                                              $data["discount"]);
 
+               $tax = new PluginOrderOrderTax();
+               $tax->getFromDB($data["plugin_order_ordertaxes_id"]);
+
                $listeArticles[] = [
                   'quantity'         => $quantity,
-                  'ref'              => utf8_decode($data["name"]),
-                  'taxe'             => Dropdown::getDropdownName(PluginOrderOrderTax::getTable(),
-                                                                  $data["plugin_order_ordertaxes_id"]),
+                  'ref'              => $data["name"],
+                  'taxe'             => $tax->getRate(),
                   'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier(
                                           $data["id"],
                                           $this->fields["suppliers_id"]),
@@ -1712,11 +1722,13 @@ class PluginOrderOrder extends CommonDBTM {
                                                                                     $data["price_taxfree"],
                                                                                     $data["discount"]);
 
+               $tax = new PluginOrderOrderTax();
+               $tax->getFromDB($data["plugin_order_ordertaxes_id"]);
+
                $listeArticles[] = [
                   'quantity'         => $quantity,
-                  'ref'              => utf8_decode($data["name"]),
-                  'taxe'             => Dropdown::getDropdownName(getTableForItemType("PluginOrderOrderTax"),
-                                                                  $data["plugin_order_ordertaxes_id"]),
+                  'ref'              => $data["name"],
+                  'taxe'             => $tax->getRate(),
                   'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier(
                      $data["id"],
                      $this->fields["suppliers_id"]),
@@ -1728,20 +1740,30 @@ class PluginOrderOrder extends CommonDBTM {
 
             $article = $odf->setSegment('articles');
             foreach ($listeArticles AS $element) {
-               $article->nbA($element['quantity']);
-               $article->titleArticle($element['ref']);
-               $article->refArticle($element['refnumber']);
-               $article->TVAArticle($element['taxe']);
-               $article->HTPriceArticle(Html::clean(Html::formatNumber($element['price_taxfree'])));
+               $articleValues = [];
+               $articleValues['nbA'] = $element['quantity'];
+               $articleValues['titleArticle'] = $element['ref'];
+               $articleValues['refArticle'] = $element['refnumber'];
+               $articleValues['TVAArticle'] = $element['taxe'];
+               $articleValues['HTPriceArticle'] = Html::clean(Html::formatNumber($element['price_taxfree']));
                if ($element['discount'] != 0) {
-                  $article->discount(Html::clean(Html::formatNumber($element['discount']))." %");
+                  $articleValues['discount'] = Html::clean(Html::formatNumber($element['discount']))." %";
                } else {
-                  $article->discount("");
+                  $articleValues['discount'] = "";
                }
-               $article->HTPriceTotalArticle(Html::clean(Html::formatNumber($element['price_discounted'])));
+               $articleValues['HTPriceTotalArticle'] = Html::clean(Html::formatNumber($element['price_discounted']));
 
                $total_TTC_Article = $element['price_discounted'] * (1 + ($element['taxe'] / 100));
-               $article->ATIPriceTotalArticle(Html::clean(Html::formatNumber($total_TTC_Article)));
+               $articleValues['ATIPriceTotalArticle'] = Html::clean(Html::formatNumber($total_TTC_Article));
+
+               // Set variables in odt segment
+               foreach ($articleValues as $field => $val) {
+                  try {
+                     $article->setVars($field, $val, true, 'UTF-8');
+                  } catch (\Odtphp\Exceptions\OdfException $e) {
+                     $is_cs_happy = true;
+                  }
+               }
                $article->merge();
             }
 
@@ -1976,7 +1998,7 @@ class PluginOrderOrder extends CommonDBTM {
    public static function updateBillState($ID) {
       $all_paid    = true;
       $order_items = getAllDatasFromTable(PluginOrderOrder_Item::getTable(),
-                                          "`plugin_order_orders_id`='$ID'");
+                                          ['plugin_order_orders_id' => $ID]);
       foreach ($order_items as $item) {
          if ($item['plugin_order_billstates_id'] == PluginOrderBillState::NOTPAID) {
             $all_paid = false;
@@ -2084,7 +2106,7 @@ class PluginOrderOrder extends CommonDBTM {
       $nblate = 0;
       $table  = self::getTable();
 
-      foreach (getAllDatasFromTable($table, "`is_template`='0'") as $values) {
+      foreach (getAllDatasFromTable($table, ['is_template' => 0]) as $values) {
          $order = new self();
          $order->fields = $values;
          if (!$order->fields['is_late'] && $order->shouldBeAlreadyDelivered(true)) {
@@ -2347,7 +2369,7 @@ class PluginOrderOrder extends CommonDBTM {
                KEY `is_template` (`is_template`),
                KEY `is_deleted` (`is_deleted`),
                KEY date_mod (date_mod)
-            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
             $DB->query($query) or die ($DB->error());
 
             Crontask::Register(__CLASS__, 'computeLateOrders', HOUR_TIMESTAMP, [
@@ -2534,7 +2556,7 @@ class PluginOrderOrder extends CommonDBTM {
          $migration->addField($table, 'deliverydate', "DATETIME NULL");
          $migration->addField($table, "is_late", "TINYINT(1) NOT NULL DEFAULT '0'");
          $migration->addKey($table, "is_late");
-         if (!countElementsInTable('glpi_crontasks', "`name`='computeLateOrders'")) {
+         if (!countElementsInTable('glpi_crontasks', ['name' => 'computeLateOrders'])) {
             Crontask::Register(__CLASS__, 'computeLateOrders', HOUR_TIMESTAMP, [
                'param' => 24,
                'mode'  => CronTask::MODE_EXTERNAL
@@ -2565,8 +2587,9 @@ class PluginOrderOrder extends CommonDBTM {
          $prefs = [1 => 1, 2 => 2, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 10 => 10];
          foreach ($prefs as $num => $rank) {
             if (!countElementsInTable("glpi_displaypreferences",
-                                       "`itemtype`='PluginOrderOrder' AND `num`='$num'
-                                        AND `users_id`='0'")) {
+                                      ['itemtype' => 'PluginOrderOrder',
+                                       'num' => $num,
+                                       'users_id' => 0])) {
                $DB->query("INSERT INTO glpi_displaypreferences
                            VALUES (NULL,'PluginOrderOrder','$num','$rank','0');");
             }
@@ -2576,6 +2599,13 @@ class PluginOrderOrder extends CommonDBTM {
          $notification = new Notification();
          $notification->deleteByCriteria("`itemtype`='PluginOrderOrder_Item'");
       }
+
+      // Remove RIGHT_OPENTICKET
+      $DB->update(
+         ProfileRight::getTable(),
+         ['rights' => new QueryExpression(DB::quoteName('rights') . ' & ~' . self::RIGHT_OPENTICKET)],
+         ['name' => self::$rightname]
+      );
    }
 
 

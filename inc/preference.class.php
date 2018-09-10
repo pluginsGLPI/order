@@ -61,7 +61,7 @@ class PluginOrderPreference extends CommonDBTM {
     * @return preference value or 0
     */
    public static function checkPreferenceValue($field, $users_id = 0) {
-      $data = getAllDatasFromTable(self::getTable(), "`users_id` = '$users_id'");
+      $data = getAllDatasFromTable(self::getTable(), ['users_id' => $users_id]);
       if (!empty($data)) {
          $first = array_pop($data);
          return $first[$field];
@@ -172,7 +172,7 @@ class PluginOrderPreference extends CommonDBTM {
 
       if (isset($this->fields["sign"]) && !empty($this->fields["sign"])) {
          echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
-          echo "<img src='".$CFG_GLPI["root_doc"]."/plugins/order/signatures/".$this->fields["sign"]."'>";
+          echo "<img src='".$CFG_GLPI["root_doc"]."/plugins/order/front/signature.php?sign=".rawurlencode($this->fields["sign"])."'>";
          echo "</td></tr>";
       }
 
@@ -243,7 +243,7 @@ class PluginOrderPreference extends CommonDBTM {
                   `sign` varchar(255) collate utf8_unicode_ci default NULL,
                   PRIMARY KEY  (`id`),
                   KEY `users_id` (`users_id`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+               ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query) or die ($DB->error());
       } else {
 
