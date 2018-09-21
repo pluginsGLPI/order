@@ -575,6 +575,18 @@ class PluginOrderOrder extends CommonDBTM {
          'massiveaction' => false,
       ];
 
+      $tab[] = [
+         'id'            => 87,
+         'table'         => 'glpi_plugin_order_accountsections',
+         'field'         => 'name',
+         'name'          =>  __("Account Section", "order"),
+         'datatype'      => 'dropdown',
+         'checktype'     => 'text',
+         'displaytype'   => 'dropdown',
+         'injectable'    => true,
+         'massiveaction' => false,
+      ];
+
       return $tab;
    }
 
@@ -674,6 +686,12 @@ class PluginOrderOrder extends CommonDBTM {
             $input["name"] = $input["num_order"];
          }
 
+         $config = PluginOrderConfig::getConfig();
+         if ($config->isAccountSectionDisplayed() && $config->isAccountSectionMandatory() && $input["plugin_order_accountsections_id"] == 0) {
+            Session::addMessageAfterRedirect(__("An account section is mandatory !", "order"), false, ERROR);
+            return [];
+         }
+
          if (isset($input['budgets_id'])
              && $input['budgets_id'] > 0) {
             if (!self::canStillUseBudget($input)) {
@@ -742,6 +760,12 @@ class PluginOrderOrder extends CommonDBTM {
             && !isset($input['_unlink_budget'])) {
             Session::addMessageAfterRedirect(__("The order date must be within the dates entered for the selected budget.", "order"), false, ERROR);
          }
+      }
+
+      $config = PluginOrderConfig::getConfig();
+      if ($config->isAccountSectionDisplayed() && $config->isAccountSectionMandatory() && $input["plugin_order_accountsections_id"] == 0) {
+         Session::addMessageAfterRedirect(__("An account section is mandatory !", "order"), false, ERROR);
+         return [];
       }
 
       if (!isset($input['is_late'])
@@ -1069,6 +1093,42 @@ class PluginOrderOrder extends CommonDBTM {
          echo "<br/>".Html::convDate($this->fields['deliverydate']);
       }
       echo "</td>";
+      echo "</tr>";
+
+      /* account section */
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      if (!$config->isAccountSectionDisplayed()) {
+         echo "<span style='display:none'>";
+      }
+      echo __("Account section", "order") . " :";
+      if (!$config->isAccountSectionDisplayed()) {
+         echo "</span>";
+      }
+      echo "</td>";
+
+      echo "<td>";
+      if (!$config->isAccountSectionDisplayed()) {
+         echo "<span style='display:none'>";
+      }
+      if ($canedit) {
+         PluginOrderAccountSection::Dropdown([
+            'name'  => "plugin_order_accountsections_id",
+            'value' => $this->fields["plugin_order_accountsections_id"],
+         ]);
+      } else {
+         echo Dropdown::getDropdownName("glpi_plugin_order_accountsections",
+                                        $this->fields["plugin_order_accountsections_id"]);
+      }
+
+      if ($config->isAccountSectionMandatory()) {
+         echo " <span class='red'>*</span>";
+      }
+      if (!$config->isAccountSectionDisplayed()) {
+         echo "</span>";
+      }
+      echo "</td>";
+      echo "<td colspan='2'></td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -2342,6 +2402,7 @@ class PluginOrderOrder extends CommonDBTM {
                `is_late` tinyint(1) NOT NULL default '0',
                `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
                `contacts_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_contacts (id)',
+               `plugin_order_accountsections_id` int(11) NOT NULL default '0' COMMENT 'RELATION to plugin_order_accountsections (id)',
                `locations_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_locations (id)',
                `plugin_order_orderstates_id` int(11) NOT NULL default 1,
                `plugin_order_billstates_id` int(11) NOT NULL default 1,
@@ -2364,6 +2425,7 @@ class PluginOrderOrder extends CommonDBTM {
                KEY `states_id` (`plugin_order_orderstates_id`),
                KEY `suppliers_id` (`suppliers_id`),
                KEY `contacts_id` (`contacts_id`),
+               KEY `plugin_order_accountsections_id` (`plugin_order_accountsections_id`),
                KEY `locations_id` (`locations_id`),
                KEY `is_late` (`locations_id`),
                KEY `is_template` (`is_template`),
@@ -2606,6 +2668,11 @@ class PluginOrderOrder extends CommonDBTM {
          ['rights' => new QueryExpression(DB::quoteName('rights') . ' & ~' . self::RIGHT_OPENTICKET)],
          ['name' => self::$rightname]
       );
+
+      if (!$DB->fieldExists($table, 'plugin_order_accountsections_id')) {
+         $migration->addField($table, 'plugin_order_accountsections_id', 'integer', ['after' => 'contacts_id']);
+         $migration->migrationOneTable($table);
+      }
    }
 
 
