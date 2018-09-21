@@ -172,6 +172,18 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          'injectable'    => true,
       ];
 
+      $tab[] = [
+         'id'            => 87,
+         'table'         => 'glpi_plugin_order_analyticnatures',
+         'field'         => 'name',
+         'name'          => __("Analytic Nature", "order"),
+         'datatype'      => 'dropdown',
+         'checktype'     => 'text',
+         'displaytype'   => 'dropdown',
+         'injectable'    => true,
+         'massiveaction' => false
+      ];
+
       return $tab;
    }
 
@@ -275,7 +287,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    }
 
 
-   public function addDetails($ref_id, $itemtype, $orders_id, $quantity, $price, $discounted_price, $taxes_id) {
+   public function addDetails($ref_id, $itemtype, $orders_id, $quantity, $price, $discounted_price, $taxes_id, $analytic_nature_id) {
 
       $order = new PluginOrderOrder();
       if ($quantity > 0 && $order->getFromDB($orders_id)) {
@@ -283,20 +295,21 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          $tax->getFromDB($taxes_id);
 
          for ($i = 0; $i < $quantity; $i++) {
-            $input["plugin_order_orders_id"]     = $orders_id;
-            $input["plugin_order_references_id"] = $ref_id;
-            $input["plugin_order_ordertaxes_id"] = $taxes_id;
-            $input["itemtype"]                   = $itemtype;
-            $input["entities_id"]                = $order->getEntityID();
-            $input["is_recursive"]               = $order->isRecursive();
-            $input["price_taxfree"]              = $price;
-            $input["price_discounted"]           = $price - ($price * ($discounted_price / 100));
-            $input["states_id"]                  = PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED;;
-            $input["price_ati"]                  = $this->getPricesATI(
+            $input["plugin_order_orders_id"]          = $orders_id;
+            $input["plugin_order_references_id"]      = $ref_id;
+            $input["plugin_order_ordertaxes_id"]      = $taxes_id;
+            $input["plugin_order_analyticnatures_id"] = $analytic_nature_id;
+            $input["itemtype"]                        = $itemtype;
+            $input["entities_id"]                     = $order->getEntityID();
+            $input["is_recursive"]                    = $order->isRecursive();
+            $input["price_taxfree"]                   = $price;
+            $input["price_discounted"]                = $price - ($price * ($discounted_price / 100));
+            $input["states_id"]                       = PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED;;
+            $input["price_ati"]                       = $this->getPricesATI(
                $input["price_discounted"],
                $tax->getRate()
             );
-            $input["discount"]                   = $discounted_price;
+            $input["discount"]                        = $discounted_price;
 
             $this->add($input);
          }
@@ -334,6 +347,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "<tr align='center'>";
                echo "<th>".__("Type")."</th>";
                echo "<th>".__("Product reference", "order")."</th>";
+               echo "<th " . (!$config->isAnalyticNatureDisplayed() ? 'style="display:none;"' : '') . ">";
+               echo __("Analytic nature", "order");
+               echo "</th>";
                echo "<th>".__("Quantity", "order")."</th>";
                echo "<th>".__("Unit price tax free", "order")."</th>";
                echo "<th>".__("VAT", "order")."</th>";
@@ -383,6 +399,14 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                ]);
                echo "</span></td>";
 
+               echo "<td " . (!$config->isAnalyticNatureDisplayed() ? 'style="display:none;"' : '') . ">";
+               PluginOrderAnalyticNature::Dropdown(['name'  => "plugin_order_analyticnatures_id"]);
+
+               if ($config->isAnalyticNatureMandatory()) {
+                  echo " <span class='red'>*</span>";
+               }
+               echo "</td>";
+
                echo "<td class='tab_bg_1'><span id='show_quantity'>";
                echo "<input type='number' name='quantity' value='0' class='quantity' />";
                echo "</span></td>";
@@ -430,6 +454,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   echo "<tr align='center'>";
                   echo "<th>" . __("Product name", "order") . "</th>";
                   echo "<th>" . __("Manufacturer") . "</th>";
+                  echo "<th " . (!$config->isAnalyticNatureDisplayed() ? 'style="display:none;"' : '') . ">";
+                  echo __("Analytic nature", "order");
+                  echo "</th>";
                   echo "<th>" . __("Quantity", "order") . "</th>";
                   echo "<th>" . __("Unit price tax free", "order") . "</th>";
                   echo "<th>" . __("VAT", "order") . "</th>";
@@ -449,6 +476,14 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   echo "<td class='tab_bg_1'>";
                   $rand = mt_rand();
                   Manufacturer::dropdown(['rand' => $rand]);
+                  echo "</td>";
+
+                  echo "<td " . (!$config->isAnalyticNatureDisplayed() ? 'style="display:none;"' : '') . ">";
+                  PluginOrderAnalyticNature::Dropdown(['name'  => "plugin_order_analyticnatures_id"]);
+
+                  if ($config->isAnalyticNatureMandatory()) {
+                     echo " <span class='red'>*</span>";
+                  }
                   echo "</td>";
 
                   echo "<td class='tab_bg_1'><span id='show_quantity'>";
@@ -544,6 +579,36 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       }
    }
 
+   public function prepareInputForAdd($input) {
+      $config = PluginOrderConfig::getConfig();
+
+      if (isset($input["id"]) && $input["id"]>0) {
+         $input["_oldID"] = $input["id"];
+         unset($input['id']);
+         unset($input['withtemplate']);
+      } else {
+         if ($config->isAnalyticNatureDisplayed()
+             && $config->isAnalyticNatureMandatory()
+             && $input["plugin_order_analyticnatures_id"] == 0) {
+            Session::addMessageAfterRedirect(__("A analytic nature is mandatory !", "order"), false, ERROR);
+            return [];
+         }
+      }
+
+      return $input;
+   }
+
+   public function prepareInputForUpdate($input) {
+      $config = PluginOrderConfig::getConfig();
+      if ($config->isAnalyticNatureDisplayed()
+          && $config->isAnalyticNatureMandatory()
+          && $input["plugin_order_analyticnatures_id"] == 0) {
+         Session::addMessageAfterRedirect(__("A analytic nature is mandatory !", "order"), false, ERROR);
+         return [];
+      }
+
+      return $input;
+   }
 
    public function queryDetail($ID, $tableRef = 'glpi_plugin_order_references') {
       global $DB;
@@ -561,7 +626,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                           item.`price_taxfree`, item.`price_ati`,
                           item.`price_discounted`,
                           item.`discount`,
-                          item.`plugin_order_ordertaxes_id`
+                          item.`plugin_order_ordertaxes_id`,
+                          item.`plugin_order_analyticnatures_id`
                   FROM $table item
                   LEFT JOIN `glpi_plugin_order_references` ref
                      ON item.`plugin_order_references_id` = ref.`id`
@@ -581,7 +647,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                        item.`price_taxfree`, item.`price_ati`,
                        item.`price_discounted`,
                        item.`discount`,
-                       item.`plugin_order_ordertaxes_id`
+                       item.`plugin_order_ordertaxes_id`,
+                       item.`plugin_order_analyticnatures_id`
                FROM $table item, `" . $tableRef . "` ref
                WHERE item.`plugin_order_references_id` = ref.`id`
                AND item.`plugin_order_orders_id` = '$ID'
@@ -683,6 +750,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       global  $CFG_GLPI,$DB;
 
       $global_rand = mt_rand();
+      $config      = new PluginOrderConfig();
+
       echo "<div class='center'>";
       echo "<form method='post' name='order_updatedetail_form$rand' " .
            "id='order_updatedetail_form$rand'  " .
@@ -705,6 +774,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "</a>";
          echo "</li></ul></th>";
          echo "<th>" . __("Quantity", "order") . "</th>";
+         echo "<th " . (!$config->isAnalyticNatureDisplayed() ? 'style="display:none;"' : '') . ">";
+         echo  __("Analytic nature", "order");
+         echo "</th>";
          echo "<th>" . __("Assets") . "</th>";
          echo "<th>" . __("Manufacturer") . "</th>";
          echo "<th>" . __("Reference") . "</th>";
@@ -768,6 +840,32 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          } else {
             echo "<td align='center'>".$quantity."</td>";
          }
+
+         $config = new PluginOrderConfig();
+
+         echo "<td align='center' " . (!$config->isAnalyticNatureDisplayed() ? 'style="display:none;"' : '') . ">";
+         echo "<script type='text/javascript' >\n";
+         echo "function showAnalyticNature$rand() {\n";
+         echo "$('#analyticnature$rand').hide();";
+         echo "$('#viewanalyticnature$rand').show();";
+         echo "$('#viewaccept$rand').show();";
+         echo "}";
+         echo "</script>\n";
+         echo "<div id='analyticnature$rand' class='center' onClick='showAnalyticNature$rand()'>\n";
+         echo Dropdown::getDropdownName("glpi_plugin_order_analyticnatures",
+                                  $data_ref["plugin_order_analyticnatures_id"]);
+         echo "</div>\n";
+         echo "<div id='viewanalyticnature$rand' style='display:none;'>\n";
+         PluginOrderAnalyticNature::Dropdown([
+            'name'  => "plugin_order_analyticnatures_id",
+            'value' => $data_ref['plugin_order_analyticnatures_id'],
+         ]);
+         if ($config->isAnalyticNatureMandatory()) {
+            echo " <span class='red'>*</span>";
+         }
+         echo "</div>\n";
+         echo "</td>";
+
          /* type */
          $item = new $data_ref["itemtype"]();
          echo "<td align='center'>".$item->getTypeName()."</td>";
@@ -1611,10 +1709,20 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                            $to_add,
                            $this->fields['price_taxfree'],
                            $this->fields['discount'],
-                           $this->fields['plugin_order_ordertaxes_id']);
+                           $this->fields['plugin_order_ordertaxes_id'],
+                           $this->fields['plugin_order_analyticnatures_id']);
       }
    }
 
+   public function updateAnalyticNature($post) {
+      global $DB;
+
+      $this->getFromDB($post['item_id']);
+
+      $input = $this->fields;
+      $input['plugin_order_analyticnatures_id'] = $post['plugin_order_analyticnatures_id'];
+      $this->update($input);
+   }
 
    public function updatePrice_taxfree($post) {
       global $DB;
@@ -1676,6 +1784,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                `plugin_order_references_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)',
                `plugin_order_deliverystates_id` int (11)  NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_deliverystates (id)',
                `plugin_order_ordertaxes_id` float NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)',
+               `plugin_order_analyticnatures_id` int (11) NOT NULL default '0' COMMENT 'RELATION to plugin_order_analyticnatures (id)',
                `delivery_number` varchar(255) collate utf8_unicode_ci default NULL,
                `delivery_comment` text collate utf8_unicode_ci,
                `price_taxfree` decimal(20,6) NOT NULL DEFAULT '0.000000',
@@ -1693,6 +1802,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                KEY `item` (`itemtype`,`items_id`),
                KEY `plugin_order_references_id` (`plugin_order_references_id`),
                KEY `plugin_order_deliverystates_id` (`plugin_order_deliverystates_id`),
+               KEY `plugin_order_analyticnatures_id` (`plugin_order_analyticnatures_id`),
                KEY `states_id` (`states_id`)
             ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
             $DB->query($query) or die ($DB->error());
@@ -1786,6 +1896,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                           AND `is_recursive`='".$data['is_recursive']."'
                        WHERE `id`='".$data['items_id']."'";
             $DB->query($update) or die($DB->error());
+         }
+
+         if (!$DB->fieldExists($table, 'plugin_order_analyticnatures_id')) {
+            $migration->addField($table, 'plugin_order_analyticnatures_id', 'integer', ['after' => 'plugin_order_ordertaxes_id']);
+            $migration->migrationOneTable($table);
          }
 
          $migration->executeMigration();

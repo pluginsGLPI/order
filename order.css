@@ -46,8 +46,8 @@ input[type=number].quantity::-webkit-inner-spin-button {
 }
 
 /* ADD button */
-.tab_order_add_items th:nth-child(7),
-.tab_order_add_items td:nth-child(7) {
+.tab_order_add_items th:nth-child(8),
+.tab_order_add_items td:nth-child(8) {
    width: 40px;
 }
 

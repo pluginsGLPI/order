@@ -209,6 +209,20 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1' align='center'>";
+      echo "<td>" . __("Display account section on order form", 'order') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("order_accountsection_display", $this->fields["order_accountsection_display"]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>";
+      echo "<td>" . __("Set account section as mandatory on order form", 'order') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("order_accountsection_mandatory", $this->fields["order_accountsection_mandatory"]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>";
       echo "<td>".__("Use free references", 'order')."</td>";
       echo "<td>";
       Dropdown::showYesNo("use_free_reference", $this->fields["use_free_reference"]);
@@ -230,6 +244,20 @@ class PluginOrderConfig extends CommonDBTM {
       // ASSETS
       echo "<tr class='tab_bg_1' align='center'>";
       echo "<th colspan='2'>".__('Item')."</th>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>";
+      echo "<td>" . __("Display analytic nature on item form", 'order') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("order_analyticnature_display", $this->fields["order_analyticnature_display"]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1' align='center'>";
+      echo "<td>" . __("Set analytic nature as mandatory on item form", 'order') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("order_analyticnature_mandatory", $this->fields["order_analyticnature_mandatory"]);
+      echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1 center'>";
@@ -440,6 +468,25 @@ class PluginOrderConfig extends CommonDBTM {
 
    }
 
+   public function isAccountSectionDisplayed() {
+
+      return $this->fields['order_accountsection_display'];
+   }
+
+   public function isAccountSectionMandatory() {
+
+      return $this->fields['order_accountsection_mandatory'];
+   }
+
+   public function isAnalyticNatureDisplayed() {
+
+      return $this->fields['order_analyticnature_display'];
+   }
+
+   public function isAnalyticNatureMandatory() {
+
+      return $this->fields['order_analyticnature_mandatory'];
+   }
 
    public function getDefaultTaxes() {
       return $this->fields['default_taxes'];
@@ -579,6 +626,10 @@ class PluginOrderConfig extends CommonDBTM {
                         `order_status_completly_delivered` int(11) NOT NULL default '0',
                         `order_status_canceled` int(11) NOT NULL default '0',
                         `order_status_paid` int(11) NOT NULL default '0',
+                        `order_analyticnature_display` int(11) NOT NULL default '0',
+                        `order_analyticnature_mandatory` int(11) NOT NULL default '0',
+                        `order_accountsection_display` int(11) NOT NULL default '0',
+                        `order_accountsection_mandatory` int(11) NOT NULL default '0',
                         `shoudbedelivered_color` char(20) collate utf8_unicode_ci default '#ff5555',
                         `documentcategories_id` int(11) NOT NULL default '0',
                         `groups_id_author` int(11) NOT NULL default '0',
@@ -689,6 +740,20 @@ class PluginOrderConfig extends CommonDBTM {
       foreach ($new_states as $field => $value) {
          $migration->addField($table, $field, "int(11) NOT NULL default '0'", ['update' => $value]);
       }
+
+      if (!$DB->fieldExists($table, 'order_analyticnature_display')) {
+         $migration->addField($table, 'order_analyticnature_display', 'integer');
+      }
+      if (!$DB->fieldExists($table, 'order_accountsection_display')) {
+         $migration->addField($table, 'order_accountsection_display', 'integer');
+      }
+      if (!$DB->fieldExists($table, 'order_analyticnature_mandatory')) {
+         $migration->addField($table, 'order_analyticnature_mandatory', 'integer');
+      }
+      if (!$DB->fieldExists($table, 'order_accountsection_mandatory')) {
+         $migration->addField($table, 'order_accountsection_mandatory', 'integer');
+      }
+
       $migration->migrationOneTable($table);
    }
 
