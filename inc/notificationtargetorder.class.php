@@ -55,7 +55,6 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
 
    public function addDataForTemplate($event, $options = []) {
-      global $CFG_GLPI;
 
       $events = $this->getAllEvents();
       $this->data['##order.action##'] = $events[$event];
@@ -67,8 +66,10 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
             $this->data['orders'][] = [
                '##order.item.name##'         => $order['name'],
                '##order.item.numorder##'     => $order['num_order'],
-               '##order.item.url##'          => rawurldecode($CFG_GLPI["url_base"]
-                                                ."/index.php?redirect=plugin_order_order_".$id),
+               '##order.item.url##'          => $this->formatURL(
+                  $options['additionnaloption']['usertype'],
+                  $order->getType()."_".$id
+               ),
                '##order.item.orderdate##'    => Html::convDate($order["order_date"]),
                '##order.item.duedate##'      => Html::convDate($order["duedate"]),
                '##order.item.deliverydate##' => Html::convDate($order["deliverydate"]),
@@ -137,10 +138,10 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
          $this->data['##order.deliveryuser.name##']  = Html::clean(getUserName($this->obj->getField('users_id_delivery')));
 
          $this->data['##lang.ordervalidation.url##'] = "URL";
-
-         $url = $CFG_GLPI["url_base"]."/index.php?redirect=plugin_order_order_".$this->obj->getField("id");
-         $this->data['##ordervalidation.url##']      = urldecode($url);
-
+         $this->data['##ordervalidation.url##']      = $this->formatURL(
+            $options['additionnaloption']['usertype'],
+            $this->obj->getType()."_".$this->obj->getField("id")
+         );
       }
    }
 
