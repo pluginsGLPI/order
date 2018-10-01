@@ -135,6 +135,12 @@ class PluginOrderLink extends CommonDBChild {
                echo "<td><input type='text' size='20' name='id[$i][otherserial]'></td>";
             }
 
+            echo "<td align='center'>";
+            if ($templateID) {
+               echo $reference->getTemplateName($params['add_items'][$key]['itemtype'], $templateID);
+            }
+            echo "</td>";
+
             if (Session::isMultiEntitiesMode()
                   && count($_SESSION['glpiactiveentities']) > 1) {
                echo "<td>";
