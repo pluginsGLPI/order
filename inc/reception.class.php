@@ -332,7 +332,6 @@ class PluginOrderReception extends CommonDBChild {
                'massive_action_fields' => [
                   'plugin_order_orders_id',
                   'plugin_order_references_id',
-                  'add_items'
                ]
             ]
          ];
@@ -401,14 +400,6 @@ class PluginOrderReception extends CommonDBChild {
          $all_data = [];
          while ($data = $DB->fetch_array($result)) {
             $all_data[] = $data;
-            $massiveactionparams['extraparams']['add_items'][$data["IDD"]] = [
-               'id'                         => $data["IDD"],
-               'name'                       => $data["name"],
-               'plugin_order_references_id' => $data["id"],
-               'itemtype'                   => $data["itemtype"],
-               'templates_id'               => $data["templates_id"],
-               'states_id'                  => $data["states_id"],
-            ];
          }
 
          if ($canmassive && $num) {
@@ -724,6 +715,8 @@ class PluginOrderReception extends CommonDBChild {
 
 
    public function updateReceptionStatus($params) {
+      global $DB;
+
       $detail                 = new PluginOrderOrder_Item();
       $plugin_order_orders_id = 0;
       $ma                     = false;
@@ -735,12 +728,38 @@ class PluginOrderReception extends CommonDBChild {
       }
 
       if (isset($params2['items'][__CLASS__])) {
+         $additional_data_ite = $DB->request([
+            'SELECT' => [
+               'glpi_plugin_order_orders_items.id',
+               'glpi_plugin_order_references.id AS plugin_order_references_id',
+               'glpi_plugin_order_references.itemtype',
+            ],
+            'FROM' => [
+               'glpi_plugin_order_orders_items'
+            ],
+            'LEFT JOIN' => [
+               'glpi_plugin_order_references' => [
+                  'FKEY' => [
+                     'glpi_plugin_order_orders_items' => 'plugin_order_references_id',
+                     'glpi_plugin_order_references'   => 'id',
+                  ]
+               ]
+            ],
+            'WHERE' => [
+               'glpi_plugin_order_orders_items.id' => array_keys($params2['items'][__CLASS__])
+            ]
+         ]);
+         $additional_data = [];
+         foreach ($additional_data_ite as $add_values) {
+            $additional_data[$add_values['id']] = $add_values;
+         }
+
          foreach ($params2['items'][__CLASS__] as $key => $val) {
             if ($val > 1) {
-               $add_item = $params2['POST']['add_items'][$key];
-               if ($add_item["itemtype"] == 'SoftwareLicense') {
+               $add_data = $additional_data[$key];
+               if ($add_data["itemtype"] == 'SoftwareLicense') {
                   $this->receptionAllItem($key,
-                                          $add_item["plugin_order_references_id"],
+                                          $add_data["plugin_order_references_id"],
                                           $params2['POST']["plugin_order_orders_id"],
                                           $params2['POST']["delivery_date"],
                                           $params2['POST']["delivery_number"],
@@ -770,11 +789,11 @@ class PluginOrderReception extends CommonDBChild {
 
                      // Automatic generate asset
                      $options = [
-                        "itemtype"                   => $add_item["itemtype"],
+                        "itemtype"                   => $add_data["itemtype"],
                         "items_id"                   => $key,
                         'entities_id'                => $detail->getEntityID(),
                         "plugin_order_orders_id"     => $detail->fields["plugin_order_orders_id"],
-                        "plugin_order_references_id" => $add_item["plugin_order_references_id"],
+                        "plugin_order_references_id" => $add_data["plugin_order_references_id"],
                      ];
 
                      $config = PluginOrderConfig::getConfig(true);

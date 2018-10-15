@@ -211,10 +211,7 @@ class PluginOrderLink extends CommonDBChild {
                echo "</span>";
                echo "</td>";
                echo "</tr>";
-               echo Html::hidden("id[$i][itemtype]", ['value' => $itemtype]);
                echo Html::hidden("id[$i][id]", ['value' => $key]);
-               echo Html::hidden("id[$i][plugin_order_orders_id]",
-                                 ['value' => $params["plugin_order_orders_id"]]);
                $found = true;
          }
          $i++;
@@ -330,8 +327,6 @@ class PluginOrderLink extends CommonDBChild {
          $massiveactionparams = [
             'extraparams' => [
                'massive_action_fields' => [
-                  'add_items',
-                  'itemtype',
                   'plugin_order_orders_id',
                   'plugin_order_references_id',
                ]
@@ -371,13 +366,6 @@ class PluginOrderLink extends CommonDBChild {
          $all_data = [];
          while ($data = $DB->fetch_array($result)) {
             $all_data[] = $data;
-            $massiveactionparams['extraparams']['add_items'][$data["IDD"]] = [
-               'id'           => $data["IDD"],
-               'name'         => $data["name"],
-               'itemtype'     => $data["itemtype"],
-               'templates_id' => $data["templates_id"],
-               'states_id'    => $data["states_id"],
-            ];
          }
 
          echo "<tr><th>";
@@ -412,7 +400,6 @@ class PluginOrderLink extends CommonDBChild {
             $massiveactionparams['container']   = 'mass'.__CLASS__.$rand;
             $massiveactionparams['item']        = $PluginOrderOrder;
             $massiveactionparams['rand']        = $rand;
-            $massiveactionparams['extraparams']['itemtype']                   = $itemtype;
             $massiveactionparams['extraparams']['plugin_order_orders_id']     = $plugin_order_orders_id;
             $massiveactionparams['extraparams']['plugin_order_references_id'] = $plugin_order_references_id;
             Html::showMassiveActions($massiveactionparams);
@@ -530,7 +517,6 @@ class PluginOrderLink extends CommonDBChild {
    static function showMassiveActionsSubForm(MassiveAction $ma) {
       $link = new self;
       $reference = new PluginOrderReference;
-      $order_item = new PluginOrderOrder_Item;
 
       switch ($ma->getAction()) {
          case 'generation':
@@ -538,7 +524,7 @@ class PluginOrderLink extends CommonDBChild {
             break;
          case 'createLink' :
             $reference->getFromDB($ma->POST["plugin_order_references_id"]);
-            $reference->dropdownAllItemsByType("items_id", $ma->POST["itemtype"],
+            $reference->dropdownAllItemsByType("items_id", $reference->fields["itemtype"],
                                                $_SESSION["glpiactiveentities"],
                                                $reference->fields["types_id"],
                                                $reference->fields["models_id"]);
@@ -551,6 +537,37 @@ class PluginOrderLink extends CommonDBChild {
 
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
+      global $DB;
+
+      // retrieve additional informations for each items
+      $ma->POST['add_items'] = [];
+      if (isset($ma->items[__CLASS__])) {
+         $additional_data_ite = $DB->request([
+            'SELECT' => [
+               'glpi_plugin_order_orders_items.id',
+               'glpi_plugin_order_references.id AS plugin_order_references_id',
+               'glpi_plugin_order_references.itemtype',
+            ],
+            'FROM' => [
+               'glpi_plugin_order_orders_items'
+            ],
+            'LEFT JOIN' => [
+               'glpi_plugin_order_references' => [
+                  'FKEY' => [
+                     'glpi_plugin_order_orders_items' => 'plugin_order_references_id',
+                     'glpi_plugin_order_references'   => 'id',
+                  ]
+               ]
+            ],
+            'WHERE' => [
+               'glpi_plugin_order_orders_items.id' => array_keys($ma->items[__CLASS__])
+            ]
+         ]);
+         foreach ($additional_data_ite as $add_values) {
+            $ma->POST['add_items'][$add_values['id']] = $add_values;
+         }
+      }
+
       $link = new self;
       switch ($ma->getAction()) {
          case 'generation':
@@ -592,9 +609,9 @@ class PluginOrderLink extends CommonDBChild {
 
          case 'deleteLink':
             foreach ($ma->items[__CLASS__] as $key => $val) {
-               $ret = $link->deleteLinkWithItem($key,
-                                                 $ma->POST['add_items'][$key]['itemtype'],
-                                                 $ma->POST['plugin_order_orders_id']);
+               $link->deleteLinkWithItem($key,
+                                         $ma->POST['add_items'][$key]['itemtype'],
+                                         $ma->POST['plugin_order_orders_id']);
                $ma->itemDone($item->getType(), $val, MassiveAction::ACTION_OK);
             }
             break;
@@ -1090,37 +1107,32 @@ class PluginOrderLink extends CommonDBChild {
 
 
    public function generateNewItem($params) {
-      global $DB;
-
       $newIDs = [];
 
       // Retrieve plugin configuration
       $config    = new PluginOrderConfig();
       $reference = new PluginOrderReference();
 
-      echo Html::hidden('plugin_order_orders_id',
-                        ['value' => $params["plugin_order_orders_id"]]);
-      echo Html::hidden('plugin_order_references_id',
-                        ['value' => $params["plugin_order_references_id"]]);
+      foreach ($params["id"] as $key => $values) {
+         $add_item = $params['add_items'][$values['id']];
 
-      foreach ($params["id"] as $tmp => $values) {
          //If itemtype cannot be generated, go to the new occurence
-         if (in_array($values['itemtype'], self::getTypesThanCannotBeGenerared())) {
+         if (in_array($add_item['itemtype'], self::getTypesThanCannotBeGenerared())) {
             continue;
          }
 
          $entity = $values["entities_id"];
          //------------- Template management -----------------------//
          //Look for a template in the entity
-         $templateID = $reference->checkIfTemplateExistsInEntity($values["id"], $values["itemtype"],
+         $templateID = $reference->checkIfTemplateExistsInEntity($values["id"], $add_item["itemtype"],
                                                                  $entity);
 
-         $item  = new $values["itemtype"]();
-         if ($values['itemtype']) {
+         $item  = new $add_item["itemtype"]();
+         if ($add_item['itemtype']) {
             $order = new PluginOrderOrder();
          }
-         $order->getFromDB($values["plugin_order_orders_id"]);
-         $reference->getFromDB($params["plugin_order_references_id"]);
+         $order->getFromDB($params["plugin_order_orders_id"]);
+         $reference->getFromDB($add_item["plugin_order_references_id"]);
 
          if ($templateID) {
             $item->getFromDB($templateID);
@@ -1159,7 +1171,7 @@ class PluginOrderLink extends CommonDBChild {
 
             if (isset($item->fields['name']) && $item->fields['name']) {
                $input["name"] = autoName($item->fields["name"], "name", $templateID,
-                                $values["itemtype"], $entity);
+                                $add_item["itemtype"], $entity);
             } else {
                $input["name"] = $values["name"];
             }
@@ -1167,7 +1179,7 @@ class PluginOrderLink extends CommonDBChild {
             if ($item->getField('otherserial') != NOT_AVAILABLE) {
                if ($item->fields['otherserial']) {
                   $input["otherserial"] = autoName($item->fields["otherserial"], "otherserial",
-                                          $templateID, $values["itemtype"], $entity);
+                                          $templateID, $add_item["itemtype"], $entity);
                } else {
                   $input["otherserial"] = $values["otherserial"];
                }
@@ -1177,7 +1189,7 @@ class PluginOrderLink extends CommonDBChild {
                $input['locations_id'] = $order->fields['locations_id'];
             }
 
-         } else if ($values["itemtype"] == 'Contract') {
+         } else if ($add_item["itemtype"] == 'Contract') {
             $input["name"]             = $values["name"];
             $input["entities_id"]      = $entity;
             $input['contracttypes_id'] = $reference->fields['types_id'];
@@ -1208,9 +1220,9 @@ class PluginOrderLink extends CommonDBChild {
             $input["name"]             = $values["name"];
 
             $input["manufacturers_id"] = $reference->fields["manufacturers_id"];
-            $typefield                 = getForeignKeyFieldForTable(getTableForItemType($values["itemtype"]."Type"));
+            $typefield                 = getForeignKeyFieldForTable(getTableForItemType($add_item["itemtype"]."Type"));
             $input[$typefield]         = $reference->fields["types_id"];
-            $modelfield                = getForeignKeyFieldForTable(getTableForItemType($values["itemtype"]."Model"));
+            $modelfield                = getForeignKeyFieldForTable(getTableForItemType($add_item["itemtype"]."Model"));
             $input[$modelfield]        = $reference->fields["models_id"];
 
          }
@@ -1235,7 +1247,7 @@ class PluginOrderLink extends CommonDBChild {
                $input['entities_id']         = $entity;
                $input['_users_id_requester'] = empty($order->fields['users_id']) ? Session::getLoginUserID() : $order->fields['users_id'];
                $input['items_id']            = $newID;
-               $input['itemtype']            = $values["itemtype"];
+               $input['itemtype']            = $add_item["itemtype"];
 
                $ticket = new Ticket();
                $ticketID = $ticket->add($input);
@@ -1243,21 +1255,21 @@ class PluginOrderLink extends CommonDBChild {
          }
 
          //-------------- End template management ---------------------------------//
-         $result = $this->createLinkWithItem($values["id"], $newID, $values["itemtype"],
-                                             $values["plugin_order_orders_id"], $entity, $templateID,
+         $result = $this->createLinkWithItem($values["id"], $newID, $add_item["itemtype"],
+                                             $params["plugin_order_orders_id"], $entity, $templateID,
                                              false, false);
 
          //Add item's history
          $new_value = __("Item generated by using order", "order").' : '.$order->fields["name"];
-         $order->addHistory($values["itemtype"], '', $new_value, $newID);
+         $order->addHistory($add_item["itemtype"], '', $new_value, $newID);
 
          //Add order's history
          $new_value  = __("Item generated by using order", "order").' : ';
          $new_value .= $item->getTypeName()." -> ".$item->getField("name");
-         $order->addHistory('PluginOrderOrder', '', $new_value, $values["plugin_order_orders_id"]);
+         $order->addHistory('PluginOrderOrder', '', $new_value, $params["plugin_order_orders_id"]);
 
          //Copy order documents if needed
-         self::copyDocuments($values['itemtype'], $newID, $values["plugin_order_orders_id"], $entity);
+         self::copyDocuments($add_item['itemtype'], $newID, $params["plugin_order_orders_id"], $entity);
 
          Session::addMessageAfterRedirect(__("Item successfully selected", "order"), true);
       }
