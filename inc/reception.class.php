@@ -503,29 +503,6 @@ class PluginOrderReception extends CommonDBChild {
             Html::closeForm();
          }
 
-         if ($order_order->canDeliver()
-             && $this->checkItemStatus($orders_id,
-                                       $references_id,
-                                       PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED)) {
-
-            if ($typeRef != 'SoftwareLicense') {
-               echo "<form method='post' name='order_reception_form$rand'
-                              action='".Toolbox::getItemTypeFormURL("PluginOrderReception")."'>";
-               echo "<div id='massreception$orders_id$rand'></div>";
-               echo Html::scriptBlock("function viewmassreception".$orders_id."$rand() {".
-                                      Ajax::updateItemJsCode("massreception".$orders_id.$rand,
-                                                             $CFG_GLPI["root_doc"]."/plugins/order/ajax/massreception.php",
-                                                             [
-                                                                'plugin_order_orders_id'     => $orders_id,
-                                                                'plugin_order_references_id' => $references_id,
-                                                             ],
-                                                             false, false)."
-                  }");
-               echo "<p><a href='javascript:viewmassreception".$orders_id."$rand();'>";
-               echo __("Take item delivery (bulk)", "order")."</a></p><br>";
-               Html::closeForm();
-            }
-         }
          echo "</div>";
       }
       echo "<br>";

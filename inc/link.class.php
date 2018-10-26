@@ -110,13 +110,19 @@ class PluginOrderLink extends CommonDBChild {
                $item = new $itemtype();
                $item->getFromDB($templateID);
 
-               $name        = $item->fields["name"];
-               $serial      = $item->fields["serial"];
-               $otherserial = $item->fields["otherserial"];
+               $name         = $item->fields["name"];
+               $serial       = $item->fields["serial"];
+               $otherserial  = $item->fields["otherserial"];
+               $states_id    = $item->fields["states_id"];
+               $locations_id = $item->fields["locations_id"];
+               $groups_id    = $item->fields["groups_id"];
             } else {
-               $name        = false;
-               $serial      = false;
-               $otherserial = false;
+               $name         = false;
+               $serial       = false;
+               $otherserial  = false;
+               $states_id    = false;
+               $locations_id = false;
+               $groups_id    = false;
             }
 
             if (!$name) {
@@ -134,6 +140,12 @@ class PluginOrderLink extends CommonDBChild {
             } else {
                echo "<td><input type='text' size='20' name='id[$i][otherserial]'></td>";
             }
+
+            echo "<td align='center'>";
+            if ($templateID) {
+               echo $reference->getTemplateName($params['add_items'][$key]['itemtype'], $templateID);
+            }
+            echo "</td>";
 
             if (Session::isMultiEntitiesMode()
                   && count($_SESSION['glpiactiveentities']) > 1) {
@@ -175,14 +187,16 @@ class PluginOrderLink extends CommonDBChild {
 
               echo "<span id='show_location_by_entity_id_$i'>";
               Location::dropdown(['name'   => "id[$i][locations_id]",
-                                 'entity' => $entity
+                                 'entity' => $entity,
+                                 'value'  => $locations_id,
                                  ]);
               echo "</span>";
               echo "</td>";
               echo "<td>";
               echo "<span id='show_group_by_entity_id_$i'>";
               Group::dropdown(['name'   => "id[$i][groups_id]",
-                               'entity' => $entity
+                               'entity' => $entity,
+                               'value'  => $groups_id,
                               ]);
               echo "</span>";
               echo "</td>";
@@ -191,7 +205,8 @@ class PluginOrderLink extends CommonDBChild {
               $condition = self::getCondition($itemtype);
               State::dropdown(['name'      => "id[$i][states_id]",
                                'entity'    => $entity,
-                               'condition' => $condition
+                               'condition' => $condition,
+                               'value'     => $states_id,
                               ]);
                echo "</span>";
                echo "</td>";

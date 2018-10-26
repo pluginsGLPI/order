@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-10 09:20+0000\n"
-"PO-Revision-Date: 2018-09-10 09:22+0000\n"
+"POT-Creation-Date: 2018-10-26 14:12+0000\n"
+"PO-Revision-Date: 2018-10-26 14:13+0000\n"
 "Last-Translator: Cédric Anne\n"
 "Language-Team: French (France) (http://www.transifex.com/teclib/glpi-plugin-order/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -29,9 +29,9 @@ msgstr "Expédition des commandes"
 #: report/orderdelivery/orderdelivery.php:48
 #: report/orderdelivery/orderdelivery.php:75
 #: report/deliveryinfos/deliveryinfos.php:48
-#: inc/notificationtargetorder.class.php:101
-#: inc/notificationtargetorder.class.php:152
-#: inc/notificationtargetorder.class.php:160 inc/order.class.php:306
+#: inc/notificationtargetorder.class.php:102
+#: inc/notificationtargetorder.class.php:153
+#: inc/notificationtargetorder.class.php:161 inc/order.class.php:306
 #: inc/order.class.php:828
 msgid "Date of order"
 msgstr "Date commande"
@@ -49,7 +49,7 @@ msgid "Order number"
 msgstr "N° commande"
 
 #: report/orderdelivery/orderdelivery.php:76
-#: inc/notificationtargetorder.class.php:161 inc/order.class.php:432
+#: inc/notificationtargetorder.class.php:162 inc/order.class.php:432
 #: inc/order.class.php:1049
 msgid "Estimated due date"
 msgstr "Date de livraison estimée"
@@ -113,7 +113,7 @@ msgstr "Références produits"
 msgid "Bills"
 msgstr "Factures"
 
-#: front/order.form.php:94 inc/notificationtargetorder.class.php:119
+#: front/order.form.php:94 inc/notificationtargetorder.class.php:120
 msgid "Order is validated"
 msgstr "La commande est validée"
 
@@ -126,7 +126,7 @@ msgid "Validation query is now canceled"
 msgstr "Annulation la demande de validation effectuée"
 
 #: front/order.form.php:123 inc/notificationtargetorder.class.php:49
-#: inc/notificationtargetorder.class.php:123
+#: inc/notificationtargetorder.class.php:124
 msgid "Order canceled"
 msgstr "Commande annulée"
 
@@ -144,7 +144,7 @@ msgstr "Ajout référence"
 
 #: front/order.form.php:150 front/order.form.php:246 front/order.form.php:265
 #: inc/order_item.class.php:337 inc/order_item.class.php:433
-#: inc/order_item.class.php:707 inc/link.class.php:415
+#: inc/order_item.class.php:707 inc/link.class.php:430
 #: inc/order.class.php:1681
 msgid "Quantity"
 msgstr "Quantité"
@@ -162,7 +162,7 @@ msgstr "Remise en %"
 msgid "Remove reference"
 msgstr "Suppression référence"
 
-#: front/order.form.php:210 inc/reception.class.php:820
+#: front/order.form.php:210 inc/reception.class.php:797
 msgid "No item selected"
 msgstr "Aucun matériel sélectionné"
 
@@ -171,36 +171,6 @@ msgstr "Aucun matériel sélectionné"
 #: inc/order.class.php:1032
 msgid "No VAT"
 msgstr "Pas de TVA"
-
-#: ajax/massreception.php:53
-msgid "Number to deliver"
-msgstr "Nombre à réceptionner"
-
-#: ajax/massreception.php:63 hook.php:144 inc/deliverystate.class.php:38
-#: inc/reception.class.php:235 inc/reception.class.php:436
-#: inc/reception.class.php:588 inc/order_item.class.php:171
-msgid "Delivery status"
-msgstr "Statut de la livraison"
-
-#: ajax/massreception.php:70 inc/config.class.php:236
-#: inc/reception.class.php:593
-msgid "Enable automatic generation"
-msgstr "Activer la génération automatique"
-
-#: ajax/massreception.php:73 inc/config.class.php:272
-#: inc/reception.class.php:599
-msgid "Default name"
-msgstr "Nom par défaut"
-
-#: ajax/massreception.php:78 inc/config.class.php:279
-#: inc/reception.class.php:602
-msgid "Default serial number"
-msgstr "Numéro de série par défaut"
-
-#: ajax/massreception.php:83 inc/config.class.php:286
-#: inc/reception.class.php:605
-msgid "Default inventory number"
-msgstr "Numéro d'inventaire par défaut"
 
 #: hook.php:46
 msgid "Plugin installation or upgrade"
@@ -236,6 +206,12 @@ msgstr "Statut commande"
 #: hook.php:143 inc/othertype.class.php:40
 msgid "Other type of item"
 msgstr "Type d'autre équipement"
+
+#: hook.php:144 inc/deliverystate.class.php:38 inc/reception.class.php:235
+#: inc/reception.class.php:436 inc/reception.class.php:565
+#: inc/order_item.class.php:171
+msgid "Delivery status"
+msgstr "Statut de la livraison"
 
 #: hook.php:145 inc/bill.class.php:410 inc/order_item.class.php:1490
 #: inc/billstate.class.php:42
@@ -298,14 +274,14 @@ msgstr "Copier les documents de la commande à la génération d'un matériel"
 msgid "Default heading when adding a document to an order"
 msgstr "Rubrique par défaut pour l'ajout de documents à une commande"
 
-#: inc/config.class.php:166 inc/notificationtargetorder.class.php:466
-#: inc/notificationtargetorder.class.php:469 inc/order.class.php:522
+#: inc/config.class.php:166 inc/notificationtargetorder.class.php:467
+#: inc/notificationtargetorder.class.php:470 inc/order.class.php:522
 #: inc/order.class.php:1133
 msgid "Author group"
 msgstr "Groupe auteur"
 
-#: inc/config.class.php:176 inc/notificationtargetorder.class.php:468
-#: inc/notificationtargetorder.class.php:470 inc/order.class.php:532
+#: inc/config.class.php:176 inc/notificationtargetorder.class.php:469
+#: inc/notificationtargetorder.class.php:471 inc/order.class.php:532
 #: inc/order.class.php:1183
 msgid "Recipient group"
 msgstr "Groupe destinataire"
@@ -330,6 +306,10 @@ msgstr ""
 msgid "Automatic actions when delivery"
 msgstr "Actions automatiques lors de la réception"
 
+#: inc/config.class.php:236 inc/reception.class.php:570
+msgid "Enable automatic generation"
+msgstr "Activer la génération automatique"
+
 #: inc/config.class.php:241
 msgid "Asked"
 msgstr "Demander"
@@ -345,6 +325,18 @@ msgstr "Ajouter le lieu de la commande à l'élément"
 #: inc/config.class.php:265
 msgid "Add billing details to item"
 msgstr "Ajouter les détails de facturation à l'élément"
+
+#: inc/config.class.php:272 inc/reception.class.php:576
+msgid "Default name"
+msgstr "Nom par défaut"
+
+#: inc/config.class.php:279 inc/reception.class.php:579
+msgid "Default serial number"
+msgstr "Numéro de série par défaut"
+
+#: inc/config.class.php:286 inc/reception.class.php:582
+msgid "Default inventory number"
+msgstr "Numéro d'inventaire par défaut"
 
 #: inc/config.class.php:310
 msgid "Order lifecycle"
@@ -478,7 +470,7 @@ msgstr "Prix unitaire (HT)"
 #: inc/reference_supplier.class.php:475 inc/reference_supplier.class.php:477
 #: inc/reception.class.php:350 inc/bill.class.php:379
 #: inc/order_item.class.php:336 inc/order_item.class.php:1460
-#: inc/link.class.php:78 inc/link.class.php:377 inc/reference.class.php:44
+#: inc/link.class.php:78 inc/link.class.php:392 inc/reference.class.php:44
 #: inc/reference.class.php:61
 msgid "Product reference"
 msgstr "Référence produit"
@@ -491,7 +483,7 @@ msgstr "Liste des références"
 msgid "Delivery"
 msgstr "Livraison"
 
-#: inc/reception.class.php:201 inc/reception.class.php:644
+#: inc/reception.class.php:201 inc/reception.class.php:621
 msgid "Taken delivery"
 msgstr "Réceptionné"
 
@@ -503,7 +495,7 @@ msgstr "Facture"
 
 #: inc/reception.class.php:319 inc/bill.class.php:363
 #: inc/order_item.class.php:694 inc/order_item.class.php:1446
-#: inc/link.class.php:304
+#: inc/link.class.php:319
 msgid "No item to take delivery of"
 msgstr "Pas de matériel à réceptionner"
 
@@ -511,32 +503,28 @@ msgstr "Pas de matériel à réceptionner"
 msgid "Delivered items"
 msgstr "Matériel(s) réceptionné(s)"
 
-#: inc/reception.class.php:525
-msgid "Take item delivery (bulk)"
-msgstr "Réception en masse matériels"
-
-#: inc/reception.class.php:549 inc/reception.class.php:618
+#: inc/reception.class.php:526 inc/reception.class.php:595
 #: inc/order.class.php:271
 msgid "Take item delivery"
 msgstr "Réceptionner matériel"
 
-#: inc/reception.class.php:641
+#: inc/reception.class.php:618
 msgid "Waiting for delivery"
 msgstr "En attente de livraison"
 
-#: inc/reception.class.php:665
+#: inc/reception.class.php:642
 msgid "Not enough items to deliver"
 msgstr "Il n'y a pas assez de matériels à réceptionner"
 
-#: inc/reception.class.php:717 inc/reception.class.php:745
+#: inc/reception.class.php:694 inc/reception.class.php:722
 msgid "Item successfully taken delivery"
 msgstr "Matériel(s) réceptionné(s) avec succès"
 
-#: inc/reception.class.php:788
+#: inc/reception.class.php:765
 msgid "Item already taken delivery"
 msgstr "Matériel(s) déjà réceptionné(s)"
 
-#: inc/reception.class.php:953
+#: inc/reception.class.php:930
 msgid "Item delivered"
 msgstr "Réception matériel(s)"
 
@@ -626,7 +614,7 @@ msgid "Not paid"
 msgstr "Non payée"
 
 #: inc/notificationtargetorder.class.php:47
-#: inc/notificationtargetorder.class.php:115
+#: inc/notificationtargetorder.class.php:116
 msgid "Request order validation"
 msgstr "Demande de validation de la commande"
 
@@ -635,25 +623,25 @@ msgid "Order validated"
 msgstr "Commande validée"
 
 #: inc/notificationtargetorder.class.php:51
-#: inc/notificationtargetorder.class.php:186
+#: inc/notificationtargetorder.class.php:187
 msgid "Late orders"
 msgstr "Commandes en retard"
 
 #: inc/notificationtargetorder.class.php:52
-#: inc/notificationtargetorder.class.php:131 inc/link.class.php:210
+#: inc/notificationtargetorder.class.php:132 inc/link.class.php:225
 msgid "No item to generate"
 msgstr "Commande totalement livrée"
 
-#: inc/notificationtargetorder.class.php:108
-#: inc/notificationtargetorder.class.php:154
+#: inc/notificationtargetorder.class.php:109
+#: inc/notificationtargetorder.class.php:155
 msgid "Comment of validation"
 msgstr "Commentaire de la validation"
 
-#: inc/notificationtargetorder.class.php:127
+#: inc/notificationtargetorder.class.php:128
 msgid "Validation canceled successfully"
 msgstr "Annulation de la validation effectuée"
 
-#: inc/notificationtargetorder.class.php:155
+#: inc/notificationtargetorder.class.php:156
 msgid "Editor of validation"
 msgstr "Editeur de la validation"
 
@@ -661,53 +649,53 @@ msgstr "Editeur de la validation"
 msgid "Generation"
 msgstr "Génération"
 
-#: inc/link.class.php:75 inc/link.class.php:507
+#: inc/link.class.php:75 inc/link.class.php:522
 msgid "Generate item"
 msgstr "Générer matériel associé"
 
-#: inc/link.class.php:508
+#: inc/link.class.php:523
 msgid "Link to an existing item"
 msgstr "Lier à un matériel existant"
 
-#: inc/link.class.php:509
+#: inc/link.class.php:524
 msgid "Delete item link"
 msgstr "Supprimer le lien avec le matériel"
 
-#: inc/link.class.php:555
+#: inc/link.class.php:570
 msgid "Cannot link several items to one detail line"
 msgstr "Impossible de lier le même matériel à plusieurs lignes détail"
 
-#: inc/link.class.php:566
+#: inc/link.class.php:581
 msgid "Cannot link items not delivered"
 msgstr "Impossible de lier du matériel non réceptionné"
 
-#: inc/link.class.php:680
+#: inc/link.class.php:695
 msgid "No associated item"
 msgstr "Aucun matériel associé"
 
-#: inc/link.class.php:919 inc/link.class.php:989 inc/link.class.php:997
-#: inc/link.class.php:1001
+#: inc/link.class.php:934 inc/link.class.php:1004 inc/link.class.php:1012
+#: inc/link.class.php:1016
 msgid "Item linked to order"
 msgstr "Matériel lié à la commande"
 
-#: inc/link.class.php:1003
+#: inc/link.class.php:1018
 msgid "Item already linked to another one"
 msgstr "Matériel déjà lié à un objet d'inventaire"
 
-#: inc/link.class.php:1040 inc/link.class.php:1045 inc/link.class.php:1066
-#: inc/link.class.php:1071
+#: inc/link.class.php:1055 inc/link.class.php:1060 inc/link.class.php:1081
+#: inc/link.class.php:1086
 msgid "Item unlink form order"
 msgstr "Matériel délié de la commande"
 
-#: inc/link.class.php:1063
+#: inc/link.class.php:1078
 msgid "One or several selected rows haven't linked items"
 msgstr "Une ou plusieurs lignes sélectionnées n'ont pas de matériel associé"
 
-#: inc/link.class.php:1236 inc/link.class.php:1240
+#: inc/link.class.php:1251 inc/link.class.php:1255
 msgid "Item generated by using order"
 msgstr "Matériel généré à partir de la commande"
 
-#: inc/link.class.php:1247
+#: inc/link.class.php:1262
 msgid "Item successfully selected"
 msgstr "Matériel(s) généré(s) avec succès"
 
