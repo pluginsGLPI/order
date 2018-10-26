@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-10 09:20+0000\n"
-"PO-Revision-Date: 2018-09-10 09:22+0000\n"
+"POT-Creation-Date: 2018-10-26 14:12+0000\n"
+"PO-Revision-Date: 2018-10-26 14:13+0000\n"
 "Last-Translator: Cédric Anne\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/teclib/glpi-plugin-order/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -25,9 +25,9 @@ msgstr "tilausraportin_otsikko"
 #: report/orderdelivery/orderdelivery.php:48
 #: report/orderdelivery/orderdelivery.php:75
 #: report/deliveryinfos/deliveryinfos.php:48
-#: inc/notificationtargetorder.class.php:101
-#: inc/notificationtargetorder.class.php:152
-#: inc/notificationtargetorder.class.php:160 inc/order.class.php:306
+#: inc/notificationtargetorder.class.php:102
+#: inc/notificationtargetorder.class.php:153
+#: inc/notificationtargetorder.class.php:161 inc/order.class.php:306
 #: inc/order.class.php:828
 msgid "Date of order"
 msgstr "Tilauspäivä"
@@ -45,7 +45,7 @@ msgid "Order number"
 msgstr "Tilausnumero"
 
 #: report/orderdelivery/orderdelivery.php:76
-#: inc/notificationtargetorder.class.php:161 inc/order.class.php:432
+#: inc/notificationtargetorder.class.php:162 inc/order.class.php:432
 #: inc/order.class.php:1049
 msgid "Estimated due date"
 msgstr "Arvioitu toimituspäivä"
@@ -109,7 +109,7 @@ msgstr ""
 msgid "Bills"
 msgstr "Laskut"
 
-#: front/order.form.php:94 inc/notificationtargetorder.class.php:119
+#: front/order.form.php:94 inc/notificationtargetorder.class.php:120
 msgid "Order is validated"
 msgstr "Tilaus vahvistettu"
 
@@ -122,7 +122,7 @@ msgid "Validation query is now canceled"
 msgstr "Vahvistuskysely on nyt peruutettu"
 
 #: front/order.form.php:123 inc/notificationtargetorder.class.php:49
-#: inc/notificationtargetorder.class.php:123
+#: inc/notificationtargetorder.class.php:124
 msgid "Order canceled"
 msgstr "Tilaus peruutettu"
 
@@ -140,7 +140,7 @@ msgstr "Lisää viite"
 
 #: front/order.form.php:150 front/order.form.php:246 front/order.form.php:265
 #: inc/order_item.class.php:337 inc/order_item.class.php:433
-#: inc/order_item.class.php:707 inc/link.class.php:415
+#: inc/order_item.class.php:707 inc/link.class.php:430
 #: inc/order.class.php:1681
 msgid "Quantity"
 msgstr "Määrä"
@@ -158,7 +158,7 @@ msgstr "Alennus (%)"
 msgid "Remove reference"
 msgstr "Poista viite"
 
-#: front/order.form.php:210 inc/reception.class.php:820
+#: front/order.form.php:210 inc/reception.class.php:797
 msgid "No item selected"
 msgstr "Kohdetta ei ole valittu"
 
@@ -167,36 +167,6 @@ msgstr "Kohdetta ei ole valittu"
 #: inc/order.class.php:1032
 msgid "No VAT"
 msgstr "Ei arvonlisäveroa"
-
-#: ajax/massreception.php:53
-msgid "Number to deliver"
-msgstr "Toimitettava määrä"
-
-#: ajax/massreception.php:63 hook.php:144 inc/deliverystate.class.php:38
-#: inc/reception.class.php:235 inc/reception.class.php:436
-#: inc/reception.class.php:588 inc/order_item.class.php:171
-msgid "Delivery status"
-msgstr "Toimituksen tila"
-
-#: ajax/massreception.php:70 inc/config.class.php:236
-#: inc/reception.class.php:593
-msgid "Enable automatic generation"
-msgstr "Ota automaattinen generointi käyttöön"
-
-#: ajax/massreception.php:73 inc/config.class.php:272
-#: inc/reception.class.php:599
-msgid "Default name"
-msgstr "Oletusnimi"
-
-#: ajax/massreception.php:78 inc/config.class.php:279
-#: inc/reception.class.php:602
-msgid "Default serial number"
-msgstr "Oletus sarjanumero"
-
-#: ajax/massreception.php:83 inc/config.class.php:286
-#: inc/reception.class.php:605
-msgid "Default inventory number"
-msgstr "Oletus inventointinumero"
 
 #: hook.php:46
 msgid "Plugin installation or upgrade"
@@ -232,6 +202,12 @@ msgstr "Tilauksen tila"
 #: hook.php:143 inc/othertype.class.php:40
 msgid "Other type of item"
 msgstr ""
+
+#: hook.php:144 inc/deliverystate.class.php:38 inc/reception.class.php:235
+#: inc/reception.class.php:436 inc/reception.class.php:565
+#: inc/order_item.class.php:171
+msgid "Delivery status"
+msgstr "Toimituksen tila"
 
 #: hook.php:145 inc/bill.class.php:410 inc/order_item.class.php:1490
 #: inc/billstate.class.php:42
@@ -294,14 +270,14 @@ msgstr ""
 msgid "Default heading when adding a document to an order"
 msgstr ""
 
-#: inc/config.class.php:166 inc/notificationtargetorder.class.php:466
-#: inc/notificationtargetorder.class.php:469 inc/order.class.php:522
+#: inc/config.class.php:166 inc/notificationtargetorder.class.php:467
+#: inc/notificationtargetorder.class.php:470 inc/order.class.php:522
 #: inc/order.class.php:1133
 msgid "Author group"
 msgstr "Tekijäryhmä"
 
-#: inc/config.class.php:176 inc/notificationtargetorder.class.php:468
-#: inc/notificationtargetorder.class.php:470 inc/order.class.php:532
+#: inc/config.class.php:176 inc/notificationtargetorder.class.php:469
+#: inc/notificationtargetorder.class.php:471 inc/order.class.php:532
 #: inc/order.class.php:1183
 msgid "Recipient group"
 msgstr "Vastaanottajaryhmä"
@@ -326,6 +302,10 @@ msgstr ""
 msgid "Automatic actions when delivery"
 msgstr "Toimituksen automaattiset toimet"
 
+#: inc/config.class.php:236 inc/reception.class.php:570
+msgid "Enable automatic generation"
+msgstr "Ota automaattinen generointi käyttöön"
+
 #: inc/config.class.php:241
 msgid "Asked"
 msgstr ""
@@ -341,6 +321,18 @@ msgstr ""
 #: inc/config.class.php:265
 msgid "Add billing details to item"
 msgstr "Lisää tuotteelle laskutustiedot"
+
+#: inc/config.class.php:272 inc/reception.class.php:576
+msgid "Default name"
+msgstr "Oletusnimi"
+
+#: inc/config.class.php:279 inc/reception.class.php:579
+msgid "Default serial number"
+msgstr "Oletus sarjanumero"
+
+#: inc/config.class.php:286 inc/reception.class.php:582
+msgid "Default inventory number"
+msgstr "Oletus inventointinumero"
 
 #: inc/config.class.php:310
 msgid "Order lifecycle"
@@ -474,7 +466,7 @@ msgstr "Veroton yksikköhinta"
 #: inc/reference_supplier.class.php:475 inc/reference_supplier.class.php:477
 #: inc/reception.class.php:350 inc/bill.class.php:379
 #: inc/order_item.class.php:336 inc/order_item.class.php:1460
-#: inc/link.class.php:78 inc/link.class.php:377 inc/reference.class.php:44
+#: inc/link.class.php:78 inc/link.class.php:392 inc/reference.class.php:44
 #: inc/reference.class.php:61
 msgid "Product reference"
 msgstr ""
@@ -487,7 +479,7 @@ msgstr "Luettelo viitteistä"
 msgid "Delivery"
 msgstr "Toimitus"
 
-#: inc/reception.class.php:201 inc/reception.class.php:644
+#: inc/reception.class.php:201 inc/reception.class.php:621
 msgid "Taken delivery"
 msgstr "Toimitetaan"
 
@@ -499,7 +491,7 @@ msgstr "Lasku"
 
 #: inc/reception.class.php:319 inc/bill.class.php:363
 #: inc/order_item.class.php:694 inc/order_item.class.php:1446
-#: inc/link.class.php:304
+#: inc/link.class.php:319
 msgid "No item to take delivery of"
 msgstr ""
 
@@ -507,32 +499,28 @@ msgstr ""
 msgid "Delivered items"
 msgstr "Toimitetut tuotteet"
 
-#: inc/reception.class.php:525
-msgid "Take item delivery (bulk)"
-msgstr ""
-
-#: inc/reception.class.php:549 inc/reception.class.php:618
+#: inc/reception.class.php:526 inc/reception.class.php:595
 #: inc/order.class.php:271
 msgid "Take item delivery"
 msgstr ""
 
-#: inc/reception.class.php:641
+#: inc/reception.class.php:618
 msgid "Waiting for delivery"
 msgstr "Odottaa toimitusta"
 
-#: inc/reception.class.php:665
+#: inc/reception.class.php:642
 msgid "Not enough items to deliver"
 msgstr ""
 
-#: inc/reception.class.php:717 inc/reception.class.php:745
+#: inc/reception.class.php:694 inc/reception.class.php:722
 msgid "Item successfully taken delivery"
 msgstr "Tuote onnistuneesti vastaanotettu"
 
-#: inc/reception.class.php:788
+#: inc/reception.class.php:765
 msgid "Item already taken delivery"
 msgstr "Tuote on jo vastaanotettu"
 
-#: inc/reception.class.php:953
+#: inc/reception.class.php:930
 msgid "Item delivered"
 msgstr "Tuote toimitettu"
 
@@ -622,7 +610,7 @@ msgid "Not paid"
 msgstr "Maksamaton"
 
 #: inc/notificationtargetorder.class.php:47
-#: inc/notificationtargetorder.class.php:115
+#: inc/notificationtargetorder.class.php:116
 msgid "Request order validation"
 msgstr ""
 
@@ -631,25 +619,25 @@ msgid "Order validated"
 msgstr ""
 
 #: inc/notificationtargetorder.class.php:51
-#: inc/notificationtargetorder.class.php:186
+#: inc/notificationtargetorder.class.php:187
 msgid "Late orders"
 msgstr ""
 
 #: inc/notificationtargetorder.class.php:52
-#: inc/notificationtargetorder.class.php:131 inc/link.class.php:210
+#: inc/notificationtargetorder.class.php:132 inc/link.class.php:225
 msgid "No item to generate"
 msgstr ""
 
-#: inc/notificationtargetorder.class.php:108
-#: inc/notificationtargetorder.class.php:154
+#: inc/notificationtargetorder.class.php:109
+#: inc/notificationtargetorder.class.php:155
 msgid "Comment of validation"
 msgstr ""
 
-#: inc/notificationtargetorder.class.php:127
+#: inc/notificationtargetorder.class.php:128
 msgid "Validation canceled successfully"
 msgstr ""
 
-#: inc/notificationtargetorder.class.php:155
+#: inc/notificationtargetorder.class.php:156
 msgid "Editor of validation"
 msgstr ""
 
@@ -657,53 +645,53 @@ msgstr ""
 msgid "Generation"
 msgstr ""
 
-#: inc/link.class.php:75 inc/link.class.php:507
+#: inc/link.class.php:75 inc/link.class.php:522
 msgid "Generate item"
 msgstr ""
 
-#: inc/link.class.php:508
+#: inc/link.class.php:523
 msgid "Link to an existing item"
 msgstr ""
 
-#: inc/link.class.php:509
+#: inc/link.class.php:524
 msgid "Delete item link"
 msgstr ""
 
-#: inc/link.class.php:555
+#: inc/link.class.php:570
 msgid "Cannot link several items to one detail line"
 msgstr ""
 
-#: inc/link.class.php:566
+#: inc/link.class.php:581
 msgid "Cannot link items not delivered"
 msgstr ""
 
-#: inc/link.class.php:680
+#: inc/link.class.php:695
 msgid "No associated item"
 msgstr ""
 
-#: inc/link.class.php:919 inc/link.class.php:989 inc/link.class.php:997
-#: inc/link.class.php:1001
+#: inc/link.class.php:934 inc/link.class.php:1004 inc/link.class.php:1012
+#: inc/link.class.php:1016
 msgid "Item linked to order"
 msgstr "Tuote liitetty tilaukseen"
 
-#: inc/link.class.php:1003
+#: inc/link.class.php:1018
 msgid "Item already linked to another one"
 msgstr ""
 
-#: inc/link.class.php:1040 inc/link.class.php:1045 inc/link.class.php:1066
-#: inc/link.class.php:1071
+#: inc/link.class.php:1055 inc/link.class.php:1060 inc/link.class.php:1081
+#: inc/link.class.php:1086
 msgid "Item unlink form order"
 msgstr "Tuote poistettu tilauksesta"
 
-#: inc/link.class.php:1063
+#: inc/link.class.php:1078
 msgid "One or several selected rows haven't linked items"
 msgstr ""
 
-#: inc/link.class.php:1236 inc/link.class.php:1240
+#: inc/link.class.php:1251 inc/link.class.php:1255
 msgid "Item generated by using order"
 msgstr ""
 
-#: inc/link.class.php:1247
+#: inc/link.class.php:1262
 msgid "Item successfully selected"
 msgstr ""
 
