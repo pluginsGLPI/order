@@ -2152,32 +2152,36 @@ class PluginOrderOrder extends CommonDBTM {
 
             if (!empty($orders)) {
                $options['entities_id'] = $entity;
-               $options['orders']      = $orders;
-               if (NotificationEvent::raiseEvent('duedate', new PluginOrderOrder(), $options)) {
-                  if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
-                           ."&nbsp;:  $message\n");
-                     $task->addVolume(1);
-                  } else {
-                     Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity).
-                                                      "&nbsp;:  $message");
-                  }
-                  $input["type"]     = Alert::THRESHOLD;
-                  $input["itemtype"] = 'PluginOrderOrder';
-
-                  // add alerts
-                  foreach ($orders as $ID => $tmp) {
-                     $input["items_id"] = $ID;
+               foreach ($orders as $id_order=>$tmp) {
+                  $pluginOrderOrder= new PluginOrderOrder();
+                  $pluginOrderOrder->getFromDB($id_order);
+                  $tmp_order[$id_order] = $tmp;
+                  $options['orders']= $tmp_order;
+                  unset($tmp_order[$id_order]);
+                  if (NotificationEvent::raiseEvent('duedate', $pluginOrderOrder, $options)) {
+                     if ($task) {
+                        $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
+                             ."&nbsp;:  $message\n"
+                         );
+                        $task->addVolume(1);
+                     } else {
+                        Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity).
+                                                         "&nbsp;:  $message"
+                         );
+                     }
+                     $input["type"]     = Alert::THRESHOLD;
+                     $input["itemtype"] = 'PluginOrderOrder';
+                     $input["items_id"] = $id_order;
                      $alert->add($input);
                      unset($alert->fields['id']);
-                  }
-               } else {
-                  if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities", $entity).
-                                "&nbsp;: Send order alert failed\n");
                   } else {
-                     Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity).
+                     if ($task) {
+                        $task->log(Dropdown::getDropdownName("glpi_entities", $entity).
+                                "&nbsp;: Send order alert failed\n");
+                     } else {
+                        Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity).
                                                       "&nbsp;: Send order alert failed", false, ERROR);
+                     }
                   }
                }
             }
