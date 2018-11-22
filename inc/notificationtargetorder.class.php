@@ -55,7 +55,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
 
 
    public function addDataForTemplate($event, $options = []) {
-   	global $DB;
+      global $DB;
 
       $events = $this->getAllEvents();
       $this->data['##order.action##'] = $events[$event];
@@ -63,36 +63,36 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       $this->data['##order.duedate##']=$this->obj->getField('duedate');
       $this->data['##order.budget##']=$this->getBudgetsName($this->obj->getField('budgets_id'));
       $query=[
-      	'SELECT'=>[
-      		'glpi_plugin_order_references.id AS references_id',
-      		'glpi_plugin_order_references.name',
-      		'glpi_plugin_order_references.itemtype',
-      		'glpi_plugin_order_references.models_id',
-      		'glpi_plugin_order_references.manufacturers_id',
-      		'glpi_plugin_order_orders_items.price_taxfree',
-      		'glpi_plugin_order_orders_items.discount',
-      		'glpi_plugin_order_orders_items.price_discounted',
-      		'SUM'=>'glpi_plugin_order_orders_items.price_discounted AS total_item'
-      	],
-      	'FROM'=>'glpi_plugin_order_orders_items',
-      	'LEFT JOIN'=>[
-      		'glpi_plugin_order_references'=>[
-      			'FKEY'=>[
-      				'glpi_plugin_order_orders_items'=>'plugin_order_references_id',
-      				'glpi_plugin_order_references'=>'id',
-      			]
-      		]
-      	],
-      	'WHERE'=>[
-      		'glpi_plugin_order_orders_items.plugin_order_orders_id'=>$this->obj->getField('id'),
-      	],
-      	'COUNT'=>'quantity',
-      	'GROUPBY'=>[
-      		'glpi_plugin_order_references.id',
-      		'glpi_plugin_order_orders_items.price_taxfree',
-      		'glpi_plugin_order_orders_items.discount',
-      		'glpi_plugin_order_orders_items.price_discounted',
-      	]
+         'SELECT'=>[
+            'glpi_plugin_order_references.id AS references_id',
+            'glpi_plugin_order_references.name',
+            'glpi_plugin_order_references.itemtype',
+            'glpi_plugin_order_references.models_id',
+            'glpi_plugin_order_references.manufacturers_id',
+            'glpi_plugin_order_orders_items.price_taxfree',
+            'glpi_plugin_order_orders_items.discount',
+            'glpi_plugin_order_orders_items.price_discounted',
+            'SUM'=>'glpi_plugin_order_orders_items.price_discounted AS total_item'
+         ],
+         'FROM'=>'glpi_plugin_order_orders_items',
+         'LEFT JOIN'=>[
+            'glpi_plugin_order_references'=>[
+               'FKEY'=>[
+                  'glpi_plugin_order_orders_items'=>'plugin_order_references_id',
+                  'glpi_plugin_order_references'=>'id',
+               ]
+            ]
+         ],
+         'WHERE'=>[
+            'glpi_plugin_order_orders_items.plugin_order_orders_id'=>$this->obj->getField('id'),
+         ],
+         'COUNT'=>'quantity',
+         'GROUPBY'=>[
+            'glpi_plugin_order_references.id',
+            'glpi_plugin_order_orders_items.price_taxfree',
+            'glpi_plugin_order_orders_items.discount',
+            'glpi_plugin_order_orders_items.price_discounted',
+         ]
       ];
       $data_orderitems = $DB->request($query);
       $this->data["orderitems"] = [];
@@ -100,11 +100,11 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       foreach ($data_orderitems as $id => $orderitem) {
          $tmp = [];
          $tmp['##order.item.type##'] = $orderitem['itemtype'];
-         $tmp['##order.item.price##'] = number_format($orderitem['price_discounted'],2);
+         $tmp['##order.item.price##'] = number_format($orderitem['price_discounted'], 2);
          $tmp['##order.item.quantity##'] = $orderitem['quantity'];
          $tmp['##order.item.manufacturer##'] = Dropdown::getDropdownName("glpi_manufacturers", $orderitem["manufacturers_id"]);
          $tmp['##order.item.model##'] = Dropdown::getDropdownName(getTableForItemType($orderitem["itemtype"]."models"), $orderitem["models_id"]);
-         $tmp['##order.item.totalprice##'] = number_format($orderitem['total_item'],2);
+         $tmp['##order.item.totalprice##'] = number_format($orderitem['total_item'], 2);
          $references_data = $this->getReferenceData($orderitem['references_id']);
          $tmp['##order.itemreference.name##'] = $references_data['name'];
          $tmp['##order.itemreference.itemtype##'] = $references_data['itemtype'];
@@ -169,7 +169,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                 '##order.item.name##'       => $order['name'],
                 '##order.item.numorder##'    => $order['num_order'],
 
-                '##order.item.url##'        => $this->formatURL($options['additionnaloption']['usertype'],$this->obj->getType()."_".$id),
+                '##order.item.url##'        => $this->formatURL($options['additionnaloption']['usertype'], $this->obj->getType()."_".$id),
                '##order.item.orderdate##'   => Html::convDate($order["order_date"]),
                '##order.item.duedate##'     => Html::convDate($order["duedate"]),
                '##order.item.deliverydate##' => Html::convDate($order["deliverydate"]),
@@ -585,14 +585,14 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       global $DB;
 
       $query=[
-			'SELECT'=>[
-				'name',
-			],
-			'FROM'=>'glpi_budgets',
-			'WHERE'=>[
-				'id'=>$references_id,
-			]
-		];
+         'SELECT'=>[
+            'name',
+         ],
+         'FROM'=>'glpi_budgets',
+         'WHERE'=>[
+            'id'=>$references_id,
+         ]
+      ];
       $result = $DB->request($query);
       $data = $result->next();
       return $data['name'];
@@ -606,21 +606,21 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
       global $DB;
 
       $query=[
-      	'SELECT'=>[
-      		'glpi_suppliers.name AS name',
-      	],
-      	'FROM'=>'glpi_suppliers',
-      	'LEFT JOIN'=>[
-      		'glpi_plugin_order_orders'=>[
-      			'FKEY'=>[
-      				'glpi_plugin_order_orders'=>'suppliers_id',
-      				'glpi_suppliers'=>'id',
-      			]
-      		],
-      	],
-      	'WHERE'=>[
-      		'glpi_plugin_order_orders.id'=>$order_id,
-      	]
+         'SELECT'=>[
+            'glpi_suppliers.name AS name',
+         ],
+         'FROM'=>'glpi_suppliers',
+         'LEFT JOIN'=>[
+            'glpi_plugin_order_orders'=>[
+               'FKEY'=>[
+                  'glpi_plugin_order_orders'=>'suppliers_id',
+                  'glpi_suppliers'=>'id',
+               ]
+            ],
+         ],
+         'WHERE'=>[
+            'glpi_plugin_order_orders.id'=>$order_id,
+         ]
       ];
       $result = $DB->request($query);
       $data = $result->next();
@@ -631,19 +631,19 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
     **/
    public function getReferenceData($reference_id) {
       global $DB;
-      
+
       $query=[
-      	'SELECT'=>[
-      		'name',
-      		'itemtype',
-      		'models_id',
-      		'manufacturers_reference',
-      		'types_id',
-      	],
-      	'FROM'=>'glpi_plugin_order_references',
-      	'WHERE'=>[
-      		'id'=>$reference_id,
-      	]
+         'SELECT'=>[
+            'name',
+            'itemtype',
+            'models_id',
+            'manufacturers_reference',
+            'types_id',
+         ],
+         'FROM'=>'glpi_plugin_order_references',
+         'WHERE'=>[
+            'id'=>$reference_id,
+         ]
       ];
       $result = $DB->request($query);
       $data = $result->next();
