@@ -43,7 +43,7 @@ if (isset($_POST["action"])) {
          echo "&nbsp;";
          echo Html::hidden('plugin_order_orders_id', ['value' => $_POST["plugin_order_orders_id"]]);
          PluginOrderBill::Dropdown([
-            'condition' => "`plugin_order_orders_id`='".$_POST['plugin_order_orders_id']."'",
+            'condition' => ['plugin_order_orders_id' => $_POST['plugin_order_orders_id']],
          ]);
          break;
    }
