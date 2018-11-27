@@ -76,7 +76,7 @@ if (isset($_POST["action"])) {
       case "show_group_by_entity":
          Group::dropdown(['name'      => "id[".$_POST['id']."][groups_id]",
                           'entity'    => $_POST['entities'],
-                          'condition' => '`is_assign`'
+                          'condition' => ['is_assign' => 1],
                          ]);
          break;
 
