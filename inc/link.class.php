@@ -143,7 +143,7 @@ class PluginOrderLink extends CommonDBChild {
 
             echo "<td align='center'>";
             if ($templateID) {
-               echo $reference->getTemplateName($params['add_items'][$key]['itemtype'], $templateID);
+               echo $reference->getTemplateName($itemtype, $templateID);
             }
             echo "</td>";
 
