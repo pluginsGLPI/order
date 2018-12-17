@@ -917,9 +917,14 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<td>";
       if ($canedit) {
          if ($config->canHideInactiveBudgets()) {
-            $restrict = " (`end_date` IS NULL) OR (`end_date`> '".date("Y-m-d")."')";
+            $restrict = [
+               'OR' => [
+                  ['end_date' => null],
+                  ['end_date' => ['>', date("Y-m-d")]],
+               ]
+            ];
          } else {
-            $restrict = "";
+            $restrict = [];
          }
 
          Budget::Dropdown([

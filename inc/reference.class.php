@@ -664,7 +664,7 @@ class PluginOrderReference extends CommonDBTM {
          case 'ConsumableItem':
          case 'SoftwareLicense':
             $fk        = getForeignkeyFieldForItemType($itemtype."Type");
-            $condition = "`$fk` = '$types_id'";
+            $condition = [$fk => $types_id];
             $rand      = Dropdown::show($itemtype, [
                'condition'   => $condition,
                'name'        => $name,
@@ -675,26 +675,36 @@ class PluginOrderReference extends CommonDBTM {
 
          default:
             $item = new $itemtype();
-            $and  = "";
-            if (class_exists($itemtype."Type", false)) {
-               $and .= $types_id != 0 ? " AND `".
-                    getForeignKeyFieldForTable(getTableForItemType($itemtype."Type"))."` = '$types_id' " : "";
+
+            $condition = [];
+            if (class_exists($itemtype."Type", false) && $types_id != 0) {
+               $fk = getForeignKeyFieldForTable(getTableForItemType($itemtype."Type"));
+               $condition[$fk] = $types_id;
             }
-            if (class_exists($itemtype."Model", false)) {
-               $and .= $models_id != 0 ? " AND `".
-                    getForeignKeyFieldForTable(getTableForItemType($itemtype."Model"))."` = '$models_id' " : "";
+            if (class_exists($itemtype."Model", false) && $models_id != 0) {
+               $fk = getForeignKeyFieldForTable(getTableForItemType($itemtype."Model"));
+               $condition[$fk] = $models_id;
             }
             if ($item->maybeTemplate()) {
-               $and .= " AND `is_template` = 0 ";
+               $condition['is_template'] = 0;
             }
             if ($item->maybeDeleted()) {
-               $and .= " AND `is_deleted` = 0 ";
+               $condition['is_deleted'] = 0;
             }
 
-            $table = $itemtype::getTable();
-            $condition  = "1 $and AND `$table`.`id` NOT IN ";
-            $condition .= "(SELECT `items_id` FROM `glpi_plugin_order_orders_items`
-                           WHERE `itemtype`='$itemtype' AND `items_id`!='0')";
+            $condition[] = [
+               'NOT' => [
+                  $itemtype::getTableField('id') => new QuerySubQuery([
+                     'SELECT' => 'items_id',
+                     'FROM'   => 'glpi_plugin_order_orders_items',
+                     'WHERE'  => [
+                        'itemtype' => $itemtype,
+                        'items_id' => ['!=', 0],
+                     ]
+                  ])
+               ]
+            ];
+
             $rand = Dropdown::show($itemtype, [
                'condition'   => $condition,
                'name'        => $name,

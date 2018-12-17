@@ -590,7 +590,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          if ($config->isAnalyticNatureDisplayed()
              && $config->isAnalyticNatureMandatory()
              && $input["plugin_order_analyticnatures_id"] == 0) {
-            Session::addMessageAfterRedirect(__("A analytic nature is mandatory !", "order"), false, ERROR);
+            Session::addMessageAfterRedirect(__("An analytic nature is mandatory !", "order"), false, ERROR);
             return [];
          }
       }
@@ -603,7 +603,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       if ($config->isAnalyticNatureDisplayed()
           && $config->isAnalyticNatureMandatory()
           && $input["plugin_order_analyticnatures_id"] == 0) {
-         Session::addMessageAfterRedirect(__("A analytic nature is mandatory !", "order"), false, ERROR);
+         Session::addMessageAfterRedirect(__("An analytic nature is mandatory !", "order"), false, ERROR);
          return [];
       }
 

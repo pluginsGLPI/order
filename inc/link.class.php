@@ -259,19 +259,19 @@ class PluginOrderLink extends CommonDBChild {
    public static function getCondition($itemtype) {
       switch ($itemtype) {
          case 'Computer' :
-            return "`is_visible_computer`";
+            return ['is_visible_computer' => 1];
          case 'Monitor' :
-            return "`is_visible_monitor`";
+            return ['is_visible_monitor' => 1];
          case 'Printer' :
-            return "`is_visible_printer`";
+            return ['is_visible_printer' => 1];
          case 'Phone' :
-            return "`is_visible_phone`";
+            return ['is_visible_phone' => 1];
          case 'NetworkEquipment' :
-            return "`is_visible_networkequipment`";
+            return ['is_visible_networkequipment' => 1];
          case 'Peripheral' :
-            return "`is_visible_peripheral`";
+            return ['is_visible_peripheral' => 1];
          case 'SoftwareLicense':
-            return "`is_visible_softwareversion`";
+            return ['is_visible_softwareversion' => 1];
       }
    }
 
