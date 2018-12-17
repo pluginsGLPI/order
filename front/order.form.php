@@ -154,7 +154,8 @@ if (isset ($_POST["add"])) {
       $pluginOrderOrder_Item->addDetails($_POST["plugin_order_references_id"], $_POST["itemtype"],
                                          $_POST["plugin_order_orders_id"], $_POST["quantity"],
                                          $_POST["price"], $_POST["discount"],
-                                         $_POST["plugin_order_ordertaxes_id"]);
+                                         $_POST["plugin_order_ordertaxes_id"],
+                                         $_POST["plugin_order_analyticnatures_id"]);
    }
    Html::back();
 
@@ -249,7 +250,8 @@ if (isset ($_POST["add"])) {
             $pluginOrderOrder_Item->addDetails($id_reference, $itemtype,
                                                $_POST["plugin_order_orders_id"], $_POST["quantity"],
                                                $_POST["price"], $_POST["discount"],
-                                               $_POST["plugin_order_ordertaxes_id"]);
+                                               $_POST["plugin_order_ordertaxes_id"],
+                                               $_POST["plugin_order_analyticnatures_id"]);
          }
       } else {
          //create reference free
@@ -268,7 +270,8 @@ if (isset ($_POST["add"])) {
          $pluginOrderOrder_Item->addDetails($id_reference, 'PluginOrderReferenceFree',
                                             $_POST["plugin_order_orders_id"], $_POST["quantity"],
                                             $_POST["price"], $_POST["discount"],
-                                            $_POST["plugin_order_ordertaxes_id"]);
+                                            $_POST["plugin_order_ordertaxes_id"],
+                                            $_POST["plugin_order_analyticnatures_id"]);
 
 
       }
@@ -327,6 +330,22 @@ if (isset ($_POST["add"])) {
 } else if (isset($_POST["update_item"])) {
    if (isset($_POST['quantity'])) {
       $pluginOrderOrder_Item->updateQuantity($_POST);
+   }
+
+   if (isset($_POST['plugin_order_analyticnatures_id'])) {
+      $datas = $pluginOrderOrder_Item->queryRef(
+         $_POST['plugin_order_orders_id'],
+         $_POST['old_plugin_order_references_id'],
+         $_POST['old_price_taxfree'],
+         $_POST['old_discount']
+      );
+      while ($item = $DB->fetch_array($datas)) {
+         $input = [
+            'item_id'                         => $item['id'],
+            'plugin_order_analyticnatures_id' => $_POST['plugin_order_analyticnatures_id'],
+         ];
+         $pluginOrderOrder_Item->updateAnalyticNature($input);
+      }
    }
 
    if (isset($_POST['price_taxfree'])) {

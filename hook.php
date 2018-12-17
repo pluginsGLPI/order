@@ -57,7 +57,8 @@ function plugin_order_install() {
                'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
                'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderDocumentCategory',
-               'PluginOrderReferenceFree'];
+               'PluginOrderReferenceFree', 'PluginOrderAccountSection',
+               'PluginOrderAnalyticNature'];
    foreach ($classes as $class) {
       if ($plug = isPluginItemType($class)) {
          $plugname = strtolower($plug['plugin']);
@@ -122,7 +123,8 @@ function plugin_order_uninstall() {
                'PluginOrderOrder_Supplier', 'PluginOrderOrderPayment','PluginOrderOrderTax',
                'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
                'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
-               'PluginOrderSurveySupplier', 'PluginOrderDocumentCategory'];
+               'PluginOrderSurveySupplier', 'PluginOrderDocumentCategory',
+               'PluginOrderAccountSection', 'PluginOrderAnalyticNature'];
    foreach ($classes as $class) {
       call_user_func([$class, 'uninstall']);
    }
@@ -144,6 +146,8 @@ function plugin_order_getDropdown() {
               'PluginOrderDeliveryState'    => __("Delivery status", "order"),
               'PluginOrderBillState'        => __("Bill status", "order"),
               'PluginOrderBillType'         => __("Bill type", "order"),
+              'PluginOrderAnalyticNature'   => __("Analytic nature", "order"),
+              'PluginOrderAccountSection'   => __("Account section", "order"),
               'PluginOrderDocumentCategory' => __("Orders", "order")];
    } else {
       return [];
@@ -167,6 +171,12 @@ function plugin_order_getDatabaseRelations() {
          ],
          "glpi_plugin_order_orderstates" => [
             "glpi_plugin_order_orders" => "plugin_order_orderstates_id"
+         ],
+         "glpi_plugin_order_accountsections" => [
+            "glpi_plugin_order_accountsections" => "plugin_order_accountsections_id"
+         ],
+         "plugin_order_analyticnatures" => [
+            "glpi_plugin_order_orders_items" => "plugin_order_analyticnatures_id"
          ],
          "glpi_plugin_order_deliverystates" => [
             "glpi_plugin_order_orders_items" => "plugin_order_deliverystates_id"

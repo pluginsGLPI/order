@@ -29,24 +29,6 @@
 
 include ("../../../inc/includes.php");
 
-header("Content-Type: text/html; charset=UTF-8");
+$dropdown = new PluginOrderAnalyticNature();
 
-Html::header_nocache();
-
-if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
-}
-
-Session::checkCentralAccess();
-
-$params = [
-   'itemtype'     => $_POST['itemtype'],
-   'orders_id'    => $_POST['orders_id'],
-   'suppliers_id' => $_POST['suppliers_id'],
-   'entity'       => $_POST['entity_restrict'],
-   'span'         => $_POST['span'],
-   'action'       => $CFG_GLPI["root_doc"] . "/plugins/order/ajax/detail.php",
-   'condition'    => ''
-];
-$ref = new PluginOrderReference();
-$ref->dropdownReferencesByEnterprise("PluginOrderReference", $params);
+include (GLPI_ROOT . "/front/dropdown.common.php");
