@@ -298,8 +298,6 @@ function plugin_order_addLeftJoin($type, $ref_table, $new_table, $linkfield, &$a
 
 /* display custom fields in the search */
 function plugin_order_giveItem($type, $ID, $data, $num) {
-   global $CFG_GLPI;
-
    $searchopt = &Search::getOptions($type);
    $table     = $searchopt[$ID]["table"];
    $field     = $searchopt[$ID]["field"];
@@ -310,7 +308,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
    switch ($table.'.'.$field) {
       /* display associated items with order */
       case "glpi_plugin_order_references.types_id" :
-         if ($data['raw']["itemtype"] == 'PluginOrderOther') {
+         if ($itemtype == 'PluginOrderOther') {
             $file = GLPI_ROOT."/plugins/order/inc/othertype.class.php";
          } else {
             $file = GLPI_ROOT."/inc/".strtolower($itemtype)."type.class.php";
@@ -323,7 +321,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
          }
          break;
       case "glpi_plugin_order_references.models_id" :
-         if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."model.class.php")) {
+         if (file_exists(GLPI_ROOT."/inc/".strtolower($itemtype)."model.class.php")) {
             return Dropdown::getDropdownName(getTableForItemType($itemtype."Model"),
                                              $itemnum);
          } else {
