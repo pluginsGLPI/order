@@ -1114,7 +1114,12 @@ class PluginOrderLink extends CommonDBChild {
       $reference = new PluginOrderReference();
 
       foreach ($params["id"] as $key => $values) {
-         $add_item = $params['add_items'][$values['id']];
+         $add_item = $values;
+
+         //retrieve plugin_order_references_id from param if needed
+         if (!isset($add_item["plugin_order_references_id"])) {
+            $add_item["plugin_order_references_id"] = $params['plugin_order_references_id'];
+         }
 
          //If itemtype cannot be generated, go to the new occurence
          if (in_array($add_item['itemtype'], self::getTypesThanCannotBeGenerared())) {
