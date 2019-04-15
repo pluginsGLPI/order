@@ -210,7 +210,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                      default:
                         $field_set    = false;
                         $unset_fields = ["order_number", "delivery_number", "budgets_id",
-                                         "suppliers_id", "value", "buy_date"];
+                                         "suppliers_id", "value"];
                         $orderitem->getFromDB($detail_id);
                         $order->getFromDB($orderitem->fields["plugin_order_orders_id"]);
                         $order_supplier->getFromDBByOrder($orderitem->fields["plugin_order_orders_id"]);
@@ -220,7 +220,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                         $value["budgets_id"]      = $order->fields["budgets_id"];
                         $value["suppliers_id"]    = $order->fields["suppliers_id"];
                         $value["value"]           = $orderitem->fields["price_discounted"];
-                        $value["buy_date"]        = $order->fields["order_date"];
                         if (isset($order_supplier->fields["num_bill"])
                            && !empty($order_supplier->fields["num_bill"])) {
                            $unset_fields[]        = "bill";

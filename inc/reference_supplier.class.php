@@ -46,6 +46,12 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       return __("Supplier for the reference", "order");
    }
 
+   function getRawName() {
+      $ref = new PluginOrderReference();
+      $ref->getFromDB($this->fields['plugin_order_references_id']);
+      return sprintf(__('Supplier for the reference "%1$s"'), $ref->getName());
+   }
+
 
    public function getFromDBByReference($plugin_order_references_id) {
       global $DB;

@@ -34,7 +34,7 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-define('PLUGIN_ORDER_VERSION', '2.4.0');
+define('PLUGIN_ORDER_VERSION', '2.5.0');
 
 // Minimal GLPI version, inclusive
 define("PLUGIN_ORDER_MIN_GLPI", "9.4");
@@ -232,6 +232,11 @@ function plugin_order_check_prerequisites() {
          );
          return false;
       }
+   }
+
+   if (!is_readable(__DIR__ . '/vendor/autoload.php') || !is_file(__DIR__ . '/vendor/autoload.php')) {
+      echo "Run composer install --no-dev in the plugin directory<br>";
+      return false;
    }
 
    return true;
