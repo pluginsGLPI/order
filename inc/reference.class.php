@@ -106,6 +106,7 @@ class PluginOrderReference extends CommonDBTM {
          'injectable'    => true,
          'massiveaction' => false,
          'nosearch'      => true,
+         'additionalfields' => ['itemtype'],
       ];
 
       $tab[] = [
@@ -129,6 +130,7 @@ class PluginOrderReference extends CommonDBTM {
          'massiveaction' => false,
          'searchtype'    => ['equals'],
          'nosearch'      => true,
+         'additionalfields' => ['itemtype'],
       ];
 
       $tab[] = [
@@ -141,6 +143,7 @@ class PluginOrderReference extends CommonDBTM {
          'injectable'    => true,
          'massiveaction' => false,
          'nosearch'      => true,
+         'additionalfields' => ['itemtype'],
       ];
 
       $tab[] = [

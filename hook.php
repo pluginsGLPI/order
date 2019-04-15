@@ -303,7 +303,9 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
    $field     = $searchopt[$ID]["field"];
    $reference = new PluginOrderReference();
    $itemnum   = $data['raw']["ITEM_".$num];
-   $itemtype  = isset($data['raw']["itemtype"]) ? $data['raw']["itemtype"] : "";
+   $itemtype  = isset($data['raw']["ITEM_".$num."_itemtype"])
+      ? $data['raw']["ITEM_".$num."_itemtype"]
+      : '';
 
    switch ($table.'.'.$field) {
       /* display associated items with order */
@@ -314,7 +316,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
             $file = GLPI_ROOT."/inc/".strtolower($itemtype)."type.class.php";
          }
          if (file_exists($file)) {
-            return Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"),
+            return Dropdown::getDropdownName(getTableForItemType($itemtype."Type"),
                                              $itemnum);
          } else {
             return " ";
