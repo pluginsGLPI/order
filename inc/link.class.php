@@ -1115,7 +1115,7 @@ class PluginOrderLink extends CommonDBChild {
       $reference = new PluginOrderReference();
 
       foreach ($params["id"] as $key => $values) {
-         $add_item = $values;
+         $add_item = array_merge($params['add_items'][$values['id']], $values);
 
          //retrieve plugin_order_references_id from param if needed
          if (!isset($add_item["plugin_order_references_id"])) {
