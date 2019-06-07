@@ -1224,14 +1224,20 @@ class PluginOrderLink extends CommonDBChild {
             $input["serial"]           = $values["serial"];
             $input["otherserial"]      = $values["otherserial"];
             $input["name"]             = $values["name"];
-
-            $input["manufacturers_id"] = $reference->fields["manufacturers_id"];
-            $typefield                 = getForeignKeyFieldForTable(getTableForItemType($add_item["itemtype"]."Type"));
-            $input[$typefield]         = $reference->fields["types_id"];
-            $modelfield                = getForeignKeyFieldForTable(getTableForItemType($add_item["itemtype"]."Model"));
-            $input[$modelfield]        = $reference->fields["models_id"];
-
          }
+
+         if ($input["manufacturers_id"] == 0) {
+            $input["manufacturers_id"] = $reference->fields["manufacturers_id"];
+         }
+         $typefield = getForeignKeyFieldForTable(getTableForItemType($add_item["itemtype"]."Type"));
+         if ($input[$typefield] == 0) {
+            $input[$typefield] = $reference->fields["types_id"];
+         }
+         $modelfield = getForeignKeyFieldForTable(getTableForItemType($add_item["itemtype"]."Model"));
+         if ($input[$modelfield] == 0) {
+            $input[$modelfield] = $reference->fields["models_id"];
+         }
+
          $input = Toolbox::addslashes_deep($input);
          $newID = $item->add($input);
          $newIDs[$values["id"]] = $newID;
