@@ -1115,7 +1115,11 @@ class PluginOrderLink extends CommonDBChild {
       $reference = new PluginOrderReference();
 
       foreach ($params["id"] as $key => $values) {
-         $add_item = array_merge($params['add_items'][$values['id']], $values);
+         $add_item = $values;
+         if (array_key_exists('add_items', $params)
+             && array_key_exists($values['id'], $params['add_items'])) {
+            $add_item = array_merge($params['add_items'][$values['id']], $add_item);
+         }
 
          //retrieve plugin_order_references_id from param if needed
          if (!isset($add_item["plugin_order_references_id"])) {
@@ -1145,6 +1149,7 @@ class PluginOrderLink extends CommonDBChild {
             unset($item->fields["is_template"]);
             unset($item->fields["date_mod"]);
 
+            $input  = [];
             $fields = [];
             foreach ($item->fields as $key => $value) {
                if ($value != ''
@@ -1155,7 +1160,7 @@ class PluginOrderLink extends CommonDBChild {
                }
             }
 
-            if (isset($values["states_id"])) {
+            if (isset($values["states_id"]) && $values["states_id"] != 0) {
                $input['states_id'] = $values['states_id'];
             } else {
                if ($config->getGeneratedAssetState()) {
@@ -1191,10 +1196,6 @@ class PluginOrderLink extends CommonDBChild {
                }
             }
 
-            if ($config->canAddLocation()) {
-               $input['locations_id'] = $order->fields['locations_id'];
-            }
-
          } else if ($add_item["itemtype"] == 'Contract') {
             $input["name"]             = $values["name"];
             $input["entities_id"]      = $entity;
@@ -1226,15 +1227,15 @@ class PluginOrderLink extends CommonDBChild {
             $input["name"]             = $values["name"];
          }
 
-         if ($input["manufacturers_id"] == 0) {
+         if (!array_key_exists('manufacturers_id', $input) || $input["manufacturers_id"] == 0) {
             $input["manufacturers_id"] = $reference->fields["manufacturers_id"];
          }
          $typefield = getForeignKeyFieldForTable(getTableForItemType($add_item["itemtype"]."Type"));
-         if ($input[$typefield] == 0) {
+         if (!array_key_exists($typefield, $input) || $input[$typefield] == 0) {
             $input[$typefield] = $reference->fields["types_id"];
          }
          $modelfield = getForeignKeyFieldForTable(getTableForItemType($add_item["itemtype"]."Model"));
-         if ($input[$modelfield] == 0) {
+         if (!array_key_exists($modelfield, $input) || $input[$modelfield] == 0) {
             $input[$modelfield] = $reference->fields["models_id"];
          }
 
