@@ -921,6 +921,7 @@ class PluginOrderReception extends CommonDBChild {
             "plugin_order_orders_id"     => $options["plugin_order_orders_id"],
             "plugin_order_references_id" => $options["plugin_order_references_id"],
             "id"                         => [$item],
+            'itemtype'                   => $options['itemtype'],
          ];
 
          if ($config->canGenerateTicket()) {
