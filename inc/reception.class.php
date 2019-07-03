@@ -946,7 +946,7 @@ class PluginOrderReception extends CommonDBChild {
    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
       if ($item->getType() == 'PluginOrderOrder'
           && Session::haveRight('plugin_order_order', PluginOrderOrder::canView())
-          && $item->getState() > PluginOrderOrderState::DRAFT) {
+          && $item->getState() > PluginOrderOrderState::WAITING_FOR_APPROVAL) {
          return self::createTabEntry(__("Item delivered", "order"), self::countForOrder($item));
       }
    }
