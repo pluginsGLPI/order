@@ -826,6 +826,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                'name'          => 'quantity',
                'class'         => 'quantity',
                'force_integer' => true,
+               'min'           => rawurlencode($quantity),
                'data'          => rawurlencode($quantity)
             ], false);
             echo "}";
