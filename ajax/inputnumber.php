@@ -54,5 +54,5 @@ if (isset($_POST['name'])) {
 
    $data = Html::cleanInputText(Toolbox::clean_cross_side_scripting_deep(rawurldecode(stripslashes($_POST["data"]))));
 
-   echo "<input type='number' step='$step' name='".$_POST['name']."' value='$data' $class>";
+   echo "<input type='number' step='$step' min='0' name='".$_POST['name']."' value='$data' $class>";
 }
