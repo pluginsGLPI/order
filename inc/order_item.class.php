@@ -407,11 +407,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "</td>";
 
                echo "<td class='tab_bg_1'><span id='show_quantity'>";
-               echo "<input type='number' name='quantity' value='0' class='quantity' />";
+               echo "<input type='number' min='0' name='quantity' value='0' class='quantity' />";
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_priceht'>";
-               echo "<input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price' value='0.00' class='decimal' />";
+               echo "<input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price' value='0.00' class='decimal' />";
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_taxe'>";
@@ -425,7 +425,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_pricediscounted'>";
-               echo "<input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount' value='0' class='smalldecimal' />";
+               echo "<input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount' value='0' class='smalldecimal' />";
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_validate'>";
@@ -486,11 +486,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   echo "</td>";
 
                   echo "<td class='tab_bg_1'><span id='show_quantity'>";
-                  echo "<input type='number' name='quantity' value='0' class='quantity' />";
+                  echo "<input type='number' min='0' name='quantity' value='0' class='quantity' />";
                   echo "</span></td>";
 
                   echo "<td class='tab_bg_1'><span id='show_priceht'>";
-                  echo "<input type='number' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='price' value='0.00' class='decimal' />";
+                  echo "<input type='number' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='price' value='0.00' class='decimal' />";
                   echo "</span></td>";
 
                   echo "<td class='tab_bg_1'><span id='show_taxe'>";
@@ -504,7 +504,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   echo "</span></td>";
 
                   echo "<td class='tab_bg_1'><span id='show_pricediscounted'>";
-                  echo "<input type='number' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='discount' value='0' class='smalldecimal' />";
+                  echo "<input type='number' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='discount' value='0' class='smalldecimal' />";
                   echo "</span></td>";
 
                   echo "<td class='tab_bg_1'><span id='show_addreference'>";
@@ -826,6 +826,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                'name'          => 'quantity',
                'class'         => 'quantity',
                'force_integer' => true,
+               'min'           => rawurlencode($quantity),
                'data'          => rawurlencode($quantity)
             ], false);
             echo "}";
@@ -1366,7 +1367,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__("Unit price tax free", "order").": </td>";
       if ($canedit) {
-         echo "<td><input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price_taxfree' value='".$this->fields['price_taxfree']."' class='decimal'>";
+         echo "<td><input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price_taxfree' value='".$this->fields['price_taxfree']."' class='decimal'>";
       } else {
          echo "<td>".Html::formatNumber($this->fields['price_taxfree'])."</td>";
       }
@@ -1385,7 +1386,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__("Discount (%)", "order").": </td>";
       if ($canedit) {
-         echo "<td><input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount'
+         echo "<td><input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount'
                           value='".$this->fields['discount']."' class='decimal'>";
       } else {
          echo "<td>".Html::formatNumber($this->fields['discount'])."</td>";
