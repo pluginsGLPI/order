@@ -54,13 +54,15 @@ $fields = [
    "validate",
 ];
 
+$order_url = Plugin::getWebDir('order');
+
 foreach ($fields as $field) {
    $paramsaction['update'] = $field;
    Ajax::updateItem("show_$field",
-                    $CFG_GLPI["root_doc"] . "/plugins/order/ajax/referencedetail.php",
+                    "$order_url/ajax/referencedetail.php",
                     $paramsaction, "dropdown_reference$rand");
    Ajax::updateItemOnSelectEvent("dropdown_reference$rand",
                                  "show_$field",
-                                 $CFG_GLPI["root_doc"]."/plugins/order/ajax/referencedetail.php",
+                                 "$order_url/ajax/referencedetail.php",
                                  $paramsaction);
 }

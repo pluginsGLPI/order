@@ -46,7 +46,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       return __("Supplier for the reference", "order");
    }
 
-   function getRawName() {
+   protected function computeFriendlyName() {
       $ref = new PluginOrderReference();
       $ref->getFromDB($this->fields['plugin_order_references_id']);
       return sprintf(__('Supplier for the reference "%1$s"'), $ref->getName());
@@ -64,7 +64,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          if ($DB->numrows($result) != 1) {
             return false;
          }
-         $this->fields = $DB->fetch_assoc($result);
+         $this->fields = $DB->fetchAssoc($result);
          if (is_array($this->fields) && count($this->fields)) {
             return true;
          } else {
@@ -201,7 +201,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
                      FROM `".self::getTable()."`
                      WHERE `plugin_order_references_id` = '$plugin_order_references_id'";
          $result = $DB->query($query);
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             $suppliers[] = $data["suppliers_id"];
          }
 
@@ -272,7 +272,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          echo "<form method='post' name='show_ref_manu' action=\"$target\">";
          echo Html::hidden('plugin_order_references_id', ['value' => $ID]);
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             Session::addToNavigateListItems($this->getType(), $data['id']);
             echo Html::hidden("item[".$data["id"]."]", ['value' => $ID]);
             echo "<tr class='tab_bg_1 center'>";
@@ -484,7 +484,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          echo "<th>".__("Product reference", "order")."</th>";
          echo "<th>".__("Unit price tax free", "order")."</th></tr>";
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             echo "<tr class='tab_bg_1' align='center'>";
             echo "<td>";
             echo Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);

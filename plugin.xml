@@ -30,14 +30,9 @@
    </authors>
    <versions>
       <version>
-          <num>2.6.0-rc2</num>
+          <num>2.6.0</num>
           <compatibility>~9.5.0</compatibility>
-          <download_url>https://github.com/pluginsGLPI/order/releases/download/2.6.0-rc2/glpi-order-2.6.0-rc2.tar.bz2</download_url>
-      </version>
-      <version>
-          <num>2.6.0-rc1</num>
-          <compatibility>~9.5.0</compatibility>
-          <download_url>https://github.com/pluginsGLPI/order/releases/download/2.6.0-rc1/glpi-order-2.6.0-rc1.tar.bz2</download_url>
+          <download_url>https://github.com/pluginsGLPI/order/releases/download/2.6.0/glpi-order-2.6.0.tar.bz2</download_url>
       </version>
       <version>
           <num>2.5.3</num>

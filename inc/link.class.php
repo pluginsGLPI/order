@@ -149,6 +149,7 @@ class PluginOrderLink extends CommonDBChild {
 
             if (Session::isMultiEntitiesMode()
                   && count($_SESSION['glpiactiveentities']) > 1) {
+               $order_web_dir = Plugin::getWebDir('order');
                echo "<td>";
                $rand = Entity::Dropdown([
                'name'   => "id[$i][entities_id]",
@@ -157,21 +158,21 @@ class PluginOrderLink extends CommonDBChild {
                );
                Ajax::updateItemOnSelectEvent("dropdown_id[$i][entities_id]$rand",
                                           "show_location_by_entity_id_$i",
-                                          $CFG_GLPI["root_doc"] . "/plugins/order/ajax/linkactions.php",
+                                          "$order_web_dir/ajax/linkactions.php",
                                           ['entities' => '__VALUE__',
                                            'action'   => 'show_location_by_entity',
                                            'id'       => $i
                                           ]);
                Ajax::updateItemOnSelectEvent("dropdown_id[$i][entities_id]$rand",
                                           "show_group_by_entity_id_$i",
-                                          $CFG_GLPI["root_doc"] . "/plugins/order/ajax/linkactions.php",
+                                          "$order_web_dir/ajax/linkactions.php",
                                           ['entities' => '__VALUE__',
                                            'action'   => 'show_group_by_entity',
                                            'id'       => $i
                                           ]);
                Ajax::updateItemOnSelectEvent("dropdown_id[$i][entities_id]$rand",
                                           "show_state_by_entity_id_$i",
-                                          $CFG_GLPI["root_doc"] . "/plugins/order/ajax/linkactions.php",
+                                          "$order_web_dir/ajax/linkactions.php",
                                           ['entities' => '__VALUE__',
                                            'action'   => 'show_state_by_entity',
                                            'id'       => $i
@@ -288,7 +289,7 @@ class PluginOrderLink extends CommonDBChild {
 
       $result_ref = $this->queryRef($plugin_order_orders_id, 'glpi_plugin_order_references');
       $numref     = $DB->numrows($result_ref);
-      while ($data_ref = $DB->fetch_array($result_ref)) {
+      while ($data_ref = $DB->fetchArray($result_ref)) {
          $link = new self();
          $link->showOrderLinkItem($numref, $data_ref, $canedit, $plugin_order_orders_id, $PluginOrderOrder,
                                   'glpi_plugin_order_references');
@@ -296,7 +297,7 @@ class PluginOrderLink extends CommonDBChild {
 
       $result_reffree = $this->queryRef($plugin_order_orders_id, 'glpi_plugin_order_referencefrees');
       $numreffree     = $DB->numrows($result_reffree);
-      while ($data_reffree = $DB->fetch_array($result_reffree)) {
+      while ($data_reffree = $DB->fetchArray($result_reffree)) {
          $link = new self();
          $link->showOrderLinkItem($numreffree, $data_reffree, $canedit, $plugin_order_orders_id, $PluginOrderOrder,
                                   'glpi_plugin_order_referencefrees');
@@ -364,7 +365,7 @@ class PluginOrderLink extends CommonDBChild {
          $result = $DB->query($query);
          $num    = $DB->numrows($result);
          $all_data = [];
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             $all_data[] = $data;
          }
 
@@ -752,7 +753,7 @@ class PluginOrderLink extends CommonDBChild {
       }
       $rand   = Dropdown::showFromArray('generationActions', $actions);
       Ajax::updateItemOnSelectEvent("dropdown_generationActions$rand", "show_generationActions$rand",
-                                  $CFG_GLPI["root_doc"]."/plugins/order/ajax/linkactions.php",
+                                  Plugin::getWebDir('order')."/ajax/linkactions.php",
                                   ['action'                     => '__VALUE__',
                                    'itemtype'                   => $itemtype,
                                    'plugin_order_references_id' => $plugin_order_references_id,
@@ -1342,7 +1343,7 @@ class PluginOrderLink extends CommonDBChild {
          $item->getFromDB($items_id);
          $is_recursive = 0;
 
-         foreach (getAllDatasFromTable('glpi_documents_items',
+         foreach (getAllDataFromTable('glpi_documents_items',
                                        ['itemtype' => 'PluginOrderOrder',
                                         'items_id' => $orders_id]) as $doc) {
 
@@ -1350,7 +1351,7 @@ class PluginOrderLink extends CommonDBChild {
             $document->getFromDB($doc['documents_id']);
             if (($document->getEntityID() != $entity && !$document->fields['is_recursive'])
                || !in_array($entity, getSonsOf('glpi_entities', $document->getEntityID()))) {
-               $found_docs = getAllDatasFromTable(
+               $found_docs = getAllDataFromTable(
                   'glpi_documents',
                   [
                      'entities_id' => $entity,
