@@ -492,7 +492,7 @@ class PluginOrderReference extends CommonDBTM {
 
          $number = $DB->numrows($result);
          if ($number) {
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
                $used[] = $data["itemtype"];
             }
          }
@@ -819,7 +819,7 @@ class PluginOrderReference extends CommonDBTM {
          $result = $DB->query($query);
          $num    = $DB->numrows($result);
          if ($num) {
-            while ($dataref = $DB->fetch_array($result)) {
+            while ($dataref = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
                $values["id"]                         = $dataref['id'];
                $values["plugin_order_references_id"] = $newid;
                $PluginOrderOrder_Item->update($values);

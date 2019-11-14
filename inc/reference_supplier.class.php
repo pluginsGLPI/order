@@ -203,7 +203,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
                      FROM `".self::getTable()."`
                      WHERE `plugin_order_references_id` = '$plugin_order_references_id'";
          $result = $DB->query($query);
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
             $suppliers[] = $data["suppliers_id"];
          }
 
@@ -274,7 +274,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          echo "<form method='post' name='show_ref_manu' action=\"$target\">";
          echo Html::hidden('plugin_order_references_id', ['value' => $ID]);
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
             Session::addToNavigateListItems($this->getType(), $data['id']);
             echo Html::hidden("item[".$data["id"]."]", ['value' => $ID]);
             echo "<tr class='tab_bg_1 center'>";
@@ -486,7 +486,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          echo "<th>".__("Product reference", "order")."</th>";
          echo "<th>".__("Unit price tax free", "order")."</th></tr>";
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
             echo "<tr class='tab_bg_1' align='center'>";
             echo "<td>";
             echo Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);

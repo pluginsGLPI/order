@@ -77,7 +77,7 @@ echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 
 if ($DB->numrows($result)) {
    $prev = -1;
-   while ($data = $DB->fetch_array($result)) {
+   while ($data = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
       if ($data["entities_id"] != $prev) {
          if ($prev > 0) {
             echo "</optgroup>";

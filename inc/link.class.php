@@ -288,7 +288,7 @@ class PluginOrderLink extends CommonDBChild {
 
       $result_ref = $this->queryRef($plugin_order_orders_id, 'glpi_plugin_order_references');
       $numref     = $DB->numrows($result_ref);
-      while ($data_ref = $DB->fetch_array($result_ref)) {
+      while ($data_ref = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result_ref) : $DB->fetch_array($result_ref)) {
          $link = new self();
          $link->showOrderLinkItem($numref, $data_ref, $canedit, $plugin_order_orders_id, $PluginOrderOrder,
                                   'glpi_plugin_order_references');
@@ -296,7 +296,7 @@ class PluginOrderLink extends CommonDBChild {
 
       $result_reffree = $this->queryRef($plugin_order_orders_id, 'glpi_plugin_order_referencefrees');
       $numreffree     = $DB->numrows($result_reffree);
-      while ($data_reffree = $DB->fetch_array($result_reffree)) {
+      while ($data_reffree = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result_reffree) : $DB->fetch_array($result_reffree)) {
          $link = new self();
          $link->showOrderLinkItem($numreffree, $data_reffree, $canedit, $plugin_order_orders_id, $PluginOrderOrder,
                                   'glpi_plugin_order_referencefrees');
@@ -364,7 +364,7 @@ class PluginOrderLink extends CommonDBChild {
          $result = $DB->query($query);
          $num    = $DB->numrows($result);
          $all_data = [];
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
             $all_data[] = $data;
          }
 

@@ -1348,7 +1348,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>\n";
 
       $prev = -1;
-      while ($data = $DB->fetch_array($result)) {
+      while ($data = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
          if ($data["entities_id"] != $prev) {
             if ($prev >= 0) {
                echo "</optgroup>";
@@ -1401,7 +1401,7 @@ class PluginOrderOrder extends CommonDBTM {
 
       if ($DB->numrows($result)) {
          $prev = -1;
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
             if ($data["entities_id"] != $prev) {
                if ($prev >= 0) {
                   echo "</optgroup>";
@@ -1760,7 +1760,7 @@ class PluginOrderOrder extends CommonDBTM {
             $result = $PluginOrderOrder_Item->queryDetail($ID, 'glpi_plugin_order_references');
             $num    = $DB->numrows($result);
 
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
                $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID, $data["id"],
                                                                              $data["price_taxfree"],
                                                                              $data["discount"]);
@@ -1785,7 +1785,7 @@ class PluginOrderOrder extends CommonDBTM {
             $result = $PluginOrderOrder_Item->queryDetail($ID, 'glpi_plugin_order_referencefrees');
             $num    = $DB->numrows($result);
 
-            while ($data=$DB->fetch_array($result)) {
+            while ($data = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
                $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID, $data["id"],
                                                                                     $data["price_taxfree"],
                                                                                     $data["discount"]);
@@ -1935,7 +1935,7 @@ class PluginOrderOrder extends CommonDBTM {
                 GROUP BY plugin_order_references_id";
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
-         while ($detail = $DB->fetch_array($result)) {
+         while ($detail = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
             $ref = $reference->transfer($detail["plugin_order_references_id"], $entity);
          }
       }

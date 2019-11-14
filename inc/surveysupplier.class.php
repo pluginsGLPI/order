@@ -389,7 +389,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       echo "</tr>";
 
       if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
             Session::addToNavigateListItems(__CLASS__, $data['id']);
             echo Html::hidden("item[".$data["id"]."]", ['value' => $ID]);
             echo "<tr class='tab_bg_1 center'>";

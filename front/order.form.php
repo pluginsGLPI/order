@@ -339,7 +339,7 @@ if (isset ($_POST["add"])) {
          $_POST['old_price_taxfree'],
          $_POST['old_discount']
       );
-      while ($item = $DB->fetch_array($datas)) {
+      while ($item = method_exists($DB, 'fetchArray') ? $DB->fetchArray($datas) : $DB->fetch_array($datas)) {
          $input = [
             'item_id'                         => $item['id'],
             'plugin_order_analyticnatures_id' => $_POST['plugin_order_analyticnatures_id'],
@@ -353,7 +353,7 @@ if (isset ($_POST["add"])) {
                                                $_POST['old_plugin_order_references_id'],
                                                $_POST['old_price_taxfree'],
                                                $_POST['old_discount']);
-      while ($item = $DB->fetch_array($data)) {
+      while ($item = method_exists($DB, 'fetchArray') ? $DB->fetchArray($data) : $DB->fetch_array($data)) {
          $pluginOrderOrder_Item->updatePrice_taxfree([
             'item_id'       => $item['id'],
             'price_taxfree' => $_POST['price_taxfree'],
@@ -372,7 +372,7 @@ if (isset ($_POST["add"])) {
                                                   $_POST['old_plugin_order_references_id'],
                                                   $price,
                                                   $_POST['old_discount']);
-         while ($item = $DB->fetch_array($data)) {
+         while ($item = method_exists($DB, 'fetchArray') ? $DB->fetchArray($data) : $DB->fetch_array($data)) {
             $pluginOrderOrder_Item->updateDiscount([
                'item_id'  => $item['id'],
                'discount' => $_POST['discount'],

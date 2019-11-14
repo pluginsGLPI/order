@@ -58,7 +58,7 @@ if (isset($_REQUEST['node'])) {
          if ($DB->numrows($result)) {
             $pos = 0;
 
-            while ($row = $DB->fetch_array($result)) {
+            while ($row = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
                $class             = $row['itemtype'];
                $item              = new $class();
                $path['text']      = $item->getTypeName();

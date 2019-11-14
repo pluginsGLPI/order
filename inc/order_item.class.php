@@ -383,7 +383,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                $result = $DB->query($query);
 
                $itemtypeArray = ['' => Dropdown::EMPTY_VALUE];
-               while (list($itemtype) = $DB->fetch_array($result)) {
+               while (list($itemtype) = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
                   $type                     = new $itemtype();
                   $itemtypeArray[$itemtype] = $type->getTypeName();
                }
@@ -747,7 +747,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                               && $order->canUpdateOrder();
       Session::initNavigateListItems($this->getType(),
                             __("Order", "order") ." = ". $order->getName());
-      while ($data_ref = $DB->fetch_array($result_ref)) {
+      while ($data_ref = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result_ref) : $DB->fetch_array($result_ref)) {
          self::getItems($rand, $data_ref, $plugin_order_orders_id, $numref, $canedit, $reference, $reception,
                         'glpi_plugin_order_references');
 
@@ -755,7 +755,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       $result_ref_free       = $this->queryDetail($plugin_order_orders_id, 'glpi_plugin_order_referencefrees');
       $numref_free           = $DB->numrows($result_ref_free);
-      while ($data_ref_free = $DB->fetch_array($result_ref_free)) {
+      while ($data_ref_free = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result_ref_free) : $DB->fetch_array($result_ref_free)) {
          self::getItems($rand, $data_ref_free, $plugin_order_orders_id, $numref_free, $canedit, $reference, $reception,
                         'glpi_plugin_order_referencefrees');
       }
@@ -1055,7 +1055,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          // Initialize for detail_hideForm javascript function
          $hideForm = "";
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
             $rand_line = mt_rand();
             Session::addToNavigateListItems($this->getType(), $data['IDD']);
 
@@ -1265,7 +1265,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                 FROM `".self::getTable()."`
                 WHERE `plugin_order_orders_id` = '$orders_id' ";
       $result = $DB->query($query);
-      return $DB->fetch_array($result);
+      return method_exists($DB, 'fetchArray')
+         ? $DB->fetchArray($result)
+         : $DB->fetch_array($result);
    }
 
 
@@ -1280,7 +1282,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   AND `$table`.`items_id` = '$items_id' ";
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
-         return $DB->fetch_array($result);
+         return method_exists($DB, 'fetchArray')
+            ? $DB->fetchArray($result)
+            : $DB->fetch_array($result);
       } else {
          return false;
       }
@@ -1454,7 +1458,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                                  $this->fields['plugin_order_references_id'],
                                  $this->fields['price_taxfree'],
                                  $this->fields['discount']);
-         while ($item = $DB->fetch_array($data)) {
+         while ($item = method_exists($DB, 'fetchArray') ? $DB->fetchArray($data) : $DB->fetch_array($data)) {
             $this->updatePrice_taxfree([
                'item_id'       => $item['id'],
                'price_taxfree'  => $this->fields['price_taxfree']
@@ -1515,12 +1519,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                  && !$order->isPaid() && !$order->isCanceled();
 
       $result_ref = self::queryBillsItems($order->getID(), 'glpi_plugin_order_references');
-      while ($data_ref = $DB->fetch_array($result_ref)) {
+      while ($data_ref = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result_ref) : $DB->fetch_array($result_ref)) {
          self::showBillsItemsDetail($data_ref, $result_ref, $canedit, $order, 'glpi_plugin_order_references');
       }
 
       $result_reffree = self::queryBillsItems($order->getID(), 'glpi_plugin_order_referencefrees');
-      while ($data_reffree = $DB->fetch_array($result_reffree)) {
+      while ($data_reffree = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result_reffree) : $DB->fetch_array($result_reffree)) {
          self::showBillsItemsDetail($data_reffree, $result_reffree, $canedit, $order, 'glpi_plugin_order_referencefrees');
       }
       echo "<br>";
@@ -1606,7 +1610,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "</tr>";
 
          $results = $this->queryBills($order->getID(), $data_ref['id'], $table);
-         while ($data = $DB->fetch_array($results)) {
+         while ($data = method_exists($DB, 'fetchArray') ? $DB->fetchArray($results) : $DB->fetch_array($results)) {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td width='10'>";
@@ -1716,7 +1720,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                                  $post['old_plugin_order_references_id'],
                                  $post['old_price_taxfree'],
                                  $post['old_discount']);
-         $item = $DB->fetch_array($data);
+         $item = method_exists($DB, 'fetchArray')
+            ? $DB->fetchArray($data)
+            : $DB->fetch_array($data);
 
          $this->getFromDB($item['id']);
          $to_add  = $post['quantity'] - $quantity;

@@ -278,7 +278,7 @@ class PluginOrderBill extends CommonDropdown
          $old_itemtype = '';
          $num          = 0;
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result) : $DB->fetch_array($result)) {
             if (!class_exists($data['itemtype'])) {
                continue;
             }
@@ -343,14 +343,14 @@ class PluginOrderBill extends CommonDropdown
       $query_ref = $bill->queryRef($order->getID(), 'glpi_plugin_order_references');
       $result_ref = $DB->query($query_ref);
 
-      while ($data_ref = $DB->fetch_array($result_ref)) {
+      while ($data_ref = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result_ref) : $DB->fetch_array($result_ref)) {
          self::showOrder($data_ref, $result_ref, $canedit, $order, $reference, 'glpi_plugin_order_references');
       }
 
       $query_reffree = $bill->queryRef($order->getID(), 'glpi_plugin_order_referencefrees');
       $result_reffree = $DB->query($query_reffree);
 
-      while ($data_reffree = $DB->fetch_array($result_reffree)) {
+      while ($data_reffree = method_exists($DB, 'fetchArray') ? $DB->fetchArray($result_reffree) : $DB->fetch_array($result_reffree)) {
          self::showOrder($data_reffree, $result_reffree, $canedit, $order, $reference, 'glpi_plugin_order_referencefrees');
       }
       echo "<br>";
@@ -411,7 +411,7 @@ class PluginOrderBill extends CommonDropdown
          echo "</tr>";
 
          $results = $order_item->queryBills($order->getID(), $data_ref['id'], $table);
-         while ($data = $DB->fetch_array($results)) {
+         while ($data = method_exists($DB, 'fetchArray') ? $DB->fetchArray($results) : $DB->fetch_array($results)) {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td width='10'>";
