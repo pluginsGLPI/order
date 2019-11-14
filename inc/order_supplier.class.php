@@ -61,6 +61,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          'field'         => 'num_quote',
          'name'          => __('Quote number', 'order'),
          'datatype'      => 'text',
+         'autocomplete'  => true,
       ];
 
       $tab[] = [
@@ -69,6 +70,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          'field'         => 'num_order',
          'name'          => __('Order number'),
          'datatype'      => 'text',
+         'autocomplete'  => true,
       ];
 
       $tab[] = [
