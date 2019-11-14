@@ -127,7 +127,9 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          if (!$DB->numrows($result)) {
             return false;
          }
-         $this->fields = $DB->fetch_assoc($result);
+         $this->fields = method_exists($DB, 'fetchAssoc')
+            ? $DB->fetchAssoc($result)
+            : $DB->fetch_assoc($result);
          if (is_array($this->fields) && count($this->fields)) {
             return true;
          } else {

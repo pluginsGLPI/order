@@ -1035,7 +1035,7 @@ class PluginOrderOrder extends CommonDBTM {
 
          $values = [0 => Dropdown::EMPTY_VALUE];
          if ($number) {
-            while ($data = $DB->fetch_assoc($result)) {
+            while ($data = (method_exists($DB, 'fetchAssoc') ? $DB->fetchAssoc($result) : $DB->fetch_assoc($result))) {
                $values[$data['id']] = formatUserName('', '', $data['name'], $data['firstname']);
             }
          }
