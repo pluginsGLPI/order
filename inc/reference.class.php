@@ -70,6 +70,7 @@ class PluginOrderReference extends CommonDBTM {
          'checktype'     => 'text',
          'displaytype'   => 'text',
          'injectable'    => true,
+         'autocomplete'  => true,
       ];
 
       $tab[] = [
@@ -144,6 +145,14 @@ class PluginOrderReference extends CommonDBTM {
          'massiveaction' => false,
          'nosearch'      => true,
          'additionalfields' => ['itemtype'],
+      ];
+
+      $tab[] = [
+         'id'            => 8,
+         'table'         => self::getTable(),
+         'field'         => 'manufacturers_reference',
+         'name'          => __('Manufacturer reference', 'order'),
+         'autocomplete'  => true,
       ];
 
       $tab[] = [
