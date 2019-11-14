@@ -127,7 +127,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          if (!$DB->numrows($result)) {
             return false;
          }
-         $this->fields = $DB->fetch_assoc($result);
+         $this->fields = $DB->fetchAssoc($result);
          if (is_array($this->fields) && count($this->fields)) {
             return true;
          } else {
@@ -223,7 +223,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
          echo "<th>".__("Order number")."</th>";
          echo "</tr>";
 
-         $data = getAllDatasFromTable($table, ['plugin_order_orders_id' => $ID]);
+         $data = getAllDataFromTable($table, ['plugin_order_orders_id' => $ID]);
          foreach ($data as $cur) {
             Session::addToNavigateListItems(__CLASS__, $cur['id']);
             echo Html::hidden("item[".$cur["id"]."]", ['value' => $ID]);
@@ -258,7 +258,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    public function checkIfSupplierInfosExists($plugin_order_orders_id) {
 
       if ($plugin_order_orders_id) {
-         $devices = getAllDatasFromTable(self::getTable(),
+         $devices = getAllDataFromTable(self::getTable(),
                                          ['plugin_order_orders_id' => $plugin_order_orders_id]);
          if (!empty($devices)) {
             return true;

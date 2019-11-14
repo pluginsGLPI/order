@@ -89,7 +89,7 @@ class PluginOrderReferenceFree extends CommonDBTM {
                `is_deleted` tinyint(1) NOT NULL default '0',
                `is_active` tinyint(1) NOT NULL default '1',
                `notepad` longtext collate utf8_unicode_ci,
-               `date_mod` datetime default NULL,
+               `date_mod` timestamp NULL default NULL,
                PRIMARY KEY  (`id`),
                KEY `name` (`name`),
                KEY `entities_id` (`entities_id`),

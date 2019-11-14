@@ -48,7 +48,7 @@ if (isset($_POST["itemtype"])) {
    $number = $DB->numrows($result);
    $values = [0 => Dropdown::EMPTY_VALUE];
    if ($number) {
-      while ($data = $DB->fetch_assoc($result)) {
+      while ($data = $DB->fetchAssoc($result)) {
          $values[$data['id']] = $data['name']." - ".$data['reference_code'];
       }
    }

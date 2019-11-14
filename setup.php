@@ -34,12 +34,16 @@
  @since     2009
  ---------------------------------------------------------------------- */
 
-define('PLUGIN_ORDER_VERSION', '2.5.3');
+define('PLUGIN_ORDER_VERSION', '2.6.0');
 
 // Minimal GLPI version, inclusive
-define("PLUGIN_ORDER_MIN_GLPI", "9.4");
+define("PLUGIN_ORDER_MIN_GLPI", "9.5");
 // Maximum GLPI version, exclusive
-define("PLUGIN_ORDER_MAX_GLPI", "9.5");
+define("PLUGIN_ORDER_MAX_GLPI", "9.6");
+
+if (!defined('PLUGIN_ORDER_DIR')) {
+   define("PLUGIN_ORDER_DIR", Plugin::getPhpDir('order'));
+}
 
 if (!defined('PLUGIN_ORDER_TEMPLATE_DIR')) {
    define("PLUGIN_ORDER_TEMPLATE_DIR", GLPI_PLUGIN_DOC_DIR."/order/templates/");
@@ -69,7 +73,7 @@ if (!defined('PLUGIN_ORDER_NUMBER_STEP')) {
 if (!defined('PCLZIP_TEMPORARY_DIR')) {
    define('PCLZIP_TEMPORARY_DIR', GLPI_DOC_DIR . '/_tmp/pclzip');
 }
-include_once GLPI_ROOT . "/plugins/order/vendor/autoload.php";
+include_once PLUGIN_ORDER_DIR . "/vendor/autoload.php";
 
 
 /**
@@ -127,7 +131,7 @@ function plugin_init_order() {
          'Document' => ['PluginOrderOrder', 'addDocumentCategory']
       ];
 
-      include_once(GLPI_ROOT . "/plugins/order/inc/order_item.class.php");
+      include_once(PLUGIN_ORDER_DIR . "/inc/order_item.class.php");
       foreach (PluginOrderOrder_Item::getClasses(true) as $type) {
          $PLUGIN_HOOKS['item_purge']['order'][$type] = 'plugin_item_purge_order';
       }
@@ -215,41 +219,10 @@ function plugin_version_order() {
  * @return boolean
  */
 function plugin_order_check_prerequisites() {
-
-   //Version check is not done by core in GLPI < 9.2 but has to be delegated to core in GLPI >= 9.2.
-   if (!method_exists('Plugin', 'checkGlpiVersion')) {
-      $version = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
-      $matchMinGlpiReq = version_compare($version, PLUGIN_ORDER_MIN_GLPI, '>=');
-      $matchMaxGlpiReq = version_compare($version, PLUGIN_ORDER_MAX_GLPI, '<');
-
-      if (!$matchMinGlpiReq || !$matchMaxGlpiReq) {
-         echo vsprintf(
-            'This plugin requires GLPI >= %1$s and < %2$s.',
-            [
-               PLUGIN_ORDER_MIN_GLPI,
-               PLUGIN_ORDER_MAX_GLPI,
-            ]
-         );
-         return false;
-      }
-   }
-
    if (!is_readable(__DIR__ . '/vendor/autoload.php') || !is_file(__DIR__ . '/vendor/autoload.php')) {
       echo "Run composer install --no-dev in the plugin directory<br>";
       return false;
    }
 
-   return true;
-}
-
-
-/**
- * Check configuration process
- *
- * @param boolean $verbose Whether to display message on failure. Defaults to false
- *
- * @return boolean
- */
-function plugin_order_check_config() {
    return true;
 }

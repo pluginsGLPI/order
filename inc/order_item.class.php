@@ -383,7 +383,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                $result = $DB->query($query);
 
                $itemtypeArray = ['' => Dropdown::EMPTY_VALUE];
-               while (list($itemtype) = $DB->fetch_array($result)) {
+               while (list($itemtype) = $DB->fetchArray($result)) {
                   $type                     = new $itemtype();
                   $itemtypeArray[$itemtype] = $type->getTypeName();
                }
@@ -551,7 +551,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                      'myname'    => 'itemtype',
                      'value'     => 'PluginOrderOther',
                      'entity'    => $_SESSION["glpiactive_entity"],
-                     'ajax_page' => $CFG_GLPI["root_doc"] . '/plugins/order/ajax/referencespecifications.php',
+                     'ajax_page' => Plugin::getWebDir('order') . '//ajax/referencespecifications.php',
                      //                     'class'     => __CLASS__,
                   ];
                   $reference = new PluginOrderReference();
@@ -564,7 +564,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   $file = 'other';
 
                   $core_typefilename   = GLPI_ROOT . "/inc/" . strtolower($file) . "type.class.php";
-                  $plugin_typefilename = GLPI_ROOT . "/plugins/order/inc/" . strtolower($file) . "type.class.php";
+                  $plugin_typefilename = PLUGIN_ORDER_DIR . "/inc/" . strtolower($file) . "type.class.php";
                   $itemtypeclass       = "PluginOrderOtherType";
 
                   if (file_exists($core_typefilename)
@@ -747,7 +747,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                               && $order->canUpdateOrder();
       Session::initNavigateListItems($this->getType(),
                             __("Order", "order") ." = ". $order->getName());
-      while ($data_ref = $DB->fetch_array($result_ref)) {
+      while ($data_ref = $DB->fetchArray($result_ref)) {
          self::getItems($rand, $data_ref, $plugin_order_orders_id, $numref, $canedit, $reference, $reception,
                         'glpi_plugin_order_references');
 
@@ -755,7 +755,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       $result_ref_free       = $this->queryDetail($plugin_order_orders_id, 'glpi_plugin_order_referencefrees');
       $numref_free           = $DB->numrows($result_ref_free);
-      while ($data_ref_free = $DB->fetch_array($result_ref_free)) {
+      while ($data_ref_free = $DB->fetchArray($result_ref_free)) {
          self::getItems($rand, $data_ref_free, $plugin_order_orders_id, $numref_free, $canedit, $reference, $reception,
                         'glpi_plugin_order_referencefrees');
       }
@@ -836,7 +836,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             echo "function showQuantity$rand() {\n";
             echo "$('#quantity$rand').hide();";
             echo "$('#viewaccept$rand').show();";
-            Ajax::updateItemJsCode("viewquantity$rand", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
+            Ajax::updateItemJsCode("viewquantity$rand", Plugin::getWebDir('order')."/ajax/inputnumber.php", [
                'maxlength'     => 15,
                'size'          => 8,
                'name'          => 'quantity',
@@ -925,7 +925,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             echo "function showPricetaxfree$rand() {\n";
             echo "$('#pricetaxfree$rand').hide();";
             echo "$('#viewaccept$rand').show();";
-            Ajax::updateItemJsCode("viewpricetaxfree$rand", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
+            Ajax::updateItemJsCode("viewpricetaxfree$rand", Plugin::getWebDir('order')."/ajax/inputnumber.php", [
                'maxlength' => 15,
                'size'      => 8,
                'name'      => 'price_taxfree',
@@ -951,7 +951,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             echo "function showDiscount$rand() {\n";
             echo "$('#discount$rand').hide();";
             echo "$('#viewaccept$rand').show();";
-            Ajax::updateItemJsCode("viewdiscount$rand", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
+            Ajax::updateItemJsCode("viewdiscount$rand", Plugin::getWebDir('order')."/ajax/inputnumber.php", [
                'maxlength' => 15,
                'size'      => 8,
                'name'      => 'discount',
@@ -1055,7 +1055,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          // Initialize for detail_hideForm javascript function
          $hideForm = "";
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             $rand_line = mt_rand();
             Session::addToNavigateListItems($this->getType(), $data['IDD']);
 
@@ -1104,7 +1104,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "function showDetailPricetaxfree$rand_line() {\n";
                echo "$('#detail_pricetaxfree$rand_line').hide();";
                echo "$('#detail_viewaccept$global_rand').show();";
-               Ajax::updateItemJsCode("detail_viewpricetaxfree$rand_line", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
+               Ajax::updateItemJsCode("detail_viewpricetaxfree$rand_line", Plugin::getWebDir('order')."/ajax/inputnumber.php", [
                   'maxlength' => 15,
                   'size'      => 8,
                   'name'      => 'detail_price_taxfree['.$data["IDD"].']',
@@ -1139,7 +1139,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "function showDetailDiscount$rand_line() {\n";
                echo "$('#detail_discount$rand_line').hide();";
                echo "$('#detail_viewaccept$global_rand').show();";
-               Ajax::updateItemJsCode("detail_viewdiscount$rand_line", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
+               Ajax::updateItemJsCode("detail_viewdiscount$rand_line", Plugin::getWebDir('order')."/ajax/inputnumber.php", [
                   'maxlength' => 15,
                   'size'      => 8,
                   'name'      => 'detail_discount['.$data["IDD"].']',
@@ -1265,7 +1265,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                 FROM `".self::getTable()."`
                 WHERE `plugin_order_orders_id` = '$orders_id' ";
       $result = $DB->query($query);
-      return $DB->fetch_array($result);
+      return $DB->fetchArray($result);
    }
 
 
@@ -1280,7 +1280,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   AND `$table`.`items_id` = '$items_id' ";
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
-         return $DB->fetch_array($result);
+         return $DB->fetchArray($result);
       } else {
          return false;
       }
@@ -1300,7 +1300,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo $order->getLink(PluginOrderOrder::canView());
          echo "</td>";
 
-         $result = getAllDatasFromTable(
+         $result = getAllDataFromTable(
             self::getTable(),
             [
                'plugin_order_orders_id' => $infos['id'],
@@ -1453,7 +1453,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                                  $this->fields['plugin_order_references_id'],
                                  $this->fields['price_taxfree'],
                                  $this->fields['discount']);
-         while ($item = $DB->fetch_array($data)) {
+         while ($item = $DB->fetchArray($data)) {
             $this->updatePrice_taxfree([
                'item_id'       => $item['id'],
                'price_taxfree'  => $this->fields['price_taxfree']
@@ -1514,12 +1514,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                  && !$order->isPaid() && !$order->isCanceled();
 
       $result_ref = self::queryBillsItems($order->getID(), 'glpi_plugin_order_references');
-      while ($data_ref = $DB->fetch_array($result_ref)) {
+      while ($data_ref = $DB->fetchArray($result_ref)) {
          self::showBillsItemsDetail($data_ref, $result_ref, $canedit, $order, 'glpi_plugin_order_references');
       }
 
       $result_reffree = self::queryBillsItems($order->getID(), 'glpi_plugin_order_referencefrees');
-      while ($data_reffree = $DB->fetch_array($result_reffree)) {
+      while ($data_reffree = $DB->fetchArray($result_reffree)) {
          self::showBillsItemsDetail($data_reffree, $result_reffree, $canedit, $order, 'glpi_plugin_order_referencefrees');
       }
       echo "<br>";
@@ -1605,7 +1605,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "</tr>";
 
          $results = $this->queryBills($order->getID(), $data_ref['id'], $table);
-         while ($data = $DB->fetch_array($results)) {
+         while ($data = $DB->fetchArray($results)) {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td width='10'>";
@@ -1692,7 +1692,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $rand           = Dropdown::showFromArray('chooseAction', $action);
 
       Ajax::updateItemOnSelectEvent("dropdown_chooseAction$rand", "show_billsActions$rand",
-                                    $CFG_GLPI["root_doc"]."/plugins/order/ajax/billactions.php",
+                                    Plugin::getWebDir('order')."/ajax/billactions.php",
                                     [
                                        'action'                 => '__VALUE__',
                                        'plugin_order_orders_id' => $orders_id
@@ -1715,7 +1715,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                                  $post['old_plugin_order_references_id'],
                                  $post['old_price_taxfree'],
                                  $post['old_discount']);
-         $item = $DB->fetch_array($data);
+         $item = $DB->fetchArray($data);
 
          $this->getFromDB($item['id']);
          $to_add  = $post['quantity'] - $quantity;
