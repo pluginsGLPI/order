@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Bernd Bischof <bernd.bischof@mkkliniken.de>, 2019
 # Thomas Spranger <thspranger@yahoo.de>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-15 14:15+0000\n"
-"PO-Revision-Date: 2018-12-17 15:03+0000\n"
-"Last-Translator: Cédric Anne\n"
+"POT-Creation-Date: 2019-11-14 11:10+0000\n"
+"PO-Revision-Date: 2019-10-17 12:51+0000\n"
+"Last-Translator: Bernd Bischof <bernd.bischof@mkkliniken.de>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/teclib/glpi-plugin-order/language/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +21,7 @@ msgstr ""
 
 #: report/orderdelivery/orderdelivery.php:47
 msgid "orderdelivery_report_title"
-msgstr ""
+msgstr "Bestellinformationen"
 
 #: report/orderdelivery/orderdelivery.php:48
 #: report/orderdelivery/orderdelivery.php:75
@@ -52,7 +53,7 @@ msgstr "Vorrausichtlich bis zum"
 
 #: report/deliveryinfos/deliveryinfos.php:47
 msgid "deliveryinfos_report_title"
-msgstr ""
+msgstr "Lieferinformationen"
 
 #: report/deliveryinfos/deliveryinfos.php:64
 msgid "Orders total"
@@ -90,8 +91,8 @@ msgstr "Bestellverwaltung"
 #: inc/profile.class.php:103 inc/profile.class.php:145
 #: inc/profile.class.php:170 inc/menu.class.php:7
 #: inc/documentcategory.class.php:47 inc/bill.class.php:594
-#: inc/preference.class.php:269 inc/order_item.class.php:1948
-#: inc/order_item.class.php:1950 inc/order.class.php:77
+#: inc/preference.class.php:269 inc/order_item.class.php:1949
+#: inc/order_item.class.php:1951 inc/order.class.php:77
 #: inc/order.class.php:625 inc/order_supplier.class.php:408
 msgid "Orders"
 msgstr "Bestellungen"
@@ -105,7 +106,7 @@ msgstr "Lieferant für eine Referenz"
 msgid "Products references"
 msgstr "Liste der Produktreferenzen verwalten"
 
-#: front/menu.php:77 inc/profile.class.php:178 inc/order_item.class.php:1453
+#: front/menu.php:77 inc/profile.class.php:178 inc/order_item.class.php:1454
 msgid "Bills"
 msgstr "Rechnungen"
 
@@ -148,8 +149,8 @@ msgstr "Menge"
 #: front/order.form.php:151 front/order.form.php:248 front/order.form.php:268
 #: inc/order_item.class.php:123 inc/order_item.class.php:131
 #: inc/order_item.class.php:355 inc/order_item.class.php:462
-#: inc/order_item.class.php:786 inc/order_item.class.php:1008
-#: inc/order_item.class.php:1386
+#: inc/order_item.class.php:786 inc/order_item.class.php:1009
+#: inc/order_item.class.php:1387
 msgid "Discount (%)"
 msgstr "Rabatt in %"
 
@@ -179,11 +180,11 @@ msgstr "Ordner kann nicht angelegt werden"
 #: hook.php:96
 #, php-format
 msgid "Cannot copy file %1$s to %2$s"
-msgstr ""
+msgstr "Fehler beim Kopieren von Datei %1$snach %2$s"
 
 #: hook.php:141 inc/ordertax.class.php:41 inc/order_item.class.php:354
-#: inc/order_item.class.php:461 inc/order_item.class.php:1007
-#: inc/order_item.class.php:1374 inc/order.class.php:318
+#: inc/order_item.class.php:461 inc/order_item.class.php:1008
+#: inc/order_item.class.php:1375 inc/order.class.php:318
 #: inc/order.class.php:1050 inc/order.class.php:1308 inc/order.class.php:1750
 #: inc/order.class.php:1875
 msgid "VAT"
@@ -209,7 +210,7 @@ msgstr "Other type of item"
 msgid "Delivery status"
 msgstr "Lieferstatus"
 
-#: hook.php:147 inc/bill.class.php:410 inc/order_item.class.php:1587
+#: hook.php:147 inc/bill.class.php:410 inc/order_item.class.php:1588
 #: inc/billstate.class.php:42
 msgid "Bill status"
 msgstr "Rechnungsstatus"
@@ -227,21 +228,21 @@ msgstr ""
 msgid "Account section"
 msgstr ""
 
-#: hook.php:243 inc/surveysupplier.class.php:183 inc/order_item.class.php:1279
+#: hook.php:243 inc/surveysupplier.class.php:183 inc/order_item.class.php:1280
 #: inc/order.class.php:408 inc/order.class.php:841
 msgid "Order name"
 msgstr "Name der Bestellung"
 
 #: hook.php:401 inc/surveysupplier.class.php:370 inc/reception.class.php:290
 #: inc/bill.class.php:101 inc/bill.class.php:197 inc/order_item.class.php:733
-#: inc/order_item.class.php:1347 inc/order_item.class.php:1956
+#: inc/order_item.class.php:1348 inc/order_item.class.php:1957
 #: inc/order.class.php:77 inc/order_supplier.class.php:199
 msgid "Order"
 msgstr "Bestellung"
 
 #: inc/referencefree.class.php:39
 msgid "Reference free"
-msgstr ""
+msgstr "ohne Produktreferenz"
 
 #: inc/config.class.php:103
 msgid "Plugin configuration"
@@ -297,7 +298,7 @@ msgstr "verstecke inaktive Budgets"
 
 #: inc/config.class.php:205
 msgid "Transmit budget change to linked assets"
-msgstr ""
+msgstr "Übermittle Budget-Änderungen an verknüpfte Geräte"
 
 #: inc/config.class.php:212
 msgid "Display account section on order form"
@@ -309,11 +310,11 @@ msgstr ""
 
 #: inc/config.class.php:226
 msgid "Use free references"
-msgstr ""
+msgstr "verwende freie Artikelauswahl"
 
 #: inc/config.class.php:233
 msgid "Rename documents added in order"
-msgstr ""
+msgstr "Dokumente in Bestellung umbenennen"
 
 #: inc/config.class.php:241
 msgid "Automatic actions when delivery"
@@ -333,7 +334,7 @@ msgstr "Aktiviere automatische Generierung"
 
 #: inc/config.class.php:269
 msgid "Asked"
-msgstr ""
+msgstr "angefragt"
 
 #: inc/config.class.php:275
 msgid "Default state"
@@ -402,7 +403,7 @@ msgstr "Notiz"
 
 #: inc/surveysupplier.class.php:185 inc/surveysupplier.class.php:386
 msgid "Comment on survey"
-msgstr ""
+msgstr "Kommentar zur Umfrage"
 
 #: inc/surveysupplier.class.php:214 inc/surveysupplier.class.php:310
 msgid "Administrative followup quality (contracts, bills, mail, etc.)"
@@ -482,7 +483,7 @@ msgstr "Produktreferenz des Lieferanten"
 #: inc/reference_supplier.class.php:267 inc/reference_supplier.class.php:484
 #: inc/order_item.class.php:115 inc/order_item.class.php:353
 #: inc/order_item.class.php:460 inc/order_item.class.php:785
-#: inc/order_item.class.php:1006 inc/order_item.class.php:1367
+#: inc/order_item.class.php:1007 inc/order_item.class.php:1368
 #: inc/reference.class.php:174
 msgid "Unit price tax free"
 msgstr "Nettostückpreis"
@@ -490,7 +491,7 @@ msgstr "Nettostückpreis"
 #: inc/reference_supplier.class.php:249 inc/reference_supplier.class.php:266
 #: inc/reference_supplier.class.php:481 inc/reference_supplier.class.php:483
 #: inc/reception.class.php:349 inc/bill.class.php:379
-#: inc/order_item.class.php:348 inc/order_item.class.php:1557
+#: inc/order_item.class.php:348 inc/order_item.class.php:1558
 #: inc/link.class.php:78 inc/link.class.php:380 inc/reference.class.php:44
 #: inc/reference.class.php:61
 msgid "Product reference"
@@ -509,13 +510,13 @@ msgid "Taken delivery"
 msgstr "Empfangen"
 
 #: inc/reception.class.php:248 inc/bill.class.php:47 inc/bill.class.php:135
-#: inc/bill.class.php:409 inc/order_item.class.php:1586
-#: inc/order_item.class.php:1674
+#: inc/bill.class.php:409 inc/order_item.class.php:1587
+#: inc/order_item.class.php:1675
 msgid "Bill"
 msgstr "Rechnung"
 
 #: inc/reception.class.php:319 inc/bill.class.php:363
-#: inc/order_item.class.php:762 inc/order_item.class.php:1543
+#: inc/order_item.class.php:762 inc/order_item.class.php:1544
 #: inc/link.class.php:316
 msgid "No item to take delivery of"
 msgstr "Kein Gerät kann empfangen werden"
@@ -545,7 +546,7 @@ msgstr "Geräte erfolgreich empfangen"
 msgid "Item already taken delivery"
 msgstr "Bereits empfangene Geräte"
 
-#: inc/reception.class.php:949
+#: inc/reception.class.php:950
 msgid "Item delivered"
 msgstr "Warenempfang"
 
@@ -555,13 +556,13 @@ msgstr "Eine Rechnungsnummer ist notwendig"
 
 #: inc/preference.class.php:163 inc/order.class.php:1609
 msgid "Use this model"
-msgstr ""
+msgstr "Vorlage auswählen"
 
 #: inc/preference.class.php:168 inc/order.class.php:1618
 msgid "Use this sign"
-msgstr ""
+msgstr "Unterschrift auswählen"
 
-#: inc/order_item.class.php:99 inc/order_item.class.php:1954
+#: inc/order_item.class.php:99 inc/order_item.class.php:1955
 msgid "Order item"
 msgstr "Bestellartikel"
 
@@ -575,7 +576,7 @@ msgstr "Einige Felder können nicht verändert werden: sie stammen aus einer Bes
 
 #: inc/order_item.class.php:342
 msgid "Add to the order from the catalog"
-msgstr ""
+msgstr "aus Produktreferenz-Katalog zur Bestellung hinzufügen"
 
 #: inc/order_item.class.php:436 inc/order_item.class.php:571
 msgid "Please select a supplier"
@@ -587,11 +588,11 @@ msgstr ""
 
 #: inc/order_item.class.php:454
 msgid "Product name"
-msgstr ""
+msgstr "Produktbezeichnung"
 
 #: inc/order_item.class.php:463
 msgid "Add the reference"
-msgstr ""
+msgstr "Produktreferenz hinzufügen"
 
 #: inc/order_item.class.php:592 inc/order_item.class.php:605
 msgid "An analytic nature is mandatory !"
@@ -601,36 +602,36 @@ msgstr ""
 msgid "Manufacturer reference"
 msgstr "Herstellerverweis"
 
-#: inc/order_item.class.php:792 inc/order_item.class.php:983
-#: inc/order_item.class.php:1185
+#: inc/order_item.class.php:792 inc/order_item.class.php:984
+#: inc/order_item.class.php:1186
 msgid "Do you really want to update this item ?"
 msgstr "Artikel aktualisieren?"
 
-#: inc/order_item.class.php:974 inc/order_item.class.php:1176
+#: inc/order_item.class.php:975 inc/order_item.class.php:1177
 msgid ""
 "Do you really want to delete these details ? Delivered items will not be "
 "linked to order !"
 msgstr "Wollen Sie wirklich diese Positionen entfernen? Bereits gelieferte Geräte werden von dieser Bestellung getrennt!"
 
-#: inc/order_item.class.php:1009 inc/order_item.class.php:1394
+#: inc/order_item.class.php:1010 inc/order_item.class.php:1395
 msgid "Discounted price tax free"
 msgstr "Nettostückpreis mit Rabatt"
 
-#: inc/order_item.class.php:1010 inc/order_item.class.php:1399
+#: inc/order_item.class.php:1011 inc/order_item.class.php:1400
 #: inc/order.class.php:1301 inc/order.class.php:1753 inc/order.class.php:1877
 #: inc/order.class.php:1967
 msgid "Price ATI"
-msgstr ""
+msgstr "Gesamtpreis Brutto"
 
-#: inc/order_item.class.php:1278
+#: inc/order_item.class.php:1279
 msgid "Order informations"
 msgstr "Informationen über die Bestellung"
 
-#: inc/order_item.class.php:1454
+#: inc/order_item.class.php:1455
 msgid "Payment status"
 msgstr "Bezahlstatus"
 
-#: inc/order_item.class.php:1467
+#: inc/order_item.class.php:1468
 msgid "Paid value"
 msgstr ""
 
@@ -720,17 +721,17 @@ msgstr "Von Bestellung gelöste Geräte"
 msgid "One or several selected rows haven't linked items"
 msgstr "Eine oder mehrere ausgewählte Positionen wurden noch keinem Gerät zugeordnet"
 
-#: inc/link.class.php:1269 inc/link.class.php:1273
+#: inc/link.class.php:1276 inc/link.class.php:1280
 msgid "Item generated by using order"
 msgstr "Aus Bestellung erzeugte Geräte"
 
-#: inc/link.class.php:1280
+#: inc/link.class.php:1287
 msgid "Item successfully selected"
 msgstr "Geräte erfolgreich erzeugt"
 
 #: inc/order.class.php:270 inc/order.class.php:1603 inc/order.class.php:1629
 msgid "Order Generation"
-msgstr "Lieferschein erzeugen"
+msgstr "Bestellschein erzeugen"
 
 #: inc/order.class.php:272
 msgid "Order validation"
@@ -886,7 +887,7 @@ msgstr "Verbundene Bestellungen"
 
 #: inc/order.class.php:1992
 msgid "Unlink"
-msgstr ""
+msgstr "Verknüpfung entfernen"
 
 #: inc/order.class.php:2132
 msgid "Total orders related with this budget is greater than its value."
