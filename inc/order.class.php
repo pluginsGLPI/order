@@ -714,7 +714,8 @@ class PluginOrderOrder extends CommonDBTM {
 
          // ADD Documents
          $docitem  = new Document_Item();
-         $docs     = getAllDatasFromTable(
+         $getAllFct = function_exists('getAllDataFromTable') ? 'getAllDataFromTable' : 'getAllDatasFromTable';
+         $docs     = $getAllFct(
             "glpi_documents_items",
             [
                'items_id' => $this->input["_oldID"],
@@ -2064,7 +2065,8 @@ class PluginOrderOrder extends CommonDBTM {
 
    public static function updateBillState($ID) {
       $all_paid    = true;
-      $order_items = getAllDatasFromTable(PluginOrderOrder_Item::getTable(),
+      $getAllFct = function_exists('getAllDataFromTable') ? 'getAllDataFromTable' : 'getAllDatasFromTable';
+      $order_items = $getAllFct(PluginOrderOrder_Item::getTable(),
                                           ['plugin_order_orders_id' => $ID]);
       foreach ($order_items as $item) {
          if ($item['plugin_order_billstates_id'] == PluginOrderBillState::NOTPAID) {
@@ -2173,7 +2175,8 @@ class PluginOrderOrder extends CommonDBTM {
       $nblate = 0;
       $table  = self::getTable();
 
-      foreach (getAllDatasFromTable($table, ['is_template' => 0]) as $values) {
+      $getAllFct = function_exists('getAllDataFromTable') ? 'getAllDataFromTable' : 'getAllDatasFromTable';
+      foreach ($getAllFct($table, ['is_template' => 0]) as $values) {
          $order = new self();
          $order->fields = $values;
          if (!$order->fields['is_late'] && $order->shouldBeAlreadyDelivered(true)) {
@@ -2564,7 +2567,8 @@ class PluginOrderOrder extends CommonDBTM {
                'entities_id' => 'entities_id',
                'is_deleted'  => 'is_deleted'
             ];
-            foreach (getAllDatasFromTable("glpi_plugin_order_budgets") as $data) {
+            $getAllFct = function_exists('getAllDataFromTable') ? 'getAllDataFromTable' : 'getAllDatasFromTable';
+            foreach ($getAllFct("glpi_plugin_order_budgets") as $data) {
                $tmp    = [];
                $id     = false;
                foreach ($matchings as $old => $new) {

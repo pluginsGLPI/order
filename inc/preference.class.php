@@ -61,7 +61,8 @@ class PluginOrderPreference extends CommonDBTM {
     * @return preference value or 0
     */
    public static function checkPreferenceValue($field, $users_id = 0) {
-      $data = getAllDatasFromTable(self::getTable(), ['users_id' => $users_id]);
+      $getAllFct = function_exists('getAllDataFromTable') ? 'getAllDataFromTable' : 'getAllDatasFromTable';
+      $data = $getAllFct(self::getTable(), ['users_id' => $users_id]);
       if (!empty($data)) {
          $first = array_pop($data);
          return $first[$field];

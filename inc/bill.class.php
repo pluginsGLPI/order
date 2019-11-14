@@ -536,8 +536,8 @@ class PluginOrderBill extends CommonDropdown
          if ($DB->fieldExists("glpi_plugin_order_orders_suppliers", "num_bill")) {
             //Migrate bills
             $bill  = new PluginOrderBill();
-            $query = "SELECT * FROM `glpi_plugin_order_orders_suppliers`";
-            foreach (getAllDatasFromTable('glpi_plugin_order_orders_suppliers') as $data) {
+            $getAllFct = function_exists('getAllDataFromTable') ? 'getAllDataFromTable' : 'getAllDatasFromTable';
+            foreach ($getAllFct('glpi_plugin_order_orders_suppliers') as $data) {
                if (!is_null($data['num_bill'])
                   && $data['num_bill'] != ''
                      && !countElementsInTable('glpi_plugin_order_bills',

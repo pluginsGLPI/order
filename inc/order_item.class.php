@@ -1300,7 +1300,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo $order->getLink(PluginOrderOrder::canView());
          echo "</td>";
 
-         $result = getAllDatasFromTable(
+         $getAllFct = function_exists('getAllDataFromTable') ? 'getAllDataFromTable' : 'getAllDatasFromTable';
+         $result = $getAllFct(
             self::getTable(),
             [
                'plugin_order_orders_id' => $infos['id'],

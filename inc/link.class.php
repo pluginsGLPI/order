@@ -1342,7 +1342,8 @@ class PluginOrderLink extends CommonDBChild {
          $item->getFromDB($items_id);
          $is_recursive = 0;
 
-         foreach (getAllDatasFromTable('glpi_documents_items',
+         $getAllFct = function_exists('getAllDataFromTable') ? 'getAllDataFromTable' : 'getAllDatasFromTable';
+         foreach ($getAllFct('glpi_documents_items',
                                        ['itemtype' => 'PluginOrderOrder',
                                         'items_id' => $orders_id]) as $doc) {
 
@@ -1350,7 +1351,7 @@ class PluginOrderLink extends CommonDBChild {
             $document->getFromDB($doc['documents_id']);
             if (($document->getEntityID() != $entity && !$document->fields['is_recursive'])
                || !in_array($entity, getSonsOf('glpi_entities', $document->getEntityID()))) {
-               $found_docs = getAllDatasFromTable(
+               $found_docs = $getAllFct(
                   'glpi_documents',
                   [
                      'entities_id' => $entity,

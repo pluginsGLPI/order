@@ -839,7 +839,8 @@ class PluginOrderReference extends CommonDBTM {
       $target->fields = Toolbox::addslashes_deep($target->fields);
       $newID = $this->add($target->fields);
 
-      foreach (getAllDatasFromTable('glpi_plugin_order_references_suppliers',
+      $getAllFct = function_exists('getAllDataFromTable') ? 'getAllDataFromTable' : 'getAllDatasFromTable';
+      foreach ($getAllFct('glpi_plugin_order_references_suppliers',
                                     ['plugin_order_references_id' => $ID]) as $refsup) {
          $reference_supplier = new  PluginOrderReference_Supplier();
          $refsup['plugin_order_references_id'] = $newID;
