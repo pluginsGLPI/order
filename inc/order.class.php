@@ -2176,9 +2176,12 @@ class PluginOrderOrder extends CommonDBTM {
       foreach (getAllDatasFromTable($table, ['is_template' => 0]) as $values) {
          $order = new self();
          $order->fields = $values;
-         if (!$order->fields['is_late'] && $order->shouldBeAlreadyDelivered(true)) {
+         if (!$order->fields['is_late'] && $order->shouldBeAlreadyDelivered()) {
             $order->setIsLate();
             $nblate++;
+         }
+         if ($order->fields['is_late'] && !$order->shouldBeAlreadyDelivered() && ($order->isApproved() || $order->isPartiallyDelivered())) {
+            $order->setNotLate();
          }
       }
       $task->addVolume($nblate);
@@ -2189,12 +2192,11 @@ class PluginOrderOrder extends CommonDBTM {
          $alert   = new Alert();
          $config  = PluginOrderConfig::getConfig();
 
-         $entities[] = 0;
          foreach ($DB->request("SELECT `id` FROM `glpi_entities` ORDER BY `id` ASC") as $entity) {
             $entities[] = $entity['id'];
          }
          foreach ($entities as $entity) {
-            $query_alert = "SELECT `$table`.`id` AS id,
+            $query_alert = "SELECT DISTINCT `$table`.`id` AS id,
                                    `$table`.`name` AS name,
                                    `$table`.`num_order` AS num_order,
                                    `$table`.`order_date` AS order_date,
@@ -2209,8 +2211,9 @@ class PluginOrderOrder extends CommonDBTM {
                               ON `$table`.`id` = `glpi_alerts`.`items_id`
                               AND `glpi_alerts`.`itemtype` = '".__CLASS__."'
                             WHERE `$table`.`entities_id` = '".$entity."'
-                              AND `glpi_alerts`.`date` IS NULL
+                              AND (`glpi_alerts`.`date` IS NULL OR CURDATE() >= `$table`.`duedate`)
                               AND `$table`.`is_late`='1'
+                              AND `$table`.`is_sent`='0'
                               AND `plugin_order_orderstates_id`!='".$config->getDeliveredState()."';";
             $orders = [];
             foreach ($DB->request($query_alert) as $order) {
@@ -2237,6 +2240,7 @@ class PluginOrderOrder extends CommonDBTM {
                      $input["items_id"] = $ID;
                      $alert->add($input);
                      unset($alert->fields['id']);
+                     self::setIsSent($ID);
                   }
                } else {
                   if ($task) {
@@ -2407,6 +2411,7 @@ class PluginOrderOrder extends CommonDBTM {
                `duedate` date default NULL,
                `deliverydate` date default NULL,
                `is_late` tinyint(1) NOT NULL default '0',
+               `is_sent` tinyint(1) NOT NULL default '0',
                `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
                `contacts_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_contacts (id)',
                `plugin_order_accountsections_id` int(11) NOT NULL default '0' COMMENT 'RELATION to plugin_order_accountsections (id)',
@@ -2664,6 +2669,8 @@ class PluginOrderOrder extends CommonDBTM {
             }
          }
 
+         $migration->addField($table, "is_sent", "tinyint(1) NOT NULL DEFAULT 0");
+
          //Remove unused notifications
          $notification = new Notification();
          $notification->deleteByCriteria("`itemtype`='PluginOrderOrder_Item'");
@@ -2698,6 +2705,21 @@ class PluginOrderOrder extends CommonDBTM {
 
       //Current table name
       $DB->query("DROP TABLE IF EXISTS  `".self::getTable()."`") or die ($DB->error());
+   }
+
+
+   public function setNotLate() {
+
+      $this->update(['id' => $this->getID(), 'is_late' => 0]);
+      $this->update(['id' => $this->getID(), 'is_sent' => 0]);
+   }
+
+
+   public static function setIsSent($ID) {
+
+      $order = new self();
+      $order->getFromDB($ID);
+      $order->update(['id' => $ID, 'is_sent' => 1]);
    }
 
 
