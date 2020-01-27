@@ -30,7 +30,8 @@
    <versions>
       <version>
           <num>2.5.2</num>
-          <compatibility>9.4</compatibility>
+          <compatibility>~9.4.0</compatibility>
+          <download_url>https://github.com/pluginsGLPI/order/releases/download/2.5.2/glpi-order-2.5.2.tar.bz2</download_url>
       </version>
       <version>
           <num>2.5.1</num>
@@ -228,4 +229,9 @@
          </cs>
    </tags>
    <license>GPL v2+</license>
+   <screenshots>
+      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/order/master/screnshots/screenshot1.png</screenshot>
+      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/order/master/screnshots/screenshot2.png</screenshot>
+      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/order/master/screnshots/screenshot3.png</screenshot>
+   </screenshots>
 </root>
