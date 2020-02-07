@@ -769,4 +769,33 @@ class PluginOrderConfig extends CommonDBTM {
    }
 
 
+   function rawSearchOptions() {
+      $tab = [];
+
+      $tab[] = [
+         'id'            => '2',
+         'table'         => $this->getTable(),
+         'field'         => 'generated_name',
+         'name'          => __('Default name', 'order'),
+         'autocomplete'  => true,
+      ];
+
+      $tab[] = [
+         'id'            => '3',
+         'table'         => $this->getTable(),
+         'field'         => 'generated_serial',
+         'name'          => __('Default serial number', 'order'),
+         'autocomplete'  => true,
+      ];
+
+      $tab[] = [
+         'id'            => '4',
+         'table'         => $this->getTable(),
+         'field'         => 'generated_otherserial',
+         'name'          => __('Default inventory number', 'order'),
+         'autocomplete'  => true,
+      ];
+
+      return $tab;
+   }
 }

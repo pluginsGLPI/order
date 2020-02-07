@@ -89,6 +89,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          'field'         => 'reference_code',
          'name'          => __('Manufacturer\'s product reference', 'order'),
          'datatype'      => 'text',
+         'autocomplete'  => true,
       ];
 
       $tab[] = [

@@ -297,6 +297,7 @@ class PluginOrderOrder extends CommonDBTM {
          'displaytype'   => 'text',
          'injectable'    => true,
          'massiveaction' => false,
+         'autocomplete'  => true,
       ];
 
       $tab[] = [
@@ -411,6 +412,7 @@ class PluginOrderOrder extends CommonDBTM {
          'displaytype'   => 'text',
          'injectable'    => true,
          'massiveaction' => false,
+         'autocomplete'  => true,
       ];
 
       $tab[] = [

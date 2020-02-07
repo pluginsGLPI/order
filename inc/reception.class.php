@@ -962,4 +962,17 @@ class PluginOrderReception extends CommonDBChild {
    }
 
 
+   function rawSearchOptions() {
+      $tab = [];
+
+      $tab[] = [
+         'id'            => '2',
+         'table'         => $this->getTable(),
+         'field'         => 'delivery_number',
+         'name'          => __('Delivery form'),
+         'autocomplete'  => true,
+      ];
+
+      return $tab;
+   }
 }

@@ -154,6 +154,22 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       ];
 
       $tab[] = [
+         'id'            => 6,
+         'table'         => self::getTable(),
+         'field'         => 'name',
+         'name'          => __('Product name', 'order'),
+         'autocomplete'  => true,
+      ];
+
+      $tab[] = [
+         'id'            => 7,
+         'table'         => self::getTable(),
+         'field'         => 'reference_code',
+         'name'          => __("Manufacturer's product reference", 'order'),
+         'autocomplete'  => true,
+      ];
+
+      $tab[] = [
          'id'            => 16,
          'table'         => self::getTable(),
          'field'         => 'comment',
