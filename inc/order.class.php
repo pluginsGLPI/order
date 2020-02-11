@@ -2425,7 +2425,7 @@ class PluginOrderOrder extends CommonDBTM {
                `users_id_delivery` int(11) NOT NULL default '0',
                `groups_id_delivery` int(11) NOT NULL default '0',
                `plugin_order_ordertypes_id` int (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)',
-               `date_mod` datetime default NULL,
+               `date_mod` timestamp NULL default NULL,
                `is_helpdesk_visible` tinyint(1) NOT NULL default '1',
                PRIMARY KEY  (`id`),
                KEY `name` (`name`),
@@ -2649,7 +2649,7 @@ class PluginOrderOrder extends CommonDBTM {
          $migration->addField($table, "groups_id_delivery", "INT(11) NOT NULL DEFAULT '0'");
 
          //1.7.0
-         $migration->addField($table, "date_mod", "datetime");
+         $migration->addField($table, "date_mod", "timestamp");
          $migration->addKey($table, "date_mod");
 
          //1.7.2
