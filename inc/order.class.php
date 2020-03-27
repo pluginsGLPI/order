@@ -1369,7 +1369,7 @@ class PluginOrderOrder extends CommonDBTM {
       }
       echo "</select>";
       Ajax::updateItemOnSelectEvent("suppliers_id", "show_contacts_id",
-                                    $CFG_GLPI["root_doc"]."/plugins/order/ajax/dropdownSupplier.php",
+                                    Plugin::getWebDir('order')."/ajax/dropdownSupplier.php",
                                     [
                                        'suppliers_id'    => '__VALUE__',
                                        'entity_restrict' => $entity_restrict,
@@ -1599,7 +1599,7 @@ class PluginOrderOrder extends CommonDBTM {
    public function showGenerationForm($ID) {
       global $CFG_GLPI;
 
-      echo "<form action='".$CFG_GLPI["root_doc"]."/plugins/order/front/export.php?id=".$ID
+      echo "<form action='".Plugin::getWebDir('order')."/front/export.php?id=".$ID
       ."&display_type=".Search::PDF_OUTPUT_LANDSCAPE."' method=\"GET\" target='_blank'>";
       echo "<div align=\"center\">";
       echo "<table class='tab_cadre_fixe'>";

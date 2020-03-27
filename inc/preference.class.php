@@ -173,7 +173,7 @@ class PluginOrderPreference extends CommonDBTM {
 
       if (isset($this->fields["sign"]) && !empty($this->fields["sign"])) {
          echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
-          echo "<img src='".$CFG_GLPI["root_doc"]."/plugins/order/front/signature.php?sign=".rawurlencode($this->fields["sign"])."'>";
+          echo "<img src='".Plugin::getWebDir('order')."/front/signature.php?sign=".rawurlencode($this->fields["sign"])."'>";
          echo "</td></tr>";
       }
 

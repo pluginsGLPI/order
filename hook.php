@@ -34,7 +34,7 @@
  * @return boolean
  */
 function plugin_order_install() {
-   foreach (glob(GLPI_ROOT . '/plugins/order/inc/*.php') as $file) {
+   foreach (glob(PLUGIN_ORDER_DIR . '/inc/*.php') as $file) {
       //Do not load datainjection files (not needed and avoid missing class error message)
       if (!preg_match('/injection.class.php/', $file)) {
          include_once ($file);
@@ -62,7 +62,7 @@ function plugin_order_install() {
    foreach ($classes as $class) {
       if ($plug = isPluginItemType($class)) {
          $plugname = strtolower($plug['plugin']);
-         $dir = GLPI_ROOT."/plugins/$plugname/inc/";
+         $dir = Plugin::getPhpDir($plugname)."/inc/";
          $item = strtolower($plug['class']);
          if (file_exists("$dir$item.class.php")) {
             include_once ("$dir$item.class.php");
@@ -87,10 +87,9 @@ function plugin_order_install() {
                   @mkdir($new_directory, 0755, true)
                      or die(sprintf(__('%1$s %2$s'), __("Can't create folder", 'order'),
                                     $new_directory));
-         $base_directory = GLPI_ROOT.'/plugins/order/';
          //Copy files from the old directories to the new ones
-         foreach (glob($base_directory.$old_directory.'/*') as $file) {
-            $new_file = str_replace($base_directory.$old_directory, $new_directory, $file);
+         foreach (glob(PLUGIN_ORDER_DIR."/$old_directory/*") as $file) {
+            $new_file = str_replace(PLUGIN_ORDER_DIR."/$old_directory", $new_directory, $file);
             if (!file_exists($new_directory.$file)) {
                copy($file, $new_file)
                   or die (sprintf(__('Cannot copy file %1$s to %2$s', 'order'),
@@ -109,7 +108,7 @@ function plugin_order_install() {
  * @return boolean
  */
 function plugin_order_uninstall() {
-   foreach (glob(GLPI_ROOT.'/plugins/order/inc/*.php') as $file) {
+   foreach (glob(PLUGIN_ORDER_DIR.'/inc/*.php') as $file) {
       //Do not load datainjection files (not needed and avoid missing class error message)
       if (!preg_match('/injection.class.php/', $file)) {
          include_once ($file);
@@ -311,7 +310,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
       /* display associated items with order */
       case "glpi_plugin_order_references.types_id" :
          if ($itemtype == 'PluginOrderOther') {
-            $file = GLPI_ROOT."/plugins/order/inc/othertype.class.php";
+            $file = PLUGIN_ORDER_DIR."/inc/othertype.class.php";
          } else {
             $file = GLPI_ROOT."/inc/".strtolower($itemtype)."type.class.php";
          }

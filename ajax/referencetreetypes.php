@@ -73,8 +73,8 @@ if (isset($_REQUEST['node'])) {
                           Dropdown::getDropdownName("glpi_entities", $entity)."&field[1]=80";
                }
 
-               $path['href'] = $CFG_GLPI["root_doc"].
-                  "/plugins/order/front/$target?is_deleted=0&field[0]=3&searchtype[0]=equals&contains[0]=".
+               $path['href'] = Plugin::getWebDir('order').
+                  "/front/$target?is_deleted=0&field[0]=3&searchtype[0]=equals&contains[0]=".
                   rawurlencode($class)."&$link&itemtype=PluginOrderReference&start=0";
 
                // Check if node is a leaf or a folder.

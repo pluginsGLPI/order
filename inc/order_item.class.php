@@ -551,7 +551,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                      'myname'    => 'itemtype',
                      'value'     => 'PluginOrderOther',
                      'entity'    => $_SESSION["glpiactive_entity"],
-                     'ajax_page' => $CFG_GLPI["root_doc"] . '/plugins/order/ajax/referencespecifications.php',
+                     'ajax_page' => Plugin::getWebDir('order') . '//ajax/referencespecifications.php',
                      //                     'class'     => __CLASS__,
                   ];
                   $reference = new PluginOrderReference();
@@ -564,7 +564,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   $file = 'other';
 
                   $core_typefilename   = GLPI_ROOT . "/inc/" . strtolower($file) . "type.class.php";
-                  $plugin_typefilename = GLPI_ROOT . "/plugins/order/inc/" . strtolower($file) . "type.class.php";
+                  $plugin_typefilename = PLUGIN_ORDER_DIR . "/inc/" . strtolower($file) . "type.class.php";
                   $itemtypeclass       = "PluginOrderOtherType";
 
                   if (file_exists($core_typefilename)
@@ -836,7 +836,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             echo "function showQuantity$rand() {\n";
             echo "$('#quantity$rand').hide();";
             echo "$('#viewaccept$rand').show();";
-            Ajax::updateItemJsCode("viewquantity$rand", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
+            Ajax::updateItemJsCode("viewquantity$rand", Plugin::getWebDir('order')."/ajax/inputnumber.php", [
                'maxlength'     => 15,
                'size'          => 8,
                'name'          => 'quantity',
@@ -925,7 +925,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             echo "function showPricetaxfree$rand() {\n";
             echo "$('#pricetaxfree$rand').hide();";
             echo "$('#viewaccept$rand').show();";
-            Ajax::updateItemJsCode("viewpricetaxfree$rand", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
+            Ajax::updateItemJsCode("viewpricetaxfree$rand", Plugin::getWebDir('order')."/ajax/inputnumber.php", [
                'maxlength' => 15,
                'size'      => 8,
                'name'      => 'price_taxfree',
@@ -951,7 +951,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             echo "function showDiscount$rand() {\n";
             echo "$('#discount$rand').hide();";
             echo "$('#viewaccept$rand').show();";
-            Ajax::updateItemJsCode("viewdiscount$rand", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
+            Ajax::updateItemJsCode("viewdiscount$rand", Plugin::getWebDir('order')."/ajax/inputnumber.php", [
                'maxlength' => 15,
                'size'      => 8,
                'name'      => 'discount',
@@ -1104,7 +1104,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "function showDetailPricetaxfree$rand_line() {\n";
                echo "$('#detail_pricetaxfree$rand_line').hide();";
                echo "$('#detail_viewaccept$global_rand').show();";
-               Ajax::updateItemJsCode("detail_viewpricetaxfree$rand_line", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
+               Ajax::updateItemJsCode("detail_viewpricetaxfree$rand_line", Plugin::getWebDir('order')."/ajax/inputnumber.php", [
                   'maxlength' => 15,
                   'size'      => 8,
                   'name'      => 'detail_price_taxfree['.$data["IDD"].']',
@@ -1139,7 +1139,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "function showDetailDiscount$rand_line() {\n";
                echo "$('#detail_discount$rand_line').hide();";
                echo "$('#detail_viewaccept$global_rand').show();";
-               Ajax::updateItemJsCode("detail_viewdiscount$rand_line", $CFG_GLPI["root_doc"]."/plugins/order/ajax/inputnumber.php", [
+               Ajax::updateItemJsCode("detail_viewdiscount$rand_line", Plugin::getWebDir('order')."/ajax/inputnumber.php", [
                   'maxlength' => 15,
                   'size'      => 8,
                   'name'      => 'detail_discount['.$data["IDD"].']',
@@ -1697,7 +1697,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $rand           = Dropdown::showFromArray('chooseAction', $action);
 
       Ajax::updateItemOnSelectEvent("dropdown_chooseAction$rand", "show_billsActions$rand",
-                                    $CFG_GLPI["root_doc"]."/plugins/order/ajax/billactions.php",
+                                    Plugin::getWebDir('order')."/ajax/billactions.php",
                                     [
                                        'action'                 => '__VALUE__',
                                        'plugin_order_orders_id' => $orders_id

@@ -599,7 +599,7 @@ class PluginOrderReference extends CommonDBTM {
             'myname'    => 'itemtype',
             'value'     => $options["item"],
             'entity'    => $_SESSION["glpiactive_entity"],
-            'ajax_page' => $CFG_GLPI["root_doc"].'/plugins/order/ajax/referencespecifications.php',
+            'ajax_page' => Plugin::getWebDir('order').'/ajax/referencespecifications.php',
             'class'     => __CLASS__,
          ]);
       }
@@ -858,8 +858,6 @@ class PluginOrderReference extends CommonDBTM {
     * @param $target target for entity change action
     */
    public static function showSelector($target) {
-      global $CFG_GLPI;
-
       $rand = mt_rand();
       Plugin::loadLang('order');
       echo "<div class='center' ><span class='b'>".__("Select the wanted item type", "order")
@@ -871,7 +869,7 @@ class PluginOrderReference extends CommonDBTM {
 
       echo "<script type='javascript'>";
       echo "var Tree_Category_Loader$rand = new Ext.tree.TreeLoader({
-         dataUrl:'".$CFG_GLPI["root_doc"]."/plugins/order/ajax/referencetreetypes.php'
+         dataUrl:'".Plugin::getWebDir('order')."/ajax/referencetreetypes.php'
       });";
 
       echo "var Tree_Category$rand = new Ext.tree.TreePanel({
@@ -935,7 +933,7 @@ class PluginOrderReference extends CommonDBTM {
          modal: true,
          autoScroll: true,
          title: \"".__("View by item type", "order")."\",
-         autoLoad: '".$CFG_GLPI['root_doc']."/plugins/order/ajax/referencetree.php'
+         autoLoad: '".Plugin::getWebDir('order')."/ajax/referencetree.php'
       });";
       $out .= "</script>";
       return $out;

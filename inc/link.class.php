@@ -149,6 +149,7 @@ class PluginOrderLink extends CommonDBChild {
 
             if (Session::isMultiEntitiesMode()
                   && count($_SESSION['glpiactiveentities']) > 1) {
+               $order_web_dir = Plugin::getWebDir('order');
                echo "<td>";
                $rand = Entity::Dropdown([
                'name'   => "id[$i][entities_id]",
@@ -157,21 +158,21 @@ class PluginOrderLink extends CommonDBChild {
                );
                Ajax::updateItemOnSelectEvent("dropdown_id[$i][entities_id]$rand",
                                           "show_location_by_entity_id_$i",
-                                          $CFG_GLPI["root_doc"] . "/plugins/order/ajax/linkactions.php",
+                                          "$order_web_dir/ajax/linkactions.php",
                                           ['entities' => '__VALUE__',
                                            'action'   => 'show_location_by_entity',
                                            'id'       => $i
                                           ]);
                Ajax::updateItemOnSelectEvent("dropdown_id[$i][entities_id]$rand",
                                           "show_group_by_entity_id_$i",
-                                          $CFG_GLPI["root_doc"] . "/plugins/order/ajax/linkactions.php",
+                                          "$order_web_dir/ajax/linkactions.php",
                                           ['entities' => '__VALUE__',
                                            'action'   => 'show_group_by_entity',
                                            'id'       => $i
                                           ]);
                Ajax::updateItemOnSelectEvent("dropdown_id[$i][entities_id]$rand",
                                           "show_state_by_entity_id_$i",
-                                          $CFG_GLPI["root_doc"] . "/plugins/order/ajax/linkactions.php",
+                                          "$order_web_dir/ajax/linkactions.php",
                                           ['entities' => '__VALUE__',
                                            'action'   => 'show_state_by_entity',
                                            'id'       => $i
@@ -752,7 +753,7 @@ class PluginOrderLink extends CommonDBChild {
       }
       $rand   = Dropdown::showFromArray('generationActions', $actions);
       Ajax::updateItemOnSelectEvent("dropdown_generationActions$rand", "show_generationActions$rand",
-                                  $CFG_GLPI["root_doc"]."/plugins/order/ajax/linkactions.php",
+                                  Plugin::getWebDir('order')."/ajax/linkactions.php",
                                   ['action'                     => '__VALUE__',
                                    'itemtype'                   => $itemtype,
                                    'plugin_order_references_id' => $plugin_order_references_id,

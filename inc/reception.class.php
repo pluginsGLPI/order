@@ -594,7 +594,7 @@ class PluginOrderReception extends CommonDBChild {
          'plugin_order_orders_id'     => $plugin_order_orders_id,
       ];
       Ajax::updateItemOnSelectEvent("receptionActions$rand", "show_receptionActions$rand",
-                                    $CFG_GLPI["root_doc"]."/plugins/order/ajax/receptionactions.php",
+                                    Plugin::getWebDir('order')."/ajax/receptionactions.php",
                                     $params);
       echo "<span id='show_receptionActions$rand'>&nbsp;</span>";
    }
