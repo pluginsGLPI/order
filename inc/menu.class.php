@@ -14,6 +14,7 @@ class PluginOrderMenu extends CommonGLPI {
       $menu = [
          'title' => self::getTypeName(2),
          'page'  => self::getSearchURL(false),
+         'icon'  => PluginOrderOrder::getIcon(),
       ];
       if (PluginOrderConfig::canView()) {
          $menu['links']['config'] = PluginOrderConfig::getFormURL(false);
@@ -23,6 +24,7 @@ class PluginOrderMenu extends CommonGLPI {
          $menu['options']['order'] = [
             'title' => PluginOrderOrder::getTypeName(2),
             'page'  => PluginOrderOrder::getSearchURL(false),
+            'icon'  => PluginOrderOrder::getIcon(),
          ];
          if (PluginOrderOrder::canCreate()) {
             $menu['options']['order']['links'] = [

@@ -2705,4 +2705,7 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
 
+   static function getIcon() {
+      return "fas fa-shopping-cart";
+   }
 }
