@@ -21,6 +21,7 @@
    <homepage>https://github.com/pluginsGLPI/order/</homepage>
    <download>https://github.com/pluginsGLPI/order/releases</download>
    <issues>https://github.com/pluginsGLPI/order/issues</issues>
+   <readme>https://glpi-plugins.readthedocs.io/en/latest/order/index.html</readme>
    <authors>
       <author>Walid Nouh</author>
       <author>Xavier Caillaud / Infotel</author>
