@@ -278,7 +278,7 @@ class PluginOrderBill extends CommonDropdown
          $old_itemtype = '';
          $num          = 0;
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             if (!class_exists($data['itemtype'])) {
                continue;
             }
@@ -343,14 +343,14 @@ class PluginOrderBill extends CommonDropdown
       $query_ref = $bill->queryRef($order->getID(), 'glpi_plugin_order_references');
       $result_ref = $DB->query($query_ref);
 
-      while ($data_ref = $DB->fetch_array($result_ref)) {
+      while ($data_ref = $DB->fetchArray($result_ref)) {
          self::showOrder($data_ref, $result_ref, $canedit, $order, $reference, 'glpi_plugin_order_references');
       }
 
       $query_reffree = $bill->queryRef($order->getID(), 'glpi_plugin_order_referencefrees');
       $result_reffree = $DB->query($query_reffree);
 
-      while ($data_reffree = $DB->fetch_array($result_reffree)) {
+      while ($data_reffree = $DB->fetchArray($result_reffree)) {
          self::showOrder($data_reffree, $result_reffree, $canedit, $order, $reference, 'glpi_plugin_order_referencefrees');
       }
       echo "<br>";
@@ -411,7 +411,7 @@ class PluginOrderBill extends CommonDropdown
          echo "</tr>";
 
          $results = $order_item->queryBills($order->getID(), $data_ref['id'], $table);
-         while ($data = $DB->fetch_array($results)) {
+         while ($data = $DB->fetchArray($results)) {
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td width='10'>";
@@ -517,8 +517,8 @@ class PluginOrderBill extends CommonDropdown
                     `id` int(11) NOT NULL AUTO_INCREMENT,
                     `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
                     `number` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
-                    `billdate` datetime DEFAULT NULL,
-                    `validationdate` datetime DEFAULT NULL,
+                    `billdate` timestamp NULL DEFAULT NULL,
+                    `validationdate` timestamp NULL DEFAULT NULL,
                     `comment` text COLLATE utf8_unicode_ci,
                     `plugin_order_billstates_id` int(11) NOT NULL DEFAULT '0',
                     `value` decimal(20,6) NOT NULL DEFAULT '0.000000',
@@ -537,7 +537,7 @@ class PluginOrderBill extends CommonDropdown
             //Migrate bills
             $bill  = new PluginOrderBill();
             $query = "SELECT * FROM `glpi_plugin_order_orders_suppliers`";
-            foreach (getAllDatasFromTable('glpi_plugin_order_orders_suppliers') as $data) {
+            foreach (getAllDataFromTable('glpi_plugin_order_orders_suppliers') as $data) {
                if (!is_null($data['num_bill'])
                   && $data['num_bill'] != ''
                      && !countElementsInTable('glpi_plugin_order_bills',

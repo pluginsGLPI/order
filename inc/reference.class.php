@@ -492,7 +492,7 @@ class PluginOrderReference extends CommonDBTM {
 
          $number = $DB->numrows($result);
          if ($number) {
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetchArray($result)) {
                $used[] = $data["itemtype"];
             }
          }
@@ -599,7 +599,7 @@ class PluginOrderReference extends CommonDBTM {
             'myname'    => 'itemtype',
             'value'     => $options["item"],
             'entity'    => $_SESSION["glpiactive_entity"],
-            'ajax_page' => $CFG_GLPI["root_doc"].'/plugins/order/ajax/referencespecifications.php',
+            'ajax_page' => Plugin::getWebDir('order').'/ajax/referencespecifications.php',
             'class'     => __CLASS__,
          ]);
       }
@@ -819,7 +819,7 @@ class PluginOrderReference extends CommonDBTM {
          $result = $DB->query($query);
          $num    = $DB->numrows($result);
          if ($num) {
-            while ($dataref = $DB->fetch_array($result)) {
+            while ($dataref = $DB->fetchArray($result)) {
                $values["id"]                         = $dataref['id'];
                $values["plugin_order_references_id"] = $newid;
                $PluginOrderOrder_Item->update($values);
@@ -839,7 +839,7 @@ class PluginOrderReference extends CommonDBTM {
       $target->fields = Toolbox::addslashes_deep($target->fields);
       $newID = $this->add($target->fields);
 
-      foreach (getAllDatasFromTable('glpi_plugin_order_references_suppliers',
+      foreach (getAllDataFromTable('glpi_plugin_order_references_suppliers',
                                     ['plugin_order_references_id' => $ID]) as $refsup) {
          $reference_supplier = new  PluginOrderReference_Supplier();
          $refsup['plugin_order_references_id'] = $newID;
@@ -857,8 +857,6 @@ class PluginOrderReference extends CommonDBTM {
     * @param $target target for entity change action
     */
    public static function showSelector($target) {
-      global $CFG_GLPI;
-
       $rand = mt_rand();
       Plugin::loadLang('order');
       echo "<div class='center' ><span class='b'>".__("Select the wanted item type", "order")
@@ -870,7 +868,7 @@ class PluginOrderReference extends CommonDBTM {
 
       echo "<script type='javascript'>";
       echo "var Tree_Category_Loader$rand = new Ext.tree.TreeLoader({
-         dataUrl:'".$CFG_GLPI["root_doc"]."/plugins/order/ajax/referencetreetypes.php'
+         dataUrl:'".Plugin::getWebDir('order')."/ajax/referencetreetypes.php'
       });";
 
       echo "var Tree_Category$rand = new Ext.tree.TreePanel({
@@ -934,7 +932,7 @@ class PluginOrderReference extends CommonDBTM {
          modal: true,
          autoScroll: true,
          title: \"".__("View by item type", "order")."\",
-         autoLoad: '".$CFG_GLPI['root_doc']."/plugins/order/ajax/referencetree.php'
+         autoLoad: '".Plugin::getWebDir('order')."/ajax/referencetree.php'
       });";
       $out .= "</script>";
       return $out;
@@ -1069,7 +1067,7 @@ class PluginOrderReference extends CommonDBTM {
                `is_deleted` tinyint(1) NOT NULL default '0',
                `is_active` tinyint(1) NOT NULL default '1',
                `notepad` longtext collate utf8_unicode_ci,
-               `date_mod` datetime default NULL,
+               `date_mod` timestamp NULL default NULL,
                PRIMARY KEY  (`id`),
                KEY `name` (`name`),
                KEY `entities_id` (`entities_id`),
@@ -1114,7 +1112,7 @@ class PluginOrderReference extends CommonDBTM {
                                  "tinyint(1) NOT NULL default '0'");
          $migration->addField($table, "notepad", "longtext collate utf8_unicode_ci");
          $migration->addField($table, "is_active", "TINYINT(1) NOT NULL DEFAULT '1'");
-         $migration->addField($table, "date_mod", "datetime");
+         $migration->addField($table, "date_mod", "timestamp");
 
          $migration->addKey($table, "name");
          $migration->addKey($table, "entities_id");

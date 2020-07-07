@@ -79,7 +79,7 @@ class PluginOrderReception extends CommonDBChild {
          if ($DB->numrows($result) != 1) {
             return false;
          }
-         $this->fields = $DB->fetch_assoc($result);
+         $this->fields = $DB->fetchAssoc($result);
          if (is_array($this->fields) && count($this->fields)) {
             return true;
          } else {
@@ -296,7 +296,7 @@ class PluginOrderReception extends CommonDBChild {
       $result_ref = $order_item->queryDetail($orders_id, 'glpi_plugin_order_references');
       $numref     = $DB->numrows($result_ref);
 
-      while ($data_ref = $DB->fetch_array($result_ref)) {
+      while ($data_ref = $DB->fetchArray($result_ref)) {
          self::showOrderReceptionItem($data_ref, $numref, $canedit, $reference, $order_item, $orders_id, $order_order,
                                       'glpi_plugin_order_references');
       }
@@ -304,7 +304,7 @@ class PluginOrderReception extends CommonDBChild {
       $result_reffree = $order_item->queryDetail($orders_id, 'glpi_plugin_order_referencefrees');
       $numreffree     = $DB->numrows($result_reffree);
 
-      while ($data_reffree = $DB->fetch_array($result_reffree)) {
+      while ($data_reffree = $DB->fetchArray($result_reffree)) {
          self::showOrderReceptionItem($data_reffree, $numreffree, $canedit, $reference, $order_item, $orders_id,
                                       $order_order, 'glpi_plugin_order_referencefrees');
       }
@@ -398,7 +398,7 @@ class PluginOrderReception extends CommonDBChild {
          $num    = $DB->numrows($result);
 
          $all_data = [];
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             $all_data[] = $data;
          }
 
@@ -592,7 +592,7 @@ class PluginOrderReception extends CommonDBChild {
          'plugin_order_orders_id'     => $plugin_order_orders_id,
       ];
       Ajax::updateItemOnSelectEvent("receptionActions$rand", "show_receptionActions$rand",
-                                    $CFG_GLPI["root_doc"]."/plugins/order/ajax/receptionactions.php",
+                                    Plugin::getWebDir('order')."/ajax/receptionactions.php",
                                     $params);
       echo "<span id='show_receptionActions$rand'>&nbsp;</span>";
    }
@@ -835,7 +835,7 @@ class PluginOrderReception extends CommonDBChild {
       $delivery_status = 0;
       $is_delivered    = 1; //Except order to be totally delivered
       if ($number) {
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             if ($data["states_id"] == PluginOrderOrder::ORDER_DEVICE_DELIVRED) {
                $delivery_status = 1;
             } else {
