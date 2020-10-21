@@ -110,12 +110,12 @@ class PluginOrderLink extends CommonDBChild {
                $item = new $itemtype();
                $item->getFromDB($templateID);
 
-               $name         = $item->fields["name"];
-               $serial       = $item->fields["serial"];
-               $otherserial  = $item->fields["otherserial"];
-               $states_id    = $item->fields["states_id"];
-               $locations_id = $item->fields["locations_id"];
-               $groups_id    = $item->fields["groups_id"];
+               $name         = $item->fields["name"] ?? "";
+               $serial       = $item->fields["serial"] ?? "";
+               $otherserial  = $item->fields["otherserial"] ?? "";
+               $states_id    = $item->fields["states_id"] ?? "";
+               $locations_id = $item->fields["locations_id"] ?? "";
+               $groups_id    = $item->fields["groups_id"] ?? "";
             } else {
                $name         = false;
                $serial       = false;

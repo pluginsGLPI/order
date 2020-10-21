@@ -1102,6 +1102,19 @@ class PluginOrderOrder extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__("Global discount to apply to items", 'order')."&nbsp;:</td><td>";
+      if ($canedit) {
+         echo "<input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='global_discount' size='5'"
+            ." value=\"".Html::formatNumber($this->fields["global_discount"], true)."\" class='smalldecimal'>";
+      } else {
+         echo Html::formatNumber($this->fields["global_discount"]);
+      }
+      echo "%</td>";
+      echo "<td>";
+      echo "</td>";
+      echo "</tr>";
+
       /* account section */
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
@@ -2414,6 +2427,7 @@ class PluginOrderOrder extends CommonDBTM {
                `plugin_order_orderstates_id` int(11) NOT NULL default 1,
                `plugin_order_billstates_id` int(11) NOT NULL default 1,
                `port_price` float NOT NULL default 0,
+               `global_discount` float NOT NULL default 0,
                `comment` text collate utf8_unicode_ci,
                `notepad` longtext collate utf8_unicode_ci,
                `is_deleted` tinyint(1) NOT NULL default '0',
@@ -2667,6 +2681,9 @@ class PluginOrderOrder extends CommonDBTM {
          //Remove unused notifications
          $notification = new Notification();
          $notification->deleteByCriteria("`itemtype`='PluginOrderOrder_Item'");
+
+         //2.7.0
+         $migration->addField($table, "global_discount", "FLOAT NOT NULL default '0'");
       }
 
       // Remove RIGHT_OPENTICKET
