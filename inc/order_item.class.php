@@ -427,7 +427,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_priceht'>";
-               echo "<input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price' value='0.00' class='decimal' />";
+               echo "<input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price' value='0.00' class='decimal' />";
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_taxe'>";
