@@ -806,11 +806,23 @@ class PluginOrderOrder extends CommonDBTM {
    public function showForm ($ID, $options = []) {
       global $CFG_GLPI, $DB;
 
+      $config = PluginOrderConfig::getConfig();
+      if (!$config->isConfigured()) {
+
+         $link = "<a href='" . $config->getLinkURL(). "'>".__('Go to configuration page', 'order')."</a>";
+
+         echo "<div>";
+         echo "<span class='red fas fa-exclamation-triangle'>&nbsp;";
+         echo __('You must set up at least the order life cycle before starting.', 'order')." ".$link;
+         echo "</span>";
+         echo "</div>";
+         return;
+      }
+
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
       $rand   = mt_rand();
-      $config = PluginOrderConfig::getConfig();
       $user   = new User();
 
       if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {

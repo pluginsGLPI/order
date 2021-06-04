@@ -488,6 +488,16 @@ class PluginOrderConfig extends CommonDBTM {
       return $this->fields['order_analyticnature_mandatory'];
    }
 
+   public function isConfigured() {
+      return ($this->fields['order_status_draft'] &&
+      $this->fields['order_status_waiting_approval'] &&
+      $this->fields['order_status_approved'] &&
+      $this->fields['order_status_partially_delivred'] &&
+      $this->fields['order_status_completly_delivered'] &&
+      $this->fields['order_status_canceled'] &&
+      $this->fields['order_status_paid']);
+   }
+
    public function getDefaultTaxes() {
       return $this->fields['default_taxes'];
    }
