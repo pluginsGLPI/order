@@ -806,11 +806,23 @@ class PluginOrderOrder extends CommonDBTM {
    public function showForm ($ID, $options = []) {
       global $CFG_GLPI, $DB;
 
+      $config = PluginOrderConfig::getConfig();
+      if (!$config->isConfigured()) {
+
+         $link = "<a href='" . $config->getLinkURL(). "'>".__('Go to configuration page', 'order')."</a>";
+
+         echo "<div>";
+         echo "<span class='red fas fa-exclamation-triangle'>&nbsp;";
+         echo __('You must set up at least the order life cycle before starting.', 'order')." ".$link;
+         echo "</span>";
+         echo "</div>";
+         return;
+      }
+
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
       $rand   = mt_rand();
-      $config = PluginOrderConfig::getConfig();
       $user   = new User();
 
       if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
@@ -1099,6 +1111,19 @@ class PluginOrderOrder extends CommonDBTM {
       if ($this->isDelivered() && $this->fields['deliverydate']) {
          echo "<br/>".Html::convDate($this->fields['deliverydate']);
       }
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__("Global discount to apply to items", 'order')."&nbsp;:</td><td>";
+      if ($canedit) {
+         echo "<input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='global_discount' size='5'"
+            ." value=\"".Html::formatNumber($this->fields["global_discount"], true)."\" class='smalldecimal'>";
+      } else {
+         echo Html::formatNumber($this->fields["global_discount"]);
+      }
+      echo "%</td>";
+      echo "<td>";
       echo "</td>";
       echo "</tr>";
 
@@ -2414,6 +2439,7 @@ class PluginOrderOrder extends CommonDBTM {
                `plugin_order_orderstates_id` int(11) NOT NULL default 1,
                `plugin_order_billstates_id` int(11) NOT NULL default 1,
                `port_price` float NOT NULL default 0,
+               `global_discount` float NOT NULL default 0,
                `comment` text collate utf8_unicode_ci,
                `notepad` longtext collate utf8_unicode_ci,
                `is_deleted` tinyint(1) NOT NULL default '0',
@@ -2667,6 +2693,9 @@ class PluginOrderOrder extends CommonDBTM {
          //Remove unused notifications
          $notification = new Notification();
          $notification->deleteByCriteria("`itemtype`='PluginOrderOrder_Item'");
+
+         //2.7.0
+         $migration->addField($table, "global_discount", "FLOAT NOT NULL default '0'");
       }
 
       // Remove RIGHT_OPENTICKET

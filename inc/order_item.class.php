@@ -427,7 +427,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_priceht'>";
-               echo "<input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price' value='0.00' class='decimal' />";
+               echo "<input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price' value='0.00' class='decimal' />";
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_taxe'>";
@@ -441,7 +441,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_pricediscounted'>";
-               echo "<input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount' value='0' class='smalldecimal' />";
+               echo "<input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount'
+                            value='".$order->fields['global_discount']."' class='smalldecimal' />";
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_validate'>";
@@ -520,7 +521,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   echo "</span></td>";
 
                   echo "<td class='tab_bg_1'><span id='show_pricediscounted'>";
-                  echo "<input type='number' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='discount' value='0' class='smalldecimal' />";
+                  echo "<input type='number' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='discount'
+                               value='".$order->fields['global_discount']."' class='smalldecimal' />";
                   echo "</span></td>";
 
                   echo "<td class='tab_bg_1'><span id='show_addreference'>";
