@@ -5,13 +5,14 @@
 # Translators:
 # Bernd Bischof <bernd.bischof@mkkliniken.de>, 2019
 # Thomas Spranger <thspranger@yahoo.de>, 2018
+# vollkommen irrelevant <martin.lex@oikopolis.lu>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-15 13:07+0000\n"
-"PO-Revision-Date: 2021-06-15 13:08+0000\n"
-"Last-Translator: Cédric Anne\n"
+"POT-Creation-Date: 2021-09-15 11:53+0000\n"
+"PO-Revision-Date: 2021-08-26 13:04+0000\n"
+"Last-Translator: vollkommen irrelevant <martin.lex@oikopolis.lu>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/teclib/glpi-plugin-order/language/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -76,7 +77,7 @@ msgstr ""
 
 #: hook.php:149 inc/accountsection.class.php:65 inc/order.class.php:1136
 msgid "Account section"
-msgstr ""
+msgstr "Rechnungsbereich"
 
 #: hook.php:150 front/order.form.php:417 front/preference.form.php:43
 #: front/order.php:33 front/menu.php:63 front/config.form.php:41
@@ -276,7 +277,7 @@ msgstr ""
 
 #: inc/surveysupplier.class.php:230 inc/surveysupplier.class.php:322
 msgid "Contacts availability"
-msgstr ""
+msgstr "Verfügbarkeit von Kontakten"
 
 #: inc/surveysupplier.class.php:238 inc/surveysupplier.class.php:328
 msgid "Quality of supplier intervention"
@@ -284,7 +285,7 @@ msgstr ""
 
 #: inc/surveysupplier.class.php:245 inc/surveysupplier.class.php:334
 msgid "Reliability about annouced delays"
-msgstr ""
+msgstr "Zuverlässigkeit der angekündigten Bestellungen"
 
 #: inc/surveysupplier.class.php:257
 msgid "Final supplier note"
@@ -366,20 +367,20 @@ msgstr "Die Bestellnummer ist Pflicht!"
 
 #: inc/order.class.php:693 inc/order.class.php:769
 msgid "An account section is mandatory !"
-msgstr ""
+msgstr "Ein Rechnungsbereich ist zwingend!"
 
 #: inc/order.class.php:700 inc/order.class.php:763
 msgid ""
 "The order date must be within the dates entered for the selected budget."
-msgstr ""
+msgstr "Das Bestelldatum muss innerhalb des Datums des gewählten Budgets liegen."
 
 #: inc/order.class.php:812
 msgid "Go to configuration page"
-msgstr ""
+msgstr "Gehe zur Einstellungsseite"
 
 #: inc/order.class.php:816
 msgid "You must set up at least the order life cycle before starting."
-msgstr ""
+msgstr "Vor dem Starten musst du mindestens einen Bestellzyklus konfigurieren."
 
 #: inc/order.class.php:1075 inc/order_item.class.php:439
 #: inc/order_item.class.php:519 inc/config.class.php:112
@@ -393,7 +394,7 @@ msgstr "Due date overtaken"
 
 #: inc/order.class.php:1118
 msgid "Global discount to apply to items"
-msgstr ""
+msgstr "Globalrabatt für Artikel anwenden"
 
 #: inc/order.class.php:1306 inc/order.class.php:1895 inc/order.class.php:1993
 msgid "Price tax free"
@@ -505,11 +506,11 @@ msgstr "Verknüpfung entfernen"
 
 #: inc/order.class.php:2159
 msgid "Total orders related with this budget is greater than its value."
-msgstr ""
+msgstr "Der Bestellwert der Bestellungen ist grösser als das zugehörige Budget."
 
 #: inc/order.class.php:2164
 msgid "Total orders related with this budget is equal to its value."
-msgstr ""
+msgstr "Der Bestellwert der Bestellungen ist gleich dem zugehörigen Budget."
 
 #: inc/notificationtargetorder.class.php:47
 #: inc/notificationtargetorder.class.php:116
@@ -592,7 +593,7 @@ msgstr "Lieferanten wählen"
 
 #: inc/order_item.class.php:466
 msgid "Add to the order free items"
-msgstr ""
+msgstr "Füge der Order kostenlose Items hinzu."
 
 #: inc/order_item.class.php:480
 msgid "Add the reference"
@@ -637,7 +638,7 @@ msgstr "Bezahlstatus"
 
 #: inc/order_item.class.php:1486
 msgid "Paid value"
-msgstr ""
+msgstr "Bezahlwert"
 
 #: inc/order_item.class.php:1605 inc/order_item.class.php:1693
 #: inc/bill.class.php:47 inc/bill.class.php:135 inc/bill.class.php:409
@@ -671,12 +672,12 @@ msgstr "Kopie von"
 
 #: inc/reference.class.php:862
 msgid "Select the wanted item type"
-msgstr ""
+msgstr "Wähle den gewünschten Elementtyp"
 
 #: inc/reference.class.php:915 inc/reference.class.php:916
 #: inc/reference.class.php:934
 msgid "View by item type"
-msgstr ""
+msgstr "Ausgabe nach Elementtyp"
 
 #: inc/reference.class.php:991
 msgid "Copy reference"
@@ -684,7 +685,7 @@ msgstr "Verweis kopieren"
 
 #: inc/orderstate.class.php:55 inc/billstate.class.php:48
 msgid "You cannot remove this status"
-msgstr ""
+msgstr "Du kannst diesen Status nicht entfernen."
 
 #: inc/orderstate.class.php:87
 msgid "Draft"
@@ -803,7 +804,7 @@ msgstr "Dokumente der Bestellung kopieren, wenn Objekt erstellt wird"
 
 #: inc/config.class.php:159
 msgid "Default heading when adding a document to an order"
-msgstr "Standard Überschrift, wenn Dokument zu einer Bestllung hinzugefügt wird"
+msgstr "Standard Überschrift wenn ein Dokument zu einer Bestellung hinzugefügt wird"
 
 #: inc/config.class.php:198
 msgid "Hide inactive budgets"
@@ -815,11 +816,11 @@ msgstr "Übermittle Budget-Änderungen an verknüpfte Geräte"
 
 #: inc/config.class.php:212
 msgid "Display account section on order form"
-msgstr ""
+msgstr "Zeige Rechnungsbereich auf dem Bestellformular."
 
 #: inc/config.class.php:219
 msgid "Set account section as mandatory on order form"
-msgstr ""
+msgstr "Erzwinge Rechnungsbereich im Bestellformular."
 
 #: inc/config.class.php:226
 msgid "Use free references"
@@ -878,7 +879,7 @@ msgstr "Standard Inventarnummer"
 
 #: inc/config.class.php:338
 msgid "Order lifecycle"
-msgstr ""
+msgstr "Bestellzyklus"
 
 #: inc/config.class.php:342
 msgid "State before validation"

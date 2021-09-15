@@ -4,7 +4,7 @@
 # 
 # Translators:
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
-# Cédric Anne, 2018
+# Cédric Anne, 2018,2021
 # 06c8e5f1ec78ded2ceb41498ec52b068, 2015
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2016
 # Walid Nouh, 2017
@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-15 13:07+0000\n"
-"PO-Revision-Date: 2021-06-15 13:08+0000\n"
+"POT-Creation-Date: 2021-09-15 11:53+0000\n"
+"PO-Revision-Date: 2021-09-15 12:02+0000\n"
 "Last-Translator: Cédric Anne\n"
 "Language-Team: French (France) (http://www.transifex.com/teclib/glpi-plugin-order/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -378,11 +378,11 @@ msgstr "La date de commande doit être comprise dans les dates déclarées pour 
 
 #: inc/order.class.php:812
 msgid "Go to configuration page"
-msgstr ""
+msgstr "Aller à la page de configuration"
 
 #: inc/order.class.php:816
 msgid "You must set up at least the order life cycle before starting."
-msgstr ""
+msgstr "Vous devez définir le cycle de vie des commandes avant de commencer."
 
 #: inc/order.class.php:1075 inc/order_item.class.php:439
 #: inc/order_item.class.php:519 inc/config.class.php:112

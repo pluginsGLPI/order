@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Cédric Anne, 2018
+# Cédric Anne, 2018,2021
 # 06c8e5f1ec78ded2ceb41498ec52b068, 2015
 # Johan Cwiklinski <jcwiklinski@teclib.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-15 13:07+0000\n"
-"PO-Revision-Date: 2021-06-15 13:08+0000\n"
+"POT-Creation-Date: 2021-09-15 11:53+0000\n"
+"PO-Revision-Date: 2021-09-15 11:59+0000\n"
 "Last-Translator: Cédric Anne\n"
 "Language-Team: English (United Kingdom) (http://www.transifex.com/teclib/glpi-plugin-order/language/en_GB/)\n"
 "MIME-Version: 1.0\n"
@@ -376,11 +376,11 @@ msgstr "The order date must be within the dates entered for the selected budget.
 
 #: inc/order.class.php:812
 msgid "Go to configuration page"
-msgstr ""
+msgstr "Go to configuration page"
 
 #: inc/order.class.php:816
 msgid "You must set up at least the order life cycle before starting."
-msgstr ""
+msgstr "You must set up at least the order life cycle before starting."
 
 #: inc/order.class.php:1075 inc/order_item.class.php:439
 #: inc/order_item.class.php:519 inc/config.class.php:112
@@ -394,7 +394,7 @@ msgstr "Due date overtaken"
 
 #: inc/order.class.php:1118
 msgid "Global discount to apply to items"
-msgstr ""
+msgstr "Global discount to apply to items"
 
 #: inc/order.class.php:1306 inc/order.class.php:1895 inc/order.class.php:1993
 msgid "Price tax free"
