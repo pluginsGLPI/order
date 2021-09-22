@@ -117,7 +117,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
                  WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'";
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
-         return $DB->result($result, 0, "total") / 5 * 2;
+         return $DB->result($result, 0, "total") / 5;
       } else {
          return 0;
       }
@@ -198,7 +198,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
             echo "</td>";
             $link = Toolbox::getItemTypeFormURL('PluginOrderOrder');
             echo "<td><a href=\"".$link."?id=".$ID."\">".$name."</a></td>";
-            echo "<td>".$note." / 10</td>";
+            echo "<td>".$note." / 5</td>";
             echo "<td>".nl2br($comment)."</td>";
             echo "</tr>";
             $total += $survey->getTotalNotation($ID);
@@ -215,7 +215,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
               "</div></td>";
          echo "<td><div align='left'>".
               Html::formatNumber($survey->getNotation($suppliers_id, "answer1")).
-              "&nbsp;/ 10</div></td>";
+              "&nbsp;/ 5</div></td>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2'></td>";
@@ -223,14 +223,14 @@ class PluginOrderSurveySupplier extends CommonDBChild {
               __("Commercial followup quality, visits, responseness", "order"). "</div></td>";
          echo "<td><div align='left'>".
               Html::formatNumber($survey->getNotation($suppliers_id, "answer2")).
-              "&nbsp;/ 10</div></td>";
+              "&nbsp;/ 5</div></td>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2'></td>";
          echo "<td><div align='left'>".__("Contacts availability", "order"). "</div></td>";
          echo "<td><div align='left'>".
               Html::formatNumber($survey->getNotation($suppliers_id, "answer3")).
-              "&nbsp;/ 10</div></td>";
+              "&nbsp;/ 5</div></td>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2'></td>";
@@ -238,7 +238,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
               __("Quality of supplier intervention", "order"). "</div></td>";
          echo "<td><div align='left'>".
               Html::formatNumber($survey->getNotation($suppliers_id, "answer4")).
-              "&nbsp;/ 10</div></td>";
+              "&nbsp;/ 5</div></td>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2'></td>";
@@ -246,7 +246,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
               "</div></td>";
          echo "<td><div align='left'>".
               Html::formatNumber($survey->getNotation($suppliers_id, "answer5")).
-              "&nbsp;/ 10</div></td>";
+              "&nbsp;/ 5</div></td>";
 
          echo "<tr>";
          echo "<th colspan='4'>&nbsp;</th>";
@@ -255,7 +255,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
          echo "<tr class='tab_bg_1 b'>";
          echo "<td colspan='2'></td>";
          echo "<td><div align='left'>".__("Final supplier note", "order")."</div></td>";
-         echo "<td><div align='left'>".Html::formatNumber($total / $nb_order)."&nbsp;/ 10</div></td>";
+         echo "<td><div align='left'>".Html::formatNumber($total / $nb_order)."&nbsp;/ 5</div></td>";
          echo "</tr>";
       }
       echo "</table>";
@@ -345,10 +345,10 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       echo "</tr>";
 
       if ($ID > 0) {
-         echo "<tr><th><div align='left'>".__("Average mark up to 10 (X points / 5)", "order")
+         echo "<tr><th><div align='left'>".__("Average mark up to 5 (X points / 5)", "order")
            .": </div></th><th><div align='left'>";
          $total = $this->getTotalNotation($this->fields["plugin_order_orders_id"]);
-         echo Html::formatNumber($total)." / 10";
+         echo Html::formatNumber($total)." / 5";
          echo "</div></th>";
          echo "</tr>";
       }
@@ -405,7 +405,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
               .Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"])."</a></td>";
             echo "<td>";
             $total = $survey->getTotalNotation($ID);
-            echo $total." / 10";
+            echo $total." / 5";
             echo "</td>";
             echo "<td>";
             echo $data["comment"];
