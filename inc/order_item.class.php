@@ -1030,26 +1030,26 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "<th>" . __("Status") . "</th></tr>";
 
          $table = self::getTable();
-         $query = "SELECT `$table`.`id` AS IDD, `glpi_plugin_order_references`.`id`,
-                           `glpi_plugin_order_references`.`name`,
+         $query = "SELECT `$table`.`id` AS IDD, `$table_ref`.`id`,
+                           `$table_ref`.`name`,
                            `$table`.`comment`,
                            `$table`.`price_taxfree`,
                            `$table`.`price_discounted`,
                            `$table`.`discount`,
                            `$table`.`plugin_order_ordertaxes_id`,
                            `$table`.`price_ati`
-                     FROM `$table`, `glpi_plugin_order_references`
-                     WHERE `$table`.`plugin_order_references_id` = `glpi_plugin_order_references`.`id`
+                     FROM `$table`, `$table_ref`
+                     WHERE `$table`.`plugin_order_references_id` = `$table_ref`.`id`
                         AND `$table`.`plugin_order_references_id` = '$refID'
                         AND `$table`.`price_taxfree` LIKE '$price_taxfree'
                         AND `$table`.`discount` LIKE '$discount'
                         AND `$table`.`plugin_order_orders_id` = '$plugin_order_orders_id'";
 
          if ($data_ref["itemtype"] == 'SoftwareLicense') {
-            $query.=" GROUP BY `glpi_plugin_order_references`.`name` ";
+            $query.=" GROUP BY `$table_ref`.`name` ";
 
          }
-         $query .= " ORDER BY `glpi_plugin_order_references`.`name` ";
+         $query .= " ORDER BY `$table_ref`.`name` ";
 
          $result = $DB->query($query);
          $num    = $DB->numrows($result);
