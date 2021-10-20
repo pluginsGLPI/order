@@ -2437,7 +2437,7 @@ class PluginOrderOrder extends CommonDBTM {
                `plugin_order_accountsections_id` int(11) NOT NULL default '0' COMMENT 'RELATION to plugin_order_accountsections (id)',
                `locations_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_locations (id)',
                `plugin_order_orderstates_id` int(11) NOT NULL default 1,
-               `plugin_order_billstates_id` int(11) NOT NULL default 1,
+               `plugin_order_billstates_id` int(11) NOT NULL default 0,
                `port_price` float NOT NULL default 0,
                `global_discount` float NOT NULL default 0,
                `comment` text collate utf8_unicode_ci,
@@ -2696,6 +2696,9 @@ class PluginOrderOrder extends CommonDBTM {
 
          //2.7.0
          $migration->addField($table, "global_discount", "FLOAT NOT NULL default '0'");
+
+         //2.7.3
+         $migration->changeField($table, "plugin_order_billstates_id", "plugin_order_billstates_id", "int(11) NOT NULL DEFAULT 0");
       }
 
       // Remove RIGHT_OPENTICKET
