@@ -31,9 +31,9 @@
 define('PLUGIN_ORDER_VERSION', '2.7.6');
 
 // Minimal GLPI version, inclusive
-define("PLUGIN_ORDER_MIN_GLPI", "9.5");
+define("PLUGIN_ORDER_MIN_GLPI", "10.0.0");
 // Maximum GLPI version, exclusive
-define("PLUGIN_ORDER_MAX_GLPI", "9.6");
+define("PLUGIN_ORDER_MAX_GLPI", "10.0.99");
 
 if (!defined('PLUGIN_ORDER_DIR')) {
    define("PLUGIN_ORDER_DIR", Plugin::getPhpDir('order'));
@@ -145,12 +145,7 @@ function plugin_init_order() {
       Plugin::registerClass('PluginOrderProfile', ['addtabon' => ['Profile']]);
 
       $values['notificationtemplates_types'] = true;
-      //If the new infocom display hook (introduced in 9.1) is available, use it !
-      if (method_exists('Infocom', 'addPluginInfos')) {
-         $PLUGIN_HOOKS['infocom']['order'] = ['PluginOrderOrder_Item', 'showForInfocom'];
-      } else {
-         $values['addtabon'] = PluginOrderOrder_Item::getClasses(true);
-      }
+      $PLUGIN_HOOKS['infocom']['order'] = ['PluginOrderOrder_Item', 'showForInfocom'];
       Plugin::registerClass('PluginOrderOrder_Item', $values);
 
       if (PluginOrderOrder::canView()) {

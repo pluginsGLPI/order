@@ -91,8 +91,8 @@ class PluginOrderConfig extends CommonDBTM {
    }
 
 
-   public function showForm() {
-      $this->getFromDB(1);
+   function showForm($ID, array $options = []) {
+      $this->getFromDB($ID);
 
       echo "<div class='center'>";
       echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
@@ -300,21 +300,36 @@ class PluginOrderConfig extends CommonDBTM {
          echo "<tr class='tab_bg_1' align='center'>";
          echo "<td>".__("Default name", "order")."</td>";
          echo "<td>";
-         Html::autocompletionTextField($this, "generated_name");
+         echo Html::input(
+            'generated_name',
+            [
+               'value' => $this->fields['generated_name'],
+            ]
+         );
          echo "</td>";
          echo "</tr>";
 
          echo "<tr class='tab_bg_1' align='center'>";
          echo "<td>".__("Default serial number", "order")."</td>";
          echo "<td>";
-         Html::autocompletionTextField($this, "generated_serial");
+         echo Html::input(
+            'generated_serial',
+            [
+               'value' => $this->fields['generated_serial'],
+            ]
+         );
          echo "</td>";
          echo "</tr>";
 
          echo "<tr class='tab_bg_1' align='center'>";
          echo "<td>".__("Default inventory number", "order")."</td>";
          echo "<td>";
-         Html::autocompletionTextField($this, "generated_otherserial");
+         echo Html::input(
+            'generated_otherserial',
+            [
+               'value' => $this->fields['generated_otherserial'],
+            ]
+         );
          echo "</td>";
          echo "</tr>";
 
@@ -614,46 +629,49 @@ class PluginOrderConfig extends CommonDBTM {
           && !$DB->tableExists("glpi_plugin_order_config")) {
             $migration->displayMessage("Installing $table");
 
+            $default_charset = DBConnection::getDefaultCharset();
+            $default_collation = DBConnection::getDefaultCollation();
+
             //Install
             $query = "CREATE TABLE `$table` (
-                        `id` int(11) NOT NULL auto_increment,
-                        `use_validation` tinyint(1) NOT NULL default '0',
-                        `use_supplier_satisfaction` tinyint(1) NOT NULL default '0',
-                        `use_supplier_informations` tinyint(1) NOT NULL default '0',
-                        `use_supplier_infos` tinyint(1) NOT NULL default '1',
-                        `generate_order_pdf` tinyint(1) NOT NULL default '0',
-                        `copy_documents` tinyint(1) NOT NULL default '0',
-                        `default_taxes` int(11) NOT NULL default '0',
-                        `generate_assets` int(11) NOT NULL default '0',
-                        `generated_name` varchar(255) collate utf8_unicode_ci default NULL,
-                        `generated_serial` varchar(255) collate utf8_unicode_ci default NULL,
-                        `generated_otherserial` varchar(255) collate utf8_unicode_ci default NULL,
-                        `default_asset_states_id` int(11) NOT NULL default '0',
-                        `tickettemplates_id_delivery` int(11) NOT NULL default '0',
-                        `order_status_draft` int(11) NOT NULL default '1',
-                        `order_status_waiting_approval` int(11) NOT NULL default '2',
-                        `order_status_approved` int(11) NOT NULL default '3',
-                        `order_status_partially_delivred` int(11) NOT NULL default '4',
-                        `order_status_completly_delivered` int(11) NOT NULL default '5',
-                        `order_status_canceled` int(11) NOT NULL default '6',
-                        `order_status_paid` int(11) NOT NULL default '7',
-                        `order_analyticnature_display` int(11) NOT NULL default '0',
-                        `order_analyticnature_mandatory` int(11) NOT NULL default '0',
-                        `order_accountsection_display` int(11) NOT NULL default '0',
-                        `order_accountsection_mandatory` int(11) NOT NULL default '0',
-                        `shoudbedelivered_color` char(20) collate utf8_unicode_ci default '#ff5555',
-                        `documentcategories_id` int(11) NOT NULL default '0',
-                        `groups_id_author` int(11) NOT NULL default '0',
-                        `groups_id_recipient` int(11) NOT NULL default '0',
-                        `users_id_recipient` int(11) NOT NULL default '0',
-                        `add_location` tinyint(1) NOT NULL default '0',
-                        `add_bill_details` tinyint(1) NOT NULL default '0',
-                        `hide_inactive_budgets` tinyint(1) NOT NULL default '0',
-                        `rename_documents` tinyint(1) NOT NULL default '0',
-                        `transmit_budget_change` tinyint(1) NOT NULL default '0',
-                        `use_free_reference` tinyint(1) NOT NULL default '0',
+                        `id` int unsigned NOT NULL auto_increment,
+                        `use_validation` tinyint NOT NULL default '0',
+                        `use_supplier_satisfaction` tinyint NOT NULL default '0',
+                        `use_supplier_informations` tinyint NOT NULL default '0',
+                        `use_supplier_infos` tinyint NOT NULL default '1',
+                        `generate_order_pdf` tinyint NOT NULL default '0',
+                        `copy_documents` tinyint NOT NULL default '0',
+                        `default_taxes` int NOT NULL default '0',
+                        `generate_assets` int NOT NULL default '0',
+                        `generated_name` varchar(255) default NULL,
+                        `generated_serial` varchar(255) default NULL,
+                        `generated_otherserial` varchar(255) default NULL,
+                        `default_asset_states_id` int unsigned NOT NULL default '0',
+                        `tickettemplates_id_delivery` int unsigned NOT NULL default '0',
+                        `order_status_draft` int NOT NULL default '1',
+                        `order_status_waiting_approval` int NOT NULL default '2',
+                        `order_status_approved` int NOT NULL default '3',
+                        `order_status_partially_delivred` int NOT NULL default '4',
+                        `order_status_completly_delivered` int NOT NULL default '5',
+                        `order_status_canceled` int NOT NULL default '6',
+                        `order_status_paid` int NOT NULL default '7',
+                        `order_analyticnature_display` int NOT NULL default '0',
+                        `order_analyticnature_mandatory` int NOT NULL default '0',
+                        `order_accountsection_display` int NOT NULL default '0',
+                        `order_accountsection_mandatory` int NOT NULL default '0',
+                        `shoudbedelivered_color` char(20) default '#ff5555',
+                        `documentcategories_id` int unsigned NOT NULL default '0',
+                        `groups_id_author` int unsigned NOT NULL default '0',
+                        `groups_id_recipient` int unsigned NOT NULL default '0',
+                        `users_id_recipient` int unsigned NOT NULL default '0',
+                        `add_location` tinyint NOT NULL default '0',
+                        `add_bill_details` tinyint NOT NULL default '0',
+                        `hide_inactive_budgets` tinyint NOT NULL default '0',
+                        `rename_documents` tinyint NOT NULL default '0',
+                        `transmit_budget_change` tinyint NOT NULL default '0',
+                        `use_free_reference` tinyint NOT NULL default '0',
                         PRIMARY KEY  (`id`)
-                     ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
                $DB->query($query) or die ($DB->error());
 
                $tobefilled = "TOBEFILLED";
@@ -683,40 +701,40 @@ class PluginOrderConfig extends CommonDBTM {
             $DB->query($query) or die($DB->error());
          }
 
-         $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
+         $migration->changeField($table, "ID", "id", "int unsigned NOT NULL auto_increment");
 
          //1.3.0
-         $migration->addField($table, "generate_assets", "tinyint(1) NOT NULL default '0'");
-         $migration->addField($table, "generated_name", "varchar(255) collate utf8_unicode_ci default NULL");
-         $migration->addField($table, "generated_serial", "varchar(255) collate utf8_unicode_ci default NULL");
-         $migration->addField($table, "generated_otherserial", "varchar(255) collate utf8_unicode_ci default NULL");
-         $migration->addField($table, "default_asset_entities_id", "int(11) NOT NULL default '0'");
-         $migration->addField($table, "default_asset_states_id", "int(11) NOT NULL default '0'");
-         $migration->addField($table, "generated_title", "varchar(255) collate utf8_unicode_ci default NULL");
-         $migration->addField($table, "generated_content", "text collate utf8_unicode_ci");
-         $migration->addField($table, "default_ticketcategories_id", "int(11) NOT NULL default '0'");
-         $migration->addField($table, "use_supplier_satisfaction", "tinyint(1) NOT NULL default '0'");
-         $migration->addField($table, "generate_order_pdf", "tinyint(1) NOT NULL default '0'");
-         $migration->addField($table, "use_supplier_informations", "tinyint(1) NOT NULL default '1'");
-         $migration->addField($table, "shoudbedelivered_color", "char(20) collate utf8_unicode_ci default '#ff5555'");
-         $migration->addField($table, "copy_documents", "tinyint(1) NOT NULL DEFAULT '0'");
-         $migration->addField($table, "documentcategories_id", "integer");
-         $migration->addField($table, "groups_id_author", "integer");
-         $migration->addField($table, "groups_id_recipient", "integer");
-         $migration->addField($table, "users_id_recipient", "integer");
+         $migration->addField($table, "generate_assets", "tinyint NOT NULL default '0'");
+         $migration->addField($table, "generated_name", "varchar(255) default NULL");
+         $migration->addField($table, "generated_serial", "varchar(255) default NULL");
+         $migration->addField($table, "generated_otherserial", "varchar(255) default NULL");
+         $migration->addField($table, "default_asset_entities_id", "int NOT NULL default '0'");
+         $migration->addField($table, "default_asset_states_id", "int NOT NULL default '0'");
+         $migration->addField($table, "generated_title", "varchar(255) default NULL");
+         $migration->addField($table, "generated_content", "text");
+         $migration->addField($table, "default_ticketcategories_id", "int NOT NULL default '0'");
+         $migration->addField($table, "use_supplier_satisfaction", "tinyint NOT NULL default '0'");
+         $migration->addField($table, "generate_order_pdf", "tinyint NOT NULL default '0'");
+         $migration->addField($table, "use_supplier_informations", "tinyint NOT NULL default '1'");
+         $migration->addField($table, "shoudbedelivered_color", "char(20) default '#ff5555'");
+         $migration->addField($table, "copy_documents", "tinyint NOT NULL DEFAULT '0'");
+         $migration->addField($table, "documentcategories_id", "int unsigned NOT NULL default '0'");
+         $migration->addField($table, "groups_id_author", "int unsigned NOT NULL default '0'");
+         $migration->addField($table, "groups_id_recipient", "int unsigned NOT NULL default '0'");
+         $migration->addField($table, "users_id_recipient", "int unsigned NOT NULL default '0'");
 
          $migration->changeField($table, "default_ticketcategories_id",
-                                 "default_itilcategories_id", "integer");
+                                 "default_itilcategories_id", "int unsigned NOT NULL default '0'");
 
          //1.9.0
-         $migration->addField($table, "add_location", "TINYINT(1) NOT NULL DEFAULT '0'");
-         $migration->addField($table, "add_bill_details", "TINYINT(1) NOT NULL DEFAULT '0'");
+         $migration->addField($table, "add_location", "TINYINT NOT NULL DEFAULT '0'");
+         $migration->addField($table, "add_bill_details", "TINYINT NOT NULL DEFAULT '0'");
 
          $config = new self();
          $config->getFromDB(1);
          $templateID = false;
 
-         $migration->addField($table, "tickettemplates_id_delivery", 'integer');
+         $migration->addField($table, "tickettemplates_id_delivery", "int unsigned NOT NULL default '0'");
          $migration->migrationOneTable($table);
 
          $migration->dropField($table, "generated_title");
@@ -749,7 +767,7 @@ class PluginOrderConfig extends CommonDBTM {
                      'order_status_paid'                => 7];
 
       foreach ($new_states as $field => $value) {
-         $migration->addField($table, $field, "int(11) NOT NULL default '{$value}'", ['update' => $value]);
+         $migration->addField($table, $field, "int NOT NULL default '{$value}'", ['update' => $value]);
       }
 
       if (!$DB->fieldExists($table, 'order_analyticnature_display')) {

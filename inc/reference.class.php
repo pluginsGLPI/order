@@ -272,8 +272,6 @@ class PluginOrderReference extends CommonDBTM {
     * @param $options   array
     **/
    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []) {
-      global $CFG_GLPI;
-
       if (!is_array($values)) {
          $values = [$field => $values];
       }
@@ -297,8 +295,6 @@ class PluginOrderReference extends CommonDBTM {
 
 
    public function prepareInputForAdd($input) {
-      global $DB;
-
       if (!isset($input["name"]) || $input["name"] == '') {
          Session::addMessageAfterRedirect(__("Cannot create reference without a name", "order"), false, ERROR);
          return false;
@@ -332,8 +328,6 @@ class PluginOrderReference extends CommonDBTM {
 
 
    public function referenceInUse() {
-      global $DB;
-
       $number = countElementsInTable("glpi_plugin_order_orders_items",
                                      ['plugin_order_references_id' => $this->fields["id"]]);
       if ($number > 0) {
@@ -459,7 +453,7 @@ class PluginOrderReference extends CommonDBTM {
 
 
    public function dropdownAllItems($options = []) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $p['myname']       = '';
       $p['value']        = "";
@@ -541,7 +535,7 @@ class PluginOrderReference extends CommonDBTM {
 
 
    public function showForm($id, $options = []) {
-      global $CFG_GLPI, $DB;
+      global $DB;
 
       $this->initForm($id, $options);
       $reference_in_use = !$id ? false : $this->referenceInUse();
@@ -558,7 +552,12 @@ class PluginOrderReference extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".__("Name")."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "name");
+      echo Html::input(
+         'name',
+         [
+            'value' => $this->fields['name'],
+         ]
+      );
       echo "</td>";
       echo "<td rowspan='2'>".__("Comments")."</td>";
       echo "<td rowspan='2'>";
@@ -577,7 +576,12 @@ class PluginOrderReference extends CommonDBTM {
       echo "</td>";
       echo "<td>".__("Manufacturer reference", "order")."</td>";
       echo "<td>";
-      echo Html::autocompletionTextField($this, 'manufacturers_reference');
+      echo Html::input(
+         'manufacturers_reference',
+         [
+            'value' => $this->fields['manufacturers_reference'],
+         ]
+      );
       echo "</td>";
       echo "</tr>";
 
@@ -610,12 +614,6 @@ class PluginOrderReference extends CommonDBTM {
       echo "<td>";
       echo "<span id='show_types_id'>";
       if ($options['item']) {
-         if ($options['item'] == 'PluginOrderOther') {
-            $file = 'other';
-         } else {
-            $file = $options['item'];
-         }
-
          $itemtypeclass = $options['item']."Type";
          if (class_exists($itemtypeclass)) {
             if (!$reference_in_use) {
@@ -908,8 +906,6 @@ class PluginOrderReference extends CommonDBTM {
 
 
    public function title() {
-      global $CFG_GLPI;
-
       echo "<div align='center'>";
       echo self::getPerTypeJavascriptCode();
       echo "<a onclick='order_window.show();' href='#modal_reference_content' title='"
@@ -961,8 +957,6 @@ class PluginOrderReference extends CommonDBTM {
     * @see CommonDBTM::showMassiveActionsSubForm()
     **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $UNINSTALL_TYPES;
-
       switch ($ma->getAction()) {
          case 'transfert':
             Entity::dropdown();
@@ -1002,8 +996,6 @@ class PluginOrderReference extends CommonDBTM {
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
     **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids) {
-      global $CFG_GLPI;
-
       switch ($ma->getAction()) {
          case "transfert":
             $input = $ma->getInput();
@@ -1052,22 +1044,25 @@ class PluginOrderReference extends CommonDBTM {
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
+         $default_charset = DBConnection::getDefaultCharset();
+         $default_collation = DBConnection::getDefaultCollation();
+
          //Install
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references` (
-               `id` int(11) NOT NULL auto_increment,
-               `entities_id` int(11) NOT NULL default '0',
-               `is_recursive` tinyint(1) NOT NULL default '0',
-               `name` varchar(255) collate utf8_unicode_ci default NULL,
-               `manufacturers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)',
-               `manufacturers_reference` varchar(255) collate utf8_unicode_ci NOT NULL DEFAULT '',
-               `types_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtypes tables (id)',
-               `models_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemmodels tables (id)',
-               `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file',
-               `templates_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
-               `comment` text collate utf8_unicode_ci,
-               `is_deleted` tinyint(1) NOT NULL default '0',
-               `is_active` tinyint(1) NOT NULL default '1',
-               `notepad` longtext collate utf8_unicode_ci,
+               `id` int unsigned NOT NULL auto_increment,
+               `entities_id` int unsigned NOT NULL default '0',
+               `is_recursive` tinyint NOT NULL default '0',
+               `name` varchar(255) default NULL,
+               `manufacturers_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)',
+               `manufacturers_reference` varchar(255) NOT NULL DEFAULT '',
+               `types_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtypes tables (id)',
+               `models_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemmodels tables (id)',
+               `itemtype` varchar(100) NOT NULL COMMENT 'see .class.php file',
+               `templates_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
+               `comment` text,
+               `is_deleted` tinyint NOT NULL default '0',
+               `is_active` tinyint NOT NULL default '1',
+               `notepad` longtext,
                `date_mod` timestamp NULL default NULL,
                PRIMARY KEY  (`id`),
                KEY `name` (`name`),
@@ -1079,7 +1074,7 @@ class PluginOrderReference extends CommonDBTM {
                KEY `is_active` (`is_active`),
                KEY `is_deleted` (`is_deleted`),
                KEY date_mod (date_mod)
-            ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
             $DB->query($query) or die ($DB->error());
 
       } else {
@@ -1087,32 +1082,32 @@ class PluginOrderReference extends CommonDBTM {
          $migration->displayMessage("Upgrading $table");
 
          //1.1.0
-         $migration->changeField($table, "FK_manufacturer", "FK_glpi_enterprise", "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($table, "FK_manufacturer", "FK_glpi_enterprise", "int unsigned NOT NULL DEFAULT '0'");
 
          ///1.2.0
-         $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
+         $migration->changeField($table, "ID", "id", "int unsigned NOT NULL auto_increment");
          $migration->changeField($table, "FK_entities", "entities_id",
-                                 "int(11) NOT NULL default '0'");
+                                 "int unsigned NOT NULL default '0'");
          $migration->changeField($table, "recursive", "is_recursive",
-                                 "tinyint(1) NOT NULL default '0'");
+                                 "tinyint NOT NULL default '0'");
          $migration->changeField($table, "name", "name",
-                                 "varchar(255) collate utf8_unicode_ci default NULL");
+                                 "varchar(255) default NULL");
          $migration->changeField($table, "FK_glpi_enterprise", "manufacturers_id",
-                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)'");
+                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)'");
          $migration->changeField($table, "FK_type", "types_id",
-                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtypes tables (id)'");
+                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtypes tables (id)'");
          $migration->changeField($table, "FK_model", "models_id",
-                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemmodels tables (id)'");
+                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemmodels tables (id)'");
          $migration->changeField($table, "type", "itemtype",
-                                 "varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file'");
+                                 "varchar(100) NOT NULL COMMENT 'see .class.php file'");
          $migration->changeField($table, "template", "templates_id",
-                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
+                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
          $migration->changeField($table, "comments", "comment",
-                                 "text collate utf8_unicode_ci");
+                                 "text");
          $migration->changeField($table, "deleted", "is_deleted",
-                                 "tinyint(1) NOT NULL default '0'");
-         $migration->addField($table, "notepad", "longtext collate utf8_unicode_ci");
-         $migration->addField($table, "is_active", "TINYINT(1) NOT NULL DEFAULT '1'");
+                                 "tinyint NOT NULL default '0'");
+         $migration->addField($table, "notepad", "longtext");
+         $migration->addField($table, "is_active", "TINYINT NOT NULL DEFAULT '1'");
          $migration->addField($table, "date_mod", "timestamp");
 
          $migration->addKey($table, "name");
@@ -1146,7 +1141,7 @@ class PluginOrderReference extends CommonDBTM {
                      WHERE `itemtype` ='Cartridge'") or die ($DB->error());
 
          //1.7.0
-         $migration->addField($table, "date_mod", "DATETIME NULL");
+         $migration->addField($table, "date_mod", "timestamp NULL DEFAULT NULL");
          $migration->addKey($table, "date_mod");
 
          //Displayprefs
@@ -1164,14 +1159,14 @@ class PluginOrderReference extends CommonDBTM {
          //Fix error naming field
          if ($DB->fieldExists($table, 'manufacturer_reference')) {
             $migration->changeField($table, "manufacturer_reference", "manufacturers_reference",
-                                    "varchar(255) collate utf8_unicode_ci NOT NULL DEFAULT ''");
+                                    "varchar(255) NOT NULL DEFAULT ''");
             $migration->migrationOneTable($table);
          }
 
          //2.0.1
          if (!$DB->fieldExists($table, 'manufacturers_reference')) {
             $migration->addField($table, "manufacturers_reference",
-                                    "varchar(255) collate utf8_unicode_ci NOT NULL DEFAULT ''");
+                                    "varchar(255) NOT NULL DEFAULT ''");
             $migration->migrationOneTable($table);
          }
       }
@@ -1192,4 +1187,7 @@ class PluginOrderReference extends CommonDBTM {
    }
 
 
+   static function getIcon() {
+      return "ti ti-list-search";
+   }
 }

@@ -74,7 +74,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                '##order.item.orderdate##'    => Html::convDate($order["order_date"]),
                '##order.item.duedate##'      => Html::convDate($order["duedate"]),
                '##order.item.deliverydate##' => Html::convDate($order["deliverydate"]),
-               '##order.item.comment##'      => Html::clean($order["comment"]),
+               '##order.item.comment##'      => $order["comment"],
                '##order.item.state##'        => Dropdown::getDropdownName('glpi_plugin_order_orderstates',
                                                                           $order["plugin_order_orderstates_id"]),
             ];
@@ -133,10 +133,10 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                $this->data['##lang.ordervalidation.users##'] = __("No item to generate", "order");
                break;
          }
-         $this->data['##ordervalidation.users##']    = Html::clean(getUserName(Session::getLoginUserID()));
+         $this->data['##ordervalidation.users##']    = getUserName(Session::getLoginUserID());
 
-         $this->data['##order.author.name##']        = Html::clean(getUserName($this->obj->getField('users_id')));
-         $this->data['##order.deliveryuser.name##']  = Html::clean(getUserName($this->obj->getField('users_id_delivery')));
+         $this->data['##order.author.name##']        = getUserName($this->obj->getField('users_id'));
+         $this->data['##order.deliveryuser.name##']  = getUserName($this->obj->getField('users_id_delivery'));
 
          $this->data['##lang.ordervalidation.url##'] = "URL";
          $this->data['##ordervalidation.url##']      = $this->formatURL(

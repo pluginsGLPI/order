@@ -32,6 +32,8 @@
 * @brief
 */
 
+use Glpi\Toolbox\Sanitizer;
+
 include ('../../../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -58,7 +60,7 @@ if (isset($_POST['name'])) {
       }
    }
 
-   $data = Html::cleanInputText(Toolbox::clean_cross_side_scripting_deep(rawurldecode(stripslashes($_POST["data"]))));
+   $data = Html::cleanInputText(Sanitizer::sanitize(rawurldecode(stripslashes($_POST["data"]))));
 
    echo "<input type='number' step='$step' min='$min' name='".$_POST['name']."' value='$data' $class>";
 }

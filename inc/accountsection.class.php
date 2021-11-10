@@ -48,13 +48,17 @@ class PluginOrderAccountSection extends CommonDropdown {
       $table = getTableForItemType(__CLASS__);
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
+
+         $default_charset = DBConnection::getDefaultCharset();
+         $default_collation = DBConnection::getDefaultCollation();
+
          $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_accountsections` (
-                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                    `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                    `comment` text COLLATE utf8_unicode_ci,
+                    `id` int unsigned NOT NULL AUTO_INCREMENT,
+                    `name` varchar(255) DEFAULT NULL,
+                    `comment` text,
                     PRIMARY KEY (`id`),
                     KEY `name` (`name`)
-                  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
+                  ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
          $DB->query($query) or die ($DB->error());
       }
    }

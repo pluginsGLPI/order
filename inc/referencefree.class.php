@@ -68,28 +68,31 @@ class PluginOrderReferenceFree extends CommonDBTM {
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
+         $default_charset = DBConnection::getDefaultCharset();
+         $default_collation = DBConnection::getDefaultCollation();
+
          //Install
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_referencefrees` (
-               `id` int(11) NOT NULL auto_increment,
-               `entities_id` int(11) NOT NULL default '0',
-               `is_recursive` tinyint(1) NOT NULL default '0',
-               `plugin_order_orders_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
-               `name` varchar(255) collate utf8_unicode_ci default NULL,
-               `manufacturers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)',
-               `manufacturers_reference` varchar(255) collate utf8_unicode_ci NOT NULL DEFAULT '',
-               `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file',
-               `templates_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
-               `comment` text collate utf8_unicode_ci,
+               `id` int unsigned NOT NULL auto_increment,
+               `entities_id` int unsigned NOT NULL default '0',
+               `is_recursive` tinyint NOT NULL default '0',
+               `plugin_order_orders_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
+               `name` varchar(255) default NULL,
+               `manufacturers_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)',
+               `manufacturers_reference` varchar(255) NOT NULL DEFAULT '',
+               `itemtype` varchar(100) NOT NULL COMMENT 'see .class.php file',
+               `templates_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
+               `comment` text,
                `price_taxfree` decimal(20,6) NOT NULL DEFAULT '0.000000',
                `price_discounted` decimal(20,6) NOT NULL DEFAULT '0.000000',
                `discount` decimal(20,6) NOT NULL DEFAULT '0.000000',
                `price_ati` decimal(20,6) NOT NULL DEFAULT '0.000000',
-               `states_id` int(11) NOT NULL default 1,
+               `states_id` int unsigned NOT NULL default 1,
                `delivery_date` date default NULL,
-               `plugin_order_ordertaxes_id` float NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)',
-               `is_deleted` tinyint(1) NOT NULL default '0',
-               `is_active` tinyint(1) NOT NULL default '1',
-               `notepad` longtext collate utf8_unicode_ci,
+               `plugin_order_ordertaxes_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)',
+               `is_deleted` tinyint NOT NULL default '0',
+               `is_active` tinyint NOT NULL default '1',
+               `notepad` longtext,
                `date_mod` timestamp NULL default NULL,
                PRIMARY KEY  (`id`),
                KEY `name` (`name`),
@@ -101,7 +104,7 @@ class PluginOrderReferenceFree extends CommonDBTM {
                KEY `is_active` (`is_active`),
                KEY `is_deleted` (`is_deleted`),
                KEY date_mod (date_mod)
-            ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
          $DB->query($query) or die ($DB->error());
 
       }
