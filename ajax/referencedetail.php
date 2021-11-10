@@ -46,14 +46,14 @@ if ($_POST["plugin_order_references_id"] > 0) {
                                                                 $_POST["suppliers_id"]);
    switch ($_POST["update"]) {
       case 'quantity':
-         echo "<input type='number' min='0' name='quantity' class='quantity'>";
+         echo "<input type='number' class='form-control' min='0' name='quantity' class='quantity'>";
          break;
       case 'priceht':
-         echo "<input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."'
+         echo "<input type='number' class='form-control' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."'
                       name='price' value='".Html::formatNumber($price, true)."' class='decimal'>";
          break;
       case 'pricediscounted':
-         echo "<input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."'
+         echo "<input type='number' class='form-control' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."'
                       name='discount' class='smalldecimal' value='0'>";
          break;
       case 'taxe':

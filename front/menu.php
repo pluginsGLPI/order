@@ -59,21 +59,21 @@ if (PluginOrderOrder::canView() || PluginOrderReference::canView()) {
 
    if (PluginOrderOrder::canView()) {
       echo "<tr class='tab_bg_1 center'>";
-      echo "<td><img src='../pics/order-icon.png'></td>";
+      echo "<td><i class='fa-2x ".PluginOrderOrder::getIcon()."'></i></td>";
       echo "<td><a href='".Toolbox::getItemTypeSearchURL('PluginOrderOrder')."'>" .
          __("Orders", "order") . "</a></td></tr>";
    }
 
    if (PluginOrderReference::canView()) {
       echo "<tr class='tab_bg_1 center'>";
-      echo "<td><img src='../pics/reference-icon.png'></td>";
+      echo "<td><i class='fa-2x ".PluginOrderReference::getIcon()."'></i></td>";
       echo "<td><a href='".Toolbox::getItemTypeSearchURL('PluginOrderReference')."'>" .
          __("Products references", "order") . "</a></td></tr>";
    }
 
    if (PluginOrderBill::canView()) {
       echo "<tr class='tab_bg_1 center'>";
-      echo "<td><img src='../pics/bill-icon.png'></td>";
+      echo "<td><i class='fa-2x ".PluginOrderBill::getIcon()."'></i></td>";
       echo "<td><a href='".Toolbox::getItemTypeSearchURL('PluginOrderBill')."'>" .
          __("Bills", "order") . "</a></td></tr>";
    }

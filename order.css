@@ -33,14 +33,10 @@ input[type=number].quantity {
    padding: 0;
    position: relative;
 }
-input[type=number].decimal{
-   width: 70px;
-}
-input[type=number].smalldecimal {
-   width: 50px;
-}
+input[type=number].decimal,
+input[type=number].smalldecimal,
 input[type=number].quantity {
-   width: 40px;
+   width: 100px;
 }
 
 input[type=number].decimal::-webkit-inner-spin-button,

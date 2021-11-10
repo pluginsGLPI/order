@@ -42,6 +42,6 @@ if (isset($_POST["update"])) {
 
 } else {
    Html::header(__("Orders", "order"), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu");
-   $PluginOrderPreference->showForm("./preference.form.php", $_GET["id"]);
+   $PluginOrderPreference->showForm($_GET["id"]);
    Html::footer();
 }

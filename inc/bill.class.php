@@ -329,7 +329,7 @@ class PluginOrderBill extends CommonDropdown
 
 
    public static function showOrdersItems(PluginOrderBill $bill) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $reference = new PluginOrderReference();
       $order     = new PluginOrderOrder();
@@ -369,7 +369,7 @@ class PluginOrderBill extends CommonDropdown
          $rand     = mt_rand();
          $itemtype = $data_ref["itemtype"];
          $item     = new $itemtype();
-         echo "<tr><th><ul><li>";
+         echo "<tr><th><ul class='list-unstyled'><li>";
          echo "<a href=\"javascript:showHideDiv('generation$rand','generation_img$rand', '"
               . $CFG_GLPI['root_doc'] . "/pics/plus.png','" . $CFG_GLPI['root_doc'] . "/pics/moins.png');\">";
          echo "<img alt='' name='generation_img$rand' src=\"" . $CFG_GLPI['root_doc'] . "/pics/plus.png\">";
@@ -432,7 +432,7 @@ class PluginOrderBill extends CommonDropdown
 
             //Type
             echo "<td align='center'>";
-            if (file_exists($CFG_GLPI['root_doc']."/inc/".strtolower($data["itemtype"])."type.class.php")) {
+            if (file_exists($CFG_GLPI['root_doc']."/src/".$data["itemtype"]."Type.php")) {
                echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"),
                                               $data["types_id"]);
             }
@@ -440,7 +440,7 @@ class PluginOrderBill extends CommonDropdown
 
             //Model
             echo "<td align='center'>";
-            if (file_exists($CFG_GLPI['root_doc']."/inc/".strtolower($data["itemtype"])."model.class.php")) {
+            if (file_exists($CFG_GLPI['root_doc']."/src/".$data["itemtype"]."Model.php")) {
                echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"),
                                               $data["models_id"]);
             }
@@ -466,8 +466,7 @@ class PluginOrderBill extends CommonDropdown
       if ($canedit) {
          echo "<div class='center'>";
          echo "<table width='950px' class='tab_glpi'>";
-         echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"]
-              . "/pics/arrow-left.png\" alt=''></td><td class='center'>";
+         echo "<tr><td<i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></td><td class='center'>";
          echo "<a onclick= \"if ( markCheckboxes('bills_form$rand') ) "
               . "return false;\" href='#'>" . __("Check all") . "</a></td>";
 
@@ -510,28 +509,33 @@ class PluginOrderBill extends CommonDropdown
    public static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
       $table = self::getTable();
 
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
+
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_bills` (
-                    `id` int(11) NOT NULL AUTO_INCREMENT,
-                    `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
-                    `number` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
+                    `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+                    `name` varchar(255) DEFAULT '',
+                    `number` varchar(255) DEFAULT '',
                     `billdate` timestamp NULL DEFAULT NULL,
                     `validationdate` timestamp NULL DEFAULT NULL,
-                    `comment` text COLLATE utf8_unicode_ci,
-                    `plugin_order_billstates_id` int(11) NOT NULL DEFAULT '0',
+                    `comment` text,
+                    `plugin_order_billstates_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                     `value` decimal(20,6) NOT NULL DEFAULT '0.000000',
-                    `plugin_order_billtypes_id` int(11) NOT NULL DEFAULT '0',
-                    `suppliers_id` int(11) NOT NULL DEFAULT '0',
-                    `plugin_order_orders_id` int(11) NOT NULL DEFAULT '0',
-                    `users_id_validation` int(11) NOT NULL DEFAULT '0',
-                    `entities_id` int(11) NOT NULL DEFAULT '0',
-                    `is_recursive` int(11) NOT NULL DEFAULT '0',
-                    `notepad` text COLLATE utf8_unicode_ci,
+                    `plugin_order_billtypes_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `suppliers_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `plugin_order_orders_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `users_id_validation` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `is_recursive` int NOT NULL DEFAULT '0',
+                    `notepad` text,
                     PRIMARY KEY (`id`)
-                  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
+                  ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
          $DB->query($query) or die ($DB->error());
       } else {
          if ($DB->fieldExists("glpi_plugin_order_orders_suppliers", "num_bill")) {
@@ -621,4 +625,7 @@ class PluginOrderBill extends CommonDropdown
    }
 
 
+   static function getIcon() {
+      return "ti ti-receipt";
+   }
 }

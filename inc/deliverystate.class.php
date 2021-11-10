@@ -43,6 +43,10 @@ class PluginOrderDeliveryState extends CommonDropdown {
    public static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
       $table = self::getTable();
       if (!$DB->tableExists($table)
           && !$DB->tableExists("glpi_dropdown_plugin_order_deliverystate")) {
@@ -50,21 +54,21 @@ class PluginOrderDeliveryState extends CommonDropdown {
 
          //Install
          $query = "CREATE TABLE `glpi_plugin_order_deliverystates` (
-                     `id` int(11) NOT NULL auto_increment,
-                     `name` varchar(255) collate utf8_unicode_ci default NULL,
-                     `comment` text collate utf8_unicode_ci,
+                     `id` int {$default_key_sign} NOT NULL auto_increment,
+                     `name` varchar(255) default NULL,
+                     `comment` text,
                      PRIMARY KEY  (`id`),
                      KEY `name` (`name`)
-                  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
          $DB->query($query) or die($DB->error());
       } else {
          $migration->displayMessage("Upgrading $table");
 
          //Upgrade 1.2.0
          $migration->renameTable("glpi_dropdown_plugin_order_deliverystate", $table);
-         $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
-         $migration->changeField($table, "name", "name", "varchar(255) collate utf8_unicode_ci default NULL");
-         $migration->changeField($table, "comments", "comment", "text collate utf8_unicode_ci");
+         $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
+         $migration->changeField($table, "name", "name", "varchar(255) default NULL");
+         $migration->changeField($table, "comments", "comment", "text");
          $migration->migrationOneTable($table);
       }
    }
