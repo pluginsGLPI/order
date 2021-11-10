@@ -340,7 +340,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
 
    public function showAddForm($plugin_order_orders_id) {
-      global  $CFG_GLPI,$DB;
+      global $DB;
 
       $order     = new PluginOrderOrder();
       $reference = new PluginOrderReference();
@@ -486,7 +486,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
                   echo "<tr align='center'>";
                   echo "<td class='tab_bg_1'>";
-                  Html::autocompletionTextField($this, "name");
+                  echo Html::input(
+                     'name',
+                     [
+                        'value' => $this->fields['name'],
+                     ]
+                  );
                   echo "</td>";
 
                   echo "<td class='tab_bg_1'>";
@@ -578,7 +583,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   echo "</td>";
 
                   echo "<td class='tab_bg_1' name='add_reference' style='display: none;'>";
-                  Html::autocompletionTextField($this, "reference_code");
+                  echo Html::input(
+                     'reference_code',
+                     [
+                        'value' => $this->fields['reference_code'],
+                     ]
+                  );
                   echo "</td>";
 
                   echo "<td class='tab_bg_1'><span id='show_validate'>";
@@ -769,7 +779,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       $global_rand = mt_rand();
       $config      = new PluginOrderConfig();
 
-      echo "<div class='center'>";
       echo "<form method='post' name='order_updatedetail_form$rand' " .
            "id='order_updatedetail_form$rand'  " .
            "action='" . Toolbox::getItemTypeFormURL('PluginOrderOrder') . "'>";
@@ -783,7 +792,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          $price_taxfree = $data_ref["price_taxfree"];
          $discount      = $data_ref["discount"];
          $rand          = mt_rand();
-         echo "<tr><th><ul><li>";
+         echo "<tr><th><ul class='list-unstyled'><li>";
          echo "<a href=\"javascript:showHideDiv('detail$rand','detail_img$rand', '"
               . $CFG_GLPI['root_doc'] . "/pics/plus.png','"
               . $CFG_GLPI['root_doc'] . "/pics/moins.png');\">";
@@ -979,7 +988,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
               "action=\"" . Toolbox::getItemTypeFormURL('PluginOrderOrder')."\">";
 
          if ($canedit) {
-            echo "<div class='center'>";
             echo "<table width='950px' class='tab_glpi'>";
             echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left-top.png\" alt=''>";
             echo "</td><td class='center'>";
@@ -1009,7 +1017,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             echo "</td>";
 
             echo "</table>";
-            echo "</div>";
          }
 
          echo "<table class='tab_cadre_fixe'>";
@@ -1181,7 +1188,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          }
 
          if ($canedit) {
-            echo "<div class='center'>";
             echo "<table width='950px' class='tab_glpi'>";
             echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''>";
             echo "</td><td class='center'>";
@@ -1211,10 +1217,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             echo "</td>";
 
             echo "</table>";
-            echo "</div>";
          }
          Html::closeForm();
-         echo "</div>";
       }
       echo "<br>";
    }
@@ -1290,8 +1294,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
 
    public function showPluginFromItems($itemtype, $ID) {
-      global $CFG_GLPI;
-
       $infos = $this->getOrderInfosByItem($itemtype, $ID);
       if ($infos) {
          echo "<tr align='center'><th colspan='5'>".__("Order informations", "order")."</th></tr>";
@@ -1466,9 +1468,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
 
    public function showBillsItems(PluginOrderOrder $order) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th colspan='2'>".__("Bills", "order")."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>".__("Payment status", "order").": </td>";
       echo "<td>";
@@ -1508,8 +1510,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
          echo "</tr></table>";
       }
-
-      echo "</div>";
 
       //Can write orders, and order is not already paid
       $canedit = $order->can($order->getID(), UPDATE)
@@ -1557,7 +1557,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       $reference = new PluginOrderReference();
 
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixe'>";
       if (!$DB->numrows($result_ref)) {
          echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
 
@@ -1565,7 +1565,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          $rand     = mt_rand();
          $itemtype = $data_ref["itemtype"];
          $item     = new $itemtype();
-         echo "<tr><th><ul><li>";
+         echo "<tr><th><ul class='list-unstyled'><li>";
          echo "<a href=\"javascript:showHideDiv('generation$rand','generation_img$rand', '".
               $CFG_GLPI['root_doc']."/pics/plus.png','".$CFG_GLPI['root_doc']."/pics/moins.png');\">";
          echo "<img alt='' name='generation_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
@@ -1684,11 +1684,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
       }
       Html::closeForm();
-      echo "</div>";
    }
 
    public function dropdownBillItemsActions($orders_id) {
-      global $CFG_GLPI;
       $action['']     = Dropdown::EMPTY_VALUE;
       $action['bill'] = __("Bill", "order");
       $rand           = Dropdown::showFromArray('chooseAction', $action);
@@ -1764,8 +1762,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
 
    public function updateDiscount($post) {
-      global $DB;
-
       $this->getFromDB($post['item_id']);
 
       $input                        = $this->fields;
@@ -1791,29 +1787,32 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order_detail")) {
          $migration->displayMessage("Installing $table");
 
+         $default_charset = DBConnection::getDefaultCharset();
+         $default_collation = DBConnection::getDefaultCollation();
+
          //install
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
-               `id` int(11) NOT NULL auto_increment,
-               `entities_id` int(11) NOT NULL default '0',
-               `is_recursive` tinyint(1) NOT NULL default '0',
-               `plugin_order_orders_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
-               `itemtype` varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file',
-               `items_id` int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
-               `plugin_order_references_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)',
-               `plugin_order_deliverystates_id` int (11)  NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_deliverystates (id)',
-               `plugin_order_ordertaxes_id` float NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)',
-               `plugin_order_analyticnatures_id` int (11) NOT NULL default '0' COMMENT 'RELATION to plugin_order_analyticnatures (id)',
-               `delivery_number` varchar(255) collate utf8_unicode_ci default NULL,
-               `delivery_comment` text collate utf8_unicode_ci,
+               `id` int unsigned NOT NULL auto_increment,
+               `entities_id` int unsigned NOT NULL default '0',
+               `is_recursive` tinyint NOT NULL default '0',
+               `plugin_order_orders_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
+               `itemtype` varchar(100) NOT NULL COMMENT 'see .class.php file',
+               `items_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
+               `plugin_order_references_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)',
+               `plugin_order_deliverystates_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_deliverystates (id)',
+               `plugin_order_ordertaxes_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)',
+               `plugin_order_analyticnatures_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to plugin_order_analyticnatures (id)',
+               `delivery_number` varchar(255) default NULL,
+               `delivery_comment` text,
                `price_taxfree` decimal(20,6) NOT NULL DEFAULT '0.000000',
                `price_discounted` decimal(20,6) NOT NULL DEFAULT '0.000000',
                `discount` decimal(20,6) NOT NULL DEFAULT '0.000000',
                `price_ati` decimal(20,6) NOT NULL DEFAULT '0.000000',
-               `states_id` int(11) NOT NULL default 1,
+               `states_id` int unsigned NOT NULL default 1,
                `delivery_date` date default NULL,
-               `plugin_order_bills_id` INT( 11 ) NOT NULL DEFAULT '0',
-               `plugin_order_billstates_id` INT( 11 ) NOT NULL DEFAULT '0',
-               `comment` text collate utf8_unicode_ci,
+               `plugin_order_bills_id` INT unsigned NOT NULL DEFAULT '0',
+               `plugin_order_billstates_id` INT unsigned NOT NULL DEFAULT '0',
+               `comment` text,
                PRIMARY KEY  (`id`),
                KEY `FK_device` (`items_id`,`itemtype`),
                KEY `entities_id` (`entities_id`),
@@ -1822,7 +1821,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                KEY `plugin_order_deliverystates_id` (`plugin_order_deliverystates_id`),
                KEY `plugin_order_analyticnatures_id` (`plugin_order_analyticnatures_id`),
                KEY `states_id` (`states_id`)
-            ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+            ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
             $DB->query($query) or die ($DB->error());
       } else {
          //Upgrade
@@ -1831,7 +1830,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          //1.1.2
          if ($DB->tableExists("glpi_plugin_order_detail")) {
             $migration->addField("glpi_plugin_order_detail", "delivery_status",
-                                 "int(1) NOT NULL default '0'");
+                                 "int NOT NULL default '0'");
             $migration->addField("glpi_plugin_order_detail", "delivery_comments", "TEXT");
             $migration->migrationOneTable("glpi_plugin_order_detail");
 
@@ -1840,22 +1839,22 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          //1.2.0
          $migration->renameTable("glpi_plugin_order_detail", $table);
 
-         $migration->changeField($table, "ID", "id", "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($table, "ID", "id", "int unsigned NOT NULL AUTO_INCREMENT");
          $migration->changeField($table, "FK_order", "plugin_order_orders_id",
-                                  "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'");
+                                  "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'");
          $migration->changeField($table, "device_type", "itemtype",
-                                 "varchar(100) collate utf8_unicode_ci NOT NULL COMMENT 'see .class.php file'");
+                                 "varchar(100) NOT NULL COMMENT 'see .class.php file'");
          $migration->changeField($table, "FK_device", "items_id",
-                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
+                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
          $migration->changeField($table, "FK_reference", "plugin_order_references_id",
-                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'");
+                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'");
          $migration->changeField($table, "delivery_status", "plugin_order_deliverystates_id",
-                                 "int (11)  NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_deliverystates (id)'");
+                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_deliverystates (id)'");
          $migration->changeField($table, "deliverynum", "delivery_number",
-                                 "varchar(255) collate utf8_unicode_ci default NULL");
+                                 "varchar(255) default NULL");
          $migration->changeField($table, "delivery_comments", "delivery_comment",
-                                 "text collate utf8_unicode_ci");
-         $migration->changeField($table, "status", "states_id", "int(11) NOT NULL default 1");
+                                 "text");
+         $migration->changeField($table, "status", "states_id", "int unsigned NOT NULL default 1");
          $migration->changeField($table, "date", "delivery_date", "date default NULL");
          $migration->addKey($table, ["items_id", "itemtype"], "FK_device" );
          $migration->addKey($table, ["itemtype", "items_id"], "item");
@@ -1867,7 +1866,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          Plugin::migrateItemType([], [], [$table]);
           //1.4.0
          $migration->addField($table, "plugin_order_ordertaxes_id",
-                              "INT (11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)'");
+                              "INT unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)'");
          $migration->migrationOneTable($table);
 
          /* Migrate VAT */
@@ -1878,14 +1877,14 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             $result = $DB->query($query) or die($DB->error());
          }
           //1.5.0
-         $migration->addField($table, "entities_id", "INT( 11 ) NOT NULL DEFAULT '0'");
-         $migration->addField($table, "is_recursive", "TINYINT( 1 ) NOT NULL DEFAULT '0'");
-         $migration->addField($table, "plugin_order_bills_id", "INT( 11 ) NOT NULL DEFAULT '0'");
-         $migration->addField($table, "plugin_order_billstates_id", "INT( 11 ) NOT NULL DEFAULT '0'");
+         $migration->addField($table, "entities_id", "INT unsigned NOT NULL DEFAULT '0'");
+         $migration->addField($table, "is_recursive", "TINYINT NOT NULL DEFAULT '0'");
+         $migration->addField($table, "plugin_order_bills_id", "INT unsigned NOT NULL DEFAULT '0'");
+         $migration->addField($table, "plugin_order_billstates_id", "INT unsigned NOT NULL DEFAULT '0'");
          $migration->addKey($table, "entities_id");
          $migration->addKey($table, "plugin_order_bills_id");
          $migration->addKey($table, "plugin_order_billstates_id");
-         $migration->addField($table, "comment", "text collate utf8_unicode_ci");
+         $migration->addField($table, "comment", "text");
          $migration->migrationOneTable($table);
 
          //Change format for prices : from float to decimal
@@ -1917,7 +1916,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          }
 
          if (!$DB->fieldExists($table, 'plugin_order_analyticnatures_id')) {
-            $migration->addField($table, 'plugin_order_analyticnatures_id', 'integer', ['after' => 'plugin_order_ordertaxes_id']);
+            $migration->addField($table, 'plugin_order_analyticnatures_id', "INT unsigned NOT NULL DEFAULT '0'", ['after' => 'plugin_order_ordertaxes_id']);
             $migration->migrationOneTable($table);
          }
 
@@ -1995,6 +1994,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    public static function showForInfocom(CommonDBTM $item) {
       $order_item = new self();
       $order_item->showPluginFromItems(get_class($item), $item->getField('id'));
+
+      return $item;
    }
 
 
@@ -2048,7 +2049,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          'WHERE'  => ['id' => $reference_id]
       ]);
 
-      $data = $result->next();
+      $data = $result->current();
       return $data['manufacturers_reference'];
    }
 }

@@ -209,7 +209,12 @@ class PluginOrderReception extends CommonDBChild {
       echo "<td>".__("Delivery form").": </td>";
       echo "<td>";
       if ($canedit) {
-         Html::autocompletionTextField($this, "delivery_number");
+         echo Html::input(
+            'delivery_number',
+            [
+               'value' => $this->fields['delivery_number'],
+            ]
+         );
       } else {
          echo $this->fields["delivery_number"];
       }
@@ -313,7 +318,7 @@ class PluginOrderReception extends CommonDBChild {
    public function showOrderReceptionItem($data_ref, $numref, $canedit, $reference, $order_item, $orders_id, $order_order, $table) {
       global $DB, $CFG_GLPI;
 
-      echo "<div class='center'><table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixe'>";
 
       if (!$numref) {
          echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
@@ -338,7 +343,7 @@ class PluginOrderReception extends CommonDBChild {
 
          $item = new $typeRef();
          $rand = mt_rand();
-         echo "<tr><th><ul><li>";
+         echo "<tr><th><ul class='list-unstyled'><li>";
          echo "<a href=\"javascript:showHideDiv('reception$rand','reception_img$rand', '".
               $CFG_GLPI['root_doc']."/pics/plus.png','".$CFG_GLPI['root_doc']."/pics/moins.png');\">";
          echo "<img alt='' name='reception_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
@@ -370,7 +375,7 @@ class PluginOrderReception extends CommonDBChild {
               . " / " . $total . "</td>";
          echo "</tr></table>";
 
-         echo "<div class='center' id='reception$rand' style='display:none'>";
+         echo "<div id='reception$rand' style='display:none'>";
 
          $query = "SELECT items.`id` AS IDD,
                              ref.`id` AS id,
@@ -493,8 +498,6 @@ class PluginOrderReception extends CommonDBChild {
             }
             Html::closeForm();
          }
-
-         echo "</div>";
       }
       echo "<br>";
    }
@@ -565,13 +568,28 @@ class PluginOrderReception extends CommonDBChild {
          ]);
 
          echo "<label class='order_ma'>" . __("Default name", "order") . "</label>";
-         Html::autocompletionTextField($config, "generated_name");
+         echo Html::input(
+            'generated_name',
+            [
+               'value' => $config->fields['generated_name'],
+            ]
+         );
 
          echo "<label class='order_ma'>" . __("Default serial number", "order") . "</label>";
-         Html::autocompletionTextField($config, "generated_serial");
+         echo Html::input(
+            'generated_serial',
+            [
+               'value' => $config->fields['generated_serial'],
+            ]
+         );
 
          echo "<label class='order_ma'>" . __("Default inventory number", "order") . "<label>";
-         Html::autocompletionTextField($config, "generated_otherserial");
+         echo Html::input(
+            'generated_otherserial',
+            [
+               'value' => $config->fields['generated_otherserial'],
+            ]
+         );
       }
    }
 
@@ -599,8 +617,6 @@ class PluginOrderReception extends CommonDBChild {
 
 
    public function getReceptionStatus($ID) {
-      global $DB;
-
       $detail = new PluginOrderOrder_Item();
       $detail->getFromDB($ID);
 
@@ -671,8 +687,6 @@ class PluginOrderReception extends CommonDBChild {
 
 
    public function receptionOneItem($detailID, $orders_id, $delivery_date, $delivery_nb, $state_id) {
-      global $CFG_GLPI;
-
       $detail = new PluginOrderOrder_Item();
       $detail->update([
          "id"                             => $detailID,

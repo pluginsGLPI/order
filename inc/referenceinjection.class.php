@@ -83,8 +83,6 @@ class PluginOrderReferenceInjection extends PluginOrderReference
 
 
    public function getSpecificFieldValue($itemtype, $searchOption, $field, &$values) {
-      global $DB;
-
       $value = $values[$itemtype][$field];
       switch ($searchOption['displaytype']) {
          case "reference_itemtype":

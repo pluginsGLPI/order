@@ -41,7 +41,7 @@ if (isset($_POST["update"])) {
    Html::header(__("Orders", "order"), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "order");
 
    Session::checkRight("config", UPDATE);
-   $config->showForm();
+   $config->showForm(1);
 
    Html::footer();
 

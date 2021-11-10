@@ -9,8 +9,6 @@ class PluginOrderMenu extends CommonGLPI {
 
 
    static function getMenuContent() {
-      global $CFG_GLPI;
-
       $menu = [
          'title' => self::getTypeName(2),
          'page'  => self::getSearchURL(false),
@@ -44,7 +42,8 @@ class PluginOrderMenu extends CommonGLPI {
             'page'  => PluginOrderBill::getSearchURL(false),
             'links' => [
                'search' => PluginOrderBill::getSearchURL(false)
-            ]
+            ],
+            'icon'  => PluginOrderBill::getIcon(),
          ];
          if (PluginOrderBill::canCreate()) {
             $menu['options']['bill']['links']['add'] = PluginOrderBill::getFormURL(false);
@@ -60,7 +59,8 @@ class PluginOrderMenu extends CommonGLPI {
             'page'  => PluginOrderReference::getSearchURL(false),
             'links' => [
                'search' => PluginOrderReference::getSearchURL(false)
-            ]
+            ],
+            'icon'  => PluginOrderReference::getIcon(),
          ];
          if (PluginOrderReference::canCreate()) {
             $menu['options']['references']['links']['add'] = PluginOrderReference::getFormURL(false);
