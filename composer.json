@@ -1,6 +1,6 @@
 {
     "require": {
-        "php": "^7.2",
+        "php": ">=7.4",
         "masnathan/odtphp": "dev-teclib"
     },
     "require-dev": {
@@ -9,7 +9,7 @@
     "config": {
         "optimize-autoloader": true,
         "platform": {
-            "php": "7.2.0"
+            "php": "7.4.0"
         },
         "sort-packages": true
     },

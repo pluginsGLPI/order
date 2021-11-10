@@ -359,7 +359,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
 
 
    public static function showOrderSupplierSurvey($ID) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $order = new PluginOrderOrder;
       $order->getFromDB($ID);
@@ -442,43 +442,47 @@ class PluginOrderSurveySupplier extends CommonDBChild {
       global $DB;
       //Only avaiable since 1.3.0
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
       $table = self::getTable();
       if (!$DB->tableExists("glpi_plugin_order_surveysuppliers")) {
          $migration->displayMessage("Installing $table");
 
          //Installation
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_surveysuppliers` (
-                  `id` int(11) NOT NULL auto_increment,
-                  `entities_id` int(11) NOT NULL default '0',
-                  `is_recursive` tinyint(1) NOT NULL default '0',
-                  `plugin_order_orders_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
-                  `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
-                  `answer1` int(11) NOT NULL default 0,
-                  `answer2` int(11) NOT NULL default 0,
-                  `answer3` int(11) NOT NULL default 0,
-                  `answer4` int(11) NOT NULL default 0,
-                  `answer5` int(11) NOT NULL default 0,
-                  `comment` text collate utf8_unicode_ci,
+                  `id` int {$default_key_sign} NOT NULL auto_increment,
+                  `entities_id` int {$default_key_sign} NOT NULL default '0',
+                  `is_recursive` tinyint NOT NULL default '0',
+                  `plugin_order_orders_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
+                  `suppliers_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
+                  `answer1` int NOT NULL default 0,
+                  `answer2` int NOT NULL default 0,
+                  `answer3` int NOT NULL default 0,
+                  `answer4` int NOT NULL default 0,
+                  `answer5` int NOT NULL default 0,
+                  `comment` text,
                   PRIMARY KEY  (`id`),
                   KEY `plugin_order_orders_id` (`plugin_order_orders_id`),
                   KEY `entities_id` (`entities_id`),
                   KEY `suppliers_id` (`suppliers_id`)
-               ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
          $DB->query($query) or die($DB->error());
       } else {
          //upgrade
          $migration->displayMessage("Upgrading $table");
 
          //1.2.0
-         $migration->changeField($table, "ID", "id", "int(11) NOT NULL auto_increment");
+         $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
          $migration->changeField($table, "FK_order", "plugin_order_orders_id",
-                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'");
          $migration->changeField($table, "FK_enterprise", "suppliers_id",
-                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
          $migration->changeField($table, "comment", "comment",
-                                 "text collate utf8_unicode_ci");
-         $migration->addField($table, "entities_id", "int(11) NOT NULL default '0'");
-         $migration->addField($table, "is_recursive", "tinyint(1) NOT NULL default '0'");
+                                 "text");
+         $migration->addField($table, "entities_id", "int {$default_key_sign} NOT NULL default '0'");
+         $migration->addField($table, "is_recursive", "tinyint NOT NULL default '0'");
          $migration->addKey($table, "plugin_order_orders_id");
          $migration->addKey($table, "suppliers_id");
          $migration->migrationOneTable($table);
@@ -527,6 +531,4 @@ class PluginOrderSurveySupplier extends CommonDBChild {
 
       return true;
    }
-
-
 }

@@ -50,8 +50,6 @@ class PluginOrderProfile extends CommonDBTM {
     * @param $profile
     * */
    static function addDefaultProfileInfos($profiles_id, $rights, $drop_existing = false) {
-      global $DB;
-
       $profileRight = new ProfileRight();
       foreach ($rights as $right => $value) {
          if (countElementsInTable('glpi_profilerights',
@@ -76,20 +74,17 @@ class PluginOrderProfile extends CommonDBTM {
       }
    }
 
-
-   /* profiles modification */
-
-   public function showForm($profiles_id = 0, $openform = true, $closeform = true) {
+   public function showForm($ID, array $options = []) {
 
       echo "<div class='firstbloc'>";
 
-      if ($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]) && $openform) {
+      if ($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE])) {
          $profile = new Profile();
          echo "<form method='post' action='".$profile->getFormURL()."'>";
       }
 
       $profile = new Profile();
-      $profile->getFromDB($profiles_id);
+      $profile->getFromDB($ID);
 
       //$rights = ['rights' => self::getRights($profile->getField('interface'),];
       $rights = [];
@@ -103,10 +98,10 @@ class PluginOrderProfile extends CommonDBTM {
          'title'         => __('Orders', 'order'),
       ]);
 
-      if ($canedit && $closeform) {
+      if ($canedit) {
          echo "<div class='center'>";
-         echo Html::hidden('id', ['value' => $profiles_id]);
-         echo Html::submit(_sx('button', 'Save'), ['name' => 'update']);
+         echo Html::hidden('id', ['value' => $ID]);
+         echo Html::submit(_sx('button', 'Save'), ['name' => 'update', 'class' => 'btn btn-primary']);
          echo "</div>";
          Html::closeForm();
       }

@@ -161,10 +161,11 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
       $reference_supplier = new self();
       if ($item->getType() == 'PluginOrderReference') {
-         $reference_supplier->showReferenceManufacturers($item->getID());
          if ($item->can($item->getID(), UPDATE)) {
             $reference_supplier->showForm(0, ['plugin_order_references_id' => $item->getID()]);
          }
+         $reference_supplier->showReferenceManufacturers($item->getID());
+
       }
 
       return true;
@@ -216,7 +217,12 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
       echo "<td>".__("Manufacturer's product reference", "order").": </td>";
       echo "<td>";
-      Html::autocompletionTextField($this, "reference_code");
+      echo Html::input(
+         'reference_code',
+         [
+            'value' => $this->fields['reference_code'],
+         ]
+      );
       echo "</td></tr>";
 
       echo "</tr>";
@@ -225,7 +231,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
       echo "<td>".__("Unit price tax free", "order").": </td>";
       echo "<td>";
-      echo "<input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price_taxfree' value=\""
+      echo "<input type='number' class='form-control' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price_taxfree' value=\""
         .Html::formatNumber($this->fields["price_taxfree"], true)."\" class='decimal'>";
       echo "</td>";
 
@@ -303,7 +309,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          if ($candelete) {
             echo "<div class='center'>";
             echo "<table width='900px' class='tab_glpi'>";
-            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
+            echo "<tr><td><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></td>";
             echo "<td class='center'><a onclick= \"if ( markCheckboxes('show_supplierref$rand') ) "
               ."return false;\" href='#'>".__("Check all")."</a></td>";
 
@@ -364,23 +370,27 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    public static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
       $table = self::getTable();
       if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order_references_manufacturers")) {
          $migration->displayMessage("Installing $table");
 
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_suppliers` (
-                     `id` int(11) NOT NULL auto_increment,
-                     `entities_id` int(11) NOT NULL default '0',
-                     `is_recursive` tinyint(1) NOT NULL default '0',
-                     `plugin_order_references_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)',
-                     `suppliers_id` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
+                     `id` int {$default_key_sign} NOT NULL auto_increment,
+                     `entities_id` int {$default_key_sign} NOT NULL default '0',
+                     `is_recursive` tinyint NOT NULL default '0',
+                     `plugin_order_references_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)',
+                     `suppliers_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
                      `price_taxfree` decimal(20,6) NOT NULL DEFAULT '0.000000',
-                     `reference_code` varchar(255) collate utf8_unicode_ci default NULL,
+                     `reference_code` varchar(255) default NULL,
                      PRIMARY KEY  (`id`),
                      KEY `entities_id` (`entities_id`),
                      KEY `plugin_order_references_id` (`plugin_order_references_id`),
                      KEY `suppliers_id` (`suppliers_id`)
-                  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
          $DB->query($query) or die($DB->error());
       } else {
          $migration->displayMessage("Upgrading $table");
@@ -388,25 +398,25 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          //1.1.0
          if ($DB->tableExists("glpi_plugin_order_references_manufacturers")) {
             $migration->addField("glpi_plugin_order_references_manufacturers", "reference_code",
-                              "varchar(255) NOT NULL collate utf8_unicode_ci default ''");
+                              "varchar(255) NOT NULL default ''");
             $migration->migrationOneTable("glpi_plugin_order_references_manufacturers");
          }
 
          //1.2.0
          $migration->renameTable("glpi_plugin_order_references_manufacturers", $table);
-         $migration->addField($table, "is_recursive", "int(11) NOT NULL default '0'");
+         $migration->addField($table, "is_recursive", "int {$default_key_sign} NOT NULL default '0'");
          $migration->addKey($table, "suppliers_id");
          $migration->addKey($table, "plugin_order_references_id");
          $migration->changeField($table, "ID", "id",
-                                 "int(11) NOT NULL auto_increment");
+                                 "int {$default_key_sign} NOT NULL auto_increment");
          $migration->changeField($table, "FK_entities", "entities_id",
-                                 "int(11) NOT NULL default '0'");
+                                 "int {$default_key_sign} NOT NULL default '0'");
          $migration->changeField($table, "FK_reference", "plugin_order_references_id",
-                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'");
          $migration->changeField($table, "FK_enterprise", "suppliers_id",
-                                 "int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
          $migration->changeField($table, "reference_code", "reference_code",
-                                 "varchar(255) collate utf8_unicode_ci default NULL");
+                                 "varchar(255) default NULL");
          $migration->changeField($table, "price_taxfree", "price_taxfree",
                                  "decimal(20,6) NOT NULL DEFAULT '0.000000'");
          $migration->migrationOneTable($table);
@@ -446,7 +456,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
 
    public static function showReferencesFromSupplier($ID) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       if (isset($_POST["start"])) {
          $start = (int) $_POST["start"];
@@ -518,6 +528,4 @@ class PluginOrderReference_Supplier extends CommonDBChild {
       echo "</table>";
       echo "</div>";
    }
-
-
 }

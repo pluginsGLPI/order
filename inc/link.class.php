@@ -61,12 +61,10 @@ class PluginOrderLink extends CommonDBChild {
 
 
    public function showItemGenerationForm($params) {
-      global $CFG_GLPI;
-
       // Retrieve configuration for generate assets feature
       $config = PluginOrderConfig::getConfig();
 
-      echo "<div class='center'>";
+      echo "<div class='center overflow-auto w-100'>";
       echo "<table class='tab_cadre_fixe'>";
       $colspan = "9";
       if (Session::isMultiEntitiesMode()) {
@@ -279,7 +277,7 @@ class PluginOrderLink extends CommonDBChild {
 
 
    public function showOrderLink($plugin_order_orders_id) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $PluginOrderOrder      = new PluginOrderOrder();
 
@@ -312,7 +310,6 @@ class PluginOrderLink extends CommonDBChild {
       $PluginOrderReference  = new PluginOrderReference();
       $PluginOrderReception  = new PluginOrderReception();
 
-      echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       if (!$numref) {
          echo "<tr><th>".__("No item to take delivery of", "order")."</th></tr>";
@@ -371,7 +368,7 @@ class PluginOrderLink extends CommonDBChild {
          }
 
          echo "<tr><th>";
-         echo "<ul><li>";
+         echo "<ul class='list-unstyled'><li>";
          echo "<a href=\"javascript:showHideDiv('generation$rand','generation_img$rand', " .
               "'".$CFG_GLPI['root_doc']."/pics/plus.png','".$CFG_GLPI['root_doc']."/pics/moins.png');\">";
          echo "<img alt='' name='generation_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
@@ -396,7 +393,7 @@ class PluginOrderLink extends CommonDBChild {
 
          echo "</table>";
 
-         echo "<div class='center' id='generation$rand' style='display:none'>";
+         echo "<div id='generation$rand' style='display:none'>";
          if ($canedit & $canuse && $num) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             $massiveactionparams['container']   = 'mass'.__CLASS__.$rand;
@@ -410,8 +407,7 @@ class PluginOrderLink extends CommonDBChild {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr>";
          if ($canedit & $canuse && $num) {
-            echo $header = "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)
-                           ."</th>";
+            echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
          }
          if ($itemtype != 'SoftwareLicense') {
             echo "<th>" . __("ID") . "</th>";
@@ -465,7 +461,6 @@ class PluginOrderLink extends CommonDBChild {
             Html::closeForm();
          }
          echo "</div>";
-         echo "</div>";
       }
       echo "<br>";
    }
@@ -490,8 +485,8 @@ class PluginOrderLink extends CommonDBChild {
          'FROM'   => $itemtype::getTable(),
          'WHERE'  => ['id' => $items_id]
       ]);
-      $data = $result->next();
-      return $data['serial'];
+      $data = $result->current();
+      return isset($data['serial']) ? $data['serial'] : '';
    }
 
    function getForbiddenStandardMassiveAction() {
@@ -708,8 +703,6 @@ class PluginOrderLink extends CommonDBChild {
 
 
    public function getReceptionItemName($items_id, $itemtype) {
-      global $CFG_GLPI;
-
       if ($items_id == 0) {
          return (__("No associated item", "order"));
       } else {
@@ -1384,6 +1377,4 @@ class PluginOrderLink extends CommonDBChild {
          }
       }
    }
-
-
 }

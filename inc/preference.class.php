@@ -151,9 +151,7 @@ class PluginOrderPreference extends CommonDBTM {
    }
 
 
-   public function showForm($ID) {
-      global $CFG_GLPI;
-
+   public function showForm($ID, array $options = []) {
       $version = plugin_version_order();
       $this->getFromDB($ID);
 
@@ -231,25 +229,29 @@ class PluginOrderPreference extends CommonDBTM {
    public static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
       //Only avaiable since 1.2.0
       $table = self::getTable();
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
          $query = "CREATE TABLE `$table` (
-                  `id` int(11) NOT NULL auto_increment,
-                  `users_id` int(11) NOT NULL default 0,
-                  `template` varchar(255) collate utf8_unicode_ci default NULL,
-                  `sign` varchar(255) collate utf8_unicode_ci default NULL,
+                  `id` int {$default_key_sign} NOT NULL auto_increment,
+                  `users_id` int {$default_key_sign} NOT NULL default 0,
+                  `template` varchar(255) default NULL,
+                  `sign` varchar(255) default NULL,
                   PRIMARY KEY  (`id`),
                   KEY `users_id` (`users_id`)
-               ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+               ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
          $DB->query($query) or die ($DB->error());
       } else {
 
          //1.5.3
-         $migration->changeField($table, 'ID', 'id', "int(11) NOT NULL auto_increment");
-         $migration->changeField($table, 'user_id', 'users_id', "INT(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($table, 'ID', 'id', "int {$default_key_sign} NOT NULL auto_increment");
+         $migration->changeField($table, 'user_id', 'users_id', "INT {$default_key_sign} NOT NULL DEFAULT '0'");
          $migration->addKey($table, 'users_id');
          $migration->migrationOneTable($table);
       }

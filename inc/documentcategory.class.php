@@ -109,6 +109,10 @@ class PluginOrderDocumentCategory extends CommonDBTM {
    static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
       $table = self::getTable();
       //Installation
       if (!$DB->tableExists($table)
@@ -116,13 +120,13 @@ class PluginOrderDocumentCategory extends CommonDBTM {
          $migration->displayMessage("Installing $table");
 
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_documentcategories` (
-                     `id` int(11) NOT NULL auto_increment,
-                     `documentcategories_id` int(11) NOT NULL default '0',
-                     `documentcategories_prefix` varchar(255) collate utf8_unicode_ci default NULL,
+                     `id` int {$default_key_sign} NOT NULL auto_increment,
+                     `documentcategories_id` int {$default_key_sign} NOT NULL default '0',
+                     `documentcategories_prefix` varchar(255) default NULL,
                      PRIMARY KEY  (`id`),
                      KEY `documentcategories_id` (`documentcategories_id`),
                      UNIQUE KEY `unicity` (`documentcategories_id`, `documentcategories_prefix`)
-                  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
          $DB->query($query) or die ($DB->error());
       }
    }
