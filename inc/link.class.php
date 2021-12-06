@@ -1188,13 +1188,11 @@ class PluginOrderLink extends CommonDBChild {
                $input["name"] = $values["name"];
             }
 
-            if ($item->getField('otherserial') != NOT_AVAILABLE) {
-               if ($item->fields['otherserial']) {
-                  $input["otherserial"] = autoName($item->fields["otherserial"], "otherserial",
-                                          $templateID, $add_item["itemtype"], $entity);
-               } else {
-                  $input["otherserial"] = $values["otherserial"];
-               }
+            if (isset($item->fields['otherserial']) && $item->fields['otherserial']) {
+               $input["otherserial"] = autoName($item->fields["otherserial"], "otherserial",
+                                       $templateID, $add_item["itemtype"], $entity);
+            } else {
+               $input["otherserial"] = $values["otherserial"];
             }
 
          } else if ($add_item["itemtype"] == 'Contract') {
