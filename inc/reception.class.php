@@ -755,60 +755,61 @@ class PluginOrderReception extends CommonDBChild {
          }
 
          foreach ($params2['items'][__CLASS__] as $key => $val) {
-            if ($val > 1) {
-               $add_data = $additional_data[$key];
-               if ($add_data["itemtype"] == 'SoftwareLicense') {
-                  $this->receptionAllItem($key,
-                                          $add_data["plugin_order_references_id"],
-                                          $params2['POST']["plugin_order_orders_id"],
-                                          $params2['POST']["delivery_date"],
-                                          $params2['POST']["delivery_number"],
-                                          $params2['POST']["plugin_order_deliverystates_id"]);
+            if ($val < 1) {
+                continue;
+            }
+            $add_data = $additional_data[$key];
+            if ($add_data["itemtype"] == 'SoftwareLicense') {
+               $this->receptionAllItem($key,
+                                       $add_data["plugin_order_references_id"],
+                                       $params2['POST']["plugin_order_orders_id"],
+                                       $params2['POST']["delivery_date"],
+                                       $params2['POST']["delivery_number"],
+                                       $params2['POST']["plugin_order_deliverystates_id"]);
 
-                  $plugin_order_orders_id = $params2['POST']["plugin_order_orders_id"];
-               } else {
-                  if ($detail->getFromDB($key)) {
-                     if (!$plugin_order_orders_id) {
-                        $plugin_order_orders_id = $detail->fields["plugin_order_orders_id"];
-                     }
-
-                     if ($detail->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
-                        $this->receptionOneItem($key, $plugin_order_orders_id,
-                                                $params2['POST']["delivery_date"],
-                                                $params2['POST']["delivery_number"],
-                                                $params2['POST']["plugin_order_deliverystates_id"]);
-                        if ($ma !== false) {
-                           $ma->itemDone(__CLASS__, $key, MassiveAction::ACTION_OK);
-                        }
-                     } else {
-                        Session::addMessageAfterRedirect(__("Item already taken delivery", "order"), true, ERROR);
-                        if ($ma !== false) {
-                           $ma->itemDone(__CLASS__, $key, MassiveAction::ACTION_KO);
-                        }
-                     }
-
-                     // Automatic generate asset
-                     $options = [
-                        "itemtype"                   => $add_data["itemtype"],
-                        "items_id"                   => $key,
-                        'entities_id'                => $detail->getEntityID(),
-                        "plugin_order_orders_id"     => $detail->fields["plugin_order_orders_id"],
-                        "plugin_order_references_id" => $add_data["plugin_order_references_id"],
-                     ];
-
-                     $config = PluginOrderConfig::getConfig(true);
-                     if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
-                        $options['manual_generate'] = $params2['POST']['manual_generate'];
-                        if ($params2['POST']['manual_generate'] == 1) {
-                           $options['name']            = $params2['POST']['generated_name'];
-                           $options['serial']          = $params2['POST']['generated_serial'];
-                           $options['otherserial']     = $params2['POST']['generated_otherserial'];
-                        }
-                     }
-                     self::generateAsset($options);
+               $plugin_order_orders_id = $params2['POST']["plugin_order_orders_id"];
+            } else {
+               if ($detail->getFromDB($key)) {
+                  if (!$plugin_order_orders_id) {
+                     $plugin_order_orders_id = $detail->fields["plugin_order_orders_id"];
                   }
+
+                  if ($detail->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
+                     $this->receptionOneItem($key, $plugin_order_orders_id,
+                                             $params2['POST']["delivery_date"],
+                                             $params2['POST']["delivery_number"],
+                                             $params2['POST']["plugin_order_deliverystates_id"]);
+                     if ($ma !== false) {
+                        $ma->itemDone(__CLASS__, $key, MassiveAction::ACTION_OK);
+                     }
+                  } else {
+                     Session::addMessageAfterRedirect(__("Item already taken delivery", "order"), true, ERROR);
+                     if ($ma !== false) {
+                        $ma->itemDone(__CLASS__, $key, MassiveAction::ACTION_KO);
+                     }
+                  }
+
+                  // Automatic generate asset
+                  $options = [
+                     "itemtype"                   => $add_data["itemtype"],
+                     "items_id"                   => $key,
+                     'entities_id'                => $detail->getEntityID(),
+                     "plugin_order_orders_id"     => $detail->fields["plugin_order_orders_id"],
+                     "plugin_order_references_id" => $add_data["plugin_order_references_id"],
+                  ];
+
+                  $config = PluginOrderConfig::getConfig(true);
+                  if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
+                     $options['manual_generate'] = $params2['POST']['manual_generate'];
+                     if ($params2['POST']['manual_generate'] == 1) {
+                        $options['name']            = $params2['POST']['generated_name'];
+                        $options['serial']          = $params2['POST']['generated_serial'];
+                        $options['otherserial']     = $params2['POST']['generated_otherserial'];
+                     }
+                  }
+                  self::generateAsset($options);
                }
-            }// $val == 1
+            }
          }
 
          self::updateDelivryStatus($plugin_order_orders_id);
