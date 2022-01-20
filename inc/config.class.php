@@ -629,13 +629,13 @@ class PluginOrderConfig extends CommonDBTM {
                         `generated_otherserial` varchar(255) collate utf8_unicode_ci default NULL,
                         `default_asset_states_id` int(11) NOT NULL default '0',
                         `tickettemplates_id_delivery` int(11) NOT NULL default '0',
-                        `order_status_draft` int(11) NOT NULL default '0',
-                        `order_status_waiting_approval` int(11) NOT NULL default '0',
-                        `order_status_approved` int(11) NOT NULL default '0',
-                        `order_status_partially_delivred` int(11) NOT NULL default '0',
-                        `order_status_completly_delivered` int(11) NOT NULL default '0',
-                        `order_status_canceled` int(11) NOT NULL default '0',
-                        `order_status_paid` int(11) NOT NULL default '0',
+                        `order_status_draft` int(11) NOT NULL default '1',
+                        `order_status_waiting_approval` int(11) NOT NULL default '2',
+                        `order_status_approved` int(11) NOT NULL default '3',
+                        `order_status_partially_delivred` int(11) NOT NULL default '4',
+                        `order_status_completly_delivered` int(11) NOT NULL default '5',
+                        `order_status_canceled` int(11) NOT NULL default '6',
+                        `order_status_paid` int(11) NOT NULL default '7',
                         `order_analyticnature_display` int(11) NOT NULL default '0',
                         `order_analyticnature_mandatory` int(11) NOT NULL default '0',
                         `order_accountsection_display` int(11) NOT NULL default '0',
@@ -748,7 +748,7 @@ class PluginOrderConfig extends CommonDBTM {
                      'order_status_paid'                => 7];
 
       foreach ($new_states as $field => $value) {
-         $migration->addField($table, $field, "int(11) NOT NULL default '0'", ['update' => $value]);
+         $migration->addField($table, $field, "int(11) NOT NULL default '{$value}'", ['update' => $value]);
       }
 
       if (!$DB->fieldExists($table, 'order_analyticnature_display')) {
