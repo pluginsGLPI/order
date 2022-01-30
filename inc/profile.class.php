@@ -100,7 +100,7 @@ class PluginOrderProfile extends CommonDBTM {
       if ($canedit) {
          echo "<div class='center'>";
          echo Html::hidden('id', ['value' => $ID]);
-         echo Html::submit(_sx('button', 'Save'), ['name' => 'update']);
+         echo Html::submit(_sx('button', 'Save'), ['name' => 'update', 'class' => 'btn btn-primary']);
          echo "</div>";
          Html::closeForm();
       }

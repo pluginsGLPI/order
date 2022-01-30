@@ -423,11 +423,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "</td>";
 
                echo "<td class='tab_bg_1'><span id='show_quantity'>";
-               echo "<input type='number' min='0' name='quantity' value='0' class='quantity' />";
+               echo "<input type='number' class='form-control' min='0' name='quantity' value='0' class='quantity' />";
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_priceht'>";
-               echo "<input type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price' value='0.00' class='decimal' />";
+               echo "<input type='number' class='form-control' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price' value='0.00' class='decimal' />";
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_taxe'>";
@@ -441,7 +441,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                echo "</span></td>";
 
                echo "<td class='tab_bg_1'><span id='show_pricediscounted'>";
-               echo "<input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount'
+               echo "<input type='number' class='form-control' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount'
                             value='".$order->fields['global_discount']."' class='smalldecimal' />";
                echo "</span></td>";
 
@@ -486,12 +486,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
                   echo "<tr align='center'>";
                   echo "<td class='tab_bg_1'>";
-                  echo Html::input(
-                     'name',
-                     [
-                        'value' => $this->fields['name'],
-                     ]
-                  );
+                  echo Html::input('name');
                   echo "</td>";
 
                   echo "<td class='tab_bg_1'>";
@@ -508,11 +503,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   echo "</td>";
 
                   echo "<td class='tab_bg_1'><span id='show_quantity'>";
-                  echo "<input type='number' min='0' name='quantity' value='0' class='quantity' />";
+                  echo "<input type='number' class='form-control' min='0' name='quantity' value='0' class='quantity' />";
                   echo "</span></td>";
 
                   echo "<td class='tab_bg_1'><span id='show_priceht'>";
-                  echo "<input type='number' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='price' value='0.00' class='decimal' />";
+                  echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='price' value='0.00' class='decimal' />";
                   echo "</span></td>";
 
                   echo "<td class='tab_bg_1'><span id='show_taxe'>";
@@ -526,7 +521,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   echo "</span></td>";
 
                   echo "<td class='tab_bg_1'><span id='show_pricediscounted'>";
-                  echo "<input type='number' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='discount'
+                  echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='discount'
                                value='".$order->fields['global_discount']."' class='smalldecimal' />";
                   echo "</span></td>";
 
@@ -570,7 +565,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   echo "<span id='show_types_id'>";
                   $file = 'other';
 
-                  $core_typefilename   = GLPI_ROOT . "/inc/" . strtolower($file) . "type.class.php";
+                  $core_typefilename   = GLPI_ROOT . "/src/" . $file . "Type.php";
                   $plugin_typefilename = PLUGIN_ORDER_DIR . "/inc/" . strtolower($file) . "type.class.php";
                   $itemtypeclass       = "PluginOrderOtherType";
 
@@ -583,12 +578,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   echo "</td>";
 
                   echo "<td class='tab_bg_1' name='add_reference' style='display: none;'>";
-                  echo Html::input(
-                     'reference_code',
-                     [
-                        'value' => $this->fields['reference_code'],
-                     ]
-                  );
+                  echo Html::input('reference_code');
                   echo "</td>";
 
                   echo "<td class='tab_bg_1'><span id='show_validate'>";
@@ -913,7 +903,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "</td>";
          /* type */
          echo "<td align='center'>";
-         if (file_exists(GLPI_ROOT."/inc/".strtolower($data_ref["itemtype"])."type.class.php")) {
+         if (file_exists(GLPI_ROOT."/src/".$data_ref["itemtype"]."Type.php")) {
             echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Type"),
                                            $data_ref["types_id"]);
          } else if ($data_ref["itemtype"] == "PluginOrderOther") {
@@ -922,7 +912,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "</td>";
          /* modele */
          echo "<td align='center'>";
-         if (file_exists(GLPI_ROOT."/inc/".strtolower($data_ref["itemtype"])."model.class.php")) {
+         if (file_exists(GLPI_ROOT."/src/".$data_ref["itemtype"]."Model.php")) {
             echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Model"),
                                            $data_ref["models_id"]);
          }
@@ -988,8 +978,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
               "action=\"" . Toolbox::getItemTypeFormURL('PluginOrderOrder')."\">";
 
          if ($canedit) {
-            echo "<table width='950px' class='tab_glpi'>";
-            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left-top.png\" alt=''>";
+            echo "<table width='950px' class='tab_cadre_fixe left'>";
+            echo "<tr><td><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i>";
             echo "</td><td class='center'>";
             echo "<a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='#'>".
                  __("Check all")."</a></td>";
@@ -1188,8 +1178,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          }
 
          if ($canedit) {
-            echo "<table width='950px' class='tab_glpi'>";
-            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''>";
+            echo "<table width='950px' class='tab_cadre_fixe left'>";
+            echo "<tr><td><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i>";
             echo "</td><td class='center'>";
             echo "<a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='#'>".
                  __("Check all")."</a></td>";
@@ -1387,7 +1377,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__("Unit price tax free", "order").": </td>";
       if ($canedit) {
-         echo "<td><input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price_taxfree' value='".$this->fields['price_taxfree']."' class='decimal'>";
+         echo "<td><input type='number' class='form-control' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price_taxfree' value='".$this->fields['price_taxfree']."' class='decimal'>";
       } else {
          echo "<td>".Html::formatNumber($this->fields['price_taxfree'])."</td>";
       }
@@ -1406,7 +1396,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__("Discount (%)", "order").": </td>";
       if ($canedit) {
-         echo "<td><input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount'
+         echo "<td><input type='number' class='form-control' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='discount'
                           value='".$this->fields['discount']."' class='decimal'>";
       } else {
          echo "<td>".Html::formatNumber($this->fields['discount'])."</td>";
@@ -1631,14 +1621,14 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
             //Type
             echo "<td align='center'>";
-            if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."type.class.php")) {
+            if (file_exists(GLPI_ROOT."/src/".$data["itemtype"]."Type.php")) {
                echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"),
                                               $data["types_id"]);
             }
             echo "</td>";
             //Model
             echo "<td align='center'>";
-            if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."model.class.php")) {
+            if (file_exists(GLPI_ROOT."/src/".$data["itemtype"]."Model.php")) {
                echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"),
                                               $data["models_id"]);
             }
@@ -1666,9 +1656,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
       echo "</table>";
       if ($canedit) {
          echo "<div class='center'>";
-         echo "<table width='950px' class='tab_glpi'>";
-         echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"].
-              "/pics/arrow-left.png\" alt=''></td><td class='center'>";
+         echo "<table width='950px' class='tab_cadre_fixe left'>";
+         echo "<tr><td><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></td><td class='center'>";
          echo "<a onclick= \"if ( markCheckboxes('bills_form$rand') ) " .
               "return false;\" href='#'>".__("Check all")."</a></td>";
 

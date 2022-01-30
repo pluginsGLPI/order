@@ -301,9 +301,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
    $field     = $searchopt[$ID]["field"];
    $reference = new PluginOrderReference();
    $itemnum   = $data['raw']["ITEM_".$num];
-   $itemtype  = isset($data['raw']["ITEM_".$num."_itemtype"])
-      ? $data['raw']["ITEM_".$num."_itemtype"]
-      : '';
+   $itemtype  = $data['raw']["ITEM_" . $num . "_itemtype"] ?? '';
 
    switch ($table.'.'.$field) {
       /* display associated items with order */
@@ -311,7 +309,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
          if ($itemtype == 'PluginOrderOther') {
             $file = PLUGIN_ORDER_DIR."/inc/othertype.class.php";
          } else {
-            $file = GLPI_ROOT."/inc/".strtolower($itemtype)."type.class.php";
+            $file = GLPI_ROOT."/src/".$itemtype."Type.php";
          }
          if (file_exists($file)) {
             return Dropdown::getDropdownName(getTableForItemType($itemtype."Type"),
@@ -321,7 +319,7 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
          }
          break;
       case "glpi_plugin_order_references.models_id" :
-         if (file_exists(GLPI_ROOT."/inc/".strtolower($itemtype)."model.class.php")) {
+         if (file_exists(GLPI_ROOT."/src/".$itemtype."Model.php")) {
             return Dropdown::getDropdownName(getTableForItemType($itemtype."Model"),
                                              $itemnum);
          } else {

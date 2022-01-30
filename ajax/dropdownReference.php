@@ -70,5 +70,5 @@ if (isset($_POST["itemtype"])) {
    $result = $DB->query($query);
    $price = $DB->result($result, 0, 'price_taxfree');
    $price = Html::formatNumber($price, true);
-   echo "<input value='$price' type='number' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price' class='decimal' min='0' />";
+   echo "<input value='$price' type='number' class='form-control' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price' class='decimal' min='0' />";
 }

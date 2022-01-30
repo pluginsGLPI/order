@@ -1032,7 +1032,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<td>".__("Postage", "order").": </td>";
       echo "<td>";
       if ($canedit) {
-         echo "<input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='port_price' size='5'"
+         echo "<input type='number' class='form-control' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='port_price' size='5'"
             ." value=\"".Html::formatNumber($this->fields["port_price"], true)."\">";
       } else {
          echo Html::formatNumber($this->fields["port_price"]);
@@ -1127,7 +1127,7 @@ class PluginOrderOrder extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__("Global discount to apply to items", 'order')."&nbsp;:</td><td>";
       if ($canedit) {
-         echo "<input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='global_discount' size='5'"
+         echo "<input type='number' class='form-control' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='global_discount' size='5'"
             ." value=\"".Html::formatNumber($this->fields["global_discount"], true)."\" class='smalldecimal'>";
       } else {
          echo Html::formatNumber($this->fields["global_discount"]);
