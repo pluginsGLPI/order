@@ -35,32 +35,7 @@ if (!defined('GLPI_ROOT')) {
 class PluginOrderAccountSection extends CommonDropdown {
 
    public static $rightname   = 'plugin_order_order';
-
-   public static function canCreate() {
-
-      return true;
-   }
-
-   public static function canPurge() {
-
-      return true;
-   }
-
-   public static function canDelete() {
-
-      return true;
-   }
-
-   public static function canUpdate() {
-
-      return true;
-   }
-
-   public static function canView() {
-
-      return true;
-   }
-
+   
    public static function getTypeName($nb = 0) {
 
       return __("Account section", "order");
