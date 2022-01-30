@@ -432,7 +432,7 @@ class PluginOrderBill extends CommonDropdown
 
             //Type
             echo "<td align='center'>";
-            if (file_exists($CFG_GLPI['root_doc']."/inc/".strtolower($data["itemtype"])."type.class.php")) {
+            if (file_exists($CFG_GLPI['root_doc']."/src/".$data["itemtype"]."Type.php")) {
                echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"),
                                               $data["types_id"]);
             }
@@ -440,7 +440,7 @@ class PluginOrderBill extends CommonDropdown
 
             //Model
             echo "<td align='center'>";
-            if (file_exists($CFG_GLPI['root_doc']."/inc/".strtolower($data["itemtype"])."model.class.php")) {
+            if (file_exists($CFG_GLPI['root_doc']."/src/".$data["itemtype"]."Model.php")) {
                echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"),
                                               $data["models_id"]);
             }
@@ -466,8 +466,7 @@ class PluginOrderBill extends CommonDropdown
       if ($canedit) {
          echo "<div class='center'>";
          echo "<table width='950px' class='tab_glpi'>";
-         echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"]
-              . "/pics/arrow-left.png\" alt=''></td><td class='center'>";
+         echo "<tr><td<i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></td><td class='center'>";
          echo "<a onclick= \"if ( markCheckboxes('bills_form$rand') ) "
               . "return false;\" href='#'>" . __("Check all") . "</a></td>";
 

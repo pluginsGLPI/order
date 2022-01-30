@@ -62,5 +62,5 @@ if (isset($_POST['name'])) {
 
    $data = Html::cleanInputText(Sanitizer::sanitize(rawurldecode(stripslashes($_POST["data"]))));
 
-   echo "<input type='number' step='$step' min='$min' name='".$_POST['name']."' value='$data' $class>";
+   echo "<input type='number' class='form-control' step='$step' min='$min' name='".$_POST['name']."' value='$data' $class>";
 }

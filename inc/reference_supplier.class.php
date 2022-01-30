@@ -231,7 +231,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
       echo "<td>".__("Unit price tax free", "order").": </td>";
       echo "<td>";
-      echo "<input type='number' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price_taxfree' value=\""
+      echo "<input type='number' class='form-control' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price_taxfree' value=\""
         .Html::formatNumber($this->fields["price_taxfree"], true)."\" class='decimal'>";
       echo "</td>";
 
@@ -309,7 +309,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
          if ($candelete) {
             echo "<div class='center'>";
             echo "<table width='900px' class='tab_glpi'>";
-            echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
+            echo "<tr><td><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></td>";
             echo "<td class='center'><a onclick= \"if ( markCheckboxes('show_supplierref$rand') ) "
               ."return false;\" href='#'>".__("Check all")."</a></td>";
 
