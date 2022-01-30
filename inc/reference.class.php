@@ -399,9 +399,11 @@ class PluginOrderReference extends CommonDBTM {
 
    public function getTemplateName($itemtype, $ID) {
       if ($ID) {
-         $item = new $itemtype();
-         $item->getFromDB($ID);
-         return $item->getField("template_name");
+         if (getItemForItemtype($itemtype)) {
+            $item = new $itemtype();
+            $item->getFromDB($ID);
+            return $item->getField("template_name");
+         }
       } else {
          return false;
       }

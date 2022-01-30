@@ -570,7 +570,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   echo "<span id='show_types_id'>";
                   $file = 'other';
 
-                  $core_typefilename   = GLPI_ROOT . "/inc/" . strtolower($file) . "type.class.php";
+                  $core_typefilename   = GLPI_ROOT . "/src/" . $file . "Type.php";
                   $plugin_typefilename = PLUGIN_ORDER_DIR . "/inc/" . strtolower($file) . "type.class.php";
                   $itemtypeclass       = "PluginOrderOtherType";
 
@@ -913,7 +913,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "</td>";
          /* type */
          echo "<td align='center'>";
-         if (file_exists(GLPI_ROOT."/inc/".strtolower($data_ref["itemtype"])."type.class.php")) {
+         if (file_exists(GLPI_ROOT."/src/".$data_ref["itemtype"]."Type.php")) {
             echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Type"),
                                            $data_ref["types_id"]);
          } else if ($data_ref["itemtype"] == "PluginOrderOther") {
@@ -922,7 +922,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          echo "</td>";
          /* modele */
          echo "<td align='center'>";
-         if (file_exists(GLPI_ROOT."/inc/".strtolower($data_ref["itemtype"])."model.class.php")) {
+         if (file_exists(GLPI_ROOT."/src/".$data_ref["itemtype"]."Model.php")) {
             echo Dropdown::getDropdownName(getTableForItemType($data_ref["itemtype"]."Model"),
                                            $data_ref["models_id"]);
          }
@@ -1631,14 +1631,14 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
             //Type
             echo "<td align='center'>";
-            if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."type.class.php")) {
+            if (file_exists(GLPI_ROOT."/src/".$data["itemtype"]."Type.php")) {
                echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Type"),
                                               $data["types_id"]);
             }
             echo "</td>";
             //Model
             echo "<td align='center'>";
-            if (file_exists(GLPI_ROOT."/inc/".strtolower($data["itemtype"])."model.class.php")) {
+            if (file_exists(GLPI_ROOT."/src/".$data["itemtype"]."Model.php")) {
                echo Dropdown::getDropdownName(getTableForItemType($data["itemtype"]."Model"),
                                               $data["models_id"]);
             }
@@ -1991,7 +1991,8 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    }
 
 
-   public static function showForInfocom(CommonDBTM $item) {
+   public static function showForInfocom($item) {
+//      $item = $params['item'];
       $order_item = new self();
       $order_item->showPluginFromItems(get_class($item), $item->getField('id'));
 
