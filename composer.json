@@ -4,7 +4,7 @@
         "masnathan/odtphp": "dev-teclib"
     },
     "require-dev": {
-        "glpi-project/tools": "^0.3"
+        "glpi-project/tools": "^0.4"
     },
     "config": {
         "optimize-autoloader": true,
