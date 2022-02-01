@@ -257,20 +257,6 @@ function plugin_order_getAddSearchOptions($itemtype) {
 }
 
 
-function plugin_order_addSelect($type, $ID, $num) {
-   $searchopt = &Search::getOptions($type);
-   $table     = $searchopt[$ID]["table"];
-   $field     = $searchopt[$ID]["field"];
-
-   if ($table == "glpi_plugin_order_references"
-       && $num != 0) {
-      return "`$table`.`itemtype`, `$table`.`$field` AS `ITEM_$num`, ";
-   } else {
-      return "";
-   }
-}
-
-
 function plugin_order_addLeftJoin($type, $ref_table, $new_table, $linkfield, &$already_link_tables) {
    $out = "";
    switch ($new_table) {
