@@ -47,16 +47,17 @@ class PluginOrderOrderType extends CommonDropdown {
       global $DB;
       //Only avaiable since 1.3.0
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       $table = self::getTable();
 
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
-         $default_charset = DBConnection::getDefaultCharset();
-         $default_collation = DBConnection::getDefaultCollation();
-
          $query = "CREATE TABLE `glpi_plugin_order_ordertypes` (
-                  `id` int unsigned NOT NULL auto_increment,
+                  `id` int {$default_key_sign} NOT NULL auto_increment,
                   `name` varchar(255) default NULL,
                   `comment` text,
                   PRIMARY KEY  (`id`),

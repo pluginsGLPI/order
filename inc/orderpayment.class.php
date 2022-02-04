@@ -45,15 +45,16 @@ class PluginOrderOrderPayment extends CommonDropdown {
    public static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       $table = self::getTable();
       if (!$DB->tableExists($table) && !$DB->tableExists("glpi_dropdown_plugin_order_payment")) {
          $migration->displayMessage("Installing $table");
 
-         $default_charset = DBConnection::getDefaultCharset();
-         $default_collation = DBConnection::getDefaultCollation();
-
          $query = "CREATE TABLE `glpi_plugin_order_orderpayments` (
-                  `id` int unsigned NOT NULL auto_increment,
+                  `id` int {$default_key_sign} NOT NULL auto_increment,
                   `name` varchar(255) default NULL,
                   `comment` text,
                   PRIMARY KEY  (`id`),
@@ -65,7 +66,7 @@ class PluginOrderOrderPayment extends CommonDropdown {
 
          //1.2.0
          $migration->renameTable("glpi_dropdown_plugin_order_payment", $table);
-         $migration->changeField($table, "ID", "id", "int unsigned NOT NULL auto_increment");
+         $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
          $migration->changeField($table, "name", "name", "varchar(255) default NULL");
          $migration->changeField($table, "comments", "comment", "text");
          $migration->migrationOneTable($table);

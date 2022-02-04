@@ -370,19 +370,20 @@ class PluginOrderReference_Supplier extends CommonDBChild {
    public static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       $table = self::getTable();
       if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order_references_manufacturers")) {
          $migration->displayMessage("Installing $table");
 
-         $default_charset = DBConnection::getDefaultCharset();
-         $default_collation = DBConnection::getDefaultCollation();
-
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_suppliers` (
-                     `id` int unsigned NOT NULL auto_increment,
-                     `entities_id` int unsigned NOT NULL default '0',
+                     `id` int {$default_key_sign} NOT NULL auto_increment,
+                     `entities_id` int {$default_key_sign} NOT NULL default '0',
                      `is_recursive` tinyint NOT NULL default '0',
-                     `plugin_order_references_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)',
-                     `suppliers_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
+                     `plugin_order_references_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)',
+                     `suppliers_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
                      `price_taxfree` decimal(20,6) NOT NULL DEFAULT '0.000000',
                      `reference_code` varchar(255) default NULL,
                      PRIMARY KEY  (`id`),
@@ -403,17 +404,17 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
          //1.2.0
          $migration->renameTable("glpi_plugin_order_references_manufacturers", $table);
-         $migration->addField($table, "is_recursive", "int unsigned NOT NULL default '0'");
+         $migration->addField($table, "is_recursive", "int {$default_key_sign} NOT NULL default '0'");
          $migration->addKey($table, "suppliers_id");
          $migration->addKey($table, "plugin_order_references_id");
          $migration->changeField($table, "ID", "id",
-                                 "int unsigned NOT NULL auto_increment");
+                                 "int {$default_key_sign} NOT NULL auto_increment");
          $migration->changeField($table, "FK_entities", "entities_id",
-                                 "int unsigned NOT NULL default '0'");
+                                 "int {$default_key_sign} NOT NULL default '0'");
          $migration->changeField($table, "FK_reference", "plugin_order_references_id",
-                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'");
          $migration->changeField($table, "FK_enterprise", "suppliers_id",
-                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
          $migration->changeField($table, "reference_code", "reference_code",
                                  "varchar(255) default NULL");
          $migration->changeField($table, "price_taxfree", "price_taxfree",

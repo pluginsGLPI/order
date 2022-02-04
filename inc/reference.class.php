@@ -1042,25 +1042,26 @@ class PluginOrderReference extends CommonDBTM {
    public static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       $table = self::getTable();
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
-         $default_charset = DBConnection::getDefaultCharset();
-         $default_collation = DBConnection::getDefaultCollation();
-
          //Install
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references` (
-               `id` int unsigned NOT NULL auto_increment,
-               `entities_id` int unsigned NOT NULL default '0',
+               `id` int {$default_key_sign} NOT NULL auto_increment,
+               `entities_id` int {$default_key_sign} NOT NULL default '0',
                `is_recursive` tinyint NOT NULL default '0',
                `name` varchar(255) default NULL,
-               `manufacturers_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)',
+               `manufacturers_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)',
                `manufacturers_reference` varchar(255) NOT NULL DEFAULT '',
-               `types_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtypes tables (id)',
-               `models_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemmodels tables (id)',
+               `types_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtypes tables (id)',
+               `models_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemmodels tables (id)',
                `itemtype` varchar(100) NOT NULL COMMENT 'see .class.php file',
-               `templates_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
+               `templates_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
                `comment` text,
                `is_deleted` tinyint NOT NULL default '0',
                `is_active` tinyint NOT NULL default '1',
@@ -1084,26 +1085,26 @@ class PluginOrderReference extends CommonDBTM {
          $migration->displayMessage("Upgrading $table");
 
          //1.1.0
-         $migration->changeField($table, "FK_manufacturer", "FK_glpi_enterprise", "int unsigned NOT NULL DEFAULT '0'");
+         $migration->changeField($table, "FK_manufacturer", "FK_glpi_enterprise", "int {$default_key_sign} NOT NULL DEFAULT '0'");
 
          ///1.2.0
-         $migration->changeField($table, "ID", "id", "int unsigned NOT NULL auto_increment");
+         $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
          $migration->changeField($table, "FK_entities", "entities_id",
-                                 "int unsigned NOT NULL default '0'");
+                                 "int {$default_key_sign} NOT NULL default '0'");
          $migration->changeField($table, "recursive", "is_recursive",
                                  "tinyint NOT NULL default '0'");
          $migration->changeField($table, "name", "name",
                                  "varchar(255) default NULL");
          $migration->changeField($table, "FK_glpi_enterprise", "manufacturers_id",
-                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)'");
          $migration->changeField($table, "FK_type", "types_id",
-                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtypes tables (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtypes tables (id)'");
          $migration->changeField($table, "FK_model", "models_id",
-                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemmodels tables (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemmodels tables (id)'");
          $migration->changeField($table, "type", "itemtype",
                                  "varchar(100) NOT NULL COMMENT 'see .class.php file'");
          $migration->changeField($table, "template", "templates_id",
-                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
          $migration->changeField($table, "comments", "comment",
                                  "text");
          $migration->changeField($table, "deleted", "is_deleted",

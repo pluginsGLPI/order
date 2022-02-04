@@ -509,28 +509,29 @@ class PluginOrderBill extends CommonDropdown
    public static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       $table = self::getTable();
 
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
-         $default_charset = DBConnection::getDefaultCharset();
-         $default_collation = DBConnection::getDefaultCollation();
-
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_bills` (
-                    `id` int unsigned NOT NULL AUTO_INCREMENT,
+                    `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
                     `name` varchar(255) DEFAULT '',
                     `number` varchar(255) DEFAULT '',
                     `billdate` timestamp NULL DEFAULT NULL,
                     `validationdate` timestamp NULL DEFAULT NULL,
                     `comment` text,
-                    `plugin_order_billstates_id` int unsigned NOT NULL DEFAULT '0',
+                    `plugin_order_billstates_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                     `value` decimal(20,6) NOT NULL DEFAULT '0.000000',
-                    `plugin_order_billtypes_id` int unsigned NOT NULL DEFAULT '0',
-                    `suppliers_id` int unsigned NOT NULL DEFAULT '0',
-                    `plugin_order_orders_id` int unsigned NOT NULL DEFAULT '0',
-                    `users_id_validation` int unsigned NOT NULL DEFAULT '0',
-                    `entities_id` int unsigned NOT NULL DEFAULT '0',
+                    `plugin_order_billtypes_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `suppliers_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `plugin_order_orders_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `users_id_validation` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                     `is_recursive` int NOT NULL DEFAULT '0',
                     `notepad` text,
                     PRIMARY KEY (`id`)

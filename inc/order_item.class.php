@@ -1772,36 +1772,37 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    public static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       $table = self::getTable();
 
       if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order_detail")) {
          $migration->displayMessage("Installing $table");
 
-         $default_charset = DBConnection::getDefaultCharset();
-         $default_collation = DBConnection::getDefaultCollation();
-
          //install
          $query = "CREATE TABLE IF NOT EXISTS `$table` (
-               `id` int unsigned NOT NULL auto_increment,
-               `entities_id` int unsigned NOT NULL default '0',
+               `id` int {$default_key_sign} NOT NULL auto_increment,
+               `entities_id` int {$default_key_sign} NOT NULL default '0',
                `is_recursive` tinyint NOT NULL default '0',
-               `plugin_order_orders_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
+               `plugin_order_orders_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
                `itemtype` varchar(100) NOT NULL COMMENT 'see .class.php file',
-               `items_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
-               `plugin_order_references_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)',
-               `plugin_order_deliverystates_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_deliverystates (id)',
-               `plugin_order_ordertaxes_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)',
-               `plugin_order_analyticnatures_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to plugin_order_analyticnatures (id)',
+               `items_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
+               `plugin_order_references_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)',
+               `plugin_order_deliverystates_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_deliverystates (id)',
+               `plugin_order_ordertaxes_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)',
+               `plugin_order_analyticnatures_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to plugin_order_analyticnatures (id)',
                `delivery_number` varchar(255) default NULL,
                `delivery_comment` text,
                `price_taxfree` decimal(20,6) NOT NULL DEFAULT '0.000000',
                `price_discounted` decimal(20,6) NOT NULL DEFAULT '0.000000',
                `discount` decimal(20,6) NOT NULL DEFAULT '0.000000',
                `price_ati` decimal(20,6) NOT NULL DEFAULT '0.000000',
-               `states_id` int unsigned NOT NULL default 1,
+               `states_id` int {$default_key_sign} NOT NULL default 1,
                `delivery_date` date default NULL,
-               `plugin_order_bills_id` INT unsigned NOT NULL DEFAULT '0',
-               `plugin_order_billstates_id` INT unsigned NOT NULL DEFAULT '0',
+               `plugin_order_bills_id` INT {$default_key_sign} NOT NULL DEFAULT '0',
+               `plugin_order_billstates_id` INT {$default_key_sign} NOT NULL DEFAULT '0',
                `comment` text,
                PRIMARY KEY  (`id`),
                KEY `FK_device` (`items_id`,`itemtype`),
@@ -1829,22 +1830,22 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          //1.2.0
          $migration->renameTable("glpi_plugin_order_detail", $table);
 
-         $migration->changeField($table, "ID", "id", "int unsigned NOT NULL AUTO_INCREMENT");
+         $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL AUTO_INCREMENT");
          $migration->changeField($table, "FK_order", "plugin_order_orders_id",
-                                  "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'");
+                                  "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'");
          $migration->changeField($table, "device_type", "itemtype",
                                  "varchar(100) NOT NULL COMMENT 'see .class.php file'");
          $migration->changeField($table, "FK_device", "items_id",
-                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)'");
          $migration->changeField($table, "FK_reference", "plugin_order_references_id",
-                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'");
          $migration->changeField($table, "delivery_status", "plugin_order_deliverystates_id",
-                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_deliverystates (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_deliverystates (id)'");
          $migration->changeField($table, "deliverynum", "delivery_number",
                                  "varchar(255) default NULL");
          $migration->changeField($table, "delivery_comments", "delivery_comment",
                                  "text");
-         $migration->changeField($table, "status", "states_id", "int unsigned NOT NULL default 1");
+         $migration->changeField($table, "status", "states_id", "int {$default_key_sign} NOT NULL default 1");
          $migration->changeField($table, "date", "delivery_date", "date default NULL");
          $migration->addKey($table, ["items_id", "itemtype"], "FK_device" );
          $migration->addKey($table, ["itemtype", "items_id"], "item");
@@ -1856,7 +1857,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          Plugin::migrateItemType([], [], [$table]);
           //1.4.0
          $migration->addField($table, "plugin_order_ordertaxes_id",
-                              "INT unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)'");
+                              "INT {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)'");
          $migration->migrationOneTable($table);
 
          /* Migrate VAT */
@@ -1867,10 +1868,10 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             $result = $DB->query($query) or die($DB->error());
          }
           //1.5.0
-         $migration->addField($table, "entities_id", "INT unsigned NOT NULL DEFAULT '0'");
+         $migration->addField($table, "entities_id", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
          $migration->addField($table, "is_recursive", "TINYINT NOT NULL DEFAULT '0'");
-         $migration->addField($table, "plugin_order_bills_id", "INT unsigned NOT NULL DEFAULT '0'");
-         $migration->addField($table, "plugin_order_billstates_id", "INT unsigned NOT NULL DEFAULT '0'");
+         $migration->addField($table, "plugin_order_bills_id", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
+         $migration->addField($table, "plugin_order_billstates_id", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
          $migration->addKey($table, "entities_id");
          $migration->addKey($table, "plugin_order_bills_id");
          $migration->addKey($table, "plugin_order_billstates_id");
@@ -1906,7 +1907,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          }
 
          if (!$DB->fieldExists($table, 'plugin_order_analyticnatures_id')) {
-            $migration->addField($table, 'plugin_order_analyticnatures_id', "INT unsigned NOT NULL DEFAULT '0'", ['after' => 'plugin_order_ordertaxes_id']);
+            $migration->addField($table, 'plugin_order_analyticnatures_id', "INT {$default_key_sign} NOT NULL DEFAULT '0'", ['after' => 'plugin_order_ordertaxes_id']);
             $migration->migrationOneTable($table);
          }
 

@@ -64,32 +64,33 @@ class PluginOrderReferenceFree extends CommonDBTM {
    public static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       $table = getTableForItemType(__CLASS__);
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
-         $default_charset = DBConnection::getDefaultCharset();
-         $default_collation = DBConnection::getDefaultCollation();
-
          //Install
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_referencefrees` (
-               `id` int unsigned NOT NULL auto_increment,
-               `entities_id` int unsigned NOT NULL default '0',
+               `id` int {$default_key_sign} NOT NULL auto_increment,
+               `entities_id` int {$default_key_sign} NOT NULL default '0',
                `is_recursive` tinyint NOT NULL default '0',
-               `plugin_order_orders_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
+               `plugin_order_orders_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)',
                `name` varchar(255) default NULL,
-               `manufacturers_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)',
+               `manufacturers_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_manufacturers (id)',
                `manufacturers_reference` varchar(255) NOT NULL DEFAULT '',
                `itemtype` varchar(100) NOT NULL COMMENT 'see .class.php file',
-               `templates_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
+               `templates_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
                `comment` text,
                `price_taxfree` decimal(20,6) NOT NULL DEFAULT '0.000000',
                `price_discounted` decimal(20,6) NOT NULL DEFAULT '0.000000',
                `discount` decimal(20,6) NOT NULL DEFAULT '0.000000',
                `price_ati` decimal(20,6) NOT NULL DEFAULT '0.000000',
-               `states_id` int unsigned NOT NULL default 1,
+               `states_id` int {$default_key_sign} NOT NULL default 1,
                `delivery_date` date default NULL,
-               `plugin_order_ordertaxes_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)',
+               `plugin_order_ordertaxes_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)',
                `is_deleted` tinyint NOT NULL default '0',
                `is_active` tinyint NOT NULL default '1',
                `notepad` longtext,

@@ -621,6 +621,10 @@ class PluginOrderConfig extends CommonDBTM {
    public static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       $table  = self::getTable();
       $config = new self();
 
@@ -629,12 +633,9 @@ class PluginOrderConfig extends CommonDBTM {
           && !$DB->tableExists("glpi_plugin_order_config")) {
             $migration->displayMessage("Installing $table");
 
-            $default_charset = DBConnection::getDefaultCharset();
-            $default_collation = DBConnection::getDefaultCollation();
-
             //Install
             $query = "CREATE TABLE `$table` (
-                        `id` int unsigned NOT NULL auto_increment,
+                        `id` int {$default_key_sign} NOT NULL auto_increment,
                         `use_validation` tinyint NOT NULL default '0',
                         `use_supplier_satisfaction` tinyint NOT NULL default '0',
                         `use_supplier_informations` tinyint NOT NULL default '0',
@@ -646,8 +647,8 @@ class PluginOrderConfig extends CommonDBTM {
                         `generated_name` varchar(255) default NULL,
                         `generated_serial` varchar(255) default NULL,
                         `generated_otherserial` varchar(255) default NULL,
-                        `default_asset_states_id` int unsigned NOT NULL default '0',
-                        `tickettemplates_id_delivery` int unsigned NOT NULL default '0',
+                        `default_asset_states_id` int {$default_key_sign} NOT NULL default '0',
+                        `tickettemplates_id_delivery` int {$default_key_sign} NOT NULL default '0',
                         `order_status_draft` int NOT NULL default '1',
                         `order_status_waiting_approval` int NOT NULL default '2',
                         `order_status_approved` int NOT NULL default '3',
@@ -660,10 +661,10 @@ class PluginOrderConfig extends CommonDBTM {
                         `order_accountsection_display` int NOT NULL default '0',
                         `order_accountsection_mandatory` int NOT NULL default '0',
                         `shoudbedelivered_color` char(20) default '#ff5555',
-                        `documentcategories_id` int unsigned NOT NULL default '0',
-                        `groups_id_author` int unsigned NOT NULL default '0',
-                        `groups_id_recipient` int unsigned NOT NULL default '0',
-                        `users_id_recipient` int unsigned NOT NULL default '0',
+                        `documentcategories_id` int {$default_key_sign} NOT NULL default '0',
+                        `groups_id_author` int {$default_key_sign} NOT NULL default '0',
+                        `groups_id_recipient` int {$default_key_sign} NOT NULL default '0',
+                        `users_id_recipient` int {$default_key_sign} NOT NULL default '0',
                         `add_location` tinyint NOT NULL default '0',
                         `add_bill_details` tinyint NOT NULL default '0',
                         `hide_inactive_budgets` tinyint NOT NULL default '0',
@@ -701,30 +702,30 @@ class PluginOrderConfig extends CommonDBTM {
             $DB->query($query) or die($DB->error());
          }
 
-         $migration->changeField($table, "ID", "id", "int unsigned NOT NULL auto_increment");
+         $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
 
          //1.3.0
          $migration->addField($table, "generate_assets", "tinyint NOT NULL default '0'");
          $migration->addField($table, "generated_name", "varchar(255) default NULL");
          $migration->addField($table, "generated_serial", "varchar(255) default NULL");
          $migration->addField($table, "generated_otherserial", "varchar(255) default NULL");
-         $migration->addField($table, "default_asset_entities_id", "int NOT NULL default '0'");
-         $migration->addField($table, "default_asset_states_id", "int NOT NULL default '0'");
+         $migration->addField($table, "default_asset_entities_id", "int {$default_key_sign} NOT NULL default '0'");
+         $migration->addField($table, "default_asset_states_id", "int {$default_key_sign} NOT NULL default '0'");
          $migration->addField($table, "generated_title", "varchar(255) default NULL");
          $migration->addField($table, "generated_content", "text");
-         $migration->addField($table, "default_ticketcategories_id", "int NOT NULL default '0'");
+         $migration->addField($table, "default_ticketcategories_id", "int {$default_key_sign} NOT NULL default '0'");
          $migration->addField($table, "use_supplier_satisfaction", "tinyint NOT NULL default '0'");
          $migration->addField($table, "generate_order_pdf", "tinyint NOT NULL default '0'");
          $migration->addField($table, "use_supplier_informations", "tinyint NOT NULL default '1'");
          $migration->addField($table, "shoudbedelivered_color", "char(20) default '#ff5555'");
          $migration->addField($table, "copy_documents", "tinyint NOT NULL DEFAULT '0'");
-         $migration->addField($table, "documentcategories_id", "int unsigned NOT NULL default '0'");
-         $migration->addField($table, "groups_id_author", "int unsigned NOT NULL default '0'");
-         $migration->addField($table, "groups_id_recipient", "int unsigned NOT NULL default '0'");
-         $migration->addField($table, "users_id_recipient", "int unsigned NOT NULL default '0'");
+         $migration->addField($table, "documentcategories_id", "int {$default_key_sign} NOT NULL default '0'");
+         $migration->addField($table, "groups_id_author", "int {$default_key_sign} NOT NULL default '0'");
+         $migration->addField($table, "groups_id_recipient", "int {$default_key_sign} NOT NULL default '0'");
+         $migration->addField($table, "users_id_recipient", "int {$default_key_sign} NOT NULL default '0'");
 
          $migration->changeField($table, "default_ticketcategories_id",
-                                 "default_itilcategories_id", "int unsigned NOT NULL default '0'");
+                                 "default_itilcategories_id", "int {$default_key_sign} NOT NULL default '0'");
 
          //1.9.0
          $migration->addField($table, "add_location", "TINYINT NOT NULL DEFAULT '0'");
@@ -734,7 +735,7 @@ class PluginOrderConfig extends CommonDBTM {
          $config->getFromDB(1);
          $templateID = false;
 
-         $migration->addField($table, "tickettemplates_id_delivery", "int unsigned NOT NULL default '0'");
+         $migration->addField($table, "tickettemplates_id_delivery", "int {$default_key_sign} NOT NULL default '0'");
          $migration->migrationOneTable($table);
 
          $migration->dropField($table, "generated_title");

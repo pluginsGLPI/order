@@ -109,18 +109,19 @@ class PluginOrderDocumentCategory extends CommonDBTM {
    static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       $table = self::getTable();
       //Installation
       if (!$DB->tableExists($table)
           && !$DB->tableExists("glpi_plugin_order_documentcategories")) {
          $migration->displayMessage("Installing $table");
 
-         $default_charset = DBConnection::getDefaultCharset();
-         $default_collation = DBConnection::getDefaultCollation();
-
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_documentcategories` (
-                     `id` int unsigned NOT NULL auto_increment,
-                     `documentcategories_id` int unsigned NOT NULL default '0',
+                     `id` int {$default_key_sign} NOT NULL auto_increment,
+                     `documentcategories_id` int {$default_key_sign} NOT NULL default '0',
                      `documentcategories_prefix` varchar(255) default NULL,
                      PRIMARY KEY  (`id`),
                      KEY `documentcategories_id` (`documentcategories_id`),

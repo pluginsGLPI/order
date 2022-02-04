@@ -229,17 +229,18 @@ class PluginOrderPreference extends CommonDBTM {
    public static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       //Only avaiable since 1.2.0
       $table = self::getTable();
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
-         $default_charset = DBConnection::getDefaultCharset();
-         $default_collation = DBConnection::getDefaultCollation();
-
          $query = "CREATE TABLE `$table` (
-                  `id` int unsigned NOT NULL auto_increment,
-                  `users_id` int unsigned NOT NULL default 0,
+                  `id` int {$default_key_sign} NOT NULL auto_increment,
+                  `users_id` int {$default_key_sign} NOT NULL default 0,
                   `template` varchar(255) default NULL,
                   `sign` varchar(255) default NULL,
                   PRIMARY KEY  (`id`),
@@ -249,8 +250,8 @@ class PluginOrderPreference extends CommonDBTM {
       } else {
 
          //1.5.3
-         $migration->changeField($table, 'ID', 'id', "int unsigned NOT NULL auto_increment");
-         $migration->changeField($table, 'user_id', 'users_id', "INT unsigned NOT NULL DEFAULT '0'");
+         $migration->changeField($table, 'ID', 'id', "int {$default_key_sign} NOT NULL auto_increment");
+         $migration->changeField($table, 'user_id', 'users_id', "INT {$default_key_sign} NOT NULL DEFAULT '0'");
          $migration->addKey($table, 'users_id');
          $migration->migrationOneTable($table);
       }

@@ -45,19 +45,20 @@ class PluginOrderOther extends CommonDBTM {
    public static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       //Only avaiable since 1.2.0
       $table = self::getTable();
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
-         $default_charset = DBConnection::getDefaultCharset();
-         $default_collation = DBConnection::getDefaultCollation();
-
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_others` (
-                  `id` int unsigned NOT NULL auto_increment,
-                  `entities_id` int unsigned NOT NULL default '0',
+                  `id` int {$default_key_sign} NOT NULL auto_increment,
+                  `entities_id` int {$default_key_sign} NOT NULL default '0',
                   `name` varchar(255) default NULL,
-                  `othertypes_id` int unsigned NOT NULL default '0',
+                  `othertypes_id` int {$default_key_sign} NOT NULL default '0',
                   PRIMARY KEY  (`ID`),
                   KEY `name` (`name`),
                   KEY `entities_id` (`entities_id`),

@@ -2423,45 +2423,46 @@ class PluginOrderOrder extends CommonDBTM {
    public static function install(Migration $migration) {
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       $table = self::getTable();
       //Installation
       if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order")) {
          $migration->displayMessage("Installing $table");
 
-         $default_charset = DBConnection::getDefaultCharset();
-         $default_collation = DBConnection::getDefaultCollation();
-
          $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders` (
-               `id` int unsigned NOT NULL auto_increment,
-               `entities_id` int unsigned NOT NULL default '0',
+               `id` int {$default_key_sign} NOT NULL auto_increment,
+               `entities_id` int {$default_key_sign} NOT NULL default '0',
                `is_template` tinyint NOT NULL default '0',
                `template_name` varchar(255) default NULL,
                `is_recursive` tinyint NOT NULL default '0',
                `name` varchar(255) default NULL,
                `num_order` varchar(255) default NULL,
-               `budgets_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_budgets (id)',
-               `plugin_order_ordertaxes_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)',
-               `plugin_order_orderpayments_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orderpayments (id)',
+               `budgets_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_budgets (id)',
+               `plugin_order_ordertaxes_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)',
+               `plugin_order_orderpayments_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orderpayments (id)',
                `order_date` date default NULL,
                `duedate` date default NULL,
                `deliverydate` date default NULL,
                `is_late` tinyint NOT NULL default '0',
-               `suppliers_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
-               `contacts_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_contacts (id)',
-               `plugin_order_accountsections_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to plugin_order_accountsections (id)',
-               `locations_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_locations (id)',
-               `plugin_order_orderstates_id` int unsigned NOT NULL default 1,
-               `plugin_order_billstates_id` int unsigned NOT NULL default 0,
+               `suppliers_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)',
+               `contacts_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_contacts (id)',
+               `plugin_order_accountsections_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to plugin_order_accountsections (id)',
+               `locations_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_locations (id)',
+               `plugin_order_orderstates_id` int {$default_key_sign} NOT NULL default 1,
+               `plugin_order_billstates_id` int {$default_key_sign} NOT NULL default 0,
                `port_price` float NOT NULL default 0,
                `global_discount` float NOT NULL default 0,
                `comment` text,
                `notepad` longtext,
                `is_deleted` tinyint NOT NULL default '0',
-               `users_id` int unsigned NOT NULL default '0',
-               `groups_id` int unsigned NOT NULL default '0',
-               `users_id_delivery` int unsigned NOT NULL default '0',
-               `groups_id_delivery` int unsigned NOT NULL default '0',
-               `plugin_order_ordertypes_id` int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)',
+               `users_id` int {$default_key_sign} NOT NULL default '0',
+               `groups_id` int {$default_key_sign} NOT NULL default '0',
+               `users_id_delivery` int {$default_key_sign} NOT NULL default '0',
+               `groups_id_delivery` int {$default_key_sign} NOT NULL default '0',
+               `plugin_order_ordertypes_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)',
                `date_mod` timestamp NULL default NULL,
                `is_helpdesk_visible` tinyint NOT NULL default '1',
                PRIMARY KEY  (`id`),
@@ -2514,31 +2515,31 @@ class PluginOrderOrder extends CommonDBTM {
             $domigration_itemtypes = true;
          }
 
-         $migration->changeField($table, "ID", "id", "int unsigned NOT NULL AUTO_INCREMENT");
+         $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL AUTO_INCREMENT");
          $migration->changeField($table, "FK_entities", "entities_id",
-                                 "int unsigned NOT NULL default 0");
+                                 "int {$default_key_sign} NOT NULL default 0");
          $migration->changeField($table, "recursive", "is_recursive",
                                  "tinyint NOT NULL default 0");
          $migration->changeField($table, "name", "name",
                                  "varchar(255) default NULL");
          $migration->changeField($table, "budget", "budgets_id",
-                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_budgets (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_budgets (id)'");
          $migration->changeField($table, "numorder", "num_order",
                                  "varchar(255) default NULL");
          $migration->changeField($table, "taxes", "plugin_order_ordertaxes_id",
-                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)'");
          $migration->changeField($table, "payment", "plugin_order_orderpayments_id",
-                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orderpayments (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orderpayments (id)'");
          $migration->changeField($table, "date", "order_date",
                                  "date default NULL");
          $migration->changeField($table, "FK_enterprise", "suppliers_id",
-                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
          $migration->changeField($table, "FK_contact", "contacts_id",
-                                  "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_contacts (id)'");
+                                  "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_contacts (id)'");
          $migration->changeField($table, "location", "locations_id",
-                                 "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_locations (id)'");
+                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_locations (id)'");
          $migration->changeField($table, "status", "states_id",
-                                 "int unsigned NOT NULL default '0'");
+                                 "int {$default_key_sign} NOT NULL default '0'");
          $migration->changeField($table, "comment", "comment",
                                  "text");
          $migration->changeField($table, "notes", "notepad",
@@ -2567,11 +2568,11 @@ class PluginOrderOrder extends CommonDBTM {
 
          if ($DB->tableExists("glpi_plugin_order_budgets")) {
             //Manage budgets (here because class has been remove since 1.4.0)
-            $migration->changeField("glpi_plugin_order_budgets", "ID", "id", " int unsigned NOT NULL auto_increment");
+            $migration->changeField("glpi_plugin_order_budgets", "ID", "id", " int {$default_key_sign} NOT NULL auto_increment");
             $migration->changeField("glpi_plugin_order_budgets", "FK_entities", "entities_id",
-                                    "int unsigned NOT NULL default '0'");
+                                    "int {$default_key_sign} NOT NULL default '0'");
             $migration->changeField("glpi_plugin_order_budgets", "FK_budget", "budgets_id",
-                                    "int unsigned NOT NULL default '0'");
+                                    "int {$default_key_sign} NOT NULL default '0'");
             $migration->changeField("glpi_plugin_order_budgets", "comments", "comment",
                                     "text");
             $migration->changeField("glpi_plugin_order_budgets", "deleted", "is_deleted",
@@ -2636,12 +2637,12 @@ class PluginOrderOrder extends CommonDBTM {
 
          //1.3.0
          $migration->addField($table, "plugin_order_ordertypes_id",
-                              "int unsigned NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)'");
+                              "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)'");
          $migration->migrationOneTable($table);
 
          //1.4.0
          if ($migration->changeField("glpi_plugin_order_orders", "states_id",
-                                     "plugin_order_orderstates_id", "int unsigned NOT NULL default 1")) {
+                                     "plugin_order_orderstates_id", "int {$default_key_sign} NOT NULL default 1")) {
             $migration->migrationOneTable($table);
             $query = "UPDATE `glpi_plugin_order_orders` SET `plugin_order_orderstates_id`=`plugin_order_orderstates_id`+1";
             $DB->query($query) or die ($DB->error());
@@ -2659,7 +2660,7 @@ class PluginOrderOrder extends CommonDBTM {
             $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_mailing`;") or die($DB->error());
          }
 
-         $migration->addField($table, 'plugin_order_billstates_id', "int unsigned NOT NULL default 0");
+         $migration->addField($table, 'plugin_order_billstates_id', "int {$default_key_sign} NOT NULL default 0");
 
          //1.5.2
          $migration->addField($table, 'deliverydate', "DATETIME NULL");
@@ -2679,10 +2680,10 @@ class PluginOrderOrder extends CommonDBTM {
             $migration->migrationOneTable($table);
          }
 
-         $migration->addField($table, "users_id", "INT unsigned NOT NULL DEFAULT '0'");
-         $migration->addField($table, "groups_id", "INT unsigned NOT NULL DEFAULT '0'");
-         $migration->addField($table, "users_id_delivery", "INT unsigned NOT NULL DEFAULT '0'");
-         $migration->addField($table, "groups_id_delivery", "INT unsigned NOT NULL DEFAULT '0'");
+         $migration->addField($table, "users_id", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
+         $migration->addField($table, "groups_id", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
+         $migration->addField($table, "users_id_delivery", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
+         $migration->addField($table, "groups_id_delivery", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
 
          //1.7.0
          $migration->addField($table, "date_mod", "timestamp");
@@ -2713,7 +2714,7 @@ class PluginOrderOrder extends CommonDBTM {
          $migration->addField($table, "global_discount", "FLOAT NOT NULL default '0'");
 
          //2.7.3
-         $migration->changeField($table, "plugin_order_billstates_id", "plugin_order_billstates_id", "int unsigned NOT NULL DEFAULT 0");
+         $migration->changeField($table, "plugin_order_billstates_id", "plugin_order_billstates_id", "int {$default_key_sign} NOT NULL DEFAULT 0");
       }
 
       // Remove RIGHT_OPENTICKET
@@ -2724,7 +2725,7 @@ class PluginOrderOrder extends CommonDBTM {
       );
 
       if (!$DB->fieldExists($table, 'plugin_order_accountsections_id')) {
-         $migration->addField($table, 'plugin_order_accountsections_id', 'int unsigned NOT NULL DEFAULT 0', ['after' => 'contacts_id']);
+         $migration->addField($table, 'plugin_order_accountsections_id', "int {$default_key_sign} NOT NULL DEFAULT 0", ['after' => 'contacts_id']);
          $migration->migrationOneTable($table);
       }
    }

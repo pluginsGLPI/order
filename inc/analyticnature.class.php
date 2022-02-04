@@ -45,15 +45,16 @@ class PluginOrderAnalyticNature extends CommonDropdown {
 
       global $DB;
 
+      $default_charset = DBConnection::getDefaultCharset();
+      $default_collation = DBConnection::getDefaultCollation();
+      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+
       $table = getTableForItemType(__CLASS__);
       if (!$DB->tableExists($table)) {
          $migration->displayMessage("Installing $table");
 
-         $default_charset = DBConnection::getDefaultCharset();
-         $default_collation = DBConnection::getDefaultCollation();
-
          $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_analyticnatures` (
-                    `id` int unsigned NOT NULL AUTO_INCREMENT,
+                    `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
                     `name` varchar(255) DEFAULT NULL,
                     `comment` text,
                     PRIMARY KEY (`id`),
