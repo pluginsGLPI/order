@@ -554,7 +554,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                      'myname'    => 'itemtype',
                      'value'     => 'PluginOrderOther',
                      'entity'    => $_SESSION["glpiactive_entity"],
-                     'ajax_page' => Plugin::getWebDir('order') . '//ajax/referencespecifications.php',
+                     'ajax_page' => Plugin::getWebDir('order') . '/ajax/referencespecifications.php',
                      //                     'class'     => __CLASS__,
                   ];
                   $reference = new PluginOrderReference();
