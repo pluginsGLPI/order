@@ -231,7 +231,7 @@ class PluginOrderPreference extends CommonDBTM {
 
       $default_charset = DBConnection::getDefaultCharset();
       $default_collation = DBConnection::getDefaultCollation();
-      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
       //Only avaiable since 1.2.0
       $table = self::getTable();

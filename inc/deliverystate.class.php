@@ -45,7 +45,7 @@ class PluginOrderDeliveryState extends CommonDropdown {
 
       $default_charset = DBConnection::getDefaultCharset();
       $default_collation = DBConnection::getDefaultCollation();
-      $default_key_sign = method_exists('DBConnection', 'getDefaultPrimaryKeySignOption') ? DBConnection::getDefaultPrimaryKeySignOption() : '';
+      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
       $table = self::getTable();
       if (!$DB->tableExists($table)
