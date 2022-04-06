@@ -980,7 +980,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
          if ($canedit) {
             echo "<table width='950px' class='tab_cadre_fixe left'>";
-            echo "<tr><td><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i>";
+            echo "<tr><td><i class='fas fa-level-down-alt fa-flip-horizontal fa-lg mx-2'></i>";
             echo "</td><td class='center'>";
             echo "<a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='#'>".
                  __("Check all")."</a></td>";
@@ -1210,6 +1210,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             echo "</table>";
          }
          Html::closeForm();
+         echo "</div>\n";
       }
       echo "<br>";
    }
