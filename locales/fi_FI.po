@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-28 09:19+0000\n"
-"PO-Revision-Date: 2021-09-30 12:22+0000\n"
-"Last-Translator: Cédric Anne\n"
+"POT-Creation-Date: 2022-04-20 14:13+0000\n"
+"PO-Revision-Date: 2015-09-18 10:11+0000\n"
+"Last-Translator: Markku Vepsä, 2018\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.com/teclib/glpi-plugin-order/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,256 +18,177 @@ msgstr ""
 "Language: fi_FI\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: hook.php:46
-msgid "Plugin installation or upgrade"
-msgstr "Liitännäisen asennus tai päivitys"
+#: inc/bill.class.php:60
+msgid "A bill number is mandatory"
+msgstr "Laskun numero on pakollinen"
+
+#: inc/reference.class.php:312
+msgid "A reference with the same name still exists"
+msgstr "Samanniminen viittaus on olemassa"
+
+#: inc/order.class.php:585
+msgid "Account Section"
+msgstr "Tili-osio"
+
+#: hook.php:149 inc/accountsection.class.php:41 inc/order.class.php:1147
+msgid "Account section"
+msgstr "Tili-osio"
+
+#: inc/config.class.php:132
+msgid "Activate suppliers quality satisfaction"
+msgstr "Aktivoi tyytyväisyys toimittajan laatuun"
+
+#: inc/config.class.php:294
+msgid "Add billing details to item"
+msgstr "Lisää tuotteelle laskutustiedot"
+
+#: inc/config.class.php:287
+msgid "Add order location to item"
+msgstr "Lisää tilauksen sijainti kohteeseen"
+
+#: front/order.form.php:148 front/order.form.php:246 front/order.form.php:266
+msgid "Add reference"
+msgstr "Lisää viite"
+
+#: inc/order_item.class.php:481
+msgid "Add the reference"
+msgstr "Lisää viite"
+
+#: inc/order_item.class.php:467
+msgid "Add to the order free items"
+msgstr "Lisää tilausvapaisiin tuotteisiin"
+
+#: inc/order_item.class.php:359
+msgid "Add to the order from the catalog"
+msgstr "Lisää tilaukseen luettelosta"
+
+#: inc/surveysupplier.class.php:214 inc/surveysupplier.class.php:310
+msgid "Administrative followup quality (contracts, bills, mail, etc.)"
+msgstr "Hallinnollisen seurannan laatu (sopimukset, laskut, posti jne.)"
+
+#: inc/order.class.php:694 inc/order.class.php:768
+msgid "An account section is mandatory !"
+msgstr "Tili-osio on pakollinen!"
+
+#: inc/order_item.class.php:611 inc/order_item.class.php:624
+msgid "An analytic nature is mandatory !"
+msgstr "Analyyttinen luonne on pakollinen!"
+
+#: inc/order.class.php:685
+msgid "An order number is mandatory !"
+msgstr "Tilausnumero on pakollinen !"
+
+#: inc/order_item.class.php:196
+msgid "Analytic Nature"
+msgstr "Analyyttinen luonne"
+
+#: hook.php:148 inc/order_item.class.php:367 inc/order_item.class.php:475
+#: inc/order_item.class.php:795 inc/analyticnature.class.php:41
+msgid "Analytic nature"
+msgstr "Analyyttinen luonne"
+
+#: inc/order.class.php:1610
+msgid "Ask for validation"
+msgstr "Kysy vahvistusta"
+
+#: inc/config.class.php:270
+msgid "Asked"
+msgstr "Kysytty"
+
+#: inc/order.class.php:525 inc/order.class.php:1236
+#: inc/notificationtargetorder.class.php:468
+#: inc/notificationtargetorder.class.php:471 inc/config.class.php:167
+msgid "Author group"
+msgstr "Tekijäryhmä"
+
+#: inc/config.class.php:242
+msgid "Automatic actions when delivery"
+msgstr "Toimituksen automaattiset toimet"
+
+#: inc/surveysupplier.class.php:348
+msgid "Average mark up to 5 (X points / 5)"
+msgstr ""
+
+#: inc/orderstate.class.php:95
+msgid "Being delivered"
+msgstr "Toimitetaan"
+
+#: inc/billstate.class.php:60
+msgid "Being paid"
+msgstr "Maksettu"
+
+#: inc/order_item.class.php:1597 inc/order_item.class.php:1682
+#: inc/bill.class.php:48 inc/bill.class.php:136 inc/bill.class.php:410
+#: inc/reception.class.php:254
+msgid "Bill"
+msgstr "Lasku"
+
+#: hook.php:146 inc/order_item.class.php:1598 inc/bill.class.php:411
+#: inc/billstate.class.php:43
+msgid "Bill status"
+msgstr "Laskun tila"
+
+#: hook.php:147 inc/billtype.class.php:41
+msgid "Bill type"
+msgstr "Laskun tyyppi"
+
+#: front/menu.php:78 inc/profile.class.php:173 inc/order_item.class.php:1466
+msgid "Bills"
+msgstr "Laskut"
 
 #: hook.php:88
 msgid "Can't create folder"
 msgstr "Kansiota ei voi luoda"
+
+#: inc/order.class.php:1604
+msgid "Cancel ask for validation"
+msgstr "Peruuta vahvistuskysely"
+
+#: inc/order.class.php:274 inc/order.class.php:1590
+msgid "Cancel order"
+msgstr "Peruuta tilaus"
+
+#: inc/orderstate.class.php:97
+msgid "Canceled"
+msgstr "Peruttu"
+
+#: inc/config.class.php:418
+msgid "Canceled order state"
+msgstr "Tilaus peruttu tila"
 
 #: hook.php:95
 #, php-format
 msgid "Cannot copy file %1$s to %2$s"
 msgstr "Tiedostoa %1$s ei voitu kopioida kohteeseen %2$s"
 
-#: hook.php:140 inc/order.class.php:319 inc/order.class.php:1064
-#: inc/order.class.php:1335 inc/order.class.php:1777 inc/order.class.php:1902
-#: inc/order_item.class.php:370 inc/order_item.class.php:478
-#: inc/order_item.class.php:1026 inc/order_item.class.php:1393
-#: inc/ordertax.class.php:41
-msgid "VAT"
-msgstr "ALV"
+#: inc/reference.class.php:299
+msgid "Cannot create reference without a name"
+msgstr "Viittausta ei voi luoda ilman nimeä"
 
-#: hook.php:141 inc/order.class.php:369 inc/order.class.php:978
-#: inc/order.class.php:1908 inc/orderpayment.class.php:40
-msgid "Payment conditions"
-msgstr "Maksuehdot"
+#: inc/reference.class.php:304
+msgid "Cannot create reference without a type"
+msgstr "Viittausta ei voi luoda ilman tyyppiä"
 
-#: hook.php:143 inc/order.class.php:343 inc/order.class.php:912
-#: inc/order.class.php:1991 inc/orderstate.class.php:49
-msgid "Order status"
-msgstr "Tilauksen tila"
+#: inc/link.class.php:595
+msgid "Cannot link items not delivered"
+msgstr "Toimittamattomia tuotteita ei voida linkittää"
 
-#: hook.php:144 inc/othertype.class.php:40
-msgid "Other type of item"
-msgstr "Muun tyyppinen tuote"
+#: inc/link.class.php:584
+msgid "Cannot link several items to one detail line"
+msgstr "Useita kohteita ei voida yhdistää yhteen yksityiskohtariviin"
 
-#: hook.php:145 inc/deliverystate.class.php:38 inc/order_item.class.php:187
-#: inc/reception.class.php:235 inc/reception.class.php:427
-#: inc/reception.class.php:556
-msgid "Delivery status"
-msgstr "Toimituksen tila"
+#: inc/config.class.php:145
+msgid "Color to be displayed when order due date is overtaken"
+msgstr "Väri, joka näytetään, kun tilauksen määräpäivä on ohitettu"
 
-#: hook.php:146 inc/order_item.class.php:1606 inc/bill.class.php:410
-#: inc/billstate.class.php:42
-msgid "Bill status"
-msgstr "Laskun tila"
-
-#: hook.php:147 inc/billtype.class.php:40
-msgid "Bill type"
-msgstr "Laskun tyyppi"
-
-#: hook.php:148 inc/order_item.class.php:366 inc/order_item.class.php:474
-#: inc/order_item.class.php:795 inc/analyticnature.class.php:40
-msgid "Analytic nature"
-msgstr "Analyyttinen luonne"
-
-#: hook.php:149 inc/accountsection.class.php:65 inc/order.class.php:1136
-msgid "Account section"
-msgstr "Tili-osio"
-
-#: hook.php:150 front/order.form.php:417 front/preference.form.php:43
-#: front/order.php:33 front/menu.php:63 front/config.form.php:41
-#: inc/profile.class.php:103 inc/profile.class.php:145
-#: inc/profile.class.php:170 inc/preference.class.php:269
-#: inc/order_supplier.class.php:410 inc/documentcategory.class.php:47
-#: inc/order.class.php:77 inc/order.class.php:627 inc/menu.class.php:7
-#: inc/order_item.class.php:1967 inc/order_item.class.php:1969
-#: inc/bill.class.php:594
-msgid "Orders"
-msgstr "Tilaukset"
-
-#: hook.php:242 inc/surveysupplier.class.php:183 inc/order.class.php:409
-#: inc/order.class.php:855 inc/order_item.class.php:1298
-msgid "Order name"
-msgstr "Tilauksen nimi"
-
-#: hook.php:250 report/orderdelivery/orderdelivery.php:68
-#: inc/order.class.php:294 inc/order.class.php:882 inc/order.class.php:1704
-msgid "Order number"
-msgstr "Tilausnumero"
-
-#: hook.php:400 inc/order_supplier.class.php:201
-#: inc/surveysupplier.class.php:370 inc/order.class.php:77
-#: inc/order_item.class.php:751 inc/order_item.class.php:1366
-#: inc/order_item.class.php:1975 inc/bill.class.php:101 inc/bill.class.php:197
-#: inc/reception.class.php:290
-msgid "Order"
-msgstr "Tilaus"
-
-#: report/deliveryinfos/deliveryinfos.php:47
-msgid "deliveryinfos_report_title"
-msgstr "toimitustietoraportin_otsikko"
-
-#: report/deliveryinfos/deliveryinfos.php:48
-#: report/orderdelivery/orderdelivery.php:48
-#: report/orderdelivery/orderdelivery.php:75 inc/order.class.php:307
-#: inc/order.class.php:866 inc/notificationtargetorder.class.php:102
-#: inc/notificationtargetorder.class.php:153
-#: inc/notificationtargetorder.class.php:161
-msgid "Date of order"
-msgstr "Tilauspäivä"
-
-#: report/deliveryinfos/deliveryinfos.php:50
-#: report/orderdelivery/orderdelivery.php:50
-#: report/orderdelivery/orderdelivery.php:79 inc/order.class.php:331
-#: inc/order.class.php:964
-msgid "Delivery location"
-msgstr "Toimituskohde"
-
-#: report/deliveryinfos/deliveryinfos.php:64
-msgid "Orders total"
-msgstr "Tilausten yhteisarvo"
-
-#: report/deliveryinfos/deliveryinfos.php:65
-msgid "Late orders total"
-msgstr "Jälkitoimitusten yhteisarvo"
-
-#: report/orderdelivery/orderdelivery.php:47
-msgid "orderdelivery_report_title"
-msgstr "tilausraportin_otsikko"
-
-#: report/orderdelivery/orderdelivery.php:76 inc/order.class.php:434
-#: inc/order.class.php:1092 inc/notificationtargetorder.class.php:162
-msgid "Estimated due date"
-msgstr "Arvioitu toimituspäivä"
-
-#: front/order_supplier.form.php:51 inc/order_supplier.class.php:62
-#: inc/order_supplier.class.php:170 inc/order_supplier.class.php:222
-msgid "Quote number"
-msgstr "Viitenumero"
-
-#: front/order_supplier.form.php:66
-msgid "Delete"
-msgstr "Poista"
-
-#: front/order_supplier.form.php:66 inc/order_supplier.class.php:46
-#: inc/order_supplier.class.php:55 inc/order_supplier.class.php:218
-#: inc/order_supplier.class.php:415 inc/reference_supplier.class.php:154
-#: inc/reference_supplier.class.php:264
-msgid "Supplier Detail"
-msgstr "Toimittajan tiedot"
-
-#: front/order_supplier.form.php:80 front/reception.form.php:96
-#: front/surveysupplier.form.php:69 front/order_item.form.php:39
-#: front/menu.php:33 front/menu.php:57 inc/order.class.php:287
-#: inc/order_item.class.php:108 inc/config.class.php:76 setup.php:199
-msgid "Orders management"
-msgstr "Tilausten hallinta"
-
-#: front/order.form.php:94 inc/notificationtargetorder.class.php:120
-msgid "Order is validated"
-msgstr "Tilaus vahvistettu"
-
-#: front/order.form.php:103
-msgid "Order validation successfully requested"
-msgstr "Tilauksen vahvistus pyydetty onnistuneesti"
-
-#: front/order.form.php:113
-msgid "Validation query is now canceled"
-msgstr "Vahvistuskysely on nyt peruutettu"
-
-#: front/order.form.php:123 inc/notificationtargetorder.class.php:49
-#: inc/notificationtargetorder.class.php:124
-msgid "Order canceled"
-msgstr "Tilaus peruutettu"
-
-#: front/order.form.php:134 inc/notificationtargetorder.class.php:50
-msgid "Order currently edited"
-msgstr "Tilausta muokataan"
-
-#: front/order.form.php:143 front/order.form.php:218 front/order.form.php:366
-msgid "The discount pourcentage must be between 0 and 100"
-msgstr "Alennusprosentin täytyy olla väliltä 0-100"
-
-#: front/order.form.php:147 front/order.form.php:245 front/order.form.php:265
-msgid "Add reference"
-msgstr "Lisää viite"
-
-#: front/order.form.php:150 front/order.form.php:247 front/order.form.php:267
-#: inc/order.class.php:1773 inc/order_item.class.php:368
-#: inc/order_item.class.php:476 inc/order_item.class.php:793
-#: inc/link.class.php:418
-msgid "Quantity"
-msgstr "Määrä"
-
-#: front/order.form.php:151 front/order.form.php:248 front/order.form.php:268
-#: inc/order_item.class.php:123 inc/order_item.class.php:131
-#: inc/order_item.class.php:371 inc/order_item.class.php:479
-#: inc/order_item.class.php:804 inc/order_item.class.php:1027
-#: inc/order_item.class.php:1405
-msgid "Discount (%)"
-msgstr "Alennus (%)"
-
-#: front/order.form.php:194 front/order.form.php:201 front/order.form.php:314
-#: front/order.form.php:320
-msgid "Remove reference"
-msgstr "Poista viite"
-
-#: front/order.form.php:211 inc/reception.class.php:816
-msgid "No item selected"
-msgstr "Kohdetta ei ole valittu"
-
-#: front/reference_supplier.form.php:69 inc/reference_supplier.class.php:46
-#: inc/reference_supplier.class.php:83
-msgid "Supplier for the reference"
-msgstr "Toimittajan viite"
-
-#: front/menu.php:70 inc/profile.class.php:174
-msgid "Products references"
-msgstr "Tuoteviittaukset"
-
-#: front/menu.php:77 inc/profile.class.php:178 inc/order_item.class.php:1472
-msgid "Bills"
-msgstr "Laskut"
-
-#: inc/preference.class.php:163 inc/order.class.php:1636
-msgid "Use this model"
-msgstr "Käytä tätä mallia"
-
-#: inc/preference.class.php:168 inc/order.class.php:1645
-msgid "Use this sign"
-msgstr "Käytä tätä merkkiä"
-
-#: inc/referencefree.class.php:39
-msgid "Reference free"
-msgstr "Viite vapaa"
-
-#: inc/order_supplier.class.php:293
-msgid "Delivery statistics"
-msgstr "Toimitustiedot"
-
-#: inc/order_supplier.class.php:309
-msgid "No specified status"
-msgstr "Ei määritettyä tilaa"
-
-#: inc/surveysupplier.class.php:45 inc/surveysupplier.class.php:179
-#: inc/surveysupplier.class.php:382 inc/surveysupplier.class.php:512
-msgid "Supplier quality"
-msgstr "Toimittajan laatu"
-
-#: inc/surveysupplier.class.php:184 inc/surveysupplier.class.php:385
-msgid "Note"
-msgstr "Huomautus"
+#: inc/notificationtargetorder.class.php:110
+#: inc/notificationtargetorder.class.php:156
+msgid "Comment of validation"
+msgstr "Vahvistuksen kommentti"
 
 #: inc/surveysupplier.class.php:185 inc/surveysupplier.class.php:386
 msgid "Comment on survey"
 msgstr "Kommentti kyselyssä"
-
-#: inc/surveysupplier.class.php:214 inc/surveysupplier.class.php:310
-msgid "Administrative followup quality (contracts, bills, mail, etc.)"
-msgstr "Hallinnollisen seurannan laatu (sopimukset, laskut, posti jne.)"
 
 #: inc/surveysupplier.class.php:223 inc/surveysupplier.class.php:317
 msgid "Commercial followup quality, visits, responseness"
@@ -277,21 +198,150 @@ msgstr "Kaupallinen seuranta laatu, vierailut, reagointikyky"
 msgid "Contacts availability"
 msgstr "Yhteystietojen saatavuus"
 
-#: inc/surveysupplier.class.php:238 inc/surveysupplier.class.php:328
-msgid "Quality of supplier intervention"
-msgstr "Toimittajan intervention laatu"
+#: inc/reference.class.php:839
+msgid "Copy of"
+msgstr "Kopio"
 
-#: inc/surveysupplier.class.php:245 inc/surveysupplier.class.php:334
-msgid "Reliability about annouced delays"
-msgstr "Luotettavuus ilmoitetuista viiveistä"
+#: inc/config.class.php:153
+msgid "Copy order documents when a new item is created"
+msgstr "Kopioi tilausasiakirjat, kun uusi kohde luodaan"
 
-#: inc/surveysupplier.class.php:257
-msgid "Final supplier note"
-msgstr "Lopullinen toimittajan huomautus"
+#: inc/reference.class.php:988
+msgid "Copy reference"
+msgstr "Kopioi viite"
 
-#: inc/surveysupplier.class.php:348
-msgid "Average mark up to 5 (X points / 5)"
-msgstr ""
+#: report/deliveryinfos/deliveryinfos.php:48
+#: report/orderdelivery/orderdelivery.php:48
+#: report/orderdelivery/orderdelivery.php:75 inc/order.class.php:308
+#: inc/order.class.php:872 inc/notificationtargetorder.class.php:103
+#: inc/notificationtargetorder.class.php:154
+#: inc/notificationtargetorder.class.php:162
+msgid "Date of order"
+msgstr "Tilauspäivä"
+
+#: inc/config.class.php:107
+msgid "Default VAT"
+msgstr "Oletus ALV"
+
+#: inc/config.class.php:160
+msgid "Default heading when adding a document to an order"
+msgstr "Oletus otsikko, kun asiakirja lisätään tilaukseen"
+
+#: inc/config.class.php:325 inc/config.class.php:825
+#: inc/reception.class.php:587
+msgid "Default inventory number"
+msgstr "Oletus inventointinumero"
+
+#: inc/config.class.php:301 inc/config.class.php:809
+#: inc/reception.class.php:571
+msgid "Default name"
+msgstr "Oletusnimi"
+
+#: inc/config.class.php:313 inc/config.class.php:817
+#: inc/reception.class.php:579
+msgid "Default serial number"
+msgstr "Oletus sarjanumero"
+
+#: inc/config.class.php:276
+msgid "Default state"
+msgstr "Oletustila"
+
+#: front/order_supplier.form.php:67
+msgid "Delete"
+msgstr "Poista"
+
+#: inc/link.class.php:508
+msgid "Delete item link"
+msgstr "Poista kohteen linkki"
+
+#: inc/orderstate.class.php:96
+msgid "Delivered"
+msgstr "Toimitettu"
+
+#: inc/reception.class.php:356
+msgid "Delivered items"
+msgstr "Toimitetut tuotteet"
+
+#: inc/reception.class.php:54
+msgid "Delivery"
+msgstr "Toimitus"
+
+#: inc/order.class.php:1752
+msgid "Delivery address"
+msgstr "Toimitusosoite"
+
+#: report/deliveryinfos/deliveryinfos.php:50
+#: report/orderdelivery/orderdelivery.php:50
+#: report/orderdelivery/orderdelivery.php:79 inc/order.class.php:332
+#: inc/order.class.php:975
+msgid "Delivery location"
+msgstr "Toimituskohde"
+
+#: inc/order_supplier.class.php:301
+msgid "Delivery statistics"
+msgstr "Toimitustiedot"
+
+#: hook.php:145 inc/deliverystate.class.php:39 inc/order_item.class.php:188
+#: inc/reception.class.php:241 inc/reception.class.php:433
+#: inc/reception.class.php:560
+msgid "Delivery status"
+msgstr "Toimituksen tila"
+
+#: inc/order.class.php:1785
+msgid "Designation"
+msgstr "Nimittäjä"
+
+#: front/order.form.php:152 front/order.form.php:249 front/order.form.php:269
+#: inc/order_item.class.php:124 inc/order_item.class.php:132
+#: inc/order_item.class.php:372 inc/order_item.class.php:480
+#: inc/order_item.class.php:804 inc/order_item.class.php:1025
+#: inc/order_item.class.php:1399
+msgid "Discount (%)"
+msgstr "Alennus (%)"
+
+#: inc/order.class.php:1789
+msgid "Discount rate"
+msgstr "Alennus"
+
+#: inc/order_item.class.php:1026 inc/order_item.class.php:1407
+msgid "Discounted price tax free"
+msgstr "Alennettu hinta ilman veroja"
+
+#: inc/config.class.php:213
+msgid "Display account section on order form"
+msgstr "Näytä tili-osio tilauslomakkeella"
+
+#: inc/config.class.php:251
+msgid "Display analytic nature on item form"
+msgstr "Näytä analyyttinen luonne lomakkeella"
+
+#: inc/config.class.php:139
+msgid "Display order's suppliers informations"
+msgstr "Näytä tilausten toimittajien tiedot"
+
+#: inc/order.class.php:1589
+msgid ""
+"Do you really want to cancel this order ? This option is irreversible !"
+msgstr "Haluatko todella peruuttaa tämän tilauksen? Tämä vaihtoehto on peruuttamaton!"
+
+#: inc/order_item.class.php:992 inc/order_item.class.php:1192
+msgid ""
+"Do you really want to delete these details ? Delivered items will not be "
+"linked to order !"
+msgstr "Haluatko todella poistaa nämä tiedot? Toimitettuja tuotteita ei liitetetä tilaukseen!"
+
+#: inc/order.class.php:1616
+msgid "Do you really want to edit the order ?"
+msgstr "Haluatko varmasti muokata tilausta ?"
+
+#: inc/order_item.class.php:810 inc/order_item.class.php:1001
+#: inc/order_item.class.php:1201
+msgid "Do you really want to update this item ?"
+msgstr "Haluatko todella päivittää tämän kohteen?"
+
+#: inc/order.class.php:1602
+msgid "Do you want to cancel the validation approval ?"
+msgstr "Haluatko peruuttaa vahvistuksen hyväksynnän?"
 
 #: inc/documentcategory.class.php:39
 msgid "Document category"
@@ -301,652 +351,602 @@ msgstr "Asiakirjaluokka"
 msgid "Document category prefix"
 msgstr "Asiakirjaluokan etuliite"
 
-#: inc/order.class.php:270 inc/order.class.php:1630 inc/order.class.php:1656
-msgid "Order Generation"
-msgstr "Tilauksen luominen"
+#: inc/orderstate.class.php:92
+msgid "Draft"
+msgstr "Luonnos"
 
-#: inc/order.class.php:271 inc/reception.class.php:517
-#: inc/reception.class.php:586
-msgid "Take item delivery"
-msgstr "Tuotteiden toimitus"
+#: inc/order.class.php:1119
+msgid "Due date overtaken"
+msgstr "Erääntymispäivä ylitetty"
 
-#: inc/order.class.php:272
-msgid "Order validation"
-msgstr "Tilauksen vahvistaminen"
-
-#: inc/order.class.php:273 inc/order.class.php:1579
-msgid "Cancel order"
-msgstr "Peruuta tilaus"
-
-#: inc/order.class.php:274
+#: inc/order.class.php:275
 msgid "Edit a validated order"
 msgstr "Muokkaa vahvistettua tilausta"
 
-#: inc/order.class.php:275
+#: inc/order.class.php:1618
+msgid "Edit order"
+msgstr "Muokkaa tilausta"
+
+#: inc/notificationtargetorder.class.php:157
+msgid "Editor of validation"
+msgstr "Vahvistuksen muokkaaja"
+
+#: inc/config.class.php:265 inc/reception.class.php:565
+msgid "Enable automatic generation"
+msgstr "Ota automaattinen generointi käyttöön"
+
+#: report/orderdelivery/orderdelivery.php:76 inc/order.class.php:435
+#: inc/order.class.php:1103 inc/notificationtargetorder.class.php:163
+msgid "Estimated due date"
+msgstr "Arvioitu toimituspäivä"
+
+#: inc/surveysupplier.class.php:257
+msgid "Final supplier note"
+msgstr "Lopullinen toimittajan huomautus"
+
+#: inc/link.class.php:74 inc/link.class.php:506
+msgid "Generate item"
+msgstr "Luo kohde"
+
+#: inc/order.class.php:276
 msgid "Generate order without validation"
 msgstr "Luo tilaus ilman vahvistusta"
 
-#: inc/order.class.php:319 inc/order.class.php:492 inc/order.class.php:1022
-#: inc/order.class.php:1064 inc/order.class.php:1899
-msgid "Postage"
-msgstr "Postikulut"
+#: inc/link.class.php:49
+msgid "Generation"
+msgstr "Luonti"
 
-#: inc/order.class.php:458 inc/order.class.php:2213
+#: inc/order.class.php:1129
+msgid "Global discount to apply to items"
+msgstr ""
+
+#: inc/order.class.php:808
+msgid "Go to configuration page"
+msgstr ""
+
+#: inc/config.class.php:199
+msgid "Hide inactive budgets"
+msgstr "Piilota passiiviset budjetit"
+
+#: inc/order.class.php:1717
+msgid "Invoice address"
+msgstr "Laskutusosoite"
+
+#: inc/order.class.php:1764
+msgid "Issuer order"
+msgstr "Liikkeellelaskijan tilaus"
+
+#: inc/link.class.php:1031
+msgid "Item already linked to another one"
+msgstr "Tuote on jo liitetty toiseen kohteeseen"
+
+#: inc/reception.class.php:801
+msgid "Item already taken delivery"
+msgstr "Tuote on jo vastaanotettu"
+
+#: inc/reception.class.php:966
+msgid "Item delivered"
+msgstr "Tuote toimitettu"
+
+#: inc/link.class.php:1269 inc/link.class.php:1273
+msgid "Item generated by using order"
+msgstr "Tuote luotu tilauksen avulla"
+
+#: inc/link.class.php:947 inc/link.class.php:1017 inc/link.class.php:1025
+#: inc/link.class.php:1029
+msgid "Item linked to order"
+msgstr "Tuote liitetty tilaukseen"
+
+#: inc/link.class.php:1280
+msgid "Item successfully selected"
+msgstr "Tuote on valittu onnistuneesti"
+
+#: inc/reception.class.php:700 inc/reception.class.php:728
+msgid "Item successfully taken delivery"
+msgstr "Tuote onnistuneesti vastaanotettu"
+
+#: inc/link.class.php:1068 inc/link.class.php:1073 inc/link.class.php:1094
+#: inc/link.class.php:1099
+msgid "Item unlink form order"
+msgstr "Tuote poistettu tilauksesta"
+
+#: inc/notificationtargetorder.class.php:52
+#: inc/notificationtargetorder.class.php:188
+msgid "Late orders"
+msgstr "Jälkitilaukset"
+
+#: report/deliveryinfos/deliveryinfos.php:65
+msgid "Late orders total"
+msgstr "Jälkitoimitusten yhteisarvo"
+
+#: inc/link.class.php:507
+msgid "Link to an existing item"
+msgstr "Linkki olemassa olevaan kohteeseen"
+
+#: inc/order.class.php:1996 inc/reference.class.php:368
+#: inc/reference.class.php:759
+msgid "Linked orders"
+msgstr "Linkitetyt tilaukset"
+
+#: inc/reference_supplier.class.php:487
+msgid "List references"
+msgstr "Luettelo viitteistä"
+
+#: inc/order_item.class.php:802 inc/reference.class.php:155
+#: inc/reference.class.php:579
+msgid "Manufacturer reference"
+msgstr "Valmistajan viite"
+
+#: inc/order_item.class.php:169 inc/order_item.class.php:484
+#: inc/reference_supplier.class.php:91 inc/reference_supplier.class.php:218
+#: inc/reference.class.php:196
+msgid "Manufacturer's product reference"
+msgstr "Valmistajan tuotenumero"
+
+#: inc/order.class.php:1086 inc/order_item.class.php:440
+#: inc/order_item.class.php:520 inc/config.class.php:113
+#: ajax/referencedetail.php:65
+msgid "No VAT"
+msgstr "Ei arvonlisäveroa"
+
+#: inc/link.class.php:707
+msgid "No associated item"
+msgstr "Ei liittyviä kohteita"
+
+#: front/order.form.php:212 inc/reception.class.php:832
+msgid "No item selected"
+msgstr "Kohdetta ei ole valittu"
+
+#: inc/notificationtargetorder.class.php:53
+#: inc/notificationtargetorder.class.php:133 inc/link.class.php:222
+msgid "No item to generate"
+msgstr "Ei luotavaa kohdetta"
+
+#: inc/order_item.class.php:780 inc/order_item.class.php:1554
+#: inc/link.class.php:315 inc/bill.class.php:364 inc/reception.class.php:325
+msgid "No item to take delivery of"
+msgstr "Ei toimitettavia tuotteita"
+
+#: inc/order_supplier.class.php:317
+msgid "No specified status"
+msgstr "Ei määritettyä tilaa"
+
+#: inc/reception.class.php:650
+msgid "Not enough items to deliver"
+msgstr "Ei tarpeeksi tuotteita toimitettavaksi"
+
+#: inc/billstate.class.php:98
+msgid "Not paid"
+msgstr "Maksamaton"
+
+#: inc/surveysupplier.class.php:184 inc/surveysupplier.class.php:385
+msgid "Note"
+msgstr "Huomautus"
+
+#: inc/link.class.php:1091
+msgid "One or several selected rows haven't linked items"
+msgstr "Yhdellä tai useammalla valitulla rivillä ei ole linkitettyjä kohteita"
+
+#: hook.php:384 inc/order_supplier.class.php:209
+#: inc/surveysupplier.class.php:370 inc/order.class.php:78
+#: inc/order_item.class.php:752 inc/order_item.class.php:1360
+#: inc/order_item.class.php:1966 inc/bill.class.php:102 inc/bill.class.php:198
+#: inc/reception.class.php:296
+msgid "Order"
+msgstr "Tilaus"
+
+#: inc/order.class.php:271 inc/order.class.php:1641 inc/order.class.php:1667
+msgid "Order Generation"
+msgstr "Tilauksen luominen"
+
+#: inc/config.class.php:388
+msgid "Order being delivered state"
+msgstr "Tilaus toimituksessa tila"
+
+#: front/order.form.php:124 inc/notificationtargetorder.class.php:50
+#: inc/notificationtargetorder.class.php:125
+msgid "Order canceled"
+msgstr "Tilaus peruutettu"
+
+#: front/order.form.php:135 inc/notificationtargetorder.class.php:51
+msgid "Order currently edited"
+msgstr "Tilausta muokataan"
+
+#: inc/config.class.php:398
+msgid "Order delivered state"
+msgstr "Tilaus toimitettu tila"
+
+#: inc/config.class.php:126
+msgid "Order generation in ODT"
+msgstr "Tilauksen luonti tilauksen seurannassa"
+
+#: inc/order_item.class.php:1291
+msgid "Order informations"
+msgstr "Tilaustiedot"
+
+#: inc/order.class.php:459 inc/order.class.php:2224
 msgid "Order is late"
 msgstr "Tilaus on myöhässä"
 
-#: inc/order.class.php:524 inc/order.class.php:1225
-#: inc/notificationtargetorder.class.php:467
-#: inc/notificationtargetorder.class.php:470 inc/config.class.php:166
-msgid "Author group"
-msgstr "Tekijäryhmä"
+#: front/order.form.php:95 inc/notificationtargetorder.class.php:121
+msgid "Order is validated"
+msgstr "Tilaus vahvistettu"
 
-#: inc/order.class.php:534 inc/order.class.php:1275
-#: inc/notificationtargetorder.class.php:469
-#: inc/notificationtargetorder.class.php:471 inc/config.class.php:176
-msgid "Recipient group"
-msgstr "Vastaanottajaryhmä"
+#: inc/order_item.class.php:100 inc/order_item.class.php:1964
+msgid "Order item"
+msgstr "Tilaa tuote"
 
-#: inc/order.class.php:584
-msgid "Account Section"
-msgstr "Tili-osio"
+#: inc/config.class.php:354
+msgid "Order lifecycle"
+msgstr "Tilauksen elinkaari"
 
-#: inc/order.class.php:636
-msgid "Validation"
-msgstr "Vahvistus"
+#: hook.php:242 inc/surveysupplier.class.php:183 inc/order.class.php:410
+#: inc/order.class.php:856 inc/order_item.class.php:1292
+msgid "Order name"
+msgstr "Tilauksen nimi"
 
-#: inc/order.class.php:642
+#: hook.php:250 report/orderdelivery/orderdelivery.php:68
+#: inc/order.class.php:295 inc/order.class.php:888 inc/order.class.php:1715
+msgid "Order number"
+msgstr "Tilausnumero"
+
+#: inc/config.class.php:408
+msgid "Order paied state"
+msgstr "Tilaus maksettu tila"
+
+#: hook.php:143 inc/order.class.php:344 inc/order.class.php:923
+#: inc/order.class.php:2002 inc/orderstate.class.php:49
+msgid "Order status"
+msgstr "Tilauksen tila"
+
+#: inc/notificationtargetorder.class.php:49
+msgid "Order validated"
+msgstr "Tilaus vahvistettu"
+
+#: inc/order.class.php:273
+msgid "Order validation"
+msgstr "Tilauksen vahvistaminen"
+
+#: front/order.form.php:104
+msgid "Order validation successfully requested"
+msgstr "Tilauksen vahvistus pyydetty onnistuneesti"
+
+#: hook.php:150 front/order.form.php:418 front/preference.form.php:44
+#: front/order.php:34 front/menu.php:64 front/config.form.php:42
+#: inc/profile.class.php:98 inc/profile.class.php:140
+#: inc/profile.class.php:165 inc/preference.class.php:271
+#: inc/order_supplier.class.php:422 inc/documentcategory.class.php:47
+#: inc/order.class.php:78 inc/order.class.php:628 inc/menu.class.php:35
+#: inc/order_item.class.php:1958 inc/order_item.class.php:1960
+#: inc/bill.class.php:599
+msgid "Orders"
+msgstr "Tilaukset"
+
+#: front/order_supplier.form.php:81 front/reception.form.php:97
+#: front/surveysupplier.form.php:70 front/order_item.form.php:40
+#: front/menu.php:34 front/menu.php:58 inc/order.class.php:288
+#: inc/order_item.class.php:109 inc/config.class.php:77 setup.php:188
+msgid "Orders management"
+msgstr "Tilausten hallinta"
+
+#: report/deliveryinfos/deliveryinfos.php:64
+msgid "Orders total"
+msgstr "Tilausten yhteisarvo"
+
+#: hook.php:144 inc/othertype.class.php:41
+msgid "Other type of item"
+msgstr "Muun tyyppinen tuote"
+
+#: inc/orderstate.class.php:98 inc/billstate.class.php:61
+#: inc/billstate.class.php:97
+msgid "Paid"
+msgstr "Maksettu"
+
+#: inc/order_item.class.php:1480
+msgid "Paid value"
+msgstr "Maksettu summa"
+
+#: hook.php:141 inc/order.class.php:370 inc/order.class.php:989
+#: inc/order.class.php:1919 inc/orderpayment.class.php:41
+msgid "Payment conditions"
+msgstr "Maksuehdot"
+
+#: inc/order_item.class.php:1467
+msgid "Payment status"
+msgstr "Maksun tila"
+
+#: inc/order_item.class.php:454 inc/order_item.class.php:590
+msgid "Please select a supplier"
+msgstr "Ole hyvä ja valitse toimittaja"
+
+#: inc/config.class.php:104
+msgid "Plugin configuration"
+msgstr "Liitännäisen asetukset"
+
+#: hook.php:46
+msgid "Plugin installation or upgrade"
+msgstr "Liitännäisen asennus tai päivitys"
+
+#: inc/order.class.php:320 inc/order.class.php:493 inc/order.class.php:1033
+#: inc/order.class.php:1075 inc/order.class.php:1910
+msgid "Postage"
+msgstr "Postikulut"
+
+#: inc/order.class.php:1339 inc/order.class.php:1791 inc/order.class.php:1915
+#: inc/order.class.php:2005 inc/order_item.class.php:1027
+#: inc/order_item.class.php:1412
+msgid "Price ATI"
+msgstr "Hinta veroineen"
+
+#: inc/order.class.php:1317 inc/order.class.php:1906 inc/order.class.php:2004
+msgid "Price tax free"
+msgstr "Hinta ilman veroa"
+
+#: inc/order.class.php:1332 inc/order.class.php:1908
+msgid "Price tax free with postage"
+msgstr "Hinta ilman veroja postituskuluineen"
+
+#: inc/order_item.class.php:161 inc/order_item.class.php:472
+msgid "Product name"
+msgstr "Tuotteen nimi"
+
+#: inc/order_item.class.php:365 inc/order_item.class.php:1568
+#: inc/reference_supplier.class.php:257 inc/reference_supplier.class.php:274
+#: inc/reference_supplier.class.php:493 inc/reference_supplier.class.php:495
+#: inc/reference.class.php:45 inc/reference.class.php:62 inc/link.class.php:77
+#: inc/link.class.php:379 inc/bill.class.php:380 inc/reception.class.php:355
+msgid "Product reference"
+msgstr "Tuotteen viite"
+
+#: front/menu.php:71 inc/profile.class.php:169
+msgid "Products references"
+msgstr "Tuoteviittaukset"
+
+#: inc/order.class.php:643
 msgid "Purchase order"
 msgstr "Osta tilaus"
 
-#: inc/order.class.php:684
-msgid "An order number is mandatory !"
-msgstr "Tilausnumero on pakollinen !"
+#: inc/surveysupplier.class.php:238 inc/surveysupplier.class.php:328
+msgid "Quality of supplier intervention"
+msgstr "Toimittajan intervention laatu"
 
-#: inc/order.class.php:693 inc/order.class.php:769
-msgid "An account section is mandatory !"
-msgstr "Tili-osio on pakollinen!"
+#: front/order.form.php:151 front/order.form.php:248 front/order.form.php:268
+#: inc/order.class.php:1784 inc/order_item.class.php:369
+#: inc/order_item.class.php:477 inc/order_item.class.php:793
+#: inc/link.class.php:415
+msgid "Quantity"
+msgstr "Määrä"
 
-#: inc/order.class.php:700 inc/order.class.php:763
+#: front/order_supplier.form.php:52 inc/order_supplier.class.php:63
+#: inc/order_supplier.class.php:171 inc/order_supplier.class.php:230
+msgid "Quote number"
+msgstr "Viitenumero"
+
+#: inc/order.class.php:1782
+msgid "Recipient"
+msgstr "Vastaanottaja"
+
+#: inc/order.class.php:535 inc/order.class.php:1286
+#: inc/notificationtargetorder.class.php:470
+#: inc/notificationtargetorder.class.php:472 inc/config.class.php:177
+msgid "Recipient group"
+msgstr "Vastaanottajaryhmä"
+
+#: inc/referencefree.class.php:40
+msgid "Reference free"
+msgstr "Viite vapaa"
+
+#: inc/reference.class.php:324
+msgid "Reference(s) in use"
+msgstr "Viite/viitteet käytössä"
+
+#: inc/surveysupplier.class.php:245 inc/surveysupplier.class.php:334
+msgid "Reliability about annouced delays"
+msgstr "Luotettavuus ilmoitetuista viiveistä"
+
+#: front/order.form.php:195 front/order.form.php:202 front/order.form.php:315
+#: front/order.form.php:321
+msgid "Remove reference"
+msgstr "Poista viite"
+
+#: inc/config.class.php:234
+msgid "Rename documents added in order"
+msgstr "Uudelleennimeä tilaukseen lisättyjä asiakirjoja "
+
+#: inc/notificationtargetorder.class.php:48
+#: inc/notificationtargetorder.class.php:117
+msgid "Request order validation"
+msgstr "Pyydä tilauksen vahvistusta"
+
+#: inc/reference.class.php:863
+msgid "Select the wanted item type"
+msgstr "Valitse haluttu kohteen tyyppi"
+
+#: inc/config.class.php:220
+msgid "Set account section as mandatory on order form"
+msgstr "Aseta tili-osio pakolliseksi tilauslomakkeella"
+
+#: inc/config.class.php:258
+msgid "Set analytic nature as mandatory on item form"
+msgstr "Aseta analyyttinen luonne pakolliseksi lomakkeella"
+
+#: inc/order.class.php:1918
+msgid "Signature of issuing order"
+msgstr "Myöntämispäätöksen allekirjoitus"
+
+#: inc/order_item.class.php:254
+msgid "Some fields cannont be modified because they belong to an order"
+msgstr "Joitakin kenttiä ei voida muuttaa, koska ne kuuluvat tilaukseen"
+
+#: inc/config.class.php:358
+msgid "State before validation"
+msgstr "Tila ennen vahvistusta"
+
+#: inc/order.class.php:1790
+msgid "Sum tax free"
+msgstr "Yhteensä ilman veroja"
+
+#: front/order_supplier.form.php:67 inc/order_supplier.class.php:47
+#: inc/order_supplier.class.php:56 inc/order_supplier.class.php:226
+#: inc/order_supplier.class.php:427 inc/reference_supplier.class.php:155
+#: inc/reference_supplier.class.php:271
+msgid "Supplier Detail"
+msgstr "Toimittajan tiedot"
+
+#: front/reference_supplier.form.php:70 inc/reference_supplier.class.php:47
+#: inc/reference_supplier.class.php:84
+msgid "Supplier for the reference"
+msgstr "Toimittajan viite"
+
+#: inc/surveysupplier.class.php:45 inc/surveysupplier.class.php:179
+#: inc/surveysupplier.class.php:382 inc/surveysupplier.class.php:516
+msgid "Supplier quality"
+msgstr "Toimittajan laatu"
+
+#: inc/order.class.php:272 inc/reception.class.php:521
+#: inc/reception.class.php:605
+msgid "Take item delivery"
+msgstr "Tuotteiden toimitus"
+
+#: inc/reception.class.php:202 inc/reception.class.php:629
+msgid "Taken delivery"
+msgstr "Toimitetaan"
+
+#: inc/order.class.php:1626
+msgid "Thanks to add at least one equipment on your order."
+msgstr "Kiitos, että lisäsit vähintään yhden laitteen tilaukseesi."
+
+#: inc/order.class.php:1675
+msgid "Thanks to select a model into your preferences"
+msgstr "Kiitos, että valitsit mallin asetuksiisi"
+
+#: inc/order.class.php:1762
+msgid "The"
+msgstr " "
+
+#: front/order.form.php:144 front/order.form.php:219 front/order.form.php:367
+msgid "The discount pourcentage must be between 0 and 100"
+msgstr "Alennusprosentin täytyy olla väliltä 0-100"
+
+#: inc/order.class.php:701 inc/order.class.php:762
 msgid ""
 "The order date must be within the dates entered for the selected budget."
 msgstr "Tilauspäivän on noudatettava valitulle budjetille asetettuja päivämääriä."
 
-#: inc/order.class.php:812
-msgid "Go to configuration page"
-msgstr ""
+#: inc/order.class.php:2175
+msgid "Total orders related with this budget is equal to its value."
+msgstr "Tilausten kokonaisarvo on sama kuin budjetti."
+
+#: inc/order.class.php:2170
+msgid "Total orders related with this budget is greater than its value."
+msgstr "Tilausten kokonaisarvo on budjettia suuremmat."
+
+#: inc/config.class.php:206
+msgid "Transmit budget change to linked assets"
+msgstr "Lähetä talousarvion muutos linkitettyihin varoihin"
+
+#: inc/order.class.php:1787
+msgid "Unit price"
+msgstr "Yksikköhinta"
+
+#: inc/order_item.class.php:116 inc/order_item.class.php:370
+#: inc/order_item.class.php:478 inc/order_item.class.php:803
+#: inc/order_item.class.php:1023 inc/order_item.class.php:1380
+#: inc/reference_supplier.class.php:100 inc/reference_supplier.class.php:232
+#: inc/reference_supplier.class.php:275 inc/reference_supplier.class.php:496
+#: inc/reference.class.php:184
+msgid "Unit price tax free"
+msgstr "Veroton yksikköhinta"
+
+#: inc/order.class.php:2030
+msgid "Unlink"
+msgstr "Linkityksen poisto"
+
+#: inc/config.class.php:227
+msgid "Use free references"
+msgstr "Käytä vapaita ​​viitteitä"
+
+#: inc/preference.class.php:161 inc/order.class.php:1647
+msgid "Use this model"
+msgstr "Käytä tätä mallia"
+
+#: inc/preference.class.php:166 inc/order.class.php:1656
+msgid "Use this sign"
+msgstr "Käytä tätä merkkiä"
+
+#: inc/config.class.php:119
+msgid "Use validation process"
+msgstr "Käytä vahvistusprosessia"
+
+#: hook.php:140 inc/order.class.php:320 inc/order.class.php:1075
+#: inc/order.class.php:1346 inc/order.class.php:1788 inc/order.class.php:1913
+#: inc/order_item.class.php:371 inc/order_item.class.php:479
+#: inc/order_item.class.php:1024 inc/order_item.class.php:1387
+#: inc/ordertax.class.php:42
+msgid "VAT"
+msgstr "ALV"
+
+#: inc/order.class.php:1596
+msgid "Validate order"
+msgstr "Vahvista tilaus"
+
+#: inc/orderstate.class.php:94
+msgid "Validated"
+msgstr "Vahvistettu"
+
+#: inc/config.class.php:378
+msgid "Validated order state"
+msgstr "Vahvista tilauksen tila"
+
+#: inc/order.class.php:637
+msgid "Validation"
+msgstr "Vahvistus"
+
+#: inc/notificationtargetorder.class.php:129
+msgid "Validation canceled successfully"
+msgstr "Vahvistus peruttu onnistuneesti"
+
+#: inc/order.class.php:1570
+msgid "Validation process"
+msgstr "Vahvistusprosessi"
+
+#: front/order.form.php:114
+msgid "Validation query is now canceled"
+msgstr "Vahvistuskysely on nyt peruutettu"
+
+#: inc/reference.class.php:914 inc/reference.class.php:915
+#: inc/reference.class.php:933
+msgid "View by item type"
+msgstr "Näytä tyypin mukaan"
+
+#: inc/orderstate.class.php:93
+msgid "Waiting for approval"
+msgstr "Odottaa hyväksyntää"
+
+#: inc/reception.class.php:626
+msgid "Waiting for delivery"
+msgstr "Odottaa toimitusta"
+
+#: inc/config.class.php:368
+msgid "Waiting for validation state"
+msgstr "Odottaa vahvistuksen tilaa"
+
+#: inc/orderstate.class.php:55 inc/billstate.class.php:49
+msgid "You cannot remove this status"
+msgstr "Et voi poistaa tätä tilaa"
 
 #: inc/order.class.php:816
 msgid "You must set up at least the order life cycle before starting."
 msgstr ""
 
-#: inc/order.class.php:1075 inc/order_item.class.php:439
-#: inc/order_item.class.php:519 inc/config.class.php:112
-#: ajax/referencedetail.php:64
-msgid "No VAT"
-msgstr "Ei arvonlisäveroa"
+#: report/deliveryinfos/deliveryinfos.php:47
+msgid "deliveryinfos_report_title"
+msgstr "toimitustietoraportin_otsikko"
 
-#: inc/order.class.php:1108
-msgid "Due date overtaken"
-msgstr "Erääntymispäivä ylitetty"
+#: report/orderdelivery/orderdelivery.php:47
+msgid "orderdelivery_report_title"
+msgstr "tilausraportin_otsikko"
 
-#: inc/order.class.php:1118
-msgid "Global discount to apply to items"
-msgstr ""
-
-#: inc/order.class.php:1306 inc/order.class.php:1895 inc/order.class.php:1993
-msgid "Price tax free"
-msgstr "Hinta ilman veroa"
-
-#: inc/order.class.php:1321 inc/order.class.php:1897
-msgid "Price tax free with postage"
-msgstr "Hinta ilman veroja postituskuluineen"
-
-#: inc/order.class.php:1328 inc/order.class.php:1780 inc/order.class.php:1904
-#: inc/order.class.php:1994 inc/order_item.class.php:1029
-#: inc/order_item.class.php:1418
-msgid "Price ATI"
-msgstr "Hinta veroineen"
-
-#: inc/order.class.php:1559
-msgid "Validation process"
-msgstr "Vahvistusprosessi"
-
-#: inc/order.class.php:1578
-msgid ""
-"Do you really want to cancel this order ? This option is irreversible !"
-msgstr "Haluatko todella peruuttaa tämän tilauksen? Tämä vaihtoehto on peruuttamaton!"
-
-#: inc/order.class.php:1585
-msgid "Validate order"
-msgstr "Vahvista tilaus"
-
-#: inc/order.class.php:1591
-msgid "Do you want to cancel the validation approval ?"
-msgstr "Haluatko peruuttaa vahvistuksen hyväksynnän?"
-
-#: inc/order.class.php:1593
-msgid "Cancel ask for validation"
-msgstr "Peruuta vahvistuskysely"
-
-#: inc/order.class.php:1599
-msgid "Ask for validation"
-msgstr "Kysy vahvistusta"
-
-#: inc/order.class.php:1605
-msgid "Do you really want to edit the order ?"
-msgstr "Haluatko varmasti muokata tilausta ?"
-
-#: inc/order.class.php:1607
-msgid "Edit order"
-msgstr "Muokkaa tilausta"
-
-#: inc/order.class.php:1615
-msgid "Thanks to add at least one equipment on your order."
-msgstr "Kiitos, että lisäsit vähintään yhden laitteen tilaukseesi."
-
-#: inc/order.class.php:1664
-msgid "Thanks to select a model into your preferences"
-msgstr "Kiitos, että valitsit mallin asetuksiisi"
-
-#: inc/order.class.php:1706
-msgid "Invoice address"
-msgstr "Laskutusosoite"
-
-#: inc/order.class.php:1741
-msgid "Delivery address"
-msgstr "Toimitusosoite"
-
-#: inc/order.class.php:1751
-msgid "The"
-msgstr " "
-
-#: inc/order.class.php:1753
-msgid "Issuer order"
-msgstr "Liikkeellelaskijan tilaus"
-
-#: inc/order.class.php:1771
-msgid "Recipient"
-msgstr "Vastaanottaja"
-
-#: inc/order.class.php:1774
-msgid "Designation"
-msgstr "Nimittäjä"
-
-#: inc/order.class.php:1776
-msgid "Unit price"
-msgstr "Yksikköhinta"
-
-#: inc/order.class.php:1778
-msgid "Discount rate"
-msgstr "Alennus"
-
-#: inc/order.class.php:1779
-msgid "Sum tax free"
-msgstr "Yhteensä ilman veroja"
-
-#: inc/order.class.php:1906
+#: inc/order.class.php:1917
 msgid "€"
 msgstr "€"
-
-#: inc/order.class.php:1907
-msgid "Signature of issuing order"
-msgstr "Myöntämispäätöksen allekirjoitus"
-
-#: inc/order.class.php:1985 inc/reference.class.php:373
-#: inc/reference.class.php:758
-msgid "Linked orders"
-msgstr "Linkitetyt tilaukset"
-
-#: inc/order.class.php:2019
-msgid "Unlink"
-msgstr "Linkityksen poisto"
-
-#: inc/order.class.php:2159
-msgid "Total orders related with this budget is greater than its value."
-msgstr "Tilausten kokonaisarvo on budjettia suuremmat."
-
-#: inc/order.class.php:2164
-msgid "Total orders related with this budget is equal to its value."
-msgstr "Tilausten kokonaisarvo on sama kuin budjetti."
-
-#: inc/notificationtargetorder.class.php:47
-#: inc/notificationtargetorder.class.php:116
-msgid "Request order validation"
-msgstr "Pyydä tilauksen vahvistusta"
-
-#: inc/notificationtargetorder.class.php:48
-msgid "Order validated"
-msgstr "Tilaus vahvistettu"
-
-#: inc/notificationtargetorder.class.php:51
-#: inc/notificationtargetorder.class.php:187
-msgid "Late orders"
-msgstr "Jälkitilaukset"
-
-#: inc/notificationtargetorder.class.php:52
-#: inc/notificationtargetorder.class.php:132 inc/link.class.php:223
-msgid "No item to generate"
-msgstr "Ei luotavaa kohdetta"
-
-#: inc/notificationtargetorder.class.php:109
-#: inc/notificationtargetorder.class.php:155
-msgid "Comment of validation"
-msgstr "Vahvistuksen kommentti"
-
-#: inc/notificationtargetorder.class.php:128
-msgid "Validation canceled successfully"
-msgstr "Vahvistus peruttu onnistuneesti"
-
-#: inc/notificationtargetorder.class.php:156
-msgid "Editor of validation"
-msgstr "Vahvistuksen muokkaaja"
-
-#: inc/order_item.class.php:99 inc/order_item.class.php:1973
-msgid "Order item"
-msgstr "Tilaa tuote"
-
-#: inc/order_item.class.php:115 inc/order_item.class.php:369
-#: inc/order_item.class.php:477 inc/order_item.class.php:803
-#: inc/order_item.class.php:1025 inc/order_item.class.php:1386
-#: inc/reference_supplier.class.php:99 inc/reference_supplier.class.php:225
-#: inc/reference_supplier.class.php:268 inc/reference_supplier.class.php:485
-#: inc/reference.class.php:183
-msgid "Unit price tax free"
-msgstr "Veroton yksikköhinta"
-
-#: inc/order_item.class.php:160 inc/order_item.class.php:471
-msgid "Product name"
-msgstr "Tuotteen nimi"
-
-#: inc/order_item.class.php:168 inc/order_item.class.php:483
-#: inc/reference_supplier.class.php:90 inc/reference_supplier.class.php:216
-#: inc/reference.class.php:195
-msgid "Manufacturer's product reference"
-msgstr "Valmistajan tuotenumero"
-
-#: inc/order_item.class.php:195
-msgid "Analytic Nature"
-msgstr "Analyyttinen luonne"
-
-#: inc/order_item.class.php:253
-msgid "Some fields cannont be modified because they belong to an order"
-msgstr "Joitakin kenttiä ei voida muuttaa, koska ne kuuluvat tilaukseen"
-
-#: inc/order_item.class.php:358
-msgid "Add to the order from the catalog"
-msgstr "Lisää tilaukseen luettelosta"
-
-#: inc/order_item.class.php:364 inc/order_item.class.php:1576
-#: inc/reference_supplier.class.php:250 inc/reference_supplier.class.php:267
-#: inc/reference_supplier.class.php:482 inc/reference_supplier.class.php:484
-#: inc/reference.class.php:44 inc/reference.class.php:61 inc/link.class.php:78
-#: inc/link.class.php:381 inc/bill.class.php:379 inc/reception.class.php:349
-msgid "Product reference"
-msgstr "Tuotteen viite"
-
-#: inc/order_item.class.php:453 inc/order_item.class.php:589
-msgid "Please select a supplier"
-msgstr "Ole hyvä ja valitse toimittaja"
-
-#: inc/order_item.class.php:466
-msgid "Add to the order free items"
-msgstr "Lisää tilausvapaisiin tuotteisiin"
-
-#: inc/order_item.class.php:480
-msgid "Add the reference"
-msgstr "Lisää viite"
-
-#: inc/order_item.class.php:610 inc/order_item.class.php:623
-msgid "An analytic nature is mandatory !"
-msgstr "Analyyttinen luonne on pakollinen!"
-
-#: inc/order_item.class.php:780 inc/order_item.class.php:1562
-#: inc/link.class.php:317 inc/bill.class.php:363 inc/reception.class.php:319
-msgid "No item to take delivery of"
-msgstr "Ei toimitettavia tuotteita"
-
-#: inc/order_item.class.php:802 inc/reference.class.php:154
-#: inc/reference.class.php:577
-msgid "Manufacturer reference"
-msgstr "Valmistajan viite"
-
-#: inc/order_item.class.php:810 inc/order_item.class.php:1002
-#: inc/order_item.class.php:1204
-msgid "Do you really want to update this item ?"
-msgstr "Haluatko todella päivittää tämän kohteen?"
-
-#: inc/order_item.class.php:993 inc/order_item.class.php:1195
-msgid ""
-"Do you really want to delete these details ? Delivered items will not be "
-"linked to order !"
-msgstr "Haluatko todella poistaa nämä tiedot? Toimitettuja tuotteita ei liitetetä tilaukseen!"
-
-#: inc/order_item.class.php:1028 inc/order_item.class.php:1413
-msgid "Discounted price tax free"
-msgstr "Alennettu hinta ilman veroja"
-
-#: inc/order_item.class.php:1297
-msgid "Order informations"
-msgstr "Tilaustiedot"
-
-#: inc/order_item.class.php:1473
-msgid "Payment status"
-msgstr "Maksun tila"
-
-#: inc/order_item.class.php:1486
-msgid "Paid value"
-msgstr "Maksettu summa"
-
-#: inc/order_item.class.php:1605 inc/order_item.class.php:1693
-#: inc/bill.class.php:47 inc/bill.class.php:135 inc/bill.class.php:409
-#: inc/reception.class.php:248
-msgid "Bill"
-msgstr "Lasku"
-
-#: inc/reference_supplier.class.php:476
-msgid "List references"
-msgstr "Luettelo viitteistä"
-
-#: inc/reference.class.php:302
-msgid "Cannot create reference without a name"
-msgstr "Viittausta ei voi luoda ilman nimeä"
-
-#: inc/reference.class.php:307
-msgid "Cannot create reference without a type"
-msgstr "Viittausta ei voi luoda ilman tyyppiä"
-
-#: inc/reference.class.php:315
-msgid "A reference with the same name still exists"
-msgstr "Samanniminen viittaus on olemassa"
-
-#: inc/reference.class.php:327
-msgid "Reference(s) in use"
-msgstr "Viite/viitteet käytössä"
-
-#: inc/reference.class.php:838
-msgid "Copy of"
-msgstr "Kopio"
-
-#: inc/reference.class.php:862
-msgid "Select the wanted item type"
-msgstr "Valitse haluttu kohteen tyyppi"
-
-#: inc/reference.class.php:915 inc/reference.class.php:916
-#: inc/reference.class.php:934
-msgid "View by item type"
-msgstr "Näytä tyypin mukaan"
-
-#: inc/reference.class.php:991
-msgid "Copy reference"
-msgstr "Kopioi viite"
-
-#: inc/orderstate.class.php:55 inc/billstate.class.php:48
-msgid "You cannot remove this status"
-msgstr "Et voi poistaa tätä tilaa"
-
-#: inc/orderstate.class.php:87
-msgid "Draft"
-msgstr "Luonnos"
-
-#: inc/orderstate.class.php:88
-msgid "Waiting for approval"
-msgstr "Odottaa hyväksyntää"
-
-#: inc/orderstate.class.php:89
-msgid "Validated"
-msgstr "Vahvistettu"
-
-#: inc/orderstate.class.php:90
-msgid "Being delivered"
-msgstr "Toimitetaan"
-
-#: inc/orderstate.class.php:91
-msgid "Delivered"
-msgstr "Toimitettu"
-
-#: inc/orderstate.class.php:92
-msgid "Canceled"
-msgstr "Peruttu"
-
-#: inc/orderstate.class.php:93 inc/billstate.class.php:60
-#: inc/billstate.class.php:91
-msgid "Paid"
-msgstr "Maksettu"
-
-#: inc/link.class.php:48
-msgid "Generation"
-msgstr "Luonti"
-
-#: inc/link.class.php:75 inc/link.class.php:510
-msgid "Generate item"
-msgstr "Luo kohde"
-
-#: inc/link.class.php:511
-msgid "Link to an existing item"
-msgstr "Linkki olemassa olevaan kohteeseen"
-
-#: inc/link.class.php:512
-msgid "Delete item link"
-msgstr "Poista kohteen linkki"
-
-#: inc/link.class.php:588
-msgid "Cannot link several items to one detail line"
-msgstr "Useita kohteita ei voida yhdistää yhteen yksityiskohtariviin"
-
-#: inc/link.class.php:599
-msgid "Cannot link items not delivered"
-msgstr "Toimittamattomia tuotteita ei voida linkittää"
-
-#: inc/link.class.php:713
-msgid "No associated item"
-msgstr "Ei liittyviä kohteita"
-
-#: inc/link.class.php:953 inc/link.class.php:1023 inc/link.class.php:1031
-#: inc/link.class.php:1035
-msgid "Item linked to order"
-msgstr "Tuote liitetty tilaukseen"
-
-#: inc/link.class.php:1037
-msgid "Item already linked to another one"
-msgstr "Tuote on jo liitetty toiseen kohteeseen"
-
-#: inc/link.class.php:1074 inc/link.class.php:1079 inc/link.class.php:1100
-#: inc/link.class.php:1105
-msgid "Item unlink form order"
-msgstr "Tuote poistettu tilauksesta"
-
-#: inc/link.class.php:1097
-msgid "One or several selected rows haven't linked items"
-msgstr "Yhdellä tai useammalla valitulla rivillä ei ole linkitettyjä kohteita"
-
-#: inc/link.class.php:1277 inc/link.class.php:1281
-msgid "Item generated by using order"
-msgstr "Tuote luotu tilauksen avulla"
-
-#: inc/link.class.php:1288
-msgid "Item successfully selected"
-msgstr "Tuote on valittu onnistuneesti"
-
-#: inc/config.class.php:103
-msgid "Plugin configuration"
-msgstr "Liitännäisen asetukset"
-
-#: inc/config.class.php:106
-msgid "Default VAT"
-msgstr "Oletus ALV"
-
-#: inc/config.class.php:118
-msgid "Use validation process"
-msgstr "Käytä vahvistusprosessia"
-
-#: inc/config.class.php:125
-msgid "Order generation in ODT"
-msgstr "Tilauksen luonti tilauksen seurannassa"
-
-#: inc/config.class.php:131
-msgid "Activate suppliers quality satisfaction"
-msgstr "Aktivoi tyytyväisyys toimittajan laatuun"
-
-#: inc/config.class.php:138
-msgid "Display order's suppliers informations"
-msgstr "Näytä tilausten toimittajien tiedot"
-
-#: inc/config.class.php:144
-msgid "Color to be displayed when order due date is overtaken"
-msgstr "Väri, joka näytetään, kun tilauksen määräpäivä on ohitettu"
-
-#: inc/config.class.php:152
-msgid "Copy order documents when a new item is created"
-msgstr "Kopioi tilausasiakirjat, kun uusi kohde luodaan"
-
-#: inc/config.class.php:159
-msgid "Default heading when adding a document to an order"
-msgstr "Oletus otsikko, kun asiakirja lisätään tilaukseen"
-
-#: inc/config.class.php:198
-msgid "Hide inactive budgets"
-msgstr "Piilota passiiviset budjetit"
-
-#: inc/config.class.php:205
-msgid "Transmit budget change to linked assets"
-msgstr "Lähetä talousarvion muutos linkitettyihin varoihin"
-
-#: inc/config.class.php:212
-msgid "Display account section on order form"
-msgstr "Näytä tili-osio tilauslomakkeella"
-
-#: inc/config.class.php:219
-msgid "Set account section as mandatory on order form"
-msgstr "Aseta tili-osio pakolliseksi tilauslomakkeella"
-
-#: inc/config.class.php:226
-msgid "Use free references"
-msgstr "Käytä vapaita ​​viitteitä"
-
-#: inc/config.class.php:233
-msgid "Rename documents added in order"
-msgstr "Uudelleennimeä tilaukseen lisättyjä asiakirjoja "
-
-#: inc/config.class.php:241
-msgid "Automatic actions when delivery"
-msgstr "Toimituksen automaattiset toimet"
-
-#: inc/config.class.php:250
-msgid "Display analytic nature on item form"
-msgstr "Näytä analyyttinen luonne lomakkeella"
-
-#: inc/config.class.php:257
-msgid "Set analytic nature as mandatory on item form"
-msgstr "Aseta analyyttinen luonne pakolliseksi lomakkeella"
-
-#: inc/config.class.php:264 inc/reception.class.php:561
-msgid "Enable automatic generation"
-msgstr "Ota automaattinen generointi käyttöön"
-
-#: inc/config.class.php:269
-msgid "Asked"
-msgstr "Kysytty"
-
-#: inc/config.class.php:275
-msgid "Default state"
-msgstr "Oletustila"
-
-#: inc/config.class.php:286
-msgid "Add order location to item"
-msgstr "Lisää tilauksen sijainti kohteeseen"
-
-#: inc/config.class.php:293
-msgid "Add billing details to item"
-msgstr "Lisää tuotteelle laskutustiedot"
-
-#: inc/config.class.php:300 inc/config.class.php:789
-#: inc/reception.class.php:567
-msgid "Default name"
-msgstr "Oletusnimi"
-
-#: inc/config.class.php:307 inc/config.class.php:797
-#: inc/reception.class.php:570
-msgid "Default serial number"
-msgstr "Oletus sarjanumero"
-
-#: inc/config.class.php:314 inc/config.class.php:805
-#: inc/reception.class.php:573
-msgid "Default inventory number"
-msgstr "Oletus inventointinumero"
-
-#: inc/config.class.php:338
-msgid "Order lifecycle"
-msgstr "Tilauksen elinkaari"
-
-#: inc/config.class.php:342
-msgid "State before validation"
-msgstr "Tila ennen vahvistusta"
-
-#: inc/config.class.php:352
-msgid "Waiting for validation state"
-msgstr "Odottaa vahvistuksen tilaa"
-
-#: inc/config.class.php:362
-msgid "Validated order state"
-msgstr "Vahvista tilauksen tila"
-
-#: inc/config.class.php:372
-msgid "Order being delivered state"
-msgstr "Tilaus toimituksessa tila"
-
-#: inc/config.class.php:382
-msgid "Order delivered state"
-msgstr "Tilaus toimitettu tila"
-
-#: inc/config.class.php:392
-msgid "Order paied state"
-msgstr "Tilaus maksettu tila"
-
-#: inc/config.class.php:402
-msgid "Canceled order state"
-msgstr "Tilaus peruttu tila"
-
-#: inc/bill.class.php:59
-msgid "A bill number is mandatory"
-msgstr "Laskun numero on pakollinen"
-
-#: inc/reception.class.php:53
-msgid "Delivery"
-msgstr "Toimitus"
-
-#: inc/reception.class.php:201 inc/reception.class.php:612
-msgid "Taken delivery"
-msgstr "Toimitetaan"
-
-#: inc/reception.class.php:350
-msgid "Delivered items"
-msgstr "Toimitetut tuotteet"
-
-#: inc/reception.class.php:609
-msgid "Waiting for delivery"
-msgstr "Odottaa toimitusta"
-
-#: inc/reception.class.php:633
-msgid "Not enough items to deliver"
-msgstr "Ei tarpeeksi tuotteita toimitettavaksi"
-
-#: inc/reception.class.php:685 inc/reception.class.php:713
-msgid "Item successfully taken delivery"
-msgstr "Tuote onnistuneesti vastaanotettu"
-
-#: inc/reception.class.php:784
-msgid "Item already taken delivery"
-msgstr "Tuote on jo vastaanotettu"
-
-#: inc/reception.class.php:950
-msgid "Item delivered"
-msgstr "Tuote toimitettu"
-
-#: inc/billstate.class.php:59
-msgid "Being paid"
-msgstr "Maksettu"
-
-#: inc/billstate.class.php:92
-msgid "Not paid"
-msgstr "Maksamaton"
