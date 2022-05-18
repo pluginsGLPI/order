@@ -5,4 +5,3 @@ vendor/
 templates/
 !templates/example.odt
 !templates/order_infocom.html.twig
-
