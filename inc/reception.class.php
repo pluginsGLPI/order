@@ -734,8 +734,18 @@ class PluginOrderReception extends CommonDBChild {
 
       $detail                 = new PluginOrderOrder_Item();
       $plugin_order_orders_id = 0;
+      $ma                     = false;
 
-      if (isset($params->getItems()[__CLASS__])) {
+      // from MassiveAction process, we get ma object, so convert it into array
+      if (is_object($params)) {
+         $ma      = $params;
+         $params2 = [
+            'items' => $ma->getItems(),
+            'POST' => $ma->getInput(),
+         ];
+      }
+
+      if (isset($params2['items'][__CLASS__])) {
          $additional_data_ite = $DB->request([
             'SELECT' => [
                'glpi_plugin_order_orders_items.id',
@@ -754,7 +764,7 @@ class PluginOrderReception extends CommonDBChild {
                ]
             ],
             'WHERE' => [
-               'glpi_plugin_order_orders_items.id' => array_keys($params->getItems()[__CLASS__])
+               'glpi_plugin_order_orders_items.id' => array_keys($params2['items'][__CLASS__])
             ]
          ]);
          $additional_data = [];
@@ -762,7 +772,7 @@ class PluginOrderReception extends CommonDBChild {
             $additional_data[$add_values['id']] = $add_values;
          }
 
-         foreach ($params->getItems()[__CLASS__] as $key => $val) {
+         foreach ($params2['items'][__CLASS__] as $key => $val) {
             if ($val < 1) {
                 continue;
             }
@@ -770,12 +780,12 @@ class PluginOrderReception extends CommonDBChild {
             if ($add_data["itemtype"] == 'SoftwareLicense') {
                $this->receptionAllItem($key,
                                        $add_data["plugin_order_references_id"],
-                                       $params->getInput()["plugin_order_orders_id"],
-                                       $params->getInput()["delivery_date"],
-                                       $params->getInput()["delivery_number"],
-                                       $params->getInput()["plugin_order_deliverystates_id"]);
+                                       $params2['POST']["plugin_order_orders_id"],
+                                       $params2['POST']["delivery_date"],
+                                       $params2['POST']["delivery_number"],
+                                       $params2['POST']["plugin_order_deliverystates_id"]);
 
-               $plugin_order_orders_id = $params->getInput()["plugin_order_orders_id"];
+               $plugin_order_orders_id = $params2['POST']["plugin_order_orders_id"];
             } else {
                if ($detail->getFromDB($key)) {
                   if (!$plugin_order_orders_id) {
@@ -784,16 +794,16 @@ class PluginOrderReception extends CommonDBChild {
 
                   if ($detail->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
                      $this->receptionOneItem($key, $plugin_order_orders_id,
-                     $params->getInput()["delivery_date"],
-                     $params->getInput()["delivery_number"],
-                     $params->getInput()["plugin_order_deliverystates_id"]);
-                     if ($params !== false) {
-                        $params->itemDone(__CLASS__, $key, MassiveAction::ACTION_OK);
+                                             $params2['POST']["delivery_date"],
+                                             $params2['POST']["delivery_number"],
+                                             $params2['POST']["plugin_order_deliverystates_id"]);
+                     if ($ma !== false) {
+                        $ma->itemDone(__CLASS__, $key, MassiveAction::ACTION_OK);
                      }
                   } else {
                      Session::addMessageAfterRedirect(__("Item already taken delivery", "order"), true, ERROR);
-                     if ($params !== false) {
-                        $params->itemDone(__CLASS__, $key, MassiveAction::ACTION_KO);
+                     if ($ma !== false) {
+                        $ma->itemDone(__CLASS__, $key, MassiveAction::ACTION_KO);
                      }
                   }
 
@@ -808,11 +818,11 @@ class PluginOrderReception extends CommonDBChild {
 
                   $config = PluginOrderConfig::getConfig(true);
                   if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
-                     $options['manual_generate'] = $params->getInput()['manual_generate'];
-                     if ($params->getInput()['manual_generate'] == 1) {
-                        $options['name']            = $params->getInput()['generated_name'];
-                        $options['serial']          = $params->getInput()['generated_serial'];
-                        $options['otherserial']     = $params->getInput()['generated_otherserial'];
+                     $options['manual_generate'] = $params2['POST']['manual_generate'];
+                     if ($params2['POST']['manual_generate'] == 1) {
+                        $options['name']            = $params2['POST']['generated_name'];
+                        $options['serial']          = $params2['POST']['generated_serial'];
+                        $options['otherserial']     = $params2['POST']['generated_otherserial'];
                      }
                   }
                   self::generateAsset($options);
