@@ -739,7 +739,10 @@ class PluginOrderReception extends CommonDBChild {
       // from MassiveAction process, we get ma object, so convert it into array
       if (is_object($params)) {
          $ma      = $params;
-         $params2 = (array) $params;
+         $params2 = [
+            'items' => $ma->getItems(),
+            'POST' => $ma->getInput(),
+         ];
       }
 
       if (isset($params2['items'][__CLASS__])) {
