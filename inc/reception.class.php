@@ -500,6 +500,7 @@ class PluginOrderReception extends CommonDBChild {
             Html::closeForm();
          }
       }
+      echo "</div>";
       echo "<br>";
    }
 
