@@ -735,7 +735,7 @@ class PluginOrderReception extends CommonDBChild {
       $detail                 = new PluginOrderOrder_Item();
       $plugin_order_orders_id = 0;
 
-      if (isset($params->__get('items')[__CLASS__])) {
+      if (isset($params->getItems()[__CLASS__])) {
          $additional_data_ite = $DB->request([
             'SELECT' => [
                'glpi_plugin_order_orders_items.id',
@@ -754,7 +754,7 @@ class PluginOrderReception extends CommonDBChild {
                ]
             ],
             'WHERE' => [
-               'glpi_plugin_order_orders_items.id' => array_keys($params->__get('items')[__CLASS__])
+               'glpi_plugin_order_orders_items.id' => array_keys($params->getItems()[__CLASS__])
             ]
          ]);
          $additional_data = [];
@@ -762,7 +762,7 @@ class PluginOrderReception extends CommonDBChild {
             $additional_data[$add_values['id']] = $add_values;
          }
 
-         foreach ($params->__get('items')[__CLASS__] as $key => $val) {
+         foreach ($params->getItems()[__CLASS__] as $key => $val) {
             if ($val < 1) {
                 continue;
             }
