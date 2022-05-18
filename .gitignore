@@ -2,3 +2,6 @@ dist/
 vendor/
 .gh_token
 *.min.*
+templates/*
+!templates/example.odt
+!templates/*.html.twig
