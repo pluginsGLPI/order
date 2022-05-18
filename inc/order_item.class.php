@@ -28,6 +28,8 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
@@ -1287,14 +1289,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
    public function showPluginFromItems($itemtype, $ID) {
       $infos = $this->getOrderInfosByItem($itemtype, $ID);
+
       if ($infos) {
-         echo "<tr align='center'><th colspan='5'>".__("Order informations", "order")."</th></tr>";
-         echo "<tr align='center'><td colspan='2' class='tab_bg_2'>".__("Order name", "order")."</td>";
-         echo "<td colspan='2' class='tab_bg_2'>";
+         $twig_option = [];
          $order = new PluginOrderOrder();
          $order->getFromDB($infos['id']);
-         echo $order->getLink(PluginOrderOrder::canView());
-         echo "</td>";
+         $twig_option['order_link'] = $order->getLink(PluginOrderOrder::canView());
 
          $result = getAllDataFromTable(
             self::getTable(),
@@ -1309,16 +1309,12 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             $reference = new PluginOrderReference();
             $reference->getFromDB($link['plugin_order_references_id']);
             if (Session::haveRight('plugin_order_reference', READ)) {
-               echo "<tr align='center'><td colspan='2' class='tab_bg_2'>" .
-                     __("Reference")."</td>";
-               echo "<td colspan='2' class='tab_bg_2'>".
-                    $reference->getLink(PluginOrderReference::canView())."</td></tr>";
+               $twig_option['reference_link'] = $reference->getLink(PluginOrderReference::canView());
             }
-            echo "<tr align='center'><td colspan='2' class='tab_bg_2'>" .
-                  __("Delivery date")."</td>";
-            echo "<td colspan='2' class='tab_bg_2'>".Html::convDate($link["delivery_date"])."</td></tr>";
-
+            $twig_option['delivery_date'] = Html::convDate($link["delivery_date"]);
          }
+
+         TemplateRenderer::getInstance()->display('@order/order_infocom.html.twig', $twig_option);
       }
    }
 
