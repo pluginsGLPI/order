@@ -1,0 +1,61 @@
+{#
+ # -------------------------------------------------------------------------
+ # Order plugin for GLPI
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of Order.
+ #
+ # Order is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # Order is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with Order. If not, see <http://www.gnu.org/licenses/>.
+ # -------------------------------------------------------------------------
+ # @copyright Copyright (C) 2009-2022 by Order plugin team.
+ # @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
+ # @link      https://github.com/pluginsGLPI/order
+ # -------------------------------------------------------------------------
+ #}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{{ fields.largeTitle(
+   __("Order informations", "order"),
+   '',
+   false
+) }}
+
+<div class="form-field row col-12 col-sm-6  mb-2 col-auto p-1">
+   <label class="col-form-label col-xxl-5 text-xxl-end" for="order_name">
+      {{__("Order name", "order")}}
+   </label>
+   <div class="col-form-label col-xxl-7  field-container">
+      {{ order_link|raw }}
+   </div>
+</div>
+
+<div class="form-field row col-12 col-sm-6  mb-2 col-auto p-1">
+   <label class="col-form-label col-xxl-5 text-xxl-end" for="reference">
+      {{__("Reference")}}
+   </label>
+   <div class="col-form-label col-xxl-7  field-container">
+      {{ reference_link|raw }}
+   </div>
+</div>
+
+<div class="form-field row col-12 col-sm-6  mb-2 col-auto p-1">
+   <label class="col-form-label col-xxl-5 text-xxl-end" for="delivery_date">
+      {{__("Delivery date")}}
+   </label>
+   <div class="col-form-label col-xxl-7  field-container">
+      {{ delivery_date|raw }}
+   </div>
+</div>
