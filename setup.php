@@ -28,7 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-define('PLUGIN_ORDER_VERSION', '2.8.0');
+define('PLUGIN_ORDER_VERSION', '2.8.1');
 
 // Minimal GLPI version, inclusive
 define("PLUGIN_ORDER_MIN_GLPI", "10.0.0");
