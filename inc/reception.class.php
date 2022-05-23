@@ -507,11 +507,12 @@ class PluginOrderReception extends CommonDBChild {
                                        PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED)) {
 
             if ($typeRef != 'SoftwareLicense') {
-               echo "<form method='post' name='order_reception_form$rand'
+               $bulk_rand = mt_rand();
+               echo "<form method='post' name='order_reception_form$bulk_rand'
                               action='".Toolbox::getItemTypeFormURL("PluginOrderReception")."'>";
-               echo "<div id='massreception$orders_id$rand'></div>";
-               echo Html::scriptBlock("function viewmassreception".$orders_id."$rand() {".
-                                      Ajax::updateItemJsCode("massreception".$orders_id.$rand,
+               echo "<div id='massreception$orders_id$bulk_rand'></div>";
+               echo Html::scriptBlock("function viewmassreception".$orders_id."$bulk_rand() {".
+                                      Ajax::updateItemJsCode("massreception".$orders_id.$bulk_rand,
                                                              $CFG_GLPI["root_doc"]."/plugins/order/ajax/massreception.php",
                                                              [
                                                                 'plugin_order_orders_id'     => $orders_id,
@@ -519,7 +520,7 @@ class PluginOrderReception extends CommonDBChild {
                                                              ],
                                                              false, false)."
                   }");
-               echo "<p><a href='javascript:viewmassreception".$orders_id."$rand();'>";
+               echo "<p><a href='javascript:viewmassreception".$orders_id."$bulk_rand();'>";
                echo __("Take item delivery (bulk)", "order")."</a></p><br>";
                Html::closeForm();
             }
@@ -699,13 +700,6 @@ class PluginOrderReception extends CommonDBChild {
                }
             }
             self::generateAsset($options);
-            $this->updateReceptionStatus([
-               'items' => [
-                  __CLASS__ => [
-                     $DB->result($result, $i, 0) => 'on'
-                  ]
-               ]
-            ]);
          }
          self::updateDelivryStatus($params['plugin_order_orders_id']);
       }
