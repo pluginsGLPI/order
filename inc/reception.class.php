@@ -517,6 +517,10 @@ class PluginOrderReception extends CommonDBChild {
    function getSpecificMassiveActions($checkitem = null) {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
+
+      //drop transfer action
+      unset($actions[MassiveAction::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list']);
+
       $sep     = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
 
       $actions[$sep.'reception'] = __("Take item delivery", "order");
