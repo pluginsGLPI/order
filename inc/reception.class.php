@@ -517,9 +517,14 @@ class PluginOrderReception extends CommonDBChild {
    function getSpecificMassiveActions($checkitem = null) {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
+
+      //remove native transfer action
+      unset($actions[MassiveAction::class.MassiveAction::CLASS_ACTION_SEPARATOR.'add_transfer_list']);
       $sep     = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
 
       $actions[$sep.'reception'] = __("Take item delivery", "order");
+      $actions[$sep.'transfer_order_item'] = "<i class='fa-fw fas fa-level-up-alt'></i>" .
+      _x('button', 'Add to transfer list !');
 
       return $actions;
    }
@@ -531,6 +536,9 @@ class PluginOrderReception extends CommonDBChild {
          case 'reception':
             $reception->showReceptionForm($ma->POST);
             break;
+         case 'transfer_order_item':
+            $reception->showTransferForm($ma->POST);
+            break;
       }
 
       return parent::showMassiveActionsSubForm($ma);
@@ -539,13 +547,38 @@ class PluginOrderReception extends CommonDBChild {
 
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
+
       $reception  = new PluginOrderReception();
       switch ($ma->getAction()) {
+         case 'transfer_order_item':
+            foreach ($ids as $id) {
+               $order_item = new PluginOrderOrder_Item();
+               $input = [
+                  'id' => $id,
+                  'entities_id' => $ma->getInput()['entities_id']
+               ];
+
+               if ($order_item->update($input)) {
+                  $ma->itemDone(__CLASS__, $id, MassiveAction::ACTION_OK);
+               } else {
+                  $ma->itemDone(__CLASS__, $id, MassiveAction::ACTION_KO);
+                  $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+               }
+            }
+         break;
+
          case 'reception':
             $reception->updateReceptionStatus($ma);
             break;
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+   }
+
+
+   public function showTransferForm($params = []) {
+      echo "<label class='order_ma'>".__("Desired Entity", "order") . "</label>";
+      Entity::Dropdown(['name' => "entities_id"]);
+      echo "<br/><br/>";
    }
 
 
