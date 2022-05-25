@@ -69,7 +69,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget {
                '##order.item.numorder##'     => $order['num_order'],
                '##order.item.url##'          => $this->formatURL(
                   $options['additionnaloption']['usertype'],
-                  $order->getType()."_".$id
+                  PluginOrderOrder::class."_".$id
                ),
                '##order.item.orderdate##'    => Html::convDate($order["order_date"]),
                '##order.item.duedate##'      => Html::convDate($order["duedate"]),
