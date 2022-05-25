@@ -336,6 +336,7 @@ class PluginOrderLink extends CommonDBChild {
                               ref.`id` AS id,
                               ref.`templates_id`,
                               items.`states_id`,
+                              items.`entities_id`,
                               items.`delivery_date`,
                               items.`delivery_number`,
                               ref.`name`,
@@ -416,6 +417,7 @@ class PluginOrderLink extends CommonDBChild {
          }
          echo "<th>" . __("Reference") . "</th>";
          echo "<th>" . __("Status") . "</th>";
+         echo "<th>" . __("Entity") . "</th>";
          echo "<th>" . __("Delivery date") . "</th>";
          echo "<th>" . _n("Associated item", "Associated items", 2) . "</th>";
          echo "<th>" . __("Serial number") . "</th></tr>";
@@ -447,6 +449,7 @@ class PluginOrderLink extends CommonDBChild {
                echo "<td align='center'>" . $PluginOrderReference->getReceptionReferenceLink($data) . "</td>";
             }
             echo "<td align='center'>" . $PluginOrderReception->getReceptionStatus($detailID) . "</td>";
+            echo "<td align='center'>" . Dropdown::getDropdownName(getTableForItemType(Entity::class), $data["entities_id"]) . "</td>";
             echo "<td align='center'>" . Html::convDate($data["delivery_date"]) . "</td>";
             echo "<td align='center'>" . $this->getReceptionItemName($data["items_id"], $data["itemtype"]);
             echo "<td align='center'>" . $this->getItemSerialNumber($data["items_id"], $data["itemtype"]) . "</td>";

@@ -382,6 +382,7 @@ class PluginOrderReception extends CommonDBChild {
                              ref.`id` AS id,
                              ref.`templates_id`,
                              items.`states_id`,
+                             items.`entities_id`,
                              items.`comment`,
                              items.`plugin_order_deliverystates_id`,
                              items.`delivery_date`,
@@ -428,6 +429,7 @@ class PluginOrderReception extends CommonDBChild {
          }
          echo "<th>" . __("Reference") . "</th>";
          echo "<th>" . __("Status") . "</th>";
+         echo "<th>" . __("Entity") . "</th>";
          echo "<th>" . __("Delivery date") . "</th>";
          echo "<th>" . __("Delivery form") . "</th>";
          echo "<th>" . __("Delivery status", "order") . "</th>";
@@ -471,6 +473,8 @@ class PluginOrderReception extends CommonDBChild {
                echo "</a>";
             }
             echo "</td>";
+
+            echo "<td align='center'>" . Dropdown::getDropdownName(getTableForItemType(Entity::class), $data["entities_id"]) . "</td>";
             echo "<td align='center'>" . Html::convDate($data["delivery_date"]) . "</td>";
             echo "<td align='center'>" . $data["delivery_number"] . "</td>";
             echo "<td align='center'>" .
@@ -524,7 +528,7 @@ class PluginOrderReception extends CommonDBChild {
 
       $actions[$sep.'reception'] = __("Take item delivery", "order");
       $actions[$sep.'transfer_order_item'] = "<i class='fa-fw fas fa-level-up-alt'></i>" .
-      _x('button', 'Add to transfer list !');
+      _x('button', 'Add to transfer list');
 
       return $actions;
    }
