@@ -522,6 +522,7 @@ class PluginOrderReception extends CommonDBChild {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
+
       //remove native transfer action
       unset($actions[MassiveAction::class.MassiveAction::CLASS_ACTION_SEPARATOR.'add_transfer_list']);
       $sep     = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
@@ -580,8 +581,15 @@ class PluginOrderReception extends CommonDBChild {
 
 
    public function showTransferForm($params = []) {
+      $plugin_order_orders_id = $params['plugin_order_orders_id'];
+      $order = new PluginOrderOrder();
+      $order->getFromDB($plugin_order_orders_id);
+
       echo "<label class='order_ma'>".__("Desired Entity", "order") . "</label>";
-      Entity::Dropdown(['name' => "entities_id"]);
+      Entity::Dropdown(['name' => "entities_id",
+                        'entity' => $order->fields['entities_id'],
+                        'entity_sons' => $order->fields['is_recursive']]
+                     );
       echo "<br/><br/>";
    }
 
