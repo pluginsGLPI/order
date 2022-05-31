@@ -513,7 +513,7 @@ class PluginOrderReception extends CommonDBChild {
                echo "<div id='massreception$orders_id$bulk_rand'></div>";
                echo Html::scriptBlock("function viewmassreception".$orders_id."$bulk_rand() {".
                                       Ajax::updateItemJsCode("massreception".$orders_id.$bulk_rand,
-                                                             $CFG_GLPI["root_doc"]."/plugins/order/ajax/massreception.php",
+                                                             Plugin::getWebDir('order')."/ajax/massreception.php",
                                                              [
                                                                 'plugin_order_orders_id'     => $orders_id,
                                                                 'plugin_order_references_id' => $references_id,
