@@ -528,7 +528,7 @@ class PluginOrderReception extends CommonDBChild {
 
       $actions[$sep.'reception'] = __("Take item delivery", "order");
       $actions[$sep.'transfer_order_item'] = "<i class='fa-fw fas fa-level-up-alt'></i>" .
-      _x('button', 'Add to transfer list');
+      _x('button', 'Transfer', 'order');
 
       return $actions;
    }
@@ -584,7 +584,7 @@ class PluginOrderReception extends CommonDBChild {
       $order = new PluginOrderOrder();
       $order->getFromDB($plugin_order_orders_id);
 
-      echo "<label class='order_ma'>".__("Desired Entity", "order") . "</label>";
+      echo "<label class='order_ma'>".__("Destination entity", "order") . "</label>";
       Entity::Dropdown([
          'name'        => "entities_id",
          'entity'      => $order->fields['entities_id'],
