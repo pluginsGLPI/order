@@ -62,6 +62,8 @@ class PluginOrderMenu extends CommonGLPI {
          if (PluginOrderConfig::canView()) {
             $menu['options']['order']['links']['config'] = PluginOrderConfig::getFormURL(false);
          }
+         $menu['options']['order']['links']['lists']  = "";
+         $menu['options']['order']['lists_itemtype']  = PluginOrderOrder::getType();
       }
 
       if (PluginOrderBill::canView()) {
@@ -79,6 +81,8 @@ class PluginOrderMenu extends CommonGLPI {
          if (PluginOrderConfig::canView()) {
             $menu['options']['bill']['links']['config'] = PluginOrderConfig::getFormURL(false);
          }
+         $menu['options']['bill']['links']['lists']  = "";
+         $menu['options']['bill']['lists_itemtype']  = PluginOrderBill::getType();
       }
 
       if (PluginOrderReference::canView()) {
@@ -96,6 +100,8 @@ class PluginOrderMenu extends CommonGLPI {
          if (PluginOrderConfig::canView()) {
             $menu['options']['references']['links']['config'] = PluginOrderConfig::getFormURL(false);
          }
+         $menu['options']['references']['links']['lists']  = "";
+         $menu['options']['references']['lists_itemtype']  = PluginOrderReference::getType();
       }
       return $menu;
    }
