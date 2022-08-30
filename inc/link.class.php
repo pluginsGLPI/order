@@ -889,7 +889,7 @@ class PluginOrderLink extends CommonDBChild {
 
 
    public function removeInfoComRelatedToOrder($itemtype, $items_id) {
-      $infocom = new InfoCom();
+      $infocom = new Infocom();
       $infocom->getFromDBforDevice($itemtype, $items_id);
       $infocom->update([
          "id"              => $infocom->fields["id"],
