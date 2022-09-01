@@ -1907,6 +1907,9 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             $migration->addField($table, 'plugin_order_analyticnatures_id', "INT {$default_key_sign} NOT NULL DEFAULT '0'", ['after' => 'plugin_order_ordertaxes_id']);
             $migration->migrationOneTable($table);
          }
+         if (!$DB->fieldExists($table, 'immo_number')) {
+            $migration->addField($table, "immo_number", "varchar(255) default NULL");
+         }
 
          $migration->executeMigration();
       }
