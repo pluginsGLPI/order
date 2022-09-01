@@ -296,6 +296,12 @@ class PluginOrderConfig extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
+      echo "<tr class='tab_bg_1' align='center'>";
+      echo "<td>".__("Add immobilization number to item", "order")."</td><td>";
+      Dropdown::showYesNo("add_immobilization_number", $this->canAddImmobilizationNumber());
+      echo "</td>";
+      echo "</tr>";
+
       if ($this->canGenerateAsset()) {
          echo "<tr class='tab_bg_1' align='center'>";
          echo "<td>".__("Default name", "order")."</td>";
@@ -539,6 +545,11 @@ class PluginOrderConfig extends CommonDBTM {
    }
 
 
+   public function canAddImmobilizationNumber() {
+      return $this->fields['add_immobilization_number'];
+   }
+
+
    public function getGeneratedAssetName() {
       return $this->fields['generated_name'];
    }
@@ -667,6 +678,7 @@ class PluginOrderConfig extends CommonDBTM {
                         `users_id_recipient` int {$default_key_sign} NOT NULL default '0',
                         `add_location` tinyint NOT NULL default '0',
                         `add_bill_details` tinyint NOT NULL default '0',
+                        `add_immobilization_number` tinyint NOT NULL default '0',
                         `hide_inactive_budgets` tinyint NOT NULL default '0',
                         `rename_documents` tinyint NOT NULL default '0',
                         `transmit_budget_change` tinyint NOT NULL default '0',
@@ -756,6 +768,7 @@ class PluginOrderConfig extends CommonDBTM {
          //version 2.0.1
          $migration->addField($table, "use_free_reference", "bool");
 
+   
       }
 
       $migration->displayMessage("Add default order state workflow");
@@ -782,6 +795,9 @@ class PluginOrderConfig extends CommonDBTM {
       }
       if (!$DB->fieldExists($table, 'order_accountsection_mandatory')) {
          $migration->addField($table, 'order_accountsection_mandatory', 'integer');
+      }
+      if (!$DB->fieldExists($table, 'add_immobilization_number')) {
+         $migration->addField($table, "add_immobilization_number", "TINYINT NOT NULL DEFAULT '0'");
       }
 
       $migration->migrationOneTable($table);

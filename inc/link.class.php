@@ -66,9 +66,12 @@ class PluginOrderLink extends CommonDBChild {
 
       echo "<div class='center overflow-auto w-100'>";
       echo "<table class='tab_cadre_fixe'>";
-      $colspan = "9";
+      $colspan = 9;
       if (Session::isMultiEntitiesMode()) {
-         $colspan = "10";
+         $colspan++;
+      }
+      if ($config->canAddImmobilizationNumber()) {
+         $colspan++;
       }
 
       echo "<tr><th colspan='$colspan'>".__("Generate item", "order")."</th></tr>";
@@ -78,6 +81,9 @@ class PluginOrderLink extends CommonDBChild {
       echo "<th>".__("Name")."</th>";
       echo "<th>".__("Serial number")."</th>";
       echo "<th>".__("Inventory number")."</th>";
+      if ($config->canAddImmobilizationNumber()) {
+         echo "<th>".__("Immobilization number")."</th>";
+      }
       echo "<th>".__("Template name")."</th>";
       if (Session::isMultiEntitiesMode() && count($_SESSION['glpiactiveentities']) > 1) {
          echo "<th>".__("Entity")."</th>";
@@ -115,6 +121,7 @@ class PluginOrderLink extends CommonDBChild {
                $states_id    = $item->fields["states_id"] ?? "";
                $locations_id = $item->fields["locations_id"] ?? "";
                $groups_id    = $item->fields["groups_id"] ?? "";
+               $immo_number  = $item->fields["immo_number"] ?? "";
             } else {
                $name         = false;
                $serial       = false;
@@ -122,6 +129,7 @@ class PluginOrderLink extends CommonDBChild {
                $states_id    = false;
                $locations_id = false;
                $groups_id    = false;
+               $immo_number  = false;
             }
 
             if (!$name) {
@@ -138,6 +146,15 @@ class PluginOrderLink extends CommonDBChild {
                echo Html::hidden("id[$i][otherserial]", ['value' => '']);
             } else {
                echo "<td><input type='text' size='20' name='id[$i][otherserial]'></td>";
+            }
+			
+            if ($config->canAddImmobilizationNumber()) {
+                if ($immo_number) {
+                   echo "<td align='center'>".Dropdown::EMPTY_VALUE."</td>";
+                   echo Html::hidden("id[$i][immo_number]", ['value' => '']);
+                } else {
+                   echo "<td><input type='text' size='15' name='id[$i][immo_number]'></td>";
+                }
             }
 
             echo "<td align='center'>";
@@ -857,6 +874,10 @@ class PluginOrderLink extends CommonDBChild {
          $fields["order_date"]      = $order->fields["order_date"];
          $fields["buy_date"]        = $order->fields["order_date"];
 
+         if(!$fields["immo_number"] && $detail->fields["immo_number"]){
+             $fields["immo_number"] = $detail->fields["immo_number"];
+         }
+
          if (!is_null($detail->fields["delivery_date"])) {
             $fields["delivery_date"] = $detail->fields["delivery_date"];
          }
@@ -1139,8 +1160,15 @@ class PluginOrderLink extends CommonDBChild {
          if ($add_item['itemtype']) {
             $order = new PluginOrderOrder();
          }
+   
          $order->getFromDB($params["plugin_order_orders_id"]);
          $reference->getFromDB($add_item["plugin_order_references_id"]);
+   
+		 //Update immo_number in details to fill Infocom later
+         if ($config->canAddImmobilizationNumber()) {
+    		 $detail = new PluginOrderOrder_Item();
+    		 $detail->update(['id' => $add_item["id"], 'immo_number' => $values["immo_number"]]);
+         }
 
          if ($templateID) {
             $item->getFromDB($templateID);
