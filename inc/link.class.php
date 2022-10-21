@@ -55,8 +55,8 @@ class PluginOrderLink extends CommonDBChild {
    }
 
 
-   public static function getTypesThanCannotBeGenerared() {
-      return ['ConsumableItem', 'CartridgeItem', 'SoftwareLicense', 'Contract'];
+   public static function getTypesThanCannotBeGenerated() {
+      return ['CartridgeItem', 'SoftwareLicense', 'Contract'];
    }
 
 
@@ -501,12 +501,13 @@ class PluginOrderLink extends CommonDBChild {
       }
 
       $result = $DB->request([
-         'SELECT' => 'serial',
          'FROM'   => $itemtype::getTable(),
          'WHERE'  => ['id' => $items_id]
       ]);
       $data = $result->current();
-      return isset($data['serial']) ? $data['serial'] : '';
+      if (isset($data['serial'])) return $data['serial'];
+      if (isset($data['otherserial'])) return $data['otherserial'];
+      return '';
    }
 
    function getForbiddenStandardMassiveAction() {
@@ -748,38 +749,10 @@ class PluginOrderLink extends CommonDBChild {
    }
 
 
-   /*public function dropdownLinkActions($itemtype, $plugin_order_references_id,
-                                       $plugin_order_orders_id, $entities_id) {
-      global $CFG_GLPI;
-
-      $rand       = mt_rand();
-      $reception  = new PluginOrderReception();
-      $actions[0] = Dropdown::EMPTY_VALUE;
-      if ($reception->checkItemStatus($plugin_order_orders_id, $plugin_order_references_id,
-                                      PluginOrderOrder::ORDER_DEVICE_DELIVRED)) {
-         if (!in_array($itemtype, self::getTypesThanCannotBeGenerared())) {
-            $actions['generation'] = __("Generate item", "order");
-         }
-         if ($itemtype::canView()) {
-            $actions['createLink'] = __("Link to an existing item", "order");
-            $actions['deleteLink'] = __("Delete item link", "order");
-         }
-      }
-      $rand   = Dropdown::showFromArray('generationActions', $actions);
-      Ajax::updateItemOnSelectEvent("dropdown_generationActions$rand", "show_generationActions$rand",
-                                  Plugin::getWebDir('order')."/ajax/linkactions.php",
-                                  ['action'                     => '__VALUE__',
-                                   'itemtype'                   => $itemtype,
-                                   'plugin_order_references_id' => $plugin_order_references_id,
-                                   'plugin_order_orders_id'     => $plugin_order_orders_id,
-                                   'entities_id'                => $entities_id]);
-      echo "<span id='show_generationActions$rand'>&nbsp;</span>";
-   }*/
-
    public function itemAlreadyLinkedToAnOrder($itemtype, $items_id, $plugin_order_orders_id,
                                               $detailID = 0) {
       global $DB;
-      if (!in_array($itemtype, self::getTypesThanCannotBeGenerared())) {
+      if (!in_array($itemtype, self::getTypesThanCannotBeGenerated())) {
          $query = "SELECT COUNT(*) AS cpt
                    FROM `glpi_plugin_order_orders_items`
                    WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
@@ -874,7 +847,7 @@ class PluginOrderLink extends CommonDBChild {
          $fields["order_date"]      = $order->fields["order_date"];
          $fields["buy_date"]        = $order->fields["order_date"];
 
-         if(!$fields["immo_number"] && $detail->fields["immo_number"]){
+         if(!isset($fields["immo_number"]) && isset($detail->fields["immo_number"])){
              $fields["immo_number"] = $detail->fields["immo_number"];
          }
 
@@ -1146,7 +1119,7 @@ class PluginOrderLink extends CommonDBChild {
          }
 
          //If itemtype cannot be generated, go to the new occurence
-         if (in_array($add_item['itemtype'], self::getTypesThanCannotBeGenerared())) {
+         if (in_array($add_item['itemtype'], self::getTypesThanCannotBeGenerated())) {
             continue;
          }
 
