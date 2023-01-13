@@ -416,8 +416,23 @@ class PluginOrderSurveySupplier extends CommonDBChild {
 
          if ($candelete) {
             echo "<div class='center'>";
-            Html::openArrowMassives("show_suppliersurvey$rand", true);
-            Html::closeArrowMassives(["delete" => __("Delete permanently")]);
+            $formname = 'show_suppliersurvey' . $rand;
+            echo "<table width='950px'>";
+            $arrow = "fas fa-level-up-alt";
+
+            echo "<tr>";
+            echo "<td><i class='$arrow fa-flip-horizontal fa-lg mx-2'></i></td>";
+            echo "<td class='center' style='white-space:nowrap;'>";
+            echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\" href='#'>" . __('Check all') . "</a></td>";
+            echo "<td>/</td>";
+            echo "<td class='center' style='white-space:nowrap;'>";
+            echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\" href='#'>" . __('Uncheck all') . "</a></td>";
+            echo "<td class='left' width='80%'>";
+
+            echo "<input type='submit' name='delete' ";
+            echo "value=\"" . addslashes(_sx('button', 'Delete permanently')) . "\" class='btn btn-primary'>&nbsp;";
+            echo "</td></tr>";
+            echo "</table>";
             echo "</div>";
          }
       } else {
