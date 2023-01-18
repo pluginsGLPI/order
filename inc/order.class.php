@@ -1863,7 +1863,7 @@ class PluginOrderOrder extends CommonDBTM {
                foreach ($articleValues as $field => $val) {
                   try {
                      $article->setVars($field, $val, true, 'UTF-8');
-                  } catch (\Odtphp\Exceptions\OdfException $e) {
+                  } catch (\Odtphp\Exceptions\SegmentException $e) {
                      $is_cs_happy = true;
                   }
                }
