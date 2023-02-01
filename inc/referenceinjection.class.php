@@ -62,15 +62,6 @@ class PluginOrderReferenceInjection extends PluginOrderReference
       return [];
    }
 
-
-   /**
-    * Standard method to add an object into glpi
-    *
-    * @param values fields to add into glpi
-    * @param options options used during creation
-    * @return an array of IDs of newly created objects : for example [Computer => 1, Networkport => 10]
-    *
-   **/
    public function addOrUpdateObject($values = [], $options = []) {
       $lib = new PluginDatainjectionCommonInjectionLib($this, $values, $options);
       $lib->processAddOrUpdate();
@@ -84,7 +75,6 @@ class PluginOrderReferenceInjection extends PluginOrderReference
 
 
    public function getSpecificFieldValue($itemtype, $searchOption, $field, &$values) {
-      global $DB;
 
       $value = $values[$itemtype][$field];
       switch ($searchOption['displaytype']) {

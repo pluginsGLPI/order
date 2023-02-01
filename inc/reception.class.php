@@ -126,7 +126,7 @@ class PluginOrderReception extends CommonDBChild {
 
       if ($detail->fields["itemtype"] == 'SoftwareLicense') {
 
-         $result = $PluginOrderOrder_Item->queryRef($_POST["plugin_order_orders_id"],
+         $result = $detail->queryRef($_POST["plugin_order_orders_id"],
                                                     $detail->fields["plugin_order_references_id"],
                                                     $detail->fields["price_taxfree"],
                                                     $detail->fields["discount"],
@@ -511,7 +511,6 @@ class PluginOrderReception extends CommonDBChild {
 
 
    function getSpecificMassiveActions($checkitem = null) {
-      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       $sep     = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
 
@@ -577,31 +576,7 @@ class PluginOrderReception extends CommonDBChild {
    }
 
 
-   public function dropdownReceptionActions($itemtype, $plugin_order_references_id, $plugin_order_orders_id) {
-      global $CFG_GLPI;
-
-      $rand = mt_rand();
-
-      echo "<select name='receptionActions$rand' id='receptionActions$rand'>";
-      echo "<option value='0' selected>".Dropdown::EMPTY_VALUE."</option>";
-      echo "<option value='reception'>".__("Take item delivery", "order")."</option>";
-      echo "</select>";
-      $params = [
-         'action'                     => '__VALUE__',
-         'itemtype'                   => $itemtype,
-         'plugin_order_references_id' => $plugin_order_references_id,
-         'plugin_order_orders_id'     => $plugin_order_orders_id,
-      ];
-      Ajax::updateItemOnSelectEvent("receptionActions$rand", "show_receptionActions$rand",
-                                    Plugin::getWebDir('order')."/ajax/receptionactions.php",
-                                    $params);
-      echo "<span id='show_receptionActions$rand'>&nbsp;</span>";
-   }
-
-
    public function getReceptionStatus($ID) {
-      global $DB;
-
       $detail = new PluginOrderOrder_Item();
       $detail->getFromDB($ID);
 
@@ -672,8 +647,6 @@ class PluginOrderReception extends CommonDBChild {
 
 
    public function receptionOneItem($detailID, $orders_id, $delivery_date, $delivery_nb, $state_id) {
-      global $CFG_GLPI;
-
       $detail = new PluginOrderOrder_Item();
       $detail->update([
          "id"                             => $detailID,
@@ -883,7 +856,7 @@ class PluginOrderReception extends CommonDBChild {
    *
    * @param $options
    *
-   * return nothing
+   * @return void
    */
    public static function generateAsset($options = []) {
       // No asset should be generated for PluginOrderOther and PluginOrderReferenceFree items.

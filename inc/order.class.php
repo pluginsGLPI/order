@@ -708,8 +708,6 @@ class PluginOrderOrder extends CommonDBTM {
 
 
    public function post_addItem() {
-      global $CFG_GLPI;
-
       // Manage add from template
       if (isset($this->input["_oldID"])) {
 
@@ -805,7 +803,7 @@ class PluginOrderOrder extends CommonDBTM {
 
 
    public function showForm ($ID, $options = []) {
-      global $CFG_GLPI, $DB;
+      global $DB;
 
       $config = PluginOrderConfig::getConfig();
       if (!$config->isConfigured()) {
@@ -1353,103 +1351,6 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
 
-   public function dropdownSuppliers($myname, $value = 0, $entity_restrict = '') {
-      global $DB,$CFG_GLPI;
-
-      $rand     = mt_rand();
-      $entities = getEntitiesRestrictRequest("AND", "glpi_suppliers", '', $entity_restrict, true);
-
-      $query = "SELECT `glpi_suppliers`.*
-                FROM `glpi_suppliers`
-                LEFT JOIN `glpi_contacts_suppliers`
-                   ON (`glpi_contacts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id`)
-                WHERE `glpi_suppliers`.`is_deleted` = '0'
-                $entities
-                GROUP BY `glpi_suppliers`.`id`
-                ORDER BY `entities_id`, `name`";
-      $result = $DB->query($query);
-
-      echo "<select name='suppliers_id' id='suppliers_id'>\n";
-      echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>\n";
-
-      $prev = -1;
-      while ($data = $DB->fetchArray($result)) {
-         if ($data["entities_id"] != $prev) {
-            if ($prev >= 0) {
-               echo "</optgroup>";
-            }
-            $prev = $data["entities_id"];
-            echo "<optgroup label=\"".Dropdown::getDropdownName("glpi_entities", $prev)."\">";
-         }
-         $output = $data["name"];
-         if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
-            $output .= " (".$data["id"].")";
-         }
-         echo "<option value='".$data["id"]."' ".($value == $data["id"] ? " selected " : "").
-               " title=\"".Html::cleanInputText($output)."\">".
-               substr($output, 0, $CFG_GLPI["dropdown_chars_limit"])."</option>";
-      }
-      if ($prev >= 0) {
-         echo "</optgroup>";
-      }
-      echo "</select>";
-      Ajax::updateItemOnSelectEvent("suppliers_id", "show_contacts_id",
-                                    Plugin::getWebDir('order')."/ajax/dropdownSupplier.php",
-                                    [
-                                       'suppliers_id'    => '__VALUE__',
-                                       'entity_restrict' => $entity_restrict,
-                                       'rand'            => $rand,
-                                       'myname'          => $myname,
-                                    ]);
-
-      return $rand;
-   }
-
-
-   public function dropdownContacts($suppliers_id, $value = 0, $entity_restrict = '') {
-      global $DB,$CFG_GLPI;
-
-      $rand     = mt_rand();
-      $entities = getEntitiesRestrictRequest("AND", "glpi_contacts", '', $entity_restrict, true);
-
-      $query = "SELECT `glpi_contacts`.*
-                FROM `glpi_contacts`,`glpi_contacts_suppliers`
-                WHERE `glpi_contacts_suppliers`.`contacts_id` = `glpi_contacts`.`id`
-                AND `glpi_contacts_suppliers`.`suppliers_id` = '$suppliers_id'
-                AND `glpi_contacts`.`is_deleted` = '0'
-                $entities
-                ORDER BY `entities_id`, `name`";
-      $result = $DB->query($query);
-
-      echo "<select name='contacts_id'>";
-      echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
-
-      if ($DB->numrows($result)) {
-         $prev = -1;
-         while ($data = $DB->fetchArray($result)) {
-            if ($data["entities_id"] != $prev) {
-               if ($prev >= 0) {
-                  echo "</optgroup>";
-               }
-               $prev = $data["entities_id"];
-               echo "<optgroup label=\"".Dropdown::getDropdownName("glpi_entities", $prev)."\">";
-            }
-            $output = formatUserName($data["id"], "", $data["name"], $data["firstname"]);
-            if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
-               $output .= " (".$data["id"].")";
-            }
-            echo "<option value='".$data["id"]."' ".($value == $data["id"] ? " selected " : "")
-              ." title=\"".Html::cleanInputText($output)."\">"
-              .substr($output, 0, $CFG_GLPI["dropdown_chars_limit"])."</option>";
-         }
-         if ($prev >= 0) {
-            echo "</optgroup>";
-         }
-      }
-      echo "</select>";
-   }
-
-
    public function addStatusLog($orders_id, $status, $comments = '') {
       $changes = Dropdown::getDropdownName("glpi_plugin_order_orderstates", $status);
 
@@ -1520,15 +1421,6 @@ class PluginOrderOrder extends CommonDBTM {
    }
 
 
-   public function needValidation($ID) {
-      if ($ID > 0 && $this->getFromDB($ID)) {
-         return $this->isDraft() || $this->isWaitingForApproval();
-      } else {
-         return false;
-      }
-   }
-
-
    public function deleteAllLinkWithItem($orders_id) {
       $detail  = new PluginOrderOrder_Item();
       $detail->deleteByCriteria([
@@ -1539,7 +1431,6 @@ class PluginOrderOrder extends CommonDBTM {
 
    public function checkIfDetailExists($orders_id, $only_delivered = false) {
       if ($orders_id) {
-         $detail = new PluginOrderOrder_Item();
          $where  = ['plugin_order_orders_id' => $orders_id];
          if ($only_delivered) {
             $where['states_id'] = ['>', 0];
@@ -1783,7 +1674,6 @@ class PluginOrderOrder extends CommonDBTM {
             $listeArticles = [];
 
             $result = $PluginOrderOrder_Item->queryDetail($ID, 'glpi_plugin_order_references');
-            $num    = $DB->numrows($result);
 
             while ($data = $DB->fetchArray($result)) {
                $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID, $data["id"],
@@ -1808,7 +1698,6 @@ class PluginOrderOrder extends CommonDBTM {
             }
 
             $result = $PluginOrderOrder_Item->queryDetail($ID, 'glpi_plugin_order_referencefrees');
-            $num    = $DB->numrows($result);
 
             while ($data = $DB->fetchArray($result)) {
                $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID, $data["id"],
@@ -1961,14 +1850,14 @@ class PluginOrderOrder extends CommonDBTM {
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
          while ($detail = $DB->fetchArray($result)) {
-            $ref = $reference->transfer($detail["plugin_order_references_id"], $entity);
+            $reference->transfer($detail["plugin_order_references_id"], $entity);
          }
       }
    }
 
 
    public static function showForBudget($budgets_id) {
-      global $DB,$CFG_GLPI;
+      global $DB;
 
       $table = self::getTable();
       $query = "SELECT *
@@ -2209,7 +2098,6 @@ class PluginOrderOrder extends CommonDBTM {
       }
       $task->addVolume($nblate);
 
-      $cron_status = 1;
       if ($CFG_GLPI["use_notifications"]) {
          $message = __("Order is late", "order");
          $alert   = new Alert();
@@ -2325,14 +2213,6 @@ class PluginOrderOrder extends CommonDBTM {
       }
    }
 
-
-   /**
-    * Get the standard massive actions which are forbidden
-    *
-    * @since version 0.84
-    *
-    * @return an array of massive actions
-    **/
    public function getForbiddenStandardMassiveAction() {
 
       $forbidden = parent::getForbiddenStandardMassiveAction();
@@ -2347,8 +2227,6 @@ class PluginOrderOrder extends CommonDBTM {
     * @see CommonDBTM::showMassiveActionsSubForm()
     **/
    static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $UNINSTALL_TYPES;
-
       switch ($ma->getAction()) {
          case 'transfert':
             Entity::dropdown();
@@ -2382,8 +2260,6 @@ class PluginOrderOrder extends CommonDBTM {
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
     **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids) {
-      global $CFG_GLPI;
-
       switch ($ma->getAction()) {
          case "transfert":
             $input = $ma->getInput();

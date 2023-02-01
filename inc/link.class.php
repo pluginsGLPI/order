@@ -61,11 +61,6 @@ class PluginOrderLink extends CommonDBChild {
 
 
    public function showItemGenerationForm($params) {
-      global $CFG_GLPI;
-
-      // Retrieve configuration for generate assets feature
-      $config = PluginOrderConfig::getConfig();
-
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
       $colspan = "9";
@@ -112,14 +107,12 @@ class PluginOrderLink extends CommonDBChild {
                $item->getFromDB($templateID);
 
                $name         = $item->fields["name"] ?? "";
-               $serial       = $item->fields["serial"] ?? "";
                $otherserial  = $item->fields["otherserial"] ?? "";
                $states_id    = $item->fields["states_id"] ?? "";
                $locations_id = $item->fields["locations_id"] ?? "";
                $groups_id    = $item->fields["groups_id"] ?? "";
             } else {
                $name         = false;
-               $serial       = false;
                $otherserial  = false;
                $states_id    = false;
                $locations_id = false;
@@ -279,7 +272,7 @@ class PluginOrderLink extends CommonDBChild {
 
 
    public function showOrderLink($plugin_order_orders_id) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $PluginOrderOrder      = new PluginOrderOrder();
 
@@ -410,7 +403,7 @@ class PluginOrderLink extends CommonDBChild {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr>";
          if ($canedit & $canuse && $num) {
-            echo $header = "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)
+            echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)
                            ."</th>";
          }
          if ($itemtype != 'SoftwareLicense') {
@@ -504,7 +497,6 @@ class PluginOrderLink extends CommonDBChild {
 
 
    function getSpecificMassiveActions($checkitem = null) {
-      $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       $sep     = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
 
@@ -622,94 +614,7 @@ class PluginOrderLink extends CommonDBChild {
    }
 
 
-   public function getLinkedItemDetails($itemtype, $items_id) {
-      $comments = "";
-
-      switch ($itemtype) {
-         case 'ConsumableItem' :
-            $ci = new Consumable();
-            if ($ci->getFromDB($items_id)) {
-               $ct = new ConsumableItem();
-               $ct->getFromDB($ci->fields['consumableitems_id']);
-
-               $comments .= "<strong>".__("Entity").":</strong> ";
-               $comments .= Dropdown::getDropdownName("glpi_entities", $ct->fields["entities_id"]);
-               $comments .= '<br><strong>'.__("Consumable").' : </strong> #'.$items_id;
-               $comments .= '<br><strong>'.__("Consumable type").' : </strong>';
-               $comments .= $ct->fields['name'];
-               $comments .= '<br><strong>'.__("Manufacturer").' : </strong>';
-               $comments .= Dropdown::getDropdownName('glpi_manufacturers', $ct->fields['manufacturers_id']);
-               $comments .= '<br><strong>'.__("State").' : </strong>';
-               $comments .= (!$ci->fields['users_id'] ? __("In stock") : __("Used"));
-               if ($ci->fields['users_id']) {
-                  $comments .= '<br><strong>'.__("User").' : </strong>';
-                  $comments .= Dropdown::getDropdownName('glpi_users', $ci->fields['users_id']);
-               }
-            }
-            break;
-         case 'CartridgeItem' :
-            $ci = new Cartridge();
-            if ($ci->getFromDB($items_id)) {
-               $ct = new CartridgeItem();
-               $ct->getFromDB($ci->fields['cartridgeitems_id']);
-
-               $comments .= "<strong>".__("Entity").":</strong> ";
-               $comments .= Dropdown::getDropdownName("glpi_entities", $ct->fields["entities_id"]);
-               $comments .= '<br><strong>'.__("Cartridge").' : </strong> #'.$items_id;
-               $comments .= '<br><strong>'._n("New", "New", 2).' : </strong>';
-               $comments .= $ct->fields['name'];
-               $comments .= '<br><strong>'.__("Manufacturer").' : </strong>';
-               $comments .= Dropdown::getDropdownName('glpi_manufacturers', $ct->fields['manufacturers_id']);
-            }
-            break;
-         // case 'Computer' :
-         // case 'Monitor' :
-         // case 'NetworkEquipment' :
-         // case 'Peripheral' :
-         // case 'Phone' :
-         // case 'Printer' :
-         default :
-            $item = new $itemtype();
-            $item->getFromDB($items_id);
-
-            if ($item->getField("name")) {
-               $comments .= "<strong>".__("Name").":</strong> ";
-               $comments .= $item->getField("name");
-            }
-
-            if ($item->getField("entities_id")) {
-               $comments .= "<strong>".__("Entity").":</strong> ";
-               $comments .= Dropdown::getDropdownName("glpi_entities", $item->getField("entities_id"));
-            }
-
-            if ($item->getField("serial") != '') {
-               $comments .= "<br><strong>".__("Serial number").":</strong> ";
-               $comments .= $item->getField("serial");
-            }
-
-            if ($item->getField("otherserial") != '') {
-               $comments .= "<br><strong>".__("Inventory number").":</strong> ";
-               $comments .= $item->getField("otherserial");
-            }
-            if ($item->getField("locations_id")) {
-               $comments .= "<br><strong>".__("Location").":</strong> ";
-               $comments .= Dropdown::getDropdownName('glpi_locations', $item->getField("locations_id"));
-            }
-
-            if ($item->getField("users_id")) {
-               $comments .= "<br><strong>".__("User").":</strong> ";
-               $comments .= Dropdown::getDropdownName('glpi_users', $item->getField("users_id"));
-            }
-            break;
-      }
-
-      return ($comments);
-   }
-
-
    public function getReceptionItemName($items_id, $itemtype) {
-      global $CFG_GLPI;
-
       if ($items_id == 0) {
          return (__("No associated item", "order"));
       } else {
@@ -733,35 +638,6 @@ class PluginOrderLink extends CommonDBChild {
          }
       }
    }
-
-
-   /*public function dropdownLinkActions($itemtype, $plugin_order_references_id,
-                                       $plugin_order_orders_id, $entities_id) {
-      global $CFG_GLPI;
-
-      $rand       = mt_rand();
-      $reception  = new PluginOrderReception();
-      $actions[0] = Dropdown::EMPTY_VALUE;
-      if ($reception->checkItemStatus($plugin_order_orders_id, $plugin_order_references_id,
-                                      PluginOrderOrder::ORDER_DEVICE_DELIVRED)) {
-         if (!in_array($itemtype, self::getTypesThanCannotBeGenerared())) {
-            $actions['generation'] = __("Generate item", "order");
-         }
-         if ($itemtype::canView()) {
-            $actions['createLink'] = __("Link to an existing item", "order");
-            $actions['deleteLink'] = __("Delete item link", "order");
-         }
-      }
-      $rand   = Dropdown::showFromArray('generationActions', $actions);
-      Ajax::updateItemOnSelectEvent("dropdown_generationActions$rand", "show_generationActions$rand",
-                                  Plugin::getWebDir('order')."/ajax/linkactions.php",
-                                  ['action'                     => '__VALUE__',
-                                   'itemtype'                   => $itemtype,
-                                   'plugin_order_references_id' => $plugin_order_references_id,
-                                   'plugin_order_orders_id'     => $plugin_order_orders_id,
-                                   'entities_id'                => $entities_id]);
-      echo "<span id='show_generationActions$rand'>&nbsp;</span>";
-   }*/
 
    public function itemAlreadyLinkedToAnOrder($itemtype, $items_id, $plugin_order_orders_id,
                                               $detailID = 0) {
@@ -1050,7 +926,7 @@ class PluginOrderLink extends CommonDBChild {
          $license = $detail->fields["items_id"];
 
          $this->removeInfoComRelatedToOrder($itemtype, $license);
-         $result = $PluginOrderOrder_Item->queryRef($detail->fields["plugin_order_orders_id"],
+         $result = $detail->queryRef($detail->fields["plugin_order_orders_id"],
                                                     $detail->fields["plugin_order_references_id"],
                                                     $detail->fields["price_taxfree"],
                                                     $detail->fields["discount"],
@@ -1263,12 +1139,12 @@ class PluginOrderLink extends CommonDBChild {
                $input['itemtype']            = $add_item["itemtype"];
 
                $ticket = new Ticket();
-               $ticketID = $ticket->add($input);
+               $ticket->add($input);
             }
          }
 
          //-------------- End template management ---------------------------------//
-         $result = $this->createLinkWithItem($values["id"], $newID, $add_item["itemtype"],
+         $this->createLinkWithItem($values["id"], $newID, $add_item["itemtype"],
                                              $params["plugin_order_orders_id"], $entity, $templateID,
                                              false, false);
 
@@ -1324,10 +1200,10 @@ class PluginOrderLink extends CommonDBChild {
    /**
     * Copy order documents into the newly generated item
     * @since 1.5.3
-    * @param unknown_type $itemtype
-    * @param unknown_type $items_id
-    * @param unknown_type $orders_id
-    * @param unknown_type $entity
+    * @param $itemtype
+    * @param $items_id
+    * @param $orders_id
+    * @param $entity
     */
    public static function copyDocuments($itemtype, $items_id, $orders_id, $entity) {
       global $CFG_GLPI;

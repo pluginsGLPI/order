@@ -191,12 +191,9 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 
    public static function showOrderSupplierInfos($ID) {
       //TODO : en cours
-      global $DB;
 
       $order = new PluginOrderOrder();
       $order->getFromDB($ID);
-
-      $suppliers_id = $order->fields["suppliers_id"];
 
       Session::initNavigateListItems(__CLASS__,
                                      __("Order", "order") ." = ". $order->fields["name"]);
@@ -253,20 +250,6 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
 
       }
       Html::closeForm();
-   }
-
-
-   public function checkIfSupplierInfosExists($plugin_order_orders_id) {
-
-      if ($plugin_order_orders_id) {
-         $devices = getAllDataFromTable(self::getTable(),
-                                         ['plugin_order_orders_id' => $plugin_order_orders_id]);
-         if (!empty($devices)) {
-            return true;
-         } else {
-            return false;
-         }
-      }
    }
 
 

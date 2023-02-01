@@ -45,11 +45,6 @@ $PluginOrderReference = new PluginOrderReference();
 if ($_POST["itemtype"]) {
    switch ($_POST["field"]) {
       case "types_id":
-         if ($_POST["itemtype"] == 'PluginOrderOther') {
-            $file = 'other';
-         } else {
-            $file = $_POST["itemtype"];
-         }
          if (class_exists($_POST["itemtype"].'Type')) {
             Dropdown::show($_POST["itemtype"]."Type", ['name' => "types_id"]);
          }

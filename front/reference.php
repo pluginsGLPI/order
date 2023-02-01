@@ -38,8 +38,6 @@ Html::header(
    "references"
 );
 
-$reference = new PluginOrderReference();
-
 if (PluginOrderReference::canView()) {
    Search::show("PluginOrderReference");
 } else {
