@@ -359,7 +359,7 @@ class PluginOrderSurveySupplier extends CommonDBChild {
 
 
    public static function showOrderSupplierSurvey($ID) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $order = new PluginOrderOrder;
       $order->getFromDB($ID);

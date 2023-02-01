@@ -50,8 +50,6 @@ class PluginOrderProfile extends CommonDBTM {
     * @param $profile
     * */
    static function addDefaultProfileInfos($profiles_id, $rights, $drop_existing = false) {
-      global $DB;
-
       $profileRight = new ProfileRight();
       foreach ($rights as $right => $value) {
          if (countElementsInTable('glpi_profilerights',

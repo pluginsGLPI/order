@@ -276,26 +276,13 @@ class PluginOrderBill extends CommonDropdown
          echo "<th>".__("Status")."</th>";
          echo "</tr>";
 
-         $old_itemtype = '';
-         $num          = 0;
-
          while ($data = $DB->fetchArray($result)) {
             if (!class_exists($data['itemtype'])) {
                continue;
             }
             $item = new $data['itemtype']();
-            if ($data['itemtype']::canView()) {
+            if ($data['itemtype']::canView() && $item->getFromDB($data["id"])) {
                echo "<tr class='tab_bg_1'>";
-
-               $ID = "";
-               if ($_SESSION["glpiis_ids_visible"]
-                   || empty($data["name"])) {
-                    $ID = " (".$data["id"].")";
-               }
-               $name = NOT_AVAILABLE;
-               if ($item->getFromDB($data["id"])) {
-                  $name = $item->getLink();
-               }
 
                echo "<td class='center top'>".$item->getTypeName()."</td>";
                echo "<td class='center top'>";
@@ -329,7 +316,7 @@ class PluginOrderBill extends CommonDropdown
 
 
    public static function showOrdersItems(PluginOrderBill $bill) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $reference = new PluginOrderReference();
       $order     = new PluginOrderOrder();

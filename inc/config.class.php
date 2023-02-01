@@ -79,7 +79,6 @@ class PluginOrderConfig extends CommonDBTM {
 
 
    public static function getMenuContent() {
-      global $CFG_GLPI;
 
       $menu  = parent::getMenuContent();
       $menu['page']   = PluginOrderMenu::getSearchURL(false);

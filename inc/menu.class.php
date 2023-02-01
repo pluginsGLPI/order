@@ -37,8 +37,6 @@ class PluginOrderMenu extends CommonGLPI {
 
 
    static function getMenuContent() {
-      global $CFG_GLPI;
-
       $menu = [
          'title' => self::getTypeName(2),
          'page'  => self::getSearchURL(false),

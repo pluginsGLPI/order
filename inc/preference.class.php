@@ -85,7 +85,7 @@ class PluginOrderPreference extends CommonDBTM {
     *
     * Display a dropdown of all ODT template files available
     * @since 1.5.3
-    * @param $value default value
+    * @param $value
     */
    public static function dropdownFileTemplates($value = '') {
       return self::dropdownListFiles('template', PLUGIN_ORDER_TEMPLATE_EXTENSION,
@@ -97,7 +97,7 @@ class PluginOrderPreference extends CommonDBTM {
     *
     * Display a dropdown of all PNG signatures files available
     * @since 1.5.3
-    * @param $value default value
+    * @param $value
     */
    public static function dropdownFileSignatures($value = '', $empy_value = true) {
       return self::dropdownListFiles('sign', PLUGIN_ORDER_SIGNATURE_EXTENSION,
@@ -110,9 +110,9 @@ class PluginOrderPreference extends CommonDBTM {
     * Display a dropdown which contains all files of a certain type in a directory
     * @since 1.5.3
     * @param $name dropdown name
-    * @param $extension list files of this extension only
+    * @param array $extension list files of this extension only
     * @param $directory directory in which to look for files
-    * @param $value default value
+    * @param $value
     */
    public static function dropdownListFiles($name, $extension, $directory, $value = '') {
       $files  = self::getFiles($directory, $extension);
@@ -152,8 +152,6 @@ class PluginOrderPreference extends CommonDBTM {
 
 
    public function showForm($ID) {
-      global $CFG_GLPI;
-
       $version = plugin_version_order();
       $this->getFromDB($ID);
 
@@ -189,7 +187,6 @@ class PluginOrderPreference extends CommonDBTM {
 
 
    public static function getFiles($directory, $ext) {
-      $array_dir  = [];
       $array_file = [];
 
       if (is_dir($directory)) {
@@ -213,8 +210,6 @@ class PluginOrderPreference extends CommonDBTM {
                         $array_file[] = [$filename, $filedate, $extension];
                      }
 
-                  } else if ($filetype == "dir") {
-                     $array_dir[] = $filename;
                   }
                }
             }

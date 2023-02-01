@@ -292,17 +292,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    }
 
 
-   public function checkIFReferenceExistsInOrder($orders_id, $ref_id) {
-      return (countElementsInTable(
-         $this->getTable(),
-         [
-            'plugin_order_orders_id' => $orders_id,
-            'plugin_order_references_id' => $ref_id,
-         ]
-      ));
-   }
-
-
    public function addDetails($ref_id, $itemtype, $orders_id, $quantity, $price, $discounted_price, $taxes_id, $analytic_nature_id) {
 
       $order = new PluginOrderOrder();
@@ -341,7 +330,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
 
    public function showAddForm($plugin_order_orders_id) {
-      global  $CFG_GLPI,$DB;
+      global $DB;
 
       $order     = new PluginOrderOrder();
       $reference = new PluginOrderReference();
@@ -1053,7 +1042,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          $query .= " ORDER BY `$table_ref`.`name` ";
 
          $result = $DB->query($query);
-         $num    = $DB->numrows($result);
 
          // Initialize for detail_hideForm javascript function
          $hideForm = "";
@@ -1234,18 +1222,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    }
 
 
-   public function getTotalQuantityByRef($orders_id, $references_id) {
-      global $DB;
-
-      $query = "SELECT COUNT(*) AS quantity
-                FROM `".self::getTable()."`
-                WHERE `plugin_order_orders_id` = '$orders_id'
-                   AND `plugin_order_references_id` = '$references_id' ";
-      $result = $DB->query($query);
-      return ($DB->result($result, 0, 'quantity'));
-   }
-
-
    public function getDeliveredQuantity($orders_id, $references_id, $price_taxfree, $discount) {
       return countElementsInTable(
          self::getTable(),
@@ -1291,8 +1267,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
 
    public function showPluginFromItems($itemtype, $ID) {
-      global $CFG_GLPI;
-
       $infos = $this->getOrderInfosByItem($itemtype, $ID);
       if ($infos) {
          echo "<tr align='center'><th colspan='5'>".__("Order informations", "order")."</th></tr>";
@@ -1467,7 +1441,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
 
    public function showBillsItems(PluginOrderOrder $order) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th colspan='2'>".__("Bills", "order")."</th></tr>";
@@ -1689,7 +1663,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    }
 
    public function dropdownBillItemsActions($orders_id) {
-      global $CFG_GLPI;
       $action['']     = Dropdown::EMPTY_VALUE;
       $action['bill'] = __("Bill", "order");
       $rand           = Dropdown::showFromArray('chooseAction', $action);
@@ -1734,8 +1707,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    }
 
    public function updateAnalyticNature($post) {
-      global $DB;
-
       $this->getFromDB($post['item_id']);
 
       $input = $this->fields;
@@ -1744,8 +1715,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    }
 
    public function updatePrice_taxfree($post) {
-      global $DB;
-
       $this->getFromDB($post['item_id']);
 
       $input = $this->fields;
@@ -1765,8 +1734,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
 
    public function updateDiscount($post) {
-      global $DB;
-
       $this->getFromDB($post['item_id']);
 
       $input                        = $this->fields;
@@ -1876,7 +1843,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             $query  = "UPDATE `glpi_plugin_order_orders_items`
                        SET `plugin_order_ordertaxes_id` = '".$data["plugin_order_ordertaxes_id"]."'
                        WHERE `plugin_order_orders_id` = '".$data["id"]."'";
-            $result = $DB->query($query) or die($DB->error());
+            $DB->query($query) or die($DB->error());
          }
           //1.5.0
          $migration->addField($table, "entities_id", "INT( 11 ) NOT NULL DEFAULT '0'");

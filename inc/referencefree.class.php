@@ -40,27 +40,6 @@ class PluginOrderReferenceFree extends CommonDBTM {
       return __("Reference free", "order");
    }
 
-   public function addDetails($ref_id, $itemtype, $orders_id, $quantity, $price, $discounted_price, $taxes_id) {
-      $order = new PluginOrderOrder();
-      if ($quantity > 0 && $order->getFromDB($orders_id)) {
-         for ($i = 0; $i < $quantity; $i++) {
-            $input["plugin_order_orders_id"]     = $orders_id;
-            $input["plugin_order_ordertaxes_id"] = $taxes_id;
-            $input["itemtype"]                   = $itemtype;
-            $input["entities_id"]                = $order->getEntityID();
-            $input["is_recursive"]               = $order->isRecursive();
-            $input["price_taxfree"]              = $price;
-            $input["price_discounted"]           = $price - ($price * ($discounted_price / 100));
-            $input["states_id"]                  = PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED;
-
-            $input["price_ati"] = $this->getPricesATI($input["price_discounted"], Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $taxes_id));
-            $input["discount"]  = $discounted_price;
-
-            $this->add($input);
-         }
-      }
-   }
-
    public static function install(Migration $migration) {
       global $DB;
 
