@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/TECLIB/odtphp.git",
-                "reference": "6c2f07dd82993565ab6536a30d2d6c04ab699086"
+                "reference": "c4e081136296beac75b6151abdfc5d5633479bb0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TECLIB/odtphp/zipball/6c2f07dd82993565ab6536a30d2d6c04ab699086",
-                "reference": "6c2f07dd82993565ab6536a30d2d6c04ab699086",
+                "url": "https://api.github.com/repos/TECLIB/odtphp/zipball/c4e081136296beac75b6151abdfc5d5633479bb0",
+                "reference": "c4e081136296beac75b6151abdfc5d5633479bb0",
                 "shasum": ""
             },
             "require": {
@@ -62,7 +62,7 @@
             "support": {
                 "source": "https://github.com/TECLIB/odtphp/tree/teclib"
             },
-            "time": "2017-03-01T11:06:18+00:00"
+            "time": "2023-01-18T14:42:14+00:00"
         }
     ],
     "packages-dev": [
