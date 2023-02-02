@@ -79,8 +79,6 @@ class PluginOrderConfig extends CommonDBTM {
 
 
    public static function getMenuContent() {
-      global $CFG_GLPI;
-
       $menu  = parent::getMenuContent();
       $menu['page']   = PluginOrderMenu::getSearchURL(false);
       $menu['links']['add']    = null;
@@ -768,7 +766,7 @@ class PluginOrderConfig extends CommonDBTM {
          //version 2.0.1
          $migration->addField($table, "use_free_reference", "bool");
 
-   
+
       }
 
       $migration->displayMessage("Add default order state workflow");

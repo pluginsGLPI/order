@@ -45,7 +45,7 @@ $PluginOrderSurveySupplier = new PluginOrderSurveySupplier();
 if (isset($_POST["add"])) {
    if (PluginOrderSurveySupplier::canCreate()) {
       if (isset($_POST["plugin_order_orders_id"]) && $_POST["plugin_order_orders_id"] > 0) {
-         $newID = $PluginOrderSurveySupplier->add($_POST);
+         $PluginOrderSurveySupplier->add($_POST);
       }
    }
    Html::redirect($_SERVER['HTTP_REFERER']);

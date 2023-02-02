@@ -279,7 +279,7 @@ class PluginOrderReference extends CommonDBTM {
          case 'itemtype':
             $types    = PluginOrderOrder_Item::getClasses();
             $itemtype = [];
-            foreach ($types as $key => $type) {
+            foreach ($types as $type) {
                $item            = new $type();
                $itemtype[$type] = $item->getTypeName();
             }
@@ -850,101 +850,6 @@ class PluginOrderReference extends CommonDBTM {
       return true;
    }
 
-
-   /**
-    * Display entities of the loaded profile
-    *
-   * @param $myname select name
-    * @param $target target for entity change action
-    */
-   public static function showSelector($target) {
-      $rand = mt_rand();
-      Plugin::loadLang('order');
-      echo "<div class='center' ><span class='b'>".__("Select the wanted item type", "order")
-        ."</span><br>";
-      echo "<a style='font-size:14px;' href='".$target."?reset=reset' title=\""
-        .__("Show all")."\">".str_replace(" ", "&nbsp;", __("Show all"))."</a></div>";
-
-      echo "<div class='left' style='width:100%'>";
-
-      echo "<script type='javascript'>";
-      echo "var Tree_Category_Loader$rand = new Ext.tree.TreeLoader({
-         dataUrl:'".Plugin::getWebDir('order')."/ajax/referencetreetypes.php'
-      });";
-
-      echo "var Tree_Category$rand = new Ext.tree.TreePanel({
-         collapsible      : false,
-         animCollapse     : false,
-         border           : false,
-         id               : 'tree_projectcategory$rand',
-         el               : 'tree_projectcategory$rand',
-         autoScroll       : true,
-         animate          : false,
-         enableDD         : true,
-         containerScroll  : true,
-         height           : 320,
-         width            : 770,
-         loader           : Tree_Category_Loader$rand,
-         rootVisible     : false
-      });";
-
-      // SET the root node.
-      echo "var Tree_Category_Root$rand = new Ext.tree.AsyncTreeNode({
-         text     : '',
-         draggable   : false,
-         id    : '-1'                  // this IS the id of the startnode
-      });
-      Tree_Category$rand.setRootNode(Tree_Category_Root$rand);";
-
-      // Render the tree.
-      echo "Tree_Category$rand.render();
-            Tree_Category_Root$rand.expand();";
-
-      echo "</script>";
-
-      echo "<div id='tree_projectcategory$rand' ></div>";
-      echo "</div>";
-   }
-
-
-   public function title() {
-      echo "<div align='center'>";
-      echo self::getPerTypeJavascriptCode();
-      echo "<a onclick='order_window.show();' href='#modal_reference_content' title='"
-           .__("View by item type", "order")."'>"
-           .__("View by item type", "order")."</a>";
-      echo "</div>";
-
-   }
-
-
-   public static function getPerTypeJavascriptCode() {
-      global $CFG_GLPI;
-
-      $out  = "<script type='text/javascript'>";
-      $out .= "cleanhide('modal_reference_content');";
-      $out .= "var order_window=new Ext.Window({
-         layout:'fit',
-         width:800,
-         height:400,
-         closeAction:'hide',
-         modal: true,
-         autoScroll: true,
-         title: \"".__("View by item type", "order")."\",
-         autoLoad: '".Plugin::getWebDir('order')."/ajax/referencetree.php'
-      });";
-      $out .= "</script>";
-      return $out;
-   }
-
-
-   /**
-    * Get the standard massive actions which are forbidden
-    *
-    * @since version 0.84
-    *
-    * @return an array of massive actions
-    **/
    public function getForbiddenStandardMassiveAction() {
 
       $forbidden = parent::getForbiddenStandardMassiveAction();
@@ -1027,17 +932,6 @@ class PluginOrderReference extends CommonDBTM {
       }
       return;
    }
-
-
-   /*   function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = []) {
-      if (isset($field_id_or_search_options['displaytype'])
-         && $field_id_or_search_options['displaytype'] == 'reference_type') {
-            Toolbox::logDebug($field_id_or_search_options['displaytype'],
-                              $field_id_or_search_options, $name, $values, $options);
-
-      }
-      return false;
-   }*/
 
    public static function install(Migration $migration) {
       global $DB;
