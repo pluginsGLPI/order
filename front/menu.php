@@ -37,10 +37,6 @@ Html::header(
    "PluginOrderMenu"
 );
 
-$PluginOrderOrder     = new PluginOrderOrder();
-$PluginOrderReference = new PluginOrderReference();
-$PluginOrderBill      = new PluginOrderBill();
-
 //If there's only one possibility, do not display menu!
 if (PluginOrderOrder::canView() && !PluginOrderReference::canView() && !PluginOrderBill::canView()) {
    Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderOrder'));

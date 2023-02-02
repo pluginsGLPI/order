@@ -40,7 +40,6 @@ if (!isset ($_GET["withtemplate"])) {
 $pluginOrderOrder          = new PluginOrderOrder();
 $config                    = new PluginOrderConfig();
 $pluginOrderOrder_Item     = new PluginOrderOrder_Item();
-$pluginOrderOrder_Supplier = new PluginOrderOrder_Supplier();
 
 /* add order */
 if (isset ($_POST["add"])) {

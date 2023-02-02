@@ -326,8 +326,6 @@ function plugin_order_giveItem($type, $ID, $data, $num) {
 
 
 function plugin_order_displayConfigItem($type, $ID, $data, $num) {
-   global $CFG_GLPI;
-
    $searchopt = &Search::getOptions($type);
    $table = $searchopt[$ID]["table"];
    $field = $searchopt[$ID]["field"];

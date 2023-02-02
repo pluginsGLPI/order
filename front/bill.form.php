@@ -83,7 +83,6 @@ if (isset($_POST['action'])) {
    PluginOrderOrder::updateBillState($order_item->fields['plugin_order_orders_id']);
    Html::back();
 }
-$dropdown = new PluginOrderBill();
 
 Session::checkRight("plugin_order_bill", READ);
 

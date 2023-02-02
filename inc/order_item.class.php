@@ -294,17 +294,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    }
 
 
-   public function checkIFReferenceExistsInOrder($orders_id, $ref_id) {
-      return (countElementsInTable(
-         $this->getTable(),
-         [
-            'plugin_order_orders_id' => $orders_id,
-            'plugin_order_references_id' => $ref_id,
-         ]
-      ));
-   }
-
-
    public function addDetails($ref_id, $itemtype, $orders_id, $quantity, $price, $discounted_price, $taxes_id, $analytic_nature_id) {
 
       $order = new PluginOrderOrder();
@@ -1052,7 +1041,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
          $query .= " ORDER BY `$table_ref`.`name` ";
 
          $result = $DB->query($query);
-         $num    = $DB->numrows($result);
 
          // Initialize for detail_hideForm javascript function
          $hideForm = "";
@@ -1226,18 +1214,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
                   AND `plugin_order_references_id` = '$references_id'
                   AND CAST(`price_taxfree` AS CHAR) = '$price_taxfree'
                   AND CAST(`discount` AS CHAR) = '$discount'";
-      $result = $DB->query($query);
-      return ($DB->result($result, 0, 'quantity'));
-   }
-
-
-   public function getTotalQuantityByRef($orders_id, $references_id) {
-      global $DB;
-
-      $query = "SELECT COUNT(*) AS quantity
-                FROM `".self::getTable()."`
-                WHERE `plugin_order_orders_id` = '$orders_id'
-                   AND `plugin_order_references_id` = '$references_id' ";
       $result = $DB->query($query);
       return ($DB->result($result, 0, 'quantity'));
    }
@@ -1718,8 +1694,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    }
 
    public function updateAnalyticNature($post) {
-      global $DB;
-
       $this->getFromDB($post['item_id']);
 
       $input = $this->fields;
@@ -1728,8 +1702,6 @@ class PluginOrderOrder_Item extends CommonDBRelation {
    }
 
    public function updatePrice_taxfree($post) {
-      global $DB;
-
       $this->getFromDB($post['item_id']);
 
       $input = $this->fields;
@@ -1862,7 +1834,7 @@ class PluginOrderOrder_Item extends CommonDBRelation {
             $query  = "UPDATE `glpi_plugin_order_orders_items`
                        SET `plugin_order_ordertaxes_id` = '".$data["plugin_order_ordertaxes_id"]."'
                        WHERE `plugin_order_orders_id` = '".$data["id"]."'";
-            $result = $DB->query($query) or die($DB->error());
+            $DB->query($query) or die($DB->error());
          }
           //1.5.0
          $migration->addField($table, "entities_id", "INT {$default_key_sign} NOT NULL DEFAULT '0'");

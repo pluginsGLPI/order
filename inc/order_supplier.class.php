@@ -278,20 +278,6 @@ class PluginOrderOrder_Supplier extends CommonDBChild {
    }
 
 
-   public function checkIfSupplierInfosExists($plugin_order_orders_id) {
-
-      if ($plugin_order_orders_id) {
-         $devices = getAllDataFromTable(self::getTable(),
-                                         ['plugin_order_orders_id' => $plugin_order_orders_id]);
-         if (!empty($devices)) {
-            return true;
-         } else {
-            return false;
-         }
-      }
-   }
-
-
    public static function showDeliveries($suppliers_id) {
       global $DB;
 

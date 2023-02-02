@@ -247,7 +247,7 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
 
    public function showReferenceManufacturers($ID) {
-      global $DB, $CFG_GLPI;
+      global $DB;
 
       $ref = new PluginOrderReference();
       $ref->getFromDB($ID);
@@ -328,24 +328,6 @@ class PluginOrderReference_Supplier extends CommonDBChild {
 
       Html::closeForm();
       echo "</div>";
-   }
-
-
-   public function getPriceByReferenceAndSupplier($plugin_order_references_id, $suppliers_id) {
-      global $DB;
-
-      $table = self::getTable();
-      $query = "SELECT `price_taxfree`
-                FROM `$table`
-                WHERE `plugin_order_references_id` = '$plugin_order_references_id'
-                AND `suppliers_id` = '$suppliers_id' ";
-      $result = $DB->query($query);
-
-      if ($DB->numrows($result) > 0) {
-         return $DB->result($result, 0, "price_taxfree");
-      } else {
-         return 0;
-      }
    }
 
 

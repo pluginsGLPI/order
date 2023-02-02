@@ -194,7 +194,6 @@ function plugin_version_order() {
          'glpi' => [
             'min' => PLUGIN_ORDER_MIN_GLPI,
             'max' => PLUGIN_ORDER_MAX_GLPI,
-            'dev' => true, //Required to allow 9.2-dev
          ]
       ]
    ];

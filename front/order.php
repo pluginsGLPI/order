@@ -38,8 +38,6 @@ Html::header(
    "order"
 );
 
-$order = new PluginOrderOrder();
-
 if (PluginOrderOrder::canView() || Session::haveRight("config", UPDATE)) {
    Search::show("PluginOrderOrder");
 } else {

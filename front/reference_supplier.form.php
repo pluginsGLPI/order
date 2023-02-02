@@ -45,7 +45,7 @@ $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 if (isset($_POST["add"])) {
    if (PluginOrderReference_Supplier::canCreate()) {
       if (isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0) {
-         $newID = $PluginOrderReference_Supplier->add($_POST);
+         $PluginOrderReference_Supplier->add($_POST);
       }
    }
    Html::redirect($_SERVER['HTTP_REFERER']);
