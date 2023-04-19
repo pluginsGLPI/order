@@ -55,7 +55,7 @@ class PluginOrderLink extends CommonDBChild {
    }
 
 
-   public static function getTypesThanCannotBeGenerared() {
+   public static function getTypesThanCannotBeGenerated() {
       return [
          'CartridgeItem',
          'SoftwareLicense',
