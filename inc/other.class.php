@@ -58,13 +58,16 @@ class PluginOrderOther extends CommonDBTM {
                   `id` int {$default_key_sign} NOT NULL auto_increment,
                   `entities_id` int {$default_key_sign} NOT NULL default '0',
                   `name` varchar(255) default NULL,
-                  `othertypes_id` int {$default_key_sign} NOT NULL default '0',
+                  `plugin_order_othertypes_id` int {$default_key_sign} NOT NULL default '0',
                   PRIMARY KEY  (`ID`),
                   KEY `name` (`name`),
                   KEY `entities_id` (`entities_id`),
-                  KEY `othertypes_id` (`othertypes_id`)
+                  KEY `plugin_order_othertypes_id` (`plugin_order_othertypes_id`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
          $DB->query($query) or die ($DB->error());
+      } else {
+         $migration->displayMessage("Rename 'othertypes_id' to 'plugin_order_othertypes_id'");
+         $migration->changeField($table, "othertypes_id", "plugin_order_othertypes_id", "int {$default_key_sign} NOT NULL default '0'");
       }
    }
 
