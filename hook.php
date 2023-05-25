@@ -198,7 +198,7 @@ function plugin_order_getDatabaseRelations() {
             "glpi_plugin_order_orders" => "budgets_id"
          ],
          "glpi_plugin_order_othertypes" => [
-            "glpi_plugin_order_others" => "othertypes_id"
+            "glpi_plugin_order_others" => "plugin_order_othertypes_id"
          ],
          "glpi_suppliers" => [
             "glpi_plugin_order_orders"               => "suppliers_id",
