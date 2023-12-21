@@ -764,9 +764,11 @@ class PluginOrderOrder extends CommonDBTM {
       }
 
       $config = PluginOrderConfig::getConfig();
-      if ($config->isAccountSectionDisplayed()
-         && $config->isAccountSectionMandatory()
-         && $input["plugin_order_accountsections_id"] ?? $this->fields["plugin_order_accountsections_id"] == 0) {
+      if (
+          $config->isAccountSectionDisplayed()
+          && $config->isAccountSectionMandatory()
+          && ($input["plugin_order_accountsections_id"] ?? $this->fields["plugin_order_accountsections_id"]) == 0
+      ) {
          Session::addMessageAfterRedirect(__("An account section is mandatory !", "order"), false, ERROR);
          return [];
       }

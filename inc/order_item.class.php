@@ -609,9 +609,11 @@ class PluginOrderOrder_Item extends CommonDBRelation {
 
    public function prepareInputForUpdate($input) {
       $config = PluginOrderConfig::getConfig();
-      if ($config->isAnalyticNatureDisplayed()
+      if (
+          $config->isAnalyticNatureDisplayed()
           && $config->isAnalyticNatureMandatory()
-          && $input["plugin_order_analyticnatures_id"] ?? $this->fields["plugin_order_analyticnatures_id"] == 0) {
+          && ($input["plugin_order_analyticnatures_id"] ?? $this->fields["plugin_order_analyticnatures_id"]) == 0
+      ) {
          Session::addMessageAfterRedirect(__("An analytic nature is mandatory !", "order"), false, ERROR);
          return [];
       }
