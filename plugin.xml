@@ -3,7 +3,7 @@
    <name>Order Management</name>
    <key>order</key>
    <state>stable</state>
-   <logo>https://raw.githubusercontent.com/pluginsGLPI/order/master/order.png</logo>
+   <logo>https://raw.githubusercontent.com/pluginsGLPI/order/main/order.png</logo>
    <description>
       <short>
          <fr><![CDATA[Gestion des commandes de matériels]]></fr>
@@ -329,8 +329,8 @@
    </tags>
    <license>GPL v2+</license>
    <screenshots>
-      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/order/master/screenshots/screenshot1.png</screenshot>
-      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/order/master/screenshots/screenshot2.png</screenshot>
-      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/order/master/screenshots/screenshot3.png</screenshot>
+      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/order/main/screenshots/screenshot1.png</screenshot>
+      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/order/main/screenshots/screenshot2.png</screenshot>
+      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/order/main/screenshots/screenshot3.png</screenshot>
    </screenshots>
 </root>
