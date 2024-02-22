@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginOrderOrder extends CommonDBTM {
 
+   use Glpi\Features\Clonable;
+
    public static $rightname         = 'plugin_order_order';
 
    public $is_template              = true;
@@ -72,6 +74,12 @@ class PluginOrderOrder extends CommonDBTM {
    const RIGHT_GENERATEODT                      = 4096;
    const RIGHT_DELIVERY                         = 8192;
    const ALLRIGHTS                              = 16255;
+
+
+   public function getCloneRelations(): array
+   {
+      return [];
+   }
 
 
    public static function getTypeName($nb = 0) {
