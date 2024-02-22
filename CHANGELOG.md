@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- Restores the ability to clone an order
+
+
 ## [1.9.6] - 2017-03-03
 
 **Compatible with GLPI 0.85 and above**
