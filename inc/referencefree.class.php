@@ -29,30 +29,33 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderReferenceFree extends CommonDBTM {
-   public static $rightname         = 'plugin_order_order';
-   public $dohistory                = true;
+class PluginOrderReferenceFree extends CommonDBTM
+{
+    public static $rightname         = 'plugin_order_order';
+    public $dohistory                = true;
 
-   public static function getTypeName($nb = 0) {
-      return __("Reference free", "order");
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return __("Reference free", "order");
+    }
 
-   public static function install(Migration $migration) {
-      global $DB;
+    public static function install(Migration $migration)
+    {
+        global $DB;
 
-      $default_charset = DBConnection::getDefaultCharset();
-      $default_collation = DBConnection::getDefaultCollation();
-      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+        $default_charset = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-      $table = getTableForItemType(__CLASS__);
-      if (!$DB->tableExists($table)) {
-         $migration->displayMessage("Installing $table");
+        $table = getTableForItemType(__CLASS__);
+        if (!$DB->tableExists($table)) {
+            $migration->displayMessage("Installing $table");
 
-         //Install
-         $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_referencefrees` (
+           //Install
+            $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_referencefrees` (
                `id` int {$default_key_sign} NOT NULL auto_increment,
                `entities_id` int {$default_key_sign} NOT NULL default '0',
                `is_recursive` tinyint NOT NULL default '0',
@@ -85,21 +88,24 @@ class PluginOrderReferenceFree extends CommonDBTM {
                KEY `is_deleted` (`is_deleted`),
                KEY date_mod (date_mod)
             ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-         $DB->query($query) or die ($DB->error());
+            $DB->query($query) or die($DB->error());
+        }
+    }
 
-      }
-   }
+    public static function uninstall()
+    {
+        global $DB;
 
-   public static function uninstall() {
-      global $DB;
+        $table  = getTableForItemType(__CLASS__);
+        foreach (
+            ["glpi_displaypreferences", "glpi_documents_items", "glpi_savedsearches",
+                "glpi_logs"
+            ] as $t
+        ) {
+            $query = "DELETE FROM `$t` WHERE `itemtype`='" . __CLASS__ . "'";
+            $DB->query($query);
+        }
 
-      $table  = getTableForItemType(__CLASS__);
-      foreach (["glpi_displaypreferences", "glpi_documents_items", "glpi_savedsearches",
-                      "glpi_logs"] as $t) {
-         $query = "DELETE FROM `$t` WHERE `itemtype`='" . __CLASS__ . "'";
-         $DB->query($query);
-      }
-
-      $DB->query("DROP TABLE IF EXISTS `$table`") or die ($DB->error());
-   }
+        $DB->query("DROP TABLE IF EXISTS `$table`") or die($DB->error());
+    }
 }

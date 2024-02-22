@@ -28,73 +28,71 @@
  * -------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
+include("../../../inc/includes.php");
 
 if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = "";
+    $_GET["withtemplate"] = "";
 }
 
 $reception  = new PluginOrderReception();
 $order_item = new PluginOrderOrder_Item();
 
-if (isset ($_POST["update"])) {
+if (isset($_POST["update"])) {
+    if (PluginOrderReception::canCreate()) {
+        $order_item->getFromDB($_POST["id"]);
+        if ($order_item->fields["itemtype"] == 'SoftwareLicense') {
+            $result = $order_item->queryRef(
+                $order_item->fields["plugin_order_orders_id"],
+                $order_item->fields["plugin_order_references_id"],
+                $order_item->fields["price_taxfree"],
+                $order_item->fields["discount"],
+                PluginOrderOrder::ORDER_DEVICE_DELIVRED
+            );
+            $nb = $DB->numrows($result);
 
-   if (PluginOrderReception::canCreate()) {
-      $order_item->getFromDB($_POST["id"]);
-      if ($order_item->fields["itemtype"] == 'SoftwareLicense') {
-         $result = $order_item->queryRef($order_item->fields["plugin_order_orders_id"],
-                                         $order_item->fields["plugin_order_references_id"],
-                                         $order_item->fields["price_taxfree"],
-                                         $order_item->fields["discount"],
-                                         PluginOrderOrder::ORDER_DEVICE_DELIVRED);
-         $nb = $DB->numrows($result);
-
-         if ($nb) {
-            for ($i = 0; $i < $nb; $i++) {
-               $ID = $DB->result($result, $i, 'id');
-               $reception->update([
-                  "id"                             => $ID,
-                  "delivery_date"                  => $_POST["delivery_date"],
-                  "delivery_number"                => $_POST["delivery_number"],
-                  "plugin_order_deliverystates_id" => $_POST["plugin_order_deliverystates_id"],
-                  "delivery_comment"               => $_POST["delivery_comment"],
-               ]);
+            if ($nb) {
+                for ($i = 0; $i < $nb; $i++) {
+                    $ID = $DB->result($result, $i, 'id');
+                    $reception->update([
+                        "id"                             => $ID,
+                        "delivery_date"                  => $_POST["delivery_date"],
+                        "delivery_number"                => $_POST["delivery_number"],
+                        "plugin_order_deliverystates_id" => $_POST["plugin_order_deliverystates_id"],
+                        "delivery_comment"               => $_POST["delivery_comment"],
+                    ]);
+                }
             }
-         }
-      } else {
-         $reception->update($_POST);
-      }
-   }
-   $reception->updateReceptionStatus([
-      'items' => [
-         'PluginOrderReception' => [
-            $_POST['id'] => 'on'
-         ]
-      ]]
-   );
-   Html::redirect($_SERVER['HTTP_REFERER']);
-
-} else if (isset ($_POST["delete"])) {
-   $reception->deleteDelivery($_POST["id"]);
-   $reception->updateReceptionStatus([
-      'items' => [
-         'PluginOrderReception' => [
-            $_POST['id'] => 'on'
-         ]
-      ]
-   ]);
-   Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder')."?id=".$_POST["plugin_order_orders_id"]);
-
-} else if (isset ($_POST["bulk_reception"])) {
+        } else {
+            $reception->update($_POST);
+        }
+    }
+    $reception->updateReceptionStatus([
+        'items' => [
+            'PluginOrderReception' => [
+                $_POST['id'] => 'on'
+            ]
+        ]
+    ]);
+    Html::redirect($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["delete"])) {
+    $reception->deleteDelivery($_POST["id"]);
+    $reception->updateReceptionStatus([
+        'items' => [
+            'PluginOrderReception' => [
+                $_POST['id'] => 'on'
+            ]
+        ]
+    ]);
+    Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder') . "?id=" . $_POST["plugin_order_orders_id"]);
+} else if (isset($_POST["bulk_reception"])) {
    //Several new items are delivered
-   $reception->updateBulkReceptionStatus($_POST);
-   Html::redirect($_SERVER["HTTP_REFERER"]);
-
+    $reception->updateBulkReceptionStatus($_POST);
+    Html::redirect($_SERVER["HTTP_REFERER"]);
 } else {
-   Html::header(__("Orders management", "order"), '', "management", "PluginOrderMenu", "reception");
-   $reception->showForm($_GET["id"]);
-   Html::footer();
+    Html::header(__("Orders management", "order"), '', "management", "PluginOrderMenu", "reception");
+    $reception->showForm($_GET["id"]);
+    Html::footer();
 }

@@ -29,32 +29,34 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderOther extends CommonDBTM {
-
-   public static $rightname = 'plugin_order_order';
-
-
-   public static function getTypeName($nb = 0) {
-      return __("Other kind of items");
-   }
+class PluginOrderOther extends CommonDBTM
+{
+    public static $rightname = 'plugin_order_order';
 
 
-   public static function install(Migration $migration) {
-      global $DB;
+    public static function getTypeName($nb = 0)
+    {
+        return __("Other kind of items");
+    }
 
-      $default_charset = DBConnection::getDefaultCharset();
-      $default_collation = DBConnection::getDefaultCollation();
-      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-      //Only avaiable since 1.2.0
-      $table = self::getTable();
-      if (!$DB->tableExists($table)) {
-         $migration->displayMessage("Installing $table");
+    public static function install(Migration $migration)
+    {
+        global $DB;
 
-         $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_others` (
+        $default_charset = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
+       //Only avaiable since 1.2.0
+        $table = self::getTable();
+        if (!$DB->tableExists($table)) {
+            $migration->displayMessage("Installing $table");
+
+            $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_others` (
                   `id` int {$default_key_sign} NOT NULL auto_increment,
                   `entities_id` int {$default_key_sign} NOT NULL default '0',
                   `name` varchar(255) default NULL,
@@ -64,20 +66,19 @@ class PluginOrderOther extends CommonDBTM {
                   KEY `entities_id` (`entities_id`),
                   KEY `plugin_order_othertypes_id` (`plugin_order_othertypes_id`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-         $DB->query($query) or die ($DB->error());
-      } else {
-         $migration->displayMessage("Rename 'othertypes_id' to 'plugin_order_othertypes_id'");
-         $migration->changeField($table, "othertypes_id", "plugin_order_othertypes_id", "int {$default_key_sign} NOT NULL default '0'");
-      }
-   }
+            $DB->query($query) or die($DB->error());
+        } else {
+            $migration->displayMessage("Rename 'othertypes_id' to 'plugin_order_othertypes_id'");
+            $migration->changeField($table, "othertypes_id", "plugin_order_othertypes_id", "int {$default_key_sign} NOT NULL default '0'");
+        }
+    }
 
 
-   public static function uninstall() {
-      global $DB;
+    public static function uninstall()
+    {
+        global $DB;
 
-      //Current table name
-      $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
-   }
-
-
+       //Current table name
+        $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`") or die($DB->error());
+    }
 }

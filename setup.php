@@ -36,36 +36,36 @@ define("PLUGIN_ORDER_MIN_GLPI", "10.0.0");
 define("PLUGIN_ORDER_MAX_GLPI", "10.0.99");
 
 if (!defined('PLUGIN_ORDER_DIR')) {
-   define("PLUGIN_ORDER_DIR", Plugin::getPhpDir('order'));
+    define("PLUGIN_ORDER_DIR", Plugin::getPhpDir('order'));
 }
 
 if (!defined('PLUGIN_ORDER_TEMPLATE_DIR')) {
-   define("PLUGIN_ORDER_TEMPLATE_DIR", GLPI_PLUGIN_DOC_DIR."/order/templates/");
+    define("PLUGIN_ORDER_TEMPLATE_DIR", GLPI_PLUGIN_DOC_DIR . "/order/templates/");
 }
 if (!defined('PLUGIN_ORDER_SIGNATURE_DIR')) {
-   define("PLUGIN_ORDER_SIGNATURE_DIR", GLPI_PLUGIN_DOC_DIR."/order/signatures/");
+    define("PLUGIN_ORDER_SIGNATURE_DIR", GLPI_PLUGIN_DOC_DIR . "/order/signatures/");
 }
 if (!defined('PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR')) {
-   define("PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR", GLPI_PLUGIN_DOC_DIR."/order/generate/");
+    define("PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR", GLPI_PLUGIN_DOC_DIR . "/order/generate/");
 }
 if (!defined('PLUGIN_ORDER_TEMPLATE_LOGO_DIR')) {
-   define("PLUGIN_ORDER_TEMPLATE_LOGO_DIR", GLPI_PLUGIN_DOC_DIR."/order/logo/");
+    define("PLUGIN_ORDER_TEMPLATE_LOGO_DIR", GLPI_PLUGIN_DOC_DIR . "/order/logo/");
 }
 
 if (!defined('PLUGIN_ORDER_TEMPLATE_EXTENSION')) {
-   define("PLUGIN_ORDER_TEMPLATE_EXTENSION", "odt");
+    define("PLUGIN_ORDER_TEMPLATE_EXTENSION", "odt");
 }
 if (!defined('PLUGIN_ORDER_SIGNATURE_EXTENSION')) {
-   define("PLUGIN_ORDER_SIGNATURE_EXTENSION", "png");
+    define("PLUGIN_ORDER_SIGNATURE_EXTENSION", "png");
 }
 global $CFG_GLPI;
 if (!defined('PLUGIN_ORDER_NUMBER_STEP')) {
-   define("PLUGIN_ORDER_NUMBER_STEP", 1 / pow(10, $CFG_GLPI["decimal_number"]));
+    define("PLUGIN_ORDER_NUMBER_STEP", 1 / pow(10, $CFG_GLPI["decimal_number"]));
 }
 
 // Autoload
 if (!defined('PCLZIP_TEMPORARY_DIR')) {
-   define('PCLZIP_TEMPORARY_DIR', GLPI_DOC_DIR . '/_tmp/pclzip');
+    define('PCLZIP_TEMPORARY_DIR', GLPI_DOC_DIR . '/_tmp/pclzip');
 }
 include_once PLUGIN_ORDER_DIR . "/vendor/autoload.php";
 
@@ -76,104 +76,107 @@ include_once PLUGIN_ORDER_DIR . "/vendor/autoload.php";
  *
  * @return void
  */
-function plugin_init_order() {
-   global $PLUGIN_HOOKS, $CFG_GLPI, $ORDER_TYPES;
+function plugin_init_order()
+{
+    global $PLUGIN_HOOKS, $CFG_GLPI, $ORDER_TYPES;
 
-   Plugin::registerClass('PluginOrderProfile');
-   $PLUGIN_HOOKS['csrf_compliant']['order'] = true;
+    Plugin::registerClass('PluginOrderProfile');
+    $PLUGIN_HOOKS['csrf_compliant']['order'] = true;
 
    /* Init current profile */
-   $PLUGIN_HOOKS['change_profile']['order'] = ['PluginOrderProfile', 'initProfile'];
+    $PLUGIN_HOOKS['change_profile']['order'] = ['PluginOrderProfile', 'initProfile'];
 
-   $plugin = new Plugin();
-   if ($plugin->isActivated('order')) {
-      $PLUGIN_HOOKS['migratetypes']['order'] = 'plugin_order_migratetypes';
+    $plugin = new Plugin();
+    if ($plugin->isActivated('order')) {
+        $PLUGIN_HOOKS['migratetypes']['order'] = 'plugin_order_migratetypes';
 
-      $PLUGIN_HOOKS['assign_to_ticket']['order'] = true;
+        $PLUGIN_HOOKS['assign_to_ticket']['order'] = true;
 
-      //Itemtypes in use for an order
-      $ORDER_TYPES = [
-         'Computer',
-         'Monitor',
-         'NetworkEquipment',
-         'Peripheral',
-         'Printer',
-         'Phone',
-         'ConsumableItem',
-         'CartridgeItem',
-         'Contract',
-         'PluginOrderOther',
-         'SoftwareLicense',
-         'Certificate',
-         'Rack',
-         'Enclosure',
-         'Pdu',
-      ];
+       //Itemtypes in use for an order
+        $ORDER_TYPES = [
+            'Computer',
+            'Monitor',
+            'NetworkEquipment',
+            'Peripheral',
+            'Printer',
+            'Phone',
+            'ConsumableItem',
+            'CartridgeItem',
+            'Contract',
+            'PluginOrderOther',
+            'SoftwareLicense',
+            'Certificate',
+            'Rack',
+            'Enclosure',
+            'Pdu',
+        ];
 
-      $CFG_GLPI['plugin_order_types'] = $ORDER_TYPES;
+        $CFG_GLPI['plugin_order_types'] = $ORDER_TYPES;
 
-      $PLUGIN_HOOKS['pre_item_purge']['order'] = [
-         'Profile'          => ['PluginOrderProfile', 'purgeProfiles'],
-         'DocumentCategory' => ['PluginOrderDocumentCategory', 'purgeItem'],
-      ];
+        $PLUGIN_HOOKS['pre_item_purge']['order'] = [
+            'Profile'          => ['PluginOrderProfile', 'purgeProfiles'],
+            'DocumentCategory' => ['PluginOrderDocumentCategory', 'purgeItem'],
+        ];
 
-      $PLUGIN_HOOKS['pre_item_update']['order'] = [
-         'Infocom'  => ['PluginOrderOrder_Item', 'updateItem'],
-         'Contract' => ['PluginOrderOrder_Item', 'updateItem'],
-      ];
-      $PLUGIN_HOOKS['item_add']['order'] = [
-         'Document' => ['PluginOrderOrder', 'addDocumentCategory']
-      ];
+        $PLUGIN_HOOKS['pre_item_update']['order'] = [
+            'Infocom'  => ['PluginOrderOrder_Item', 'updateItem'],
+            'Contract' => ['PluginOrderOrder_Item', 'updateItem'],
+        ];
+        $PLUGIN_HOOKS['item_add']['order'] = [
+            'Document' => ['PluginOrderOrder', 'addDocumentCategory']
+        ];
 
-      include_once(PLUGIN_ORDER_DIR . "/inc/order_item.class.php");
-      foreach (PluginOrderOrder_Item::getClasses(true) as $type) {
-         $PLUGIN_HOOKS['item_purge']['order'][$type] = 'plugin_item_purge_order';
-      }
+        include_once(PLUGIN_ORDER_DIR . "/inc/order_item.class.php");
+        foreach (PluginOrderOrder_Item::getClasses(true) as $type) {
+            $PLUGIN_HOOKS['item_purge']['order'][$type] = 'plugin_item_purge_order';
+        }
 
-      Plugin::registerClass('PluginOrderOrder', [
-         'document_types'              => true,
-         'unicity_types'               => true,
-         'notificationtemplates_types' => true,
-         'helpdesk_visible_types'      => true,
-         'ticket_types'                => true,
-         'contract_types'              => true,
-         'linkuser_types'              => true,
-         'addtabon'                    => ['Budget']
-      ]);
+        Plugin::registerClass('PluginOrderOrder', [
+            'document_types'              => true,
+            'unicity_types'               => true,
+            'notificationtemplates_types' => true,
+            'helpdesk_visible_types'      => true,
+            'ticket_types'                => true,
+            'contract_types'              => true,
+            'linkuser_types'              => true,
+            'addtabon'                    => ['Budget']
+        ]);
 
-      Plugin::registerClass('PluginOrderReference', ['document_types' => true]);
-      Plugin::registerClass('PluginOrderProfile', ['addtabon' => ['Profile']]);
+        Plugin::registerClass('PluginOrderReference', ['document_types' => true]);
+        Plugin::registerClass('PluginOrderProfile', ['addtabon' => ['Profile']]);
 
-      $values['notificationtemplates_types'] = true;
-      $PLUGIN_HOOKS['infocom']['order'] = ['PluginOrderOrder_Item', 'showForInfocom'];
-      Plugin::registerClass('PluginOrderOrder_Item', $values);
+        $values['notificationtemplates_types'] = true;
+        $PLUGIN_HOOKS['infocom']['order'] = ['PluginOrderOrder_Item', 'showForInfocom'];
+        Plugin::registerClass('PluginOrderOrder_Item', $values);
 
-      if (PluginOrderOrder::canView()) {
-         Plugin::registerClass('PluginOrderDocumentCategory', ['addtabon' => ['DocumentCategory']]);
-         Plugin::registerClass('PluginOrderOrder_Supplier', ['addtabon' => ['Supplier']]);
-         Plugin::registerClass('PluginOrderPreference', ['addtabon' => ['Preference']]);
-      }
+        if (PluginOrderOrder::canView()) {
+            Plugin::registerClass('PluginOrderDocumentCategory', ['addtabon' => ['DocumentCategory']]);
+            Plugin::registerClass('PluginOrderOrder_Supplier', ['addtabon' => ['Supplier']]);
+            Plugin::registerClass('PluginOrderPreference', ['addtabon' => ['Preference']]);
+        }
 
-      /*if glpi is loaded */
-      if (Session::getLoginUserID()) {
-         $PLUGIN_HOOKS['add_css']['order'][] = 'order.css';
+       /*if glpi is loaded */
+        if (Session::getLoginUserID()) {
+            $PLUGIN_HOOKS['add_css']['order'][] = 'order.css';
 
-         /* link to the config page in plugins menu */
-         if (Session::haveRight("config", UPDATE)) {
-            $PLUGIN_HOOKS['config_page']['order'] = 'front/config.form.php';
-         }
+           /* link to the config page in plugins menu */
+            if (Session::haveRight("config", UPDATE)) {
+                $PLUGIN_HOOKS['config_page']['order'] = 'front/config.form.php';
+            }
 
-         if (PluginOrderOrder::canView()
-            || PluginOrderReference::canView()
-            || PluginOrderBill::canView()) {
-            $PLUGIN_HOOKS['menu_toadd']['order']['management'] = 'PluginOrderMenu';
-         }
+            if (
+                PluginOrderOrder::canView()
+                || PluginOrderReference::canView()
+                || PluginOrderBill::canView()
+            ) {
+                $PLUGIN_HOOKS['menu_toadd']['order']['management'] = 'PluginOrderMenu';
+            }
 
-         $PLUGIN_HOOKS['assign_to_ticket']['order'] = true;
-         $PLUGIN_HOOKS['use_massive_action']['order'] = 1;
-         $PLUGIN_HOOKS['plugin_datainjection_populate']['order'] = "plugin_datainjection_populate_order";
-      }
-   }
+            $PLUGIN_HOOKS['assign_to_ticket']['order'] = true;
+            $PLUGIN_HOOKS['use_massive_action']['order'] = 1;
+            $PLUGIN_HOOKS['plugin_datainjection_populate']['order'] = "plugin_datainjection_populate_order";
+        }
+    }
 }
 
 
@@ -183,20 +186,21 @@ function plugin_init_order() {
  *
  * @return array
  */
-function plugin_version_order() {
-   return [
-      'name'           => __("Orders management", "order"),
-      'version'        => PLUGIN_ORDER_VERSION,
-      'author'         => 'The plugin order team',
-      'homepage'       => 'https://github.com/pluginsGLPI/order',
-      'license'        => 'GPLv2+',
-      'requirements'   => [
-         'glpi' => [
-            'min' => PLUGIN_ORDER_MIN_GLPI,
-            'max' => PLUGIN_ORDER_MAX_GLPI,
-         ]
-      ]
-   ];
+function plugin_version_order()
+{
+    return [
+        'name'           => __("Orders management", "order"),
+        'version'        => PLUGIN_ORDER_VERSION,
+        'author'         => 'The plugin order team',
+        'homepage'       => 'https://github.com/pluginsGLPI/order',
+        'license'        => 'GPLv2+',
+        'requirements'   => [
+            'glpi' => [
+                'min' => PLUGIN_ORDER_MIN_GLPI,
+                'max' => PLUGIN_ORDER_MAX_GLPI,
+            ]
+        ]
+    ];
 }
 
 
@@ -206,11 +210,12 @@ function plugin_version_order() {
  *
  * @return boolean
  */
-function plugin_order_check_prerequisites() {
-   if (!is_readable(__DIR__ . '/vendor/autoload.php') || !is_file(__DIR__ . '/vendor/autoload.php')) {
-      echo "Run composer install --no-dev in the plugin directory<br>";
-      return false;
-   }
+function plugin_order_check_prerequisites()
+{
+    if (!is_readable(__DIR__ . '/vendor/autoload.php') || !is_file(__DIR__ . '/vendor/autoload.php')) {
+        echo "Run composer install --no-dev in the plugin directory<br>";
+        return false;
+    }
 
-   return true;
+    return true;
 }

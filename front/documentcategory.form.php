@@ -28,17 +28,17 @@
  * -------------------------------------------------------------------------
  */
 
-include ('../../../inc/includes.php');
+include('../../../inc/includes.php');
 
 $documentCategory = new PluginOrderDocumentCategory();
 
 if (isset($_POST["update"])) {
-   if (!$documentCategory->getFromDBByCrit(['documentcategories_id' => $_POST['documentcategories_id']])) {
-      $documentCategory->add($_POST);
-   } else {
-      $_POST['id'] = $documentCategory->fields['id'];
-      $documentCategory->update($_POST);
-   }
+    if (!$documentCategory->getFromDBByCrit(['documentcategories_id' => $_POST['documentcategories_id']])) {
+        $documentCategory->add($_POST);
+    } else {
+        $_POST['id'] = $documentCategory->fields['id'];
+        $documentCategory->update($_POST);
+    }
 
-   Html::back();
+    Html::back();
 }

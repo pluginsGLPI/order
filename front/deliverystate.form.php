@@ -28,8 +28,8 @@
  * -------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
+include("../../../inc/includes.php");
 
 $dropdown = new PluginOrderDeliveryState();
 
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
+include(GLPI_ROOT . "/front/dropdown.common.form.php");

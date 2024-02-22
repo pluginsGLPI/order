@@ -29,85 +29,98 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderBillState extends CommonDropdown {
-   const NOTPAID = 0;
-   const PAID    = 1;
+class PluginOrderBillState extends CommonDropdown
+{
+    const NOTPAID = 0;
+    const PAID    = 1;
 
-   public static $rightname = 'plugin_order_bill';
-
-
-   public static function getTypeName($nb = 0) {
-      return __("Bill status", "order");
-   }
+    public static $rightname = 'plugin_order_bill';
 
 
-   public function pre_deleteItem() {
-      if ($this->getID() <= self::PAID) {
-         Session::addMessageAfterRedirect(__("You cannot remove this status", "order").
-                                          ": ".$this->fields['name'],
-                                          false, ERROR);
-         return false;
-      } else {
-         return true;
-      }
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return __("Bill status", "order");
+    }
 
 
-   public static function getStates() {
-      return [self::NOTPAID => __("Being paid", "order"),
-              self::PAID    => __("Paid", "order")];
-   }
+    public function pre_deleteItem()
+    {
+        if ($this->getID() <= self::PAID) {
+            Session::addMessageAfterRedirect(
+                __("You cannot remove this status", "order") .
+                                          ": " . $this->fields['name'],
+                false,
+                ERROR
+            );
+            return false;
+        } else {
+            return true;
+        }
+    }
 
 
-   public static function getState($states_id) {
-      $states = self::getStates();
-      if (isset($states[$states_id])) {
-         return $states[$states_id];
-      } else {
-         return '';
-      }
-   }
+    public static function getStates()
+    {
+        return [self::NOTPAID => __("Being paid", "order"),
+            self::PAID    => __("Paid", "order")
+        ];
+    }
 
 
-   public static function install(Migration $migration) {
-      global $DB;
+    public static function getState($states_id)
+    {
+        $states = self::getStates();
+        if (isset($states[$states_id])) {
+            return $states[$states_id];
+        } else {
+            return '';
+        }
+    }
 
-      $default_charset = DBConnection::getDefaultCharset();
-      $default_collation = DBConnection::getDefaultCollation();
-      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-      $table = self::getTable();
-      if (!$DB->tableExists($table)) {
-         $migration->displayMessage("Installing $table");
+    public static function install(Migration $migration)
+    {
+        global $DB;
 
-         $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_billstates` (
+        $default_charset = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
+        $table = self::getTable();
+        if (!$DB->tableExists($table)) {
+            $migration->displayMessage("Installing $table");
+
+            $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_billstates` (
                     `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
                     `name` varchar(255) DEFAULT NULL,
                     `comment` text,
                     PRIMARY KEY (`id`),
                     KEY `name` (`name`)
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-         $DB->query($query) or die ($DB->error());
-      }
-      if (countElementsInTable($table) < 2) {
-         $state = new self();
-         foreach ([self::PAID     => __("Paid", "order"),
-                   self::NOTPAID  => __("Not paid", "order")] as $id => $label) {
-            $state->add(['id'   => $id,
-                         'name' => Toolbox::addslashes_deep($label)]);
-         }
-      }
-   }
+            $DB->query($query) or die($DB->error());
+        }
+        if (countElementsInTable($table) < 2) {
+            $state = new self();
+            foreach (
+                [self::PAID     => __("Paid", "order"),
+                    self::NOTPAID  => __("Not paid", "order")
+                ] as $id => $label
+            ) {
+                $state->add(['id'   => $id,
+                    'name' => Toolbox::addslashes_deep($label)
+                ]);
+            }
+        }
+    }
 
 
-   public static function uninstall() {
-      global $DB;
+    public static function uninstall()
+    {
+        global $DB;
 
-      $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
-   }
-
-
+        $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`") or die($DB->error());
+    }
 }

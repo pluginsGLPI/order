@@ -28,88 +28,87 @@
  * -------------------------------------------------------------------------
  */
 
-class PluginOrderMenu extends CommonGLPI {
+class PluginOrderMenu extends CommonGLPI
+{
+    public static function getTypeName($nb = 0)
+    {
+        return __("Orders", "order");
+    }
 
 
-   public static function getTypeName($nb = 0) {
-      return __("Orders", "order");
-   }
-
-
-   static function getMenuContent() {
-      $menu = [
-         'title' => self::getTypeName(2),
-         'page'  => self::getSearchURL(false),
-         'icon'  => PluginOrderOrder::getIcon(),
-      ];
-      if (PluginOrderConfig::canView()) {
-         $menu['links']['config'] = PluginOrderConfig::getFormURL(false);
-      }
-
-      if (PluginOrderOrder::canView()) {
-         $menu['options']['order'] = [
-            'title' => PluginOrderOrder::getTypeName(2),
-            'page'  => PluginOrderOrder::getSearchURL(false),
+    static function getMenuContent()
+    {
+        $menu = [
+            'title' => self::getTypeName(2),
+            'page'  => self::getSearchURL(false),
             'icon'  => PluginOrderOrder::getIcon(),
-         ];
-         if (PluginOrderOrder::canCreate()) {
-            $menu['options']['order']['links'] = [
-               'search' => PluginOrderOrder::getSearchURL(false),
-               'add'    => "/front/setup.templates.php?itemtype=PluginOrderOrder&add=1",
+        ];
+        if (PluginOrderConfig::canView()) {
+            $menu['links']['config'] = PluginOrderConfig::getFormURL(false);
+        }
+
+        if (PluginOrderOrder::canView()) {
+            $menu['options']['order'] = [
+                'title' => PluginOrderOrder::getTypeName(2),
+                'page'  => PluginOrderOrder::getSearchURL(false),
+                'icon'  => PluginOrderOrder::getIcon(),
             ];
-         }
-         $menu['options']['order']['links']['template'] = "/front/setup.templates.php?itemtype=PluginOrderOrder&add=0";
-         if (PluginOrderConfig::canView()) {
-            $menu['options']['order']['links']['config'] = PluginOrderConfig::getFormURL(false);
-         }
-         $menu['options']['order']['links']['lists']  = "";
-         $menu['options']['order']['lists_itemtype']  = PluginOrderOrder::getType();
-      }
+            if (PluginOrderOrder::canCreate()) {
+                $menu['options']['order']['links'] = [
+                    'search' => PluginOrderOrder::getSearchURL(false),
+                    'add'    => "/front/setup.templates.php?itemtype=PluginOrderOrder&add=1",
+                ];
+            }
+            $menu['options']['order']['links']['template'] = "/front/setup.templates.php?itemtype=PluginOrderOrder&add=0";
+            if (PluginOrderConfig::canView()) {
+                $menu['options']['order']['links']['config'] = PluginOrderConfig::getFormURL(false);
+            }
+            $menu['options']['order']['links']['lists']  = "";
+            $menu['options']['order']['lists_itemtype']  = PluginOrderOrder::getType();
+        }
 
-      if (PluginOrderBill::canView()) {
-         $menu['options']['bill'] = [
-            'title' => PluginOrderBill::getTypeName(2),
-            'page'  => PluginOrderBill::getSearchURL(false),
-            'links' => [
-               'search' => PluginOrderBill::getSearchURL(false)
-            ],
-            'icon'  => PluginOrderBill::getIcon(),
-         ];
-         if (PluginOrderBill::canCreate()) {
-            $menu['options']['bill']['links']['add'] = PluginOrderBill::getFormURL(false);
-         }
-         if (PluginOrderConfig::canView()) {
-            $menu['options']['bill']['links']['config'] = PluginOrderConfig::getFormURL(false);
-         }
-         $menu['options']['bill']['links']['lists']  = "";
-         $menu['options']['bill']['lists_itemtype']  = PluginOrderBill::getType();
-      }
+        if (PluginOrderBill::canView()) {
+            $menu['options']['bill'] = [
+                'title' => PluginOrderBill::getTypeName(2),
+                'page'  => PluginOrderBill::getSearchURL(false),
+                'links' => [
+                    'search' => PluginOrderBill::getSearchURL(false)
+                ],
+                'icon'  => PluginOrderBill::getIcon(),
+            ];
+            if (PluginOrderBill::canCreate()) {
+                $menu['options']['bill']['links']['add'] = PluginOrderBill::getFormURL(false);
+            }
+            if (PluginOrderConfig::canView()) {
+                $menu['options']['bill']['links']['config'] = PluginOrderConfig::getFormURL(false);
+            }
+            $menu['options']['bill']['links']['lists']  = "";
+            $menu['options']['bill']['lists_itemtype']  = PluginOrderBill::getType();
+        }
 
-      if (PluginOrderReference::canView()) {
-         $menu['options']['references'] = [
-            'title' => PluginOrderReference::getTypeName(2),
-            'page'  => PluginOrderReference::getSearchURL(false),
-            'links' => [
-               'search' => PluginOrderReference::getSearchURL(false)
-            ],
-            'icon'  => PluginOrderReference::getIcon(),
-         ];
-         if (PluginOrderReference::canCreate()) {
-            $menu['options']['references']['links']['add'] = PluginOrderReference::getFormURL(false);
-         }
-         if (PluginOrderConfig::canView()) {
-            $menu['options']['references']['links']['config'] = PluginOrderConfig::getFormURL(false);
-         }
-         $menu['options']['references']['links']['lists']  = "";
-         $menu['options']['references']['lists_itemtype']  = PluginOrderReference::getType();
-      }
-      return $menu;
-   }
-
-
-   function install() {
-
-   }
+        if (PluginOrderReference::canView()) {
+            $menu['options']['references'] = [
+                'title' => PluginOrderReference::getTypeName(2),
+                'page'  => PluginOrderReference::getSearchURL(false),
+                'links' => [
+                    'search' => PluginOrderReference::getSearchURL(false)
+                ],
+                'icon'  => PluginOrderReference::getIcon(),
+            ];
+            if (PluginOrderReference::canCreate()) {
+                $menu['options']['references']['links']['add'] = PluginOrderReference::getFormURL(false);
+            }
+            if (PluginOrderConfig::canView()) {
+                $menu['options']['references']['links']['config'] = PluginOrderConfig::getFormURL(false);
+            }
+            $menu['options']['references']['links']['lists']  = "";
+            $menu['options']['references']['lists_itemtype']  = PluginOrderReference::getType();
+        }
+        return $menu;
+    }
 
 
+    function install()
+    {
+    }
 }

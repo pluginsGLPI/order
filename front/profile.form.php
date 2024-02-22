@@ -28,14 +28,14 @@
  * -------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
+include("../../../inc/includes.php");
 
 Session::checkRight("profile", READ);
 
 $prof = new PluginOrderProfile();
 
 //Save profile
-if (isset ($_POST['update'])) {
-   $prof->update($_POST);
-   Html::redirect($_SERVER['HTTP_REFERER']);
+if (isset($_POST['update'])) {
+    $prof->update($_POST);
+    Html::redirect($_SERVER['HTTP_REFERER']);
 }

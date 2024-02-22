@@ -29,51 +29,52 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
 // Class for a Dropdown
-class PluginOrderOrderType extends CommonDropdown {
-
-   public static $rightname = 'plugin_order_order';
-
-
-   public static function getTypeName($nb = 0) {
-      return __("Type");
-   }
+class PluginOrderOrderType extends CommonDropdown
+{
+    public static $rightname = 'plugin_order_order';
 
 
-   public static function install(Migration $migration) {
-      global $DB;
-      //Only avaiable since 1.3.0
+    public static function getTypeName($nb = 0)
+    {
+        return __("Type");
+    }
 
-      $default_charset = DBConnection::getDefaultCharset();
-      $default_collation = DBConnection::getDefaultCollation();
-      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-      $table = self::getTable();
+    public static function install(Migration $migration)
+    {
+        global $DB;
+       //Only avaiable since 1.3.0
 
-      if (!$DB->tableExists($table)) {
-         $migration->displayMessage("Installing $table");
+        $default_charset = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-         $query = "CREATE TABLE `glpi_plugin_order_ordertypes` (
+        $table = self::getTable();
+
+        if (!$DB->tableExists($table)) {
+            $migration->displayMessage("Installing $table");
+
+            $query = "CREATE TABLE `glpi_plugin_order_ordertypes` (
                   `id` int {$default_key_sign} NOT NULL auto_increment,
                   `name` varchar(255) default NULL,
                   `comment` text,
                   PRIMARY KEY  (`id`),
                   KEY `name` (`name`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-         $DB->query($query) or die ($DB->error());
-      }
-   }
+            $DB->query($query) or die($DB->error());
+        }
+    }
 
 
-   public static function uninstall() {
-      global $DB;
+    public static function uninstall()
+    {
+        global $DB;
 
-      //Current table name
-      $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
-   }
-
-
+       //Current table name
+        $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`") or die($DB->error());
+    }
 }

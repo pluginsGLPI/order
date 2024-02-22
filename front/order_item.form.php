@@ -28,20 +28,21 @@
  * -------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
+include("../../../inc/includes.php");
 $item = new PluginOrderOrder_Item();
 
 if (isset($_POST['update'])) {
-   $item->update($_POST);
-   $item->updatePrices($_POST['id']);
-   Html::redirect($_SERVER['HTTP_REFERER']);
+    $item->update($_POST);
+    $item->updatePrices($_POST['id']);
+    Html::redirect($_SERVER['HTTP_REFERER']);
 }
 
-Html::header(__("Orders management", "order"),
-   $_SERVER['PHP_SELF'],
-   "management",
-   "PluginOrderMenu",
-   "order"
+Html::header(
+    __("Orders management", "order"),
+    $_SERVER['PHP_SELF'],
+    "management",
+    "PluginOrderMenu",
+    "order"
 );
 
 $item->display($_REQUEST);

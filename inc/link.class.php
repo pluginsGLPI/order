@@ -29,235 +29,250 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderLink extends CommonDBChild {
+class PluginOrderLink extends CommonDBChild
+{
+    public static $rightname         = 'plugin_order_order';
 
-   public static $rightname         = 'plugin_order_order';
+    public $dohistory                = true;
 
-   public $dohistory                = true;
+    public static $itemtype          = 'PluginOrderOrder';
 
-   public static $itemtype          = 'PluginOrderOrder';
+    public static $items_id          = 'plugin_order_orders_id';
 
-   public static $items_id          = 'plugin_order_orders_id';
-
-   public static $checkParentRights = self::DONT_CHECK_ITEM_RIGHTS;
-
-
-   public static function getTypeName($nb = 0) {
-      return __("Generation", "order");
-   }
+    public static $checkParentRights = self::DONT_CHECK_ITEM_RIGHTS;
 
 
-   public static function getTable($classname = null) {
-      return "glpi_plugin_order_orders_items";
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return __("Generation", "order");
+    }
 
 
-   public static function getTypesThanCannotBeGenerated() {
-      return [
-         'CartridgeItem',
-         'SoftwareLicense',
-         'Contract',
-         '', // Items without references show up as an empty itemtype
-      ];
-   }
+    public static function getTable($classname = null)
+    {
+        return "glpi_plugin_order_orders_items";
+    }
 
 
-   public function showItemGenerationForm($params) {
-      // Retrieve configuration for generate assets feature
-      $config = PluginOrderConfig::getConfig();
+    public static function getTypesThanCannotBeGenerated()
+    {
+        return [
+            'CartridgeItem',
+            'SoftwareLicense',
+            'Contract',
+            '', // Items without references show up as an empty itemtype
+        ];
+    }
 
-      echo "<div class='center overflow-auto w-100'>";
-      echo "<table class='tab_cadre_fixe'>";
-      $colspan = 9;
-      if (Session::isMultiEntitiesMode()) {
-         $colspan++;
-      }
-      if ($config->canAddImmobilizationNumber()) {
-         $colspan++;
-      }
 
-      echo "<tr><th colspan='$colspan'>".__("Generate item", "order")."</th></tr>";
+    public function showItemGenerationForm($params)
+    {
+       // Retrieve configuration for generate assets feature
+        $config = PluginOrderConfig::getConfig();
 
-      echo "<tr>";
-      echo "<th>".__("Product reference", "order")."</th>";
-      echo "<th>".__("Name")."</th>";
-      echo "<th>".__("Serial number")."</th>";
-      echo "<th>".__("Inventory number")."</th>";
-      if ($config->canAddImmobilizationNumber()) {
-         echo "<th>".__("Immobilization number")."</th>";
-      }
-      echo "<th>".__("Template name")."</th>";
-      if (Session::isMultiEntitiesMode() && count($_SESSION['glpiactiveentities']) > 1) {
-         echo "<th>".__("Entity")."</th>";
-      }
-      echo "<th>" . __("Location") . "</th>";
-      echo "<th>" . __("Group") . "</th>";
-      echo "<th>" . __("Status") . "</th>";
-      echo "</tr>";
+        echo "<div class='center overflow-auto w-100'>";
+        echo "<table class='tab_cadre_fixe'>";
+        $colspan = 9;
+        if (Session::isMultiEntitiesMode()) {
+            $colspan++;
+        }
+        if ($config->canAddImmobilizationNumber()) {
+            $colspan++;
+        }
 
-      $order = new PluginOrderOrder();
-      $order->getFromDB($params["plugin_order_orders_id"]);
+        echo "<tr><th colspan='$colspan'>" . __("Generate item", "order") . "</th></tr>";
 
-      $reference = new PluginOrderReference();
-      $i         = 0;
-      $found     = false;
+        echo "<tr>";
+        echo "<th>" . __("Product reference", "order") . "</th>";
+        echo "<th>" . __("Name") . "</th>";
+        echo "<th>" . __("Serial number") . "</th>";
+        echo "<th>" . __("Inventory number") . "</th>";
+        if ($config->canAddImmobilizationNumber()) {
+            echo "<th>" . __("Immobilization number") . "</th>";
+        }
+        echo "<th>" . __("Template name") . "</th>";
+        if (Session::isMultiEntitiesMode() && count($_SESSION['glpiactiveentities']) > 1) {
+            echo "<th>" . __("Entity") . "</th>";
+        }
+        echo "<th>" . __("Location") . "</th>";
+        echo "<th>" . __("Group") . "</th>";
+        echo "<th>" . __("Status") . "</th>";
+        echo "</tr>";
 
-      foreach ($params["items"][__CLASS__] as $key => $val) {
-         $detail = new PluginOrderOrder_Item();
-         $detail->getFromDB($key);
-         $reference->getFromDB($detail->getField('plugin_order_references_id'));
-         if (!$detail->fields["items_id"]) {
-            $itemtype = $detail->getField('itemtype');
-            echo "<tr class='tab_bg_1'><td align='center'>".$reference->getField('name')."</td>";
-            $templateID = $reference->checkIfTemplateExistsInEntity($val,
-                                                                    $detail->getField('itemtype'),
-                                                                    $order->fields["entities_id"]);
+        $order = new PluginOrderOrder();
+        $order->getFromDB($params["plugin_order_orders_id"]);
 
-            if ($templateID) {
-               $item = new $itemtype();
-               $item->getFromDB($templateID);
+        $reference = new PluginOrderReference();
+        $i         = 0;
+        $found     = false;
 
-               $name         = $item->fields["name"] ?? "";
-               $otherserial  = $item->fields["otherserial"] ?? "";
-               $states_id    = $item->fields["states_id"] ?? "";
-               $locations_id = $item->fields["locations_id"] ?? "";
-               $groups_id    = $item->fields["groups_id"] ?? "";
-               $immo_number  = $item->fields["immo_number"] ?? "";
-            } else {
-               $name         = false;
-               $otherserial  = false;
-               $states_id    = false;
-               $locations_id = false;
-               $groups_id    = false;
-               $immo_number  = false;
-            }
+        foreach ($params["items"][__CLASS__] as $key => $val) {
+            $detail = new PluginOrderOrder_Item();
+            $detail->getFromDB($key);
+            $reference->getFromDB($detail->getField('plugin_order_references_id'));
+            if (!$detail->fields["items_id"]) {
+                $itemtype = $detail->getField('itemtype');
+                echo "<tr class='tab_bg_1'><td align='center'>" . $reference->getField('name') . "</td>";
+                $templateID = $reference->checkIfTemplateExistsInEntity(
+                    $val,
+                    $detail->getField('itemtype'),
+                    $order->fields["entities_id"]
+                );
 
-            if (!$name) {
-               echo "<td><input type='text' size='20' name='id[$i][name]'></td>";
-            } else {
-               echo "<td align='center'>".Dropdown::EMPTY_VALUE."</td>";
-               echo Html::hidden("id[$i][name]", ['value' => '']);
-            }
+                if ($templateID) {
+                     $item = new $itemtype();
+                     $item->getFromDB($templateID);
 
-            echo "<td align='center'><input type='text' size='20' name='id[$i][serial]'></td>";
-
-            if ($otherserial) {
-               echo "<td align='center'>".Dropdown::EMPTY_VALUE."</td>";
-               echo Html::hidden("id[$i][otherserial]", ['value' => '']);
-            } else {
-               echo "<td><input type='text' size='20' name='id[$i][otherserial]'></td>";
-            }
-
-            if ($config->canAddImmobilizationNumber()) {
-                if ($immo_number) {
-                   echo "<td align='center'>".Dropdown::EMPTY_VALUE."</td>";
-                   echo Html::hidden("id[$i][immo_number]", ['value' => '']);
+                     $name         = $item->fields["name"] ?? "";
+                     $otherserial  = $item->fields["otherserial"] ?? "";
+                     $states_id    = $item->fields["states_id"] ?? "";
+                     $locations_id = $item->fields["locations_id"] ?? "";
+                     $groups_id    = $item->fields["groups_id"] ?? "";
+                     $immo_number  = $item->fields["immo_number"] ?? "";
                 } else {
-                   echo "<td><input type='text' size='15' name='id[$i][immo_number]'></td>";
+                    $name         = false;
+                    $otherserial  = false;
+                    $states_id    = false;
+                    $locations_id = false;
+                    $groups_id    = false;
+                    $immo_number  = false;
                 }
+
+                if (!$name) {
+                    echo "<td><input type='text' size='20' name='id[$i][name]'></td>";
+                } else {
+                    echo "<td align='center'>" . Dropdown::EMPTY_VALUE . "</td>";
+                    echo Html::hidden("id[$i][name]", ['value' => '']);
+                }
+
+                echo "<td align='center'><input type='text' size='20' name='id[$i][serial]'></td>";
+
+                if ($otherserial) {
+                    echo "<td align='center'>" . Dropdown::EMPTY_VALUE . "</td>";
+                    echo Html::hidden("id[$i][otherserial]", ['value' => '']);
+                } else {
+                    echo "<td><input type='text' size='20' name='id[$i][otherserial]'></td>";
+                }
+
+                if ($config->canAddImmobilizationNumber()) {
+                    if ($immo_number) {
+                        echo "<td align='center'>" . Dropdown::EMPTY_VALUE . "</td>";
+                        echo Html::hidden("id[$i][immo_number]", ['value' => '']);
+                    } else {
+                        echo "<td><input type='text' size='15' name='id[$i][immo_number]'></td>";
+                    }
+                }
+
+                echo "<td align='center'>";
+                if ($templateID) {
+                    echo $reference->getTemplateName($itemtype, $templateID);
+                }
+                echo "</td>";
+
+                if (
+                    Session::isMultiEntitiesMode()
+                    && count($_SESSION['glpiactiveentities']) > 1
+                ) {
+                    $order_web_dir = Plugin::getWebDir('order');
+                    echo "<td>";
+                    $rand = Entity::Dropdown([
+                        'name'   => "id[$i][entities_id]",
+                        'value'  => $order->fields["entities_id"],
+                        'entity' => $order->fields["is_recursive"] ? getSonsOf('glpi_entities', $order->fields["entities_id"]) : $order->fields["entities_id"]
+                    ]);
+                    Ajax::updateItemOnSelectEvent(
+                        "dropdown_id[$i][entities_id]$rand",
+                        "show_location_by_entity_id_$i",
+                        "$order_web_dir/ajax/linkactions.php",
+                        ['entities' => '__VALUE__',
+                            'action'   => 'show_location_by_entity',
+                            'id'       => $i
+                        ]
+                    );
+                    Ajax::updateItemOnSelectEvent(
+                        "dropdown_id[$i][entities_id]$rand",
+                        "show_group_by_entity_id_$i",
+                        "$order_web_dir/ajax/linkactions.php",
+                        ['entities' => '__VALUE__',
+                            'action'   => 'show_group_by_entity',
+                            'id'       => $i
+                        ]
+                    );
+                    Ajax::updateItemOnSelectEvent(
+                        "dropdown_id[$i][entities_id]$rand",
+                        "show_state_by_entity_id_$i",
+                        "$order_web_dir/ajax/linkactions.php",
+                        ['entities' => '__VALUE__',
+                            'action'   => 'show_state_by_entity',
+                            'id'       => $i
+                        ]
+                    );
+                    $entity = $order->fields["entities_id"];
+                    echo "</td>";
+                } else {
+                    $entity = $_SESSION["glpiactive_entity"];
+                    echo "<input type='hidden' name='id[$i][entities_id]' value="
+                    . $entity . ">";
+                }
+                echo "<td>";
+
+                echo "<span id='show_location_by_entity_id_$i'>";
+                Location::dropdown(['name'   => "id[$i][locations_id]",
+                    'entity' => $entity,
+                    'value'  => $locations_id,
+                ]);
+                 echo "</span>";
+                 echo "</td>";
+                 echo "<td>";
+                 echo "<span id='show_group_by_entity_id_$i'>";
+                 Group::dropdown(['name'   => "id[$i][groups_id]",
+                     'entity' => $entity,
+                     'value'  => $groups_id,
+                 ]);
+                 echo "</span>";
+                 echo "</td>";
+                 echo "<td>";
+                 echo "<span id='show_state_by_entity_id_$i'>";
+                 $condition = self::getCondition($itemtype);
+                 State::dropdown(['name'      => "id[$i][states_id]",
+                     'entity'    => $entity,
+                     'condition' => $condition,
+                     'value'     => $states_id,
+                 ]);
+                 echo "</span>";
+                 echo "</td>";
+                 echo "</tr>";
+                 echo Html::hidden("id[$i][id]", ['value' => $key]);
+                 $found = true;
             }
+            $i++;
+        }
 
-            echo "<td align='center'>";
-            if ($templateID) {
-               echo $reference->getTemplateName($itemtype, $templateID);
-            }
-            echo "</td>";
+        if (!$found) {
+            echo "<tr><td align='center' colspan='$colspan' class='tab_bg_2'>" .
+              __("No item to generate", "order") . "</td></tr>";
+        }
 
-            if (Session::isMultiEntitiesMode()
-                  && count($_SESSION['glpiactiveentities']) > 1) {
-               $order_web_dir = Plugin::getWebDir('order');
-               echo "<td>";
-               $rand = Entity::Dropdown([
-               'name'   => "id[$i][entities_id]",
-               'value'  => $order->fields["entities_id"],
-               'entity' => $order->fields["is_recursive"] ? getSonsOf('glpi_entities', $order->fields["entities_id"]) : $order->fields["entities_id"]]
-               );
-               Ajax::updateItemOnSelectEvent("dropdown_id[$i][entities_id]$rand",
-                                          "show_location_by_entity_id_$i",
-                                          "$order_web_dir/ajax/linkactions.php",
-                                          ['entities' => '__VALUE__',
-                                           'action'   => 'show_location_by_entity',
-                                           'id'       => $i
-                                          ]);
-               Ajax::updateItemOnSelectEvent("dropdown_id[$i][entities_id]$rand",
-                                          "show_group_by_entity_id_$i",
-                                          "$order_web_dir/ajax/linkactions.php",
-                                          ['entities' => '__VALUE__',
-                                           'action'   => 'show_group_by_entity',
-                                           'id'       => $i
-                                          ]);
-               Ajax::updateItemOnSelectEvent("dropdown_id[$i][entities_id]$rand",
-                                          "show_state_by_entity_id_$i",
-                                          "$order_web_dir/ajax/linkactions.php",
-                                          ['entities' => '__VALUE__',
-                                           'action'   => 'show_state_by_entity',
-                                           'id'       => $i
-                                          ]);
-               $entity = $order->fields["entities_id"];
-               echo "</td>";
-            } else {
-               $entity = $_SESSION["glpiactive_entity"];
-               echo "<input type='hidden' name='id[$i][entities_id]' value="
-               . $entity . ">";
-            }
-               echo "<td>";
+        echo "</table>";
+        echo "</div>";
 
-              echo "<span id='show_location_by_entity_id_$i'>";
-              Location::dropdown(['name'   => "id[$i][locations_id]",
-                                 'entity' => $entity,
-                                 'value'  => $locations_id,
-                                 ]);
-              echo "</span>";
-              echo "</td>";
-              echo "<td>";
-              echo "<span id='show_group_by_entity_id_$i'>";
-              Group::dropdown(['name'   => "id[$i][groups_id]",
-                               'entity' => $entity,
-                               'value'  => $groups_id,
-                              ]);
-              echo "</span>";
-              echo "</td>";
-              echo "<td>";
-              echo "<span id='show_state_by_entity_id_$i'>";
-              $condition = self::getCondition($itemtype);
-              State::dropdown(['name'      => "id[$i][states_id]",
-                               'entity'    => $entity,
-                               'condition' => $condition,
-                               'value'     => $states_id,
-                              ]);
-               echo "</span>";
-               echo "</td>";
-               echo "</tr>";
-               echo Html::hidden("id[$i][id]", ['value' => $key]);
-               $found = true;
-         }
-         $i++;
-      }
+        if (!$found) {
+            return false;
+        }
+    }
 
-      if (!$found) {
-         echo "<tr><td align='center' colspan='$colspan' class='tab_bg_2'>".
-              __("No item to generate", "order")."</td></tr>";
-      }
-
-      echo "</table>";
-      echo "</div>";
-
-      if (!$found) {
-         return false;
-      }
-   }
-
-   public function queryRef($ID, $table) {
-      global $DB;
-      if ($table == 'glpi_plugin_order_references') {
-         $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` NOT LIKE 'PluginOrderReferenceFree'";
-      } else {
-         $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` LIKE 'PluginOrderReferenceFree'";
-      }
-      $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD,
+    public function queryRef($ID, $table)
+    {
+        global $DB;
+        if ($table == 'glpi_plugin_order_references') {
+            $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` NOT LIKE 'PluginOrderReferenceFree'";
+        } else {
+            $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` LIKE 'PluginOrderReferenceFree'";
+        }
+        $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD,
                            `glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id,
                            ref.`name`,
                            ref.`itemtype`,
@@ -271,88 +286,102 @@ class PluginOrderLink extends CommonDBChild {
                     $condition
                     GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id`
                     ORDER BY ref.`name`";
-      return $DB->query($query_ref);
-
-   }
-
-
-   public static function getCondition($itemtype) {
-      switch ($itemtype) {
-         case 'Computer' :
-            return ['is_visible_computer' => 1];
-         case 'Monitor' :
-            return ['is_visible_monitor' => 1];
-         case 'Printer' :
-            return ['is_visible_printer' => 1];
-         case 'Phone' :
-            return ['is_visible_phone' => 1];
-         case 'NetworkEquipment' :
-            return ['is_visible_networkequipment' => 1];
-         case 'Peripheral' :
-            return ['is_visible_peripheral' => 1];
-         case 'SoftwareLicense':
-            return ['is_visible_softwareversion' => 1];
-      }
-   }
+        return $DB->query($query_ref);
+    }
 
 
-   public function showOrderLink($plugin_order_orders_id) {
-      global $DB;
+    public static function getCondition($itemtype)
+    {
+        switch ($itemtype) {
+            case 'Computer':
+                return ['is_visible_computer' => 1];
+            case 'Monitor':
+                return ['is_visible_monitor' => 1];
+            case 'Printer':
+                return ['is_visible_printer' => 1];
+            case 'Phone':
+                return ['is_visible_phone' => 1];
+            case 'NetworkEquipment':
+                return ['is_visible_networkequipment' => 1];
+            case 'Peripheral':
+                return ['is_visible_peripheral' => 1];
+            case 'SoftwareLicense':
+                return ['is_visible_softwareversion' => 1];
+        }
+    }
 
-      $PluginOrderOrder      = new PluginOrderOrder();
 
-      $PluginOrderOrder->getFromDB($plugin_order_orders_id);
-      $canedit = $PluginOrderOrder->canDeliver()
+    public function showOrderLink($plugin_order_orders_id)
+    {
+        global $DB;
+
+        $PluginOrderOrder      = new PluginOrderOrder();
+
+        $PluginOrderOrder->getFromDB($plugin_order_orders_id);
+        $canedit = $PluginOrderOrder->canDeliver()
                   && !$PluginOrderOrder->canUpdateOrder()
                   && !$PluginOrderOrder->isCanceled();
 
-      $result_ref = $this->queryRef($plugin_order_orders_id, 'glpi_plugin_order_references');
-      $numref     = $DB->numrows($result_ref);
-      while ($data_ref = $DB->fetchArray($result_ref)) {
-         $link = new self();
-         $link->showOrderLinkItem($numref, $data_ref, $canedit, $plugin_order_orders_id, $PluginOrderOrder,
-                                  'glpi_plugin_order_references');
-      }
+        $result_ref = $this->queryRef($plugin_order_orders_id, 'glpi_plugin_order_references');
+        $numref     = $DB->numrows($result_ref);
+        while ($data_ref = $DB->fetchArray($result_ref)) {
+            $link = new self();
+            $link->showOrderLinkItem(
+                $numref,
+                $data_ref,
+                $canedit,
+                $plugin_order_orders_id,
+                $PluginOrderOrder,
+                'glpi_plugin_order_references'
+            );
+        }
 
-      $result_reffree = $this->queryRef($plugin_order_orders_id, 'glpi_plugin_order_referencefrees');
-      $numreffree     = $DB->numrows($result_reffree);
-      while ($data_reffree = $DB->fetchArray($result_reffree)) {
-         $link = new self();
-         $link->showOrderLinkItem($numreffree, $data_reffree, $canedit, $plugin_order_orders_id, $PluginOrderOrder,
-                                  'glpi_plugin_order_referencefrees');
-      }
-   }
+        $result_reffree = $this->queryRef($plugin_order_orders_id, 'glpi_plugin_order_referencefrees');
+        $numreffree     = $DB->numrows($result_reffree);
+        while ($data_reffree = $DB->fetchArray($result_reffree)) {
+            $link = new self();
+            $link->showOrderLinkItem(
+                $numreffree,
+                $data_reffree,
+                $canedit,
+                $plugin_order_orders_id,
+                $PluginOrderOrder,
+                'glpi_plugin_order_referencefrees'
+            );
+        }
+    }
 
-   public function showOrderLinkItem($numref, $data_ref, $canedit, $plugin_order_orders_id, $PluginOrderOrder, $table) {
-      global $DB, $CFG_GLPI;
+    public function showOrderLinkItem($numref, $data_ref, $canedit, $plugin_order_orders_id, $PluginOrderOrder, $table)
+    {
+        global $DB, $CFG_GLPI;
 
-      $PluginOrderOrder_Item = new PluginOrderOrder_Item();
-      $PluginOrderReference  = new PluginOrderReference();
-      $PluginOrderReception  = new PluginOrderReception();
+        $PluginOrderOrder_Item = new PluginOrderOrder_Item();
+        $PluginOrderReference  = new PluginOrderReference();
+        $PluginOrderReception  = new PluginOrderReception();
 
-      echo "<table class='tab_cadre_fixe'>";
-      if (!$numref) {
-         echo "<tr><th>".__("No item to take delivery of", "order")."</th></tr>";
-         echo "</table>";
-         echo "</div>";
-      } else {
-         $plugin_order_references_id = $data_ref["id"];
-         $itemtype                   = $data_ref["itemtype"];
-         $canuse                     = ($itemtype != 'PluginOrderOther') && ($itemtype != 'PluginOrderReferenceFree');
-         $item                       = new $itemtype();
-         $rand                       = mt_rand();
+        echo "<table class='tab_cadre_fixe'>";
+        if (!$numref) {
+            echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr>";
+            echo "</table>";
+            echo "</div>";
+        } else {
+            $plugin_order_references_id = $data_ref["id"];
+            $itemtype                   = $data_ref["itemtype"];
+            $canuse                     = ($itemtype != 'PluginOrderOther') && ($itemtype != 'PluginOrderReferenceFree');
+            $item                       = new $itemtype();
+            $rand                       = mt_rand();
 
-         // add hidden fields which need to be passed between massive action functions
-         $massiveactionparams = [
-            'extraparams' => [
-               'massive_action_fields' => [
-                  'plugin_order_orders_id',
-                  'plugin_order_references_id',
-               ]
-            ]
-         ];
+           // add hidden fields which need to be passed between massive action functions
+            $massiveactionparams = [
+                'extraparams' => [
+                    'massive_action_fields' => [
+                        'plugin_order_orders_id',
+                        'plugin_order_references_id',
+                    ]
+                ]
+            ];
 
-         $query = "SELECT  items.`id` AS IDD,
+            $query = "SELECT  items.`id` AS IDD,
                               ref.`id` AS id,
                               ref.`templates_id`,
                               items.`states_id`,
@@ -365,128 +394,130 @@ class PluginOrderLink extends CommonDBChild {
                               items.`price_taxfree`,
                               items.`discount`
                        FROM `glpi_plugin_order_orders_items` as items,
-                            `".$table."` ref
+                            `" . $table . "` ref
                        WHERE items.`plugin_order_orders_id` = '$plugin_order_orders_id'
                         AND items.`plugin_order_references_id` = '$plugin_order_references_id'
                         AND items.`plugin_order_references_id` = ref.`id`
-                        AND items.`states_id` = '".PluginOrderOrder::ORDER_DEVICE_DELIVRED."'";
-         if ($table == 'glpi_plugin_order_referencefrees') {
-            $query .= "AND items.`itemtype` LIKE 'PluginOrderReferenceFree'";
-         } else {
-            $query .= "AND items.`itemtype` NOT LIKE 'PluginOrderReferenceFree'";
-         }
-         if ($itemtype == 'SoftwareLicense') {
-            $query .= " GROUP BY items.`price_taxfree`,
-                                    items.`discount`";
-         }
-         $query .= " ORDER BY ref.`name`";
-
-         $result = $DB->query($query);
-         $num    = $DB->numrows($result);
-         $all_data = [];
-         while ($data = $DB->fetchArray($result)) {
-            $all_data[] = $data;
-         }
-
-         echo "<tr><th>";
-         echo "<ul class='list-unstyled'><li>";
-         echo "<a href=\"javascript:showHideDiv('generation$rand','generation_img$rand', " .
-              "'".$CFG_GLPI['root_doc']."/pics/plus.png','".$CFG_GLPI['root_doc']."/pics/moins.png');\">";
-         echo "<img alt='' name='generation_img$rand' src=\"".$CFG_GLPI['root_doc']."/pics/plus.png\">";
-         echo "</a>";
-         echo "</li></ul></th>";
-         echo "<th>".__("Assets")."</th>";
-         echo "<th>".__("Manufacturer")."</th>";
-         echo "<th>".__("Product reference", "order")."</th>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1 center'>";
-         echo "<td></td>";
-         echo "<td align='center'>" . $item->getTypeName() . "</td>";
-         echo "<td align='center'>"
-              . Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]) . "</td>";
-         if ($table == 'glpi_plugin_order_referencefrees') {
-            echo "<td>" . $data_ref['name'] . "&nbsp;($num)</td>";
-         } else {
-            echo "<td>" . $PluginOrderReference->getReceptionReferenceLink($data_ref) . "&nbsp;($num)</td>";
-         }
-         echo "</tr>";
-
-         echo "</table>";
-
-         echo "<div id='generation$rand' style='display:none'>";
-         if ($canedit & $canuse && $num) {
-            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-            $massiveactionparams['container']   = 'mass'.__CLASS__.$rand;
-            $massiveactionparams['item']        = $PluginOrderOrder;
-            $massiveactionparams['rand']        = $rand;
-            $massiveactionparams['extraparams']['plugin_order_orders_id']     = $plugin_order_orders_id;
-            $massiveactionparams['extraparams']['plugin_order_references_id'] = $plugin_order_references_id;
-            Html::showMassiveActions($massiveactionparams);
-         }
-
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr>";
-         if ($canedit & $canuse && $num) {
-            echo "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-         }
-         if ($itemtype != 'SoftwareLicense') {
-            echo "<th>" . __("ID") . "</th>";
-         } else {
-            echo "<th>" . __("Quantity", "order") . "</th>";
-         }
-         echo "<th>" . __("Reference") . "</th>";
-         echo "<th>" . __("Status") . "</th>";
-         echo "<th>" . __("Entity") . "</th>";
-         echo "<th>" . __("Delivery date") . "</th>";
-         echo "<th>" . _n("Associated item", "Associated items", 2) . "</th>";
-         echo "<th>" . __("Serial number") . "</th></tr>";
-
-         foreach ($all_data as $data) {
-            $detailID = $data["IDD"];
-
-            echo "<tr class='tab_bg_2'>";
-
-            if ($canedit & $canuse) {
-               echo "<td width='15' align='left'>";
-               Html::showMassiveActionCheckBox(__CLASS__, $detailID);
-               echo "</td>";
-            }
-
-            if ($itemtype != 'SoftwareLicense') {
-               echo "<td align='center'>" . $data["IDD"] . "</td>";
-            } else {
-               echo "<td align='center'>";
-               echo $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($plugin_order_orders_id,
-                                                                             $plugin_order_references_id,
-                                                                             $data["price_taxfree"],
-                                                                             $data["discount"]);
-               echo "</td>";
-            }
+                        AND items.`states_id` = '" . PluginOrderOrder::ORDER_DEVICE_DELIVRED . "'";
             if ($table == 'glpi_plugin_order_referencefrees') {
-               echo "<td align='center'>" . $data['name'] . "</td>";
+                $query .= "AND items.`itemtype` LIKE 'PluginOrderReferenceFree'";
             } else {
-               echo "<td align='center'>" . $PluginOrderReference->getReceptionReferenceLink($data) . "</td>";
+                $query .= "AND items.`itemtype` NOT LIKE 'PluginOrderReferenceFree'";
             }
-            echo "<td align='center'>" . $PluginOrderReception->getReceptionStatus($detailID) . "</td>";
-            echo "<td align='center'>" . Dropdown::getDropdownName(getTableForItemType(Entity::class), $data["entities_id"]) . "</td>";
-            echo "<td align='center'>" . Html::convDate($data["delivery_date"]) . "</td>";
-            echo "<td align='center'>" . $this->getReceptionItemName($data["items_id"], $data["itemtype"]);
-            echo "<td align='center'>" . $this->getItemSerialNumber($data["items_id"], $data["itemtype"]) . "</td>";
-         }
-         echo "</tr>";
-         echo "</table>";
-         if ($canedit && $canuse) {
-            if ($num > 10) {
-               $massiveactionparams['ontop'] = false;
-               Html::showMassiveActions($massiveactionparams);
+            if ($itemtype == 'SoftwareLicense') {
+                $query .= " GROUP BY items.`price_taxfree`,
+                                    items.`discount`";
             }
-            Html::closeForm();
-         }
-         echo "</div>";
-      }
-      echo "<br>";
-   }
+            $query .= " ORDER BY ref.`name`";
+
+            $result = $DB->query($query);
+            $num    = $DB->numrows($result);
+            $all_data = [];
+            while ($data = $DB->fetchArray($result)) {
+                $all_data[] = $data;
+            }
+
+            echo "<tr><th>";
+            echo "<ul class='list-unstyled'><li>";
+            echo "<a href=\"javascript:showHideDiv('generation$rand','generation_img$rand', " .
+              "'" . $CFG_GLPI['root_doc'] . "/pics/plus.png','" . $CFG_GLPI['root_doc'] . "/pics/moins.png');\">";
+            echo "<img alt='' name='generation_img$rand' src=\"" . $CFG_GLPI['root_doc'] . "/pics/plus.png\">";
+            echo "</a>";
+            echo "</li></ul></th>";
+            echo "<th>" . __("Assets") . "</th>";
+            echo "<th>" . __("Manufacturer") . "</th>";
+            echo "<th>" . __("Product reference", "order") . "</th>";
+            echo "</tr>";
+
+            echo "<tr class='tab_bg_1 center'>";
+            echo "<td></td>";
+            echo "<td align='center'>" . $item->getTypeName() . "</td>";
+            echo "<td align='center'>"
+              . Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]) . "</td>";
+            if ($table == 'glpi_plugin_order_referencefrees') {
+                echo "<td>" . $data_ref['name'] . "&nbsp;($num)</td>";
+            } else {
+                echo "<td>" . $PluginOrderReference->getReceptionReferenceLink($data_ref) . "&nbsp;($num)</td>";
+            }
+            echo "</tr>";
+
+            echo "</table>";
+
+            echo "<div id='generation$rand' style='display:none'>";
+            if ($canedit & $canuse && $num) {
+                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
+                $massiveactionparams['container']   = 'mass' . __CLASS__ . $rand;
+                $massiveactionparams['item']        = $PluginOrderOrder;
+                $massiveactionparams['rand']        = $rand;
+                $massiveactionparams['extraparams']['plugin_order_orders_id']     = $plugin_order_orders_id;
+                $massiveactionparams['extraparams']['plugin_order_references_id'] = $plugin_order_references_id;
+                Html::showMassiveActions($massiveactionparams);
+            }
+
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr>";
+            if ($canedit & $canuse && $num) {
+                echo "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand) . "</th>";
+            }
+            if ($itemtype != 'SoftwareLicense') {
+                echo "<th>" . __("ID") . "</th>";
+            } else {
+                echo "<th>" . __("Quantity", "order") . "</th>";
+            }
+            echo "<th>" . __("Reference") . "</th>";
+            echo "<th>" . __("Status") . "</th>";
+            echo "<th>" . __("Entity") . "</th>";
+            echo "<th>" . __("Delivery date") . "</th>";
+            echo "<th>" . _n("Associated item", "Associated items", 2) . "</th>";
+            echo "<th>" . __("Serial number") . "</th></tr>";
+
+            foreach ($all_data as $data) {
+                $detailID = $data["IDD"];
+
+                echo "<tr class='tab_bg_2'>";
+
+                if ($canedit & $canuse) {
+                    echo "<td width='15' align='left'>";
+                    Html::showMassiveActionCheckBox(__CLASS__, $detailID);
+                    echo "</td>";
+                }
+
+                if ($itemtype != 'SoftwareLicense') {
+                    echo "<td align='center'>" . $data["IDD"] . "</td>";
+                } else {
+                    echo "<td align='center'>";
+                    echo $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount(
+                        $plugin_order_orders_id,
+                        $plugin_order_references_id,
+                        $data["price_taxfree"],
+                        $data["discount"]
+                    );
+                    echo "</td>";
+                }
+                if ($table == 'glpi_plugin_order_referencefrees') {
+                    echo "<td align='center'>" . $data['name'] . "</td>";
+                } else {
+                    echo "<td align='center'>" . $PluginOrderReference->getReceptionReferenceLink($data) . "</td>";
+                }
+                echo "<td align='center'>" . $PluginOrderReception->getReceptionStatus($detailID) . "</td>";
+                echo "<td align='center'>" . Dropdown::getDropdownName(getTableForItemType(Entity::class), $data["entities_id"]) . "</td>";
+                echo "<td align='center'>" . Html::convDate($data["delivery_date"]) . "</td>";
+                echo "<td align='center'>" . $this->getReceptionItemName($data["items_id"], $data["itemtype"]);
+                echo "<td align='center'>" . $this->getItemSerialNumber($data["items_id"], $data["itemtype"]) . "</td>";
+            }
+            echo "</tr>";
+            echo "</table>";
+            if ($canedit && $canuse) {
+                if ($num > 10) {
+                    $massiveactionparams['ontop'] = false;
+                    Html::showMassiveActions($massiveactionparams);
+                }
+                Html::closeForm();
+            }
+            echo "</div>";
+        }
+        echo "<br>";
+    }
 
    /**
     * Returns serial number of associated item.
@@ -495,744 +526,825 @@ class PluginOrderLink extends CommonDBChild {
     * @param string  $itemtype
     * @return string
     */
-   protected function getItemSerialNumber($items_id, $itemtype) {
+    protected function getItemSerialNumber($items_id, $itemtype)
+    {
 
-      global $DB;
+        global $DB;
 
-      if ($itemtype == 'PluginOrderOther' || $itemtype == 'PluginOrderReferenceFree') {
-         return '';
-      }
+        if ($itemtype == 'PluginOrderOther' || $itemtype == 'PluginOrderReferenceFree') {
+            return '';
+        }
 
-      $result = $DB->request([
-         'FROM'   => $itemtype::getTable(),
-         'WHERE'  => ['id' => $items_id]
-      ]);
-      $data = $result->current();
-      if (isset($data['serial'])) return $data['serial'];
-      if (isset($data['otherserial'])) return $data['otherserial'];
-      return '';
-   }
+        $result = $DB->request([
+            'FROM'   => $itemtype::getTable(),
+            'WHERE'  => ['id' => $items_id]
+        ]);
+        $data = $result->current();
+        if (isset($data['serial'])) {
+            return $data['serial'];
+        }
+        if (isset($data['otherserial'])) {
+            return $data['otherserial'];
+        }
+        return '';
+    }
 
-   function getForbiddenStandardMassiveAction() {
-      $forbidden   = parent::getForbiddenStandardMassiveAction();
-      $forbidden[] = 'update';
-      $forbidden[] = 'purge';
-      $forbidden[] = 'ObjectLock:unlock';
-      return $forbidden;
-   }
-
-
-   function getSpecificMassiveActions($checkitem = null) {
-      $actions = parent::getSpecificMassiveActions($checkitem);
-      $sep     = __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR;
-
-      $actions[$sep.'generation'] = __("Generate item", "order");
-      $actions[$sep.'createLink'] = __("Link to an existing item", "order");
-      $actions[$sep.'deleteLink'] = __("Delete item link", "order");
-
-      return $actions;
-   }
+    function getForbiddenStandardMassiveAction()
+    {
+        $forbidden   = parent::getForbiddenStandardMassiveAction();
+        $forbidden[] = 'update';
+        $forbidden[] = 'purge';
+        $forbidden[] = 'ObjectLock:unlock';
+        return $forbidden;
+    }
 
 
-   static function showMassiveActionsSubForm(MassiveAction $ma) {
-      $link = new self;
-      $reference = new PluginOrderReference;
+    function getSpecificMassiveActions($checkitem = null)
+    {
+        $actions = parent::getSpecificMassiveActions($checkitem);
+        $sep     = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
 
-      switch ($ma->getAction()) {
-         case 'generation':
-            return $link->showItemGenerationForm($ma->POST);
+        $actions[$sep . 'generation'] = __("Generate item", "order");
+        $actions[$sep . 'createLink'] = __("Link to an existing item", "order");
+        $actions[$sep . 'deleteLink'] = __("Delete item link", "order");
+
+        return $actions;
+    }
+
+
+    static function showMassiveActionsSubForm(MassiveAction $ma)
+    {
+        $link = new self();
+        $reference = new PluginOrderReference();
+
+        switch ($ma->getAction()) {
+            case 'generation':
+                return $link->showItemGenerationForm($ma->POST);
             break;
-         case 'createLink' :
-            $reference->getFromDB($ma->POST["plugin_order_references_id"]);
-            $reference->dropdownAllItemsByType("items_id", $reference->fields["itemtype"],
-                                               $_SESSION["glpiactiveentities"],
-                                               $reference->fields["types_id"],
-                                               $reference->fields["models_id"]);
-            break;
-      }
+            case 'createLink':
+                $reference->getFromDB($ma->POST["plugin_order_references_id"]);
+                $reference->dropdownAllItemsByType(
+                    "items_id",
+                    $reference->fields["itemtype"],
+                    $_SESSION["glpiactiveentities"],
+                    $reference->fields["types_id"],
+                    $reference->fields["models_id"]
+                );
+                break;
+        }
 
-      return parent::showMassiveActionsSubForm($ma);
-   }
+        return parent::showMassiveActionsSubForm($ma);
+    }
 
 
-   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
-                                                       array $ids) {
-      global $DB;
+    static function processMassiveActionsForOneItemtype(
+        MassiveAction $ma,
+        CommonDBTM $item,
+        array $ids
+    ) {
+        global $DB;
 
-      // retrieve additional informations for each items
-      $ma->POST['add_items'] = [];
-      if (isset($ma->items[__CLASS__])) {
-         $additional_data_ite = $DB->request([
-            'SELECT' => [
-               'glpi_plugin_order_orders_items.id',
-               'glpi_plugin_order_references.id AS plugin_order_references_id',
-               'glpi_plugin_order_references.itemtype',
-            ],
-            'FROM' => [
-               'glpi_plugin_order_orders_items'
-            ],
-            'LEFT JOIN' => [
-               'glpi_plugin_order_references' => [
-                  'FKEY' => [
-                     'glpi_plugin_order_orders_items' => 'plugin_order_references_id',
-                     'glpi_plugin_order_references'   => 'id',
-                  ]
-               ]
-            ],
-            'WHERE' => [
-               'glpi_plugin_order_orders_items.id' => array_keys($ma->items[__CLASS__])
-            ]
-         ]);
-         foreach ($additional_data_ite as $add_values) {
-            $ma->POST['add_items'][$add_values['id']] = $add_values;
-         }
-      }
-
-      $link = new self;
-      switch ($ma->getAction()) {
-         case 'generation':
-            $newIDs = $link->generateNewItem($ma->POST);
-            foreach ($ma->items[__CLASS__] as $key => $val) {
-               if (isset($newIDs[$key]) && $newIDs[$key]) {
-                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
-               } else {
-                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
-               }
+       // retrieve additional informations for each items
+        $ma->POST['add_items'] = [];
+        if (isset($ma->items[__CLASS__])) {
+            $additional_data_ite = $DB->request([
+                'SELECT' => [
+                    'glpi_plugin_order_orders_items.id',
+                    'glpi_plugin_order_references.id AS plugin_order_references_id',
+                    'glpi_plugin_order_references.itemtype',
+                ],
+                'FROM' => [
+                    'glpi_plugin_order_orders_items'
+                ],
+                'LEFT JOIN' => [
+                    'glpi_plugin_order_references' => [
+                        'FKEY' => [
+                            'glpi_plugin_order_orders_items' => 'plugin_order_references_id',
+                            'glpi_plugin_order_references'   => 'id',
+                        ]
+                    ]
+                ],
+                'WHERE' => [
+                    'glpi_plugin_order_orders_items.id' => array_keys($ma->items[__CLASS__])
+                ]
+            ]);
+            foreach ($additional_data_ite as $add_values) {
+                 $ma->POST['add_items'][$add_values['id']] = $add_values;
             }
+        }
 
-            break;
+        $link = new self();
+        switch ($ma->getAction()) {
+            case 'generation':
+                $newIDs = $link->generateNewItem($ma->POST);
+                foreach ($ma->items[__CLASS__] as $key => $val) {
+                    if (isset($newIDs[$key]) && $newIDs[$key]) {
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                    } else {
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                    }
+                }
 
-         case 'createLink':
-            if (count($ids) > 1) {
-               $ma->addMessage(__("Cannot link several items to one detail line", "order"));
-               foreach ($ids as $id) {
-                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-               }
-               return false;
+                break;
+
+            case 'createLink':
+                if (count($ids) > 1) {
+                    $ma->addMessage(__("Cannot link several items to one detail line", "order"));
+                    foreach ($ids as $id) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                    }
+                    return false;
+                }
+
+                $order_item = new PluginOrderOrder_Item();
+                foreach ($ma->items[__CLASS__] as $key => $val) {
+                    $order_item->getFromDB($val);
+                    if ($order_item->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
+                        $ma->addMessage(__("Cannot link items not delivered", "order"));
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                    } else {
+                        $link->createLinkWithItem(
+                            $key,
+                            $ma->POST["items_id"],
+                            $ma->POST['add_items'][$key]['itemtype'],
+                            $ma->POST['plugin_order_orders_id']
+                        );
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                    }
+                }
+                break;
+
+            case 'deleteLink':
+                foreach ($ma->items[__CLASS__] as $key => $val) {
+                    $link->deleteLinkWithItem(
+                        $key,
+                        $ma->POST['add_items'][$key]['itemtype'],
+                        $ma->POST['plugin_order_orders_id']
+                    );
+                    $ma->itemDone($item->getType(), $val, MassiveAction::ACTION_OK);
+                }
+                break;
+        }
+        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+    }
+
+
+    public function getReceptionItemName($items_id, $itemtype)
+    {
+        if ($items_id == 0) {
+            return (__("No associated item", "order"));
+        } else {
+            switch ($itemtype) {
+                case 'ConsumableItem':
+                case 'CartridgeItem':
+                    $table = $itemtype::getTable();
+                    if ($itemtype == 'ConsumableItem') {
+                        $item = new Consumable();
+                    } else {
+                        $item = new Cartridge();
+                    }
+                    $item->getFromDB($items_id);
+                    $item_type = new $itemtype();
+                    $item_type->getFromDB($item->fields[getForeignKeyFieldForTable($table)]);
+                    return $item_type->getLink(['comments' => 1]);
+                default:
+                    $item = new $itemtype();
+                    $item->getFromDB($items_id);
+                    return $item->getLink(['comments' => 1]);
             }
-
-            $order_item = new PluginOrderOrder_Item();
-            foreach ($ma->items[__CLASS__] as $key => $val) {
-               $order_item->getFromDB($val);
-               if ($order_item->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
-                  $ma->addMessage(__("Cannot link items not delivered", "order"));
-                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
-               } else {
-                  $link->createLinkWithItem($key,
-                                            $ma->POST["items_id"],
-                                            $ma->POST['add_items'][$key]['itemtype'],
-                                            $ma->POST['plugin_order_orders_id']);
-                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
-               }
-            }
-            break;
-
-         case 'deleteLink':
-            foreach ($ma->items[__CLASS__] as $key => $val) {
-               $link->deleteLinkWithItem($key,
-                                         $ma->POST['add_items'][$key]['itemtype'],
-                                         $ma->POST['plugin_order_orders_id']);
-               $ma->itemDone($item->getType(), $val, MassiveAction::ACTION_OK);
-            }
-            break;
-      }
-      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
-   }
+        }
+    }
 
 
-   public function getReceptionItemName($items_id, $itemtype) {
-      if ($items_id == 0) {
-         return (__("No associated item", "order"));
-      } else {
-         switch ($itemtype) {
-            case 'ConsumableItem' :
-            case 'CartridgeItem' :
-               $table = $itemtype::getTable();
-               if ($itemtype == 'ConsumableItem') {
-                  $item = new Consumable();
-               } else {
-                  $item = new Cartridge();
-               }
-               $item->getFromDB($items_id);
-               $item_type = new $itemtype();
-               $item_type->getFromDB($item->fields[getForeignKeyFieldForTable($table)]);
-               return $item_type->getLink(['comments' => 1]);
-            default :
-               $item = new $itemtype();
-               $item->getFromDB($items_id);
-               return $item->getLink(['comments' => 1]);
-         }
-      }
-   }
-
-
-   public function itemAlreadyLinkedToAnOrder($itemtype, $items_id, $plugin_order_orders_id,
-                                              $detailID = 0) {
-      global $DB;
-      if (!in_array($itemtype, self::getTypesThanCannotBeGenerated())) {
-         $query = "SELECT COUNT(*) AS cpt
+    public function itemAlreadyLinkedToAnOrder(
+        $itemtype,
+        $items_id,
+        $plugin_order_orders_id,
+        $detailID = 0
+    ) {
+        global $DB;
+        if (!in_array($itemtype, self::getTypesThanCannotBeGenerated())) {
+            $query = "SELECT COUNT(*) AS cpt
                    FROM `glpi_plugin_order_orders_items`
                    WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
                    AND `items_id` = '$items_id'
                    AND `itemtype` = '$itemtype'";
 
-         $result = $DB->query($query);
+            $result = $DB->query($query);
 
-         if ($DB->result($result, 0, "cpt") > 0) {
-            return true;
-         } else {
-            return false;
-         }
+            if ($DB->result($result, 0, "cpt") > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            $detail = new PluginOrderOrder_Item();
+            $detail->getFromDB($detailID);
 
-      } else {
-         $detail = new PluginOrderOrder_Item();
-         $detail->getFromDB($detailID);
-
-         if (!$detail->fields['items_id']) {
-            return false;
-         } else {
-            return true;
-         }
-      }
-   }
+            if (!$detail->fields['items_id']) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
 
 
-   public function isItemLinkedToOrder($itemtype, $items_id) {
-      global $DB;
+    public function isItemLinkedToOrder($itemtype, $items_id)
+    {
+        global $DB;
 
-      $query = "SELECT `id`
+        $query = "SELECT `id`
                 FROM `glpi_plugin_order_orders_items`
                 WHERE `itemtype` = '$itemtype'
                 AND `items_id` = '$items_id'";
-      $result = $DB->query($query);
+        $result = $DB->query($query);
 
-      if ($DB->numrows($result)) {
-         return ($DB->result($result, 0, 'id'));
-      } else {
-         return 0;
-      }
-   }
-
-
-   public function generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, $templateID = 0) {
-      global $CFG_GLPI;
-
-      //Do not try to generate infocoms if itemtype doesn't support it (ie contracts...)
-      if (in_array($itemtype, $CFG_GLPI["infocom_types"])) {
-
-         // Retrieve configuration for generate assets feature
-         $config = PluginOrderConfig::getConfig();
-
-         $fields = [];
-
-         //Create empty infocom, in order to forward entities_id and is_recursive
-         $ic = new Infocom();
-         $infocomID = !$ic->getFromDBforDevice($itemtype, $items_id) ? false : $ic->fields["id"];
-
-         $detail = new PluginOrderOrder_Item();
-         $detail->getFromDB($detailID);
-
-         $order  = new PluginOrderOrder();
-         $order->getFromDB($detail->fields["plugin_order_orders_id"]);
-
-         $order_supplier = new PluginOrderOrder_Supplier();
-         $order_supplier->getFromDBByOrder($detail->fields["plugin_order_orders_id"]);
-
-         if ($templateID) {
-            if ($ic->getFromDBforDevice($itemtype, $templateID)) {
-               $fields = $ic->fields;
-               unset ($fields["id"]);
-               if (isset ($fields["immo_number"])) {
-                  $fields["immo_number"] = autoName($fields["immo_number"], "immo_number", 1,
-                                                    'Infocom', $entity);
-               }
-
-               if (empty ($fields['buy_date'])) {
-                  unset ($fields['buy_date']);
-               }
-            }
-         }
-
-         $fields["entities_id"]     = $entity;
-         $fields["itemtype"]        = $itemtype;
-         $fields["items_id"]        = $items_id;
-         $fields["order_number"]    = $order->fields["num_order"];
-         $fields["delivery_number"] = $detail->fields["delivery_number"];
-         $fields["budgets_id"]      = $order->fields["budgets_id"];
-         $fields["suppliers_id"]    = $order->fields["suppliers_id"];
-         $fields["value"]           = $detail->fields["price_discounted"];
-         $fields["order_date"]      = $order->fields["order_date"];
-         $fields["buy_date"]        = $order->fields["order_date"];
-
-         if(!isset($fields["immo_number"]) && isset($detail->fields["immo_number"])){
-             $fields["immo_number"] = $detail->fields["immo_number"];
-         }
-
-         if (!is_null($detail->fields["delivery_date"])) {
-            $fields["delivery_date"] = $detail->fields["delivery_date"];
-         }
-
-         // Get bill data
-         if ($config->canAddBillDetails()) {
-            $bill = new PluginOrderBill();
-            if ($bill->getFromDB($detail->fields["plugin_order_bills_id"])) {
-               $fields['bill']          = $bill->fields['number'];
-               $fields['warranty_date'] = $bill->fields['billdate'];
-            }
-         }
-
-         foreach (['warranty_date', 'buy_date', 'inventory_date'] as $date) {
-            if (!isset($fields[$date])) {
-               $fields[$date] = 'NULL';
-            }
-         }
-
-         $fields['_no_warning'] = true;
-
-         if ($infocomID) {
-            $fields['id'] = $infocomID;
-            $ic->update($fields);
-         } else {
-            $ic->add($fields);
-         }
-      }
-   }
+        if ($DB->numrows($result)) {
+            return ($DB->result($result, 0, 'id'));
+        } else {
+            return 0;
+        }
+    }
 
 
-   public function removeInfoComRelatedToOrder($itemtype, $items_id) {
-      $infocom = new Infocom();
-      $infocom->getFromDBforDevice($itemtype, $items_id);
-      $infocom->update([
-         "id"              => $infocom->fields["id"],
-         "order_number"    => "",
-         "delivery_number" => "",
-         "budgets_id"      => 0,
-         "suppliers_id"    => 0,
-         "bill"            => "",
-         "value"           => 0,
-         "order_date"      => null,
-         "delivery_date"   => null,
-      ]);
-   }
+    public function generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, $templateID = 0)
+    {
+        global $CFG_GLPI;
 
+       //Do not try to generate infocoms if itemtype doesn't support it (ie contracts...)
+        if (in_array($itemtype, $CFG_GLPI["infocom_types"])) {
+           // Retrieve configuration for generate assets feature
+            $config = PluginOrderConfig::getConfig();
 
-   public function createLinkWithItem($detailID = 0, $items_id = 0, $itemtype = 0,
-                                      $plugin_order_orders_id = 0, $entity = 0, $templateID = 0,
-                                      $history = true, $check_link = true) {
-      global $DB;
+            $fields = [];
 
-      if (!$check_link
-         || !$this->itemAlreadyLinkedToAnOrder($itemtype, $items_id, $plugin_order_orders_id,
-                                               $detailID)) {
-         $detail     = new PluginOrderOrder_Item();
-         $restricted = ['ConsumableItem', 'CartridgeItem'];
+           //Create empty infocom, in order to forward entities_id and is_recursive
+            $ic = new Infocom();
+            $infocomID = !$ic->getFromDBforDevice($itemtype, $items_id) ? false : $ic->fields["id"];
 
-         if ($itemtype == 'SoftwareLicense') {
+            $detail = new PluginOrderOrder_Item();
             $detail->getFromDB($detailID);
-            $query = "SELECT `id`
+
+            $order  = new PluginOrderOrder();
+            $order->getFromDB($detail->fields["plugin_order_orders_id"]);
+
+            $order_supplier = new PluginOrderOrder_Supplier();
+            $order_supplier->getFromDBByOrder($detail->fields["plugin_order_orders_id"]);
+
+            if ($templateID) {
+                if ($ic->getFromDBforDevice($itemtype, $templateID)) {
+                    $fields = $ic->fields;
+                    unset($fields["id"]);
+                    if (isset($fields["immo_number"])) {
+                        $fields["immo_number"] = autoName(
+                            $fields["immo_number"],
+                            "immo_number",
+                            1,
+                            'Infocom',
+                            $entity
+                        );
+                    }
+
+                    if (empty($fields['buy_date'])) {
+                        unset($fields['buy_date']);
+                    }
+                }
+            }
+
+            $fields["entities_id"]     = $entity;
+            $fields["itemtype"]        = $itemtype;
+            $fields["items_id"]        = $items_id;
+            $fields["order_number"]    = $order->fields["num_order"];
+            $fields["delivery_number"] = $detail->fields["delivery_number"];
+            $fields["budgets_id"]      = $order->fields["budgets_id"];
+            $fields["suppliers_id"]    = $order->fields["suppliers_id"];
+            $fields["value"]           = $detail->fields["price_discounted"];
+            $fields["order_date"]      = $order->fields["order_date"];
+            $fields["buy_date"]        = $order->fields["order_date"];
+
+            if (!isset($fields["immo_number"]) && isset($detail->fields["immo_number"])) {
+                $fields["immo_number"] = $detail->fields["immo_number"];
+            }
+
+            if (!is_null($detail->fields["delivery_date"])) {
+                $fields["delivery_date"] = $detail->fields["delivery_date"];
+            }
+
+           // Get bill data
+            if ($config->canAddBillDetails()) {
+                $bill = new PluginOrderBill();
+                if ($bill->getFromDB($detail->fields["plugin_order_bills_id"])) {
+                    $fields['bill']          = $bill->fields['number'];
+                    $fields['warranty_date'] = $bill->fields['billdate'];
+                }
+            }
+
+            foreach (['warranty_date', 'buy_date', 'inventory_date'] as $date) {
+                if (!isset($fields[$date])) {
+                    $fields[$date] = 'NULL';
+                }
+            }
+
+            $fields['_no_warning'] = true;
+
+            if ($infocomID) {
+                $fields['id'] = $infocomID;
+                $ic->update($fields);
+            } else {
+                $ic->add($fields);
+            }
+        }
+    }
+
+
+    public function removeInfoComRelatedToOrder($itemtype, $items_id)
+    {
+        $infocom = new Infocom();
+        $infocom->getFromDBforDevice($itemtype, $items_id);
+        $infocom->update([
+            "id"              => $infocom->fields["id"],
+            "order_number"    => "",
+            "delivery_number" => "",
+            "budgets_id"      => 0,
+            "suppliers_id"    => 0,
+            "bill"            => "",
+            "value"           => 0,
+            "order_date"      => null,
+            "delivery_date"   => null,
+        ]);
+    }
+
+
+    public function createLinkWithItem(
+        $detailID = 0,
+        $items_id = 0,
+        $itemtype = 0,
+        $plugin_order_orders_id = 0,
+        $entity = 0,
+        $templateID = 0,
+        $history = true,
+        $check_link = true
+    ) {
+        global $DB;
+
+        if (
+            !$check_link
+            || !$this->itemAlreadyLinkedToAnOrder(
+                $itemtype,
+                $items_id,
+                $plugin_order_orders_id,
+                $detailID
+            )
+        ) {
+            $detail     = new PluginOrderOrder_Item();
+            $restricted = ['ConsumableItem', 'CartridgeItem'];
+
+            if ($itemtype == 'SoftwareLicense') {
+                $detail->getFromDB($detailID);
+                $query = "SELECT `id`
                       FROM `glpi_plugin_order_orders_items`
                       WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
                         AND `plugin_order_references_id` = '{$detail->fields["plugin_order_references_id"]}'
                         AND `price_taxfree` LIKE '{$detail->fields["price_taxfree"]}'
                         AND `discount` LIKE '{$detail->fields["discount"]}'
                         AND `states_id` = 1 ";
-            $result = $DB->query($query);
-            $nb     = $DB->numrows($result);
+                $result = $DB->query($query);
+                $nb     = $DB->numrows($result);
 
-            if ($nb) {
-               for ($i = 0; $i < $nb; $i++) {
-                  $ID                = $DB->result($result, $i, 'id');
-                  $input["id"]       = $ID;
-                  $input["items_id"] = $items_id;
-                  $detail->update($input);
+                if ($nb) {
+                    for ($i = 0; $i < $nb; $i++) {
+                        $ID                = $DB->result($result, $i, 'id');
+                        $input["id"]       = $ID;
+                        $input["items_id"] = $items_id;
+                        $detail->update($input);
 
-                  $this->generateInfoComRelatedToOrder($entity, $ID, $itemtype, $items_id, 0);
+                        $this->generateInfoComRelatedToOrder($entity, $ID, $itemtype, $items_id, 0);
 
-                  $lic              = new SoftwareLicense();
-                  $lic->getFromDB($items_id);
-                  $values["id"]     = $lic->fields["id"];
-                  $values["number"] = $lic->fields["number"] + 1;
-                  $lic->update($values);
+                        $lic              = new SoftwareLicense();
+                        $lic->getFromDB($items_id);
+                        $values["id"]     = $lic->fields["id"];
+                        $values["number"] = $lic->fields["number"] + 1;
+                        $lic->update($values);
+                    }
 
-               }
+                    if ($history) {
+                        $order     = new PluginOrderOrder();
+                        $new_value = __("Item linked to order", "order") . ' : ' . $lic->getField("name");
+                        $order->addHistory('PluginOrderOrder', '', $new_value, $plugin_order_orders_id);
+                    }
+                }
+            } else if (in_array($itemtype, $restricted)) {
+                if ($itemtype == 'ConsumableItem') {
+                    $item = new Consumable();
+                    $type = 'Consumable';
+                    $pkey = 'consumableitems_id';
+                } else if ($itemtype == 'CartridgeItem') {
+                    $item = new Cartridge();
+                    $type = 'Cartridge';
+                    $pkey = 'cartridgeitems_id';
+                }
+                $detail->getFromDB($detailID);
+                $input[$pkey]     = $items_id;
+                $input["date_in"] = $detail->fields["delivery_date"];
+                $newID            = $item->add($input);
 
-               if ($history) {
-                  $order     = new PluginOrderOrder();
-                  $new_value = __("Item linked to order", "order").' : '.$lic->getField("name");
-                  $order->addHistory('PluginOrderOrder', '', $new_value, $plugin_order_orders_id);
-               }
+                $input["id"]       = $detailID;
+                $input["items_id"] = $newID;
+                $input["itemtype"] = $itemtype;
+                if ($detail->update($input)) {
+                    $this->generateInfoComRelatedToOrder($entity, $detailID, $type, $newID, 0);
+                }
+            } else if ($itemtype == 'Contract') {
+                $input = [
+                    "id"       => $detailID,
+                    "items_id" => $items_id,
+                    "itemtype" => $itemtype,
+                ];
+                if ($detail->update($input)) {
+                    $detail->getFromDB($detailID);
+                    $item = new Contract();
+
+                    if (
+                        $item->update(['id'   => $items_id,
+                            'cost' => $detail->fields["price_discounted"]
+                        ])
+                    ) {
+                        $order = new PluginOrderOrder();
+                        $order->getFromDB($plugin_order_orders_id);
+                        if (
+                            !countElementsInTable(
+                                'glpi_contracts_suppliers',
+                                ['contracts_id' => $items_id, 'suppliers_id' => $order->fields['suppliers_id']]
+                            )
+                        ) {
+                            $contract_supplier = new Contract_Supplier();
+                            $contract_supplier->add([
+                                'contracts_id' => $items_id,
+                                'suppliers_id'  => $order->fields['suppliers_id']
+                            ]);
+                        }
+                    }
+                }
+            } else {
+                $input = [
+                    "id"       => $detailID,
+                    "items_id" => $items_id,
+                    "itemtype" => $itemtype,
+                ];
+                if ($detail->update($input)) {
+                    $this->generateInfoComRelatedToOrder(
+                        $entity,
+                        $detailID,
+                        $itemtype,
+                        $items_id,
+                        $templateID
+                    );
+
+                    if ($history) {
+                          $order = new PluginOrderOrder();
+                          $order->getFromDB($detail->fields["plugin_order_orders_id"]);
+
+                          $item  = new $itemtype();
+                          $item->getFromDB($items_id);
+
+                          $new_value = __("Item linked to order", "order") . ' : ' . $item->getField("name");
+                          $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
+                    }
+                }
+            }
+            if ($history) {
+                $order = new PluginOrderOrder();
+                $order->getFromDB($detail->fields["plugin_order_orders_id"]);
+                $new_value = __("Item linked to order", "order") . ' : ' . $order->fields["name"];
+                $order->addHistory($itemtype, '', $new_value, $items_id);
             }
 
-         } else if (in_array($itemtype, $restricted)) {
-            if ($itemtype == 'ConsumableItem') {
-               $item = new Consumable();
-               $type = 'Consumable';
-               $pkey = 'consumableitems_id';
-            } else if ($itemtype == 'CartridgeItem') {
-               $item = new Cartridge();
-               $type = 'Cartridge';
-               $pkey = 'cartridgeitems_id';
-            }
+            Session::addMessageAfterRedirect(__("Item linked to order", "order"), true);
+        } else {
+            Session::addMessageAfterRedirect(__("Item already linked to another one", "order"), true, ERROR);
+        }
+    }
+
+
+    public function deleteLinkWithItem($detailID, $itemtype, $plugin_order_orders_id)
+    {
+        global $DB;
+
+        if ($itemtype == 'SoftWareLicense') {
+            $detail  = new PluginOrderOrder_Item();
             $detail->getFromDB($detailID);
-            $input[$pkey]     = $items_id;
-            $input["date_in"] = $detail->fields["delivery_date"];
-            $newID            = $item->add($input);
+            $license = $detail->fields["items_id"];
 
-            $input["id"]       = $detailID;
-            $input["items_id"] = $newID;
-            $input["itemtype"] = $itemtype;
-            if ($detail->update($input)) {
-               $this->generateInfoComRelatedToOrder($entity, $detailID, $type, $newID, 0);
+            $this->removeInfoComRelatedToOrder($itemtype, $license);
+            $result = $detail->queryRef(
+                $detail->fields["plugin_order_orders_id"],
+                $detail->fields["plugin_order_references_id"],
+                $detail->fields["price_taxfree"],
+                $detail->fields["discount"],
+                PluginOrderOrder::ORDER_DEVICE_DELIVRED
+            );
+            if ($nb = $DB->numrows($result)) {
+                for ($i = 0; $i < $nb; $i++) {
+                    $ID = $DB->result($result, $i, 'id');
+                    $detail->update([
+                        "id"       => $ID,
+                        "items_id" => 0,
+                    ]);
+
+                    $lic = new SoftwareLicense();
+                    $lic->getFromDB($license);
+                    $values["id"]     = $lic->fields["id"];
+                    $values["number"] = $lic->fields["number"] - 1;
+                    $lic->update($values);
+                }
+
+                 $order = new PluginOrderOrder();
+                 $order->getFromDB($detail->fields["plugin_order_orders_id"]);
+                 $new_value = __("Item unlink form order", "order") . ' : ' . $order->fields["name"];
+                 $order->addHistory($itemtype, '', $new_value, $license);
+
+                 $item = new $itemtype();
+                 $item->getFromDB($license);
+                 $new_value = __("Item unlink form order", "order") . ' : ' . $item->getField("name");
+                 $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
             }
-
-         } else if ($itemtype == 'Contract') {
-            $input = [
-               "id"       => $detailID,
-               "items_id" => $items_id,
-               "itemtype" => $itemtype,
-            ];
-            if ($detail->update($input)) {
-               $detail->getFromDB($detailID);
-               $item = new Contract();
-
-               if ($item->update(['id'   => $items_id,
-                                  'cost' => $detail->fields["price_discounted"]])) {
-                  $order = new PluginOrderOrder();
-                  $order->getFromDB($plugin_order_orders_id);
-                  if (!countElementsInTable(
-                     'glpi_contracts_suppliers',
-                     ['contracts_id' => $items_id, 'suppliers_id' => $order->fields['suppliers_id']])) {
-
-                     $contract_supplier = new Contract_Supplier();
-                     $contract_supplier->add([
-                        'contracts_id' => $items_id,
-                        'suppliers_id'  => $order->fields['suppliers_id']
-                     ]);
-                  }
-               }
-            }
-         } else {
-            $input = [
-               "id"       => $detailID,
-               "items_id" => $items_id,
-               "itemtype" => $itemtype,
-            ];
-            if ($detail->update($input)) {
-               $this->generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id,
-                     $templateID);
-
-               if ($history) {
-                  $order = new PluginOrderOrder();
-                  $order->getFromDB($detail->fields["plugin_order_orders_id"]);
-
-                  $item  = new $itemtype();
-                  $item->getFromDB($items_id);
-
-                  $new_value = __("Item linked to order", "order").' : '.$item->getField("name");
-                  $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
-               }
-            }
-         }
-         if ($history) {
+        } else {
             $order = new PluginOrderOrder();
-            $order->getFromDB($detail->fields["plugin_order_orders_id"]);
-            $new_value = __("Item linked to order", "order").' : '.$order->fields["name"];
+            $order->getFromDB($plugin_order_orders_id);
+
+            $detail = new PluginOrderOrder_Item();
+            $detail->getFromDB($detailID);
+            $items_id = $detail->fields["items_id"];
+
+            $this->removeInfoComRelatedToOrder($itemtype, $items_id);
+
+            if ($items_id != 0) {
+                $input = $detail->fields;
+                $input["items_id"] = 0;
+                $detail->update($input);
+            } else {
+                Session::addMessageAfterRedirect(__("One or several selected rows haven't linked items", "order"), true, ERROR);
+            }
+
+            $new_value = __("Item unlink form order", "order") . ' : ' . $order->fields["name"];
             $order->addHistory($itemtype, '', $new_value, $items_id);
-         }
-
-         Session::addMessageAfterRedirect(__("Item linked to order", "order"), true);
-      } else {
-         Session::addMessageAfterRedirect(__("Item already linked to another one", "order"), true, ERROR);
-      }
-
-   }
-
-
-   public function deleteLinkWithItem($detailID, $itemtype, $plugin_order_orders_id) {
-      global $DB;
-
-      if ($itemtype == 'SoftWareLicense') {
-         $detail  = new PluginOrderOrder_Item();
-         $detail->getFromDB($detailID);
-         $license = $detail->fields["items_id"];
-
-         $this->removeInfoComRelatedToOrder($itemtype, $license);
-         $result = $detail->queryRef($detail->fields["plugin_order_orders_id"],
-                                                    $detail->fields["plugin_order_references_id"],
-                                                    $detail->fields["price_taxfree"],
-                                                    $detail->fields["discount"],
-                                                    PluginOrderOrder::ORDER_DEVICE_DELIVRED);
-         if ($nb = $DB->numrows($result)) {
-            for ($i = 0; $i < $nb; $i++) {
-               $ID = $DB->result($result, $i, 'id');
-               $detail->update([
-                  "id"       => $ID,
-                  "items_id" => 0,
-               ]);
-
-               $lic = new SoftwareLicense();
-               $lic->getFromDB($license);
-               $values["id"]     = $lic->fields["id"];
-               $values["number"] = $lic->fields["number"] - 1;
-               $lic->update($values);
-            }
-
-            $order = new PluginOrderOrder();
-            $order->getFromDB($detail->fields["plugin_order_orders_id"]);
-            $new_value = __("Item unlink form order", "order").' : '.$order->fields["name"];
-            $order->addHistory($itemtype, '', $new_value, $license);
 
             $item = new $itemtype();
-            $item->getFromDB($license);
-            $new_value = __("Item unlink form order", "order").' : '.$item->getField("name");
+            $item->getFromDB($items_id);
+            $new_value = __("Item unlink form order", "order") . ' : ' . $item->getField("name");
             $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
-         }
-      } else {
-         $order = new PluginOrderOrder();
-         $order->getFromDB($plugin_order_orders_id);
-
-         $detail = new PluginOrderOrder_Item();
-         $detail->getFromDB($detailID);
-         $items_id = $detail->fields["items_id"];
-
-         $this->removeInfoComRelatedToOrder($itemtype, $items_id);
-
-         if ($items_id != 0) {
-            $input = $detail->fields;
-            $input["items_id"] = 0;
-            $detail->update($input);
-         } else {
-            Session::addMessageAfterRedirect(__("One or several selected rows haven't linked items", "order"), true, ERROR);
-         }
-
-         $new_value = __("Item unlink form order", "order").' : '.$order->fields["name"];
-         $order->addHistory($itemtype, '', $new_value, $items_id);
-
-         $item = new $itemtype();
-         $item->getFromDB($items_id);
-         $new_value = __("Item unlink form order", "order").' : '.$item->getField("name");
-         $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
-      }
-   }
+        }
+    }
 
 
-   public function generateNewItem($params) {
-      $newIDs = [];
+    public function generateNewItem($params)
+    {
+        $newIDs = [];
 
-      // Retrieve plugin configuration
-      $config    = new PluginOrderConfig();
-      $reference = new PluginOrderReference();
+       // Retrieve plugin configuration
+        $config    = new PluginOrderConfig();
+        $reference = new PluginOrderReference();
 
-      foreach ($params["id"] as $key => $values) {
-         $add_item = $values;
-         if (array_key_exists('add_items', $params)
-             && array_key_exists($values['id'], $params['add_items'])) {
-            $add_item = array_merge($params['add_items'][$values['id']], $add_item);
-         }
-
-         //retrieve plugin_order_references_id from param if needed
-         if (!isset($add_item["plugin_order_references_id"])) {
-            $add_item["plugin_order_references_id"] = $params['plugin_order_references_id'];
-         }
-
-         //If itemtype cannot be generated, go to the new occurence
-         if (in_array($add_item['itemtype'], self::getTypesThanCannotBeGenerated())) {
-            continue;
-         }
-
-         $entity = $values["entities_id"];
-         //------------- Template management -----------------------//
-         //Look for a template in the entity
-         $templateID = $reference->checkIfTemplateExistsInEntity($values["id"], $add_item["itemtype"],
-                                                                 $entity);
-
-         $item  = new $add_item["itemtype"]();
-         if ($add_item['itemtype']) {
-            $order = new PluginOrderOrder();
-         }
-
-         $order->getFromDB($params["plugin_order_orders_id"]);
-         $reference->getFromDB($add_item["plugin_order_references_id"]);
-
-		 //Update immo_number in details to fill Infocom later
-         if ($config->canAddImmobilizationNumber()) {
-    		 $detail = new PluginOrderOrder_Item();
-    		 $detail->update(['id' => $add_item["id"], 'immo_number' => $values["immo_number"]]);
-         }
-
-         if ($templateID) {
-            $item->getFromDB($templateID);
-            unset($item->fields["is_template"]);
-            unset($item->fields["date_mod"]);
-
-            $input  = [];
-            $fields = [];
-            foreach ($item->fields as $key => $value) {
-               if ($value != ''
-                   && (!isset($fields[$key])
-                       || $fields[$key] == ''
-                       || $fields[$key] == 0)) {
-                  $input[$key] = $value;
-               }
+        foreach ($params["id"] as $key => $values) {
+            $add_item = $values;
+            if (
+                array_key_exists('add_items', $params)
+                && array_key_exists($values['id'], $params['add_items'])
+            ) {
+                $add_item = array_merge($params['add_items'][$values['id']], $add_item);
             }
 
-            if (isset($values["states_id"]) && $values["states_id"] != 0) {
-               $input['states_id'] = $values['states_id'];
+           //retrieve plugin_order_references_id from param if needed
+            if (!isset($add_item["plugin_order_references_id"])) {
+                $add_item["plugin_order_references_id"] = $params['plugin_order_references_id'];
+            }
+
+           //If itemtype cannot be generated, go to the new occurence
+            if (in_array($add_item['itemtype'], self::getTypesThanCannotBeGenerated())) {
+                continue;
+            }
+
+            $entity = $values["entities_id"];
+           //------------- Template management -----------------------//
+           //Look for a template in the entity
+            $templateID = $reference->checkIfTemplateExistsInEntity(
+                $values["id"],
+                $add_item["itemtype"],
+                $entity
+            );
+
+            $item  = new $add_item["itemtype"]();
+            if ($add_item['itemtype']) {
+                 $order = new PluginOrderOrder();
+            }
+
+            $order->getFromDB($params["plugin_order_orders_id"]);
+            $reference->getFromDB($add_item["plugin_order_references_id"]);
+
+           //Update immo_number in details to fill Infocom later
+            if ($config->canAddImmobilizationNumber()) {
+                $detail = new PluginOrderOrder_Item();
+                $detail->update(['id' => $add_item["id"], 'immo_number' => $values["immo_number"]]);
+            }
+
+            if ($templateID) {
+                $item->getFromDB($templateID);
+                unset($item->fields["is_template"]);
+                unset($item->fields["date_mod"]);
+
+                $input  = [];
+                $fields = [];
+                foreach ($item->fields as $key => $value) {
+                    if (
+                        $value != ''
+                        && (!isset($fields[$key])
+                        || $fields[$key] == ''
+                        || $fields[$key] == 0)
+                    ) {
+                        $input[$key] = $value;
+                    }
+                }
+
+                if (isset($values["states_id"]) && $values["states_id"] != 0) {
+                    $input['states_id'] = $values['states_id'];
+                } else {
+                    if ($config->getGeneratedAssetState()) {
+                        $input["states_id"] = $config->getGeneratedAssetState();
+                    }
+                }
+                $input['groups_id'] = $values['groups_id'];
+                if (isset($values["locations_id"]) && $values["locations_id"] != 0) {
+                    $input['locations_id'] = $values['locations_id'];
+                } else {
+                   // Get bill data
+                    if ($config->canAddLocation()) {
+                        $input['locations_id'] = $order->fields['locations_id'];
+                    }
+                }
+
+                $input["entities_id"] = $entity;
+                $input["serial"]      = $values["serial"];
+
+                if (isset($item->fields['name']) && $item->fields['name']) {
+                    $input["name"] = autoName(
+                        $item->fields["name"],
+                        "name",
+                        $templateID,
+                        $add_item["itemtype"],
+                        $entity
+                    );
+                } else {
+                    $input["name"] = $values["name"];
+                }
+
+                if (isset($item->fields['otherserial']) && $item->fields['otherserial']) {
+                    $input["otherserial"] = autoName(
+                        $item->fields["otherserial"],
+                        "otherserial",
+                        $templateID,
+                        $add_item["itemtype"],
+                        $entity
+                    );
+                } else {
+                    $input["otherserial"] = $values["otherserial"];
+                }
+            } else if ($add_item["itemtype"] == 'Contract') {
+                $input["name"]             = $values["name"];
+                $input["entities_id"]      = $entity;
+                $input['contracttypes_id'] = $reference->fields['types_id'];
             } else {
-               if ($config->getGeneratedAssetState()) {
-                  $input["states_id"] = $config->getGeneratedAssetState();
-               }
-            }
-            $input['groups_id'] = $values['groups_id'];
-            if (isset($values["locations_id"]) && $values["locations_id"] != 0) {
-               $input['locations_id'] = $values['locations_id'];
-            } else {
-               // Get bill data
-               if ($config->canAddLocation()) {
-                  $input['locations_id'] = $order->fields['locations_id'];
-               }
-            }
+                if (isset($values["states_id"]) && $values["states_id"] != 0) {
+                    $input['states_id']     = $values['states_id'];
+                } else {
+                    if ($config->getGeneratedAssetState()) {
+                        $input["states_id"]  = $config->getGeneratedAssetState();
+                    } else {
+                        $input["states_id"]  = 0;
+                    }
+                }
+                $input['groups_id']        = $values['groups_id'];
+                if (isset($values["locations_id"]) && $values["locations_id"] != 0) {
+                    $input['locations_id'] = $values['locations_id'];
+                } else {
+                   // Get bill data
+                    if ($config->canAddLocation()) {
+                        $input['locations_id'] = $order->fields['locations_id'];
+                    }
+                }
 
-            $input["entities_id"] = $entity;
-            $input["serial"]      = $values["serial"];
-
-            if (isset($item->fields['name']) && $item->fields['name']) {
-               $input["name"] = autoName($item->fields["name"], "name", $templateID,
-                                $add_item["itemtype"], $entity);
-            } else {
-               $input["name"] = $values["name"];
-            }
-
-            if (isset($item->fields['otherserial']) && $item->fields['otherserial']) {
-               $input["otherserial"] = autoName($item->fields["otherserial"], "otherserial",
-                                       $templateID, $add_item["itemtype"], $entity);
-            } else {
-               $input["otherserial"] = $values["otherserial"];
+                $input["entities_id"]      = $entity;
+                $input["serial"]           = $values["serial"];
+                $input["otherserial"]      = $values["otherserial"];
+                $input["name"]             = $values["name"];
             }
 
-         } else if ($add_item["itemtype"] == 'Contract') {
-            $input["name"]             = $values["name"];
-            $input["entities_id"]      = $entity;
-            $input['contracttypes_id'] = $reference->fields['types_id'];
-
-         } else {
-            if (isset($values["states_id"]) && $values["states_id"] != 0) {
-               $input['states_id']     = $values['states_id'];
-            } else {
-               if ($config->getGeneratedAssetState()) {
-                  $input["states_id"]  = $config->getGeneratedAssetState();
-               } else {
-                  $input["states_id"]  = 0;
-               }
+            if (!array_key_exists('manufacturers_id', $input) || $input["manufacturers_id"] == 0) {
+                $input["manufacturers_id"] = $reference->fields["manufacturers_id"];
             }
-            $input['groups_id']        = $values['groups_id'];
-            if (isset($values["locations_id"]) && $values["locations_id"] != 0) {
-               $input['locations_id'] = $values['locations_id'];
-            } else {
-               // Get bill data
-               if ($config->canAddLocation()) {
-                  $input['locations_id'] = $order->fields['locations_id'];
-               }
+            $typefield = getForeignKeyFieldForTable(getTableForItemType($add_item["itemtype"] . "Type"));
+            if (!array_key_exists($typefield, $input) || $input[$typefield] == 0) {
+                $input[$typefield] = $reference->fields["types_id"];
+            }
+            $modelfield = getForeignKeyFieldForTable(getTableForItemType($add_item["itemtype"] . "Model"));
+            if (!array_key_exists($modelfield, $input) || $input[$modelfield] == 0) {
+                $input[$modelfield] = $reference->fields["models_id"];
             }
 
-            $input["entities_id"]      = $entity;
-            $input["serial"]           = $values["serial"];
-            $input["otherserial"]      = $values["otherserial"];
-            $input["name"]             = $values["name"];
-         }
+            $input = Toolbox::addslashes_deep($input);
+            $newID = $item->add($input);
+            $newIDs[$values["id"]] = $newID;
 
-         if (!array_key_exists('manufacturers_id', $input) || $input["manufacturers_id"] == 0) {
-            $input["manufacturers_id"] = $reference->fields["manufacturers_id"];
-         }
-         $typefield = getForeignKeyFieldForTable(getTableForItemType($add_item["itemtype"]."Type"));
-         if (!array_key_exists($typefield, $input) || $input[$typefield] == 0) {
-            $input[$typefield] = $reference->fields["types_id"];
-         }
-         $modelfield = getForeignKeyFieldForTable(getTableForItemType($add_item["itemtype"]."Model"));
-         if (!array_key_exists($modelfield, $input) || $input[$modelfield] == 0) {
-            $input[$modelfield] = $reference->fields["models_id"];
-         }
+           // Attach new ticket if option is on
+            if (isset($params['generate_ticket'])) {
+                $tkt = new TicketTemplate();
+                if ($tkt->getFromDB($params['generate_ticket']['tickettemplates_id'])) {
+                    $input = [];
+                    $input = Ticket::getDefaultValues($entity);
+                    $ttp        = new TicketTemplatePredefinedField();
+                    $predefined = $ttp->getPredefinedFields($params['generate_ticket']['tickettemplates_id'], true);
+                    if (count($predefined)) {
+                        foreach ($predefined as $predeffield => $predefvalue) {
+                            $input[$predeffield] = $predefvalue;
+                        }
+                    }
 
-         $input = Toolbox::addslashes_deep($input);
-         $newID = $item->add($input);
-         $newIDs[$values["id"]] = $newID;
+                    $input['entities_id']         = $entity;
+                    $input['_users_id_requester'] = empty($order->fields['users_id']) ? Session::getLoginUserID() : $order->fields['users_id'];
+                    $input['items_id']            = $newID;
+                    $input['itemtype']            = $add_item["itemtype"];
 
-         // Attach new ticket if option is on
-         if (isset($params['generate_ticket'])) {
-            $tkt = new TicketTemplate();
-            if ($tkt->getFromDB($params['generate_ticket']['tickettemplates_id'])) {
-               $input = [];
-               $input = Ticket::getDefaultValues($entity);
-               $ttp        = new TicketTemplatePredefinedField();
-               $predefined = $ttp->getPredefinedFields($params['generate_ticket']['tickettemplates_id'], true);
-               if (count($predefined)) {
-                  foreach ($predefined as $predeffield => $predefvalue) {
-                     $input[$predeffield] = $predefvalue;
-                  }
-               }
-
-               $input['entities_id']         = $entity;
-               $input['_users_id_requester'] = empty($order->fields['users_id']) ? Session::getLoginUserID() : $order->fields['users_id'];
-               $input['items_id']            = $newID;
-               $input['itemtype']            = $add_item["itemtype"];
-
-               $ticket = new Ticket();
-               $ticket->add($input);
+                    $ticket = new Ticket();
+                    $ticket->add($input);
+                }
             }
-         }
 
-         //-------------- End template management ---------------------------------//
-         $this->createLinkWithItem($values["id"], $newID, $add_item["itemtype"],
-                                             $params["plugin_order_orders_id"], $entity, $templateID,
-                                             false, false);
+           //-------------- End template management ---------------------------------//
+            $this->createLinkWithItem(
+                $values["id"],
+                $newID,
+                $add_item["itemtype"],
+                $params["plugin_order_orders_id"],
+                $entity,
+                $templateID,
+                false,
+                false
+            );
 
-         //Add item's history
-         $new_value = __("Item generated by using order", "order").' : '.$order->fields["name"];
-         $order->addHistory($add_item["itemtype"], '', $new_value, $newID);
+           //Add item's history
+            $new_value = __("Item generated by using order", "order") . ' : ' . $order->fields["name"];
+            $order->addHistory($add_item["itemtype"], '', $new_value, $newID);
 
-         //Add order's history
-         $new_value  = __("Item generated by using order", "order").' : ';
-         $new_value .= $item->getTypeName()." -> ".$item->getField("name");
-         $order->addHistory('PluginOrderOrder', '', $new_value, $params["plugin_order_orders_id"]);
+           //Add order's history
+            $new_value  = __("Item generated by using order", "order") . ' : ';
+            $new_value .= $item->getTypeName() . " -> " . $item->getField("name");
+            $order->addHistory('PluginOrderOrder', '', $new_value, $params["plugin_order_orders_id"]);
 
-         //Copy order documents if needed
-         self::copyDocuments($add_item['itemtype'], $newID, $params["plugin_order_orders_id"], $entity);
+           //Copy order documents if needed
+            self::copyDocuments($add_item['itemtype'], $newID, $params["plugin_order_orders_id"], $entity);
 
-         Session::addMessageAfterRedirect(__("Item successfully selected", "order"), true);
-      }
+            Session::addMessageAfterRedirect(__("Item successfully selected", "order"), true);
+        }
 
-      return $newIDs;
-   }
-
-
-   public static function countForOrder(PluginOrderOrder $item) {
-      return countElementsInTable(
-         'glpi_plugin_order_orders_items',
-         [
-            'plugin_order_orders_id' => $item->getID(),
-            'states_id' => PluginOrderOrder::ORDER_DEVICE_DELIVRED,
-         ]
-      );
-   }
+        return $newIDs;
+    }
 
 
-   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      if ($item->getType() == 'PluginOrderOrder'
-         && $item->checkIfDetailExists($item->getID(), true)
-         && Session::haveRight('plugin_order_order', READ)) {
-         return self::createTabEntry(_n("Associated item", "Associated items", 2),
-                                     self::countForOrder($item));
-      }
-   }
+    public static function countForOrder(PluginOrderOrder $item)
+    {
+        return countElementsInTable(
+            'glpi_plugin_order_orders_items',
+            [
+                'plugin_order_orders_id' => $item->getID(),
+                'states_id' => PluginOrderOrder::ORDER_DEVICE_DELIVRED,
+            ]
+        );
+    }
 
 
-   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      if ($item->getType() == 'PluginOrderOrder') {
-         $link = new self();
-         $link->showOrderLink($item->getID());
-      }
-      return true;
-   }
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        if (
+            $item->getType() == 'PluginOrderOrder'
+            && $item->checkIfDetailExists($item->getID(), true)
+            && Session::haveRight('plugin_order_order', READ)
+        ) {
+            return self::createTabEntry(
+                _n("Associated item", "Associated items", 2),
+                self::countForOrder($item)
+            );
+        }
+    }
+
+
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        if ($item->getType() == 'PluginOrderOrder') {
+            $link = new self();
+            $link->showOrderLink($item->getID());
+        }
+        return true;
+    }
 
 
    /**
@@ -1243,59 +1355,65 @@ class PluginOrderLink extends CommonDBChild {
     * @param $orders_id
     * @param $entity
     */
-   public static function copyDocuments($itemtype, $items_id, $orders_id, $entity) {
-      global $CFG_GLPI;
+    public static function copyDocuments($itemtype, $items_id, $orders_id, $entity)
+    {
+        global $CFG_GLPI;
 
-      $config = PluginOrderConfig::getConfig();
+        $config = PluginOrderConfig::getConfig();
 
-      if ($config->canCopyDocuments() && in_array($itemtype, $CFG_GLPI["document_types"])) {
-         $document = new Document();
-         $docitem  = new Document_Item();
+        if ($config->canCopyDocuments() && in_array($itemtype, $CFG_GLPI["document_types"])) {
+            $document = new Document();
+            $docitem  = new Document_Item();
 
-         $item = new $itemtype();
-         $item->getFromDB($items_id);
-         $is_recursive = 0;
+            $item = new $itemtype();
+            $item->getFromDB($items_id);
+            $is_recursive = 0;
 
-         foreach (getAllDataFromTable('glpi_documents_items',
-                                       ['itemtype' => 'PluginOrderOrder',
-                                        'items_id' => $orders_id]) as $doc) {
-
-            //Create a new document
-            $document->getFromDB($doc['documents_id']);
-            if (($document->getEntityID() != $entity && !$document->fields['is_recursive'])
-               || !in_array($entity, getSonsOf('glpi_entities', $document->getEntityID()))) {
-               $found_docs = getAllDataFromTable(
-                  'glpi_documents',
-                  [
-                     'entities_id' => $entity,
-                     'sha1sum' => $document->fields['sha1sum'],
-                  ]
-               );
-               if (empty($found_docs)) {
-                  $tmpdoc                = $document->fields;
-                  $tmpdoc['entities_id'] = $entity;
-                  unset($tmpdoc['id']);
-                  $documents_id = $document->add($tmpdoc);
-                  $is_recursive = $document->fields['is_recursive'];
-               } else {
-                  $found_doc = array_pop($found_docs);
-                  $documents_id = $found_doc['id'];
-                  $is_recursive = $found_doc['is_recursive'];
-               }
-            } else {
-               $documents_id = $document->getID();
-               $is_recursive = $document->fields['is_recursive'];
-
+            foreach (
+                getAllDataFromTable(
+                    'glpi_documents_items',
+                    ['itemtype' => 'PluginOrderOrder',
+                        'items_id' => $orders_id
+                    ]
+                ) as $doc
+            ) {
+                //Create a new document
+                $document->getFromDB($doc['documents_id']);
+                if (
+                    ($document->getEntityID() != $entity && !$document->fields['is_recursive'])
+                    || !in_array($entity, getSonsOf('glpi_entities', $document->getEntityID()))
+                ) {
+                    $found_docs = getAllDataFromTable(
+                        'glpi_documents',
+                        [
+                            'entities_id' => $entity,
+                            'sha1sum' => $document->fields['sha1sum'],
+                        ]
+                    );
+                    if (empty($found_docs)) {
+                          $tmpdoc                = $document->fields;
+                          $tmpdoc['entities_id'] = $entity;
+                          unset($tmpdoc['id']);
+                          $documents_id = $document->add($tmpdoc);
+                          $is_recursive = $document->fields['is_recursive'];
+                    } else {
+                         $found_doc = array_pop($found_docs);
+                         $documents_id = $found_doc['id'];
+                         $is_recursive = $found_doc['is_recursive'];
+                    }
+                } else {
+                    $documents_id = $document->getID();
+                    $is_recursive = $document->fields['is_recursive'];
+                }
+              //Link the document to the newly generated item
+                $docitem->add([
+                    'documents_id' => $documents_id,
+                    'entities_id'  => $entity,
+                    'items_id'     => $items_id,
+                    'itemtype'     => $itemtype,
+                    'is_recursive' => $is_recursive,
+                ]);
             }
-            //Link the document to the newly generated item
-            $docitem->add([
-               'documents_id' => $documents_id,
-               'entities_id'  => $entity,
-               'items_id'     => $items_id,
-               'itemtype'     => $itemtype,
-               'is_recursive' => $is_recursive,
-            ]);
-         }
-      }
-   }
+        }
+    }
 }

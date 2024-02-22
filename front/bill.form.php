@@ -28,69 +28,69 @@
  * -------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
+include("../../../inc/includes.php");
 
 $bill = new PluginOrderBill();
 
 if (isset($_REQUEST['add'])) {
-   $bill->add($_REQUEST);
-   Html::back();
+    $bill->add($_REQUEST);
+    Html::back();
 }
 
 if (isset($_REQUEST['update'])) {
-   $bill->update($_REQUEST);
-   Html::back();
+    $bill->update($_REQUEST);
+    Html::back();
 }
 
 if (isset($_REQUEST['purge'])) {
-   $bill->delete($_REQUEST);
-   $bill->redirectToList();
+    $bill->delete($_REQUEST);
+    $bill->redirectToList();
 }
 
 if (isset($_POST['action'])) {
    // Retrieve configuration for generate assets feature
 
-   $order_item = new PluginOrderOrder_Item();
-   switch ($_POST['chooseAction']) {
-      case 'bill':
-      case 'state':
-         if (isset ($_POST["item"])) {
-            foreach ($_POST["item"] as $key => $val) {
-               if ($val == 1) {
-                  $tmp       = $_POST;
-                  $tmp['id'] = $key;
-                  $order_item->update($tmp);
+    $order_item = new PluginOrderOrder_Item();
+    switch ($_POST['chooseAction']) {
+        case 'bill':
+        case 'state':
+            if (isset($_POST["item"])) {
+                foreach ($_POST["item"] as $key => $val) {
+                    if ($val == 1) {
+                        $tmp       = $_POST;
+                        $tmp['id'] = $key;
+                        $order_item->update($tmp);
 
-                  // Update infocom
-                  $ic = new Infocom();
-                  $ic->getFromDBforDevice($order_item->fields['itemtype'], $order_item->fields['items_id']);
+                        // Update infocom
+                        $ic = new Infocom();
+                        $ic->getFromDBforDevice($order_item->fields['itemtype'], $order_item->fields['items_id']);
 
-                  $config = PluginOrderConfig::getConfig();
-                  if ($config->canAddBillDetails()) {
-                     if ($bill->getFromDB($_POST["plugin_order_bills_id"])) {
-                        $ic->update([
-                           'id'            => $ic->fields['id'],
-                           'bill'          => $bill->fields['number'],
-                           'warranty_date' => $bill->fields['billdate'],
-                        ]);
-                     }
-                  }
-               }
+                        $config = PluginOrderConfig::getConfig();
+                        if ($config->canAddBillDetails()) {
+                            if ($bill->getFromDB($_POST["plugin_order_bills_id"])) {
+                                 $ic->update([
+                                     'id'            => $ic->fields['id'],
+                                     'bill'          => $bill->fields['number'],
+                                     'warranty_date' => $bill->fields['billdate'],
+                                 ]);
+                            }
+                        }
+                    }
+                }
             }
-         }
-         break;
-   }
-   PluginOrderOrder::updateBillState($order_item->fields['plugin_order_orders_id']);
-   Html::back();
+            break;
+    }
+    PluginOrderOrder::updateBillState($order_item->fields['plugin_order_orders_id']);
+    Html::back();
 }
 
 Session::checkRight("plugin_order_bill", READ);
 
 Html::header(PluginOrderBill::getTypeName(), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "bill");
 if (isset($_REQUEST['id'])) {
-   $bill->display($_REQUEST);
+    $bill->display($_REQUEST);
 } else {
-   $bill->display([]);
+    $bill->display([]);
 }
 
 Html::footer();

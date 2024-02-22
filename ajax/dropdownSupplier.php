@@ -29,30 +29,29 @@
  */
 
 if (strpos($_SERVER['PHP_SELF'], "dropdownSupplier.php")) {
-   include ("../../../inc/includes.php");
-   header("Content-Type: text/html; charset=UTF-8");
-   Html::header_nocache();
+    include("../../../inc/includes.php");
+    header("Content-Type: text/html; charset=UTF-8");
+    Html::header_nocache();
 }
 
 Session::checkCentralAccess();
 
 // Make a select box
 if (isset($_POST["suppliers_id"])) {
-
    // Make a select box
-   $query = "SELECT c.`id`, c.`name`, c.`firstname`
+    $query = "SELECT c.`id`, c.`name`, c.`firstname`
              FROM `glpi_contacts` c
              LEFT JOIN `glpi_contacts_suppliers` s ON (s.`contacts_id` = c.`id`)
              WHERE s.`suppliers_id` = '{$_POST['suppliers_id']}'
              ORDER BY c.`name`";
-   $result = $DB->query($query);
-   $number = $DB->numrows($result);
+    $result = $DB->query($query);
+    $number = $DB->numrows($result);
 
-   $values = [0 => Dropdown::EMPTY_VALUE];
-   if ($number) {
-      while ($data = $DB->fetchAssoc($result)) {
-         $values[$data['id']] = formatUserName('', '', $data['name'], $data['firstname']);
-      }
-   }
-   Dropdown::showFromArray($_POST['fieldname'], $values);
+    $values = [0 => Dropdown::EMPTY_VALUE];
+    if ($number) {
+        while ($data = $DB->fetchAssoc($result)) {
+            $values[$data['id']] = formatUserName('', '', $data['name'], $data['firstname']);
+        }
+    }
+    Dropdown::showFromArray($_POST['fieldname'], $values);
 }

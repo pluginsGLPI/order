@@ -28,14 +28,14 @@
  * -------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
+include("../../../inc/includes.php");
 
 header("Content-Type: text/html; charset=UTF-8");
 
 Html::header_nocache();
 
 if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+    die("Can not acces directly to this file");
 }
 
 Session::checkCentralAccess();
@@ -43,29 +43,29 @@ Session::checkCentralAccess();
 $PluginOrderReference = new PluginOrderReference();
 
 if ($_POST["itemtype"]) {
-   switch ($_POST["field"]) {
-      case "types_id":
-         if (class_exists($_POST["itemtype"].'Type')) {
-            Dropdown::show($_POST["itemtype"]."Type", ['name' => "types_id"]);
-         }
-         break;
-      case "models_id":
-         if (class_exists($_POST["itemtype"].'Model')) {
-            Dropdown::show($_POST["itemtype"] . "Model", ['name' => "models_id"]);
-         } else {
-            return "";
-         }
-         break;
-      case "templates_id":
-         $item = new $_POST['itemtype']();
-         if ($item->maybeTemplate()) {
-            $table = getTableForItemType($_POST["itemtype"]);
-            $PluginOrderReference->dropdownTemplate("templates_id", $_POST["entity_restrict"], $table);
-         } else {
-            return "";
-         }
-         break;
-   }
+    switch ($_POST["field"]) {
+        case "types_id":
+            if (class_exists($_POST["itemtype"] . 'Type')) {
+                Dropdown::show($_POST["itemtype"] . "Type", ['name' => "types_id"]);
+            }
+            break;
+        case "models_id":
+            if (class_exists($_POST["itemtype"] . 'Model')) {
+                Dropdown::show($_POST["itemtype"] . "Model", ['name' => "models_id"]);
+            } else {
+                return "";
+            }
+            break;
+        case "templates_id":
+            $item = new $_POST['itemtype']();
+            if ($item->maybeTemplate()) {
+                $table = getTableForItemType($_POST["itemtype"]);
+                $PluginOrderReference->dropdownTemplate("templates_id", $_POST["entity_restrict"], $table);
+            } else {
+                return "";
+            }
+            break;
+    }
 } else {
-   return '';
+    return '';
 }

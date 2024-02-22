@@ -28,7 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
+include("../../../inc/includes.php");
 
 header("Content-Type: text/html; charset=UTF-8");
 
@@ -41,9 +41,9 @@ $PluginOrderReception = new PluginOrderReception();
 echo "<table width='950px' class='tab_cadre_fixe'>";
 echo "<tr class='tab_bg_2'><td>" . __("Delivery date") . "</td><td>";
 Html::showDateField("delivery_date", [
-   'value'      => date("Y-m-d"),
-   'maybeempty' => true,
-   'canedit'    => true
+    'value'      => date("Y-m-d"),
+    'maybeempty' => true,
+    'canedit'    => true
 ]);
 echo "</td><td>";
 echo __("Delivery form") . "</td><td>";
@@ -52,13 +52,15 @@ echo "</td><td>";
 echo Html::hidden('plugin_order_references_id', ['value' => $_POST["plugin_order_references_id"]]);
 echo Html::hidden('plugin_order_orders_id', ['value' => $_POST["plugin_order_orders_id"]]);
 echo __("Number to deliver", "order") . "</td><td width='10%'>";
-$nb = $PluginOrderReception->checkItemStatus($_POST['plugin_order_orders_id'],
-                                             $_POST['plugin_order_references_id'],
-                                             PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED);
+$nb = $PluginOrderReception->checkItemStatus(
+    $_POST['plugin_order_orders_id'],
+    $_POST['plugin_order_references_id'],
+    PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED
+);
 Dropdown::showNumber('number_reception', [
-   'value' => '',
-   'min'   => 1,
-   'max'   => $nb
+    'value' => '',
+    'min'   => 1,
+    'max'   => $nb
 ]);
 echo "</td><td>";
 echo __("Delivery status", "order") . "&nbsp;";
@@ -68,23 +70,23 @@ echo "</td></tr>";
 echo "<tr class='tab_bg_2'>";
 $config = PluginOrderConfig::getConfig();
 if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
-   echo "<td>". __("Enable automatic generation", "order") . "</td>";
-   echo "<td>";
-   Dropdown::showYesNo("manual_generate", $config->canGenerateAsset());
-   echo "</td><td>" . __("Default name", "order") . "</td>";
-   echo "<td>&nbsp;";
-   Html::autocompletionTextField($config, "generated_name");
-   echo "</td>&nbsp;&nbsp;";
+    echo "<td>" . __("Enable automatic generation", "order") . "</td>";
+    echo "<td>";
+    Dropdown::showYesNo("manual_generate", $config->canGenerateAsset());
+    echo "</td><td>" . __("Default name", "order") . "</td>";
+    echo "<td>&nbsp;";
+    Html::autocompletionTextField($config, "generated_name");
+    echo "</td>&nbsp;&nbsp;";
 
-   echo "<td>" . __("Default serial number", "order") . "</td>";
-   echo "<td>&nbsp;";
-   Html::autocompletionTextField($config, "generated_serial");
-   echo "</td>&nbsp;&nbsp;";
+    echo "<td>" . __("Default serial number", "order") . "</td>";
+    echo "<td>&nbsp;";
+    Html::autocompletionTextField($config, "generated_serial");
+    echo "</td>&nbsp;&nbsp;";
 
-   echo "<td>" . __("Default inventory number", "order") . "</td>";
-   echo "<td>&nbsp;";
-   Html::autocompletionTextField($config, "generated_otherserial");
-   echo "</td>";
+    echo "<td>" . __("Default inventory number", "order") . "</td>";
+    echo "<td>&nbsp;";
+    Html::autocompletionTextField($config, "generated_otherserial");
+    echo "</td>";
 }
 echo "<td><input type='submit' name='bulk_reception' class='submit' value='"
       . _sx('button', 'Post') . "'></td></tr></table>";

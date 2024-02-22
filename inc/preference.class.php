@@ -29,27 +29,28 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderPreference extends CommonDBTM {
+class PluginOrderPreference extends CommonDBTM
+{
+    public static function checkIfPreferenceExists($users_id)
+    {
+        return self::checkPreferenceValue('id', $users_id);
+    }
 
 
-   public static function checkIfPreferenceExists($users_id) {
-      return self::checkPreferenceValue('id', $users_id);
-   }
-
-
-   public function addDefaultPreference($users_id) {
-      $id = self::checkIfPreferenceExists($users_id);
-      if (!$id) {
-         $input["users_id"] = $users_id;
-         $input["template"] = "";
-         $input["sign"]     = "";
-         $id = $this->add($input);
-      }
-      return $id;
-   }
+    public function addDefaultPreference($users_id)
+    {
+        $id = self::checkIfPreferenceExists($users_id);
+        if (!$id) {
+            $input["users_id"] = $users_id;
+            $input["template"] = "";
+            $input["sign"]     = "";
+            $id = $this->add($input);
+        }
+        return $id;
+    }
 
 
    /**
@@ -60,25 +61,28 @@ class PluginOrderPreference extends CommonDBTM {
     * @param unknown_type user ID
     * @return preference value or 0
     */
-   public static function checkPreferenceValue($field, $users_id = 0) {
-      $data = getAllDataFromTable(self::getTable(), ['users_id' => $users_id]);
-      if (!empty($data)) {
-         $first = array_pop($data);
-         return $first[$field];
-      } else {
-         return 0;
-      }
-   }
+    public static function checkPreferenceValue($field, $users_id = 0)
+    {
+        $data = getAllDataFromTable(self::getTable(), ['users_id' => $users_id]);
+        if (!empty($data)) {
+            $first = array_pop($data);
+            return $first[$field];
+        } else {
+            return 0;
+        }
+    }
 
 
-   public static function checkPreferenceSignatureValue($users_id = 0) {
-      return self::checkPreferenceValue('sign', $users_id);
-   }
+    public static function checkPreferenceSignatureValue($users_id = 0)
+    {
+        return self::checkPreferenceValue('sign', $users_id);
+    }
 
 
-   public static function checkPreferenceTemplateValue($users_id) {
-      return self::checkPreferenceValue('template', $users_id);
-   }
+    public static function checkPreferenceTemplateValue($users_id)
+    {
+        return self::checkPreferenceValue('template', $users_id);
+    }
 
 
    /**
@@ -87,10 +91,15 @@ class PluginOrderPreference extends CommonDBTM {
     * @since 1.5.3
     * @param $value
     */
-   public static function dropdownFileTemplates($value = '') {
-      return self::dropdownListFiles('template', PLUGIN_ORDER_TEMPLATE_EXTENSION,
-                                     PLUGIN_ORDER_TEMPLATE_DIR, $value);
-   }
+    public static function dropdownFileTemplates($value = '')
+    {
+        return self::dropdownListFiles(
+            'template',
+            PLUGIN_ORDER_TEMPLATE_EXTENSION,
+            PLUGIN_ORDER_TEMPLATE_DIR,
+            $value
+        );
+    }
 
 
    /**
@@ -99,10 +108,15 @@ class PluginOrderPreference extends CommonDBTM {
     * @since 1.5.3
     * @param $value
     */
-   public static function dropdownFileSignatures($value = '', $empy_value = true) {
-      return self::dropdownListFiles('sign', PLUGIN_ORDER_SIGNATURE_EXTENSION,
-                                     PLUGIN_ORDER_SIGNATURE_DIR, $value);
-   }
+    public static function dropdownFileSignatures($value = '', $empy_value = true)
+    {
+        return self::dropdownListFiles(
+            'sign',
+            PLUGIN_ORDER_SIGNATURE_EXTENSION,
+            PLUGIN_ORDER_SIGNATURE_DIR,
+            $value
+        );
+    }
 
 
    /**
@@ -114,17 +128,18 @@ class PluginOrderPreference extends CommonDBTM {
     * @param $directory directory in which to look for files
     * @param $value
     */
-   public static function dropdownListFiles($name, $extension, $directory, $value = '') {
-      $files  = self::getFiles($directory, $extension);
-      $values = [];
-      if (empty($files)) {
-         $values[0] = Dropdown::EMPTY_VALUE;
-      }
-      foreach ($files as $file) {
-         $values[$file[0]] = $file[0];
-      }
-      return Dropdown::showFromArray($name, $values, ['value' => $value]);
-   }
+    public static function dropdownListFiles($name, $extension, $directory, $value = '')
+    {
+        $files  = self::getFiles($directory, $extension);
+        $values = [];
+        if (empty($files)) {
+            $values[0] = Dropdown::EMPTY_VALUE;
+        }
+        foreach ($files as $file) {
+            $values[$file[0]] = $file[0];
+        }
+        return Dropdown::showFromArray($name, $values, ['value' => $value]);
+    }
 
 
    /**
@@ -133,10 +148,11 @@ class PluginOrderPreference extends CommonDBTM {
     * @since 1.5.3
     * @return true if at least one template exists, false otherwise
     */
-   public static function atLeastOneTemplateExists() {
-      $files = self::getFiles(PLUGIN_ORDER_TEMPLATE_DIR, PLUGIN_ORDER_TEMPLATE_EXTENSION);
-      return (!empty($files));
-   }
+    public static function atLeastOneTemplateExists()
+    {
+        $files = self::getFiles(PLUGIN_ORDER_TEMPLATE_DIR, PLUGIN_ORDER_TEMPLATE_EXTENSION);
+        return (!empty($files));
+    }
 
 
    /**
@@ -145,96 +161,100 @@ class PluginOrderPreference extends CommonDBTM {
     * @since 1.5.3
     * @return true if at least one signature exists, false otherwise
     */
-   public static function atLeastOneSignatureExists() {
-      $files = self::getFiles(PLUGIN_ORDER_SIGNATURE_DIR, PLUGIN_ORDER_SIGNATURE_EXTENSION);
-      return (!empty($files));
-   }
+    public static function atLeastOneSignatureExists()
+    {
+        $files = self::getFiles(PLUGIN_ORDER_SIGNATURE_DIR, PLUGIN_ORDER_SIGNATURE_EXTENSION);
+        return (!empty($files));
+    }
 
 
-   public function showForm($ID, array $options = []) {
-      $version = plugin_version_order();
-      $this->getFromDB($ID);
+    public function showForm($ID, array $options = [])
+    {
+        $version = plugin_version_order();
+        $this->getFromDB($ID);
 
-      echo "<form method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'><div align='center'>";
-      echo "<table class='tab_cadre_fixe' cellpadding='5'>";
-      echo "<tr><th colspan='2'>" . $version['name'] . " - ".$version['version']."</th></tr>";
-      echo "<tr class='tab_bg_2'><td align='center'>".__("Use this model", "order")."</td>";
-      echo "<td align='center'>";
-      self::dropdownFileTemplates($this->fields["template"]);
-      echo "</td></tr>";
+        echo "<form method='post' action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'><div align='center'>";
+        echo "<table class='tab_cadre_fixe' cellpadding='5'>";
+        echo "<tr><th colspan='2'>" . $version['name'] . " - " . $version['version'] . "</th></tr>";
+        echo "<tr class='tab_bg_2'><td align='center'>" . __("Use this model", "order") . "</td>";
+        echo "<td align='center'>";
+        self::dropdownFileTemplates($this->fields["template"]);
+        echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td align='center'>" .__("Use this sign", "order") ."</td>";
-      echo "<td align='center'>";
-      self::dropdownFileSignatures($this->fields["sign"]);
-      echo "</td></tr>";
+        echo "<tr class='tab_bg_2'><td align='center'>" . __("Use this sign", "order") . "</td>";
+        echo "<td align='center'>";
+        self::dropdownFileSignatures($this->fields["sign"]);
+        echo "</td></tr>";
 
-      if (isset($this->fields["sign"]) && !empty($this->fields["sign"])) {
-         echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
-          echo "<img src='".Plugin::getWebDir('order')."/front/signature.php?sign=".rawurlencode($this->fields["sign"])."'>";
-         echo "</td></tr>";
-      }
+        if (isset($this->fields["sign"]) && !empty($this->fields["sign"])) {
+            echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
+            echo "<img src='" . Plugin::getWebDir('order') . "/front/signature.php?sign=" . rawurlencode($this->fields["sign"]) . "'>";
+            echo "</td></tr>";
+        }
 
-      echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
-      echo Html::hidden('id', ['value' => $ID]);
-      echo Html::hidden('users_id', ['value' => $this->fields['users_id']]);
-      echo "<input type='submit' name='update' value='"._sx('button', 'Post')."' class='submit' ></td>";
-      echo "</tr>";
+        echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
+        echo Html::hidden('id', ['value' => $ID]);
+        echo Html::hidden('users_id', ['value' => $this->fields['users_id']]);
+        echo "<input type='submit' name='update' value='" . _sx('button', 'Post') . "' class='submit' ></td>";
+        echo "</tr>";
 
-      echo "</table>";
-      echo "</div>";
-      Html::closeForm();
-   }
+        echo "</table>";
+        echo "</div>";
+        Html::closeForm();
+    }
 
 
-   public static function getFiles($directory, $ext) {
-      $array_file = [];
+    public static function getFiles($directory, $ext)
+    {
+        $array_file = [];
 
-      if (is_dir($directory)) {
-         if ($dh = opendir($directory)) {
-            while (($file = readdir($dh)) !== false) {
-               $filename  = $file;
-               $filetype  = filetype($directory. $file);
-               $filedate  = Html::convDate(date ("Y-m-d", filemtime($directory.$file)));
-               $basename  = explode('.', basename($filename));
-               $extension = array_pop($basename);
-               if ($filename == ".." OR $filename == ".") {
-                  echo "";
-               } else {
-                  if ($filetype == 'file' && $extension == $ext) {
-                     if ($ext == PLUGIN_ORDER_SIGNATURE_EXTENSION) {
-                        $name = array_shift($basename);
-                        if (strtolower($name) == strtolower($_SESSION["glpiname"])) {
-                           $array_file[] = [$filename, $filedate, $extension];
+        if (is_dir($directory)) {
+            if ($dh = opendir($directory)) {
+                while (($file = readdir($dh)) !== false) {
+                    $filename  = $file;
+                    $filetype  = filetype($directory . $file);
+                    $filedate  = Html::convDate(date("Y-m-d", filemtime($directory . $file)));
+                    $basename  = explode('.', basename($filename));
+                    $extension = array_pop($basename);
+                    if ($filename == ".." or $filename == ".") {
+                        echo "";
+                    } else {
+                        if ($filetype == 'file' && $extension == $ext) {
+                            if ($ext == PLUGIN_ORDER_SIGNATURE_EXTENSION) {
+                                $name = array_shift($basename);
+                                if (strtolower($name) == strtolower($_SESSION["glpiname"])) {
+                                    $array_file[] = [$filename, $filedate, $extension];
+                                }
+                            } else {
+                                $array_file[] = [$filename, $filedate, $extension];
+                            }
                         }
-                     } else {
-                        $array_file[] = [$filename, $filedate, $extension];
-                     }
-                  }
-               }
+                    }
+                }
+                closedir($dh);
             }
-            closedir($dh);
-         }
-      }
+        }
 
-      rsort($array_file);
+        rsort($array_file);
 
-      return $array_file;
-   }
+        return $array_file;
+    }
 
 
-   public static function install(Migration $migration) {
-      global $DB;
+    public static function install(Migration $migration)
+    {
+        global $DB;
 
-      $default_charset = DBConnection::getDefaultCharset();
-      $default_collation = DBConnection::getDefaultCollation();
-      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+        $default_charset = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-      //Only avaiable since 1.2.0
-      $table = self::getTable();
-      if (!$DB->tableExists($table)) {
-         $migration->displayMessage("Installing $table");
+       //Only avaiable since 1.2.0
+        $table = self::getTable();
+        if (!$DB->tableExists($table)) {
+            $migration->displayMessage("Installing $table");
 
-         $query = "CREATE TABLE `$table` (
+            $query = "CREATE TABLE `$table` (
                   `id` int {$default_key_sign} NOT NULL auto_increment,
                   `users_id` int {$default_key_sign} NOT NULL default 0,
                   `template` varchar(255) default NULL,
@@ -242,42 +262,42 @@ class PluginOrderPreference extends CommonDBTM {
                   PRIMARY KEY  (`id`),
                   KEY `users_id` (`users_id`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-         $DB->query($query) or die ($DB->error());
-      } else {
-
-         //1.5.3
-         $migration->changeField($table, 'ID', 'id', "int {$default_key_sign} NOT NULL auto_increment");
-         $migration->changeField($table, 'user_id', 'users_id', "INT {$default_key_sign} NOT NULL DEFAULT '0'");
-         $migration->addKey($table, 'users_id');
-         $migration->migrationOneTable($table);
-      }
-   }
-
-
-   public static function uninstall() {
-      global $DB;
-
-      //Current table name
-      $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
-   }
+            $DB->query($query) or die($DB->error());
+        } else {
+           //1.5.3
+            $migration->changeField($table, 'ID', 'id', "int {$default_key_sign} NOT NULL auto_increment");
+            $migration->changeField($table, 'user_id', 'users_id', "INT {$default_key_sign} NOT NULL DEFAULT '0'");
+            $migration->addKey($table, 'users_id');
+            $migration->migrationOneTable($table);
+        }
+    }
 
 
-   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      if (get_class($item) == 'Preference') {
-         return [1 => __("Orders", "order")];
-      }
-      return '';
-   }
+    public static function uninstall()
+    {
+        global $DB;
+
+       //Current table name
+        $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`") or die($DB->error());
+    }
 
 
-   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      if (get_class($item) == 'Preference') {
-         $pref = new self();
-         $id   = $pref->addDefaultPreference(Session::getLoginUserID());
-         $pref->showForm($id);
-      }
-      return true;
-   }
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        if (get_class($item) == 'Preference') {
+            return [1 => __("Orders", "order")];
+        }
+        return '';
+    }
 
 
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        if (get_class($item) == 'Preference') {
+            $pref = new self();
+            $id   = $pref->addDefaultPreference(Session::getLoginUserID());
+            $pref->showForm($id);
+        }
+        return true;
+    }
 }

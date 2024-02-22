@@ -28,22 +28,22 @@
  * -------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
+include("../../../inc/includes.php");
 
 Html::header(
-   __("Orders", "order"),
-   $_SERVER['PHP_SELF'],
-   "management",
-   "PluginOrderMenu",
-   "order"
+    __("Orders", "order"),
+    $_SERVER['PHP_SELF'],
+    "management",
+    "PluginOrderMenu",
+    "order"
 );
 
 if (PluginOrderOrder::canView() || Session::haveRight("config", UPDATE)) {
-   Search::show("PluginOrderOrder");
+    Search::show("PluginOrderOrder");
 } else {
-   echo "<div class='center'><br><br><img src=\""
+    echo "<div class='center'><br><br><img src=\""
       . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
-   echo "<b>" . __("Access denied") . "</b></div>";
+    echo "<b>" . __("Access denied") . "</b></div>";
 }
 
 Html::footer();
