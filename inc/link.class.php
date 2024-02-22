@@ -549,7 +549,7 @@ class PluginOrderLink extends CommonDBChild
         return '';
     }
 
-    function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction()
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
@@ -559,7 +559,7 @@ class PluginOrderLink extends CommonDBChild
     }
 
 
-    function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions($checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
         $sep     = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
@@ -572,7 +572,7 @@ class PluginOrderLink extends CommonDBChild
     }
 
 
-    static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
         $link = new self();
         $reference = new PluginOrderReference();
@@ -597,7 +597,7 @@ class PluginOrderLink extends CommonDBChild
     }
 
 
-    static function processMassiveActionsForOneItemtype(
+    public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids

@@ -36,7 +36,7 @@ class PluginOrderMenu extends CommonGLPI
     }
 
 
-    static function getMenuContent()
+    public static function getMenuContent()
     {
         $menu = [
             'title' => self::getTypeName(2),
@@ -108,7 +108,7 @@ class PluginOrderMenu extends CommonGLPI
     }
 
 
-    function install()
+    public function install()
     {
     }
 }

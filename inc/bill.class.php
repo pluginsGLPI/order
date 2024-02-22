@@ -637,7 +637,7 @@ class PluginOrderBill extends CommonDropdown
     }
 
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-receipt";
     }

@@ -598,7 +598,7 @@ class PluginOrderReception extends CommonDBChild
     }
 
 
-    function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction()
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
@@ -608,7 +608,7 @@ class PluginOrderReception extends CommonDBChild
     }
 
 
-    function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions($checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 
@@ -624,7 +624,7 @@ class PluginOrderReception extends CommonDBChild
     }
 
 
-    static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
         $reception = new self();
         switch ($ma->getAction()) {
@@ -640,7 +640,7 @@ class PluginOrderReception extends CommonDBChild
     }
 
 
-    static function processMassiveActionsForOneItemtype(
+    public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
@@ -1130,7 +1130,7 @@ class PluginOrderReception extends CommonDBChild
     }
 
 
-    function rawSearchOptions()
+    public function rawSearchOptions()
     {
         $tab = [];
 

@@ -45,7 +45,7 @@ class PluginOrderOrderInjection extends PluginOrderOrder implements PluginDatain
     *
     * @return string (table name)
    **/
-    static function getTable($classname = null)
+    public static function getTable($classname = null)
     {
 
         $parenttype = get_parent_class();

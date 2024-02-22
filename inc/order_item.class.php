@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderOrder_Item extends CommonDBRelation
+class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 {
     public static $rightname              = 'plugin_order_order';
 
@@ -58,19 +58,19 @@ class PluginOrderOrder_Item extends CommonDBRelation
    //TODO better right and entity menber (ex Computer_Item)
 
 
-    static function canCreate()
+    public static function canCreate()
     {
         return true;
     }
 
 
-    static function canPurge()
+    public static function canPurge()
     {
         return true;
     }
 
 
-    static function canDelete()
+    public static function canDelete()
     {
         return true;
     }

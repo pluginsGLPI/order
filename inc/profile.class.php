@@ -50,7 +50,7 @@ class PluginOrderProfile extends CommonDBTM
    /**
     * @param $profile
     * */
-    static function addDefaultProfileInfos($profiles_id, $rights, $drop_existing = false)
+    public static function addDefaultProfileInfos($profiles_id, $rights, $drop_existing = false)
     {
         $profileRight = new ProfileRight();
         foreach ($rights as $right => $value) {
@@ -178,7 +178,7 @@ class PluginOrderProfile extends CommonDBTM
     }
 
 
-    static function getAllRights($all = false)
+    public static function getAllRights($all = false)
     {
 
         $rights = [[
@@ -200,7 +200,7 @@ class PluginOrderProfile extends CommonDBTM
     }
 
 
-    static function translateARight($old_right)
+    public static function translateARight($old_right)
     {
         switch ($old_right) {
             case '':
@@ -219,7 +219,7 @@ class PluginOrderProfile extends CommonDBTM
     }
 
 
-    static function migrateOneProfile($profiles_id)
+    public static function migrateOneProfile($profiles_id)
     {
         global $DB;
        //Cannot launch migration if there's nothing to migrate...
@@ -275,7 +275,7 @@ class PluginOrderProfile extends CommonDBTM
    /**
     * Initialize profiles, and migrate it necessary
     */
-    static function initProfile()
+    public static function initProfile()
     {
         global $DB;
         $profile = new self();
@@ -302,7 +302,7 @@ class PluginOrderProfile extends CommonDBTM
     }
 
 
-    static function removeRightsFromSession()
+    public static function removeRightsFromSession()
     {
         foreach (self::getAllRights(true) as $right) {
             if (isset($_SESSION['glpiactiveprofile'][$right['field']])) {

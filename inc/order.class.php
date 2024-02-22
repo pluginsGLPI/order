@@ -112,7 +112,7 @@ class PluginOrderOrder extends CommonDBTM
     }
 
 
-    static function canGenerateWithoutValidation()
+    public static function canGenerateWithoutValidation()
     {
         return Session::haveRight("plugin_order_order", self::RIGHT_GENERATEODT_WITHOUT_VALIDATION);
     }
@@ -299,7 +299,7 @@ class PluginOrderOrder extends CommonDBTM
     *
     * @see commonDBTM::getRights()
    **/
-    function getRights($interface = 'central')
+    public function getRights($interface = 'central')
     {
 
         if ($interface == 'central') {
@@ -1511,9 +1511,9 @@ class PluginOrderOrder extends CommonDBTM
                 case $config->getWaitingForApprovalState():
                     $event = "ask";
                     break;
-                case $config->getCanceledState();
+                case $config->getCanceledState():
                     $event = "cancel";
-                  break;
+                    break;
                 case $config->getDraftState():
                     $event = "undovalidation";
                     break;
@@ -2383,7 +2383,7 @@ class PluginOrderOrder extends CommonDBTM
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     **/
-    static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
         switch ($ma->getAction()) {
             case 'transfert':
@@ -2396,7 +2396,7 @@ class PluginOrderOrder extends CommonDBTM
     }
 
 
-    function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions($checkitem = null)
     {
 
         $isadmin = static::canUpdate();
@@ -2420,7 +2420,7 @@ class PluginOrderOrder extends CommonDBTM
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
     **/
-    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
+    public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
     {
         switch ($ma->getAction()) {
             case "transfert":
@@ -2887,7 +2887,7 @@ class PluginOrderOrder extends CommonDBTM
     }
 
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "fas fa-shopping-cart";
     }

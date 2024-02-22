@@ -32,7 +32,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderOrder_Supplier extends CommonDBChild
+class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 {
     public static $rightname = 'plugin_order_order';
 

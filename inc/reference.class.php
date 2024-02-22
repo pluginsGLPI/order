@@ -254,7 +254,7 @@ class PluginOrderReference extends CommonDBTM
         return $tab;
     }
 
-    static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -275,7 +275,7 @@ class PluginOrderReference extends CommonDBTM
     * @param $values             (defaut '')
     * @param $options   array
     **/
-    static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -914,7 +914,7 @@ class PluginOrderReference extends CommonDBTM
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
     **/
-    static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
         switch ($ma->getAction()) {
             case 'transfert':
@@ -932,7 +932,7 @@ class PluginOrderReference extends CommonDBTM
     }
 
 
-    function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions($checkitem = null)
     {
 
         $isadmin = static::canUpdate();
@@ -957,7 +957,7 @@ class PluginOrderReference extends CommonDBTM
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
     **/
-    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
+    public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
     {
         switch ($ma->getAction()) {
             case "transfert":
@@ -1200,7 +1200,7 @@ class PluginOrderReference extends CommonDBTM
     }
 
 
-    static function getIcon()
+    public static function getIcon()
     {
         return "ti ti-list-search";
     }

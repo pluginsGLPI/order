@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginOrderConfig extends CommonDBTM
 {
-    static $rightname = 'config';
+    public static $rightname = 'config';
 
     const CONFIG_NEVER   = 0;
     const CONFIG_YES     = 1;
@@ -50,13 +50,13 @@ class PluginOrderConfig extends CommonDBTM
     }
 
 
-    static function canView()
+    public static function canView()
     {
         return Session::haveRight('config', READ);
     }
 
 
-    static function canCreate()
+    public static function canCreate()
     {
         return Session::haveRight('config', UPDATE);
     }
@@ -95,7 +95,7 @@ class PluginOrderConfig extends CommonDBTM
     }
 
 
-    function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = [])
     {
         $this->getFromDB($ID);
 
@@ -858,7 +858,7 @@ class PluginOrderConfig extends CommonDBTM
     }
 
 
-    function rawSearchOptions()
+    public function rawSearchOptions()
     {
         $tab = [];
 
