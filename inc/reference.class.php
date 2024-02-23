@@ -265,6 +265,7 @@ class PluginOrderReference extends CommonDBTM
                 return $item->getTypeName();
             break;
         }
+        return '';
     }
 
    /**
@@ -401,6 +402,7 @@ class PluginOrderReference extends CommonDBTM
 
     public function dropdownTemplate($name, $entity, $table, $value = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = "SELECT `template_name`, `id`
@@ -435,6 +437,7 @@ class PluginOrderReference extends CommonDBTM
 
     public function checkIfTemplateExistsInEntity($detailID, $itemtype, $entity)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $table = self::getTable();
@@ -481,6 +484,7 @@ class PluginOrderReference extends CommonDBTM
 
     public function dropdownAllItems($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $p['myname']       = '';
@@ -570,6 +574,7 @@ class PluginOrderReference extends CommonDBTM
 
     public function showForm($id, $options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $this->initForm($id, $options);
@@ -776,6 +781,7 @@ class PluginOrderReference extends CommonDBTM
 
     public function showOrders($ref)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $order = new PluginOrderOrder();
@@ -833,6 +839,7 @@ class PluginOrderReference extends CommonDBTM
 
     public function transfer($ID, $entity)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($ID <= 0 || !$this->getFromDB($ID)) {
@@ -991,6 +998,7 @@ class PluginOrderReference extends CommonDBTM
 
     public static function install(Migration $migration)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -1184,6 +1192,7 @@ class PluginOrderReference extends CommonDBTM
 
     public static function uninstall()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $table  = self::getTable();

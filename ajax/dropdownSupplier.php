@@ -28,6 +28,9 @@
  * -------------------------------------------------------------------------
  */
 
+/** @var \DBmysql $DB */
+global $DB;
+
 if (strpos($_SERVER['PHP_SELF'], "dropdownSupplier.php")) {
     include("../../../inc/includes.php");
     header("Content-Type: text/html; charset=UTF-8");

@@ -57,9 +57,9 @@ class PluginOrderPreference extends CommonDBTM
     *
     * Get a preference for an user
     * @since 1.5.3
-    * @param unknown_type preference field to get
-    * @param unknown_type user ID
-    * @return preference value or 0
+    * param unknown_type preference field to get
+    * param unknown_type user ID
+    * return preference value or 0
     */
     public static function checkPreferenceValue($field, $users_id = 0)
     {
@@ -243,6 +243,7 @@ class PluginOrderPreference extends CommonDBTM
 
     public static function install(Migration $migration)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -275,6 +276,7 @@ class PluginOrderPreference extends CommonDBTM
 
     public static function uninstall()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //Current table name

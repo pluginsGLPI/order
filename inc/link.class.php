@@ -266,6 +266,7 @@ class PluginOrderLink extends CommonDBChild
 
     public function queryRef($ID, $table)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         if ($table == 'glpi_plugin_order_references') {
             $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` NOT LIKE 'PluginOrderReferenceFree'";
@@ -313,6 +314,7 @@ class PluginOrderLink extends CommonDBChild
 
     public function showOrderLink($plugin_order_orders_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $PluginOrderOrder      = new PluginOrderOrder();
@@ -353,6 +355,8 @@ class PluginOrderLink extends CommonDBChild
 
     public function showOrderLinkItem($numref, $data_ref, $canedit, $plugin_order_orders_id, $PluginOrderOrder, $table)
     {
+        /** @var \DBmysql $DB */
+        /** @var array $CFG_GLPI */
         global $DB, $CFG_GLPI;
 
         $PluginOrderOrder_Item = new PluginOrderOrder_Item();
@@ -528,7 +532,7 @@ class PluginOrderLink extends CommonDBChild
     */
     protected function getItemSerialNumber($items_id, $itemtype)
     {
-
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($itemtype == 'PluginOrderOther' || $itemtype == 'PluginOrderReferenceFree') {
@@ -602,6 +606,7 @@ class PluginOrderLink extends CommonDBChild
         CommonDBTM $item,
         array $ids
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // retrieve additional informations for each items
@@ -722,6 +727,7 @@ class PluginOrderLink extends CommonDBChild
         $plugin_order_orders_id,
         $detailID = 0
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
         if (!in_array($itemtype, self::getTypesThanCannotBeGenerated())) {
             $query = "SELECT COUNT(*) AS cpt
@@ -752,6 +758,7 @@ class PluginOrderLink extends CommonDBChild
 
     public function isItemLinkedToOrder($itemtype, $items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = "SELECT `id`
@@ -770,6 +777,7 @@ class PluginOrderLink extends CommonDBChild
 
     public function generateInfoComRelatedToOrder($entity, $detailID, $itemtype, $items_id, $templateID = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        //Do not try to generate infocoms if itemtype doesn't support it (ie contracts...)
@@ -886,6 +894,7 @@ class PluginOrderLink extends CommonDBChild
         $history = true,
         $check_link = true
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (
@@ -1029,6 +1038,7 @@ class PluginOrderLink extends CommonDBChild
 
     public function deleteLinkWithItem($detailID, $itemtype, $plugin_order_orders_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($itemtype == 'SoftWareLicense') {
@@ -1357,6 +1367,7 @@ class PluginOrderLink extends CommonDBChild
     */
     public static function copyDocuments($itemtype, $items_id, $orders_id, $entity)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $config = PluginOrderConfig::getConfig();

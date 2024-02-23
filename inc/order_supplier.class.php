@@ -125,6 +125,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public function getFromDBByOrder($plugin_order_orders_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = "SELECT * FROM `" . self::getTable() . "`
@@ -288,6 +289,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public static function showDeliveries($suppliers_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = "SELECT COUNT(`glpi_plugin_order_orders_items`.`plugin_order_references_id`) AS ref,
@@ -339,6 +341,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public static function install(Migration $migration)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -441,6 +444,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public static function uninstall()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //Old table name

@@ -288,6 +288,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public static function getClasses($all = false)
     {
+        /** @var array $ORDER_TYPES */
         global $ORDER_TYPES;
 
         if ($all) {
@@ -355,6 +356,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function showAddForm($plugin_order_orders_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $order     = new PluginOrderOrder();
@@ -658,6 +660,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function queryDetail($ID, $tableRef = 'glpi_plugin_order_references')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $table = self::getTable();
@@ -709,6 +712,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function queryBills($orders_id, $references_id, $tabRef)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $table = self::getTable();
@@ -750,6 +754,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function queryRef($orders_id, $ref_id, $price_taxfree, $discount, $states_id = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = "SELECT `id`, `items_id`
@@ -770,6 +775,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function showFormDetail($plugin_order_orders_id)
     {
+        /** @var \DBmysql $DB */
         global  $DB;
 
         $order                = new PluginOrderOrder();
@@ -815,6 +821,8 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function getItems($rand, $data_ref, $plugin_order_orders_id, $numref, $canedit, $reference, $reception, $table_ref)
     {
+        /** @var array $CFG_GLPI */
+        /** @var \DBmysql $DB */
         global  $CFG_GLPI,$DB;
 
         $global_rand = mt_rand();
@@ -1280,6 +1288,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function getTotalQuantityByRefAndDiscount($orders_id, $references_id, $price_taxfree, $discount)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = "SELECT COUNT(*) AS quantity
@@ -1310,6 +1319,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function getAllPrices($orders_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = "SELECT SUM(`price_ati`) AS priceTTC, SUM(`price_discounted`) AS priceHT,
@@ -1323,6 +1333,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function getOrderInfosByItem($itemtype, $items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $table = self::getTable();
@@ -1500,6 +1511,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function updatePrices($order_items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $this->getFromDB($order_items_id);
         if (
@@ -1524,6 +1536,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function showBillsItems(PluginOrderOrder $order)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         echo "<table class='tab_cadre_fixe'>";
@@ -1595,6 +1608,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public static function queryBillsItems($ID, $table)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($table == 'glpi_plugin_order_references') {
@@ -1619,15 +1633,17 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function showBillsItemsDetail($data_ref, $result_ref, $canedit, $order, $table)
     {
+        /** @var \DBmysql $DB */
+        /** @var array $CFG_GLPI */
         global $DB, $CFG_GLPI;
 
         $reference = new PluginOrderReference();
+        $rand      = mt_rand();
 
         echo "<table class='tab_cadre_fixe'>";
         if (!$DB->numrows($result_ref)) {
             echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
         } else {
-            $rand     = mt_rand();
             $itemtype = $data_ref["itemtype"];
             $item     = new $itemtype();
             echo "<tr><th><ul class='list-unstyled'><li>";
@@ -1773,6 +1789,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function updateQuantity($post)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $quantity = $this->getTotalQuantityByRefAndDiscount(
             $post['plugin_order_orders_id'],
@@ -1855,6 +1872,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public static function install(Migration $migration)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -2055,6 +2073,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public static function uninstall()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //Old table name
@@ -2136,6 +2155,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public static function uninstallOrderItemNotification()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $notif   = new Notification();
@@ -2181,7 +2201,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
     */
     protected function getManufacturersReference($reference_id)
     {
-
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([

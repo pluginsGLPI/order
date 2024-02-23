@@ -72,9 +72,7 @@ if (isset($_POST["add"])) {
     );
 
    /* load order form */
-    $PluginOrderReference_Supplier->display($_GET, [
-        'plugin_order_references_id' => $_GET["plugin_order_references_id"],
-    ]);
+    $PluginOrderReference_Supplier->display($_GET);
 
     Html::footer();
 }

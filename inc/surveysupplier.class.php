@@ -59,6 +59,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
     public function getFromDBByOrder($plugin_order_orders_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $table = self::getTable();
@@ -114,6 +115,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
     public function getTotalNotation($plugin_order_orders_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $table = self::getTable();
@@ -131,6 +133,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
     public function getNotation($suppliers_id, $field)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $table = self::getTable();
@@ -154,6 +157,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
     public static function showGlobalNotation($suppliers_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $config = PluginOrderConfig::getConfig();
@@ -368,6 +372,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
     public static function showOrderSupplierSurvey($ID)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $order = new PluginOrderOrder();
@@ -465,6 +470,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
     public static function install(Migration $migration)
     {
+        /** @var \DBmysql $DB */
         global $DB;
        //Only avaiable since 1.3.0
 
@@ -540,6 +546,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
     public static function uninstall()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //Current table name
@@ -558,6 +565,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 return [1 => __("Supplier quality", "order")];
             }
         }
+        return [];
     }
 
 

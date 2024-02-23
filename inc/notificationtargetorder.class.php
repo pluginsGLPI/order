@@ -207,6 +207,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
 
     public static function install(Migration $migration)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $migration->displayMessage("Migrate PluginOrderOrder notifications");
@@ -437,6 +438,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
 
     public static function uninstall()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $notif = new Notification();
@@ -528,7 +530,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
     */
     protected function addAddressesByType($recipient_type, $order_id)
     {
-
+        /** @var \DBmysql $DB */
         global $DB;
 
         $table = "glpi_" . $recipient_type;

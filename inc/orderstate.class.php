@@ -70,6 +70,7 @@ class PluginOrderOrderState extends CommonDropdown
 
     public static function install(Migration $migration)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -118,6 +119,7 @@ class PluginOrderOrderState extends CommonDropdown
 
     public static function uninstall()
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`") or die($DB->error());
     }

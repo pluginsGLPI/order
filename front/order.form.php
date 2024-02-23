@@ -28,6 +28,9 @@
  * -------------------------------------------------------------------------
  */
 
+/** @var \DBmysql $DB */
+global $DB;
+
 include("../../../inc/includes.php");
 
 if (!isset($_GET["id"])) {
@@ -91,7 +94,7 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else if (isset($_POST["waiting_for_approval"])) {
-    if (pluginOrderOrder::canCreate()) {
+    if (PluginOrderOrder::canCreate()) {
         $pluginOrderOrder->updateOrderStatus(
             $_POST["id"],
             $config->getWaitingForApprovalState(),
@@ -101,7 +104,7 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else if (isset($_POST["cancel_waiting_for_approval"])) {
-    if (pluginOrderOrder::canView() && pluginOrderOrder::canCancel()) {
+    if (PluginOrderOrder::canView() && PluginOrderOrder::canCancel()) {
         $pluginOrderOrder->updateOrderStatus(
             $_POST["id"],
             $config->getDraftState(),
@@ -112,7 +115,7 @@ if (isset($_POST["add"])) {
 
     Html::back();
 } else if (isset($_POST["cancel_order"])) {
-    if (pluginOrderOrder::canView() && pluginOrderOrder::canCancel()) {
+    if (PluginOrderOrder::canView() && PluginOrderOrder::canCancel()) {
         $pluginOrderOrder->updateOrderStatus(
             $_POST["id"],
             $config->getCanceledState(),
@@ -124,7 +127,7 @@ if (isset($_POST["add"])) {
 
     Html::back();
 } else if (isset($_POST["undovalidation"])) {
-    if (pluginOrderOrder::canView() && pluginOrderOrder::canUndo()) {
+    if (PluginOrderOrder::canView() && PluginOrderOrder::canUndo()) {
         $pluginOrderOrder->updateOrderStatus(
             $_POST["id"],
             $config->getDraftState(),

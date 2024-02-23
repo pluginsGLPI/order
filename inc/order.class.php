@@ -301,9 +301,8 @@ class PluginOrderOrder extends CommonDBTM
    **/
     public function getRights($interface = 'central')
     {
-
+        $values = parent::getRights();
         if ($interface == 'central') {
-            $values = parent::getRights();
             $values[self::RIGHT_GENERATEODT]     = __("Order Generation", "order");
             $values[self::RIGHT_DELIVERY]        = __("Take item delivery", "order");
             $values[self::RIGHT_VALIDATION]      = __("Order validation", "order");
@@ -792,8 +791,9 @@ class PluginOrderOrder extends CommonDBTM
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $config = PluginOrderConfig::getConfig();
 
@@ -879,6 +879,7 @@ class PluginOrderOrder extends CommonDBTM
 
     public function showForm($ID, $options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $config = PluginOrderConfig::getConfig();
@@ -1484,6 +1485,7 @@ class PluginOrderOrder extends CommonDBTM
 
     public function updateOrderStatus($orders_id, $status, $comments = '')
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $config = PluginOrderConfig::getConfig();
@@ -1638,6 +1640,7 @@ class PluginOrderOrder extends CommonDBTM
 
     public function showGenerationForm($ID)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         echo "<form action='" . Plugin::getWebDir('order') . "/front/export.php?id=" . $ID
@@ -1691,6 +1694,7 @@ class PluginOrderOrder extends CommonDBTM
 
     public function generateOrder($params)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID        = $params['id'];
@@ -1966,6 +1970,7 @@ class PluginOrderOrder extends CommonDBTM
 
     public function transfer($ID, $entity)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $supplier  = new PluginOrderOrder_Supplier();
@@ -1999,6 +2004,7 @@ class PluginOrderOrder extends CommonDBTM
 
     public static function showForBudget($budgets_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $table = self::getTable();
@@ -2152,6 +2158,7 @@ class PluginOrderOrder extends CommonDBTM
 
     public function isOverBudget($ID)
     {
+        /** @var \DBmysql $DB */
         global $DB;
        //Do not check if it's a template
         if ($this->fields['is_template']) {
@@ -2235,6 +2242,8 @@ class PluginOrderOrder extends CommonDBTM
 
     public static function cronComputeLateOrders($task)
     {
+        /** @var array $CFG_GLPI */
+        /** @var \DBmysql $DB */
         global $CFG_GLPI, $DB;
 
         $nblate = 0;
@@ -2450,6 +2459,7 @@ class PluginOrderOrder extends CommonDBTM
 
     public static function install(Migration $migration)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -2511,7 +2521,7 @@ class PluginOrderOrder extends CommonDBTM
             ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
             $DB->query($query) or die($DB->error());
 
-            Crontask::Register(__CLASS__, 'computeLateOrders', HOUR_TIMESTAMP, [
+            CronTask::Register(__CLASS__, 'computeLateOrders', HOUR_TIMESTAMP, [
                 'param' => 24,
                 'mode'  => CronTask::MODE_EXTERNAL
             ]);
@@ -2538,9 +2548,8 @@ class PluginOrderOrder extends CommonDBTM
 
            //1.2.0
             $domigration_itemtypes = false;
-            if ($migration->renameTable("glpi_plugin_order", $table)) {
-                $domigration_itemtypes = true;
-            }
+            $migration->renameTable("glpi_plugin_order", $table);
+            $domigration_itemtypes = true;
 
             $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL AUTO_INCREMENT");
             $migration->changeField(
@@ -2798,7 +2807,7 @@ class PluginOrderOrder extends CommonDBTM
             $migration->addField($table, "is_late", "TINYINT NOT NULL DEFAULT '0'");
             $migration->addKey($table, "is_late");
             if (!countElementsInTable('glpi_crontasks', ['name' => 'computeLateOrders'])) {
-                Crontask::Register(__CLASS__, 'computeLateOrders', HOUR_TIMESTAMP, [
+                CronTask::Register(__CLASS__, 'computeLateOrders', HOUR_TIMESTAMP, [
                     'param' => 24,
                     'mode'  => CronTask::MODE_EXTERNAL
                 ]);
@@ -2856,7 +2865,7 @@ class PluginOrderOrder extends CommonDBTM
        // Remove RIGHT_OPENTICKET
         $DB->update(
             ProfileRight::getTable(),
-            ['rights' => new QueryExpression(DB::quoteName('rights') . ' & ~' . self::RIGHT_OPENTICKET)],
+            ['rights' => new QueryExpression($DB->quoteName('rights') . ' & ~' . self::RIGHT_OPENTICKET)],
             ['name' => self::$rightname]
         );
 
@@ -2869,6 +2878,7 @@ class PluginOrderOrder extends CommonDBTM
 
     public static function uninstall()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $tables = ["glpi_displaypreferences", "glpi_documents_items", "glpi_savedsearches",

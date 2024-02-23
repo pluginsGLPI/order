@@ -123,6 +123,7 @@ class PluginOrderProfile extends CommonDBTM
 
     public static function install(Migration $migration)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (
@@ -145,6 +146,7 @@ class PluginOrderProfile extends CommonDBTM
 
     public static function uninstall()
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $DB->query("DELETE FROM glpi_profilerights WHERE name LIKE 'plugin_order_%'");
         self::removeRightsFromSession();
@@ -221,6 +223,7 @@ class PluginOrderProfile extends CommonDBTM
 
     public static function migrateOneProfile($profiles_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
        //Cannot launch migration if there's nothing to migrate...
         if (!$DB->tableExists('glpi_plugin_order_profiles')) {
@@ -277,6 +280,7 @@ class PluginOrderProfile extends CommonDBTM
     */
     public static function initProfile()
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $profile = new self();
 

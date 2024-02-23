@@ -44,7 +44,7 @@ class PluginOrderAnalyticNature extends CommonDropdown
 
     public static function install(Migration $migration)
     {
-
+        /** @var \DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -68,7 +68,7 @@ class PluginOrderAnalyticNature extends CommonDropdown
 
     public static function uninstall()
     {
-
+        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->query("DROP TABLE IF EXISTS `" . getTableForItemType(__CLASS__) . "`") or die($DB->error());

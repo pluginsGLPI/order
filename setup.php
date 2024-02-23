@@ -58,6 +58,7 @@ if (!defined('PLUGIN_ORDER_TEMPLATE_EXTENSION')) {
 if (!defined('PLUGIN_ORDER_SIGNATURE_EXTENSION')) {
     define("PLUGIN_ORDER_SIGNATURE_EXTENSION", "png");
 }
+/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 if (!defined('PLUGIN_ORDER_NUMBER_STEP')) {
     define("PLUGIN_ORDER_NUMBER_STEP", 1 / pow(10, $CFG_GLPI["decimal_number"]));
@@ -78,6 +79,11 @@ include_once PLUGIN_ORDER_DIR . "/vendor/autoload.php";
  */
 function plugin_init_order()
 {
+    /**
+     * @var object $PLUGIN_HOOKS
+     * @var array $CFG_GLPI
+     * @var array $ORDER_TYPES
+     */
     global $PLUGIN_HOOKS, $CFG_GLPI, $ORDER_TYPES;
 
     Plugin::registerClass('PluginOrderProfile');

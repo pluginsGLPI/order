@@ -43,6 +43,7 @@ class PluginOrderConfig extends CommonDBTM
 
     public function __construct()
     {
+        /** @var \DBmysql $DB */
         global $DB;
         if ($DB->tableExists(self::getTable())) {
             $this->getFromDB(1);
@@ -667,6 +668,7 @@ class PluginOrderConfig extends CommonDBTM
    //----------------- Install & uninstall -------------------//
     public static function install(Migration $migration)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -848,6 +850,7 @@ class PluginOrderConfig extends CommonDBTM
 
     public static function uninstall()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //Old table

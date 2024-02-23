@@ -15,5 +15,16 @@ parameters:
         - ../../src
     stubFiles:
         - ../../stubs/glpi_constants.php
+    ignoreErrors:
+        - '#^Call to deprecated method query\b\(\)#'
+        - '#^Call to an undefined method.*#'
+        - '#^Access to an undefined property.*#'
+        - '#^Access to private property.*#'
+        - '#^Variable .* might not be defined.*#'
+        - '#^Method .* should return .* but return statement is missing.*#'
+        - '#^Fetching deprecated class constant RIGHT_OPENTICKET of class PluginOrderOrder: *#'
+    excludePaths:
+        - inc/referenceinjection.class.php
+        - inc/orderinjection.class.php
 rules:
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule

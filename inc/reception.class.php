@@ -78,6 +78,7 @@ class PluginOrderReception extends CommonDBChild
 
     public function getFromDBByOrder($plugin_order_orders_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = "SELECT * FROM `" . $this->table . "`
@@ -99,6 +100,7 @@ class PluginOrderReception extends CommonDBChild
 
     public function checkThisItemStatus($detailID, $states_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = "SELECT `states_id`
@@ -128,6 +130,7 @@ class PluginOrderReception extends CommonDBChild
 
     public function deleteDelivery($detailID)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $detail = new PluginOrderOrder_Item();
@@ -301,6 +304,7 @@ class PluginOrderReception extends CommonDBChild
 
     public function showOrderReception($orders_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $order_order = new PluginOrderOrder();
@@ -352,15 +356,18 @@ class PluginOrderReception extends CommonDBChild
 
     public function showOrderReceptionItem($data_ref, $numref, $canedit, $reference, $order_item, $orders_id, $order_order, $table)
     {
+        /** @var \DBmysql $DB */
+        /** @var array $CFG_GLPI */
         global $DB, $CFG_GLPI;
 
         echo "<table class='tab_cadre_fixe'>";
 
+        $references_id  = $data_ref["id"];
+        $typeRef        = $data_ref["itemtype"];
+
         if (!$numref) {
             echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
         } else {
-            $references_id  = $data_ref["id"];
-            $typeRef        = $data_ref["itemtype"];
             $price_taxfree  = $data_ref["price_taxfree"];
             $discount       = $data_ref["discount"];
             $canmassive     = $order_order->canDeliver()
@@ -757,6 +764,7 @@ class PluginOrderReception extends CommonDBChild
 
     public function updateBulkReceptionStatus($params)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = "SELECT `id`, `itemtype`, 'entities_id'
@@ -823,6 +831,7 @@ class PluginOrderReception extends CommonDBChild
 
     public function receptionAllItem($detailID, $ref_id, $orders_id, $delivery_date, $delivery_nb, $state_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $detail = new PluginOrderOrder_Item();
@@ -854,11 +863,13 @@ class PluginOrderReception extends CommonDBChild
 
     public function updateReceptionStatus($params)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $detail                 = new PluginOrderOrder_Item();
         $plugin_order_orders_id = 0;
         $ma                     = false;
+        $params2                = [];
 
        // from MassiveAction process, we get ma object, so convert it into array
         if (is_object($params)) {
@@ -968,6 +979,7 @@ class PluginOrderReception extends CommonDBChild
 
     public static function updateDelivryStatus($orders_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $config = PluginOrderConfig::getConfig();

@@ -252,6 +252,7 @@ class PluginOrderBill extends CommonDropdown
 
     public static function showItems(PluginOrderBill $bill)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
@@ -327,6 +328,7 @@ class PluginOrderBill extends CommonDropdown
 
     public static function showOrdersItems(PluginOrderBill $bill)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $reference = new PluginOrderReference();
@@ -357,14 +359,17 @@ class PluginOrderBill extends CommonDropdown
 
     public static function showOrder($data_ref, $result_ref, $canedit, $order, $reference, $table)
     {
+        /** @var \DBmysql $DB */
+        /** @var array $CFG_GLPI */
         global $DB, $CFG_GLPI;
+
+        $rand = mt_rand();
+        $order_item = new PluginOrderOrder_Item();
+
         echo "<div class='center'><table class='tab_cadre_fixe'>";
         if (!$DB->numrows($result_ref)) {
             echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
         } else {
-            $order_item = new PluginOrderOrder_Item();
-
-            $rand     = mt_rand();
             $itemtype = $data_ref["itemtype"];
             $item     = new $itemtype();
             echo "<tr><th><ul class='list-unstyled'><li>";
@@ -513,6 +518,7 @@ class PluginOrderBill extends CommonDropdown
 
     public static function install(Migration $migration)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -589,6 +595,7 @@ class PluginOrderBill extends CommonDropdown
 
     public static function uninstall()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $table = self::getTable();

@@ -28,6 +28,9 @@
  * -------------------------------------------------------------------------
  */
 
+/** @var DBmysql $DB */
+global $DB;
+
 include_once("../../../inc/includes.php");
 
 Session::checkCentralAccess();
