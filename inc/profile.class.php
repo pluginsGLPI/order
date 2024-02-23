@@ -118,6 +118,7 @@ class PluginOrderProfile extends CommonDBTM
             Html::closeForm();
         }
         echo "</div>";
+        return true;
     }
 
 

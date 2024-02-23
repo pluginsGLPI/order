@@ -689,6 +689,7 @@ class PluginOrderOrder extends CommonDBTM
 
                 return $ong;
         }
+        return '';
     }
 
 
@@ -2863,9 +2864,11 @@ class PluginOrderOrder extends CommonDBTM
         }
 
        // Remove RIGHT_OPENTICKET
+        /** @phpstan-ignore-next-line */
+        $right_openticket = self::RIGHT_OPENTICKET;
         $DB->update(
             ProfileRight::getTable(),
-            ['rights' => new QueryExpression($DB->quoteName('rights') . ' & ~' . self::RIGHT_OPENTICKET)],
+            ['rights' => new QueryExpression($DB->quoteName('rights') . ' & ~' . $right_openticket)],
             ['name' => self::$rightname]
         );
 

@@ -470,6 +470,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
             default:
                 return '';
         }
+        return '';
     }
 
 
