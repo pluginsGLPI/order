@@ -28,27 +28,27 @@
  * -------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
+include("../../../inc/includes.php");
 
 header("Content-Type: text/html; charset=UTF-8");
 
 Html::header_nocache();
 
 if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+    die("Can not acces directly to this file");
 }
 
 if (isset($_POST["action"])) {
-   switch ($_POST["action"]) {
-      case "bill":
-         echo "&nbsp;";
-         echo Html::hidden('plugin_order_orders_id', ['value' => $_POST["plugin_order_orders_id"]]);
-         PluginOrderBill::Dropdown([
-            'condition' => ['plugin_order_orders_id' => $_POST['plugin_order_orders_id']],
-         ]);
-         break;
-   }
+    switch ($_POST["action"]) {
+        case "bill":
+            echo "&nbsp;";
+            echo Html::hidden('plugin_order_orders_id', ['value' => $_POST["plugin_order_orders_id"]]);
+            PluginOrderBill::Dropdown([
+                'condition' => ['plugin_order_orders_id' => $_POST['plugin_order_orders_id']],
+            ]);
+            break;
+    }
 
-   PluginOrderBillState::Dropdown(['comments' => true]);
-   echo "&nbsp;<input type='submit' name='action' class='submit' value='"._sx('button', 'Post')."'>";
+    PluginOrderBillState::Dropdown(['comments' => true]);
+    echo "&nbsp;<input type='submit' name='action' class='submit' value='" . _sx('button', 'Post') . "'>";
 }

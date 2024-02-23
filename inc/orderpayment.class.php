@@ -29,60 +29,62 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
 // Class for a Dropdown
-class PluginOrderOrderPayment extends CommonDropdown {
+class PluginOrderOrderPayment extends CommonDropdown
+{
+    public static $rightname = 'plugin_order_order'; //'plugin_order_order';
 
-   public static $rightname = 'plugin_order_order'; //'plugin_order_order';
+    public static function getTypeName($nb = 0)
+    {
+        return __("Payment conditions", "order");
+    }
 
-   public static function getTypeName($nb = 0) {
-      return __("Payment conditions", "order");
-   }
 
+    public static function install(Migration $migration)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
 
-   public static function install(Migration $migration) {
-      global $DB;
+        $default_charset = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-      $default_charset = DBConnection::getDefaultCharset();
-      $default_collation = DBConnection::getDefaultCollation();
-      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+        $table = self::getTable();
+        if (!$DB->tableExists($table) && !$DB->tableExists("glpi_dropdown_plugin_order_payment")) {
+            $migration->displayMessage("Installing $table");
 
-      $table = self::getTable();
-      if (!$DB->tableExists($table) && !$DB->tableExists("glpi_dropdown_plugin_order_payment")) {
-         $migration->displayMessage("Installing $table");
-
-         $query = "CREATE TABLE `glpi_plugin_order_orderpayments` (
+            $query = "CREATE TABLE `glpi_plugin_order_orderpayments` (
                   `id` int {$default_key_sign} NOT NULL auto_increment,
                   `name` varchar(255) default NULL,
                   `comment` text,
                   PRIMARY KEY  (`id`),
                   KEY `name` (`name`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-         $DB->query($query) or die ($DB->error());
-      } else {
-         $migration->displayMessage("Upgrading $table");
+            $DB->query($query) or die($DB->error());
+        } else {
+            $migration->displayMessage("Upgrading $table");
 
-         //1.2.0
-         $migration->renameTable("glpi_dropdown_plugin_order_payment", $table);
-         $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
-         $migration->changeField($table, "name", "name", "varchar(255) default NULL");
-         $migration->changeField($table, "comments", "comment", "text");
-         $migration->migrationOneTable($table);
-
-      }
-   }
-
-
-   public static function uninstall() {
-      global $DB;
-
-      //Old table name
-      $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_payment`") or die ($DB->error());
-      //Current table name
-      $DB->query("DROP TABLE IF EXISTS  `" . self::getTable() . "`") or die ($DB->error());
-   }
+           //1.2.0
+            $migration->renameTable("glpi_dropdown_plugin_order_payment", $table);
+            $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
+            $migration->changeField($table, "name", "name", "varchar(255) default NULL");
+            $migration->changeField($table, "comments", "comment", "text");
+            $migration->migrationOneTable($table);
+        }
+    }
 
 
+    public static function uninstall()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+       //Old table name
+        $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_payment`") or die($DB->error());
+       //Current table name
+        $DB->query("DROP TABLE IF EXISTS  `" . self::getTable() . "`") or die($DB->error());
+    }
 }

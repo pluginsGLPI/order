@@ -29,45 +29,48 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderAnalyticNature extends CommonDropdown {
+class PluginOrderAnalyticNature extends CommonDropdown
+{
+    public static $rightname   = 'plugin_order_order';
 
-   public static $rightname   = 'plugin_order_order';
+    public static function getTypeName($nb = 0)
+    {
 
-   public static function getTypeName($nb = 0) {
+        return __("Analytic nature", "order");
+    }
 
-      return __("Analytic nature", "order");
-   }
+    public static function install(Migration $migration)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
 
-   public static function install(Migration $migration) {
+        $default_charset = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-      global $DB;
+        $table = getTableForItemType(__CLASS__);
+        if (!$DB->tableExists($table)) {
+            $migration->displayMessage("Installing $table");
 
-      $default_charset = DBConnection::getDefaultCharset();
-      $default_collation = DBConnection::getDefaultCollation();
-      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
-
-      $table = getTableForItemType(__CLASS__);
-      if (!$DB->tableExists($table)) {
-         $migration->displayMessage("Installing $table");
-
-         $query ="CREATE TABLE IF NOT EXISTS `glpi_plugin_order_analyticnatures` (
+            $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_analyticnatures` (
                     `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
                     `name` varchar(255) DEFAULT NULL,
                     `comment` text,
                     PRIMARY KEY (`id`),
                     KEY `name` (`name`)
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-         $DB->query($query) or die ($DB->error());
-      }
-   }
+            $DB->query($query) or die($DB->error());
+        }
+    }
 
-   public static function uninstall() {
+    public static function uninstall()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
 
-      global $DB;
-
-      $DB->query("DROP TABLE IF EXISTS `" . getTableForItemType(__CLASS__) . "`") or die ($DB->error());
-   }
+        $DB->query("DROP TABLE IF EXISTS `" . getTableForItemType(__CLASS__) . "`") or die($DB->error());
+    }
 }

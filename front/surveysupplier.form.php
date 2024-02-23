@@ -28,51 +28,48 @@
  * -------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
+include("../../../inc/includes.php");
 
 if (!isset($_GET["id"])) {
-   $_GET["id"]                     = "";
+    $_GET["id"]                     = "";
 }
 if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"]           = "";
+    $_GET["withtemplate"]           = "";
 }
 if (!isset($_GET["plugin_order_orders_id"])) {
-   $_GET["plugin_order_orders_id"] = "";
+    $_GET["plugin_order_orders_id"] = "";
 }
 
 $PluginOrderSurveySupplier = new PluginOrderSurveySupplier();
 
 if (isset($_POST["add"])) {
-   if (PluginOrderSurveySupplier::canCreate()) {
-      if (isset($_POST["plugin_order_orders_id"]) && $_POST["plugin_order_orders_id"] > 0) {
-         $PluginOrderSurveySupplier->add($_POST);
-      }
-   }
-   Html::redirect($_SERVER['HTTP_REFERER']);
-
+    if (PluginOrderSurveySupplier::canCreate()) {
+        if (isset($_POST["plugin_order_orders_id"]) && $_POST["plugin_order_orders_id"] > 0) {
+            $PluginOrderSurveySupplier->add($_POST);
+        }
+    }
+    Html::redirect($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["delete"])) {
-   if (PluginOrderSurveySupplier::canCreate()) {
-      foreach ($_POST["check"] as $ID => $value) {
-         $PluginOrderSurveySupplier->delete(["id" => $ID], 0, 0);
-      }
-   }
-   Html::redirect($_SERVER['HTTP_REFERER']);
-
+    if (PluginOrderSurveySupplier::canCreate()) {
+        foreach ($_POST["check"] as $ID => $value) {
+            $PluginOrderSurveySupplier->delete(["id" => $ID], 0, 0);
+        }
+    }
+    Html::redirect($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["update"])) {
-   if (PluginOrderSurveySupplier::canCreate()) {
-      $PluginOrderSurveySupplier->update($_POST);
-   }
-   Html::redirect($_SERVER['HTTP_REFERER']);
-
+    if (PluginOrderSurveySupplier::canCreate()) {
+        $PluginOrderSurveySupplier->update($_POST);
+    }
+    Html::redirect($_SERVER['HTTP_REFERER']);
 } else {
-   $PluginOrderSurveySupplier->checkGlobal(READ);
-   Html::header(
-      __("Orders management", "order"),
-      $_SERVER['PHP_SELF'],
-      "management",
-      "PluginOrderMenu",
-      "order"
-   );
-   $PluginOrderSurveySupplier->display($_GET);
-   Html::footer();
+    $PluginOrderSurveySupplier->checkGlobal(READ);
+    Html::header(
+        __("Orders management", "order"),
+        $_SERVER['PHP_SELF'],
+        "management",
+        "PluginOrderMenu",
+        "order"
+    );
+    $PluginOrderSurveySupplier->display($_GET);
+    Html::footer();
 }

@@ -28,65 +28,71 @@
  * -------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
+include("../../../inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+    die("Can not acces directly to this file");
 }
 
 $reference = new PluginOrderReference();
 
 if (isset($_POST["action"])) {
-   switch ($_POST["action"]) {
-      case "generation":
-         echo Html::hidden('plugin_order_references_id',
-                           ['value' => $_POST["plugin_order_references_id"]]);
-         echo "&nbsp;";
-         echo Html::submit(_sx('button', 'Post'), ['name' => 'generation']);
-         break;
+    switch ($_POST["action"]) {
+        case "generation":
+            echo Html::hidden(
+                'plugin_order_references_id',
+                ['value' => $_POST["plugin_order_references_id"]]
+            );
+            echo "&nbsp;";
+            echo Html::submit(_sx('button', 'Post'), ['name' => 'generation']);
+            break;
 
-      case "createLink":
+        case "createLink":
+            echo Html::hidden('itemtype', ['value' => $_POST["itemtype"]]);
+            echo Html::hidden(
+                'plugin_order_orders_id',
+                ['value' => $_POST["plugin_order_orders_id"]]
+            );
 
-         echo Html::hidden('itemtype', ['value' => $_POST["itemtype"]]);
-         echo Html::hidden('plugin_order_orders_id',
-                           ['value' => $_POST["plugin_order_orders_id"]]);
+            $reference->getFromDB($_POST["plugin_order_references_id"]);
+            $reference->dropdownAllItemsByType(
+                "items_id",
+                $_POST["itemtype"],
+                $_SESSION["glpiactiveentities"],
+                $reference->fields["types_id"],
+                $reference->fields["models_id"]
+            );
+            echo "&nbsp;";
+            echo Html::submit(_sx('button', 'Post'), ['name' => 'createLinkWithItem']);
 
-         $reference->getFromDB($_POST["plugin_order_references_id"]);
-         $reference->dropdownAllItemsByType("items_id", $_POST["itemtype"],
-                                            $_SESSION["glpiactiveentities"],
-                                            $reference->fields["types_id"],
-                                            $reference->fields["models_id"]);
-         echo "&nbsp;";
-         echo Html::submit(_sx('button', 'Post'), ['name' => 'createLinkWithItem']);
+            break;
 
-         break;
+        case "deleteLink":
+            echo "&nbsp;";
+            echo Html::submit(_sx('button', 'Post'), ['name' => 'deleteLinkWithItem']);
+            break;
 
-      case "deleteLink":
-         echo "&nbsp;";
-         echo Html::submit(_sx('button', 'Post'), ['name' => 'deleteLinkWithItem']);
-         break;
+        case "show_location_by_entity":
+            Location::dropdown(['name'   => "id[" . $_POST['id'] . "][locations_id]",
+                'entity' => $_POST['entities']
+            ]);
+            break;
 
-      case "show_location_by_entity":
-         Location::dropdown(['name'   => "id[".$_POST['id']."][locations_id]",
-                           'entity' => $_POST['entities']
-                          ]);
-         break;
+        case "show_group_by_entity":
+            Group::dropdown(['name'      => "id[" . $_POST['id'] . "][groups_id]",
+                'entity'    => $_POST['entities'],
+                'condition' => ['is_assign' => 1],
+            ]);
+            break;
 
-      case "show_group_by_entity":
-         Group::dropdown(['name'      => "id[".$_POST['id']."][groups_id]",
-                          'entity'    => $_POST['entities'],
-                          'condition' => ['is_assign' => 1],
-                         ]);
-         break;
-
-      case "show_state_by_entity":
-         $condition = PluginOrderLink::getCondition($_POST["itemtype"]);
-         State::dropdown(['name'      => "id[".$_POST['id']."][states_id]",
-                          'entity'    => $_POST['entities'],
-                          'condition' => $condition
-                         ]);
-         break;
-   }
+        case "show_state_by_entity":
+            $condition = PluginOrderLink::getCondition($_POST["itemtype"]);
+            State::dropdown(['name'      => "id[" . $_POST['id'] . "][states_id]",
+                'entity'    => $_POST['entities'],
+                'condition' => $condition
+            ]);
+            break;
+    }
 }

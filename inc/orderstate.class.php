@@ -29,88 +29,98 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
 // Class for a Dropdown
-class PluginOrderOrderState extends CommonDropdown {
-   const DRAFT                = 1;
-   const WAITING_FOR_APPROVAL = 2;
-   const VALIDATED            = 3;
-   const BEING_DELIVERING     = 4;
-   const DELIVERED            = 5;
-   const CANCELED             = 6;
-   const PAID                 = 7;
+class PluginOrderOrderState extends CommonDropdown
+{
+    const DRAFT                = 1;
+    const WAITING_FOR_APPROVAL = 2;
+    const VALIDATED            = 3;
+    const BEING_DELIVERING     = 4;
+    const DELIVERED            = 5;
+    const CANCELED             = 6;
+    const PAID                 = 7;
 
-   public static $rightname   = 'plugin_order_order';
-
-
-   public static function getTypeName($nb = 0) {
-      return __("Order status", "order");
-   }
+    public static $rightname   = 'plugin_order_order';
 
 
-   public function pre_deleteItem() {
-      if ($this->getID() <= self::CANCELED) {
-         Session::addMessageAfterRedirect(__("You cannot remove this status", "order").": "
-                                          .$this->fields['name'],
-                                          false, ERROR);
-         return false;
-      } else {
-         return true;
-      }
-   }
+    public static function getTypeName($nb = 0)
+    {
+        return __("Order status", "order");
+    }
 
 
-   public static function install(Migration $migration) {
-      global $DB;
+    public function pre_deleteItem()
+    {
+        if ($this->getID() <= self::CANCELED) {
+            Session::addMessageAfterRedirect(
+                __("You cannot remove this status", "order") . ": "
+                                          . $this->fields['name'],
+                false,
+                ERROR
+            );
+            return false;
+        } else {
+            return true;
+        }
+    }
 
-      $default_charset = DBConnection::getDefaultCharset();
-      $default_collation = DBConnection::getDefaultCollation();
-      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-      $table = self::getTable();
+    public static function install(Migration $migration)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
 
-      //1.2.0
-      $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_status`;");
+        $default_charset = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-      if (!$DB->tableExists($table)) {
-         $migration->displayMessage("Installing $table");
+        $table = self::getTable();
 
-         $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orderstates` (
+       //1.2.0
+        $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_status`;");
+
+        if (!$DB->tableExists($table)) {
+            $migration->displayMessage("Installing $table");
+
+            $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orderstates` (
                   `id` int {$default_key_sign} NOT NULL auto_increment,
                   `name` varchar(255) default NULL,
                   `comment` text,
                   PRIMARY KEY  (`id`),
                   KEY `name` (`name`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-         $DB->query($query) or die ($DB->error());
-      }
+            $DB->query($query) or die($DB->error());
+        }
 
-      $state = new self();
-      foreach ([
-         1 => __("Draft", "order"),
-         2 => __("Waiting for approval", "order"),
-         3 => __("Validated", "order"),
-         4 => __("Being delivered", "order"),
-         5 => __("Delivered", "order"),
-         6 => __("Canceled", "order"),
-         7 => __("Paid", "order")
-      ] as $id => $label) {
-         if (!countElementsInTable($table, ['id' => $id])) {
-            $state->add([
-               'id'   => $id,
-               'name' => Toolbox::addslashes_deep($label)
-            ]);
-         }
-      }
-   }
-
-
-   public static function uninstall() {
-      global $DB;
-      $DB->query("DROP TABLE IF EXISTS `".self::getTable()."`") or die ($DB->error());
-   }
+        $state = new self();
+        foreach (
+            [
+                1 => __("Draft", "order"),
+                2 => __("Waiting for approval", "order"),
+                3 => __("Validated", "order"),
+                4 => __("Being delivered", "order"),
+                5 => __("Delivered", "order"),
+                6 => __("Canceled", "order"),
+                7 => __("Paid", "order")
+            ] as $id => $label
+        ) {
+            if (!countElementsInTable($table, ['id' => $id])) {
+                $state->add([
+                    'id'   => $id,
+                    'name' => Toolbox::addslashes_deep($label)
+                ]);
+            }
+        }
+    }
 
 
+    public static function uninstall()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`") or die($DB->error());
+    }
 }

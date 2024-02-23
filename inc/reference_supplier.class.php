@@ -29,338 +29,362 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderReference_Supplier extends CommonDBChild {
+class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
+{
+    public static $rightname = 'plugin_order_reference';
 
-   public static $rightname = 'plugin_order_reference';
+    public static $itemtype  = 'PluginOrderReference';
 
-   public static $itemtype  = 'PluginOrderReference';
+    public static $items_id  = 'plugin_order_references_id';
 
-   public static $items_id  = 'plugin_order_references_id';
-
-   public $dohistory        = true;
-
-
-   public static function getTypeName($nb = 0) {
-      return __("Supplier for the reference", "order");
-   }
-
-   protected function computeFriendlyName() {
-      $ref = new PluginOrderReference();
-      $ref->getFromDB($this->fields['plugin_order_references_id']);
-      return sprintf(__('Supplier for the reference "%1$s"'), $ref->getName());
-   }
+    public $dohistory        = true;
 
 
-   public function getFromDBByReference($plugin_order_references_id) {
-      global $DB;
+    public static function getTypeName($nb = 0)
+    {
+        return __("Supplier for the reference", "order");
+    }
 
-      $table = self::getTable();
-      $query = "SELECT *
+    protected function computeFriendlyName()
+    {
+        $ref = new PluginOrderReference();
+        $ref->getFromDB($this->fields['plugin_order_references_id']);
+        return sprintf(__('Supplier for the reference "%1$s"'), $ref->getName());
+    }
+
+
+    public function getFromDBByReference($plugin_order_references_id)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $table = self::getTable();
+        $query = "SELECT *
                 FROM `$table`
                 WHERE `plugin_order_references_id` = '$plugin_order_references_id'";
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) != 1) {
-            return false;
-         }
-         $this->fields = $DB->fetchAssoc($result);
-         if (is_array($this->fields) && count($this->fields)) {
-            return true;
-         } else {
-            return false;
-         }
-      }
-      return false;
-   }
-
-   public function rawSearchOptions() {
-
-      $tab = [];
-
-      $tab[] = [
-         'id'            => 'common',
-         'name'          => __('Supplier for the reference', 'order'),
-      ];
-
-      $tab[] = [
-         'id'            => 1,
-         'table'         => self::getTable(),
-         'field'         => 'reference_code',
-         'name'          => __('Manufacturer\'s product reference', 'order'),
-         'datatype'      => 'text',
-         'autocomplete'  => true,
-      ];
-
-      $tab[] = [
-         'id'            => 2,
-         'table'         => self::getTable(),
-         'field'         => 'price_taxfree',
-         'name'          => __('Unit price tax free', 'order'),
-         'datatype'      => 'decimal',
-      ];
-
-      $tab[] = [
-         'id'            => 3,
-         'table'         => 'glpi_suppliers',
-         'field'         => 'name',
-         'name'          => __('Supplier'),
-         'datatype'      => 'itemlink',
-         'itemlink_type' => 'Supplier',
-         'forcegroupby'  => true,
-      ];
-
-      $tab[] = [
-         'id'            => 30,
-         'table'         => self::getTable(),
-         'field'         => 'id',
-         'name'          => __('ID'),
-      ];
-
-      $tab[] = [
-         'id'            => 80,
-         'table'         => 'glpi_entities',
-         'field'         => 'completename',
-         'name'          => __('Entity'),
-      ];
-
-      return $tab;
-   }
-
-
-   public function prepareInputForAdd($input) {
-      // Not attached to reference -> not added
-      if (!isset($input['plugin_order_references_id'])
-         || $input['plugin_order_references_id'] <= 0) {
-         return false;
-      }
-      return $input;
-   }
-
-
-   public function defineTabs($options = []) {
-      $ong = [];
-      $this->addDefaultFormTab($ong);
-      $this->addStandardTab('Document_Item', $ong, $options);
-      $this->addStandardTab('Log', $ong, $options);
-      return $ong;
-   }
-
-
-   public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
-      if (get_class($item) == __CLASS__) {
-         return [1 => __("Main")];
-      } else if ($item instanceof PluginOrderReference) {
-         return [1 => __("Supplier Detail", "order")];
-      }
-      return '';
-   }
-
-
-   public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0) {
-      $reference_supplier = new self();
-      if ($item->getType() == 'PluginOrderReference') {
-         if ($item->can($item->getID(), UPDATE)) {
-            $reference_supplier->showForm(0, ['plugin_order_references_id' => $item->getID()]);
-         }
-         $reference_supplier->showReferenceManufacturers($item->getID());
-
-      }
-
-      return true;
-   }
-
-
-   public function showForm ($ID, $options = []) {
-      global $DB;
-
-      $plugin_order_references_id = -1;
-      if (isset($options['plugin_order_references_id'])) {
-         $plugin_order_references_id = $options['plugin_order_references_id'];
-      }
-
-      $this->initForm($ID, $options);
-      $this->showFormHeader($options);
-
-      $PluginOrderReference = new PluginOrderReference();
-      $PluginOrderReference->getFromDB($plugin_order_references_id);
-      echo Html::hidden('plugin_order_references_id', ['value' => $plugin_order_references_id]);
-      echo Html::hidden('entities_id', ['value' => $PluginOrderReference->getEntityID()]);
-      echo Html::hidden('is_recursive', ['value' => $PluginOrderReference->isRecursive()]);
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__("Supplier").": </td>";
-      echo "<td>";
-
-      if ($ID > 0) {
-         $supplier = new Supplier();
-         $supplier->getFromDB($this->fields['suppliers_id']);
-         echo $supplier->getLink(Session::haveRight('supplier', READ));
-      } else {
-         $suppliers = [];
-         $query = "SELECT `suppliers_id`
-                     FROM `".self::getTable()."`
-                     WHERE `plugin_order_references_id` = '$plugin_order_references_id'";
-         $result = $DB->query($query);
-         while ($data = $DB->fetchArray($result)) {
-            $suppliers[] = $data["suppliers_id"];
-         }
-
-         Supplier::Dropdown([
-            'name'   => 'suppliers_id',
-            'used'   => $suppliers,
-            'entity' => $PluginOrderReference->getEntityID()
-         ]);
-      }
-      echo "</td>";
-
-      echo "<td>".__("Manufacturer's product reference", "order").": </td>";
-      echo "<td>";
-      echo Html::input(
-         'reference_code',
-         [
-            'value' => $this->fields['reference_code'],
-         ]
-      );
-      echo "</td></tr>";
-
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-
-      echo "<td>".__("Unit price tax free", "order").": </td>";
-      echo "<td>";
-      echo "<input type='number' class='form-control' min='0' step='".PLUGIN_ORDER_NUMBER_STEP."' name='price_taxfree' value=\""
-        .Html::formatNumber($this->fields["price_taxfree"], true)."\" class='decimal'>";
-      echo "</td>";
-
-      echo "<td></td>";
-      echo "<td></td>";
-
-      echo "</tr>";
-
-      $options['candel'] = false;
-      $this->showFormButtons($options);
-      return true;
-   }
-
-
-   public function showReferenceManufacturers($ID) {
-      global $DB;
-
-      $ref = new PluginOrderReference();
-      $ref->getFromDB($ID);
-
-      $target = Toolbox::getItemTypeFormURL(__CLASS__);
-      Session::initNavigateListItems($this->getType(),
-                            __("Product reference", "order") ." = ". $ref->fields["name"]);
-
-      $candelete = $ref->can($ID, DELETE);
-      $query     = "SELECT * FROM `".self::getTable()."` WHERE `plugin_order_references_id` = '$ID' ";
-      $query    .= getEntitiesRestrictRequest(" AND", self::getTable(), "entities_id",
-                                              $ref->fields['entities_id'],
-                                              $ref->fields['is_recursive']);
-      $result    = $DB->query($query);
-      $rand      = mt_rand();
-      echo "<div class='center'>";
-      echo "<form method='post' name='show_supplierref$rand' id='show_supplierref$rand' action=\"$target\">";
-      echo Html::hidden('plugin_order_references_id', ['value' => $ID]);
-      echo "<table class='tab_cadre_fixe'>";
-
-      echo "<tr><th colspan='5'>".__("Supplier Detail", "order")."</th></tr>";
-      echo "<tr><th>&nbsp;</th>";
-      echo "<th>".__("Supplier")."</th>";
-      echo "<th>".__("Product reference", "order")."</th>";
-      echo "<th>".__("Unit price tax free", "order")."</th>";
-      echo "</tr>";
-
-      if ($DB->numrows($result) > 0) {
-         echo "<form method='post' name='show_ref_manu' action=\"$target\">";
-         echo Html::hidden('plugin_order_references_id', ['value' => $ID]);
-
-         while ($data = $DB->fetchArray($result)) {
-            Session::addToNavigateListItems($this->getType(), $data['id']);
-            echo Html::hidden("item[".$data["id"]."]", ['value' => $ID]);
-            echo "<tr class='tab_bg_1 center'>";
-            echo "<td>";
-            if ($candelete) {
-               echo "<input type='checkbox' name='check[".$data["id"]."]'";
-               if (isset($_POST['check']) && $_POST['check'] == 'all') {
-                  echo " checked ";
-               }
-               echo ">";
+        if ($result = $DB->query($query)) {
+            if ($DB->numrows($result) != 1) {
+                return false;
             }
-            echo "</td>";
+            $this->fields = $DB->fetchAssoc($result);
+            if (is_array($this->fields) && count($this->fields)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
 
-            $link = Toolbox::getItemTypeFormURL($this->getType());
-            echo "<td><a href='".$link."?id=".$data["id"]."&plugin_order_references_id=".$ID."'>"
-              .Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"])."</a></td>";
-            echo "<td>";
-            echo $data["reference_code"];
-            echo "</td>";
-            echo "<td>";
-            echo Html::formatNumber($data["price_taxfree"]);
-            echo "</td>";
-            echo "</tr>";
-         }
-         echo "</table>";
+    public function rawSearchOptions()
+    {
 
-         if ($candelete) {
-            echo "<div class='center'>";
-            echo "<table width='900px' class='tab_glpi'>";
-            echo "<tr><td><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></td>";
-            echo "<td class='center'><a onclick= \"if ( markCheckboxes('show_supplierref$rand') ) "
-              ."return false;\" href='#'>".__("Check all")."</a></td>";
+        $tab = [];
 
-            echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('show_supplierref$rand') ) "
-              ."return false;\" href='#'>".__("Uncheck all")."</a>";
-            echo "</td><td align='left' width='80%'>";
-            echo "<input type='submit' name='delete' value=\"".__("Delete permanently")
-              ."\" class='submit' >";
-            echo "</td>";
+        $tab[] = [
+            'id'            => 'common',
+            'name'          => __('Supplier for the reference', 'order'),
+        ];
+
+        $tab[] = [
+            'id'            => 1,
+            'table'         => self::getTable(),
+            'field'         => 'reference_code',
+            'name'          => __('Manufacturer\'s product reference', 'order'),
+            'datatype'      => 'text',
+            'autocomplete'  => true,
+        ];
+
+        $tab[] = [
+            'id'            => 2,
+            'table'         => self::getTable(),
+            'field'         => 'price_taxfree',
+            'name'          => __('Unit price tax free', 'order'),
+            'datatype'      => 'decimal',
+        ];
+
+        $tab[] = [
+            'id'            => 3,
+            'table'         => 'glpi_suppliers',
+            'field'         => 'name',
+            'name'          => __('Supplier'),
+            'datatype'      => 'itemlink',
+            'itemlink_type' => 'Supplier',
+            'forcegroupby'  => true,
+        ];
+
+        $tab[] = [
+            'id'            => 30,
+            'table'         => self::getTable(),
+            'field'         => 'id',
+            'name'          => __('ID'),
+        ];
+
+        $tab[] = [
+            'id'            => 80,
+            'table'         => 'glpi_entities',
+            'field'         => 'completename',
+            'name'          => __('Entity'),
+        ];
+
+        return $tab;
+    }
+
+
+    public function prepareInputForAdd($input)
+    {
+       // Not attached to reference -> not added
+        if (
+            !isset($input['plugin_order_references_id'])
+            || $input['plugin_order_references_id'] <= 0
+        ) {
+            return false;
+        }
+        return $input;
+    }
+
+
+    public function defineTabs($options = [])
+    {
+        $ong = [];
+        $this->addDefaultFormTab($ong);
+        $this->addStandardTab('Document_Item', $ong, $options);
+        $this->addStandardTab('Log', $ong, $options);
+        return $ong;
+    }
+
+
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        if (get_class($item) == __CLASS__) {
+            return [1 => __("Main")];
+        } else if ($item instanceof PluginOrderReference) {
+            return [1 => __("Supplier Detail", "order")];
+        }
+        return '';
+    }
+
+
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        $reference_supplier = new self();
+        if ($item->getType() == 'PluginOrderReference') {
+            if ($item->can($item->getID(), UPDATE)) {
+                $reference_supplier->showForm(0, ['plugin_order_references_id' => $item->getID()]);
+            }
+            $reference_supplier->showReferenceManufacturers($item->getID());
+        }
+
+        return true;
+    }
+
+
+    public function showForm($ID, $options = [])
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $plugin_order_references_id = -1;
+        if (isset($options['plugin_order_references_id'])) {
+            $plugin_order_references_id = $options['plugin_order_references_id'];
+        }
+
+        $this->initForm($ID, $options);
+        $this->showFormHeader($options);
+
+        $PluginOrderReference = new PluginOrderReference();
+        $PluginOrderReference->getFromDB($plugin_order_references_id);
+        echo Html::hidden('plugin_order_references_id', ['value' => $plugin_order_references_id]);
+        echo Html::hidden('entities_id', ['value' => $PluginOrderReference->getEntityID()]);
+        echo Html::hidden('is_recursive', ['value' => $PluginOrderReference->isRecursive()]);
+
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>" . __("Supplier") . ": </td>";
+        echo "<td>";
+
+        if ($ID > 0) {
+            $supplier = new Supplier();
+            $supplier->getFromDB($this->fields['suppliers_id']);
+            echo $supplier->getLink(Session::haveRight('supplier', READ));
+        } else {
+            $suppliers = [];
+            $query = "SELECT `suppliers_id`
+                     FROM `" . self::getTable() . "`
+                     WHERE `plugin_order_references_id` = '$plugin_order_references_id'";
+            $result = $DB->query($query);
+            while ($data = $DB->fetchArray($result)) {
+                $suppliers[] = $data["suppliers_id"];
+            }
+
+            Supplier::Dropdown([
+                'name'   => 'suppliers_id',
+                'used'   => $suppliers,
+                'entity' => $PluginOrderReference->getEntityID()
+            ]);
+        }
+        echo "</td>";
+
+        echo "<td>" . __("Manufacturer's product reference", "order") . ": </td>";
+        echo "<td>";
+        echo Html::input(
+            'reference_code',
+            [
+                'value' => $this->fields['reference_code'],
+            ]
+        );
+        echo "</td></tr>";
+
+        echo "</tr>";
+
+        echo "<tr class='tab_bg_1'>";
+
+        echo "<td>" . __("Unit price tax free", "order") . ": </td>";
+        echo "<td>";
+        echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='price_taxfree' value=\""
+        . Html::formatNumber($this->fields["price_taxfree"], true) . "\" class='decimal'>";
+        echo "</td>";
+
+        echo "<td></td>";
+        echo "<td></td>";
+
+        echo "</tr>";
+
+        $options['candel'] = false;
+        $this->showFormButtons($options);
+        return true;
+    }
+
+
+    public function showReferenceManufacturers($ID)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $ref = new PluginOrderReference();
+        $ref->getFromDB($ID);
+
+        $target = Toolbox::getItemTypeFormURL(__CLASS__);
+        Session::initNavigateListItems(
+            $this->getType(),
+            __("Product reference", "order") . " = " . $ref->fields["name"]
+        );
+
+        $candelete = $ref->can($ID, DELETE);
+        $query     = "SELECT * FROM `" . self::getTable() . "` WHERE `plugin_order_references_id` = '$ID' ";
+        $query    .= getEntitiesRestrictRequest(
+            " AND",
+            self::getTable(),
+            "entities_id",
+            $ref->fields['entities_id'],
+            $ref->fields['is_recursive']
+        );
+        $result    = $DB->query($query);
+        $rand      = mt_rand();
+        echo "<div class='center'>";
+        echo "<form method='post' name='show_supplierref$rand' id='show_supplierref$rand' action=\"$target\">";
+        echo Html::hidden('plugin_order_references_id', ['value' => $ID]);
+        echo "<table class='tab_cadre_fixe'>";
+
+        echo "<tr><th colspan='5'>" . __("Supplier Detail", "order") . "</th></tr>";
+        echo "<tr><th>&nbsp;</th>";
+        echo "<th>" . __("Supplier") . "</th>";
+        echo "<th>" . __("Product reference", "order") . "</th>";
+        echo "<th>" . __("Unit price tax free", "order") . "</th>";
+        echo "</tr>";
+
+        if ($DB->numrows($result) > 0) {
+            echo "<form method='post' name='show_ref_manu' action=\"$target\">";
+            echo Html::hidden('plugin_order_references_id', ['value' => $ID]);
+
+            while ($data = $DB->fetchArray($result)) {
+                Session::addToNavigateListItems($this->getType(), $data['id']);
+                echo Html::hidden("item[" . $data["id"] . "]", ['value' => $ID]);
+                echo "<tr class='tab_bg_1 center'>";
+                echo "<td>";
+                if ($candelete) {
+                    echo "<input type='checkbox' name='check[" . $data["id"] . "]'";
+                    if (isset($_POST['check']) && $_POST['check'] == 'all') {
+                        echo " checked ";
+                    }
+                    echo ">";
+                }
+                echo "</td>";
+
+                $link = Toolbox::getItemTypeFormURL($this->getType());
+                echo "<td><a href='" . $link . "?id=" . $data["id"] . "&plugin_order_references_id=" . $ID . "'>"
+                . Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
+                echo "<td>";
+                echo $data["reference_code"];
+                echo "</td>";
+                echo "<td>";
+                echo Html::formatNumber($data["price_taxfree"]);
+                echo "</td>";
+                echo "</tr>";
+            }
             echo "</table>";
-            echo "</div>";
-         }
-      } else {
-         echo "</table>";
-      }
 
-      Html::closeForm();
-      echo "</div>";
-   }
+            if ($candelete) {
+                echo "<div class='center'>";
+                echo "<table width='900px' class='tab_glpi'>";
+                echo "<tr><td><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></td>";
+                echo "<td class='center'><a onclick= \"if ( markCheckboxes('show_supplierref$rand') ) "
+                . "return false;\" href='#'>" . __("Check all") . "</a></td>";
+
+                echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('show_supplierref$rand') ) "
+                . "return false;\" href='#'>" . __("Uncheck all") . "</a>";
+                echo "</td><td align='left' width='80%'>";
+                echo "<input type='submit' name='delete' value=\"" . __("Delete permanently")
+                . "\" class='submit' >";
+                echo "</td>";
+                echo "</table>";
+                echo "</div>";
+            }
+        } else {
+            echo "</table>";
+        }
+
+        Html::closeForm();
+        echo "</div>";
+    }
 
 
-   public function getReferenceCodeByReferenceAndSupplier($plugin_order_references_id, $suppliers_id) {
-      global $DB;
+    public function getReferenceCodeByReferenceAndSupplier($plugin_order_references_id, $suppliers_id)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
 
-      $table = self::getTable();
-      $query = "SELECT `reference_code`
+        $table = self::getTable();
+        $query = "SELECT `reference_code`
                 FROM `$table`
                 WHERE `plugin_order_references_id` = '$plugin_order_references_id'
                 AND `suppliers_id` = '$suppliers_id' ";
-      $result = $DB->query($query);
+        $result = $DB->query($query);
 
-      if ($DB->numrows($result) > 0) {
-         return $DB->result($result, 0, "reference_code");
-      } else {
-         return 0;
-      }
-   }
+        if ($DB->numrows($result) > 0) {
+            return $DB->result($result, 0, "reference_code");
+        } else {
+            return 0;
+        }
+    }
 
 
-   public static function install(Migration $migration) {
-      global $DB;
+    public static function install(Migration $migration)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
 
-      $default_charset = DBConnection::getDefaultCharset();
-      $default_collation = DBConnection::getDefaultCollation();
-      $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+        $default_charset = DBConnection::getDefaultCharset();
+        $default_collation = DBConnection::getDefaultCollation();
+        $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-      $table = self::getTable();
-      if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order_references_manufacturers")) {
-         $migration->displayMessage("Installing $table");
+        $table = self::getTable();
+        if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order_references_manufacturers")) {
+            $migration->displayMessage("Installing $table");
 
-         $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_suppliers` (
+            $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_suppliers` (
                      `id` int {$default_key_sign} NOT NULL auto_increment,
                      `entities_id` int {$default_key_sign} NOT NULL default '0',
                      `is_recursive` tinyint NOT NULL default '0',
@@ -373,80 +397,116 @@ class PluginOrderReference_Supplier extends CommonDBChild {
                      KEY `plugin_order_references_id` (`plugin_order_references_id`),
                      KEY `suppliers_id` (`suppliers_id`)
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-         $DB->query($query) or die($DB->error());
-      } else {
-         $migration->displayMessage("Upgrading $table");
-
-         //1.1.0
-         if ($DB->tableExists("glpi_plugin_order_references_manufacturers")) {
-            $migration->addField("glpi_plugin_order_references_manufacturers", "reference_code",
-                              "varchar(255) NOT NULL default ''");
-            $migration->migrationOneTable("glpi_plugin_order_references_manufacturers");
-         }
-
-         //1.2.0
-         $migration->renameTable("glpi_plugin_order_references_manufacturers", $table);
-         $migration->addField($table, "is_recursive", "int {$default_key_sign} NOT NULL default '0'");
-         $migration->addKey($table, "suppliers_id");
-         $migration->addKey($table, "plugin_order_references_id");
-         $migration->changeField($table, "ID", "id",
-                                 "int {$default_key_sign} NOT NULL auto_increment");
-         $migration->changeField($table, "FK_entities", "entities_id",
-                                 "int {$default_key_sign} NOT NULL default '0'");
-         $migration->changeField($table, "FK_reference", "plugin_order_references_id",
-                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'");
-         $migration->changeField($table, "FK_enterprise", "suppliers_id",
-                                 "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'");
-         $migration->changeField($table, "reference_code", "reference_code",
-                                 "varchar(255) default NULL");
-         $migration->changeField($table, "price_taxfree", "price_taxfree",
-                                 "decimal(20,6) NOT NULL DEFAULT '0.000000'");
-         $migration->migrationOneTable($table);
-
-         Plugin::migrateItemType([3152 => 'PluginOrderReference_Supplier'],
-                                 ["glpi_savedsearches", "glpi_savedsearches_users",
-                                  "glpi_displaypreferences", "glpi_documents_items",
-                                  "glpi_infocoms", "glpi_logs"],
-                                 []);
-         if ($DB->fieldExists('glpi_tickets', 'itemtype')) {
-            Plugin::migrateItemType([3152 => 'PluginOrderReference_Supplier'],
-                                    ["glpi_tickets"],
-                                    []);
-         }
-
-         //1.5.0
-         $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_references` ";
-         foreach ($DB->request($query) as $data) {
-            $query = "UPDATE `glpi_plugin_order_references_suppliers`
-                      SET `entities_id` = '".$data["entities_id"]."',`is_recursive` = '".$data["is_recursive"]."'
-                      WHERE `plugin_order_references_id` = '".$data["id"]."' ";
             $DB->query($query) or die($DB->error());
-         }
-      }
-   }
+        } else {
+            $migration->displayMessage("Upgrading $table");
+
+           //1.1.0
+            if ($DB->tableExists("glpi_plugin_order_references_manufacturers")) {
+                $migration->addField(
+                    "glpi_plugin_order_references_manufacturers",
+                    "reference_code",
+                    "varchar(255) NOT NULL default ''"
+                );
+                $migration->migrationOneTable("glpi_plugin_order_references_manufacturers");
+            }
+
+           //1.2.0
+            $migration->renameTable("glpi_plugin_order_references_manufacturers", $table);
+            $migration->addField($table, "is_recursive", "int {$default_key_sign} NOT NULL default '0'");
+            $migration->addKey($table, "suppliers_id");
+            $migration->addKey($table, "plugin_order_references_id");
+            $migration->changeField(
+                $table,
+                "ID",
+                "id",
+                "int {$default_key_sign} NOT NULL auto_increment"
+            );
+            $migration->changeField(
+                $table,
+                "FK_entities",
+                "entities_id",
+                "int {$default_key_sign} NOT NULL default '0'"
+            );
+            $migration->changeField(
+                $table,
+                "FK_reference",
+                "plugin_order_references_id",
+                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'"
+            );
+            $migration->changeField(
+                $table,
+                "FK_enterprise",
+                "suppliers_id",
+                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'"
+            );
+            $migration->changeField(
+                $table,
+                "reference_code",
+                "reference_code",
+                "varchar(255) default NULL"
+            );
+            $migration->changeField(
+                $table,
+                "price_taxfree",
+                "price_taxfree",
+                "decimal(20,6) NOT NULL DEFAULT '0.000000'"
+            );
+            $migration->migrationOneTable($table);
+
+            Plugin::migrateItemType(
+                [3152 => 'PluginOrderReference_Supplier'],
+                ["glpi_savedsearches", "glpi_savedsearches_users",
+                    "glpi_displaypreferences", "glpi_documents_items",
+                    "glpi_infocoms", "glpi_logs"
+                ],
+                []
+            );
+            if ($DB->fieldExists('glpi_tickets', 'itemtype')) {
+                Plugin::migrateItemType(
+                    [3152 => 'PluginOrderReference_Supplier'],
+                    ["glpi_tickets"],
+                    []
+                );
+            }
+
+           //1.5.0
+            $query = "SELECT `entities_id`,`is_recursive`,`id` FROM `glpi_plugin_order_references` ";
+            foreach ($DB->request($query) as $data) {
+                $query = "UPDATE `glpi_plugin_order_references_suppliers`
+                      SET `entities_id` = '" . $data["entities_id"] . "',`is_recursive` = '" . $data["is_recursive"] . "'
+                      WHERE `plugin_order_references_id` = '" . $data["id"] . "' ";
+                $DB->query($query) or die($DB->error());
+            }
+        }
+    }
 
 
-   public static function uninstall() {
-      global $DB;
+    public static function uninstall()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
 
-      //Old table name
-      $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_references_manufacturers`");
+       //Old table name
+        $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_references_manufacturers`");
 
-      //Current table name
-      $DB->query("DROP TABLE IF EXISTS  `".self::getTable()."`");
-   }
+       //Current table name
+        $DB->query("DROP TABLE IF EXISTS  `" . self::getTable() . "`");
+    }
 
 
-   public static function showReferencesFromSupplier($ID) {
-      global $DB;
+    public static function showReferencesFromSupplier($ID)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
 
-      if (isset($_POST["start"])) {
-         $start = (int) $_POST["start"];
-      } else {
-         $start = 0;
-      }
+        if (isset($_POST["start"])) {
+            $start = (int) $_POST["start"];
+        } else {
+            $start = 0;
+        }
 
-      $query = "SELECT  `gr`.`id`,
+        $query = "SELECT  `gr`.`id`,
                         `gr`.`manufacturers_id`,
                         `gr`.`entities_id`,
                         `gr`.`itemtype`,
@@ -457,57 +517,56 @@ class PluginOrderReference_Supplier extends CommonDBChild {
                     `glpi_plugin_order_references` AS gr
                WHERE `grm`.`suppliers_id` = '$ID'
                AND `grm`.`plugin_order_references_id` = `gr`.`id`"
-              .getEntitiesRestrictRequest(" AND ", "gr", '', '', true);
-      $query_limit = $query." LIMIT $start, ".(int) $_SESSION['glpilist_limit'];
-      $result = $DB->query($query);
-      $nb     = $DB->numrows($result);
-      echo "<div class='center'>";
+              . getEntitiesRestrictRequest(" AND ", "gr", '', '', true);
+        $query_limit = $query . " LIMIT $start, " . (int) $_SESSION['glpilist_limit'];
+        $result = $DB->query($query);
+        $nb     = $DB->numrows($result);
+        echo "<div class='center'>";
 
-      if ($nb) {
+        if ($nb) {
+            $result = $DB->query($query_limit);
+            Html::printAjaxPager(__("List references", "order"), $start, $nb);
 
-         $result = $DB->query($query_limit);
-         Html::printAjaxPager(__("List references", "order"), $start, $nb);
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr>";
+            echo "<th>" . __("Entity") . "</th>";
+            echo "<th>" . __("Manufacturer") . "</th>";
+            echo "<th>" . __("Product reference", "order") . "</th>";
+            echo "<th>" . __("Reference") . "</th>";
+            echo "<th>" . __("Product reference", "order") . "</th>";
+            echo "<th>" . __("Unit price tax free", "order") . "</th></tr>";
 
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr>";
-         echo "<th>".__("Entity")."</th>";
-         echo "<th>".__("Manufacturer")."</th>";
-         echo "<th>".__("Product reference", "order")."</th>";
-         echo "<th>".__("Reference")."</th>";
-         echo "<th>".__("Product reference", "order")."</th>";
-         echo "<th>".__("Unit price tax free", "order")."</th></tr>";
+            while ($data = $DB->fetchArray($result)) {
+                echo "<tr class='tab_bg_1' align='center'>";
+                echo "<td>";
+                echo Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
+                echo "</td>";
 
-         while ($data = $DB->fetchArray($result)) {
-            echo "<tr class='tab_bg_1' align='center'>";
-            echo "<td>";
-            echo Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
-            echo "</td>";
+                echo "<td>";
+                echo Dropdown::getDropdownName("glpi_manufacturers", $data["manufacturers_id"]);
+                echo "</td>";
 
-            echo "<td>";
-            echo Dropdown::getDropdownName("glpi_manufacturers", $data["manufacturers_id"]);
-            echo "</td>";
+                echo "<td>";
+                $PluginOrderReference = new PluginOrderReference();
+                echo $PluginOrderReference->getReceptionReferenceLink($data);
+                echo "</td>";
 
-            echo "<td>";
-            $PluginOrderReference = new PluginOrderReference();
-            echo $PluginOrderReference->getReceptionReferenceLink($data);
-            echo "</td>";
+                echo "<td>";
+                $item = new $data["itemtype"]();
+                echo $item->getTypeName();
+                echo "</td>";
 
-            echo "<td>";
-            $item = new $data["itemtype"]();
-            echo $item->getTypeName();
-            echo "</td>";
+                echo "<td>";
+                echo $data['reference_code'];
+                echo "</td>";
 
-            echo "<td>";
-            echo $data['reference_code'];
-            echo "</td>";
-
-            echo "<td>";
-            echo number_format($data["price_taxfree"], 2);
-            echo "</td>";
-            echo "</tr>";
-         }
-      }
-      echo "</table>";
-      echo "</div>";
-   }
+                echo "<td>";
+                echo number_format($data["price_taxfree"], 2);
+                echo "</td>";
+                echo "</tr>";
+            }
+        }
+        echo "</table>";
+        echo "</div>";
+    }
 }

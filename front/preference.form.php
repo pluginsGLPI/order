@@ -28,20 +28,19 @@
  * -------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
+include("../../../inc/includes.php");
 
-if (!isset ($_GET["id"])) {
-   $_GET["id"] = "";
+if (!isset($_GET["id"])) {
+    $_GET["id"] = "";
 }
 
 $PluginOrderPreference = new PluginOrderPreference();
 
 if (isset($_POST["update"])) {
-   $PluginOrderPreference->update($_POST);
-   Html::redirect($_SERVER['HTTP_REFERER']);
-
+    $PluginOrderPreference->update($_POST);
+    Html::redirect($_SERVER['HTTP_REFERER']);
 } else {
-   Html::header(__("Orders", "order"), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu");
-   $PluginOrderPreference->showForm($_GET["id"]);
-   Html::footer();
+    Html::header(__("Orders", "order"), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu");
+    $PluginOrderPreference->showForm($_GET["id"]);
+    Html::footer();
 }

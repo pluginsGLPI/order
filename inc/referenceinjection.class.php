@@ -29,16 +29,15 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+    die("Sorry. You can't access directly to this file");
 }
 
-class PluginOrderReferenceInjection extends PluginOrderReference
-                                    implements PluginDatainjectionInjectionInterface {
-
-
-   public function __construct() {
-      $this->table = getTableForItemType(get_parent_class($this));
-   }
+class PluginOrderReferenceInjection extends PluginOrderReference implements PluginDatainjectionInjectionInterface
+{
+    public function __construct()
+    {
+        $this->table = getTableForItemType(get_parent_class($this));
+    }
 
 
    /**
@@ -46,70 +45,74 @@ class PluginOrderReferenceInjection extends PluginOrderReference
     *
     * @return string (table name)
    **/
-   static function getTable($classname = null) {
+    public static function getTable($classname = null)
+    {
 
-      $parenttype = get_parent_class();
-      return $parenttype::getTable();
-   }
-
-
-   public function isPrimaryType() {
-      return true;
-   }
+        $parenttype = get_parent_class();
+        return $parenttype::getTable();
+    }
 
 
-   public function connectedTo() {
-      return [];
-   }
+    public function isPrimaryType()
+    {
+        return true;
+    }
 
 
-   public function addOrUpdateObject($values = [], $options = []) {
-      $lib = new PluginDatainjectionCommonInjectionLib($this, $values, $options);
-      $lib->processAddOrUpdate();
-      return $lib->getInjectionResults();
-   }
+    public function connectedTo()
+    {
+        return [];
+    }
 
 
-   public function getOptions($primary_type = '') {
-      return Search::getOptions(get_parent_class($this));
-   }
+    public function addOrUpdateObject($values = [], $options = [])
+    {
+        $lib = new PluginDatainjectionCommonInjectionLib($this, $values, $options);
+        $lib->processAddOrUpdate();
+        return $lib->getInjectionResults();
+    }
 
 
-   public function getSpecificFieldValue($itemtype, $searchOption, $field, &$values) {
-      $value = $values[$itemtype][$field];
-      switch ($searchOption['displaytype']) {
-         case "reference_itemtype":
-            unset($values[$itemtype]['itemtype']);
-            $classes = PluginOrderOrder_Item::getClasses();
-            if (in_array($value, $classes)) {
-               $value[$itemtype]['itemtype'] = $value;
-            } else {
-               foreach ($classes as $class) {
-                  if (call_user_func([$class, 'getTypeName']) == $value) {
-                     $values[$itemtype]['itemtype'] = $class;
-                     break;
-                  }
-               }
-            }
-            break;
-         case "reference_model" :
-         case "reference_type" :
-            if ($searchOption['displaytype'] == 'reference_model') {
-               $type_prefix = 'Model';
-            } else {
-               $type_prefix = 'Type';
-            }
-
-            if (isset($values[$itemtype]['itemtype']) && class_exists($values[$itemtype]['itemtype'])) {
-               $itemtype_formodel = $values[$itemtype]['itemtype'].$type_prefix;
-               if (class_exists($itemtype_formodel)) {
-                  $values[$itemtype][$field] = Dropdown::getDropdownName($itemtype_formodel::getTable(), $value);
-               }
-            }
-            break;
-      }
-      return $value;
-   }
+    public function getOptions($primary_type = '')
+    {
+        return Search::getOptions(get_parent_class($this));
+    }
 
 
+    public function getSpecificFieldValue($itemtype, $searchOption, $field, &$values)
+    {
+        $value = $values[$itemtype][$field];
+        switch ($searchOption['displaytype']) {
+            case "reference_itemtype":
+                unset($values[$itemtype]['itemtype']);
+                $classes = PluginOrderOrder_Item::getClasses();
+                if (in_array($value, $classes)) {
+                    $value[$itemtype]['itemtype'] = $value;
+                } else {
+                    foreach ($classes as $class) {
+                        if (call_user_func([$class, 'getTypeName']) == $value) {
+                              $values[$itemtype]['itemtype'] = $class;
+                              break;
+                        }
+                    }
+                }
+                break;
+            case "reference_model":
+            case "reference_type":
+                if ($searchOption['displaytype'] == 'reference_model') {
+                    $type_prefix = 'Model';
+                } else {
+                    $type_prefix = 'Type';
+                }
+
+                if (isset($values[$itemtype]['itemtype']) && class_exists($values[$itemtype]['itemtype'])) {
+                    $itemtype_formodel = $values[$itemtype]['itemtype'] . $type_prefix;
+                    if (class_exists($itemtype_formodel)) {
+                        $values[$itemtype][$field] = Dropdown::getDropdownName($itemtype_formodel::getTable(), $value);
+                    }
+                }
+                break;
+        }
+        return $value;
+    }
 }

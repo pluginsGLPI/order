@@ -28,56 +28,51 @@
  * -------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
+include("../../../inc/includes.php");
 
 if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+    $_GET["id"] = "";
 }
 if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = "";
+    $_GET["withtemplate"] = "";
 }
 if (!isset($_GET["plugin_order_references_id"])) {
-   $_GET["plugin_order_references_id"] = "";
+    $_GET["plugin_order_references_id"] = "";
 }
 
 $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 
 if (isset($_POST["add"])) {
-   if (PluginOrderReference_Supplier::canCreate()) {
-      if (isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0) {
-         $PluginOrderReference_Supplier->add($_POST);
-      }
-   }
-   Html::redirect($_SERVER['HTTP_REFERER']);
-
+    if (PluginOrderReference_Supplier::canCreate()) {
+        if (isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0) {
+            $PluginOrderReference_Supplier->add($_POST);
+        }
+    }
+    Html::redirect($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["update"])) {
-   if (PluginOrderReference_Supplier::canCreate()) {
-      $PluginOrderReference_Supplier->update($_POST);
-   }
-   Html::redirect($_SERVER['HTTP_REFERER']);
-
+    if (PluginOrderReference_Supplier::canCreate()) {
+        $PluginOrderReference_Supplier->update($_POST);
+    }
+    Html::redirect($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["delete"])) {
-   if (PluginOrderReference_Supplier::canCreate()) {
-      foreach ($_POST["check"] as $ID => $value) {
-         $PluginOrderReference_Supplier->delete(["id" => $ID]);
-      }
-   }
-   Html::redirect($_SERVER['HTTP_REFERER']);
-
+    if (PluginOrderReference_Supplier::canCreate()) {
+        foreach ($_POST["check"] as $ID => $value) {
+            $PluginOrderReference_Supplier->delete(["id" => $ID]);
+        }
+    }
+    Html::redirect($_SERVER['HTTP_REFERER']);
 } else {
-   $PluginOrderReference_Supplier->checkGlobal(READ);
-   Html::header(
-      __("Supplier for the reference", "order"),
-      $_SERVER['PHP_SELF'],
-      "management",
-      "PluginOrderMenu",
-      "references"
-   );
+    $PluginOrderReference_Supplier->checkGlobal(READ);
+    Html::header(
+        __("Supplier for the reference", "order"),
+        $_SERVER['PHP_SELF'],
+        "management",
+        "PluginOrderMenu",
+        "references"
+    );
 
    /* load order form */
-   $PluginOrderReference_Supplier->display($_GET, [
-      'plugin_order_references_id' => $_GET["plugin_order_references_id"],
-   ]);
+    $PluginOrderReference_Supplier->display($_GET);
 
-   Html::footer();
+    Html::footer();
 }
