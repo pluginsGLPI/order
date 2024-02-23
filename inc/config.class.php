@@ -448,6 +448,8 @@ class PluginOrderConfig extends CommonDBTM
         echo "</table>";
         Html::closeForm();
         echo "</div>";
+
+        return true;
     }
 
 

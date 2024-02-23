@@ -44,6 +44,8 @@ class PluginOrderReception extends CommonDBChild
 
     public static $checkParentRights  = self::DONT_CHECK_ITEM_RIGHTS;
 
+    private $table;
+
 
     public static function getTable($classname = null)
     {
@@ -1128,6 +1130,7 @@ class PluginOrderReception extends CommonDBChild
         ) {
             return self::createTabEntry(__("Item delivered", "order"), self::countForOrder($item));
         }
+        return '';
     }
 
 

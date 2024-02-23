@@ -201,6 +201,7 @@ class PluginOrderPreference extends CommonDBTM
         echo "</table>";
         echo "</div>";
         Html::closeForm();
+        return true;
     }
 
 

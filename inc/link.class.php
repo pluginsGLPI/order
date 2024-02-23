@@ -922,6 +922,7 @@ class PluginOrderLink extends CommonDBChild
                 $nb     = $DB->numrows($result);
 
                 if ($nb) {
+                    $lic = new SoftwareLicense();
                     for ($i = 0; $i < $nb; $i++) {
                         $ID                = $DB->result($result, $i, 'id');
                         $input["id"]       = $ID;
@@ -952,6 +953,8 @@ class PluginOrderLink extends CommonDBChild
                     $item = new Cartridge();
                     $type = 'Cartridge';
                     $pkey = 'cartridgeitems_id';
+                } else {
+                    return false;
                 }
                 $detail->getFromDB($detailID);
                 $input[$pkey]     = $items_id;
@@ -1147,6 +1150,8 @@ class PluginOrderLink extends CommonDBChild
             $item  = new $add_item["itemtype"]();
             if ($add_item['itemtype']) {
                  $order = new PluginOrderOrder();
+            } else {
+                return false;
             }
 
             $order->getFromDB($params["plugin_order_orders_id"]);
@@ -1344,6 +1349,7 @@ class PluginOrderLink extends CommonDBChild
                 self::countForOrder($item)
             );
         }
+        return '';
     }
 
 

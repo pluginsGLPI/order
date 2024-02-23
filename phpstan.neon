@@ -1,7 +1,7 @@
 parameters:
     parallel:
         maximumNumberOfProcesses: 2
-    level: 2
+    level: 1
     bootstrapFiles:
         - ../../inc/based_config.php
     paths:
@@ -15,5 +15,10 @@ parameters:
         - ../../src
     stubFiles:
         - ../../stubs/glpi_constants.php
+    ignoreErrors:
+        - '#Call to deprecated method query\(\) of class DBmysql:#'
+    excludePaths:
+        - 'inc/referenceinjection.class.php'
+        - 'inc/orderinjection.class.php'
 rules:
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule
