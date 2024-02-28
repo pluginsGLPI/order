@@ -630,6 +630,10 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             unset($input['id']);
             unset($input['withtemplate']);
         } else {
+            if (empty($input["plugin_order_references_id"])) {
+                Session::addMessageAfterRedirect(__("You must select a reference", "order"), false, ERROR);
+                return [];
+            }
             if (
                 $config->isAnalyticNatureDisplayed()
                 && $config->isAnalyticNatureMandatory()
@@ -949,8 +953,12 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             echo "</td>";
 
            /* type */
-            $item = new $data_ref["itemtype"]();
-            echo "<td align='center'>" . $item->getTypeName() . "</td>";
+            if (!is_null($data_ref["itemtype"]) && class_exists($data_ref["itemtype"])) {
+                $item = new $data_ref["itemtype"]();
+                echo "<td align='center'>" . $item->getTypeName() . "</td>";
+            } else {
+                echo "<td align='center'></td>";
+            }
            /* manufacturer */
             echo "<td align='center'>" . Dropdown::getDropdownName(
                 "glpi_manufacturers",
@@ -2204,6 +2212,10 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         /** @var \DBmysql $DB */
         global $DB;
 
+        if (empty($reference_id)) {
+            return '';
+        }
+
         $result = $DB->request([
             'SELECT' => 'manufacturers_reference',
             'FROM'   => 'glpi_plugin_order_references',
@@ -2211,6 +2223,6 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         ]);
 
         $data = $result->current();
-        return $data['manufacturers_reference'];
+        return $data['manufacturers_reference'] ?? '';
     }
 }
