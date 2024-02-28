@@ -2549,8 +2549,10 @@ class PluginOrderOrder extends CommonDBTM
 
            //1.2.0
             $domigration_itemtypes = false;
-            $migration->renameTable("glpi_plugin_order", $table);
-            $domigration_itemtypes = true;
+            if ($DB->tableExists('glpi_plugin_order')) {
+                $migration->renameTable("glpi_plugin_order", $table);
+                $domigration_itemtypes = true;
+            }
 
             $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL AUTO_INCREMENT");
             $migration->changeField(
