@@ -575,7 +575,7 @@ class PluginOrderOrder extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'            => 30,
+            'id'            => 31,
             'table'         => self::getTable(),
             'field'         => 'id',
             'name'          => __('ID'),

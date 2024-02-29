@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 - Fix error message during plugin update
+- Fix few errors messages in debug mode
 
 
 ## [2.10.5] - 2024-02-23
