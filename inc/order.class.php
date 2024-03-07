@@ -2659,7 +2659,7 @@ class PluginOrderOrder extends CommonDBTM
            //Only migrate itemtypes when it's only necessary, otherwise it breaks upgrade procedure !
             if ($domigration_itemtypes) {
                 Plugin::migrateItemType(
-                    [3150 => 'PluginOrderOrder'],
+                    //[3150 => 'PluginOrderOrder'],
                     ["glpi_savedsearches", "glpi_savedsearches_users",
                         "glpi_displaypreferences", "glpi_documents_items",
                         "glpi_infocoms", "glpi_logs", "glpi_tickets"
