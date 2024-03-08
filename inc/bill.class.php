@@ -214,7 +214,15 @@ class PluginOrderBill extends CommonDropdown
             'name'          => __('Name'),
             'datatype'      => 'itemlink',
         ];
-
+        
+          $tab[] = [
+             'id'            => 10,
+             'table'         => self::getTable(),
+             'field'         => 'value',
+             'name'          => __('Value'),
+             'datatype'      => 'decimal',
+        ];
+        
         $tab[] = [
             'id'            => 16,
             'table'         => self::getTable(),
