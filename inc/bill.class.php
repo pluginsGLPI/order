@@ -200,11 +200,13 @@ class PluginOrderBill extends CommonDropdown
 
         $tab[] = [
             'id'            => 8,
-            'table'         => PluginOrderOrder::getTable(),
-            'field'         => 'name',
-            'name'          => __('Order', 'order'),
-            'datatype'      => 'itemlink',
-            'itemlink_type' => 'PluginOrderOrder',
+            'table'			=> 'glpi_plugin_order_bills',
+			'field' 		=> 'order_name',
+			'name' 			=> __('Order', 'order'),
+			'datatype' 		=> 'string',
+			'nosearch' 		=> true,
+			'massiveaction' => false,
+			'computation' 	=> '(SELECT name FROM glpi_plugin_order_orders WHERE glpi_plugin_order_orders.id = glpi_plugin_order_bills.plugin_order_orders_id)',
         ];
 
         $tab[] = [
@@ -215,13 +217,24 @@ class PluginOrderBill extends CommonDropdown
             'datatype'      => 'itemlink',
         ];
         
-          $tab[] = [
+        $tab[] = [
              'id'            => 10,
              'table'         => self::getTable(),
              'field'         => 'value',
              'name'          => __('Value'),
              'datatype'      => 'decimal',
         ];
+
+		$tab[] = [
+			'id' 			=> '11',
+			'table'			=> 'glpi_plugin_order_bills',
+			'field' 		=> 'order_name',
+			'name' 			=> __('Order ID', 'order'),
+			'datatype' 		=> 'string',
+			'nosearch' 		=> true,
+			'massiveaction' => false,
+			'computation' 	=> '(SELECT num_order FROM glpi_plugin_order_orders WHERE glpi_plugin_order_orders.id = glpi_plugin_order_bills.plugin_order_orders_id)',
+		];
         
         $tab[] = [
             'id'            => 16,
