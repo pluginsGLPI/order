@@ -2145,14 +2145,18 @@ class PluginOrderOrder extends CommonDBTM
 
         $order = new self();
         $order->getFromDB($ID);
+        $conf = PluginOrderConfig::getConfig();
         if ($all_paid) {
-            $state = PluginOrderBillState::PAID;
+            $bill_state = PluginOrderBillState::PAID;
+            $order_status = $conf->fields['order_status_paid'];
         } else {
-            $state = PluginOrderBillState::NOTPAID;
+            $bill_state = PluginOrderBillState::NOTPAID;
+            $order_status = $order->fields['plugin_order_orderstates_id'];
         }
         $order->update([
             'id'                         => $ID,
-            'plugin_order_billstates_id' => $state
+            'plugin_order_billstates_id' => $bill_state,
+            'plugin_order_orderstates_id' => $order_status
         ]);
     }
 
