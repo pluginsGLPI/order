@@ -476,7 +476,7 @@ class PluginOrderLink extends CommonDBChild
             echo "<th>" . __("Serial number") . "</th></tr>";
 
             foreach ($all_data as $data) {
-                $detailID = $data["IDD"];
+                $detailID = (int) $data["IDD"];
 
                 echo "<tr class='tab_bg_2'>";
 
@@ -504,10 +504,10 @@ class PluginOrderLink extends CommonDBChild
                     echo "<td align='center'>" . $PluginOrderReference->getReceptionReferenceLink($data) . "</td>";
                 }
                 echo "<td align='center'>" . $PluginOrderReception->getReceptionStatus($detailID) . "</td>";
-                echo "<td align='center'>" . Dropdown::getDropdownName(getTableForItemType(Entity::class), $data["entities_id"]) . "</td>";
+                echo "<td align='center'>" . Dropdown::getDropdownName(getTableForItemType(Entity::class), (int) $data["entities_id"]) . "</td>";
                 echo "<td align='center'>" . Html::convDate($data["delivery_date"]) . "</td>";
                 echo "<td align='center'>" . $this->getReceptionItemName($data["items_id"], $data["itemtype"]);
-                echo "<td align='center'>" . $this->getItemSerialNumber($data["items_id"], $data["itemtype"]) . "</td>";
+                echo "<td align='center'>" . $this->getItemSerialNumber((int) $data["items_id"], $data["itemtype"]) . "</td>";
             }
             echo "</tr>";
             echo "</table>";
@@ -584,7 +584,6 @@ class PluginOrderLink extends CommonDBChild
         switch ($ma->getAction()) {
             case 'generation':
                 return $link->showItemGenerationForm($ma->POST);
-            break;
             case 'createLink':
                 $reference->getFromDB($ma->POST["plugin_order_references_id"]);
                 $reference->dropdownAllItemsByType(
@@ -630,7 +629,7 @@ class PluginOrderLink extends CommonDBChild
                     ]
                 ],
                 'WHERE' => [
-                    'glpi_plugin_order_orders_items.id' => array_keys($ma->items[__CLASS__])
+                    'glpi_plugin_order_orders_items.id' => array_keys($ma->getItems()[__CLASS__])
                 ]
             ]);
             foreach ($additional_data_ite as $add_values) {
@@ -642,7 +641,7 @@ class PluginOrderLink extends CommonDBChild
         switch ($ma->getAction()) {
             case 'generation':
                 $newIDs = $link->generateNewItem($ma->POST);
-                foreach ($ma->items[__CLASS__] as $key => $val) {
+                foreach ($ma->getItems()[__CLASS__] as $key => $val) {
                     if (isset($newIDs[$key]) && $newIDs[$key]) {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                     } else {
@@ -658,11 +657,11 @@ class PluginOrderLink extends CommonDBChild
                     foreach ($ids as $id) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                     }
-                    return false;
+                    break;
                 }
 
                 $order_item = new PluginOrderOrder_Item();
-                foreach ($ma->items[__CLASS__] as $key => $val) {
+                foreach ($ma->getItems()[__CLASS__] as $key => $val) {
                     $order_item->getFromDB($val);
                     if ($order_item->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
                         $ma->addMessage(__("Cannot link items not delivered", "order"));
@@ -680,7 +679,7 @@ class PluginOrderLink extends CommonDBChild
                 break;
 
             case 'deleteLink':
-                foreach ($ma->items[__CLASS__] as $key => $val) {
+                foreach ($ma->getItems()[__CLASS__] as $key => $val) {
                     $link->deleteLinkWithItem(
                         $key,
                         $ma->POST['add_items'][$key]['itemtype'],
@@ -808,7 +807,7 @@ class PluginOrderLink extends CommonDBChild
                         $fields["immo_number"] = autoName(
                             $fields["immo_number"],
                             "immo_number",
-                            1,
+                            true,
                             'Infocom',
                             $entity
                         );
@@ -1169,14 +1168,8 @@ class PluginOrderLink extends CommonDBChild
                 unset($item->fields["date_mod"]);
 
                 $input  = [];
-                $fields = [];
                 foreach ($item->fields as $key => $value) {
-                    if (
-                        $value != ''
-                        && (!isset($fields[$key])
-                        || $fields[$key] == ''
-                        || $fields[$key] == 0)
-                    ) {
+                    if ($value != '') {
                         $input[$key] = $value;
                     }
                 }
@@ -1340,7 +1333,7 @@ class PluginOrderLink extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (
-            $item->getType() == 'PluginOrderOrder'
+            $item instanceof PluginOrderOrder
             && $item->checkIfDetailExists($item->getID(), true)
             && Session::haveRight('plugin_order_order', READ)
         ) {
@@ -1355,7 +1348,7 @@ class PluginOrderLink extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == 'PluginOrderOrder') {
+        if ($item instanceof PluginOrderOrder) {
             $link = new self();
             $link->showOrderLink($item->getID());
         }

@@ -792,7 +792,6 @@ class PluginOrderConfig extends CommonDBTM
 
             $config = new self();
             $config->getFromDB(1);
-            $templateID = false;
 
             $migration->addField($table, "tickettemplates_id_delivery", "int {$default_key_sign} NOT NULL default '0'");
             $migration->migrationOneTable($table);
@@ -808,9 +807,6 @@ class PluginOrderConfig extends CommonDBTM
             $migration->addField($table, "transmit_budget_change", "bool");
 
             $migration->migrationOneTable($table);
-            if ($templateID) {
-                $config->update(['id' => 1, 'tickettemplates_id_delivery' => $templateID]);
-            }
 
            //version 2.0.1
             $migration->addField($table, "use_free_reference", "bool");

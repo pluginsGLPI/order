@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
    /* purge order */
 } else if (isset($_POST["purge"])) {
     $reference->check($_POST['id'], UPDATE);
-    $reference->delete($_POST, 1);
+    $reference->delete($_POST, true);
     $reference->redirectToList();
 
    /* update order */
@@ -89,7 +89,7 @@ if (isset($_GET["popup"]) && $_GET["popup"] == 1) {
     Html::popheader(
         PluginOrderReference::getTypeName(1),
         $_SERVER['PHP_SELF'],
-        "management",
+        true,
         "PluginOrderMenu",
         "references"
     );

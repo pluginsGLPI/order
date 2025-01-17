@@ -299,23 +299,23 @@ class PluginOrderBill extends CommonDropdown
 
                     if ($data['itemtype'] == 'PluginOrderReferenceFree') {
                         $reference = new PluginOrderReferenceFree();
-                        $reference->getFromDB($data["plugin_order_references_id"]);
+                        $reference->getFromDB((int) $data["plugin_order_references_id"]);
                     } else {
                         $reference = new PluginOrderReference();
-                        $reference->getFromDB($data["plugin_order_references_id"]);
+                        $reference->getFromDB((int) $data["plugin_order_references_id"]);
                     }
 
                     echo "<td class='center'>";
                     if (PluginOrderReference::canView()) {
                         echo $reference->getLink();
                     } else {
-                        echo $reference->getName(true);
+                        echo $reference->getName();
                     }
                     echo "</td>";
                     echo "<td class='center'>";
                     Dropdown::getDropdownName(
                         "glpi_plugin_order_deliverystates",
-                        $data["plugin_order_deliverystates_id"]
+                        (int) $data["plugin_order_deliverystates_id"]
                     );
                     echo "</td>";
                     echo "</tr>";
@@ -438,7 +438,7 @@ class PluginOrderBill extends CommonDropdown
                 if (file_exists($CFG_GLPI['root_doc'] . "/src/" . $data["itemtype"] . "Type.php")) {
                     echo Dropdown::getDropdownName(
                         getTableForItemType($data["itemtype"] . "Type"),
-                        $data["types_id"]
+                        (int) $data["types_id"]
                     );
                 }
                 echo "</td>";
@@ -448,14 +448,14 @@ class PluginOrderBill extends CommonDropdown
                 if (file_exists($CFG_GLPI['root_doc'] . "/src/" . $data["itemtype"] . "Model.php")) {
                     echo Dropdown::getDropdownName(
                         getTableForItemType($data["itemtype"] . "Model"),
-                        $data["models_id"]
+                        (int) $data["models_id"]
                     );
                 }
                 $bill = new PluginOrderBill();
                 echo "<td align='center'>";
                 if ($data["plugin_order_bills_id"] > 0) {
-                    if ($bill->can($data['plugin_order_bills_id'], READ)) {
-                        echo "<a href='" . $bill->getLinkURL() . "'>" . $bill->getName(true) . "</a>";
+                    if ($bill->can((int) $data['plugin_order_bills_id'], READ)) {
+                        echo "<a href='" . $bill->getLinkURL() . "'>" . $bill->getName() . "</a>";
                     } else {
                         echo $bill->getName();
                     }
@@ -464,7 +464,7 @@ class PluginOrderBill extends CommonDropdown
                 echo "<td align='center'>";
                 echo Dropdown::getDropdownName(
                     getTableForItemType('PluginOrderBillState'),
-                    $data['plugin_order_billstates_id']
+                    (int) $data['plugin_order_billstates_id']
                 );
                 echo "</td>";
                 echo "</tr>";
@@ -607,13 +607,15 @@ class PluginOrderBill extends CommonDropdown
     }
 
 
+    /**
+    * @return array|string
+    */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
             switch ($item->getType()) {
                 case 'PluginOrderOrder':
                     return self::getTypeName();
-                break;
                 case __CLASS__:
                     $ong[1] = __("Orders", "order");
                     $ong[2] = _n("Associated item", "Associated items", 2);
@@ -626,11 +628,10 @@ class PluginOrderBill extends CommonDropdown
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        if ($item->getType() == 'PluginOrderOrder') {
+        if ($item instanceof PluginOrderOrder) {
             $order_item = new PluginOrderOrder_Item();
             $order_item->showBillsItems($item);
-        } else if ($item->getType() == __CLASS__) {
+        } else if ($item instanceof self) {
             switch ($tabnum) {
                 case 1:
                     self::showOrdersItems($item);

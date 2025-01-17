@@ -44,8 +44,6 @@ class PluginOrderReception extends CommonDBChild
 
     public static $checkParentRights  = self::DONT_CHECK_ITEM_RIGHTS;
 
-    private $table;
-
 
     public static function getTable($classname = null)
     {
@@ -83,7 +81,7 @@ class PluginOrderReception extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-        $query = "SELECT * FROM `" . $this->table . "`
+        $query = "SELECT * FROM `" . self::getTable() . "`
                WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id . "' ";
         if ($result = $DB->query($query)) {
             if ($DB->numrows($result) != 1) {
@@ -276,7 +274,7 @@ class PluginOrderReception extends CommonDBChild
                 'name'  => "plugin_order_bills_id",
                 'value' => $this->fields["plugin_order_bills_id"]
             ]);
-        } else if (Session::haveRight("plugin_order_bill", UPDATE)) {
+        } else if (Session::haveRight("plugin_order_bill", READ)) {
             echo Dropdown::getDropdownName(
                 "glpi_plugin_order_bills",
                 $this->fields["plugin_order_bills_id"]
@@ -489,7 +487,7 @@ class PluginOrderReception extends CommonDBChild
 
             foreach ($all_data as $data) {
                 $detailID = $data["IDD"];
-                Session::addToNavigateListItems($this->getType(), $detailID);
+                Session::addToNavigateListItems($this->getType(), (int) $detailID);
                 echo "<tr class='tab_bg_2'>";
                 $status    = 1;
                 if ($typeRef != 'SoftwareLicense') {
@@ -501,7 +499,7 @@ class PluginOrderReception extends CommonDBChild
 
                 if ($order_order->canDeliver() && $status) {
                     echo "<td width='15' align='left'>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $detailID);
+                    Html::showMassiveActionCheckBox(__CLASS__, (int) $detailID);
                     echo "</td>";
                 } else {
                     echo "<td width='15' align='left'></td>";
@@ -528,13 +526,13 @@ class PluginOrderReception extends CommonDBChild
                 }
                 echo "</td>";
 
-                echo "<td align='center'>" . Dropdown::getDropdownName(getTableForItemType(Entity::class), $data["entities_id"]) . "</td>";
+                echo "<td align='center'>" . Dropdown::getDropdownName(getTableForItemType(Entity::class), (int) $data["entities_id"]) . "</td>";
                 echo "<td align='center'>" . Html::convDate($data["delivery_date"]) . "</td>";
                 echo "<td align='center'>" . $data["delivery_number"] . "</td>";
                 echo "<td align='center'>" .
                  Dropdown::getDropdownName(
                      "glpi_plugin_order_deliverystates",
-                     $data["plugin_order_deliverystates_id"]
+                     (int) $data["plugin_order_deliverystates_id"]
                  ) . "</td>";
                 echo Html::hidden(
                     "id[$detailID]",
@@ -593,7 +591,7 @@ class PluginOrderReception extends CommonDBChild
                                              'plugin_order_orders_id'     => $orders_id,
                                              'plugin_order_references_id' => $references_id,
                                          ],
-                                         false,
+                                         '',
                                          false
                                      ) . "
                   }");
@@ -783,7 +781,7 @@ class PluginOrderReception extends CommonDBChild
         } else {
             for ($i = 0; $i < $params['number_reception']; $i++) {
                 $this->receptionOneItem(
-                    $DB->result($result, $i, 0),
+                    $DB->result($result, $i, 'id'),
                     $params['plugin_order_orders_id'],
                     $params["delivery_date"],
                     $params["delivery_number"],
@@ -1124,8 +1122,8 @@ class PluginOrderReception extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (
-            $item->getType() == 'PluginOrderOrder'
-            && Session::haveRight('plugin_order_order', PluginOrderOrder::canView())
+            $item instanceof PluginOrderOrder
+            && PluginOrderOrder::canView()
             && $item->getState() > PluginOrderOrderState::WAITING_FOR_APPROVAL
         ) {
             return self::createTabEntry(__("Item delivered", "order"), self::countForOrder($item));
@@ -1136,7 +1134,7 @@ class PluginOrderReception extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == 'PluginOrderOrder') {
+        if ($item instanceof PluginOrderOrder) {
             $reception = new self();
             $reception->showOrderReception($item->getID());
         }

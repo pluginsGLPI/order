@@ -402,7 +402,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
         if ($DB->numrows($result) > 0) {
             while ($data = $DB->fetchArray($result)) {
-                Session::addToNavigateListItems(__CLASS__, $data['id']);
+                Session::addToNavigateListItems(__CLASS__, (int) $data['id']);
                 echo Html::hidden("item[" . $data["id"] . "]", ['value' => $ID]);
                 echo "<tr class='tab_bg_1 center'>";
                 echo "<td>";
@@ -416,7 +416,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 echo "</td>";
                 $link = Toolbox::getItemTypeFormURL(__CLASS__);
                 echo "<td><a href='" . $link . "?id=" . $data["id"] . "&plugin_order_orders_id=" . $ID . "'>"
-                . Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
+                . Dropdown::getDropdownName("glpi_suppliers", (int) $data["suppliers_id"]) . "</a></td>";
                 echo "<td>";
                 $total = $survey->getTotalNotation($ID);
                 echo $total . " / 5";
@@ -553,7 +553,6 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $DB->query("DROP TABLE IF EXISTS  `" . self::getTable() . "`") or die($DB->error());
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item instanceof PluginOrderOrder) {
@@ -562,10 +561,10 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 $config->canUseSupplierSatisfaction()
                 && $item->getState() == PluginOrderOrderState::DELIVERED
             ) {
-                return [1 => __("Supplier quality", "order")];
+                return __("Supplier quality", "order");
             }
         }
-        return [];
+        return '';
     }
 
 
@@ -578,7 +577,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 !$survey->checkIfSupplierSurveyExists($item->getID())
                 && $item->can($item->getID(), UPDATE)
             ) {
-                $survey->showForm("", ['plugin_order_orders_id' => $item->getID()]);
+                $survey->showForm(-1, ['plugin_order_orders_id' => $item->getID()]);
             }
         }
 

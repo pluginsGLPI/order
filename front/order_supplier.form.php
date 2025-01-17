@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
     if (PluginOrderOrder_Supplier::canCreate()) {
         foreach ($_POST["check"] as $ID => $value) {
-            if ($supplier->delete(["id" => $ID], 0, 0)) {
+            if ($supplier->delete(["id" => $ID], false, false)) {
                 $new_value = __("Delete", "order") . " " . __("Supplier Detail", "order") . " : " . $ID;
                 $order->addHistory('PluginOrderOrder', "", $new_value, $_POST["plugin_order_orders_id"]);
             }

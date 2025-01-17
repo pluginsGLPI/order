@@ -660,34 +660,35 @@ class PluginOrderOrder extends CommonDBTM
         return $ong;
     }
 
-
+    /**
+     * @return array|string
+     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        switch ($item->getType()) {
-            case 'Budget':
-                return __("Orders", "order");
-            case __CLASS__:
-                $ong    = [];
-                $config = PluginOrderConfig::getConfig();
-                if (
-                    Session::haveRightsOr("plugin_order_order", [
-                        self::RIGHT_VALIDATION,
-                        self::RIGHT_CANCEL,
-                        self::RIGHT_UNDO_VALIDATION
-                    ])
-                ) {
-                    $ong[1] = __("Validation", "order");
-                }
-                if (
-                    $config->canGenerateOrderPDF()
-                    && ($item->getState() > PluginOrderOrderState::DRAFT
-                    || $this->canGenerateWithoutValidation())
-                ) {
-                   // generation
-                    $ong[2] = __("Purchase order", "order");
-                }
+        if ($item instanceof Budget) {
+            return __("Orders", "order");
+        } else if ($item instanceof self) {
+            $ong    = [];
+            $config = PluginOrderConfig::getConfig();
+            if (
+                Session::haveRightsOr("plugin_order_order", [
+                    self::RIGHT_VALIDATION,
+                    self::RIGHT_CANCEL,
+                    self::RIGHT_UNDO_VALIDATION
+                ])
+            ) {
+                $ong[1] = __("Validation", "order");
+            }
+            if (
+                $config->canGenerateOrderPDF()
+                && ($item->getState() > PluginOrderOrderState::DRAFT
+                || $this->canGenerateWithoutValidation())
+            ) {
+               // generation
+                $ong[2] = __("Purchase order", "order");
+            }
 
-                return $ong;
+            return $ong;
         }
         return '';
     }
@@ -698,9 +699,9 @@ class PluginOrderOrder extends CommonDBTM
         $tabnum = 1,
         $withtemplate = 0
     ) {
-        if ($item->getType() == 'Budget') {
+        if ($item instanceof Budget) {
             self::showForBudget($item->getField('id'));
-        } else if ($item->getType() == __CLASS__) {
+        } else if ($item instanceof self) {
             switch ($tabnum) {
                 case 1:
                     $item->showValidationForm($item->getID());
@@ -897,7 +898,7 @@ class PluginOrderOrder extends CommonDBTM
                 </div>
             </div>
          </div>";
-            return;
+            return true;
         }
 
         $this->initForm($ID, $options);
@@ -1820,7 +1821,7 @@ class PluginOrderOrder extends CommonDBTM
                     );
 
                     $tax = new PluginOrderOrderTax();
-                    $tax->getFromDB($data["plugin_order_ordertaxes_id"]);
+                    $tax->getFromDB((int) $data["plugin_order_ordertaxes_id"]);
 
                     $listeArticles[] = [
                         'quantity'         => $quantity,
@@ -1848,7 +1849,7 @@ class PluginOrderOrder extends CommonDBTM
                     );
 
                     $tax = new PluginOrderOrderTax();
-                    $tax->getFromDB($data["plugin_order_ordertaxes_id"]);
+                    $tax->getFromDB((int) $data["plugin_order_ordertaxes_id"]);
 
                     $listeArticles[] = [
                         'quantity'         => $quantity,
@@ -1872,9 +1873,9 @@ class PluginOrderOrder extends CommonDBTM
                     $articleValues['titleArticle'] = $element['ref'];
                     $articleValues['refArticle'] = $element['refnumber'];
                     $articleValues['TVAArticle'] = $element['taxe'];
-                    $articleValues['HTPriceArticle'] = Html::formatNumber($element['price_taxfree']);
+                    $articleValues['HTPriceArticle'] = Html::formatNumber((float) $element['price_taxfree']);
                     if ($element['discount'] != 0) {
-                        $articleValues['discount'] = Html::formatNumber($element['discount']) . " %";
+                        $articleValues['discount'] = Html::formatNumber((float) $element['discount']) . " %";
                     } else {
                         $articleValues['discount'] = "";
                     }
@@ -2402,7 +2403,7 @@ class PluginOrderOrder extends CommonDBTM
                   Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
         }
-        return "";
+        return true;
     }
 
 
@@ -2448,7 +2449,6 @@ class PluginOrderOrder extends CommonDBTM
                     }
                 }
                 return;
-               break;
         }
         return;
     }
@@ -2856,7 +2856,9 @@ class PluginOrderOrder extends CommonDBTM
 
            //Remove unused notifications
             $notification = new Notification();
-            $notification->deleteByCriteria("`itemtype`='PluginOrderOrder_Item'");
+            $notification->deleteByCriteria([
+                'itemtype' => 'PluginOrderOrder_Item',
+            ]);
 
            //2.7.0
             $migration->addField($table, "global_discount", "FLOAT NOT NULL default '0'");
