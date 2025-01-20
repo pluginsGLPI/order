@@ -2160,8 +2160,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        /** @var CommonDBTM $item */
-        if (get_class($item) == 'PluginOrderOrder') {
+        if ($item instanceof PluginOrderOrder) {
             if (!$item->fields['is_template']) {
                 $order_item = new self();
                 $order_item->showItem($item->getID());

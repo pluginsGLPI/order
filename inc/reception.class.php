@@ -81,13 +81,17 @@ class PluginOrderReception extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-        $query = "SELECT * FROM `" . self::getTable() . "`
-               WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id . "' ";
-        if ($result = $DB->query($query)) {
-            if ($DB->numrows($result) != 1) {
+        $query = [
+            'FROM' => self::getTable(),
+            'WHERE' => ['plugin_order_orders_id' => $plugin_order_orders_id],
+        ];
+        if ($result = $DB->request($query)) {
+            if ($result->numRows() != 1) { // Remplacement de $DB->numrows($result)
                 return false;
             }
-            $this->fields = $DB->fetchAssoc($result);
+            foreach () {
+                $this->fields = $result->fetchAssoc(); // Remplacement de $DB->fetchAssoc($result)
+            }
             if (is_array($this->fields) && count($this->fields)) {
                 return true;
             } else {

@@ -158,9 +158,7 @@ class PluginOrderProfile extends CommonDBTM
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var CommonDBTM $item */
-        $type = get_class($item);
-        if ($type == 'Profile') {
+        if ($item instanceof Profile) {
             if ($item->getField('id') && $item->getField('interface') != 'helpdesk') {
                 return [1 => __("Orders", "order")];
             }
