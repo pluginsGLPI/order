@@ -220,8 +220,8 @@ class PluginOrderPreference extends CommonDBTM
                     if ($filename == ".." or $filename == ".") {
                         echo "";
                     } else {
-                        if ($filetype == 'file' && $extension == $ext) {
-                            if ($ext == PLUGIN_ORDER_SIGNATURE_EXTENSION) {
+                        if ($filetype == 'file' && in_array($extension, $ext)) {
+                            if (in_array($ext, PLUGIN_ORDER_SIGNATURE_EXTENSION)) {
                                 $name = array_shift($basename);
                                 if (strtolower($name) == strtolower($_SESSION["glpiname"])) {
                                     $array_file[] = [$filename, $filedate, $extension];
