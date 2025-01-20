@@ -85,19 +85,17 @@ class PluginOrderReception extends CommonDBChild
             'FROM' => self::getTable(),
             'WHERE' => ['plugin_order_orders_id' => $plugin_order_orders_id],
         ];
-        if ($result = $DB->request($query)) {
-            if ($result->numRows() != 1) { // Remplacement de $DB->numrows($result)
-                return false;
-            }
-            foreach () {
-                $this->fields = $result->fetchAssoc(); // Remplacement de $DB->fetchAssoc($result)
-            }
+        $result = $DB->request($query);
+
+        foreach ($result as $fields) {
+            $this->fields = $fields;
             if (is_array($this->fields) && count($this->fields)) {
                 return true;
             } else {
                 return false;
             }
         }
+
         return false;
     }
 
