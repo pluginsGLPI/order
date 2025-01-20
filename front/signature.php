@@ -34,8 +34,10 @@ $sign = array_key_exists('sign', $_GET) ? $_GET['sign'] : '';
 
 // Avoid access to another directory or to files that does not match allowed extension
 if (
-    preg_match('/(\\\\|\/)/', $sign) !== 0
-    || preg_match('/\.' . preg_quote(PLUGIN_ORDER_SIGNATURE_EXTENSION, '/') . '$/', $sign) === 0
+    preg_match('/[\\\\\/]/', $sign) !== 0
+    || preg_match('/\.(' . implode('|', array_map(function ($ext) {
+        return preg_quote($ext, '/');
+    }, PLUGIN_ORDER_SIGNATURE_EXTENSION)) . ')$/', $sign) === 0
 ) {
     header('HTTP/1.1 403 Forbidden');
     exit();

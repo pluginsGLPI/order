@@ -53,10 +53,10 @@ if (!defined('PLUGIN_ORDER_TEMPLATE_LOGO_DIR')) {
 }
 
 if (!defined('PLUGIN_ORDER_TEMPLATE_EXTENSION')) {
-    define("PLUGIN_ORDER_TEMPLATE_EXTENSION", "odt");
+    define("PLUGIN_ORDER_TEMPLATE_EXTENSION", ["odt"]);
 }
 if (!defined('PLUGIN_ORDER_SIGNATURE_EXTENSION')) {
-    define("PLUGIN_ORDER_SIGNATURE_EXTENSION", "png");
+    define("PLUGIN_ORDER_SIGNATURE_EXTENSION", ["png"]);
 }
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
