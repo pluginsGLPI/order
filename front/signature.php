@@ -33,22 +33,20 @@ include("../../../inc/includes.php");
 $sign = array_key_exists('sign', $_GET) ? $_GET['sign'] : '';
 
 // Avoid access to another directory or to files that does not match allowed extension
-if (
-    $extensionPattern = '/\.(' . implode('|', array_map(function ($ext) {
-    return preg_quote($ext, '/');
+$extensionPattern = '/\.(' . implode('|', array_map(function ($ext) {
+        return preg_quote($ext, '/');
 }, PLUGIN_ORDER_SIGNATURE_EXTENSION)) . ')$/';
 
 if (preg_match('/[\\\\\/]/', $sign) !== 0 || preg_match($extensionPattern, $sign) === 0) {
-) {
     header('HTTP/1.1 403 Forbidden');
     exit();
 }
 
-$filename = PLUGIN_ORDER_SIGNATURE_DIR . $sign;
+    $filename = PLUGIN_ORDER_SIGNATURE_DIR . $sign;
 
 if (empty($sign) || !@is_file($filename)) {
     header('HTTP/1.1 404 Not Found');
     exit();
 }
 
-Toolbox::sendFile($filename, $sign);
+    Toolbox::sendFile($filename, $sign);
