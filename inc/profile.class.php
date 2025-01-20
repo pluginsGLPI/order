@@ -171,8 +171,7 @@ class PluginOrderProfile extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        /** @var CommonDBTM $item */
-        if ($item->getType() == 'Profile') {
+        if ($item instanceof Profile) {
             $prof = new self();
             self::addDefaultProfileInfos($item->getID(), [
                 'plugin_order_order'     => 0, // All rights : CREATE + READ + ...
