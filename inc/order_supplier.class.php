@@ -455,12 +455,14 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
     }
 
 
+    /**
+     * @return array|string
+     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         switch (get_class($item)) {
             case 'Supplier':
                 return [1 => __("Orders", "order")];
-            break;
             case 'PluginOrderOrder':
                 $config = PluginOrderConfig::getConfig();
                 if ($config->canUseSupplierInformations() && $item->fields['suppliers_id']) {
@@ -486,7 +488,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                 $order_supplier = new self();
                 if ($item->can($item->getID(), READ)) {
                     self::showOrderSupplierInfos($item->getID());
-                    $order_supplier->showForm("", ['plugin_order_orders_id' => $item->getID()]);
+                    $order_supplier->showForm(-1, ['plugin_order_orders_id' => $item->getID()]);
                 }
                 break;
         }

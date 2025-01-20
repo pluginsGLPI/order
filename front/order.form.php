@@ -76,7 +76,7 @@ if (isset($_POST["add"])) {
         $id = $_GET['id'];
     }
     $pluginOrderOrder->check($id, DELETE);
-    $pluginOrderOrder->delete(['id' => $id], 1);
+    $pluginOrderOrder->delete(['id' => $id], true);
     $pluginOrderOrder->redirectToList();
 } else if (isset($_POST["update"])) {
    /* update order */

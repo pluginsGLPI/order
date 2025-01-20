@@ -263,7 +263,6 @@ class PluginOrderReference extends CommonDBTM
             case 'itemtype':
                 $item = new $values['itemtype']();
                 return $item->getTypeName();
-            break;
         }
         return '';
     }
@@ -381,7 +380,9 @@ class PluginOrderReference extends CommonDBTM
         return $ong;
     }
 
-
+    /**
+     * @return array|string
+     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (get_class($item) == __CLASS__) {
@@ -393,7 +394,7 @@ class PluginOrderReference extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == __CLASS__) {
+        if ($item instanceof self) {
             $item->showOrders($item);
         }
         return true;
@@ -817,7 +818,7 @@ class PluginOrderReference extends CommonDBTM
                 echo "<tr class='tab_bg_1' align='center'>";
                 echo "<td>";
                 $order->getFromDB($data['plugin_order_orders_id']);
-                echo $order->getLink(PluginOrderOrder::canView());
+                echo $order->getLink();
                 echo "</td>";
 
                 echo "<td>";
@@ -935,7 +936,7 @@ class PluginOrderReference extends CommonDBTM
                      _sx('button', 'Post') . "\" >";
                 return true;
         }
-        return "";
+        return false;
     }
 
 
@@ -982,16 +983,17 @@ class PluginOrderReference extends CommonDBTM
                     }
                 }
                 return;
-               break;
             case "copy_reference":
                 foreach ($ids as $id) {
-                    if ($item->getFromDB($id)) {
+                    if (
+                        $item instanceof self
+                        && $item->getFromDB($id)
+                    ) {
                         $item->copy($id);
                     }
                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                 }
                 return;
-               break;
         }
         return;
     }

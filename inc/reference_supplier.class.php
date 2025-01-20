@@ -156,7 +156,9 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         return $ong;
     }
 
-
+    /**
+     * @return array|string
+     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (get_class($item) == __CLASS__) {
@@ -171,7 +173,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         $reference_supplier = new self();
-        if ($item->getType() == 'PluginOrderReference') {
+        if ($item instanceof PluginOrderReference) {
             if ($item->can($item->getID(), UPDATE)) {
                 $reference_supplier->showForm(0, ['plugin_order_references_id' => $item->getID()]);
             }
@@ -208,7 +210,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         if ($ID > 0) {
             $supplier = new Supplier();
             $supplier->getFromDB($this->fields['suppliers_id']);
-            echo $supplier->getLink(Session::haveRight('supplier', READ));
+            echo $supplier->getLink();
         } else {
             $suppliers = [];
             $query = "SELECT `suppliers_id`
@@ -300,7 +302,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             echo Html::hidden('plugin_order_references_id', ['value' => $ID]);
 
             while ($data = $DB->fetchArray($result)) {
-                Session::addToNavigateListItems($this->getType(), $data['id']);
+                Session::addToNavigateListItems($this->getType(), (int) $data['id']);
                 echo Html::hidden("item[" . $data["id"] . "]", ['value' => $ID]);
                 echo "<tr class='tab_bg_1 center'>";
                 echo "<td>";
@@ -315,12 +317,12 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
 
                 $link = Toolbox::getItemTypeFormURL($this->getType());
                 echo "<td><a href='" . $link . "?id=" . $data["id"] . "&plugin_order_references_id=" . $ID . "'>"
-                . Dropdown::getDropdownName("glpi_suppliers", $data["suppliers_id"]) . "</a></td>";
+                . Dropdown::getDropdownName("glpi_suppliers", (int) $data["suppliers_id"]) . "</a></td>";
                 echo "<td>";
                 echo $data["reference_code"];
                 echo "</td>";
                 echo "<td>";
-                echo Html::formatNumber($data["price_taxfree"]);
+                echo Html::formatNumber((float) $data["price_taxfree"]);
                 echo "</td>";
                 echo "</tr>";
             }
@@ -539,11 +541,11 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             while ($data = $DB->fetchArray($result)) {
                 echo "<tr class='tab_bg_1' align='center'>";
                 echo "<td>";
-                echo Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
+                echo Dropdown::getDropdownName("glpi_entities", (int) $data["entities_id"]);
                 echo "</td>";
 
                 echo "<td>";
-                echo Dropdown::getDropdownName("glpi_manufacturers", $data["manufacturers_id"]);
+                echo Dropdown::getDropdownName("glpi_manufacturers", (int) $data["manufacturers_id"]);
                 echo "</td>";
 
                 echo "<td>";
@@ -561,7 +563,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 echo "</td>";
 
                 echo "<td>";
-                echo number_format($data["price_taxfree"], 2);
+                echo number_format((float) $data["price_taxfree"], 2);
                 echo "</td>";
                 echo "</tr>";
             }

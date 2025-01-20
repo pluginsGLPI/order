@@ -323,7 +323,6 @@ function plugin_order_giveItem($type, $ID, $data, $num)
             } else {
                 return " ";
             }
-            break;
         case "glpi_plugin_order_references.models_id":
             if (file_exists(GLPI_ROOT . "/src/" . $itemtype . "Model.php")) {
                 return Dropdown::getDropdownName(
@@ -333,14 +332,12 @@ function plugin_order_giveItem($type, $ID, $data, $num)
             } else {
                 return " ";
             }
-            break;
         case "glpi_plugin_order_references.templates_id":
             if (!$itemnum) {
                 return " ";
             } else {
                 return $reference->getTemplateName($itemtype, $itemnum);
             }
-            break;
     }
     return "";
 }

@@ -153,11 +153,12 @@ class PluginOrderProfile extends CommonDBTM
         self::removeRightsFromSession();
     }
 
-
+    /**
+     * @return array|string
+     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        $type = get_class($item);
-        if ($type == 'Profile') {
+        if ($item instanceof Profile) {
             if ($item->getField('id') && $item->getField('interface') != 'helpdesk') {
                 return [1 => __("Orders", "order")];
             }
@@ -168,7 +169,7 @@ class PluginOrderProfile extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == 'Profile') {
+        if ($item instanceof Profile) {
             $prof = new self();
             self::addDefaultProfileInfos($item->getID(), [
                 'plugin_order_order'     => 0, // All rights : CREATE + READ + ...

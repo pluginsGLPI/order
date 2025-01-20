@@ -37,7 +37,7 @@ Session::checkCentralAccess();
 
 // Make a select box for references
 if (isset($_POST["itemtype"])) {
-    $entity_restrict = getEntitiesRestrictRequest("AND", 'r', '', $_POST['entities_id'], 1);
+    $entity_restrict = getEntitiesRestrictRequest("AND", 'r', '', $_POST['entities_id'], true);
     $query = "SELECT s.`plugin_order_references_id` as id, s.`price_taxfree`, s.`reference_code`, r.`name`
              FROM `glpi_plugin_order_references_suppliers` s
              LEFT JOIN `glpi_plugin_order_references` r

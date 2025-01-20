@@ -146,7 +146,7 @@ class PluginOrderPreference extends CommonDBTM
     *
     * Check if at least one template exists
     * @since 1.5.3
-    * @return true if at least one template exists, false otherwise
+    * @return bool true if at least one template exists, false otherwise
     */
     public static function atLeastOneTemplateExists()
     {
@@ -159,7 +159,7 @@ class PluginOrderPreference extends CommonDBTM
     *
     * Check if at least one signature exists
     * @since 1.5.3
-    * @return true if at least one signature exists, false otherwise
+    * @return bool  true if at least one signature exists, false otherwise
     */
     public static function atLeastOneSignatureExists()
     {
@@ -284,7 +284,9 @@ class PluginOrderPreference extends CommonDBTM
         $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`") or die($DB->error());
     }
 
-
+    /**
+     * @return array|string
+     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (get_class($item) == 'Preference') {
