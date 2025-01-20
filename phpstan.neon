@@ -17,6 +17,7 @@ parameters:
         - ../../stubs/glpi_constants.php
     ignoreErrors:
         - '#Call to deprecated method query\(\) of class DBmysql:#'
+        - '#Path in include_once\(\) ".*?/files/_plugins/order/generate/custom\.php" is not a file or it does not exist\.#'
     excludePaths:
         - 'inc/referenceinjection.class.php'
         - 'inc/orderinjection.class.php'

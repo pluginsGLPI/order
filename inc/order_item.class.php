@@ -285,7 +285,6 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         }
     }
 
-
     public static function getClasses($all = false)
     {
         /** @var array $ORDER_TYPES */
@@ -2165,7 +2164,10 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 $order_item = new self();
                 $order_item->showItem($item->getID());
             }
-        } else if (in_array($item->getType(), PluginOrderOrder_Item::getClasses(true))) {
+        } else if (
+            is_subclass_of($item, CommonDBTM::class)
+            && in_array($item->getType(), PluginOrderOrder_Item::getClasses(true))
+        ) {
             $order_item = new self();
             $order_item->showPluginFromItems(get_class($item), $item->getField('id'));
         }
