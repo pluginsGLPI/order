@@ -1579,61 +1579,56 @@ class PluginOrderOrder extends CommonDBTM
          __("Validation process", "order") . "</th></tr>";
 
         if ($this->can($orders_id, READ) && $this->canDisplayValidationForm($orders_id)) {
-            if ($this->checkIfDetailExists($orders_id)) {
-                echo "<tr class='tab_bg_1'>";
-                echo "<td valign='top' align='right'>";
-                echo __("Comments") . ":&nbsp;";
-                echo "</td>";
-                echo "<td valign='top' align='left'>";
-                echo "<textarea cols='40' rows='4' name='comment'></textarea>";
-                echo "</td>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td valign='top' align='right'>";
+            echo __("Comments") . ":&nbsp;";
+            echo "</td>";
+            echo "<td valign='top' align='left'>";
+            echo "<textarea cols='40' rows='4' name='comment'></textarea>";
+            echo "</td>";
 
-                echo "<td align='center'>";
-                echo Html::hidden('id', ['value' => $orders_id]);
+            echo "<td align='center'>";
+            echo Html::hidden('id', ['value' => $orders_id]);
 
-                $link = "";
+            $link = "";
 
-                if ($this->canCancelOrder()) {
-                    echo "<input type='submit' onclick=\"return confirm('"
-                    . __("Do you really want to cancel this order ? This option is irreversible !", "order")
-                    . "')\" name='cancel_order' value=\"" . __("Cancel order", "order") . "\" class='submit'>";
-                    $link = "<br><br>";
-                }
-
-                if ($this->canValidateOrder()) {
-                    echo $link . "<input type='submit' name='validate' value=\""
-                    . __("Validate order", "order") . "\" class='submit'>";
-                    $link = "<br><br>";
-                }
-
-                if ($this->canCancelValidationRequest()) {
-                    echo $link . "<input type='submit' onclick=\"return confirm('"
-                    . __("Do you want to cancel the validation approval ?", "order")
-                    . "')\" name='cancel_waiting_for_approval' value=\""
-                    . __("Cancel ask for validation", "order") . "\" class='submit'>";
-                    $link = "<br><br>";
-                }
-
-                if ($this->canDoValidationRequest()) {
-                    echo $link . "<input type='submit' name='waiting_for_approval' value=\""
-                    . __("Ask for validation", "order") . "\" class='submit'>";
-                    $link = "<br><br>";
-                }
-
-                if ($this->canUndoValidation()) {
-                    echo $link . "<input type='submit' onclick=\"return confirm('"
-                    . __("Do you really want to edit the order ?", "order")
-                    . "')\" name='undovalidation' value=\""
-                    . __("Edit order", "order") . "\" class='submit'>";
-                    $link = "<br><br>";
-                }
-
-                echo "</td>";
-                echo "</tr>";
-            } else {
-                echo "<tr class='tab_bg_2 center'><td>"
-                . __("Thanks to add at least one equipment on your order.", "order") . "</td></tr>";
+            if ($this->canCancelOrder()) {
+                echo "<input type='submit' onclick=\"return confirm('"
+                . __("Do you really want to cancel this order ? This option is irreversible !", "order")
+                . "')\" name='cancel_order' value=\"" . __("Cancel order", "order") . "\" class='submit'>";
+                $link = "<br><br>";
             }
+
+            if ($this->canValidateOrder()) {
+                echo $link . "<input type='submit' name='validate' value=\""
+                . __("Validate order", "order") . "\" class='submit'>";
+                $link = "<br><br>";
+            }
+
+            if ($this->canCancelValidationRequest()) {
+                echo $link . "<input type='submit' onclick=\"return confirm('"
+                . __("Do you want to cancel the validation approval ?", "order")
+                . "')\" name='cancel_waiting_for_approval' value=\""
+                . __("Cancel ask for validation", "order") . "\" class='submit'>";
+                $link = "<br><br>";
+            }
+
+            if ($this->canDoValidationRequest()) {
+                echo $link . "<input type='submit' name='waiting_for_approval' value=\""
+                . __("Ask for validation", "order") . "\" class='submit'>";
+                $link = "<br><br>";
+            }
+
+            if ($this->canUndoValidation()) {
+                echo $link . "<input type='submit' onclick=\"return confirm('"
+                . __("Do you really want to edit the order ?", "order")
+                . "')\" name='undovalidation' value=\""
+                . __("Edit order", "order") . "\" class='submit'>";
+                $link = "<br><br>";
+            }
+
+            echo "</td>";
+            echo "</tr>";
         }
         echo "</table></div>";
         Html::closeForm();
