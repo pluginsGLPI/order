@@ -2048,7 +2048,7 @@ class PluginOrderOrder extends CommonDBTM
                 );
 
                 //if state is cancel do not decremente total already use
-                if (!in_array($data['plugin_order_orderstates_id'], [PluginOrderOrderState::CANCELED, PluginOrderOrderState::DRAFT, PluginOrderOrderState::WAITING_FOR_APPROVAL])) {
+                if ($data['plugin_order_orderstates_id'] !== PluginOrderOrderState::CANCELED) {
                      $total += $prices["priceTTC"];
                 }
                 $link   = Toolbox::getItemTypeFormURL(__CLASS__);
