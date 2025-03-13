@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-- Fix: The calculation of the total price of the orders remained always at 0
+- Fixed the cumulative total order price (TTC) calculation in budgets.
 
 ## [2.10.6] - 2024-03-08
 
