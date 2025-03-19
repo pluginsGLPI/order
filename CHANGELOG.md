@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+- Fixed the cumulative total order price (TTC) calculation in budgets.
+
 ## [2.10.6] - 2024-03-08
 
 ### Changed
