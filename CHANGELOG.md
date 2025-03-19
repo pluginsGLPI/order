@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [2.10.7] - 2025-03-19
 
 - Fixed the cumulative total order price (TTC) calculation in budgets.
+- Paid invoice changes status to Paid
 
 ## [2.10.6] - 2024-03-08
 
