@@ -1046,7 +1046,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $visible = $_GET[$countainer_name . 'visible'] ?? false;
 
         if (!empty($entries)) {
-            usort($entries, function($a, $b) use ($sort, $order) {
+            usort($entries, function ($a, $b) use ($sort, $order){
                 // Handle different data types appropriately
                 if (is_numeric($a[$sort]) && is_numeric($b[$sort])) {
                     $cmp = $a[$sort] <=> $b[$sort];
