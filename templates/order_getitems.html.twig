@@ -33,6 +33,23 @@
 
 {% set datatable_id = datatable_id|default('datatable' ~ random()) %}
 {% set showmassiveactions = canedit %}
+{% if hide_and_show %}
+    <button id="toggle-table-{{ datatable_id }}" class="btn btn-link btn-sm mb-2" type="button">
+        {% if table_visible %}
+            <i class="ti ti-eye-off"></i>
+        {% else %}
+            <i class="ti ti-eye"></i>
+        {% endif %}
+    </button>
+    <input type="hidden" name="{{ countainer_name }}" value="true">
+{% endif %}
+
+{% if hidden_fields is defined %}
+    {% for field in hidden_fields %}
+        <input type="hidden" name="{{ field['name'] }}" value="{{ field['value'] }}" />
+    {% endfor %}
+{% endif %}
+
 {% if total_number < 1 and filters|length == 0 %}
     <table id="{{ datatable_id }}" class="table">
         <thead>
@@ -63,17 +80,17 @@
     {% if not nopager %}
         {{ include('components/pager.html.twig', {
             'count': filtered_number,
-            'additional_params': additional_params ~ '&sort=' ~ sort ~ '&order=' ~ order
+            'additional_params': additional_params ~ '&sort=' ~ sort ~ '&order=' ~ order ~ '&visibility=1',
         }) }}
     {% endif %}
 
-    <div class="table-responsive" {% if showmassiveactions %} id="{{ massiveactionparams['container'] }}" {% endif %}>
+    <div class="table-responsive" {% if showmassiveactions %} id="{{ massiveactionparams['container'] }}" {% endif %} {% if not table_visible %}style="display: none;"{% endif %}>
         {% if showmassiveactions %}
             <div class="mb-2">
                 {% do call('Html::showMassiveActions', [massiveactionparams|default([])]) %}
             </div>
         {% endif %}
-        <table id="{{ datatable_id }}" class="table {{ table_class_style|default('table-hover') }}">
+        <table id="{{ datatable_id }}" class="table {{ table_class_style|default('table-hover') }} mb-1">
             <thead>
                 {% if super_header is defined and super_header is not empty %}
                     {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
@@ -105,7 +122,7 @@
                                 {% set new_order = (order == 'ASC' ? 'DESC' : 'ASC') %}
                             {% endif %}
 
-                            {% set sort_href = "javascript:reloadTab('sort=" ~ colkey ~ "&order=" ~ new_order ~ "&" ~ additional_params ~ "');" %}
+                            {% set sort_href = "javascript:reloadTab('" ~ countainer_name ~ "sort=" ~ colkey ~ "&" ~ countainer_name ~ "order=" ~ new_order ~ "&" ~ countainer_name ~ "visible=" ~ true ~ "');" %}
 
                             <th>
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
@@ -275,12 +292,6 @@
                                                     {{ content }}
                                                 </div>
                                             {% endif %}
-                                        {% elseif formatter == 'yesno' %}
-                                            {% if entry[colkey] == 1 %}
-                                                <div aria-label="{{ __('Yes') }}"><i class="ti ti-circle-check"></i></div>
-                                            {% else %}
-                                                <div aria-label="{{ __('No') }}"></div>
-                                            {% endif %}
                                         {% else %}
                                             {{ entry[colkey] }}
                                         {% endif %}
@@ -333,5 +344,58 @@
     $(function() {
         $('.filter-select-multiple').select2();
     });
+    </script>
+{% endif %}
+
+{% if hide_and_show %}
+    <script>
+        $(function() {
+            {% if datatable_id is defined %}
+            // Toggle button functionality
+            $('#toggle-table-{{ datatable_id }}').on('click', function() {
+                const div_table = $('#{{ massiveactionparams['container'] }}');
+                const icon = $(this).find('i');
+                const countainer_name = $('#{{ countainer_name }}');
+
+                let isVisible = !div_table.is(':hidden');
+
+                // Toggle visibility
+                if (!isVisible) {
+                    div_table.show();
+                    icon.removeClass('ti-eye').addClass('ti-eye-off');
+                    countainer_name.val('true');
+                    isVisible = true;
+                } else {
+                    div_table.hide();
+                    icon.removeClass('ti-eye-off').addClass('ti-eye');
+                    countainer_name.val('false');
+                    isVisible = false;
+                }
+
+                // Update all reloadTab links to reflect the new visibility state
+                $('a[href^="javascript:reloadTab("]').each(function() {
+                    let href = $(this).attr('href');
+                    let params = href.substring(href.indexOf("'") + 1, href.lastIndexOf("'"));
+
+                    // Parse parameters
+                    let paramsObj = {};
+                    params.split('&').forEach(function(param) {
+                        let [key, value] = param.split('=');
+                        paramsObj[key] = value;
+                    });
+
+                    // Update visible parameter
+                    paramsObj['{{ countainer_name }}visible'] = isVisible ? '1' : '0';
+
+                    // Reconstruct parameters string
+                    let newParams = Object.entries(paramsObj).map(([key, value]) => `${key}=${value}`).join('&');
+
+                    // Update href
+                    let newHref = `javascript:reloadTab('${newParams}');`;
+                    $(this).attr('href', newHref);
+                });
+            });
+            {% endif %}
+        });
     </script>
 {% endif %}
