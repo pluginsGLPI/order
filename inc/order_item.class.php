@@ -1124,11 +1124,8 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             // Initialize columns array based on needed headers
             $columns = [];
 
-            if ($canedit) {
-                $columns['checkbox'] = '';
-            }
             if ($data_ref["itemtype"] != 'SoftwareLicense') {
-                $columns['id'] = __("ID");
+                $columns['id_show'] = __("ID");
             }
             $columns['reference'] = __("Reference");
             $columns['price_taxfree'] = __("Unit price tax free", "order");
@@ -1180,17 +1177,8 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 // Build entry for this row
                 $entry = [];
 
-                if ($canedit) {
-                    $sel = "";
-                    if (isset($_GET["select"]) && $_GET["select"] == "all") {
-                        $sel = "checked";
-                    }
-                    $entry['checkbox'] = "<input type='checkbox' name='item[" . $data["IDD"] . "]' value='1' $sel>" .
-                        Html::hidden('plugin_order_orders_id', ['value' => $plugin_order_orders_id]);
-                }
-
                 if ($data_ref["itemtype"] != 'SoftwareLicense') {
-                    $entry['id'] = "<a href='" . Toolbox::getItemTypeFormURL('PluginOrderOrder_Item') . 
+                    $entry['id_show'] = "<a href='" . Toolbox::getItemTypeFormURL('PluginOrderOrder_Item') . 
                         "?id=" . $data['IDD'] . "'>" . $data['IDD'] . "</a>&nbsp;" . 
                         Html::showToolTip($data['comment'], ['display' => false]);
                 }
@@ -1279,6 +1267,9 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 
                 // Status
                 $entry['status'] = $reception->getReceptionStatus($data["IDD"]);
+
+                $entry['id'] = $data['IDD'];
+                $entry['itemtype'] = PluginOrderOrder_Item::class;
                 
                 $entries[] = $entry;
             }
@@ -1295,57 +1286,66 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
             // Render the table using the template
             TemplateRenderer::getInstance()->display('@order/order_getitems.html.twig', [
+                'rand' => $rand,
                 'nopager' => true,
                 'nofilter' => true,
                 'is_tab' => true,
-                'items_id' => $plugin_order_orders_id,
                 'columns' => $columns,
                 'formatters' => [
-                    'checkbox' => 'raw_html',
-                    'id' => 'raw_html',
+                    'id_show' => 'raw_html',
                     'reference' => 'raw_html',
+                    'vat' => 'raw_html',
                     'price_taxfree' => 'raw_html',
                     'discount' => 'raw_html',
                 ],
                 'entries' => $entries,
+                'canedit' => $canedit,
                 'total_number' => count($entries),
                 'filtered_number' => count($entries),
-                'showmassiveactions' => false,
+                'ID' => $plugin_order_orders_id,
+                'massiveactionparams' => [
+                    'container'        => 'mass' . __CLASS__ . $rand,
+                    'itemtype'         => PluginOrderOrder_Item::class,
+                    'specific_actions' => [
+                        'purge'     => _x('button', 'Delete permanently')
+                    ]
+                ],
             ]);
 
             // Add the action buttons
-            if ($canedit) {
-                echo "<div class='center mt-2'>";
-                echo "<table width='950px' class='tab_cadre_fixe left'>";
-                echo "<tr><td><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i>";
-                echo "</td><td class='center'>";
-                echo "<a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='#'>" .
-                    __("Check all") . "</a></td>";
-                echo "<td>/</td><td class='center'>";
-                echo "<a onclick= \"if ( unMarkCheckboxes('order_detail_form$rand') ) " .
-                    " return false;\" href='#'>" . __("Uncheck all") . "</a>";
-                echo "</td><td align='left'>";
-                echo "<input type='submit' onclick=\"return confirm('" .
-                    __("Do you really want to delete these details ? Delivered items will not be linked to order !", "order") . "')\" name='delete_item' value=\"" .
-                    __("Delete permanently") . "\" class='btn btn-primary'>";
-                echo "</td>";
+            // if ($canedit) {
+            //     echo "<div class='center mt-2'>";
+            //     echo "ttt";
+            //     echo "<table width='950px' class='tab_cadre_fixe left'>";
+            //     echo "<tr><td><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i>";
+            //     echo "</td><td class='center'>";
+            //     echo "<a onclick= \"if ( markCheckboxes('order_detail_form$rand') ) return false;\" href='#'>" .
+            //         __("Check all") . "</a></td>";
+            //     echo "<td>/</td><td class='center'>";
+            //     echo "<a onclick= \"if ( unMarkCheckboxes('order_detail_form$rand') ) " .
+            //         " return false;\" href='#'>" . __("Uncheck all") . "</a>";
+            //     echo "</td><td align='left'>";
+            //     echo "<input type='submit' onclick=\"return confirm('" .
+            //         __("Do you really want to delete these details ? Delivered items will not be linked to order !", "order") . "')\" name='delete_item' value=\"" .
+            //         __("Delete permanently") . "\" class='btn btn-primary'>";
+            //     echo "</td>";
 
-                // Edit buttons
-                echo "<td align='left' width='80%'>";
-                echo "<div id='detail_viewaccept$global_rand' style='display:none;'>";
+            //     // Edit buttons
+            //     echo "<td align='left' width='80%'>";
+            //     echo "<div id='detail_viewaccept$global_rand' style='display:none;'>";
 
-                echo "&nbsp;<input type='submit' onclick=\"return confirm('" .
-                    __("Do you really want to update this item ?", "order") . "');\" name='update_detail_item'
-                        value=\"" . _sx("button", "Update") . "\" class='btn btn-primary'>&nbsp;";
+            //     echo "&nbsp;<input type='submit' onclick=\"return confirm('" .
+            //         __("Do you really want to update this item ?", "order") . "');\" name='update_detail_item'
+            //             value=\"" . _sx("button", "Update") . "\" class='btn btn-primary'>&nbsp;";
 
-                echo "&nbsp;<input type='button' onclick=\"detail_hideForm$global_rand();\"
-                        value=\"" . _sx("button", "Cancel") . "\" class='btn btn-secondary'>";
+            //     echo "&nbsp;<input type='button' onclick=\"detail_hideForm$global_rand();\"
+            //             value=\"" . _sx("button", "Cancel") . "\" class='btn btn-secondary'>";
 
-                echo "</div>";
-                echo "</td>";
-                echo "</table>";
-                echo "</div>";
-            }
+            //     echo "</div>";
+            //     echo "</td>";
+            //     echo "</table>";
+            //     echo "</div>";
+            // }
         }
         echo "<br>";
     }

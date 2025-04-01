@@ -32,6 +32,7 @@
  #}
 
 {% set datatable_id = datatable_id|default('datatable' ~ random()) %}
+{% set showmassiveactions = canedit %}
 {% if total_number < 1 and filters|length == 0 %}
     <table id="{{ datatable_id }}" class="table">
         <thead>
