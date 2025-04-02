@@ -891,7 +891,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $hidden_fields = array_merge($hidden_fields, [
             'old_plugin_order_references_id' => $refID,
             'old_price_taxfree' => $price_taxfree,
-            'old_price_taxfree' => $discount
+            'old_discount' => $discount
         ]);
 
         if ($table_ref == 'glpi_plugin_order_referencefrees') {
