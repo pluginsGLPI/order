@@ -31,6 +31,7 @@
 
 {% set datatable_id = datatable_id|default('datatable' ~ random()) %}
 {% set showmassiveactions = canedit %}
+{% set table_visible = table_visible|default(false) %}
 {% if hide_and_show %}
     <button id="toggle-table-{{ datatable_id }}" class="btn btn-link btn-sm mb-2" type="button">
         {% if table_visible %}
@@ -82,7 +83,7 @@
         }) }}
     {% endif %}
 
-    <div class="table-responsive" {% if showmassiveactions %} id="{{ massiveactionparams['container'] }}" {% endif %} {% if not table_visible %}style="display: none;"{% endif %}>
+    <div name="{{ datatable_id }}" class="table-responsive" {% if showmassiveactions %} id="{{ massiveactionparams['container'] }}" {% endif %} {% if not table_visible %}style="display: none;"{% endif %}>
         {% if showmassiveactions %}
             <div class="mb-2">
                 {% do call('Html::showMassiveActions', [massiveactionparams|default([])]) %}
@@ -348,10 +349,9 @@
 {% if hide_and_show %}
     <script>
         $(function() {
-            {% if datatable_id is defined %}
             // Toggle button functionality
             $('#toggle-table-{{ datatable_id }}').on('click', function() {
-                const div_table = $('#{{ massiveactionparams['container'] }}');
+                const div_table = $('[name="{{ datatable_id }}"]');
                 const icon = $(this).find('i');
                 const countainer_name = $('#{{ countainer_name }}');
 
@@ -393,7 +393,6 @@
                     $(this).attr('href', newHref);
                 });
             });
-            {% endif %}
         });
     </script>
 {% endif %}

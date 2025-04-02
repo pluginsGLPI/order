@@ -29,7 +29,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use League\Uri\UriTemplate\Template;
 
 if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
@@ -941,6 +940,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             'columns' => $columns,
             'formatters' => [
                 'reference' => 'raw_html',
+                'manufacturer' => 'raw_html',
             ],
             'columns_values' => [],
             'entries' => [$entrie],
