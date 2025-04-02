@@ -35,9 +35,11 @@
 {% if hide_and_show %}
     <button id="toggle-table-{{ datatable_id }}" class="btn btn-link btn-sm mb-2" type="button">
         {% if table_visible %}
-            <i class="ti ti-eye-off"></i>
+            <i class="ti ti-sort-ascending"></i>
+            <span>{{ __('Collapse all', 'order') }}</span>
         {% else %}
-            <i class="ti ti-eye"></i>
+            <i class="ti ti-sort-descending"></i>
+            <span>{{ __('Expand all', 'order') }}</span>
         {% endif %}
     </button>
     <input type="hidden" name="{{ countainer_name }}" value="true">
@@ -353,6 +355,7 @@
             $('#toggle-table-{{ datatable_id }}').on('click', function() {
                 const div_table = $('[name="{{ datatable_id }}"]');
                 const icon = $(this).find('i');
+                const textSpan = icon.next('span');
                 const countainer_name = $('#{{ countainer_name }}');
 
                 let isVisible = !div_table.is(':hidden');
@@ -360,12 +363,14 @@
                 // Toggle visibility
                 if (!isVisible) {
                     div_table.show();
-                    icon.removeClass('ti-eye').addClass('ti-eye-off');
+                    icon.removeClass('ti-sort-descending').addClass('ti-sort-ascending');
+                    textSpan.text('{{ __("Collapse all") }}');
                     countainer_name.val('true');
                     isVisible = true;
                 } else {
                     div_table.hide();
-                    icon.removeClass('ti-eye-off').addClass('ti-eye');
+                    icon.removeClass('ti-sort-ascending').addClass('ti-sort-descending');
+                    textSpan.text('{{ __("Expand all") }}');
                     countainer_name.val('false');
                     isVisible = false;
                 }
