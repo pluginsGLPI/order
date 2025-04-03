@@ -147,6 +147,10 @@ class PluginOrderLink extends CommonDBChild
             $i++;
         }
 
+        if (!$found) {
+            return false;
+        }
+
         // Render the template with all prepared data
         TemplateRenderer::getInstance()->display('@order/massactions/generate_item.html.twig', [
             'config' => $config,
@@ -156,8 +160,6 @@ class PluginOrderLink extends CommonDBChild
             'item_rows' => $item_rows,
             'order_web_dir' => $order_web_dir,
         ]);
-
-        return $found;
     }
 
     public function queryRef($ID, $table)
