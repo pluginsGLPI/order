@@ -51,7 +51,7 @@ if (isset($_POST["add"])) {
     $reference->check(-1, UPDATE, $_POST);
     $newID = $reference->add($_POST);
     $url   = Toolbox::getItemTypeFormURL('PluginOrderReference') . "?id=$newID";
-    if (isset($_GET["popup"]) && $_GET["popup"] == 1) {
+    if ($_GET["popup"] == 1) {
         $url .= "&popup=1";
     }
     if ($_SESSION['glpibackcreated']) {
@@ -85,7 +85,7 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
-if (isset($_GET["popup"]) && $_GET["popup"] == 1) {
+if ($_GET["popup"] == 1) {
     Html::popheader(
         PluginOrderReference::getTypeName(1),
         $_SERVER['PHP_SELF'],
@@ -110,7 +110,7 @@ if ($_GET['id'] == "") {
     $reference->display($_GET);
 }
 
-if (isset($_GET["popup"]) && $_GET["popup"] == 1) {
+if ($_GET["popup"] == 1) {
     Html::popfooter();
 } else {
     Html::footer();
