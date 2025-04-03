@@ -76,6 +76,7 @@ if (isset($_POST["action"])) {
 
         case "show_location_by_entity":
             Location::dropdown(['name'   => "id[" . $_POST['id'] . "][locations_id]",
+                'value'  => $_POST['value'] ?? 0,
                 'entity' => $_POST['entities']
             ]);
             break;
@@ -83,15 +84,25 @@ if (isset($_POST["action"])) {
         case "show_group_by_entity":
             Group::dropdown(['name'      => "id[" . $_POST['id'] . "][groups_id]",
                 'entity'    => $_POST['entities'],
+                'value'  => $_POST['value'] ?? 0,
                 'condition' => ['is_assign' => 1],
             ]);
             break;
 
         case "show_state_by_entity":
-            $condition = PluginOrderLink::getCondition($_POST["itemtype"]);
+            $condition = PluginOrderLink::getCondition($_POST["itemtype"] ?? "");
             State::dropdown(['name'      => "id[" . $_POST['id'] . "][states_id]",
                 'entity'    => $_POST['entities'],
+                'value'  => $_POST['value'] ?? 0,
                 'condition' => $condition
+            ]);
+            break;
+
+        case "update_entity":
+            Entity::dropdown(['name'      => "id[" . $_POST['id'] . "][entities_id]",
+                'entity'    => $_POST['entities'],
+                'value'     => $_POST['value'],
+                'condition' => ['is_assign' => 1],
             ]);
             break;
     }
