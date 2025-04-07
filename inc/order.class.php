@@ -1098,7 +1098,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "</tr>";
 
        /* ecotax price */
-       echo "<tr class='tab_bg_1'><td>" . __("Ecotax (tax free)", "order") . ": </td>";
+       echo "<tr class='tab_bg_1'><td>" . __("Eco-responsibility fees (tax free)", "order") . ": </td>";
        echo "<td>";
        if ($canedit) {
            echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='ecotax_price' size='5'"
@@ -1121,7 +1121,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "</tr>";
 
         /* TVA ecotax price */
-        echo "<tr class='tab_bg_1'><td>" . __("VAT", "order") . " " . __("Ecotax", "order") . ": </td><td>";
+        echo "<tr class='tab_bg_1'><td>" . __("VAT", "order") . " " . __("Eco-responsibility fees", "order") . ": </td><td>";
         $PluginOrderConfig = new PluginOrderConfig();
         $default_taxes     = $PluginOrderConfig->getDefaultTaxes();
 
@@ -1492,21 +1492,21 @@ class PluginOrderOrder extends CommonDBTM
 
             // Section Ecotax
             echo "<tr class='tab_bg_2'>";
-            echo "<th colspan='2' style='text-align: left; background-color: #e1e1e1;'>" . __("Ecotax", "order") . "</th>";
+            echo "<th colspan='2' style='text-align: left; background-color: #e1e1e1;'>" . __("Eco-responsibility fees", "order") . "</th>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<td style='padding-left: 20px;'>" . __("Ecotax tax free", "order") . "</td>";
+            echo "<td style='padding-left: 20px;'>" . __("Eco-responsibility fees (tax free)", "order") . "</td>";
             echo "<td>" . Html::formatNumber($ecotaxHT) . "</td>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<td style='padding-left: 20px;'>" . __("VAT on Ecotax", "order") . "</td>";
+            echo "<td style='padding-left: 20px;'>" . __("VAT on Eco-responsibility fees", "order") . "</td>";
             echo "<td>" . Html::formatNumber($ecotaxTVA) . "</td>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<td style='padding-left: 20px;'>" . __("Ecotax (ATI)", "order") . "</td>";
+            echo "<td style='padding-left: 20px;'>" . __("Eco-responsibility fees (ATI)", "order") . "</td>";
             echo "<td><b>" . Html::formatNumber($ecotaxTTC) . "</b></td>";
             echo "</tr>";
 

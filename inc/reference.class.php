@@ -707,7 +707,7 @@ class PluginOrderReference extends CommonDBTM
         echo "</td>";
         echo "<td colspan='2'></td></tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . __("Ecotax price") . "</td>";
+        echo "<tr class='tab_bg_1'><td>" . __("Eco-responsibility fees") . "</td>";
         echo "<td>";
         echo Html::input(
             'ecotax_price',

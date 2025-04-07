@@ -102,7 +102,7 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
    $odf->setVars('HTPrice_item',__("Unit price", "order"),true,'UTF-8');
    $odf->setVars('TVA_item',__("VAT", "order"),true,'UTF-8');
    $odf->setVars('title_discount',__("Discount rate", "order"),true,'UTF-8');
-   $odf->setVars('title_ecotax',__("Ecotax", "order"),true,'UTF-8');
+   $odf->setVars('title_ecotax',__("Eco-responsibility fees", "order"),true,'UTF-8');
    $odf->setVars('HTPriceTotal_item',__("Sum tax free", "order"),true,'UTF-8');
    $odf->setVars('ATIPriceTotal_item',__("Price ATI", "order"),true,'UTF-8');
 
@@ -240,15 +240,15 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
    $odf->setVars('totalht', Html::formatNumber($prices['priceHT']), true, 'UTF-8');
 
    // Section Ecotax
-   $odf->setVars('title_ecotax_section', __("Ecotax", "order"), true, 'UTF-8');
-   $odf->setVars('title_ecotax_ht', __("Ecotax tax free", "order"), true, 'UTF-8');
+   $odf->setVars('title_ecotax_section', __("Eco-responsibility fees", "order"), true, 'UTF-8');
+   $odf->setVars('title_ecotax_ht', __("Eco-responsibility fees (tax free)", "order"), true, 'UTF-8');
    $odf->setVars('ecotax_ht', Html::formatNumber($ecotaxHT), true, 'UTF-8');
 
-   $odf->setVars('title_ecotax_tva', __("VAT on Ecotax", "order"), true, 'UTF-8');
+   $odf->setVars('title_ecotax_tva', __("VAT on Eco-responsibility fees", "order"), true, 'UTF-8');
    $odf->setVars('ecotax_rate', $ecotaxRate . " %", true, 'UTF-8');
    $odf->setVars('ecotax_tva', Html::formatNumber($ecotaxTVA), true, 'UTF-8');
 
-   $odf->setVars('title_ecotax_ttc', __("Ecotax (ATI)", "order"), true, 'UTF-8');
+   $odf->setVars('title_ecotax_ttc', __("Eco-responsibility fees (ATI)", "order"), true, 'UTF-8');
    $odf->setVars('ecotax_ttc', Html::formatNumber($ecotaxTTC), true, 'UTF-8');
 
    // Section Shipping
