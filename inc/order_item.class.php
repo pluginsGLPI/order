@@ -345,18 +345,18 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
             if ($data['reftype'] === 'standard') {
                 $reference = new PluginOrderReference();
-                if ($reference->getFromDB($data['plugin_order_references_id'])) {
+                if ($reference->getFromDB((int) $data['plugin_order_references_id'])) {
                     $ecotax_price = $reference->getEcotaxPrice();
                 }
             } else {
                 $reference = new PluginOrderReferenceFree();
-                if ($reference->getFromDB($data['plugin_order_references_id'])) {
+                if ($reference->getFromDB((int) $data['plugin_order_references_id'])) {
                     $ecotax_price = $reference->getEcotaxPrice();
                 }
             }
 
             // Add to total (quantity * unit ecotax price)
-            $total_ecotax += ($data['quantity'] * $ecotax_price);
+            $total_ecotax += ((float)$data['quantity'] * (float)$ecotax_price);
         }
 
         return $total_ecotax;
