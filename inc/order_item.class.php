@@ -312,6 +312,55 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         return (!$priceHT ? 0 : $priceHT + (($priceHT * $taxes) / 100));
     }
 
+    /**
+     * Calculate the total ecotax from all ordered items with their quantities
+     *
+     * @param int $orders_id Order ID
+     * @return float Total ecotax amount
+     */
+    public function getEcotaxTotal($orders_id)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $total_ecotax = 0;
+
+        // Get all items with references in this order
+        $query = "SELECT oi.`plugin_order_references_id`, COUNT(oi.`id`) as quantity, 'standard' as reftype
+                  FROM `" . self::getTable() . "` as oi
+                  WHERE oi.`plugin_order_orders_id` = '$orders_id'
+                  AND oi.`itemtype` NOT LIKE 'PluginOrderReferenceFree'
+                  GROUP BY oi.`plugin_order_references_id`
+                  UNION
+                  SELECT oi.`plugin_order_references_id`, COUNT(oi.`id`) as quantity, 'free' as reftype
+                  FROM `" . self::getTable() . "` as oi
+                  WHERE oi.`plugin_order_orders_id` = '$orders_id'
+                  AND oi.`itemtype` LIKE 'PluginOrderReferenceFree'
+                  GROUP BY oi.`plugin_order_references_id`";
+
+        $result = $DB->query($query);
+
+        while ($data = $DB->fetchArray($result)) {
+            $ecotax_price = 0;
+
+            if ($data['reftype'] === 'standard') {
+                $reference = new PluginOrderReference();
+                if ($reference->getFromDB($data['plugin_order_references_id'])) {
+                    $ecotax_price = $reference->getEcotaxPrice();
+                }
+            } else {
+                $reference = new PluginOrderReferenceFree();
+                if ($reference->getFromDB($data['plugin_order_references_id'])) {
+                    $ecotax_price = $reference->getEcotaxPrice();
+                }
+            }
+
+            // Add to total (quantity * unit ecotax price)
+            $total_ecotax += ($data['quantity'] * $ecotax_price);
+        }
+
+        return $total_ecotax;
+    }
 
     public function addDetails($ref_id, $itemtype, $orders_id, $quantity, $price, $discounted_price, $taxes_id, $analytic_nature_id)
     {
@@ -320,6 +369,20 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         if ($quantity > 0 && $order->getFromDB($orders_id)) {
             $tax = new PluginOrderOrderTax();
             $tax->getFromDB($taxes_id);
+
+            // Get ecotax price from reference
+            $ecotax_price = 0;
+            if ($itemtype == 'PluginOrderReferenceFree') {
+                $reference = new PluginOrderReferenceFree();
+                if ($reference->getFromDB($ref_id)) {
+                    $ecotax_price = $reference->getEcotaxPrice();
+                }
+            } else {
+                $reference = new PluginOrderReference();
+                if ($reference->getFromDB($ref_id)) {
+                    $ecotax_price = $reference->getEcotaxPrice();
+                }
+            }
 
             for ($i = 0; $i < $quantity; $i++) {
                 $input["plugin_order_orders_id"]          = $orders_id;
@@ -332,7 +395,6 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 $input["price_taxfree"]                   = $price;
                 $input["price_discounted"]                = $price - ($price * ($discounted_price / 100));
                 $input["states_id"]                       = PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED;
-                ;
                 $input["price_ati"]                       = $this->getPricesATI(
                     $input["price_discounted"],
                     $tax->getRate()
@@ -1354,7 +1416,9 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 FROM `" . self::getTable() . "`
                 WHERE `plugin_order_orders_id` = '$orders_id' ";
         $result = $DB->query($query);
-        return $DB->fetchArray($result);
+        $prices = $DB->fetchArray($result);
+
+        return $prices;
     }
 
 

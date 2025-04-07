@@ -287,3 +287,5 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
                                            $order->fields["plugin_order_orderpayments_id"]),
                                            true,'UTF-8');
 }
+
+

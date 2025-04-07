@@ -707,6 +707,20 @@ class PluginOrderReference extends CommonDBTM
         echo "</td>";
         echo "<td colspan='2'></td></tr>";
 
+        echo "<tr class='tab_bg_1'><td>" . __("Ecotax price") . "</td>";
+        echo "<td>";
+        echo Html::input(
+            'ecotax_price',
+            [
+                'type'  => 'number',
+                'step'  => PLUGIN_ORDER_NUMBER_STEP,
+                'min'   => 0,
+                'value' => $this->fields['ecotax_price'],
+            ]
+        );
+        echo "</td>";
+        echo "<td colspan='2'></td></tr>";
+
         $options['canedit'] = true;
         $this->showFormButtons($options);
         Html::closeForm();
@@ -1028,6 +1042,7 @@ class PluginOrderReference extends CommonDBTM
                `is_active` tinyint NOT NULL default '1',
                `notepad` longtext,
                `date_mod` timestamp NULL default NULL,
+               `ecotax_price` decimal(20,6) NOT NULL DEFAULT '0.000000',
                PRIMARY KEY  (`id`),
                KEY `name` (`name`),
                KEY `entities_id` (`entities_id`),
@@ -1188,6 +1203,17 @@ class PluginOrderReference extends CommonDBTM
                 );
                 $migration->migrationOneTable($table);
             }
+
+           // Add ecotax field if it doesn't exist
+            if (!$DB->fieldExists($table, 'ecotax_price')) {
+                $migration->addField(
+                    $table,
+                    'ecotax_price',
+                    "decimal(20,6) NOT NULL DEFAULT '0.000000'",
+                    ['after' => 'warranty_duration']
+                );
+                $migration->migrationOneTable($table);
+            }
         }
     }
 
@@ -1214,5 +1240,15 @@ class PluginOrderReference extends CommonDBTM
     public static function getIcon()
     {
         return "ti ti-list-search";
+    }
+
+    /**
+     * Get the ecotax price for this reference
+     *
+     * @return float price
+     */
+    public function getEcotaxPrice()
+    {
+        return $this->fields['ecotax_price'] ?? 0;
     }
 }
