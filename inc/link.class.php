@@ -113,8 +113,8 @@ class PluginOrderLink extends CommonDBChild
                     'templateID' => $templateID,
                     'entity' => $order->fields["entities_id"],
                     'order_entity_id' => $order->fields["entities_id"],
-                    'entity_scope' => $order->fields["is_recursive"] ? 
-                        getSonsOf('glpi_entities', $order->fields["entities_id"]) : 
+                    'entity_scope' => $order->fields["is_recursive"] ?
+                        getSonsOf('glpi_entities', $order->fields["entities_id"]) :
                         $order->fields["entities_id"],
                     'condition' => self::getCondition($itemtype),
                     'itemtype' => $itemtype

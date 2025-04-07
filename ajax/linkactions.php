@@ -136,9 +136,7 @@ if (isset($_POST["action"])) {
 
         case "check_unicity":
             $itemtype = new $_POST['itemtype']();
-            if (count($itemtype->find([
-                $_POST['field']     => $_POST['field_value'],
-            ])) > 0) {
+            if (count($itemtype->find([$_POST['field'] => $_POST['field_value'], ])) > 0) {
                 echo "false";
             } else {
                 echo "true";
