@@ -100,10 +100,48 @@ if (isset($_POST["action"])) {
 
         case "update_entity":
             Entity::dropdown(['name'      => "id[" . $_POST['id'] . "][entities_id]",
-                'entity'    => $_POST['entities'],
                 'value'     => $_POST['value'],
-                'condition' => ['is_assign' => 1],
+                'on_change' => "plugin_order_adaptOnSelectedEntity(" . $_POST['id'] . ", this.value);",
             ]);
+
+            $order_web_dir = Plugin::getWebDir('order');
+            Ajax::updateItemOnSelectEvent(
+                "dropdown_id[" . $_POST['id'] . "][entities_id]",
+                "show_location_by_entity_id_" . $_POST['id'],
+                "$order_web_dir/ajax/linkactions.php",
+                ['entities' => '__VALUE__',
+                    'action'   => 'show_location_by_entity',
+                    'id'       => $_POST['id']
+                ]
+            );
+            Ajax::updateItemOnSelectEvent(
+                "dropdown_id[" . $_POST['id'] . "][entities_id]",
+                "show_group_by_entity_id_" . $_POST['id'],
+                "$order_web_dir/ajax/linkactions.php",
+                ['entities' => '__VALUE__',
+                    'action'   => 'show_group_by_entity',
+                    'id'       => $_POST['id']
+                ]
+            );
+            Ajax::updateItemOnSelectEvent(
+                "dropdown_id[" . $_POST['id'] . "][entities_id]",
+                "show_state_by_entity_id_" . $_POST['id'],
+                "$order_web_dir/ajax/linkactions.php",
+                ['entities' => '__VALUE__',
+                    'action'   => 'show_state_by_entity',
+                    'id'       => $_POST['id']
+                ]
+            );
             break;
+
+        case "check_unicity":
+            $itemtype = new $_POST['itemtype']();
+            if (count($itemtype->find([
+                $_POST['field']     => $_POST['field_value'],
+            ])) > 0) {
+                echo "false";
+            } else {
+                echo "true";
+            }
     }
 }
