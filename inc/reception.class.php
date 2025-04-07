@@ -643,7 +643,7 @@ class PluginOrderReception extends CommonDBChild
                     echo $button;
                     echo "<br>";
                 }
-                
+
                 Html::closeForm();
             }
         }
