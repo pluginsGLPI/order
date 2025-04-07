@@ -998,11 +998,11 @@ class PluginOrderOrder extends CommonDBTM
             echo $this->fields["num_order"];
         }
         echo "</td>";
-       /* type order */
+        /* type order */
         echo "<td>" . __("Type") . ": </td><td>";
         if ($canedit) {
             PluginOrderOrderType::Dropdown([
-                'name'  => "plugin_order_ordertypes_id",
+                'name' => "plugin_order_ordertypes_id",
                 'value' => $this->fields["plugin_order_ordertypes_id"]
             ]);
         } else {
@@ -1098,15 +1098,15 @@ class PluginOrderOrder extends CommonDBTM
         echo "</tr>";
 
        /* ecotax price */
-       echo "<tr class='tab_bg_1'><td>" . __("Eco-responsibility fees (tax free)", "order") . ": </td>";
-       echo "<td>";
-       if ($canedit) {
-           echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='ecotax_price' size='5'"
-           . " value=\"" . Html::formatNumber($this->fields["ecotax_price"], true) . "\">";
-       } else {
-           echo Html::formatNumber($this->fields["ecotax_price"]);
-       }
-       echo "</td>";
+        echo "<tr class='tab_bg_1'><td>" . __("Eco-responsibility fees (tax free)", "order") . ": </td>";
+        echo "<td>";
+        if ($canedit) {
+            echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='ecotax_price' size='5'"
+            . " value=\"" . Html::formatNumber($this->fields["ecotax_price"], true) . "\">";
+        } else {
+            echo Html::formatNumber($this->fields["ecotax_price"]);
+        }
+        echo "</td>";
 
        /* port price */
         echo "<td>" . __("Postage", "order") . ": </td>";
