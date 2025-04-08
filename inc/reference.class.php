@@ -1209,8 +1209,7 @@ class PluginOrderReference extends CommonDBTM
                 $migration->addField(
                     $table,
                     'ecotax_price',
-                    "decimal(20,6) NOT NULL DEFAULT '0.000000'",
-                    ['after' => 'warranty_duration']
+                    "decimal(20,6) NOT NULL DEFAULT '0.000000'"
                 );
                 $migration->migrationOneTable($table);
             }
