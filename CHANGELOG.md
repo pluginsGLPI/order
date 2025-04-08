@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Duplicate the bulk delivery button at the top of the material reception list
+
 ## [2.10.6] - 2024-03-08
 
 ### Changed
