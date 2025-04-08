@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Duplicate the bulk delivery button at the top of the material reception list
 
+### Changed
+
+- Implement `Twig` template for order items list
+
+## [2.10.7] - 2025-03-19
+
+- Fixed the cumulative total order price (TTC) calculation in budgets.
+- Paid invoice changes status to Paid
+
 ## [2.10.6] - 2024-03-08
 
 ### Changed
