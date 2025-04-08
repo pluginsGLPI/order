@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- Duplicate the bulk delivery button at the top of the material reception list
+- Duplicate the delivery button at the top of the reception list
 
 ### Changed
 
