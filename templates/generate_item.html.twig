@@ -75,31 +75,37 @@
                     ) }}
                 </td>
                 <td>
-                    {{ fields.dropdownField(
-                        'Location',
-                        "mass[locations_id]",
-                        0,
-                        "",
-                        fields_option|merge({'on_change': 'plugin_order_setAllLocations(this.value)'})
-                    ) }}
+                    <span id='show_location_by_entity_id_mass'>
+                        {{ fields.dropdownField(
+                            'Location',
+                            "mass[locations_id]",
+                            0,
+                            "",
+                            fields_option|merge({'on_change': 'plugin_order_setAllLocations(this.value)'})
+                        ) }}
+                    </span>
                 </td>
                 <td>
-                    {{ fields.dropdownField(
-                        'Group',
-                        "mass[groups_id]",
-                        0,
-                        "",
-                        fields_option|merge({'on_change': 'plugin_order_setAllGroups(this.value)'})
-                    ) }}
+                    <span id='show_group_by_entity_id_mass'>
+                        {{ fields.dropdownField(
+                            'Group',
+                            "mass[groups_id]",
+                            0,
+                            "",
+                            fields_option|merge({'on_change': 'plugin_order_setAllGroups(this.value)'})
+                        ) }}
+                    </span>
                 </td>
                 <td>
-                    {{ fields.dropdownField(
-                        'State',
-                        "mass[states_id]",
-                        0,
-                        "",
-                        fields_option|merge({'on_change': 'plugin_order_setAllStates(this.value)'})
-                    ) }}
+                    <span id='show_state_by_entity_id_mass'>
+                        {{ fields.dropdownField(
+                            'State',
+                            "mass[states_id]",
+                            0,
+                            "",
+                            fields_option|merge({'on_change': 'plugin_order_setAllStates(this.value)'})
+                        ) }}
+                    </span>
                 </td>
             </tr>
 
@@ -284,6 +290,7 @@
 
     function plugin_order_setAllEntities(value) {
         var elements = document.querySelectorAll('[id^="show_entity"]');
+        plugin_order_adaptOnSelectedEntity('mass', value);
         for (var i = 0; i < elements.length; i++) {
             (function(index) {
                 $.ajax({

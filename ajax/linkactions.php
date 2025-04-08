@@ -79,6 +79,19 @@ if (isset($_POST["action"])) {
                 'value'  => $_POST['value'] ?? 0,
                 'entity' => $_POST['entities']
             ]);
+
+            if (isset($_POST['massaction'])) {
+                $order_web_dir = Plugin::getWebDir('order');
+                Ajax::updateItemOnSelectEvent(
+                    $_POST['id'] . "[entities_id]",
+                    "show_location_by_entity_id_" . $_POST['id'],
+                    "$order_web_dir/ajax/linkactions.php",
+                    ['entities' => '__VALUE__',
+                        'action'   => 'show_location_by_entity',
+                        'id'       => $_POST['id']
+                    ]
+                );
+            }
             break;
 
         case "show_group_by_entity":
@@ -87,6 +100,19 @@ if (isset($_POST["action"])) {
                 'value'  => $_POST['value'] ?? 0,
                 'condition' => ['is_assign' => 1],
             ]);
+
+            if (isset($_POST['massaction'])) {
+                $order_web_dir = Plugin::getWebDir('order');
+                Ajax::updateItemOnSelectEvent(
+                    $_POST['id'] . "[entities_id]",
+                    "show_group_by_entity_id_" . $_POST['id'],
+                    "$order_web_dir/ajax/linkactions.php",
+                    ['entities' => '__VALUE__',
+                        'action'   => 'show_group_by_entity',
+                        'id'       => $_POST['id']
+                    ]
+                );
+            }
             break;
 
         case "show_state_by_entity":
@@ -96,6 +122,19 @@ if (isset($_POST["action"])) {
                 'value'  => $_POST['value'] ?? 0,
                 'condition' => $condition
             ]);
+
+            if (isset($_POST['massaction'])) {
+                $order_web_dir = Plugin::getWebDir('order');
+                Ajax::updateItemOnSelectEvent(
+                    $_POST['id'] . "[entities_id]",
+                    "show_state_by_entity_id_" . $_POST['id'],
+                    "$order_web_dir/ajax/linkactions.php",
+                    ['entities' => '__VALUE__',
+                        'action'   => 'show_state_by_entity',
+                        'id'       => $_POST['id']
+                    ]
+                );
+            }
             break;
 
         case "update_entity":
