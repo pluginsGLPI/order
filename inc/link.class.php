@@ -152,7 +152,7 @@ class PluginOrderLink extends CommonDBChild
         }
 
         // Render the template with all prepared data
-        TemplateRenderer::getInstance()->display('@order/massactions/generate_item.html.twig', [
+        TemplateRenderer::getInstance()->display('@order/generate_item.html.twig', [
             'config' => $config,
             'colspan' => $colspan,
             'is_multi_entities_mode' => Session::isMultiEntitiesMode(),
