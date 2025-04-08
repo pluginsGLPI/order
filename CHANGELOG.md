@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Duplicate the delivery button at the top of the reception list
+
 ### Changed
 
 - Implement `Twig` template for order items list
