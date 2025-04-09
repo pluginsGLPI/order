@@ -28,6 +28,8 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
 }
@@ -70,11 +72,10 @@ class PluginOrderLink extends CommonDBChild
 
     public function showItemGenerationForm($params)
     {
-       // Retrieve configuration for generate assets feature
+        // Retrieve configuration for generate assets feature
         $config = PluginOrderConfig::getConfig();
 
-        echo "<div class='center overflow-auto w-100'>";
-        echo "<table class='tab_cadre_fixe'>";
+        // Calculate colspan
         $colspan = 9;
         if (Session::isMultiEntitiesMode()) {
             $colspan++;
@@ -83,185 +84,82 @@ class PluginOrderLink extends CommonDBChild
             $colspan++;
         }
 
-        echo "<tr><th colspan='$colspan'>" . __("Generate item", "order") . "</th></tr>";
-
-        echo "<tr>";
-        echo "<th>" . __("Product reference", "order") . "</th>";
-        echo "<th>" . __("Name") . "</th>";
-        echo "<th>" . __("Serial number") . "</th>";
-        echo "<th>" . __("Inventory number") . "</th>";
-        if ($config->canAddImmobilizationNumber()) {
-            echo "<th>" . __("Immobilization number") . "</th>";
-        }
-        echo "<th>" . __("Template name") . "</th>";
-        if (Session::isMultiEntitiesMode() && count($_SESSION['glpiactiveentities']) > 1) {
-            echo "<th>" . __("Entity") . "</th>";
-        }
-        echo "<th>" . __("Location") . "</th>";
-        echo "<th>" . __("Group") . "</th>";
-        echo "<th>" . __("Status") . "</th>";
-        echo "</tr>";
-
         $order = new PluginOrderOrder();
         $order->getFromDB($params["plugin_order_orders_id"]);
 
         $reference = new PluginOrderReference();
-        $i         = 0;
-        $found     = false;
+        $i = 0;
+        $item_rows = [];
+        $found = false;
+        $order_web_dir = Plugin::getWebDir('order');
 
         foreach ($params["items"][__CLASS__] as $key => $val) {
             $detail = new PluginOrderOrder_Item();
             $detail->getFromDB($key);
             $reference->getFromDB($detail->getField('plugin_order_references_id'));
+
             if (!$detail->fields["items_id"]) {
                 $itemtype = $detail->getField('itemtype');
-                echo "<tr class='tab_bg_1'><td align='center'>" . $reference->getField('name') . "</td>";
                 $templateID = $reference->checkIfTemplateExistsInEntity(
                     $val,
                     $detail->getField('itemtype'),
                     $order->fields["entities_id"]
                 );
 
+                $row = [
+                    'i' => $i,
+                    'key' => $key,
+                    'reference_name' => $reference->getField('name'),
+                    'templateID' => $templateID,
+                    'entity' => $order->fields["entities_id"],
+                    'order_entity_id' => $order->fields["entities_id"],
+                    'entity_scope' => $order->fields["is_recursive"] ?
+                        getSonsOf('glpi_entities', $order->fields["entities_id"]) :
+                        $order->fields["entities_id"],
+                    'condition' => self::getCondition($itemtype),
+                    'itemtype' => $itemtype
+                ];
+
                 if ($templateID) {
-                     $item = new $itemtype();
-                     $item->getFromDB($templateID);
+                    $item = new $itemtype();
+                    $item->getFromDB($templateID);
 
-                     $name         = $item->fields["name"] ?? "";
-                     $otherserial  = $item->fields["otherserial"] ?? "";
-                     $states_id    = $item->fields["states_id"] ?? "";
-                     $locations_id = $item->fields["locations_id"] ?? "";
-                     $groups_id    = $item->fields["groups_id"] ?? "";
-                     $immo_number  = $item->fields["immo_number"] ?? "";
+                    $row['name'] = $item->fields["name"] ?? "";
+                    $row['otherserial'] = $item->fields["otherserial"] ?? "";
+                    $row['states_id'] = $item->fields["states_id"] ?? "";
+                    $row['locations_id'] = $item->fields["locations_id"] ?? "";
+                    $row['groups_id'] = $item->fields["groups_id"] ?? "";
+                    $row['immo_number'] = $item->fields["immo_number"] ?? "";
+                    $row['template_name'] = $reference->getTemplateName($itemtype, $templateID);
                 } else {
-                    $name         = false;
-                    $otherserial  = false;
-                    $states_id    = false;
-                    $locations_id = false;
-                    $groups_id    = false;
-                    $immo_number  = false;
+                    $row['name'] = false;
+                    $row['otherserial'] = false;
+                    $row['states_id'] = false;
+                    $row['locations_id'] = false;
+                    $row['groups_id'] = false;
+                    $row['immo_number'] = false;
+                    $row['template_name'] = "";
                 }
 
-                if (!$name) {
-                    echo "<td><input type='text' size='20' name='id[$i][name]'></td>";
-                } else {
-                    echo "<td align='center'>" . Dropdown::EMPTY_VALUE . "</td>";
-                    echo Html::hidden("id[$i][name]", ['value' => '']);
-                }
-
-                echo "<td align='center'><input type='text' size='20' name='id[$i][serial]'></td>";
-
-                if ($otherserial) {
-                    echo "<td align='center'>" . Dropdown::EMPTY_VALUE . "</td>";
-                    echo Html::hidden("id[$i][otherserial]", ['value' => '']);
-                } else {
-                    echo "<td><input type='text' size='20' name='id[$i][otherserial]'></td>";
-                }
-
-                if ($config->canAddImmobilizationNumber()) {
-                    if ($immo_number) {
-                        echo "<td align='center'>" . Dropdown::EMPTY_VALUE . "</td>";
-                        echo Html::hidden("id[$i][immo_number]", ['value' => '']);
-                    } else {
-                        echo "<td><input type='text' size='15' name='id[$i][immo_number]'></td>";
-                    }
-                }
-
-                echo "<td align='center'>";
-                if ($templateID) {
-                    echo $reference->getTemplateName($itemtype, $templateID);
-                }
-                echo "</td>";
-
-                if (
-                    Session::isMultiEntitiesMode()
-                    && count($_SESSION['glpiactiveentities']) > 1
-                ) {
-                    $order_web_dir = Plugin::getWebDir('order');
-                    echo "<td>";
-                    $rand = Entity::Dropdown([
-                        'name'   => "id[$i][entities_id]",
-                        'value'  => $order->fields["entities_id"],
-                        'entity' => $order->fields["is_recursive"] ? getSonsOf('glpi_entities', $order->fields["entities_id"]) : $order->fields["entities_id"]
-                    ]);
-                    Ajax::updateItemOnSelectEvent(
-                        "dropdown_id[$i][entities_id]$rand",
-                        "show_location_by_entity_id_$i",
-                        "$order_web_dir/ajax/linkactions.php",
-                        ['entities' => '__VALUE__',
-                            'action'   => 'show_location_by_entity',
-                            'id'       => $i
-                        ]
-                    );
-                    Ajax::updateItemOnSelectEvent(
-                        "dropdown_id[$i][entities_id]$rand",
-                        "show_group_by_entity_id_$i",
-                        "$order_web_dir/ajax/linkactions.php",
-                        ['entities' => '__VALUE__',
-                            'action'   => 'show_group_by_entity',
-                            'id'       => $i
-                        ]
-                    );
-                    Ajax::updateItemOnSelectEvent(
-                        "dropdown_id[$i][entities_id]$rand",
-                        "show_state_by_entity_id_$i",
-                        "$order_web_dir/ajax/linkactions.php",
-                        ['entities' => '__VALUE__',
-                            'action'   => 'show_state_by_entity',
-                            'id'       => $i
-                        ]
-                    );
-                    $entity = $order->fields["entities_id"];
-                    echo "</td>";
-                } else {
-                    $entity = $_SESSION["glpiactive_entity"];
-                    echo "<input type='hidden' name='id[$i][entities_id]' value="
-                    . $entity . ">";
-                }
-                echo "<td>";
-
-                echo "<span id='show_location_by_entity_id_$i'>";
-                Location::dropdown(['name'   => "id[$i][locations_id]",
-                    'entity' => $entity,
-                    'value'  => $locations_id,
-                ]);
-                 echo "</span>";
-                 echo "</td>";
-                 echo "<td>";
-                 echo "<span id='show_group_by_entity_id_$i'>";
-                 Group::dropdown(['name'   => "id[$i][groups_id]",
-                     'entity' => $entity,
-                     'value'  => $groups_id,
-                 ]);
-                 echo "</span>";
-                 echo "</td>";
-                 echo "<td>";
-                 echo "<span id='show_state_by_entity_id_$i'>";
-                 $condition = self::getCondition($itemtype);
-                 State::dropdown(['name'      => "id[$i][states_id]",
-                     'entity'    => $entity,
-                     'condition' => $condition,
-                     'value'     => $states_id,
-                 ]);
-                 echo "</span>";
-                 echo "</td>";
-                 echo "</tr>";
-                 echo Html::hidden("id[$i][id]", ['value' => $key]);
-                 $found = true;
+                $item_rows[] = $row;
+                $found = true;
             }
             $i++;
         }
 
         if (!$found) {
-            echo "<tr><td align='center' colspan='$colspan' class='tab_bg_2'>" .
-              __("No item to generate", "order") . "</td></tr>";
-        }
-
-        echo "</table>";
-        echo "</div>";
-
-        if (!$found) {
             return false;
         }
+
+        // Render the template with all prepared data
+        TemplateRenderer::getInstance()->display('@order/generate_item.html.twig', [
+            'config' => $config,
+            'colspan' => $colspan,
+            'is_multi_entities_mode' => Session::isMultiEntitiesMode(),
+            'active_entities' => $_SESSION['glpiactiveentities'] ?? [],
+            'item_rows' => $item_rows,
+            'order_web_dir' => $order_web_dir,
+        ]);
     }
 
     public function queryRef($ID, $table)
