@@ -478,6 +478,19 @@ class PluginOrderReception extends CommonDBChild
                 $massiveactionparams['extraparams']['plugin_order_orders_id']     = $orders_id;
                 $massiveactionparams['extraparams']['plugin_order_references_id'] = $references_id;
                 Html::showMassiveActions($massiveactionparams);
+
+                echo "<span style='margin-left: 10px;'>";
+                Dropdown::showNumber(
+                    'nb_items_to_check_top_',
+                    [
+                        'value' => '',
+                        'min'   => 1,
+                        'max'   => $num,
+                        'rand' => $rand,
+                    ]
+                );
+                echo "&nbsp;<button type='button' class='btn btn-secondary btn-sm' onclick='selectNItems(\"mass" . __CLASS__ . "$rand\", \"dropdown_nb_items_to_check_top_$rand\")'>" . __("Select") . "</button>";
+                echo "</span>";
             }
 
             echo "<table class='tab_cadre_fixe'>";
@@ -576,8 +589,43 @@ class PluginOrderReception extends CommonDBChild
                 if ($num > 10) {
                     $massiveactionparams['ontop'] = false;
                     Html::showMassiveActions($massiveactionparams);
+
+                    echo "<span style='margin-left: 10px;'>";
+                    Dropdown::showNumber(
+                        'nb_items_to_check_bottom_',
+                        [
+                            'value' => '',
+                            'min'   => 1,
+                            'max'   => $num,
+                            'rand' => $rand,
+                        ]
+                    );
+                    echo "&nbsp;<button type='button' class='btn btn-secondary btn-sm' onclick='selectNItems(\"mass" . __CLASS__ . "$rand\", \"dropdown_nb_items_to_check_bottom_$rand\")'>" . __("Select") . "</button>";
+                    echo "</span>";
                 }
                 Html::closeForm();
+
+                $script = <<<JAVASCRIPT
+                    function selectNItems(container_id, select_id) {
+                        var n = parseInt(document.getElementById(select_id).value);
+                        var checked = 0;
+                        var checkboxes = document.querySelectorAll("#" + container_id + " input[type='checkbox']");
+
+                        checkboxes.forEach(function(checkbox) {
+                            if (checkbox.name && checkbox.name.indexOf('item') === 0) {
+                                checkbox.checked = false;
+                            }
+                        });
+
+                        checkboxes.forEach(function(checkbox) {
+                            if (checkbox.name && checkbox.name.indexOf('item') === 0 && checked < n) {
+                                checkbox.checked = true;
+                                checked++;
+                            }
+                        });
+                    }
+                JAVASCRIPT;
+                echo Html::scriptBlock($script);
             }
         }
 
