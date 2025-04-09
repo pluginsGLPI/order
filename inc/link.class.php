@@ -571,7 +571,7 @@ class PluginOrderLink extends CommonDBChild
         $actions[$sep . 'generation']       = __("Generate item", "order");
         $actions[$sep . 'createLink']       = __("Link to an existing item", "order");
         $actions[$sep . 'deleteLink']       = __("Delete item link", "order");
-        $actions[$sep . 'cancelReception']  = __("Cancel reception", "order");
+        $actions[$sep . 'cancelReceipt']    = __("Cancel receipt", "order");
 
         return $actions;
     }
@@ -690,7 +690,7 @@ class PluginOrderLink extends CommonDBChild
                 }
                 break;
 
-            case 'cancelReception':
+            case 'cancelReceipt':
                 foreach ($ma->getItems()[__CLASS__] as $key => $val) {
                     $order_item = new PluginOrderOrder_Item();
                     $order_item->getFromDB($val);
