@@ -437,8 +437,6 @@
                 'itemtype': itemtype
             },
             success: function(response) {
-                console.log(response.trim());
-
                 if (response.trim() == 'false') {
                     if ($(field).hasClass('is-invalid')) {
                         return;

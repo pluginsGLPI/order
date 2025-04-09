@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## Added
+
+- Batch data entry for item generation
+
 ## [2.10.7] - 2025-03-19
 
 - Fixed the cumulative total order price (TTC) calculation in budgets.
