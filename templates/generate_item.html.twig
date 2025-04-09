@@ -407,13 +407,21 @@
     });
 
     function sendFieldUpdateToServer(field, fieldType) {
+        // Get field value
+        var fieldValue = field.value;
+
+        // If field is empty, just remove validation states and return
+        if (fieldValue.trim() === '') {
+            $(field).removeClass('is-invalid');
+            $(field).removeAttr('required');
+            $(field).next('.invalid-feedback').remove();
+            return;
+        }
+
         // Extract item ID from field name using regex
         var namePattern = /id\[(\d+)\]\[/;
         var matches = field.name.match(namePattern);
         var itemId = matches ? matches[1] : 0;
-
-        // Get field value
-        var fieldValue = field.value;
 
         // Find itemtype - this should be passed from your PHP controller or set globally
         var itemtype = $('input[name="id[' + itemId + '][itemtype]"]').val();
@@ -457,12 +465,12 @@
     }
 
     $(function() {
-        // Add change event listeners to all field types
-        $('input[name^="id["][name$="[name]"]').on('change', function() {
+        // Add input and change event listeners to all field types
+        $('input[name^="id["][name$="[name]"]').on('input change', function() {
             sendFieldUpdateToServer(this, 'name');
         });
 
-        $('input[name^="id["][name$="[serial]"]').on('change', function() {
+        $('input[name^="id["][name$="[serial]"]').on('input change', function() {
             sendFieldUpdateToServer(this, 'serial');
         });
     });
