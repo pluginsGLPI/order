@@ -430,6 +430,15 @@ class PluginOrderReception extends CommonDBChild
 
             echo "<div id='reception$rand' style='display:none'>";
 
+            $this->displayBulkReceptionForm(
+                $order_order,
+                $orders_id,
+                $references_id,
+                $typeRef,
+                '_top',
+                'top'
+            );
+
             $query = "SELECT items.`id` AS IDD,
                              ref.`id` AS id,
                              ref.`templates_id`,
@@ -620,40 +629,73 @@ class PluginOrderReception extends CommonDBChild
             }
         }
 
-        if (
-            $order_order->canDeliver()
-             && $this->checkItemStatus(
-                 $orders_id,
-                 $references_id,
-                 PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED
-             )
-        ) {
-            if ($typeRef != 'SoftwareLicense') {
-                $bulk_rand = mt_rand();
-                echo "<form method='post' name='order_reception_form$bulk_rand'
-                              action='" . Toolbox::getItemTypeFormURL("PluginOrderReception") . "'>";
-                echo "<div id='massreception$orders_id$bulk_rand'></div>";
-                echo Html::scriptBlock("function viewmassreception" . $orders_id . "$bulk_rand() {" .
-                                     Ajax::updateItemJsCode(
-                                         "massreception" . $orders_id . $bulk_rand,
-                                         Plugin::getWebDir('order') . "/ajax/massreception.php",
-                                         [
-                                             'plugin_order_orders_id'     => $orders_id,
-                                             'plugin_order_references_id' => $references_id,
-                                         ],
-                                         '',
-                                         false
-                                     ) . "
-                  }");
-                echo "<p><a href='javascript:viewmassreception" . $orders_id . "$bulk_rand();'>";
-                echo __("Take item delivery (bulk)", "order") . "</a></p><br>";
-                Html::closeForm();
-            }
-        }
+        $this->displayBulkReceptionForm(
+            $order_order,
+            $orders_id,
+            $references_id,
+            $typeRef
+        );
+
         echo "</div>";
         echo "<br>";
     }
 
+    /**
+     * Display bulk reception form button
+     *
+     * @param PluginOrderOrder $order_order   Order object
+     * @param int              $orders_id     Order ID
+     * @param int              $references_id Reference ID
+     * @param string           $typeRef       Reference type
+     * @param string           $suffix        Suffix for unique IDs
+     * @param string           $position      Position the button
+     *
+     * @return void
+     */
+    private function displayBulkReceptionForm($order_order, $orders_id, $references_id, $typeRef, $suffix = '', $position = 'bottom')
+    {
+        if (
+            $order_order->canDeliver()
+            && $this->checkItemStatus(
+                $orders_id,
+                $references_id,
+                PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED
+            )
+        ) {
+            if ($typeRef != 'SoftwareLicense') {
+                $bulk_rand = mt_rand();
+
+                $button = "<p><a href='javascript:viewmassreception$suffix" . $orders_id . "$bulk_rand();'>";
+                $button .= __("Take item delivery (bulk)", "order") . "</a></p>";
+
+                echo "<form method='post' name='order_reception_form$suffix$bulk_rand'
+                          action='" . Toolbox::getItemTypeFormURL("PluginOrderReception") . "'>";
+                if ($position == 'top') {
+                    echo "<br>";
+                    echo $button;
+                }
+                echo "<div id='massreception$suffix$orders_id$bulk_rand'></div>";
+                echo Html::scriptBlock("function viewmassreception$suffix" . $orders_id . "$bulk_rand() {" .
+                    Ajax::updateItemJsCode(
+                        "massreception$suffix" . $orders_id . $bulk_rand,
+                        Plugin::getWebDir('order') . "/ajax/massreception.php",
+                        [
+                            'plugin_order_orders_id'     => $orders_id,
+                            'plugin_order_references_id' => $references_id,
+                        ],
+                        '',
+                        false
+                    ) . "
+                }");
+                if ($position == 'bottom') {
+                    echo $button;
+                    echo "<br>";
+                }
+
+                Html::closeForm();
+            }
+        }
+    }
 
     public function getForbiddenStandardMassiveAction()
     {

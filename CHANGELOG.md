@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - Add massive selection for delivered items
+- Duplicate the delivery button at the top of the reception list
 
 ### Changed
 
