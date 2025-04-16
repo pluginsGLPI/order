@@ -1,7 +1,5 @@
 <?php
 
-use Glpi\Application\View\TemplateRenderer;
-
 /**
  * -------------------------------------------------------------------------
  * Order plugin for GLPI
@@ -29,6 +27,8 @@ use Glpi\Application\View\TemplateRenderer;
  * @link      https://github.com/pluginsGLPI/order
  * -------------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
 
 if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access directly to this file");
