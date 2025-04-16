@@ -65,15 +65,17 @@
                         fields_option|merge({'id': 'mass_otherserial_insertion'})
                     ) }}
                 </td>
-                <td>
-                    {{ fields.dropdownField(
-                        'Entity',
-                        "mass[entities_id]",
-                        0,
-                        "",
-                        fields_option|merge({'on_change': 'plugin_order_setAllEntities(this.value)'})
-                    ) }}
-                </td>
+                {% if is_multi_entities_mode and active_entities|length > 1 %}
+                    <td>
+                        {{ fields.dropdownField(
+                            'Entity',
+                            "mass[entities_id]",
+                            0,
+                            "",
+                            fields_option|merge({'on_change': 'plugin_order_setAllEntities(this.value)'})
+                        ) }}
+                    </td>
+                {% endif %}
                 <td>
                     <span id='show_location_by_entity_id_mass'>
                         {{ fields.dropdownField(
