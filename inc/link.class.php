@@ -1,5 +1,7 @@
 <?php
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * -------------------------------------------------------------------------
  * Order plugin for GLPI
@@ -363,164 +365,191 @@ class PluginOrderLink extends CommonDBChild
         $PluginOrderReference  = new PluginOrderReference();
         $PluginOrderReception  = new PluginOrderReception();
 
-        echo "<table class='tab_cadre_fixe'>";
         if (!$numref) {
+            echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr>";
             echo "</table>";
-            echo "</div>";
-        } else {
-            $plugin_order_references_id = $data_ref["id"];
-            $itemtype                   = $data_ref["itemtype"];
-            $canuse                     = ($itemtype != 'PluginOrderOther') && ($itemtype != 'PluginOrderReferenceFree');
-            $item                       = new $itemtype();
-            $rand                       = mt_rand();
-
-           // add hidden fields which need to be passed between massive action functions
-            $massiveactionparams = [
-                'extraparams' => [
-                    'massive_action_fields' => [
-                        'plugin_order_orders_id',
-                        'plugin_order_references_id',
-                    ]
-                ]
-            ];
-
-            $query = "SELECT  items.`id` AS IDD,
-                              ref.`id` AS id,
-                              ref.`templates_id`,
-                              items.`states_id`,
-                              items.`entities_id`,
-                              items.`delivery_date`,
-                              items.`delivery_number`,
-                              ref.`name`,
-                              ref.`itemtype`,
-                              items.`items_id`,
-                              items.`price_taxfree`,
-                              items.`discount`
-                       FROM `glpi_plugin_order_orders_items` as items,
-                            `" . $table . "` ref
-                       WHERE items.`plugin_order_orders_id` = '$plugin_order_orders_id'
-                        AND items.`plugin_order_references_id` = '$plugin_order_references_id'
-                        AND items.`plugin_order_references_id` = ref.`id`
-                        AND items.`states_id` = '" . PluginOrderOrder::ORDER_DEVICE_DELIVRED . "'";
-            if ($table == 'glpi_plugin_order_referencefrees') {
-                $query .= "AND items.`itemtype` LIKE 'PluginOrderReferenceFree'";
-            } else {
-                $query .= "AND items.`itemtype` NOT LIKE 'PluginOrderReferenceFree'";
-            }
-            if ($itemtype == 'SoftwareLicense') {
-                $query .= " GROUP BY items.`price_taxfree`,
-                                    items.`discount`";
-            }
-            $query .= " ORDER BY ref.`name`";
-
-            $result = $DB->query($query);
-            $num    = $DB->numrows($result);
-            $all_data = [];
-            while ($data = $DB->fetchArray($result)) {
-                $all_data[] = $data;
-            }
-
-            echo "<tr><th>";
-            echo "<ul class='list-unstyled'><li>";
-            echo "<a href=\"javascript:showHideDiv('generation$rand','generation_img$rand', " .
-              "'" . $CFG_GLPI['root_doc'] . "/pics/plus.png','" . $CFG_GLPI['root_doc'] . "/pics/moins.png');\">";
-            echo "<img alt='' name='generation_img$rand' src=\"" . $CFG_GLPI['root_doc'] . "/pics/plus.png\">";
-            echo "</a>";
-            echo "</li></ul></th>";
-            echo "<th>" . __("Assets") . "</th>";
-            echo "<th>" . __("Manufacturer") . "</th>";
-            echo "<th>" . __("Product reference", "order") . "</th>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1 center'>";
-            echo "<td></td>";
-            echo "<td align='center'>" . $item->getTypeName() . "</td>";
-            echo "<td align='center'>"
-              . Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]) . "</td>";
-            if ($table == 'glpi_plugin_order_referencefrees') {
-                echo "<td>" . $data_ref['name'] . "&nbsp;($num)</td>";
-            } else {
-                echo "<td>" . $PluginOrderReference->getReceptionReferenceLink($data_ref) . "&nbsp;($num)</td>";
-            }
-            echo "</tr>";
-
-            echo "</table>";
-
-            echo "<div id='generation$rand' style='display:none'>";
-            if ($canedit & $canuse && $num) {
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams['container']   = 'mass' . __CLASS__ . $rand;
-                $massiveactionparams['item']        = $PluginOrderOrder;
-                $massiveactionparams['rand']        = $rand;
-                $massiveactionparams['extraparams']['plugin_order_orders_id']     = $plugin_order_orders_id;
-                $massiveactionparams['extraparams']['plugin_order_references_id'] = $plugin_order_references_id;
-                Html::showMassiveActions($massiveactionparams);
-            }
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr>";
-            if ($canedit & $canuse && $num) {
-                echo "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand) . "</th>";
-            }
-            if ($itemtype != 'SoftwareLicense') {
-                echo "<th>" . __("ID") . "</th>";
-            } else {
-                echo "<th>" . __("Quantity", "order") . "</th>";
-            }
-            echo "<th>" . __("Reference") . "</th>";
-            echo "<th>" . __("Status") . "</th>";
-            echo "<th>" . __("Entity") . "</th>";
-            echo "<th>" . __("Delivery date") . "</th>";
-            echo "<th>" . _n("Associated item", "Associated items", 2) . "</th>";
-            echo "<th>" . __("Serial number") . "</th></tr>";
-
-            foreach ($all_data as $data) {
-                $detailID = (int) $data["IDD"];
-
-                echo "<tr class='tab_bg_2'>";
-
-                if ($canedit & $canuse) {
-                    echo "<td width='15' align='left'>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $detailID);
-                    echo "</td>";
-                }
-
-                if ($itemtype != 'SoftwareLicense') {
-                    echo "<td align='center'>" . $data["IDD"] . "</td>";
-                } else {
-                    echo "<td align='center'>";
-                    echo $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount(
-                        $plugin_order_orders_id,
-                        $plugin_order_references_id,
-                        $data["price_taxfree"],
-                        $data["discount"]
-                    );
-                    echo "</td>";
-                }
-                if ($table == 'glpi_plugin_order_referencefrees') {
-                    echo "<td align='center'>" . $data['name'] . "</td>";
-                } else {
-                    echo "<td align='center'>" . $PluginOrderReference->getReceptionReferenceLink($data) . "</td>";
-                }
-                echo "<td align='center'>" . $PluginOrderReception->getReceptionStatus($detailID) . "</td>";
-                echo "<td align='center'>" . Dropdown::getDropdownName(getTableForItemType(Entity::class), (int) $data["entities_id"]) . "</td>";
-                echo "<td align='center'>" . Html::convDate($data["delivery_date"]) . "</td>";
-                echo "<td align='center'>" . $this->getReceptionItemName($data["items_id"], $data["itemtype"]);
-                echo "<td align='center'>" . $this->getItemSerialNumber((int) $data["items_id"], $data["itemtype"]) . "</td>";
-            }
-            echo "</tr>";
-            echo "</table>";
-            if ($canedit && $canuse) {
-                if ($num > 10) {
-                    $massiveactionparams['ontop'] = false;
-                    Html::showMassiveActions($massiveactionparams);
-                }
-                Html::closeForm();
-            }
-            echo "</div>";
+            echo "<br>"; // Keep the line break between tables
+            return;
         }
-        echo "<br>";
+
+        $plugin_order_references_id = $data_ref["id"];
+        $itemtype                   = $data_ref["itemtype"];
+        $canuse                     = !in_array($itemtype, ['PluginOrderOther', 'PluginOrderReferenceFree']);
+        $item                       = new $itemtype();
+        $rand                       = mt_rand();
+        $countainer_name            = 'orderlink' . $plugin_order_orders_id . "_" . $plugin_order_references_id;
+
+        // add hidden fields which need to be passed between massive action functions
+        $massiveactionparams = [
+            'container'   => 'mass' . __CLASS__ . $rand,
+            'itemtype'    => __CLASS__, // Itemtype for massive actions on link items
+            'item'        => $PluginOrderOrder, // Pass the order object if needed by actions
+            'extraparams' => [
+                'plugin_order_orders_id'     => $plugin_order_orders_id,
+                'plugin_order_references_id' => $plugin_order_references_id,
+                'massive_action_fields' => [ // Ensure these are passed along
+                    'plugin_order_orders_id',
+                    'plugin_order_references_id',
+                ]
+            ],
+            'specific_actions' => $this->getSpecificMassiveActions(), // Get actions for PluginOrderLink
+        ];
+
+        $query = "SELECT  items.`id` AS IDD,
+                          ref.`id` AS id,
+                          ref.`templates_id`,
+                          items.`states_id`,
+                          items.`entities_id`,
+                          items.`delivery_date`,
+                          items.`delivery_number`,
+                          ref.`name`,
+                          ref.`itemtype`,
+                          items.`items_id`,
+                          items.`price_taxfree`,
+                          items.`discount`
+                   FROM `glpi_plugin_order_orders_items` as items,
+                        `" . $table . "` ref
+                   WHERE items.`plugin_order_orders_id` = '$plugin_order_orders_id'
+                    AND items.`plugin_order_references_id` = '$plugin_order_references_id'
+                    AND items.`plugin_order_references_id` = ref.`id`
+                    AND items.`states_id` = '" . PluginOrderOrder::ORDER_DEVICE_DELIVRED . "'";
+        if ($table == 'glpi_plugin_order_referencefrees') {
+            $query .= "AND items.`itemtype` LIKE 'PluginOrderReferenceFree'";
+        } else {
+            $query .= "AND items.`itemtype` NOT LIKE 'PluginOrderReferenceFree'";
+        }
+        if ($itemtype == 'SoftwareLicense') {
+            $query .= " GROUP BY items.`price_taxfree`,
+                                items.`discount`";
+        }
+        $query .= " ORDER BY ref.`name`";
+
+        $result = $DB->query($query);
+        $num    = $DB->numrows($result);
+        $all_data = [];
+        while ($data = $DB->fetchArray($result)) {
+            Session::addToNavigateListItems(__CLASS__, (int) $data['IDD']); // Use __CLASS__ as itemtype for navigation
+            $all_data[] = $data;
+        }
+
+        // Prepare columns for the Twig template
+        $columns = [];
+        if ($itemtype != 'SoftwareLicense') {
+            $columns['id_showed'] = __("ID");
+        } else {
+            $columns['quantity'] = __("Quantity", "order");
+        }
+        $columns['reference'] = __("Reference");
+        $columns['status'] = __("Status");
+        $columns['entity'] = __("Entity");
+        $columns['delivery_date'] = __("Delivery date");
+        $columns['associated_item'] = _n("Associated item", "Associated items", 2);
+        $columns['serial_number'] = __("Serial number");
+
+        // Prepare entries for the Twig template
+        $entries = [];
+        foreach ($all_data as $data) {
+            $detailID = (int) $data["IDD"];
+            $entry = [];
+            $entry['id'] = $detailID; // ID for massive actions checkbox name
+            $entry['itemtype'] = __CLASS__; // Itemtype for massive actions checkbox name
+
+            if ($itemtype != 'SoftwareLicense') {
+                $entry['id_showed'] = $detailID;
+            } else {
+                $entry['quantity'] = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount(
+                    $plugin_order_orders_id,
+                    $plugin_order_references_id,
+                    $data["price_taxfree"],
+                    $data["discount"]
+                );
+            }
+
+            if ($table == 'glpi_plugin_order_referencefrees') {
+                $entry['reference'] = $data['name'];
+            } else {
+                $entry['reference'] = $PluginOrderReference->getReceptionReferenceLink($data);
+            }
+            $entry['status'] = $PluginOrderReception->getReceptionStatus($detailID);
+            $entry['entity'] = Dropdown::getDropdownName(getTableForItemType(Entity::class), (int) $data["entities_id"]);
+            $entry['delivery_date'] = Html::convDate($data["delivery_date"]);
+            $entry['associated_item'] = $this->getReceptionItemName($data["items_id"], $data["itemtype"]);
+            $entry['serial_number'] = $this->getItemSerialNumber((int) $data["items_id"], $data["itemtype"]);
+
+            $entries[] = $entry;
+        }
+
+        // Sorting parameters
+        $sort = $_GET[$countainer_name . 'sort'] ?? 'id_showed'; // Default sort column
+        if ($itemtype == 'SoftwareLicense' && $sort == 'id_showed') {
+            $sort = 'quantity'; // Adjust default sort for SoftwareLicense
+        }
+        $order = $_GET[$countainer_name . 'order'] ?? 'ASC';
+        $visible = $_GET[$countainer_name . 'visible'] ?? false;
+
+        // Sort entries based on $sort and $order
+        if (!empty($entries) && isset($columns[$sort])) {
+            usort($entries, function ($a, $b) use ($sort, $order) {
+                $val_a = $a[$sort] ?? null;
+                $val_b = $b[$sort] ?? null;
+
+                // Handle different data types appropriately
+                if (is_numeric($val_a) && is_numeric($val_b)) {
+                    $cmp = $val_a <=> $val_b;
+                } elseif (is_string($val_a) && is_string($val_b)) {
+                    // For string values, ensure proper comparison by removing HTML tags if necessary
+                    $val_a_clean = strip_tags($val_a);
+                    $val_b_clean = strip_tags($val_b);
+                    $cmp = strcasecmp($val_a_clean, $val_b_clean);
+                } else {
+                    // Fallback comparison for mixed or other types
+                    $cmp = strcasecmp((string)$val_a, (string)$val_b);
+                }
+                // Apply sort direction
+                return $order === 'DESC' ? -$cmp : $cmp;
+            });
+        }
+
+        // Data for the reference header part
+        $reference_header_data = [
+            'item_type_name' => $item->getTypeName(),
+            'manufacturer_name' => Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]),
+            'reference_name' => ($table == 'glpi_plugin_order_referencefrees') ? $data_ref['name'] : $PluginOrderReference->getReceptionReferenceLink($data_ref),
+            'item_count' => $num,
+        ];
+
+        // Render the template
+        TemplateRenderer::getInstance()->display('@order/order_link_item.html.twig', [
+            'rand' => $rand,
+            'ID' => $plugin_order_orders_id, // Pass Order ID if needed
+            'countainer_name' => $countainer_name,
+            'hide_and_show' => true,
+            'table_visible' => $visible,
+            'sub_table' => true, // Indicate this is a sub-table within the main form
+            'nopager' => true,
+            'nofilter' => true,
+            'is_tab' => false, // Not a main tab content, but a section
+            'sort' => $sort,
+            'order' => $order,
+            'columns' => $columns,
+            'formatters' => [ // Specify formatters for columns needing raw HTML or specific formatting
+                'reference' => 'raw_html',
+                'status' => 'raw_html',
+                'associated_item' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'canedit' => $canedit,
+            'canuse' => $canuse, // Pass canuse flag
+            'num' => $num, // Pass item count
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'massiveactionparams' => $massiveactionparams,
+            'reference_header_data' => $reference_header_data, // Pass header data
+            'itemtype' => $itemtype, // Pass itemtype for conditional rendering in Twig if needed
+        ]);
+
+        echo "<br>"; // Keep the line break between tables
     }
 
    /**
@@ -1233,7 +1262,7 @@ class PluginOrderLink extends CommonDBChild
                 }
                 $input['groups_id']        = $values['groups_id'];
                 if (isset($values["locations_id"]) && $values["locations_id"] != 0) {
-                    $input['locations_id'] = $values['locations_id'];
+                    $input['locations_id'] = $values["locations_id"];
                 } else {
                    // Get bill data
                     if ($config->canAddLocation()) {
