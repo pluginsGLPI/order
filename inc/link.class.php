@@ -358,20 +358,11 @@ class PluginOrderLink extends CommonDBChild
     public function showOrderLinkItem($numref, $data_ref, $canedit, $plugin_order_orders_id, $PluginOrderOrder, $table)
     {
         /** @var \DBmysql $DB */
-        /** @var array $CFG_GLPI */
-        global $DB, $CFG_GLPI;
+        global $DB;
 
         $PluginOrderOrder_Item = new PluginOrderOrder_Item();
         $PluginOrderReference  = new PluginOrderReference();
         $PluginOrderReception  = new PluginOrderReception();
-
-        if (!$numref) {
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr>";
-            echo "</table>";
-            echo "<br>"; // Keep the line break between tables
-            return;
-        }
 
         $plugin_order_references_id = $data_ref["id"];
         $itemtype                   = $data_ref["itemtype"];
@@ -380,20 +371,19 @@ class PluginOrderLink extends CommonDBChild
         $rand                       = mt_rand();
         $countainer_name            = 'orderlink' . $plugin_order_orders_id . "_" . $plugin_order_references_id;
 
-        // add hidden fields which need to be passed between massive action functions
         $massiveactionparams = [
             'container'   => 'mass' . __CLASS__ . $rand,
-            'itemtype'    => __CLASS__, // Itemtype for massive actions on link items
-            'item'        => $PluginOrderOrder, // Pass the order object if needed by actions
+            'itemtype'    => __CLASS__,
+            'item'        => $PluginOrderOrder,
             'extraparams' => [
                 'plugin_order_orders_id'     => $plugin_order_orders_id,
                 'plugin_order_references_id' => $plugin_order_references_id,
-                'massive_action_fields' => [ // Ensure these are passed along
+                'massive_action_fields' => [
                     'plugin_order_orders_id',
                     'plugin_order_references_id',
                 ]
             ],
-            'specific_actions' => $this->getSpecificMassiveActions(), // Get actions for PluginOrderLink
+            'specific_actions' => $this->getSpecificMassiveActions(),
         ];
 
         $query = "SELECT  items.`id` AS IDD,
@@ -429,11 +419,10 @@ class PluginOrderLink extends CommonDBChild
         $num    = $DB->numrows($result);
         $all_data = [];
         while ($data = $DB->fetchArray($result)) {
-            Session::addToNavigateListItems(__CLASS__, (int) $data['IDD']); // Use __CLASS__ as itemtype for navigation
+            Session::addToNavigateListItems(__CLASS__, (int) $data['IDD']);
             $all_data[] = $data;
         }
 
-        // Prepare columns for the Twig template
         $columns = [];
         if ($itemtype != 'SoftwareLicense') {
             $columns['id_showed'] = __("ID");
@@ -452,8 +441,8 @@ class PluginOrderLink extends CommonDBChild
         foreach ($all_data as $data) {
             $detailID = (int) $data["IDD"];
             $entry = [];
-            $entry['id'] = $detailID; // ID for massive actions checkbox name
-            $entry['itemtype'] = __CLASS__; // Itemtype for massive actions checkbox name
+            $entry['id'] = $detailID;
+            $entry['itemtype'] = __CLASS__;
 
             if ($itemtype != 'SoftwareLicense') {
                 $entry['id_showed'] = $detailID;
@@ -480,38 +469,31 @@ class PluginOrderLink extends CommonDBChild
             $entries[] = $entry;
         }
 
-        // Sorting parameters
-        $sort = $_GET[$countainer_name . 'sort'] ?? 'id_showed'; // Default sort column
+        $sort = $_GET[$countainer_name . 'sort'] ?? 'id_showed';
         if ($itemtype == 'SoftwareLicense' && $sort == 'id_showed') {
-            $sort = 'quantity'; // Adjust default sort for SoftwareLicense
+            $sort = 'quantity';
         }
         $order = $_GET[$countainer_name . 'order'] ?? 'ASC';
         $visible = $_GET[$countainer_name . 'visible'] ?? false;
 
-        // Sort entries based on $sort and $order
         if (!empty($entries) && isset($columns[$sort])) {
             usort($entries, function ($a, $b) use ($sort, $order) {
                 $val_a = $a[$sort] ?? null;
                 $val_b = $b[$sort] ?? null;
 
-                // Handle different data types appropriately
                 if (is_numeric($val_a) && is_numeric($val_b)) {
                     $cmp = $val_a <=> $val_b;
                 } elseif (is_string($val_a) && is_string($val_b)) {
-                    // For string values, ensure proper comparison by removing HTML tags if necessary
                     $val_a_clean = strip_tags($val_a);
                     $val_b_clean = strip_tags($val_b);
                     $cmp = strcasecmp($val_a_clean, $val_b_clean);
                 } else {
-                    // Fallback comparison for mixed or other types
                     $cmp = strcasecmp((string)$val_a, (string)$val_b);
                 }
-                // Apply sort direction
                 return $order === 'DESC' ? -$cmp : $cmp;
             });
         }
 
-        // Data for the reference header part
         $reference_header_data = [
             'item_type_name' => $item->getTypeName(),
             'manufacturer_name' => Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]),
@@ -519,37 +501,35 @@ class PluginOrderLink extends CommonDBChild
             'item_count' => $num,
         ];
 
-        // Render the template
         TemplateRenderer::getInstance()->display('@order/order_link_item.html.twig', [
             'rand' => $rand,
-            'ID' => $plugin_order_orders_id, // Pass Order ID if needed
+            'ID' => $plugin_order_orders_id,
             'countainer_name' => $countainer_name,
             'hide_and_show' => true,
             'table_visible' => $visible,
-            'sub_table' => true, // Indicate this is a sub-table within the main form
+            'sub_table' => true,
             'nopager' => true,
             'nofilter' => true,
-            'is_tab' => false, // Not a main tab content, but a section
+            'is_tab' => false,
             'sort' => $sort,
             'order' => $order,
             'columns' => $columns,
-            'formatters' => [ // Specify formatters for columns needing raw HTML or specific formatting
+            'formatters' => [
                 'reference' => 'raw_html',
                 'status' => 'raw_html',
                 'associated_item' => 'raw_html',
             ],
             'entries' => $entries,
             'canedit' => $canedit,
-            'canuse' => $canuse, // Pass canuse flag
-            'num' => $num, // Pass item count
+            'canuse' => $canuse,
+            'num' => $num,
             'total_number' => count($entries),
             'filtered_number' => count($entries),
             'massiveactionparams' => $massiveactionparams,
-            'reference_header_data' => $reference_header_data, // Pass header data
-            'itemtype' => $itemtype, // Pass itemtype for conditional rendering in Twig if needed
+            'reference_header_data' => $reference_header_data,
+            'itemtype' => $itemtype,
+            'numref' => $numref,
         ]);
-
-        echo "<br>"; // Keep the line break between tables
     }
 
    /**

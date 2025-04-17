@@ -33,207 +33,215 @@
 {% set showmassiveactions = canedit and canuse and num > 0 %}
 {% set table_visible = table_visible|default(false) %}
 
-<table class="table mb-1">
-    <thead>
+{% if numref == 0 %}
+    <table class='tab_cadre_fixe'>
         <tr>
-            <th>{{ __('Assets') }}</th>
-            <th>{{ __('Manufacturer') }}</th>
-            <th>{{ __('Product reference', 'order') }}</th>
+            <th>{{ __("No item to take delivery of", "order") }}</th>
         </tr>
-    </thead>
-    <tbody>
-        <tr class="table-light">
-            <td>{{ reference_header_data.item_type_name }}</td>
-            <td>{{ reference_header_data.manufacturer_name|raw }}</td>
-            <td>{{ reference_header_data.reference_name|raw }} ({{ reference_header_data.item_count }})</td>
-        </tr>
-    </tbody>
-</table>
-
-{% if hide_and_show %}
-    <button id="toggle-table-{{ datatable_id }}" class="btn btn-link btn-sm mb-2" type="button">
-        {% if table_visible %}
-            <i class="ti ti-sort-ascending"></i>
-            <span>{{ __('Collapse all', 'order') }}</span>
-        {% else %}
-            <i class="ti ti-sort-descending"></i>
-            <span>{{ __('Expand all', 'order') }}</span>
-        {% endif %}
-    </button>
-    <input type="hidden" name="{{ countainer_name }}" value="true">
-{% endif %}
-
-{# Items Details Table (collapsible) #}
-{% if total_number < 1 %}
-    <div name="{{ datatable_id }}" {% if not table_visible %}style="display: none;"{% endif %}>
-        <div class="alert alert-info m-2">
-            {{ __('No results found') }}
-        </div>
-    </div>
+    </table>
 {% else %}
-    {% set total_cols = columns|length + (showmassiveactions ? 1 : 0) %}
+    <table class="table mb-1">
+        <thead>
+            <tr>
+                <th>{{ __('Assets') }}</th>
+                <th>{{ __('Manufacturer') }}</th>
+                <th>{{ __('Product reference', 'order') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="table-light">
+                <td>{{ reference_header_data.item_type_name }}</td>
+                <td>{{ reference_header_data.manufacturer_name|raw }}</td>
+                <td>{{ reference_header_data.reference_name|raw }} ({{ reference_header_data.item_count }})</td>
+            </tr>
+        </tbody>
+    </table>
 
-    <div name="{{ datatable_id }}" class="table-responsive" {% if showmassiveactions %} id="{{ massiveactionparams['container'] }}" {% endif %} {% if not table_visible %}style="display: none;"{% endif %}>
-        {% if showmassiveactions %}
-            <div class="my-2 ms-2">
-                {% do call('Html::showMassiveActions', [massiveactionparams|default([])]) %}
-            </div>
-        {% endif %}
-        <table id="{{ datatable_id }}" class="table {{ table_class_style|default('table-hover table-sm') }} mb-1">
-            <thead>
-                <tr>
-                    {% if showmassiveactions %}
-                        <th style="width: 30px;">
-                            <div>
-                                <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
-                                    value="" aria-label="{{ __('Check all') }}"
-                                    onclick="checkAsCheckboxes(this, '{{ massiveactionparams['container'] }}', '.massive_action_checkbox');" />
-                            </div>
-                        </th>
-                    {% endif %}
-                    {% for colkey, column in columns %}
-                        {% set column_label = column is array ? column['label'] : column %}
-                        {% set raw_header = column is array ? column['raw_header']|default(false) : false %}
-                        {% set sort_icon = '' %}
-                        {% set new_order = "ASC" %} {# Default to ASC for the next click #}
-                        {% if sort == colkey %}
-                            {% set sort_icon = order == 'ASC' ? 'ti ti-sort-ascending' : (order == 'DESC' ? 'ti ti-sort-descending' : '') %}
-                            {% set new_order = (order == 'ASC' ? 'DESC' : 'ASC') %}
-                        {% endif %}
-
-                        {% set sort_href = "javascript:reloadTab('" ~ countainer_name ~ "sort=" ~ colkey ~ "&" ~ countainer_name ~ "order=" ~ new_order ~ "&" ~ countainer_name ~ "visible=" ~ true ~ "');" %}
-
-                        <th>
-                            {% if not nosort and not (column is array and column['nosort'] is defined) %}
-                                <a href="{{ sort_href }}">
-                                <i class="{{ sort_icon }}"></i>
-                            {% endif %}
-                            <span>{{ raw_header ? column_label|raw : column_label }}</span>
-                            {% if not nosort and not (column is array and column['nosort'] is defined) %}
-                                </a>
-                            {% endif %}
-                        </th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% if entries|length > 0 %}
-                    {% for entry in entries %}
-                        <tr class="{{ row_class|default('') }} {{ entry['row_class']|default('') }}" data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}">
-                            {% set row_massiveactions = entry['showmassiveactions']|default(showmassiveactions) %}
-                            {% if row_massiveactions %}
-                                <td style="width: 10px">
-                                    {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
-                                        <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
-                                               value="1" aria-label="{{ __("Select item") }}"
-                                               name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
-                                    {% endif %}
-                                </td>
-                            {% endif %}
-                            {% for colkey, colum in columns %}
-                                <td>
-                                    {% if colkey in entry|keys %}
-                                        {% set formatter = formatters[colkey]|default(null) %}
-                                        {% if formatter == "raw_html" %}
-                                            {{ entry[colkey]|raw }}
-                                        {% else %}
-                                            {{ entry[colkey] }}
-                                        {% endif %}
-                                    {% endif %}
-                                </td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                {% else %}
-                    <tr>
-                        <td colspan="{{ total_cols }}">
-                            <div class="alert alert-info">
-                                {{ __('No results found') }}
-                            </div>
-                        </td>
-                    </tr>
-                {% endif %}
-            </tbody>
-            {% if footers %}
-                <tfoot class="{{ footer_class|default('') }}">
-                    {% for footer in footers %}
-                        <tr>
-                            {% if showmassiveactions %}
-                                <td></td>
-                            {% endif %}
-                            {% for footer_col, footerval in footer %}
-                                <td>{{ footerval|nl2br }}</td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </tfoot>
+    {% if hide_and_show %}
+        <button id="toggle-table-{{ datatable_id }}" class="btn btn-link btn-sm mb-2" type="button">
+            {% if table_visible %}
+                <i class="ti ti-sort-ascending"></i>
+                <span>{{ __('Collapse all', 'order') }}</span>
+            {% else %}
+                <i class="ti ti-sort-descending"></i>
+                <span>{{ __('Expand all', 'order') }}</span>
             {% endif %}
-        </table>
-        {% if showmassiveactions and entries|length > 10 %} {# Show actions at bottom if many items #}
-             <div class="my-2 ms-2">
-                {% do call('Html::showMassiveActions', [massiveactionparams|default([])]) %}
-            </div>
-        {% endif %}
-    </div>
-
-    {% if not nopager %}
-        <div class="ms-auto d-inline-flex align-items-center d-none d-md-block my-2">
-            {{ __('Entries to show:') }}
-            {% include 'components/dropdown/limit.html.twig' %}
-        </div>
+        </button>
+        <input type="hidden" name="{{ countainer_name }}" value="true">
     {% endif %}
 
-    <script type="text/javascript">
-    $(function() {
-        $('.filter-select-multiple').select2();
-    });
-    </script>
-{% endif %}
+    {# Items Details Table (collapsible) #}
+    {% if total_number < 1 %}
+        <div name="{{ datatable_id }}" {% if not table_visible %}style="display: none;"{% endif %}>
+            <div class="alert alert-info m-2">
+                {{ __('No results found') }}
+            </div>
+        </div>
+    {% else %}
+        {% set total_cols = columns|length + (showmassiveactions ? 1 : 0) %}
 
-{% if hide_and_show %}
-    <script>
+        <div name="{{ datatable_id }}" class="table-responsive" {% if showmassiveactions %} id="{{ massiveactionparams['container'] }}" {% endif %} {% if not table_visible %}style="display: none;"{% endif %}>
+            {% if showmassiveactions %}
+                <div class="my-2 ms-2">
+                    {% do call('Html::showMassiveActions', [massiveactionparams|default([])]) %}
+                </div>
+            {% endif %}
+            <table id="{{ datatable_id }}" class="table {{ table_class_style|default('table-hover table-sm') }} mb-1">
+                <thead>
+                    <tr>
+                        {% if showmassiveactions %}
+                            <th style="width: 30px;">
+                                <div>
+                                    <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
+                                        value="" aria-label="{{ __('Check all') }}"
+                                        onclick="checkAsCheckboxes(this, '{{ massiveactionparams['container'] }}', '.massive_action_checkbox');" />
+                                </div>
+                            </th>
+                        {% endif %}
+                        {% for colkey, column in columns %}
+                            {% set column_label = column is array ? column['label'] : column %}
+                            {% set raw_header = column is array ? column['raw_header']|default(false) : false %}
+                            {% set sort_icon = '' %}
+                            {% set new_order = "ASC" %} {# Default to ASC for the next click #}
+                            {% if sort == colkey %}
+                                {% set sort_icon = order == 'ASC' ? 'ti ti-sort-ascending' : (order == 'DESC' ? 'ti ti-sort-descending' : '') %}
+                                {% set new_order = (order == 'ASC' ? 'DESC' : 'ASC') %}
+                            {% endif %}
+
+                            {% set sort_href = "javascript:reloadTab('" ~ countainer_name ~ "sort=" ~ colkey ~ "&" ~ countainer_name ~ "order=" ~ new_order ~ "&" ~ countainer_name ~ "visible=" ~ true ~ "');" %}
+
+                            <th>
+                                {% if not nosort and not (column is array and column['nosort'] is defined) %}
+                                    <a href="{{ sort_href }}">
+                                    <i class="{{ sort_icon }}"></i>
+                                {% endif %}
+                                <span>{{ raw_header ? column_label|raw : column_label }}</span>
+                                {% if not nosort and not (column is array and column['nosort'] is defined) %}
+                                    </a>
+                                {% endif %}
+                            </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if entries|length > 0 %}
+                        {% for entry in entries %}
+                            <tr class="{{ row_class|default('') }} {{ entry['row_class']|default('') }}" data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}">
+                                {% set row_massiveactions = entry['showmassiveactions']|default(showmassiveactions) %}
+                                {% if row_massiveactions %}
+                                    <td style="width: 10px">
+                                        {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
+                                            <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
+                                                value="1" aria-label="{{ __("Select item") }}"
+                                                name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+                                {% for colkey, colum in columns %}
+                                    <td>
+                                        {% if colkey in entry|keys %}
+                                            {% set formatter = formatters[colkey]|default(null) %}
+                                            {% if formatter == "raw_html" %}
+                                                {{ entry[colkey]|raw }}
+                                            {% else %}
+                                                {{ entry[colkey] }}
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="{{ total_cols }}">
+                                <div class="alert alert-info">
+                                    {{ __('No results found') }}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+                {% if footers %}
+                    <tfoot class="{{ footer_class|default('') }}">
+                        {% for footer in footers %}
+                            <tr>
+                                {% if showmassiveactions %}
+                                    <td></td>
+                                {% endif %}
+                                {% for footer_col, footerval in footer %}
+                                    <td>{{ footerval|nl2br }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tfoot>
+                {% endif %}
+            </table>
+            {% if showmassiveactions and entries|length > 10 %} {# Show actions at bottom if many items #}
+                <div class="my-2 ms-2">
+                    {% do call('Html::showMassiveActions', [massiveactionparams|default([])]) %}
+                </div>
+            {% endif %}
+        </div>
+
+        {% if not nopager %}
+            <div class="ms-auto d-inline-flex align-items-center d-none d-md-block my-2">
+                {{ __('Entries to show:') }}
+                {% include 'components/dropdown/limit.html.twig' %}
+            </div>
+        {% endif %}
+
+        <script type="text/javascript">
         $(function() {
-            // Toggle button functionality
-            $('#toggle-table-{{ datatable_id }}').on('click', function() {
-                const div_table = $('[name="{{ datatable_id }}"]');
-                const icon = $(this).find('i');
-                const textSpan = icon.next('span');
-                const countainer_name = $('#{{ countainer_name }}');
-                let isVisible = !div_table.is(':hidden');
+            $('.filter-select-multiple').select2();
+        });
+        </script>
+    {% endif %}
 
-                // Toggle visibility
-                if (!isVisible) {
-                    div_table.show();
-                    icon.removeClass('ti-sort-descending').addClass('ti-sort-ascending');
-                    textSpan.text('{{ __("Collapse all") }}');
-                    countainer_name.val('true');
-                    isVisible = true;
-                } else {
-                    div_table.hide();
-                    icon.removeClass('ti-sort-ascending').addClass('ti-sort-descending');
-                    textSpan.text('{{ __("Expand all") }}');
-                    countainer_name.val('false');
-                    isVisible = false;
-                }
-                // Update all reloadTab links to reflect the new visibility state
-                $('a[href^="javascript:reloadTab("]').each(function() {
-                    let href = $(this).attr('href');
-                    let params = href.substring(href.indexOf("'") + 1, href.lastIndexOf("'"));
-                    // Parse parameters
-                    let paramsObj = {};
-                    params.split('&').forEach(function(param) {
-                        let [key, value] = param.split('=');
-                        paramsObj[key] = value;
+    {% if hide_and_show %}
+        <script>
+            $(function() {
+                // Toggle button functionality
+                $('#toggle-table-{{ datatable_id }}').on('click', function() {
+                    const div_table = $('[name="{{ datatable_id }}"]');
+                    const icon = $(this).find('i');
+                    const textSpan = icon.next('span');
+                    const countainer_name = $('#{{ countainer_name }}');
+                    let isVisible = !div_table.is(':hidden');
+
+                    // Toggle visibility
+                    if (!isVisible) {
+                        div_table.show();
+                        icon.removeClass('ti-sort-descending').addClass('ti-sort-ascending');
+                        textSpan.text('{{ __("Collapse all") }}');
+                        countainer_name.val('true');
+                        isVisible = true;
+                    } else {
+                        div_table.hide();
+                        icon.removeClass('ti-sort-ascending').addClass('ti-sort-descending');
+                        textSpan.text('{{ __("Expand all") }}');
+                        countainer_name.val('false');
+                        isVisible = false;
+                    }
+                    // Update all reloadTab links to reflect the new visibility state
+                    $('a[href^="javascript:reloadTab("]').each(function() {
+                        let href = $(this).attr('href');
+                        let params = href.substring(href.indexOf("'") + 1, href.lastIndexOf("'"));
+                        // Parse parameters
+                        let paramsObj = {};
+                        params.split('&').forEach(function(param) {
+                            let [key, value] = param.split('=');
+                            paramsObj[key] = value;
+                        });
+                        // Update visible parameter
+                        paramsObj['{{ countainer_name }}visible'] = isVisible ? '1' : '0';
+                        // Reconstruct parameters string
+                        let newParams = Object.entries(paramsObj).map(([key, value]) => `${key}=${value}`).join('&');
+                        // Update href
+                        let newHref = `javascript:reloadTab('${newParams}');`;
+                        $(this).attr('href', newHref);
                     });
-                    // Update visible parameter
-                    paramsObj['{{ countainer_name }}visible'] = isVisible ? '1' : '0';
-                    // Reconstruct parameters string
-                    let newParams = Object.entries(paramsObj).map(([key, value]) => `${key}=${value}`).join('&');
-                    // Update href
-                    let newHref = `javascript:reloadTab('${newParams}');`;
-                    $(this).attr('href', newHref);
                 });
             });
-        });
-    </script>
+        </script>
+    {% endif %}
 {% endif %}
