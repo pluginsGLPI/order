@@ -585,24 +585,22 @@ class PluginOrderReception extends CommonDBChild
             }
             echo "</table>";
 
-            if ($canmassive) {
-                if ($num > 10) {
-                    $massiveactionparams['ontop'] = false;
-                    Html::showMassiveActions($massiveactionparams);
+            if ($canmassive && $num) {
+                $massiveactionparams['ontop'] = false;
+                Html::showMassiveActions($massiveactionparams);
 
-                    echo "<span style='margin-left: 10px;'>";
-                    Dropdown::showNumber(
-                        'nb_items_to_check_bottom_',
-                        [
-                            'value' => '',
-                            'min'   => 1,
-                            'max'   => $num,
-                            'rand' => $rand,
-                        ]
-                    );
-                    echo "&nbsp;<button type='button' class='btn btn-secondary btn-sm' onclick='selectNItems(\"mass" . __CLASS__ . "$rand\", \"dropdown_nb_items_to_check_bottom_$rand\")'>" . __("Select") . "</button>";
-                    echo "</span>";
-                }
+                echo "<span style='margin-left: 10px;'>";
+                Dropdown::showNumber(
+                    'nb_items_to_check_bottom_',
+                    [
+                        'value' => '',
+                        'min'   => 1,
+                        'max'   => $num,
+                        'rand' => $rand,
+                    ]
+                );
+                echo "&nbsp;<button type='button' class='btn btn-secondary btn-sm' onclick='selectNItems(\"mass" . __CLASS__ . "$rand\", \"dropdown_nb_items_to_check_bottom_$rand\")'>" . __("Select") . "</button>";
+                echo "</span>";
                 Html::closeForm();
 
                 $script = <<<JAVASCRIPT

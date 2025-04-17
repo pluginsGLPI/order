@@ -456,6 +456,50 @@ class PluginOrderLink extends CommonDBChild
                 $massiveactionparams['extraparams']['plugin_order_orders_id']     = $plugin_order_orders_id;
                 $massiveactionparams['extraparams']['plugin_order_references_id'] = $plugin_order_references_id;
                 Html::showMassiveActions($massiveactionparams);
+
+                echo "<span style='margin-left: 10px;'>";
+                Dropdown::showNumber(
+                    'nb_items_to_check_top_',
+                    [
+                        'value' => '',
+                        'min'   => 1,
+                        'max'   => $num,
+                        'rand' => $rand,
+                    ]
+                );
+                echo "&nbsp;<button type='button' class='btn btn-secondary btn-sm' onclick='selectNItems(\"mass" . __CLASS__ . "$rand\", \"dropdown_nb_items_to_check_top_$rand\")'>" . __("Select") . "</button>";
+                echo "</span>";
+
+                $script = <<<JAVASCRIPT
+                    function selectNItems(container_id, select_id) {
+                        var selectElement = document.getElementById(select_id);
+                        if (!selectElement) {
+                            console.error("Select element not found:", select_id);
+                            return;
+                        }
+                        var n = parseInt(selectElement.value);
+                        if (isNaN(n) || n <= 0) {
+                            console.error("Invalid number selected:", selectElement.value);
+                            return;
+                        }
+
+                        var checked = 0;
+                        var selector = "#" + container_id + " input[type='checkbox'][name^='item[PluginOrderLink]']";
+                        var checkboxes = document.querySelectorAll(selector);
+
+                        checkboxes.forEach(function(checkbox) {
+                            checkbox.checked = false;
+                        });
+
+                        checkboxes.forEach(function(checkbox) {
+                            if (checked < n) {
+                                checkbox.checked = true;
+                                checked++;
+                            }
+                        });
+                    }
+                JAVASCRIPT;
+                echo Html::scriptBlock($script);
             }
 
             echo "<table class='tab_cadre_fixe'>";
