@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## Added
 
 - Batch data entry for item generation
+- Add massive selection for delivered items
+- Duplicate the delivery button at the top of the reception list
+
+### Changed
+
+- Implement `Twig` template for order items list
 
 ## [2.10.7] - 2025-03-19
 
