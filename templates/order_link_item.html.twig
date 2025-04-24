@@ -231,8 +231,9 @@
                     <div class="d-flex align-items-center">
                         <div class="d-inline-flex align-items-center me-4">
                             {{ __('Entries to show:') }}
-                            {% include 'components/dropdown/limit.html.twig' with {'right': true, 'additional_params': 
-                                'id=' ~ ID ~ '&' ~ countainer_name ~ 'sort=' ~ sort ~ '&' ~ countainer_name ~ 'order=' ~ order ~ '&' ~ countainer_name ~ 'visible=1'
+                            {% include 'components/dropdown/limit.html.twig' with {
+                                'right': true,
+                                'additional_params': 'id=' ~ ID ~ '&' ~ countainer_name ~ 'sort=' ~ sort ~ '&' ~ countainer_name ~ 'order=' ~ order ~ '&' ~ countainer_name ~ 'visible=1'
                             } %}
                         </div>
 
