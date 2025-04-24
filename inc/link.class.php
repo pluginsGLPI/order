@@ -371,6 +371,9 @@ class PluginOrderLink extends CommonDBChild
         $rand                       = mt_rand();
         $countainer_name            = 'orderlink' . $plugin_order_orders_id . "_" . $plugin_order_references_id;
 
+        $start = (int)($_GET['start'] ?? 0);
+        $limit = $_SESSION['glpilist_limit'] ?? 15; // Utilise la limite de session GLPI
+
         $massiveactionparams = [
             'container'   => 'mass' . __CLASS__ . $rand,
             'itemtype'    => __CLASS__,
@@ -415,8 +418,14 @@ class PluginOrderLink extends CommonDBChild
         }
         $query .= " ORDER BY ref.`name`";
 
+        $query_count = $query;
+        $query .= " LIMIT $limit OFFSET $start";
+
+        $result_count = $DB->query($query_count);
+        $total_number = $DB->numRows($result_count);
+
         $result = $DB->query($query);
-        $num    = $DB->numrows($result);
+        $num = $DB->numrows($result);
         $all_data = [];
         while ($data = $DB->fetchArray($result)) {
             Session::addToNavigateListItems(__CLASS__, (int) $data['IDD']);
@@ -498,37 +507,38 @@ class PluginOrderLink extends CommonDBChild
             'item_type_name' => $item->getTypeName(),
             'manufacturer_name' => Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]),
             'reference_name' => ($table == 'glpi_plugin_order_referencefrees') ? $data_ref['name'] : $PluginOrderReference->getReceptionReferenceLink($data_ref),
-            'item_count' => $num,
+            'item_count' => $total_number,
+        ];
+
+        $formatters = [
+            'reference' => 'raw_html',
+            'status' => 'raw_html',
+            'associated_item' => 'raw_html',
+            'serial_number' => 'raw_html',
         ];
 
         TemplateRenderer::getInstance()->display('@order/order_link_item.html.twig', [
             'rand' => $rand,
             'ID' => $plugin_order_orders_id,
-            'countainer_name' => $countainer_name,
-            'hide_and_show' => true,
+            'entries' => $entries,
+            'columns' => $columns,
+            'formatters' => $formatters ?? [],
+            'showmassiveactions' => $canedit && $canuse && $num > 0,
+            'massiveactionparams' => $massiveactionparams,
+            'datatable_id' => 'datatable_link_' . $rand,
+            'numref' => $numref,
             'table_visible' => $visible,
-            'sub_table' => true,
-            'nopager' => true,
-            'nofilter' => true,
-            'is_tab' => false,
+            'hide_and_show' => true,
+            'countainer_name' => $countainer_name,
             'sort' => $sort,
             'order' => $order,
-            'columns' => $columns,
-            'formatters' => [
-                'reference' => 'raw_html',
-                'status' => 'raw_html',
-                'associated_item' => 'raw_html',
-            ],
-            'entries' => $entries,
-            'canedit' => $canedit,
-            'canuse' => $canuse,
-            'num' => $num,
-            'total_number' => count($entries),
-            'filtered_number' => count($entries),
-            'massiveactionparams' => $massiveactionparams,
-            'reference_header_data' => $reference_header_data,
-            'itemtype' => $itemtype,
-            'numref' => $numref,
+            'nosort' => false,
+            'nopager' => false,
+            'total_count' => $total_number,
+            'displayed_count' => $num,
+            'start' => $start,
+            'limit' => $limit,
+            'reference_header_data' => $reference_header_data
         ]);
     }
 
