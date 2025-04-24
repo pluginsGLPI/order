@@ -372,7 +372,7 @@ class PluginOrderLink extends CommonDBChild
         $countainer_name            = 'orderlink' . $plugin_order_orders_id . "_" . $plugin_order_references_id;
 
         $start = (int)($_GET['start'] ?? 0);
-        $limit = $_SESSION['glpilist_limit'] ?? 15; // Utilise la limite de session GLPI
+        $limit = $_SESSION['glpilist_limit'] ?? 15;
 
         $massiveactionparams = [
             'container'   => 'mass' . __CLASS__ . $rand,
@@ -517,7 +517,18 @@ class PluginOrderLink extends CommonDBChild
             'serial_number' => 'raw_html',
         ];
 
+        $massive_select_params = [
+            'name' => 'nb_items_to_check_top_',
+            'params' => [
+                'value' => '',
+                'min'   => 1,
+                'max'   => ($start + $num > $total_number ? $total_number : $start + $num),
+                'rand' => $rand,
+            ]
+        ];
+
         TemplateRenderer::getInstance()->display('@order/order_link_item.html.twig', [
+            'classname' => __CLASS__,
             'rand' => $rand,
             'ID' => $plugin_order_orders_id,
             'entries' => $entries,
@@ -525,6 +536,7 @@ class PluginOrderLink extends CommonDBChild
             'formatters' => $formatters ?? [],
             'showmassiveactions' => $canedit && $canuse && $num > 0,
             'massiveactionparams' => $massiveactionparams,
+            'massive_select_params' => $massive_select_params,
             'datatable_id' => 'datatable_link_' . $rand,
             'numref' => $numref,
             'table_visible' => $visible,

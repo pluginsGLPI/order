@@ -30,7 +30,6 @@
  #}
 
 {% set datatable_id = 'datatable_link_' ~ rand %}
-{% set showmassiveactions = canedit and canuse and num > 0 %}
 {% set table_visible = table_visible|default(false) %}
 
 {% if numref == 0 %}
@@ -84,6 +83,44 @@
             {% if showmassiveactions %}
                 <div class="my-2 ms-2">
                     {% do call('Html::showMassiveActions', [massiveactionparams|default([])]) %}
+                    <span style='margin-left: 10px;'>
+                        {% do call(
+                            'Dropdown::showNumber',
+                            [
+                                massive_select_params["name"]|default(''),
+                                massive_select_params["params"]|default([])
+                            ]
+                        ) %}
+                        <button type='button' class='btn btn-secondary btn-sm' onclick='selectNItems("mass{{ classname }}{{ rand }}", "dropdown_nb_items_to_check_top_{{ rand }}")'>
+                            {{ __("Select") }}
+                        </button>
+                    </span>
+                    <script>
+                        function selectNItems(container_id, select_id) {
+                            var selectElement = document.getElementById(select_id);
+                            if (!selectElement) {
+                                console.error("Select element not found:", select_id);
+                                return;
+                            }
+                            var n = parseInt(selectElement.value);
+                            if (isNaN(n) || n <= 0) {
+                                console.error("Invalid number selected:", selectElement.value);
+                                return;
+                            }
+                            var checked = 0;
+                            var selector = "#" + container_id + " input[type='checkbox'][name^='item[PluginOrderLink]']";
+                            var checkboxes = document.querySelectorAll(selector);
+                            checkboxes.forEach(function(checkbox) {
+                                checkbox.checked = false;
+                            });
+                            checkboxes.forEach(function(checkbox) {
+                                if (checked < n) {
+                                    checkbox.checked = true;
+                                    checked++;
+                                }
+                            });
+                        }
+                    </script>
                 </div>
             {% endif %}
             <table id="{{ datatable_id }}" class="table {{ table_class_style|default('table-hover table-sm') }} mb-1">
