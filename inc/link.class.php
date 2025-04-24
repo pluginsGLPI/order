@@ -522,7 +522,7 @@ class PluginOrderLink extends CommonDBChild
             'ID' => $plugin_order_orders_id,
             'entries' => $entries,
             'columns' => $columns,
-            'formatters' => $formatters ?? [],
+            'formatters' => $formatters,
             'showmassiveactions' => $canedit && $canuse && $num > 0,
             'massiveactionparams' => $massiveactionparams,
             'datatable_id' => 'datatable_link_' . $rand,
