@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-- Implement `Twig` template for order items list
+- Implement `Twig` template for order items list and associated items
 
 ## [2.10.7] - 2025-03-19
 
