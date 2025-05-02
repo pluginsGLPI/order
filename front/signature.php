@@ -29,6 +29,7 @@
  */
 
 include("../../../inc/includes.php");
+Session::checkLoginUser();
 
 $sign = array_key_exists('sign', $_GET) ? $_GET['sign'] : '';
 
