@@ -30,7 +30,7 @@
 
 include("../../../inc/includes.php");
 
-Session::checkLoginUser();
+Session::checkRight("plugin_order_bill", READ);
 
 header("Content-Type: text/html; charset=UTF-8");
 
