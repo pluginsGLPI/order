@@ -30,7 +30,7 @@
 
 include("../../../inc/includes.php");
 
-Session::checkRight("profile", READ);
+Session::checkRight("profile", UPDATE);
 
 $prof = new PluginOrderProfile();
 

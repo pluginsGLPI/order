@@ -29,6 +29,7 @@
  */
 
 include("../../../inc/includes.php");
+Session::checkLoginUser();
 
 $PluginOrderOrder = new PluginOrderOrder();
 $PluginOrderOrder->generateOrder($_GET);
