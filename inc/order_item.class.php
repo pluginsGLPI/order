@@ -996,7 +996,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             'nopager' => true,
             'nofilter' => true,
             'is_tab' => true,
-            'nosort' => true,
+            'nosort' => false,
             'table_visible' => true,
             'items_id' => $plugin_order_orders_id,
             'columns' => $columns,
@@ -1030,6 +1030,28 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $entries = [];
 
         $table = self::getTable();
+
+        $countainer_name = 'countainer' . $plugin_order_orders_id . "_" . $refID;
+        $start = (int)($_GET['start'] ?? 0);
+        $limit = $_SESSION['glpilist_limit'] ?? 15;
+
+        $query_count = "SELECT COUNT(*) AS total
+                FROM `$table`, `$table_ref`
+                WHERE `$table`.`plugin_order_references_id` = `$table_ref`.`id`
+                    AND `$table`.`plugin_order_references_id` = '$refID'
+                    AND `$table`.`price_taxfree` LIKE '$price_taxfree'
+                    AND `$table`.`discount` LIKE '$discount'
+                    AND `$table`.`plugin_order_orders_id` = '$plugin_order_orders_id'";
+
+        if ($data_ref["itemtype"] == 'SoftwareLicense') {
+            $query_count .= " GROUP BY `$table_ref`.`name` ";
+        }
+
+        $result_count = $DB->query($query_count);
+        $total_number = ($data_ref["itemtype"] == 'SoftwareLicense')
+            ? $DB->numrows($result_count)
+            : $DB->result($result_count, 0, 'total');
+
         $query = "SELECT `$table`.`id` AS IDD, `$table_ref`.`id`,
                     `$table_ref`.`name`,
                     `$table`.`comment`,
@@ -1049,10 +1071,15 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             $query .= " GROUP BY `$table_ref`.`name` ";
         }
         $query .= " ORDER BY `$table_ref`.`name` ";
+        $query .= " LIMIT $limit OFFSET $start";
 
         $result = $DB->query($query);
+        $displayed_number = $DB->numrows($result);
 
-        $countainer_name = 'countainer' . $plugin_order_orders_id . "_" . $refID;
+        $sort = $_GET[$countainer_name . 'sort'] ?? 'id_showed';
+        $order = $_GET[$countainer_name . 'order'] ?? 'ASC';
+        $visible = $_GET[$countainer_name . 'visible'] ?? false;
+
         while ($data = $DB->fetchArray($result)) {
             Session::addToNavigateListItems($this->getType(), (int) $data['IDD']);
 
@@ -1103,10 +1130,6 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             $entries[] = $entry;
         }
 
-        $sort = $_GET[$countainer_name . 'sort'] ?? 'id_showed';
-        $order = $_GET[$countainer_name . 'order'] ?? 'ASC';
-        $visible = $_GET[$countainer_name . 'visible'] ?? false;
-
         if (!empty($entries)) {
             usort($entries, function ($a, $b) use ($sort, $order) {
                 // Handle different data types appropriately
@@ -1131,7 +1154,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             'hide_and_show' => true,
             'table_visible' => $visible,
             'sub_table' => true,
-            'nopager' => true,
+            'nopager' => false,
             'nofilter' => true,
             'is_tab' => true,
             'sort' => $sort,
@@ -1146,8 +1169,11 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             ],
             'entries' => $entries,
             'canedit' => $canedit,
-            'total_number' => count($entries),
-            'filtered_number' => count($entries),
+            'total_number' => $total_number,
+            'filtered_number' => $total_number,
+            'displayed_count' => $displayed_number,
+            'start' => $start,
+            'limit' => $limit,
             'massiveactionparams' => [
                 'container'        => 'mass' . __CLASS__ . $rand,
                 'itemtype'         => PluginOrderOrder_Item::class,

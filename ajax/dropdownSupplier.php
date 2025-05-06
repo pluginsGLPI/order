@@ -37,7 +37,7 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownSupplier.php")) {
     Html::header_nocache();
 }
 
-Session::checkCentralAccess();
+Session::checkRight("contact_enterprise", READ);
 
 // Make a select box
 if (isset($_POST["suppliers_id"])) {

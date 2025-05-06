@@ -32,6 +32,7 @@
 global $CFG_GLPI;
 
 include("../../../inc/includes.php");
+Session::checkLoginUser();
 
 Html::header(
     PluginOrderReference::getTypeName(),
