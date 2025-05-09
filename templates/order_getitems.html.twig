@@ -116,7 +116,7 @@
                                 {% set new_order = (order == 'ASC' ? 'DESC' : 'ASC') %}
                             {% endif %}
 
-                            {% set sort_href = "javascript:reloadTab('" ~ countainer_name ~ "sort=" ~ colkey ~ "&" ~ countainer_name ~ "order=" ~ new_order ~ "&" ~ countainer_name ~ "visible=" ~ true ~ "');" %}
+                            {% set sort_href = "javascript:reloadTab('start=" ~ start ~ "&limit=" ~ limit ~ "&" ~ countainer_name ~ "sort=" ~ colkey ~ "&" ~ countainer_name ~ "order=" ~ new_order ~ "&" ~ countainer_name ~ "visible=" ~ true ~ "');" %}
 
                             <th>
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
@@ -339,8 +339,9 @@
                     <div class="d-inline-flex align-items-center me-4">
                         {{ __('Entries to show:') }}
                         {% include 'components/dropdown/limit.html.twig' with {
+                            'is_tab': false,
                             'right': true,
-                            'additional_params': 'id=' ~ ID ~ '&' ~ countainer_name ~ 'sort=' ~ sort ~ '&' ~ countainer_name ~ 'order=' ~ order ~ '&' ~ countainer_name ~ 'visible=1'
+                            'additional_params': 'id=' ~ ID ~ '&start=' ~ start ~ '&' ~ countainer_name ~ 'sort=' ~ sort ~ '&' ~ countainer_name ~ 'order=' ~ order ~ '&' ~ countainer_name ~ 'visible=1'
                         } %}
                     </div>
 
@@ -348,12 +349,12 @@
                     {% if nb_pages > 1 %}
                         <ul class="pagination mb-0">
                             <li class="page-item {{ start == 0 ? 'disabled' : '' }}">
-                                <a class="page-link" href="javascript:reloadTab('start=0&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
+                                <a class="page-link" href="javascript:reloadTab('start=0&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
                                     <i class="ti ti-chevrons-left"></i>
                                 </a>
                             </li>
                             <li class="page-item {{ start == 0 ? 'disabled' : '' }}">
-                                <a class="page-link" href="javascript:reloadTab('start={{ start - limit < 0 ? 0 : start - limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
+                                <a class="page-link" href="javascript:reloadTab('start={{ start - limit < 0 ? 0 : start - limit }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
                                     <i class="ti ti-chevron-left"></i>
                                 </a>
                             </li>
@@ -364,19 +365,19 @@
 
                             {% for i in start_page..end_page %}
                                 <li class="page-item {{ current_page == i ? 'active' : '' }}">
-                                    <a class="page-link" href="javascript:reloadTab('start={{ (i - 1) * limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
+                                    <a class="page-link" href="javascript:reloadTab('start={{ (i - 1) * limit }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
                                         {{ i }}
                                     </a>
                                 </li>
                             {% endfor %}
 
                             <li class="page-item {{ start + limit >= total_number ? 'disabled' : '' }}">
-                                <a class="page-link" href="javascript:reloadTab('start={{ start + limit >= total_number ? start : start + limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
+                                <a class="page-link" href="javascript:reloadTab('start={{ start + limit >= total_number ? start : start + limit }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
                                     <i class="ti ti-chevron-right"></i>
                                 </a>
                             </li>
                             <li class="page-item {{ start + limit >= total_number ? 'disabled' : '' }}">
-                                <a class="page-link" href="javascript:reloadTab('start={{ ((nb_pages - 1) * limit)|round(0, 'floor') }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
+                                <a class="page-link" href="javascript:reloadTab('start={{ ((nb_pages - 1) * limit)|round(0, 'floor') }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
                                     <i class="ti ti-chevrons-right"></i>
                                 </a>
                             </li>
