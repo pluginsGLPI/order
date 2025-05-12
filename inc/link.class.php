@@ -312,7 +312,6 @@ class PluginOrderLink extends CommonDBChild
             $query .= " GROUP BY items.`price_taxfree`,
                                 items.`discount`";
         }
-        $query .= " ORDER BY ref.`name`";
 
         $query_count = $query;
         $query .= " LIMIT $limit OFFSET $start";
