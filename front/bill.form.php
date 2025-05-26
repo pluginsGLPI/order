@@ -29,6 +29,7 @@
  */
 
 include("../../../inc/includes.php");
+Session::checkLoginUser();
 
 $bill = new PluginOrderBill();
 

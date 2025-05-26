@@ -33,7 +33,7 @@ global $DB;
 
 include_once("../../../inc/includes.php");
 
-Session::checkCentralAccess();
+Session::checkRight("plugin_order_reference", READ);
 
 // Make a select box for references
 if (isset($_POST["itemtype"])) {

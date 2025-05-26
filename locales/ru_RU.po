@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-04 01:51+0000\n"
+"POT-Creation-Date: 2025-05-01 02:05+0000\n"
 "PO-Revision-Date: 2015-09-18 10:11+0000\n"
 "Last-Translator: Nikolai Petrov <techobsl@yandex.ru>, 2016-2017\n"
 "Language-Team: Russian (Russia) (http://app.transifex.com/teclib/glpi-project-plugin-order/language/ru_RU/)\n"
@@ -101,9 +101,9 @@ msgstr "Запрос на проверку"
 msgid "Asked"
 msgstr "Запрошено"
 
-#: inc/order.class.php:561 inc/order.class.php:1342
-#: inc/notificationtargetorder.class.php:484
-#: inc/notificationtargetorder.class.php:487 inc/config.class.php:173
+#: inc/config.class.php:173 inc/notificationtargetorder.class.php:484
+#: inc/notificationtargetorder.class.php:487 inc/order.class.php:561
+#: inc/order.class.php:1342
 msgid "Author group"
 msgstr "Группа автора"
 
@@ -123,14 +123,14 @@ msgstr "Отправляющийся"
 msgid "Being paid"
 msgstr "В оплате"
 
+#: inc/order_item.class.php:1522 inc/order_item.class.php:1610
 #: inc/bill.class.php:48 inc/bill.class.php:143 inc/bill.class.php:413
-#: inc/reception.class.php:272 inc/order_item.class.php:1496
-#: inc/order_item.class.php:1584
+#: inc/reception.class.php:272
 msgid "Bill"
 msgstr "Счет"
 
-#: inc/billstate.class.php:45 inc/bill.class.php:414
-#: inc/order_item.class.php:1497 hook.php:157
+#: inc/order_item.class.php:1523 inc/billstate.class.php:45
+#: inc/bill.class.php:414 hook.php:157
 msgid "Bill status"
 msgstr "Статус счета"
 
@@ -138,7 +138,7 @@ msgstr "Статус счета"
 msgid "Bill type"
 msgstr "Тип счета"
 
-#: inc/profile.class.php:198 inc/order_item.class.php:1353 front/menu.php:75
+#: inc/order_item.class.php:1379 inc/profile.class.php:198 front/menu.php:75
 msgid "Bills"
 msgstr "Счета"
 
@@ -175,15 +175,15 @@ msgstr "Не возможно создать товар без наименов�
 msgid "Cannot create reference without a type"
 msgstr "Не возможно создать товар без указания типа"
 
-#: inc/link.class.php:667
+#: inc/link.class.php:594
 msgid "Cannot link items not delivered"
 msgstr "Не удается связать, товар не доставлен "
 
-#: inc/link.class.php:656
+#: inc/link.class.php:583
 msgid "Cannot link several items to one detail line"
 msgstr "Невозможно связать с тем же самым товаром с разной информацией"
 
-#: templates/order_getitems.html.twig
+#: templates/order_getitems.html.twig templates/order_link_item.html.twig
 msgid "Collapse all"
 msgstr ""
 
@@ -220,13 +220,12 @@ msgstr "Копировать документы заказов при созда
 msgid "Copy reference"
 msgstr "Копировать товар"
 
-#: inc/order.class.php:344 inc/order.class.php:958
 #: inc/notificationtargetorder.class.php:111
 #: inc/notificationtargetorder.class.php:165
-#: inc/notificationtargetorder.class.php:173
+#: inc/notificationtargetorder.class.php:173 inc/order.class.php:344
+#: inc/order.class.php:958 report/deliveryinfos/deliveryinfos.php:48
 #: report/orderdelivery/orderdelivery.php:48
 #: report/orderdelivery/orderdelivery.php:90
-#: report/deliveryinfos/deliveryinfos.php:48
 msgid "Date of order"
 msgstr "Дата заказа"
 
@@ -238,18 +237,15 @@ msgstr "НДС по умолчанию"
 msgid "Default heading when adding a document to an order"
 msgstr "Заголовок по умолчанию при добавлении документа к заказу"
 
-#: inc/reception.class.php:739 inc/config.class.php:340
-#: inc/config.class.php:886 ajax/massreception.php:86
+#: ajax/massreception.php:86 inc/config.class.php:340 inc/config.class.php:886
 msgid "Default inventory number"
 msgstr "Инвентарный номер по умолчанию"
 
-#: inc/reception.class.php:723 inc/config.class.php:316
-#: inc/config.class.php:870 ajax/massreception.php:76
+#: ajax/massreception.php:76 inc/config.class.php:316 inc/config.class.php:870
 msgid "Default name"
 msgstr "Наименование по умолчанию"
 
-#: inc/reception.class.php:731 inc/config.class.php:328
-#: inc/config.class.php:878 ajax/massreception.php:81
+#: ajax/massreception.php:81 inc/config.class.php:328 inc/config.class.php:878
 msgid "Default serial number"
 msgstr "Серийный номер по умолчанию"
 
@@ -261,7 +257,7 @@ msgstr "Статус по умолчанию"
 msgid "Delete"
 msgstr "Удалить"
 
-#: inc/link.class.php:573
+#: inc/link.class.php:500
 msgid "Delete item link"
 msgstr "Удалить связь с товаром"
 
@@ -282,9 +278,9 @@ msgid "Delivery address"
 msgstr "Адрес доставки"
 
 #: inc/order.class.php:368 inc/order.class.php:1071
+#: report/deliveryinfos/deliveryinfos.php:50
 #: report/orderdelivery/orderdelivery.php:50
 #: report/orderdelivery/orderdelivery.php:95
-#: report/deliveryinfos/deliveryinfos.php:50
 msgid "Delivery location"
 msgstr "Место доставки"
 
@@ -292,9 +288,9 @@ msgstr "Место доставки"
 msgid "Delivery statistics"
 msgstr "Статистика доставок"
 
-#: inc/deliverystate.class.php:39 inc/reception.class.php:257
-#: inc/reception.class.php:487 inc/reception.class.php:712
-#: inc/order_item.class.php:200 ajax/massreception.php:66 hook.php:156
+#: ajax/massreception.php:66 inc/deliverystate.class.php:39
+#: inc/order_item.class.php:200 inc/reception.class.php:257
+#: inc/reception.class.php:509 hook.php:156
 msgid "Delivery status"
 msgstr "Статус доставки"
 
@@ -302,14 +298,10 @@ msgstr "Статус доставки"
 msgid "Designation"
 msgstr "Обозначение"
 
-#: inc/reception.class.php:691
-msgid "Destination entity"
-msgstr ""
-
 #: inc/order_item.class.php:136 inc/order_item.class.php:144
 #: inc/order_item.class.php:389 inc/order_item.class.php:499
 #: inc/order_item.class.php:856 inc/order_item.class.php:962
-#: inc/order_item.class.php:1276 front/order.form.php:152
+#: inc/order_item.class.php:1302 front/order.form.php:152
 #: front/order.form.php:273 front/order.form.php:299
 msgid "Discount (%)"
 msgstr "Скидка (%)"
@@ -318,7 +310,7 @@ msgstr "Скидка (%)"
 msgid "Discount rate"
 msgstr "Скидка"
 
-#: inc/order_item.class.php:963 inc/order_item.class.php:1284
+#: inc/order_item.class.php:963 inc/order_item.class.php:1310
 msgid "Discounted price tax free"
 msgstr "Стоимость со скидкой без налогов"
 
@@ -375,18 +367,16 @@ msgstr "Редактировать заказ"
 msgid "Editor of validation"
 msgstr "Редактировать проверку"
 
-#: inc/reception.class.php:717 inc/config.class.php:271
-#: ajax/massreception.php:73
+#: ajax/massreception.php:73 inc/config.class.php:271
 msgid "Enable automatic generation"
 msgstr "Включить автоматическое создание"
 
-#: inc/order.class.php:471 inc/order.class.php:1204
-#: inc/notificationtargetorder.class.php:174
-#: report/orderdelivery/orderdelivery.php:91
+#: inc/notificationtargetorder.class.php:174 inc/order.class.php:471
+#: inc/order.class.php:1204 report/orderdelivery/orderdelivery.php:91
 msgid "Estimated due date"
 msgstr "Предполагаемая дата поставки"
 
-#: templates/order_getitems.html.twig
+#: templates/order_getitems.html.twig templates/order_link_item.html.twig
 msgid "Expand all"
 msgstr ""
 
@@ -394,7 +384,7 @@ msgstr ""
 msgid "Final supplier note"
 msgstr "Последнее примечание к поставщику"
 
-#: inc/link.class.php:86 inc/link.class.php:571
+#: inc/link.class.php:498
 msgid "Generate item"
 msgstr "Создание материала"
 
@@ -402,7 +392,7 @@ msgstr "Создание материала"
 msgid "Generate order without validation"
 msgstr "Создать заказ без проверки"
 
-#: inc/link.class.php:50
+#: inc/link.class.php:52
 msgid "Generation"
 msgstr "Генерация"
 
@@ -426,37 +416,25 @@ msgstr "Адрес выставления счета"
 msgid "Issuer order"
 msgstr "Отпускающий заказ"
 
-#: inc/link.class.php:1036
+#: inc/link.class.php:963
 msgid "Item already linked to another one"
 msgstr "Материал уже связан с объектом инвентаризации"
 
-#: inc/reception.class.php:946
-msgid "Item already taken delivery"
-msgstr "Товар уже принят доставкой"
-
-#: inc/reception.class.php:1131
-msgid "Item delivered"
-msgstr "Товар доставлен"
-
-#: inc/link.class.php:1303 inc/link.class.php:1307
+#: inc/link.class.php:1230 inc/link.class.php:1234
 msgid "Item generated by using order"
 msgstr "Материал сформирован при использовании заказов"
 
-#: inc/link.class.php:942 inc/link.class.php:1022 inc/link.class.php:1030
-#: inc/link.class.php:1034
+#: inc/link.class.php:869 inc/link.class.php:949 inc/link.class.php:957
+#: inc/link.class.php:961
 msgid "Item linked to order"
 msgstr "Материал связанный с заказом"
 
-#: inc/link.class.php:1314
+#: inc/link.class.php:1241
 msgid "Item successfully selected"
 msgstr "Материал(ы) успешно выбран(ы)"
 
-#: inc/reception.class.php:830 inc/reception.class.php:862
-msgid "Item successfully taken delivery"
-msgstr "Товар успешно принят доставкой"
-
-#: inc/link.class.php:1076 inc/link.class.php:1081 inc/link.class.php:1102
-#: inc/link.class.php:1107
+#: inc/link.class.php:1003 inc/link.class.php:1008 inc/link.class.php:1029
+#: inc/link.class.php:1034
 msgid "Item unlink form order"
 msgstr "Разорвать связь с материалом в форме заказа"
 
@@ -469,7 +447,7 @@ msgstr "Последние заказы"
 msgid "Late orders total"
 msgstr "Всего просроченных заказов"
 
-#: inc/link.class.php:572
+#: inc/link.class.php:499
 msgid "Link to an existing item"
 msgstr "Ссылка на существующий товар"
 
@@ -482,47 +460,47 @@ msgstr "Связанные заказы"
 msgid "List references"
 msgstr "Список товаров"
 
-#: inc/reference.class.php:158 inc/reference.class.php:618
-#: inc/order_item.class.php:854
+#: inc/order_item.class.php:854 inc/reference.class.php:158
+#: inc/reference.class.php:618
 msgid "Manufacturer reference"
 msgstr "Ссылка на производителя"
 
-#: inc/reference.class.php:199 inc/order_item.class.php:181
-#: inc/order_item.class.php:503 inc/reference_supplier.class.php:96
+#: inc/order_item.class.php:181 inc/order_item.class.php:503
+#: inc/reference.class.php:199 inc/reference_supplier.class.php:96
 #: inc/reference_supplier.class.php:232
 msgid "Manufacturer's product reference"
 msgstr "Артикул производителя"
 
-#: inc/order.class.php:1187 inc/order_item.class.php:459
-#: inc/order_item.class.php:539 inc/config.class.php:119
+#: templates/generate_item.html.twig
+msgid "Mass value filling"
+msgstr ""
+
+#: inc/config.class.php:119 inc/order_item.class.php:459
+#: inc/order_item.class.php:539 inc/order.class.php:1187
 msgid "No VAT"
 msgstr "Без НДС"
 
-#: inc/link.class.php:699
+#: inc/link.class.php:626
 msgid "No associated item"
 msgstr "Нет связей с материалом"
 
-#: inc/reception.class.php:977 front/order.form.php:234
+#: front/order.form.php:234
 msgid "No item selected"
 msgstr "Не выбран пункт"
 
 #: inc/notificationtargetorder.class.php:55
-#: inc/notificationtargetorder.class.php:143 inc/link.class.php:256
+#: inc/notificationtargetorder.class.php:143
 msgid "No item to generate"
 msgstr "Нет материала для создания"
 
+#: templates/order_link_item.html.twig inc/order_item.class.php:1481
 #: inc/bill.class.php:371 inc/reception.class.php:371
-#: inc/order_item.class.php:1455 inc/link.class.php:368
 msgid "No item to take delivery of"
 msgstr "Нет товара, чтобы принят в доставку"
 
 #: inc/order_supplier.class.php:331
 msgid "No specified status"
 msgstr "Не указан статус"
-
-#: inc/reception.class.php:782
-msgid "Not enough items to deliver"
-msgstr "Не достаточно материала для доставки"
 
 #: inc/billstate.class.php:110
 msgid "Not paid"
@@ -536,14 +514,15 @@ msgstr "Примечание"
 msgid "Number to deliver"
 msgstr ""
 
-#: inc/link.class.php:1099
+#: inc/link.class.php:1026
 msgid "One or several selected rows haven't linked items"
 msgstr "Один или несколько выбранных строк имеют связанные элементы"
 
+#: inc/order_item.class.php:794 inc/order_item.class.php:1261
+#: inc/order_item.class.php:1963 inc/surveysupplier.class.php:384
 #: inc/order_supplier.class.php:218 inc/bill.class.php:107
-#: inc/bill.class.php:205 inc/reception.class.php:319 inc/order.class.php:87
-#: inc/surveysupplier.class.php:384 inc/order_item.class.php:794
-#: inc/order_item.class.php:1235 inc/order_item.class.php:1937 hook.php:406
+#: inc/bill.class.php:205 inc/order.class.php:87 inc/reception.class.php:319
+#: hook.php:406
 msgid "Order"
 msgstr "Заказ"
 
@@ -584,7 +563,7 @@ msgstr "Опоздание заказа"
 msgid "Order is validated"
 msgstr "Заказ проверен"
 
-#: inc/order_item.class.php:111 inc/order_item.class.php:1935
+#: inc/order_item.class.php:111 inc/order_item.class.php:1961
 msgid "Order item"
 msgstr "Заказ товара"
 
@@ -592,13 +571,13 @@ msgstr "Заказ товара"
 msgid "Order lifecycle"
 msgstr "Цикл заказа"
 
-#: templates/order_infocom.html.twig inc/order.class.php:446
-#: inc/order.class.php:937 inc/surveysupplier.class.php:194 hook.php:257
+#: templates/order_infocom.html.twig inc/surveysupplier.class.php:194
+#: inc/order.class.php:446 inc/order.class.php:937 hook.php:257
 msgid "Order name"
 msgstr "Наименование заказа"
 
 #: inc/order.class.php:331 inc/order.class.php:975 inc/order.class.php:1728
-#: report/orderdelivery/orderdelivery.php:78 hook.php:265
+#: hook.php:265 report/orderdelivery/orderdelivery.php:78
 msgid "Order number"
 msgstr "Номер заказа"
 
@@ -606,8 +585,8 @@ msgstr "Номер заказа"
 msgid "Order paied state"
 msgstr "Статус оплаченного заказа"
 
-#: inc/orderstate.class.php:51 inc/order.class.php:380
-#: inc/order.class.php:1017 inc/order.class.php:2031 hook.php:154
+#: inc/order.class.php:380 inc/order.class.php:1017 inc/order.class.php:2031
+#: inc/orderstate.class.php:51 hook.php:154
 msgid "Order status"
 msgstr "Статус заказа"
 
@@ -623,21 +602,21 @@ msgstr "Проверка заказа"
 msgid "Order validation successfully requested"
 msgstr "Запрос на проверку заказа одобрен"
 
+#: inc/preference.class.php:293 inc/menu.class.php:35
+#: inc/order_item.class.php:1955 inc/order_item.class.php:1957
 #: inc/order_supplier.class.php:465 inc/documentcategory.class.php:48
-#: inc/bill.class.php:620 inc/preference.class.php:293
-#: inc/profile.class.php:110 inc/profile.class.php:163
-#: inc/profile.class.php:190 inc/menu.class.php:35 inc/order.class.php:87
-#: inc/order.class.php:669 inc/order_item.class.php:1929
-#: inc/order_item.class.php:1931 hook.php:161 front/menu.php:61
+#: inc/bill.class.php:620 inc/profile.class.php:110 inc/profile.class.php:163
+#: inc/profile.class.php:190 inc/order.class.php:87 inc/order.class.php:669
 #: front/config.form.php:41 front/preference.form.php:43
-#: front/order.form.php:459 front/order.php:37
+#: front/order.form.php:459 front/order.php:37 front/menu.php:61 hook.php:161
 msgid "Orders"
 msgstr "Заказы"
 
-#: inc/order.class.php:324 inc/order_item.class.php:121
-#: inc/config.class.php:83 setup.php:198 front/menu.php:37 front/menu.php:55
+#: inc/config.class.php:83 inc/order_item.class.php:121
+#: inc/order.class.php:324 front/reception.form.php:98
 #: front/order_item.form.php:41 front/surveysupplier.form.php:67
-#: front/reception.form.php:98 front/order_supplier.form.php:78
+#: front/order_supplier.form.php:78 front/menu.php:37 front/menu.php:55
+#: setup.php:198
 msgid "Orders management"
 msgstr "Управление заказами"
 
@@ -654,7 +633,7 @@ msgstr "Другой тип товара"
 msgid "Paid"
 msgstr "Оплачено"
 
-#: inc/order_item.class.php:1372
+#: inc/order_item.class.php:1398
 msgid "Paid value"
 msgstr "Сколько оплачено"
 
@@ -663,7 +642,7 @@ msgstr "Сколько оплачено"
 msgid "Payment conditions"
 msgstr "Условия оплаты"
 
-#: inc/order_item.class.php:1354
+#: inc/order_item.class.php:1380
 msgid "Payment status"
 msgstr "Статус платежа"
 
@@ -684,9 +663,9 @@ msgstr "Плагин устанавливается или обновляетс�
 msgid "Postage"
 msgstr "Расход на доставку"
 
+#: inc/order_item.class.php:964 inc/order_item.class.php:1315
 #: inc/order.class.php:1449 inc/order.class.php:1809 inc/order.class.php:1940
-#: inc/order.class.php:2034 inc/order_item.class.php:964
-#: inc/order_item.class.php:1289
+#: inc/order.class.php:2034
 msgid "Price ATI"
 msgstr "Цена"
 
@@ -702,12 +681,12 @@ msgstr "Общая стоимость без налогов + доставка"
 msgid "Product name"
 msgstr ""
 
+#: templates/order_link_item.html.twig templates/generate_item.html.twig
+#: inc/order_item.class.php:382 inc/order_item.class.php:1493
 #: inc/reference.class.php:46 inc/reference.class.php:65
-#: inc/bill.class.php:383 inc/reception.class.php:401
-#: inc/order_item.class.php:382 inc/order_item.class.php:1467
-#: inc/link.class.php:89 inc/link.class.php:433
-#: inc/reference_supplier.class.php:274 inc/reference_supplier.class.php:296
-#: inc/reference_supplier.class.php:536 inc/reference_supplier.class.php:538
+#: inc/bill.class.php:383 inc/reference_supplier.class.php:274
+#: inc/reference_supplier.class.php:296 inc/reference_supplier.class.php:536
+#: inc/reference_supplier.class.php:538 inc/reception.class.php:401
 msgid "Product reference"
 msgstr "Товар"
 
@@ -723,9 +702,9 @@ msgstr "Бланк заказа"
 msgid "Quality of supplier intervention"
 msgstr "Качество действий поставщика"
 
-#: inc/order.class.php:1802 inc/order_item.class.php:386
-#: inc/order_item.class.php:496 inc/order_item.class.php:843
-#: inc/link.class.php:469 front/order.form.php:151 front/order.form.php:272
+#: inc/order_item.class.php:386 inc/order_item.class.php:496
+#: inc/order_item.class.php:843 inc/link.class.php:335
+#: inc/order.class.php:1802 front/order.form.php:151 front/order.form.php:272
 #: front/order.form.php:298
 msgid "Quantity"
 msgstr "Количество"
@@ -739,9 +718,9 @@ msgstr "Номер цитаты"
 msgid "Recipient"
 msgstr "Получатель"
 
-#: inc/order.class.php:571 inc/order.class.php:1396
-#: inc/notificationtargetorder.class.php:486
-#: inc/notificationtargetorder.class.php:488 inc/config.class.php:183
+#: inc/config.class.php:183 inc/notificationtargetorder.class.php:486
+#: inc/notificationtargetorder.class.php:488 inc/order.class.php:571
+#: inc/order.class.php:1396
 msgid "Recipient group"
 msgstr "Группа получателя"
 
@@ -812,15 +791,11 @@ msgstr "Поставщик товара"
 msgid "Supplier quality"
 msgstr "Качество поставщика"
 
-#: inc/reception.class.php:628 inc/order.class.php:307
+#: inc/order.class.php:307
 msgid "Take item delivery"
 msgstr "Получение товара"
 
-#: inc/reception.class.php:601
-msgid "Take item delivery (bulk)"
-msgstr ""
-
-#: inc/reception.class.php:218 inc/reception.class.php:759
+#: inc/reception.class.php:218
 msgid "Taken delivery"
 msgstr "Переданные в доставку"
 
@@ -853,11 +828,6 @@ msgstr "Всего заявок связанных с этим бюджетом,
 msgid "Total orders related with this budget is greater than its value."
 msgstr "Всего заявок связанных с этим бюджетом, превышающих его."
 
-#: inc/reception.class.php:630
-msgctxt "button"
-msgid "Transfer"
-msgstr ""
-
 #: inc/config.class.php:212
 msgid "Transmit budget change to linked assets"
 msgstr "Передача изменений бюджета на связанные активы"
@@ -866,10 +836,10 @@ msgstr "Передача изменений бюджета на связанны
 msgid "Unit price"
 msgstr "Цена за единицу"
 
-#: inc/reference.class.php:187 inc/order_item.class.php:128
-#: inc/order_item.class.php:387 inc/order_item.class.php:497
-#: inc/order_item.class.php:855 inc/order_item.class.php:960
-#: inc/order_item.class.php:1255 inc/reference_supplier.class.php:105
+#: inc/order_item.class.php:128 inc/order_item.class.php:387
+#: inc/order_item.class.php:497 inc/order_item.class.php:855
+#: inc/order_item.class.php:960 inc/order_item.class.php:1281
+#: inc/reference.class.php:187 inc/reference_supplier.class.php:105
 #: inc/reference_supplier.class.php:246 inc/reference_supplier.class.php:297
 #: inc/reference_supplier.class.php:539
 msgid "Unit price tax free"
@@ -895,10 +865,11 @@ msgstr "Используйте этот знак"
 msgid "Use validation process"
 msgstr "Использовать проверку заказов"
 
-#: inc/order.class.php:356 inc/order.class.php:1176 inc/order.class.php:1456
-#: inc/order.class.php:1806 inc/order.class.php:1938 inc/ordertax.class.php:43
 #: inc/order_item.class.php:388 inc/order_item.class.php:498
-#: inc/order_item.class.php:961 inc/order_item.class.php:1262 hook.php:151
+#: inc/order_item.class.php:961 inc/order_item.class.php:1288
+#: inc/ordertax.class.php:43 inc/order.class.php:356 inc/order.class.php:1176
+#: inc/order.class.php:1456 inc/order.class.php:1806 inc/order.class.php:1938
+#: hook.php:151
 msgid "VAT"
 msgstr "НДС"
 
@@ -933,10 +904,6 @@ msgstr "Проверка запроса сейчас отменена"
 #: inc/orderstate.class.php:102
 msgid "Waiting for approval"
 msgstr "Ожидание утверждения"
-
-#: inc/reception.class.php:756
-msgid "Waiting for delivery"
-msgstr "Ожидание доставки"
 
 #: inc/config.class.php:383
 msgid "Waiting for validation state"

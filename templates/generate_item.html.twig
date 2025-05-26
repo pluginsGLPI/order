@@ -1,0 +1,477 @@
+{#
+ # -------------------------------------------------------------------------
+ # Order plugin for GLPI
+ # -------------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of Order.
+ #
+ # Order is free software; you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation; either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # Order is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with Order. If not, see <http://www.gnu.org/licenses/>.
+ # -------------------------------------------------------------------------
+ # @copyright Copyright (C) 2009-2023 by Order plugin team.
+ # @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
+ # @link      https://github.com/pluginsGLPI/order
+ # -------------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set fields_option = {
+    'field_class': 'col-12 col-sm-12',
+    'no_label': true,
+    'mb': 'mb-0'
+} %}
+<div class="table-responsive center overflow-auto w-100">
+    <table class='table'>
+        <thead>
+            <tr>
+                <th colspan='{{ colspan }}'>{{ __("Mass value filling", "order") }}</th>
+            </tr>
+
+            <tr>
+                <td></td>
+                <td style="min-width: 200px !important;">
+                    {{ fields.textareaField(
+                        "mass_name_insertion",
+                        "",
+                        "",
+                        fields_option|merge({'id': 'mass_name_insertion'})
+                    ) }}
+                </td>
+                <td style="min-width: 200px !important;">
+                    {{ fields.textareaField(
+                        "mass_serial_insertion",
+                        "",
+                        "",
+                        fields_option|merge({'id': 'mass_serial_insertion'})
+                    ) }}
+                </td>
+                <td style="min-width: 200px !important;">
+                    {{ fields.textareaField(
+                        "mass_otherserial_insertion",
+                        "",
+                        "",
+                        fields_option|merge({'id': 'mass_otherserial_insertion'})
+                    ) }}
+                </td>
+                {% if is_multi_entities_mode and active_entities|length > 1 %}
+                    <td>
+                        {{ fields.dropdownField(
+                            'Entity',
+                            "mass[entities_id]",
+                            0,
+                            "",
+                            fields_option|merge({'on_change': 'plugin_order_setAllEntities(this.value)'})
+                        ) }}
+                    </td>
+                {% endif %}
+                <td>
+                    <span id='show_location_by_entity_id_mass'>
+                        {{ fields.dropdownField(
+                            'Location',
+                            "mass[locations_id]",
+                            0,
+                            "",
+                            fields_option|merge({'on_change': 'plugin_order_setAllLocations(this.value)'})
+                        ) }}
+                    </span>
+                </td>
+                <td>
+                    <span id='show_group_by_entity_id_mass'>
+                        {{ fields.dropdownField(
+                            'Group',
+                            "mass[groups_id]",
+                            0,
+                            "",
+                            fields_option|merge({'on_change': 'plugin_order_setAllGroups(this.value)'})
+                        ) }}
+                    </span>
+                </td>
+                <td>
+                    <span id='show_state_by_entity_id_mass'>
+                        {{ fields.dropdownField(
+                            'State',
+                            "mass[states_id]",
+                            0,
+                            "",
+                            fields_option|merge({'on_change': 'plugin_order_setAllStates(this.value)'})
+                        ) }}
+                    </span>
+                </td>
+            </tr>
+
+            <tr>
+                <th>{{ __("Product reference", "order") }}</th>
+                <th>{{ __("Name") }}</th>
+                <th>{{ __("Serial number") }}</th>
+                <th>{{ __("Inventory number") }}</th>
+                {% if config.canAddImmobilizationNumber() %}
+                    <th>{{ __("Immobilization number") }}</th>
+                {% endif %}
+                {% if is_multi_entities_mode and active_entities|length > 1 %}
+                    <th>{{ __("Entity") }}</th>
+                {% endif %}
+                <th>{{ __("Location") }}</th>
+                <th>{{ __("Group") }}</th>
+                <th>{{ __("Status") }}</th>
+            </tr>
+        </thead>
+
+        <!-- Other rows -->
+        <tbody>
+            {% for item in item_rows %}
+                <tr class='tab_bg_1'>
+                    <td align='center'>{{ item.reference_name }}</td>
+
+                    {% if not item.name %}
+                        <td>
+                            {{ fields.textField(
+                                "id[" ~ item.i ~ "][name]",
+                                "",
+                                "",
+                                fields_option
+                            ) }}
+                        </td>
+                    {% else %}
+                        <td align='center'>{{ constant('Dropdown::EMPTY_VALUE') }}</td>
+                        <input type="hidden" name="id[{{ item.i }}][name]" value="{{ item.name }}">
+                    {% endif %}
+
+                    <td align='center'>
+                        {{ fields.textField(
+                            "id[" ~ item.i ~ "][serial]",
+                            "",
+                            "",
+                            fields_option
+                        ) }}
+                    </td>
+
+                    {% if item.otherserial %}
+                        <td align='center'>{{ constant('Dropdown::EMPTY_VALUE') }}</td>
+                        <input type="hidden" name="id[{{ item.i }}][otherserial]" value="{{ item.otherserial }}">
+                    {% else %}
+                        <td>
+                            {{ fields.textField(
+                                "id[" ~ item.i ~ "][otherserial]",
+                                "",
+                                "",
+                                fields_option
+                            ) }}
+                        </td>
+                    {% endif %}
+
+                    {% if config.canAddImmobilizationNumber() %}
+                        {% if item.immo_number %}
+                            <td align='center'>{{ constant('Dropdown::EMPTY_VALUE') }}</td>
+                            <input type="hidden" name="id[{{ item.i }}][immo_number]" value="{{ item.immo_number }}">
+                        {% else %}
+                            <td>
+                                {{ fields.textField(
+                                    "id[" ~ item.i ~ "][immo_number]",
+                                    "",
+                                    "",
+                                    fields_option
+                                ) }}
+                            </td>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if is_multi_entities_mode and active_entities|length > 1 %}
+                        <td>
+                            {% set rand = random() %}
+                            <span id='show_entity_id_{{ item.i }}'>
+                                {{ fields.dropdownField(
+                                    'Entity',
+                                    "id[" ~ item.i ~ "][entities_id]",
+                                    item.order_entity_id,
+                                    "",
+                                    fields_option|merge({'on_change': 'plugin_order_adaptOnSelectedEntity(' ~ item.i ~ ', this.value)'})
+                                ) }}
+                            </span>
+                        </td>
+                    {% else %}
+                        <input type="hidden" name="id[{{ item.i }}][entities_id]" value="{{ item.order_entity_id }}">
+                    {% endif %}
+
+                    <td>
+                        <span id='show_location_by_entity_id_{{ item.i }}'>
+                            {{ fields.dropdownField(
+                                'Location',
+                                "id[" ~ item.i ~ "][locations_id]",
+                                item.locations_id,
+                                "",
+                                fields_option
+                            ) }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span id='show_group_by_entity_id_{{ item.i }}'>
+                            {{ fields.dropdownField(
+                                'Group',
+                                "id[" ~ item.i ~ "][groups_id]",
+                                item.groups_id,
+                                "",
+                                fields_option
+                            ) }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span id='show_state_by_entity_id_{{ item.i }}'>
+                            {{ fields.dropdownField(
+                                'State',
+                                "id[" ~ item.i ~ "][states_id]",
+                                item.states_id,
+                                "",
+                                fields_option
+                            ) }}
+                        </span>
+                    </td>
+                </tr>
+                <input type="hidden" name="id[{{ item.i }}][id]" value="{{ item.key }}">
+                <input type="hidden" name="id[{{ item.i }}][itemtype]" value="{{ item.itemtype }}">
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+	function plugin_order_adaptOnSelectedEntity(id, value) {
+        // Make AJAX call
+        $.ajax({
+            url: '{{ order_web_dir }}/ajax/linkactions.php',
+            type: 'POST',
+            data: {
+                'entities': value,
+                'action': 'show_location_by_entity',
+                'id': id
+            },
+            success: function(response) {
+                // This part is missing - updating the target element with response
+                $('#show_location_by_entity_id_' + id).html(response);
+            }
+        });
+        $.ajax({
+            url: '{{ order_web_dir }}/ajax/linkactions.php',
+            type: 'POST',
+            data: {
+                'entities': value,
+                'action': 'show_group_by_entity',
+                'id': id
+            },
+            success: function(response) {
+                $('#show_group_by_entity_id_' + id).html(response);
+            }
+        });
+
+        $.ajax({
+            url: '{{ order_web_dir }}/ajax/linkactions.php',
+            type: 'POST',
+            data: {
+                'entities': value,
+                'action': 'show_state_by_entity',
+                'id': id,
+            },
+            success: function(response) {
+                $('#show_state_by_entity_id_' + id).html(response);
+            }
+        });
+    }
+
+    function plugin_order_setAllEntities(value) {
+        var elements = document.querySelectorAll('[id^="show_entity"]');
+        plugin_order_adaptOnSelectedEntity('mass', value);
+        for (var i = 0; i < elements.length; i++) {
+            (function(index) {
+                $.ajax({
+                    url: '{{ order_web_dir }}/ajax/linkactions.php',
+                    type: 'POST',
+                    data: {
+                        'entities': 0,
+                        'action': 'update_entity',
+                        'id': index,
+                        'value': value
+                    },
+                    success: function(response) {
+                        $('#show_entity_id_' + index).html(response);
+                        plugin_order_adaptOnSelectedEntity(index, value);
+                    }
+                });
+            })(i);
+        }
+    }
+
+    function plugin_order_setAllLocations(value) {
+        var elements = document.querySelectorAll('[id^="show_location_by"]');
+        for (var i = 0; i < elements.length; i++) {
+            (function(index) {
+                $.ajax({
+                    url: '{{ order_web_dir }}/ajax/linkactions.php',
+                    type: 'POST',
+                    data: {
+                        'entities': 0,
+                        'action': 'show_location_by_entity',
+                        'id': index,
+                        'value': value
+                    },
+                    success: function(response) {
+                        $('#show_location_by_entity_id_' + index).html(response);
+                    }
+                });
+            })(i);
+        }
+    }
+
+    function plugin_order_setAllGroups(value) {
+        var elements = document.querySelectorAll('[id^="show_group_by"]');
+        for (var i = 0; i < elements.length; i++) {
+            (function(index) {
+                $.ajax({
+                    url: '{{ order_web_dir }}/ajax/linkactions.php',
+                    type: 'POST',
+                    data: {
+                        'entities': 0,
+                        'action': 'show_group_by_entity',
+                        'id': index,
+                        'value': value
+                    },
+                    success: function(response) {
+                        $('#show_group_by_entity_id_' + index).html(response);
+                    }
+                });
+            })(i);
+        }
+    }
+
+    function plugin_order_setAllStates(value) {
+        var elements = document.querySelectorAll('[id^="show_state_by"]');
+        for (var i = 0; i < elements.length; i++) {
+            (function(index) {
+                $.ajax({
+                    url: '{{ order_web_dir }}/ajax/linkactions.php',
+                    type: 'POST',
+                    data: {
+                        'entities': 0,
+                        'action': 'show_state_by_entity',
+                        'id': index,
+                        'value': value
+                    },
+                    success: function(response) {
+                        $('#show_state_by_entity_id_' + index).html(response);
+                    }
+                });
+            })(i);
+        }
+    }
+
+    function plugin_order_setFieldsFromTextarea(value, type) {
+        var lines = value.split(/\r?\n/);
+        var nameFields = document.querySelectorAll('input[name$="[' + type + ']"]');
+
+        for (var i = 0; i < nameFields.length; i++) {
+            var field = nameFields[i];
+            if (i < lines.length) {
+                field.value = lines[i].trim();
+            } else {
+                field.value = '';
+            }
+            var event = new Event('change', { bubbles: true });
+            field.dispatchEvent(event);
+            $(field).trigger('change');
+        }
+    }
+
+    $(function() {
+        // Add event listeners for all three field types
+        $('#mass_name_insertion').on('input', function() {
+            plugin_order_setFieldsFromTextarea(this.value, 'name');
+        });
+
+        $('#mass_serial_insertion').on('input', function() {
+            plugin_order_setFieldsFromTextarea(this.value, 'serial');
+        });
+
+        $('#mass_otherserial_insertion').on('input', function() {
+            plugin_order_setFieldsFromTextarea(this.value, 'otherserial');
+        });
+    });
+
+    function sendFieldUpdateToServer(field, fieldType) {
+        // Get field value
+        var fieldValue = field.value;
+
+        // If field is empty, just remove validation states and return
+        if (fieldValue.trim() === '') {
+            $(field).removeClass('is-invalid');
+            $(field).removeAttr('required');
+            $(field).next('.invalid-feedback').remove();
+            return;
+        }
+
+        // Extract item ID from field name using regex
+        var namePattern = /id\[(\d+)\]\[/;
+        var matches = field.name.match(namePattern);
+        var itemId = matches ? matches[1] : 0;
+
+        // Find itemtype - this should be passed from your PHP controller or set globally
+        var itemtype = $('input[name="id[' + itemId + '][itemtype]"]').val();
+
+        // Make AJAX call
+        $.ajax({
+            url: '{{ order_web_dir }}/ajax/linkactions.php',
+            type: 'POST',
+            data: {
+                'action': 'check_unicity',
+                'field': fieldType,
+                'field_value': fieldValue,
+                'itemtype': itemtype
+            },
+            success: function(response) {
+                if (response.trim() == 'false') {
+                    if ($(field).hasClass('is-invalid')) {
+                        return;
+                    }
+
+                    $(field).addClass('is-invalid');
+                    // Create field type label for the message
+                    let fieldTypeLabel = '';
+                    if (fieldType === 'name') fieldTypeLabel = "{{ __('name') }}";
+                    if (fieldType === 'serial') fieldTypeLabel = "{{ __('serial number') }}";
+
+                    // Add error message after the input
+                    $(field).after('<div class="invalid-feedback"> {{ __("An asset with this value already exists") }} </div>');
+
+                    // Add required attribute for visual indication
+                    $(field).attr('required', 'required');
+                } else {
+                    $(field).removeClass('is-invalid');
+                    $(field).removeAttr('required');
+                    $(field).next('.invalid-feedback').remove();
+                }
+            }
+        });
+    }
+
+    $(function() {
+        // Add input and change event listeners to all field types
+        $('input[name^="id["][name$="[name]"]').on('input change', function() {
+            sendFieldUpdateToServer(this, 'name');
+        });
+
+        $('input[name^="id["][name$="[serial]"]').on('input change', function() {
+            sendFieldUpdateToServer(this, 'serial');
+        });
+    });
+</script>
