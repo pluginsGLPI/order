@@ -268,7 +268,7 @@ class PluginOrderLink extends CommonDBChild
         $countainer_name            = 'orderlink' . $plugin_order_orders_id . "_" . $plugin_order_references_id;
 
         $start = (int)($_GET['start'] ?? 0);
-        $limit = $_SESSION['glpilist_limit'] ?? 15;
+        $limit = (int)($_GET['glpilist_limit'] ?? 15);
 
         $massiveactionparams = [
             'container'   => 'mass' . __CLASS__ . $rand,
@@ -312,7 +312,6 @@ class PluginOrderLink extends CommonDBChild
             $query .= " GROUP BY items.`price_taxfree`,
                                 items.`discount`";
         }
-        $query .= " ORDER BY ref.`name`";
 
         $query_count = $query;
         $query .= " LIMIT $limit OFFSET $start";
