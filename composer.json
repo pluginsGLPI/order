@@ -1,7 +1,7 @@
 {
     "require": {
-        "php": ">=7.4",
-        "masnathan/odtphp": "dev-teclib"
+        "php": ">=8.2",
+        "sboden/odtphp": "^3.2"
     },
     "require-dev": {
         "friendsoftwig/twigcs": "^6.1",
@@ -15,22 +15,27 @@
     "config": {
         "optimize-autoloader": true,
         "platform": {
-            "php": "7.4.0"
+            "php": "8.2.99"
         },
         "sort-packages": true,
         "allow-plugins": {
             "phpstan/extension-installer": true
         }
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/teclib/odtphp/"
-        }
-    ],
     "autoload-dev": {
         "psr-4": {
             "Glpi\\Tools\\": "../../tools/src/"
         }
+    },
+    "scripts": {
+        "patch": [
+                "patch -f -p1 -d vendor/sboden/odtphp < tools/patches/null_htmlspecialchars.patch || true"
+        ],
+        "post-install-cmd": [
+            "@patch"
+        ],
+        "post-update-cmd": [
+            "@patch"
+        ]
     }
 }
