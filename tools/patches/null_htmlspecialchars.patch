@@ -7,7 +7,7 @@ index 323baf8..15fa4a1 100755
      }
      else {
 -      return htmlspecialchars($value);
-+      return htmlspecialchars((string) $value);
++      return htmlspecialchars((string) ($value ?? ''));
      }
    }
  
