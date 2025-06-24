@@ -1,6 +1,7 @@
 {
     "require": {
         "php": ">=8.2",
+        "psr/container": "^1.1",
         "sboden/odtphp": "^3.2"
     },
     "require-dev": {
