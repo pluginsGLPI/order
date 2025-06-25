@@ -325,22 +325,42 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
         $total_ecotax = 0;
 
-        // Get all items with references in this order
-        $query = "SELECT oi.`plugin_order_references_id`, COUNT(oi.`id`) as quantity, 'standard' as reftype
-                  FROM `" . self::getTable() . "` as oi
-                  WHERE oi.`plugin_order_orders_id` = '$orders_id'
-                  AND oi.`itemtype` NOT LIKE 'PluginOrderReferenceFree'
-                  GROUP BY oi.`plugin_order_references_id`
-                  UNION
-                  SELECT oi.`plugin_order_references_id`, COUNT(oi.`id`) as quantity, 'free' as reftype
-                  FROM `" . self::getTable() . "` as oi
-                  WHERE oi.`plugin_order_orders_id` = '$orders_id'
-                  AND oi.`itemtype` LIKE 'PluginOrderReferenceFree'
-                  GROUP BY oi.`plugin_order_references_id`";
+        // Create subqueries for standard and free references
+        $standard_subquery = new \QuerySubQuery([
+            'SELECT' => [
+                'plugin_order_references_id',
+                new \QueryExpression('COUNT(' . $DB->quoteName('id') . ') AS quantity'),
+                new \QueryExpression("'standard' AS reftype")
+            ],
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'plugin_order_orders_id' => $orders_id,
+                'NOT' => ['itemtype' => 'PluginOrderReferenceFree']
+            ],
+            'GROUP' => 'plugin_order_references_id'
+        ]);
 
-        $result = $DB->query($query);
+        $free_subquery = new \QuerySubQuery([
+            'SELECT' => [
+                'plugin_order_references_id',
+                new \QueryExpression('COUNT(' . $DB->quoteName('id') . ') AS quantity'),
+                new \QueryExpression("'free' AS reftype")
+            ],
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'plugin_order_orders_id' => $orders_id,
+                'itemtype' => 'PluginOrderReferenceFree'
+            ],
+            'GROUP' => 'plugin_order_references_id'
+        ]);
 
-        while ($data = $DB->fetchArray($result)) {
+        // Create union query
+        $union = new \QueryUnion([$standard_subquery, $free_subquery]);
+        $iterator = $DB->request([
+            'FROM' => $union
+        ]);
+
+        foreach ($iterator as $data) {
             $ecotax_price = 0;
 
             if ($data['reftype'] === 'standard') {
