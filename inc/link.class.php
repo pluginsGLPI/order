@@ -166,26 +166,40 @@ class PluginOrderLink extends CommonDBChild
     {
         /** @var \DBmysql $DB */
         global $DB;
-        if ($table == 'glpi_plugin_order_references') {
-            $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` NOT LIKE 'PluginOrderReferenceFree'";
-        } else {
-            $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` LIKE 'PluginOrderReferenceFree'";
-        }
-        $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD,
-                           `glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id,
-                           ref.`name`,
-                           ref.`itemtype`,
-                           ref.`manufacturers_id`,
-                           `glpi_plugin_order_orders_items`.`price_taxfree`,
-                           `glpi_plugin_order_orders_items`.`discount`
-                    FROM `glpi_plugin_order_orders_items`, `" . $table . "` ref
-                    WHERE `glpi_plugin_order_orders_items`.`plugin_order_orders_id` = '$ID'
-                    AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = ref.`id`
-                    AND `glpi_plugin_order_orders_items`.`states_id` = '" . PluginOrderOrder::ORDER_DEVICE_DELIVRED . "'
-                    $condition
-                    GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id`
-                    ORDER BY ref.`name`";
-        return $DB->query($query_ref);
+
+        $condition_itemtype = ($table == 'glpi_plugin_order_references')
+            ? ['NOT LIKE', 'PluginOrderReferenceFree']
+            : ['LIKE', 'PluginOrderReferenceFree'];
+
+        $criteria = [
+            'SELECT' => [
+                'glpi_plugin_order_orders_items.id AS IDD',
+                'glpi_plugin_order_orders_items.plugin_order_references_id AS id',
+                'ref.name',
+                'ref.itemtype',
+                'ref.manufacturers_id',
+                'glpi_plugin_order_orders_items.price_taxfree',
+                'glpi_plugin_order_orders_items.discount'
+            ],
+            'FROM' => 'glpi_plugin_order_orders_items',
+            'INNER JOIN' => [
+                "$table AS ref" => [
+                    'ON' => [
+                        'glpi_plugin_order_orders_items' => 'plugin_order_references_id',
+                        'ref' => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'glpi_plugin_order_orders_items.plugin_order_orders_id' => $ID,
+                'glpi_plugin_order_orders_items.states_id' => PluginOrderOrder::ORDER_DEVICE_DELIVRED,
+                'glpi_plugin_order_orders_items.itemtype' => $condition_itemtype
+            ],
+            'GROUPBY' => 'glpi_plugin_order_orders_items.plugin_order_references_id',
+            'ORDER' => 'ref.name'
+        ];
+
+        return $DB->request($criteria);
     }
 
 
@@ -223,8 +237,8 @@ class PluginOrderLink extends CommonDBChild
                   && !$PluginOrderOrder->isCanceled();
 
         $result_ref = $this->queryRef($plugin_order_orders_id, 'glpi_plugin_order_references');
-        $numref     = $DB->numrows($result_ref);
-        while ($data_ref = $DB->fetchArray($result_ref)) {
+        $numref     = count($result_ref);
+        foreach ($result_ref as $data_ref) {
             $link = new self();
             $link->showOrderLinkItem(
                 $numref,
@@ -237,8 +251,8 @@ class PluginOrderLink extends CommonDBChild
         }
 
         $result_reffree = $this->queryRef($plugin_order_orders_id, 'glpi_plugin_order_referencefrees');
-        $numreffree     = $DB->numrows($result_reffree);
-        while ($data_reffree = $DB->fetchArray($result_reffree)) {
+        $numreffree     = count($result_reffree);
+        foreach ($result_reffree as $data_reffree) {
             $link = new self();
             $link->showOrderLinkItem(
                 $numreffree,
@@ -285,45 +299,59 @@ class PluginOrderLink extends CommonDBChild
             'specific_actions' => $this->getSpecificMassiveActions(),
         ];
 
-        $query = "SELECT  items.`id` AS IDD,
-                          ref.`id` AS id,
-                          ref.`templates_id`,
-                          items.`states_id`,
-                          items.`entities_id`,
-                          items.`delivery_date`,
-                          items.`delivery_number`,
-                          ref.`name`,
-                          ref.`itemtype`,
-                          items.`items_id`,
-                          items.`price_taxfree`,
-                          items.`discount`
-                   FROM `glpi_plugin_order_orders_items` as items,
-                        `" . $table . "` ref
-                   WHERE items.`plugin_order_orders_id` = '$plugin_order_orders_id'
-                    AND items.`plugin_order_references_id` = '$plugin_order_references_id'
-                    AND items.`plugin_order_references_id` = ref.`id`
-                    AND items.`states_id` = '" . PluginOrderOrder::ORDER_DEVICE_DELIVRED . "'";
-        if ($table == 'glpi_plugin_order_referencefrees') {
-            $query .= "AND items.`itemtype` LIKE 'PluginOrderReferenceFree'";
-        } else {
-            $query .= "AND items.`itemtype` NOT LIKE 'PluginOrderReferenceFree'";
-        }
+        $condition_itemtype = ($table == 'glpi_plugin_order_referencefrees')
+            ? ['LIKE', 'PluginOrderReferenceFree']
+            : ['NOT LIKE', 'PluginOrderReferenceFree'];
+
+        $criteria = [
+            'SELECT' => [
+                'items.id AS IDD',
+                'ref.id AS id',
+                'ref.templates_id',
+                'items.states_id',
+                'items.entities_id',
+                'items.delivery_date',
+                'items.delivery_number',
+                'ref.name',
+                'ref.itemtype',
+                'items.items_id',
+                'items.price_taxfree',
+                'items.discount'
+            ],
+            'FROM' => 'glpi_plugin_order_orders_items AS items',
+            'INNER JOIN' => [
+                "$table AS ref" => [
+                    'ON' => [
+                        'items' => 'plugin_order_references_id',
+                        'ref' => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'items.plugin_order_orders_id' => $plugin_order_orders_id,
+                'items.plugin_order_references_id' => $plugin_order_references_id,
+                'items.states_id' => PluginOrderOrder::ORDER_DEVICE_DELIVRED,
+                'items.itemtype' => $condition_itemtype
+            ],
+            'ORDER' => 'ref.name'
+        ];
+
         if ($itemtype == 'SoftwareLicense') {
-            $query .= " GROUP BY items.`price_taxfree`,
-                                items.`discount`";
+            $criteria['GROUPBY'] = ['items.price_taxfree', 'items.discount'];
         }
-        $query .= " ORDER BY ref.`name`";
 
-        $query_count = $query;
-        $query .= " LIMIT $limit OFFSET $start";
+        // Count total for pagination
+        $result_count = $DB->request($criteria);
+        $total_number = count($result_count);
 
-        $result_count = $DB->query($query_count);
-        $total_number = $DB->numRows($result_count);
+        // Add pagination
+        $criteria['START'] = $start;
+        $criteria['LIMIT'] = $limit;
 
-        $result = $DB->query($query);
-        $num = $DB->numrows($result);
+        $result = $DB->request($criteria);
+        $num = count($result);
         $all_data = [];
-        while ($data = $DB->fetchArray($result)) {
+        foreach ($result as $data) {
             Session::addToNavigateListItems(__CLASS__, (int) $data['IDD']);
             $all_data[] = $data;
         }
@@ -687,14 +715,19 @@ class PluginOrderLink extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-        $query = "SELECT `id`
-                FROM `glpi_plugin_order_orders_items`
-                WHERE `itemtype` = '$itemtype'
-                AND `items_id` = '$items_id'";
-        $result = $DB->query($query);
+        $criteria = [
+            'SELECT' => 'id',
+            'FROM' => 'glpi_plugin_order_orders_items',
+            'WHERE' => [
+                'itemtype' => $itemtype,
+                'items_id' => $items_id
+            ]
+        ];
+        $result = $DB->request($criteria);
 
-        if ($DB->numrows($result)) {
-            return ($DB->result($result, 0, 'id'));
+        if (count($result)) {
+            $row = $result->current();
+            return $row['id'];
         } else {
             return 0;
         }
@@ -837,20 +870,24 @@ class PluginOrderLink extends CommonDBChild
 
             if ($itemtype == 'SoftwareLicense') {
                 $detail->getFromDB($detailID);
-                $query = "SELECT `id`
-                      FROM `glpi_plugin_order_orders_items`
-                      WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
-                        AND `plugin_order_references_id` = '{$detail->fields["plugin_order_references_id"]}'
-                        AND `price_taxfree` LIKE '{$detail->fields["price_taxfree"]}'
-                        AND `discount` LIKE '{$detail->fields["discount"]}'
-                        AND `states_id` = 1 ";
-                $result = $DB->query($query);
-                $nb     = $DB->numrows($result);
+                $criteria = [
+                    'SELECT' => 'id',
+                    'FROM' => 'glpi_plugin_order_orders_items',
+                    'WHERE' => [
+                        'plugin_order_orders_id' => $plugin_order_orders_id,
+                        'plugin_order_references_id' => $detail->fields["plugin_order_references_id"],
+                        'price_taxfree' => ['LIKE', $detail->fields["price_taxfree"]],
+                        'discount' => ['LIKE', $detail->fields["discount"]],
+                        'states_id' => 1
+                    ]
+                ];
+                $result = $DB->request($criteria);
+                $nb     = count($result);
 
                 if ($nb) {
                     $lic = new SoftwareLicense();
-                    for ($i = 0; $i < $nb; $i++) {
-                        $ID                = $DB->result($result, $i, 'id');
+                    foreach ($result as $row) {
+                        $ID                = $row['id'];
                         $input["id"]       = $ID;
                         $input["items_id"] = $items_id;
                         $detail->update($input);
@@ -983,9 +1020,9 @@ class PluginOrderLink extends CommonDBChild
                 $detail->fields["discount"],
                 PluginOrderOrder::ORDER_DEVICE_DELIVRED
             );
-            if ($nb = $DB->numrows($result)) {
-                for ($i = 0; $i < $nb; $i++) {
-                    $ID = $DB->result($result, $i, 'id');
+            if ($nb = count($result)) {
+                foreach ($result as $row) {
+                    $ID = $row['id'];
                     $detail->update([
                         "id"       => $ID,
                         "items_id" => 0,

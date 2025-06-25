@@ -42,17 +42,26 @@ Session::checkRight("contact_enterprise", READ);
 // Make a select box
 if (isset($_POST["suppliers_id"])) {
    // Make a select box
-    $query = "SELECT c.`id`, c.`name`, c.`firstname`
-             FROM `glpi_contacts` c
-             LEFT JOIN `glpi_contacts_suppliers` s ON (s.`contacts_id` = c.`id`)
-             WHERE s.`suppliers_id` = '{$_POST['suppliers_id']}'
-             ORDER BY c.`name`";
-    $result = $DB->query($query);
-    $number = $DB->numrows($result);
+    $criteria = [
+        'SELECT' => ['c.id', 'c.name', 'c.firstname'],
+        'FROM' => 'glpi_contacts AS c',
+        'LEFT JOIN' => [
+            'glpi_contacts_suppliers AS s' => [
+                'ON' => [
+                    's' => 'contacts_id',
+                    'c' => 'id'
+                ]
+            ]
+        ],
+        'WHERE' => ['s.suppliers_id' => $_POST['suppliers_id']],
+        'ORDER' => ['c.name']
+    ];
+    $result = $DB->request($criteria);
+    $number = count($result);
 
     $values = [0 => Dropdown::EMPTY_VALUE];
     if ($number) {
-        while ($data = $DB->fetchAssoc($result)) {
+        foreach ($result as $data) {
             $values[$data['id']] = formatUserName('', '', $data['name'], $data['firstname']);
         }
     }
