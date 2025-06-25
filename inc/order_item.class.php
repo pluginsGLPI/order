@@ -792,7 +792,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                        item.`plugin_order_bills_id`,
                        item.`plugin_order_billstates_id`
                 FROM `$table` item, `glpi_plugin_order_references` ref
-                WHERE item.`plugin_order_references_id` = `ref`.`id`
+                WHERE item.`plugin_order_references_id` = ref.`id`
                 AND item.`plugin_order_orders_id` = '$orders_id'
                 AND `ref`.`id` = '$references_id'
                 AND item.`itemtype` NOT LIKE 'PluginOrderReferenceFree'
@@ -807,7 +807,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                        item.`plugin_order_bills_id`,
                        item.`plugin_order_billstates_id`
                 FROM `$table` item, `" . $tabRef . "` ref
-                WHERE item.`plugin_order_references_id` = `ref`.`id`
+                WHERE item.`plugin_order_references_id` = ref.`id`
                 AND item.`plugin_order_orders_id` = '$orders_id'
                 AND ref.`id` = '$references_id'
                 AND item.`itemtype` LIKE 'PluginOrderReferenceFree'
@@ -1003,6 +1003,8 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             'formatters' => [
                 'reference' => 'raw_html',
                 'manufacturer' => 'raw_html',
+                'type' => 'raw_html',
+                'model' => 'raw_html',
             ],
             'columns_values' => [],
             'entries' => [$entrie],
@@ -1033,7 +1035,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
         $countainer_name = 'countainer' . $plugin_order_orders_id . "_" . $refID;
         $start = (int)($_GET['start'] ?? 0);
-        $limit = $_SESSION['glpilist_limit'] ?? 15;
+        $limit = (int)($_GET['glpilist_limit'] ?? 15);
 
         $query_count = "SELECT COUNT(*) AS total
                 FROM `$table`, `$table_ref`
@@ -1130,18 +1132,38 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             $entries[] = $entry;
         }
 
-        if (!empty($entries)) {
+        if (!empty($entries) && isset($columns[$sort])) {
             usort($entries, function ($a, $b) use ($sort, $order) {
                 // Handle different data types appropriately
-                if (is_numeric($a[$sort]) && is_numeric($b[$sort])) {
-                    $cmp = $a[$sort] <=> $b[$sort];
+                $val_a = $a[$sort] ?? null;
+                $val_b = $b[$sort] ?? null;
+
+                if (is_numeric($val_a) && is_numeric($val_b)) {
+                    $cmp = $val_a <=> $val_b;
                 } else {
-                    // For string values, ensure proper comparison by removing HTML tags
-                    $val_a = is_string($a[$sort]) ? strip_tags($a[$sort]) : $a[$sort];
-                    $val_b = is_string($b[$sort]) ? strip_tags($b[$sort]) : $b[$sort];
-                    $cmp = strcasecmp($val_a, $val_b);
+                    if (is_string($val_a)) {
+                        if (preg_match('/<a[^>]*>(\d+)<\/a>/', $val_a, $matches)) {
+                            $val_a = (int)$matches[1];
+                        } else {
+                            $val_a = strip_tags($val_a);
+                        }
+                    }
+
+                    if (is_string($val_b)) {
+                        if (preg_match('/<a[^>]*>(\d+)<\/a>/', $val_b, $matches)) {
+                            $val_b = (int)$matches[1];
+                        } else {
+                            $val_b = strip_tags($val_b);
+                        }
+                    }
+
+                    if (is_numeric($val_a) && is_numeric($val_b)) {
+                        $cmp = (float)$val_a <=> (float)$val_b;
+                    } else {
+                        $cmp = strcasecmp((string)$val_a, (string)$val_b);
+                    }
                 }
-                // Apply sort direction
+
                 return $order === 'DESC' ? -$cmp : $cmp;
             });
         }
