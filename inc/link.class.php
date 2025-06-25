@@ -494,9 +494,10 @@ class PluginOrderLink extends CommonDBChild
         $actions = parent::getSpecificMassiveActions($checkitem);
         $sep     = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
 
-        $actions[$sep . 'generation'] = __("Generate item", "order");
-        $actions[$sep . 'createLink'] = __("Link to an existing item", "order");
-        $actions[$sep . 'deleteLink'] = __("Delete item link", "order");
+        $actions[$sep . 'generation']       = __("Generate item", "order");
+        $actions[$sep . 'createLink']       = __("Link to an existing item", "order");
+        $actions[$sep . 'deleteLink']       = __("Delete item link", "order");
+        $actions[$sep . 'cancelReceipt']    = __("Cancel reception", "order");
 
         return $actions;
     }
@@ -614,8 +615,38 @@ class PluginOrderLink extends CommonDBChild
                     $ma->itemDone($item->getType(), $val, MassiveAction::ACTION_OK);
                 }
                 break;
+
+            case 'cancelReceipt':
+                foreach ($ma->getItems()[__CLASS__] as $key => $val) {
+                    $order_item = new PluginOrderOrder_Item();
+                    $order_item->getFromDB($val);
+                    if ($order_item->fields["items_id"] != 0) {
+                        $ma->addMessage(__("Unable to cancel reception when items are already linked, please unlink them before trying again.", "order"));
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                    } else {
+                        if (!$link->cancelReception($key)) {
+                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        } else {
+                            $ma->itemDone($item->getType(), $val, MassiveAction::ACTION_OK);
+                        }
+                    }
+                }
+                break;
         }
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+    }
+
+    public function cancelReception($id)
+    {
+        $order_item = new PluginOrderOrder_Item();
+        $order_item->getFromDB($id);
+        $updated = $order_item->update([
+            'id'            => $id,
+            'states_id'     => PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED,
+            'delivery_date' => null,
+        ]);
+
+        return $updated;
     }
 
 

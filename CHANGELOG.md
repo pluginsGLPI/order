@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
+- Addition of a massive action “Cancel receipt” (in the “attachments” tab)
 - Batch data entry for item generation
 - Add massive selection for delivered items
 - Duplicate the delivery button at the top of the reception list
