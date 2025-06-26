@@ -55,11 +55,11 @@ if (isset($_POST["update"])) {
                 $order_item->fields["discount"],
                 PluginOrderOrder::ORDER_DEVICE_DELIVRED
             );
-            $nb = $DB->numrows($result);
+            $nb = count($result);
 
             if ($nb) {
-                for ($i = 0; $i < $nb; $i++) {
-                    $ID = $DB->result($result, $i, 'id');
+                foreach ($result as $row) {
+                    $ID = $row['id'];
                     $reception->update([
                         "id"                             => $ID,
                         "delivery_date"                  => $_POST["delivery_date"],

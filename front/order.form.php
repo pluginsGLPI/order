@@ -187,10 +187,10 @@ if (isset($_POST["add"])) {
                         $pluginOrderOrder_Item->fields["discount"]
                     );
 
-                    if ($nb = $DB->numrows($result)) {
-                        for ($i = 0; $i < $nb; $i++) {
-                            $ID       = $DB->result($result, $i, 'id');
-                            $items_id = $DB->result($result, $i, 'items_id');
+                    if ($nb = count($result)) {
+                        foreach ($result as $row) {
+                            $ID       = $row['id'];
+                            $items_id = $row['items_id'];
 
                             if ($items_id) {
                                   $lic = new SoftwareLicense();
@@ -330,10 +330,10 @@ if (isset($_POST["add"])) {
                         $pluginOrderOrder_Item->fields["discount"]
                     );
 
-                    if ($nb = $DB->numrows($result)) {
-                        for ($i = 0; $i < $nb; $i++) {
-                            $ID       = $DB->result($result, $i, 'id');
-                            $items_id = $DB->result($result, $i, 'items_id');
+                    if ($nb = count($result)) {
+                        foreach ($result as $row) {
+                            $ID       = $row['id'];
+                            $items_id = $row['items_id'];
 
                             if ($items_id) {
                                   $lic = new SoftwareLicense();
@@ -381,7 +381,7 @@ if (isset($_POST["add"])) {
             $_POST['old_price_taxfree'],
             $_POST['old_discount']
         );
-        while ($item = $DB->fetchArray($datas)) {
+        foreach ($datas as $item) {
             $input = [
                 'item_id'                         => $item['id'],
                 'plugin_order_analyticnatures_id' => $_POST['plugin_order_analyticnatures_id'],
@@ -397,7 +397,7 @@ if (isset($_POST["add"])) {
             $_POST['old_price_taxfree'],
             $_POST['old_discount']
         );
-        while ($item = $DB->fetchArray($data)) {
+        foreach ($data as $item) {
             $pluginOrderOrder_Item->updatePrice_taxfree([
                 'item_id'       => $item['id'],
                 'price_taxfree' => $_POST['price_taxfree'],
@@ -417,7 +417,7 @@ if (isset($_POST["add"])) {
                 $price,
                 $_POST['old_discount']
             );
-            while ($item = $DB->fetchArray($data)) {
+            foreach ($data as $item) {
                 $pluginOrderOrder_Item->updateDiscount([
                     'item_id'  => $item['id'],
                     'discount' => $_POST['discount'],

@@ -139,18 +139,18 @@ class PluginOrderReception extends CommonDBChild
         $detail->getFromDB($detailID);
 
         if ($detail->fields["itemtype"] == 'SoftwareLicense') {
-            $result = $detail->queryRef(
+            $iterator = $detail->queryRef(
                 $_POST["plugin_order_orders_id"],
                 $detail->fields["plugin_order_references_id"],
                 $detail->fields["price_taxfree"],
                 $detail->fields["discount"],
                 PluginOrderOrder::ORDER_DEVICE_DELIVRED
             );
-            $nb = $DB->numrows($result);
+            $nb = count($iterator);
 
             if ($nb) {
-                for ($i = 0; $i < $nb; $i++) {
-                    $detailID = $DB->result($result, $i, 'id');
+                foreach ($iterator as $data) {
+                    $detailID = $data['id'];
                     $detail->update([
                         "id"                             => $detailID,
                         "delivery_date"                  => 'NULL',
@@ -324,9 +324,9 @@ class PluginOrderReception extends CommonDBChild
                  && !$order_order->isCanceled();
 
         $result_ref = $order_item->queryDetail($orders_id, 'glpi_plugin_order_references');
-        $numref     = $DB->numrows($result_ref);
+        $numref     = count($result_ref);
 
-        while ($data_ref = $DB->fetchArray($result_ref)) {
+        foreach ($result_ref as $data_ref) {
             self::showOrderReceptionItem(
                 $data_ref,
                 $numref,
@@ -340,9 +340,9 @@ class PluginOrderReception extends CommonDBChild
         }
 
         $result_reffree = $order_item->queryDetail($orders_id, 'glpi_plugin_order_referencefrees');
-        $numreffree     = $DB->numrows($result_reffree);
+        $numreffree     = count($result_reffree);
 
-        while ($data_reffree = $DB->fetchArray($result_reffree)) {
+        foreach ($result_reffree as $data_reffree) {
             self::showOrderReceptionItem(
                 $data_reffree,
                 $numreffree,
@@ -439,34 +439,48 @@ class PluginOrderReception extends CommonDBChild
                 'top'
             );
 
-            $query = "SELECT items.`id` AS IDD,
-                             ref.`id` AS id,
-                             ref.`templates_id`,
-                             items.`states_id`,
-                             items.`entities_id`,
-                             items.`comment`,
-                             items.`plugin_order_deliverystates_id`,
-                             items.`delivery_date`,
-                             items.`delivery_number`,
-                             ref.`name`,
-                             ref.`itemtype`,
-                             items.`items_id`
-                    FROM `glpi_plugin_order_orders_items` as items,
-                         `" . $table . "` as ref
-                    WHERE items.`plugin_order_orders_id` = '$orders_id'
-                    AND items.`plugin_order_references_id` = '" . $references_id . "'
-                    AND items.`plugin_order_references_id` = ref.`id`
-                    AND items.`discount` LIKE '" . $discount . "'
-                    AND items.`price_taxfree` LIKE '" . $price_taxfree . "' ";
+            $criteria = [
+                'SELECT' => [
+                    'items.id AS IDD',
+                    'ref.id AS id',
+                    'ref.templates_id',
+                    'items.states_id',
+                    'items.entities_id',
+                    'items.comment',
+                    'items.plugin_order_deliverystates_id',
+                    'items.delivery_date',
+                    'items.delivery_number',
+                    'ref.name',
+                    'ref.itemtype',
+                    'items.items_id'
+                ],
+                'FROM' => 'glpi_plugin_order_orders_items AS items',
+                'INNER JOIN' => [
+                    "$table AS ref" => [
+                        'ON' => [
+                            'items' => 'plugin_order_references_id',
+                            'ref' => 'id'
+                        ]
+                    ]
+                ],
+                'WHERE' => [
+                    'items.plugin_order_orders_id' => $orders_id,
+                    'items.plugin_order_references_id' => $references_id,
+                    'items.discount' => ['LIKE', $discount],
+                    'items.price_taxfree' => ['LIKE', $price_taxfree]
+                ],
+                'ORDER' => 'ref.name'
+            ];
+
             if ($typeRef == 'SoftwareLicense') {
-                $query .= " GROUP BY ref.`name` ";
+                $criteria['GROUPBY'] = 'ref.name';
             }
-            $query .= " ORDER BY ref.`name` ";
-            $result = $DB->query($query);
-            $num    = $DB->numrows($result);
+
+            $result = $DB->request($criteria);
+            $num    = count($result);
 
             $all_data = [];
-            while ($data = $DB->fetchArray($result)) {
+            foreach ($result as $data) {
                 $all_data[] = $data;
             }
 
@@ -859,21 +873,29 @@ class PluginOrderReception extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-        $query = "SELECT `id`, `itemtype`, 'entities_id'
-               FROM `glpi_plugin_order_orders_items`
-               WHERE `plugin_order_orders_id` = '{$params["plugin_order_orders_id"]}'
-               AND `plugin_order_references_id` = '{$params["plugin_order_references_id"]}'
-               AND `states_id` = 0 ";
+        $criteria = [
+            'SELECT' => ['id', 'itemtype', 'entities_id'],
+            'FROM' => 'glpi_plugin_order_orders_items',
+            'WHERE' => [
+                'plugin_order_orders_id' => $params["plugin_order_orders_id"],
+                'plugin_order_references_id' => $params["plugin_order_references_id"],
+                'states_id' => 0
+            ]
+        ];
 
-        $result  = $DB->query($query);
-        $nb      = $DB->numrows($result);
+        $result  = $DB->request($criteria);
+        $nb      = count($result);
 
         if ($nb < $params['number_reception']) {
             Session::addMessageAfterRedirect(__("Not enough items to deliver", "order"), true, ERROR);
         } else {
-            for ($i = 0; $i < $params['number_reception']; $i++) {
+            $i = 0;
+            foreach ($result as $row) {
+                if ($i >= $params['number_reception']) {
+                    break;
+                }
                 $this->receptionOneItem(
-                    $DB->result($result, $i, 'id'),
+                    $row['id'],
                     $params['plugin_order_orders_id'],
                     $params["delivery_date"],
                     $params["delivery_number"],
@@ -882,8 +904,8 @@ class PluginOrderReception extends CommonDBChild
 
                // Automatic generate asset
                 $options = [
-                    "itemtype"                   => $DB->result($result, $i, "itemtype"),
-                    "items_id"                   => $DB->result($result, $i, "id"),
+                    "itemtype"                   => $row["itemtype"],
+                    "items_id"                   => $row["id"],
                     "entities_id"                => $_SESSION['glpiactive_entity'],
                     "plugin_order_orders_id"     => $params['plugin_order_orders_id'],
                     "plugin_order_references_id" => $params["plugin_order_references_id"],
@@ -900,6 +922,7 @@ class PluginOrderReception extends CommonDBChild
                     }
                 }
                 self::generateAsset($options);
+                $i++;
             }
             self::updateDelivryStatus($params['plugin_order_orders_id']);
         }
@@ -935,11 +958,11 @@ class PluginOrderReception extends CommonDBChild
             $detail->fields["discount"],
             PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED
         );
-        $nb = $DB->numrows($result);
+        $nb = count($result);
 
         if ($nb) {
-            for ($i = 0; $i < $nb; $i++) {
-                $detailID = $DB->result($result, $i, 'id');
+            foreach ($result as $row) {
+                $detailID = $row['id'];
                 $detail->update([
                     "id"                             => $detailID,
                     "delivery_date"                  => $delivery_date,
@@ -1079,16 +1102,20 @@ class PluginOrderReception extends CommonDBChild
 
         $order->getFromDB($orders_id);
 
-        $query = "SELECT `states_id`
-                FROM `glpi_plugin_order_orders_items`
-                WHERE `plugin_order_orders_id` = '$orders_id'";
-        $result = $DB->query($query);
-        $number = $DB->numrows($result);
+        $criteria = [
+            'SELECT' => 'states_id',
+            'FROM' => 'glpi_plugin_order_orders_items',
+            'WHERE' => [
+                'plugin_order_orders_id' => $orders_id
+            ]
+        ];
+        $result = $DB->request($criteria);
+        $number = count($result);
 
         $delivery_status = 0;
         $is_delivered    = 1; //Except order to be totally delivered
         if ($number) {
-            while ($data = $DB->fetchArray($result)) {
+            foreach ($result as $data) {
                 if ($data["states_id"] == PluginOrderOrder::ORDER_DEVICE_DELIVRED) {
                     $delivery_status = 1;
                 } else {

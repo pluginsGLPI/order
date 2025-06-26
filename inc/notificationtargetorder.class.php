@@ -218,14 +218,19 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
         $n_n_template = new Notification_NotificationTemplate();
 
         $templates_id = false;
-        $query_id     = "SELECT `id`
-                       FROM `glpi_notificationtemplates`
-                       WHERE `itemtype`='PluginOrderOrder'
-                       AND `name` = 'Order Validation'";
-        $result       = $DB->query($query_id) or die($DB->error());
+        $criteria     = [
+            'SELECT' => 'id',
+            'FROM' => 'glpi_notificationtemplates',
+            'WHERE' => [
+                'itemtype' => 'PluginOrderOrder',
+                'name' => 'Order Validation'
+            ]
+        ];
+        $result       = $DB->request($criteria);
 
-        if ($DB->numrows($result) > 0) {
-            $templates_id = $DB->result($result, 0, 'id');
+        if (count($result) > 0) {
+            $row = $result->current();
+            $templates_id = $row['id'];
         } else {
             $tmp = [
                 'name'     => 'Order Validation',
@@ -300,14 +305,19 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             }
         }
 
-        $query_id     = "SELECT `id`
-                       FROM `glpi_notificationtemplates`
-                       WHERE `itemtype`='PluginOrderOrder'
-                       AND `name` = 'Due date overtaken'";
-        $result       = $DB->query($query_id) or die($DB->error());
+        $criteria     = [
+            'SELECT' => 'id',
+            'FROM' => 'glpi_notificationtemplates',
+            'WHERE' => [
+                'itemtype' => 'PluginOrderOrder',
+                'name' => 'Due date overtaken'
+            ]
+        ];
+        $result       = $DB->request($criteria);
 
-        if ($DB->numrows($result) > 0) {
-            $templates_id = $DB->result($result, 0, 'id');
+        if (count($result) > 0) {
+            $row = $result->current();
+            $templates_id = $row['id'];
         } else {
             $templates_id = $template->add([
                 'name'     => 'Due date overtaken',
@@ -369,14 +379,19 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
         }
 
         $templates_id = false;
-        $query_id     = "SELECT `id`
-                       FROM `glpi_notificationtemplates`
-                       WHERE `itemtype`='PluginOrderOrder'
-                       AND `name` = 'Order Delivered'";
-        $result       = $DB->query($query_id) or die($DB->error());
+        $criteria     = [
+            'SELECT' => 'id',
+            'FROM' => 'glpi_notificationtemplates',
+            'WHERE' => [
+                'itemtype' => 'PluginOrderOrder',
+                'name' => 'Order Delivered'
+            ]
+        ];
+        $result       = $DB->request($criteria);
 
-        if ($DB->numrows($result) > 0) {
-            $templates_id = $DB->result($result, 0, 'id');
+        if (count($result) > 0) {
+            $row = $result->current();
+            $templates_id = $row['id'];
         } else {
             $templates_id = $template->add([
                 'name'     => 'Order Delivered',

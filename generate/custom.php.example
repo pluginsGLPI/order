@@ -107,8 +107,8 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
 
    $listeArticles = [];
    $result = $PluginOrderOrder_Item->queryDetail($ID);
-   $num    = $DB->numrows($result);
-   while ($data = $DB->fetchArray($result)) {
+   $num    = count($result);
+   foreach ($result as $data) {
       $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID, $data["id"],
                                                                            $data["price_taxfree"],
                                                                            $data["discount"]);
