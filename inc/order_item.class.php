@@ -312,6 +312,75 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         return (!$priceHT ? 0 : $priceHT + (($priceHT * $taxes) / 100));
     }
 
+    /**
+     * Calculate the total ecotax from all ordered items with their quantities
+     *
+     * @param int $orders_id Order ID
+     * @return float Total ecotax amount
+     */
+    public function getEcotaxTotal($orders_id)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $total_ecotax = 0;
+
+        // Create subqueries for standard and free references
+        $standard_subquery = new \QuerySubQuery([
+            'SELECT' => [
+                'plugin_order_references_id',
+                new \QueryExpression('COUNT(' . $DB->quoteName('id') . ') AS quantity'),
+                new \QueryExpression("'standard' AS reftype")
+            ],
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'plugin_order_orders_id' => $orders_id,
+                'NOT' => ['itemtype' => 'PluginOrderReferenceFree']
+            ],
+            'GROUP' => 'plugin_order_references_id'
+        ]);
+
+        $free_subquery = new \QuerySubQuery([
+            'SELECT' => [
+                'plugin_order_references_id',
+                new \QueryExpression('COUNT(' . $DB->quoteName('id') . ') AS quantity'),
+                new \QueryExpression("'free' AS reftype")
+            ],
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'plugin_order_orders_id' => $orders_id,
+                'itemtype' => 'PluginOrderReferenceFree'
+            ],
+            'GROUP' => 'plugin_order_references_id'
+        ]);
+
+        // Create union query
+        $union = new \QueryUnion([$standard_subquery, $free_subquery]);
+        $iterator = $DB->request([
+            'FROM' => $union
+        ]);
+
+        foreach ($iterator as $data) {
+            $ecotax_price = 0;
+
+            if ($data['reftype'] === 'standard') {
+                $reference = new PluginOrderReference();
+                if ($reference->getFromDB((int) $data['plugin_order_references_id'])) {
+                    $ecotax_price = $reference->getEcotaxPrice();
+                }
+            } else {
+                $reference = new PluginOrderReferenceFree();
+                if ($reference->getFromDB((int) $data['plugin_order_references_id'])) {
+                    $ecotax_price = $reference->getEcotaxPrice();
+                }
+            }
+
+            // Add to total (quantity * unit ecotax price)
+            $total_ecotax += ((float)$data['quantity'] * (float)$ecotax_price);
+        }
+
+        return $total_ecotax;
+    }
 
     public function addDetails($ref_id, $itemtype, $orders_id, $quantity, $price, $discounted_price, $taxes_id, $analytic_nature_id)
     {
@@ -320,6 +389,20 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         if ($quantity > 0 && $order->getFromDB($orders_id)) {
             $tax = new PluginOrderOrderTax();
             $tax->getFromDB($taxes_id);
+
+            // Get ecotax price from reference
+            $ecotax_price = 0;
+            if ($itemtype == 'PluginOrderReferenceFree') {
+                $reference = new PluginOrderReferenceFree();
+                if ($reference->getFromDB($ref_id)) {
+                    $ecotax_price = $reference->getEcotaxPrice();
+                }
+            } else {
+                $reference = new PluginOrderReference();
+                if ($reference->getFromDB($ref_id)) {
+                    $ecotax_price = $reference->getEcotaxPrice();
+                }
+            }
 
             for ($i = 0; $i < $quantity; $i++) {
                 $input["plugin_order_orders_id"]          = $orders_id;
@@ -332,7 +415,6 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 $input["price_taxfree"]                   = $price;
                 $input["price_discounted"]                = $price - ($price * ($discounted_price / 100));
                 $input["states_id"]                       = PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED;
-                ;
                 $input["price_ati"]                       = $this->getPricesATI(
                     $input["price_discounted"],
                     $tax->getRate()

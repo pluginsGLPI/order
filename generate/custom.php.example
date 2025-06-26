@@ -102,16 +102,33 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
    $odf->setVars('HTPrice_item',__("Unit price", "order"),true,'UTF-8');
    $odf->setVars('TVA_item',__("VAT", "order"),true,'UTF-8');
    $odf->setVars('title_discount',__("Discount rate", "order"),true,'UTF-8');
+   $odf->setVars('title_ecotax',__("Eco-responsibility fees", "order"),true,'UTF-8');
    $odf->setVars('HTPriceTotal_item',__("Sum tax free", "order"),true,'UTF-8');
    $odf->setVars('ATIPriceTotal_item',__("Price ATI", "order"),true,'UTF-8');
 
    $listeArticles = [];
-   $result = $PluginOrderOrder_Item->queryDetail($ID);
+   $result = $PluginOrderOrder_Item->queryDetail($ID, 'glpi_plugin_order_references');
    $num    = count($result);
+
+   // Get ecotax total from references
+   $ecotaxHT = $PluginOrderOrder_Item->getEcotaxTotal($ID);
+
+   // If no calculated ecotax from references, use the global ecotax value
+   if ($ecotaxHT == 0) {
+      $ecotaxHT = $order->fields["ecotax_price"];
+   }
+
    foreach ($result as $data) {
       $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID, $data["id"],
                                                                            $data["price_taxfree"],
                                                                            $data["discount"]);
+
+      // Get ecotax price for display in line items
+      $ecotax_line = 0;
+      $ref = new PluginOrderReference();
+      if ($ref->getFromDB($data["id"])) {
+         $ecotax_line = $ref->getEcotaxPrice();
+      }
 
       $listeArticles[] = [
          'quantity'         => $quantity,
@@ -121,9 +138,38 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
          'refnumber'        => $PluginOrderReference_Supplier->getReferenceCodeByReferenceAndSupplier($data["id"],
                                                                                                       $order->fields["suppliers_id"]),
          'price_taxfree'    => $data["price_taxfree"],
-         'discount'         => $data["discount"], false, 0,
+         'ecotax'           => $ecotax_line, // Add ecotax price per line
+         'discount'         => $data["discount"],
          'price_discounted' => $data["price_discounted"]*$quantity,
          'price_ati'        => $data["price_ati"]
+      ];
+   }
+
+   // Add free reference items
+   $result_free = $PluginOrderOrder_Item->queryDetail($ID, 'glpi_plugin_order_referencefrees');
+   while ($data_free = $DB->fetchArray($result_free)) {
+      $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID, $data_free["id"],
+                                                                           $data_free["price_taxfree"],
+                                                                           $data_free["discount"]);
+
+      // Get ecotax price for free references
+      $ecotax_line = 0;
+      $ref_free = new PluginOrderReferenceFree();
+      if ($ref_free->getFromDB($data_free["id"])) {
+         $ecotax_line = $ref_free->getEcotaxPrice();
+      }
+
+      $listeArticles[] = [
+         'quantity'         => $quantity,
+         'ref'              => $data_free["name"],
+         'taxe'             => Dropdown::getDropdownName(PluginOrderOrderTax::getTable(),
+                                                         $data_free["plugin_order_ordertaxes_id"]),
+         'refnumber'        => '',
+         'price_taxfree'    => $data_free["price_taxfree"],
+         'ecotax'           => $ecotax_line,
+         'discount'         => $data_free["discount"],
+         'price_discounted' => $data_free["price_discounted"]*$quantity,
+         'price_ati'        => $data_free["price_ati"]
       ];
    }
 
@@ -139,6 +185,12 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
          $articleValues['discount'] = Html::formatNumber($element['discount'])." %";
       } else {
          $articleValues['discount'] = "";
+      }
+      // Add ecotax to the template
+      if ($element['ecotax'] > 0) {
+         $articleValues['ecotax'] = Html::formatNumber($element['ecotax']);
+      } else {
+         $articleValues['ecotax'] = "";
       }
       $articleValues['HTPriceTotalArticle'] = Html::formatNumber($element['price_discounted']);
 
@@ -168,29 +220,61 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
       $tax->getRate()
    );
 
-   $total_HT  = $prices["priceHT"] + $order->fields["port_price"];
-   $total_TVA = $prices["priceTVA"] + $postagewithTVA - $order->fields["port_price"];
-   $total_TTC = $prices["priceTTC"] + $postagewithTVA;
+   // Get ecotax tax rate and calculate VAT on ecotax
+   $ecotaxRate = 0;
+   if ($order->fields["plugin_order_ordertaxes_ecotax_id"] > 0) {
+      $tax->getFromDB($order->fields["plugin_order_ordertaxes_ecotax_id"]);
+      $ecotaxRate = $tax->getRate();
+   }
 
-   $odf->setVars('title_totalht',__("Price tax free", "order"),true,'UTF-8');
-   $odf->setVars('totalht',Html::formatNumber($prices['priceHT']),true,'UTF-8');
+   $ecotaxTVA = $ecotaxHT * ($ecotaxRate / 100);
+   $ecotaxTTC = $ecotaxHT + $ecotaxTVA;
 
-   $odf->setVars('title_port',__("Price tax free with postage", "order"),true,'UTF-8');
-   $odf->setVars('totalht_port_price',Html::formatNumber($total_HT),true,'UTF-8');
+   $total_HT  = $prices["priceHT"] + $order->fields["port_price"] + $ecotaxHT;
+   $total_TVA = $prices["priceTVA"] + ($postagewithTVA - $order->fields["port_price"]) + $ecotaxTVA;
+   $total_TTC = $prices["priceTTC"] + $postagewithTVA + $ecotaxTTC;
 
-   $odf->setVars('title_price_port',__("Postage", "order"),true,'UTF-8');
-   $odf->setVars('price_port_tva'," (".Dropdown::getDropdownName("glpi_plugin_order_ordertaxes",
-                 $order->fields["plugin_order_ordertaxes_id"])."%)",true,'UTF-8');
-   $odf->setVars('port_price',Html::formatNumber($postagewithTVA),true,'UTF-8');
+   // Section Articles
+   $odf->setVars('title_articles', __("Articles", "order"), true, 'UTF-8');
+   $odf->setVars('title_totalht', __("Price tax free", "order"), true, 'UTF-8');
+   $odf->setVars('totalht', Html::formatNumber($prices['priceHT']), true, 'UTF-8');
 
-   $odf->setVars('title_tva',__("VAT", "order"),true,'UTF-8');
-   $odf->setVars('totaltva',Html::formatNumber($total_TVA),true,'UTF-8');
+   // Section Ecotax
+   $odf->setVars('title_ecotax_section', __("Eco-responsibility fees", "order"), true, 'UTF-8');
+   $odf->setVars('title_ecotax_ht', __("Eco-responsibility fees (tax free)", "order"), true, 'UTF-8');
+   $odf->setVars('ecotax_ht', Html::formatNumber($ecotaxHT), true, 'UTF-8');
 
-   $odf->setVars('title_totalttc',__("Price ATI", "order"),true,'UTF-8');
-   $odf->setVars('totalttc',Html::formatNumber($total_TTC),true,'UTF-8');
+   $odf->setVars('title_ecotax_tva', __("VAT on Eco-responsibility fees", "order"), true, 'UTF-8');
+   $odf->setVars('ecotax_rate', $ecotaxRate . " %", true, 'UTF-8');
+   $odf->setVars('ecotax_tva', Html::formatNumber($ecotaxTVA), true, 'UTF-8');
 
-   $odf->setVars('title_money',__("€", "order"),true,'UTF-8');
-   $odf->setVars('title_sign',__("Signature of issuing order", "order"),true,'UTF-8');
+   $odf->setVars('title_ecotax_ttc', __("Eco-responsibility fees (ATI)", "order"), true, 'UTF-8');
+   $odf->setVars('ecotax_ttc', Html::formatNumber($ecotaxTTC), true, 'UTF-8');
+
+   // Section Shipping
+   $odf->setVars('title_shipping', __("Shipping", "order"), true, 'UTF-8');
+   $odf->setVars('title_price_port', __("Postage", "order"), true, 'UTF-8');
+   $odf->setVars('port_price', Html::formatNumber($order->fields["port_price"]), true, 'UTF-8');
+
+   $odf->setVars('title_tva_port', __("VAT on postage", "order"), true, 'UTF-8');
+   $odf->setVars('price_port_tva', Html::formatNumber($postagewithTVA - $order->fields["port_price"]), true, 'UTF-8');
+
+   $odf->setVars('title_port_ttc', __("Postage (ATI)", "order"), true, 'UTF-8');
+   $odf->setVars('port_price_ttc', Html::formatNumber($postagewithTVA), true, 'UTF-8');
+
+   // Section Totals
+   $odf->setVars('title_totals', __("Totals", "order"), true, 'UTF-8');
+   $odf->setVars('title_total_ht', __("Total tax free", "order"), true, 'UTF-8');
+   $odf->setVars('totalht_port_price', Html::formatNumber($total_HT), true, 'UTF-8');
+
+   $odf->setVars('title_tva', __("Total VAT", "order"), true, 'UTF-8');
+   $odf->setVars('totaltva', Html::formatNumber($total_TVA), true, 'UTF-8');
+
+   $odf->setVars('title_totalttc', __("Total price (ATI)", "order"), true, 'UTF-8');
+   $odf->setVars('totalttc', Html::formatNumber($total_TTC), true, 'UTF-8');
+
+   $odf->setVars('title_money', __("€", "order"), true, 'UTF-8');
+   $odf->setVars('title_sign', __("Signature of issuing order", "order"), true, 'UTF-8');
 
    if ($signature) {
       $odf->setImage('sign', PLUGIN_ORDER_SIGNATURE_DIR . $signature);
