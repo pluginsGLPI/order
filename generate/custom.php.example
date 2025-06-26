@@ -108,7 +108,7 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
 
    $listeArticles = [];
    $result = $PluginOrderOrder_Item->queryDetail($ID, 'glpi_plugin_order_references');
-   $num    = $DB->numrows($result);
+   $num    = count($result);
 
    // Get ecotax total from references
    $ecotaxHT = $PluginOrderOrder_Item->getEcotaxTotal($ID);
@@ -118,7 +118,7 @@ function plugin_order_getCustomFieldsForODT($ID, $odttemplates_id, $odf, $signat
       $ecotaxHT = $order->fields["ecotax_price"];
    }
 
-   while ($data = $DB->fetchArray($result)) {
+   foreach ($result as $data) {
       $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount($ID, $data["id"],
                                                                            $data["price_taxfree"],
                                                                            $data["discount"]);

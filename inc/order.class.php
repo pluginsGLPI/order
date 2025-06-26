@@ -1199,17 +1199,28 @@ class PluginOrderOrder extends CommonDBTM
         if ($canedit) {
             echo "<span id='show_contacts_id$rand'>";
            // Make a select box
-            $query = "SELECT c.`id`, c.`name`, c.`firstname`
-                   FROM `glpi_contacts` c
-                   LEFT JOIN `glpi_contacts_suppliers` s ON (s.`contacts_id` = c.`id`)
-                   WHERE s.`suppliers_id` = '{$this->fields['suppliers_id']}'
-                   ORDER BY c.`name`";
-            $result = $DB->query($query);
-            $number = $DB->numrows($result);
+            $criteria = [
+                'SELECT' => ['c.id', 'c.name', 'c.firstname'],
+                'FROM' => 'glpi_contacts AS c',
+                'LEFT JOIN' => [
+                    'glpi_contacts_suppliers AS s' => [
+                        'ON' => [
+                            's' => 'contacts_id',
+                            'c' => 'id'
+                        ]
+                    ]
+                ],
+                'WHERE' => [
+                    's.suppliers_id' => $this->fields['suppliers_id']
+                ],
+                'ORDER' => 'c.name'
+            ];
+            $result = $DB->request($criteria);
+            $number = count($result);
 
             $values = [0 => Dropdown::EMPTY_VALUE];
             if ($number) {
-                while ($data = $DB->fetchAssoc($result)) {
+                foreach ($result as $data) {
                     $values[$data['id']] = formatUserName('', '', $data['name'], $data['firstname']);
                 }
             }
@@ -1905,7 +1916,7 @@ class PluginOrderOrder extends CommonDBTM
 
                 $result = $PluginOrderOrder_Item->queryDetail($ID, 'glpi_plugin_order_references');
 
-                while ($data = $DB->fetchArray($result)) {
+                foreach ($result as $data) {
                     $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount(
                         $ID,
                         $data["id"],
@@ -1933,7 +1944,7 @@ class PluginOrderOrder extends CommonDBTM
 
                 $result = $PluginOrderOrder_Item->queryDetail($ID, 'glpi_plugin_order_referencefrees');
 
-                while ($data = $DB->fetchArray($result)) {
+                foreach ($result as $data) {
                     $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount(
                         $ID,
                         $data["id"],
@@ -2084,13 +2095,17 @@ class PluginOrderOrder extends CommonDBTM
             ]);
         }
 
-        $query = "SELECT `plugin_order_references_id`
-                FROM `glpi_plugin_order_orders_items`
-                WHERE `plugin_order_orders_id` = '$ID'
-                GROUP BY plugin_order_references_id";
-        $result = $DB->query($query);
-        if ($DB->numrows($result)) {
-            while ($detail = $DB->fetchArray($result)) {
+        $criteria = [
+            'SELECT' => 'plugin_order_references_id',
+            'FROM' => 'glpi_plugin_order_orders_items',
+            'WHERE' => [
+                'plugin_order_orders_id' => $ID
+            ],
+            'GROUPBY' => 'plugin_order_references_id'
+        ];
+        $result = $DB->request($criteria);
+        if (count($result)) {
+            foreach ($result as $detail) {
                 $reference->transfer($detail["plugin_order_references_id"], $entity);
             }
         }
@@ -2103,17 +2118,24 @@ class PluginOrderOrder extends CommonDBTM
         global $DB;
 
         $table = self::getTable();
-        $query = "SELECT *
-                FROM `$table`
-                WHERE `budgets_id` = '$budgets_id'
-                AND `is_template`='0'
-                ORDER BY `entities_id`, `name` ";
-        $result = $DB->query($query);
+        $criteria = [
+            'FROM' => $table,
+            'WHERE' => [
+                'budgets_id' => $budgets_id,
+                'is_template' => 0
+            ],
+            'ORDER' => ['entities_id', 'name']
+        ];
+        $result = $DB->request($criteria);
 
         echo "<div class='center'>";
-        if ($nb = $DB->numrows($result)) {
+        if ($nb = count($result)) {
             $start       = (isset($_REQUEST["start"])) ? $_REQUEST["start"] : 0;
-            $query_limit = $query . " LIMIT " . (int) $start . "," . (int) $_SESSION['glpilist_limit'];
+            // For pagination, we need to create a limited query
+            $criteria_limited = $criteria;
+            $criteria_limited['START'] = (int) $start;
+            $criteria_limited['LIMIT'] = (int) $_SESSION['glpilist_limit'];
+            $result_limited = $DB->request($criteria_limited);
 
             Html::printAjaxPager(__("Linked orders", "order"), $start, $nb);
 
@@ -2128,7 +2150,7 @@ class PluginOrderOrder extends CommonDBTM
             echo "</tr>";
 
             $total = 0;
-            foreach ($DB->request($query_limit) as $data) {
+            foreach ($result_limited as $data) {
                 $PluginOrderOrder_Item = new PluginOrderOrder_Item();
                 $prices                = $PluginOrderOrder_Item->getAllPrices($data["id"]);
 

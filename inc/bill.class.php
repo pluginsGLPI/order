@@ -265,13 +265,16 @@ class PluginOrderBill extends CommonDropdown
         $bills_id = $bill->getID();
         $table = PluginOrderOrder_Item::getTable();
 
-        $query  = "SELECT * FROM `$table`";
-        $query .= " WHERE `plugin_order_bills_id` = '$bills_id'";
-        $query .= getEntitiesRestrictRequest(" AND", $table, "entities_id", $bill->getEntityID(), true);
-        $query .= "GROUP BY `itemtype`";
+        $criteria = [
+            'FROM' => $table,
+            'WHERE' => [
+                'plugin_order_bills_id' => $bills_id
+            ] + getEntitiesRestrictCriteria($table, "entities_id", $bill->getEntityID(), true),
+            'GROUPBY' => 'itemtype'
+        ];
 
-        $result = $DB->query($query);
-        $number = $DB->numrows($result);
+        $result = $DB->request($criteria);
+        $number = count($result);
 
         if (!$number) {
             echo "</th><td>";
@@ -285,7 +288,7 @@ class PluginOrderBill extends CommonDropdown
             echo "<th>" . __("Status") . "</th>";
             echo "</tr>";
 
-            while ($data = $DB->fetchArray($result)) {
+            foreach ($result as $data) {
                 if (!class_exists($data['itemtype'])) {
                     continue;
                 }
@@ -341,17 +344,15 @@ class PluginOrderBill extends CommonDropdown
                  && !$order->isCanceled();
 
         $bill = new self();
-        $query_ref = $bill->queryRef($order->getID(), 'glpi_plugin_order_references');
-        $result_ref = $DB->query($query_ref);
+        $result_ref = $bill->queryRef($order->getID(), 'glpi_plugin_order_references');
 
-        while ($data_ref = $DB->fetchArray($result_ref)) {
+        foreach ($result_ref as $data_ref) {
             self::showOrder($data_ref, $result_ref, $canedit, $order, $reference, 'glpi_plugin_order_references');
         }
 
-        $query_reffree = $bill->queryRef($order->getID(), 'glpi_plugin_order_referencefrees');
-        $result_reffree = $DB->query($query_reffree);
+        $result_reffree = $bill->queryRef($order->getID(), 'glpi_plugin_order_referencefrees');
 
-        while ($data_reffree = $DB->fetchArray($result_reffree)) {
+        foreach ($result_reffree as $data_reffree) {
             self::showOrder($data_reffree, $result_reffree, $canedit, $order, $reference, 'glpi_plugin_order_referencefrees');
         }
         echo "<br>";
@@ -367,7 +368,7 @@ class PluginOrderBill extends CommonDropdown
         $order_item = new PluginOrderOrder_Item();
 
         echo "<div class='center'><table class='tab_cadre_fixe'>";
-        if (!$DB->numrows($result_ref)) {
+        if (!count($result_ref)) {
             echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
         } else {
             $itemtype = $data_ref["itemtype"];
@@ -415,7 +416,7 @@ class PluginOrderBill extends CommonDropdown
             echo "</tr>";
 
             $results = $order_item->queryBills($order->getID(), $data_ref['id'], $table);
-            while ($data = $DB->fetchArray($results)) {
+            foreach ($results as $data) {
                 echo "<tr class='tab_bg_1'>";
                 if ($canedit) {
                     echo "<td width='10'>";
@@ -495,24 +496,40 @@ class PluginOrderBill extends CommonDropdown
 
     public function queryRef($ID, $table)
     {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $criteria = [
+            'SELECT' => [
+                'glpi_plugin_order_orders_items.id AS IDD',
+                'glpi_plugin_order_orders_items.plugin_order_references_id AS id',
+                'ref.name',
+                'ref.itemtype',
+                'ref.manufacturers_id'
+            ],
+            'FROM' => 'glpi_plugin_order_orders_items',
+            'INNER JOIN' => [
+                $table . ' AS ref' => [
+                    'ON' => [
+                        'glpi_plugin_order_orders_items' => 'plugin_order_references_id',
+                        'ref' => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'glpi_plugin_order_orders_items.plugin_order_orders_id' => $ID
+            ],
+            'GROUPBY' => ['glpi_plugin_order_orders_items.plugin_order_references_id'],
+            'ORDER' => ['ref.name']
+        ];
+
         if ($table == 'glpi_plugin_order_references') {
-            $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` NOT LIKE 'PluginOrderReferenceFree' ";
+            $criteria['WHERE']['glpi_plugin_order_orders_items.itemtype'] = ['NOT LIKE', 'PluginOrderReferenceFree'];
         } else {
-            $condition = "AND `glpi_plugin_order_orders_items`.`itemtype` LIKE 'PluginOrderReferenceFree' ";
+            $criteria['WHERE']['glpi_plugin_order_orders_items.itemtype'] = ['LIKE', 'PluginOrderReferenceFree'];
         }
 
-        $query_ref = "SELECT `glpi_plugin_order_orders_items`.`id` AS IDD, " .
-                   "`glpi_plugin_order_orders_items`.`plugin_order_references_id` AS id, " .
-                   "ref.`name`, " .
-                   "ref.`itemtype`, " .
-                   "ref.`manufacturers_id` " .
-                   "FROM `glpi_plugin_order_orders_items`, `" . $table . "` ref " .
-                   "WHERE `glpi_plugin_order_orders_items`.`plugin_order_orders_id` = '" . $ID . "' " .
-                   "AND `glpi_plugin_order_orders_items`.`plugin_order_references_id` = ref.`id` " .
-                   $condition .
-                   "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
-                   "ORDER BY ref.`name`";
-        return $query_ref;
+        return $DB->request($criteria);
     }
 
 

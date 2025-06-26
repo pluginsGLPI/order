@@ -475,16 +475,28 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                     echo "<tr align='center'>";
                     echo "<td class='tab_bg_1'>";
 
-                    $query = "SELECT DISTINCT r.`itemtype`
-                         FROM `glpi_plugin_order_references` r
-                         LEFT JOIN `glpi_plugin_order_references_suppliers` s
-                            ON s.`plugin_order_references_id` = r.`id`
-                         WHERE s.`suppliers_id` = {$order->fields["suppliers_id"]}";
-                    $result = $DB->query($query);
+                    $criteria = [
+                        'SELECT' => ['r.itemtype'],
+                        'DISTINCT' => true,
+                        'FROM' => 'glpi_plugin_order_references AS r',
+                        'LEFT JOIN' => [
+                            'glpi_plugin_order_references_suppliers AS s' => [
+                                'ON' => [
+                                    's' => 'plugin_order_references_id',
+                                    'r' => 'id'
+                                ]
+                            ]
+                        ],
+                        'WHERE' => [
+                            's.suppliers_id' => $order->fields["suppliers_id"]
+                        ]
+                    ];
+                    $result = $DB->request($criteria);
 
                     $itemtypeArray = ['' => Dropdown::EMPTY_VALUE];
-                    while (list($itemtype) = $DB->fetchArray($result)) {
-                        $type                     = new $itemtype();
+                    foreach ($result as $row) {
+                        $itemtype = $row['itemtype'];
+                        $type = new $itemtype();
                         $itemtypeArray[$itemtype] = $type->getTypeName();
                     }
                     asort($itemtypeArray);
@@ -750,47 +762,82 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
         $table = self::getTable();
         if ($tableRef == 'glpi_plugin_order_references') {
-            $query = "SELECT item.`id` AS IDD,
-                          ref.`id`,
-                          ref.`itemtype`,
-                          othertype.`name` as othertypename,
-                          ref.`types_id`,
-                          ref.`models_id`,
-                          ref.`manufacturers_id`,
-                          ref.`name`,
-                          item.`price_taxfree`, item.`price_ati`,
-                          item.`price_discounted`,
-                          item.`discount`,
-                          item.`plugin_order_ordertaxes_id`,
-                          item.`plugin_order_analyticnatures_id`
-                  FROM $table item
-                  LEFT JOIN `glpi_plugin_order_references` ref
-                     ON item.`plugin_order_references_id` = ref.`id`
-                  LEFT JOIN `glpi_plugin_order_othertypes` othertype
-                     ON ref.`itemtype` = 'PluginOrderOther' AND ref.`types_id` = `othertype`.`id`
-                  WHERE item.`plugin_order_orders_id` = '$ID'
-                   AND item.`itemtype` NOT LIKE 'PluginOrderReferenceFree'
-                  GROUP BY ref.`id`, item.`price_taxfree`, item.`discount`
-                  ORDER BY ref.`name` ";
-            return $DB->query($query);
+            $criteria = [
+                'SELECT' => [
+                    'item.id AS IDD',
+                    'ref.id',
+                    'ref.itemtype',
+                    'othertype.name as othertypename',
+                    'ref.types_id',
+                    'ref.models_id',
+                    'ref.manufacturers_id',
+                    'ref.name',
+                    'item.price_taxfree',
+                    'item.price_ati',
+                    'item.price_discounted',
+                    'item.discount',
+                    'item.plugin_order_ordertaxes_id',
+                    'item.plugin_order_analyticnatures_id'
+                ],
+                'FROM' => "$table AS item",
+                'LEFT JOIN' => [
+                    'glpi_plugin_order_references AS ref' => [
+                        'ON' => [
+                            'item' => 'plugin_order_references_id',
+                            'ref' => 'id'
+                        ]
+                    ],
+                    'glpi_plugin_order_othertypes AS othertype' => [
+                        'ON' => [
+                            'ref' => 'types_id',
+                            'othertype' => 'id', [
+                                'AND' => [
+                                    'ref.itemtype' => ['LIKE', 'PluginOrderOther'],
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                'WHERE' => [
+                    'item.plugin_order_orders_id' => $ID,
+                    ['NOT' => ['item.itemtype' => ['LIKE', 'PluginOrderReferenceFree']]]
+                ],
+                'GROUPBY' => ['ref.id', 'item.price_taxfree', 'item.discount'],
+                'ORDER' => 'ref.name'
+            ];
+            return $DB->request($criteria);
         } else {
-            $query = "SELECT item.`id` AS IDD,
-                       ref.`id`,
-                       ref.`itemtype`,
-                       ref.`manufacturers_id`,
-                       ref.`name`,
-                       item.`price_taxfree`, item.`price_ati`,
-                       item.`price_discounted`,
-                       item.`discount`,
-                       item.`plugin_order_ordertaxes_id`,
-                       item.`plugin_order_analyticnatures_id`
-               FROM $table item, `" . $tableRef . "` ref
-               WHERE item.`plugin_order_references_id` = ref.`id`
-               AND item.`plugin_order_orders_id` = '$ID'
-               AND item.`itemtype` LIKE 'PluginOrderReferenceFree'
-               GROUP BY ref.`id`, item.`price_taxfree`, item.`discount`
-               ORDER BY ref.`name` ";
-            return $DB->query($query);
+            $criteria = [
+                'SELECT' => [
+                    'item.id AS IDD',
+                    'ref.id',
+                    'ref.itemtype',
+                    'ref.manufacturers_id',
+                    'ref.name',
+                    'item.price_taxfree',
+                    'item.price_ati',
+                    'item.price_discounted',
+                    'item.discount',
+                    'item.plugin_order_ordertaxes_id',
+                    'item.plugin_order_analyticnatures_id'
+                ],
+                'FROM' => "$table AS item",
+                'INNER JOIN' => [
+                    "$tableRef AS ref" => [
+                        'ON' => [
+                            'item' => 'plugin_order_references_id',
+                            'ref' => 'id'
+                        ]
+                    ]
+                ],
+                'WHERE' => [
+                    'item.plugin_order_orders_id' => $ID,
+                    ['item.itemtype' => ['LIKE', 'PluginOrderReferenceFree']]
+                ],
+                'GROUPBY' => ['ref.id', 'item.price_taxfree', 'item.discount'],
+                'ORDER' => 'ref.name'
+            ];
+            return $DB->request($criteria);
         }
     }
 
@@ -817,7 +864,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 AND `ref`.`id` = '$references_id'
                 AND item.`itemtype` NOT LIKE 'PluginOrderReferenceFree'
                 ORDER BY `ref`.`name` ";
-            return $DB->query($query);
+            return $DB->request($query);
         } else {
             $query = "SELECT item.`id` AS IDD,
                        ref.`id`,
@@ -832,7 +879,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 AND ref.`id` = '$references_id'
                 AND item.`itemtype` LIKE 'PluginOrderReferenceFree'
                 ORDER BY `ref`.`name` ";
-            return $DB->query($query);
+            return $DB->request($query);
         }
     }
 
@@ -854,7 +901,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             $query .= "AND `states_id` = '" . $states_id . "' ";
         }
 
-        return $DB->query($query);
+        return $DB->request($query);
     }
 
 
@@ -867,7 +914,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $reference            = new PluginOrderReference();
         $reception            = new PluginOrderReception();
         $result_ref           = $this->queryDetail($plugin_order_orders_id, 'glpi_plugin_order_references');
-        $numref               = $DB->numrows($result_ref);
+        $numref               = count($result_ref);
         $rand                 = mt_rand();
         $canedit              = $order->can($plugin_order_orders_id, UPDATE)
                               && $order->canUpdateOrder();
@@ -875,7 +922,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             $this->getType(),
             __("Order", "order") . " = " . $order->getName()
         );
-        while ($data_ref = $DB->fetchArray($result_ref)) {
+        foreach ($result_ref as $data_ref) {
             self::getItems(
                 $rand,
                 $data_ref,
@@ -889,8 +936,8 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         }
 
         $result_ref_free       = $this->queryDetail($plugin_order_orders_id, 'glpi_plugin_order_referencefrees');
-        $numref_free           = $DB->numrows($result_ref_free);
-        while ($data_ref_free = $DB->fetchArray($result_ref_free)) {
+        $numref_free           = count($result_ref_free);
+        foreach ($result_ref_free as $data_ref_free) {
             self::getItems(
                 $rand,
                 $data_ref_free,
@@ -1057,52 +1104,64 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $start = (int)($_GET['start'] ?? 0);
         $limit = (int)($_GET['glpilist_limit'] ?? 15);
 
-        $query_count = "SELECT COUNT(*) AS total
-                FROM `$table`, `$table_ref`
-                WHERE `$table`.`plugin_order_references_id` = `$table_ref`.`id`
-                    AND `$table`.`plugin_order_references_id` = '$refID'
-                    AND `$table`.`price_taxfree` LIKE '$price_taxfree'
-                    AND `$table`.`discount` LIKE '$discount'
-                    AND `$table`.`plugin_order_orders_id` = '$plugin_order_orders_id'";
+        $criteria_count = [
+            'COUNT' => 'total',
+            'FROM' => [$table, $table_ref],
+            'WHERE' => [
+                "$table.plugin_order_references_id" => "$table_ref.id",
+                "$table.plugin_order_references_id" => $refID,
+                "$table.price_taxfree" => ['LIKE', $price_taxfree],
+                "$table.discount" => ['LIKE', $discount],
+                "$table.plugin_order_orders_id" => $plugin_order_orders_id
+            ]
+        ];
 
         if ($data_ref["itemtype"] == 'SoftwareLicense') {
-            $query_count .= " GROUP BY `$table_ref`.`name` ";
+            $criteria_count['GROUPBY'] = "$table_ref.name";
         }
 
-        $result_count = $DB->query($query_count);
+        $iterator_count = $DB->request($criteria_count);
         $total_number = ($data_ref["itemtype"] == 'SoftwareLicense')
-            ? $DB->numrows($result_count)
-            : $DB->result($result_count, 0, 'total');
+            ? count($iterator_count)
+            : $iterator_count->current()['total'];
 
-        $query = "SELECT `$table`.`id` AS IDD, `$table_ref`.`id`,
-                    `$table_ref`.`name`,
-                    `$table`.`comment`,
-                    `$table`.`price_taxfree`,
-                    `$table`.`price_discounted`,
-                    `$table`.`discount`,
-                    `$table`.`plugin_order_ordertaxes_id`,
-                    `$table`.`price_ati`
-                FROM `$table`, `$table_ref`
-                WHERE `$table`.`plugin_order_references_id` = `$table_ref`.`id`
-                    AND `$table`.`plugin_order_references_id` = '$refID'
-                    AND `$table`.`price_taxfree` LIKE '$price_taxfree'
-                    AND `$table`.`discount` LIKE '$discount'
-                    AND `$table`.`plugin_order_orders_id` = '$plugin_order_orders_id'";
+        $criteria = [
+            'SELECT' => [
+                "$table.id AS IDD",
+                "$table_ref.id",
+                "$table_ref.name",
+                "$table.comment",
+                "$table.price_taxfree",
+                "$table.price_discounted",
+                "$table.discount",
+                "$table.plugin_order_ordertaxes_id",
+                "$table.price_ati"
+            ],
+            'FROM' => [$table, $table_ref],
+            'WHERE' => [
+                "$table.plugin_order_references_id" => "$table_ref.id",
+                "$table.plugin_order_references_id" => $refID,
+                "$table.price_taxfree" => ['LIKE', $price_taxfree],
+                "$table.discount" => ['LIKE', $discount],
+                "$table.plugin_order_orders_id" => $plugin_order_orders_id
+            ],
+            'ORDER' => "$table_ref.name",
+            'LIMIT' => $limit,
+            'START' => $start
+        ];
 
         if ($data_ref["itemtype"] == 'SoftwareLicense') {
-            $query .= " GROUP BY `$table_ref`.`name` ";
+            $criteria['GROUPBY'] = "$table_ref.name";
         }
-        $query .= " ORDER BY `$table_ref`.`name` ";
-        $query .= " LIMIT $limit OFFSET $start";
 
-        $result = $DB->query($query);
-        $displayed_number = $DB->numrows($result);
+        $iterator = $DB->request($criteria);
+        $displayed_number = count($iterator);
 
         $sort = $_GET[$countainer_name . 'sort'] ?? 'id_showed';
         $order = $_GET[$countainer_name . 'order'] ?? 'ASC';
         $visible = $_GET[$countainer_name . 'visible'] ?? false;
 
-        while ($data = $DB->fetchArray($result)) {
+        foreach ($iterator as $data) {
             Session::addToNavigateListItems($this->getType(), (int) $data['IDD']);
 
             // Build entry for this row
@@ -1231,14 +1290,18 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         /** @var \DBmysql $DB */
         global $DB;
 
-        $query = "SELECT COUNT(*) AS quantity
-                FROM `" . self::getTable() . "`
-                WHERE  `plugin_order_orders_id` = '$orders_id'
-                  AND `plugin_order_references_id` = '$references_id'
-                  AND CAST(`price_taxfree` AS CHAR) = '$price_taxfree'
-                  AND CAST(`discount` AS CHAR) = '$discount'";
-        $result = $DB->query($query);
-        return ($DB->result($result, 0, 'quantity'));
+        $criteria = [
+            'COUNT' => 'quantity',
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'plugin_order_orders_id' => $orders_id,
+                'plugin_order_references_id' => $references_id,
+                'price_taxfree' => ['LIKE', $price_taxfree],
+                'discount' => ['LIKE', $discount]
+            ]
+        ];
+        $iterator = $DB->request($criteria);
+        return $iterator->current()['quantity'];
     }
 
 
@@ -1262,14 +1325,19 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         /** @var \DBmysql $DB */
         global $DB;
 
-        $query = "SELECT SUM(`price_ati`) AS priceTTC, SUM(`price_discounted`) AS priceHT,
-                     SUM(`price_ati` - `price_discounted`) as priceTVA
-                FROM `" . self::getTable() . "`
-                WHERE `plugin_order_orders_id` = '$orders_id' ";
-        $result = $DB->query($query);
-        $prices = $DB->fetchArray($result);
-
-        return $prices;
+        $criteria = [
+            'SELECT' => [
+                'SUM' => [
+                    'price_ati AS priceTTC',
+                    'price_discounted AS priceHT',
+                    'price_ati` - `price_discounted AS priceTVA'
+                ]
+            ],
+            'FROM' => self::getTable(),
+            'WHERE' => ['plugin_order_orders_id' => $orders_id]
+        ];
+        $iterator = $DB->request($criteria);
+        return $iterator->current();
     }
 
 
@@ -1279,14 +1347,18 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         global $DB;
 
         $table = self::getTable();
-        $query = "SELECT `glpi_plugin_order_orders`.*
-                FROM `glpi_plugin_order_orders`, `$table`
-                WHERE `glpi_plugin_order_orders`.`id` = `$table`.`plugin_order_orders_id`
-                  AND `$table`.`itemtype` = '$itemtype'
-                  AND `$table`.`items_id` = '$items_id' ";
-        $result = $DB->query($query);
-        if ($DB->numrows($result)) {
-            return $DB->fetchArray($result);
+        $criteria = [
+            'SELECT' => 'glpi_plugin_order_orders.*',
+            'FROM' => ['glpi_plugin_order_orders', $table],
+            'WHERE' => [
+                "glpi_plugin_order_orders.id" => "$table.plugin_order_orders_id",
+                "$table.itemtype" => $itemtype,
+                "$table.items_id" => $items_id
+            ]
+        ];
+        $iterator = $DB->request($criteria);
+        if (count($iterator)) {
+            return $iterator->current();
         } else {
             return false;
         }
@@ -1460,13 +1532,13 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             isset($this->input['price_taxfree'])
             || isset($this->input['plugin_order_ordertaxes_id'])
         ) {
-            $data = $this->queryRef(
+            $iterator = $this->queryRef(
                 $this->fields['plugin_order_orders_id'],
                 $this->fields['plugin_order_references_id'],
                 $this->fields['price_taxfree'],
                 $this->fields['discount']
             );
-            while ($item = $DB->fetchArray($data)) {
+            foreach ($iterator as $item) {
                 $this->updatePrice_taxfree([
                     'item_id'       => $item['id'],
                     'price_taxfree'  => $this->fields['price_taxfree']
@@ -1536,14 +1608,14 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $canedit = $order->can($order->getID(), UPDATE)
                  && !$order->isPaid() && !$order->isCanceled();
 
-        $result_ref = self::queryBillsItems($order->getID(), 'glpi_plugin_order_references');
-        while ($data_ref = $DB->fetchArray($result_ref)) {
-            self::showBillsItemsDetail($data_ref, $result_ref, $canedit, $order, 'glpi_plugin_order_references');
+        $iterator_ref = self::queryBillsItems($order->getID(), 'glpi_plugin_order_references');
+        foreach ($iterator_ref as $data_ref) {
+            self::showBillsItemsDetail($data_ref, $iterator_ref, $canedit, $order, 'glpi_plugin_order_references');
         }
 
-        $result_reffree = self::queryBillsItems($order->getID(), 'glpi_plugin_order_referencefrees');
-        while ($data_reffree = $DB->fetchArray($result_reffree)) {
-            self::showBillsItemsDetail($data_reffree, $result_reffree, $canedit, $order, 'glpi_plugin_order_referencefrees');
+        $iterator_reffree = self::queryBillsItems($order->getID(), 'glpi_plugin_order_referencefrees');
+        foreach ($iterator_reffree as $data_reffree) {
+            self::showBillsItemsDetail($data_reffree, $iterator_reffree, $canedit, $order, 'glpi_plugin_order_referencefrees');
         }
         echo "<br>";
     }
@@ -1570,7 +1642,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                $condition .
                "GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_references_id` " .
                "ORDER BY ref.`name`";
-        return $DB->query($query);
+        return $DB->request($query);
     }
 
     public function showBillsItemsDetail($data_ref, $result_ref, $canedit, $order, $table)
@@ -1583,7 +1655,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $rand      = mt_rand();
 
         echo "<table class='tab_cadre_fixe'>";
-        if (!$DB->numrows($result_ref)) {
+        if (!count($result_ref)) {
             echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
         } else {
             $itemtype = $data_ref["itemtype"];
@@ -1629,8 +1701,8 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             echo "<th>" . __("Bill status", "order") . "</th>";
             echo "</tr>";
 
-            $results = $this->queryBills($order->getID(), $data_ref['id'], $table);
-            while ($data = $DB->fetchArray($results)) {
+            $iterator = $this->queryBills($order->getID(), $data_ref['id'], $table);
+            foreach ($iterator as $data) {
                 echo "<tr class='tab_bg_1'>";
                 if ($canedit) {
                     echo "<td width='10'>";
@@ -1741,13 +1813,13 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         );
 
         if ($post['quantity'] > $quantity) {
-            $data = $this->queryRef(
+            $iterator = $this->queryRef(
                 $post['plugin_order_orders_id'],
                 $post['old_plugin_order_references_id'],
                 $post['old_price_taxfree'],
                 $post['old_discount']
             );
-            $item = $DB->fetchArray($data);
+            $item = $iterator->current();
 
             $this->getFromDB((int) $item['id']);
             $to_add  = $post['quantity'] - $quantity;
@@ -1858,7 +1930,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                KEY `plugin_order_analyticnatures_id` (`plugin_order_analyticnatures_id`),
                KEY `states_id` (`states_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query) or die($DB->error());
         } else {
            //Upgrade
             $migration->displayMessage("Upgrading $table");
@@ -1943,7 +2015,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 $query  = "UPDATE `glpi_plugin_order_orders_items`
                        SET `plugin_order_ordertaxes_id` = '" . $data["plugin_order_ordertaxes_id"] . "'
                        WHERE `plugin_order_orders_id` = '" . $data["id"] . "'";
-                $DB->query($query) or die($DB->error());
+                $DB->doQuery($query) or die($DB->error());
             }
            //1.5.0
             $migration->addField($table, "entities_id", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
@@ -1997,7 +2069,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                        SET `entities_id`='" . $data['entities_id'] . "'
                           AND `is_recursive`='" . $data['is_recursive'] . "'
                        WHERE `id`='" . $data['items_id'] . "'";
-                $DB->query($update) or die($DB->error());
+                $DB->doQuery($update) or die($DB->error());
             }
 
             if (!$DB->fieldExists($table, 'plugin_order_analyticnatures_id')) {
@@ -2019,9 +2091,9 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         global $DB;
 
        //Old table name
-        $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_detail`") or die($DB->error());
+        $DB->doQuery("DROP TABLE IF EXISTS `glpi_plugin_order_detail`") or die($DB->error());
        //Current table name
-        $DB->query("DROP TABLE IF EXISTS  `" . self::getTable() . "`") or die($DB->error());
+        $DB->doQuery("DROP TABLE IF EXISTS  `" . self::getTable() . "`") or die($DB->error());
         self::uninstallOrderItemNotification();
     }
 
@@ -2084,7 +2156,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             && in_array($item->getType(), PluginOrderOrder_Item::getClasses(true))
         ) {
             $order_item = new self();
-            $order_item->showPluginFromItems(get_class($item), $item->getField('id'));
+            $order_item->showPluginFromItems(get_class($item), $item->fields['id']);
         }
         return true;
     }
@@ -2093,7 +2165,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
     public static function showForInfocom(CommonDBTM $item)
     {
         $order_item = new self();
-        $order_item->showPluginFromItems(get_class($item), $item->getField('id'));
+        $order_item->showPluginFromItems(get_class($item), $item->fields['id']);
 
         return $item;
     }
