@@ -118,6 +118,12 @@ class PluginOrderOrder extends CommonDBTM
     }
 
 
+    public static function canGenerate()
+    {
+        return Session::haveRight("plugin_order_order", self::RIGHT_GENERATEODT);
+    }
+
+
     public static function canDeliver()
     {
         return Session::haveRight("plugin_order_order", self::RIGHT_DELIVERY);

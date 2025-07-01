@@ -31,10 +31,9 @@
 include("../../../inc/includes.php");
 Session::checkLoginUser();
 
-Session::checkRight("plugin_order_order", READ);
 PluginOrderConfig::getConfig();
 
-if ($config->canGenerateOrderPDF()) {
+if ($config->canGenerateOrderPDF() && ($config->canGenerateWithoutValidation() || $config->canGenerate())) {
     $PluginOrderOrder = new PluginOrderOrder();
     $PluginOrderOrder->generateOrder($_GET);
 } else {
