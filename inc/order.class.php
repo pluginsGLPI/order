@@ -1807,6 +1807,18 @@ class PluginOrderOrder extends CommonDBTM
         $template  = $params['template'];
         $signature = $params['sign'];
 
+         // Only allow filenames with .odt extension and no path traversal
+        if (!preg_match('/^[a-zA-Z0-9_\-\.]+\.odt$/', $template)) {
+            throw new \RuntimeException("Invalid template name");
+        }
+
+        $template_path = PLUGIN_ORDER_TEMPLATE_DIR . $template;
+
+        // Ensure the file exists and is readable
+        if (!is_file($template_path) || !is_readable($template_path)) {
+            throw new \RuntimeException("Template file not found or not readable");
+        }
+
         if ($template) {
             $config = ['PATH_TO_TMP' => GLPI_DOC_DIR . '/_tmp'];
             $odf = new Odtphp\Odf(PLUGIN_ORDER_TEMPLATE_DIR . "$template", $config);
