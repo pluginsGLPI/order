@@ -74,9 +74,6 @@ if (isset($_POST['action'])) {
                         $config = PluginOrderConfig::getConfig();
                         if ($config->canAddBillDetails()) {
                             if ($bill->getFromDB($_POST["plugin_order_bills_id"])) {
-                                if (!$bill::canDelete()) {
-                                    Html::displayRightError();
-                                }
                                 $input = [
                                      'id'            => $ic->fields['id'],
                                      'bill'          => $bill->fields['number'],
