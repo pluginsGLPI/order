@@ -4,7 +4,7 @@
 
 ## Reporting a Vulnerability
 
-If you found a security issue, please contact us by mail at \[glpi-security AT ow2.org\]
+If you found a security issue, please contact us by mail at \[glpi-security AT ow2.org\] or [open  an advisory](https://github.com/pluginsGLPI/order/security/advisories/new).
 
 You should provide us all details about the issue and the way to reproduce it.
 You may also provide a script that can be used to check the issue exists.
