@@ -31,5 +31,11 @@
 include("../../../inc/includes.php");
 Session::checkLoginUser();
 
-$PluginOrderOrder = new PluginOrderOrder();
-$PluginOrderOrder->generateOrder($_GET);
+PluginOrderConfig::getConfig();
+
+if ($config->canGenerateOrderPDF()) {
+    $PluginOrderOrder = new PluginOrderOrder();
+    $PluginOrderOrder->generateOrder($_GET);
+} else {
+    Html::displayRightError("PDF export fro Order plugin is not enable");
+}

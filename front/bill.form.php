@@ -34,16 +34,23 @@ Session::checkLoginUser();
 $bill = new PluginOrderBill();
 
 if (isset($_REQUEST['add'])) {
+    $bill->check(-1, CREATE, $_REQUEST);
     $bill->add($_REQUEST);
     Html::back();
 }
 
 if (isset($_REQUEST['update'])) {
+    if (!$bill::canUpdate()) {
+        Html::displayRightError();
+    }
     $bill->update($_REQUEST);
     Html::back();
 }
 
 if (isset($_REQUEST['purge'])) {
+    if (!$bill::canDelete()) {
+        Html::displayRightError();
+    }
     $bill->delete($_REQUEST);
     $bill->redirectToList();
 }
@@ -60,6 +67,9 @@ if (isset($_POST['action'])) {
                     if ($val == 1) {
                         $tmp       = $_POST;
                         $tmp['id'] = $key;
+                        if (!$order_item::canUpdate()) {
+                            Html::displayRightError();
+                        }
                         $order_item->update($tmp);
 
                         // Update infocom
@@ -69,17 +79,23 @@ if (isset($_POST['action'])) {
                         $config = PluginOrderConfig::getConfig();
                         if ($config->canAddBillDetails()) {
                             if ($bill->getFromDB($_POST["plugin_order_bills_id"])) {
-                                 $ic->update([
+                                if (!$bill::canDelete()) {
+                                    Html::displayRightError();
+                                }
+                                $ic->update([
                                      'id'            => $ic->fields['id'],
                                      'bill'          => $bill->fields['number'],
                                      'warranty_date' => $bill->fields['billdate'],
-                                 ]);
+                                ]);
                             }
                         }
                     }
                 }
             }
             break;
+    }
+    if (!PluginOrderOrder::canDelete()) {
+        Html::displayRightError();
     }
     PluginOrderOrder::updateBillState($order_item->fields['plugin_order_orders_id']);
     Html::back();

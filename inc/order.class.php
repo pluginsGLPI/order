@@ -2281,6 +2281,12 @@ class PluginOrderOrder extends CommonDBTM
             $bill_state = PluginOrderBillState::NOTPAID;
             $order_status = $order->fields['plugin_order_orderstates_id'];
         }
+        $input = [
+            'id'                         => $ID,
+            'plugin_order_billstates_id' => $bill_state,
+            'plugin_order_orderstates_id' => $order_status
+        ];
+        $order->check($ID, UPDATE, $input);
         $order->update([
             'id'                         => $ID,
             'plugin_order_billstates_id' => $bill_state,
