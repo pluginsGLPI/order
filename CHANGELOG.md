@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Improved access control checks when updating user preferences
 - Access checks improved for ODT export generation.
+- Added missing access control.
+
 
 ### Added
 
