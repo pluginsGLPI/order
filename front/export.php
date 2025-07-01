@@ -37,5 +37,5 @@ if ($config->canGenerateOrderPDF()) {
     $PluginOrderOrder = new PluginOrderOrder();
     $PluginOrderOrder->generateOrder($_GET);
 } else {
-    Html::displayRightError("PDF export fro Order plugin is not enable");
+    Html::displayRightError("PDF export for Order plugin is not enable");
 }
