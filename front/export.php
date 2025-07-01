@@ -31,6 +31,7 @@
 include("../../../inc/includes.php");
 Session::checkLoginUser();
 
+Session::checkRight("plugin_order_order", READ);
 PluginOrderConfig::getConfig();
 
 if ($config->canGenerateOrderPDF()) {
