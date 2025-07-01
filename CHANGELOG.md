@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Improved access control checks when updating user preferences
+- Access checks improved for ODT export generation.
 
 ### Added
 
