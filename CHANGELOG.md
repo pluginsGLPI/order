@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Improved access control checks when updating user preferences
+
 ### Added
 
 - Add eco responsibility fees
