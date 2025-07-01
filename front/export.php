@@ -34,8 +34,19 @@ Session::checkLoginUser();
 PluginOrderConfig::getConfig();
 
 if ($config->canGenerateOrderPDF() && ($config->canGenerateWithoutValidation() || $config->canGenerate())) {
+
     $PluginOrderOrder = new PluginOrderOrder();
-    $PluginOrderOrder->generateOrder($_GET);
+
+    // load related order with entity restrict criteria
+    if ($PluginOrderOrder->getFromDBByCrit([
+        "id" => $_GET['id'],
+        "entities_id" => getEntitiesRestrictCriteria(getTableForItemType(PluginOrderOrder::class), '', '', true),
+    ])) {
+        $PluginOrderOrder->generateOrder($_GET);
+    } else {
+        Html::displayRightError("You don't have permission to perform this action.");
+    }
+
 } else {
     Html::displayRightError("PDF export for Order plugin is not enable");
 }
