@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.11.0] - 2025-07-10
+
 ### Fixed
 
 - Improved access control checks when updating user preferences
