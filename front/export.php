@@ -31,22 +31,28 @@
 include("../../../inc/includes.php");
 Session::checkLoginUser();
 
-PluginOrderConfig::getConfig();
+$config = PluginOrderConfig::getConfig();
+$PluginOrderOrder = new PluginOrderOrder();
 
-if ($config->canGenerateOrderPDF() && ($config->canGenerateWithoutValidation() || $config->canGenerate())) {
-
+if ($config->canGenerateOrderPDF() && ($PluginOrderOrder->canGenerateWithoutValidation() || $PluginOrderOrder->canGenerate())) {
     $PluginOrderOrder = new PluginOrderOrder();
 
     // load related order with entity restrict criteria
-    if ($PluginOrderOrder->getFromDBByCrit([
-        "id" => $_GET['id'],
-        "entities_id" => getEntitiesRestrictCriteria(getTableForItemType(PluginOrderOrder::class), '', '', true),
-    ])) {
+    if (
+        $PluginOrderOrder->getFromDBByCrit([
+            'id'          => $_GET['id'],
+            'entities_id' => getEntitiesRestrictCriteria(
+                getTableForItemType(PluginOrderOrder::class),
+                '',
+                '',
+                true
+            ),
+        ])
+    ) {
         $PluginOrderOrder->generateOrder($_GET);
     } else {
         Html::displayRightError("You don't have permission to perform this action.");
     }
-
 } else {
     Html::displayRightError("PDF export for Order plugin is not enable");
 }

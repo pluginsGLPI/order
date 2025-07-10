@@ -75,9 +75,9 @@ if (isset($_POST['action'])) {
                         if ($config->canAddBillDetails()) {
                             if ($bill->getFromDB($_POST["plugin_order_bills_id"])) {
                                 $input = [
-                                     'id'            => $ic->fields['id'],
-                                     'bill'          => $bill->fields['number'],
-                                     'warranty_date' => $bill->fields['billdate'],
+                                    'id'            => $ic->fields['id'],
+                                    'bill'          => $bill->fields['number'],
+                                    'warranty_date' => $bill->fields['billdate'],
                                 ];
                                 $ic->check($input['id'], UPDATE, $input);
                                 $ic->update($input);
