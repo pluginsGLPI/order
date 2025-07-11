@@ -35,20 +35,14 @@ $config = PluginOrderConfig::getConfig();
 $PluginOrderOrder = new PluginOrderOrder();
 
 if ($config->canGenerateOrderPDF() && ($PluginOrderOrder->canGenerateWithoutValidation() || $PluginOrderOrder->canGenerate())) {
-    $PluginOrderOrder = new PluginOrderOrder();
+    $criteria = ['id' => $_GET['id']] + getEntitiesRestrictCriteria(
+        getTableForItemType(PluginOrderOrder::class),
+        '',
+        '',
+        true
+    );
 
-    // load related order with entity restrict criteria
-    if (
-        $PluginOrderOrder->getFromDBByCrit([
-            'id'          => $_GET['id'],
-            'entities_id' => getEntitiesRestrictCriteria(
-                getTableForItemType(PluginOrderOrder::class),
-                '',
-                '',
-                true
-            ),
-        ])
-    ) {
+    if ($PluginOrderOrder->getFromDBByCrit($criteria)) {
         $PluginOrderOrder->generateOrder($_GET);
     } else {
         Html::displayRightError("You don't have permission to perform this action.");

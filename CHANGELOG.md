@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix ODT export generation
+
 ## [2.11.0] - 2025-07-10
 
 ### Fixed
