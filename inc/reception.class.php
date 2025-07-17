@@ -730,8 +730,7 @@ class PluginOrderReception extends CommonDBChild
         $sep     = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
 
         $actions[$sep . 'reception'] = __("Take item delivery", "order");
-        $actions[$sep . 'transfer_order_item'] = "<i class='fa-fw fas fa-level-up-alt'></i>" .
-        _x('button', 'Transfer', 'order');
+        $actions[$sep . 'transfer_order_item'] = _x('button', 'Add to transfer list');
 
         return $actions;
     }
