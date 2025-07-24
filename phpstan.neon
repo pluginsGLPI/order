@@ -21,5 +21,3 @@ parameters:
     excludePaths:
         - 'inc/referenceinjection.class.php'
         - 'inc/orderinjection.class.php'
-rules:
-    - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule

@@ -442,17 +442,27 @@ class PluginOrderReference extends CommonDBTM
         global $DB;
 
         $table = self::getTable();
-        $query = "SELECT ref.`templates_id`
-                FROM `glpi_plugin_order_orders_items` item, `$table` ref
-                WHERE item.`plugin_order_references_id` = ref.`id`
-                AND item.`id` = '$detailID';";
-        $result = $DB->query($query);
+        $criteria = [
+            'SELECT' => ['ref.templates_id'],
+            'FROM' => 'glpi_plugin_order_orders_items AS item',
+            'INNER JOIN' => [
+                $table . ' AS ref' => [
+                    'ON' => [
+                        'item' => 'plugin_order_references_id',
+                        'ref' => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => ['item.id' => $detailID]
+        ];
+        $result = $DB->request($criteria);
 
-        if (!$DB->numrows($result)) {
+        if (!count($result)) {
             return 0;
         } else {
+            $row = $result->current();
             $item = new $itemtype();
-            $item->getFromDB($DB->result($result, 0, "templates_id"));
+            $item->getFromDB($row["templates_id"]);
             if (
                 $item->getField('entities_id') == $entity
                 || ($item->maybeRecursive()
@@ -465,13 +475,19 @@ class PluginOrderReference extends CommonDBTM
                //If templates have the same name in several entities : search for a template with
                //the same name
                 if ($item->getField('template_name') != NOT_AVAILABLE) {
-                    $query = "SELECT `id` FROM `" . $item->getTable() . "`
-                         WHERE `entities_id`='$entity'
-                            AND `template_name`='" . $item->fields['template_name'] . "'
-                               AND `is_template`='1'";
-                    $result_template = $DB->query($query);
-                    if ($DB->numrows($result_template) >= 1) {
-                        return $DB->result($result_template, 0, "id");
+                    $criteria_template = [
+                        'SELECT' => ['id'],
+                        'FROM' => $item->getTable(),
+                        'WHERE' => [
+                            'entities_id' => $entity,
+                            'template_name' => $item->fields['template_name'],
+                            'is_template' => 1
+                        ]
+                    ];
+                    $result_template = $DB->request($criteria_template);
+                    if (count($result_template) >= 1) {
+                        $row_template = $result_template->current();
+                        return $row_template["id"];
                     } else {
                         return 0;
                     }
@@ -510,17 +526,26 @@ class PluginOrderReference extends CommonDBTM
         if ($p['filter']) {
             $used  = [];
             $table = self::getTable();
-            $query = "SELECT `itemtype`
-                   FROM `$table` as t
-                   LEFT JOIN `glpi_plugin_order_references_suppliers` as s
-                     ON (`t`.`id` = `s`.`plugin_order_references_id`)
-                  WHERE `s`.`suppliers_id` = '{$p['suppliers_id']}'"
-                 . getEntitiesRestrictRequest("AND", 't', '', $p['entity'], true);
-            $result = $DB->query($query);
+            $criteria = [
+                'SELECT' => ['itemtype'],
+                'FROM' => $table . ' AS t',
+                'LEFT JOIN' => [
+                    'glpi_plugin_order_references_suppliers AS s' => [
+                        'ON' => [
+                            't' => 'id',
+                            's' => 'plugin_order_references_id'
+                        ]
+                    ]
+                ],
+                'WHERE' => [
+                    's.suppliers_id' => $p['suppliers_id']
+                ] + getEntitiesRestrictCriteria('t', '', $p['entity'], true)
+            ];
+            $result = $DB->request($criteria);
 
-            $number = $DB->numrows($result);
+            $number = count($result);
             if ($number) {
-                while ($data = $DB->fetchArray($result)) {
+                foreach ($result as $data) {
                     $used[] = $data["itemtype"];
                 }
             }
@@ -707,6 +732,20 @@ class PluginOrderReference extends CommonDBTM
         echo "</td>";
         echo "<td colspan='2'></td></tr>";
 
+        echo "<tr class='tab_bg_1'><td>" . __("Eco-responsibility fees") . "</td>";
+        echo "<td>";
+        echo Html::input(
+            'ecotax_price',
+            [
+                'type'  => 'number',
+                'step'  => PLUGIN_ORDER_NUMBER_STEP,
+                'min'   => 0,
+                'value' => $this->fields['ecotax_price'],
+            ]
+        );
+        echo "</td>";
+        echo "<td colspan='2'></td></tr>";
+
         $options['canedit'] = true;
         $this->showFormButtons($options);
         Html::closeForm();
@@ -786,17 +825,31 @@ class PluginOrderReference extends CommonDBTM
         global $DB;
 
         $order = new PluginOrderOrder();
-        $query = "SELECT `glpi_plugin_order_orders_items`.*
-                FROM `glpi_plugin_order_orders_items`
-                LEFT JOIN `glpi_plugin_order_references`
-                   ON (`glpi_plugin_order_references`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_references_id`)
-                WHERE `plugin_order_references_id` = '" . $ref->getID() . "'";
-        $query .= getEntitiesRestrictRequest(" AND ", "glpi_plugin_order_references", "entities_id", $ref->fields["entities_id"], true);
-        $query .= " GROUP BY `glpi_plugin_order_orders_items`.`plugin_order_orders_id`
-               ORDER BY `entities_id`, `name` ";
+        $criteria = [
+            'SELECT' => ['glpi_plugin_order_orders_items.*'],
+            'FROM' => 'glpi_plugin_order_orders_items',
+            'LEFT JOIN' => [
+                'glpi_plugin_order_references' => [
+                    'ON' => [
+                        'glpi_plugin_order_references' => 'id',
+                        'glpi_plugin_order_orders_items' => 'plugin_order_references_id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'plugin_order_references_id' => $ref->getID()
+            ] + getEntitiesRestrictCriteria('glpi_plugin_order_references', 'entities_id', $ref->fields["entities_id"], true),
+            'GROUPBY' => ['glpi_plugin_order_orders_items.plugin_order_orders_id'],
+            'ORDER' => ['entities_id', 'name']
+        ];
 
-        $result = $DB->query($query);
-        $nb     = $DB->numrows($result);
+        // Compter d'abord le nombre total
+        $count_criteria = $criteria;
+        $count_criteria['SELECT'] = ['COUNT DISTINCT' => 'glpi_plugin_order_orders_items.plugin_order_orders_id AS total'];
+        unset($count_criteria['GROUPBY']);
+        $count_result = $DB->request($count_criteria);
+        $count_row = $count_result->current();
+        $nb = $count_row['total'];
 
         echo "<div class='center'>";
         if ($nb) {
@@ -805,7 +858,8 @@ class PluginOrderReference extends CommonDBTM
             } else {
                 $start = 0;
             }
-            $query_limit = $query . " LIMIT " . intval($start) . "," . intval($_SESSION['glpilist_limit']);
+            $criteria['START'] = intval($start);
+            $criteria['LIMIT'] = intval($_SESSION['glpilist_limit']);
 
             Html::printAjaxPager(__("Linked orders", "order"), $start, $nb);
             echo "<table class='tab_cadre_fixe'>";
@@ -814,7 +868,7 @@ class PluginOrderReference extends CommonDBTM
             echo "<th>" . __("Entity") . "</th>";
             echo "</tr>";
 
-            foreach ($DB->request($query_limit) as $data) {
+            foreach ($DB->request($criteria) as $data) {
                 echo "<tr class='tab_bg_1' align='center'>";
                 echo "<td>";
                 $order->getFromDB($data['plugin_order_orders_id']);
@@ -866,14 +920,16 @@ class PluginOrderReference extends CommonDBTM
 
             $PluginOrderOrder_Item = new PluginOrderOrder_Item();
 
-            $query = "SELECT `id`
-                   FROM `glpi_plugin_order_orders_items`
-                   WHERE `plugin_order_references_id` = '$oldref'";
+            $criteria = [
+                'SELECT' => ['id'],
+                'FROM' => 'glpi_plugin_order_orders_items',
+                'WHERE' => ['plugin_order_references_id' => $oldref]
+            ];
 
-            $result = $DB->query($query);
-            $num    = $DB->numrows($result);
+            $result = $DB->request($criteria);
+            $num    = count($result);
             if ($num) {
-                while ($dataref = $DB->fetchArray($result)) {
+                foreach ($result as $dataref) {
                     $values["id"]                         = $dataref['id'];
                     $values["plugin_order_references_id"] = $newid;
                     $PluginOrderOrder_Item->update($values);
@@ -1028,6 +1084,7 @@ class PluginOrderReference extends CommonDBTM
                `is_active` tinyint NOT NULL default '1',
                `notepad` longtext,
                `date_mod` timestamp NULL default NULL,
+               `ecotax_price` decimal(20,6) NOT NULL DEFAULT '0.000000',
                PRIMARY KEY  (`id`),
                KEY `name` (`name`),
                KEY `entities_id` (`entities_id`),
@@ -1188,6 +1245,16 @@ class PluginOrderReference extends CommonDBTM
                 );
                 $migration->migrationOneTable($table);
             }
+
+           // Add ecotax field if it doesn't exist
+            if (!$DB->fieldExists($table, 'ecotax_price')) {
+                $migration->addField(
+                    $table,
+                    'ecotax_price',
+                    "decimal(20,6) NOT NULL DEFAULT '0.000000'"
+                );
+                $migration->migrationOneTable($table);
+            }
         }
     }
 
@@ -1214,5 +1281,15 @@ class PluginOrderReference extends CommonDBTM
     public static function getIcon()
     {
         return "ti ti-list-search";
+    }
+
+    /**
+     * Get the ecotax price for this reference
+     *
+     * @return float price
+     */
+    public function getEcotaxPrice()
+    {
+        return $this->fields['ecotax_price'] ?? 0;
     }
 }

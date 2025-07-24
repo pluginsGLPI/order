@@ -63,22 +63,21 @@ class PluginOrderSurveySupplier extends CommonDBChild
         global $DB;
 
         $table = self::getTable();
-        $query = "SELECT *
-                FROM `$table`
-                WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'";
+        $criteria = [
+            'FROM' => $table,
+            'WHERE' => ['plugin_order_orders_id' => $plugin_order_orders_id]
+        ];
 
-        if ($result = $DB->query($query)) {
-            if ($DB->numrows($result) != 1) {
-                return false;
-            }
-            $this->fields = $DB->fetchAssoc($result);
-            if (is_array($this->fields) && count($this->fields)) {
-                return true;
-            } else {
-                return false;
-            }
+        $iterator = $DB->request($criteria);
+        if (count($iterator) != 1) {
+            return false;
         }
-        return false;
+        $this->fields = $iterator->current();
+        if (is_array($this->fields) && count($this->fields)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
@@ -119,12 +118,14 @@ class PluginOrderSurveySupplier extends CommonDBChild
         global $DB;
 
         $table = self::getTable();
-        $query  = "SELECT (`answer1` + `answer2` + `answer3` + `answer4` + `answer5`) AS total
-                 FROM `$table`
-                 WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'";
-        $result = $DB->query($query);
-        if ($DB->numrows($result)) {
-            return $DB->result($result, 0, "total") / 5;
+        $criteria = [
+            'SELECT' => ['(answer1 + answer2 + answer3 + answer4 + answer5) AS total'],
+            'FROM' => $table,
+            'WHERE' => ['plugin_order_orders_id' => $plugin_order_orders_id]
+        ];
+        $iterator = $DB->request($criteria);
+        if (count($iterator)) {
+            return $iterator->current()["total"] / 5;
         } else {
             return 0;
         }
@@ -137,18 +138,23 @@ class PluginOrderSurveySupplier extends CommonDBChild
         global $DB;
 
         $table = self::getTable();
-        $query = "SELECT  SUM(survey.`$field`) AS total,
-                        COUNT(survey.`id`) AS nb
-                FROM `glpi_plugin_order_orders` orders, `$table` survey
-                 WHERE survey.`suppliers_id` = orders.`suppliers_id`
-                 AND survey.`plugin_order_orders_id` = orders.`id`
-                 AND orders.`suppliers_id` = '$suppliers_id'"
-              . getEntitiesRestrictRequest(" AND ", "orders", "entities_id", '', true);
-        $result = $DB->query($query);
-        $nb     = $DB->numrows($result);
+        $criteria = [
+            'SELECT' => [
+                "SUM(survey.$field) AS total",
+                "COUNT(survey.id) AS nb"
+            ],
+            'FROM' => ["glpi_plugin_order_orders AS orders", "$table AS survey"],
+            'WHERE' => [
+                'survey.suppliers_id' => 'orders.suppliers_id',
+                'survey.plugin_order_orders_id' => 'orders.id',
+                'orders.suppliers_id' => $suppliers_id
+            ] + getEntitiesRestrictCriteria('orders', 'entities_id', '', true)
+        ];
+        $iterator = $DB->request($criteria);
 
-        if ($nb) {
-            return $DB->result($result, 0, "total") / $DB->result($result, 0, "nb");
+        if (count($iterator)) {
+            $result = $iterator->current();
+            return $result["total"] / $result["nb"];
         } else {
             return 0;
         }
@@ -170,15 +176,26 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
         $restrict = getEntitiesRestrictRequest(" AND ", "orders", "entities_id", '', true);
 
-        $query  = "SELECT orders.`id`, orders.`entities_id`, orders.`name`, survey.`comment`
-                 FROM `glpi_plugin_order_orders` orders, `$survey_table` survey
-                 WHERE survey.`suppliers_id` = orders.`suppliers_id`
-                  AND survey.`plugin_order_orders_id` = orders.`id`
-                  AND orders.`suppliers_id` = '$suppliers_id'
-                 $restrict";
-        $query .= "GROUP BY `survey`.id";
-        $result   = $DB->query($query);
-        $nb       = $DB->numrows($result);
+        $criteria = [
+            'SELECT' => [
+                'orders.id',
+                'orders.entities_id',
+                'orders.name',
+                'survey.comment'
+            ],
+            'FROM' => [
+                'glpi_plugin_order_orders AS orders',
+                "$survey_table AS survey"
+            ],
+            'WHERE' => [
+                'survey.suppliers_id' => 'orders.suppliers_id',
+                'survey.plugin_order_orders_id' => 'orders.id',
+                'orders.suppliers_id' => $suppliers_id
+            ] + getEntitiesRestrictCriteria('orders', 'entities_id', '', true),
+            'GROUPBY' => 'survey.id'
+        ];
+        $iterator = $DB->request($criteria);
+        $nb       = count($iterator);
         $total    = 0;
         $nb_order = 0;
 
@@ -197,11 +214,11 @@ class PluginOrderSurveySupplier extends CommonDBChild
         echo "</tr>";
 
         if ($nb) {
-            for ($i = 0; $i < $nb; $i++) {
-                $name        = $DB->result($result, $i, "name");
-                $ID          = $DB->result($result, $i, "id");
-                $comment     = $DB->result($result, $i, "comment");
-                $entities_id = $DB->result($result, $i, "entities_id");
+            foreach ($iterator as $row) {
+                $name        = $row["name"];
+                $ID          = $row["id"];
+                $comment     = $row["comment"];
+                $entities_id = $row["entities_id"];
                 $note        = $survey->getTotalNotation($ID);
                 echo "<tr class='tab_bg_1'>";
                 echo "<td>";
@@ -384,8 +401,11 @@ class PluginOrderSurveySupplier extends CommonDBChild
         Session::initNavigateListItems(__CLASS__, __("Order", "order") . " = " . $order->fields["name"]);
 
         $candelete = $order->can($ID, DELETE);
-        $query     = "SELECT * FROM `$table` WHERE `plugin_order_orders_id` = '$ID' ";
-        $result    = $DB->query($query);
+        $criteria = [
+            'FROM' => $table,
+            'WHERE' => ['plugin_order_orders_id' => $ID]
+        ];
+        $iterator = $DB->request($criteria);
         $rand      = mt_rand();
         echo "<div class='center'>";
         echo "<form method='post' name='show_suppliersurvey$rand' id='show_suppliersurvey$rand' " .
@@ -400,8 +420,8 @@ class PluginOrderSurveySupplier extends CommonDBChild
         echo "<th>" . __("Comment on survey", "order") . "</th>";
         echo "</tr>";
 
-        if ($DB->numrows($result) > 0) {
-            while ($data = $DB->fetchArray($result)) {
+        if (count($iterator) > 0) {
+            foreach ($iterator as $data) {
                 Session::addToNavigateListItems(__CLASS__, (int) $data['id']);
                 echo Html::hidden("item[" . $data["id"] . "]", ['value' => $ID]);
                 echo "<tr class='tab_bg_1 center'>";
@@ -500,7 +520,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
                   KEY `entities_id` (`entities_id`),
                   KEY `suppliers_id` (`suppliers_id`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query) or die($DB->error());
         } else {
            //upgrade
             $migration->displayMessage("Upgrading $table");
@@ -538,7 +558,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
                         `entities_id` = '{$data["entities_id"]}',
                         `is_recursive` = '{$data["is_recursive"]}'
                       WHERE `plugin_order_orders_id` = '{$data["id"]}' ";
-                $DB->query($query) or die($DB->error());
+                $DB->doQuery($query) or die($DB->error());
             }
         }
     }
@@ -550,7 +570,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         global $DB;
 
        //Current table name
-        $DB->query("DROP TABLE IF EXISTS  `" . self::getTable() . "`") or die($DB->error());
+        $DB->doQuery("DROP TABLE IF EXISTS  `" . self::getTable() . "`") or die($DB->error());
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)

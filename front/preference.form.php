@@ -37,7 +37,7 @@ if (!isset($_GET["id"])) {
 
 $PluginOrderPreference = new PluginOrderPreference();
 
-if (isset($_POST["update"])) {
+if (isset($_POST["update"]) && $_POST["users_id"] == Session::getLoginUserID()) {
     $PluginOrderPreference->update($_POST);
     Html::redirect($_SERVER['HTTP_REFERER']);
 } else {

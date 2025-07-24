@@ -128,20 +128,23 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         /** @var \DBmysql $DB */
         global $DB;
 
-        $query = "SELECT * FROM `" . self::getTable() . "`
-               WHERE `plugin_order_orders_id` = '" . $plugin_order_orders_id . "' ";
-        if ($result = $DB->query($query)) {
-            if (!$DB->numrows($result)) {
-                return false;
-            }
-            $this->fields = $DB->fetchAssoc($result);
-            if (is_array($this->fields) && count($this->fields)) {
-                return true;
-            } else {
-                return false;
-            }
+        $criteria = [
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'plugin_order_orders_id' => $plugin_order_orders_id
+            ]
+        ];
+        $result = $DB->request($criteria);
+
+        if (!count($result)) {
+            return false;
         }
-        return false;
+        $this->fields = $result->current();
+        if (is_array($this->fields) && count($this->fields)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
@@ -292,19 +295,32 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         /** @var \DBmysql $DB */
         global $DB;
 
-        $query = "SELECT COUNT(`glpi_plugin_order_orders_items`.`plugin_order_references_id`) AS ref,
-                       `glpi_plugin_order_orders_items`.`plugin_order_deliverystates_id` as sid,
-                       `glpi_plugin_order_orders`.`entities_id`
-                  FROM `glpi_plugin_order_orders_items`
-                  LEFT JOIN `glpi_plugin_order_orders`
-                     ON (`glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id`)
-                  WHERE `glpi_plugin_order_orders`.`suppliers_id` = '" . $suppliers_id . "'
-                  AND `glpi_plugin_order_orders_items`.`states_id` = '" . PluginOrderOrder::ORDER_DEVICE_DELIVRED . "' "
-                  . getEntitiesRestrictRequest(" AND ", "glpi_plugin_order_orders", '', '', true);
-        $query .= "GROUP BY `glpi_plugin_order_orders`.`entities_id`,
-                         `glpi_plugin_order_orders_items`.`plugin_order_deliverystates_id`";
-        $result = $DB->query($query);
-        $nb     = $DB->numrows($result);
+        $criteria = [
+            'SELECT' => [
+                'COUNT(glpi_plugin_order_orders_items.plugin_order_references_id) AS ref',
+                'glpi_plugin_order_orders_items.plugin_order_deliverystates_id AS sid',
+                'glpi_plugin_order_orders.entities_id'
+            ],
+            'FROM' => 'glpi_plugin_order_orders_items',
+            'LEFT JOIN' => [
+                'glpi_plugin_order_orders' => [
+                    'ON' => [
+                        'glpi_plugin_order_orders' => 'id',
+                        'glpi_plugin_order_orders_items' => 'plugin_order_orders_id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'glpi_plugin_order_orders.suppliers_id' => $suppliers_id,
+                'glpi_plugin_order_orders_items.states_id' => PluginOrderOrder::ORDER_DEVICE_DELIVRED
+            ] + getEntitiesRestrictCriteria("glpi_plugin_order_orders", '', '', false, true),
+            'GROUPBY' => [
+                'glpi_plugin_order_orders.entities_id',
+                'glpi_plugin_order_orders_items.plugin_order_deliverystates_id'
+            ]
+        ];
+        $result = $DB->request($criteria);
+        $nb     = count($result);
 
         echo "<br><div class='center'>";
         echo "<table class='tab_cadre_fixe'>";
@@ -314,10 +330,10 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         echo "</tr>";
 
         if ($nb) {
-            for ($i = 0; $i < $nb; $i++) {
-                $ref               = $DB->result($result, $i, "ref");
-                $entities_id       = $DB->result($result, $i, "entities_id");
-                $deliverystates_id = $DB->result($result, $i, "sid");
+            foreach ($result as $data) {
+                $ref               = $data["ref"];
+                $entities_id       = $data["entities_id"];
+                $deliverystates_id = $data["sid"];
                 echo "<tr class='tab_bg_1'>";
                 echo "<td>";
                 echo Dropdown::getDropdownName("glpi_entities", $entities_id);

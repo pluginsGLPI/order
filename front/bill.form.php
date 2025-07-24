@@ -34,16 +34,19 @@ Session::checkLoginUser();
 $bill = new PluginOrderBill();
 
 if (isset($_REQUEST['add'])) {
+    $bill->check(-1, CREATE, $_REQUEST);
     $bill->add($_REQUEST);
     Html::back();
 }
 
 if (isset($_REQUEST['update'])) {
+    $bill->check($_REQUEST['id'], UPDATE, $_REQUEST);
     $bill->update($_REQUEST);
     Html::back();
 }
 
 if (isset($_REQUEST['purge'])) {
+    $bill->check($_REQUEST['id'], DELETE, $_REQUEST);
     $bill->delete($_REQUEST);
     $bill->redirectToList();
 }
@@ -60,6 +63,8 @@ if (isset($_POST['action'])) {
                     if ($val == 1) {
                         $tmp       = $_POST;
                         $tmp['id'] = $key;
+
+                        $order_item->check($tmp['id'], UPDATE, $tmp);
                         $order_item->update($tmp);
 
                         // Update infocom
@@ -69,11 +74,13 @@ if (isset($_POST['action'])) {
                         $config = PluginOrderConfig::getConfig();
                         if ($config->canAddBillDetails()) {
                             if ($bill->getFromDB($_POST["plugin_order_bills_id"])) {
-                                 $ic->update([
-                                     'id'            => $ic->fields['id'],
-                                     'bill'          => $bill->fields['number'],
-                                     'warranty_date' => $bill->fields['billdate'],
-                                 ]);
+                                $input = [
+                                    'id'            => $ic->fields['id'],
+                                    'bill'          => $bill->fields['number'],
+                                    'warranty_date' => $bill->fields['billdate'],
+                                ];
+                                $ic->check($input['id'], UPDATE, $input);
+                                $ic->update($input);
                             }
                         }
                     }
@@ -81,6 +88,9 @@ if (isset($_POST['action'])) {
             }
             break;
     }
+
+    $order = new PluginOrderOrder();
+    $order->check($order_item->fields['plugin_order_orders_id'], UPDATE);
     PluginOrderOrder::updateBillState($order_item->fields['plugin_order_orders_id']);
     Html::back();
 }
