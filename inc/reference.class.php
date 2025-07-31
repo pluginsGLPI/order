@@ -738,8 +738,15 @@ class PluginOrderReference extends CommonDBTM
 
         echo "<tr class='tab_bg_1'><td>" . __("Eco-responsibility fees") . "</td>";
         echo "<td>";
-        echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='ecotax_price' size='5'"
-            . " value=\"" . Html::formatNumber($this->fields["ecotax_price"], true) . "\">";
+        echo Html::input(
+            'ecotax_price',
+            [
+                'type'  => 'number',
+                'step'  => PLUGIN_ORDER_NUMBER_STEP,
+                'min'   => 0,
+                'value' => Html::formatNumber($this->fields["ecotax_price"], true),
+            ]
+        );
         echo "</td>";
         echo "<td colspan='2'></td></tr>";
 
