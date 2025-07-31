@@ -325,6 +325,10 @@ class PluginOrderReference extends CommonDBTM
             return false;
         }
 
+        if (empty($input["ecotax_price"])) {
+            $input["ecotax_price"] = 0;
+        }
+
         return $input;
     }
 
@@ -740,7 +744,7 @@ class PluginOrderReference extends CommonDBTM
                 'type'  => 'number',
                 'step'  => PLUGIN_ORDER_NUMBER_STEP,
                 'min'   => 0,
-                'value' => $this->fields['ecotax_price'],
+                'value' => Html::formatNumber($this->fields["ecotax_price"], true),
             ]
         );
         echo "</td>";
