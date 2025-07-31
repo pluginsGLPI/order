@@ -325,6 +325,10 @@ class PluginOrderReference extends CommonDBTM
             return false;
         }
 
+        if (!isset($input["ecotax_price"]) || $input["ecotax_price"] == '') {
+            $input["ecotax_price"] = 0;
+        }
+
         return $input;
     }
 
