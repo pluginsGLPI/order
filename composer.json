@@ -27,16 +27,5 @@
         "psr-4": {
             "Glpi\\Tools\\": "../../tools/src/"
         }
-    },
-    "scripts": {
-        "patch": [
-                "patch -f -p1 -d vendor/sboden/odtphp < tools/patches/null_htmlspecialchars.patch || true"
-        ],
-        "post-install-cmd": [
-            "@patch"
-        ],
-        "post-update-cmd": [
-            "@patch"
-        ]
     }
 }
