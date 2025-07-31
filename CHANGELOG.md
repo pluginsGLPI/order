@@ -7,8 +7,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- Fix icon for `transfer` action
+
+## [2.11.1] - 2025-07-11
+
+### Fixed
+
+- Fix ODT export generation
+
+## [2.11.0] - 2025-07-10
+
+### Fixed
+
+- Improved access control checks when updating user preferences
+- Access checks improved for ODT export generation.
+- Added missing access control.
+
+
 ### Added
 
+- Add eco responsibility fees
+- Addition of a massive action “Cancel receipt” (in the “attachments” tab)
 - Batch data entry for item generation
 - Add massive selection for delivered items
 - Duplicate the delivery button at the top of the reception list

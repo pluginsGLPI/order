@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginOrderReferenceFree extends CommonDBTM
 {
-    public static $rightname         = 'plugin_order_order';
+    public static $rightname         = 'plugin_order_reference';
     public $dohistory                = true;
 
     public static function getTypeName($nb = 0)
@@ -67,6 +67,7 @@ class PluginOrderReferenceFree extends CommonDBTM
                `itemtype` varchar(100) NOT NULL COMMENT 'see .class.php file',
                `templates_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to various tables, according to itemtype (id)',
                `comment` text,
+               `ecotax_price` decimal(20,6) NOT NULL DEFAULT '0.000000',
                `price_taxfree` decimal(20,6) NOT NULL DEFAULT '0.000000',
                `price_discounted` decimal(20,6) NOT NULL DEFAULT '0.000000',
                `discount` decimal(20,6) NOT NULL DEFAULT '0.000000',
@@ -90,6 +91,17 @@ class PluginOrderReferenceFree extends CommonDBTM
                KEY date_mod (date_mod)
             ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
             $DB->query($query) or die($DB->error());
+        } else {
+            // Add ecotax field if it doesn't exist
+            if (!$DB->fieldExists($table, 'ecotax_price')) {
+                $migration->addField(
+                    $table,
+                    'ecotax_price',
+                    "decimal(20,6) NOT NULL DEFAULT '0.000000'",
+                    ['after' => 'comment']
+                );
+                $migration->migrationOneTable($table);
+            }
         }
     }
 
@@ -109,5 +121,15 @@ class PluginOrderReferenceFree extends CommonDBTM
         }
 
         $DB->query("DROP TABLE IF EXISTS `$table`") or die($DB->error());
+    }
+
+    /**
+     * Get the ecotax price for this reference
+     *
+     * @return float price
+     */
+    public function getEcotaxPrice()
+    {
+        return $this->fields['ecotax_price'] ?? 0;
     }
 }

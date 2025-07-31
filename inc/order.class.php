@@ -118,6 +118,12 @@ class PluginOrderOrder extends CommonDBTM
     }
 
 
+    public static function canGenerate()
+    {
+        return Session::haveRight("plugin_order_order", self::RIGHT_GENERATEODT);
+    }
+
+
     public static function canDeliver()
     {
         return Session::haveRight("plugin_order_order", self::RIGHT_DELIVERY);
@@ -998,11 +1004,11 @@ class PluginOrderOrder extends CommonDBTM
             echo $this->fields["num_order"];
         }
         echo "</td>";
-       /* type order */
+        /* type order */
         echo "<td>" . __("Type") . ": </td><td>";
         if ($canedit) {
             PluginOrderOrderType::Dropdown([
-                'name'  => "plugin_order_ordertypes_id",
+                'name' => "plugin_order_ordertypes_id",
                 'value' => $this->fields["plugin_order_ordertypes_id"]
             ]);
         } else {
@@ -1097,7 +1103,70 @@ class PluginOrderOrder extends CommonDBTM
         echo "</td>";
         echo "</tr>";
 
-       /* supplier of order */
+       /* ecotax price */
+        echo "<tr class='tab_bg_1'><td>" . __("Eco-responsibility fees (tax free)", "order") . ": </td>";
+        echo "<td>";
+        if ($canedit) {
+            echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='ecotax_price' size='5'"
+            . " value=\"" . Html::formatNumber($this->fields["ecotax_price"], true) . "\">";
+        } else {
+            echo Html::formatNumber($this->fields["ecotax_price"]);
+        }
+        echo "</td>";
+
+       /* port price */
+        echo "<td>" . __("Postage", "order") . ": </td>";
+        echo "<td>";
+        if ($canedit) {
+            echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='port_price' size='5'"
+            . " value=\"" . Html::formatNumber($this->fields["port_price"], true) . "\">";
+        } else {
+            echo Html::formatNumber($this->fields["port_price"]);
+        }
+        echo "</td>";
+        echo "</tr>";
+
+        /* TVA ecotax price */
+        echo "<tr class='tab_bg_1'><td>" . __("VAT", "order") . " " . __("Eco-responsibility fees", "order") . ": </td><td>";
+        $PluginOrderConfig = new PluginOrderConfig();
+        $default_taxes     = $PluginOrderConfig->getDefaultTaxes();
+
+        $taxes = (empty($ID) || ($ID < 0)) ? $default_taxes : $this->fields["plugin_order_ordertaxes_ecotax_id"];
+
+        if ($canedit) {
+            PluginOrderOrderTax::Dropdown([
+                'name'  => "plugin_order_ordertaxes_ecotax_id",
+                'value' => $taxes,
+            ]);
+        } else {
+            echo Dropdown::getDropdownName(
+                "glpi_plugin_order_ordertaxes",
+                $this->fields["plugin_order_ordertaxes_ecotax_id"]
+            );
+        }
+        echo "</td>";
+
+        /* tva port price */
+        echo "<td>" . __("VAT", "order") . " " . __("Postage", "order") . ": </td><td>";
+        $PluginOrderConfig = new PluginOrderConfig();
+        $default_taxes     = $PluginOrderConfig->getDefaultTaxes();
+
+        $taxes = (empty($ID) || ($ID < 0)) ? $default_taxes : $this->fields["plugin_order_ordertaxes_id"];
+
+        if ($canedit) {
+            PluginOrderOrderTax::Dropdown([
+                'name'                => "plugin_order_ordertaxes_id",
+                'value'               => $taxes,
+                'display_emptychoice' => true,
+                'emptylabel'          => __("No VAT", "order"),
+            ]);
+        } else {
+            echo Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $taxes);
+        }
+        echo "</td>";
+        echo "</tr>";
+
+        /* supplier of order */
         echo "<tr class='tab_bg_1'><td>" . __("Supplier") . ": </td>";
         echo "<td>";
         if ($canedit && !$this->checkIfDetailExists($ID)) {
@@ -1130,35 +1199,34 @@ class PluginOrderOrder extends CommonDBTM
         }
         echo "</td>";
 
-       /* port price */
-        echo "<td>" . __("Postage", "order") . ": </td>";
-        echo "<td>";
-        if ($canedit) {
-            echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='port_price' size='5'"
-            . " value=\"" . Html::formatNumber($this->fields["port_price"], true) . "\">";
-        } else {
-            echo Html::formatNumber($this->fields["port_price"]);
-        }
-        echo "</td>";
-        echo "</tr>";
-
-       /* linked contact of the supplier of order */
-        echo "<tr class='tab_bg_1'><td>" . __("Contact") . ": </td>";
+        /* linked contact of the supplier of order */
+        echo "<td>" . __("Contact") . ": </td>";
         echo "<td><span id='show_contacts_id'>";
         if ($canedit) {
             echo "<span id='show_contacts_id$rand'>";
            // Make a select box
-            $query = "SELECT c.`id`, c.`name`, c.`firstname`
-                   FROM `glpi_contacts` c
-                   LEFT JOIN `glpi_contacts_suppliers` s ON (s.`contacts_id` = c.`id`)
-                   WHERE s.`suppliers_id` = '{$this->fields['suppliers_id']}'
-                   ORDER BY c.`name`";
-            $result = $DB->query($query);
-            $number = $DB->numrows($result);
+            $criteria = [
+                'SELECT' => ['c.id', 'c.name', 'c.firstname'],
+                'FROM' => 'glpi_contacts AS c',
+                'LEFT JOIN' => [
+                    'glpi_contacts_suppliers AS s' => [
+                        'ON' => [
+                            's' => 'contacts_id',
+                            'c' => 'id'
+                        ]
+                    ]
+                ],
+                'WHERE' => [
+                    's.suppliers_id' => $this->fields['suppliers_id']
+                ],
+                'ORDER' => 'c.name'
+            ];
+            $result = $DB->request($criteria);
+            $number = count($result);
 
             $values = [0 => Dropdown::EMPTY_VALUE];
             if ($number) {
-                while ($data = $DB->fetchAssoc($result)) {
+                foreach ($result as $data) {
                     $values[$data['id']] = formatUserName('', '', $data['name'], $data['firstname']);
                 }
             }
@@ -1171,25 +1239,6 @@ class PluginOrderOrder extends CommonDBTM
             echo Dropdown::getDropdownName("glpi_contacts", $this->fields["contacts_id"]);
         }
         echo "</span></td>";
-
-       /* tva port price */
-        echo "<td>" . __("VAT", "order") . " " . __("Postage", "order") . ": </td><td>";
-        $PluginOrderConfig = new PluginOrderConfig();
-        $default_taxes     = $PluginOrderConfig->getDefaultTaxes();
-
-        $taxes = (empty($ID) || ($ID < 0)) ? $default_taxes : $this->fields["plugin_order_ordertaxes_id"];
-
-        if ($canedit) {
-            PluginOrderOrderTax::Dropdown([
-                'name'                => "plugin_order_ordertaxes_id",
-                'value'               => $taxes,
-                'display_emptychoice' => true,
-                'emptylabel'          => __("No VAT", "order"),
-            ]);
-        } else {
-            echo Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $taxes);
-        }
-        echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
@@ -1421,40 +1470,101 @@ class PluginOrderOrder extends CommonDBTM
             $PluginOrderOrder_Item = new PluginOrderOrder_Item();
             $prices                = $PluginOrderOrder_Item->getAllPrices($ID);
 
-            echo "<table class='format'>";
-
-            echo "<tr>";
-            echo "<td>" . __("Price tax free", "order") . "</td>";
-            echo "<td>" . Html::formatNumber($prices["priceHT"]) . "</td>";
-            echo "</tr>";
-
-           // total price (with postage)
+            // Get ecotax details
+            $ecotaxHT = $PluginOrderOrder_Item->getEcotaxTotal($ID);
+            if ($ecotaxHT == 0) {
+                $ecotaxHT = $this->fields["ecotax_price"];
+            }
             $tax = new PluginOrderOrderTax();
-            $tax->getFromDB($this->fields["plugin_order_ordertaxes_id"]);
+            $tax->getFromDB($this->fields["plugin_order_ordertaxes_ecotax_id"]);
+            $ecotaxTVA = $ecotaxHT * ($tax->getRate() / 100);
+            $ecotaxTTC = $ecotaxHT + $ecotaxTVA;
 
+            // total price (with postage)
+            $tax->getFromDB($this->fields["plugin_order_ordertaxes_id"]);
             $postagewithTVA = $PluginOrderOrder_Item->getPricesATI(
                 $this->fields["port_price"],
                 $tax->getRate()
             );
 
             $priceHTwithpostage = $prices["priceHT"] + $this->fields["port_price"];
-            echo "<tr>";
-            echo "<td>" . __("Price tax free with postage", "order") . "</td>";
-            echo "<td>" . Html::formatNumber($priceHTwithpostage) . "</td>";
+
+            // total price (with taxes)
+            $total = $prices["priceTTC"] + $postagewithTVA + $ecotaxTTC;
+
+            // total TVA
+            $total_tva = $prices["priceTVA"] + ($postagewithTVA - $this->fields["port_price"]) + $ecotaxTVA;
+
+            echo "<table class='format tab_cadre' style='width: 100%'>";
+
+            // Section Articles
+            echo "<tr class='tab_bg_2'>";
+            echo "<th colspan='2' style='text-align: left; background-color: #e1e1e1;'>" . __("Articles", "order") . "</th>";
             echo "</tr>";
 
-           // total price (with taxes)
-            $total = $prices["priceTTC"] + $postagewithTVA;
             echo "<tr>";
-            echo "<td>" . __("Price ATI", "order") . "</td>";
-            echo "<td>" . Html::formatNumber($total) . "</td>";
+            echo "<td style='padding-left: 20px;'>" . __("Price tax free", "order") . "</td>";
+            echo "<td><b>" . Html::formatNumber($prices["priceHT"]) . "</b></td>";
             echo "</tr>";
 
-           // total TVA
-            $total_tva = $prices["priceTVA"] + ($postagewithTVA - $this->fields["port_price"]);
+            // Section Ecotax
+            echo "<tr class='tab_bg_2'>";
+            echo "<th colspan='2' style='text-align: left; background-color: #e1e1e1;'>" . __("Eco-responsibility fees", "order") . "</th>";
+            echo "</tr>";
+
             echo "<tr>";
-            echo "<td>" . __("VAT", "order") . "</td>";
-            echo "<td>" . Html::formatNumber($total_tva) . "</td>";
+            echo "<td style='padding-left: 20px;'>" . __("Eco-responsibility fees (tax free)", "order") . "</td>";
+            echo "<td>" . Html::formatNumber($ecotaxHT) . "</td>";
+            echo "</tr>";
+
+            echo "<tr>";
+            echo "<td style='padding-left: 20px;'>" . __("VAT on Eco-responsibility fees", "order") . "</td>";
+            echo "<td>" . Html::formatNumber($ecotaxTVA) . "</td>";
+            echo "</tr>";
+
+            echo "<tr>";
+            echo "<td style='padding-left: 20px;'>" . __("Eco-responsibility fees (ATI)", "order") . "</td>";
+            echo "<td><b>" . Html::formatNumber($ecotaxTTC) . "</b></td>";
+            echo "</tr>";
+
+            // Section Shipping
+            echo "<tr class='tab_bg_2'>";
+            echo "<th colspan='2' style='text-align: left; background-color: #e1e1e1;'>" . __("Shipping", "order") . "</th>";
+            echo "</tr>";
+
+            echo "<tr>";
+            echo "<td style='padding-left: 20px;'>" . __("Postage", "order") . "</td>";
+            echo "<td>" . Html::formatNumber($this->fields["port_price"]) . "</td>";
+            echo "</tr>";
+
+            echo "<tr>";
+            echo "<td style='padding-left: 20px;'>" . __("VAT on postage", "order") . "</td>";
+            echo "<td>" . Html::formatNumber($postagewithTVA - $this->fields["port_price"]) . "</td>";
+            echo "</tr>";
+
+            echo "<tr>";
+            echo "<td style='padding-left: 20px;'>" . __("Postage (ATI)", "order") . "</td>";
+            echo "<td><b>" . Html::formatNumber($postagewithTVA) . "</b></td>";
+            echo "</tr>";
+
+            // Section Totals
+            echo "<tr class='tab_bg_2'>";
+            echo "<th colspan='2' style='text-align: left; background-color: #e1e1e1;'>" . __("Totals", "order") . "</th>";
+            echo "</tr>";
+
+            echo "<tr>";
+            echo "<td style='padding-left: 20px;'>" . __("Total tax free", "order") . "</td>";
+            echo "<td><b>" . Html::formatNumber($priceHTwithpostage + $ecotaxHT) . "</b></td>";
+            echo "</tr>";
+
+            echo "<tr>";
+            echo "<td style='padding-left: 20px;'>" . __("Total VAT", "order") . "</td>";
+            echo "<td><b>" . Html::formatNumber($total_tva) . "</b></td>";
+            echo "</tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td style='padding-left: 20px; font-size: 1.1em;'><strong>" . __("Total price (ATI)", "order") . "</strong></td>";
+            echo "<td style='font-size: 1.1em;'><strong>" . Html::formatNumber($total) . "</strong></td>";
             echo "</tr>";
 
             echo "</table>";
@@ -1703,9 +1813,21 @@ class PluginOrderOrder extends CommonDBTM
         $template  = $params['template'];
         $signature = $params['sign'];
 
+         // Only allow filenames with .odt extension and no path traversal
+        if (!preg_match('/^[a-zA-Z0-9_\-\.]+\.odt$/', $template)) {
+            throw new \RuntimeException("Invalid template name");
+        }
+
+        $template_path = PLUGIN_ORDER_TEMPLATE_DIR . $template;
+
+        // Ensure the file exists and is readable
+        if (!is_file($template_path) || !is_readable($template_path)) {
+            throw new \RuntimeException("Template file not found or not readable");
+        }
+
         if ($template) {
             $config = ['PATH_TO_TMP' => GLPI_DOC_DIR . '/_tmp'];
-            $odf = new Odtphp\Odf(PLUGIN_ORDER_TEMPLATE_DIR . "$template", $config);
+            $odf = new Odtphp\Odf($template_path, $config);
             $this->getFromDB($ID);
 
             if (file_exists(PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR . "custom.php")) {
@@ -1812,7 +1934,7 @@ class PluginOrderOrder extends CommonDBTM
 
                 $result = $PluginOrderOrder_Item->queryDetail($ID, 'glpi_plugin_order_references');
 
-                while ($data = $DB->fetchArray($result)) {
+                foreach ($result as $data) {
                     $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount(
                         $ID,
                         $data["id"],
@@ -1840,7 +1962,7 @@ class PluginOrderOrder extends CommonDBTM
 
                 $result = $PluginOrderOrder_Item->queryDetail($ID, 'glpi_plugin_order_referencefrees');
 
-                while ($data = $DB->fetchArray($result)) {
+                foreach ($result as $data) {
                     $quantity = $PluginOrderOrder_Item->getTotalQuantityByRefAndDiscount(
                         $ID,
                         $data["id"],
@@ -1991,13 +2113,17 @@ class PluginOrderOrder extends CommonDBTM
             ]);
         }
 
-        $query = "SELECT `plugin_order_references_id`
-                FROM `glpi_plugin_order_orders_items`
-                WHERE `plugin_order_orders_id` = '$ID'
-                GROUP BY plugin_order_references_id";
-        $result = $DB->query($query);
-        if ($DB->numrows($result)) {
-            while ($detail = $DB->fetchArray($result)) {
+        $criteria = [
+            'SELECT' => 'plugin_order_references_id',
+            'FROM' => 'glpi_plugin_order_orders_items',
+            'WHERE' => [
+                'plugin_order_orders_id' => $ID
+            ],
+            'GROUPBY' => 'plugin_order_references_id'
+        ];
+        $result = $DB->request($criteria);
+        if (count($result)) {
+            foreach ($result as $detail) {
                 $reference->transfer($detail["plugin_order_references_id"], $entity);
             }
         }
@@ -2010,17 +2136,24 @@ class PluginOrderOrder extends CommonDBTM
         global $DB;
 
         $table = self::getTable();
-        $query = "SELECT *
-                FROM `$table`
-                WHERE `budgets_id` = '$budgets_id'
-                AND `is_template`='0'
-                ORDER BY `entities_id`, `name` ";
-        $result = $DB->query($query);
+        $criteria = [
+            'FROM' => $table,
+            'WHERE' => [
+                'budgets_id' => $budgets_id,
+                'is_template' => 0
+            ],
+            'ORDER' => ['entities_id', 'name']
+        ];
+        $result = $DB->request($criteria);
 
         echo "<div class='center'>";
-        if ($nb = $DB->numrows($result)) {
+        if ($nb = count($result)) {
             $start       = (isset($_REQUEST["start"])) ? $_REQUEST["start"] : 0;
-            $query_limit = $query . " LIMIT " . (int) $start . "," . (int) $_SESSION['glpilist_limit'];
+            // For pagination, we need to create a limited query
+            $criteria_limited = $criteria;
+            $criteria_limited['START'] = (int) $start;
+            $criteria_limited['LIMIT'] = (int) $_SESSION['glpilist_limit'];
+            $result_limited = $DB->request($criteria_limited);
 
             Html::printAjaxPager(__("Linked orders", "order"), $start, $nb);
 
@@ -2035,7 +2168,7 @@ class PluginOrderOrder extends CommonDBTM
             echo "</tr>";
 
             $total = 0;
-            foreach ($DB->request($query_limit) as $data) {
+            foreach ($result_limited as $data) {
                 $PluginOrderOrder_Item = new PluginOrderOrder_Item();
                 $prices                = $PluginOrderOrder_Item->getAllPrices($data["id"]);
 
@@ -2154,6 +2287,12 @@ class PluginOrderOrder extends CommonDBTM
             $bill_state = PluginOrderBillState::NOTPAID;
             $order_status = $order->fields['plugin_order_orderstates_id'];
         }
+        $input = [
+            'id'                         => $ID,
+            'plugin_order_billstates_id' => $bill_state,
+            'plugin_order_orderstates_id' => $order_status
+        ];
+        $order->check($ID, UPDATE, $input);
         $order->update([
             'id'                         => $ID,
             'plugin_order_billstates_id' => $bill_state,
@@ -2499,6 +2638,8 @@ class PluginOrderOrder extends CommonDBTM
                `plugin_order_billstates_id` int {$default_key_sign} NOT NULL default 0,
                `port_price` float NOT NULL default 0,
                `global_discount` float NOT NULL default 0,
+               `ecotax_price` decimal(20,6) NOT NULL DEFAULT '0.000000',
+               `plugin_order_ordertaxes_ecotax_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                `comment` text,
                `notepad` longtext,
                `is_deleted` tinyint NOT NULL default '0',
@@ -2869,6 +3010,27 @@ class PluginOrderOrder extends CommonDBTM
 
            //2.7.3
             $migration->changeField($table, "plugin_order_billstates_id", "plugin_order_billstates_id", "int {$default_key_sign} NOT NULL DEFAULT 0");
+
+           // Add ecotax fields if they don't exist
+            if (!$DB->fieldExists($table, 'ecotax_price')) {
+                $migration->addField(
+                    $table,
+                    'ecotax_price',
+                    "decimal(20,6) NOT NULL DEFAULT '0.000000'",
+                    ['after' => 'port_price']
+                );
+            }
+
+            if (!$DB->fieldExists($table, 'plugin_order_ordertaxes_ecotax_id')) {
+                $migration->addField(
+                    $table,
+                    'plugin_order_ordertaxes_ecotax_id',
+                    "int {$default_key_sign} NOT NULL DEFAULT '0'",
+                    ['after' => 'ecotax_price']
+                );
+            }
+
+            $migration->migrationOneTable($table);
         }
 
        // Remove RIGHT_OPENTICKET

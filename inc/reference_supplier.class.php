@@ -62,21 +62,23 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         global $DB;
 
         $table = self::getTable();
-        $query = "SELECT *
-                FROM `$table`
-                WHERE `plugin_order_references_id` = '$plugin_order_references_id'";
-        if ($result = $DB->query($query)) {
-            if ($DB->numrows($result) != 1) {
-                return false;
-            }
-            $this->fields = $DB->fetchAssoc($result);
-            if (is_array($this->fields) && count($this->fields)) {
-                return true;
-            } else {
-                return false;
-            }
+        $criteria = [
+            'FROM' => $table,
+            'WHERE' => [
+                'plugin_order_references_id' => $plugin_order_references_id
+            ]
+        ];
+        $result = $DB->request($criteria);
+
+        if (count($result) != 1) {
+            return false;
         }
-        return false;
+        $this->fields = $result->current();
+        if (is_array($this->fields) && count($this->fields)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function rawSearchOptions()
@@ -213,11 +215,15 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             echo $supplier->getLink();
         } else {
             $suppliers = [];
-            $query = "SELECT `suppliers_id`
-                     FROM `" . self::getTable() . "`
-                     WHERE `plugin_order_references_id` = '$plugin_order_references_id'";
-            $result = $DB->query($query);
-            while ($data = $DB->fetchArray($result)) {
+            $criteria = [
+                'SELECT' => 'suppliers_id',
+                'FROM' => self::getTable(),
+                'WHERE' => [
+                    'plugin_order_references_id' => $plugin_order_references_id
+                ]
+            ];
+            $result = $DB->request($criteria);
+            foreach ($result as $data) {
                 $suppliers[] = $data["suppliers_id"];
             }
 
@@ -275,15 +281,18 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         );
 
         $candelete = $ref->can($ID, DELETE);
-        $query     = "SELECT * FROM `" . self::getTable() . "` WHERE `plugin_order_references_id` = '$ID' ";
-        $query    .= getEntitiesRestrictRequest(
-            " AND",
-            self::getTable(),
-            "entities_id",
-            $ref->fields['entities_id'],
-            $ref->fields['is_recursive']
-        );
-        $result    = $DB->query($query);
+        $criteria  = [
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'plugin_order_references_id' => $ID
+            ] + getEntitiesRestrictCriteria(
+                self::getTable(),
+                "entities_id",
+                $ref->fields['entities_id'],
+                $ref->fields['is_recursive']
+            )
+        ];
+        $result    = $DB->request($criteria);
         $rand      = mt_rand();
         echo "<div class='center'>";
         echo "<form method='post' name='show_supplierref$rand' id='show_supplierref$rand' action=\"$target\">";
@@ -297,11 +306,11 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         echo "<th>" . __("Unit price tax free", "order") . "</th>";
         echo "</tr>";
 
-        if ($DB->numrows($result) > 0) {
+        if (count($result) > 0) {
             echo "<form method='post' name='show_ref_manu' action=\"$target\">";
             echo Html::hidden('plugin_order_references_id', ['value' => $ID]);
 
-            while ($data = $DB->fetchArray($result)) {
+            foreach ($result as $data) {
                 Session::addToNavigateListItems($this->getType(), (int) $data['id']);
                 echo Html::hidden("item[" . $data["id"] . "]", ['value' => $ID]);
                 echo "<tr class='tab_bg_1 center'>";
@@ -359,14 +368,19 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         global $DB;
 
         $table = self::getTable();
-        $query = "SELECT `reference_code`
-                FROM `$table`
-                WHERE `plugin_order_references_id` = '$plugin_order_references_id'
-                AND `suppliers_id` = '$suppliers_id' ";
-        $result = $DB->query($query);
+        $criteria = [
+            'SELECT' => 'reference_code',
+            'FROM' => $table,
+            'WHERE' => [
+                'plugin_order_references_id' => $plugin_order_references_id,
+                'suppliers_id' => $suppliers_id
+            ]
+        ];
+        $result = $DB->request($criteria);
 
-        if ($DB->numrows($result) > 0) {
-            return $DB->result($result, 0, "reference_code");
+        if (count($result) > 0) {
+            $row = $result->current();
+            return $row["reference_code"];
         } else {
             return 0;
         }
@@ -508,25 +522,41 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             $start = 0;
         }
 
-        $query = "SELECT  `gr`.`id`,
-                        `gr`.`manufacturers_id`,
-                        `gr`.`entities_id`,
-                        `gr`.`itemtype`,
-                        `gr`.`name`,
-                        `grm`.`price_taxfree`,
-                        `grm`.`reference_code`
-               FROM `glpi_plugin_order_references_suppliers` AS grm,
-                    `glpi_plugin_order_references` AS gr
-               WHERE `grm`.`suppliers_id` = '$ID'
-               AND `grm`.`plugin_order_references_id` = `gr`.`id`"
-              . getEntitiesRestrictRequest(" AND ", "gr", '', '', true);
-        $query_limit = $query . " LIMIT $start, " . (int) $_SESSION['glpilist_limit'];
-        $result = $DB->query($query);
-        $nb     = $DB->numrows($result);
+        $criteria = [
+            'SELECT' => [
+                'gr.id',
+                'gr.manufacturers_id',
+                'gr.entities_id',
+                'gr.itemtype',
+                'gr.name',
+                'grm.price_taxfree',
+                'grm.reference_code'
+            ],
+            'FROM' => 'glpi_plugin_order_references_suppliers AS grm',
+            'INNER JOIN' => [
+                'glpi_plugin_order_references AS gr' => [
+                    'ON' => [
+                        'grm' => 'plugin_order_references_id',
+                        'gr' => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'grm.suppliers_id' => $ID
+            ] + getEntitiesRestrictCriteria("gr", '', '', false, true)
+        ];
+
+        $result = $DB->request($criteria);
+        $nb     = count($result);
         echo "<div class='center'>";
 
         if ($nb) {
-            $result = $DB->query($query_limit);
+            // Add pagination
+            $criteria_limit = $criteria;
+            $criteria_limit['START'] = $start;
+            $criteria_limit['LIMIT'] = (int) $_SESSION['glpilist_limit'];
+            $result_limited = $DB->request($criteria_limit);
+
             Html::printAjaxPager(__("List references", "order"), $start, $nb);
 
             echo "<table class='tab_cadre_fixe'>";
@@ -538,7 +568,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             echo "<th>" . __("Product reference", "order") . "</th>";
             echo "<th>" . __("Unit price tax free", "order") . "</th></tr>";
 
-            while ($data = $DB->fetchArray($result)) {
+            foreach ($result_limited as $data) {
                 echo "<tr class='tab_bg_1' align='center'>";
                 echo "<td>";
                 echo Dropdown::getDropdownName("glpi_entities", (int) $data["entities_id"]);
