@@ -288,7 +288,12 @@ class PluginOrderPreference extends CommonDBTM
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (get_class($item) == 'Preference') {
-            return [1 => __("Orders", "order")];
+            return self::createTabEntry(
+                PluginOrderOrder::getTypeName(2),
+                0,
+                null,
+                PluginOrderOrder::getIcon()
+            );
         }
         return '';
     }

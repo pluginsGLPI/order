@@ -87,7 +87,6 @@ class PluginOrderOrder extends CommonDBTM
         return $nb > 1 ? __("Orders", "order") : __("Order", "order");
     }
 
-
     public function getState()
     {
         return $this->fields["plugin_order_orderstates_id"];
@@ -450,6 +449,7 @@ class PluginOrderOrder extends CommonDBTM
             'table'         => self::getTable(),
             'field'         => 'name',
             'name'          => __('Order name', 'order'),
+            'datatype'      => 'itemlink',
             'searchtype'    => 'contains',
             'checktype'     => 'text',
             'displaytype'   => 'text',
@@ -3079,6 +3079,6 @@ class PluginOrderOrder extends CommonDBTM
 
     public static function getIcon()
     {
-        return "fas fa-shopping-cart";
+        return "ti ti-shopping-cart";
     }
 }

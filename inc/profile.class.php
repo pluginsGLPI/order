@@ -158,7 +158,12 @@ class PluginOrderProfile extends CommonDBTM
     {
         if ($item instanceof Profile) {
             if ($item->getField('id') && $item->getField('interface') != 'helpdesk') {
-                return [1 => __("Orders", "order")];
+                return self::createTabEntry(
+                    PluginOrderOrder::getTypeName(2),
+                    0,
+                    null,
+                    PluginOrderOrder::getIcon()
+                );
             }
         }
         return '';
