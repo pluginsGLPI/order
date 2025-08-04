@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderProfile extends CommonDBTM
 {
@@ -47,9 +45,9 @@ class PluginOrderProfile extends CommonDBTM
     }
 
 
-   /**
-    * @param $profile
-    * */
+    /**
+     * @param $profile
+     * */
     public static function addDefaultProfileInfos($profiles_id, $rights, $drop_existing = false)
     {
         $profileRight = new ProfileRight();
@@ -79,7 +77,7 @@ class PluginOrderProfile extends CommonDBTM
                     'rights'      => $value,
                 ]);
 
-               //Add right to the current session
+                //Add right to the current session
                 $_SESSION['glpiactiveprofile'][$right] = $value;
             }
         }
@@ -98,7 +96,7 @@ class PluginOrderProfile extends CommonDBTM
         $profile = new Profile();
         $profile->getFromDB($ID);
 
-       //$rights = ['rights' => self::getRights($profile->getField('interface'),];
+        //$rights = ['rights' => self::getRights($profile->getField('interface'),];
         $rights = [];
         if ($profile->getField('interface') == 'central') {
             $rights = $this->getAllRights();
@@ -134,7 +132,7 @@ class PluginOrderProfile extends CommonDBTM
                 "plugin_order_generate_order_without_validation"
             )
         ) {
-            $DB->query("ALTER TABLE `glpi_plugin_order_profiles`
+            $DB->doQuery("ALTER TABLE `glpi_plugin_order_profiles`
                      ADD `plugin_order_generate_order_without_validation` char(1) default NULL;");
         }
 
@@ -149,7 +147,7 @@ class PluginOrderProfile extends CommonDBTM
     {
         /** @var \DBmysql $DB */
         global $DB;
-        $DB->query("DELETE FROM glpi_profilerights WHERE name LIKE 'plugin_order_%'");
+        $DB->doQuery("DELETE FROM glpi_profilerights WHERE name LIKE 'plugin_order_%'");
         self::removeRightsFromSession();
     }
 
@@ -227,16 +225,20 @@ class PluginOrderProfile extends CommonDBTM
     {
         /** @var \DBmysql $DB */
         global $DB;
-       //Cannot launch migration if there's nothing to migrate...
+        //Cannot launch migration if there's nothing to migrate...
         if (!$DB->tableExists('glpi_plugin_order_profiles')) {
             return true;
         }
 
+        $profiles_query = [
+            'FROM' => 'glpi_plugin_order_profiles',
+            'WHERE' => [
+                'profiles_id' => $profiles_id
+            ]
+        ];
+
         foreach (
-            $DB->request(
-                'glpi_plugin_order_profiles',
-                "`profiles_id`='$profiles_id'"
-            ) as $profile_data
+            $DB->request($profiles_query) as $profile_data
         ) {
             $matching = [
                 'order'              => 'plugin_order_order',
@@ -270,38 +272,48 @@ class PluginOrderProfile extends CommonDBTM
                     $query = "UPDATE `glpi_profilerights`
                          SET `rights`='" . $right . "'
                          WHERE `name`='$new' AND `profiles_id`='$profiles_id'";
-                    $DB->query($query);
+                    $DB->doQuery($query);
                 }
             }
         }
     }
 
 
-   /**
-    * Initialize profiles, and migrate it necessary
-    */
+    /**
+     * Initialize profiles, and migrate it necessary
+     */
     public static function initProfile()
     {
         /** @var \DBmysql $DB */
         global $DB;
         $profile = new self();
 
-       //Add new rights in glpi_profilerights table
+        //Add new rights in glpi_profilerights table
         foreach ($profile->getAllRights(true) as $data) {
             if (!countElementsInTable("glpi_profilerights", ['name' => $data['field']])) {
                 ProfileRight::addProfileRights([$data['field']]);
             }
         }
 
-       //Migration old rights in new ones
-        foreach ($DB->request("SELECT `id` FROM `glpi_profiles`") as $prof) {
+        $query_profiles = [
+            'SELECT' => 'id',
+            'FROM' => 'glpi_profiles'
+        ];
+
+        $query_profiles_rights = [
+            'FROM' => 'glpi_profilerights',
+            'WHERE' => [
+                'profiles_id' => $_SESSION['glpiactiveprofile']['id'],
+                'name' => ['LIKE', '%plugin_order%']
+            ]
+        ];
+
+        //Migration old rights in new ones
+        foreach ($DB->request($query_profiles) as $prof) {
             self::migrateOneProfile($prof['id']);
         }
         foreach (
-            $DB->request("SELECT *
-                             FROM `glpi_profilerights`
-                             WHERE `profiles_id`='" . $_SESSION['glpiactiveprofile']['id'] . "'
-                              AND `name` LIKE '%plugin_order%'") as $prof
+            $DB->request($query_profiles_rights) as $prof
         ) {
             $_SESSION['glpiactiveprofile'][$prof['name']] = $prof['rights'];
         }

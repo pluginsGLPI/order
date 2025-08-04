@@ -28,21 +28,19 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 // Class NotificationTarget
 class PluginOrderNotificationTargetOrder extends NotificationTarget
 {
-    const AUTHOR                    = 30;
-    const AUTHOR_GROUP              = 31;
-    const DELIVERY_USER             = 32;
-    const DELIVERY_GROUP            = 33;
-    const SUPERVISOR_AUTHOR_GROUP   = 34;
-    const SUPERVISOR_DELIVERY_GROUP = 35;
-    const SUPPLIER                  = 36;
-    const CONTACT                   = 37;
+    public const AUTHOR                    = 30;
+    public const AUTHOR_GROUP              = 31;
+    public const DELIVERY_USER             = 32;
+    public const DELIVERY_GROUP            = 33;
+    public const SUPERVISOR_AUTHOR_GROUP   = 34;
+    public const SUPERVISOR_DELIVERY_GROUP = 35;
+    public const SUPPLIER                  = 36;
+    public const CONTACT                   = 37;
 
     public function getEvents()
     {
@@ -69,22 +67,22 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             );
 
             foreach ($options['orders'] as $id => $order) {
-                 $this->data['orders'][] = [
-                     '##order.item.name##'         => $order['name'],
-                     '##order.item.numorder##'     => $order['num_order'],
-                     '##order.item.url##'          => $this->formatURL(
-                         $options['additionnaloption']['usertype'],
-                         PluginOrderOrder::class . "_" . $id
-                     ),
-                     '##order.item.orderdate##'    => Html::convDate($order["order_date"]),
-                     '##order.item.duedate##'      => Html::convDate($order["duedate"]),
-                     '##order.item.deliverydate##' => Html::convDate($order["deliverydate"]),
-                     '##order.item.comment##'      => $order["comment"],
-                     '##order.item.state##'        => Dropdown::getDropdownName(
-                         'glpi_plugin_order_orderstates',
-                         $order["plugin_order_orderstates_id"]
-                     ),
-                 ];
+                $this->data['orders'][] = [
+                    '##order.item.name##'         => $order['name'],
+                    '##order.item.numorder##'     => $order['num_order'],
+                    '##order.item.url##'          => $this->formatURL(
+                        $options['additionnaloption']['usertype'],
+                        PluginOrderOrder::class . "_" . $id
+                    ),
+                    '##order.item.orderdate##'    => Html::convDate($order["order_date"]),
+                    '##order.item.duedate##'      => Html::convDate($order["duedate"]),
+                    '##order.item.deliverydate##' => Html::convDate($order["deliverydate"]),
+                    '##order.item.comment##'      => $order["comment"],
+                    '##order.item.state##'        => Dropdown::getDropdownName(
+                        'glpi_plugin_order_orderstates',
+                        $order["plugin_order_orderstates_id"]
+                    ),
+                ];
             }
 
             $this->getTags();
@@ -119,7 +117,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
 
             $this->data['##lang.ordervalidation.comment##']   = __("Comment of validation", "order");
 
-            $comment = Toolbox::stripslashes_deep(str_replace(['\r\n', '\n', '\r'], "<br/>", $options['comments']));
+            $comment = str_replace(['\r\n', '\n', '\r'], "<br/>", $options['comments']);
             $this->data['##ordervalidation.comment##']        = nl2br($comment);
 
             switch ($event) {
@@ -464,12 +462,12 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                 'event'    => $event,
                 'FIELDS'   => 'id',
             ];
-            foreach ($DB->request('glpi_notifications', $options) as $data) {
+            foreach ($DB->request(['FROM' => 'glpi_notifications'], $options) as $data) {
                 $notif->delete($data);
             }
         }
 
-       //templates
+        //templates
         $template    = new NotificationTemplate();
         $translation = new NotificationTemplateTranslation();
         $options     = [
@@ -477,12 +475,12 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             'FIELDS'   => 'id'
         ];
 
-        foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
+        foreach ($DB->request(['FROM' => 'glpi_notificationtemplates'], $options) as $data) {
             $options_template = [
                 'notificationtemplates_id' => $data['id'],
                 'FIELDS'                   => 'id'
             ];
-            foreach ($DB->request('glpi_notificationtemplatetranslations', $options_template) as $data_template) {
+            foreach ($DB->request(['FROM' => 'glpi_notificationtemplatetranslations'], $options_template) as $data_template) {
                 $translation->delete($data_template);
             }
             $template->delete($data);
@@ -490,9 +488,9 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
     }
 
 
-   /**
-    * Get additionnals targets for Tickets
-   **/
+    /**
+     * Get additionnals targets for Tickets
+    **/
     public function addAdditionalTargets($event = '')
     {
         $this->addTarget(self::AUTHOR, __("Author"));
@@ -536,13 +534,13 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
         }
     }
 
-   /**
-    * Add order suppliers or contacts to list of recipients.
-    *
-    * @param string  $recipient_type Recipient type ("suppliers" or "contacts")
-    * @param integer $order_id       Order id
-    * @return void
-    */
+    /**
+     * Add order suppliers or contacts to list of recipients.
+     *
+     * @param string  $recipient_type Recipient type ("suppliers" or "contacts")
+     * @param integer $order_id       Order id
+     * @return void
+     */
     protected function addAddressesByType($recipient_type, $order_id)
     {
         /** @var \DBmysql $DB */

@@ -36,7 +36,7 @@
 function plugin_order_install()
 {
     foreach (glob(PLUGIN_ORDER_DIR . '/inc/*.php') as $file) {
-       //Do not load datainjection files (not needed and avoid missing class error message)
+        //Do not load datainjection files (not needed and avoid missing class error message)
         if (!preg_match('/injection.class.php/', $file)) {
             include_once($file);
         }
@@ -78,7 +78,7 @@ function plugin_order_install()
     echo "</table>";
     echo "</center>";
 
-   //Create directories for the plugin's files
+    //Create directories for the plugin's files
     $directories = [PLUGIN_ORDER_TEMPLATE_DIR        => 'templates',
         PLUGIN_ORDER_SIGNATURE_DIR       => 'signatures',
         PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR => 'generate',
@@ -86,22 +86,12 @@ function plugin_order_install()
     ];
     foreach ($directories as $new_directory => $old_directory) {
         if (!is_dir($new_directory)) {
-                  @mkdir($new_directory, 0755, true)
-                     or die(sprintf(
-                         __('%1$s %2$s'),
-                         __("Can't create folder", 'order'),
-                         $new_directory
-                     ));
-           //Copy files from the old directories to the new ones
+            @mkdir($new_directory, 0755, true);
+            //Copy files from the old directories to the new ones
             foreach (glob(PLUGIN_ORDER_DIR . "/$old_directory/*") as $file) {
-                 $new_file = str_replace(PLUGIN_ORDER_DIR . "/$old_directory", $new_directory, $file);
+                $new_file = str_replace(PLUGIN_ORDER_DIR . "/$old_directory", $new_directory, $file);
                 if (!file_exists($new_directory . $file)) {
-                    copy($file, $new_file)
-                     or die(sprintf(
-                         __('Cannot copy file %1$s to %2$s', 'order'),
-                         $file,
-                         $new_file
-                     ));
+                    copy($file, $new_file);
                 }
             }
         }
@@ -118,7 +108,7 @@ function plugin_order_install()
 function plugin_order_uninstall()
 {
     foreach (glob(PLUGIN_ORDER_DIR . '/inc/*.php') as $file) {
-       //Do not load datainjection files (not needed and avoid missing class error message)
+        //Do not load datainjection files (not needed and avoid missing class error message)
         if (!preg_match('/injection.class.php/', $file)) {
             include_once($file);
         }
@@ -145,7 +135,7 @@ function plugin_order_uninstall()
 /* define dropdown tables to be manage in GLPI : */
 function plugin_order_getDropdown()
 {
-   /* table => name */
+    /* table => name */
     $plugin = new Plugin();
     if ($plugin->isActivated("order")) {
         return ['PluginOrderOrderTax'         => __("VAT", "order"),
@@ -172,40 +162,32 @@ function plugin_order_getDatabaseRelations()
     $plugin = new Plugin();
     if ($plugin->isActivated("order")) {
         return [
-            "glpi_plugin_order_orderpayments" => [
-                "glpi_plugin_order_orders" => "plugin_order_orderpayments_id"
-            ],
-            "glpi_plugin_order_ordertaxes" => [
-                "glpi_plugin_order_orders" => "plugin_order_ordertaxes_id"
-            ],
-            "glpi_plugin_order_ordertypes" => [
-                "glpi_plugin_order_orders" => "plugin_order_ordertypes_id"
-            ],
-            "glpi_plugin_order_orderstates" => [
-                "glpi_plugin_order_orders" => "plugin_order_orderstates_id"
+            "glpi_plugin_order_orders" => [
+                "glpi_plugin_order_orderpayments" => "plugin_order_orders_id",
+                "glpi_plugin_order_ordertaxes" => "plugin_order_orders_id",
+                "glpi_plugin_order_ordertypes" => "plugin_order_orders_id",
+                "glpi_plugin_order_orderstates" => "plugin_order_orders_id",
+                "glpi_plugin_order_orders_items" => "plugin_order_orders_id",
+                "glpi_plugin_order_orders_suppliers" => "plugin_order_orders_id"
             ],
             "glpi_plugin_order_accountsections" => [
                 "glpi_plugin_order_accountsections" => "plugin_order_accountsections_id"
             ],
-            "plugin_order_analyticnatures" => [
+            "glpi_plugin_order_analyticnatures" => [
                 "glpi_plugin_order_orders_items" => "plugin_order_analyticnatures_id"
             ],
             "glpi_plugin_order_deliverystates" => [
                 "glpi_plugin_order_orders_items" => "plugin_order_deliverystates_id"
             ],
-            "glpi_plugin_order_orders" => [
-                "glpi_plugin_order_orders_items"     => "plugin_order_orders_id",
-                "glpi_plugin_order_orders_suppliers" => "plugin_order_orders_id"
-            ],
             "glpi_plugin_order_references" => [
-                "glpi_plugin_order_orders_items"         => "plugin_order_references_id",
+                "glpi_plugin_order_orders_items" => "plugin_order_references_id",
                 "glpi_plugin_order_references_suppliers" => "plugin_order_references_id"
             ],
             "glpi_entities" => [
-                "glpi_plugin_order_orders"    => "entities_id",
+                "glpi_plugin_order_orders" => "entities_id",
                 "glpi_plugin_order_references" => "entities_id",
-                "glpi_plugin_order_others"     => "entities_id",
-                "glpi_plugin_order_bills"      => "entities_id"
+                "glpi_plugin_order_others" => "entities_id",
+                "glpi_plugin_order_bills" => "entities_id"
             ],
             "glpi_budgets" => [
                 "glpi_plugin_order_orders" => "budgets_id"
@@ -214,8 +196,8 @@ function plugin_order_getDatabaseRelations()
                 "glpi_plugin_order_others" => "plugin_order_othertypes_id"
             ],
             "glpi_suppliers" => [
-                "glpi_plugin_order_orders"               => "suppliers_id",
-                "glpi_plugin_order_orders_suppliers"     => "suppliers_id",
+                "glpi_plugin_order_orders" => "suppliers_id",
+                "glpi_plugin_order_orders_suppliers" => "suppliers_id",
                 "glpi_plugin_order_references_suppliers" => "suppliers_id"
             ],
             "glpi_manufacturers" => [
@@ -300,7 +282,7 @@ function plugin_order_addLeftJoin($type, $ref_table, $new_table, $linkfield, &$a
 /* display custom fields in the search */
 function plugin_order_giveItem($type, $ID, $data, $num)
 {
-    $searchopt = &Search::getOptions($type);
+    $searchopt = Search::getOptions($type);
     $table     = $searchopt[$ID]["table"];
     $field     = $searchopt[$ID]["field"];
     $reference = new PluginOrderReference();
@@ -308,7 +290,7 @@ function plugin_order_giveItem($type, $ID, $data, $num)
     $itemtype  = $data['raw']["ITEM_" . $num . "_itemtype"] ?? '';
 
     switch ($table . '.' . $field) {
-       /* display associated items with order */
+        /* display associated items with order */
         case "glpi_plugin_order_references.types_id":
             if ($itemtype == 'PluginOrderOther') {
                 $file = PLUGIN_ORDER_DIR . "/inc/othertype.class.php";
@@ -323,6 +305,7 @@ function plugin_order_giveItem($type, $ID, $data, $num)
             } else {
                 return " ";
             }
+            // no break
         case "glpi_plugin_order_references.models_id":
             if (file_exists(GLPI_ROOT . "/src/" . $itemtype . "Model.php")) {
                 return Dropdown::getDropdownName(
@@ -332,6 +315,7 @@ function plugin_order_giveItem($type, $ID, $data, $num)
             } else {
                 return " ";
             }
+            // no break
         case "glpi_plugin_order_references.templates_id":
             if (!$itemnum) {
                 return " ";
@@ -345,7 +329,7 @@ function plugin_order_giveItem($type, $ID, $data, $num)
 
 function plugin_order_displayConfigItem($type, $ID, $data, $num)
 {
-    $searchopt = &Search::getOptions($type);
+    $searchopt = Search::getOptions($type);
     $table = $searchopt[$ID]["table"];
     $field = $searchopt[$ID]["field"];
     switch ($table . '.' . $field) {
@@ -371,7 +355,7 @@ function plugin_item_purge_order($item)
              SET `items_id`='0'
              WHERE `itemtype`='" . $item->getType() . "'
                AND `items_id`='" . $item->getField('id') . "'";
-    $DB->query($query);
+    $DB->doQuery($query);
 
     return true;
 }

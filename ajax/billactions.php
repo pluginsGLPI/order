@@ -28,17 +28,13 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
+
 
 Session::checkRight("plugin_order_bill", READ);
 
 header("Content-Type: text/html; charset=UTF-8");
 
 Html::header_nocache();
-
-if (!defined('GLPI_ROOT')) {
-    die("Can not acces directly to this file");
-}
 
 if (isset($_POST["action"])) {
     switch ($_POST["action"]) {

@@ -28,17 +28,15 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderConfig extends CommonDBTM
 {
     public static $rightname = 'config';
 
-    const CONFIG_NEVER   = 0;
-    const CONFIG_YES     = 1;
-    const CONFIG_ASK     = 2;
+    public const CONFIG_NEVER   = 0;
+    public const CONFIG_YES     = 1;
+    public const CONFIG_ASK     = 2;
 
 
     public function __construct()
@@ -51,13 +49,13 @@ class PluginOrderConfig extends CommonDBTM
     }
 
 
-    public static function canView()
+    public static function canView(): bool
     {
         return Session::haveRight('config', READ);
     }
 
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return Session::haveRight('config', UPDATE);
     }
@@ -243,12 +241,12 @@ class PluginOrderConfig extends CommonDBTM
         echo "</td>";
         echo "</tr>";
 
-       // Automatic actions
+        // Automatic actions
         echo "<tr class='tab_bg_1' align='center'>";
         echo "<th colspan='2'>" . __("Automatic actions when delivery", "order") . "</th>";
         echo "</tr>";
 
-       // ASSETS
+        // ASSETS
         echo "<tr class='tab_bg_1' align='center'>";
         echo "<th colspan='2'>" . __('Item') . "</th>";
         echo "</tr>";
@@ -348,7 +346,7 @@ class PluginOrderConfig extends CommonDBTM
             echo "</td>";
             echo "</tr>";
 
-           // TICKETS
+            // TICKETS
             echo "<tr class='tab_bg_1' align='center'>";
             echo "<th colspan='2'>" . __("Ticket") . "</th>";
             echo "</tr>";
@@ -364,7 +362,7 @@ class PluginOrderConfig extends CommonDBTM
             echo "</tr>";
         }
 
-       /* Workflow */
+        /* Workflow */
         echo "<tr class='tab_bg_1' align='center'>";
         echo "<th colspan='2'>" . __("Order lifecycle", "order") . "</th>";
         echo "</tr>";
@@ -453,7 +451,7 @@ class PluginOrderConfig extends CommonDBTM
     }
 
 
-   //----------------- Getters and setters -------------------//
+    //----------------- Getters and setters -------------------//
 
     public function useValidation()
     {
@@ -667,7 +665,7 @@ class PluginOrderConfig extends CommonDBTM
     }
 
 
-   //----------------- Install & uninstall -------------------//
+    //----------------- Install & uninstall -------------------//
     public static function install(Migration $migration)
     {
         /** @var \DBmysql $DB */
@@ -680,7 +678,7 @@ class PluginOrderConfig extends CommonDBTM
         $table  = self::getTable();
         $config = new self();
 
-       //This class is available since version 1.3.0
+        //This class is available since version 1.3.0
         if (
             !$DB->tableExists($table)
             && !$DB->tableExists("glpi_plugin_order_config")
@@ -728,38 +726,38 @@ class PluginOrderConfig extends CommonDBTM
                         `use_free_reference` tinyint NOT NULL default '0',
                         PRIMARY KEY  (`id`)
                      ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-               $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
 
-               $tobefilled = "TOBEFILLED";
-               $config->add([
-                   'id'                          => 1,
-                   'use_validation'              => 0,
-                   'default_taxes'               => 0,
-                   'generate_assets'             => 0,
-                   'generated_name'              => $tobefilled,
-                   'generated_serial'            => $tobefilled,
-                   'generated_otherserial'       => $tobefilled,
-                   'default_asset_states_id'     => 0,
-                   'generated_title'             => $tobefilled,
-                   'generated_content'           => $tobefilled,
-                   'default_ticketcategories_id' => 0,
-                   'shoudbedelivered_color'      => '#ff5555',
-               ]);
+            $tobefilled = "TOBEFILLED";
+            $config->add([
+                'id'                          => 1,
+                'use_validation'              => 0,
+                'default_taxes'               => 0,
+                'generate_assets'             => 0,
+                'generated_name'              => $tobefilled,
+                'generated_serial'            => $tobefilled,
+                'generated_otherserial'       => $tobefilled,
+                'default_asset_states_id'     => 0,
+                'generated_title'             => $tobefilled,
+                'generated_content'           => $tobefilled,
+                'default_ticketcategories_id' => 0,
+                'shoudbedelivered_color'      => '#ff5555',
+            ]);
         } else {
-           //Upgrade
+            //Upgrade
             $migration->displayMessage("Upgrading $table");
 
-           //1.2.0
+            //1.2.0
             $migration->renameTable("glpi_plugin_order_config", $table);
 
             if (!countElementsInTable("glpi_plugin_order_configs")) {
                 $query = "INSERT INTO `glpi_plugin_order_configs`(`id`,`use_validation`,`default_taxes`) VALUES (1,0,0);";
-                $DB->query($query) or die($DB->error());
+                $DB->doQuery($query);
             }
 
             $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
 
-           //1.3.0
+            //1.3.0
             $migration->addField($table, "generate_assets", "tinyint NOT NULL default '0'");
             $migration->addField($table, "generated_name", "varchar(255) default NULL");
             $migration->addField($table, "generated_serial", "varchar(255) default NULL");
@@ -786,7 +784,7 @@ class PluginOrderConfig extends CommonDBTM
                 "int {$default_key_sign} NOT NULL default '0'"
             );
 
-           //1.9.0
+            //1.9.0
             $migration->addField($table, "add_location", "TINYINT NOT NULL DEFAULT '0'");
             $migration->addField($table, "add_bill_details", "TINYINT NOT NULL DEFAULT '0'");
 
@@ -803,23 +801,24 @@ class PluginOrderConfig extends CommonDBTM
             $migration->addField($table, "hide_inactive_budgets", "bool");
             $migration->addField($table, "rename_documents", "bool");
 
-           //0.85+1.2
+            //0.85+1.2
             $migration->addField($table, "transmit_budget_change", "bool");
 
             $migration->migrationOneTable($table);
 
-           //version 2.0.1
+            //version 2.0.1
             $migration->addField($table, "use_free_reference", "bool");
         }
 
         $migration->displayMessage("Add default order state workflow");
-        $new_states = ['order_status_draft'               => 1,
-            'order_status_waiting_approval'    => 2,
-            'order_status_approved'            => 3,
-            'order_status_partially_delivred'  => 4,
-            'order_status_completly_delivered' => 5,
-            'order_status_canceled'            => 6,
-            'order_status_paid'                => 7
+        $new_states = [
+            'order_status_draft'               => '1',
+            'order_status_waiting_approval'    => '2',
+            'order_status_approved'            => '3',
+            'order_status_partially_delivred'  => '4',
+            'order_status_completly_delivered' => '5',
+            'order_status_canceled'            => '6',
+            'order_status_paid'                => '7'
         ];
 
         foreach ($new_states as $field => $value) {
@@ -851,11 +850,11 @@ class PluginOrderConfig extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
-       //Old table
-        $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_config`");
+        //Old table
+        $DB->doQuery("DROP TABLE IF EXISTS `glpi_plugin_order_config`");
 
-       //New table
-        $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`");
+        //New table
+        $DB->doQuery("DROP TABLE IF EXISTS `" . self::getTable() . "`");
     }
 
 

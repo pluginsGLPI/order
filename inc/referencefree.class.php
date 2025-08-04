@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderReferenceFree extends CommonDBTM
 {
@@ -55,7 +53,7 @@ class PluginOrderReferenceFree extends CommonDBTM
         if (!$DB->tableExists($table)) {
             $migration->displayMessage("Installing $table");
 
-           //Install
+            //Install
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_referencefrees` (
                `id` int {$default_key_sign} NOT NULL auto_increment,
                `entities_id` int {$default_key_sign} NOT NULL default '0',
@@ -117,10 +115,10 @@ class PluginOrderReferenceFree extends CommonDBTM
             ] as $t
         ) {
             $query = "DELETE FROM `$t` WHERE `itemtype`='" . __CLASS__ . "'";
-            $DB->query($query);
+            $DB->doQuery($query);
         }
 
-        $DB->query("DROP TABLE IF EXISTS `$table`") or die($DB->error());
+        $DB->doQuery("DROP TABLE IF EXISTS `$table`");
     }
 
     /**

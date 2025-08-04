@@ -28,7 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
+
 Session::checkLoginUser();
 
 if (!isset($_GET["id"])) {
@@ -50,14 +50,14 @@ if (isset($_POST["add"])) {
         }
     }
     Html::redirect($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     if (PluginOrderSurveySupplier::canCreate()) {
         foreach ($_POST["check"] as $ID => $value) {
             $PluginOrderSurveySupplier->delete(["id" => $ID], false, false);
         }
     }
     Html::redirect($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     if (PluginOrderSurveySupplier::canCreate()) {
         $PluginOrderSurveySupplier->update($_POST);
     }

@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderReception extends CommonDBChild
 {
@@ -56,14 +54,18 @@ class PluginOrderReception extends CommonDBChild
         return __("Delivery", "order");
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-truck-delivery';
+    }
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         return Session::haveRight('plugin_order_order', PluginOrderOrder::RIGHT_DELIVERY);
     }
 
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         return Session::haveRight('plugin_order_order', PluginOrderOrder::RIGHT_DELIVERY)
          && Session::haveRight('plugin_order_order', READ);
@@ -108,7 +110,7 @@ class PluginOrderReception extends CommonDBChild
         $query = "SELECT `states_id`
                 FROM `glpi_plugin_order_orders_items`
                 WHERE `id` = '$detailID' ";
-        $result = $DB->query($query);
+        $result = $DB->doQuery($query);
         if ($DB->result($result, 0, "states_id") == $states_id) {
             return true;
         } else {
@@ -276,7 +278,7 @@ class PluginOrderReception extends CommonDBChild
                 'name'  => "plugin_order_bills_id",
                 'value' => $this->fields["plugin_order_bills_id"]
             ]);
-        } else if (Session::haveRight("plugin_order_bill", READ)) {
+        } elseif (Session::haveRight("plugin_order_bill", READ)) {
             echo Dropdown::getDropdownName(
                 "glpi_plugin_order_bills",
                 $this->fields["plugin_order_bills_id"]
@@ -286,7 +288,7 @@ class PluginOrderReception extends CommonDBChild
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'><td>";
-       //comments of order
+        //comments of order
         echo __("Comments") . ": </td>";
         echo "<td colspan='3'>";
         if ($canedit) {
@@ -388,7 +390,7 @@ class PluginOrderReception extends CommonDBChild
                 ]
             ];
 
-            $item = new $typeRef();
+            $item = getItemForItemtype($typeRef);
             $rand = mt_rand();
             echo "<tr><th><ul class='list-unstyled'><li>";
             echo "<a href=\"javascript:showHideDiv('reception$rand','reception_img$rand', '" .
@@ -725,7 +727,7 @@ class PluginOrderReception extends CommonDBChild
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 
-       //remove native transfer action
+        //remove native transfer action
         unset($actions[MassiveAction::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list']);
         $sep     = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
 
@@ -901,7 +903,7 @@ class PluginOrderReception extends CommonDBChild
                     $params["plugin_order_deliverystates_id"]
                 );
 
-               // Automatic generate asset
+                // Automatic generate asset
                 $options = [
                     "itemtype"                   => $row["itemtype"],
                     "items_id"                   => $row["id"],
@@ -985,7 +987,7 @@ class PluginOrderReception extends CommonDBChild
         $ma                     = false;
         $params2                = [];
 
-       // from MassiveAction process, we get ma object, so convert it into array
+        // from MassiveAction process, we get ma object, so convert it into array
         if (is_object($params)) {
             $ma      = $params;
             $params2 = [
@@ -1040,7 +1042,7 @@ class PluginOrderReception extends CommonDBChild
                 } else {
                     if ($detail->getFromDB($key)) {
                         if (!$plugin_order_orders_id) {
-                             $plugin_order_orders_id = $detail->fields["plugin_order_orders_id"];
+                            $plugin_order_orders_id = $detail->fields["plugin_order_orders_id"];
                         }
 
                         if ($detail->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
@@ -1052,7 +1054,7 @@ class PluginOrderReception extends CommonDBChild
                                 $params2['POST']["plugin_order_deliverystates_id"]
                             );
                             if ($ma !== false) {
-                                 $ma->itemDone(__CLASS__, $key, MassiveAction::ACTION_OK);
+                                $ma->itemDone(__CLASS__, $key, MassiveAction::ACTION_OK);
                             }
                         } else {
                             Session::addMessageAfterRedirect(__("Item already taken delivery", "order"), true, ERROR);
@@ -1061,7 +1063,7 @@ class PluginOrderReception extends CommonDBChild
                             }
                         }
 
-                       // Automatic generate asset
+                        // Automatic generate asset
                         $options = [
                             "itemtype"                   => $add_data["itemtype"],
                             "items_id"                   => $key,
@@ -1123,10 +1125,10 @@ class PluginOrderReception extends CommonDBChild
             }
         }
 
-       //Are all items delivered ?
+        //Are all items delivered ?
         if ($is_delivered && !$order->isDelivered()) {
             $order->updateOrderStatus($orders_id, $config->getDeliveredState());
-           //At least one item is delivered
+            //At least one item is delivered
         } else {
             if ($delivery_status) {
                 $order->updateOrderStatus(
@@ -1161,15 +1163,15 @@ class PluginOrderReception extends CommonDBChild
     }
 
 
-   /**
-   *
-   * @param $options
-   *
-   * @return void
-   */
+    /**
+    *
+    * @param $options
+    *
+    * @return void
+    */
     public static function generateAsset($options = [])
     {
-       // No asset should be generated for PluginOrderOther and PluginOrderReferenceFree items.
+        // No asset should be generated for PluginOrderOther and PluginOrderReferenceFree items.
         if (
             array_key_exists('itemtype', $options)
             && (in_array($options['itemtype'], [PluginOrderOther::class, PluginOrderReferenceFree::class]))
@@ -1177,14 +1179,14 @@ class PluginOrderReception extends CommonDBChild
             return;
         }
 
-       // Retrieve configuration for generate assets feature
+        // Retrieve configuration for generate assets feature
         $config = PluginOrderConfig::getConfig();
         if (
             $config->canGenerateAsset() == PluginOrderConfig::CONFIG_YES
             || ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK
               && $options['manual_generate'] == 1)
         ) {
-           // Automatic generate assets on delivery
+            // Automatic generate assets on delivery
             $rand = mt_rand();
             $item = [
                 "name"                   => $config->getGeneratedAssetName() . $rand,
@@ -1244,7 +1246,12 @@ class PluginOrderReception extends CommonDBChild
             && PluginOrderOrder::canView()
             && $item->getState() > PluginOrderOrderState::WAITING_FOR_APPROVAL
         ) {
-            return self::createTabEntry(__("Item delivered", "order"), self::countForOrder($item));
+            return self::createTabEntry(
+                __("Item delivered", "order"),
+                self::countForOrder($item),
+                null,
+                self::getIcon()
+            );
         }
         return '';
     }

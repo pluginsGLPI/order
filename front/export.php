@@ -28,7 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
+
 Session::checkLoginUser();
 
 $config = PluginOrderConfig::getConfig();

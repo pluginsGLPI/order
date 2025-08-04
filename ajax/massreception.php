@@ -28,7 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
+
 
 header("Content-Type: text/html; charset=UTF-8");
 
@@ -75,20 +75,24 @@ if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
     Dropdown::showYesNo("manual_generate", $config->canGenerateAsset());
     echo "</td><td>" . __("Default name", "order") . "</td>";
     echo "<td>&nbsp;";
-    Html::autocompletionTextField($config, "generated_name");
+    Html::input("generated_name", [
+        'value' => $config->fields['generated_name'],
+    ]);
     echo "</td>&nbsp;&nbsp;";
 
     echo "<td>" . __("Default serial number", "order") . "</td>";
     echo "<td>&nbsp;";
-    Html::autocompletionTextField($config, "generated_serial");
+    Html::input("generated_serial", [
+        'value' => $config->fields['generated_serial'],
+    ]);
     echo "</td>&nbsp;&nbsp;";
 
     echo "<td>" . __("Default inventory number", "order") . "</td>";
     echo "<td>&nbsp;";
-    Html::autocompletionTextField($config, "generated_otherserial");
+    Html::input("generated_otherserial", [
+        'value' => $config->fields['generated_otherserial'],
+    ]);
     echo "</td>";
 }
 echo "<td><input type='submit' name='bulk_reception' class='submit' value='"
       . _sx('button', 'Post') . "'></td></tr></table>";
-
-Html::ajaxFooter();

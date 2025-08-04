@@ -30,17 +30,13 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
-
 class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 {
     public static $rightname              = 'plugin_order_order';
 
     public $dohistory                     = true;
 
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1             = "PluginOrderOrder";
 
     public static $items_id_1             = 'plugin_order_orders_id';
@@ -55,52 +51,52 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public static $check_entity_coherency = false;
 
-   //TODO better right and entity menber (ex Computer_Item)
+    //TODO better right and entity menber (ex Computer_Item)
 
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return true;
     }
 
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return true;
     }
 
 
-    public static function canDelete()
+    public static function canDelete(): bool
     {
         return true;
     }
 
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         return true;
     }
 
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         return true;
     }
 
 
-    public function canDeleteItem()
+    public function canDeleteItem(): bool
     {
         return true;
     }
 
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         return true;
     }
 
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         return true;
     }
@@ -109,6 +105,11 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
     public static function getTypeName($nb = 0)
     {
         return __("Order item", "order");
+    }
+
+    public static function getIcon()
+    {
+        return 'ti ti-clipboard-list';
     }
 
     public function rawSearchOptions()
@@ -220,7 +221,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
     public static function updateItem(CommonDBTM $item)
     {
 
-       //TO DO : Must do check same values or update infocom
+        //TO DO : Must do check same values or update infocom
         $plugin = new Plugin();
         if ($plugin->isActivated("order")) {
             if (isset($item->fields["id"])) {
@@ -239,44 +240,44 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                     if ($detail_id > 0) {
                         switch ($item->fields["itemtype"]) {
                             default:
-                                  $field_set    = false;
-                                  $unset_fields = ["order_number", "delivery_number", "budgets_id",
-                                      "suppliers_id", "value"
-                                  ];
-                                  $orderitem->getFromDB($detail_id);
-                                  $order->getFromDB($orderitem->fields["plugin_order_orders_id"]);
-                                  $order_supplier->getFromDBByOrder($orderitem->fields["plugin_order_orders_id"]);
+                                $field_set    = false;
+                                $unset_fields = ["order_number", "delivery_number", "budgets_id",
+                                    "suppliers_id", "value"
+                                ];
+                                $orderitem->getFromDB($detail_id);
+                                $order->getFromDB($orderitem->fields["plugin_order_orders_id"]);
+                                $order_supplier->getFromDBByOrder($orderitem->fields["plugin_order_orders_id"]);
 
-                                  $value["order_number"]    = $order->fields["num_order"];
-                                  $value["delivery_number"] = $orderitem->fields["delivery_number"];
-                                  $value["budgets_id"]      = $order->fields["budgets_id"];
-                                  $value["suppliers_id"]    = $order->fields["suppliers_id"];
-                                  $value["value"]           = $orderitem->fields["price_discounted"];
-                                  if (
-                                      isset($order_supplier->fields["num_bill"])
-                                      && !empty($order_supplier->fields["num_bill"])
-                                  ) {
-                                      $unset_fields[]        = "bill";
-                                      $value["bill"]         = $order_supplier->fields["num_bill"];
-                                  }
+                                $value["order_number"]    = $order->fields["num_order"];
+                                $value["delivery_number"] = $orderitem->fields["delivery_number"];
+                                $value["budgets_id"]      = $order->fields["budgets_id"];
+                                $value["suppliers_id"]    = $order->fields["suppliers_id"];
+                                $value["value"]           = $orderitem->fields["price_discounted"];
+                                if (
+                                    isset($order_supplier->fields["num_bill"])
+                                    && !empty($order_supplier->fields["num_bill"])
+                                ) {
+                                    $unset_fields[]        = "bill";
+                                    $value["bill"]         = $order_supplier->fields["num_bill"];
+                                }
 
-                                  foreach ($unset_fields as $field) {
-                                      if (
-                                          isset($item->input[$field])
-                                           && $item->input[$field] != $value[$field]
-                                      ) {
-                                          $field_set           = true;
-                                          $item->input[$field] = $value[$field];
-                                      }
-                                  }
-                                  if ($field_set && !isset($item->input['_no_warning'])) {
-                                      Session::addMessageAfterRedirect(__("Some fields cannont be modified because they belong to an order", "order"), true, ERROR);
-                                  }
+                                foreach ($unset_fields as $field) {
+                                    if (
+                                        isset($item->input[$field])
+                                         && $item->input[$field] != $value[$field]
+                                    ) {
+                                        $field_set           = true;
+                                        $item->input[$field] = $value[$field];
+                                    }
+                                }
+                                if ($field_set && !isset($item->input['_no_warning'])) {
+                                    Session::addMessageAfterRedirect(__("Some fields cannont be modified because they belong to an order", "order"), true, ERROR);
+                                }
                                 break;
                             case 'Contract':
-                                 $orderitem->getFromDB($detail_id);
-                                 $order->getFromDB($orderitem->fields["plugin_order_orders_id"]);
-                                 $item->input['cost'] = $orderitem->fields["price_discounted"];
+                                $orderitem->getFromDB($detail_id);
+                                $order->getFromDB($orderitem->fields["plugin_order_orders_id"]);
+                                $item->input['cost'] = $orderitem->fields["price_discounted"];
                                 break;
                         }
                     }
@@ -427,7 +428,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
     }
 
 
-   /* show details of orders */
+    /* show details of orders */
     public function showItem($ID)
     {
         $this->showFormDetail($ID);
@@ -496,7 +497,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                     $itemtypeArray = ['' => Dropdown::EMPTY_VALUE];
                     foreach ($result as $row) {
                         $itemtype = $row['itemtype'];
-                        $type = new $itemtype();
+                        $type = getItemForItemtype($itemtype);
                         $itemtypeArray[$itemtype] = $type->getTypeName();
                     }
                     asort($itemtypeArray);
@@ -507,38 +508,38 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                         'width' => '100%'
                     ]);
 
-                     Ajax::updateItemOnSelectEvent(
-                         'dropdown_itemtype' . $rand,
-                         'show_reference',
-                         '../ajax/dropdownReference.php',
-                         [
-                             'itemtype'     => '__VALUE__',
-                             'fieldname'    => 'plugin_order_references_id',
-                             'suppliers_id' => $order->fields["suppliers_id"],
-                             'entities_id'  => $order->fields["entities_id"],
-                             'is_recursive' => $order->fields["is_recursive"],
-                             'rand'         => $rand,
-                         ]
-                     );
-                     echo "</td>";
-                     echo "<td class='tab_bg_1'><span id='show_reference'>";
-                     Dropdown::showFromArray('plugin_order_references_id', [0 => Dropdown::EMPTY_VALUE], [
-                         'rand'  => $rand,
-                         'width' => '100%'
-                     ]);
-                     echo "</span></td>";
+                    Ajax::updateItemOnSelectEvent(
+                        'dropdown_itemtype' . $rand,
+                        'show_reference',
+                        '../ajax/dropdownReference.php',
+                        [
+                            'itemtype'     => '__VALUE__',
+                            'fieldname'    => 'plugin_order_references_id',
+                            'suppliers_id' => $order->fields["suppliers_id"],
+                            'entities_id'  => $order->fields["entities_id"],
+                            'is_recursive' => $order->fields["is_recursive"],
+                            'rand'         => $rand,
+                        ]
+                    );
+                    echo "</td>";
+                    echo "<td class='tab_bg_1'><span id='show_reference'>";
+                    Dropdown::showFromArray('plugin_order_references_id', [0 => Dropdown::EMPTY_VALUE], [
+                        'rand'  => $rand,
+                        'width' => '100%'
+                    ]);
+                    echo "</span></td>";
 
-                     echo "<td " . (!$config->isAnalyticNatureDisplayed() ? 'style="display:none;"' : '') . ">";
-                     PluginOrderAnalyticNature::Dropdown(['name'  => "plugin_order_analyticnatures_id"]);
+                    echo "<td " . (!$config->isAnalyticNatureDisplayed() ? 'style="display:none;"' : '') . ">";
+                    PluginOrderAnalyticNature::Dropdown(['name'  => "plugin_order_analyticnatures_id"]);
 
                     if ($config->isAnalyticNatureMandatory()) {
                         echo " <span class='red'>*</span>";
                     }
-                     echo "</td>";
+                    echo "</td>";
 
-                     echo "<td class='tab_bg_1'><span id='show_quantity'>";
-                     echo "<input type='number' class='form-control' min='0' name='quantity' value='0' class='quantity' />";
-                     echo "</span></td>";
+                    echo "<td class='tab_bg_1'><span id='show_quantity'>";
+                    echo "<input type='number' class='form-control' min='0' name='quantity' value='0' class='quantity' />";
+                    echo "</span></td>";
 
                     echo "<td class='tab_bg_1'><span id='show_priceht'>";
                     echo "<input type='number' class='form-control' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='price' value='0.00' class='decimal' />";
@@ -667,7 +668,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                             'myname'    => 'itemtype',
                             'value'     => 'PluginOrderOther',
                             'entity'    => $_SESSION["glpiactive_entity"],
-                            'ajax_page' => Plugin::getWebDir('order') . '/ajax/referencespecifications.php',
+                            'ajax_page' => "/plugins/order/ajax/referencespecifications.php",
                          //                     'class'     => __CLASS__,
                         ];
                         $reference = new PluginOrderReference();
@@ -1003,19 +1004,21 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             );
         }
 
-        /* type */
+         /* type */
         if (!is_null($data_ref["itemtype"]) && class_exists($data_ref["itemtype"])) {
-            $item = new $data_ref["itemtype"]();
-            $entrie['assets'] = $item->getTypeName();
+            $item = getItemForItemtype($data_ref["itemtype"]);
+            if (is_a($item, CommonGLPI::class)) {
+                $entrie['assets'] = $item->getTypeName();
+            }
         } else {
             $entrie['assets'] = '';
         }
-        /* manufacturer */
+         /* manufacturer */
         $entrie['manufacturer'] = Dropdown::getDropdownName(
             "glpi_manufacturers",
             $data_ref["manufacturers_id"]
         );
-        /* reference */
+         /* reference */
         $hidden_fields = array_merge($hidden_fields, [
             'old_plugin_order_references_id' => $refID,
             'old_price_taxfree' => $price_taxfree,
@@ -1384,13 +1387,13 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 ]
             );
             if (!empty($result)) {
-                 $link = array_shift($result);
-                 $reference = new PluginOrderReference();
-                 $reference->getFromDB($link['plugin_order_references_id']);
+                $link = array_shift($result);
+                $reference = new PluginOrderReference();
+                $reference->getFromDB($link['plugin_order_references_id']);
                 if (Session::haveRight('plugin_order_reference', READ)) {
                     $twig_option['reference_link'] = $reference->getLink();
                 }
-                 $twig_option['delivery_date'] = Html::convDate($link["delivery_date"]);
+                $twig_option['delivery_date'] = Html::convDate($link["delivery_date"]);
             }
 
             TemplateRenderer::getInstance()->display('@order/order_infocom.html.twig', $twig_option);
@@ -1504,7 +1507,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
         echo "<tr class='tab_bg_1'><td>";
 
-       //comments of order
+        //comments of order
         echo __("Description") . ":  </td>";
         echo "<td colspan='3'>";
         if ($canedit_comment) {
@@ -1576,13 +1579,19 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             echo "<th>" . __("Paid value", "order") . "</th></tr>";
 
             $bill = new PluginOrderBill();
-            foreach (
-                $DB->request($table, "`plugin_order_orders_id`='" . $order->getID() .
-                                       "' GROUP BY `plugin_order_bills_id`") as $item
-            ) {
+
+            $query = [
+                'FROM' => $table,
+                'WHERE' => [
+                    'plugin_order_orders_id' => $order->getID()
+                ],
+                'GROUPBY' => 'plugin_order_bills_id'
+            ];
+
+            foreach ($DB->request($query) as $item) {
                 if (
-                        isset($item['plugin_order_bills_id'])
-                        && $item['plugin_order_bills_id']
+                    isset($item['plugin_order_bills_id'])
+                    && $item['plugin_order_bills_id']
                 ) {
                     echo "<tr class='tab_bg_1'><td class='center'>";
                     if ($bill->can($item['plugin_order_bills_id'], READ)) {
@@ -1597,14 +1606,14 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                         PluginOrderBillState::getTable(),
                         $bill->fields['plugin_order_billstates_id']
                     );
-                     echo "</td></tr>";
+                    echo "</td></tr>";
                 }
             }
 
             echo "</tr></table>";
         }
 
-       //Can write orders, and order is not already paid
+        //Can write orders, and order is not already paid
         $canedit = $order->can($order->getID(), UPDATE)
                  && !$order->isPaid() && !$order->isCanceled();
 
@@ -1659,7 +1668,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
         } else {
             $itemtype = $data_ref["itemtype"];
-            $item     = new $itemtype();
+            $item     = getItemForItemtype($itemtype);
             echo "<tr><th><ul class='list-unstyled'><li>";
             echo "<a href=\"javascript:showHideDiv('generation$rand','generation_img$rand', '" .
               $CFG_GLPI['root_doc'] . "/pics/plus.png','" . $CFG_GLPI['root_doc'] . "/pics/moins.png');\">";
@@ -1675,7 +1684,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             echo "<td></td>";
             echo "<td align='center'>" . $item->getTypeName() . "</td>";
 
-           //Entity
+            //Entity
             echo "<td align='center'>";
             echo Dropdown::getDropdownName('glpi_entities', $this->getEntityID());
             echo "</td>";
@@ -1707,7 +1716,17 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 if ($canedit) {
                     echo "<td width='10'>";
                     $sel = "";
-                    if (isset($_GET["select"]) && $_GET["select"] == "all") {
+                    if (
+                        isset($_POST['select'])
+                        && (
+                            is_string($_POST['select'])
+                            && $_POST['select'] == 'all'
+                            || (
+                                is_array($_POST['select'])
+                                && isset($_POST['select']['all'])
+                            )
+                        )
+                    ) {
                         $sel = "checked";
                     }
                     echo "<input type='checkbox' name='item[" . $data["IDD"] . "]' value='1' $sel>";
@@ -1715,7 +1734,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                     echo "</td>";
                 }
 
-               //Reference
+                //Reference
                 echo "<td align='center'>";
                 if ($table == 'glpi_plugin_order_referencefrees') {
                     echo $data['name'];
@@ -1724,7 +1743,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 }
                 echo "</td>";
 
-               //Type
+                //Type
                 echo "<td align='center'>";
                 if (file_exists(GLPI_ROOT . "/src/" . $data["itemtype"] . "Type.php")) {
                     echo Dropdown::getDropdownName(
@@ -1733,7 +1752,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                     );
                 }
                 echo "</td>";
-               //Model
+                //Model
                 echo "<td align='center'>";
                 if (file_exists(GLPI_ROOT . "/src/" . $data["itemtype"] . "Model.php")) {
                     echo Dropdown::getDropdownName(
@@ -1784,6 +1803,9 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function dropdownBillItemsActions($orders_id)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $action['']     = Dropdown::EMPTY_VALUE;
         $action['bill'] = __("Bill", "order");
         $rand           = Dropdown::showFromArray('chooseAction', $action);
@@ -1791,7 +1813,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         Ajax::updateItemOnSelectEvent(
             "dropdown_chooseAction$rand",
             "show_billsActions$rand",
-            Plugin::getWebDir('order') . "/ajax/billactions.php",
+            $CFG_GLPI['root_doc'] . "/plugins/order/ajax/billactions.php",
             [
                 'action'                 => '__VALUE__',
                 'plugin_order_orders_id' => $orders_id
@@ -1898,7 +1920,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order_detail")) {
             $migration->displayMessage("Installing $table");
 
-           //install
+            //install
             $query = "CREATE TABLE IF NOT EXISTS `$table` (
                `id` int {$default_key_sign} NOT NULL auto_increment,
                `entities_id` int {$default_key_sign} NOT NULL default '0',
@@ -1932,10 +1954,10 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
             $DB->doQuery($query) or die($DB->error());
         } else {
-           //Upgrade
+            //Upgrade
             $migration->displayMessage("Upgrading $table");
 
-           //1.1.2
+            //1.1.2
             if ($DB->tableExists("glpi_plugin_order_detail")) {
                 $migration->addField(
                     "glpi_plugin_order_detail",
@@ -1946,7 +1968,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 $migration->migrationOneTable("glpi_plugin_order_detail");
             }
 
-           //1.2.0
+            //1.2.0
             $migration->renameTable("glpi_plugin_order_detail", $table);
 
             $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL AUTO_INCREMENT");
@@ -2001,7 +2023,6 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             $migration->addKey($table, "states_id");
             $migration->migrationOneTable($table);
 
-            Plugin::migrateItemType([], [], [$table]);
             //1.4.0
             $migration->addField(
                 $table,
@@ -2010,14 +2031,14 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             );
             $migration->migrationOneTable($table);
 
-           /* Migrate VAT */
-            foreach ($DB->request("glpi_plugin_order_orders") as $data) {
+            /* Migrate VAT */
+            foreach ($DB->request(['FROM' => 'glpi_plugin_order_orders']) as $data) {
                 $query  = "UPDATE `glpi_plugin_order_orders_items`
                        SET `plugin_order_ordertaxes_id` = '" . $data["plugin_order_ordertaxes_id"] . "'
                        WHERE `plugin_order_orders_id` = '" . $data["id"] . "'";
                 $DB->doQuery($query) or die($DB->error());
             }
-           //1.5.0
+            //1.5.0
             $migration->addField($table, "entities_id", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
             $migration->addField($table, "is_recursive", "TINYINT NOT NULL DEFAULT '0'");
             $migration->addField($table, "plugin_order_bills_id", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
@@ -2028,7 +2049,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             $migration->addField($table, "comment", "text");
             $migration->migrationOneTable($table);
 
-           //Change format for prices : from float to decimal
+            //Change format for prices : from float to decimal
             $migration->changeField(
                 $table,
                 "price_taxfree",
@@ -2054,22 +2075,32 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 "decimal(20,6) NOT NULL DEFAULT '0.000000'"
             );
 
-           //Drop unused fields from previous migration
+            //Drop unused fields from previous migration
             $migration->dropField($table, "price_taxfree2");
             $migration->dropField($table, "price_discounted2");
             $migration->migrationOneTable($table);
 
-           //Forward entities_id and is_recursive into table glpi_plugin_order_orders_items
-            $query = "SELECT `go`.`entities_id` as entities_id ,
-                          `go`.`is_recursive` as is_recursive, `goi`.`id` as items_id
-                   FROM `glpi_plugin_order_orders` as go, `$table` as `goi`
-                   WHERE `goi`.`plugin_order_orders_id`=`go`.`id`";
+            //Forward entities_id and is_recursive into table glpi_plugin_order_orders_items
+            $query = [
+                'SELECT' => [
+                    'go.entities_id as entities_id',
+                    'go.is_recursive as is_recursive',
+                    'goi.id as items_id'
+                ],
+                'FROM' => [
+                    'glpi_plugin_order_orders as go',
+                    "$table as goi"
+                ],
+                'WHERE' => [
+                    'goi.plugin_order_orders_id' => 'go.id'
+                ]
+            ];
             foreach ($DB->request($query) as $data) {
                 $update = "UPDATE `$table`
                        SET `entities_id`='" . $data['entities_id'] . "'
                           AND `is_recursive`='" . $data['is_recursive'] . "'
                        WHERE `id`='" . $data['items_id'] . "'";
-                $DB->doQuery($update) or die($DB->error());
+                $DB->doQuery($update);
             }
 
             if (!$DB->fieldExists($table, 'plugin_order_analyticnatures_id')) {
@@ -2090,10 +2121,10 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         /** @var \DBmysql $DB */
         global $DB;
 
-       //Old table name
-        $DB->doQuery("DROP TABLE IF EXISTS `glpi_plugin_order_detail`") or die($DB->error());
-       //Current table name
-        $DB->doQuery("DROP TABLE IF EXISTS  `" . self::getTable() . "`") or die($DB->error());
+        //Old table name
+        $DB->doQuery("DROP TABLE IF EXISTS `glpi_plugin_order_detail`");
+        //Current table name
+        $DB->doQuery("DROP TABLE IF EXISTS  `" . self::getTable() . "`");
         self::uninstallOrderItemNotification();
     }
 
@@ -2130,13 +2161,21 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
             if ($item->getField('id') && !$withtemplate) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
-                    return self::createTabEntry(__("Orders", "order"), self::countForItem($item));
+                    return self::createTabEntry(
+                        __("Orders", "order"),
+                        self::countForItem($item)
+                    );
                 }
                 return __("Orders", "order");
             }
-        } else if (get_class($item) == 'PluginOrderOrder') {
+        } elseif (get_class($item) == 'PluginOrderOrder') {
             if ($_SESSION['glpishow_count_on_tabs']) {
-                return self::createTabEntry(__("Order item", "order"), self::countForOrder($item));
+                return self::createTabEntry(
+                    __("Order item", "order"),
+                    self::countForOrder($item),
+                    null,
+                    self::getIcon()
+                );
             }
             return __("Order", "order");
         }
@@ -2151,7 +2190,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 $order_item = new self();
                 $order_item->showItem($item->getID());
             }
-        } else if (
+        } elseif (
             is_subclass_of($item, CommonDBTM::class)
             && in_array($item->getType(), PluginOrderOrder_Item::getClasses(true))
         ) {
@@ -2182,26 +2221,26 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             'event'    => 'delivered',
             'FIELDS'   => 'id'
         ];
-        foreach ($DB->request('glpi_notifications', $options) as $data) {
+        foreach ($DB->request(['FROM' => 'glpi_notifications'], $options) as $data) {
             $notif->delete($data);
         }
 
         $template    = new NotificationTemplate();
         $translation = new NotificationTemplateTranslation();
 
-       //templates
+        //templates
         $options = [
             'itemtype' => 'PluginOrderOrder_Item',
             'FIELDS'   => 'id'
         ];
-        foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
+        foreach ($DB->request(['FROM' => 'glpi_notificationtemplates'], $options) as $data) {
             $options_template = [
                 'notificationtemplates_id' => $data['id'],
                 'FIELDS'                   => 'id'
             ];
             foreach (
                 $DB->request(
-                    'glpi_notificationtemplatetranslations',
+                    ['FROM' => 'glpi_notificationtemplatetranslations'],
                     $options_template
                 ) as $data_template
             ) {
@@ -2211,12 +2250,12 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         }
     }
 
-   /**
-    * Returns manufacturer's reference number.
-    *
-    * @param integer $reference_id
-    * @return string
-    */
+    /**
+     * Returns manufacturer's reference number.
+     *
+     * @param integer $reference_id
+     * @return string
+     */
     protected function getManufacturersReference($reference_id)
     {
         /** @var \DBmysql $DB */

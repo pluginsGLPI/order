@@ -28,7 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
+
 Session::checkLoginUser();
 
 if (!isset($_GET["id"])) {
@@ -50,12 +50,12 @@ if (isset($_POST["add"])) {
         }
     }
     Html::redirect($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     if (PluginOrderReference_Supplier::canCreate()) {
         $PluginOrderReference_Supplier->update($_POST);
     }
     Html::redirect($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     if (PluginOrderReference_Supplier::canCreate()) {
         foreach ($_POST["check"] as $ID => $value) {
             $PluginOrderReference_Supplier->delete(["id" => $ID]);
@@ -72,7 +72,7 @@ if (isset($_POST["add"])) {
         "references"
     );
 
-   /* load order form */
+    /* load order form */
     $PluginOrderReference_Supplier->display($_GET);
 
     Html::footer();

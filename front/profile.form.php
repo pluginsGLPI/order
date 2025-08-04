@@ -28,7 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
+
 
 Session::checkRight("profile", UPDATE);
 

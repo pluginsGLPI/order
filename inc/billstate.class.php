@@ -28,14 +28,12 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderBillState extends CommonDropdown
 {
-    const NOTPAID = 0;
-    const PAID    = 1;
+    public const NOTPAID = 0;
+    public const PAID    = 1;
 
     public static $rightname = 'plugin_order_bill';
 
@@ -101,7 +99,7 @@ class PluginOrderBillState extends CommonDropdown
                     PRIMARY KEY (`id`),
                     KEY `name` (`name`)
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         }
         if (countElementsInTable($table) < 2) {
             $state = new self();
@@ -111,7 +109,7 @@ class PluginOrderBillState extends CommonDropdown
                 ] as $id => $label
             ) {
                 $state->add(['id'   => $id,
-                    'name' => Toolbox::addslashes_deep($label)
+                    'name' => $label
                 ]);
             }
         }
@@ -123,6 +121,6 @@ class PluginOrderBillState extends CommonDropdown
         /** @var \DBmysql $DB */
         global $DB;
 
-        $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`") or die($DB->error());
+        $DB->doQuery("DROP TABLE IF EXISTS `" . self::getTable() . "`");
     }
 }

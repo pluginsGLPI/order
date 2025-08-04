@@ -31,7 +31,7 @@
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include("../../../inc/includes.php");
+
 Session::checkLoginUser();
 
 Html::header(
@@ -44,9 +44,9 @@ Html::header(
 //If there's only one possibility, do not display menu!
 if (PluginOrderOrder::canView() && !PluginOrderReference::canView() && !PluginOrderBill::canView()) {
     Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderOrder'));
-} else if (!PluginOrderOrder::canView() && PluginOrderReference::canView() && !PluginOrderBill::canView()) {
+} elseif (!PluginOrderOrder::canView() && PluginOrderReference::canView() && !PluginOrderBill::canView()) {
     Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderReference'));
-} else if (!PluginOrderOrder::canView() && !PluginOrderReference::canView() && PluginOrderBill::canView()) {
+} elseif (!PluginOrderOrder::canView() && !PluginOrderReference::canView() && PluginOrderBill::canView()) {
     Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderBill'));
 }
 

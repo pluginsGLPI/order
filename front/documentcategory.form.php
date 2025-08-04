@@ -28,7 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-include('../../../inc/includes.php');
+
 Session::checkLoginUser();
 
 $documentCategory = new PluginOrderDocumentCategory();

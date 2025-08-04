@@ -3,7 +3,8 @@ parameters:
         maximumNumberOfProcesses: 2
     level: 5
     bootstrapFiles:
-        - ../../inc/based_config.php
+        - ../../stubs/glpi_constants.php
+        - ../../vendor/autoload.php
     paths:
         - ajax
         - front
@@ -16,7 +17,6 @@ parameters:
     stubFiles:
         - ../../stubs/glpi_constants.php
     ignoreErrors:
-        - '#Call to deprecated method query\(\) of class DBmysql:#'
         - '#Path in include_once\(\) ".*?/files/_plugins/order/generate/custom\.php" is not a file or it does not exist\.#'
     excludePaths:
         - 'inc/referenceinjection.class.php'

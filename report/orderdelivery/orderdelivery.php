@@ -98,7 +98,7 @@ if ($report->criteriasValidated()) {
         )
     ]);
 
-   //TODO : ne pas chercher dans la poublelles
+    //TODO : ne pas chercher dans la poublelles
     $query = "SELECT * FROM `glpi_plugin_order_orders`";
     $query .= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");
     $query .= $report->addSqlCriteriasRestriction();

@@ -28,20 +28,18 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 // Class for a Dropdown
 class PluginOrderOrderState extends CommonDropdown
 {
-    const DRAFT                = 1;
-    const WAITING_FOR_APPROVAL = 2;
-    const VALIDATED            = 3;
-    const BEING_DELIVERING     = 4;
-    const DELIVERED            = 5;
-    const CANCELED             = 6;
-    const PAID                 = 7;
+    public const DRAFT                = 1;
+    public const WAITING_FOR_APPROVAL = 2;
+    public const VALIDATED            = 3;
+    public const BEING_DELIVERING     = 4;
+    public const DELIVERED            = 5;
+    public const CANCELED             = 6;
+    public const PAID                 = 7;
 
     public static $rightname   = 'plugin_order_order';
 
@@ -79,8 +77,8 @@ class PluginOrderOrderState extends CommonDropdown
 
         $table = self::getTable();
 
-       //1.2.0
-        $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_status`;");
+        //1.2.0
+        $DB->doQuery("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_status`;");
 
         if (!$DB->tableExists($table)) {
             $migration->displayMessage("Installing $table");
@@ -92,7 +90,7 @@ class PluginOrderOrderState extends CommonDropdown
                   PRIMARY KEY  (`id`),
                   KEY `name` (`name`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         }
 
         $state = new self();
@@ -110,7 +108,7 @@ class PluginOrderOrderState extends CommonDropdown
             if (!countElementsInTable($table, ['id' => $id])) {
                 $state->add([
                     'id'   => $id,
-                    'name' => Toolbox::addslashes_deep($label)
+                    'name' => $label
                 ]);
             }
         }
@@ -121,6 +119,6 @@ class PluginOrderOrderState extends CommonDropdown
     {
         /** @var \DBmysql $DB */
         global $DB;
-        $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`") or die($DB->error());
+        $DB->doQuery("DROP TABLE IF EXISTS `" . self::getTable() . "`");
     }
 }

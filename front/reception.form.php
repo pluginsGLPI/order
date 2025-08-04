@@ -31,7 +31,7 @@
 /** @var \DBmysql $DB */
 global $DB;
 
-include("../../../inc/includes.php");
+
 Session::checkLoginUser();
 
 if (!isset($_GET["id"])) {
@@ -81,7 +81,7 @@ if (isset($_POST["update"])) {
         ]
     ]);
     Html::redirect($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $reception->deleteDelivery($_POST["id"]);
     $reception->updateReceptionStatus([
         'items' => [
@@ -91,8 +91,8 @@ if (isset($_POST["update"])) {
         ]
     ]);
     Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder') . "?id=" . $_POST["plugin_order_orders_id"]);
-} else if (isset($_POST["bulk_reception"])) {
-   //Several new items are delivered
+} elseif (isset($_POST["bulk_reception"])) {
+    //Several new items are delivered
     $reception->updateBulkReceptionStatus($_POST);
     Html::redirect($_SERVER["HTTP_REFERER"]);
 } else {

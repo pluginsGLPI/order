@@ -28,15 +28,11 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
+
 
 header("Content-Type: text/html; charset=UTF-8");
 
 Html::header_nocache();
-
-if (!defined('GLPI_ROOT')) {
-    die("Can not acces directly to this file");
-}
 
 Session::checkCentralAccess();
 
@@ -57,7 +53,7 @@ if ($_POST["itemtype"]) {
             }
             break;
         case "templates_id":
-            $item = new $_POST['itemtype']();
+            $item = getItemForItemtype($_POST['itemtype']);
             if ($item->maybeTemplate()) {
                 $table = getTableForItemType($_POST["itemtype"]);
                 $PluginOrderReference->dropdownTemplate("templates_id", $_POST["entity_restrict"], $table);
