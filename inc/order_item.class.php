@@ -1106,7 +1106,15 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
         $criteria_count = [
             'COUNT' => 'total',
-            'FROM' => [$table, $table_ref],
+            'FROM' => $table,
+            'JOIN' => [
+                $table_ref => [
+                    'ON' => [
+                        "$table.plugin_order_references_id",
+                        "$table_ref.id",
+                    ],
+                ],
+            ],
             'WHERE' => [
                 "$table.plugin_order_references_id" => "$table_ref.id",
                 "$table.plugin_order_references_id" => $refID,
@@ -1138,7 +1146,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 "$table.price_ati"
             ],
             'FROM' => $table,
-            'LEFT JOIN' => [
+            'JOIN' => [
                 $table_ref => [
                     'ON' => [
                         "$table.plugin_order_references_id",
