@@ -63,8 +63,8 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         $criteria = [
             'FROM' => $table,
             'WHERE' => [
-                'plugin_order_references_id' => $plugin_order_references_id
-            ]
+                'plugin_order_references_id' => $plugin_order_references_id,
+            ],
         ];
         $result = $DB->request($criteria);
 
@@ -168,7 +168,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 __("Supplier Detail", "order"),
                 0,
                 null,
-                self::getIcon()
+                self::getIcon(),
             );
         }
         return '';
@@ -226,8 +226,8 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 'SELECT' => 'suppliers_id',
                 'FROM' => self::getTable(),
                 'WHERE' => [
-                    'plugin_order_references_id' => $plugin_order_references_id
-                ]
+                    'plugin_order_references_id' => $plugin_order_references_id,
+                ],
             ];
             $result = $DB->request($criteria);
             foreach ($result as $data) {
@@ -237,7 +237,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             Supplier::Dropdown([
                 'name'   => 'suppliers_id',
                 'used'   => $suppliers,
-                'entity' => $PluginOrderReference->getEntityID()
+                'entity' => $PluginOrderReference->getEntityID(),
             ]);
         }
         echo "</td>";
@@ -248,7 +248,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             'reference_code',
             [
                 'value' => $this->fields['reference_code'],
-            ]
+            ],
         );
         echo "</td></tr>";
 
@@ -284,20 +284,20 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         $target = Toolbox::getItemTypeFormURL(__CLASS__);
         Session::initNavigateListItems(
             $this->getType(),
-            __("Product reference", "order") . " = " . $ref->fields["name"]
+            __("Product reference", "order") . " = " . $ref->fields["name"],
         );
 
         $candelete = $ref->can($ID, DELETE);
         $criteria  = [
             'FROM' => self::getTable(),
             'WHERE' => [
-                'plugin_order_references_id' => $ID
+                'plugin_order_references_id' => $ID,
             ] + getEntitiesRestrictCriteria(
                 self::getTable(),
                 "entities_id",
                 $ref->fields['entities_id'],
-                $ref->fields['is_recursive']
-            )
+                $ref->fields['is_recursive'],
+            ),
         ];
         $result    = $DB->request($criteria);
         $rand      = mt_rand();
@@ -389,8 +389,8 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             'FROM' => $table,
             'WHERE' => [
                 'plugin_order_references_id' => $plugin_order_references_id,
-                'suppliers_id' => $suppliers_id
-            ]
+                'suppliers_id' => $suppliers_id,
+            ],
         ];
         $result = $DB->request($criteria);
 
@@ -438,7 +438,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 $migration->addField(
                     "glpi_plugin_order_references_manufacturers",
                     "reference_code",
-                    "varchar(255) NOT NULL default ''"
+                    "varchar(255) NOT NULL default ''",
                 );
                 $migration->migrationOneTable("glpi_plugin_order_references_manufacturers");
             }
@@ -452,37 +452,37 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 $table,
                 "ID",
                 "id",
-                "int {$default_key_sign} NOT NULL auto_increment"
+                "int {$default_key_sign} NOT NULL auto_increment",
             );
             $migration->changeField(
                 $table,
                 "FK_entities",
                 "entities_id",
-                "int {$default_key_sign} NOT NULL default '0'"
+                "int {$default_key_sign} NOT NULL default '0'",
             );
             $migration->changeField(
                 $table,
                 "FK_reference",
                 "plugin_order_references_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'"
+                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'",
             );
             $migration->changeField(
                 $table,
                 "FK_enterprise",
                 "suppliers_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'"
+                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'",
             );
             $migration->changeField(
                 $table,
                 "reference_code",
                 "reference_code",
-                "varchar(255) default NULL"
+                "varchar(255) default NULL",
             );
             $migration->changeField(
                 $table,
                 "price_taxfree",
                 "price_taxfree",
-                "decimal(20,6) NOT NULL DEFAULT '0.000000'"
+                "decimal(20,6) NOT NULL DEFAULT '0.000000'",
             );
             $migration->migrationOneTable($table);
 
@@ -491,9 +491,9 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 'SELECT' => [
                     'entities_id',
                     'is_recursive',
-                    'id'
+                    'id',
                 ],
-                'FROM' => 'glpi_plugin_order_references'
+                'FROM' => 'glpi_plugin_order_references',
             ];
             foreach ($DB->request($query) as $data) {
                 $query = "UPDATE `glpi_plugin_order_references_suppliers`
@@ -537,20 +537,20 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 'gr.itemtype',
                 'gr.name',
                 'grm.price_taxfree',
-                'grm.reference_code'
+                'grm.reference_code',
             ],
             'FROM' => 'glpi_plugin_order_references_suppliers AS grm',
             'INNER JOIN' => [
                 'glpi_plugin_order_references AS gr' => [
                     'ON' => [
                         'grm' => 'plugin_order_references_id',
-                        'gr' => 'id'
-                    ]
-                ]
+                        'gr' => 'id',
+                    ],
+                ],
             ],
             'WHERE' => [
-                'grm.suppliers_id' => $ID
-            ] + getEntitiesRestrictCriteria("gr", '', '', false, true)
+                'grm.suppliers_id' => $ID,
+            ] + getEntitiesRestrictCriteria("gr", '', '', false, true),
         ];
 
         $result = $DB->request($criteria);

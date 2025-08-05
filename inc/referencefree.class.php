@@ -88,7 +88,7 @@ class PluginOrderReferenceFree extends CommonDBTM
                KEY `is_deleted` (`is_deleted`),
                KEY date_mod (date_mod)
             ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         } else {
             // Add ecotax field if it doesn't exist
             if (!$DB->fieldExists($table, 'ecotax_price')) {
@@ -96,7 +96,7 @@ class PluginOrderReferenceFree extends CommonDBTM
                     $table,
                     'ecotax_price',
                     "decimal(20,6) NOT NULL DEFAULT '0.000000'",
-                    ['after' => 'comment']
+                    ['after' => 'comment'],
                 );
                 $migration->migrationOneTable($table);
             }
@@ -111,7 +111,7 @@ class PluginOrderReferenceFree extends CommonDBTM
         $table  = getTableForItemType(__CLASS__);
         foreach (
             ["glpi_displaypreferences", "glpi_documents_items", "glpi_savedsearches",
-                "glpi_logs"
+                "glpi_logs",
             ] as $t
         ) {
             $query = "DELETE FROM `$t` WHERE `itemtype`='" . __CLASS__ . "'";

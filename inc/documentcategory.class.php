@@ -65,7 +65,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
     {
         $temp = new self();
         $temp->deleteByCriteria([
-            'documentcategories_id' => $item->getField("id")
+            'documentcategories_id' => $item->getField("id"),
         ]);
     }
 

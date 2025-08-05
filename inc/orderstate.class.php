@@ -57,7 +57,7 @@ class PluginOrderOrderState extends CommonDropdown
                 __("You cannot remove this status", "order") . ": "
                                           . $this->fields['name'],
                 false,
-                ERROR
+                ERROR,
             );
             return false;
         } else {
@@ -102,13 +102,13 @@ class PluginOrderOrderState extends CommonDropdown
                 4 => __("Being delivered", "order"),
                 5 => __("Delivered", "order"),
                 6 => __("Canceled", "order"),
-                7 => __("Paid", "order")
+                7 => __("Paid", "order"),
             ] as $id => $label
         ) {
             if (!countElementsInTable($table, ['id' => $id])) {
                 $state->add([
                     'id'   => $id,
-                    'name' => $label
+                    'name' => $label,
                 ]);
             }
         }

@@ -95,7 +95,7 @@ class PluginOrderPreference extends CommonDBTM
             'template',
             PLUGIN_ORDER_TEMPLATE_EXTENSION,
             PLUGIN_ORDER_TEMPLATE_DIR,
-            $value
+            $value,
         );
     }
 
@@ -112,7 +112,7 @@ class PluginOrderPreference extends CommonDBTM
             'sign',
             PLUGIN_ORDER_SIGNATURE_EXTENSION,
             PLUGIN_ORDER_SIGNATURE_DIR,
-            $value
+            $value,
         );
     }
 
@@ -168,6 +168,9 @@ class PluginOrderPreference extends CommonDBTM
 
     public function showForm($ID, array $options = [])
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $version = plugin_version_order();
         $this->getFromDB($ID);
 
@@ -186,7 +189,7 @@ class PluginOrderPreference extends CommonDBTM
 
         if (isset($this->fields["sign"]) && !empty($this->fields["sign"])) {
             echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
-            echo "<img src='" . "/plugins/order/front/signature.php?sign=" . rawurlencode($this->fields["sign"]) . "'>";
+            echo "<img src='" . $CFG_GLPI['root_doc'] . "/plugins/order/front/signature.php?sign=" . rawurlencode($this->fields["sign"]) . "'>";
             echo "</td></tr>";
         }
 
@@ -292,7 +295,7 @@ class PluginOrderPreference extends CommonDBTM
                 PluginOrderOrder::getTypeName(2),
                 0,
                 null,
-                PluginOrderOrder::getIcon()
+                PluginOrderOrder::getIcon(),
             );
         }
         return '';

@@ -40,7 +40,7 @@ class PluginOrderProfile extends CommonDBTM
         self::addDefaultProfileInfos($ID, [
             'plugin_order_order'     => PluginOrderOrder::ALLRIGHTS, // All rights : CREATE + READ + ...
             'plugin_order_bill'      => 127,
-            'plugin_order_reference' => 127
+            'plugin_order_reference' => 127,
         ], true);
     }
 
@@ -56,19 +56,19 @@ class PluginOrderProfile extends CommonDBTM
                 countElementsInTable(
                     'glpi_profilerights',
                     ['profiles_id' => $profiles_id,
-                        'name' => $right
-                    ]
+                        'name' => $right,
+                    ],
                 ) && $drop_existing
             ) {
                 $profileRight->deleteByCriteria([
                     'profiles_id' => $profiles_id,
-                    'name'        => $right
+                    'name'        => $right,
                 ]);
             }
             if (
                 !countElementsInTable(
                     'glpi_profilerights',
-                    ['profiles_id' => $profiles_id, 'name' => $right]
+                    ['profiles_id' => $profiles_id, 'name' => $right],
                 )
             ) {
                 $profileRight->add([
@@ -129,7 +129,7 @@ class PluginOrderProfile extends CommonDBTM
             $DB->tableExists("glpi_plugin_order_profiles")
             && !$DB->fieldExists(
                 "glpi_plugin_order_profiles",
-                "plugin_order_generate_order_without_validation"
+                "plugin_order_generate_order_without_validation",
             )
         ) {
             $DB->doQuery("ALTER TABLE `glpi_plugin_order_profiles`
@@ -162,7 +162,7 @@ class PluginOrderProfile extends CommonDBTM
                     PluginOrderOrder::getTypeName(2),
                     0,
                     null,
-                    PluginOrderOrder::getIcon()
+                    PluginOrderOrder::getIcon(),
                 );
             }
         }
@@ -177,7 +177,7 @@ class PluginOrderProfile extends CommonDBTM
             self::addDefaultProfileInfos($item->getID(), [
                 'plugin_order_order'     => 0, // All rights : CREATE + READ + ...
                 'plugin_order_bill'      => 0,
-                'plugin_order_reference' => 0
+                'plugin_order_reference' => 0,
             ]);
             $prof->showForm($item->getID());
         }
@@ -191,16 +191,16 @@ class PluginOrderProfile extends CommonDBTM
         $rights = [[
             'itemtype' => 'PluginOrderOrder',
             'label'    => __("Orders", "order"),
-            'field'    => 'plugin_order_order'
+            'field'    => 'plugin_order_order',
         ], [
             'itemtype' => 'PluginOrderReference',
             'label'    => __("Products references", "order"),
-            'field'    => 'plugin_order_reference'
+            'field'    => 'plugin_order_reference',
         ], [
             'itemtype' => 'PluginOrderBill',
             'label'    => __("Bills", "order"),
-            'field'    => 'plugin_order_bill'
-        ]
+            'field'    => 'plugin_order_bill',
+        ],
         ];
 
         return $rights;
@@ -238,8 +238,8 @@ class PluginOrderProfile extends CommonDBTM
         $profiles_query = [
             'FROM' => 'glpi_plugin_order_profiles',
             'WHERE' => [
-                'profiles_id' => $profiles_id
-            ]
+                'profiles_id' => $profiles_id,
+            ],
         ];
 
         foreach (
@@ -254,7 +254,7 @@ class PluginOrderProfile extends CommonDBTM
                 'undo_validation'    => 'plugin_order_undo_validation',
                 'delivery'           => 'plugin_order_delivery',
                 'generate_order_odt' => 'plugin_order_generate_order_odt',
-                'open_ticket'        => 'plugin_order_open_ticket'
+                'open_ticket'        => 'plugin_order_open_ticket',
             ];
             $current_rights = ProfileRight::getProfileRights($profiles_id, array_values($matching));
             foreach ($matching as $old => $new) {
@@ -302,15 +302,15 @@ class PluginOrderProfile extends CommonDBTM
 
         $query_profiles = [
             'SELECT' => 'id',
-            'FROM' => 'glpi_profiles'
+            'FROM' => 'glpi_profiles',
         ];
 
         $query_profiles_rights = [
             'FROM' => 'glpi_profilerights',
             'WHERE' => [
                 'profiles_id' => $_SESSION['glpiactiveprofile']['id'],
-                'name' => ['LIKE', '%plugin_order%']
-            ]
+                'name' => ['LIKE', '%plugin_order%'],
+            ],
         ];
 
         //Migration old rights in new ones

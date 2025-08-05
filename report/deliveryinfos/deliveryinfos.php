@@ -53,7 +53,7 @@ new PluginReportsDropdownCriteria(
     $report,
     'plugin_order_orderstates_id',
     'PluginOrderOrderState',
-    __("Status")
+    __("Status"),
 );
 $report->displayCriteriasForm();
 
@@ -64,12 +64,12 @@ if ($report->criteriasValidated()) {
         new PluginReportsColumnLink(
             'suppliers_id',
             __("Supplier"),
-            'Supplier'
+            'Supplier',
         ),
         new PluginReportsColumnLink(
             'entities_id',
             __("Entity"),
-            'Entity'
+            'Entity',
         ),
         new PluginReportsColumnInteger('total', __("Orders total", "order")),
         new PluginReportsColumnInteger('late', __("Late orders total", "order")),

@@ -43,7 +43,7 @@ echo "<tr class='tab_bg_2'><td>" . __("Delivery date") . "</td><td>";
 Html::showDateField("delivery_date", [
     'value'      => date("Y-m-d"),
     'maybeempty' => true,
-    'canedit'    => true
+    'canedit'    => true,
 ]);
 echo "</td><td>";
 echo __("Delivery form") . "</td><td>";
@@ -55,12 +55,12 @@ echo __("Number to deliver", "order") . "</td><td width='10%'>";
 $nb = $PluginOrderReception->checkItemStatus(
     $_POST['plugin_order_orders_id'],
     $_POST['plugin_order_references_id'],
-    PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED
+    PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED,
 );
 Dropdown::showNumber('number_reception', [
     'value' => '',
     'min'   => 1,
-    'max'   => $nb
+    'max'   => $nb,
 ]);
 echo "</td><td>";
 echo __("Delivery status", "order") . "&nbsp;";

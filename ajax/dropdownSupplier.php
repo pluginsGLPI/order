@@ -41,7 +41,7 @@ Session::checkRight("contact_enterprise", READ);
 
 // Make a select box
 if (isset($_POST["suppliers_id"])) {
-   // Make a select box
+    // Make a select box
     $criteria = [
         'SELECT' => ['c.id', 'c.name', 'c.firstname'],
         'FROM' => 'glpi_contacts AS c',
@@ -49,12 +49,12 @@ if (isset($_POST["suppliers_id"])) {
             'glpi_contacts_suppliers AS s' => [
                 'ON' => [
                     's' => 'contacts_id',
-                    'c' => 'id'
-                ]
-            ]
+                    'c' => 'id',
+                ],
+            ],
         ],
         'WHERE' => ['s.suppliers_id' => $_POST['suppliers_id']],
-        'ORDER' => ['c.name']
+        'ORDER' => ['c.name'],
     ];
     $result = $DB->request($criteria);
     $number = count($result);
@@ -62,7 +62,7 @@ if (isset($_POST["suppliers_id"])) {
     $values = [0 => Dropdown::EMPTY_VALUE];
     if ($number) {
         foreach ($result as $data) {
-            $values[$data['id']] = formatUserName('', '', $data['name'], $data['firstname']);
+            $values[$data['id']] = formatUserName(0, '', $data['name'], $data['firstname']);
         }
     }
     Dropdown::showFromArray($_POST['fieldname'], $values);

@@ -69,7 +69,7 @@ if (isset($_POST["add"])) {
         $_SERVER['PHP_SELF'],
         "management",
         "PluginOrderMenu",
-        "references"
+        "references",
     );
 
     /* load order form */

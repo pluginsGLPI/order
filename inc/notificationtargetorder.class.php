@@ -50,7 +50,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             'cancel'         => __("Order canceled", "order"),
             'undovalidation' => __("Order currently edited", "order"),
             'duedate'        => __("Late orders", "order"),
-            'delivered'      => __("No item to generate", "order")
+            'delivered'      => __("No item to generate", "order"),
         ];
     }
 
@@ -63,7 +63,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
         if ($event == 'duedate') {
             $this->data['##order.entity##'] = Dropdown::getDropdownName(
                 'glpi_entities',
-                $options['entities_id']
+                $options['entities_id'],
             );
 
             foreach ($options['orders'] as $id => $order) {
@@ -72,7 +72,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                     '##order.item.numorder##'     => $order['num_order'],
                     '##order.item.url##'          => $this->formatURL(
                         $options['additionnaloption']['usertype'],
-                        PluginOrderOrder::class . "_" . $id
+                        PluginOrderOrder::class . "_" . $id,
                     ),
                     '##order.item.orderdate##'    => Html::convDate($order["order_date"]),
                     '##order.item.duedate##'      => Html::convDate($order["duedate"]),
@@ -80,7 +80,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                     '##order.item.comment##'      => $order["comment"],
                     '##order.item.state##'        => Dropdown::getDropdownName(
                         'glpi_plugin_order_orderstates',
-                        $order["plugin_order_orderstates_id"]
+                        $order["plugin_order_orderstates_id"],
                     ),
                 ];
             }
@@ -97,7 +97,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             $this->data['##lang.ordervalidation.entity##']    = __("Entity");
             $this->data['##ordervalidation.entity##']         = Dropdown::getDropdownName(
                 'glpi_entities',
-                $this->obj->getField('entities_id')
+                $this->obj->getField('entities_id'),
             );
 
             $this->data['##lang.ordervalidation.name##']      = __("Name");
@@ -112,7 +112,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             $this->data['##lang.ordervalidation.state##']     = __("Status");
             $this->data['##ordervalidation.state##']          = Dropdown::getDropdownName(
                 "glpi_plugin_order_orderstates",
-                $this->obj->getField("plugin_order_orderstates_id")
+                $this->obj->getField("plugin_order_orderstates_id"),
             );
 
             $this->data['##lang.ordervalidation.comment##']   = __("Comment of validation", "order");
@@ -149,7 +149,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             $this->data['##lang.ordervalidation.url##'] = "URL";
             $this->data['##ordervalidation.url##']      = $this->formatURL(
                 $options['additionnaloption']['usertype'],
-                $this->obj->getType() . "_" . $this->obj->getField("id")
+                $this->obj->getType() . "_" . $this->obj->getField("id"),
             );
         }
     }
@@ -221,8 +221,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             'FROM' => 'glpi_notificationtemplates',
             'WHERE' => [
                 'itemtype' => 'PluginOrderOrder',
-                'name' => 'Order Validation'
-            ]
+                'name' => 'Order Validation',
+            ],
         ];
         $result       = $DB->request($criteria);
 
@@ -297,7 +297,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                             'notifications_id'         => $notification_id,
                             'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                             'notificationtemplates_id' => $templates_id,
-                        ]
+                        ],
                     );
                 }
             }
@@ -308,8 +308,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             'FROM' => 'glpi_notificationtemplates',
             'WHERE' => [
                 'itemtype' => 'PluginOrderOrder',
-                'name' => 'Due date overtaken'
-            ]
+                'name' => 'Due date overtaken',
+            ],
         ];
         $result       = $DB->request($criteria);
 
@@ -370,7 +370,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                             'notifications_id'         => $notification_id,
                             'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                             'notificationtemplates_id' => $templates_id,
-                        ]
+                        ],
                     );
                 }
             }
@@ -382,8 +382,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             'FROM' => 'glpi_notificationtemplates',
             'WHERE' => [
                 'itemtype' => 'PluginOrderOrder',
-                'name' => 'Order Delivered'
-            ]
+                'name' => 'Order Delivered',
+            ],
         ];
         $result       = $DB->request($criteria);
 
@@ -441,7 +441,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                             'notifications_id'         => $notification_id,
                             'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                             'notificationtemplates_id' => $templates_id,
-                        ]
+                        ],
                     );
                 }
             }
@@ -472,13 +472,13 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
         $translation = new NotificationTemplateTranslation();
         $options     = [
             'itemtype' => 'PluginOrderOrder',
-            'FIELDS'   => 'id'
+            'FIELDS'   => 'id',
         ];
 
         foreach ($DB->request(['FROM' => 'glpi_notificationtemplates'], $options) as $data) {
             $options_template = [
                 'notificationtemplates_id' => $data['id'],
-                'FIELDS'                   => 'id'
+                'FIELDS'                   => 'id',
             ];
             foreach ($DB->request(['FROM' => 'glpi_notificationtemplatetranslations'], $options_template) as $data_template) {
                 $translation->delete($data_template);
@@ -555,10 +555,10 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                     'FKEY' => [
                         'glpi_plugin_order_orders' => $recipient_type . "_id",
                         $table => 'id',
-                    ]
-                ]
+                    ],
+                ],
             ],
-            'WHERE' => ['glpi_plugin_order_orders.id' => $order_id]
+            'WHERE' => ['glpi_plugin_order_orders.id' => $order_id],
         ]);
 
         foreach ($result as $data) {

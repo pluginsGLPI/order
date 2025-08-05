@@ -39,7 +39,7 @@ Html::header(
     $_SERVER['PHP_SELF'],
     "management",
     "PluginOrderMenu",
-    "order"
+    "order",
 );
 
 if (PluginOrderOrder::canView() || Session::haveRight("config", UPDATE)) {

@@ -53,7 +53,7 @@ new PluginReportsDropdownCriteria(
     $report,
     'plugin_order_orderstates_id',
     'PluginOrderOrderState',
-    __("Status")
+    __("Status"),
 );
 $report->displayCriteriasForm();
 
@@ -64,7 +64,7 @@ if ($report->criteriasValidated()) {
         new PluginReportsColumnLink(
             'entities_id',
             __("Entity"),
-            'Entity'
+            'Entity',
         ),
         new PluginReportsColumnLink(
             'id',
@@ -72,20 +72,20 @@ if ($report->criteriasValidated()) {
             'PluginOrderOrder',
             [
                 'with_comment'  => true,
-                'with_navigate' => true
-            ]
+                'with_navigate' => true,
+            ],
         ),
         new PluginReportsColumn('num_order', __("Order number", "order")),
         new PluginReportsColumnLink(
             'suppliers_id',
             __("Supplier"),
-            'Supplier'
+            'Supplier',
         ),
         new PluginReportsColumnLink(
             'plugin_order_orderstates_id',
             __("Status"),
             'PluginOrderOrderState',
-            ['with_comment' => true]
+            ['with_comment' => true],
         ),
         new PluginReportsColumnDateTime('order_date', __("Date of order", "order")),
         new PluginReportsColumnDateTime('duedate', __("Estimated due date", "order")),
@@ -94,8 +94,8 @@ if ($report->criteriasValidated()) {
             'locations_id',
             __("Delivery location", "order"),
             'Location',
-            ['with_comment' => true]
-        )
+            ['with_comment' => true],
+        ),
     ]);
 
     //TODO : ne pas chercher dans la poublelles

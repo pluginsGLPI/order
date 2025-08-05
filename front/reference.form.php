@@ -92,7 +92,7 @@ if (!empty($_GET["popup"]) && $_GET["popup"] == 1) {
         $_SERVER['PHP_SELF'],
         true,
         "PluginOrderMenu",
-        "references"
+        "references",
     );
 } else {
     Html::header(
@@ -100,7 +100,7 @@ if (!empty($_GET["popup"]) && $_GET["popup"] == 1) {
         $_SERVER['PHP_SELF'],
         "management",
         "PluginOrderMenu",
-        "references"
+        "references",
     );
 }
 

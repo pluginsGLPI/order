@@ -63,7 +63,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $table = self::getTable();
         $criteria = [
             'FROM' => $table,
-            'WHERE' => ['plugin_order_orders_id' => $plugin_order_orders_id]
+            'WHERE' => ['plugin_order_orders_id' => $plugin_order_orders_id],
         ];
 
         $iterator = $DB->request($criteria);
@@ -119,7 +119,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $criteria = [
             'SELECT' => ['(answer1 + answer2 + answer3 + answer4 + answer5) AS total'],
             'FROM' => $table,
-            'WHERE' => ['plugin_order_orders_id' => $plugin_order_orders_id]
+            'WHERE' => ['plugin_order_orders_id' => $plugin_order_orders_id],
         ];
         $iterator = $DB->request($criteria);
         if (count($iterator)) {
@@ -139,14 +139,14 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $criteria = [
             'SELECT' => [
                 "SUM(survey.$field) AS total",
-                "COUNT(survey.id) AS nb"
+                "COUNT(survey.id) AS nb",
             ],
             'FROM' => ["glpi_plugin_order_orders AS orders", "$table AS survey"],
             'WHERE' => [
                 'survey.suppliers_id' => 'orders.suppliers_id',
                 'survey.plugin_order_orders_id' => 'orders.id',
-                'orders.suppliers_id' => $suppliers_id
-            ] + getEntitiesRestrictCriteria('orders', 'entities_id', '', true)
+                'orders.suppliers_id' => $suppliers_id,
+            ] + getEntitiesRestrictCriteria('orders', 'entities_id', '', true),
         ];
         $iterator = $DB->request($criteria);
 
@@ -179,18 +179,18 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 'orders.id',
                 'orders.entities_id',
                 'orders.name',
-                'survey.comment'
+                'survey.comment',
             ],
             'FROM' => [
                 'glpi_plugin_order_orders AS orders',
-                "$survey_table AS survey"
+                "$survey_table AS survey",
             ],
             'WHERE' => [
                 'survey.suppliers_id' => 'orders.suppliers_id',
                 'survey.plugin_order_orders_id' => 'orders.id',
-                'orders.suppliers_id' => $suppliers_id
+                'orders.suppliers_id' => $suppliers_id,
             ] + getEntitiesRestrictCriteria('orders', 'entities_id', '', true),
-            'GROUPBY' => 'survey.id'
+            'GROUPBY' => 'survey.id',
         ];
         $iterator = $DB->request($criteria);
         $nb       = count($iterator);
@@ -305,7 +305,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         } else {
             // Create item
             $input = [
-                'plugin_order_orders_id' => $options['plugin_order_orders_id']
+                'plugin_order_orders_id' => $options['plugin_order_orders_id'],
             ];
             $this->check(-1, UPDATE, $input);
         }
@@ -401,7 +401,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $candelete = $order->can($ID, DELETE);
         $criteria = [
             'FROM' => $table,
-            'WHERE' => ['plugin_order_orders_id' => $ID]
+            'WHERE' => ['plugin_order_orders_id' => $ID],
         ];
         $iterator = $DB->request($criteria);
         $rand      = mt_rand();
@@ -539,19 +539,19 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 $table,
                 "FK_order",
                 "plugin_order_orders_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'"
+                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'",
             );
             $migration->changeField(
                 $table,
                 "FK_enterprise",
                 "suppliers_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'"
+                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'",
             );
             $migration->changeField(
                 $table,
                 "comment",
                 "comment",
-                "text"
+                "text",
             );
             $migration->addField($table, "entities_id", "int {$default_key_sign} NOT NULL default '0'");
             $migration->addField($table, "is_recursive", "tinyint NOT NULL default '0'");
@@ -564,9 +564,9 @@ class PluginOrderSurveySupplier extends CommonDBChild
                     'suppliers_id',
                     'entities_id',
                     'is_recursive',
-                    'id'
+                    'id',
                 ],
-                'FROM' => 'glpi_plugin_order_orders'
+                'FROM' => 'glpi_plugin_order_orders',
             ];
             foreach ($DB->request($query) as $data) {
                 $query = "UPDATE `glpi_plugin_order_surveysuppliers` SET

@@ -52,9 +52,9 @@ if (isset($_POST['name'])) {
     $min = 0;
     if (isset($_REQUEST['min'])) {
         if (!empty($_REQUEST['force_integer'])) {
-            $min = (int)$_REQUEST['min'];
+            $min = (int) $_REQUEST['min'];
         } else {
-            $min = (float)$_REQUEST['min'];
+            $min = (float) $_REQUEST['min'];
         }
     }
 

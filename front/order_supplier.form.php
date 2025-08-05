@@ -79,7 +79,7 @@ if (isset($_POST["add"])) {
     Html::header(__("Orders management", "order"), '', "plugins", "order", "order");
     $supplier->showForm(
         $_GET["id"],
-        ['plugin_order_orders_id' => $_GET["plugin_order_orders_id"]]
+        ['plugin_order_orders_id' => $_GET["plugin_order_orders_id"]],
     );
     Html::footer();
 }

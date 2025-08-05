@@ -134,8 +134,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         $criteria = [
             'FROM' => self::getTable(),
             'WHERE' => [
-                'plugin_order_orders_id' => $plugin_order_orders_id
-            ]
+                'plugin_order_orders_id' => $plugin_order_orders_id,
+            ],
         ];
         $result = $DB->request($criteria);
 
@@ -186,7 +186,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
             'num_quote',
             [
                 'value' => $this->fields['num_quote'],
-            ]
+            ],
         );
         echo "</td>";
 
@@ -201,7 +201,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
             'num_order',
             [
                 'value' => $this->fields['num_order'],
-            ]
+            ],
         );
         echo "</td>";
 
@@ -221,7 +221,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
         Session::initNavigateListItems(
             __CLASS__,
-            __("Order", "order") . " = " . $order->fields["name"]
+            __("Order", "order") . " = " . $order->fields["name"],
         );
 
         $candelete = $order->can($ID, UPDATE);
@@ -311,25 +311,25 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
             'SELECT' => [
                 'COUNT(glpi_plugin_order_orders_items.plugin_order_references_id) AS ref',
                 'glpi_plugin_order_orders_items.plugin_order_deliverystates_id AS sid',
-                'glpi_plugin_order_orders.entities_id'
+                'glpi_plugin_order_orders.entities_id',
             ],
             'FROM' => 'glpi_plugin_order_orders_items',
             'LEFT JOIN' => [
                 'glpi_plugin_order_orders' => [
                     'ON' => [
                         'glpi_plugin_order_orders' => 'id',
-                        'glpi_plugin_order_orders_items' => 'plugin_order_orders_id'
-                    ]
-                ]
+                        'glpi_plugin_order_orders_items' => 'plugin_order_orders_id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'glpi_plugin_order_orders.suppliers_id' => $suppliers_id,
-                'glpi_plugin_order_orders_items.states_id' => PluginOrderOrder::ORDER_DEVICE_DELIVRED
+                'glpi_plugin_order_orders_items.states_id' => PluginOrderOrder::ORDER_DEVICE_DELIVRED,
             ] + getEntitiesRestrictCriteria("glpi_plugin_order_orders", '', '', false, true),
             'GROUPBY' => [
                 'glpi_plugin_order_orders.entities_id',
-                'glpi_plugin_order_orders_items.plugin_order_deliverystates_id'
-            ]
+                'glpi_plugin_order_orders_items.plugin_order_deliverystates_id',
+            ],
         ];
         $result = $DB->request($criteria);
         $nb     = count($result);
@@ -353,7 +353,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                 if ($deliverystates_id > 0) {
                     $name = Dropdown::getDropdownName(
                         "glpi_plugin_order_deliverystates",
-                        $deliverystates_id
+                        $deliverystates_id,
                     );
                 } else {
                     $name = __("No specified status", "order");
@@ -410,32 +410,32 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                 $migration->addField(
                     $table,
                     "suppliers_id",
-                    "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'"
+                    "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'",
                 );
                 $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
                 $migration->changeField(
                     $table,
                     "FK_order",
                     "plugin_order_orders_id",
-                    "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'"
+                    "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'",
                 );
                 $migration->changeField(
                     $table,
                     "numquote",
                     "num_quote",
-                    "varchar(255) default NULL"
+                    "varchar(255) default NULL",
                 );
                 $migration->changeField(
                     $table,
                     "numbill",
                     "num_bill",
-                    "varchar(255) default NULL"
+                    "varchar(255) default NULL",
                 );
                 $migration->changeField(
                     $table,
                     "numorder",
                     "num_order",
-                    "varchar(255) default NULL"
+                    "varchar(255) default NULL",
                 );
                 $migration->addKey($table, "plugin_order_orders_id");
                 $migration->addKey($table, "suppliers_id");
@@ -447,9 +447,9 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                         `suppliers_id`,
                         `entities_id`,
                         `is_recursive`,
-                        `id`
+                        `id`,
                     ],
-                    'FROM' => 'glpi_plugin_order_orders'
+                    'FROM' => 'glpi_plugin_order_orders',
                 ];
                 foreach ($DB->request($query) as $data) {
                     $query = "UPDATE `glpi_plugin_order_orders_suppliers` SET
@@ -496,7 +496,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                         __("Supplier Detail", "order"),
                         0,
                         null,
-                        self::getIcon()
+                        self::getIcon(),
                     );
                 }
                 break;

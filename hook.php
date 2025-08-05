@@ -59,7 +59,7 @@ function plugin_order_install()
         'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
         'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderDocumentCategory',
         'PluginOrderReferenceFree', 'PluginOrderAccountSection',
-        'PluginOrderAnalyticNature'
+        'PluginOrderAnalyticNature',
     ];
     foreach ($classes as $class) {
         if ($plug = isPluginItemType($class)) {
@@ -82,7 +82,7 @@ function plugin_order_install()
     $directories = [PLUGIN_ORDER_TEMPLATE_DIR        => 'templates',
         PLUGIN_ORDER_SIGNATURE_DIR       => 'signatures',
         PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR => 'generate',
-        PLUGIN_ORDER_TEMPLATE_LOGO_DIR   => 'logo'
+        PLUGIN_ORDER_TEMPLATE_LOGO_DIR   => 'logo',
     ];
     foreach ($directories as $new_directory => $old_directory) {
         if (!is_dir($new_directory)) {
@@ -122,7 +122,7 @@ function plugin_order_uninstall()
         'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
         'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
         'PluginOrderSurveySupplier', 'PluginOrderDocumentCategory',
-        'PluginOrderAccountSection', 'PluginOrderAnalyticNature'
+        'PluginOrderAccountSection', 'PluginOrderAnalyticNature',
     ];
     foreach ($classes as $class) {
         call_user_func([$class, 'uninstall']);
@@ -148,7 +148,7 @@ function plugin_order_getDropdown()
             'PluginOrderBillType'         => __("Bill type", "order"),
             'PluginOrderAnalyticNature'   => __("Analytic nature", "order"),
             'PluginOrderAccountSection'   => __("Account section", "order"),
-            'PluginOrderDocumentCategory' => __("Orders", "order")
+            'PluginOrderDocumentCategory' => __("Orders", "order"),
         ];
     } else {
         return [];
@@ -168,50 +168,50 @@ function plugin_order_getDatabaseRelations()
                 "glpi_plugin_order_ordertypes" => "plugin_order_orders_id",
                 "glpi_plugin_order_orderstates" => "plugin_order_orders_id",
                 "glpi_plugin_order_orders_items" => "plugin_order_orders_id",
-                "glpi_plugin_order_orders_suppliers" => "plugin_order_orders_id"
+                "glpi_plugin_order_orders_suppliers" => "plugin_order_orders_id",
             ],
             "glpi_plugin_order_accountsections" => [
-                "glpi_plugin_order_accountsections" => "plugin_order_accountsections_id"
+                "glpi_plugin_order_accountsections" => "plugin_order_accountsections_id",
             ],
             "glpi_plugin_order_analyticnatures" => [
-                "glpi_plugin_order_orders_items" => "plugin_order_analyticnatures_id"
+                "glpi_plugin_order_orders_items" => "plugin_order_analyticnatures_id",
             ],
             "glpi_plugin_order_deliverystates" => [
-                "glpi_plugin_order_orders_items" => "plugin_order_deliverystates_id"
+                "glpi_plugin_order_orders_items" => "plugin_order_deliverystates_id",
             ],
             "glpi_plugin_order_references" => [
                 "glpi_plugin_order_orders_items" => "plugin_order_references_id",
-                "glpi_plugin_order_references_suppliers" => "plugin_order_references_id"
+                "glpi_plugin_order_references_suppliers" => "plugin_order_references_id",
             ],
             "glpi_entities" => [
                 "glpi_plugin_order_orders" => "entities_id",
                 "glpi_plugin_order_references" => "entities_id",
                 "glpi_plugin_order_others" => "entities_id",
-                "glpi_plugin_order_bills" => "entities_id"
+                "glpi_plugin_order_bills" => "entities_id",
             ],
             "glpi_budgets" => [
-                "glpi_plugin_order_orders" => "budgets_id"
+                "glpi_plugin_order_orders" => "budgets_id",
             ],
             "glpi_plugin_order_othertypes" => [
-                "glpi_plugin_order_others" => "plugin_order_othertypes_id"
+                "glpi_plugin_order_others" => "plugin_order_othertypes_id",
             ],
             "glpi_suppliers" => [
                 "glpi_plugin_order_orders" => "suppliers_id",
                 "glpi_plugin_order_orders_suppliers" => "suppliers_id",
-                "glpi_plugin_order_references_suppliers" => "suppliers_id"
+                "glpi_plugin_order_references_suppliers" => "suppliers_id",
             ],
             "glpi_manufacturers" => [
-                "glpi_plugin_order_references" => "manufacturers_id"
+                "glpi_plugin_order_references" => "manufacturers_id",
             ],
             "glpi_contacts" => [
-                "glpi_plugin_order_orders" => "contacts_id"
+                "glpi_plugin_order_orders" => "contacts_id",
             ],
             "glpi_locations" => [
-                "glpi_plugin_order_orders" => "locations_id"
+                "glpi_plugin_order_orders" => "locations_id",
             ],
             "glpi_profiles" => [
-                "glpi_plugin_order_profiles" => "profiles_id"
-            ]
+                "glpi_plugin_order_profiles" => "profiles_id",
+            ],
         ];
     } else {
         return [];
@@ -300,7 +300,7 @@ function plugin_order_giveItem($type, $ID, $data, $num)
             if (file_exists($file)) {
                 return Dropdown::getDropdownName(
                     getTableForItemType($itemtype . "Type"),
-                    $itemnum
+                    $itemnum,
                 );
             } else {
                 return " ";
@@ -310,7 +310,7 @@ function plugin_order_giveItem($type, $ID, $data, $num)
             if (file_exists(GLPI_ROOT . "/src/" . $itemtype . "Model.php")) {
                 return Dropdown::getDropdownName(
                     getTableForItemType($itemtype . "Model"),
-                    $itemnum
+                    $itemnum,
                 );
             } else {
                 return " ";

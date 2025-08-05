@@ -43,7 +43,7 @@ Html::header(
     $_SERVER['PHP_SELF'],
     "management",
     "PluginOrderMenu",
-    "order"
+    "order",
 );
 
 $item->display($_REQUEST);

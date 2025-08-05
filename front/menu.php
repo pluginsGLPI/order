@@ -38,7 +38,7 @@ Html::header(
     __("Orders management", "order"),
     $_SERVER['PHP_SELF'],
     "management",
-    "PluginOrderMenu"
+    "PluginOrderMenu",
 );
 
 //If there's only one possibility, do not display menu!

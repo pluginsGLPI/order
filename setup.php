@@ -129,7 +129,7 @@ function plugin_init_order()
             'Contract' => ['PluginOrderOrder_Item', 'updateItem'],
         ];
         $PLUGIN_HOOKS['item_add']['order'] = [
-            'Document' => ['PluginOrderOrder', 'addDocumentCategory']
+            'Document' => ['PluginOrderOrder', 'addDocumentCategory'],
         ];
 
         include_once(PLUGIN_ORDER_DIR . "/inc/order_item.class.php");
@@ -145,7 +145,7 @@ function plugin_init_order()
             'ticket_types'                => true,
             'contract_types'              => true,
             'assignable_types'            => true,
-            'addtabon'                    => ['Budget']
+            'addtabon'                    => ['Budget'],
         ]);
 
         Plugin::registerClass('PluginOrderReference', ['document_types' => true]);
@@ -163,7 +163,7 @@ function plugin_init_order()
 
         /*if glpi is loaded */
         if (Session::getLoginUserID()) {
-            $PLUGIN_HOOKS['add_css']['order'][] = 'order.css';
+            $PLUGIN_HOOKS['add_css']['order'][] = 'public/css/order.css';
 
             /* link to the config page in plugins menu */
             if (Session::haveRight("config", UPDATE)) {
@@ -204,8 +204,8 @@ function plugin_version_order()
             'glpi' => [
                 'min' => PLUGIN_ORDER_MIN_GLPI,
                 'max' => PLUGIN_ORDER_MAX_GLPI,
-            ]
-        ]
+            ],
+        ],
     ];
 }
 

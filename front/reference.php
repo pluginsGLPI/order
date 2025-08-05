@@ -39,7 +39,7 @@ Html::header(
     $_SERVER['PHP_SELF'],
     "management",
     "PluginOrderMenu",
-    "references"
+    "references",
 );
 
 if (PluginOrderReference::canView()) {

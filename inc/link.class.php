@@ -30,8 +30,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-
-
 class PluginOrderLink extends CommonDBChild
 {
     public static $rightname         = 'plugin_order_order';
@@ -74,6 +72,9 @@ class PluginOrderLink extends CommonDBChild
 
     public function showItemGenerationForm($params)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         // Retrieve configuration for generate assets feature
         $config = PluginOrderConfig::getConfig();
 
@@ -93,7 +94,7 @@ class PluginOrderLink extends CommonDBChild
         $i = 0;
         $item_rows = [];
         $found = false;
-        $order_web_dir = Plugin::getWebDir('order');
+        $order_web_dir = $CFG_GLPI['root_doc'] . '/plugins/order';
 
         foreach ($params["items"][__CLASS__] as $key => $val) {
             $detail = new PluginOrderOrder_Item();
@@ -105,7 +106,7 @@ class PluginOrderLink extends CommonDBChild
                 $templateID = $reference->checkIfTemplateExistsInEntity(
                     $val,
                     $detail->getField('itemtype'),
-                    $order->fields["entities_id"]
+                    $order->fields["entities_id"],
                 );
 
                 $row = [
@@ -119,7 +120,7 @@ class PluginOrderLink extends CommonDBChild
                         getSonsOf('glpi_entities', $order->fields["entities_id"]) :
                         $order->fields["entities_id"],
                     'condition' => self::getCondition($itemtype),
-                    'itemtype' => $itemtype
+                    'itemtype' => $itemtype,
                 ];
 
                 if ($templateID) {
@@ -181,24 +182,24 @@ class PluginOrderLink extends CommonDBChild
                 'ref.itemtype',
                 'ref.manufacturers_id',
                 'glpi_plugin_order_orders_items.price_taxfree',
-                'glpi_plugin_order_orders_items.discount'
+                'glpi_plugin_order_orders_items.discount',
             ],
             'FROM' => 'glpi_plugin_order_orders_items',
             'INNER JOIN' => [
                 "$table AS ref" => [
                     'ON' => [
                         'glpi_plugin_order_orders_items' => 'plugin_order_references_id',
-                        'ref' => 'id'
-                    ]
-                ]
+                        'ref' => 'id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'glpi_plugin_order_orders_items.plugin_order_orders_id' => $ID,
                 'glpi_plugin_order_orders_items.states_id' => PluginOrderOrder::ORDER_DEVICE_DELIVRED,
-                'glpi_plugin_order_orders_items.itemtype' => $condition_itemtype
+                'glpi_plugin_order_orders_items.itemtype' => $condition_itemtype,
             ],
             'GROUPBY' => 'glpi_plugin_order_orders_items.plugin_order_references_id',
-            'ORDER' => 'ref.name'
+            'ORDER' => 'ref.name',
         ];
 
         return $DB->request($criteria);
@@ -248,7 +249,7 @@ class PluginOrderLink extends CommonDBChild
                 $canedit,
                 $plugin_order_orders_id,
                 $PluginOrderOrder,
-                'glpi_plugin_order_references'
+                'glpi_plugin_order_references',
             );
         }
 
@@ -262,7 +263,7 @@ class PluginOrderLink extends CommonDBChild
                 $canedit,
                 $plugin_order_orders_id,
                 $PluginOrderOrder,
-                'glpi_plugin_order_referencefrees'
+                'glpi_plugin_order_referencefrees',
             );
         }
     }
@@ -283,8 +284,8 @@ class PluginOrderLink extends CommonDBChild
         $rand                       = mt_rand();
         $countainer_name            = 'orderlink' . $plugin_order_orders_id . "_" . $plugin_order_references_id;
 
-        $start = (int)($_GET['start'] ?? 0);
-        $limit = (int)($_GET['glpilist_limit'] ?? 15);
+        $start = (int) ($_GET['start'] ?? 0);
+        $limit = (int) ($_GET['glpilist_limit'] ?? 15);
 
         $massiveactionparams = [
             'container'   => 'mass' . __CLASS__ . $rand,
@@ -296,7 +297,7 @@ class PluginOrderLink extends CommonDBChild
                 'massive_action_fields' => [
                     'plugin_order_orders_id',
                     'plugin_order_references_id',
-                ]
+                ],
             ],
             'specific_actions' => $this->getSpecificMassiveActions(),
         ];
@@ -318,24 +319,24 @@ class PluginOrderLink extends CommonDBChild
                 'ref.itemtype',
                 'items.items_id',
                 'items.price_taxfree',
-                'items.discount'
+                'items.discount',
             ],
             'FROM' => 'glpi_plugin_order_orders_items AS items',
             'INNER JOIN' => [
                 "$table AS ref" => [
                     'ON' => [
                         'items' => 'plugin_order_references_id',
-                        'ref' => 'id'
-                    ]
-                ]
+                        'ref' => 'id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'items.plugin_order_orders_id' => $plugin_order_orders_id,
                 'items.plugin_order_references_id' => $plugin_order_references_id,
                 'items.states_id' => PluginOrderOrder::ORDER_DEVICE_DELIVRED,
-                'items.itemtype' => $condition_itemtype
+                'items.itemtype' => $condition_itemtype,
             ],
-            'ORDER' => 'ref.name'
+            'ORDER' => 'ref.name',
         ];
 
         if ($itemtype == 'SoftwareLicense') {
@@ -386,7 +387,7 @@ class PluginOrderLink extends CommonDBChild
                     $plugin_order_orders_id,
                     $plugin_order_references_id,
                     $data["price_taxfree"],
-                    $data["discount"]
+                    $data["discount"],
                 );
             }
 
@@ -423,7 +424,7 @@ class PluginOrderLink extends CommonDBChild
                     $val_b_clean = strip_tags($val_b);
                     $cmp = strcasecmp($val_a_clean, $val_b_clean);
                 } else {
-                    $cmp = strcasecmp((string)$val_a, (string)$val_b);
+                    $cmp = strcasecmp((string) $val_a, (string) $val_b);
                 }
                 return $order === 'DESC' ? -$cmp : $cmp;
             });
@@ -450,7 +451,7 @@ class PluginOrderLink extends CommonDBChild
                 'min'   => 1,
                 'max'   => ($start + $num > $total_number ? $total_number : $start + $num),
                 'rand' => $rand,
-            ]
+            ],
         ];
 
         TemplateRenderer::getInstance()->display('@order/order_link_item.html.twig', [
@@ -476,7 +477,7 @@ class PluginOrderLink extends CommonDBChild
             'displayed_count' => $num,
             'start' => $start,
             'limit' => $limit,
-            'reference_header_data' => $reference_header_data
+            'reference_header_data' => $reference_header_data,
         ]);
     }
 
@@ -498,7 +499,7 @@ class PluginOrderLink extends CommonDBChild
 
         $result = $DB->request([
             'FROM'   => $itemtype::getTable(),
-            'WHERE'  => ['id' => $items_id]
+            'WHERE'  => ['id' => $items_id],
         ]);
         $data = $result->current();
         if (isset($data['serial'])) {
@@ -549,7 +550,7 @@ class PluginOrderLink extends CommonDBChild
                     $reference->fields["itemtype"],
                     $_SESSION["glpiactiveentities"],
                     $reference->fields["types_id"],
-                    $reference->fields["models_id"]
+                    $reference->fields["models_id"],
                 );
                 break;
         }
@@ -576,19 +577,19 @@ class PluginOrderLink extends CommonDBChild
                     'glpi_plugin_order_references.itemtype',
                 ],
                 'FROM' => [
-                    'glpi_plugin_order_orders_items'
+                    'glpi_plugin_order_orders_items',
                 ],
                 'LEFT JOIN' => [
                     'glpi_plugin_order_references' => [
                         'FKEY' => [
                             'glpi_plugin_order_orders_items' => 'plugin_order_references_id',
                             'glpi_plugin_order_references'   => 'id',
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'WHERE' => [
-                    'glpi_plugin_order_orders_items.id' => array_keys($ma->getItems()[__CLASS__])
-                ]
+                    'glpi_plugin_order_orders_items.id' => array_keys($ma->getItems()[__CLASS__]),
+                ],
             ]);
             foreach ($additional_data_ite as $add_values) {
                 $ma->POST['add_items'][$add_values['id']] = $add_values;
@@ -629,7 +630,7 @@ class PluginOrderLink extends CommonDBChild
                             $key,
                             $ma->POST["items_id"],
                             $ma->POST['add_items'][$key]['itemtype'],
-                            $ma->POST['plugin_order_orders_id']
+                            $ma->POST['plugin_order_orders_id'],
                         );
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                     }
@@ -641,7 +642,7 @@ class PluginOrderLink extends CommonDBChild
                     $link->deleteLinkWithItem(
                         $key,
                         $ma->POST['add_items'][$key]['itemtype'],
-                        $ma->POST['plugin_order_orders_id']
+                        $ma->POST['plugin_order_orders_id'],
                     );
                     $ma->itemDone($item->getType(), $val, MassiveAction::ACTION_OK);
                 }
@@ -753,8 +754,8 @@ class PluginOrderLink extends CommonDBChild
             'FROM' => 'glpi_plugin_order_orders_items',
             'WHERE' => [
                 'itemtype' => $itemtype,
-                'items_id' => $items_id
-            ]
+                'items_id' => $items_id,
+            ],
         ];
         $result = $DB->request($criteria);
 
@@ -802,7 +803,7 @@ class PluginOrderLink extends CommonDBChild
                             "immo_number",
                             true,
                             'Infocom',
-                            $entity
+                            $entity,
                         );
                     }
 
@@ -895,7 +896,7 @@ class PluginOrderLink extends CommonDBChild
                 $itemtype,
                 $items_id,
                 $plugin_order_orders_id,
-                $detailID
+                $detailID,
             )
         ) {
             $detail     = new PluginOrderOrder_Item();
@@ -911,8 +912,8 @@ class PluginOrderLink extends CommonDBChild
                         'plugin_order_references_id' => $detail->fields["plugin_order_references_id"],
                         'price_taxfree' => ['LIKE', $detail->fields["price_taxfree"]],
                         'discount' => ['LIKE', $detail->fields["discount"]],
-                        'states_id' => 1
-                    ]
+                        'states_id' => 1,
+                    ],
                 ];
                 $result = $DB->request($criteria);
                 $nb     = count($result);
@@ -975,7 +976,7 @@ class PluginOrderLink extends CommonDBChild
 
                     if (
                         $item->update(['id'   => $items_id,
-                            'cost' => $detail->fields["price_discounted"]
+                            'cost' => $detail->fields["price_discounted"],
                         ])
                     ) {
                         $order = new PluginOrderOrder();
@@ -983,13 +984,13 @@ class PluginOrderLink extends CommonDBChild
                         if (
                             !countElementsInTable(
                                 'glpi_contracts_suppliers',
-                                ['contracts_id' => $items_id, 'suppliers_id' => $order->fields['suppliers_id']]
+                                ['contracts_id' => $items_id, 'suppliers_id' => $order->fields['suppliers_id']],
                             )
                         ) {
                             $contract_supplier = new Contract_Supplier();
                             $contract_supplier->add([
                                 'contracts_id' => $items_id,
-                                'suppliers_id'  => $order->fields['suppliers_id']
+                                'suppliers_id'  => $order->fields['suppliers_id'],
                             ]);
                         }
                     }
@@ -1006,7 +1007,7 @@ class PluginOrderLink extends CommonDBChild
                         $detailID,
                         $itemtype,
                         $items_id,
-                        $templateID
+                        $templateID,
                     );
 
                     if ($history) {
@@ -1051,7 +1052,7 @@ class PluginOrderLink extends CommonDBChild
                 $detail->fields["plugin_order_references_id"],
                 $detail->fields["price_taxfree"],
                 $detail->fields["discount"],
-                PluginOrderOrder::ORDER_DEVICE_DELIVRED
+                PluginOrderOrder::ORDER_DEVICE_DELIVRED,
             );
             if ($nb = count($result)) {
                 foreach ($result as $row) {
@@ -1140,7 +1141,7 @@ class PluginOrderLink extends CommonDBChild
             $templateID = $reference->checkIfTemplateExistsInEntity(
                 $values["id"],
                 $add_item["itemtype"],
-                $entity
+                $entity,
             );
 
             $item  = getItemForItemtype($add_item["itemtype"]);
@@ -1197,7 +1198,7 @@ class PluginOrderLink extends CommonDBChild
                         "name",
                         $templateID,
                         $add_item["itemtype"],
-                        $entity
+                        $entity,
                     );
                 } else {
                     $input["name"] = $values["name"];
@@ -1209,7 +1210,7 @@ class PluginOrderLink extends CommonDBChild
                         "otherserial",
                         $templateID,
                         $add_item["itemtype"],
-                        $entity
+                        $entity,
                     );
                 } else {
                     $input["otherserial"] = $values["otherserial"];
@@ -1292,7 +1293,7 @@ class PluginOrderLink extends CommonDBChild
                 $entity,
                 $templateID,
                 false,
-                false
+                false,
             );
 
             //Add item's history
@@ -1321,7 +1322,7 @@ class PluginOrderLink extends CommonDBChild
             [
                 'plugin_order_orders_id' => $item->getID(),
                 'states_id' => PluginOrderOrder::ORDER_DEVICE_DELIVRED,
-            ]
+            ],
         );
     }
 
@@ -1337,7 +1338,7 @@ class PluginOrderLink extends CommonDBChild
                 _n("Associated item", "Associated items", 2),
                 self::countForOrder($item),
                 null,
-                self::getIcon()
+                self::getIcon(),
             );
         }
         return '';
@@ -1381,8 +1382,8 @@ class PluginOrderLink extends CommonDBChild
                 getAllDataFromTable(
                     'glpi_documents_items',
                     ['itemtype' => 'PluginOrderOrder',
-                        'items_id' => $orders_id
-                    ]
+                        'items_id' => $orders_id,
+                    ],
                 ) as $doc
             ) {
                 //Create a new document
@@ -1396,7 +1397,7 @@ class PluginOrderLink extends CommonDBChild
                         [
                             'entities_id' => $entity,
                             'sha1sum' => $document->fields['sha1sum'],
-                        ]
+                        ],
                     );
                     if (empty($found_docs)) {
                         $tmpdoc                = $document->fields;

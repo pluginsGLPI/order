@@ -114,7 +114,7 @@ class PluginOrderConfig extends CommonDBTM
             'name'                => "default_taxes",
             'value'               => $this->fields["default_taxes"],
             'display_emptychoice' => true,
-            'emptylabel'          => __("No VAT", "order")
+            'emptylabel'          => __("No VAT", "order"),
         ]);
         echo "</td>";
         echo "</tr>";
@@ -272,9 +272,9 @@ class PluginOrderConfig extends CommonDBTM
             'generate_assets',
             [self::CONFIG_NEVER => __('No'),
                 self::CONFIG_YES   => __('Yes'),
-                self::CONFIG_ASK   => __('Asked', 'order')
+                self::CONFIG_ASK   => __('Asked', 'order'),
             ],
-            ['value' => $this->canGenerateAsset()]
+            ['value' => $this->canGenerateAsset()],
         );
         echo "</td>";
         echo "</tr>";
@@ -317,7 +317,7 @@ class PluginOrderConfig extends CommonDBTM
                 'generated_name',
                 [
                     'value' => $this->fields['generated_name'],
-                ]
+                ],
             );
             echo "</td>";
             echo "</tr>";
@@ -329,7 +329,7 @@ class PluginOrderConfig extends CommonDBTM
                 'generated_serial',
                 [
                     'value' => $this->fields['generated_serial'],
-                ]
+                ],
             );
             echo "</td>";
             echo "</tr>";
@@ -341,7 +341,7 @@ class PluginOrderConfig extends CommonDBTM
                 'generated_otherserial',
                 [
                     'value' => $this->fields['generated_otherserial'],
-                ]
+                ],
             );
             echo "</td>";
             echo "</tr>";
@@ -781,7 +781,7 @@ class PluginOrderConfig extends CommonDBTM
                 $table,
                 "default_ticketcategories_id",
                 "default_itilcategories_id",
-                "int {$default_key_sign} NOT NULL default '0'"
+                "int {$default_key_sign} NOT NULL default '0'",
             );
 
             //1.9.0
@@ -818,7 +818,7 @@ class PluginOrderConfig extends CommonDBTM
             'order_status_partially_delivred'  => '4',
             'order_status_completly_delivered' => '5',
             'order_status_canceled'            => '6',
-            'order_status_paid'                => '7'
+            'order_status_paid'                => '7',
         ];
 
         foreach ($new_states as $field => $value) {

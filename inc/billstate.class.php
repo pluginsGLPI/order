@@ -51,7 +51,7 @@ class PluginOrderBillState extends CommonDropdown
                 __("You cannot remove this status", "order") .
                                           ": " . $this->fields['name'],
                 false,
-                ERROR
+                ERROR,
             );
             return false;
         } else {
@@ -63,7 +63,7 @@ class PluginOrderBillState extends CommonDropdown
     public static function getStates()
     {
         return [self::NOTPAID => __("Being paid", "order"),
-            self::PAID    => __("Paid", "order")
+            self::PAID    => __("Paid", "order"),
         ];
     }
 
@@ -105,11 +105,11 @@ class PluginOrderBillState extends CommonDropdown
             $state = new self();
             foreach (
                 [self::PAID     => __("Paid", "order"),
-                    self::NOTPAID  => __("Not paid", "order")
+                    self::NOTPAID  => __("Not paid", "order"),
                 ] as $id => $label
             ) {
                 $state->add(['id'   => $id,
-                    'name' => $label
+                    'name' => $label,
                 ]);
             }
         }
