@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+- Update exemple.odt file to include ecotax tags
 - Fix icon for `transfer` action
 - Fix reference form error when ecotax_price field is not set
 
