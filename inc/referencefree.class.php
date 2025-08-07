@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderReferenceFree extends CommonDBTM
 {
@@ -55,7 +53,7 @@ class PluginOrderReferenceFree extends CommonDBTM
         if (!$DB->tableExists($table)) {
             $migration->displayMessage("Installing $table");
 
-           //Install
+            //Install
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_referencefrees` (
                `id` int {$default_key_sign} NOT NULL auto_increment,
                `entities_id` int {$default_key_sign} NOT NULL default '0',
@@ -90,7 +88,7 @@ class PluginOrderReferenceFree extends CommonDBTM
                KEY `is_deleted` (`is_deleted`),
                KEY date_mod (date_mod)
             ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         } else {
             // Add ecotax field if it doesn't exist
             if (!$DB->fieldExists($table, 'ecotax_price')) {
@@ -98,7 +96,7 @@ class PluginOrderReferenceFree extends CommonDBTM
                     $table,
                     'ecotax_price',
                     "decimal(20,6) NOT NULL DEFAULT '0.000000'",
-                    ['after' => 'comment']
+                    ['after' => 'comment'],
                 );
                 $migration->migrationOneTable($table);
             }
@@ -113,14 +111,14 @@ class PluginOrderReferenceFree extends CommonDBTM
         $table  = getTableForItemType(__CLASS__);
         foreach (
             ["glpi_displaypreferences", "glpi_documents_items", "glpi_savedsearches",
-                "glpi_logs"
+                "glpi_logs",
             ] as $t
         ) {
             $query = "DELETE FROM `$t` WHERE `itemtype`='" . __CLASS__ . "'";
-            $DB->query($query);
+            $DB->doQuery($query);
         }
 
-        $DB->query("DROP TABLE IF EXISTS `$table`") or die($DB->error());
+        $DB->doQuery("DROP TABLE IF EXISTS `$table`");
     }
 
     /**

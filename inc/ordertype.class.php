@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 // Class for a Dropdown
 class PluginOrderOrderType extends CommonDropdown
@@ -48,7 +46,7 @@ class PluginOrderOrderType extends CommonDropdown
     {
         /** @var \DBmysql $DB */
         global $DB;
-       //Only avaiable since 1.3.0
+        //Only avaiable since 1.3.0
 
         $default_charset = DBConnection::getDefaultCharset();
         $default_collation = DBConnection::getDefaultCollation();
@@ -66,7 +64,7 @@ class PluginOrderOrderType extends CommonDropdown
                   PRIMARY KEY  (`id`),
                   KEY `name` (`name`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         }
     }
 
@@ -76,7 +74,7 @@ class PluginOrderOrderType extends CommonDropdown
         /** @var \DBmysql $DB */
         global $DB;
 
-       //Current table name
-        $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`") or die($DB->error());
+        //Current table name
+        $DB->doQuery("DROP TABLE IF EXISTS `" . self::getTable() . "`");
     }
 }

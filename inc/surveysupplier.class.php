@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderSurveySupplier extends CommonDBChild
 {
@@ -49,7 +47,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
-       // Not attached to reference -> not added
+        // Not attached to reference -> not added
         if (!isset($input['plugin_order_orders_id']) || $input['plugin_order_orders_id'] <= 0) {
             return false;
         }
@@ -65,7 +63,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $table = self::getTable();
         $criteria = [
             'FROM' => $table,
-            'WHERE' => ['plugin_order_orders_id' => $plugin_order_orders_id]
+            'WHERE' => ['plugin_order_orders_id' => $plugin_order_orders_id],
         ];
 
         $iterator = $DB->request($criteria);
@@ -121,7 +119,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $criteria = [
             'SELECT' => ['(answer1 + answer2 + answer3 + answer4 + answer5) AS total'],
             'FROM' => $table,
-            'WHERE' => ['plugin_order_orders_id' => $plugin_order_orders_id]
+            'WHERE' => ['plugin_order_orders_id' => $plugin_order_orders_id],
         ];
         $iterator = $DB->request($criteria);
         if (count($iterator)) {
@@ -141,14 +139,14 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $criteria = [
             'SELECT' => [
                 "SUM(survey.$field) AS total",
-                "COUNT(survey.id) AS nb"
+                "COUNT(survey.id) AS nb",
             ],
             'FROM' => ["glpi_plugin_order_orders AS orders", "$table AS survey"],
             'WHERE' => [
                 'survey.suppliers_id' => 'orders.suppliers_id',
                 'survey.plugin_order_orders_id' => 'orders.id',
-                'orders.suppliers_id' => $suppliers_id
-            ] + getEntitiesRestrictCriteria('orders', 'entities_id', '', true)
+                'orders.suppliers_id' => $suppliers_id,
+            ] + getEntitiesRestrictCriteria('orders', 'entities_id', '', true),
         ];
         $iterator = $DB->request($criteria);
 
@@ -181,18 +179,18 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 'orders.id',
                 'orders.entities_id',
                 'orders.name',
-                'survey.comment'
+                'survey.comment',
             ],
             'FROM' => [
                 'glpi_plugin_order_orders AS orders',
-                "$survey_table AS survey"
+                "$survey_table AS survey",
             ],
             'WHERE' => [
                 'survey.suppliers_id' => 'orders.suppliers_id',
                 'survey.plugin_order_orders_id' => 'orders.id',
-                'orders.suppliers_id' => $suppliers_id
+                'orders.suppliers_id' => $suppliers_id,
             ] + getEntitiesRestrictCriteria('orders', 'entities_id', '', true),
-            'GROUPBY' => 'survey.id'
+            'GROUPBY' => 'survey.id',
         ];
         $iterator = $DB->request($criteria);
         $nb       = count($iterator);
@@ -305,9 +303,9 @@ class PluginOrderSurveySupplier extends CommonDBChild
         if ($ID > 0) {
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $input = [
-                'plugin_order_orders_id' => $options['plugin_order_orders_id']
+                'plugin_order_orders_id' => $options['plugin_order_orders_id'],
             ];
             $this->check(-1, UPDATE, $input);
         }
@@ -321,7 +319,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $order->getFromDB($plugin_order_orders_id);
         echo Html::hidden('plugin_order_orders_id', ['value' => $plugin_order_orders_id]);
         echo Html::hidden('entities_id', ['value' => $order->getEntityID()]);
-        echo Html::hidden('is_recursive', ['value' => $order->isRecursive()]);
+        echo Html::hidden('is_recursive', ['value' => (int) $order->isRecursive()]);
 
         echo "<tr class='tab_bg_1'><td>" . __("Supplier") . ": </td><td>";
         $suppliers_id = $order->fields["suppliers_id"];
@@ -366,7 +364,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'><td>";
-       //comments of order
+        //comments of order
         echo __("Comments") . ": </td>";
         echo "<td>";
         echo "<textarea cols='80' rows='4' name='comment'>" . $this->fields["comment"] . "</textarea>";
@@ -403,7 +401,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $candelete = $order->can($ID, DELETE);
         $criteria = [
             'FROM' => $table,
-            'WHERE' => ['plugin_order_orders_id' => $ID]
+            'WHERE' => ['plugin_order_orders_id' => $ID],
         ];
         $iterator = $DB->request($criteria);
         $rand      = mt_rand();
@@ -428,7 +426,17 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 echo "<td>";
                 if ($candelete) {
                     echo "<input type='checkbox' name='check[" . $data["id"] . "]'";
-                    if (isset($_POST['check']) && $_POST['check'] == 'all') {
+                    if (
+                        isset($_POST['check'])
+                        && (
+                            is_string($_POST['check'])
+                            && $_POST['check'] == 'all'
+                            || (
+                                is_array($_POST['check'])
+                                && isset($_POST['check']['all'])
+                            )
+                        )
+                    ) {
                         echo " checked ";
                     }
                     echo ">";
@@ -492,7 +500,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
     {
         /** @var \DBmysql $DB */
         global $DB;
-       //Only avaiable since 1.3.0
+        //Only avaiable since 1.3.0
 
         $default_charset = DBConnection::getDefaultCharset();
         $default_collation = DBConnection::getDefaultCollation();
@@ -502,7 +510,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         if (!$DB->tableExists("glpi_plugin_order_surveysuppliers")) {
             $migration->displayMessage("Installing $table");
 
-           //Installation
+            //Installation
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_surveysuppliers` (
                   `id` int {$default_key_sign} NOT NULL auto_increment,
                   `entities_id` int {$default_key_sign} NOT NULL default '0',
@@ -520,30 +528,30 @@ class PluginOrderSurveySupplier extends CommonDBChild
                   KEY `entities_id` (`entities_id`),
                   KEY `suppliers_id` (`suppliers_id`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->doQuery($query) or die($DB->error());
+            $DB->doQuery($query);
         } else {
-           //upgrade
+            //upgrade
             $migration->displayMessage("Upgrading $table");
 
-           //1.2.0
+            //1.2.0
             $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
             $migration->changeField(
                 $table,
                 "FK_order",
                 "plugin_order_orders_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'"
+                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'",
             );
             $migration->changeField(
                 $table,
                 "FK_enterprise",
                 "suppliers_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'"
+                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'",
             );
             $migration->changeField(
                 $table,
                 "comment",
                 "comment",
-                "text"
+                "text",
             );
             $migration->addField($table, "entities_id", "int {$default_key_sign} NOT NULL default '0'");
             $migration->addField($table, "is_recursive", "tinyint NOT NULL default '0'");
@@ -551,14 +559,21 @@ class PluginOrderSurveySupplier extends CommonDBChild
             $migration->addKey($table, "suppliers_id");
             $migration->migrationOneTable($table);
 
-            $query = "SELECT `suppliers_id`, `entities_id`,`is_recursive`,`id`
-                   FROM `glpi_plugin_order_orders` ";
+            $query = [
+                'SELECT' => [
+                    'suppliers_id',
+                    'entities_id',
+                    'is_recursive',
+                    'id',
+                ],
+                'FROM' => 'glpi_plugin_order_orders',
+            ];
             foreach ($DB->request($query) as $data) {
                 $query = "UPDATE `glpi_plugin_order_surveysuppliers` SET
                         `entities_id` = '{$data["entities_id"]}',
                         `is_recursive` = '{$data["is_recursive"]}'
                       WHERE `plugin_order_orders_id` = '{$data["id"]}' ";
-                $DB->doQuery($query) or die($DB->error());
+                $DB->doQuery($query);
             }
         }
     }
@@ -569,8 +584,8 @@ class PluginOrderSurveySupplier extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-       //Current table name
-        $DB->doQuery("DROP TABLE IF EXISTS  `" . self::getTable() . "`") or die($DB->error());
+        //Current table name
+        $DB->doQuery("DROP TABLE IF EXISTS  `" . self::getTable() . "`");
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)

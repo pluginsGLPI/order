@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderOtherType extends CommonDropdown
 {
@@ -52,7 +50,7 @@ class PluginOrderOtherType extends CommonDropdown
         $default_collation = DBConnection::getDefaultCollation();
         $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-       //Only avaiable since 1.2.0
+        //Only avaiable since 1.2.0
         $table = self::getTable();
         if (!$DB->tableExists($table)) {
             $migration->displayMessage("Installing $table");
@@ -64,7 +62,7 @@ class PluginOrderOtherType extends CommonDropdown
                   PRIMARY KEY  (`ID`),
                   KEY `name` (`name`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         }
     }
 
@@ -74,7 +72,7 @@ class PluginOrderOtherType extends CommonDropdown
         /** @var \DBmysql $DB */
         global $DB;
 
-       //Current table name
-        $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`") or die($DB->error());
+        //Current table name
+        $DB->doQuery("DROP TABLE IF EXISTS `" . self::getTable() . "`");
     }
 }

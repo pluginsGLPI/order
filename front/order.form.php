@@ -31,7 +31,7 @@
 /** @var \DBmysql $DB */
 global $DB;
 
-include("../../../inc/includes.php");
+
 Session::checkLoginUser();
 
 if (!isset($_GET["id"])) {
@@ -49,7 +49,7 @@ $pluginOrderOrder_Item     = new PluginOrderOrder_Item();
 if (isset($_POST["add"])) {
     $pluginOrderOrder->check(-1, CREATE, $_POST);
 
-   /* FORCE Status */
+    /* FORCE Status */
     $_POST['plugin_order_orderstates_id'] = $config->getDraftState();
 
     $newID = $pluginOrderOrder->add($_POST);
@@ -59,18 +59,18 @@ if (isset($_POST["add"])) {
         $url .= "&withtemplate=1";
     }
     Html::redirect($url);
-} else if (isset($_POST["delete"])) {
-   /* delete order */
+} elseif (isset($_POST["delete"])) {
+    /* delete order */
     $pluginOrderOrder->check($_POST['id'], DELETE);
     $pluginOrderOrder->delete($_POST);
     $pluginOrderOrder->redirectToList();
-} else if (isset($_POST["restore"])) {
-   /* restore order */
+} elseif (isset($_POST["restore"])) {
+    /* restore order */
     $pluginOrderOrder->check($_POST['id'], CREATE);
     $pluginOrderOrder->restore($_POST);
     $pluginOrderOrder->redirectToList();
-} else if (isset($_REQUEST["purge"])) {
-   /* purge order */
+} elseif (isset($_REQUEST["purge"])) {
+    /* purge order */
     if (isset($_POST['id'])) {
         $id = $_POST['id'];
     } else {
@@ -79,67 +79,67 @@ if (isset($_POST["add"])) {
     $pluginOrderOrder->check($id, DELETE);
     $pluginOrderOrder->delete(['id' => $id], true);
     $pluginOrderOrder->redirectToList();
-} else if (isset($_POST["update"])) {
-   /* update order */
+} elseif (isset($_POST["update"])) {
+    /* update order */
     $pluginOrderOrder->check($_POST['id'], UPDATE);
     $pluginOrderOrder->update($_POST);
     Html::back();
 
-   //Status update & order workflow
-} else if (isset($_POST["validate"])) {
-   /* validate order */
+    //Status update & order workflow
+} elseif (isset($_POST["validate"])) {
+    /* validate order */
     if (PluginOrderOrder::canView() && (PluginOrderOrder::canValidate() || !$config->useValidation())) {
         $pluginOrderOrder->updateOrderStatus($_POST["id"], $config->getApprovedState(), $_POST["comment"]);
         PluginOrderReception::updateDelivryStatus($_POST["id"]);
         Session::addMessageAfterRedirect(__("Order is validated", "order"));
     }
     Html::back();
-} else if (isset($_POST["waiting_for_approval"])) {
+} elseif (isset($_POST["waiting_for_approval"])) {
     if (PluginOrderOrder::canCreate()) {
         $pluginOrderOrder->updateOrderStatus(
             $_POST["id"],
             $config->getWaitingForApprovalState(),
-            $_POST["comment"]
+            $_POST["comment"],
         );
         Session::addMessageAfterRedirect(__("Order validation successfully requested", "order"));
     }
     Html::back();
-} else if (isset($_POST["cancel_waiting_for_approval"])) {
+} elseif (isset($_POST["cancel_waiting_for_approval"])) {
     if (PluginOrderOrder::canView() && PluginOrderOrder::canCancel()) {
         $pluginOrderOrder->updateOrderStatus(
             $_POST["id"],
             $config->getDraftState(),
-            $_POST["comment"]
+            $_POST["comment"],
         );
         Session::addMessageAfterRedirect(__("Validation query is now canceled", "order"));
     }
 
     Html::back();
-} else if (isset($_POST["cancel_order"])) {
+} elseif (isset($_POST["cancel_order"])) {
     if (PluginOrderOrder::canView() && PluginOrderOrder::canCancel()) {
         $pluginOrderOrder->updateOrderStatus(
             $_POST["id"],
             $config->getCanceledState(),
-            $_POST["comment"]
+            $_POST["comment"],
         );
         $pluginOrderOrder->deleteAllLinkWithItem($_POST["id"]);
         Session::addMessageAfterRedirect(__("Order canceled", "order"));
     }
 
     Html::back();
-} else if (isset($_POST["undovalidation"])) {
+} elseif (isset($_POST["undovalidation"])) {
     if (PluginOrderOrder::canView() && PluginOrderOrder::canUndo()) {
         $pluginOrderOrder->updateOrderStatus(
             $_POST["id"],
             $config->getDraftState(),
-            $_POST["comment"]
+            $_POST["comment"],
         );
         Session::addMessageAfterRedirect(__("Order currently edited", "order"));
     }
 
     Html::back();
-} else if (isset($_POST["add_item"])) {
-   //Details management
+} elseif (isset($_POST["add_item"])) {
+    //Details management
     if ($_POST["discount"] < 0 || $_POST["discount"] > 100) {
         Session::addMessageAfterRedirect(__("The discount pourcentage must be between 0 and 100", "order"), false, ERROR);
     } else {
@@ -147,7 +147,7 @@ if (isset($_POST["add"])) {
         $new_value  = __("Add reference", "order") . " ";
         $new_value .= Dropdown::getDropdownName(
             "glpi_plugin_order_references",
-            $_POST["plugin_order_references_id"]
+            $_POST["plugin_order_references_id"],
         );
         $new_value .= " (" . __("Quantity", "order") . " : " . $_POST["quantity"];
         $new_value .= " " . __("Discount (%)", "order") . " : " . $_POST["discount"] . ")";
@@ -155,7 +155,7 @@ if (isset($_POST["add"])) {
             "PluginOrderOrder",
             "",
             $new_value,
-            $_POST["plugin_order_orders_id"]
+            $_POST["plugin_order_orders_id"],
         );
         $pluginOrderOrder_Item->addDetails(
             $_POST["plugin_order_references_id"],
@@ -165,11 +165,11 @@ if (isset($_POST["add"])) {
             $_POST["price"],
             $_POST["discount"],
             $_POST["plugin_order_ordertaxes_id"],
-            $_POST["plugin_order_analyticnatures_id"]
+            $_POST["plugin_order_analyticnatures_id"],
         );
     }
     Html::back();
-} else if (isset($_POST["delete_item"])) {
+} elseif (isset($_POST["delete_item"])) {
     if (
         isset($_POST["plugin_order_orders_id"])
         && ($_POST["plugin_order_orders_id"] > 0)
@@ -184,7 +184,7 @@ if (isset($_POST["add"])) {
                         $_POST["plugin_order_orders_id"],
                         $pluginOrderOrder_Item->fields["plugin_order_references_id"],
                         $pluginOrderOrder_Item->fields["price_taxfree"],
-                        $pluginOrderOrder_Item->fields["discount"]
+                        $pluginOrderOrder_Item->fields["discount"],
                     );
 
                     if ($nb = count($result)) {
@@ -193,51 +193,51 @@ if (isset($_POST["add"])) {
                             $items_id = $row['items_id'];
 
                             if ($items_id) {
-                                  $lic = new SoftwareLicense();
-                                  $lic->getFromDB($items_id);
-                                  $values["id"]     = $lic->fields["id"];
-                                  $values["number"] = $lic->fields["number"] - 1;
-                                  $lic->update($values);
+                                $lic = new SoftwareLicense();
+                                $lic->getFromDB($items_id);
+                                $values["id"]     = $lic->fields["id"];
+                                $values["number"] = $lic->fields["number"] - 1;
+                                $lic->update($values);
                             }
                             $input["id"] = $ID;
 
                             $pluginOrderOrder_Item->delete(['id' => $input["id"]]);
                         }
-                         $new_value  = __("Remove reference", "order") . " ";
-                         $new_value .= Dropdown::getDropdownName(
-                             "glpi_plugin_order_references",
-                             $pluginOrderOrder_Item->fields["plugin_order_references_id"]
-                         );
-                            $pluginOrderOrder->addHistory(
-                                "PluginOrderOrder",
-                                "",
-                                $new_value,
-                                $_POST["plugin_order_orders_id"]
-                            );
+                        $new_value  = __("Remove reference", "order") . " ";
+                        $new_value .= Dropdown::getDropdownName(
+                            "glpi_plugin_order_references",
+                            $pluginOrderOrder_Item->fields["plugin_order_references_id"],
+                        );
+                        $pluginOrderOrder->addHistory(
+                            "PluginOrderOrder",
+                            "",
+                            $new_value,
+                            $_POST["plugin_order_orders_id"],
+                        );
                     }
                 } else {
                     $new_value  = __("Remove reference", "order") . " ";
                     $new_value .= Dropdown::getDropdownName(
                         "glpi_plugin_order_references",
-                        $pluginOrderOrder_Item->fields["plugin_order_references_id"]
+                        $pluginOrderOrder_Item->fields["plugin_order_references_id"],
                     );
                     $pluginOrderOrder->addHistory(
                         "PluginOrderOrder",
                         "",
                         $new_value,
-                        $_POST["plugin_order_orders_id"]
+                        $_POST["plugin_order_orders_id"],
                     );
                     $pluginOrderOrder_Item->delete(['id' => $ID]);
                 }
             }
         }
-    } else if (!isset($_POST["item"])) {
+    } elseif (!isset($_POST["item"])) {
         Session::addMessageAfterRedirect(__("No item selected", "order"), false, ERROR);
     }
 
     Html::back();
-} else if (isset($_POST["add_itemfree"])) {
-   //Details management
+} elseif (isset($_POST["add_itemfree"])) {
+    //Details management
     if ($_POST["discount"] < 0 || $_POST["discount"] > 100) {
         Session::addMessageAfterRedirect(__("The discount pourcentage must be between 0 and 100", "order"), false, ERROR);
     } else {
@@ -245,7 +245,7 @@ if (isset($_POST["add"])) {
 
 
         if (isset($_POST['addreference'])) {
-           //create reference
+            //create reference
             $itemtype = (isset($_POST['itemtype'])) ? $_POST['itemtype'] : 'PluginOrderOther';
             $types_id = (isset($_POST['types_id'])) ? $_POST['types_id'] : 0;
 
@@ -255,7 +255,7 @@ if (isset($_POST["add"])) {
                     'manufacturers_id' => $_POST['manufacturers_id'],
                     'name'             => $_POST['name'],
                     'itemtype'         => $itemtype,
-                    'types_id'         => $types_id
+                    'types_id'         => $types_id,
                 ])
             ) {
                 //add link
@@ -264,7 +264,7 @@ if (isset($_POST["add"])) {
                     'plugin_order_references_id' => $id_reference,
                     'suppliers_id'               => $pluginOrderOrder->fields['suppliers_id'],
                     'price_taxfree'              => $_POST['price'],
-                    'reference_code'             => $_POST['reference_code']
+                    'reference_code'             => $_POST['reference_code'],
                 ]);
 
 
@@ -281,17 +281,17 @@ if (isset($_POST["add"])) {
                     $_POST["price"],
                     $_POST["discount"],
                     $_POST["plugin_order_ordertaxes_id"],
-                    $_POST["plugin_order_analyticnatures_id"]
+                    $_POST["plugin_order_analyticnatures_id"],
                 );
             }
         } else {
-           //create reference free
+            //create reference free
             $reference_free = new PluginOrderReferenceFree();
             $id_reference   = $reference_free->add(['entities_id'            => $_POST["entities_id"],
                 'manufacturers_id'       => $_POST['manufacturers_id'],
                 'name'                   => $_POST['name'],
                 'itemtype'               => 'PluginOrderReferenceFree',
-                'plugin_order_orders_id' => $_POST["plugin_order_orders_id"]
+                'plugin_order_orders_id' => $_POST["plugin_order_orders_id"],
             ]);
 
             $new_value = __("Add reference", "order") . " ";
@@ -307,12 +307,12 @@ if (isset($_POST["add"])) {
                 $_POST["price"],
                 $_POST["discount"],
                 $_POST["plugin_order_ordertaxes_id"],
-                $_POST["plugin_order_analyticnatures_id"]
+                $_POST["plugin_order_analyticnatures_id"],
             );
         }
     }
     Html::back();
-} else if (isset($_POST["delete_itemfree"])) {
+} elseif (isset($_POST["delete_itemfree"])) {
     if (
         isset($_POST["plugin_order_orders_id"])
         && ($_POST["plugin_order_orders_id"] > 0)
@@ -327,7 +327,7 @@ if (isset($_POST["add"])) {
                         $_POST["plugin_order_orders_id"],
                         $pluginOrderOrder_Item->fields["plugin_order_references_id"],
                         $pluginOrderOrder_Item->fields["price_taxfree"],
-                        $pluginOrderOrder_Item->fields["discount"]
+                        $pluginOrderOrder_Item->fields["discount"],
                     );
 
                     if ($nb = count($result)) {
@@ -336,24 +336,24 @@ if (isset($_POST["add"])) {
                             $items_id = $row['items_id'];
 
                             if ($items_id) {
-                                  $lic = new SoftwareLicense();
-                                  $lic->getFromDB($items_id);
-                                  $values["id"]     = $lic->fields["id"];
-                                  $values["number"] = $lic->fields["number"] - 1;
-                                  $lic->update($values);
+                                $lic = new SoftwareLicense();
+                                $lic->getFromDB($items_id);
+                                $values["id"]     = $lic->fields["id"];
+                                $values["number"] = $lic->fields["number"] - 1;
+                                $lic->update($values);
                             }
                             $input["id"] = $ID;
 
                             $pluginOrderOrder_Item->delete(['id' => $input["id"]]);
                         }
-                         $new_value = __("Remove reference", "order") . " ";
-                         $new_value .= Dropdown::getDropdownName("glpi_plugin_order_references", $ID);
-                         $pluginOrderOrder->addHistory(
-                             "PluginOrderOrder",
-                             "",
-                             $new_value,
-                             $_POST["plugin_order_orders_id"]
-                         );
+                        $new_value = __("Remove reference", "order") . " ";
+                        $new_value .= Dropdown::getDropdownName("glpi_plugin_order_references", $ID);
+                        $pluginOrderOrder->addHistory(
+                            "PluginOrderOrder",
+                            "",
+                            $new_value,
+                            $_POST["plugin_order_orders_id"],
+                        );
                     }
                 } else {
                     $new_value = __("Remove reference", "order") . " ";
@@ -362,14 +362,14 @@ if (isset($_POST["add"])) {
                         "PluginOrderOrder",
                         "",
                         $new_value,
-                        $_POST["plugin_order_orders_id"]
+                        $_POST["plugin_order_orders_id"],
                     );
                     $pluginOrderOrder_Item->delete(['id' => $ID]);
                 }
             }
         }
     }
-} else if (isset($_POST["update_item"])) {
+} elseif (isset($_POST["update_item"])) {
     if (isset($_POST['quantity'])) {
         $pluginOrderOrder_Item->updateQuantity($_POST);
     }
@@ -379,7 +379,7 @@ if (isset($_POST["add"])) {
             $_POST['plugin_order_orders_id'],
             $_POST['old_plugin_order_references_id'],
             $_POST['old_price_taxfree'],
-            $_POST['old_discount']
+            $_POST['old_discount'],
         );
         foreach ($datas as $item) {
             $input = [
@@ -395,7 +395,7 @@ if (isset($_POST["add"])) {
             $_POST['plugin_order_orders_id'],
             $_POST['old_plugin_order_references_id'],
             $_POST['old_price_taxfree'],
-            $_POST['old_discount']
+            $_POST['old_discount'],
         );
         foreach ($data as $item) {
             $pluginOrderOrder_Item->updatePrice_taxfree([
@@ -415,20 +415,20 @@ if (isset($_POST["add"])) {
                 $_POST['plugin_order_orders_id'],
                 $_POST['old_plugin_order_references_id'],
                 $price,
-                $_POST['old_discount']
+                $_POST['old_discount'],
             );
             foreach ($data as $item) {
                 $pluginOrderOrder_Item->updateDiscount([
                     'item_id'  => $item['id'],
                     'discount' => $_POST['discount'],
-                    'price'    => $price
+                    'price'    => $price,
                 ]);
             }
         }
     }
 
     Html::back();
-} else if (isset($_POST["update_detail_item"])) {
+} elseif (isset($_POST["update_detail_item"])) {
     if (isset($_POST['detail_price_taxfree'])) {
         foreach ($_POST['detail_price_taxfree'] as $item_id => $price) {
             $pluginOrderOrder_Item->updatePrice_taxfree([
@@ -443,13 +443,13 @@ if (isset($_POST["add"])) {
             $pluginOrderOrder_Item->updateDiscount([
                 'item_id'  => $item_id,
                 'discount' => $discount,
-                'price'    => isset($_POST['detail_price_taxfree']) ? $_POST['detail_price_taxfree'][$item_id] : $_POST['detail_old_price_taxfree'][$item_id]
+                'price'    => isset($_POST['detail_price_taxfree']) ? $_POST['detail_price_taxfree'][$item_id] : $_POST['detail_old_price_taxfree'][$item_id],
             ]);
         }
     }
 
     Html::back();
-} else if (isset($_GET['unlink_order'])) {
+} elseif (isset($_GET['unlink_order'])) {
     $pluginOrderOrder->check($_GET['id'], UPDATE);
     $pluginOrderOrder->unlinkBudget($_GET['id']);
     Html::back();
@@ -461,7 +461,7 @@ if (isset($_POST["add"])) {
         $_SERVER['PHP_SELF'],
         "management",
         "PluginOrderMenu",
-        "order"
+        "order",
     );
 
     if ($_GET['id'] == "") {

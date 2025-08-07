@@ -30,9 +30,22 @@
  #}
 
 {% set datatable_id = datatable_id|default('datatable' ~ random()) %}
-{% set showmassiveactions = canedit %}
+{% set showmassiveactions = canedit|default(false) %}
 {% set table_visible = table_visible|default(false) %}
-{% if hide_and_show %}
+{% set entries = entries|default([]) %}
+{% set columns = columns|default({}) %}
+{% set formatters = formatters|default({}) %}
+{% set filters = filters|default({}) %}
+{% set total_number = total_number|default(0) %}
+{% set start = start|default(0) %}
+{% set limit = limit|default(15) %}
+{% set displayed_count = displayed_count|default(0) %}
+{% set sort = sort|default('') %}
+{% set order = order|default('ASC') %}
+{% set countainer_name = countainer_name|default('') %}
+{% set nosort = nosort|default(false) %}
+
+{% if hide_and_show is defined and hide_and_show %}
     <button id="toggle-table-{{ datatable_id }}" class="btn btn-link btn-sm mb-2" type="button">
         {% if table_visible %}
             <i class="ti ti-sort-ascending"></i>
@@ -46,8 +59,8 @@
 {% endif %}
 
 {% if hidden_fields is defined %}
-    {% for field in hidden_fields %}
-        <input type="hidden" name="{{ field['name'] }}" value="{{ field['value'] }}" />
+    {% for field_name, field_value in hidden_fields %}
+        <input type="hidden" name="{{ field_name }}" value="{{ field_value }}" />
     {% endfor %}
 {% endif %}
 
@@ -130,7 +143,7 @@
                             </th>
                         {% endfor %}
 
-                       {% if nofilter is not defined or csv_url|length %}
+                       {% if nofilter is not defined or csv_url is defined %}
                            <th>
                                <span class="float-end log-toolbar mb-0">
                                    {% if nofilter is not defined %}
@@ -219,7 +232,11 @@
             <tbody>
                 {% if entries|length > 0 %}
                     {% for entry in entries %}
-                        <tr class="{{ row_class|default('') }} {{ entry['row_class']|default('') }}" data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}">
+                        {% set row_class = entry['row_class']|default('') %}
+                        {% set itemtype = entry['itemtype']|default('') %}
+                        {% set id = entry['id']|default('') %}
+
+                        <tr class="{{ row_class }}" data-itemtype="{{ itemtype }}" data-id="{{ id }}">
                             {% set row_massiveactions = entry['showmassiveactions']|default(showmassiveactions) %}
                             {% if row_massiveactions %}
                                 <td style="width: 10px">
@@ -234,7 +251,7 @@
                                 <td>
                                     {% if colkey in entry|keys %}
 
-                                        {% set formatter = formatters[colkey] %}
+                                        {% set formatter = formatters[colkey]|default('') %}
 
                                         {% if formatter == "maintext" %}
                                             <span class="d-inline-block bg-blue-lt p-1 text-truncate"
@@ -307,7 +324,7 @@
                     </tr>
                 {% endif %}
             </tbody>
-            {% if footers %}
+            {% if footers is defined and footers|length > 0 %}
                 <tfoot class="{{ footer_class|default('') }}">
                     {% for footer in footers %}
                         <tr>
@@ -339,7 +356,7 @@
                     <div class="d-inline-flex align-items-center me-4">
                         {{ __('Entries to show:') }}
                         {% include 'components/dropdown/limit.html.twig' with {
-                            'is_tab': false,
+                            'is_tab': true,
                             'right': true,
                             'additional_params': 'id=' ~ ID ~ '&start=' ~ start ~ '&' ~ countainer_name ~ 'sort=' ~ sort ~ '&' ~ countainer_name ~ 'order=' ~ order ~ '&' ~ countainer_name ~ 'visible=1'
                         } %}
@@ -396,7 +413,7 @@
     <br>
 {% endif %}
 
-{% if hide_and_show %}
+{% if hide_and_show is defined and hide_and_show %}
     <script>
         $(function() {
             // Toggle button functionality

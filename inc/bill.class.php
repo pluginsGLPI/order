@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderBill extends CommonDropdown
 {
@@ -74,49 +72,49 @@ class PluginOrderBill extends CommonDropdown
             [
                 'name'  => 'suppliers_id',
                 'label' => __("Supplier"),
-                'type'  => 'dropdownValue'
+                'type'  => 'dropdownValue',
             ],
             [
                 'name'  => 'value',
                 'label' => __("Value"),
-                'type'  => 'text'
+                'type'  => 'text',
             ],
             [
                 'name'  => 'number',
-                'label' => _x("phone", "Number") . " <span class='red'>*</span>",
+                'label' => _x("phone", "Number"),
                 'type'  => 'text',
-                'mandatory' => true
+                'mandatory' => true,
             ],
             [
                 'name'  => 'billdate',
                 'label' => __("Date"),
-                'type'  => 'date'
+                'type'  => 'date',
             ],
             [
                 'name'  => 'plugin_order_billtypes_id',
                 'label' => __("Type"),
-                'type'  => 'dropdownValue'
+                'type'  => 'dropdownValue',
             ],
             [
                 'name'  => 'plugin_order_billstates_id',
                 'label' => __("Status"),
-                'type'  => 'dropdownValue'
+                'type'  => 'dropdownValue',
             ],
             [
                 'name'  => 'plugin_order_orders_id',
                 'label' => __("Order", "order"),
-                'type'  => 'dropdownValue'
+                'type'  => 'dropdownValue',
             ],
             [
                 'name'  => 'users_id_validation',
                 'label' => __("Approver"),
-                'type'  => 'UserDropdown'
+                'type'  => 'UserDropdown',
             ],
             [
                 'name'  => 'validationdate',
                 'label' => __("Approval date"),
-                'type'  => 'date'
-            ]
+                'type'  => 'date',
+            ],
         ];
     }
 
@@ -268,9 +266,9 @@ class PluginOrderBill extends CommonDropdown
         $criteria = [
             'FROM' => $table,
             'WHERE' => [
-                'plugin_order_bills_id' => $bills_id
+                'plugin_order_bills_id' => $bills_id,
             ] + getEntitiesRestrictCriteria($table, "entities_id", $bill->getEntityID(), true),
-            'GROUPBY' => 'itemtype'
+            'GROUPBY' => 'itemtype',
         ];
 
         $result = $DB->request($criteria);
@@ -292,8 +290,8 @@ class PluginOrderBill extends CommonDropdown
                 if (!class_exists($data['itemtype'])) {
                     continue;
                 }
-                $item = new $data['itemtype']();
-                if ($data['itemtype']::canView() && $item->getFromDB($data["id"])) {
+                $item = getItemForItemtype($data['itemtype']);
+                if ($item !== false && $data['itemtype']::canView() && $item->getFromDB($data["id"])) {
                     echo "<tr class='tab_bg_1'>";
 
                     echo "<td class='center top'>" . $item->getTypeName() . "</td>";
@@ -318,7 +316,7 @@ class PluginOrderBill extends CommonDropdown
                     echo "<td class='center'>";
                     Dropdown::getDropdownName(
                         "glpi_plugin_order_deliverystates",
-                        (int) $data["plugin_order_deliverystates_id"]
+                        (int) $data["plugin_order_deliverystates_id"],
                     );
                     echo "</td>";
                     echo "</tr>";
@@ -338,7 +336,7 @@ class PluginOrderBill extends CommonDropdown
         $order     = new PluginOrderOrder();
         $order->getFromDB($bill->fields['plugin_order_orders_id']);
 
-       //Can write orders, and order is not already paid
+        //Can write orders, and order is not already paid
         $canedit = $order->can($order->getID(), UPDATE)
                  && !$order->isPaid()
                  && !$order->isCanceled();
@@ -372,7 +370,7 @@ class PluginOrderBill extends CommonDropdown
             echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
         } else {
             $itemtype = $data_ref["itemtype"];
-            $item     = new $itemtype();
+            $item     = getItemForItemtype($itemtype);
             echo "<tr><th><ul class='list-unstyled'><li>";
             echo "<a href=\"javascript:showHideDiv('generation$rand','generation_img$rand', '"
               . $CFG_GLPI['root_doc'] . "/pics/plus.png','" . $CFG_GLPI['root_doc'] . "/pics/moins.png');\">";
@@ -388,7 +386,7 @@ class PluginOrderBill extends CommonDropdown
             echo "<td></td>";
             echo "<td align='center'>" . $item->getTypeName() . "</td>";
 
-           //Entity
+            //Entity
             echo "<td align='center'>";
             echo Dropdown::getDropdownName('glpi_entities', $order->getEntityID());
             echo "</td>";
@@ -421,7 +419,17 @@ class PluginOrderBill extends CommonDropdown
                 if ($canedit) {
                     echo "<td width='10'>";
                     $sel = "";
-                    if (isset($_GET["select"]) && $_GET["select"] == "all") {
+                    if (
+                        isset($_POST['select'])
+                        && (
+                            is_string($_POST['select'])
+                            && $_POST['select'] == 'all'
+                            || (
+                                is_array($_POST['select'])
+                                && isset($_POST['select']['all'])
+                            )
+                        )
+                    ) {
                         $sel = "checked";
                     }
                     echo "<input type='checkbox' name='item[" . $data["IDD"] . "]' value='1' $sel>";
@@ -429,27 +437,27 @@ class PluginOrderBill extends CommonDropdown
                     echo "</td>";
                 }
 
-               //Reference
+                //Reference
                 echo "<td align='center'>";
                 echo $reference->getReceptionReferenceLink($data);
                 echo "</td>";
 
-               //Type
+                //Type
                 echo "<td align='center'>";
                 if (file_exists($CFG_GLPI['root_doc'] . "/src/" . $data["itemtype"] . "Type.php")) {
                     echo Dropdown::getDropdownName(
                         getTableForItemType($data["itemtype"] . "Type"),
-                        (int) $data["types_id"]
+                        (int) $data["types_id"],
                     );
                 }
                 echo "</td>";
 
-               //Model
+                //Model
                 echo "<td align='center'>";
                 if (file_exists($CFG_GLPI['root_doc'] . "/src/" . $data["itemtype"] . "Model.php")) {
                     echo Dropdown::getDropdownName(
                         getTableForItemType($data["itemtype"] . "Model"),
-                        (int) $data["models_id"]
+                        (int) $data["models_id"],
                     );
                 }
                 $bill = new PluginOrderBill();
@@ -465,7 +473,7 @@ class PluginOrderBill extends CommonDropdown
                 echo "<td align='center'>";
                 echo Dropdown::getDropdownName(
                     getTableForItemType('PluginOrderBillState'),
-                    (int) $data['plugin_order_billstates_id']
+                    (int) $data['plugin_order_billstates_id'],
                 );
                 echo "</td>";
                 echo "</tr>";
@@ -505,22 +513,22 @@ class PluginOrderBill extends CommonDropdown
                 'glpi_plugin_order_orders_items.plugin_order_references_id AS id',
                 'ref.name',
                 'ref.itemtype',
-                'ref.manufacturers_id'
+                'ref.manufacturers_id',
             ],
             'FROM' => 'glpi_plugin_order_orders_items',
             'INNER JOIN' => [
                 $table . ' AS ref' => [
                     'ON' => [
                         'glpi_plugin_order_orders_items' => 'plugin_order_references_id',
-                        'ref' => 'id'
-                    ]
-                ]
+                        'ref' => 'id',
+                    ],
+                ],
             ],
             'WHERE' => [
-                'glpi_plugin_order_orders_items.plugin_order_orders_id' => $ID
+                'glpi_plugin_order_orders_items.plugin_order_orders_id' => $ID,
             ],
             'GROUPBY' => ['glpi_plugin_order_orders_items.plugin_order_references_id'],
-            'ORDER' => ['ref.name']
+            'ORDER' => ['ref.name'],
         ];
 
         if ($table == 'glpi_plugin_order_references') {
@@ -565,10 +573,10 @@ class PluginOrderBill extends CommonDropdown
                     `notepad` text,
                     PRIMARY KEY (`id`)
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         } else {
             if ($DB->fieldExists("glpi_plugin_order_orders_suppliers", "num_bill")) {
-               //Migrate bills
+                //Migrate bills
                 $bill  = new PluginOrderBill();
                 $query = "SELECT * FROM `glpi_plugin_order_orders_suppliers`";
                 foreach (getAllDataFromTable('glpi_plugin_order_orders_suppliers') as $data) {
@@ -577,28 +585,28 @@ class PluginOrderBill extends CommonDropdown
                         && $data['num_bill'] != ''
                         && !countElementsInTable(
                             'glpi_plugin_order_bills',
-                            ['number' => $data['num_bill']]
+                            ['number' => $data['num_bill']],
                         )
                     ) {
-                      //create new bill and link it to the order
+                        //create new bill and link it to the order
                         $tmp['name']                   = $tmp['number'] = $data['num_bill'];
 
-                      //Get supplier from the order
+                        //Get supplier from the order
                         $tmp['suppliers_id']           = $data['suppliers_id'];
 
-                      //Bill has the same entities_id and is_recrusive
+                        //Bill has the same entities_id and is_recrusive
                         $tmp['entities_id']            = $data['entities_id'];
                         $tmp['is_recursive']           = $data['is_recursive'];
-                      //Link bill to order
+                        //Link bill to order
                         $tmp['plugin_order_orders_id'] = $data['plugin_order_orders_id'];
-                      //Create bill
+                        //Create bill
                         $bills_id                      = $bill->add($tmp);
 
-                      //All order items are now linked to this bill
+                        //All order items are now linked to this bill
                         $query = "UPDATE `glpi_plugin_order_orders_items`
                             SET `plugin_order_bills_id` = '$bills_id'
                             WHERE `plugin_order_orders_id` = '" . $data['plugin_order_orders_id'] . "'";
-                        $DB->query($query);
+                        $DB->doQuery($query);
                     }
                 }
             }
@@ -618,9 +626,9 @@ class PluginOrderBill extends CommonDropdown
         $table = self::getTable();
         foreach (["displaypreferences", "documents_items", "savedsearches", "logs"] as $t) {
             $query = "DELETE FROM `glpi_$t` WHERE `itemtype` = '" . __CLASS__ . "'";
-            $DB->query($query);
+            $DB->doQuery($query);
         }
-        $DB->query("DROP TABLE IF EXISTS`" . $table . "`") or die($DB->error());
+        $DB->doQuery("DROP TABLE IF EXISTS`" . $table . "`");
     }
 
 
@@ -632,10 +640,25 @@ class PluginOrderBill extends CommonDropdown
         if (!$withtemplate) {
             switch ($item->getType()) {
                 case 'PluginOrderOrder':
-                    return self::getTypeName();
+                    return self::createTabEntry(
+                        self::getTypeName(),
+                        0,
+                        null,
+                        self::getIcon(),
+                    );
                 case __CLASS__:
-                    $ong[1] = __("Orders", "order");
-                    $ong[2] = _n("Associated item", "Associated items", 2);
+                    $ong[1] = self::createTabEntry(
+                        __("Orders", "order"),
+                        0,
+                        null,
+                        'ti ti-receipt-2',
+                    );
+                    $ong[2] = self::createTabEntry(
+                        _n("Associated item", "Associated items", 2),
+                        0,
+                        null,
+                        'ti ti-clipboard-list',
+                    );
                     return $ong;
             }
         }
@@ -648,7 +671,7 @@ class PluginOrderBill extends CommonDropdown
         if ($item instanceof PluginOrderOrder) {
             $order_item = new PluginOrderOrder_Item();
             $order_item->showBillsItems($item);
-        } else if ($item instanceof self) {
+        } elseif ($item instanceof self) {
             switch ($tabnum) {
                 case 1:
                     self::showOrdersItems($item);
