@@ -381,11 +381,11 @@ class PluginOrderReference extends CommonDBTM
         $ong = [];
         if (!$this->isNewItem()) {
             $this->addDefaultFormTab($ong);
-            $this->addStandardTab('PluginOrderReference_Supplier', $ong, $options);
+            $this->addStandardTab(PluginOrderReference_Supplier::class, $ong, $options);
             // $this->addStandardTab('PluginOrderReference', $ong,$options);
-            $this->addStandardTab('Document_Item', $ong, $options);
-            $this->addStandardTab('Note', $ong, $options);
-            $this->addStandardTab('Log', $ong, $options);
+            $this->addStandardTab(Document_Item::class, $ong, $options);
+            $this->addStandardTab(Notepad::class, $ong, $options);
+            $this->addStandardTab(Log::class, $ong, $options);
         }
         return $ong;
     }
