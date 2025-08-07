@@ -638,7 +638,7 @@ class PluginOrderReception extends CommonDBChild
                             }
                         });
                     }
-                JAVASCRIPT;
+JAVASCRIPT;
                 echo Html::scriptBlock($script);
             }
         }
