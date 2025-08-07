@@ -34,8 +34,6 @@
 
 use Glpi\Toolbox\Sanitizer;
 
-include('../../../inc/includes.php');
-
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
@@ -53,14 +51,14 @@ if (isset($_POST['name'])) {
 
     $min = 0;
     if (isset($_REQUEST['min'])) {
-        if (isset($_REQUEST['force_integer']) && $_REQUEST['force_integer']) {
-            $min = (int)$_REQUEST['min'];
+        if (!empty($_REQUEST['force_integer'])) {
+            $min = (int) $_REQUEST['min'];
         } else {
-            $min = (float)$_REQUEST['min'];
+            $min = (float) $_REQUEST['min'];
         }
     }
 
-    $data = Html::cleanInputText(Sanitizer::sanitize(rawurldecode(stripslashes($_POST["data"]))));
+    $data = htmlescape(rawurldecode(stripslashes($_POST["data"])));
 
     echo "<input type='number' class='form-control' step='$step' min='$min' name='" . $_POST['name'] . "' value='$data' $class>";
 }

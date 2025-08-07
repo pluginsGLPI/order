@@ -28,8 +28,6 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
-
 Session::checkRight("plugin_order_bill", READ);
 
 Html::header(PluginOrderBill::getTypeName(), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "bill");

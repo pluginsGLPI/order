@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderDocumentCategory extends CommonDBTM
 {
@@ -67,7 +65,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
     {
         $temp = new self();
         $temp->deleteByCriteria([
-            'documentcategories_id' => $item->getField("id")
+            'documentcategories_id' => $item->getField("id"),
         ]);
     }
 
@@ -86,7 +84,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
         echo "<tr><th colspan='2'>" . __('Document category prefix', 'order') . "</th></tr>";
 
         echo "<tr class='tab_bg_1'>";
-       // Dropdown group
+        // Dropdown group
         echo "<td>";
         echo __('Document category prefix', 'order');
         echo "</td>";
@@ -106,9 +104,9 @@ class PluginOrderDocumentCategory extends CommonDBTM
     }
 
 
-   //------------------------------------------------------------
-   //--------------------Install / uninstall --------------------
-   //------------------------------------------------------------
+    //------------------------------------------------------------
+    //--------------------Install / uninstall --------------------
+    //------------------------------------------------------------
 
     public static function install(Migration $migration)
     {
@@ -120,7 +118,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
         $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
         $table = self::getTable();
-       //Installation
+        //Installation
         if (
             !$DB->tableExists($table)
             && !$DB->tableExists("glpi_plugin_order_documentcategories")
@@ -135,7 +133,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
                      KEY `documentcategories_id` (`documentcategories_id`),
                      UNIQUE KEY `unicity` (`documentcategories_id`, `documentcategories_prefix`)
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         }
     }
 
@@ -144,7 +142,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
     {
         /** @var \DBmysql $DB */
         global $DB;
-       //Current table name
-        $DB->query("DROP TABLE IF EXISTS  `" . self::getTable() . "`") or die($DB->error());
+        //Current table name
+        $DB->doQuery("DROP TABLE IF EXISTS  `" . self::getTable() . "`");
     }
 }

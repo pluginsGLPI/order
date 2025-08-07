@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderAnalyticNature extends CommonDropdown
 {
@@ -62,7 +60,7 @@ class PluginOrderAnalyticNature extends CommonDropdown
                     PRIMARY KEY (`id`),
                     KEY `name` (`name`)
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         }
     }
 
@@ -71,6 +69,6 @@ class PluginOrderAnalyticNature extends CommonDropdown
         /** @var \DBmysql $DB */
         global $DB;
 
-        $DB->query("DROP TABLE IF EXISTS `" . getTableForItemType(__CLASS__) . "`") or die($DB->error());
+        $DB->doQuery("DROP TABLE IF EXISTS `" . getTableForItemType(__CLASS__) . "`");
     }
 }

@@ -28,8 +28,6 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
-
 Session::checkRight("profile", UPDATE);
 
 $prof = new PluginOrderProfile();
