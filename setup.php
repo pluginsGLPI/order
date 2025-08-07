@@ -28,10 +28,10 @@
  * -------------------------------------------------------------------------
  */
 
-define('PLUGIN_ORDER_VERSION', '2.11.1');
+define('PLUGIN_ORDER_VERSION', '2.11.2');
 
 // Minimal GLPI version, inclusive
-define("PLUGIN_ORDER_MIN_GLPI", "10.0.0");
+define("PLUGIN_ORDER_MIN_GLPI", "10.0.11");
 // Maximum GLPI version, exclusive
 define("PLUGIN_ORDER_MAX_GLPI", "10.0.99");
 
