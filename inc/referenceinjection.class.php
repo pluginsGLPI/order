@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderReferenceInjection extends PluginOrderReference implements PluginDatainjectionInjectionInterface
 {
@@ -40,11 +38,11 @@ class PluginOrderReferenceInjection extends PluginOrderReference implements Plug
     }
 
 
-   /**
-    * Returns the name of the table used to store this object parent
-    *
-    * @return string (table name)
-   **/
+    /**
+     * Returns the name of the table used to store this object parent
+     *
+     * @return string (table name)
+    **/
     public static function getTable($classname = null)
     {
 
@@ -91,8 +89,8 @@ class PluginOrderReferenceInjection extends PluginOrderReference implements Plug
                 } else {
                     foreach ($classes as $class) {
                         if (call_user_func([$class, 'getTypeName']) == $value) {
-                              $values[$itemtype]['itemtype'] = $class;
-                              break;
+                            $values[$itemtype]['itemtype'] = $class;
+                            break;
                         }
                     }
                 }

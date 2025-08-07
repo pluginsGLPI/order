@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderOrderInjection extends PluginOrderOrder implements PluginDatainjectionInjectionInterface
 {
@@ -40,11 +38,11 @@ class PluginOrderOrderInjection extends PluginOrderOrder implements PluginDatain
     }
 
 
-   /**
-    * Returns the name of the table used to store this object parent
-    *
-    * @return string (table name)
-   **/
+    /**
+     * Returns the name of the table used to store this object parent
+     *
+     * @return string (table name)
+    **/
     public static function getTable($classname = null)
     {
 

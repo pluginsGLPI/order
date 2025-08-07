@@ -28,8 +28,6 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
-
 header("Content-Type: text/html; charset=UTF-8");
 
 Html::header_nocache();
@@ -43,7 +41,7 @@ echo "<tr class='tab_bg_2'><td>" . __("Delivery date") . "</td><td>";
 Html::showDateField("delivery_date", [
     'value'      => date("Y-m-d"),
     'maybeempty' => true,
-    'canedit'    => true
+    'canedit'    => true,
 ]);
 echo "</td><td>";
 echo __("Delivery form") . "</td><td>";
@@ -55,12 +53,12 @@ echo __("Number to deliver", "order") . "</td><td width='10%'>";
 $nb = $PluginOrderReception->checkItemStatus(
     $_POST['plugin_order_orders_id'],
     $_POST['plugin_order_references_id'],
-    PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED
+    PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED,
 );
 Dropdown::showNumber('number_reception', [
     'value' => '',
     'min'   => 1,
-    'max'   => $nb
+    'max'   => $nb,
 ]);
 echo "</td><td>";
 echo __("Delivery status", "order") . "&nbsp;";
@@ -75,20 +73,24 @@ if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
     Dropdown::showYesNo("manual_generate", $config->canGenerateAsset());
     echo "</td><td>" . __("Default name", "order") . "</td>";
     echo "<td>&nbsp;";
-    Html::autocompletionTextField($config, "generated_name");
+    Html::input("generated_name", [
+        'value' => $config->fields['generated_name'],
+    ]);
     echo "</td>&nbsp;&nbsp;";
 
     echo "<td>" . __("Default serial number", "order") . "</td>";
     echo "<td>&nbsp;";
-    Html::autocompletionTextField($config, "generated_serial");
+    Html::input("generated_serial", [
+        'value' => $config->fields['generated_serial'],
+    ]);
     echo "</td>&nbsp;&nbsp;";
 
     echo "<td>" . __("Default inventory number", "order") . "</td>";
     echo "<td>&nbsp;";
-    Html::autocompletionTextField($config, "generated_otherserial");
+    Html::input("generated_otherserial", [
+        'value' => $config->fields['generated_otherserial'],
+    ]);
     echo "</td>";
 }
 echo "<td><input type='submit' name='bulk_reception' class='submit' value='"
       . _sx('button', 'Post') . "'></td></tr></table>";
-
-Html::ajaxFooter();
