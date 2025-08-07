@@ -5,10 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [2.11.2] - 2025-08-07
 
+- Update exemple.odt file to include ecotax tags
 - Fix icon for `transfer` action
 - Fix reference form error when ecotax_price field is not set
+- Fix expanding all rows in table shows incorrect reference
 
 ## [2.11.1] - 2025-07-11
 
