@@ -28,7 +28,6 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
 Session::checkLoginUser();
 
 $bill = new PluginOrderBill();
@@ -52,7 +51,7 @@ if (isset($_REQUEST['purge'])) {
 }
 
 if (isset($_POST['action'])) {
-   // Retrieve configuration for generate assets feature
+    // Retrieve configuration for generate assets feature
 
     $order_item = new PluginOrderOrder_Item();
     switch ($_POST['chooseAction']) {

@@ -198,7 +198,7 @@
                         </tr>
                     {% endif %}
                 </tbody>
-                {% if footers %}
+                {% if footers is defined and footers|length > 0 %}
                     <tfoot class="{{ footer_class|default('') }}">
                         {% for footer in footers %}
                             <tr>
@@ -232,6 +232,7 @@
                         <div class="d-inline-flex align-items-center me-4">
                             {{ __('Entries to show:', 'order') }}
                             {% include 'components/dropdown/limit.html.twig' with {
+                                'is_tab': true,
                                 'right': true,
                                 'additional_params': 'id=' ~ ID ~ '&' ~ countainer_name ~ 'sort=' ~ sort ~ '&' ~ countainer_name ~ 'order=' ~ order ~ '&' ~ countainer_name ~ 'visible=1'
                             } %}

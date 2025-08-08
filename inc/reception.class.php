@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderReception extends CommonDBChild
 {
@@ -56,14 +54,18 @@ class PluginOrderReception extends CommonDBChild
         return __("Delivery", "order");
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-truck-delivery';
+    }
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         return Session::haveRight('plugin_order_order', PluginOrderOrder::RIGHT_DELIVERY);
     }
 
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         return Session::haveRight('plugin_order_order', PluginOrderOrder::RIGHT_DELIVERY)
          && Session::haveRight('plugin_order_order', READ);
@@ -108,7 +110,7 @@ class PluginOrderReception extends CommonDBChild
         $query = "SELECT `states_id`
                 FROM `glpi_plugin_order_orders_items`
                 WHERE `id` = '$detailID' ";
-        $result = $DB->query($query);
+        $result = $DB->doQuery($query);
         if ($DB->result($result, 0, "states_id") == $states_id) {
             return true;
         } else {
@@ -125,7 +127,7 @@ class PluginOrderReception extends CommonDBChild
                 'plugin_order_orders_id' => $plugin_order_orders_id,
                 'plugin_order_references_id' => $plugin_order_references_id,
                 'states_id' => $states_id,
-            ]
+            ],
         );
     }
 
@@ -144,7 +146,7 @@ class PluginOrderReception extends CommonDBChild
                 $detail->fields["plugin_order_references_id"],
                 $detail->fields["price_taxfree"],
                 $detail->fields["discount"],
-                PluginOrderOrder::ORDER_DEVICE_DELIVRED
+                PluginOrderOrder::ORDER_DEVICE_DELIVRED,
             );
             $nb = count($iterator);
 
@@ -230,7 +232,7 @@ class PluginOrderReception extends CommonDBChild
                 'delivery_number',
                 [
                     'value' => $this->fields['delivery_number'],
-                ]
+                ],
             );
         } else {
             echo $this->fields["delivery_number"];
@@ -243,7 +245,7 @@ class PluginOrderReception extends CommonDBChild
             Html::showDateField("delivery_date", [
                 'value'      => $this->fields["delivery_date"],
                 'maybeempty' => true,
-                'canedit'    => true
+                'canedit'    => true,
             ]);
         } else {
             echo Html::convDate($this->fields["delivery_date"]);
@@ -259,12 +261,12 @@ class PluginOrderReception extends CommonDBChild
         if ($canedit) {
             PluginOrderDeliveryState::Dropdown([
                 'name'  => "plugin_order_deliverystates_id",
-                'value' => $this->fields["plugin_order_deliverystates_id"]
+                'value' => $this->fields["plugin_order_deliverystates_id"],
             ]);
         } else {
             echo Dropdown::getDropdownName(
                 "glpi_plugin_order_deliverystates",
-                $this->fields["plugin_order_deliverystates_id"]
+                $this->fields["plugin_order_deliverystates_id"],
             );
         }
         echo "</td>";
@@ -274,19 +276,19 @@ class PluginOrderReception extends CommonDBChild
         if (Session::haveRight("plugin_order_bill", UPDATE)) {
             PluginOrderBill::Dropdown([
                 'name'  => "plugin_order_bills_id",
-                'value' => $this->fields["plugin_order_bills_id"]
+                'value' => $this->fields["plugin_order_bills_id"],
             ]);
-        } else if (Session::haveRight("plugin_order_bill", READ)) {
+        } elseif (Session::haveRight("plugin_order_bill", READ)) {
             echo Dropdown::getDropdownName(
                 "glpi_plugin_order_bills",
-                $this->fields["plugin_order_bills_id"]
+                $this->fields["plugin_order_bills_id"],
             );
         }
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'><td>";
-       //comments of order
+        //comments of order
         echo __("Comments") . ": </td>";
         echo "<td colspan='3'>";
         if ($canedit) {
@@ -316,7 +318,7 @@ class PluginOrderReception extends CommonDBChild
 
         Session::initNavigateListItems(
             $this->getType(),
-            __("Order", "order") . " = " . $order_order->fields["name"]
+            __("Order", "order") . " = " . $order_order->fields["name"],
         );
 
         $canedit = self::canCreate()
@@ -335,7 +337,7 @@ class PluginOrderReception extends CommonDBChild
                 $order_item,
                 $orders_id,
                 $order_order,
-                'glpi_plugin_order_references'
+                'glpi_plugin_order_references',
             );
         }
 
@@ -351,7 +353,7 @@ class PluginOrderReception extends CommonDBChild
                 $order_item,
                 $orders_id,
                 $order_order,
-                'glpi_plugin_order_referencefrees'
+                'glpi_plugin_order_referencefrees',
             );
         }
     }
@@ -376,7 +378,7 @@ class PluginOrderReception extends CommonDBChild
                            && $this->checkItemStatus(
                                $orders_id,
                                $references_id,
-                               PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED
+                               PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED,
                            );
 
             $massiveactionparams = [
@@ -384,11 +386,11 @@ class PluginOrderReception extends CommonDBChild
                     'massive_action_fields' => [
                         'plugin_order_orders_id',
                         'plugin_order_references_id',
-                    ]
-                ]
+                    ],
+                ],
             ];
 
-            $item = new $typeRef();
+            $item = getItemForItemtype($typeRef);
             $rand = mt_rand();
             echo "<tr><th><ul class='list-unstyled'><li>";
             echo "<a href=\"javascript:showHideDiv('reception$rand','reception_img$rand', '" .
@@ -406,7 +408,7 @@ class PluginOrderReception extends CommonDBChild
             echo "<td align='center'>" . $item->getTypeName() . "</td>";
             echo "<td align='center'>" . Dropdown::getDropdownName(
                 "glpi_manufacturers",
-                $data_ref["manufacturers_id"]
+                $data_ref["manufacturers_id"],
             ) . "</td>";
             if ($table == 'glpi_plugin_order_referencefrees') {
                 echo "<td>" . $data_ref['name'] . "</td>";
@@ -417,13 +419,13 @@ class PluginOrderReception extends CommonDBChild
                 $orders_id,
                 $references_id,
                 $data_ref["price_taxfree"],
-                $data_ref["discount"]
+                $data_ref["discount"],
             );
             echo "<td>" . $order_item->getDeliveredQuantity(
                 $orders_id,
                 $references_id,
                 $data_ref["price_taxfree"],
-                $data_ref["discount"]
+                $data_ref["discount"],
             )
               . " / " . $total . "</td>";
             echo "</tr></table>";
@@ -436,7 +438,7 @@ class PluginOrderReception extends CommonDBChild
                 $references_id,
                 $typeRef,
                 '_top',
-                'top'
+                'top',
             );
 
             $criteria = [
@@ -452,24 +454,24 @@ class PluginOrderReception extends CommonDBChild
                     'items.delivery_number',
                     'ref.name',
                     'ref.itemtype',
-                    'items.items_id'
+                    'items.items_id',
                 ],
                 'FROM' => 'glpi_plugin_order_orders_items AS items',
                 'INNER JOIN' => [
                     "$table AS ref" => [
                         'ON' => [
                             'items' => 'plugin_order_references_id',
-                            'ref' => 'id'
-                        ]
-                    ]
+                            'ref' => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE' => [
                     'items.plugin_order_orders_id' => $orders_id,
                     'items.plugin_order_references_id' => $references_id,
                     'items.discount' => ['LIKE', $discount],
-                    'items.price_taxfree' => ['LIKE', $price_taxfree]
+                    'items.price_taxfree' => ['LIKE', $price_taxfree],
                 ],
-                'ORDER' => 'ref.name'
+                'ORDER' => 'ref.name',
             ];
 
             if ($typeRef == 'SoftwareLicense') {
@@ -501,7 +503,7 @@ class PluginOrderReception extends CommonDBChild
                         'min'   => 1,
                         'max'   => $num,
                         'rand' => $rand,
-                    ]
+                    ],
                 );
                 echo "&nbsp;<button type='button' class='btn btn-secondary btn-sm' onclick='selectNItems(\"mass" . __CLASS__ . "$rand\", \"dropdown_nb_items_to_check_top_$rand\")'>" . __("Select") . "</button>";
                 echo "</span>";
@@ -531,7 +533,7 @@ class PluginOrderReception extends CommonDBChild
                 if ($typeRef != 'SoftwareLicense') {
                     $status = $this->checkThisItemStatus(
                         $detailID,
-                        PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED
+                        PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED,
                     );
                 }
 
@@ -570,31 +572,31 @@ class PluginOrderReception extends CommonDBChild
                 echo "<td align='center'>" .
                  Dropdown::getDropdownName(
                      "glpi_plugin_order_deliverystates",
-                     (int) $data["plugin_order_deliverystates_id"]
+                     (int) $data["plugin_order_deliverystates_id"],
                  ) . "</td>";
                 echo Html::hidden(
                     "id[$detailID]",
-                    ['value' => $detailID]
+                    ['value' => $detailID],
                 );
                 echo Html::hidden(
                     "name[$detailID]",
-                    ['value' => $data["name"]]
+                    ['value' => $data["name"]],
                 );
                 echo Html::hidden(
                     "plugin_order_references_id[$detailID]",
-                    ['value' => $data["id"]]
+                    ['value' => $data["id"]],
                 );
                 echo Html::hidden(
                     "itemtype[$detailID]",
-                    ['value' => $data["itemtype"]]
+                    ['value' => $data["itemtype"]],
                 );
                 echo Html::hidden(
                     "templates_id[$detailID]",
-                    ['value' => $data["templates_id"]]
+                    ['value' => $data["templates_id"]],
                 );
                 echo Html::hidden(
                     "states_id[$detailID]",
-                    ['value' => $data["states_id"]]
+                    ['value' => $data["states_id"]],
                 );
             }
             echo "</table>";
@@ -612,7 +614,7 @@ class PluginOrderReception extends CommonDBChild
                             'min'   => 1,
                             'max'   => $num,
                             'rand' => $rand,
-                        ]
+                        ],
                     );
                     echo "&nbsp;<button type='button' class='btn btn-secondary btn-sm' onclick='selectNItems(\"mass" . __CLASS__ . "$rand\", \"dropdown_nb_items_to_check_bottom_$rand\")'>" . __("Select") . "</button>";
                     echo "</span>";
@@ -647,7 +649,7 @@ JAVASCRIPT;
             $order_order,
             $orders_id,
             $references_id,
-            $typeRef
+            $typeRef,
         );
 
         echo "</div>";
@@ -668,12 +670,15 @@ JAVASCRIPT;
      */
     private function displayBulkReceptionForm($order_order, $orders_id, $references_id, $typeRef, $suffix = '', $position = 'bottom')
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         if (
             $order_order->canDeliver()
             && $this->checkItemStatus(
                 $orders_id,
                 $references_id,
-                PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED
+                PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED,
             )
         ) {
             if ($typeRef != 'SoftwareLicense') {
@@ -692,15 +697,15 @@ JAVASCRIPT;
                 echo Html::scriptBlock("function viewmassreception$suffix" . $orders_id . "$bulk_rand() {" .
                     Ajax::updateItemJsCode(
                         "massreception$suffix" . $orders_id . $bulk_rand,
-                        Plugin::getWebDir('order') . "/ajax/massreception.php",
+                        $CFG_GLPI['root_doc'] . '/plugins/order/ajax/massreception.php',
                         [
                             'plugin_order_orders_id'     => $orders_id,
                             'plugin_order_references_id' => $references_id,
                         ],
                         '',
-                        false
+                        false,
                     ) . "
-                }");
+                }",);
                 if ($position == 'bottom') {
                     echo $button;
                     echo "<br>";
@@ -725,7 +730,7 @@ JAVASCRIPT;
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 
-       //remove native transfer action
+        //remove native transfer action
         unset($actions[MassiveAction::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list']);
         $sep     = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
 
@@ -765,7 +770,7 @@ JAVASCRIPT;
                     $order_item = new PluginOrderOrder_Item();
                     $input = [
                         'id' => $id,
-                        'entities_id' => $ma->getInput()['entities_id']
+                        'entities_id' => $ma->getInput()['entities_id'],
                     ];
 
                     if ($order_item->update($input)) {
@@ -795,7 +800,7 @@ JAVASCRIPT;
         Entity::Dropdown([
             'name'        => "entities_id",
             'entity'      => $order->fields['entities_id'],
-            'entity_sons' => $order->fields['is_recursive']
+            'entity_sons' => $order->fields['is_recursive'],
         ]);
         echo "<br/><br/>";
     }
@@ -806,7 +811,7 @@ JAVASCRIPT;
         echo "<label class='order_ma'>" . __("Delivery date") . "</label>";
         Html::showDateField("delivery_date", ['value'      => date("Y-m-d"),
             'maybeempty' => true,
-            'canedit'    => true
+            'canedit'    => true,
         ]);
 
         echo "<label class='order_ma'>" . __("Delivery form") . "</label>";
@@ -820,7 +825,7 @@ JAVASCRIPT;
             echo "<label class='order_ma'>" . __("Enable automatic generation", "order") . "</label>";
             Dropdown::showFromArray('manual_generate', [
                 PluginOrderConfig::CONFIG_NEVER => __('No'),
-                PluginOrderConfig::CONFIG_YES   => __('Yes')
+                PluginOrderConfig::CONFIG_YES   => __('Yes'),
             ]);
 
             echo "<label class='order_ma'>" . __("Default name", "order") . "</label>";
@@ -828,7 +833,7 @@ JAVASCRIPT;
                 'generated_name',
                 [
                     'value' => $config->fields['generated_name'],
-                ]
+                ],
             );
 
             echo "<label class='order_ma'>" . __("Default serial number", "order") . "</label>";
@@ -836,7 +841,7 @@ JAVASCRIPT;
                 'generated_serial',
                 [
                     'value' => $config->fields['generated_serial'],
-                ]
+                ],
             );
 
             echo "<label class='order_ma'>" . __("Default inventory number", "order") . "<label>";
@@ -844,7 +849,7 @@ JAVASCRIPT;
                 'generated_otherserial',
                 [
                     'value' => $config->fields['generated_otherserial'],
-                ]
+                ],
             );
         }
     }
@@ -878,8 +883,8 @@ JAVASCRIPT;
             'WHERE' => [
                 'plugin_order_orders_id' => $params["plugin_order_orders_id"],
                 'plugin_order_references_id' => $params["plugin_order_references_id"],
-                'states_id' => 0
-            ]
+                'states_id' => 0,
+            ],
         ];
 
         $result  = $DB->request($criteria);
@@ -898,10 +903,10 @@ JAVASCRIPT;
                     $params['plugin_order_orders_id'],
                     $params["delivery_date"],
                     $params["delivery_number"],
-                    $params["plugin_order_deliverystates_id"]
+                    $params["plugin_order_deliverystates_id"],
                 );
 
-               // Automatic generate asset
+                // Automatic generate asset
                 $options = [
                     "itemtype"                   => $row["itemtype"],
                     "items_id"                   => $row["id"],
@@ -955,7 +960,7 @@ JAVASCRIPT;
             $ref_id,
             $detail->fields["price_taxfree"],
             $detail->fields["discount"],
-            PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED
+            PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED,
         );
         $nb = count($result);
 
@@ -985,7 +990,7 @@ JAVASCRIPT;
         $ma                     = false;
         $params2                = [];
 
-       // from MassiveAction process, we get ma object, so convert it into array
+        // from MassiveAction process, we get ma object, so convert it into array
         if (is_object($params)) {
             $ma      = $params;
             $params2 = [
@@ -1002,19 +1007,19 @@ JAVASCRIPT;
                     'glpi_plugin_order_references.itemtype',
                 ],
                 'FROM' => [
-                    'glpi_plugin_order_orders_items'
+                    'glpi_plugin_order_orders_items',
                 ],
                 'LEFT JOIN' => [
                     'glpi_plugin_order_references' => [
                         'FKEY' => [
                             'glpi_plugin_order_orders_items' => 'plugin_order_references_id',
                             'glpi_plugin_order_references'   => 'id',
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'WHERE' => [
-                    'glpi_plugin_order_orders_items.id' => array_keys($params2['items'][__CLASS__])
-                ]
+                    'glpi_plugin_order_orders_items.id' => array_keys($params2['items'][__CLASS__]),
+                ],
             ]);
             $additional_data = [];
             foreach ($additional_data_ite as $add_values) {
@@ -1033,14 +1038,14 @@ JAVASCRIPT;
                         $params2['POST']["plugin_order_orders_id"],
                         $params2['POST']["delivery_date"],
                         $params2['POST']["delivery_number"],
-                        $params2['POST']["plugin_order_deliverystates_id"]
+                        $params2['POST']["plugin_order_deliverystates_id"],
                     );
 
                     $plugin_order_orders_id = $params2['POST']["plugin_order_orders_id"];
                 } else {
                     if ($detail->getFromDB($key)) {
                         if (!$plugin_order_orders_id) {
-                             $plugin_order_orders_id = $detail->fields["plugin_order_orders_id"];
+                            $plugin_order_orders_id = $detail->fields["plugin_order_orders_id"];
                         }
 
                         if ($detail->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
@@ -1049,10 +1054,10 @@ JAVASCRIPT;
                                 $plugin_order_orders_id,
                                 $params2['POST']["delivery_date"],
                                 $params2['POST']["delivery_number"],
-                                $params2['POST']["plugin_order_deliverystates_id"]
+                                $params2['POST']["plugin_order_deliverystates_id"],
                             );
                             if ($ma !== false) {
-                                 $ma->itemDone(__CLASS__, $key, MassiveAction::ACTION_OK);
+                                $ma->itemDone(__CLASS__, $key, MassiveAction::ACTION_OK);
                             }
                         } else {
                             Session::addMessageAfterRedirect(__("Item already taken delivery", "order"), true, ERROR);
@@ -1061,7 +1066,7 @@ JAVASCRIPT;
                             }
                         }
 
-                       // Automatic generate asset
+                        // Automatic generate asset
                         $options = [
                             "itemtype"                   => $add_data["itemtype"],
                             "items_id"                   => $key,
@@ -1105,8 +1110,8 @@ JAVASCRIPT;
             'SELECT' => 'states_id',
             'FROM' => 'glpi_plugin_order_orders_items',
             'WHERE' => [
-                'plugin_order_orders_id' => $orders_id
-            ]
+                'plugin_order_orders_id' => $orders_id,
+            ],
         ];
         $result = $DB->request($criteria);
         $number = count($result);
@@ -1123,15 +1128,15 @@ JAVASCRIPT;
             }
         }
 
-       //Are all items delivered ?
+        //Are all items delivered ?
         if ($is_delivered && !$order->isDelivered()) {
             $order->updateOrderStatus($orders_id, $config->getDeliveredState());
-           //At least one item is delivered
+            //At least one item is delivered
         } else {
             if ($delivery_status) {
                 $order->updateOrderStatus(
                     $orders_id,
-                    $config->getPartiallyDeliveredState()
+                    $config->getPartiallyDeliveredState(),
                 );
             }
         }
@@ -1161,15 +1166,15 @@ JAVASCRIPT;
     }
 
 
-   /**
-   *
-   * @param $options
-   *
-   * @return void
-   */
+    /**
+    *
+    * @param $options
+    *
+    * @return void
+    */
     public static function generateAsset($options = [])
     {
-       // No asset should be generated for PluginOrderOther and PluginOrderReferenceFree items.
+        // No asset should be generated for PluginOrderOther and PluginOrderReferenceFree items.
         if (
             array_key_exists('itemtype', $options)
             && (in_array($options['itemtype'], [PluginOrderOther::class, PluginOrderReferenceFree::class]))
@@ -1177,14 +1182,14 @@ JAVASCRIPT;
             return;
         }
 
-       // Retrieve configuration for generate assets feature
+        // Retrieve configuration for generate assets feature
         $config = PluginOrderConfig::getConfig();
         if (
             $config->canGenerateAsset() == PluginOrderConfig::CONFIG_YES
             || ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK
               && $options['manual_generate'] == 1)
         ) {
-           // Automatic generate assets on delivery
+            // Automatic generate assets on delivery
             $rand = mt_rand();
             $item = [
                 "name"                   => $config->getGeneratedAssetName() . $rand,
@@ -1232,7 +1237,7 @@ JAVASCRIPT;
     {
         return countElementsInTable(
             'glpi_plugin_order_orders_items',
-            ['plugin_order_orders_id' => $item->getID()]
+            ['plugin_order_orders_id' => $item->getID()],
         );
     }
 
@@ -1244,7 +1249,12 @@ JAVASCRIPT;
             && PluginOrderOrder::canView()
             && $item->getState() > PluginOrderOrderState::WAITING_FOR_APPROVAL
         ) {
-            return self::createTabEntry(__("Item delivered", "order"), self::countForOrder($item));
+            return self::createTabEntry(
+                __("Item delivered", "order"),
+                self::countForOrder($item),
+                null,
+                self::getIcon(),
+            );
         }
         return '';
     }
