@@ -451,40 +451,21 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         $notif = new Notification();
+        $notif->deleteByCriteria([
+            'itemtype' => 'PluginOrderOrder'
+        ]);
 
-        foreach (['ask', 'validation', 'cancel', 'undovalidation', 'duedate', 'delivered'] as $event) {
-            $options = [
-                'itemtype' => 'PluginOrderOrder',
-                'event'    => $event,
-                'FIELDS'   => 'id',
-            ];
-            foreach ($DB->request(['FROM' => 'glpi_notifications'], $options) as $data) {
-                $notif->delete($data);
-            }
-        }
 
-        //templates
-        $template    = new NotificationTemplate();
+        $template = new NotificationTemplate();
+        $template->deleteByCriteria([
+            'itemtype' => 'PluginOrderOrder'
+        ]);
+
         $translation = new NotificationTemplateTranslation();
-        $options     = [
-            'itemtype' => 'PluginOrderOrder',
-            'FIELDS'   => 'id',
-        ];
-
-        foreach ($DB->request(['FROM' => 'glpi_notificationtemplates'], $options) as $data) {
-            $options_template = [
-                'notificationtemplates_id' => $data['id'],
-                'FIELDS'                   => 'id',
-            ];
-            foreach ($DB->request(['FROM' => 'glpi_notificationtemplatetranslations'], $options_template) as $data_template) {
-                $translation->delete($data_template);
-            }
-            $template->delete($data);
-        }
+        $translation->deleteByCriteria([
+            'itemtype' => 'PluginOrderOrder'
+        ]);
     }
 
 

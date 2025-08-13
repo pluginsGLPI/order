@@ -2255,42 +2255,20 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public static function uninstallOrderItemNotification()
     {
-        /** @var \DBmysql $DB */
-        global $DB;
+        $notif = new Notification();
+        $notif->deleteByCriteria([
+            'itemtype' => 'PluginOrderOrder_Item'
+        ]);
 
-        $notif   = new Notification();
-        $options = [
-            'itemtype' => 'PluginOrderOrder_Item',
-            'event'    => 'delivered',
-            'FIELDS'   => 'id',
-        ];
-        foreach ($DB->request(['FROM' => 'glpi_notifications'], $options) as $data) {
-            $notif->delete($data);
-        }
+        $template = new NotificationTemplate();
+        $template->deleteByCriteria([
+            'itemtype' => 'PluginOrderOrder_Item'
+        ]);
 
-        $template    = new NotificationTemplate();
         $translation = new NotificationTemplateTranslation();
-
-        //templates
-        $options = [
-            'itemtype' => 'PluginOrderOrder_Item',
-            'FIELDS'   => 'id',
-        ];
-        foreach ($DB->request(['FROM' => 'glpi_notificationtemplates'], $options) as $data) {
-            $options_template = [
-                'notificationtemplates_id' => $data['id'],
-                'FIELDS'                   => 'id',
-            ];
-            foreach (
-                $DB->request(
-                    ['FROM' => 'glpi_notificationtemplatetranslations'],
-                    $options_template,
-                ) as $data_template
-            ) {
-                $translation->delete($data_template);
-            }
-            $template->delete($data);
-        }
+        $translation->deleteByCriteria([
+            'itemtype' => 'PluginOrderOrder_Item'
+        ]);
     }
 
     /**
