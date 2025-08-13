@@ -28,4 +28,6 @@
  * -------------------------------------------------------------------------
  */
 
-interface PluginDatainjectionInjectionInterface {}
+interface PluginDatainjectionInjectionInterface
+{
+}
