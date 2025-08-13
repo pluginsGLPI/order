@@ -28,10 +28,10 @@
  * -------------------------------------------------------------------------
  */
 
-
-
 class PluginOrderReferenceInjection extends PluginOrderReference implements PluginDatainjectionInjectionInterface
 {
+    protected $table;
+
     public function __construct()
     {
         $this->table = getTableForItemType(get_parent_class($this));
@@ -65,9 +65,12 @@ class PluginOrderReferenceInjection extends PluginOrderReference implements Plug
 
     public function addOrUpdateObject($values = [], $options = [])
     {
-        $lib = new PluginDatainjectionCommonInjectionLib($this, $values, $options);
-        $lib->processAddOrUpdate();
-        return $lib->getInjectionResults();
+        if (class_exists('PluginDatainjectionCommonInjectionLib')) {
+            $lib = new PluginDatainjectionCommonInjectionLib($this, $values, $options);
+            $lib->processAddOrUpdate();
+            return $lib->getInjectionResults();
+        }
+        throw new \Glpi\Exception\Http\NotFoundHttpException();
     }
 
 
