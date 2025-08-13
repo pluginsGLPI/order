@@ -5,6 +5,7 @@ parameters:
     bootstrapFiles:
         - ../../stubs/glpi_constants.php
         - ../../vendor/autoload.php
+        - stubs/PluginDatainjectionInjectionInterface.php
     paths:
         - ajax
         - front
@@ -15,9 +16,5 @@ parameters:
         - ../../inc
         - ../../src
     stubFiles:
-        - ../../stubs/glpi_constants.php
     ignoreErrors:
         - '#Path in include_once\(\) ".*?/files/_plugins/order/generate/custom\.php" is not a file or it does not exist\.#'
-    excludePaths:
-        - 'inc/referenceinjection.class.php'
-        - 'inc/orderinjection.class.php'
