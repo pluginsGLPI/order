@@ -28,6 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
+use Dom\Mysql;
 use Glpi\DBAL\QueryExpression;
 
 class PluginOrderOrder extends CommonDBTM
@@ -2709,10 +2710,14 @@ class PluginOrderOrder extends CommonDBTM
                 $migration->addField('glpi_plugin_order', "taxes", "FLOAT NOT NULL default '0'");
                 if ($DB->fieldExists("glpi_plugin_order", "numordersupplier")) {
                     foreach ($DB->request(['FROM' => 'glpi_plugin_order']) as $data) {
-                        $query = "INSERT INTO  `glpi_plugin_order_suppliers`
-                              (`ID`, `FK_order`, `numorder`, `numbill`) VALUES
-                              (NULL, '" . $data["ID"] . "', '" . $data["numordersupplier"] . "', '" . $data["numbill"] . "') ";
-                        $DB->doQuery($query);
+                        $migration->insertInTable(
+                            'glpi_plugin_order_suppliers',
+                            [
+                                'FK_order' => $data['ID'],
+                                'numorder' => $data['numordersupplier'],
+                                'numbill'  => $data['numbill'],
+                            ],
+                        );
                     }
                 }
                 $migration->dropField('glpi_plugin_order', 'numordersupplier');
@@ -2915,7 +2920,10 @@ class PluginOrderOrder extends CommonDBTM
                         'glpi_logs',
                     ] as $t
                 ) {
-                    $DB->doQuery("DELETE FROM `$t` WHERE `itemtype` = 'PluginOrderBudget'");
+                    $item = getItemForTable($t);
+                    $item->deleteByCriteria([
+                        'itemtype' => 'PluginOrderBudget',
+                    ]);
                 }
             }
 
@@ -2936,9 +2944,13 @@ class PluginOrderOrder extends CommonDBTM
                     "int {$default_key_sign} NOT NULL default 1",
                 )
             ) {
-                $migration->migrationOneTable($table);
-                $query = "UPDATE `glpi_plugin_order_orders` SET `plugin_order_orderstates_id`=`plugin_order_orderstates_id`+1";
-                $DB->doQuery($query);
+                $migration->addPostQuery(
+                    $DB->buildUpdate(
+                        'glpi_plugin_order_orders',
+                        ['plugin_order_orderstates_id' => new QueryExpression($DB->quoteName('plugin_order_orderstates_id') . ' + 1')],
+                        ['plugin_order_orderstates_id' => ['<', 7]],
+                    )
+                );
             }
 
             $migration->addField($table, "duedate", "DATETIME NULL");
@@ -2998,9 +3010,15 @@ class PluginOrderOrder extends CommonDBTM
                         ],
                     )
                 ) {
-                    $DB->doQuery("INSERT INTO glpi_displaypreferences
-                                  (`itemtype`, `num`, `rank`, `users_id`)
-                           VALUES ('PluginOrderOrder','$num','$rank','0');");
+                    $migration->insertInTable(
+                        'glpi_displaypreferences',
+                        [
+                            'itemtype' => 'PluginOrderOrder',
+                            'num'      => $num,
+                            'rank'     => $rank,
+                            'users_id' => 0,
+                        ],
+                    );
                 }
             }
 
@@ -3063,8 +3081,8 @@ class PluginOrderOrder extends CommonDBTM
             "glpi_logs",
         ];
         foreach ($tables as $table) {
-            $query = "DELETE FROM `$table` WHERE `itemtype`='" . __CLASS__ . "'";
-            $DB->doQuery($query);
+            $item = getItemForTable($table);
+            $item->deleteByCriteria(['itemtype' => __CLASS__]);
         }
 
         //Old table name

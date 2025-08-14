@@ -114,8 +114,8 @@ class PluginOrderReferenceFree extends CommonDBTM
                 "glpi_logs",
             ] as $t
         ) {
-            $query = "DELETE FROM `$t` WHERE `itemtype`='" . __CLASS__ . "'";
-            $DB->doQuery($query);
+            $item = getItemForTable($t);
+            $item->deleteByCriteria(['itemtype' => __CLASS__]);
         }
 
         $DB->doQuery("DROP TABLE IF EXISTS `$table`");

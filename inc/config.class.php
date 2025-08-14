@@ -751,8 +751,14 @@ class PluginOrderConfig extends CommonDBTM
             $migration->renameTable("glpi_plugin_order_config", $table);
 
             if (!countElementsInTable("glpi_plugin_order_configs")) {
-                $query = "INSERT INTO `glpi_plugin_order_configs`(`id`,`use_validation`,`default_taxes`) VALUES (1,0,0);";
-                $DB->doQuery($query);
+                $migration->insertInTable(
+                    'glpi_plugin_order_configs',
+                    [
+                        'id'                          => 1,
+                        'use_validation'              => 0,
+                        'default_taxes'               => 0,
+                    ]
+                );
             }
 
             $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");

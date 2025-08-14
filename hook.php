@@ -349,13 +349,11 @@ function plugin_order_displayConfigItem($type, $ID, $data, $num)
 /* hook done on purge item case */
 function plugin_item_purge_order($item)
 {
-    /** @var \DBmysql $DB */
-    global $DB;
-    $query = "UPDATE `glpi_plugin_order_orders_items`
-             SET `items_id`='0'
-             WHERE `itemtype`='" . $item->getType() . "'
-               AND `items_id`='" . $item->getField('id') . "'";
-    $DB->doQuery($query);
+    $order_item = new PluginOrderOrder_Item();
+    $order_item->deleteByCriteria([
+        'itemtype' => $item->getType(),
+        'items_id' => $item->getField('id'),
+    ]);
 
     return true;
 }

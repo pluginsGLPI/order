@@ -104,14 +104,9 @@ class PluginOrderReception extends CommonDBChild
 
     public function checkThisItemStatus($detailID, $states_id)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $query = "SELECT `states_id`
-                FROM `glpi_plugin_order_orders_items`
-                WHERE `id` = '$detailID' ";
-        $result = $DB->doQuery($query);
-        if ($DB->result($result, 0, "states_id") == $states_id) {
+        $order_item = new PluginOrderOrder_Item();
+        $order_item->getFromDB($detailID);
+        if ($order_item->fields["states_id"] == $states_id) {
             return true;
         } else {
             return false;

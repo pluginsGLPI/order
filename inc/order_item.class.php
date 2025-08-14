@@ -2076,10 +2076,13 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
             /* Migrate VAT */
             foreach ($DB->request(['FROM' => 'glpi_plugin_order_orders']) as $data) {
-                $query  = "UPDATE `glpi_plugin_order_orders_items`
-                       SET `plugin_order_ordertaxes_id` = '" . $data["plugin_order_ordertaxes_id"] . "'
-                       WHERE `plugin_order_orders_id` = '" . $data["id"] . "'";
-                $DB->doQuery($query);
+                $migration->addPostQuery(
+                    $DB->buildUpdate(
+                        'glpi_plugin_order_orders_items',
+                        ['plugin_order_ordertaxes_id' => $data['plugin_order_ordertaxes_id']],
+                        ['plugin_order_orders_id' => $data['id']],
+                    ),
+                );
             }
             //1.5.0
             $migration->addField($table, "entities_id", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
@@ -2139,11 +2142,16 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 ],
             ];
             foreach ($DB->request($query) as $data) {
-                $update = "UPDATE `$table`
-                       SET `entities_id`='" . $data['entities_id'] . "'
-                          AND `is_recursive`='" . $data['is_recursive'] . "'
-                       WHERE `id`='" . $data['items_id'] . "'";
-                $DB->doQuery($update);
+                $migration->addPostQuery(
+                    $DB->buildUpdate(
+                        $table,
+                        [
+                            'entities_id' => $data['entities_id'],
+                            'is_recursive' => $data['is_recursive'],
+                        ],
+                        ['id' => $data['items_id']],
+                    ),
+                );
             }
 
             if (!$DB->fieldExists($table, 'plugin_order_analyticnatures_id')) {

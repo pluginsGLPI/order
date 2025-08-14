@@ -1201,12 +1201,20 @@ class PluginOrderReference extends CommonDBTM
             $migration->migrationOneTable($table);
 
             //1.3.0
-            $DB->doQuery("UPDATE `glpi_plugin_order_references` SET
-                        `itemtype`='ConsumableItem'
-                     WHERE `itemtype` ='Consumable'");
-            $DB->doQuery("UPDATE `glpi_plugin_order_references` SET
-                        `itemtype`='CartridgeItem'
-                     WHERE `itemtype` ='Cartridge'");
+            $migration->addPostQuery(
+                $DB->buildUpdate(
+                    'glpi_plugin_order_references',
+                    ['itemtype' => 'ConsumableItem'],
+                    ['itemtype' => 'Consumable'],
+                ),
+            );
+            $migration->addPostQuery(
+                $DB->buildUpdate(
+                    'glpi_plugin_order_references',
+                    ['itemtype' => 'CartridgeItem'],
+                    ['itemtype' => 'Cartridge'],
+                ),
+            );
 
             //1.7.0
             $migration->addField($table, "date_mod", "timestamp NULL DEFAULT NULL");
@@ -1224,9 +1232,15 @@ class PluginOrderReference extends CommonDBTM
                         ],
                     )
                 ) {
-                    $DB->doQuery("INSERT INTO glpi_displaypreferences
-                           (`itemtype`, `num`, `rank`, `users_id`) 
-                           VALUES ('PluginOrderReference','$num','$rank','0');");
+                    $migration->insertInTable(
+                        "glpi_displaypreferences",
+                        [
+                            'itemtype' => 'PluginOrderReference',
+                            'num'      => $num,
+                            'rank'     => $rank,
+                            'users_id' => 0,
+                        ],
+                    );
                 }
             }
 
@@ -1275,8 +1289,8 @@ class PluginOrderReference extends CommonDBTM
                 "glpi_logs",
             ] as $t
         ) {
-            $query = "DELETE FROM `$t` WHERE `itemtype`='" . __CLASS__ . "'";
-            $DB->doQuery($query);
+            $item = getItemForTable($t);
+            $item->deleteByCriteria(['itemtype' => __CLASS__]);
         }
 
         $DB->doQuery("DROP TABLE IF EXISTS `$table`");
