@@ -715,22 +715,17 @@ class PluginOrderLink extends CommonDBChild
         $plugin_order_orders_id,
         $detailID = 0
     ) {
-        /** @var \DBmysql $DB */
-        global $DB;
         if (!in_array($itemtype, self::getTypesThanCannotBeGenerated())) {
-            $query = "SELECT COUNT(*) AS cpt
-                   FROM `glpi_plugin_order_orders_items`
-                   WHERE `plugin_order_orders_id` = '$plugin_order_orders_id'
-                   AND `items_id` = '$items_id'
-                   AND `itemtype` = '$itemtype'";
+            $cpt = countElementsInTable(
+                'glpi_plugin_order_orders_items',
+                [
+                    'plugin_order_orders_id' => $plugin_order_orders_id,
+                    'items_id'               => $items_id,
+                    'itemtype'               => $itemtype,
+                ]
+            );
 
-            $result = $DB->doQuery($query);
-
-            if ($DB->result($result, 0, "cpt") > 0) {
-                return true;
-            } else {
-                return false;
-            }
+            return ($cpt > 0);
         } else {
             $detail = new PluginOrderOrder_Item();
             $detail->getFromDB($detailID);

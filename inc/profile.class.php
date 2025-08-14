@@ -145,9 +145,10 @@ class PluginOrderProfile extends CommonDBTM
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-        $DB->doQuery("DELETE FROM glpi_profilerights WHERE name LIKE 'plugin_order_%'");
+        $item = new Profile();
+        $item->deleteByCriteria([
+            'name' => ['LIKE', 'PluginOrder%'],
+        ]);
         self::removeRightsFromSession();
     }
 

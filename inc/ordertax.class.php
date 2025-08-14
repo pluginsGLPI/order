@@ -91,10 +91,13 @@ class PluginOrderOrderTax extends CommonDropdown
             foreach ($DB->request($query_name) as $data) {
                 if (strpos($data["name"], ',')) {
                     $name  = str_replace(',', '.', $data["name"]);
-                    $query = "UPDATE `$table`
-                         SET `name` = '" . $name . "'
-                         WHERE `name`= '" . $data["name"] . "'";
-                    $DB->doQuery($query);
+                    $migration->addPostQuery(
+                        $DB->buildUpdate(
+                            $table,
+                            ['name' => $name],
+                            ['name' => $data['name']],
+                        ),
+                    );
                 }
             }
         }

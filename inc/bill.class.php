@@ -603,10 +603,13 @@ class PluginOrderBill extends CommonDropdown
                         $bills_id                      = $bill->add($tmp);
 
                         //All order items are now linked to this bill
-                        $query = "UPDATE `glpi_plugin_order_orders_items`
-                            SET `plugin_order_bills_id` = '$bills_id'
-                            WHERE `plugin_order_orders_id` = '" . $data['plugin_order_orders_id'] . "'";
-                        $DB->doQuery($query);
+                        $migration->addPostQuery(
+                            $DB->buildUpdate(
+                                'glpi_plugin_order_orders_items',
+                                ['plugin_order_bills_id' => $bills_id],
+                                ['plugin_order_orders_id' => $data['plugin_order_orders_id']],
+                            ),
+                        );
                     }
                 }
             }
@@ -625,8 +628,10 @@ class PluginOrderBill extends CommonDropdown
 
         $table = self::getTable();
         foreach (["displaypreferences", "documents_items", "savedsearches", "logs"] as $t) {
-            $query = "DELETE FROM `glpi_$t` WHERE `itemtype` = '" . __CLASS__ . "'";
-            $DB->doQuery($query);
+            $item = getItemForTable("glpi_$t");
+            $item->deleteByCriteria([
+                'itemtype' => __CLASS__,
+            ]);
         }
         $DB->doQuery("DROP TABLE IF EXISTS`" . $table . "`");
     }

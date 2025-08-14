@@ -452,16 +452,24 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                     'FROM' => 'glpi_plugin_order_orders',
                 ];
                 foreach ($DB->request($query) as $data) {
-                    $query = "UPDATE `glpi_plugin_order_orders_suppliers` SET
-                           `suppliers_id` = '{$data["suppliers_id"]}'
-                         WHERE `plugin_order_orders_id` = '{$data["id"]}' ";
-                    $DB->doQuery($query);
+                    $migration->addPostQuery(
+                        $DB->buildUpdate(
+                            'glpi_plugin_order_orders_suppliers',
+                            ['suppliers_id' => $data['suppliers_id']],
+                            ['plugin_order_orders_id' => $data['id']],
+                        ),
+                    );
 
-                    $query = "UPDATE `glpi_plugin_order_orders_suppliers` SET
-                           `entities_id` = '{$data["entities_id"]}',
-                           `is_recursive` = '{$data["is_recursive"]}'
-                         WHERE `plugin_order_orders_id` = '{$data["id"]}' ";
-                    $DB->doQuery($query);
+                    $migration->addPostQuery(
+                        $DB->buildUpdate(
+                            'glpi_plugin_order_orders_suppliers',
+                            [
+                                'entities_id' => $data['entities_id'],
+                                'is_recursive' => $data['is_recursive'],
+                            ],
+                            ['plugin_order_orders_id' => $data['id']],
+                        ),
+                    );
                 }
             }
         }

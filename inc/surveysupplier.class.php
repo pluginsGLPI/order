@@ -569,11 +569,16 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 'FROM' => 'glpi_plugin_order_orders',
             ];
             foreach ($DB->request($query) as $data) {
-                $query = "UPDATE `glpi_plugin_order_surveysuppliers` SET
-                        `entities_id` = '{$data["entities_id"]}',
-                        `is_recursive` = '{$data["is_recursive"]}'
-                      WHERE `plugin_order_orders_id` = '{$data["id"]}' ";
-                $DB->doQuery($query);
+                $migration->addPostQuery(
+                    $DB->buildUpdate(
+                        'glpi_plugin_order_surveysuppliers',
+                        [
+                            'entities_id' => $data['entities_id'],
+                            'is_recursive' => $data['is_recursive'],
+                        ],
+                        ['plugin_order_orders_id' => $data['id']],
+                    ),
+                );
             }
         }
     }
