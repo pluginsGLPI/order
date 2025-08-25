@@ -28,23 +28,21 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
-
 class PluginOrderOrderInjection extends PluginOrderOrder implements PluginDatainjectionInjectionInterface
 {
+    protected $table;
+
     public function __construct()
     {
         $this->table = getTableForItemType(get_parent_class($this));
     }
 
 
-   /**
-    * Returns the name of the table used to store this object parent
-    *
-    * @return string (table name)
-   **/
+    /**
+     * Returns the name of the table used to store this object parent
+     *
+     * @return string (table name)
+    **/
     public static function getTable($classname = null)
     {
 
@@ -66,9 +64,12 @@ class PluginOrderOrderInjection extends PluginOrderOrder implements PluginDatain
 
     public function addOrUpdateObject($values = [], $options = [])
     {
-        $lib = new PluginDatainjectionCommonInjectionLib($this, $values, $options);
-        $lib->processAddOrUpdate();
-        return $lib->getInjectionResults();
+        if (class_exists('PluginDatainjectionCommonInjectionLib')) {
+            $lib = new PluginDatainjectionCommonInjectionLib($this, $values, $options);
+            $lib->processAddOrUpdate();
+            return $lib->getInjectionResults();
+        }
+        throw new \Glpi\Exception\Http\NotFoundHttpException();
     }
 
 

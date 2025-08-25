@@ -28,7 +28,6 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
 Session::checkLoginUser();
 
 if (!isset($_GET["id"])) {
@@ -60,7 +59,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     if (PluginOrderOrder_Supplier::canCreate()) {
         foreach ($_POST["check"] as $ID => $value) {
             if ($supplier->delete(["id" => $ID], false, false)) {
@@ -70,7 +69,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     if (PluginOrderOrder_Supplier::canCreate()) {
         $supplier->update($_POST);
     }
@@ -79,7 +78,7 @@ if (isset($_POST["add"])) {
     Html::header(__("Orders management", "order"), '', "plugins", "order", "order");
     $supplier->showForm(
         $_GET["id"],
-        ['plugin_order_orders_id' => $_GET["plugin_order_orders_id"]]
+        ['plugin_order_orders_id' => $_GET["plugin_order_orders_id"]],
     );
     Html::footer();
 }

@@ -28,7 +28,6 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
 Session::checkLoginUser();
 
 if (!isset($_GET["id"])) {
@@ -52,7 +51,7 @@ if (isset($_POST["add"])) {
     $reference->check(-1, UPDATE, $_POST);
     $newID = $reference->add($_POST);
     $url   = Toolbox::getItemTypeFormURL('PluginOrderReference') . "?id=$newID";
-    if ($_GET["popup"] == 1) {
+    if (!empty($_GET["popup"]) && $_GET["popup"] == 1) {
         $url .= "&popup=1";
     }
     if ($_SESSION['glpibackcreated']) {
@@ -61,38 +60,38 @@ if (isset($_POST["add"])) {
         Html::redirect($url);
     }
 
-   /* delete order */
-} else if (isset($_POST["delete"])) {
+    /* delete order */
+} elseif (isset($_POST["delete"])) {
     $reference->check($_POST['id'], UPDATE);
     $reference->delete($_POST);
     $reference->redirectToList();
 
-   /* restore order */
-} else if (isset($_POST["restore"])) {
+    /* restore order */
+} elseif (isset($_POST["restore"])) {
     $reference->check($_POST['id'], UPDATE);
     $reference->restore($_POST);
     $reference->redirectToList();
 
-   /* purge order */
-} else if (isset($_POST["purge"])) {
+    /* purge order */
+} elseif (isset($_POST["purge"])) {
     $reference->check($_POST['id'], UPDATE);
     $reference->delete($_POST, true);
     $reference->redirectToList();
 
-   /* update order */
-} else if (isset($_POST["update"])) {
+    /* update order */
+} elseif (isset($_POST["update"])) {
     $reference->check($_POST['id'], UPDATE);
     $reference->update($_POST);
     Html::back();
 }
 
-if ($_GET["popup"] == 1) {
+if (!empty($_GET["popup"]) && $_GET["popup"] == 1) {
     Html::popheader(
         PluginOrderReference::getTypeName(1),
         $_SERVER['PHP_SELF'],
         true,
         "PluginOrderMenu",
-        "references"
+        "references",
     );
 } else {
     Html::header(
@@ -100,7 +99,7 @@ if ($_GET["popup"] == 1) {
         $_SERVER['PHP_SELF'],
         "management",
         "PluginOrderMenu",
-        "references"
+        "references",
     );
 }
 
@@ -111,7 +110,7 @@ if ($_GET['id'] == "") {
     $reference->display($_GET);
 }
 
-if ($_GET["popup"] == 1) {
+if (!empty($_GET["popup"]) && $_GET["popup"] == 1) {
     Html::popfooter();
 } else {
     Html::footer();

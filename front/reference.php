@@ -31,7 +31,7 @@
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include("../../../inc/includes.php");
+
 Session::checkLoginUser();
 
 Html::header(
@@ -39,7 +39,7 @@ Html::header(
     $_SERVER['PHP_SELF'],
     "management",
     "PluginOrderMenu",
-    "references"
+    "references",
 );
 
 if (PluginOrderReference::canView()) {

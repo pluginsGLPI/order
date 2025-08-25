@@ -28,7 +28,8 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 Session::checkLoginUser();
 
 $config = PluginOrderConfig::getConfig();
@@ -39,14 +40,14 @@ if ($config->canGenerateOrderPDF() && ($PluginOrderOrder->canGenerateWithoutVali
         getTableForItemType(PluginOrderOrder::class),
         '',
         '',
-        true
+        true,
     );
 
     if ($PluginOrderOrder->getFromDBByCrit($criteria)) {
         $PluginOrderOrder->generateOrder($_GET);
     } else {
-        Html::displayRightError("You don't have permission to perform this action.");
+        throw new AccessDeniedHttpException();
     }
 } else {
-    Html::displayRightError("PDF export for Order plugin is not enable");
+    throw new AccessDeniedHttpException();
 }
