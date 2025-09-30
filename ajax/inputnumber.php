@@ -56,5 +56,5 @@ if (isset($_POST['name'])) {
 
     $data = htmlescape(rawurldecode(stripslashes($_POST["data"])));
 
-    echo "<input type='number' class='form-control' step='$step' min='$min' name='" . $_POST['name'] . "' value='$data' $class>";
+    echo "<input type='number' class='form-control' step='" . $step . "' min='" . $min . "' name='" . $_POST['name'] . "' value='" . $data . "' " . $class . ">";
 }
