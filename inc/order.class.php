@@ -85,7 +85,7 @@ class PluginOrderOrder extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return $nb > 1 ? __("Orders", "order") : __("Order", "order");
+        return $nb > 1 ? __s("Orders", "order") : __s("Order", "order");
     }
 
     public function getState()
@@ -303,12 +303,12 @@ class PluginOrderOrder extends CommonDBTM
     {
         $values = parent::getRights();
         if ($interface == 'central') {
-            $values[self::RIGHT_GENERATEODT]     = __("Order Generation", "order");
-            $values[self::RIGHT_DELIVERY]        = __("Take item delivery", "order");
-            $values[self::RIGHT_VALIDATION]      = __("Order validation", "order");
-            $values[self::RIGHT_CANCEL]          = __("Cancel order", "order");
-            $values[self::RIGHT_UNDO_VALIDATION] = __("Edit a validated order", "order");
-            $values[self::RIGHT_GENERATEODT_WITHOUT_VALIDATION] = __("Generate order without validation", "order");
+            $values[self::RIGHT_GENERATEODT]     = __s("Order Generation", "order");
+            $values[self::RIGHT_DELIVERY]        = __s("Take item delivery", "order");
+            $values[self::RIGHT_VALIDATION]      = __s("Order validation", "order");
+            $values[self::RIGHT_CANCEL]          = __s("Cancel order", "order");
+            $values[self::RIGHT_UNDO_VALIDATION] = __s("Edit a validated order", "order");
+            $values[self::RIGHT_GENERATEODT_WITHOUT_VALIDATION] = __s("Generate order without validation", "order");
         }
 
         return $values;
@@ -321,14 +321,14 @@ class PluginOrderOrder extends CommonDBTM
 
         $tab[] = [
             'id'            => 'common',
-            'name'          => __('Orders management', 'order'),
+            'name'          => __s('Orders management', 'order'),
         ];
 
         $tab[] = [
             'id'            => 1,
             'table'         => self::getTable(),
             'field'         => 'num_order',
-            'name'          => __('Order number', 'order'),
+            'name'          => __s('Order number', 'order'),
             'datatype'      => 'itemlink',
             'checktype'     => 'text',
             'displaytype'   => 'text',
@@ -341,7 +341,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 2,
             'table'         => self::getTable(),
             'field'         => 'order_date',
-            'name'          => __('Date of order', 'order'),
+            'name'          => __s('Date of order', 'order'),
             'datatype'      => 'date',
             'checktype'     => 'date',
             'displaytype'   => 'date',
@@ -353,7 +353,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 3,
             'table'         => 'glpi_plugin_order_ordertaxes',
             'field'         => 'name',
-            'name'          => __('VAT', 'order') . ' ' . __('Postage', 'order'),
+            'name'          => __s('VAT', 'order') . ' ' . __s('Postage', 'order'),
             'datatype'      => 'dropdown',
             'checktype'     => 'text',
             'displaytype'   => 'dropdown',
@@ -365,7 +365,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 4,
             'table'         => 'glpi_locations',
             'field'         => 'completename',
-            'name'          => __('Delivery location', 'order'),
+            'name'          => __s('Delivery location', 'order'),
             'datatype'      => 'itemlink',
             'checktype'     => 'text',
             'displaytype'   => 'dropdown',
@@ -377,7 +377,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 5,
             'table'         => 'glpi_plugin_order_orderstates',
             'field'         => 'name',
-            'name'          => __('Order status', 'order'),
+            'name'          => __s('Order status', 'order'),
             'datatype'      => 'dropdown',
             'checktype'     => 'text',
             'displaytype'   => 'dropdown',
@@ -389,7 +389,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 6,
             'table'         => 'glpi_suppliers',
             'field'         => 'name',
-            'name'          => __('Supplier'),
+            'name'          => __s('Supplier'),
             'datatype'      => 'itemlink',
             'itemlink_type' => 'Supplier',
             'forcegroupby'  => true,
@@ -403,7 +403,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 7,
             'table'         => 'glpi_plugin_order_orderpayments',
             'field'         => 'name',
-            'name'          => __('Payment conditions', 'order'),
+            'name'          => __s('Payment conditions', 'order'),
             'datatype'      => 'dropdown',
             'checktype'     => 'text',
             'displaytype'   => 'dropdown',
@@ -415,7 +415,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 8,
             'table'         => 'glpi_contacts',
             'field'         => 'name',
-            'name'          => __('Alternate username'),
+            'name'          => __s('Alternate username'),
             'datatype'      => 'itemlink',
             'itemlink_type' => 'Contact',
             'forcegroupby'  => true,
@@ -429,7 +429,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 9,
             'table'         => 'glpi_budgets',
             'field'         => 'name',
-            'name'          => __('Budget'),
+            'name'          => __s('Budget'),
             'datatype'      => 'itemlink',
             'itemlink_type' => 'Budget',
             'forcegroupby'  => true,
@@ -443,7 +443,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 10,
             'table'         => self::getTable(),
             'field'         => 'name',
-            'name'          => __('Order name', 'order'),
+            'name'          => __s('Order name', 'order'),
             'datatype'      => 'itemlink',
             'searchtype'    => 'contains',
             'checktype'     => 'text',
@@ -457,7 +457,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 11,
             'table'         => 'glpi_plugin_order_ordertypes',
             'field'         => 'name',
-            'name'          => __('Type'),
+            'name'          => __s('Type'),
             'datatype'      => 'dropdown',
             'checktype'     => 'text',
             'displaytype'   => 'dropdown',
@@ -469,7 +469,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 12,
             'table'         => self::getTable(),
             'field'         => 'duedate',
-            'name'          => __('Estimated due date', 'order'),
+            'name'          => __s('Estimated due date', 'order'),
             'datatype'      => 'date',
             'checktype'     => 'date',
             'displaytype'   => 'date',
@@ -481,7 +481,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 13,
             'table'         => self::getTable(),
             'field'         => 'deliverydate',
-            'name'          => __('Delivery due date'),
+            'name'          => __s('Delivery due date'),
             'datatype'      => 'date',
             'checktype'     => 'date',
             'displaytype'   => 'date',
@@ -493,7 +493,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 14,
             'table'         => self::getTable(),
             'field'         => 'is_late',
-            'name'          => __('Order is late', 'order'),
+            'name'          => __s('Order is late', 'order'),
             'datatype'      => 'bool',
             'checktype'     => 'bool',
             'displaytype'   => 'bool',
@@ -505,7 +505,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 15,
             'table'         => self::getTable(),
             'field'         => 'is_helpdesk_visible',
-            'name'          => __('Associable to a ticket'),
+            'name'          => __s('Associable to a ticket'),
             'datatype'      => 'bool',
             'injectable'    => true,
             'massiveaction' => true,
@@ -515,7 +515,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 16,
             'table'         => self::getTable(),
             'field'         => 'comment',
-            'name'          => __('Description'),
+            'name'          => __s('Description'),
             'datatype'      => 'text',
             'checktype'     => 'text',
             'displaytype'   => 'multiline_text',
@@ -527,7 +527,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 17,
             'table'         => self::getTable(),
             'field'         => 'port_price',
-            'name'          => __('Postage', 'order'),
+            'name'          => __s('Postage', 'order'),
             'datatype'      => 'decimal',
             'checktype'     => 'text',
             'displaytype'   => 'text',
@@ -539,7 +539,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 24,
             'table'         => 'glpi_users',
             'field'         => 'name',
-            'name'          => __('Author'),
+            'name'          => __s('Author'),
             'linkfield'     => 'users_id',
             'datatype'      => 'itemlink',
             'massiveaction' => false,
@@ -549,7 +549,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 25,
             'table'         => 'glpi_users',
             'field'         => 'name',
-            'name'          => __('Recipient'),
+            'name'          => __s('Recipient'),
             'linkfield'     => 'users_id_delivery',
             'datatype'      => 'itemlink',
             'massiveaction' => false,
@@ -559,7 +559,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 26,
             'table'         => 'glpi_groups',
             'field'         => 'name',
-            'name'          => __('Author group', 'order'),
+            'name'          => __s('Author group', 'order'),
             'linkfield'     => 'groups_id',
             'datatype'      => 'dropdown',
             'massiveaction' => false,
@@ -569,7 +569,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 27,
             'table'         => 'glpi_groups',
             'field'         => 'name',
-            'name'          => __('Recipient group', 'order'),
+            'name'          => __s('Recipient group', 'order'),
             'linkfield'     => 'groups_id_delivery',
             'datatype'      => 'dropdown',
             'massiveaction' => false,
@@ -579,7 +579,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 31,
             'table'         => self::getTable(),
             'field'         => 'id',
-            'name'          => __('ID'),
+            'name'          => __s('ID'),
             'injectable'    => false,
             'massiveaction' => false,
         ];
@@ -588,7 +588,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 35,
             'table'         => self::getTable(),
             'field'         => 'date_mod',
-            'name'          => __('Last update'),
+            'name'          => __s('Last update'),
             'datatype'      => 'datetime',
             'massiveaction' => false,
         ];
@@ -597,7 +597,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 80,
             'table'         => 'glpi_entities',
             'field'         => 'completename',
-            'name'          => __('Entity'),
+            'name'          => __s('Entity'),
             'datatype'      => 'dropdown',
             'injectable'    => false,
             'massiveaction' => false,
@@ -607,7 +607,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 86,
             'table'         => self::getTable(),
             'field'         => 'is_recursive',
-            'name'          => __('Child entities'),
+            'name'          => __s('Child entities'),
             'datatype'      => 'bool',
             'checktype'     => 'bool',
             'displaytype'   => 'bool',
@@ -619,7 +619,7 @@ class PluginOrderOrder extends CommonDBTM
             'id'            => 87,
             'table'         => 'glpi_plugin_order_accountsections',
             'field'         => 'name',
-            'name'          =>  __("Account Section", "order"),
+            'name'          =>  __s("Account Section", "order"),
             'datatype'      => 'dropdown',
             'checktype'     => 'text',
             'displaytype'   => 'dropdown',
@@ -667,7 +667,7 @@ class PluginOrderOrder extends CommonDBTM
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item instanceof Budget) {
-            return __("Orders", "order");
+            return __s("Orders", "order");
         } elseif ($item instanceof self) {
             $ong    = [];
             $config = PluginOrderConfig::getConfig();
@@ -679,7 +679,7 @@ class PluginOrderOrder extends CommonDBTM
                 ])
             ) {
                 return self::createTabEntry(
-                    __("Validation", "order"),
+                    __s("Validation", "order"),
                     0,
                     null,
                     'ti ti-check',
@@ -691,7 +691,7 @@ class PluginOrderOrder extends CommonDBTM
                 || static::canGenerateWithoutValidation())
             ) {
                 // generation
-                $ong[2] = __("Purchase order", "order");
+                $ong[2] = __s("Purchase order", "order");
             }
 
             return $ong;
@@ -744,7 +744,7 @@ class PluginOrderOrder extends CommonDBTM
                 !isset($input["num_order"])
                 || $input["num_order"] == ''
             ) {
-                Session::addMessageAfterRedirect(__("An order number is mandatory !", "order"), false, ERROR);
+                Session::addMessageAfterRedirect(__s("An order number is mandatory !", "order"), false, ERROR);
                 return [];
             } elseif (
                 !isset($input["name"])
@@ -755,14 +755,14 @@ class PluginOrderOrder extends CommonDBTM
 
             $config = PluginOrderConfig::getConfig();
             if ($config->isAccountSectionDisplayed() && $config->isAccountSectionMandatory() && $input["plugin_order_accountsections_id"] == 0) {
-                Session::addMessageAfterRedirect(__("An account section is mandatory !", "order"), false, ERROR);
+                Session::addMessageAfterRedirect(__s("An account section is mandatory !", "order"), false, ERROR);
                 return [];
             }
 
             if (
                 isset($input['budgets_id']) && $input['budgets_id'] > 0 && !self::canStillUseBudget($input)
             ) {
-                Session::addMessageAfterRedirect(__("The order date must be within the dates entered for the selected budget.", "order"), false, ERROR);
+                Session::addMessageAfterRedirect(__s("The order date must be within the dates entered for the selected budget.", "order"), false, ERROR);
             }
         }
 
@@ -832,7 +832,7 @@ class PluginOrderOrder extends CommonDBTM
         if (
             (isset($input['budgets_id']) && $input['budgets_id'] > 0 || isset($input['budgets_id']) && $input['budgets_id'] > 0 && $this->fields['budgets_id'] != $input['budgets_id']) && (!self::canStillUseBudget($input) && !isset($input['_unlink_budget']))
         ) {
-            Session::addMessageAfterRedirect(__("The order date must be within the dates entered for the selected budget.", "order"), false, ERROR);
+            Session::addMessageAfterRedirect(__s("The order date must be within the dates entered for the selected budget.", "order"), false, ERROR);
         }
 
         $config = PluginOrderConfig::getConfig();
@@ -841,7 +841,7 @@ class PluginOrderOrder extends CommonDBTM
             && $config->isAccountSectionMandatory()
             && ($input["plugin_order_accountsections_id"] ?? $this->fields["plugin_order_accountsections_id"]) == 0
         ) {
-            Session::addMessageAfterRedirect(__("An account section is mandatory !", "order"), false, ERROR);
+            Session::addMessageAfterRedirect(__s("An account section is mandatory !", "order"), false, ERROR);
             return [];
         }
 
@@ -888,7 +888,7 @@ class PluginOrderOrder extends CommonDBTM
 
         $config = PluginOrderConfig::getConfig();
         if (!$config->isConfigured()) {
-            $link = "<a href='" . $config->getLinkURL() . "' class='alert-link'>" . __('Go to configuration page', 'order') . "</a>";
+            $link = "<a href='" . $config->getLinkURL() . "' class='alert-link'>" . __s('Go to configuration page', 'order') . "</a>";
 
             echo "<div class='alert alert-warning' role='alert'>
             <div class='d-flex'>
@@ -896,7 +896,7 @@ class PluginOrderOrder extends CommonDBTM
                     <i class='ti ti-alert-triangle fa-2x'></i>
                 </div>
                 <div class='ms-2'>
-                    " . __('You must set up at least the order life cycle before starting.', 'order') . " — $link
+                    " . __s('You must set up at least the order life cycle before starting.', 'order') . " — $link
                 </div>
             </div>
          </div>";
@@ -911,13 +911,13 @@ class PluginOrderOrder extends CommonDBTM
 
         if (isset($options['withtemplate']) && $options['withtemplate'] == 2) {
             $template   = "newcomp";
-            $datestring = sprintf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
+            $datestring = sprintf(__s('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
         } elseif (isset($options['withtemplate']) && $options['withtemplate'] == 1) {
             $template   = "newtemplate";
-            $datestring = sprintf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
+            $datestring = sprintf(__s('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
         } else {
             $template   = false;
-            $datestring = sprintf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
+            $datestring = sprintf(__s('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
         }
 
         $canedit            = $this->canUpdateOrder() && $this->canUpdate() && !$this->isCanceled();
@@ -936,7 +936,7 @@ class PluginOrderOrder extends CommonDBTM
 
         //Display without inside table
         /* title */
-        echo "<tr class='tab_bg_1'><td>" . __("Order name", "order") . "*: </td>";
+        echo "<tr class='tab_bg_1'><td>" . __s("Order name", "order") . "*: </td>";
         echo "<td>";
         if ($canedit) {
             $objectName = autoName(
@@ -957,7 +957,7 @@ class PluginOrderOrder extends CommonDBTM
         }
         echo "</td>";
         /* date of order */
-        echo "<td>" . __("Date of order", "order") . ":</td><td>";
+        echo "<td>" . __s("Date of order", "order") . ":</td><td>";
         if ($canedit) {
             $value = $this->fields["order_date"] == null ? date('Y-m-d') : $this->fields["order_date"];
             Html::showDateField(
@@ -974,7 +974,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "</td></tr>";
 
         /* num order */
-        echo "<tr class='tab_bg_1'><td>" . __("Order number", "order");
+        echo "<tr class='tab_bg_1'><td>" . __s("Order number", "order");
         if ($ID > 0) {
             echo "*";
         } else {
@@ -1001,7 +1001,7 @@ class PluginOrderOrder extends CommonDBTM
         }
         echo "</td>";
         /* type order */
-        echo "<td>" . __("Type") . ": </td><td>";
+        echo "<td>" . __s("Type") . ": </td><td>";
         if ($canedit) {
             PluginOrderOrderType::Dropdown([
                 'name' => "plugin_order_ordertypes_id",
@@ -1016,7 +1016,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "</td></tr>";
 
         /* state */
-        echo "<tr class='tab_bg_1'><td>" . __("Order status", "order") . ": </td>";
+        echo "<tr class='tab_bg_1'><td>" . __s("Order status", "order") . ": </td>";
         echo "<td>";
         $state = !$this->getID() ? $config->getDraftState() : $this->fields["plugin_order_orderstates_id"];
         if ($canedit) {
@@ -1030,7 +1030,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "</td>";
 
         /* budget */
-        echo "<td>" . __("Budget") . ": </td>";
+        echo "<td>" . __s("Budget") . ": </td>";
         echo "<td>";
         if ($canedit) {
             if ($config->canHideInactiveBudgets()) {
@@ -1066,7 +1066,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "</td></tr>";
 
         /* location */
-        echo "<tr class='tab_bg_1'><td>" . __("Delivery location", "order") . ": </td>";
+        echo "<tr class='tab_bg_1'><td>" . __s("Delivery location", "order") . ": </td>";
         echo "<td>";
         if ($canedit) {
             Location::Dropdown([
@@ -1080,7 +1080,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "</td>";
 
         /* payment */
-        echo "<td>" . __("Payment conditions", "order") . ": </td><td>";
+        echo "<td>" . __s("Payment conditions", "order") . ": </td><td>";
         if ($canedit) {
             PluginOrderOrderPayment::Dropdown([
                 'name'  => "plugin_order_orderpayments_id",
@@ -1096,7 +1096,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "</tr>";
 
         /* ecotax price */
-        echo "<tr class='tab_bg_1'><td>" . __("Eco-responsibility fees (tax free)", "order") . ": </td>";
+        echo "<tr class='tab_bg_1'><td>" . __s("Eco-responsibility fees (tax free)", "order") . ": </td>";
         echo "<td>";
         if ($canedit) {
             echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='ecotax_price' size='5'"
@@ -1107,7 +1107,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "</td>";
 
         /* port price */
-        echo "<td>" . __("Postage", "order") . ": </td>";
+        echo "<td>" . __s("Postage", "order") . ": </td>";
         echo "<td>";
         if ($canedit) {
             echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='port_price' size='5'"
@@ -1119,7 +1119,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "</tr>";
 
         /* TVA ecotax price */
-        echo "<tr class='tab_bg_1'><td>" . __("VAT", "order") . " " . __("Eco-responsibility fees", "order") . ": </td><td>";
+        echo "<tr class='tab_bg_1'><td>" . __s("VAT", "order") . " " . __s("Eco-responsibility fees", "order") . ": </td><td>";
         $PluginOrderConfig = new PluginOrderConfig();
         $default_taxes     = $PluginOrderConfig->getDefaultTaxes();
 
@@ -1139,7 +1139,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "</td>";
 
         /* tva port price */
-        echo "<td>" . __("VAT", "order") . " " . __("Postage", "order") . ": </td><td>";
+        echo "<td>" . __s("VAT", "order") . " " . __s("Postage", "order") . ": </td><td>";
         $PluginOrderConfig = new PluginOrderConfig();
         $default_taxes     = $PluginOrderConfig->getDefaultTaxes();
 
@@ -1150,7 +1150,7 @@ class PluginOrderOrder extends CommonDBTM
                 'name'                => "plugin_order_ordertaxes_id",
                 'value'               => $taxes,
                 'display_emptychoice' => true,
-                'emptylabel'          => __("No VAT", "order"),
+                'emptylabel'          => __s("No VAT", "order"),
             ]);
         } else {
             echo Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $taxes);
@@ -1159,7 +1159,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "</tr>";
 
         /* supplier of order */
-        echo "<tr class='tab_bg_1'><td>" . __("Supplier") . ": </td>";
+        echo "<tr class='tab_bg_1'><td>" . __s("Supplier") . ": </td>";
         echo "<td>";
         if ($canedit && !$this->checkIfDetailExists($ID)) {
             $rand = mt_rand();
@@ -1192,7 +1192,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "</td>";
 
         /* linked contact of the supplier of order */
-        echo "<td>" . __("Contact") . ": </td>";
+        echo "<td>" . __s("Contact") . ": </td>";
         echo "<td><span id='show_contacts_id'>";
         if ($canedit) {
             echo "<span id='show_contacts_id$rand'>";
@@ -1234,7 +1234,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __("Associable to a ticket") . "&nbsp;:</td><td>";
+        echo "<td>" . __s("Associable to a ticket") . "&nbsp;:</td><td>";
         if ($canedit) {
             Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
         } else {
@@ -1242,9 +1242,9 @@ class PluginOrderOrder extends CommonDBTM
         }
         echo "</td>";
         echo "<td>";
-        echo __("Estimated due date", "order") . ":";
+        echo __s("Estimated due date", "order") . ":";
         if ($this->isDelivered() && $this->fields['deliverydate']) {
-            echo "<br/>" . __("Delivery date") . ":";
+            echo "<br/>" . __s("Delivery date") . ":";
         }
         echo " </td><td>";
         if ($canedit) {
@@ -1258,7 +1258,7 @@ class PluginOrderOrder extends CommonDBTM
             echo Html::convDate($this->fields["duedate"]);
         }
         if ($this->shouldBeAlreadyDelivered()) {
-            echo "<br/><span class='red'>" . __("Due date overtaken", "order") . "</span>";
+            echo "<br/><span class='red'>" . __s("Due date overtaken", "order") . "</span>";
         }
         if ($this->isDelivered() && $this->fields['deliverydate']) {
             echo "<br/>" . Html::convDate($this->fields['deliverydate']);
@@ -1267,7 +1267,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __("Global discount to apply to items", 'order') . "&nbsp;:</td><td>";
+        echo "<td>" . __s("Global discount to apply to items", 'order') . "&nbsp;:</td><td>";
         if ($canedit) {
             echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='global_discount' size='5'"
             . " value=\"" . Html::formatNumber($this->fields["global_discount"], true) . "\" class='smalldecimal'>";
@@ -1285,7 +1285,7 @@ class PluginOrderOrder extends CommonDBTM
         if (!$config->isAccountSectionDisplayed()) {
             echo "<span style='display:none'>";
         }
-        echo __("Account section", "order") . " :";
+        echo __s("Account section", "order") . " :";
         if (!$config->isAccountSectionDisplayed()) {
             echo "</span>";
         }
@@ -1320,7 +1320,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "<tr class='tab_bg_1'>";
         echo "<td colspan='2' class='center'>" . $datestring;
         if (!$template && !empty($this->fields['template_name'])) {
-            echo "<span class='small_space'>(" . __("Template name") . "&nbsp;: "
+            echo "<span class='small_space'>(" . __s("Template name") . "&nbsp;: "
             . $this->fields['template_name'] . ")</span>";
         }
         echo "</td><td colspan='2'></td>";
@@ -1329,7 +1329,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "<tr class='tab_bg_1'>";
 
         //comments of order
-        echo "<td>" . __("Comments") . ":  </td>";
+        echo "<td>" . __s("Comments") . ":  </td>";
         echo "<td colspan='3' align='center'>";
         if ($canedit) {
             echo "<textarea cols='40' rows='3' name='comment' class='form-control'>" . $this->fields["comment"] . "</textarea>";
@@ -1339,9 +1339,9 @@ class PluginOrderOrder extends CommonDBTM
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<th colspan='2'>" . __("Actor") . "</th>";
+        echo "<th colspan='2'>" . __s("Actor") . "</th>";
         if ($ID > 0 && !$template) {
-            echo "<th colspan='2'>" . __("Cost") . "</th></tr>";
+            echo "<th colspan='2'>" . __s("Cost") . "</th></tr>";
         } else {
             echo "<th colspan='2'></th>";
         }
@@ -1350,7 +1350,7 @@ class PluginOrderOrder extends CommonDBTM
         echo "<tr class='tab_bg_1'>";
         echo "<td colspan='2'>";
         echo "<table class='format'>";
-        echo "<tr class='tab_bg_1'><td>" . __("Author") . ":</td><td style='width: 170px;'>";
+        echo "<tr class='tab_bg_1'><td>" . __s("Author") . ":</td><td style='width: 170px;'>";
         if ($canedit) {
             $value = $template == 'newcomp' ? Session::getLoginUserID() : $this->fields['users_id'];
             User::Dropdown([
@@ -1373,7 +1373,7 @@ class PluginOrderOrder extends CommonDBTM
             echo $output;
         }
         echo "</td>";
-        echo "<td>" . __("Author group", "order") . ":</td>";
+        echo "<td>" . __s("Author group", "order") . ":</td>";
         echo "<td style='width: 180px;'>";
         if ($canedit) {
             if (empty($ID) || $ID < 0) {
@@ -1391,7 +1391,7 @@ class PluginOrderOrder extends CommonDBTM
         }
         echo "</td></tr>";
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __("Recipient") . ":</td>";
+        echo "<td>" . __s("Recipient") . ":</td>";
         echo "<td style='width: 170px;'>";
         if ($canedit) {
             if (empty($ID) || $ID < 0) {
@@ -1421,7 +1421,7 @@ class PluginOrderOrder extends CommonDBTM
             echo $output;
         }
         echo "</td>";
-        echo "<td>" . __("Recipient group", "order") . ":</td>";
+        echo "<td>" . __s("Recipient group", "order") . ":</td>";
         echo "<td style='width: 180px;'>";
         if ($canedit) {
             if (empty($ID) || $ID < 0) {
@@ -1478,71 +1478,71 @@ class PluginOrderOrder extends CommonDBTM
 
             // Section Articles
             echo "<tr class='tab_bg_2'>";
-            echo "<th colspan='2' style='text-align: left; background-color: #e1e1e1;'>" . __("Articles", "order") . "</th>";
+            echo "<th colspan='2' style='text-align: left; background-color: #e1e1e1;'>" . __s("Articles", "order") . "</th>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<td style='padding-left: 20px;'>" . __("Price tax free", "order") . "</td>";
+            echo "<td style='padding-left: 20px;'>" . __s("Price tax free", "order") . "</td>";
             echo "<td><b>" . Html::formatNumber($prices["priceHT"]) . "</b></td>";
             echo "</tr>";
 
             // Section Ecotax
             echo "<tr class='tab_bg_2'>";
-            echo "<th colspan='2' style='text-align: left; background-color: #e1e1e1;'>" . __("Eco-responsibility fees", "order") . "</th>";
+            echo "<th colspan='2' style='text-align: left; background-color: #e1e1e1;'>" . __s("Eco-responsibility fees", "order") . "</th>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<td style='padding-left: 20px;'>" . __("Eco-responsibility fees (tax free)", "order") . "</td>";
+            echo "<td style='padding-left: 20px;'>" . __s("Eco-responsibility fees (tax free)", "order") . "</td>";
             echo "<td>" . Html::formatNumber($ecotaxHT) . "</td>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<td style='padding-left: 20px;'>" . __("VAT on Eco-responsibility fees", "order") . "</td>";
+            echo "<td style='padding-left: 20px;'>" . __s("VAT on Eco-responsibility fees", "order") . "</td>";
             echo "<td>" . Html::formatNumber($ecotaxTVA) . "</td>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<td style='padding-left: 20px;'>" . __("Eco-responsibility fees (ATI)", "order") . "</td>";
+            echo "<td style='padding-left: 20px;'>" . __s("Eco-responsibility fees (ATI)", "order") . "</td>";
             echo "<td><b>" . Html::formatNumber($ecotaxTTC) . "</b></td>";
             echo "</tr>";
 
             // Section Shipping
             echo "<tr class='tab_bg_2'>";
-            echo "<th colspan='2' style='text-align: left; background-color: #e1e1e1;'>" . __("Shipping", "order") . "</th>";
+            echo "<th colspan='2' style='text-align: left; background-color: #e1e1e1;'>" . __s("Shipping", "order") . "</th>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<td style='padding-left: 20px;'>" . __("Postage", "order") . "</td>";
+            echo "<td style='padding-left: 20px;'>" . __s("Postage", "order") . "</td>";
             echo "<td>" . Html::formatNumber($this->fields["port_price"]) . "</td>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<td style='padding-left: 20px;'>" . __("VAT on postage", "order") . "</td>";
+            echo "<td style='padding-left: 20px;'>" . __s("VAT on postage", "order") . "</td>";
             echo "<td>" . Html::formatNumber($postagewithTVA - $this->fields["port_price"]) . "</td>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<td style='padding-left: 20px;'>" . __("Postage (ATI)", "order") . "</td>";
+            echo "<td style='padding-left: 20px;'>" . __s("Postage (ATI)", "order") . "</td>";
             echo "<td><b>" . Html::formatNumber($postagewithTVA) . "</b></td>";
             echo "</tr>";
 
             // Section Totals
             echo "<tr class='tab_bg_2'>";
-            echo "<th colspan='2' style='text-align: left; background-color: #e1e1e1;'>" . __("Totals", "order") . "</th>";
+            echo "<th colspan='2' style='text-align: left; background-color: #e1e1e1;'>" . __s("Totals", "order") . "</th>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<td style='padding-left: 20px;'>" . __("Total tax free", "order") . "</td>";
+            echo "<td style='padding-left: 20px;'>" . __s("Total tax free", "order") . "</td>";
             echo "<td><b>" . Html::formatNumber($priceHTwithpostage + $ecotaxHT) . "</b></td>";
             echo "</tr>";
 
             echo "<tr>";
-            echo "<td style='padding-left: 20px;'>" . __("Total VAT", "order") . "</td>";
+            echo "<td style='padding-left: 20px;'>" . __s("Total VAT", "order") . "</td>";
             echo "<td><b>" . Html::formatNumber($total_tva) . "</b></td>";
             echo "</tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td style='padding-left: 20px; font-size: 1.1em;'><strong>" . __("Total price (ATI)", "order") . "</strong></td>";
+            echo "<td style='padding-left: 20px; font-size: 1.1em;'><strong>" . __s("Total price (ATI)", "order") . "</strong></td>";
             echo "<td style='font-size: 1.1em;'><strong>" . Html::formatNumber($total) . "</strong></td>";
             echo "</tr>";
 
@@ -1665,13 +1665,13 @@ class PluginOrderOrder extends CommonDBTM
         echo "<form method='post' name='form' action=\"" . Toolbox::getItemTypeFormURL('PluginOrderOrder') . "\">";
         echo "<div align='center'><table class='tab_cadre_fixe'>";
         echo "<tr class='tab_bg_2'><th colspan='3'>" .
-         __("Validation process", "order") . "</th></tr>";
+         __s("Validation process", "order") . "</th></tr>";
 
         if ($this->can($orders_id, READ) && $this->canDisplayValidationForm($orders_id)) {
             if ($this->checkIfDetailExists($orders_id)) {
                 echo "<tr class='tab_bg_1'>";
                 echo "<td valign='top' align='right'>";
-                echo __("Comments") . ":&nbsp;";
+                echo __s("Comments") . ":&nbsp;";
                 echo "</td>";
                 echo "<td valign='top' align='left'>";
                 echo "<textarea cols='40' rows='4' name='comment'></textarea>";
@@ -1684,36 +1684,36 @@ class PluginOrderOrder extends CommonDBTM
 
                 if ($this->canCancelOrder()) {
                     echo "<input type='submit' onclick=\"return confirm('"
-                    . __("Do you really want to cancel this order ? This option is irreversible !", "order")
-                    . "')\" name='cancel_order' value=\"" . __("Cancel order", "order") . "\" class='submit'>";
+                    . __s("Do you really want to cancel this order ? This option is irreversible !", "order")
+                    . "')\" name='cancel_order' value=\"" . __s("Cancel order", "order") . "\" class='submit'>";
                     $link = "<br><br>";
                 }
 
                 if ($this->canValidateOrder()) {
                     echo $link . "<input type='submit' name='validate' value=\""
-                    . __("Validate order", "order") . "\" class='submit'>";
+                    . __s("Validate order", "order") . "\" class='submit'>";
                     $link = "<br><br>";
                 }
 
                 if ($this->canCancelValidationRequest()) {
                     echo $link . "<input type='submit' onclick=\"return confirm('"
-                    . __("Do you want to cancel the validation approval ?", "order")
+                    . __s("Do you want to cancel the validation approval ?", "order")
                     . "')\" name='cancel_waiting_for_approval' value=\""
-                    . __("Cancel ask for validation", "order") . "\" class='submit'>";
+                    . __s("Cancel ask for validation", "order") . "\" class='submit'>";
                     $link = "<br><br>";
                 }
 
                 if ($this->canDoValidationRequest()) {
                     echo $link . "<input type='submit' name='waiting_for_approval' value=\""
-                    . __("Ask for validation", "order") . "\" class='submit'>";
+                    . __s("Ask for validation", "order") . "\" class='submit'>";
                     $link = "<br><br>";
                 }
 
                 if ($this->canUndoValidation()) {
                     echo $link . "<input type='submit' onclick=\"return confirm('"
-                    . __("Do you really want to edit the order ?", "order")
+                    . __s("Do you really want to edit the order ?", "order")
                     . "')\" name='undovalidation' value=\""
-                    . __("Edit order", "order") . "\" class='submit'>";
+                    . __s("Edit order", "order") . "\" class='submit'>";
                     $link = "<br><br>";
                 }
 
@@ -1721,7 +1721,7 @@ class PluginOrderOrder extends CommonDBTM
                 echo "</tr>";
             } else {
                 echo "<tr class='tab_bg_2 center'><td>"
-                . __("Thanks to add at least one equipment on your order.", "order") . "</td></tr>";
+                . __s("Thanks to add at least one equipment on your order.", "order") . "</td></tr>";
             }
         }
         echo "</table></div>";
@@ -1738,13 +1738,13 @@ class PluginOrderOrder extends CommonDBTM
         . "&display_type=" . Search::PDF_OUTPUT_LANDSCAPE . "' method=\"GET\" target='_blank'>";
         echo "<div align=\"center\">";
         echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . __("Order Generation", "order") . "</th></tr>";
+        echo "<tr><th colspan='2'>" . __s("Order Generation", "order") . "</th></tr>";
 
         if (PluginOrderPreference::atLeastOneTemplateExists()) {
             if ($this->getState() > PluginOrderOrderState::DRAFT || static::canGenerateWithoutValidation()) {
                 $template = PluginOrderPreference::checkPreferenceTemplateValue(Session::getLoginUserID());
                 echo "<tr class='tab_bg_1'>";
-                echo "<td>" . __("Use this model", "order") . "</td>";
+                echo "<td>" . __s("Use this model", "order") . "</td>";
                 echo "<td>";
                 PluginOrderPreference::dropdownFileTemplates($template);
                 echo "</td>";
@@ -1753,7 +1753,7 @@ class PluginOrderOrder extends CommonDBTM
                 if (PluginOrderPreference::atLeastOneSignatureExists()) {
                     echo "<tr class='tab_bg_1'>";
                     $signature = PluginOrderPreference::checkPreferenceSignatureValue(Session::getLoginUserID());
-                    echo "<td class='center'>" . __("Use this sign", "order") . "</td>";
+                    echo "<td class='center'>" . __s("Use this sign", "order") . "</td>";
                     echo "<td class='center' >";
                     PluginOrderPreference::dropdownFileSignatures($signature);
                     echo "</td>";
@@ -1764,7 +1764,7 @@ class PluginOrderOrder extends CommonDBTM
                 echo "<tr class='tab_bg_1'>";
                 echo "<td class='center' colspan='2'>";
                 echo Html::hidden('id', ['value' => $ID]);
-                echo "<input type='submit' value=\"" . __("Order Generation", "order") . "\" class='submit' >";
+                echo "<input type='submit' value=\"" . __s("Order Generation", "order") . "\" class='submit' >";
                 echo "</td>";
                 echo "</tr>";
             }
@@ -1772,7 +1772,7 @@ class PluginOrderOrder extends CommonDBTM
             echo "<tr class='tab_bg_1'>";
             echo "<td class='center'>";
             echo "<a href='" . $CFG_GLPI['root_doc'] . "/front/preference.php?forcetab=order_1'>"
-            . __("Thanks to select a model into your preferences", "order") . "</a>";
+            . __s("Thanks to select a model into your preferences", "order") . "</a>";
             echo "</td>";
             echo "</tr>";
         }
@@ -1826,9 +1826,9 @@ class PluginOrderOrder extends CommonDBTM
                 }
 
                 $values = [
-                    'title_order'           => __("Order number", "order"),
+                    'title_order'           => __s("Order number", "order"),
                     'num_order'             => $this->fields["num_order"],
-                    'title_invoice_address' => __("Invoice address", "order"),
+                    'title_invoice_address' => __s("Invoice address", "order"),
                     'comment_order'         => $this->fields["comment"],
                 ];
 
@@ -1836,7 +1836,7 @@ class PluginOrderOrder extends CommonDBTM
                 $entity->getFromDB($this->fields["entities_id"]);
                 $town   = '';
 
-                $name_entity = $this->fields["entities_id"] != 0 ? $entity->fields["name"] : __("Root entity");
+                $name_entity = $this->fields["entities_id"] != 0 ? $entity->fields["name"] : __s("Root entity");
 
                 $values['entity_name'] = $name_entity;
                 if ($entity->getFromDB($this->fields["entities_id"])) {
@@ -1859,7 +1859,7 @@ class PluginOrderOrder extends CommonDBTM
 
                 $location = new Location();
                 if ($location->getFromDB($this->fields["locations_id"])) {
-                    $values['title_delivery_address']   = __("Delivery address", "order");
+                    $values['title_delivery_address']   = __s("Delivery address", "order");
                     $values['comment_delivery_address'] = $location->fields['comment'];
                 }
 
@@ -1869,11 +1869,11 @@ class PluginOrderOrder extends CommonDBTM
                 $order_date = Html::convDate($this->fields["order_date"]);
                 $username   = getUserName(Session::getLoginUserID());
 
-                $values['title_date_order'] = $town . __("The", "order") . " ";
+                $values['title_date_order'] = $town . __s("The", "order") . " ";
                 $values['date_order']       = $order_date;
-                $values['title_sender']     = __("Issuer order", "order");
+                $values['title_sender']     = __s("Issuer order", "order");
                 $values['sender']           = $username;
-                $values['title_budget']     = __("Budget");
+                $values['title_budget']     = __s("Budget");
 
                 $budget = new Budget();
                 $values['budget'] = $budget->getFromDB($this->fields["budgets_id"]) ? $budget->fields['name'] : '';
@@ -1890,16 +1890,16 @@ class PluginOrderOrder extends CommonDBTM
                     );
                 }
 
-                $values['title_recipient']    = __("Recipient", "order");
+                $values['title_recipient']    = __s("Recipient", "order");
                 $values['recipient']          = $output;
-                $values['nb']                 = __("Quantity", "order");
-                $values['title_item']         = __("Designation", "order");
-                $values['title_ref']          = __("Reference");
-                $values['HTPrice_item']       = __("Unit price", "order");
-                $values['TVA_item']           = __("VAT", "order");
-                $values['title_discount']     = __("Discount rate", "order");
-                $values['HTPriceTotal_item']  = __("Sum tax free", "order");
-                $values['ATIPriceTotal_item'] = __("Price ATI", "order");
+                $values['nb']                 = __s("Quantity", "order");
+                $values['title_item']         = __s("Designation", "order");
+                $values['title_ref']          = __s("Reference");
+                $values['HTPrice_item']       = __s("Unit price", "order");
+                $values['TVA_item']           = __s("VAT", "order");
+                $values['title_discount']     = __s("Discount rate", "order");
+                $values['HTPriceTotal_item']  = __s("Sum tax free", "order");
+                $values['ATIPriceTotal_item'] = __s("Price ATI", "order");
 
                 $listeArticles = [];
 
@@ -2017,20 +2017,20 @@ class PluginOrderOrder extends CommonDBTM
 
                 $name = Dropdown::getDropdownName("glpi_plugin_order_orderpayments", $this->fields["plugin_order_orderpayments_id"]);
 
-                $values['title_totalht']      = __("Price tax free", "order");
+                $values['title_totalht']      = __s("Price tax free", "order");
                 $values['totalht']            = Html::formatNumber($prices['priceHT']);
-                $values['title_port']         = __("Price tax free with postage", "order");
+                $values['title_port']         = __s("Price tax free with postage", "order");
                 $values['totalht_port_price'] = Html::formatNumber($total_HT);
-                $values['title_price_port']   = __("Postage", "order");
+                $values['title_price_port']   = __s("Postage", "order");
                 $values['price_port_tva']     = " (" . Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $this->fields["plugin_order_ordertaxes_id"]) . "%)";
                 $values['port_price']         = Html::formatNumber($postagewithTVA);
-                $values['title_tva']          = __("VAT", "order");
+                $values['title_tva']          = __s("VAT", "order");
                 $values['totaltva']           = Html::formatNumber($total_TVA);
-                $values['title_totalttc']     = __("Price ATI", "order");
+                $values['title_totalttc']     = __s("Price ATI", "order");
                 $values['totalttc']           = Html::formatNumber($total_TTC);
-                $values['title_money']        = __("€", "order");
-                $values['title_sign']         = __("Signature of issuing order", "order");
-                $values['title_conditions']   = __("Payment conditions", "order");
+                $values['title_money']        = __s("€", "order");
+                $values['title_sign']         = __s("Signature of issuing order", "order");
+                $values['title_conditions']   = __s("Payment conditions", "order");
                 $values['payment_conditions'] = $name;
 
                 // Set variables in odt template
@@ -2122,16 +2122,16 @@ class PluginOrderOrder extends CommonDBTM
             $criteria_limited['LIMIT'] = (int) $_SESSION['glpilist_limit'];
             $result_limited = $DB->request($criteria_limited);
 
-            Html::printAjaxPager(__("Linked orders", "order"), $start, $nb);
+            Html::printAjaxPager(__s("Linked orders", "order"), $start, $nb);
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr>";
             echo "<th style='width:15%;'>" . _n("Action", "Actions", 2) . "</th>";
-            echo "<th>" . __("Name") . "</th>";
-            echo "<th>" . __("Order status", "order") . "</th>";
-            echo "<th>" . __("Entity") . "</th>";
-            echo "<th>" . __("Price tax free", "order") . "</th>";
-            echo "<th>" . __("Price ATI", "order") . "</th>";
+            echo "<th>" . __s("Name") . "</th>";
+            echo "<th>" . __s("Order status", "order") . "</th>";
+            echo "<th>" . __s("Entity") . "</th>";
+            echo "<th>" . __s("Price tax free", "order") . "</th>";
+            echo "<th>" . __s("Price ATI", "order") . "</th>";
             echo "</tr>";
 
             $total = 0;
@@ -2156,7 +2156,7 @@ class PluginOrderOrder extends CommonDBTM
                 echo "<tr class='tab_bg_1' align='center'>";
                 echo "<td>";
                 echo "<a href=\"" . $link . "?unlink_order=unlink_order&id=" . $data["id"] . "\">"
-                 . __("Unlink", "order") . "</a>";
+                 . __s("Unlink", "order") . "</a>";
                 echo "</td>";
                 echo "<td>";
 
@@ -2192,14 +2192,14 @@ class PluginOrderOrder extends CommonDBTM
 
             echo "<br><div class='center'>";
             echo "<table class='tab_cadre' width='15%'>";
-            echo "<tr class='tab_bg_2'><td>" . __("Budget already used") . ": </td>";
+            echo "<tr class='tab_bg_2'><td>" . __s("Budget already used") . ": </td>";
             echo "<td>";
             echo Html::formatNumber($total) . "</td>";
             echo "</tr>";
             echo "</table></div>";
         } else {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><td class='center'>" . __("No item to display") . "</td></tr>";
+            echo "<tr><td class='center'>" . __s("No item to display") . "</td></tr>";
             echo "</table>";
         }
     }
@@ -2317,12 +2317,12 @@ class PluginOrderOrder extends CommonDBTM
         switch ($type) {
             case PluginOrderOrder::ORDER_IS_OVER_BUDGET:
                 $message = "<h3><span class='red'>"
-                       . __("Total orders related with this budget is greater than its value.", "order")
+                       . __s("Total orders related with this budget is greater than its value.", "order")
                        . "</span></h3>";
                 break;
             case PluginOrderOrder::ORDER_IS_EQUAL_BUDGET:
                 $message = "<h3><span class='red'>"
-                       . __("Total orders related with this budget is equal to its value.", "order")
+                       . __s("Total orders related with this budget is equal to its value.", "order")
                        . "</span></h3>";
                 break;
         }
@@ -2373,7 +2373,7 @@ class PluginOrderOrder extends CommonDBTM
         $task->addVolume($nblate);
 
         if ($CFG_GLPI["use_notifications"]) {
-            $message = __("Order is late", "order");
+            $message = __s("Order is late", "order");
             $alert   = new Alert();
             $config  = PluginOrderConfig::getConfig();
 
@@ -2539,7 +2539,7 @@ class PluginOrderOrder extends CommonDBTM
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin && (Session::haveRight('transfer', READ) && Session::isMultiEntitiesMode())) {
-            $actions['PluginOrderOrder:transfert'] = __('Transfer');
+            $actions['PluginOrderOrder:transfert'] = __s('Transfer');
         }
 
         return $actions;
@@ -2563,7 +2563,7 @@ class PluginOrderOrder extends CommonDBTM
                         $item->update([
                             "id"          => $id,
                             "entities_id" => $entities_id,
-                            "update"      => __('Update'),
+                            "update"      => __s('Update'),
                         ]);
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                     }

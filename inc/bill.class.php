@@ -43,7 +43,7 @@ class PluginOrderBill extends CommonDropdown
 
     public static function getTypeName($nb = 0)
     {
-        return __("Bill", "order");
+        return __s("Bill", "order");
     }
 
 
@@ -59,7 +59,7 @@ class PluginOrderBill extends CommonDropdown
             !isset($input["number"])
             || $input["number"] == ''
         ) {
-            Session::addMessageAfterRedirect(__("A bill number is mandatory", "order"), false, ERROR);
+            Session::addMessageAfterRedirect(__s("A bill number is mandatory", "order"), false, ERROR);
             return [];
         }
         return $input;
@@ -71,12 +71,12 @@ class PluginOrderBill extends CommonDropdown
         return [
             [
                 'name'  => 'suppliers_id',
-                'label' => __("Supplier"),
+                'label' => __s("Supplier"),
                 'type'  => 'dropdownValue',
             ],
             [
                 'name'  => 'value',
-                'label' => __("Value"),
+                'label' => __s("Value"),
                 'type'  => 'text',
             ],
             [
@@ -87,32 +87,32 @@ class PluginOrderBill extends CommonDropdown
             ],
             [
                 'name'  => 'billdate',
-                'label' => __("Date"),
+                'label' => __s("Date"),
                 'type'  => 'date',
             ],
             [
                 'name'  => 'plugin_order_billtypes_id',
-                'label' => __("Type"),
+                'label' => __s("Type"),
                 'type'  => 'dropdownValue',
             ],
             [
                 'name'  => 'plugin_order_billstates_id',
-                'label' => __("Status"),
+                'label' => __s("Status"),
                 'type'  => 'dropdownValue',
             ],
             [
                 'name'  => 'plugin_order_orders_id',
-                'label' => __("Order", "order"),
+                'label' => __s("Order", "order"),
                 'type'  => 'dropdownValue',
             ],
             [
                 'name'  => 'users_id_validation',
-                'label' => __("Approver"),
+                'label' => __s("Approver"),
                 'type'  => 'UserDropdown',
             ],
             [
                 'name'  => 'validationdate',
-                'label' => __("Approval date"),
+                'label' => __s("Approval date"),
                 'type'  => 'date',
             ],
         ];
@@ -138,7 +138,7 @@ class PluginOrderBill extends CommonDropdown
 
         $tab[] = [
             'id'            => 'common',
-            'name'          => __('Bill', 'order'),
+            'name'          => __s('Bill', 'order'),
         ];
 
         $tab[] = [
@@ -153,7 +153,7 @@ class PluginOrderBill extends CommonDropdown
             'id'            => 2,
             'table'         => self::getTable(),
             'field'         => 'billdate',
-            'name'          => __('Date'),
+            'name'          => __s('Date'),
             'datatype'      => 'datetime',
         ];
 
@@ -161,7 +161,7 @@ class PluginOrderBill extends CommonDropdown
             'id'            => 3,
             'table'         => self::getTable(),
             'field'         => 'validationdate',
-            'name'          => __('Approval date'),
+            'name'          => __s('Approval date'),
             'datatype'      => 'datetime',
         ];
 
@@ -170,28 +170,28 @@ class PluginOrderBill extends CommonDropdown
             'table'         => User::getTable(),
             'field'         => 'name',
             'linkfield'     => 'users_id_validation',
-            'name'          => __('Approver'),
+            'name'          => __s('Approver'),
         ];
 
         $tab[] = [
             'id'            => 5,
             'table'         => PluginOrderBillType::getTable(),
             'field'         => 'name',
-            'name'          => __('Type'),
+            'name'          => __s('Type'),
         ];
 
         $tab[] = [
             'id'            => 6,
             'table'         => PluginOrderBillState::getTable(),
             'field'         => 'name',
-            'name'          => __('Status'),
+            'name'          => __s('Status'),
         ];
 
         $tab[] = [
             'id'            => 7,
             'table'         => Supplier::getTable(),
             'field'         => 'name',
-            'name'          => __('Supplier'),
+            'name'          => __s('Supplier'),
             'datatype'      => 'itemlink',
             'itemlink_type' => 'Supplier',
         ];
@@ -200,7 +200,7 @@ class PluginOrderBill extends CommonDropdown
             'id'            => 8,
             'table'         => PluginOrderOrder::getTable(),
             'field'         => 'name',
-            'name'          => __('Order', 'order'),
+            'name'          => __s('Order', 'order'),
             'datatype'      => 'itemlink',
             'itemlink_type' => 'PluginOrderOrder',
         ];
@@ -209,7 +209,7 @@ class PluginOrderBill extends CommonDropdown
             'id'            => 9,
             'table'         => self::getTable(),
             'field'         => 'name',
-            'name'          => __('Name'),
+            'name'          => __s('Name'),
             'datatype'      => 'itemlink',
         ];
 
@@ -217,7 +217,7 @@ class PluginOrderBill extends CommonDropdown
             'id'            => 16,
             'table'         => self::getTable(),
             'field'         => 'comment',
-            'name'          => __('Description'),
+            'name'          => __s('Description'),
             'datatype'      => 'text',
         ];
 
@@ -225,21 +225,21 @@ class PluginOrderBill extends CommonDropdown
             'id'            => 30,
             'table'         => self::getTable(),
             'field'         => 'id',
-            'name'          => __('ID'),
+            'name'          => __s('ID'),
         ];
 
         $tab[] = [
             'id'            => 80,
             'table'         => 'glpi_entities',
             'field'         => 'completename',
-            'name'          => __('Entity'),
+            'name'          => __s('Entity'),
         ];
 
         $tab[] = [
             'id'            => 86,
             'table'         => self::getTable(),
             'field'         => 'is_recursive',
-            'name'          => __('Child entities'),
+            'name'          => __s('Child entities'),
             'datatype'      => 'bool',
             'massiveaction' => false,
         ];
@@ -280,10 +280,10 @@ class PluginOrderBill extends CommonDropdown
             echo "</td></tr>";
         } else {
             echo "<tr>";
-            echo "<th>" . __("Type") . "</th>";
-            echo "<th>" . __("Entity") . "</th>";
-            echo "<th>" . __("Reference") . "</th>";
-            echo "<th>" . __("Status") . "</th>";
+            echo "<th>" . __s("Type") . "</th>";
+            echo "<th>" . __s("Entity") . "</th>";
+            echo "<th>" . __s("Reference") . "</th>";
+            echo "<th>" . __s("Status") . "</th>";
             echo "</tr>";
 
             foreach ($result as $data) {
@@ -367,7 +367,7 @@ class PluginOrderBill extends CommonDropdown
 
         echo "<div class='center'><table class='tab_cadre_fixe'>";
         if (count($result_ref) === 0) {
-            echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
+            echo "<tr><th>" . __s("No item to take delivery of", "order") . "</th></tr></table></div>";
         } else {
             $itemtype = $data_ref["itemtype"];
             $item     = getItemForItemtype($itemtype);
@@ -377,9 +377,9 @@ class PluginOrderBill extends CommonDropdown
             echo "<img alt='' name='generation_img$rand' src=\"" . $CFG_GLPI['root_doc'] . "/pics/plus.png\">";
             echo "</a>";
             echo "</li></ul></th>";
-            echo "<th>" . __("Type") . "</th>";
-            echo "<th>" . __("Manufacturer") . "</th>";
-            echo "<th>" . __("Product reference", "order") . "</th>";
+            echo "<th>" . __s("Type") . "</th>";
+            echo "<th>" . __s("Manufacturer") . "</th>";
+            echo "<th>" . __s("Product reference", "order") . "</th>";
             echo "</tr>";
 
             echo "<tr class='tab_bg_1 center'>";
@@ -406,11 +406,11 @@ class PluginOrderBill extends CommonDropdown
             echo "<table class='tab_cadre_fixe'>";
 
             echo "<th></th>";
-            echo "<th>" . __("Reference") . "</th>";
-            echo "<th>" . __("Type") . "</th>";
-            echo "<th>" . __("Model") . "</th>";
-            echo "<th>" . __("Bill", "order") . "</th>";
-            echo "<th>" . __("Bill status", "order") . "</th>";
+            echo "<th>" . __s("Reference") . "</th>";
+            echo "<th>" . __s("Type") . "</th>";
+            echo "<th>" . __s("Model") . "</th>";
+            echo "<th>" . __s("Bill", "order") . "</th>";
+            echo "<th>" . __s("Bill status", "order") . "</th>";
             echo "</tr>";
 
             $results = $order_item->queryBills($order->getID(), $data_ref['id'], $table);
@@ -486,11 +486,11 @@ class PluginOrderBill extends CommonDropdown
             echo "<table width='950px' class='tab_glpi'>";
             echo "<tr><td<i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></td><td class='center'>";
             echo "<a onclick= \"if ( markCheckboxes('bills_form$rand') ) "
-              . "return false;\" href='#'>" . __("Check all") . "</a></td>";
+              . "return false;\" href='#'>" . __s("Check all") . "</a></td>";
 
             echo "<td>/</td><td class='center'>";
             echo "<a onclick= \"if ( unMarkCheckboxes('bills_form$rand') ) "
-              . "return false;\" href='#'>" . __("Uncheck all") . "</a>";
+              . "return false;\" href='#'>" . __s("Uncheck all") . "</a>";
             echo "</td><td align='left' width='80%'>";
             echo Html::hidden('plugin_order_orders_id', ['value' => $order->getID()]);
             $order_item->dropdownBillItemsActions($order->getID());
@@ -653,7 +653,7 @@ class PluginOrderBill extends CommonDropdown
                     );
                 case self::class:
                     $ong[1] = self::createTabEntry(
-                        __("Orders", "order"),
+                        __s("Orders", "order"),
                         0,
                         null,
                         'ti ti-receipt-2',

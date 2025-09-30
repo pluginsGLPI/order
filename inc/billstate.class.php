@@ -40,7 +40,7 @@ class PluginOrderBillState extends CommonDropdown
 
     public static function getTypeName($nb = 0)
     {
-        return __("Bill status", "order");
+        return __s("Bill status", "order");
     }
 
 
@@ -48,7 +48,7 @@ class PluginOrderBillState extends CommonDropdown
     {
         if ($this->getID() <= self::PAID) {
             Session::addMessageAfterRedirect(
-                __("You cannot remove this status", "order") .
+                __s("You cannot remove this status", "order") .
                                           ": " . $this->fields['name'],
                 false,
                 ERROR,
@@ -62,8 +62,8 @@ class PluginOrderBillState extends CommonDropdown
 
     public static function getStates()
     {
-        return [self::NOTPAID => __("Being paid", "order"),
-            self::PAID    => __("Paid", "order"),
+        return [self::NOTPAID => __s("Being paid", "order"),
+            self::PAID    => __s("Paid", "order"),
         ];
     }
 
@@ -104,8 +104,8 @@ class PluginOrderBillState extends CommonDropdown
         if (countElementsInTable($table) < 2) {
             $state = new self();
             foreach (
-                [self::PAID     => __("Paid", "order"),
-                    self::NOTPAID  => __("Not paid", "order"),
+                [self::PAID     => __s("Paid", "order"),
+                    self::NOTPAID  => __s("Not paid", "order"),
                 ] as $id => $label
             ) {
                 $state->add(['id'   => $id,

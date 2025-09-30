@@ -37,7 +37,7 @@ class PluginOrderAccountSection extends CommonDropdown
     public static function getTypeName($nb = 0)
     {
 
-        return __("Account section", "order");
+        return __s("Account section", "order");
     }
 
     public static function install(Migration $migration)

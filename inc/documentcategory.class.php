@@ -34,7 +34,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
 {
     public static function getTypeName($nb = 0)
     {
-        return __("Document category", "order");
+        return __s("Document category", "order");
     }
 
 
@@ -43,7 +43,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
         $config = PluginOrderConfig::getConfig();
 
         if ($item->getType() == "DocumentCategory" && $config->canRenameDocuments()) {
-            return __("Orders", "order");
+            return __s("Orders", "order");
         }
 
         return '';
@@ -81,12 +81,12 @@ class PluginOrderDocumentCategory extends CommonDBTM
         Toolbox::getItemTypeFormURL($documentCategory->getType()) . "'>";
 
         echo "<div align='center'><table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . __('Document category prefix', 'order') . "</th></tr>";
+        echo "<tr><th colspan='2'>" . __s('Document category prefix', 'order') . "</th></tr>";
 
         echo "<tr class='tab_bg_1'>";
         // Dropdown group
         echo "<td>";
-        echo __('Document category prefix', 'order');
+        echo __s('Document category prefix', 'order');
         echo "</td>";
         echo "<td>";
         echo "<input type='text' name='documentcategories_prefix' value='" . $documentCategory->fields['documentcategories_prefix'] . "'>";

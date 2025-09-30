@@ -37,7 +37,7 @@ class PluginOrderOther extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return __("Other kind of items");
+        return __s("Other kind of items");
     }
 
 

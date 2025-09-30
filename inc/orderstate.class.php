@@ -46,7 +46,7 @@ class PluginOrderOrderState extends CommonDropdown
 
     public static function getTypeName($nb = 0)
     {
-        return __("Order status", "order");
+        return __s("Order status", "order");
     }
 
 
@@ -54,7 +54,7 @@ class PluginOrderOrderState extends CommonDropdown
     {
         if ($this->getID() <= self::CANCELED) {
             Session::addMessageAfterRedirect(
-                __("You cannot remove this status", "order") . ": "
+                __s("You cannot remove this status", "order") . ": "
                                           . $this->fields['name'],
                 false,
                 ERROR,
@@ -96,13 +96,13 @@ class PluginOrderOrderState extends CommonDropdown
         $state = new self();
         foreach (
             [
-                1 => __("Draft", "order"),
-                2 => __("Waiting for approval", "order"),
-                3 => __("Validated", "order"),
-                4 => __("Being delivered", "order"),
-                5 => __("Delivered", "order"),
-                6 => __("Canceled", "order"),
-                7 => __("Paid", "order"),
+                1 => __s("Draft", "order"),
+                2 => __s("Waiting for approval", "order"),
+                3 => __s("Validated", "order"),
+                4 => __s("Being delivered", "order"),
+                5 => __s("Delivered", "order"),
+                6 => __s("Canceled", "order"),
+                7 => __s("Paid", "order"),
             ] as $id => $label
         ) {
             if (!countElementsInTable($table, ['id' => $id])) {

@@ -41,7 +41,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
     public static function getTypeName($nb = 0)
     {
-        return __("Supplier quality", "order");
+        return __s("Supplier quality", "order");
     }
 
 
@@ -202,13 +202,13 @@ class PluginOrderSurveySupplier extends CommonDBChild
         echo "<table class='tab_cadre_fixe'>";
 
         echo "<tr>";
-        echo "<th colspan='4'>" . __("Supplier quality", "order") . "</th>";
+        echo "<th colspan='4'>" . __s("Supplier quality", "order") . "</th>";
         echo "</tr>";
         echo "<tr>";
-        echo "<th>" . __("Entity") . "</th>";
-        echo "<th>" . __("Order name", "order") . "</th>";
-        echo "<th>" . __("Note", "order") . "</th>";
-        echo "<th>" . __("Comment on survey", "order") . "</th>";
+        echo "<th>" . __s("Entity") . "</th>";
+        echo "<th>" . __s("Order name", "order") . "</th>";
+        echo "<th>" . __s("Note", "order") . "</th>";
+        echo "<th>" . __s("Comment on survey", "order") . "</th>";
         echo "</tr>";
 
         if ($nb !== 0) {
@@ -237,7 +237,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='2'></td>";
             echo "<td><div align='left'>" .
-              __("Administrative followup quality (contracts, bills, mail, etc.)", "order") .
+              __s("Administrative followup quality (contracts, bills, mail, etc.)", "order") .
               "</div></td>";
             echo "<td><div align='left'>" .
               Html::formatNumber($survey->getNotation($suppliers_id, "answer1")) .
@@ -246,14 +246,14 @@ class PluginOrderSurveySupplier extends CommonDBChild
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='2'></td>";
             echo "<td><div align='left'>" .
-              __("Commercial followup quality, visits, responseness", "order") . "</div></td>";
+              __s("Commercial followup quality, visits, responseness", "order") . "</div></td>";
             echo "<td><div align='left'>" .
               Html::formatNumber($survey->getNotation($suppliers_id, "answer2")) .
               "&nbsp;/ 5</div></td>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='2'></td>";
-            echo "<td><div align='left'>" . __("Contacts availability", "order") . "</div></td>";
+            echo "<td><div align='left'>" . __s("Contacts availability", "order") . "</div></td>";
             echo "<td><div align='left'>" .
               Html::formatNumber($survey->getNotation($suppliers_id, "answer3")) .
               "&nbsp;/ 5</div></td>";
@@ -261,14 +261,14 @@ class PluginOrderSurveySupplier extends CommonDBChild
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='2'></td>";
             echo "<td><div align='left'>" .
-              __("Quality of supplier intervention", "order") . "</div></td>";
+              __s("Quality of supplier intervention", "order") . "</div></td>";
             echo "<td><div align='left'>" .
               Html::formatNumber($survey->getNotation($suppliers_id, "answer4")) .
               "&nbsp;/ 5</div></td>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='2'></td>";
-            echo "<td><div align='left'>" . __("Reliability about annouced delays", "order") .
+            echo "<td><div align='left'>" . __s("Reliability about annouced delays", "order") .
               "</div></td>";
             echo "<td><div align='left'>" .
               Html::formatNumber($survey->getNotation($suppliers_id, "answer5")) .
@@ -280,7 +280,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
             echo "<tr class='tab_bg_1 b'>";
             echo "<td colspan='2'></td>";
-            echo "<td><div align='left'>" . __("Final supplier note", "order") . "</div></td>";
+            echo "<td><div align='left'>" . __s("Final supplier note", "order") . "</div></td>";
             echo "<td><div align='left'>" . Html::formatNumber($total / $nb_order) . "&nbsp;/ 5</div></td>";
             echo "</tr>";
         }
@@ -321,7 +321,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         echo Html::hidden('entities_id', ['value' => $order->getEntityID()]);
         echo Html::hidden('is_recursive', ['value' => (int) $order->isRecursive()]);
 
-        echo "<tr class='tab_bg_1'><td>" . __("Supplier") . ": </td><td>";
+        echo "<tr class='tab_bg_1'><td>" . __s("Supplier") . ": </td><td>";
         $suppliers_id = $order->fields["suppliers_id"];
         if ($ID > 0) {
             $suppliers_id = $this->fields["suppliers_id"];
@@ -334,45 +334,45 @@ class PluginOrderSurveySupplier extends CommonDBChild
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'><td>" .
-           __("Administrative followup quality (contracts, bills, mail, etc.)", "order") .
+           __s("Administrative followup quality (contracts, bills, mail, etc.)", "order") .
            ": </td><td>";
         $this->addNotation("answer1", $this->fields["answer1"]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'><td>" .
-           __("Commercial followup quality, visits, responseness", "order") . ": </td><td>";
+           __s("Commercial followup quality, visits, responseness", "order") . ": </td><td>";
         $this->addNotation("answer2", $this->fields["answer2"]);
         echo "</td>";
         echo "</tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . __("Contacts availability", "order") . ": </td><td>";
+        echo "<tr class='tab_bg_1'><td>" . __s("Contacts availability", "order") . ": </td><td>";
         $this->addNotation("answer3", $this->fields["answer3"]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'><td>" .
-           __("Quality of supplier intervention", "order") . ": </td><td>";
+           __s("Quality of supplier intervention", "order") . ": </td><td>";
         $this->addNotation("answer4", $this->fields["answer4"]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'><td>" .
-           __("Reliability about annouced delays", "order") . ": </td><td>";
+           __s("Reliability about annouced delays", "order") . ": </td><td>";
         $this->addNotation("answer5", $this->fields["answer5"]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'><td>";
         //comments of order
-        echo __("Comments") . ": </td>";
+        echo __s("Comments") . ": </td>";
         echo "<td>";
         echo "<textarea cols='80' rows='4' name='comment'>" . $this->fields["comment"] . "</textarea>";
         echo "</td>";
         echo "</tr>";
 
         if ($ID > 0) {
-            echo "<tr><th><div align='left'>" . __("Average mark up to 5 (X points / 5)", "order")
+            echo "<tr><th><div align='left'>" . __s("Average mark up to 5 (X points / 5)", "order")
             . ": </div></th><th><div align='left'>";
             $total = $this->getTotalNotation($this->fields["plugin_order_orders_id"]);
             echo Html::formatNumber($total) . " / 5";
@@ -396,7 +396,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $survey = new self();
 
         $table = self::getTable();
-        Session::initNavigateListItems(self::class, __("Order", "order") . " = " . $order->fields["name"]);
+        Session::initNavigateListItems(self::class, __s("Order", "order") . " = " . $order->fields["name"]);
 
         $candelete = $order->can($ID, DELETE);
         $criteria = [
@@ -411,11 +411,11 @@ class PluginOrderSurveySupplier extends CommonDBChild
         echo Html::hidden('plugin_order_orders_id', ['value' => $ID]);
         echo "<table class='tab_cadre_fixe'>";
 
-        echo "<tr><th colspan='5'>" . __("Supplier quality", "order") . "</th></tr>";
+        echo "<tr><th colspan='5'>" . __s("Supplier quality", "order") . "</th></tr>";
         echo "<tr><th>&nbsp;</th>";
-        echo "<th>" . __("Supplier") . "</th>";
-        echo "<th>" . __("Note", "order") . "</th>";
-        echo "<th>" . __("Comment on survey", "order") . "</th>";
+        echo "<th>" . __s("Supplier") . "</th>";
+        echo "<th>" . __s("Note", "order") . "</th>";
+        echo "<th>" . __s("Comment on survey", "order") . "</th>";
         echo "</tr>";
 
         if (count($iterator) > 0) {
@@ -465,10 +465,10 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 echo "<tr>";
                 echo "<td><i class='$arrow fa-flip-horizontal fa-lg mx-2'></i></td>";
                 echo "<td class='center' style='white-space:nowrap;'>";
-                echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\" href='#'>" . __('Check all') . "</a></td>";
+                echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\" href='#'>" . __s('Check all') . "</a></td>";
                 echo "<td>/</td>";
                 echo "<td class='center' style='white-space:nowrap;'>";
-                echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\" href='#'>" . __('Uncheck all') . "</a></td>";
+                echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\" href='#'>" . __s('Uncheck all') . "</a></td>";
                 echo "<td class='left' width='80%'>";
 
                 echo "<input type='submit' name='delete' ";
@@ -601,7 +601,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 $config->canUseSupplierSatisfaction()
                 && $item->getState() == PluginOrderOrderState::DELIVERED
             ) {
-                return __("Supplier quality", "order");
+                return __s("Supplier quality", "order");
             }
         }
         return '';

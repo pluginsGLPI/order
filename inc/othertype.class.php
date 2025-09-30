@@ -37,7 +37,7 @@ class PluginOrderOtherType extends CommonDropdown
 
     public static function getTypeName($nb = 0)
     {
-        return __("Other type of item", "order");
+        return __s("Other type of item", "order");
     }
 
 

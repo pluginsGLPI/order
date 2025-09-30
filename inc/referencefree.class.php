@@ -37,7 +37,7 @@ class PluginOrderReferenceFree extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return __("Reference free", "order");
+        return __s("Reference free", "order");
     }
 
     public static function install(Migration $migration)

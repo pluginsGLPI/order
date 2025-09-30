@@ -43,7 +43,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public static function getTypeName($nb = 0)
     {
-        return __("Supplier Detail", "order");
+        return __s("Supplier Detail", "order");
     }
 
     public static function getIcon()
@@ -58,14 +58,14 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
         $tab[] = [
             'id'            => 'common',
-            'name'          => __('Supplier Detail', 'order'),
+            'name'          => __s('Supplier Detail', 'order'),
         ];
 
         $tab[] = [
             'id'            => 1,
             'table'         => self::getTable(),
             'field'         => 'num_quote',
-            'name'          => __('Quote number', 'order'),
+            'name'          => __s('Quote number', 'order'),
             'datatype'      => 'text',
             'autocomplete'  => true,
         ];
@@ -74,7 +74,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
             'id'            => 2,
             'table'         => self::getTable(),
             'field'         => 'num_order',
-            'name'          => __('Order number'),
+            'name'          => __s('Order number'),
             'datatype'      => 'text',
             'autocomplete'  => true,
         ];
@@ -83,7 +83,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
             'id'            => 4,
             'table'         => 'glpi_suppliers',
             'field'         => 'name',
-            'name'          => __('Supplier'),
+            'name'          => __s('Supplier'),
             'datatype'      => 'itemlink',
             'itemlink_type' => 'Supplier',
             'forcegroupby'  => true,
@@ -93,14 +93,14 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
             'id'            => 30,
             'table'         => self::getTable(),
             'field'         => 'id',
-            'name'          => __('ID'),
+            'name'          => __s('ID'),
         ];
 
         $tab[] = [
             'id'            => 80,
             'table'         => 'glpi_entities',
             'field'         => 'completename',
-            'name'          => __('Entity'),
+            'name'          => __s('Entity'),
         ];
 
         return $tab;
@@ -167,7 +167,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         echo Html::hidden('is_recursive', ['value' => (int) $PluginOrderOrder->isRecursive()]);
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __("Supplier") . ": </td>";
+        echo "<td>" . __s("Supplier") . ": </td>";
         $supplier = $PluginOrderOrder->fields["suppliers_id"];
         if ($ID > 0) {
             $supplier = $this->fields["suppliers_id"];
@@ -181,7 +181,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         echo "</td>";
 
         /* number of quote */
-        echo "<td>" . __("Quote number", "order") . ": </td><td>";
+        echo "<td>" . __s("Quote number", "order") . ": </td><td>";
         echo Html::input(
             'num_quote',
             [
@@ -196,7 +196,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         echo "</td><td colspan='2'></td>";
 
         /* num order supplier */
-        echo "<td>" . __("Order number") . ": </td><td>";
+        echo "<td>" . __s("Order number") . ": </td><td>";
         echo Html::input(
             'num_order',
             [
@@ -221,7 +221,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
         Session::initNavigateListItems(
             self::class,
-            __("Order", "order") . " = " . $order->fields["name"],
+            __s("Order", "order") . " = " . $order->fields["name"],
         );
 
         $candelete = $order->can($ID, UPDATE);
@@ -239,12 +239,12 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
         if ($nb_elements > 0) {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='4'>" . __("Supplier Detail", "order") . "</th></tr>";
+            echo "<tr><th colspan='4'>" . __s("Supplier Detail", "order") . "</th></tr>";
             echo "<tr>";
             echo "<th>&nbsp;</th>";
-            echo "<th>" . __("Supplier") . "</th>";
-            echo "<th>" . __("Quote number", "order") . "</th>";
-            echo "<th>" . __("Order number") . "</th>";
+            echo "<th>" . __s("Supplier") . "</th>";
+            echo "<th>" . __s("Quote number", "order") . "</th>";
+            echo "<th>" . __s("Order number") . "</th>";
             echo "</tr>";
 
             $data = getAllDataFromTable($table, ['plugin_order_orders_id' => $ID]);
@@ -286,10 +286,10 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                 echo "<tr>";
                 echo "<td><i class='$arrow fa-flip-horizontal fa-lg mx-2'></i></td>";
                 echo "<td class='center' style='white-space:nowrap;'>";
-                echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\" href='#'>" . __('Check all') . "</a></td>";
+                echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\" href='#'>" . __s('Check all') . "</a></td>";
                 echo "<td>/</td>";
                 echo "<td class='center' style='white-space:nowrap;'>";
-                echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\" href='#'>" . __('Uncheck all') . "</a></td>";
+                echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\" href='#'>" . __s('Uncheck all') . "</a></td>";
                 echo "<td class='left' width='80%'>";
 
                 echo "<input type='submit' name='delete' ";
@@ -337,8 +337,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         echo "<br><div class='center'>";
         echo "<table class='tab_cadre_fixe'>";
         echo "<tr>";
-        echo "<th>" . __("Entity") . "</th>";
-        echo "<th>" . __("Delivery statistics", "order") . "</th>";
+        echo "<th>" . __s("Entity") . "</th>";
+        echo "<th>" . __s("Delivery statistics", "order") . "</th>";
         echo "</tr>";
 
         if ($nb !== 0) {
@@ -356,7 +356,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                         $deliverystates_id,
                     );
                 } else {
-                    $name = __("No specified status", "order");
+                    $name = __s("No specified status", "order");
                 }
                 echo "<td>" . $name . "&nbsp;:" . $ref . "</td>";
                 echo "</tr>";
@@ -496,12 +496,12 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
     {
         switch (get_class($item)) {
             case 'Supplier':
-                return [1 => __("Orders", "order")];
+                return [1 => __s("Orders", "order")];
             case 'PluginOrderOrder':
                 $config = PluginOrderConfig::getConfig();
                 if ($config->canUseSupplierInformations() && $item->fields['suppliers_id']) {
                     return self::createTabEntry(
-                        __("Supplier Detail", "order"),
+                        __s("Supplier Detail", "order"),
                         0,
                         null,
                         self::getIcon(),

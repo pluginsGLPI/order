@@ -68,7 +68,7 @@ class PluginOrderReference extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return __("Product reference", "order");
+        return __s("Product reference", "order");
     }
 
 
@@ -87,14 +87,14 @@ class PluginOrderReference extends CommonDBTM
 
         $tab[] = [
             'id'            => 'common',
-            'name'          => __('Product reference', 'order'),
+            'name'          => __s('Product reference', 'order'),
         ];
 
         $tab[] = [
             'id'            => 1,
             'table'         => self::getTable(),
             'field'         => 'name',
-            'name'          => __('Reference'),
+            'name'          => __s('Reference'),
             'datatype'      => 'itemlink',
             'checktype'     => 'text',
             'displaytype'   => 'text',
@@ -106,7 +106,7 @@ class PluginOrderReference extends CommonDBTM
             'id'            => 2,
             'table'         => self::getTable(),
             'field'         => 'comment',
-            'name'          => __('Comments'),
+            'name'          => __s('Comments'),
             'datatype'      => 'text',
             'checktype'     => 'text',
             'displaytype'   => 'multiline_text',
@@ -117,7 +117,7 @@ class PluginOrderReference extends CommonDBTM
             'id'            => 3,
             'table'         => self::getTable(),
             'field'         => 'itemtype',
-            'name'          => __('Item type'),
+            'name'          => __s('Item type'),
             'datatype'      => 'specific',
             'itemtype_list' => 'plugin_order_types',
             'checktype'     => 'itemtype',
@@ -130,7 +130,7 @@ class PluginOrderReference extends CommonDBTM
             'id'            => 4,
             'table'         => self::getTable(),
             'field'         => 'models_id',
-            'name'          => __('Model'),
+            'name'          => __s('Model'),
             'checktype'     => 'text',
             'displaytype'   => 'reference_model',
             'injectable'    => true,
@@ -143,7 +143,7 @@ class PluginOrderReference extends CommonDBTM
             'id'            => 5,
             'table'         => 'glpi_manufacturers',
             'field'         => 'name',
-            'name'          => __('Manufacturer'),
+            'name'          => __s('Manufacturer'),
             'datatype'      => 'dropdown',
             'checktype'     => 'text',
             'displaytype'   => 'dropdown',
@@ -154,7 +154,7 @@ class PluginOrderReference extends CommonDBTM
             'id'            => 6,
             'table'         => self::getTable(),
             'field'         => 'types_id',
-            'name'          => __('Type'),
+            'name'          => __s('Type'),
             'checktype'     => 'text',
             'injectable'    => true,
             'massiveaction' => false,
@@ -167,7 +167,7 @@ class PluginOrderReference extends CommonDBTM
             'id'            => 7,
             'table'         => self::getTable(),
             'field'         => 'templates_id',
-            'name'          => __('Template name'),
+            'name'          => __s('Template name'),
             'checktype'     => 'text',
             'displaytype'   => 'dropdown',
             'injectable'    => true,
@@ -180,7 +180,7 @@ class PluginOrderReference extends CommonDBTM
             'id'            => 8,
             'table'         => self::getTable(),
             'field'         => 'manufacturers_reference',
-            'name'          => __('Manufacturer reference', 'order'),
+            'name'          => __s('Manufacturer reference', 'order'),
             'autocomplete'  => true,
         ];
 
@@ -188,7 +188,7 @@ class PluginOrderReference extends CommonDBTM
             'id'            => 30,
             'table'         => self::getTable(),
             'field'         => 'id',
-            'name'          => __('ID'),
+            'name'          => __s('ID'),
             'injectable'    => false,
             'massiveaction' => false,
         ];
@@ -197,7 +197,7 @@ class PluginOrderReference extends CommonDBTM
             'id'            => 31,
             'table'         => self::getTable(),
             'field'         => 'is_active',
-            'name'          => __('Active'),
+            'name'          => __s('Active'),
             'datatype'      => 'bool',
             'checktype'     => 'bool',
             'displaytype'   => 'bool',
@@ -209,7 +209,7 @@ class PluginOrderReference extends CommonDBTM
             'id'            => 32,
             'table'         => 'glpi_plugin_order_references_suppliers',
             'field'         => 'price_taxfree',
-            'name'          => __('Unit price tax free', 'order'),
+            'name'          => __s('Unit price tax free', 'order'),
             'datatype'      => 'decimal',
             'forcegroupby'  => true,
             'usehaving'     => true,
@@ -221,7 +221,7 @@ class PluginOrderReference extends CommonDBTM
             'id'            => 33,
             'table'         => 'glpi_plugin_order_references_suppliers',
             'field'         => 'reference_code',
-            'name'          => __('Manufacturer\'s product reference', 'order'),
+            'name'          => __s('Manufacturer\'s product reference', 'order'),
             'forcegroupby'  => true,
             'usehaving'     => true,
             'massiveaction' => false,
@@ -232,7 +232,7 @@ class PluginOrderReference extends CommonDBTM
             'id'            => 34,
             'table'         => 'glpi_suppliers',
             'field'         => 'name',
-            'name'          => __('Supplier'),
+            'name'          => __s('Supplier'),
             'datatype'      => 'itemlink',
             'itemlink_type' => 'Supplier',
             'forcegroupby'  => true,
@@ -250,7 +250,7 @@ class PluginOrderReference extends CommonDBTM
             'id'            => 35,
             'table'         => self::getTable(),
             'field'         => 'date_mod',
-            'name'          => __('Last update'),
+            'name'          => __s('Last update'),
             'datatype'      => 'datetime',
             'massiveaction' => false,
         ];
@@ -259,7 +259,7 @@ class PluginOrderReference extends CommonDBTM
             'id'            => 80,
             'table'         => 'glpi_entities',
             'field'         => 'completename',
-            'name'          => __('Entity'),
+            'name'          => __s('Entity'),
             'datatype'      => 'dropdown',
             'injectable'    => false,
         ];
@@ -268,7 +268,7 @@ class PluginOrderReference extends CommonDBTM
             'id'            => 86,
             'table'         => self::getTable(),
             'field'         => 'is_recursive',
-            'name'          => __('Child entities'),
+            'name'          => __s('Child entities'),
             'datatype'      => 'bool',
             'checktype'     => 'text',
             'displaytype'   => 'dropdown',
@@ -332,12 +332,12 @@ class PluginOrderReference extends CommonDBTM
     public function prepareInputForAdd($input)
     {
         if (!isset($input["name"]) || $input["name"] == '') {
-            Session::addMessageAfterRedirect(__("Cannot create reference without a name", "order"), false, ERROR);
+            Session::addMessageAfterRedirect(__s("Cannot create reference without a name", "order"), false, ERROR);
             return false;
         }
 
         if (!$input["itemtype"]) {
-            Session::addMessageAfterRedirect(__("Cannot create reference without a type", "order"), false, ERROR);
+            Session::addMessageAfterRedirect(__s("Cannot create reference without a type", "order"), false, ERROR);
             return false;
         }
 
@@ -350,7 +350,7 @@ class PluginOrderReference extends CommonDBTM
                 ],
             )
         ) {
-            Session::addMessageAfterRedirect(__("A reference with the same name still exists", "order"), false, ERROR);
+            Session::addMessageAfterRedirect(__s("A reference with the same name still exists", "order"), false, ERROR);
             return false;
         }
 
@@ -367,7 +367,7 @@ class PluginOrderReference extends CommonDBTM
         if (!$this->referenceInUse()) {
             return true;
         } else {
-            Session::addMessageAfterRedirect(__("Reference(s) in use", "order"), true, ERROR);
+            Session::addMessageAfterRedirect(__s("Reference(s) in use", "order"), true, ERROR);
             return false;
         }
     }
@@ -419,7 +419,7 @@ class PluginOrderReference extends CommonDBTM
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (get_class($item) == self::class) {
-            return [1 => __("Linked orders", "order")];
+            return [1 => __s("Linked orders", "order")];
         }
         return '';
     }
@@ -652,7 +652,7 @@ class PluginOrderReference extends CommonDBTM
             $options['item'] = $this->fields["itemtype"];
         }
 
-        echo "<tr class='tab_bg_1'><td>" . __("Name") . "</td>";
+        echo "<tr class='tab_bg_1'><td>" . __s("Name") . "</td>";
         echo "<td>";
         echo Html::input(
             'name',
@@ -661,22 +661,22 @@ class PluginOrderReference extends CommonDBTM
             ],
         );
         echo "</td>";
-        echo "<td rowspan='2'>" . __("Comments") . "</td>";
+        echo "<td rowspan='2'>" . __s("Comments") . "</td>";
         echo "<td rowspan='2'>";
         echo "<textarea cols='50' rows='3' name='comment'>" . $this->fields["comment"] .
             "</textarea>";
         echo "</td></tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . __("Active") . "</td>";
+        echo "<tr class='tab_bg_1'><td>" . __s("Active") . "</td>";
         echo "<td>";
         Dropdown::showYesNo('is_active', $this->fields['is_active']);
         echo "</td></tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . __("Manufacturer") . "</td>";
+        echo "<tr class='tab_bg_1'><td>" . __s("Manufacturer") . "</td>";
         echo "<td>";
         Manufacturer::Dropdown(['value' => $this->fields['manufacturers_id']]);
         echo "</td>";
-        echo "<td>" . __("Manufacturer reference", "order") . "</td>";
+        echo "<td>" . __s("Manufacturer reference", "order") . "</td>";
         echo "<td>";
         echo Html::input(
             'manufacturers_reference',
@@ -689,7 +689,7 @@ class PluginOrderReference extends CommonDBTM
 
         echo "<tr class='tab_bg_1'>";
 
-        echo "<td>" . __("Item type");
+        echo "<td>" . __s("Item type");
         // Mandatory dropdown :
         if ($id <= 0) {
             echo " <span class='red'>*</span>";
@@ -712,7 +712,7 @@ class PluginOrderReference extends CommonDBTM
         }
         echo "</td>";
 
-        echo "<td>" . __("Type") . "</td>";
+        echo "<td>" . __s("Type") . "</td>";
         echo "<td>";
         echo "<span id='show_types_id'>";
         if ($options['item']) {
@@ -731,7 +731,7 @@ class PluginOrderReference extends CommonDBTM
         echo "</span>";
         echo "</td></tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . __("Model") . "</td>";
+        echo "<tr class='tab_bg_1'><td>" . __s("Model") . "</td>";
         echo "<td>";
         echo "<span id='show_models_id'>";
         if ($options['item'] && class_exists($itemtypeclass)) {
@@ -743,7 +743,7 @@ class PluginOrderReference extends CommonDBTM
         echo "</span>";
         echo "</td>";
 
-        echo "<td>" . __("Template name") . "</td>";
+        echo "<td>" . __s("Template name") . "</td>";
         echo "<td>";
         echo "<span id='show_templates_id'>";
         if (
@@ -760,13 +760,13 @@ class PluginOrderReference extends CommonDBTM
         echo "</span>";
         echo "</td></tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . __("Last update") . "</td>";
+        echo "<tr class='tab_bg_1'><td>" . __s("Last update") . "</td>";
         echo "<td>";
         echo Html::convDateTime($this->fields["date_mod"]);
         echo "</td>";
         echo "<td colspan='2'></td></tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . __("Eco-responsibility fees", 'order') . "</td>";
+        echo "<tr class='tab_bg_1'><td>" . __s("Eco-responsibility fees", 'order') . "</td>";
         echo "<td>";
         echo Html::input(
             'ecotax_price',
@@ -893,11 +893,11 @@ class PluginOrderReference extends CommonDBTM
             $start = $_REQUEST["start"] ?? 0;
             $criteria['START'] = intval($start);
             $criteria['LIMIT'] = intval($_SESSION['glpilist_limit']);
-            Html::printAjaxPager(__("Linked orders", "order"), $start, $nb);
+            Html::printAjaxPager(__s("Linked orders", "order"), $start, $nb);
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr>";
-            echo "<th>" . __("Name") . "</a></th>";
-            echo "<th>" . __("Entity") . "</th>";
+            echo "<th>" . __s("Name") . "</a></th>";
+            echo "<th>" . __s("Entity") . "</th>";
             echo "</tr>";
             foreach ($DB->request($criteria) as $data) {
                 echo "<tr class='tab_bg_1' align='center'>";
@@ -915,7 +915,7 @@ class PluginOrderReference extends CommonDBTM
             echo "</table>";
         } else {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><td class='center'>" . __("No item to display") . "</td></tr>";
+            echo "<tr class='tab_bg_1'><td class='center'>" . __s("No item to display") . "</td></tr>";
             echo "</table>";
         }
 
@@ -977,7 +977,7 @@ class PluginOrderReference extends CommonDBTM
 
         $target = clone $source;
         unset($target->fields['id']);
-        $target->fields['name'] = __("Copy of", "order") . ' ' . $target->fields['name'];
+        $target->fields['name'] = __s("Copy of", "order") . ' ' . $target->fields['name'];
         $newID = $this->add($target->fields);
 
         foreach (
@@ -1037,9 +1037,9 @@ class PluginOrderReference extends CommonDBTM
                 Session::haveRight('transfer', READ)
                 && Session::isMultiEntitiesMode()
             ) {
-                $actions['PluginOrderReference:transfert'] = __('Transfer');
+                $actions['PluginOrderReference:transfert'] = __s('Transfer');
             }
-            $actions['PluginOrderReference:copy_reference'] = __("Copy reference", "order");
+            $actions['PluginOrderReference:copy_reference'] = __s("Copy reference", "order");
         }
 
         return $actions;
@@ -1063,7 +1063,7 @@ class PluginOrderReference extends CommonDBTM
                         $item->update([
                             "id" => $id,
                             "entities_id" => $entities_id,
-                            "update" => __('Update'),
+                            "update" => __s('Update'),
                         ]);
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                     }

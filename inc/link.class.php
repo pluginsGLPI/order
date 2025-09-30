@@ -45,7 +45,7 @@ class PluginOrderLink extends CommonDBChild
 
     public static function getTypeName($nb = 0)
     {
-        return __("Generation", "order");
+        return __s("Generation", "order");
     }
 
 
@@ -361,16 +361,16 @@ class PluginOrderLink extends CommonDBChild
 
         $columns = [];
         if ($itemtype != 'SoftwareLicense') {
-            $columns['id_showed'] = __("ID");
+            $columns['id_showed'] = __s("ID");
         } else {
-            $columns['quantity'] = __("Quantity", "order");
+            $columns['quantity'] = __s("Quantity", "order");
         }
-        $columns['reference'] = __("Reference");
-        $columns['status'] = __("Status");
-        $columns['entity'] = __("Entity");
-        $columns['delivery_date'] = __("Delivery date");
+        $columns['reference'] = __s("Reference");
+        $columns['status'] = __s("Status");
+        $columns['entity'] = __s("Entity");
+        $columns['delivery_date'] = __s("Delivery date");
         $columns['associated_item'] = _n("Associated item", "Associated items", 2);
-        $columns['serial_number'] = __("Serial number");
+        $columns['serial_number'] = __s("Serial number");
 
         // Prepare entries for the Twig template
         $entries = [];
@@ -502,10 +502,7 @@ class PluginOrderLink extends CommonDBChild
             'WHERE'  => ['id' => $items_id],
         ]);
         $data = $result->current();
-        if (isset($data['serial'])) {
-            return $data['serial'];
-        }
-        return $data['otherserial'] ?? '';
+        return $data['serial'] ?? $data['otherserial'] ?? '';
     }
 
     public function getForbiddenStandardMassiveAction()
@@ -523,10 +520,10 @@ class PluginOrderLink extends CommonDBChild
         $actions = parent::getSpecificMassiveActions($checkitem);
         $sep     = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
 
-        $actions[$sep . 'generation']       = __("Generate item", "order");
-        $actions[$sep . 'createLink']       = __("Link to an existing item", "order");
-        $actions[$sep . 'deleteLink']       = __("Delete item link", "order");
-        $actions[$sep . 'cancelReceipt']    = __("Cancel reception", "order");
+        $actions[$sep . 'generation']       = __s("Generate item", "order");
+        $actions[$sep . 'createLink']       = __s("Link to an existing item", "order");
+        $actions[$sep . 'deleteLink']       = __s("Delete item link", "order");
+        $actions[$sep . 'cancelReceipt']    = __s("Cancel reception", "order");
 
         return $actions;
     }
@@ -609,7 +606,7 @@ class PluginOrderLink extends CommonDBChild
 
             case 'createLink':
                 if (count($ids) > 1) {
-                    $ma->addMessage(__("Cannot link several items to one detail line", "order"));
+                    $ma->addMessage(__s("Cannot link several items to one detail line", "order"));
                     foreach ($ids as $id) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                     }
@@ -620,7 +617,7 @@ class PluginOrderLink extends CommonDBChild
                 foreach ($ma->getItems()[self::class] as $key => $val) {
                     $order_item->getFromDB($val);
                     if ($order_item->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
-                        $ma->addMessage(__("Cannot link items not delivered", "order"));
+                        $ma->addMessage(__s("Cannot link items not delivered", "order"));
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                     } else {
                         $link->createLinkWithItem(
@@ -650,7 +647,7 @@ class PluginOrderLink extends CommonDBChild
                     $order_item = new PluginOrderOrder_Item();
                     $order_item->getFromDB($val);
                     if ($order_item->fields["items_id"] != 0) {
-                        $ma->addMessage(__("Unable to cancel reception when items are already linked, please unlink them before trying again.", "order"));
+                        $ma->addMessage(__s("Unable to cancel reception when items are already linked, please unlink them before trying again.", "order"));
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                     } elseif (!$link->cancelReception($key)) {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
@@ -680,7 +677,7 @@ class PluginOrderLink extends CommonDBChild
     public function getReceptionItemName($items_id, $itemtype)
     {
         if ($items_id == 0) {
-            return (__("No associated item", "order"));
+            return (__s("No associated item", "order"));
         } else {
             switch ($itemtype) {
                 case 'ConsumableItem':
@@ -920,7 +917,7 @@ class PluginOrderLink extends CommonDBChild
 
                     if ($history) {
                         $order     = new PluginOrderOrder();
-                        $new_value = __("Item linked to order", "order") . ' : ' . $lic->getField("name");
+                        $new_value = __s("Item linked to order", "order") . ' : ' . $lic->getField("name");
                         $order->addHistory('PluginOrderOrder', '', $new_value, $plugin_order_orders_id);
                     }
                 }
@@ -1000,7 +997,7 @@ class PluginOrderLink extends CommonDBChild
                         $item  = getItemForItemtype($itemtype);
                         $item->getFromDB($items_id);
 
-                        $new_value = __("Item linked to order", "order") . ' : ' . $item->getField("name");
+                        $new_value = __s("Item linked to order", "order") . ' : ' . $item->getField("name");
                         $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
                     }
                 }
@@ -1008,13 +1005,13 @@ class PluginOrderLink extends CommonDBChild
             if ($history) {
                 $order = new PluginOrderOrder();
                 $order->getFromDB($detail->fields["plugin_order_orders_id"]);
-                $new_value = __("Item linked to order", "order") . ' : ' . $order->fields["name"];
+                $new_value = __s("Item linked to order", "order") . ' : ' . $order->fields["name"];
                 $order->addHistory($itemtype, '', $new_value, $items_id);
             }
 
-            Session::addMessageAfterRedirect(__("Item linked to order", "order"), true);
+            Session::addMessageAfterRedirect(__s("Item linked to order", "order"), true);
         } else {
-            Session::addMessageAfterRedirect(__("Item already linked to another one", "order"), true, ERROR);
+            Session::addMessageAfterRedirect(__s("Item already linked to another one", "order"), true, ERROR);
         }
     }
 
@@ -1054,12 +1051,12 @@ class PluginOrderLink extends CommonDBChild
 
                 $order = new PluginOrderOrder();
                 $order->getFromDB($detail->fields["plugin_order_orders_id"]);
-                $new_value = __("Item unlink form order", "order") . ' : ' . $order->fields["name"];
+                $new_value = __s("Item unlink form order", "order") . ' : ' . $order->fields["name"];
                 $order->addHistory($itemtype, '', $new_value, $license);
 
                 $item = getItemForItemtype($itemtype);
                 $item->getFromDB($license);
-                $new_value = __("Item unlink form order", "order") . ' : ' . $item->getField("name");
+                $new_value = __s("Item unlink form order", "order") . ' : ' . $item->getField("name");
                 $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
             }
         } else {
@@ -1077,15 +1074,15 @@ class PluginOrderLink extends CommonDBChild
                 $input["items_id"] = 0;
                 $detail->update($input);
             } else {
-                Session::addMessageAfterRedirect(__("One or several selected rows haven't linked items", "order"), true, ERROR);
+                Session::addMessageAfterRedirect(__s("One or several selected rows haven't linked items", "order"), true, ERROR);
             }
 
-            $new_value = __("Item unlink form order", "order") . ' : ' . $order->fields["name"];
+            $new_value = __s("Item unlink form order", "order") . ' : ' . $order->fields["name"];
             $order->addHistory($itemtype, '', $new_value, $items_id);
 
             $item = getItemForItemtype($itemtype);
             $item->getFromDB($items_id);
-            $new_value = __("Item unlink form order", "order") . ' : ' . $item->getField("name");
+            $new_value = __s("Item unlink form order", "order") . ' : ' . $item->getField("name");
             $order->addHistory('PluginOrderOrder', '', $new_value, $order->fields["id"]);
         }
     }
@@ -1272,18 +1269,18 @@ class PluginOrderLink extends CommonDBChild
             );
 
             //Add item's history
-            $new_value = __("Item generated by using order", "order") . ' : ' . $order->fields["name"];
+            $new_value = __s("Item generated by using order", "order") . ' : ' . $order->fields["name"];
             $order->addHistory($add_item["itemtype"], '', $new_value, $newID);
 
             //Add order's history
-            $new_value  = __("Item generated by using order", "order") . ' : ';
+            $new_value  = __s("Item generated by using order", "order") . ' : ';
             $new_value .= $item->getTypeName() . " -> " . $item->getField("name");
             $order->addHistory('PluginOrderOrder', '', $new_value, $params["plugin_order_orders_id"]);
 
             //Copy order documents if needed
             self::copyDocuments($add_item['itemtype'], $newID, $params["plugin_order_orders_id"], $entity);
 
-            Session::addMessageAfterRedirect(__("Item successfully selected", "order"), true);
+            Session::addMessageAfterRedirect(__s("Item successfully selected", "order"), true);
         }
 
         return $newIDs;

@@ -43,14 +43,14 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
 
     public static function getTypeName($nb = 0)
     {
-        return __("Supplier for the reference", "order");
+        return __s("Supplier for the reference", "order");
     }
 
     protected function computeFriendlyName()
     {
         $ref = new PluginOrderReference();
         $ref->getFromDB($this->fields['plugin_order_references_id']);
-        return sprintf(__('Supplier for the reference "%1$s"'), $ref->getName());
+        return sprintf(__s('Supplier for the reference "%1$s"'), $ref->getName());
     }
 
 
@@ -86,14 +86,14 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
 
         $tab[] = [
             'id'            => 'common',
-            'name'          => __('Supplier for the reference', 'order'),
+            'name'          => __s('Supplier for the reference', 'order'),
         ];
 
         $tab[] = [
             'id'            => 1,
             'table'         => self::getTable(),
             'field'         => 'reference_code',
-            'name'          => __('Manufacturer\'s product reference', 'order'),
+            'name'          => __s('Manufacturer\'s product reference', 'order'),
             'datatype'      => 'text',
             'autocomplete'  => true,
         ];
@@ -102,7 +102,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             'id'            => 2,
             'table'         => self::getTable(),
             'field'         => 'price_taxfree',
-            'name'          => __('Unit price tax free', 'order'),
+            'name'          => __s('Unit price tax free', 'order'),
             'datatype'      => 'decimal',
         ];
 
@@ -110,7 +110,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             'id'            => 3,
             'table'         => 'glpi_suppliers',
             'field'         => 'name',
-            'name'          => __('Supplier'),
+            'name'          => __s('Supplier'),
             'datatype'      => 'itemlink',
             'itemlink_type' => 'Supplier',
             'forcegroupby'  => true,
@@ -120,14 +120,14 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             'id'            => 30,
             'table'         => self::getTable(),
             'field'         => 'id',
-            'name'          => __('ID'),
+            'name'          => __s('ID'),
         ];
 
         $tab[] = [
             'id'            => 80,
             'table'         => 'glpi_entities',
             'field'         => 'completename',
-            'name'          => __('Entity'),
+            'name'          => __s('Entity'),
         ];
 
         return $tab;
@@ -162,10 +162,10 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (get_class($item) == self::class) {
-            return [1 => __("Main")];
+            return [1 => __s("Main")];
         } elseif ($item instanceof PluginOrderReference) {
             return self::createTabEntry(
-                __("Supplier Detail", "order"),
+                __s("Supplier Detail", "order"),
                 0,
                 null,
                 self::getIcon(),
@@ -213,7 +213,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         echo Html::hidden('is_recursive', ['value' => (int) $PluginOrderReference->isRecursive()]);
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __("Supplier") . ": </td>";
+        echo "<td>" . __s("Supplier") . ": </td>";
         echo "<td>";
 
         if ($ID > 0) {
@@ -242,7 +242,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         }
         echo "</td>";
 
-        echo "<td>" . __("Manufacturer's product reference", "order") . ": </td>";
+        echo "<td>" . __s("Manufacturer's product reference", "order") . ": </td>";
         echo "<td>";
         echo Html::input(
             'reference_code',
@@ -256,7 +256,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
 
         echo "<tr class='tab_bg_1'>";
 
-        echo "<td>" . __("Unit price tax free", "order") . ": </td>";
+        echo "<td>" . __s("Unit price tax free", "order") . ": </td>";
         echo "<td>";
         echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='price_taxfree' value=\""
         . Html::formatNumber($this->fields["price_taxfree"], true) . "\" class='decimal'>";
@@ -284,7 +284,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         $target = Toolbox::getItemTypeFormURL(self::class);
         Session::initNavigateListItems(
             $this->getType(),
-            __("Product reference", "order") . " = " . $ref->fields["name"],
+            __s("Product reference", "order") . " = " . $ref->fields["name"],
         );
 
         $candelete = $ref->can($ID, DELETE);
@@ -306,11 +306,11 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         echo Html::hidden('plugin_order_references_id', ['value' => $ID]);
         echo "<table class='tab_cadre_fixe'>";
 
-        echo "<tr><th colspan='5'>" . __("Supplier Detail", "order") . "</th></tr>";
+        echo "<tr><th colspan='5'>" . __s("Supplier Detail", "order") . "</th></tr>";
         echo "<tr><th>&nbsp;</th>";
-        echo "<th>" . __("Supplier") . "</th>";
-        echo "<th>" . __("Product reference", "order") . "</th>";
-        echo "<th>" . __("Unit price tax free", "order") . "</th>";
+        echo "<th>" . __s("Supplier") . "</th>";
+        echo "<th>" . __s("Product reference", "order") . "</th>";
+        echo "<th>" . __s("Unit price tax free", "order") . "</th>";
         echo "</tr>";
 
         if (count($result) > 0) {
@@ -358,12 +358,12 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 echo "<table width='900px' class='tab_glpi'>";
                 echo "<tr><td><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></td>";
                 echo "<td class='center'><a onclick= \"if ( markCheckboxes('show_supplierref$rand') ) "
-                . "return false;\" href='#'>" . __("Check all") . "</a></td>";
+                . "return false;\" href='#'>" . __s("Check all") . "</a></td>";
 
                 echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('show_supplierref$rand') ) "
-                . "return false;\" href='#'>" . __("Uncheck all") . "</a>";
+                . "return false;\" href='#'>" . __s("Uncheck all") . "</a>";
                 echo "</td><td align='left' width='80%'>";
-                echo "<input type='submit' name='delete' value=\"" . __("Delete permanently")
+                echo "<input type='submit' name='delete' value=\"" . __s("Delete permanently")
                 . "\" class='submit' >";
                 echo "</td>";
                 echo "</table>";
@@ -566,16 +566,16 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             $criteria_limit['LIMIT'] = (int) $_SESSION['glpilist_limit'];
             $result_limited = $DB->request($criteria_limit);
 
-            Html::printAjaxPager(__("List references", "order"), $start, $nb);
+            Html::printAjaxPager(__s("List references", "order"), $start, $nb);
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr>";
-            echo "<th>" . __("Entity") . "</th>";
-            echo "<th>" . __("Manufacturer") . "</th>";
-            echo "<th>" . __("Product reference", "order") . "</th>";
-            echo "<th>" . __("Reference") . "</th>";
-            echo "<th>" . __("Product reference", "order") . "</th>";
-            echo "<th>" . __("Unit price tax free", "order") . "</th></tr>";
+            echo "<th>" . __s("Entity") . "</th>";
+            echo "<th>" . __s("Manufacturer") . "</th>";
+            echo "<th>" . __s("Product reference", "order") . "</th>";
+            echo "<th>" . __s("Reference") . "</th>";
+            echo "<th>" . __s("Product reference", "order") . "</th>";
+            echo "<th>" . __s("Unit price tax free", "order") . "</th></tr>";
 
             foreach ($result_limited as $data) {
                 echo "<tr class='tab_bg_1' align='center'>";

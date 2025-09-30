@@ -34,7 +34,7 @@ class PluginOrderDeliveryState extends CommonDropdown
 {
     public static function getTypeName($nb = 0)
     {
-        return __("Delivery status", "order");
+        return __s("Delivery status", "order");
     }
 
 

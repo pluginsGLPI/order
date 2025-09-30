@@ -32,7 +32,7 @@ class PluginOrderMenu extends CommonGLPI
 {
     public static function getTypeName($nb = 0)
     {
-        return __("Orders", "order");
+        return __s("Orders", "order");
     }
 
 

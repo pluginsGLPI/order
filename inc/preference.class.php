@@ -177,12 +177,12 @@ class PluginOrderPreference extends CommonDBTM
         echo "<form method='post' action='" . Toolbox::getItemTypeFormURL(self::class) . "'><div align='center'>";
         echo "<table class='tab_cadre_fixe' cellpadding='5'>";
         echo "<tr><th colspan='2'>" . $version['name'] . " - " . $version['version'] . "</th></tr>";
-        echo "<tr class='tab_bg_2'><td align='center'>" . __("Use this model", "order") . "</td>";
+        echo "<tr class='tab_bg_2'><td align='center'>" . __s("Use this model", "order") . "</td>";
         echo "<td align='center'>";
         self::dropdownFileTemplates($this->fields["template"]);
         echo "</td></tr>";
 
-        echo "<tr class='tab_bg_2'><td align='center'>" . __("Use this sign", "order") . "</td>";
+        echo "<tr class='tab_bg_2'><td align='center'>" . __s("Use this sign", "order") . "</td>";
         echo "<td align='center'>";
         self::dropdownFileSignatures($this->fields["sign"]);
         echo "</td></tr>";

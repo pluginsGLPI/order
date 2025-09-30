@@ -37,7 +37,7 @@ class PluginOrderBillType extends CommonDropdown
 
     public static function getTypeName($nb = 0)
     {
-        return __("Bill type", "order");
+        return __s("Bill type", "order");
     }
 
 

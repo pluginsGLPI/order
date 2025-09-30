@@ -37,7 +37,7 @@ class PluginOrderAnalyticNature extends CommonDropdown
     public static function getTypeName($nb = 0)
     {
 
-        return __("Analytic nature", "order");
+        return __s("Analytic nature", "order");
     }
 
     public static function install(Migration $migration)

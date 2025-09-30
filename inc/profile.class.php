@@ -105,7 +105,7 @@ class PluginOrderProfile extends CommonDBTM
         $profile->displayRightsChoiceMatrix($rights, [
             'canedit'       => $canedit,
             'default_class' => 'tab_bg_2',
-            'title'         => __('Orders', 'order'),
+            'title'         => __s('Orders', 'order'),
         ]);
 
         if ($canedit) {
@@ -189,15 +189,15 @@ class PluginOrderProfile extends CommonDBTM
 
         $rights = [[
             'itemtype' => 'PluginOrderOrder',
-            'label'    => __("Orders", "order"),
+            'label'    => __s("Orders", "order"),
             'field'    => 'plugin_order_order',
         ], [
             'itemtype' => 'PluginOrderReference',
-            'label'    => __("Products references", "order"),
+            'label'    => __s("Products references", "order"),
             'field'    => 'plugin_order_reference',
         ], [
             'itemtype' => 'PluginOrderBill',
-            'label'    => __("Bills", "order"),
+            'label'    => __s("Bills", "order"),
             'field'    => 'plugin_order_bill',
         ],
         ];

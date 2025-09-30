@@ -37,7 +37,7 @@ class PluginOrderOrderPayment extends CommonDropdown
 
     public static function getTypeName($nb = 0)
     {
-        return __("Payment conditions", "order");
+        return __s("Payment conditions", "order");
     }
 
 

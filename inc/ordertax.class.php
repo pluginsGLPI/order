@@ -38,7 +38,7 @@ class PluginOrderOrderTax extends CommonDropdown
 
     public static function getTypeName($nb = 0)
     {
-        return __("VAT", "order");
+        return __s("VAT", "order");
     }
 
 

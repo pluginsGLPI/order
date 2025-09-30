@@ -78,7 +78,7 @@ class PluginOrderConfig extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return __("Orders management", "order");
+        return __s("Orders management", "order");
     }
 
 
@@ -105,48 +105,48 @@ class PluginOrderConfig extends CommonDBTM
 
         echo "<table class='tab_cadre_fixe'>";
 
-        echo "<tr><th colspan='2'>" . __("Plugin configuration", "order") . "</th></tr>";
+        echo "<tr><th colspan='2'>" . __s("Plugin configuration", "order") . "</th></tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Default VAT", "order") . "</td>";
+        echo "<td>" . __s("Default VAT", "order") . "</td>";
         echo "<td>";
         PluginOrderOrderTax::Dropdown([
             'name'                => "default_taxes",
             'value'               => $this->fields["default_taxes"],
             'display_emptychoice' => true,
-            'emptylabel'          => __("No VAT", "order"),
+            'emptylabel'          => __s("No VAT", "order"),
         ]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Use validation process", "order") . "</td>";
+        echo "<td>" . __s("Use validation process", "order") . "</td>";
         echo "<td>";
         Dropdown::showYesNo("use_validation", $this->fields["use_validation"]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Order generation in ODT", "order") . "</td><td>";
+        echo "<td>" . __s("Order generation in ODT", "order") . "</td><td>";
         Dropdown::showYesNo("generate_order_pdf", $this->fields["generate_order_pdf"]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Activate suppliers quality satisfaction", "order") . "</td>";
+        echo "<td>" . __s("Activate suppliers quality satisfaction", "order") . "</td>";
         echo "<td>";
         Dropdown::showYesNo("use_supplier_satisfaction", $this->fields["use_supplier_satisfaction"]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Display order's suppliers informations", "order") . "</td><td>";
+        echo "<td>" . __s("Display order's suppliers informations", "order") . "</td><td>";
         Dropdown::showYesNo("use_supplier_informations", $this->fields["use_supplier_informations"]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Color to be displayed when order due date is overtaken", "order") . "</td>";
+        echo "<td>" . __s("Color to be displayed when order due date is overtaken", "order") . "</td>";
         echo "<td>";
         echo "<input type='color' name='shoudbedelivered_color'
                value='" . $this->fields['shoudbedelivered_color'] . "'>";
@@ -154,21 +154,21 @@ class PluginOrderConfig extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Copy order documents when a new item is created", "order") . "</td>";
+        echo "<td>" . __s("Copy order documents when a new item is created", "order") . "</td>";
         echo "<td>";
         Dropdown::showYesNo("copy_documents", $this->fields["copy_documents"]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Default heading when adding a document to an order", "order") . "</td>";
+        echo "<td>" . __s("Default heading when adding a document to an order", "order") . "</td>";
         echo "<td>";
         DocumentCategory::Dropdown(['value' => $this->fields["documentcategories_id"]]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Author group", "order") . ' (' . __("Default values") . ")</td>";
+        echo "<td>" . __s("Author group", "order") . ' (' . __s("Default values") . ")</td>";
         echo "<td>";
         Group::Dropdown([
             'value' => $this->fields["groups_id_author"],
@@ -178,7 +178,7 @@ class PluginOrderConfig extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Recipient group", "order") . ' (' . __("Default values") . ")</td>";
+        echo "<td>" . __s("Recipient group", "order") . ' (' . __s("Default values") . ")</td>";
         echo "<td>";
         Group::Dropdown([
             'value' => $this->fields["groups_id_recipient"],
@@ -188,7 +188,7 @@ class PluginOrderConfig extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Recipient") . ' (' . __("Default values") . ")</td>";
+        echo "<td>" . __s("Recipient") . ' (' . __s("Default values") . ")</td>";
         echo "<td>";
         User::Dropdown([
             'name'   => 'users_id_recipient',
@@ -200,42 +200,42 @@ class PluginOrderConfig extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Hide inactive budgets", 'order') . "</td>";
+        echo "<td>" . __s("Hide inactive budgets", 'order') . "</td>";
         echo "<td>";
         Dropdown::showYesNo("hide_inactive_budgets", $this->fields["hide_inactive_budgets"]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Transmit budget change to linked assets", 'order') . "</td>";
+        echo "<td>" . __s("Transmit budget change to linked assets", 'order') . "</td>";
         echo "<td>";
         Dropdown::showYesNo("transmit_budget_change", $this->fields["transmit_budget_change"]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Display account section on order form", 'order') . "</td>";
+        echo "<td>" . __s("Display account section on order form", 'order') . "</td>";
         echo "<td>";
         Dropdown::showYesNo("order_accountsection_display", $this->fields["order_accountsection_display"]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Set account section as mandatory on order form", 'order') . "</td>";
+        echo "<td>" . __s("Set account section as mandatory on order form", 'order') . "</td>";
         echo "<td>";
         Dropdown::showYesNo("order_accountsection_mandatory", $this->fields["order_accountsection_mandatory"]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Use free references", 'order') . "</td>";
+        echo "<td>" . __s("Use free references", 'order') . "</td>";
         echo "<td>";
         Dropdown::showYesNo("use_free_reference", $this->fields["use_free_reference"]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Rename documents added in order", 'order') . "</td>";
+        echo "<td>" . __s("Rename documents added in order", 'order') . "</td>";
         echo "<td>";
         Dropdown::showYesNo("rename_documents", $this->fields["rename_documents"]);
         echo "</td>";
@@ -243,36 +243,36 @@ class PluginOrderConfig extends CommonDBTM
 
         // Automatic actions
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<th colspan='2'>" . __("Automatic actions when delivery", "order") . "</th>";
+        echo "<th colspan='2'>" . __s("Automatic actions when delivery", "order") . "</th>";
         echo "</tr>";
 
         // ASSETS
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<th colspan='2'>" . __('Item') . "</th>";
+        echo "<th colspan='2'>" . __s('Item') . "</th>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Display analytic nature on item form", 'order') . "</td>";
+        echo "<td>" . __s("Display analytic nature on item form", 'order') . "</td>";
         echo "<td>";
         Dropdown::showYesNo("order_analyticnature_display", $this->fields["order_analyticnature_display"]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Set analytic nature as mandatory on item form", 'order') . "</td>";
+        echo "<td>" . __s("Set analytic nature as mandatory on item form", 'order') . "</td>";
         echo "<td>";
         Dropdown::showYesNo("order_analyticnature_mandatory", $this->fields["order_analyticnature_mandatory"]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1 center'>";
-        echo "<td>" . __("Enable automatic generation", "order") . "</td>";
+        echo "<td>" . __s("Enable automatic generation", "order") . "</td>";
         echo "<td>";
         Dropdown::showFromArray(
             'generate_assets',
-            [self::CONFIG_NEVER => __('No'),
-                self::CONFIG_YES   => __('Yes'),
-                self::CONFIG_ASK   => __('Asked', 'order'),
+            [self::CONFIG_NEVER => __s('No'),
+                self::CONFIG_YES   => __s('Yes'),
+                self::CONFIG_ASK   => __s('Asked', 'order'),
             ],
             ['value' => $this->canGenerateAsset()],
         );
@@ -280,7 +280,7 @@ class PluginOrderConfig extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Default state", "order") . "</td>";
+        echo "<td>" . __s("Default state", "order") . "</td>";
         echo "<td>";
         State::Dropdown([
             'name'   => 'default_asset_states_id',
@@ -291,27 +291,27 @@ class PluginOrderConfig extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Add order location to item", "order") . "</td>";
+        echo "<td>" . __s("Add order location to item", "order") . "</td>";
         echo "<td>";
         Dropdown::showYesNo("add_location", $this->canAddLocation());
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Add billing details to item", "order") . "</td><td>";
+        echo "<td>" . __s("Add billing details to item", "order") . "</td><td>";
         Dropdown::showYesNo("add_bill_details", $this->canAddBillDetails());
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Add immobilization number to item", "order") . "</td><td>";
+        echo "<td>" . __s("Add immobilization number to item", "order") . "</td><td>";
         Dropdown::showYesNo("add_immobilization_number", $this->canAddImmobilizationNumber());
         echo "</td>";
         echo "</tr>";
 
         if ($this->canGenerateAsset()) {
             echo "<tr class='tab_bg_1' align='center'>";
-            echo "<td>" . __("Default name", "order") . "</td>";
+            echo "<td>" . __s("Default name", "order") . "</td>";
             echo "<td>";
             echo Html::input(
                 'generated_name',
@@ -323,7 +323,7 @@ class PluginOrderConfig extends CommonDBTM
             echo "</tr>";
 
             echo "<tr class='tab_bg_1' align='center'>";
-            echo "<td>" . __("Default serial number", "order") . "</td>";
+            echo "<td>" . __s("Default serial number", "order") . "</td>";
             echo "<td>";
             echo Html::input(
                 'generated_serial',
@@ -335,7 +335,7 @@ class PluginOrderConfig extends CommonDBTM
             echo "</tr>";
 
             echo "<tr class='tab_bg_1' align='center'>";
-            echo "<td>" . __("Default inventory number", "order") . "</td>";
+            echo "<td>" . __s("Default inventory number", "order") . "</td>";
             echo "<td>";
             echo Html::input(
                 'generated_otherserial',
@@ -348,7 +348,7 @@ class PluginOrderConfig extends CommonDBTM
 
             // TICKETS
             echo "<tr class='tab_bg_1' align='center'>";
-            echo "<th colspan='2'>" . __("Ticket") . "</th>";
+            echo "<th colspan='2'>" . __s("Ticket") . "</th>";
             echo "</tr>";
 
             echo "<tr class='tab_bg_1' align='center'>";
@@ -364,11 +364,11 @@ class PluginOrderConfig extends CommonDBTM
 
         /* Workflow */
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<th colspan='2'>" . __("Order lifecycle", "order") . "</th>";
+        echo "<th colspan='2'>" . __s("Order lifecycle", "order") . "</th>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("State before validation", "order") . "</td>";
+        echo "<td>" . __s("State before validation", "order") . "</td>";
         echo "<td>";
         PluginOrderOrderState::Dropdown([
             'name'   => 'order_status_draft',
@@ -378,7 +378,7 @@ class PluginOrderConfig extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Waiting for validation state", "order") . "</td>";
+        echo "<td>" . __s("Waiting for validation state", "order") . "</td>";
         echo "<td>";
         PluginOrderOrderState::Dropdown([
             'name'   => 'order_status_waiting_approval',
@@ -388,7 +388,7 @@ class PluginOrderConfig extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Validated order state", "order") . "</td>";
+        echo "<td>" . __s("Validated order state", "order") . "</td>";
         echo "<td>";
         PluginOrderOrderState::Dropdown([
             'name'   => 'order_status_approved',
@@ -398,7 +398,7 @@ class PluginOrderConfig extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Order being delivered state", "order") . "</td>";
+        echo "<td>" . __s("Order being delivered state", "order") . "</td>";
         echo "<td>";
         PluginOrderOrderState::Dropdown([
             'name'   => 'order_status_partially_delivred',
@@ -408,7 +408,7 @@ class PluginOrderConfig extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Order delivered state", "order") . "</td>";
+        echo "<td>" . __s("Order delivered state", "order") . "</td>";
         echo "<td>";
         PluginOrderOrderState::Dropdown([
             'name'   => 'order_status_completly_delivered',
@@ -418,7 +418,7 @@ class PluginOrderConfig extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Order paied state", "order") . "</td>";
+        echo "<td>" . __s("Order paied state", "order") . "</td>";
         echo "<td>";
         PluginOrderOrderState::Dropdown([
             'name'   => 'order_status_paid',
@@ -428,7 +428,7 @@ class PluginOrderConfig extends CommonDBTM
         echo "</tr>";
 
         echo "<tr class='tab_bg_1' align='center'>";
-        echo "<td>" . __("Canceled order state", "order") . "</td>";
+        echo "<td>" . __s("Canceled order state", "order") . "</td>";
         echo "<td>";
         PluginOrderOrderState::Dropdown([
             'name'   => 'order_status_canceled',
@@ -872,7 +872,7 @@ class PluginOrderConfig extends CommonDBTM
             'id'            => '2',
             'table'         => $this->getTable(),
             'field'         => 'generated_name',
-            'name'          => __('Default name', 'order'),
+            'name'          => __s('Default name', 'order'),
             'autocomplete'  => true,
         ];
 
@@ -880,7 +880,7 @@ class PluginOrderConfig extends CommonDBTM
             'id'            => '3',
             'table'         => $this->getTable(),
             'field'         => 'generated_serial',
-            'name'          => __('Default serial number', 'order'),
+            'name'          => __s('Default serial number', 'order'),
             'autocomplete'  => true,
         ];
 
@@ -888,7 +888,7 @@ class PluginOrderConfig extends CommonDBTM
             'id'            => '4',
             'table'         => $this->getTable(),
             'field'         => 'generated_otherserial',
-            'name'          => __('Default inventory number', 'order'),
+            'name'          => __s('Default inventory number', 'order'),
             'autocomplete'  => true,
         ];
 

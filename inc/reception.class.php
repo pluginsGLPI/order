@@ -51,7 +51,7 @@ class PluginOrderReception extends CommonDBChild
 
     public static function getTypeName($nb = 0)
     {
-        return __("Delivery", "order");
+        return __s("Delivery", "order");
     }
 
     public static function getIcon()
@@ -200,7 +200,7 @@ class PluginOrderReception extends CommonDBChild
 
         echo "<tr class='tab_bg_1'>";
 
-        echo "<td>" . __("Reference") . ": </td>";
+        echo "<td>" . __s("Reference") . ": </td>";
         echo "<td>";
         if ($this->fields['itemtype'] == 'PluginOrderReferenceFree') {
             echo $order_reference->fields["name"];
@@ -212,7 +212,7 @@ class PluginOrderReception extends CommonDBChild
         }
         echo "</td>";
 
-        echo "<td>" . __("Taken delivery", "order") . "</td>";
+        echo "<td>" . __s("Taken delivery", "order") . "</td>";
         echo "<td>";
         Dropdown::showYesNo('states_id', $this->fields['states_id']);
         echo "</td>";
@@ -220,7 +220,7 @@ class PluginOrderReception extends CommonDBChild
 
         echo "<tr class='tab_bg_1'>";
 
-        echo "<td>" . __("Delivery form") . ": </td>";
+        echo "<td>" . __s("Delivery form") . ": </td>";
         echo "<td>";
         if ($canedit) {
             echo Html::input(
@@ -234,7 +234,7 @@ class PluginOrderReception extends CommonDBChild
         }
         echo "</td>";
 
-        echo "<td>" . __("Delivery date") . ": </td>";
+        echo "<td>" . __s("Delivery date") . ": </td>";
         echo "<td>";
         if ($canedit) {
             Html::showDateField("delivery_date", [
@@ -251,7 +251,7 @@ class PluginOrderReception extends CommonDBChild
 
         echo "<tr class='tab_bg_1'>";
 
-        echo "<td>" . __("Delivery status", "order") . ": </td>";
+        echo "<td>" . __s("Delivery status", "order") . ": </td>";
         echo "<td>";
         if ($canedit) {
             PluginOrderDeliveryState::Dropdown([
@@ -266,7 +266,7 @@ class PluginOrderReception extends CommonDBChild
         }
         echo "</td>";
 
-        echo "<td>" . __("Bill", "order") . "</td>";
+        echo "<td>" . __s("Bill", "order") . "</td>";
         echo "<td>";
         if (Session::haveRight("plugin_order_bill", UPDATE)) {
             PluginOrderBill::Dropdown([
@@ -284,7 +284,7 @@ class PluginOrderReception extends CommonDBChild
 
         echo "<tr class='tab_bg_1'><td>";
         //comments of order
-        echo __("Comments") . ": </td>";
+        echo __s("Comments") . ": </td>";
         echo "<td colspan='3'>";
         if ($canedit) {
             echo "<textarea cols='100' rows='4' name='delivery_comment'>" .
@@ -313,7 +313,7 @@ class PluginOrderReception extends CommonDBChild
 
         Session::initNavigateListItems(
             $this->getType(),
-            __("Order", "order") . " = " . $order_order->fields["name"],
+            __s("Order", "order") . " = " . $order_order->fields["name"],
         );
 
         $canedit = self::canCreate()
@@ -365,7 +365,7 @@ class PluginOrderReception extends CommonDBChild
         $typeRef        = $data_ref["itemtype"];
 
         if (!$numref) {
-            echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
+            echo "<tr><th>" . __s("No item to take delivery of", "order") . "</th></tr></table></div>";
         } else {
             $price_taxfree  = $data_ref["price_taxfree"];
             $discount       = $data_ref["discount"];
@@ -393,10 +393,10 @@ class PluginOrderReception extends CommonDBChild
             echo "<img alt='' name='reception_img$rand' src=\"" . $CFG_GLPI['root_doc'] . "/pics/plus.png\">";
             echo "</a>";
             echo "</li></ul></th>";
-            echo "<th>" . __("Assets") . "</th>";
-            echo "<th>" . __("Manufacturer") . "</th>";
-            echo "<th>" . __("Product reference", "order") . "</th>";
-            echo "<th>" . __("Delivered items", "order") . "</th>";
+            echo "<th>" . __s("Assets") . "</th>";
+            echo "<th>" . __s("Manufacturer") . "</th>";
+            echo "<th>" . __s("Product reference", "order") . "</th>";
+            echo "<th>" . __s("Delivered items", "order") . "</th>";
             echo "</tr>";
             echo "<tr class='tab_bg_1 center'>";
             echo "<td></td>";
@@ -500,7 +500,7 @@ class PluginOrderReception extends CommonDBChild
                         'rand' => $rand,
                     ],
                 );
-                echo "&nbsp;<button type='button' class='btn btn-secondary btn-sm' onclick='selectNItems(\"mass" . self::class . "$rand\", \"dropdown_nb_items_to_check_top_$rand\")'>" . __("Select") . "</button>";
+                echo "&nbsp;<button type='button' class='btn btn-secondary btn-sm' onclick='selectNItems(\"mass" . self::class . "$rand\", \"dropdown_nb_items_to_check_top_$rand\")'>" . __s("Select") . "</button>";
                 echo "</span>";
             }
 
@@ -510,14 +510,14 @@ class PluginOrderReception extends CommonDBChild
                 echo "<th width='15'>" . Html::getCheckAllAsCheckbox('mass' . self::class . $rand) . "</th>";
             }
             if ($typeRef != 'SoftwareLicense') {
-                echo "<th>" . __("ID") . "</th>";
+                echo "<th>" . __s("ID") . "</th>";
             }
-            echo "<th>" . __("Reference") . "</th>";
-            echo "<th>" . __("Status") . "</th>";
-            echo "<th>" . __("Entity") . "</th>";
-            echo "<th>" . __("Delivery date") . "</th>";
-            echo "<th>" . __("Delivery form") . "</th>";
-            echo "<th>" . __("Delivery status", "order") . "</th>";
+            echo "<th>" . __s("Reference") . "</th>";
+            echo "<th>" . __s("Status") . "</th>";
+            echo "<th>" . __s("Entity") . "</th>";
+            echo "<th>" . __s("Delivery date") . "</th>";
+            echo "<th>" . __s("Delivery form") . "</th>";
+            echo "<th>" . __s("Delivery status", "order") . "</th>";
             echo "</tr>";
 
             foreach ($all_data as $data) {
@@ -611,7 +611,7 @@ class PluginOrderReception extends CommonDBChild
                             'rand' => $rand,
                         ],
                     );
-                    echo "&nbsp;<button type='button' class='btn btn-secondary btn-sm' onclick='selectNItems(\"mass" . self::class . "$rand\", \"dropdown_nb_items_to_check_bottom_$rand\")'>" . __("Select") . "</button>";
+                    echo "&nbsp;<button type='button' class='btn btn-secondary btn-sm' onclick='selectNItems(\"mass" . self::class . "$rand\", \"dropdown_nb_items_to_check_bottom_$rand\")'>" . __s("Select") . "</button>";
                     echo "</span>";
                 }
                 Html::closeForm();
@@ -671,7 +671,7 @@ JAVASCRIPT;
         if ($order_order->canDeliver() && $this->checkItemStatus($orders_id, $references_id, PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) && $typeRef != 'SoftwareLicense') {
             $bulk_rand = mt_rand();
             $button = "<p><a href='javascript:viewmassreception$suffix" . $orders_id . "$bulk_rand();'>";
-            $button .= __("Take item delivery (bulk)", "order") . "</a></p>";
+            $button .= __s("Take item delivery (bulk)", "order") . "</a></p>";
             echo "<form method='post' name='order_reception_form$suffix$bulk_rand'
                           action='" . Toolbox::getItemTypeFormURL("PluginOrderReception") . "'>";
             if ($position == 'top') {
@@ -717,7 +717,7 @@ JAVASCRIPT;
         unset($actions[MassiveAction::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list']);
         $sep     = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
 
-        $actions[$sep . 'reception'] = __("Take item delivery", "order");
+        $actions[$sep . 'reception'] = __s("Take item delivery", "order");
         $actions[$sep . 'transfer_order_item'] = _x('button', 'Add to transfer list');
 
         return $actions;
@@ -779,7 +779,7 @@ JAVASCRIPT;
         $order = new PluginOrderOrder();
         $order->getFromDB($plugin_order_orders_id);
 
-        echo "<label class='order_ma'>" . __("Destination entity", "order") . "</label>";
+        echo "<label class='order_ma'>" . __s("Destination entity", "order") . "</label>";
         Entity::Dropdown([
             'name'        => "entities_id",
             'entity'      => $order->fields['entities_id'],
@@ -791,27 +791,27 @@ JAVASCRIPT;
 
     public function showReceptionForm($params = [])
     {
-        echo "<label class='order_ma'>" . __("Delivery date") . "</label>";
+        echo "<label class='order_ma'>" . __s("Delivery date") . "</label>";
         Html::showDateField("delivery_date", ['value'      => date("Y-m-d"),
             'maybeempty' => true,
             'canedit'    => true,
         ]);
 
-        echo "<label class='order_ma'>" . __("Delivery form") . "</label>";
+        echo "<label class='order_ma'>" . __s("Delivery form") . "</label>";
         echo "<input type='text' name='delivery_number' size='20'>";
 
-        echo "<label class='order_ma'>" . __("Delivery status", "order") . "</label>";
+        echo "<label class='order_ma'>" . __s("Delivery status", "order") . "</label>";
         PluginOrderDeliveryState::Dropdown(['name' => "plugin_order_deliverystates_id"]);
 
         $config = PluginOrderConfig::getConfig();
         if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
-            echo "<label class='order_ma'>" . __("Enable automatic generation", "order") . "</label>";
+            echo "<label class='order_ma'>" . __s("Enable automatic generation", "order") . "</label>";
             Dropdown::showFromArray('manual_generate', [
-                PluginOrderConfig::CONFIG_NEVER => __('No'),
-                PluginOrderConfig::CONFIG_YES   => __('Yes'),
+                PluginOrderConfig::CONFIG_NEVER => __s('No'),
+                PluginOrderConfig::CONFIG_YES   => __s('Yes'),
             ]);
 
-            echo "<label class='order_ma'>" . __("Default name", "order") . "</label>";
+            echo "<label class='order_ma'>" . __s("Default name", "order") . "</label>";
             echo Html::input(
                 'generated_name',
                 [
@@ -819,7 +819,7 @@ JAVASCRIPT;
                 ],
             );
 
-            echo "<label class='order_ma'>" . __("Default serial number", "order") . "</label>";
+            echo "<label class='order_ma'>" . __s("Default serial number", "order") . "</label>";
             echo Html::input(
                 'generated_serial',
                 [
@@ -827,7 +827,7 @@ JAVASCRIPT;
                 ],
             );
 
-            echo "<label class='order_ma'>" . __("Default inventory number", "order") . "<label>";
+            echo "<label class='order_ma'>" . __s("Default inventory number", "order") . "<label>";
             echo Html::input(
                 'generated_otherserial',
                 [
@@ -844,10 +844,10 @@ JAVASCRIPT;
 
         switch ($detail->fields["states_id"]) {
             case PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED:
-                return __("Waiting for delivery", "order");
+                return __s("Waiting for delivery", "order");
 
             case PluginOrderOrder::ORDER_DEVICE_DELIVRED:
-                return __("Taken delivery", "order");
+                return __s("Taken delivery", "order");
 
             default:
                 return "";
@@ -874,7 +874,7 @@ JAVASCRIPT;
         $nb      = count($result);
 
         if ($nb < $params['number_reception']) {
-            Session::addMessageAfterRedirect(__("Not enough items to deliver", "order"), true, ERROR);
+            Session::addMessageAfterRedirect(__s("Not enough items to deliver", "order"), true, ERROR);
         } else {
             $i = 0;
             foreach ($result as $row) {
@@ -927,7 +927,7 @@ JAVASCRIPT;
             "plugin_order_deliverystates_id" => $state_id,
         ]);
 
-        Session::addMessageAfterRedirect(__("Item successfully taken delivery", "order"), true);
+        Session::addMessageAfterRedirect(__s("Item successfully taken delivery", "order"), true);
     }
 
 
@@ -959,7 +959,7 @@ JAVASCRIPT;
                 ]);
             }
         }
-        Session::addMessageAfterRedirect(__("Item successfully taken delivery", "order"), true);
+        Session::addMessageAfterRedirect(__s("Item successfully taken delivery", "order"), true);
     }
 
 
@@ -1040,7 +1040,7 @@ JAVASCRIPT;
                             $ma->itemDone(self::class, $key, MassiveAction::ACTION_OK);
                         }
                     } else {
-                        Session::addMessageAfterRedirect(__("Item already taken delivery", "order"), true, ERROR);
+                        Session::addMessageAfterRedirect(__s("Item already taken delivery", "order"), true, ERROR);
                         if ($ma !== false) {
                             $ma->itemDone(self::class, $key, MassiveAction::ACTION_KO);
                         }
@@ -1068,7 +1068,7 @@ JAVASCRIPT;
 
             self::updateDelivryStatus($plugin_order_orders_id);
         } else {
-            Session::addMessageAfterRedirect(__("No item selected", "order"), false, ERROR);
+            Session::addMessageAfterRedirect(__s("No item selected", "order"), false, ERROR);
         }
     }
 
@@ -1225,7 +1225,7 @@ JAVASCRIPT;
             && $item->getState() > PluginOrderOrderState::WAITING_FOR_APPROVAL
         ) {
             return self::createTabEntry(
-                __("Item delivered", "order"),
+                __s("Item delivered", "order"),
                 self::countForOrder($item),
                 null,
                 self::getIcon(),
@@ -1254,7 +1254,7 @@ JAVASCRIPT;
             'id'            => '2',
             'table'         => static::getTable(),
             'field'         => 'delivery_number',
-            'name'          => __('Delivery form'),
+            'name'          => __s('Delivery form'),
             'autocomplete'  => true,
         ];
 
