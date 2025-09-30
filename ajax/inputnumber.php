@@ -56,5 +56,20 @@ if (isset($_POST['name'])) {
 
     $data = htmlescape(rawurldecode(stripslashes($_POST["data"])));
 
-    echo "<input type='number' class='form-control' step='" . $step . "' min='" . $min . "' name='" . $_POST['name'] . "' value='" . $data . "' " . $class . ">";
+    // Validation
+    $name  = preg_match('/^[a-zA-Z0-9_\-]+$/', $_POST['name'] ?? '') ? $_POST['name'] : 'default_name';
+    $value = is_numeric($data) ? $data : 0;
+    $step  = is_numeric($step) ? $step : 1;
+    $min   = is_numeric($min) ? $min : 0;
+    $class = htmlspecialchars($class ?? '', ENT_QUOTES, 'UTF-8');
+
+    // Échappement pour HTML
+    $name  = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+    $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+    $step  = htmlspecialchars($step, ENT_QUOTES, 'UTF-8');
+    $min   = htmlspecialchars($min, ENT_QUOTES, 'UTF-8');
+
+    echo "<input type='number' class='form-control' step='{$step}' min='{$min}' name='{$name}' value='{$value}' {$class}>";
+
+
 }
