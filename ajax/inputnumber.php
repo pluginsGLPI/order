@@ -56,19 +56,23 @@ if (isset($_POST['name'])) {
 
     $data = htmlescape(rawurldecode(stripslashes($_POST["data"])));
 
-    // Validation and fallback
-    $name  = isset($_POST['name']) && preg_match('/^[a-zA-Z0-9_\-]+$/', $_POST['name']) ? $_POST['name'] : 'default_name';
-    $value = $data ?? 0;
-    $step ??= 1;
-    $min ??= 0;
-    $class ??= '';
+    // Validation et fallback
+    $name  = preg_match('/^[a-zA-Z0-9_\-]+$/', $_POST['name']) ? $_POST['name'] : 'default_name';
 
+    // Ces variables existent déjà et ne sont pas null, donc pas besoin de ??=
+    $value = $data;
+    $step  = $step;
+    $min   = $min;
+    $class = $class;
+
+    // Échappement pour HTML (caster les nombres en string)
     $name  = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
     $value = htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
     $step  = htmlspecialchars((string) $step, ENT_QUOTES, 'UTF-8');
     $min   = htmlspecialchars((string) $min, ENT_QUOTES, 'UTF-8');
     $class = htmlspecialchars($class, ENT_QUOTES, 'UTF-8');
 
-
+    // Affichage
     echo "<input type='number' class='form-control' step='{$step}' min='{$min}' name='{$name}' value='{$value}' {$class}>";
+
 }
