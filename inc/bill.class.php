@@ -257,7 +257,7 @@ class PluginOrderBill extends CommonDropdown
         echo "<tr><th>";
         Html::printPagerForm();
         echo "</th><th colspan='5'>";
-        echo _n("Item", "Items", 2);
+        echo _sn("Item", "Items", 2);
         echo "</th></tr>";
 
         $bills_id = $bill->getID();
@@ -276,7 +276,7 @@ class PluginOrderBill extends CommonDropdown
 
         if ($number === 0) {
             echo "</th><td>";
-            echo _n("Item", "Items", 2);
+            echo _sn("Item", "Items", 2);
             echo "</td></tr>";
         } else {
             echo "<tr>";

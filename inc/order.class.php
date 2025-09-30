@@ -2126,7 +2126,7 @@ class PluginOrderOrder extends CommonDBTM
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr>";
-            echo "<th style='width:15%;'>" . _n("Action", "Actions", 2) . "</th>";
+            echo "<th style='width:15%;'>" . _sn("Action", "Actions", 2) . "</th>";
             echo "<th>" . __s("Name") . "</th>";
             echo "<th>" . __s("Order status", "order") . "</th>";
             echo "<th>" . __s("Entity") . "</th>";
