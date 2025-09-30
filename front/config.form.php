@@ -38,7 +38,7 @@ if (isset($_POST["update"])) {
     PluginOrderConfig::getConfig(true);
     Html::back();
 } else {
-    Html::header(__("Orders", "order"), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "order");
+    Html::header(__s("Orders", "order"), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "order");
 
     Session::checkRight("config", UPDATE);
     $config->showForm(1);

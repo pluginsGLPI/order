@@ -195,7 +195,7 @@ function plugin_init_order()
 function plugin_version_order()
 {
     return [
-        'name'           => __("Orders management", "order"),
+        'name'           => __s("Orders management", "order"),
         'version'        => PLUGIN_ORDER_VERSION,
         'author'         => 'The plugin order team',
         'homepage'       => 'https://github.com/pluginsGLPI/order',

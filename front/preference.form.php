@@ -40,7 +40,7 @@ if (isset($_POST["update"]) && $_POST["users_id"] == Session::getLoginUserID()) 
     $PluginOrderPreference->update($_POST);
     Html::redirect($_SERVER['HTTP_REFERER']);
 } else {
-    Html::header(__("Orders", "order"), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu");
+    Html::header(__s("Orders", "order"), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu");
     $PluginOrderPreference->showForm($_GET["id"]);
     Html::footer();
 }

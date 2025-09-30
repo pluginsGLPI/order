@@ -37,19 +37,19 @@ Session::checkLoginUser();
 $PluginOrderReception = new PluginOrderReception();
 
 echo "<table width='950px' class='tab_cadre_fixe'>";
-echo "<tr class='tab_bg_2'><td>" . __("Delivery date") . "</td><td>";
+echo "<tr class='tab_bg_2'><td>" . __s("Delivery date") . "</td><td>";
 Html::showDateField("delivery_date", [
     'value'      => date("Y-m-d"),
     'maybeempty' => true,
     'canedit'    => true,
 ]);
 echo "</td><td>";
-echo __("Delivery form") . "</td><td>";
+echo __s("Delivery form") . "</td><td>";
 echo "<input type='text' name='delivery_number' size='20'>";
 echo "</td><td>";
 echo Html::hidden('plugin_order_references_id', ['value' => $_POST["plugin_order_references_id"]]);
 echo Html::hidden('plugin_order_orders_id', ['value' => $_POST["plugin_order_orders_id"]]);
-echo __("Number to deliver", "order") . "</td><td width='10%'>";
+echo __s("Number to deliver", "order") . "</td><td width='10%'>";
 $nb = $PluginOrderReception->checkItemStatus(
     $_POST['plugin_order_orders_id'],
     $_POST['plugin_order_references_id'],
@@ -61,31 +61,31 @@ Dropdown::showNumber('number_reception', [
     'max'   => $nb,
 ]);
 echo "</td><td>";
-echo __("Delivery status", "order") . "&nbsp;";
+echo __s("Delivery status", "order") . "&nbsp;";
 PluginOrderDeliveryState::Dropdown(['name' => "plugin_order_deliverystates_id"]);
 echo "</td></tr>";
 
 echo "<tr class='tab_bg_2'>";
 $config = PluginOrderConfig::getConfig();
 if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
-    echo "<td>" . __("Enable automatic generation", "order") . "</td>";
+    echo "<td>" . __s("Enable automatic generation", "order") . "</td>";
     echo "<td>";
     Dropdown::showYesNo("manual_generate", $config->canGenerateAsset());
-    echo "</td><td>" . __("Default name", "order") . "</td>";
+    echo "</td><td>" . __s("Default name", "order") . "</td>";
     echo "<td>&nbsp;";
     Html::input("generated_name", [
         'value' => $config->fields['generated_name'],
     ]);
     echo "</td>&nbsp;&nbsp;";
 
-    echo "<td>" . __("Default serial number", "order") . "</td>";
+    echo "<td>" . __s("Default serial number", "order") . "</td>";
     echo "<td>&nbsp;";
     Html::input("generated_serial", [
         'value' => $config->fields['generated_serial'],
     ]);
     echo "</td>&nbsp;&nbsp;";
 
-    echo "<td>" . __("Default inventory number", "order") . "</td>";
+    echo "<td>" . __s("Default inventory number", "order") . "</td>";
     echo "<td>&nbsp;";
     Html::input("generated_otherserial", [
         'value' => $config->fields['generated_otherserial'],

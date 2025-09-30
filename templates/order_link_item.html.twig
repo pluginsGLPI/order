@@ -35,16 +35,16 @@
 {% if numref == 0 %}
     <table class='tab_cadre_fixe'>
         <tr>
-            <th>{{ __("No item to take delivery of", "order") }}</th>
+            <th>{{ __s("No item to take delivery of", "order") }}</th>
         </tr>
     </table>
 {% else %}
     <table class="table mb-1">
         <thead>
             <tr>
-                <th>{{ __('Assets') }}</th>
-                <th>{{ __('Manufacturer') }}</th>
-                <th>{{ __('Product reference', 'order') }}</th>
+                <th>{{ __s('Assets') }}</th>
+                <th>{{ __s('Manufacturer') }}</th>
+                <th>{{ __s('Product reference', 'order') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -60,10 +60,10 @@
         <button id="toggle-table-{{ datatable_id }}" class="btn btn-link btn-sm mb-2" type="button">
             {% if table_visible %}
                 <i class="ti ti-sort-ascending"></i>
-                <span>{{ __('Collapse all', 'order') }}</span>
+                <span>{{ __s('Collapse all', 'order') }}</span>
             {% else %}
                 <i class="ti ti-sort-descending"></i>
-                <span>{{ __('Expand all', 'order') }}</span>
+                <span>{{ __s('Expand all', 'order') }}</span>
             {% endif %}
         </button>
         <input type="hidden" name="{{ countainer_name }}" value="true">
@@ -73,7 +73,7 @@
     {% if total_count < 1 %}
         <div name="{{ datatable_id }}" {% if not table_visible %}style="display: none;"{% endif %}>
             <div class="alert alert-info m-2">
-                {{ __('No results found') }}
+                {{ __s('No results found') }}
             </div>
         </div>
     {% else %}
@@ -92,7 +92,7 @@
                             ]
                         ) %}
                         <button type='button' class='btn btn-secondary btn-sm' onclick='selectNItems("mass{{ classname }}{{ rand }}", "dropdown_nb_items_to_check_top_{{ rand }}")'>
-                            {{ __("Select") }}
+                            {{ __s("Select") }}
                         </button>
                     </span>
                     <script>
@@ -130,7 +130,7 @@
                             <th style="width: 30px;">
                                 <div>
                                     <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
-                                        value="" aria-label="{{ __('Check all') }}"
+                                        value="" aria-label="{{ __s('Check all') }}"
                                         onclick="checkAsCheckboxes(this, '{{ massiveactionparams['container'] }}', '.massive_action_checkbox');" />
                                 </div>
                             </th>
@@ -169,7 +169,7 @@
                                     <td style="width: 10px">
                                         {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
                                             <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
-                                                value="1" aria-label="{{ __("Select item") }}"
+                                                value="1" aria-label="{{ __s("Select item") }}"
                                                 name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
                                         {% endif %}
                                     </td>
@@ -192,7 +192,7 @@
                         <tr>
                             <td colspan="{{ total_cols }}">
                                 <div class="alert alert-info">
-                                    {{ __('No results found') }}
+                                    {{ __s('No results found') }}
                                 </div>
                             </td>
                         </tr>
@@ -222,7 +222,7 @@
             {% if not nopager and total_count > 0 %}
                 <div class="d-flex justify-content-between align-items-center my-2">
                     <div>
-                        {{ __('Showing %s to %s of %s entries', 'order')|format(
+                        {{ __s('Showing %s to %s of %s entries', 'order')|format(
                             start + 1,
                             (start + displayed_count > total_count ? total_count : start + displayed_count),
                             total_count
@@ -230,7 +230,7 @@
                     </div>
                     <div class="d-flex align-items-center">
                         <div class="d-inline-flex align-items-center me-4">
-                            {{ __('Entries to show:', 'order') }}
+                            {{ __s('Entries to show:', 'order') }}
                             {% include 'components/dropdown/limit.html.twig' with {
                                 'is_tab': true,
                                 'right': true,
@@ -303,13 +303,13 @@
                     if (!isVisible) {
                         div_table.show();
                         icon.removeClass('ti-sort-descending').addClass('ti-sort-ascending');
-                        textSpan.text('{{ __("Collapse all", "order") }}');
+                        textSpan.text('{{ __s("Collapse all", "order") }}');
                         countainer_name.val('true');
                         isVisible = true;
                     } else {
                         div_table.hide();
                         icon.removeClass('ti-sort-ascending').addClass('ti-sort-descending');
-                        textSpan.text('{{ __("Expand all", "order") }}');
+                        textSpan.text('{{ __s("Expand all", "order") }}');
                         countainer_name.val('false');
                         isVisible = false;
                     }

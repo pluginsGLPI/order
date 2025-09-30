@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
 } else {
     $PluginOrderSurveySupplier->checkGlobal(READ);
     Html::header(
-        __("Orders management", "order"),
+        __s("Orders management", "order"),
         $_SERVER['PHP_SELF'],
         "management",
         "PluginOrderMenu",

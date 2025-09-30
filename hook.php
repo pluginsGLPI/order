@@ -44,7 +44,7 @@ function plugin_order_install()
 
     echo "<center>";
     echo "<table class='tab_cadre_fixe'>";
-    echo "<tr><th>" . __("Plugin installation or upgrade", "order") . "<th></tr>";
+    echo "<tr><th>" . __s("Plugin installation or upgrade", "order") . "<th></tr>";
 
     echo "<tr class='tab_bg_1'>";
     echo "<td align='center'>";
@@ -138,17 +138,17 @@ function plugin_order_getDropdown()
     /* table => name */
     $plugin = new Plugin();
     if ($plugin->isActivated("order")) {
-        return ['PluginOrderOrderTax'         => __("VAT", "order"),
-            'PluginOrderOrderPayment'     => __("Payment conditions", "order"),
-            'PluginOrderOrderType'        => __("Type"),
-            'PluginOrderOrderState'       => __("Order status", "order"),
-            'PluginOrderOtherType'        => __("Other type of item", "order"),
-            'PluginOrderDeliveryState'    => __("Delivery status", "order"),
-            'PluginOrderBillState'        => __("Bill status", "order"),
-            'PluginOrderBillType'         => __("Bill type", "order"),
-            'PluginOrderAnalyticNature'   => __("Analytic nature", "order"),
-            'PluginOrderAccountSection'   => __("Account section", "order"),
-            'PluginOrderDocumentCategory' => __("Orders", "order"),
+        return ['PluginOrderOrderTax'         => __s("VAT", "order"),
+            'PluginOrderOrderPayment'     => __s("Payment conditions", "order"),
+            'PluginOrderOrderType'        => __s("Type"),
+            'PluginOrderOrderState'       => __s("Order status", "order"),
+            'PluginOrderOtherType'        => __s("Other type of item", "order"),
+            'PluginOrderDeliveryState'    => __s("Delivery status", "order"),
+            'PluginOrderBillState'        => __s("Bill status", "order"),
+            'PluginOrderBillType'         => __s("Bill type", "order"),
+            'PluginOrderAnalyticNature'   => __s("Analytic nature", "order"),
+            'PluginOrderAccountSection'   => __s("Account section", "order"),
+            'PluginOrderDocumentCategory' => __s("Orders", "order"),
         ];
     } else {
         return [];
@@ -231,14 +231,14 @@ function plugin_order_getAddSearchOptions($itemtype)
         $sopt[3160]['table']         = 'glpi_plugin_order_orders';
         $sopt[3160]['field']         = 'name';
         $sopt[3160]['linkfield']     = '';
-        $sopt[3160]['name']          = __("Order name", "order");
+        $sopt[3160]['name']          = __s("Order name", "order");
         $sopt[3160]['forcegroupby']  = true;
         $sopt[3160]['datatype']      = 'itemlink';
         $sopt[3160]['itemlink_type'] = 'PluginOrderOrder';
         $sopt[3161]['table']         = 'glpi_plugin_order_orders';
         $sopt[3161]['field']         = 'num_order';
         $sopt[3161]['linkfield']     = '';
-        $sopt[3161]['name']          = __("Order number", "order");
+        $sopt[3161]['name']          = __s("Order number", "order");
         $sopt[3161]['forcegroupby']  = true;
         $sopt[3161]['datatype']      = 'itemlink';
         $sopt[3161]['itemlink_type'] = 'PluginOrderOrder';
@@ -378,6 +378,6 @@ function plugin_datainjection_populate_order()
 
 function plugin_order_AssignToTicket($types)
 {
-    $types['PluginOrderOrder'] = __("Order", "order");
+    $types['PluginOrderOrder'] = __s("Order", "order");
     return $types;
 }

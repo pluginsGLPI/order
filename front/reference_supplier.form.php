@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
 } else {
     $PluginOrderReference_Supplier->checkGlobal(READ);
     Html::header(
-        __("Supplier for the reference", "order"),
+        __s("Supplier for the reference", "order"),
         $_SERVER['PHP_SELF'],
         "management",
         "PluginOrderMenu",

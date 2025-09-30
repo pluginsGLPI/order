@@ -95,7 +95,7 @@ if (isset($_POST["update"])) {
     $reception->updateBulkReceptionStatus($_POST);
     Html::redirect($_SERVER["HTTP_REFERER"]);
 } else {
-    Html::header(__("Orders management", "order"), '', "management", "PluginOrderMenu", "reception");
+    Html::header(__s("Orders management", "order"), '', "management", "PluginOrderMenu", "reception");
     $reception->showForm($_GET["id"]);
     Html::footer();
 }
