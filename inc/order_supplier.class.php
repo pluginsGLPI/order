@@ -128,7 +128,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public function getFromDBByOrder($plugin_order_orders_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -139,7 +139,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         ];
         $result = $DB->request($criteria);
 
-        if (!count($result)) {
+        if (count($result) === 0) {
             return false;
         }
         $this->fields = $result->current();
@@ -220,14 +220,14 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         $order->getFromDB($ID);
 
         Session::initNavigateListItems(
-            __CLASS__,
+            self::class,
             __("Order", "order") . " = " . $order->fields["name"],
         );
 
         $candelete = $order->can($ID, UPDATE);
         $rand      = mt_rand();
 
-        $link = Toolbox::getItemTypeFormURL(__CLASS__);
+        $link = Toolbox::getItemTypeFormURL(self::class);
 
         echo "<form method='post' name='show_supplierinfos$rand' id='show_supplierinfos$rand' " .
             "action=\"" . $link . "\">";
@@ -249,7 +249,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
             $data = getAllDataFromTable($table, ['plugin_order_orders_id' => $ID]);
             foreach ($data as $cur) {
-                Session::addToNavigateListItems(__CLASS__, $cur['id']);
+                Session::addToNavigateListItems(self::class, $cur['id']);
                 echo Html::hidden("item[" . $cur["id"] . "]", ['value' => $ID]);
                 echo "<tr class='tab_bg_1 center'>";
                 echo "<td>";
@@ -304,7 +304,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public static function showDeliveries($suppliers_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -341,7 +341,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         echo "<th>" . __("Delivery statistics", "order") . "</th>";
         echo "</tr>";
 
-        if ($nb) {
+        if ($nb !== 0) {
             foreach ($result as $data) {
                 $ref               = $data["ref"];
                 $entities_id       = $data["entities_id"];
@@ -369,7 +369,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -478,7 +478,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         //Old table name

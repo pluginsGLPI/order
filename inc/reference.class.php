@@ -28,8 +28,35 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QuerySubQuery;
 
-
+/**
+ * -------------------------------------------------------------------------
+ * Order plugin for GLPI
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of Order.
+ *
+ * Order is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Order is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Order. If not, see <http://www.gnu.org/licenses/>.
+ * -------------------------------------------------------------------------
+ * @copyright Copyright (C) 2009-2023 by Order plugin team.
+ * @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
+ * @link      https://github.com/pluginsGLPI/order
+ * -------------------------------------------------------------------------
+ */
 class PluginOrderReference extends CommonDBTM
 {
     public static $rightname         = 'plugin_order_reference'; //'plugin_order_reference'; //TODO : A développer
@@ -288,11 +315,7 @@ class PluginOrderReference extends CommonDBTM
                 $itemtype = [];
                 foreach ($types as $type) {
                     $item = getItemForItemtype($type);
-                    if ($item !== false) {
-                        $itemtype[$type] = $item->getTypeName();
-                    } else {
-                        $itemtype[$type] = $type;
-                    }
+                    $itemtype[$type] = $item !== false ? $item->getTypeName() : $type;
                 }
                 $options['display'] = false;
                 return Dropdown::showFromArray($name, $itemtype, $options);
@@ -395,7 +418,7 @@ class PluginOrderReference extends CommonDBTM
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if (get_class($item) == __CLASS__) {
+        if (get_class($item) == self::class) {
             return [1 => __("Linked orders", "order")];
         }
         return '';
@@ -413,7 +436,7 @@ class PluginOrderReference extends CommonDBTM
 
     public function dropdownTemplate($name, $entity, $table, $value = 0)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $query = [
@@ -452,7 +475,7 @@ class PluginOrderReference extends CommonDBTM
 
     public function checkIfTemplateExistsInEntity($detailID, $itemtype, $entity)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $table = self::getTable();
@@ -471,43 +494,39 @@ class PluginOrderReference extends CommonDBTM
         ];
         $result = $DB->request($criteria);
 
-        if (!count($result)) {
+        if (count($result) === 0) {
             return 0;
         } else {
             $row = $result->current();
             $item = getItemForItemtype($itemtype);
             $item->getFromDB($row["templates_id"]);
-            if (
-                $item->getField('entities_id') == $entity
-                || ($item->maybeRecursive()
-                && $item->fields['is_recursive']
-                && Session::haveAccessToEntity($entity, true))
-            ) {
+            if ($item->getField('entities_id') == $entity
+            || ($item->maybeRecursive()
+            && $item->fields['is_recursive']
+            && Session::haveAccessToEntity($entity, true))) {
                 return $item->getField('id');
-            } else {
+            } elseif ($item->getField('template_name') != NOT_AVAILABLE) {
                 //Workaround when templates are not recursive (ie computers, monitors, etc.)
                 //If templates have the same name in several entities : search for a template with
                 //the same name
-                if ($item->getField('template_name') != NOT_AVAILABLE) {
-                    $criteria_template = [
-                        'SELECT' => ['id'],
-                        'FROM' => $item->getTable(),
-                        'WHERE' => [
-                            'entities_id' => $entity,
-                            'template_name' => $item->fields['template_name'],
-                            'is_template' => 1,
-                        ],
-                    ];
-                    $result_template = $DB->request($criteria_template);
-                    if (count($result_template) >= 1) {
-                        $row_template = $result_template->current();
-                        return $row_template["id"];
-                    } else {
-                        return 0;
-                    }
+                $criteria_template = [
+                    'SELECT' => ['id'],
+                    'FROM' => $item->getTable(),
+                    'WHERE' => [
+                        'entities_id' => $entity,
+                        'template_name' => $item->fields['template_name'],
+                        'is_template' => 1,
+                    ],
+                ];
+                $result_template = $DB->request($criteria_template);
+                if (count($result_template) >= 1) {
+                    $row_template = $result_template->current();
+                    return $row_template["id"];
                 } else {
                     return 0;
                 }
+            } else {
+                return 0;
             }
         }
     }
@@ -515,7 +534,7 @@ class PluginOrderReference extends CommonDBTM
 
     public function dropdownAllItems($options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $p['myname']       = '';
@@ -558,7 +577,7 @@ class PluginOrderReference extends CommonDBTM
             $result = $DB->request($criteria);
 
             $number = count($result);
-            if ($number) {
+            if ($number !== 0) {
                 foreach ($result as $data) {
                     $used[] = $data["itemtype"];
                 }
@@ -615,7 +634,7 @@ class PluginOrderReference extends CommonDBTM
     public function showForm($id, $options = [])
     {
         /**
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          * @var array $CFG_GLPI
          */
         global $DB, $CFG_GLPI;
@@ -688,7 +707,7 @@ class PluginOrderReference extends CommonDBTM
                 'value'     => $options["item"],
                 'entity'    => $_SESSION["glpiactive_entity"],
                 'ajax_page' => $CFG_GLPI['root_doc'] . '/plugins/order/ajax/referencespecifications.php',
-                'class'     => __CLASS__,
+                'class'     => self::class,
             ]);
         }
         echo "</td>";
@@ -715,13 +734,11 @@ class PluginOrderReference extends CommonDBTM
         echo "<tr class='tab_bg_1'><td>" . __("Model") . "</td>";
         echo "<td>";
         echo "<span id='show_models_id'>";
-        if ($options['item']) {
-            if (class_exists($itemtypeclass)) {
-                Dropdown::show($options['item'] . "Model", [
-                    'name'  => "models_id",
-                    'value' => $this->fields["models_id"],
-                ]);
-            }
+        if ($options['item'] && class_exists($itemtypeclass)) {
+            Dropdown::show($options['item'] . "Model", [
+                'name'  => "models_id",
+                'value' => $this->fields["models_id"],
+            ]);
         }
         echo "</span>";
         echo "</td>";
@@ -815,7 +832,7 @@ class PluginOrderReference extends CommonDBTM
 
                 $condition[] = [
                     'NOT' => [
-                        $itemtype::getTableField('id') => new Glpi\DBAL\QuerySubQuery([
+                        $itemtype::getTableField('id') => new QuerySubQuery([
                             'SELECT' => 'items_id',
                             'FROM'   => 'glpi_plugin_order_orders_items',
                             'WHERE'  => [
@@ -841,7 +858,7 @@ class PluginOrderReference extends CommonDBTM
 
     public function showOrders($ref)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $order = new PluginOrderOrder();
@@ -873,21 +890,15 @@ class PluginOrderReference extends CommonDBTM
 
         echo "<div class='center'>";
         if ($nb) {
-            if (isset($_REQUEST["start"])) {
-                $start = $_REQUEST["start"];
-            } else {
-                $start = 0;
-            }
+            $start = $_REQUEST["start"] ?? 0;
             $criteria['START'] = intval($start);
             $criteria['LIMIT'] = intval($_SESSION['glpilist_limit']);
-
             Html::printAjaxPager(__("Linked orders", "order"), $start, $nb);
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr>";
             echo "<th>" . __("Name") . "</a></th>";
             echo "<th>" . __("Entity") . "</th>";
             echo "</tr>";
-
             foreach ($DB->request($criteria) as $data) {
                 echo "<tr class='tab_bg_1' align='center'>";
                 echo "<td>";
@@ -914,7 +925,7 @@ class PluginOrderReference extends CommonDBTM
 
     public function transfer($ID, $entity)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if ($ID <= 0 || !$this->getFromDB($ID)) {
@@ -948,7 +959,7 @@ class PluginOrderReference extends CommonDBTM
 
             $result = $DB->request($criteria);
             $num    = count($result);
-            if ($num) {
+            if ($num !== 0) {
                 foreach ($result as $dataref) {
                     $values["id"]                         = $dataref['id'];
                     $values["plugin_order_references_id"] = $newid;
@@ -1075,7 +1086,7 @@ class PluginOrderReference extends CommonDBTM
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -1280,7 +1291,7 @@ class PluginOrderReference extends CommonDBTM
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $table  = self::getTable();
@@ -1290,7 +1301,7 @@ class PluginOrderReference extends CommonDBTM
             ] as $t
         ) {
             $item = getItemForTable($t);
-            $item->deleteByCriteria(['itemtype' => __CLASS__]);
+            $item->deleteByCriteria(['itemtype' => self::class]);
         }
 
         $DB->doQuery("DROP TABLE IF EXISTS `$table`");

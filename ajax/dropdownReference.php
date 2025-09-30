@@ -31,7 +31,7 @@
 /** @var DBmysql $DB */
 global $DB;
 
-include_once("../../../inc/includes.php");
+include_once(__DIR__ . "/../../../inc/includes.php");
 
 Session::checkRight("plugin_order_reference", READ);
 
@@ -64,7 +64,7 @@ if (isset($_POST["itemtype"])) {
     $result = $DB->request($criteria);
     $number = count($result);
     $values = [0 => Dropdown::EMPTY_VALUE];
-    if ($number) {
+    if ($number !== 0) {
         foreach ($result as $data) {
             $values[$data['id']] = $data['name'] . " - " . $data['reference_code'];
         }

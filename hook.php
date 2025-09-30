@@ -227,28 +227,21 @@ function plugin_order_getAddSearchOptions($itemtype)
     $plugin = new Plugin();
 
     $sopt = [];
-    if (
-        $plugin->isInstalled('order')
-        && $plugin->isActivated('order')
-        && Session::haveRight("plugin_order_order", READ)
-    ) {
-        if (in_array($itemtype, PluginOrderOrder_Item::getClasses(true))) {
-            $sopt[3160]['table']         = 'glpi_plugin_order_orders';
-            $sopt[3160]['field']         = 'name';
-            $sopt[3160]['linkfield']     = '';
-            $sopt[3160]['name']          = __("Order name", "order");
-            $sopt[3160]['forcegroupby']  = true;
-            $sopt[3160]['datatype']      = 'itemlink';
-            $sopt[3160]['itemlink_type'] = 'PluginOrderOrder';
-
-            $sopt[3161]['table']         = 'glpi_plugin_order_orders';
-            $sopt[3161]['field']         = 'num_order';
-            $sopt[3161]['linkfield']     = '';
-            $sopt[3161]['name']          = __("Order number", "order");
-            $sopt[3161]['forcegroupby']  = true;
-            $sopt[3161]['datatype']      = 'itemlink';
-            $sopt[3161]['itemlink_type'] = 'PluginOrderOrder';
-        }
+    if ($plugin->isInstalled('order') && $plugin->isActivated('order') && Session::haveRight("plugin_order_order", READ) && in_array($itemtype, PluginOrderOrder_Item::getClasses(true))) {
+        $sopt[3160]['table']         = 'glpi_plugin_order_orders';
+        $sopt[3160]['field']         = 'name';
+        $sopt[3160]['linkfield']     = '';
+        $sopt[3160]['name']          = __("Order name", "order");
+        $sopt[3160]['forcegroupby']  = true;
+        $sopt[3160]['datatype']      = 'itemlink';
+        $sopt[3160]['itemlink_type'] = 'PluginOrderOrder';
+        $sopt[3161]['table']         = 'glpi_plugin_order_orders';
+        $sopt[3161]['field']         = 'num_order';
+        $sopt[3161]['linkfield']     = '';
+        $sopt[3161]['name']          = __("Order number", "order");
+        $sopt[3161]['forcegroupby']  = true;
+        $sopt[3161]['datatype']      = 'itemlink';
+        $sopt[3161]['itemlink_type'] = 'PluginOrderOrder';
     }
     return $sopt;
 }

@@ -61,7 +61,7 @@ if (!defined('PLUGIN_ORDER_SIGNATURE_EXTENSION')) {
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 if (!defined('PLUGIN_ORDER_NUMBER_STEP')) {
-    define("PLUGIN_ORDER_NUMBER_STEP", 1 / pow(10, $CFG_GLPI["decimal_number"]));
+    define("PLUGIN_ORDER_NUMBER_STEP", 1 / 10 ** $CFG_GLPI["decimal_number"]);
 }
 
 // Autoload

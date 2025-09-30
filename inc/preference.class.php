@@ -174,7 +174,7 @@ class PluginOrderPreference extends CommonDBTM
         $version = plugin_version_order();
         $this->getFromDB($ID);
 
-        echo "<form method='post' action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'><div align='center'>";
+        echo "<form method='post' action='" . Toolbox::getItemTypeFormURL(self::class) . "'><div align='center'>";
         echo "<table class='tab_cadre_fixe' cellpadding='5'>";
         echo "<tr><th colspan='2'>" . $version['name'] . " - " . $version['version'] . "</th></tr>";
         echo "<tr class='tab_bg_2'><td align='center'>" . __("Use this model", "order") . "</td>";
@@ -210,31 +210,27 @@ class PluginOrderPreference extends CommonDBTM
     {
         $array_file = [];
 
-        if (is_dir($directory)) {
-            if ($dh = opendir($directory)) {
-                while (($file = readdir($dh)) !== false) {
-                    $filename  = $file;
-                    $filetype  = filetype($directory . $file);
-                    $filedate  = Html::convDate(date("Y-m-d", filemtime($directory . $file)));
-                    $basename  = explode('.', basename($filename));
-                    $extension = array_pop($basename);
-                    if ($filename == ".." or $filename == ".") {
-                        echo "";
-                    } else {
-                        if ($filetype == 'file' && in_array($extension, $ext)) {
-                            if (in_array($ext, PLUGIN_ORDER_SIGNATURE_EXTENSION)) {
-                                $name = array_shift($basename);
-                                if (strtolower($name) == strtolower($_SESSION["glpiname"])) {
-                                    $array_file[] = [$filename, $filedate, $extension];
-                                }
-                            } else {
-                                $array_file[] = [$filename, $filedate, $extension];
-                            }
+        if (is_dir($directory) && $dh = opendir($directory)) {
+            while (($file = readdir($dh)) !== false) {
+                $filename  = $file;
+                $filetype  = filetype($directory . $file);
+                $filedate  = Html::convDate(date("Y-m-d", filemtime($directory . $file)));
+                $basename  = explode('.', basename($filename));
+                $extension = array_pop($basename);
+                if ($filename == ".." || $filename == ".") {
+                    echo "";
+                } elseif ($filetype == 'file' && in_array($extension, $ext)) {
+                    if (in_array($ext, PLUGIN_ORDER_SIGNATURE_EXTENSION)) {
+                        $name = array_shift($basename);
+                        if (strtolower($name) == strtolower($_SESSION["glpiname"])) {
+                            $array_file[] = [$filename, $filedate, $extension];
                         }
+                    } else {
+                        $array_file[] = [$filename, $filedate, $extension];
                     }
                 }
-                closedir($dh);
             }
+            closedir($dh);
         }
 
         rsort($array_file);
@@ -245,7 +241,7 @@ class PluginOrderPreference extends CommonDBTM
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -278,7 +274,7 @@ class PluginOrderPreference extends CommonDBTM
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         //Current table name

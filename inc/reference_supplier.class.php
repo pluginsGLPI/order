@@ -56,7 +56,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
 
     public function getFromDBByReference($plugin_order_references_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $table = self::getTable();
@@ -161,7 +161,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if (get_class($item) == __CLASS__) {
+        if (get_class($item) == self::class) {
             return [1 => __("Main")];
         } elseif ($item instanceof PluginOrderReference) {
             return self::createTabEntry(
@@ -195,7 +195,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
 
     public function showForm($ID, $options = [])
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $plugin_order_references_id = -1;
@@ -275,13 +275,13 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
 
     public function showReferenceManufacturers($ID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $ref = new PluginOrderReference();
         $ref->getFromDB($ID);
 
-        $target = Toolbox::getItemTypeFormURL(__CLASS__);
+        $target = Toolbox::getItemTypeFormURL(self::class);
         Session::initNavigateListItems(
             $this->getType(),
             __("Product reference", "order") . " = " . $ref->fields["name"],
@@ -380,7 +380,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
 
     public function getReferenceCodeByReferenceAndSupplier($plugin_order_references_id, $suppliers_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $table = self::getTable();
@@ -405,7 +405,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -513,7 +513,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         //Old table name
@@ -526,14 +526,10 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
 
     public static function showReferencesFromSupplier($ID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
-        if (isset($_POST["start"])) {
-            $start = (int) $_POST["start"];
-        } else {
-            $start = 0;
-        }
+        $start = isset($_POST["start"]) ? (int) $_POST["start"] : 0;
 
         $criteria = [
             'SELECT' => [
@@ -563,7 +559,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         $nb     = count($result);
         echo "<div class='center'>";
 
-        if ($nb) {
+        if ($nb !== 0) {
             // Add pagination
             $criteria_limit = $criteria;
             $criteria_limit['START'] = $start;

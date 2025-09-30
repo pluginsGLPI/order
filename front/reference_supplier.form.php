@@ -43,10 +43,8 @@ if (!isset($_GET["plugin_order_references_id"])) {
 $PluginOrderReference_Supplier = new PluginOrderReference_Supplier();
 
 if (isset($_POST["add"])) {
-    if (PluginOrderReference_Supplier::canCreate()) {
-        if (isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0) {
-            $PluginOrderReference_Supplier->add($_POST);
-        }
+    if (PluginOrderReference_Supplier::canCreate() && (isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0)) {
+        $PluginOrderReference_Supplier->add($_POST);
     }
     Html::redirect($_SERVER['HTTP_REFERER']);
 } elseif (isset($_POST["update"])) {

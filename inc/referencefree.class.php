@@ -42,17 +42,16 @@ class PluginOrderReferenceFree extends CommonDBTM
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
         $default_collation = DBConnection::getDefaultCollation();
         $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-        $table = getTableForItemType(__CLASS__);
+        $table = getTableForItemType(self::class);
         if (!$DB->tableExists($table)) {
             $migration->displayMessage("Installing $table");
-
             //Install
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_referencefrees` (
                `id` int {$default_key_sign} NOT NULL auto_increment,
@@ -89,33 +88,31 @@ class PluginOrderReferenceFree extends CommonDBTM
                KEY date_mod (date_mod)
             ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
             $DB->doQuery($query);
-        } else {
+        } elseif (!$DB->fieldExists($table, 'ecotax_price')) {
             // Add ecotax field if it doesn't exist
-            if (!$DB->fieldExists($table, 'ecotax_price')) {
-                $migration->addField(
-                    $table,
-                    'ecotax_price',
-                    "decimal(20,6) NOT NULL DEFAULT '0.000000'",
-                    ['after' => 'comment'],
-                );
-                $migration->migrationOneTable($table);
-            }
+            $migration->addField(
+                $table,
+                'ecotax_price',
+                "decimal(20,6) NOT NULL DEFAULT '0.000000'",
+                ['after' => 'comment'],
+            );
+            $migration->migrationOneTable($table);
         }
     }
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
-        $table  = getTableForItemType(__CLASS__);
+        $table  = getTableForItemType(self::class);
         foreach (
             ["glpi_displaypreferences", "glpi_documents_items", "glpi_savedsearches",
                 "glpi_logs",
             ] as $t
         ) {
             $item = getItemForTable($t);
-            $item->deleteByCriteria(['itemtype' => __CLASS__]);
+            $item->deleteByCriteria(['itemtype' => self::class]);
         }
 
         $DB->doQuery("DROP TABLE IF EXISTS `$table`");

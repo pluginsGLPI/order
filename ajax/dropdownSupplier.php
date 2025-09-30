@@ -27,8 +27,7 @@
  * @link      https://github.com/pluginsGLPI/order
  * -------------------------------------------------------------------------
  */
-
-/** @var \DBmysql $DB */
+/** @var DBmysql $DB */
 global $DB;
 
 if (strpos($_SERVER['PHP_SELF'], "dropdownSupplier.php")) {
@@ -59,7 +58,7 @@ if (isset($_POST["suppliers_id"])) {
     $number = count($result);
 
     $values = [0 => Dropdown::EMPTY_VALUE];
-    if ($number) {
+    if ($number !== 0) {
         foreach ($result as $data) {
             $values[$data['id']] = formatUserName(0, '', $data['name'], $data['firstname']);
         }

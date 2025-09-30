@@ -250,7 +250,7 @@ class PluginOrderBill extends CommonDropdown
 
     public static function showItems(PluginOrderBill $bill)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
@@ -274,7 +274,7 @@ class PluginOrderBill extends CommonDropdown
         $result = $DB->request($criteria);
         $number = count($result);
 
-        if (!$number) {
+        if ($number === 0) {
             echo "</th><td>";
             echo _n("Item", "Items", 2);
             echo "</td></tr>";
@@ -329,7 +329,7 @@ class PluginOrderBill extends CommonDropdown
 
     public static function showOrdersItems(PluginOrderBill $bill)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $reference = new PluginOrderReference();
@@ -366,7 +366,7 @@ class PluginOrderBill extends CommonDropdown
         $order_item = new PluginOrderOrder_Item();
 
         echo "<div class='center'><table class='tab_cadre_fixe'>";
-        if (!count($result_ref)) {
+        if (count($result_ref) === 0) {
             echo "<tr><th>" . __("No item to take delivery of", "order") . "</th></tr></table></div>";
         } else {
             $itemtype = $data_ref["itemtype"];
@@ -504,7 +504,7 @@ class PluginOrderBill extends CommonDropdown
 
     public function queryRef($ID, $table)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -543,7 +543,7 @@ class PluginOrderBill extends CommonDropdown
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -623,14 +623,14 @@ class PluginOrderBill extends CommonDropdown
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $table = self::getTable();
         foreach (["displaypreferences", "documents_items", "savedsearches", "logs"] as $t) {
             $item = getItemForTable("glpi_$t");
             $item->deleteByCriteria([
-                'itemtype' => __CLASS__,
+                'itemtype' => self::class,
             ]);
         }
         $DB->doQuery("DROP TABLE IF EXISTS`" . $table . "`");
@@ -651,7 +651,7 @@ class PluginOrderBill extends CommonDropdown
                         null,
                         self::getIcon(),
                     );
-                case __CLASS__:
+                case self::class:
                     $ong[1] = self::createTabEntry(
                         __("Orders", "order"),
                         0,

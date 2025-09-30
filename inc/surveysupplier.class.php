@@ -57,7 +57,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
     public function getFromDBByOrder($plugin_order_orders_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $table = self::getTable();
@@ -112,7 +112,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
     public function getTotalNotation($plugin_order_orders_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $table = self::getTable();
@@ -122,7 +122,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
             'WHERE' => ['plugin_order_orders_id' => $plugin_order_orders_id],
         ];
         $iterator = $DB->request($criteria);
-        if (count($iterator)) {
+        if (count($iterator) > 0) {
             return $iterator->current()["total"] / 5;
         } else {
             return 0;
@@ -132,7 +132,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
     public function getNotation($suppliers_id, $field)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $table = self::getTable();
@@ -150,7 +150,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         ];
         $iterator = $DB->request($criteria);
 
-        if (count($iterator)) {
+        if (count($iterator) > 0) {
             $result = $iterator->current();
             return $result["total"] / $result["nb"];
         } else {
@@ -161,7 +161,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
     public static function showGlobalNotation($suppliers_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $config = PluginOrderConfig::getConfig();
@@ -172,7 +172,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $survey       = new self();
         $survey_table = $survey->getTable();
 
-        $restrict = getEntitiesRestrictRequest(" AND ", "orders", "entities_id", '', true);
+        getEntitiesRestrictRequest(" AND ", "orders", "entities_id", '', true);
 
         $criteria = [
             'SELECT' => [
@@ -211,7 +211,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         echo "<th>" . __("Comment on survey", "order") . "</th>";
         echo "</tr>";
 
-        if ($nb) {
+        if ($nb !== 0) {
             foreach ($iterator as $row) {
                 $name        = $row["name"];
                 $ID          = $row["id"];
@@ -387,7 +387,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
     public static function showOrderSupplierSurvey($ID)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $order = new PluginOrderOrder();
@@ -396,7 +396,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $survey = new self();
 
         $table = self::getTable();
-        Session::initNavigateListItems(__CLASS__, __("Order", "order") . " = " . $order->fields["name"]);
+        Session::initNavigateListItems(self::class, __("Order", "order") . " = " . $order->fields["name"]);
 
         $candelete = $order->can($ID, DELETE);
         $criteria = [
@@ -407,7 +407,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $rand      = mt_rand();
         echo "<div class='center'>";
         echo "<form method='post' name='show_suppliersurvey$rand' id='show_suppliersurvey$rand' " .
-            " action=\"" . Toolbox::getItemTypeFormURL(__CLASS__) . "\">";
+            " action=\"" . Toolbox::getItemTypeFormURL(self::class) . "\">";
         echo Html::hidden('plugin_order_orders_id', ['value' => $ID]);
         echo "<table class='tab_cadre_fixe'>";
 
@@ -420,7 +420,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
         if (count($iterator) > 0) {
             foreach ($iterator as $data) {
-                Session::addToNavigateListItems(__CLASS__, (int) $data['id']);
+                Session::addToNavigateListItems(self::class, (int) $data['id']);
                 echo Html::hidden("item[" . $data["id"] . "]", ['value' => $ID]);
                 echo "<tr class='tab_bg_1 center'>";
                 echo "<td>";
@@ -442,7 +442,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
                     echo ">";
                 }
                 echo "</td>";
-                $link = Toolbox::getItemTypeFormURL(__CLASS__);
+                $link = Toolbox::getItemTypeFormURL(self::class);
                 echo "<td><a href='" . $link . "?id=" . $data["id"] . "&plugin_order_orders_id=" . $ID . "'>"
                 . Dropdown::getDropdownName("glpi_suppliers", (int) $data["suppliers_id"]) . "</a></td>";
                 echo "<td>";
@@ -498,7 +498,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         //Only avaiable since 1.3.0
 
@@ -586,7 +586,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         //Current table name

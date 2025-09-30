@@ -99,7 +99,7 @@ class PluginOrderProfile extends CommonDBTM
         //$rights = ['rights' => self::getRights($profile->getField('interface'),];
         $rights = [];
         if ($profile->getField('interface') == 'central') {
-            $rights = $this->getAllRights();
+            $rights = static::getAllRights();
         }
 
         $profile->displayRightsChoiceMatrix($rights, [
@@ -122,7 +122,7 @@ class PluginOrderProfile extends CommonDBTM
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -157,15 +157,13 @@ class PluginOrderProfile extends CommonDBTM
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if ($item instanceof Profile) {
-            if ($item->getField('id') && $item->getField('interface') != 'helpdesk') {
-                return self::createTabEntry(
-                    PluginOrderOrder::getTypeName(2),
-                    0,
-                    null,
-                    PluginOrderOrder::getIcon(),
-                );
-            }
+        if ($item instanceof Profile && ($item->getField('id') && $item->getField('interface') != 'helpdesk')) {
+            return self::createTabEntry(
+                PluginOrderOrder::getTypeName(2),
+                0,
+                null,
+                PluginOrderOrder::getIcon(),
+            );
         }
         return '';
     }
@@ -229,7 +227,7 @@ class PluginOrderProfile extends CommonDBTM
 
     public static function migrateOneProfile($profiles_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         //Cannot launch migration if there's nothing to migrate...
         if (!$DB->tableExists('glpi_plugin_order_profiles')) {
@@ -290,7 +288,7 @@ class PluginOrderProfile extends CommonDBTM
      */
     public static function initProfile()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $profile = new self();
 

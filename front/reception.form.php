@@ -27,8 +27,7 @@
  * @link      https://github.com/pluginsGLPI/order
  * -------------------------------------------------------------------------
  */
-
-/** @var \DBmysql $DB */
+/** @var DBmysql $DB */
 global $DB;
 
 
@@ -57,7 +56,7 @@ if (isset($_POST["update"])) {
             );
             $nb = count($result);
 
-            if ($nb) {
+            if ($nb !== 0) {
                 foreach ($result as $row) {
                     $ID = $row['id'];
                     $reception->update([

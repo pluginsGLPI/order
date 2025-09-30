@@ -110,7 +110,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -140,7 +140,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         //Current table name
         $DB->doQuery("DROP TABLE IF EXISTS  `" . self::getTable() . "`");

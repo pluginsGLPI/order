@@ -36,11 +36,7 @@ if (!isset($_GET["id"])) {
 if (!isset($_GET["withtemplate"])) {
     $_GET["withtemplate"] = "";
 }
-if (isset($_POST["popup"])) {
-    $_GET["popup"] = $_POST["popup"];
-} else {
-    $_GET["popup"] = "";
-}
+$_GET["popup"] = $_POST["popup"] ?? "";
 if (!isset($_GET["itemtype"])) {
     $_GET["itemtype"] = "";
 }

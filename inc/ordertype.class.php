@@ -44,7 +44,7 @@ class PluginOrderOrderType extends CommonDropdown
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         //Only avaiable since 1.3.0
 
@@ -71,7 +71,7 @@ class PluginOrderOrderType extends CommonDropdown
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         //Current table name

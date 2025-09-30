@@ -27,8 +27,7 @@
  * @link      https://github.com/pluginsGLPI/order
  * -------------------------------------------------------------------------
  */
-
-/** @var \DBmysql $DB */
+/** @var DBmysql $DB */
 global $DB;
 
 
@@ -71,11 +70,7 @@ if (isset($_POST["add"])) {
     $pluginOrderOrder->redirectToList();
 } elseif (isset($_REQUEST["purge"])) {
     /* purge order */
-    if (isset($_POST['id'])) {
-        $id = $_POST['id'];
-    } else {
-        $id = $_GET['id'];
-    }
+    $id = $_POST['id'] ?? $_GET['id'];
     $pluginOrderOrder->check($id, DELETE);
     $pluginOrderOrder->delete(['id' => $id], true);
     $pluginOrderOrder->redirectToList();
@@ -187,7 +182,7 @@ if (isset($_POST["add"])) {
                         $pluginOrderOrder_Item->fields["discount"],
                     );
 
-                    if ($nb = count($result)) {
+                    if (($nb = count($result)) !== 0) {
                         foreach ($result as $row) {
                             $ID       = $row['id'];
                             $items_id = $row['items_id'];
@@ -246,8 +241,8 @@ if (isset($_POST["add"])) {
 
         if (isset($_POST['addreference'])) {
             //create reference
-            $itemtype = (isset($_POST['itemtype'])) ? $_POST['itemtype'] : 'PluginOrderOther';
-            $types_id = (isset($_POST['types_id'])) ? $_POST['types_id'] : 0;
+            $itemtype = $_POST['itemtype'] ?? 'PluginOrderOther';
+            $types_id = $_POST['types_id'] ?? 0;
 
             $reference = new PluginOrderReference();
             if (
@@ -330,7 +325,7 @@ if (isset($_POST["add"])) {
                         $pluginOrderOrder_Item->fields["discount"],
                     );
 
-                    if ($nb = count($result)) {
+                    if (($nb = count($result)) !== 0) {
                         foreach ($result as $row) {
                             $ID       = $row['id'];
                             $items_id = $row['items_id'];
@@ -409,7 +404,7 @@ if (isset($_POST["add"])) {
         if ($_POST["discount"] < 0 || $_POST["discount"] > 100) {
             Session::addMessageAfterRedirect(__("The discount pourcentage must be between 0 and 100", "order"), false, ERROR);
         } else {
-            $price = isset($_POST['price_taxfree']) ? $_POST['price_taxfree'] : $_POST['old_price_taxfree'];
+            $price = $_POST['price_taxfree'] ?? $_POST['old_price_taxfree'];
 
             $data = $pluginOrderOrder_Item->queryRef(
                 $_POST['plugin_order_orders_id'],
