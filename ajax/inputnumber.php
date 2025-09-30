@@ -59,9 +59,9 @@ if (isset($_POST['name'])) {
     // Validation and fallback
     $name  = isset($_POST['name']) && preg_match('/^[a-zA-Z0-9_\-]+$/', $_POST['name']) ? $_POST['name'] : 'default_name';
     $value = $data ?? 0;
-    $step  = $step ?? 1;
-    $min   = $min ?? 0;
-    $class = $class ?? '';
+    $step ??= 1;
+    $min ??= 0;
+    $class ??= '';
 
     $name  = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
     $value = htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
