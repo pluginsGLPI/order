@@ -31,56 +31,55 @@
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include("../../../inc/includes.php");
 Session::checkLoginUser();
 
 Html::header(
-    __("Orders management", "order"),
+    __s("Orders management", "order"),
     $_SERVER['PHP_SELF'],
     "management",
-    "PluginOrderMenu"
+    "PluginOrderMenu",
 );
 
 //If there's only one possibility, do not display menu!
 if (PluginOrderOrder::canView() && !PluginOrderReference::canView() && !PluginOrderBill::canView()) {
     Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderOrder'));
-} else if (!PluginOrderOrder::canView() && PluginOrderReference::canView() && !PluginOrderBill::canView()) {
+} elseif (!PluginOrderOrder::canView() && PluginOrderReference::canView() && !PluginOrderBill::canView()) {
     Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderReference'));
-} else if (!PluginOrderOrder::canView() && !PluginOrderReference::canView() && PluginOrderBill::canView()) {
+} elseif (!PluginOrderOrder::canView() && !PluginOrderReference::canView() && PluginOrderBill::canView()) {
     Html::redirect(Toolbox::getItemTypeSearchURL('PluginOrderBill'));
 }
 
 if (PluginOrderOrder::canView() || PluginOrderReference::canView()) {
     echo "<div class='center'>";
     echo "<table class='tab_cadre'>";
-    echo "<tr><th colspan='2'>" . __("Orders management", "order") . "</th></tr>";
+    echo "<tr><th colspan='2'>" . __s("Orders management", "order") . "</th></tr>";
 
     if (PluginOrderOrder::canView()) {
         echo "<tr class='tab_bg_1 center'>";
         echo "<td><i class='fa-2x " . PluginOrderOrder::getIcon() . "'></i></td>";
         echo "<td><a href='" . Toolbox::getItemTypeSearchURL('PluginOrderOrder') . "'>" .
-         __("Orders", "order") . "</a></td></tr>";
+         __s("Orders", "order") . "</a></td></tr>";
     }
 
     if (PluginOrderReference::canView()) {
         echo "<tr class='tab_bg_1 center'>";
         echo "<td><i class='fa-2x " . PluginOrderReference::getIcon() . "'></i></td>";
         echo "<td><a href='" . Toolbox::getItemTypeSearchURL('PluginOrderReference') . "'>" .
-         __("Products references", "order") . "</a></td></tr>";
+         __s("Products references", "order") . "</a></td></tr>";
     }
 
     if (PluginOrderBill::canView()) {
         echo "<tr class='tab_bg_1 center'>";
         echo "<td><i class='fa-2x " . PluginOrderBill::getIcon() . "'></i></td>";
         echo "<td><a href='" . Toolbox::getItemTypeSearchURL('PluginOrderBill') . "'>" .
-         __("Bills", "order") . "</a></td></tr>";
+         __s("Bills", "order") . "</a></td></tr>";
     }
 
     echo "</table></div>";
 } else {
     echo "<div class='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] .
          "/pics/warning.png\" alt=\"warning\"><br><br>";
-    echo "<b>" . __("Access denied") . "</b></div>";
+    echo "<b>" . __s("Access denied") . "</b></div>";
 }
 
 Html::footer();

@@ -28,7 +28,6 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
 Session::checkLoginUser();
 
 if (!isset($_GET["id"])) {
@@ -45,41 +44,37 @@ $supplier = new PluginOrderOrder_Supplier();
 $order    = new PluginOrderOrder();
 
 if (isset($_POST["add"])) {
-    if (PluginOrderOrder_Supplier::canCreate()) {
-        if (isset($_POST["plugin_order_orders_id"]) && $_POST["plugin_order_orders_id"] > 0) {
-            if ($supplier->add($_POST)) {
-                $new_value = __("Add") . " ";
-                if ($_POST["num_quote"]) {
-                    $new_value .= __("Quote number", "order") . " " . $_POST["num_quote"];
-                }
-                if ($_POST["num_order"]) {
-                    $new_value .= " - " . __("Order number") . " : " . $_POST["num_order"];
-                }
-                $order->addHistory('PluginOrderOrder', "", $new_value, $_POST["plugin_order_orders_id"]);
-            }
+    if (PluginOrderOrder_Supplier::canCreate() && (isset($_POST["plugin_order_orders_id"]) && $_POST["plugin_order_orders_id"] > 0) && $supplier->add($_POST)) {
+        $new_value = __s("Add") . " ";
+        if ($_POST["num_quote"]) {
+            $new_value .= __s("Quote number", "order") . " " . $_POST["num_quote"];
         }
+        if ($_POST["num_order"]) {
+            $new_value .= " - " . __s("Order number") . " : " . $_POST["num_order"];
+        }
+        $order->addHistory('PluginOrderOrder', "", $new_value, $_POST["plugin_order_orders_id"]);
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     if (PluginOrderOrder_Supplier::canCreate()) {
         foreach ($_POST["check"] as $ID => $value) {
             if ($supplier->delete(["id" => $ID], false, false)) {
-                $new_value = __("Delete", "order") . " " . __("Supplier Detail", "order") . " : " . $ID;
+                $new_value = __s("Delete", "order") . " " . __s("Supplier Detail", "order") . " : " . $ID;
                 $order->addHistory('PluginOrderOrder', "", $new_value, $_POST["plugin_order_orders_id"]);
             }
         }
     }
     Html::back();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     if (PluginOrderOrder_Supplier::canCreate()) {
         $supplier->update($_POST);
     }
     Html::back();
 } else {
-    Html::header(__("Orders management", "order"), '', "plugins", "order", "order");
+    Html::header(__s("Orders management", "order"), '', "plugins", "order", "order");
     $supplier->showForm(
         $_GET["id"],
-        ['plugin_order_orders_id' => $_GET["plugin_order_orders_id"]]
+        ['plugin_order_orders_id' => $_GET["plugin_order_orders_id"]],
     );
     Html::footer();
 }

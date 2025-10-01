@@ -28,7 +28,6 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
 Session::checkLoginUser();
 
 $bill = new PluginOrderBill();
@@ -52,7 +51,7 @@ if (isset($_REQUEST['purge'])) {
 }
 
 if (isset($_POST['action'])) {
-   // Retrieve configuration for generate assets feature
+    // Retrieve configuration for generate assets feature
 
     $order_item = new PluginOrderOrder_Item();
     switch ($_POST['chooseAction']) {
@@ -72,16 +71,14 @@ if (isset($_POST['action'])) {
                         $ic->getFromDBforDevice($order_item->fields['itemtype'], $order_item->fields['items_id']);
 
                         $config = PluginOrderConfig::getConfig();
-                        if ($config->canAddBillDetails()) {
-                            if ($bill->getFromDB($_POST["plugin_order_bills_id"])) {
-                                $input = [
-                                    'id'            => $ic->fields['id'],
-                                    'bill'          => $bill->fields['number'],
-                                    'warranty_date' => $bill->fields['billdate'],
-                                ];
-                                $ic->check($input['id'], UPDATE, $input);
-                                $ic->update($input);
-                            }
+                        if ($config->canAddBillDetails() && $bill->getFromDB($_POST["plugin_order_bills_id"])) {
+                            $input = [
+                                'id'            => $ic->fields['id'],
+                                'bill'          => $bill->fields['number'],
+                                'warranty_date' => $bill->fields['billdate'],
+                            ];
+                            $ic->check($input['id'], UPDATE, $input);
+                            $ic->update($input);
                         }
                     }
                 }

@@ -31,7 +31,7 @@
 /** @var DBmysql $DB */
 global $DB;
 
-include_once("../../../inc/includes.php");
+include_once(__DIR__ . "/../../../inc/includes.php");
 
 Session::checkRight("plugin_order_reference", READ);
 
@@ -42,29 +42,29 @@ if (isset($_POST["itemtype"])) {
             's.plugin_order_references_id AS id',
             's.price_taxfree',
             's.reference_code',
-            'r.name'
+            'r.name',
         ],
         'FROM' => 'glpi_plugin_order_references_suppliers AS s',
         'LEFT JOIN' => [
             'glpi_plugin_order_references AS r' => [
                 'ON' => [
                     's' => 'plugin_order_references_id',
-                    'r' => 'id'
-                ]
-            ]
+                    'r' => 'id',
+                ],
+            ],
         ],
         'WHERE' => [
             's.suppliers_id' => $_POST['suppliers_id'],
             'r.itemtype' => $_POST['itemtype'],
             'r.is_active' => 1,
-            'r.is_deleted' => 0
+            'r.is_deleted' => 0,
         ] + getEntitiesRestrictCriteria('r', '', $_POST['entities_id'], true),
-        'ORDER' => ['s.reference_code']
+        'ORDER' => ['s.reference_code'],
     ];
     $result = $DB->request($criteria);
     $number = count($result);
     $values = [0 => Dropdown::EMPTY_VALUE];
-    if ($number) {
+    if ($number !== 0) {
         foreach ($result as $data) {
             $values[$data['id']] = $data['name'] . " - " . $data['reference_code'];
         }
@@ -72,7 +72,7 @@ if (isset($_POST["itemtype"])) {
     Dropdown::showFromArray(
         $_POST['fieldname'],
         $values,
-        ['rand'  => $_POST['rand'], 'width' => '100%']
+        ['rand'  => $_POST['rand'], 'width' => '100%'],
     );
     Ajax::updateItemOnSelectEvent(
         'dropdown_plugin_order_references_id' . $_POST['rand'],
@@ -81,17 +81,17 @@ if (isset($_POST["itemtype"])) {
         [
             'reference_id' => '__VALUE__',
             'suppliers_id' => $_POST['suppliers_id'],
-        ]
+        ],
     );
-} else if (isset($_POST['reference_id'])) {
-   // Get price
+} elseif (isset($_POST['reference_id'])) {
+    // Get price
     $criteria = [
         'SELECT' => ['price_taxfree'],
         'FROM' => 'glpi_plugin_order_references_suppliers',
         'WHERE' => [
             'plugin_order_references_id' => $_POST['reference_id'],
-            'suppliers_id' => $_POST['suppliers_id']
-        ]
+            'suppliers_id' => $_POST['suppliers_id'],
+        ],
     ];
     $result = $DB->request($criteria);
     $row = $result->current();

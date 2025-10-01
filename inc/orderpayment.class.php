@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 // Class for a Dropdown
 class PluginOrderOrderPayment extends CommonDropdown
@@ -39,13 +37,13 @@ class PluginOrderOrderPayment extends CommonDropdown
 
     public static function getTypeName($nb = 0)
     {
-        return __("Payment conditions", "order");
+        return __s("Payment conditions", "order");
     }
 
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -63,11 +61,11 @@ class PluginOrderOrderPayment extends CommonDropdown
                   PRIMARY KEY  (`id`),
                   KEY `name` (`name`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         } else {
             $migration->displayMessage("Upgrading $table");
 
-           //1.2.0
+            //1.2.0
             $migration->renameTable("glpi_dropdown_plugin_order_payment", $table);
             $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
             $migration->changeField($table, "name", "name", "varchar(255) default NULL");
@@ -79,12 +77,12 @@ class PluginOrderOrderPayment extends CommonDropdown
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
-       //Old table name
-        $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_payment`") or die($DB->error());
-       //Current table name
-        $DB->query("DROP TABLE IF EXISTS  `" . self::getTable() . "`") or die($DB->error());
+        //Old table name
+        $DB->doQuery("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_payment`");
+        //Current table name
+        $DB->doQuery("DROP TABLE IF EXISTS  `" . self::getTable() . "`");
     }
 }

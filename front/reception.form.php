@@ -27,11 +27,10 @@
  * @link      https://github.com/pluginsGLPI/order
  * -------------------------------------------------------------------------
  */
-
-/** @var \DBmysql $DB */
+/** @var DBmysql $DB */
 global $DB;
 
-include("../../../inc/includes.php");
+
 Session::checkLoginUser();
 
 if (!isset($_GET["id"])) {
@@ -53,11 +52,11 @@ if (isset($_POST["update"])) {
                 $order_item->fields["plugin_order_references_id"],
                 $order_item->fields["price_taxfree"],
                 $order_item->fields["discount"],
-                PluginOrderOrder::ORDER_DEVICE_DELIVRED
+                PluginOrderOrder::ORDER_DEVICE_DELIVRED,
             );
             $nb = count($result);
 
-            if ($nb) {
+            if ($nb !== 0) {
                 foreach ($result as $row) {
                     $ID = $row['id'];
                     $reception->update([
@@ -76,27 +75,27 @@ if (isset($_POST["update"])) {
     $reception->updateReceptionStatus([
         'items' => [
             'PluginOrderReception' => [
-                $_POST['id'] => 'on'
-            ]
-        ]
+                $_POST['id'] => 'on',
+            ],
+        ],
     ]);
     Html::redirect($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $reception->deleteDelivery($_POST["id"]);
     $reception->updateReceptionStatus([
         'items' => [
             'PluginOrderReception' => [
-                $_POST['id'] => 'on'
-            ]
-        ]
+                $_POST['id'] => 'on',
+            ],
+        ],
     ]);
     Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder') . "?id=" . $_POST["plugin_order_orders_id"]);
-} else if (isset($_POST["bulk_reception"])) {
-   //Several new items are delivered
+} elseif (isset($_POST["bulk_reception"])) {
+    //Several new items are delivered
     $reception->updateBulkReceptionStatus($_POST);
     Html::redirect($_SERVER["HTTP_REFERER"]);
 } else {
-    Html::header(__("Orders management", "order"), '', "management", "PluginOrderMenu", "reception");
+    Html::header(__s("Orders management", "order"), '', "management", "PluginOrderMenu", "reception");
     $reception->showForm($_GET["id"]);
     Html::footer();
 }

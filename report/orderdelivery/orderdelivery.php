@@ -44,16 +44,16 @@ $DBCONNECTION_REQUIRED = 0; // Really a big SQL request
 
 include("../../../../inc/includes.php");
 
-$report = new PluginReportsAutoReport(__("orderdelivery_report_title", "order"));
-new PluginReportsDateIntervalCriteria($report, 'order_date', __("Date of order", "order"));
-new PluginReportsDateIntervalCriteria($report, 'deliverydate', __("Delivery date"));
-new PluginReportsLocationCriteria($report, 'locations_id', __("Delivery location", "order"));
-new PluginReportsSupplierCriteria($report, 'suppliers_id', __("Supplier"));
+$report = new PluginReportsAutoReport(__s("orderdelivery_report_title", "order"));
+new PluginReportsDateIntervalCriteria($report, 'order_date', __s("Date of order", "order"));
+new PluginReportsDateIntervalCriteria($report, 'deliverydate', __s("Delivery date"));
+new PluginReportsLocationCriteria($report, 'locations_id', __s("Delivery location", "order"));
+new PluginReportsSupplierCriteria($report, 'suppliers_id', __s("Supplier"));
 new PluginReportsDropdownCriteria(
     $report,
     'plugin_order_orderstates_id',
     'PluginOrderOrderState',
-    __("Status")
+    __s("Status"),
 );
 $report->displayCriteriasForm();
 
@@ -63,42 +63,42 @@ if ($report->criteriasValidated()) {
     $report->setColumns([
         new PluginReportsColumnLink(
             'entities_id',
-            __("Entity"),
-            'Entity'
+            __s("Entity"),
+            'Entity',
         ),
         new PluginReportsColumnLink(
             'id',
-            __("Name"),
+            __s("Name"),
             'PluginOrderOrder',
             [
                 'with_comment'  => true,
-                'with_navigate' => true
-            ]
+                'with_navigate' => true,
+            ],
         ),
-        new PluginReportsColumn('num_order', __("Order number", "order")),
+        new PluginReportsColumn('num_order', __s("Order number", "order")),
         new PluginReportsColumnLink(
             'suppliers_id',
-            __("Supplier"),
-            'Supplier'
+            __s("Supplier"),
+            'Supplier',
         ),
         new PluginReportsColumnLink(
             'plugin_order_orderstates_id',
-            __("Status"),
+            __s("Status"),
             'PluginOrderOrderState',
-            ['with_comment' => true]
+            ['with_comment' => true],
         ),
-        new PluginReportsColumnDateTime('order_date', __("Date of order", "order")),
-        new PluginReportsColumnDateTime('duedate', __("Estimated due date", "order")),
-        new PluginReportsColumnDateTime('deliverydate', __("Delivery date")),
+        new PluginReportsColumnDateTime('order_date', __s("Date of order", "order")),
+        new PluginReportsColumnDateTime('duedate', __s("Estimated due date", "order")),
+        new PluginReportsColumnDateTime('deliverydate', __s("Delivery date")),
         new PluginReportsColumnLink(
             'locations_id',
-            __("Delivery location", "order"),
+            __s("Delivery location", "order"),
             'Location',
-            ['with_comment' => true]
-        )
+            ['with_comment' => true],
+        ),
     ]);
 
-   //TODO : ne pas chercher dans la poublelles
+    //TODO : ne pas chercher dans la poublelles
     $query = "SELECT * FROM `glpi_plugin_order_orders`";
     $query .= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");
     $query .= $report->addSqlCriteriasRestriction();

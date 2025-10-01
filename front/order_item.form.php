@@ -28,7 +28,6 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
 Session::checkLoginUser();
 $item = new PluginOrderOrder_Item();
 
@@ -39,11 +38,11 @@ if (isset($_POST['update'])) {
 }
 
 Html::header(
-    __("Orders management", "order"),
+    __s("Orders management", "order"),
     $_SERVER['PHP_SELF'],
     "management",
     "PluginOrderMenu",
-    "order"
+    "order",
 );
 
 $item->display($_REQUEST);

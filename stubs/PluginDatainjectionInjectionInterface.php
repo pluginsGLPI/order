@@ -28,9 +28,6 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
-Session::checkLoginUser();
-
-$dropdown = new PluginOrderDeliveryState();
-
-include(GLPI_ROOT . "/front/dropdown.common.form.php");
+interface PluginDatainjectionInjectionInterface
+{
+}

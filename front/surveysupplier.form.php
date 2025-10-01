@@ -28,7 +28,6 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
 Session::checkLoginUser();
 
 if (!isset($_GET["id"])) {
@@ -44,20 +43,18 @@ if (!isset($_GET["plugin_order_orders_id"])) {
 $PluginOrderSurveySupplier = new PluginOrderSurveySupplier();
 
 if (isset($_POST["add"])) {
-    if (PluginOrderSurveySupplier::canCreate()) {
-        if (isset($_POST["plugin_order_orders_id"]) && $_POST["plugin_order_orders_id"] > 0) {
-            $PluginOrderSurveySupplier->add($_POST);
-        }
+    if (PluginOrderSurveySupplier::canCreate() && (isset($_POST["plugin_order_orders_id"]) && $_POST["plugin_order_orders_id"] > 0)) {
+        $PluginOrderSurveySupplier->add($_POST);
     }
     Html::redirect($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     if (PluginOrderSurveySupplier::canCreate()) {
         foreach ($_POST["check"] as $ID => $value) {
             $PluginOrderSurveySupplier->delete(["id" => $ID], false, false);
         }
     }
     Html::redirect($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     if (PluginOrderSurveySupplier::canCreate()) {
         $PluginOrderSurveySupplier->update($_POST);
     }
@@ -65,11 +62,11 @@ if (isset($_POST["add"])) {
 } else {
     $PluginOrderSurveySupplier->checkGlobal(READ);
     Html::header(
-        __("Orders management", "order"),
+        __s("Orders management", "order"),
         $_SERVER['PHP_SELF'],
         "management",
         "PluginOrderMenu",
-        "order"
+        "order",
     );
     $PluginOrderSurveySupplier->display($_GET);
     Html::footer();

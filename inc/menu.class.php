@@ -32,7 +32,7 @@ class PluginOrderMenu extends CommonGLPI
 {
     public static function getTypeName($nb = 0)
     {
-        return __("Orders", "order");
+        return __s("Orders", "order");
     }
 
 
@@ -72,7 +72,7 @@ class PluginOrderMenu extends CommonGLPI
                 'title' => PluginOrderBill::getTypeName(2),
                 'page'  => PluginOrderBill::getSearchURL(false),
                 'links' => [
-                    'search' => PluginOrderBill::getSearchURL(false)
+                    'search' => PluginOrderBill::getSearchURL(false),
                 ],
                 'icon'  => PluginOrderBill::getIcon(),
             ];
@@ -91,7 +91,7 @@ class PluginOrderMenu extends CommonGLPI
                 'title' => PluginOrderReference::getTypeName(2),
                 'page'  => PluginOrderReference::getSearchURL(false),
                 'links' => [
-                    'search' => PluginOrderReference::getSearchURL(false)
+                    'search' => PluginOrderReference::getSearchURL(false),
                 ],
                 'icon'  => PluginOrderReference::getIcon(),
             ];

@@ -28,18 +28,17 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
 Session::checkLoginUser();
 
 $config = new PluginOrderConfig();
 
 if (isset($_POST["update"])) {
     $config->update($_POST);
-   //Update singelton
+    //Update singelton
     PluginOrderConfig::getConfig(true);
     Html::back();
 } else {
-    Html::header(__("Orders", "order"), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "order");
+    Html::header(__s("Orders", "order"), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "order");
 
     Session::checkRight("config", UPDATE);
     $config->showForm(1);

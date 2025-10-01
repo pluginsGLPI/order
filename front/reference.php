@@ -31,7 +31,7 @@
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include("../../../inc/includes.php");
+
 Session::checkLoginUser();
 
 Html::header(
@@ -39,7 +39,7 @@ Html::header(
     $_SERVER['PHP_SELF'],
     "management",
     "PluginOrderMenu",
-    "references"
+    "references",
 );
 
 if (PluginOrderReference::canView()) {
@@ -47,7 +47,7 @@ if (PluginOrderReference::canView()) {
 } else {
     echo "<div class='center'><br><br><img src=\""
       . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
-    echo "<b>" . __("Access denied") . "</b></div>";
+    echo "<b>" . __s("Access denied") . "</b></div>";
 }
 
 Html::footer();

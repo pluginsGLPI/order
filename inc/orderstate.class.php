@@ -28,27 +28,25 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 // Class for a Dropdown
 class PluginOrderOrderState extends CommonDropdown
 {
-    const DRAFT                = 1;
-    const WAITING_FOR_APPROVAL = 2;
-    const VALIDATED            = 3;
-    const BEING_DELIVERING     = 4;
-    const DELIVERED            = 5;
-    const CANCELED             = 6;
-    const PAID                 = 7;
+    public const DRAFT                = 1;
+    public const WAITING_FOR_APPROVAL = 2;
+    public const VALIDATED            = 3;
+    public const BEING_DELIVERING     = 4;
+    public const DELIVERED            = 5;
+    public const CANCELED             = 6;
+    public const PAID                 = 7;
 
     public static $rightname   = 'plugin_order_order';
 
 
     public static function getTypeName($nb = 0)
     {
-        return __("Order status", "order");
+        return __s("Order status", "order");
     }
 
 
@@ -56,10 +54,10 @@ class PluginOrderOrderState extends CommonDropdown
     {
         if ($this->getID() <= self::CANCELED) {
             Session::addMessageAfterRedirect(
-                __("You cannot remove this status", "order") . ": "
+                __s("You cannot remove this status", "order") . ": "
                                           . $this->fields['name'],
                 false,
-                ERROR
+                ERROR,
             );
             return false;
         } else {
@@ -70,7 +68,7 @@ class PluginOrderOrderState extends CommonDropdown
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -79,8 +77,8 @@ class PluginOrderOrderState extends CommonDropdown
 
         $table = self::getTable();
 
-       //1.2.0
-        $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_status`;");
+        //1.2.0
+        $DB->doQuery("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_status`;");
 
         if (!$DB->tableExists($table)) {
             $migration->displayMessage("Installing $table");
@@ -92,25 +90,25 @@ class PluginOrderOrderState extends CommonDropdown
                   PRIMARY KEY  (`id`),
                   KEY `name` (`name`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         }
 
         $state = new self();
         foreach (
             [
-                1 => __("Draft", "order"),
-                2 => __("Waiting for approval", "order"),
-                3 => __("Validated", "order"),
-                4 => __("Being delivered", "order"),
-                5 => __("Delivered", "order"),
-                6 => __("Canceled", "order"),
-                7 => __("Paid", "order")
+                1 => __s("Draft", "order"),
+                2 => __s("Waiting for approval", "order"),
+                3 => __s("Validated", "order"),
+                4 => __s("Being delivered", "order"),
+                5 => __s("Delivered", "order"),
+                6 => __s("Canceled", "order"),
+                7 => __s("Paid", "order"),
             ] as $id => $label
         ) {
             if (!countElementsInTable($table, ['id' => $id])) {
                 $state->add([
                     'id'   => $id,
-                    'name' => Toolbox::addslashes_deep($label)
+                    'name' => $label,
                 ]);
             }
         }
@@ -119,8 +117,8 @@ class PluginOrderOrderState extends CommonDropdown
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
-        $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`") or die($DB->error());
+        $DB->doQuery("DROP TABLE IF EXISTS `" . self::getTable() . "`");
     }
 }

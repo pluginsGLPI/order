@@ -28,31 +28,29 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 // Class NotificationTarget
 class PluginOrderNotificationTargetOrder extends NotificationTarget
 {
-    const AUTHOR                    = 30;
-    const AUTHOR_GROUP              = 31;
-    const DELIVERY_USER             = 32;
-    const DELIVERY_GROUP            = 33;
-    const SUPERVISOR_AUTHOR_GROUP   = 34;
-    const SUPERVISOR_DELIVERY_GROUP = 35;
-    const SUPPLIER                  = 36;
-    const CONTACT                   = 37;
+    public const AUTHOR                    = 30;
+    public const AUTHOR_GROUP              = 31;
+    public const DELIVERY_USER             = 32;
+    public const DELIVERY_GROUP            = 33;
+    public const SUPERVISOR_AUTHOR_GROUP   = 34;
+    public const SUPERVISOR_DELIVERY_GROUP = 35;
+    public const SUPPLIER                  = 36;
+    public const CONTACT                   = 37;
 
     public function getEvents()
     {
         return [
-            'ask'            => __("Request order validation", "order"),
-            'validation'     => __("Order validated", "order"),
-            'cancel'         => __("Order canceled", "order"),
-            'undovalidation' => __("Order currently edited", "order"),
-            'duedate'        => __("Late orders", "order"),
-            'delivered'      => __("No item to generate", "order")
+            'ask'            => __s("Request order validation", "order"),
+            'validation'     => __s("Order validated", "order"),
+            'cancel'         => __s("Order canceled", "order"),
+            'undovalidation' => __s("Order currently edited", "order"),
+            'duedate'        => __s("Late orders", "order"),
+            'delivered'      => __s("No item to generate", "order"),
         ];
     }
 
@@ -65,26 +63,26 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
         if ($event == 'duedate') {
             $this->data['##order.entity##'] = Dropdown::getDropdownName(
                 'glpi_entities',
-                $options['entities_id']
+                $options['entities_id'],
             );
 
             foreach ($options['orders'] as $id => $order) {
-                 $this->data['orders'][] = [
-                     '##order.item.name##'         => $order['name'],
-                     '##order.item.numorder##'     => $order['num_order'],
-                     '##order.item.url##'          => $this->formatURL(
-                         $options['additionnaloption']['usertype'],
-                         PluginOrderOrder::class . "_" . $id
-                     ),
-                     '##order.item.orderdate##'    => Html::convDate($order["order_date"]),
-                     '##order.item.duedate##'      => Html::convDate($order["duedate"]),
-                     '##order.item.deliverydate##' => Html::convDate($order["deliverydate"]),
-                     '##order.item.comment##'      => $order["comment"],
-                     '##order.item.state##'        => Dropdown::getDropdownName(
-                         'glpi_plugin_order_orderstates',
-                         $order["plugin_order_orderstates_id"]
-                     ),
-                 ];
+                $this->data['orders'][] = [
+                    '##order.item.name##'         => $order['name'],
+                    '##order.item.numorder##'     => $order['num_order'],
+                    '##order.item.url##'          => $this->formatURL(
+                        $options['additionnaloption']['usertype'],
+                        PluginOrderOrder::class . "_" . $id,
+                    ),
+                    '##order.item.orderdate##'    => Html::convDate($order["order_date"]),
+                    '##order.item.duedate##'      => Html::convDate($order["duedate"]),
+                    '##order.item.deliverydate##' => Html::convDate($order["deliverydate"]),
+                    '##order.item.comment##'      => $order["comment"],
+                    '##order.item.state##'        => Dropdown::getDropdownName(
+                        'glpi_plugin_order_orderstates',
+                        $order["plugin_order_orderstates_id"],
+                    ),
+                ];
             }
 
             $this->getTags();
@@ -96,51 +94,51 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
         } else {
             $this->data['##lang.ordervalidation.title##']     = $events[$event];
 
-            $this->data['##lang.ordervalidation.entity##']    = __("Entity");
+            $this->data['##lang.ordervalidation.entity##']    = __s("Entity");
             $this->data['##ordervalidation.entity##']         = Dropdown::getDropdownName(
                 'glpi_entities',
-                $this->obj->getField('entities_id')
+                $this->obj->getField('entities_id'),
             );
 
-            $this->data['##lang.ordervalidation.name##']      = __("Name");
+            $this->data['##lang.ordervalidation.name##']      = __s("Name");
             $this->data['##ordervalidation.name##']           = $this->obj->getField("name");
 
-            $this->data['##lang.ordervalidation.numorder##']  = __("Order number");
+            $this->data['##lang.ordervalidation.numorder##']  = __s("Order number");
             $this->data['##ordervalidation.numorder##']       = $this->obj->getField("num_order");
 
-            $this->data['##lang.ordervalidation.orderdate##'] = __("Date of order", "order");
+            $this->data['##lang.ordervalidation.orderdate##'] = __s("Date of order", "order");
             $this->data['##ordervalidation.orderdate##']      = Html::convDate($this->obj->getField("order_date"));
 
-            $this->data['##lang.ordervalidation.state##']     = __("Status");
+            $this->data['##lang.ordervalidation.state##']     = __s("Status");
             $this->data['##ordervalidation.state##']          = Dropdown::getDropdownName(
                 "glpi_plugin_order_orderstates",
-                $this->obj->getField("plugin_order_orderstates_id")
+                $this->obj->getField("plugin_order_orderstates_id"),
             );
 
-            $this->data['##lang.ordervalidation.comment##']   = __("Comment of validation", "order");
+            $this->data['##lang.ordervalidation.comment##']   = __s("Comment of validation", "order");
 
-            $comment = Toolbox::stripslashes_deep(str_replace(['\r\n', '\n', '\r'], "<br/>", $options['comments']));
+            $comment = str_replace(['\r\n', '\n', '\r'], "<br/>", $options['comments']);
             $this->data['##ordervalidation.comment##']        = nl2br($comment);
 
             switch ($event) {
                 case "ask":
-                    $this->data['##lang.ordervalidation.users##'] = __("Request order validation", "order") .
-                                                                " " . __("By");
+                    $this->data['##lang.ordervalidation.users##'] = __s("Request order validation", "order") .
+                                                                " " . __s("By");
                     break;
                 case "validation":
-                    $this->data['##lang.ordervalidation.users##'] = __("Order is validated", "order") .
-                                                                " " . __("By");
+                    $this->data['##lang.ordervalidation.users##'] = __s("Order is validated", "order") .
+                                                                " " . __s("By");
                     break;
                 case "cancel":
-                    $this->data['##lang.ordervalidation.users##'] = __("Order canceled", "order") .
-                                                                " " . __("By");
+                    $this->data['##lang.ordervalidation.users##'] = __s("Order canceled", "order") .
+                                                                " " . __s("By");
                     break;
                 case "undovalidation":
-                    $this->data['##lang.ordervalidation.users##'] = __("Validation canceled successfully", "order") .
-                                                                " " . __("By");
+                    $this->data['##lang.ordervalidation.users##'] = __s("Validation canceled successfully", "order") .
+                                                                " " . __s("By");
                     break;
                 case "delivered":
-                    $this->data['##lang.ordervalidation.users##'] = __("No item to generate", "order");
+                    $this->data['##lang.ordervalidation.users##'] = __s("No item to generate", "order");
                     break;
             }
             $this->data['##ordervalidation.users##']    = getUserName(Session::getLoginUserID());
@@ -151,7 +149,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             $this->data['##lang.ordervalidation.url##'] = "URL";
             $this->data['##ordervalidation.url##']      = $this->formatURL(
                 $options['additionnaloption']['usertype'],
-                $this->obj->getType() . "_" . $this->obj->getField("id")
+                $this->obj->getType() . "_" . $this->obj->getField("id"),
             );
         }
     }
@@ -160,24 +158,24 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
     public function getTags()
     {
         $tags = [
-            'ordervalidation.name'        => __("Name"),
-            'ordervalidation.numorder'    => __("Order number"),
-            'ordervalidation.orderdate'   => __("Date of order", "order"),
-            'ordervalidation.state'       => __("Status"),
-            'ordervalidation.comment'     => __("Comment of validation", "order"),
-            'ordervalidation.users'       => __("Editor of validation", "order"),
-            'order.entity'                => __("Delivery date"),
-            'order.item.name'             => __("Name"),
-            'order.item.state'            => __("Status"),
-            'order.item.numorder'         => __("Order number"),
-            'order.item.orderdate'        => __("Date of order", "order"),
-            'order.item.duedate'          => __("Estimated due date", "order"),
-            'order.item.deliverydate'     => __("Delivery date"),
-            'order.item.comment'          => __("Comments"),
-            'order.author.name'           => __("Author"),
-            'order.author.phone'          => __("Author") . ' - ' . __("Phone"),
-            'order.deliveryuser.name'     => __("Recipient"),
-            'order.deliveryuser.phone'    => __("Recipient") . ' - ' . __("Phone"),
+            'ordervalidation.name'        => __s("Name"),
+            'ordervalidation.numorder'    => __s("Order number"),
+            'ordervalidation.orderdate'   => __s("Date of order", "order"),
+            'ordervalidation.state'       => __s("Status"),
+            'ordervalidation.comment'     => __s("Comment of validation", "order"),
+            'ordervalidation.users'       => __s("Editor of validation", "order"),
+            'order.entity'                => __s("Delivery date"),
+            'order.item.name'             => __s("Name"),
+            'order.item.state'            => __s("Status"),
+            'order.item.numorder'         => __s("Order number"),
+            'order.item.orderdate'        => __s("Date of order", "order"),
+            'order.item.duedate'          => __s("Estimated due date", "order"),
+            'order.item.deliverydate'     => __s("Delivery date"),
+            'order.item.comment'          => __s("Comments"),
+            'order.author.name'           => __s("Author"),
+            'order.author.phone'          => __s("Author") . ' - ' . __s("Phone"),
+            'order.deliveryuser.name'     => __s("Recipient"),
+            'order.deliveryuser.phone'    => __s("Recipient") . ' - ' . __s("Phone"),
         ];
 
         foreach ($tags as $tag => $label) {
@@ -190,13 +188,13 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
 
         $this->addTagToList([
             'tag'   => 'order.action',
-            'label' => __("Action"),
+            'label' => __s("Action"),
             'value' => false,
         ]);
 
         $this->addTagToList([
             'tag'     => 'orders',
-            'label'   => __("Late orders", "order"),
+            'label'   => __s("Late orders", "order"),
             'value'   => false,
             'foreach' => true,
         ]);
@@ -207,7 +205,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $migration->displayMessage("Migrate PluginOrderOrder notifications");
@@ -223,8 +221,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             'FROM' => 'glpi_notificationtemplates',
             'WHERE' => [
                 'itemtype' => 'PluginOrderOrder',
-                'name' => 'Order Validation'
-            ]
+                'name' => 'Order Validation',
+            ],
         ];
         $result       = $DB->request($criteria);
 
@@ -299,7 +297,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                             'notifications_id'         => $notification_id,
                             'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                             'notificationtemplates_id' => $templates_id,
-                        ]
+                        ],
                     );
                 }
             }
@@ -310,8 +308,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             'FROM' => 'glpi_notificationtemplates',
             'WHERE' => [
                 'itemtype' => 'PluginOrderOrder',
-                'name' => 'Due date overtaken'
-            ]
+                'name' => 'Due date overtaken',
+            ],
         ];
         $result       = $DB->request($criteria);
 
@@ -372,7 +370,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                             'notifications_id'         => $notification_id,
                             'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                             'notificationtemplates_id' => $templates_id,
-                        ]
+                        ],
                     );
                 }
             }
@@ -384,8 +382,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             'FROM' => 'glpi_notificationtemplates',
             'WHERE' => [
                 'itemtype' => 'PluginOrderOrder',
-                'name' => 'Order Delivered'
-            ]
+                'name' => 'Order Delivered',
+            ],
         ];
         $result       = $DB->request($criteria);
 
@@ -443,7 +441,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                             'notifications_id'         => $notification_id,
                             'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
                             'notificationtemplates_id' => $templates_id,
-                        ]
+                        ],
                     );
                 }
             }
@@ -453,56 +451,37 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         $notif = new Notification();
+        $notif->deleteByCriteria([
+            'itemtype' => 'PluginOrderOrder'
+        ]);
 
-        foreach (['ask', 'validation', 'cancel', 'undovalidation', 'duedate', 'delivered'] as $event) {
-            $options = [
-                'itemtype' => 'PluginOrderOrder',
-                'event'    => $event,
-                'FIELDS'   => 'id',
-            ];
-            foreach ($DB->request('glpi_notifications', $options) as $data) {
-                $notif->delete($data);
-            }
-        }
 
-       //templates
-        $template    = new NotificationTemplate();
+        $template = new NotificationTemplate();
+        $template->deleteByCriteria([
+            'itemtype' => 'PluginOrderOrder'
+        ]);
+
         $translation = new NotificationTemplateTranslation();
-        $options     = [
-            'itemtype' => 'PluginOrderOrder',
-            'FIELDS'   => 'id'
-        ];
-
-        foreach ($DB->request('glpi_notificationtemplates', $options) as $data) {
-            $options_template = [
-                'notificationtemplates_id' => $data['id'],
-                'FIELDS'                   => 'id'
-            ];
-            foreach ($DB->request('glpi_notificationtemplatetranslations', $options_template) as $data_template) {
-                $translation->delete($data_template);
-            }
-            $template->delete($data);
-        }
+        $translation->deleteByCriteria([
+            'itemtype' => 'PluginOrderOrder'
+        ]);
     }
 
 
-   /**
-    * Get additionnals targets for Tickets
-   **/
+    /**
+     * Get additionnals targets for Tickets
+    **/
     public function addAdditionalTargets($event = '')
     {
-        $this->addTarget(self::AUTHOR, __("Author"));
-        $this->addTarget(self::AUTHOR_GROUP, __("Author group", "order"));
-        $this->addTarget(self::DELIVERY_USER, __("Recipient"));
-        $this->addTarget(self::DELIVERY_GROUP, __("Recipient group", "order"));
-        $this->addTarget(self::SUPERVISOR_AUTHOR_GROUP, __("Manager") . " " . __("Author group", "order"));
-        $this->addTarget(self::SUPERVISOR_DELIVERY_GROUP, __("Manager") . " " . __("Recipient group", "order"));
-        $this->addTarget(self::SUPPLIER, __('Supplier'));
-        $this->addTarget(self::CONTACT, __('Contact'));
+        $this->addTarget(self::AUTHOR, __s("Author"));
+        $this->addTarget(self::AUTHOR_GROUP, __s("Author group", "order"));
+        $this->addTarget(self::DELIVERY_USER, __s("Recipient"));
+        $this->addTarget(self::DELIVERY_GROUP, __s("Recipient group", "order"));
+        $this->addTarget(self::SUPERVISOR_AUTHOR_GROUP, __s("Manager") . " " . __s("Author group", "order"));
+        $this->addTarget(self::SUPERVISOR_DELIVERY_GROUP, __s("Manager") . " " . __s("Recipient group", "order"));
+        $this->addTarget(self::SUPPLIER, __s('Supplier'));
+        $this->addTarget(self::CONTACT, __s('Contact'));
     }
 
 
@@ -536,16 +515,16 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
         }
     }
 
-   /**
-    * Add order suppliers or contacts to list of recipients.
-    *
-    * @param string  $recipient_type Recipient type ("suppliers" or "contacts")
-    * @param integer $order_id       Order id
-    * @return void
-    */
+    /**
+     * Add order suppliers or contacts to list of recipients.
+     *
+     * @param string  $recipient_type Recipient type ("suppliers" or "contacts")
+     * @param integer $order_id       Order id
+     * @return void
+     */
     protected function addAddressesByType($recipient_type, $order_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $table = "glpi_" . $recipient_type;
@@ -557,10 +536,10 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                     'FKEY' => [
                         'glpi_plugin_order_orders' => $recipient_type . "_id",
                         $table => 'id',
-                    ]
-                ]
+                    ],
+                ],
             ],
-            'WHERE' => ['glpi_plugin_order_orders.id' => $order_id]
+            'WHERE' => ['glpi_plugin_order_orders.id' => $order_id],
         ]);
 
         foreach ($result as $data) {

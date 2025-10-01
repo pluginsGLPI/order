@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 {
@@ -45,7 +43,12 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public static function getTypeName($nb = 0)
     {
-        return __("Supplier Detail", "order");
+        return __s("Supplier Detail", "order");
+    }
+
+    public static function getIcon()
+    {
+        return 'ti ti-trolley';
     }
 
     public function rawSearchOptions()
@@ -55,14 +58,14 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
         $tab[] = [
             'id'            => 'common',
-            'name'          => __('Supplier Detail', 'order'),
+            'name'          => __s('Supplier Detail', 'order'),
         ];
 
         $tab[] = [
             'id'            => 1,
             'table'         => self::getTable(),
             'field'         => 'num_quote',
-            'name'          => __('Quote number', 'order'),
+            'name'          => __s('Quote number', 'order'),
             'datatype'      => 'text',
             'autocomplete'  => true,
         ];
@@ -71,7 +74,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
             'id'            => 2,
             'table'         => self::getTable(),
             'field'         => 'num_order',
-            'name'          => __('Order number'),
+            'name'          => __s('Order number'),
             'datatype'      => 'text',
             'autocomplete'  => true,
         ];
@@ -80,7 +83,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
             'id'            => 4,
             'table'         => 'glpi_suppliers',
             'field'         => 'name',
-            'name'          => __('Supplier'),
+            'name'          => __s('Supplier'),
             'datatype'      => 'itemlink',
             'itemlink_type' => 'Supplier',
             'forcegroupby'  => true,
@@ -90,14 +93,14 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
             'id'            => 30,
             'table'         => self::getTable(),
             'field'         => 'id',
-            'name'          => __('ID'),
+            'name'          => __s('ID'),
         ];
 
         $tab[] = [
             'id'            => 80,
             'table'         => 'glpi_entities',
             'field'         => 'completename',
-            'name'          => __('Entity'),
+            'name'          => __s('Entity'),
         ];
 
         return $tab;
@@ -115,7 +118,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public function prepareInputForAdd($input)
     {
-       // Not attached to reference -> not added
+        // Not attached to reference -> not added
         if (!isset($input['plugin_order_orders_id']) || $input['plugin_order_orders_id'] <= 0) {
             return false;
         }
@@ -125,18 +128,18 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public function getFromDBByOrder($plugin_order_orders_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [
             'FROM' => self::getTable(),
             'WHERE' => [
-                'plugin_order_orders_id' => $plugin_order_orders_id
-            ]
+                'plugin_order_orders_id' => $plugin_order_orders_id,
+            ],
         ];
         $result = $DB->request($criteria);
 
-        if (!count($result)) {
+        if (count($result) === 0) {
             return false;
         }
         $this->fields = $result->current();
@@ -161,10 +164,10 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         $PluginOrderOrder->getFromDB($plugin_order_orders_id);
         echo Html::hidden('plugin_order_orders_id', ['value' => $plugin_order_orders_id]);
         echo Html::hidden('entities_id', ['value' => $PluginOrderOrder->getEntityID()]);
-        echo Html::hidden('is_recursive', ['value' => $PluginOrderOrder->isRecursive()]);
+        echo Html::hidden('is_recursive', ['value' => (int) $PluginOrderOrder->isRecursive()]);
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __("Supplier") . ": </td>";
+        echo "<td>" . __s("Supplier") . ": </td>";
         $supplier = $PluginOrderOrder->fields["suppliers_id"];
         if ($ID > 0) {
             $supplier = $this->fields["suppliers_id"];
@@ -177,13 +180,13 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         echo Html::hidden('suppliers_id', ['value' => $supplier]);
         echo "</td>";
 
-       /* number of quote */
-        echo "<td>" . __("Quote number", "order") . ": </td><td>";
+        /* number of quote */
+        echo "<td>" . __s("Quote number", "order") . ": </td><td>";
         echo Html::input(
             'num_quote',
             [
                 'value' => $this->fields['num_quote'],
-            ]
+            ],
         );
         echo "</td>";
 
@@ -192,13 +195,13 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         echo "<tr class='tab_bg_1'>";
         echo "</td><td colspan='2'></td>";
 
-       /* num order supplier */
-        echo "<td>" . __("Order number") . ": </td><td>";
+        /* num order supplier */
+        echo "<td>" . __s("Order number") . ": </td><td>";
         echo Html::input(
             'num_order',
             [
                 'value' => $this->fields['num_order'],
-            ]
+            ],
         );
         echo "</td>";
 
@@ -217,14 +220,14 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         $order->getFromDB($ID);
 
         Session::initNavigateListItems(
-            __CLASS__,
-            __("Order", "order") . " = " . $order->fields["name"]
+            self::class,
+            __s("Order", "order") . " = " . $order->fields["name"],
         );
 
         $candelete = $order->can($ID, UPDATE);
         $rand      = mt_rand();
 
-        $link = Toolbox::getItemTypeFormURL(__CLASS__);
+        $link = Toolbox::getItemTypeFormURL(self::class);
 
         echo "<form method='post' name='show_supplierinfos$rand' id='show_supplierinfos$rand' " .
             "action=\"" . $link . "\">";
@@ -236,23 +239,32 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
         if ($nb_elements > 0) {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='4'>" . __("Supplier Detail", "order") . "</th></tr>";
+            echo "<tr><th colspan='4'>" . __s("Supplier Detail", "order") . "</th></tr>";
             echo "<tr>";
             echo "<th>&nbsp;</th>";
-            echo "<th>" . __("Supplier") . "</th>";
-            echo "<th>" . __("Quote number", "order") . "</th>";
-            echo "<th>" . __("Order number") . "</th>";
+            echo "<th>" . __s("Supplier") . "</th>";
+            echo "<th>" . __s("Quote number", "order") . "</th>";
+            echo "<th>" . __s("Order number") . "</th>";
             echo "</tr>";
 
             $data = getAllDataFromTable($table, ['plugin_order_orders_id' => $ID]);
             foreach ($data as $cur) {
-                Session::addToNavigateListItems(__CLASS__, $cur['id']);
+                Session::addToNavigateListItems(self::class, $cur['id']);
                 echo Html::hidden("item[" . $cur["id"] . "]", ['value' => $ID]);
                 echo "<tr class='tab_bg_1 center'>";
                 echo "<td>";
                 if ($candelete) {
                     echo "<input type='checkbox' name='check[" . $cur["id"] . "]'";
-                    if (isset($_POST['check']) && $_POST['check'] == 'all') {
+                    if (
+                        isset($_POST['check'])
+                        && (
+                            is_string($_POST['check'])
+                            && $_POST['check'] == 'all'
+                            || (
+                                is_array($_POST['check']) && isset($_POST['check']['all'])
+                            )
+                        )
+                    ) {
                         echo " checked ";
                     }
                     echo ">";
@@ -274,10 +286,10 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                 echo "<tr>";
                 echo "<td><i class='$arrow fa-flip-horizontal fa-lg mx-2'></i></td>";
                 echo "<td class='center' style='white-space:nowrap;'>";
-                echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\" href='#'>" . __('Check all') . "</a></td>";
+                echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\" href='#'>" . __s('Check all') . "</a></td>";
                 echo "<td>/</td>";
                 echo "<td class='center' style='white-space:nowrap;'>";
-                echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\" href='#'>" . __('Uncheck all') . "</a></td>";
+                echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\" href='#'>" . __s('Uncheck all') . "</a></td>";
                 echo "<td class='left' width='80%'>";
 
                 echo "<input type='submit' name='delete' ";
@@ -292,32 +304,32 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public static function showDeliveries($suppliers_id)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [
             'SELECT' => [
                 'COUNT(glpi_plugin_order_orders_items.plugin_order_references_id) AS ref',
                 'glpi_plugin_order_orders_items.plugin_order_deliverystates_id AS sid',
-                'glpi_plugin_order_orders.entities_id'
+                'glpi_plugin_order_orders.entities_id',
             ],
             'FROM' => 'glpi_plugin_order_orders_items',
             'LEFT JOIN' => [
                 'glpi_plugin_order_orders' => [
                     'ON' => [
                         'glpi_plugin_order_orders' => 'id',
-                        'glpi_plugin_order_orders_items' => 'plugin_order_orders_id'
-                    ]
-                ]
+                        'glpi_plugin_order_orders_items' => 'plugin_order_orders_id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'glpi_plugin_order_orders.suppliers_id' => $suppliers_id,
-                'glpi_plugin_order_orders_items.states_id' => PluginOrderOrder::ORDER_DEVICE_DELIVRED
+                'glpi_plugin_order_orders_items.states_id' => PluginOrderOrder::ORDER_DEVICE_DELIVRED,
             ] + getEntitiesRestrictCriteria("glpi_plugin_order_orders", '', '', false, true),
             'GROUPBY' => [
                 'glpi_plugin_order_orders.entities_id',
-                'glpi_plugin_order_orders_items.plugin_order_deliverystates_id'
-            ]
+                'glpi_plugin_order_orders_items.plugin_order_deliverystates_id',
+            ],
         ];
         $result = $DB->request($criteria);
         $nb     = count($result);
@@ -325,11 +337,11 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         echo "<br><div class='center'>";
         echo "<table class='tab_cadre_fixe'>";
         echo "<tr>";
-        echo "<th>" . __("Entity") . "</th>";
-        echo "<th>" . __("Delivery statistics", "order") . "</th>";
+        echo "<th>" . __s("Entity") . "</th>";
+        echo "<th>" . __s("Delivery statistics", "order") . "</th>";
         echo "</tr>";
 
-        if ($nb) {
+        if ($nb !== 0) {
             foreach ($result as $data) {
                 $ref               = $data["ref"];
                 $entities_id       = $data["entities_id"];
@@ -341,10 +353,10 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                 if ($deliverystates_id > 0) {
                     $name = Dropdown::getDropdownName(
                         "glpi_plugin_order_deliverystates",
-                        $deliverystates_id
+                        $deliverystates_id,
                     );
                 } else {
-                    $name = __("No specified status", "order");
+                    $name = __s("No specified status", "order");
                 }
                 echo "<td>" . $name . "&nbsp;:" . $ref . "</td>";
                 echo "</tr>";
@@ -357,7 +369,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -385,12 +397,12 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                      KEY `entities_id` (`entities_id`),
                      KEY `suppliers_id` (`suppliers_id`)
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-                $DB->query($query) or die($DB->error());
+                $DB->doQuery($query);
             } else {
-               //Upgrade
+                //Upgrade
                 $migration->displayMessage("Upgrading $table");
 
-               //1.2.0
+                //1.2.0
                 $migration->renameTable("glpi_plugin_order_suppliers", $table);
 
                 $migration->addField($table, "entities_id", "int {$default_key_sign} NOT NULL default '0'");
@@ -398,60 +410,66 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                 $migration->addField(
                     $table,
                     "suppliers_id",
-                    "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'"
+                    "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'",
                 );
                 $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
                 $migration->changeField(
                     $table,
                     "FK_order",
                     "plugin_order_orders_id",
-                    "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'"
+                    "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'",
                 );
                 $migration->changeField(
                     $table,
                     "numquote",
                     "num_quote",
-                    "varchar(255) default NULL"
+                    "varchar(255) default NULL",
                 );
                 $migration->changeField(
                     $table,
                     "numbill",
                     "num_bill",
-                    "varchar(255) default NULL"
+                    "varchar(255) default NULL",
                 );
                 $migration->changeField(
                     $table,
                     "numorder",
                     "num_order",
-                    "varchar(255) default NULL"
+                    "varchar(255) default NULL",
                 );
                 $migration->addKey($table, "plugin_order_orders_id");
                 $migration->addKey($table, "suppliers_id");
                 $migration->migrationOneTable($table);
 
-                Plugin::migrateItemType(
-                    [3154 => 'PluginOrderOrder_Supplier'],
-                    ["glpi_savedsearches", "glpi_savedsearches_users",
-                        "glpi_displaypreferences", "glpi_documents_items",
-                        "glpi_infocoms", "glpi_logs", "glpi_items_tickets"
+                //1.5.0
+                $query = [
+                    'SELECT' => [
+                        `suppliers_id`,
+                        `entities_id`,
+                        `is_recursive`,
+                        `id`,
                     ],
-                    []
-                );
-
-               //1.5.0
-                $query = "SELECT `suppliers_id`, `entities_id`,`is_recursive`,`id`
-                      FROM `glpi_plugin_order_orders` ";
+                    'FROM' => 'glpi_plugin_order_orders',
+                ];
                 foreach ($DB->request($query) as $data) {
-                    $query = "UPDATE `glpi_plugin_order_orders_suppliers` SET
-                           `suppliers_id` = '{$data["suppliers_id"]}'
-                         WHERE `plugin_order_orders_id` = '{$data["id"]}' ";
-                    $DB->query($query) or die($DB->error());
+                    $migration->addPostQuery(
+                        $DB->buildUpdate(
+                            'glpi_plugin_order_orders_suppliers',
+                            ['suppliers_id' => $data['suppliers_id']],
+                            ['plugin_order_orders_id' => $data['id']],
+                        ),
+                    );
 
-                    $query = "UPDATE `glpi_plugin_order_orders_suppliers` SET
-                           `entities_id` = '{$data["entities_id"]}',
-                           `is_recursive` = '{$data["is_recursive"]}'
-                         WHERE `plugin_order_orders_id` = '{$data["id"]}' ";
-                    $DB->query($query) or die($DB->error());
+                    $migration->addPostQuery(
+                        $DB->buildUpdate(
+                            'glpi_plugin_order_orders_suppliers',
+                            [
+                                'entities_id' => $data['entities_id'],
+                                'is_recursive' => $data['is_recursive'],
+                            ],
+                            ['plugin_order_orders_id' => $data['id']],
+                        ),
+                    );
                 }
             }
         }
@@ -460,14 +478,14 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
-       //Old table name
-        $DB->query("DROP TABLE IF EXISTS `glpi_plugin_order_detail`") or die($DB->error());
+        //Old table name
+        $DB->doQuery("DROP TABLE IF EXISTS `glpi_plugin_order_detail`");
 
-       //Current table name
-        $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`") or die($DB->error());
+        //Current table name
+        $DB->doQuery("DROP TABLE IF EXISTS `" . self::getTable() . "`");
     }
 
 
@@ -478,11 +496,16 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
     {
         switch (get_class($item)) {
             case 'Supplier':
-                return [1 => __("Orders", "order")];
+                return [1 => __s("Orders", "order")];
             case 'PluginOrderOrder':
                 $config = PluginOrderConfig::getConfig();
                 if ($config->canUseSupplierInformations() && $item->fields['suppliers_id']) {
-                    return [1 => __("Supplier Detail", "order")];
+                    return self::createTabEntry(
+                        __s("Supplier Detail", "order"),
+                        0,
+                        null,
+                        self::getIcon(),
+                    );
                 }
                 break;
             default:

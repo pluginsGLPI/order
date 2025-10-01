@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderAccountSection extends CommonDropdown
 {
@@ -39,19 +37,19 @@ class PluginOrderAccountSection extends CommonDropdown
     public static function getTypeName($nb = 0)
     {
 
-        return __("Account section", "order");
+        return __s("Account section", "order");
     }
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
         $default_collation = DBConnection::getDefaultCollation();
         $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-        $table = getTableForItemType(__CLASS__);
+        $table = getTableForItemType(self::class);
         if (!$DB->tableExists($table)) {
             $migration->displayMessage("Installing $table");
 
@@ -62,15 +60,15 @@ class PluginOrderAccountSection extends CommonDropdown
                     PRIMARY KEY (`id`),
                     KEY `name` (`name`)
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         }
     }
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
-        $DB->query("DROP TABLE IF EXISTS `" . getTableForItemType(__CLASS__) . "`") or die($DB->error());
+        $DB->doQuery("DROP TABLE IF EXISTS `" . getTableForItemType(self::class) . "`");
     }
 }

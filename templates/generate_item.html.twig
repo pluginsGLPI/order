@@ -36,7 +36,7 @@
     <table class='table'>
         <thead>
             <tr>
-                <th colspan='{{ colspan }}'>{{ __("Mass value filling", "order") }}</th>
+                <th colspan='{{ colspan }}'>{{ __s("Mass value filling", "order") }}</th>
             </tr>
 
             <tr>
@@ -112,19 +112,19 @@
             </tr>
 
             <tr>
-                <th>{{ __("Product reference", "order") }}</th>
-                <th>{{ __("Name") }}</th>
-                <th>{{ __("Serial number") }}</th>
-                <th>{{ __("Inventory number") }}</th>
+                <th>{{ __s("Product reference", "order") }}</th>
+                <th>{{ __s("Name") }}</th>
+                <th>{{ __s("Serial number") }}</th>
+                <th>{{ __s("Inventory number") }}</th>
                 {% if config.canAddImmobilizationNumber() %}
-                    <th>{{ __("Immobilization number") }}</th>
+                    <th>{{ __s("Immobilization number") }}</th>
                 {% endif %}
                 {% if is_multi_entities_mode and active_entities|length > 1 %}
-                    <th>{{ __("Entity") }}</th>
+                    <th>{{ __s("Entity") }}</th>
                 {% endif %}
-                <th>{{ __("Location") }}</th>
-                <th>{{ __("Group") }}</th>
-                <th>{{ __("Status") }}</th>
+                <th>{{ __s("Location") }}</th>
+                <th>{{ __s("Group") }}</th>
+                <th>{{ __s("Status") }}</th>
             </tr>
         </thead>
 
@@ -447,11 +447,11 @@
                     $(field).addClass('is-invalid');
                     // Create field type label for the message
                     let fieldTypeLabel = '';
-                    if (fieldType === 'name') fieldTypeLabel = "{{ __('name') }}";
-                    if (fieldType === 'serial') fieldTypeLabel = "{{ __('serial number') }}";
+                    if (fieldType === 'name') fieldTypeLabel = "{{ __s('name') }}";
+                    if (fieldType === 'serial') fieldTypeLabel = "{{ __s('serial number') }}";
 
                     // Add error message after the input
-                    $(field).after('<div class="invalid-feedback"> {{ __("An asset with this value already exists") }} </div>');
+                    $(field).after('<div class="invalid-feedback"> {{ __s("An asset with this value already exists") }} </div>');
 
                     // Add required attribute for visual indication
                     $(field).attr('required', 'required');

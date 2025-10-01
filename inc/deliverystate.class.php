@@ -28,21 +28,19 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderDeliveryState extends CommonDropdown
 {
     public static function getTypeName($nb = 0)
     {
-        return __("Delivery status", "order");
+        return __s("Delivery status", "order");
     }
 
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -56,7 +54,7 @@ class PluginOrderDeliveryState extends CommonDropdown
         ) {
             $migration->displayMessage("Installing $table");
 
-           //Install
+            //Install
             $query = "CREATE TABLE `glpi_plugin_order_deliverystates` (
                      `id` int {$default_key_sign} NOT NULL auto_increment,
                      `name` varchar(255) default NULL,
@@ -64,11 +62,11 @@ class PluginOrderDeliveryState extends CommonDropdown
                      PRIMARY KEY  (`id`),
                      KEY `name` (`name`)
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         } else {
             $migration->displayMessage("Upgrading $table");
 
-           //Upgrade 1.2.0
+            //Upgrade 1.2.0
             $migration->renameTable("glpi_dropdown_plugin_order_deliverystate", $table);
             $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
             $migration->changeField($table, "name", "name", "varchar(255) default NULL");
@@ -80,13 +78,13 @@ class PluginOrderDeliveryState extends CommonDropdown
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
-       //Old table
-        $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_deliverystate`") or die($DB->error());
+        //Old table
+        $DB->doQuery("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_deliverystate`");
 
-       //New table
-        $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`") or die($DB->error());
+        //New table
+        $DB->doQuery("DROP TABLE IF EXISTS `" . self::getTable() . "`");
     }
 }

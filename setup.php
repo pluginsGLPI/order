@@ -28,12 +28,12 @@
  * -------------------------------------------------------------------------
  */
 
-define('PLUGIN_ORDER_VERSION', '2.11.2');
+define('PLUGIN_ORDER_VERSION', '2.12.0');
 
 // Minimal GLPI version, inclusive
-define("PLUGIN_ORDER_MIN_GLPI", "10.0.11");
+define("PLUGIN_ORDER_MIN_GLPI", "11.0.0");
 // Maximum GLPI version, exclusive
-define("PLUGIN_ORDER_MAX_GLPI", "10.0.99");
+define("PLUGIN_ORDER_MAX_GLPI", "11.0.99");
 
 if (!defined('PLUGIN_ORDER_DIR')) {
     define("PLUGIN_ORDER_DIR", Plugin::getPhpDir('order'));
@@ -61,7 +61,7 @@ if (!defined('PLUGIN_ORDER_SIGNATURE_EXTENSION')) {
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 if (!defined('PLUGIN_ORDER_NUMBER_STEP')) {
-    define("PLUGIN_ORDER_NUMBER_STEP", 1 / pow(10, $CFG_GLPI["decimal_number"]));
+    define("PLUGIN_ORDER_NUMBER_STEP", 1 / 10 ** $CFG_GLPI["decimal_number"]);
 }
 
 // Autoload
@@ -89,7 +89,7 @@ function plugin_init_order()
     Plugin::registerClass('PluginOrderProfile');
     $PLUGIN_HOOKS['csrf_compliant']['order'] = true;
 
-   /* Init current profile */
+    /* Init current profile */
     $PLUGIN_HOOKS['change_profile']['order'] = ['PluginOrderProfile', 'initProfile'];
 
     $plugin = new Plugin();
@@ -98,7 +98,7 @@ function plugin_init_order()
 
         $PLUGIN_HOOKS['assign_to_ticket']['order'] = true;
 
-       //Itemtypes in use for an order
+        //Itemtypes in use for an order
         $ORDER_TYPES = [
             'Computer',
             'Monitor',
@@ -129,7 +129,7 @@ function plugin_init_order()
             'Contract' => ['PluginOrderOrder_Item', 'updateItem'],
         ];
         $PLUGIN_HOOKS['item_add']['order'] = [
-            'Document' => ['PluginOrderOrder', 'addDocumentCategory']
+            'Document' => ['PluginOrderOrder', 'addDocumentCategory'],
         ];
 
         include_once(PLUGIN_ORDER_DIR . "/inc/order_item.class.php");
@@ -144,8 +144,8 @@ function plugin_init_order()
             'helpdesk_visible_types'      => true,
             'ticket_types'                => true,
             'contract_types'              => true,
-            'linkuser_types'              => true,
-            'addtabon'                    => ['Budget']
+            'assignable_types'            => true,
+            'addtabon'                    => ['Budget'],
         ]);
 
         Plugin::registerClass('PluginOrderReference', ['document_types' => true]);
@@ -161,11 +161,11 @@ function plugin_init_order()
             Plugin::registerClass('PluginOrderPreference', ['addtabon' => ['Preference']]);
         }
 
-       /*if glpi is loaded */
+        /*if glpi is loaded */
         if (Session::getLoginUserID()) {
-            $PLUGIN_HOOKS['add_css']['order'][] = 'order.css';
+            $PLUGIN_HOOKS['add_css']['order'][] = 'css/order.css';
 
-           /* link to the config page in plugins menu */
+            /* link to the config page in plugins menu */
             if (Session::haveRight("config", UPDATE)) {
                 $PLUGIN_HOOKS['config_page']['order'] = 'front/config.form.php';
             }
@@ -195,7 +195,7 @@ function plugin_init_order()
 function plugin_version_order()
 {
     return [
-        'name'           => __("Orders management", "order"),
+        'name'           => __s("Orders management", "order"),
         'version'        => PLUGIN_ORDER_VERSION,
         'author'         => 'The plugin order team',
         'homepage'       => 'https://github.com/pluginsGLPI/order',
@@ -204,8 +204,8 @@ function plugin_version_order()
             'glpi' => [
                 'min' => PLUGIN_ORDER_MIN_GLPI,
                 'max' => PLUGIN_ORDER_MAX_GLPI,
-            ]
-        ]
+            ],
+        ],
     ];
 }
 

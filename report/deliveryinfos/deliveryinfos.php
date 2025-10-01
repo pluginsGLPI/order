@@ -44,16 +44,16 @@ $DBCONNECTION_REQUIRED = 0; // Really a big SQL request
 
 include("../../../../inc/includes.php");
 
-$report = new PluginReportsAutoReport(__("deliveryinfos_report_title", "order"));
-new PluginReportsDateIntervalCriteria($report, 'order_date', __("Date of order", "order"));
-new PluginReportsDateIntervalCriteria($report, 'deliverydate', __("Delivery date"));
-new PluginReportsLocationCriteria($report, 'locations_id', __("Delivery location", "order"));
-new PluginReportsSupplierCriteria($report, 'suppliers_id', __("Supplier"));
+$report = new PluginReportsAutoReport(__s("deliveryinfos_report_title", "order"));
+new PluginReportsDateIntervalCriteria($report, 'order_date', __s("Date of order", "order"));
+new PluginReportsDateIntervalCriteria($report, 'deliverydate', __s("Delivery date"));
+new PluginReportsLocationCriteria($report, 'locations_id', __s("Delivery location", "order"));
+new PluginReportsSupplierCriteria($report, 'suppliers_id', __s("Supplier"));
 new PluginReportsDropdownCriteria(
     $report,
     'plugin_order_orderstates_id',
     'PluginOrderOrderState',
-    __("Status")
+    __s("Status"),
 );
 $report->displayCriteriasForm();
 
@@ -63,18 +63,18 @@ if ($report->criteriasValidated()) {
     $report->setColumns([
         new PluginReportsColumnLink(
             'suppliers_id',
-            __("Supplier"),
-            'Supplier'
+            __s("Supplier"),
+            'Supplier',
         ),
         new PluginReportsColumnLink(
             'entities_id',
-            __("Entity"),
-            'Entity'
+            __s("Entity"),
+            'Entity',
         ),
-        new PluginReportsColumnInteger('total', __("Orders total", "order")),
-        new PluginReportsColumnInteger('late', __("Late orders total", "order")),
+        new PluginReportsColumnInteger('total', __s("Orders total", "order")),
+        new PluginReportsColumnInteger('late', __s("Late orders total", "order")),
     ]);
-   //TODO : ne pas chercher dans la poublelles
+    //TODO : ne pas chercher dans la poublelles
 
     $query_total = "SELECT count(*) FROM `glpi_plugin_order_orders`";
     $query_total .= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");

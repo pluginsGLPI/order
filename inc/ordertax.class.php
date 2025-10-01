@@ -28,9 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 // Class for a Dropdown
 class PluginOrderOrderTax extends CommonDropdown
@@ -40,13 +38,13 @@ class PluginOrderOrderTax extends CommonDropdown
 
     public static function getTypeName($nb = 0)
     {
-        return __("VAT", "order");
+        return __s("VAT", "order");
     }
 
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -58,7 +56,7 @@ class PluginOrderOrderTax extends CommonDropdown
         if (!$DB->tableExists($table) && !$DB->tableExists("glpi_dropdown_plugin_order_taxes")) {
             $migration->displayMessage("Installing $table");
 
-           //Install
+            //Install
             $query = "CREATE TABLE `glpi_plugin_order_ordertaxes` (
                   `id` int {$default_key_sign} NOT NULL auto_increment,
                   `name` varchar(255) default NULL,
@@ -66,32 +64,40 @@ class PluginOrderOrderTax extends CommonDropdown
                   PRIMARY KEY  (`id`),
                   KEY `name` (`name`)
                ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
 
             $taxes = new self();
             foreach (['20', '5.5', '19.6'] as $tax) {
                 $taxes->add(['name' => $tax]);
             }
         } else {
-           //Update
+            //Update
 
             $migration->displayMessage("Migrating $table");
 
-           //1.2.0
+            //1.2.0
             $migration->renameTable("glpi_dropdown_plugin_order_taxes", $table);
             $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
             $migration->changeField($table, "name", "name", "varchar(255) default NULL");
             $migration->changeField($table, "comments", "comment", "text");
             $migration->migrationOneTable($table);
 
-           //Remplace , by . in taxes
-            foreach ($DB->request("SELECT `name` FROM `$table`") as $data) {
+            $query_name = [
+                'SELECT' => 'name',
+                'FROM' => $table,
+            ];
+
+            //Remplace , by . in taxes
+            foreach ($DB->request($query_name) as $data) {
                 if (strpos($data["name"], ',')) {
                     $name  = str_replace(',', '.', $data["name"]);
-                    $query = "UPDATE `$table`
-                         SET `name` = '" . $name . "'
-                         WHERE `name`= '" . $data["name"] . "'";
-                    $DB->query($query) or die($DB->error());
+                    $migration->addPostQuery(
+                        $DB->buildUpdate(
+                            $table,
+                            ['name' => $name],
+                            ['name' => $data['name']],
+                        ),
+                    );
                 }
             }
         }
@@ -100,21 +106,21 @@ class PluginOrderOrderTax extends CommonDropdown
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
-       //Old table
-        $DB->query("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_taxes`") or die($DB->error());
+        //Old table
+        $DB->doQuery("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_taxes`");
 
-       //New table
-        $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`") or die($DB->error());
+        //New table
+        $DB->doQuery("DROP TABLE IF EXISTS `" . self::getTable() . "`");
     }
 
-   /**
-    * Get the tax rate of loaded item.
-    *
-    * @return number
-    */
+    /**
+     * Get the tax rate of loaded item.
+     *
+     * @return number
+     */
     public function getRate()
     {
 

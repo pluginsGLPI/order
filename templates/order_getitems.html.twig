@@ -30,24 +30,37 @@
  #}
 
 {% set datatable_id = datatable_id|default('datatable' ~ random()) %}
-{% set showmassiveactions = canedit %}
+{% set showmassiveactions = canedit|default(false) %}
 {% set table_visible = table_visible|default(false) %}
-{% if hide_and_show %}
+{% set entries = entries|default([]) %}
+{% set columns = columns|default({}) %}
+{% set formatters = formatters|default({}) %}
+{% set filters = filters|default({}) %}
+{% set total_number = total_number|default(0) %}
+{% set start = start|default(0) %}
+{% set limit = limit|default(15) %}
+{% set displayed_count = displayed_count|default(0) %}
+{% set sort = sort|default('') %}
+{% set order = order|default('ASC') %}
+{% set countainer_name = countainer_name|default('') %}
+{% set nosort = nosort|default(false) %}
+
+{% if hide_and_show is defined and hide_and_show %}
     <button id="toggle-table-{{ datatable_id }}" class="btn btn-link btn-sm mb-2" type="button">
         {% if table_visible %}
             <i class="ti ti-sort-ascending"></i>
-            <span>{{ __('Collapse all', 'order') }}</span>
+            <span>{{ __s('Collapse all', 'order') }}</span>
         {% else %}
             <i class="ti ti-sort-descending"></i>
-            <span>{{ __('Expand all', 'order') }}</span>
+            <span>{{ __s('Expand all', 'order') }}</span>
         {% endif %}
     </button>
     <input type="hidden" name="{{ countainer_name }}" value="true">
 {% endif %}
 
 {% if hidden_fields is defined %}
-    {% for field in hidden_fields %}
-        <input type="hidden" name="{{ field['name'] }}" value="{{ field['value'] }}" />
+    {% for field_name, field_value in hidden_fields %}
+        <input type="hidden" name="{{ field_name }}" value="{{ field_value }}" />
     {% endfor %}
 {% endif %}
 
@@ -70,7 +83,7 @@
             <tr>
                 <td>
                     <div class="alert alert-info">
-                        {{ __('No results found') }}
+                        {{ __s('No results found') }}
                     </div>
                 </td>
             </tr>
@@ -101,7 +114,7 @@
                             <th style="width: 30px;">
                                 <div>
                                     <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
-                                        value="" aria-label="{{ __('Check all') }}"
+                                        value="" aria-label="{{ __s('Check all') }}"
                                         onclick="checkAsCheckboxes(this, '{{ massiveactionparams['container'] }}', '.massive_action_checkbox');" />
                                 </div>
                             </th>
@@ -130,19 +143,19 @@
                             </th>
                         {% endfor %}
 
-                       {% if nofilter is not defined or csv_url|length %}
+                       {% if nofilter is not defined or csv_url is defined %}
                            <th>
                                <span class="float-end log-toolbar mb-0">
                                    {% if nofilter is not defined %}
                                        <button class="btn btn-sm show_filters {{ filters|length > 0 ? 'btn-secondary active' : 'btn-outline-secondary' }}">
                                            <i class="fas fa-filter"></i>
-                                           <span class="d-none d-xl-block">{{ __('Filter') }}</span>
+                                           <span class="d-none d-xl-block">{{ __s('Filter') }}</span>
                                        </button>
                                    {% endif %}
                                    {% if csv_url|length %}
                                        <a href="{{ csv_url }}" class="btn btn-sm text-capitalize btn-outline-secondary">
                                            <i class="fas fa-file-download"></i>
-                                           <span class="d-none d-xl-block">{{ __('Export') }}</span>
+                                           <span class="d-none d-xl-block">{{ __s('Export') }}</span>
                                        </a>
                                    {% endif %}
                                </span>
@@ -197,12 +210,12 @@
                                         {# Cannot be filtered #}
                                     {% elseif formatter == 'yesno' %}
                                         <select name="filters[{{ colkey }}]" class="form-select">
-                                            <option value="">{{ __('All') }}</option>
+                                            <option value="">{{ __s('All') }}</option>
                                             <option value="1" {{ filters[colkey] == '1' ? 'selected' : '' }}>
-                                                {{ __('Yes') }}
+                                                {{ __s('Yes') }}
                                             </option>
                                             <option value="0" {{ filters[colkey] == '0' ? 'selected' : '' }}>
-                                                {{ __('No') }}
+                                                {{ __s('No') }}
                                             </option>
                                         </select>
                                     {% else %}
@@ -219,13 +232,17 @@
             <tbody>
                 {% if entries|length > 0 %}
                     {% for entry in entries %}
-                        <tr class="{{ row_class|default('') }} {{ entry['row_class']|default('') }}" data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}">
+                        {% set row_class = entry['row_class']|default('') %}
+                        {% set itemtype = entry['itemtype']|default('') %}
+                        {% set id = entry['id']|default('') %}
+
+                        <tr class="{{ row_class }}" data-itemtype="{{ itemtype }}" data-id="{{ id }}">
                             {% set row_massiveactions = entry['showmassiveactions']|default(showmassiveactions) %}
                             {% if row_massiveactions %}
                                 <td style="width: 10px">
                                     {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
                                         <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
-                                               value="1" aria-label="{{ __("Select item") }}"
+                                               value="1" aria-label="{{ __s("Select item") }}"
                                                name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
                                     {% endif %}
                                 </td>
@@ -234,7 +251,7 @@
                                 <td>
                                     {% if colkey in entry|keys %}
 
-                                        {% set formatter = formatters[colkey] %}
+                                        {% set formatter = formatters[colkey]|default('') %}
 
                                         {% if formatter == "maintext" %}
                                             <span class="d-inline-block bg-blue-lt p-1 text-truncate"
@@ -301,13 +318,13 @@
                     <tr>
                         <td colspan="{{ total_cols }}">
                             <div class="alert alert-info">
-                                {{ __('No results found') }}
+                                {{ __s('No results found') }}
                             </div>
                         </td>
                     </tr>
                 {% endif %}
             </tbody>
-            {% if footers %}
+            {% if footers is defined and footers|length > 0 %}
                 <tfoot class="{{ footer_class|default('') }}">
                     {% for footer in footers %}
                         <tr>
@@ -329,7 +346,7 @@
         {% if not nopager and total_number > 0 %}
             <div class="d-flex justify-content-between align-items-center my-2">
                 <div>
-                    {{ __('Showing %s to %s of %s entries', 'order')|format(
+                    {{ __s('Showing %s to %s of %s entries', 'order')|format(
                         start + 1,
                         (start + displayed_count > total_number ? total_number : start + displayed_count),
                         total_number
@@ -337,9 +354,9 @@
                 </div>
                 <div class="d-flex align-items-center">
                     <div class="d-inline-flex align-items-center me-4">
-                        {{ __('Entries to show:', 'order') }}
+                        {{ __s('Entries to show:', 'order') }}
                         {% include 'components/dropdown/limit.html.twig' with {
-                            'is_tab': false,
+                            'is_tab': true,
                             'right': true,
                             'additional_params': 'id=' ~ ID ~ '&start=' ~ start ~ '&' ~ countainer_name ~ 'sort=' ~ sort ~ '&' ~ countainer_name ~ 'order=' ~ order ~ '&' ~ countainer_name ~ 'visible=1'
                         } %}
@@ -396,7 +413,7 @@
     <br>
 {% endif %}
 
-{% if hide_and_show %}
+{% if hide_and_show is defined and hide_and_show %}
     <script>
         $(function() {
             // Toggle button functionality
@@ -412,13 +429,13 @@
                 if (!isVisible) {
                     div_table.show();
                     icon.removeClass('ti-sort-descending').addClass('ti-sort-ascending');
-                    textSpan.text('{{ __("Collapse all", "order") }}');
+                    textSpan.text('{{ __s("Collapse all", "order") }}');
                     countainer_name.val('true');
                     isVisible = true;
                 } else {
                     div_table.hide();
                     icon.removeClass('ti-sort-ascending').addClass('ti-sort-descending');
-                    textSpan.text('{{ __("Expand all", "order") }}');
+                    textSpan.text('{{ __s("Expand all", "order") }}');
                     countainer_name.val('false');
                     isVisible = false;
                 }

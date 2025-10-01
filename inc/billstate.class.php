@@ -28,21 +28,19 @@
  * -------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access directly to this file");
-}
+
 
 class PluginOrderBillState extends CommonDropdown
 {
-    const NOTPAID = 0;
-    const PAID    = 1;
+    public const NOTPAID = 0;
+    public const PAID    = 1;
 
     public static $rightname = 'plugin_order_bill';
 
 
     public static function getTypeName($nb = 0)
     {
-        return __("Bill status", "order");
+        return __s("Bill status", "order");
     }
 
 
@@ -50,10 +48,10 @@ class PluginOrderBillState extends CommonDropdown
     {
         if ($this->getID() <= self::PAID) {
             Session::addMessageAfterRedirect(
-                __("You cannot remove this status", "order") .
+                __s("You cannot remove this status", "order") .
                                           ": " . $this->fields['name'],
                 false,
-                ERROR
+                ERROR,
             );
             return false;
         } else {
@@ -64,8 +62,8 @@ class PluginOrderBillState extends CommonDropdown
 
     public static function getStates()
     {
-        return [self::NOTPAID => __("Being paid", "order"),
-            self::PAID    => __("Paid", "order")
+        return [self::NOTPAID => __s("Being paid", "order"),
+            self::PAID    => __s("Paid", "order"),
         ];
     }
 
@@ -83,7 +81,7 @@ class PluginOrderBillState extends CommonDropdown
 
     public static function install(Migration $migration)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -101,17 +99,17 @@ class PluginOrderBillState extends CommonDropdown
                     PRIMARY KEY (`id`),
                     KEY `name` (`name`)
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-            $DB->query($query) or die($DB->error());
+            $DB->doQuery($query);
         }
         if (countElementsInTable($table) < 2) {
             $state = new self();
             foreach (
-                [self::PAID     => __("Paid", "order"),
-                    self::NOTPAID  => __("Not paid", "order")
+                [self::PAID     => __s("Paid", "order"),
+                    self::NOTPAID  => __s("Not paid", "order"),
                 ] as $id => $label
             ) {
                 $state->add(['id'   => $id,
-                    'name' => Toolbox::addslashes_deep($label)
+                    'name' => $label,
                 ]);
             }
         }
@@ -120,9 +118,9 @@ class PluginOrderBillState extends CommonDropdown
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
-        $DB->query("DROP TABLE IF EXISTS `" . self::getTable() . "`") or die($DB->error());
+        $DB->doQuery("DROP TABLE IF EXISTS `" . self::getTable() . "`");
     }
 }

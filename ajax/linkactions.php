@@ -28,14 +28,12 @@
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
-
-if (!defined('GLPI_ROOT')) {
-    die("Can not acces directly to this file");
-}
 
 $reference = new PluginOrderReference();
 
@@ -44,7 +42,7 @@ if (isset($_POST["action"])) {
         case "generation":
             echo Html::hidden(
                 'plugin_order_references_id',
-                ['value' => $_POST["plugin_order_references_id"]]
+                ['value' => $_POST["plugin_order_references_id"]],
             );
             echo "&nbsp;";
             echo Html::submit(_sx('button', 'Post'), ['name' => 'generation']);
@@ -54,7 +52,7 @@ if (isset($_POST["action"])) {
             echo Html::hidden('itemtype', ['value' => $_POST["itemtype"]]);
             echo Html::hidden(
                 'plugin_order_orders_id',
-                ['value' => $_POST["plugin_order_orders_id"]]
+                ['value' => $_POST["plugin_order_orders_id"]],
             );
 
             $reference->getFromDB($_POST["plugin_order_references_id"]);
@@ -63,7 +61,7 @@ if (isset($_POST["action"])) {
                 $_POST["itemtype"],
                 $_SESSION["glpiactiveentities"],
                 $reference->fields["types_id"],
-                $reference->fields["models_id"]
+                $reference->fields["models_id"],
             );
             echo "&nbsp;";
             echo Html::submit(_sx('button', 'Post'), ['name' => 'createLinkWithItem']);
@@ -78,19 +76,19 @@ if (isset($_POST["action"])) {
         case "show_location_by_entity":
             Location::dropdown(['name'   => "id[" . $_POST['id'] . "][locations_id]",
                 'value'  => $_POST['value'] ?? 0,
-                'entity' => $_POST['entities']
+                'entity' => $_POST['entities'],
             ]);
 
             if (isset($_POST['massaction'])) {
-                $order_web_dir = Plugin::getWebDir('order');
+                $order_web_dir = $CFG_GLPI['root_doc'] . '/plugins/order';
                 Ajax::updateItemOnSelectEvent(
                     $_POST['id'] . "[entities_id]",
                     "show_location_by_entity_id_" . $_POST['id'],
                     "$order_web_dir/ajax/linkactions.php",
                     ['entities' => '__VALUE__',
                         'action'   => 'show_location_by_entity',
-                        'id'       => $_POST['id']
-                    ]
+                        'id'       => $_POST['id'],
+                    ],
                 );
             }
             break;
@@ -103,15 +101,15 @@ if (isset($_POST["action"])) {
             ]);
 
             if (isset($_POST['massaction'])) {
-                $order_web_dir = Plugin::getWebDir('order');
+                $order_web_dir = $CFG_GLPI['root_doc'] . '/plugins/order';
                 Ajax::updateItemOnSelectEvent(
                     $_POST['id'] . "[entities_id]",
                     "show_group_by_entity_id_" . $_POST['id'],
                     "$order_web_dir/ajax/linkactions.php",
                     ['entities' => '__VALUE__',
                         'action'   => 'show_group_by_entity',
-                        'id'       => $_POST['id']
-                    ]
+                        'id'       => $_POST['id'],
+                    ],
                 );
             }
             break;
@@ -121,19 +119,19 @@ if (isset($_POST["action"])) {
             State::dropdown(['name'      => "id[" . $_POST['id'] . "][states_id]",
                 'entity'    => $_POST['entities'],
                 'value'  => $_POST['value'] ?? 0,
-                'condition' => $condition
+                'condition' => $condition,
             ]);
 
             if (isset($_POST['massaction'])) {
-                $order_web_dir = Plugin::getWebDir('order');
+                $order_web_dir = $CFG_GLPI['root_doc'] . '/plugins/order';
                 Ajax::updateItemOnSelectEvent(
                     $_POST['id'] . "[entities_id]",
                     "show_state_by_entity_id_" . $_POST['id'],
                     "$order_web_dir/ajax/linkactions.php",
                     ['entities' => '__VALUE__',
                         'action'   => 'show_state_by_entity',
-                        'id'       => $_POST['id']
-                    ]
+                        'id'       => $_POST['id'],
+                    ],
                 );
             }
             break;
@@ -144,15 +142,15 @@ if (isset($_POST["action"])) {
                 'on_change' => "plugin_order_adaptOnSelectedEntity(" . $_POST['id'] . ", this.value);",
             ]);
 
-            $order_web_dir = Plugin::getWebDir('order');
+            $order_web_dir = $CFG_GLPI['root_doc'] . '/plugins/order';
             Ajax::updateItemOnSelectEvent(
                 "dropdown_id[" . $_POST['id'] . "][entities_id]",
                 "show_location_by_entity_id_" . $_POST['id'],
                 "$order_web_dir/ajax/linkactions.php",
                 ['entities' => '__VALUE__',
                     'action'   => 'show_location_by_entity',
-                    'id'       => $_POST['id']
-                ]
+                    'id'       => $_POST['id'],
+                ],
             );
             Ajax::updateItemOnSelectEvent(
                 "dropdown_id[" . $_POST['id'] . "][entities_id]",
@@ -160,8 +158,8 @@ if (isset($_POST["action"])) {
                 "$order_web_dir/ajax/linkactions.php",
                 ['entities' => '__VALUE__',
                     'action'   => 'show_group_by_entity',
-                    'id'       => $_POST['id']
-                ]
+                    'id'       => $_POST['id'],
+                ],
             );
             Ajax::updateItemOnSelectEvent(
                 "dropdown_id[" . $_POST['id'] . "][entities_id]",
@@ -169,13 +167,13 @@ if (isset($_POST["action"])) {
                 "$order_web_dir/ajax/linkactions.php",
                 ['entities' => '__VALUE__',
                     'action'   => 'show_state_by_entity',
-                    'id'       => $_POST['id']
-                ]
+                    'id'       => $_POST['id'],
+                ],
             );
             break;
 
         case "check_unicity":
-            $itemtype = new $_POST['itemtype']();
+            $itemtype = getItemForItemtype($_POST['itemtype']);
             if (count($itemtype->find([$_POST['field'] => $_POST['field_value'], ])) > 0) {
                 echo "false";
             } else {
