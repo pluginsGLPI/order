@@ -369,7 +369,7 @@ class PluginOrderLink extends CommonDBChild
         $columns['status'] = __s("Status");
         $columns['entity'] = __s("Entity");
         $columns['delivery_date'] = __s("Delivery date");
-        $columns['associated_item'] = _n("Associated item", "Associated items", 2);
+        $columns['associated_item'] = _sn("Associated item", "Associated items", 2);
         $columns['serial_number'] = __s("Serial number");
 
         // Prepare entries for the Twig template
@@ -710,7 +710,7 @@ class PluginOrderLink extends CommonDBChild
                     'plugin_order_orders_id' => $plugin_order_orders_id,
                     'items_id'               => $items_id,
                     'itemtype'               => $itemtype,
-                ]
+                ],
             );
 
             return ($cpt > 0);
@@ -1307,7 +1307,7 @@ class PluginOrderLink extends CommonDBChild
             && Session::haveRight('plugin_order_order', READ)
         ) {
             return self::createTabEntry(
-                _n("Associated item", "Associated items", 2),
+                _sn("Associated item", "Associated items", 2),
                 self::countForOrder($item),
                 null,
                 self::getIcon(),

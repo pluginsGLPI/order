@@ -453,18 +453,18 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
     {
         $notif = new Notification();
         $notif->deleteByCriteria([
-            'itemtype' => 'PluginOrderOrder'
+            'itemtype' => 'PluginOrderOrder',
         ]);
 
 
         $template = new NotificationTemplate();
         $template->deleteByCriteria([
-            'itemtype' => 'PluginOrderOrder'
+            'itemtype' => 'PluginOrderOrder',
         ]);
 
         $translation = new NotificationTemplateTranslation();
         $translation->deleteByCriteria([
-            'itemtype' => 'PluginOrderOrder'
+            'itemtype' => 'PluginOrderOrder',
         ]);
     }
 

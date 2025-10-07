@@ -27,11 +27,14 @@
  * @link      https://github.com/pluginsGLPI/order
  * -------------------------------------------------------------------------
  */
+use Glpi\DBAL\QueryExpression;
 use Glpi\Features\Clonable;
-use Odtphp\Odf;
 use Odtphp\Exceptions\OdfException;
 use Odtphp\Exceptions\SegmentException;
-use Glpi\DBAL\QueryExpression;
+use Odtphp\Odf;
+use Safe\DateTime;
+
+use function Safe\preg_match;
 
 class PluginOrderOrder extends CommonDBTM
 {
@@ -1793,7 +1796,7 @@ class PluginOrderOrder extends CommonDBTM
         $signature = $params['sign'];
 
         // Only allow filenames with .odt extension and no path traversal
-        if (!preg_match('/^[a-zA-Z0-9_\-\.]+\.odt$/', $template)) {
+        if (preg_match('/^[a-zA-Z0-9_\-\.]+\.odt$/', $template) === 0) {
             throw new RuntimeException("Invalid template name");
         }
 
@@ -1810,6 +1813,7 @@ class PluginOrderOrder extends CommonDBTM
             $this->getFromDB($ID);
 
             if (file_exists(PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR . "custom.php")) {
+                // @phpstan-ignore-next-line: custom.php is not a file or it does not exist.
                 include_once(PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR . "custom.php");
             }
 
@@ -2897,7 +2901,7 @@ class PluginOrderOrder extends CommonDBTM
                         'glpi_plugin_order_orders',
                         ['plugin_order_orderstates_id' => new QueryExpression($DB->quoteName('plugin_order_orderstates_id') . ' + 1')],
                         ['plugin_order_orderstates_id' => ['<', 7]],
-                    )
+                    ),
                 );
             }
 

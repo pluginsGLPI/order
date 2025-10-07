@@ -28,6 +28,8 @@
  * -------------------------------------------------------------------------
  */
 
+use function Safe\preg_match;
+
 /** @file
 * @brief
 */
@@ -57,7 +59,7 @@ if (isset($_POST['name'])) {
     $data = htmlescape(rawurldecode(stripslashes($_POST["data"])));
 
     // Validation et fallback
-    $name  = preg_match('/^[a-zA-Z0-9_\-]+$/', $_POST['name']) ? $_POST['name'] : 'default_name';
+    $name  = preg_match('/^[a-zA-Z0-9_\-]+$/', $_POST['name']) !== 0 ? $_POST['name'] : 'default_name';
 
     // Ces variables existent déjà et ne sont pas null, donc pas besoin de ??=
     $value = $data;
