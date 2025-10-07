@@ -42,7 +42,7 @@
 $USEDBREPLICATE = 1;
 $DBCONNECTION_REQUIRED = 0; // Really a big SQL request
 
-include("../../../../inc/includes.php");
+include(__DIR__ . "/../../../../inc/includes.php");
 
 $report = new PluginReportsAutoReport(__s("orderdelivery_report_title", "order"));
 new PluginReportsDateIntervalCriteria($report, 'order_date', __s("Date of order", "order"));
