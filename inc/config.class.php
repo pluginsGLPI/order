@@ -757,7 +757,7 @@ class PluginOrderConfig extends CommonDBTM
                         'id'                          => 1,
                         'use_validation'              => 0,
                         'default_taxes'               => 0,
-                    ]
+                    ],
                 );
             }
 

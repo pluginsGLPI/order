@@ -23,11 +23,8 @@
  * along with Order. If not, see <http://www.gnu.org/licenses/>.
  * -------------------------------------------------------------------------
  * @copyright Copyright (C) 2009-2023 by Order plugin team.
- * @copyright Copyright (C) 2018-2023 by Metabase plugin team.
  * @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
- * @license   GPLv2 https://www.gnu.org/licenses/gpl-2.0.html
  * @link      https://github.com/pluginsGLPI/order
- * @link      https://github.com/pluginsGLPI/metabase
  * -------------------------------------------------------------------------
  */
 
@@ -44,11 +41,13 @@ return RectorConfig::configure()
         __DIR__ . '/ajax',
         __DIR__ . '/front',
         __DIR__ . '/inc',
+        __DIR__ . '/report',
+        __DIR__ . '/stubs',
     ])
     ->withPhpVersion(PhpVersion::PHP_82)
     ->withCache(
         cacheClass: FileCacheStorage::class,
-        cacheDirectory: sys_get_temp_dir() . '/metabase-rector',
+        cacheDirectory: sys_get_temp_dir() . '/order-rector',
     )
     ->withRootFiles()
     ->withParallel(timeoutSeconds: 300)

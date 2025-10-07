@@ -6,6 +6,8 @@
         <directory name="ajax" />
         <directory name="front" />
         <directory name="inc" />
+        <directory name="report" />
+        <directory name="stubs" />
         <file name="hook.php" />
         <file name="setup.php" />
     </projectFiles>

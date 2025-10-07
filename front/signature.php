@@ -30,6 +30,8 @@
 
 use Glpi\Exception\Http\NotFoundHttpException;
 
+use function Safe\preg_match;
+
 /**
  * -------------------------------------------------------------------------
  * Order plugin for GLPI

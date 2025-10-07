@@ -690,7 +690,7 @@ JAVASCRIPT;
                     '',
                     false,
                 ) . "
-                }",);
+                }", );
             if ($position == 'bottom') {
                 echo $button;
                 echo "<br>";

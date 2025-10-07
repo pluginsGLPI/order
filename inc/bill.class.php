@@ -659,7 +659,7 @@ class PluginOrderBill extends CommonDropdown
                         'ti ti-receipt-2',
                     );
                     $ong[2] = self::createTabEntry(
-                        _n("Associated item", "Associated items", 2),
+                        _sn("Associated item", "Associated items", 2),
                         0,
                         null,
                         'ti ti-clipboard-list',
