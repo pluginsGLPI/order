@@ -119,7 +119,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
         $table = self::getTable();
         $criteria = [
-            'SELECT' => ['(answer1 + answer2 + answer3 + answer4 + answer5) AS total'],
+            'SELECT' => [new \QueryExpression('(answer1 + answer2 + answer3 + answer4 + answer5) AS total')],
             'FROM' => $table,
             'WHERE' => ['plugin_order_orders_id' => $plugin_order_orders_id]
         ];
