@@ -579,6 +579,16 @@ class PluginOrderOrder extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'            => 28,
+            'table'         => 'glpi_users',
+            'field'         => 'name',
+            'name'          => __s('Technician'),
+            'linkfield'     => 'users_id_tech',
+            'datatype'      => 'itemlink',
+            'massiveaction' => false,
+        ];
+
+        $tab[] = [
             'id'            => 31,
             'table'         => self::getTable(),
             'field'         => 'id',
@@ -2628,6 +2638,7 @@ class PluginOrderOrder extends CommonDBTM
                `groups_id` int {$default_key_sign} NOT NULL default '0',
                `users_id_delivery` int {$default_key_sign} NOT NULL default '0',
                `groups_id_delivery` int {$default_key_sign} NOT NULL default '0',
+               `users_id_tech` int {$default_key_sign} NOT NULL default '0',
                `plugin_order_ordertypes_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)',
                `date_mod` timestamp NULL default NULL,
                `is_helpdesk_visible` tinyint NOT NULL default '1',
@@ -2941,6 +2952,7 @@ class PluginOrderOrder extends CommonDBTM
             $migration->addField($table, "groups_id", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
             $migration->addField($table, "users_id_delivery", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
             $migration->addField($table, "groups_id_delivery", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
+            $migration->addField($table, "users_id_tech", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
 
             //1.7.0
             $migration->addField($table, "date_mod", "timestamp");
