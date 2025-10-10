@@ -27,11 +27,14 @@
  * @link      https://github.com/pluginsGLPI/order
  * -------------------------------------------------------------------------
  */
+use Glpi\DBAL\QueryExpression;
 use Glpi\Features\Clonable;
-use Odtphp\Odf;
 use Odtphp\Exceptions\OdfException;
 use Odtphp\Exceptions\SegmentException;
-use Glpi\DBAL\QueryExpression;
+use Odtphp\Odf;
+use Safe\DateTime;
+
+use function Safe\preg_match;
 
 class PluginOrderOrder extends CommonDBTM
 {
@@ -572,6 +575,16 @@ class PluginOrderOrder extends CommonDBTM
             'name'          => __s('Recipient group', 'order'),
             'linkfield'     => 'groups_id_delivery',
             'datatype'      => 'dropdown',
+            'massiveaction' => false,
+        ];
+
+        $tab[] = [
+            'id'            => 28,
+            'table'         => 'glpi_users',
+            'field'         => 'name',
+            'name'          => __s('Technician'),
+            'linkfield'     => 'users_id_tech',
+            'datatype'      => 'itemlink',
             'massiveaction' => false,
         ];
 
@@ -1793,7 +1806,7 @@ class PluginOrderOrder extends CommonDBTM
         $signature = $params['sign'];
 
         // Only allow filenames with .odt extension and no path traversal
-        if (!preg_match('/^[a-zA-Z0-9_\-\.]+\.odt$/', $template)) {
+        if (preg_match('/^[a-zA-Z0-9_\-\.]+\.odt$/', $template) === 0) {
             throw new RuntimeException("Invalid template name");
         }
 
@@ -1810,6 +1823,7 @@ class PluginOrderOrder extends CommonDBTM
             $this->getFromDB($ID);
 
             if (file_exists(PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR . "custom.php")) {
+                // @phpstan-ignore-next-line: custom.php is not a file or it does not exist.
                 include_once(PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR . "custom.php");
             }
 
@@ -2624,6 +2638,7 @@ class PluginOrderOrder extends CommonDBTM
                `groups_id` int {$default_key_sign} NOT NULL default '0',
                `users_id_delivery` int {$default_key_sign} NOT NULL default '0',
                `groups_id_delivery` int {$default_key_sign} NOT NULL default '0',
+               `users_id_tech` int {$default_key_sign} NOT NULL default '0',
                `plugin_order_ordertypes_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)',
                `date_mod` timestamp NULL default NULL,
                `is_helpdesk_visible` tinyint NOT NULL default '1',
@@ -2897,7 +2912,7 @@ class PluginOrderOrder extends CommonDBTM
                         'glpi_plugin_order_orders',
                         ['plugin_order_orderstates_id' => new QueryExpression($DB->quoteName('plugin_order_orderstates_id') . ' + 1')],
                         ['plugin_order_orderstates_id' => ['<', 7]],
-                    )
+                    ),
                 );
             }
 
@@ -2937,6 +2952,7 @@ class PluginOrderOrder extends CommonDBTM
             $migration->addField($table, "groups_id", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
             $migration->addField($table, "users_id_delivery", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
             $migration->addField($table, "groups_id_delivery", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
+            $migration->addField($table, "users_id_tech", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
 
             //1.7.0
             $migration->addField($table, "date_mod", "timestamp");

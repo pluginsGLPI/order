@@ -28,6 +28,8 @@
  * -------------------------------------------------------------------------
  */
 
+use function Safe\define;
+
 define('PLUGIN_ORDER_VERSION', '2.12.0');
 
 // Minimal GLPI version, inclusive

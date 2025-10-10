@@ -26,21 +26,22 @@
  * -------------------------------------------------------------------------
  */
 
-input[type=number].decimal,
-input[type=number].smalldecimal,
-input[type=number].quantity {
+input[type="number"].decimal,
+input[type="number"].smalldecimal,
+input[type="number"].quantity {
    text-align:center;
    padding: 0;
    position: relative;
 }
-input[type=number].decimal,
-input[type=number].smalldecimal,
-input[type=number].quantity {
+
+input[type="number"].decimal,
+input[type="number"].smalldecimal,
+input[type="number"].quantity {
    width: 100px;
 }
 
-input[type=number].decimal::-webkit-inner-spin-button,
-input[type=number].quantity::-webkit-inner-spin-button {
+input[type="number"].decimal::-webkit-inner-spin-button,
+input[type="number"].quantity::-webkit-inner-spin-button {
     opacity: 1;
 }
 

@@ -28,6 +28,11 @@
  * -------------------------------------------------------------------------
  */
 
+use function Safe\copy;
+use function Safe\glob;
+use function Safe\mkdir;
+use function Safe\preg_match;
+
 /**
  * Plugin install process
  *
@@ -37,7 +42,7 @@ function plugin_order_install()
 {
     foreach (glob(PLUGIN_ORDER_DIR . '/inc/*.php') as $file) {
         //Do not load datainjection files (not needed and avoid missing class error message)
-        if (!preg_match('/injection.class.php/', $file)) {
+        if (preg_match('/injection.class.php/', $file) === 0) {
             include_once($file);
         }
     }
@@ -109,7 +114,7 @@ function plugin_order_uninstall()
 {
     foreach (glob(PLUGIN_ORDER_DIR . '/inc/*.php') as $file) {
         //Do not load datainjection files (not needed and avoid missing class error message)
-        if (!preg_match('/injection.class.php/', $file)) {
+        if (preg_match('/injection.class.php/', $file) === 0) {
             include_once($file);
         }
     }

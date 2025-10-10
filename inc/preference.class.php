@@ -28,7 +28,9 @@
  * -------------------------------------------------------------------------
  */
 
-
+use function Safe\filemtime;
+use function Safe\filetype;
+use function Safe\opendir;
 
 class PluginOrderPreference extends CommonDBTM
 {

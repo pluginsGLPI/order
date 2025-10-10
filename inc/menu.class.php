@@ -108,7 +108,5 @@ class PluginOrderMenu extends CommonGLPI
     }
 
 
-    public function install()
-    {
-    }
+    public function install() {}
 }

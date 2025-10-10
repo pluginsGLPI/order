@@ -1,20 +1,22 @@
+includes:
+    - ../../vendor/glpi-project/phpstan-glpi/extension.neon
+    - ../../vendor/phpstan/phpstan-deprecation-rules/rules.neon
+    - ../../vendor/thecodingmachine/phpstan-safe-rule/phpstan-safe-rule.neon
+
 parameters:
-    parallel:
-        maximumNumberOfProcesses: 2
     level: 5
-    bootstrapFiles:
-        - ../../stubs/glpi_constants.php
-        - ../../vendor/autoload.php
-        - stubs/PluginDatainjectionInjectionInterface.php
     paths:
         - ajax
         - front
         - inc
+        - stubs
         - hook.php
         - setup.php
     scanDirectories:
-        - ../../inc
         - ../../src
-    stubFiles:
-    ignoreErrors:
-        - '#Path in include_once\(\) ".*?/files/_plugins/order/generate/custom\.php" is not a file or it does not exist\.#'
+        - ../../tests
+    bootstrapFiles:
+        - ../../stubs/glpi_constants.php
+        - ../../vendor/autoload.php
+        - setup.php
+    treatPhpDocTypesAsCertain: false

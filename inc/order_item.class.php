@@ -27,10 +27,12 @@
  * @link      https://github.com/pluginsGLPI/order
  * -------------------------------------------------------------------------
  */
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryUnion;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryUnion;
+
+use function Safe\preg_match;
 
 class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 {
@@ -1252,11 +1254,11 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                     $cmp = $val_a <=> $val_b;
                 } else {
                     if (is_string($val_a)) {
-                        $val_a = preg_match('/<a[^>]*>(\d+)<\/a>/', $val_a, $matches) ? (int) $matches[1] : strip_tags($val_a);
+                        $val_a = preg_match('/<a[^>]*>(\d+)<\/a>/', $val_a, $matches) !== 0 ? (int) $matches[1] : strip_tags($val_a);
                     }
 
                     if (is_string($val_b)) {
-                        $val_b = preg_match('/<a[^>]*>(\d+)<\/a>/', $val_b, $matches) ? (int) $matches[1] : strip_tags($val_b);
+                        $val_b = preg_match('/<a[^>]*>(\d+)<\/a>/', $val_b, $matches) !== 0 ? (int) $matches[1] : strip_tags($val_b);
                     }
 
                     if (is_numeric($val_a) && is_numeric($val_b)) {
@@ -2248,17 +2250,17 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
     {
         $notif = new Notification();
         $notif->deleteByCriteria([
-            'itemtype' => 'PluginOrderOrder_Item'
+            'itemtype' => 'PluginOrderOrder_Item',
         ]);
 
         $template = new NotificationTemplate();
         $template->deleteByCriteria([
-            'itemtype' => 'PluginOrderOrder_Item'
+            'itemtype' => 'PluginOrderOrder_Item',
         ]);
 
         $translation = new NotificationTemplateTranslation();
         $translation->deleteByCriteria([
-            'itemtype' => 'PluginOrderOrder_Item'
+            'itemtype' => 'PluginOrderOrder_Item',
         ]);
     }
 
