@@ -5,10 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [UNRELEASED]
 
 ### Fixed
 
+- SQL expression in supplier survey total calculation
 - Add `users_id_tech` field field for tech assignment compatibility
 
 ## [2.12.0] - 2025-10-01
