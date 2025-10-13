@@ -29,14 +29,14 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {{ fields.largeTitle(
-   __s("Order informations", "order"),
+   __("Order informations", "order"),
    '',
    false
 ) }}
 
 <div class="form-field row col-12 col-sm-6  mb-2 col-auto p-1">
    <label class="col-form-label col-xxl-5 text-xxl-end" for="order_name">
-      {{ __s("Order name", "order") }}
+      {{ __("Order name", "order") }}
    </label>
    <div class="col-form-label col-xxl-7  field-container">
       {{ order_link|raw }}
@@ -45,7 +45,7 @@
 
 <div class="form-field row col-12 col-sm-6  mb-2 col-auto p-1">
    <label class="col-form-label col-xxl-5 text-xxl-end" for="reference">
-      {{ __s("Reference") }}
+      {{ __("Reference") }}
    </label>
    <div class="col-form-label col-xxl-7  field-container">
       {{ reference_link|raw }}
@@ -54,7 +54,7 @@
 
 <div class="form-field row col-12 col-sm-6  mb-2 col-auto p-1">
    <label class="col-form-label col-xxl-5 text-xxl-end" for="delivery_date">
-      {{ __s("Delivery date") }}
+      {{ __("Delivery date") }}
    </label>
    <div class="col-form-label col-xxl-7  field-container">
       {{ delivery_date|raw }}
