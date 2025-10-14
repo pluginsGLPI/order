@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [UNRELEASED]
 
+## [2.12.1] - 2025-10-14
+
 ### Fixed
 
 - SQL expression in supplier survey total calculation
@@ -17,6 +19,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - GLPI 11 compatibility
+
+## [2.11.3] - 2025-10-14
+
+### Fixed
+
+- SQL expression in supplier survey total calculation
 
 ## [2.11.2] - 2025-08-07
 
