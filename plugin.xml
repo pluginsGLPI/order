@@ -35,6 +35,11 @@
           <download_url>https://github.com/pluginsGLPI/order/releases/download/2.12.0/glpi-order-2.12.0.tar.bz2</download_url>
       </version>
       <version>
+          <num>2.11.3</num>
+          <compatibility>~10.0.11</compatibility>
+          <download_url>https://github.com/pluginsGLPI/order/releases/download/2.11.3/glpi-order-2.11.3.tar.bz2</download_url>
+      </version>
+      <version>
           <num>2.11.2</num>
           <compatibility>~10.0.11</compatibility>
           <download_url>https://github.com/pluginsGLPI/order/releases/download/2.11.2/glpi-order-2.11.2.tar.bz2</download_url>
