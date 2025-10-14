@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-08 01:49+0000\n"
+"POT-Creation-Date: 2025-10-14 01:52+0000\n"
 "PO-Revision-Date: 2015-09-18 10:11+0000\n"
 "Last-Translator: Andrea Garelli <garelli.andrea@gmail.com>, 2022\n"
 "Language-Team: Italian (Italy) (http://app.transifex.com/teclib/glpi-project-plugin-order/language/it_IT/)\n"
@@ -20,6 +20,50 @@ msgstr ""
 "Language: it_IT\n"
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
+#: templates/order_link_item.html.twig inc/reception.class.php:368
+#: inc/bill.class.php:370 inc/order_item.class.php:1696
+msgid "No item to take delivery of"
+msgstr "Nessun  articolo da prendere in consegna"
+
+#: templates/order_link_item.html.twig templates/generate_item.html.twig
+#: inc/reference.class.php:71 inc/reference.class.php:90
+#: inc/reception.class.php:398 inc/bill.class.php:382
+#: inc/reference_supplier.class.php:287 inc/reference_supplier.class.php:312
+#: inc/reference_supplier.class.php:575 inc/reference_supplier.class.php:577
+#: inc/order_item.class.php:464 inc/order_item.class.php:1708
+msgid "Product reference"
+msgstr "Riferimento Prodotto"
+
+#: templates/order_link_item.html.twig templates/order_getitems.html.twig
+msgid "Collapse all"
+msgstr ""
+
+#: templates/order_link_item.html.twig templates/order_getitems.html.twig
+msgid "Expand all"
+msgstr ""
+
+#: templates/order_link_item.html.twig templates/order_getitems.html.twig
+#, php-format
+msgid "Showing %s to %s of %s entries"
+msgstr ""
+
+#: templates/order_link_item.html.twig templates/order_getitems.html.twig
+msgid "Entries to show:"
+msgstr ""
+
+#: templates/generate_item.html.twig
+msgid "Mass value filling"
+msgstr ""
+
+#: templates/order_infocom.html.twig
+msgid "Order informations"
+msgstr ""
+
+#: templates/order_infocom.html.twig inc/surveysupplier.class.php:209
+#: inc/order.class.php:449 inc/order.class.php:952 hook.php:239
+msgid "Order name"
+msgstr "Ordine"
+
 #: setup.php:200 inc/order_item.class.php:126 inc/config.class.php:81
 #: inc/order.class.php:327 front/order_item.form.php:41
 #: front/order_supplier.form.php:74 front/surveysupplier.form.php:65
@@ -27,11 +71,11 @@ msgstr ""
 msgid "Orders management"
 msgstr "Gestione ordini"
 
-#: inc/preference.class.php:182 inc/order.class.php:1750
+#: inc/preference.class.php:182 inc/order.class.php:1760
 msgid "Use this model"
 msgstr "Usa questo modello"
 
-#: inc/preference.class.php:187 inc/order.class.php:1759
+#: inc/preference.class.php:187 inc/order.class.php:1769
 msgid "Use this sign"
 msgstr "Usa questa firma"
 
@@ -39,11 +83,6 @@ msgstr "Usa questa firma"
 #: inc/surveysupplier.class.php:414 inc/surveysupplier.class.php:604
 msgid "Supplier quality"
 msgstr "Qualità Fornitori"
-
-#: inc/surveysupplier.class.php:209 inc/order.class.php:449
-#: inc/order.class.php:942 hook.php:239
-msgid "Order name"
-msgstr "Ordine"
 
 #: inc/surveysupplier.class.php:210 inc/surveysupplier.class.php:417
 msgid "Note"
@@ -97,7 +136,7 @@ msgstr "Tipo altre attrezzature"
 #: inc/bill.class.php:656 inc/order_supplier.class.php:499
 #: inc/documentcategory.class.php:46 inc/order_item.class.php:2201
 #: inc/order_item.class.php:2205 inc/order.class.php:91
-#: inc/order.class.php:673 front/preference.form.php:43
+#: inc/order.class.php:683 front/preference.form.php:43
 #: front/config.form.php:41 front/menu.php:61 front/order.form.php:455
 #: front/order.php:38 hook.php:156
 msgid "Orders"
@@ -121,14 +160,6 @@ msgstr "Stato spedizione"
 #: inc/order_item.class.php:586 inc/order_item.class.php:990 hook.php:154
 msgid "Analytic nature"
 msgstr ""
-
-#: inc/reference.class.php:71 inc/reference.class.php:90
-#: inc/reception.class.php:398 inc/bill.class.php:382
-#: inc/reference_supplier.class.php:287 inc/reference_supplier.class.php:312
-#: inc/reference_supplier.class.php:575 inc/reference_supplier.class.php:577
-#: inc/order_item.class.php:464 inc/order_item.class.php:1708
-msgid "Product reference"
-msgstr "Riferimento Prodotto"
 
 #: inc/reference.class.php:183 inc/reference.class.php:679
 #: inc/order_item.class.php:998
@@ -167,12 +198,12 @@ msgid "Reference(s) in use"
 msgstr "Riferimenti già utilizzati"
 
 #: inc/reference.class.php:422 inc/reference.class.php:896
-#: inc/order.class.php:2129
+#: inc/order.class.php:2139
 msgid "Linked orders"
 msgstr "Ordini collegati"
 
-#: inc/reference.class.php:769 inc/order.class.php:1125
-#: inc/order.class.php:1494
+#: inc/reference.class.php:769 inc/order.class.php:1135
+#: inc/order.class.php:1504
 msgid "Eco-responsibility fees"
 msgstr ""
 
@@ -197,11 +228,6 @@ msgstr "Ricevuta"
 #: inc/order_item.class.php:1838
 msgid "Bill"
 msgstr "Fattura"
-
-#: inc/reception.class.php:368 inc/bill.class.php:370
-#: inc/order_item.class.php:1696
-msgid "No item to take delivery of"
-msgstr "Nessun  articolo da prendere in consegna"
 
 #: inc/reception.class.php:399
 msgid "Delivered items"
@@ -266,8 +292,8 @@ msgstr ""
 #: inc/ordertax.class.php:41 inc/order_item.class.php:470
 #: inc/order_item.class.php:590 inc/order_item.class.php:1111
 #: inc/order_item.class.php:1491 inc/order.class.php:359
-#: inc/order.class.php:1125 inc/order.class.php:1145 inc/order.class.php:1903
-#: inc/order.class.php:2031 hook.php:146
+#: inc/order.class.php:1135 inc/order.class.php:1155 inc/order.class.php:1913
+#: inc/order.class.php:2041 hook.php:146
 msgid "VAT"
 msgstr "IVA"
 
@@ -286,7 +312,7 @@ msgstr "Generazione"
 
 #: inc/link.class.php:366 inc/order_item.class.php:468
 #: inc/order_item.class.php:588 inc/order_item.class.php:987
-#: inc/order.class.php:1899 front/order.form.php:147 front/order.form.php:268
+#: inc/order.class.php:1909 front/order.form.php:147 front/order.form.php:268
 #: front/order.form.php:294
 msgid "Quantity"
 msgstr "Quantità"
@@ -411,7 +437,7 @@ msgstr "Nessun Articolo Generato"
 #: inc/notificationtargetorder.class.php:109
 #: inc/notificationtargetorder.class.php:163
 #: inc/notificationtargetorder.class.php:171 inc/order.class.php:347
-#: inc/order.class.php:963 report/deliveryinfos/deliveryinfos.php:48
+#: inc/order.class.php:973 report/deliveryinfos/deliveryinfos.php:48
 #: report/orderdelivery/orderdelivery.php:48
 #: report/orderdelivery/orderdelivery.php:90
 msgid "Date of order"
@@ -435,19 +461,19 @@ msgid "Editor of validation"
 msgstr "Modifica della verifica"
 
 #: inc/notificationtargetorder.class.php:172 inc/order.class.php:475
-#: inc/order.class.php:1248 report/orderdelivery/orderdelivery.php:91
+#: inc/order.class.php:1258 report/orderdelivery/orderdelivery.php:91
 msgid "Estimated due date"
 msgstr "Data di scadenza prevista"
 
 #: inc/notificationtargetorder.class.php:478
 #: inc/notificationtargetorder.class.php:481 inc/config.class.php:171
-#: inc/order.class.php:565 inc/order.class.php:1379
+#: inc/order.class.php:565 inc/order.class.php:1389
 msgid "Author group"
 msgstr "Gruppo dell'autore"
 
 #: inc/notificationtargetorder.class.php:480
 #: inc/notificationtargetorder.class.php:482 inc/config.class.php:181
-#: inc/order.class.php:575 inc/order.class.php:1427
+#: inc/order.class.php:575 inc/order.class.php:1437
 msgid "Recipient group"
 msgstr "Gruppo del destinatario"
 
@@ -476,7 +502,7 @@ msgstr "Categoria del documento"
 msgid "Document category prefix"
 msgstr "Prefisso di categoria del documento"
 
-#: inc/accountsection.class.php:40 inc/order.class.php:1291 hook.php:155
+#: inc/accountsection.class.php:40 inc/order.class.php:1301 hook.php:155
 msgid "Account section"
 msgstr "Riferimento contabile"
 
@@ -509,7 +535,7 @@ msgid "Add to the order from the catalog"
 msgstr "Aggiungi a ordine dal catalogo"
 
 #: inc/order_item.class.php:553 inc/order_item.class.php:631
-#: inc/config.class.php:117 inc/order.class.php:1156
+#: inc/config.class.php:117 inc/order.class.php:1166
 msgid "No VAT"
 msgstr "IVA esclusa"
 
@@ -538,7 +564,7 @@ msgid "Discounted price tax free"
 msgstr "Importo scontato (IVA esclusa)"
 
 #: inc/order_item.class.php:1114 inc/order_item.class.php:1518
-#: inc/order.class.php:1906 inc/order.class.php:2033 inc/order.class.php:2138
+#: inc/order.class.php:1916 inc/order.class.php:2043 inc/order.class.php:2148
 msgid "Price ATI"
 msgstr "Importo totale (IVA + sconto)"
 
@@ -551,7 +577,7 @@ msgid "Paid value"
 msgstr "Valore pagato"
 
 #: inc/orderpayment.class.php:40 inc/order.class.php:409
-#: inc/order.class.php:1086 inc/order.class.php:2037 hook.php:147
+#: inc/order.class.php:1096 inc/order.class.php:2047 hook.php:147
 msgid "Payment conditions"
 msgstr "Condizioni di pagamento"
 
@@ -684,7 +710,7 @@ msgid "Reference free"
 msgstr ""
 
 #: inc/orderstate.class.php:49 inc/order.class.php:383
-#: inc/order.class.php:1022 inc/order.class.php:2135 hook.php:149
+#: inc/order.class.php:1032 inc/order.class.php:2145 hook.php:149
 msgid "Order status"
 msgstr "Stato dell'ordine"
 
@@ -712,7 +738,7 @@ msgstr "Consegnato"
 msgid "Canceled"
 msgstr "Annullato"
 
-#: inc/order.class.php:309 inc/order.class.php:1744 inc/order.class.php:1770
+#: inc/order.class.php:309 inc/order.class.php:1754 inc/order.class.php:1780
 msgid "Order Generation"
 msgstr "Generazione Ordine"
 
@@ -720,7 +746,7 @@ msgstr "Generazione Ordine"
 msgid "Order validation"
 msgstr "Verifica dell'ordine"
 
-#: inc/order.class.php:312 inc/order.class.php:1691
+#: inc/order.class.php:312 inc/order.class.php:1701
 msgid "Cancel order"
 msgstr "Cancellazione Ordine"
 
@@ -732,214 +758,214 @@ msgstr "Modifica Ordine verificato"
 msgid "Generate order without validation"
 msgstr "Genera l'ordine senza la verifica"
 
-#: inc/order.class.php:334 inc/order.class.php:980 inc/order.class.php:1833
+#: inc/order.class.php:334 inc/order.class.php:990 inc/order.class.php:1843
 #: hook.php:246 report/orderdelivery/orderdelivery.php:78
 msgid "Order number"
 msgstr "Numero d'ordine"
 
-#: inc/order.class.php:359 inc/order.class.php:533 inc/order.class.php:1113
-#: inc/order.class.php:1145 inc/order.class.php:1518 inc/order.class.php:2028
+#: inc/order.class.php:359 inc/order.class.php:533 inc/order.class.php:1123
+#: inc/order.class.php:1155 inc/order.class.php:1528 inc/order.class.php:2038
 msgid "Postage"
 msgstr "Spedizione"
 
-#: inc/order.class.php:371 inc/order.class.php:1072
+#: inc/order.class.php:371 inc/order.class.php:1082
 #: report/deliveryinfos/deliveryinfos.php:50
 #: report/orderdelivery/orderdelivery.php:50
 #: report/orderdelivery/orderdelivery.php:95
 msgid "Delivery location"
 msgstr "Indirizzo Spedizione"
 
-#: inc/order.class.php:499 inc/order.class.php:2380
+#: inc/order.class.php:499 inc/order.class.php:2390
 msgid "Order is late"
 msgstr "Ordine in ritardo"
 
-#: inc/order.class.php:625
+#: inc/order.class.php:635
 msgid "Account Section"
 msgstr "Riferimento contabile"
 
-#: inc/order.class.php:685
+#: inc/order.class.php:695
 msgid "Validation"
 msgstr "Verifica"
 
-#: inc/order.class.php:697
+#: inc/order.class.php:707
 msgid "Purchase order"
 msgstr "Ordinazione d'acquisto"
 
-#: inc/order.class.php:750
+#: inc/order.class.php:760
 msgid "An order number is mandatory !"
 msgstr "Il numero d'ordine è obbligatorio!"
 
-#: inc/order.class.php:761 inc/order.class.php:847
+#: inc/order.class.php:771 inc/order.class.php:857
 msgid "An account section is mandatory !"
 msgstr "Un riferimento contabile è obbligatorio!"
 
-#: inc/order.class.php:768 inc/order.class.php:838
+#: inc/order.class.php:778 inc/order.class.php:848
 msgid ""
 "The order date must be within the dates entered for the selected budget."
 msgstr "La data dell'ordine deve essere compresa tra le date inserite per il budget selezionato."
 
-#: inc/order.class.php:894
+#: inc/order.class.php:904
 msgid "Go to configuration page"
 msgstr "Vai alla pagina di configurazione"
 
-#: inc/order.class.php:902
+#: inc/order.class.php:912
 msgid "You must set up at least the order life cycle before starting."
 msgstr "Devi impostare almeno il ciclo di vita dell'ordine prima di iniziare."
 
-#: inc/order.class.php:1102 inc/order.class.php:1498
+#: inc/order.class.php:1112 inc/order.class.php:1508
 msgid "Eco-responsibility fees (tax free)"
 msgstr ""
 
-#: inc/order.class.php:1264
+#: inc/order.class.php:1274
 msgid "Due date overtaken"
 msgstr "Data di scadenza superata"
 
-#: inc/order.class.php:1273
+#: inc/order.class.php:1283
 msgid "Global discount to apply to items"
 msgstr "Sconto applicato"
 
-#: inc/order.class.php:1484
+#: inc/order.class.php:1494
 msgid "Articles"
 msgstr ""
 
-#: inc/order.class.php:1488 inc/order.class.php:2024 inc/order.class.php:2137
+#: inc/order.class.php:1498 inc/order.class.php:2034 inc/order.class.php:2147
 msgid "Price tax free"
 msgstr "Importo netto (IVA esclusa)"
 
-#: inc/order.class.php:1503
+#: inc/order.class.php:1513
 msgid "VAT on Eco-responsibility fees"
 msgstr ""
 
-#: inc/order.class.php:1508
+#: inc/order.class.php:1518
 msgid "Eco-responsibility fees (ATI)"
 msgstr ""
 
-#: inc/order.class.php:1514
+#: inc/order.class.php:1524
 msgid "Shipping"
 msgstr ""
 
-#: inc/order.class.php:1523
+#: inc/order.class.php:1533
 msgid "VAT on postage"
 msgstr ""
 
-#: inc/order.class.php:1528
+#: inc/order.class.php:1538
 msgid "Postage (ATI)"
 msgstr ""
 
-#: inc/order.class.php:1534
+#: inc/order.class.php:1544
 msgid "Totals"
 msgstr ""
 
-#: inc/order.class.php:1538
+#: inc/order.class.php:1548
 msgid "Total tax free"
 msgstr ""
 
-#: inc/order.class.php:1543
+#: inc/order.class.php:1553
 msgid "Total VAT"
 msgstr ""
 
-#: inc/order.class.php:1548
+#: inc/order.class.php:1558
 msgid "Total price (ATI)"
 msgstr ""
 
-#: inc/order.class.php:1671
+#: inc/order.class.php:1681
 msgid "Validation process"
 msgstr "Processo di verifica"
 
-#: inc/order.class.php:1690
+#: inc/order.class.php:1700
 msgid ""
 "Do you really want to cancel this order ? This option is irreversible !"
 msgstr "Vuoi cencellare questo ordine? L'operazione è irreversibile!"
 
-#: inc/order.class.php:1697
+#: inc/order.class.php:1707
 msgid "Validate order"
 msgstr "Verifica Ordine"
 
-#: inc/order.class.php:1703
+#: inc/order.class.php:1713
 msgid "Do you want to cancel the validation approval ?"
 msgstr "Vuoi cancellare il processo di verifica?"
 
-#: inc/order.class.php:1705
+#: inc/order.class.php:1715
 msgid "Cancel ask for validation"
 msgstr "Elimina la richiesta di verifica"
 
-#: inc/order.class.php:1711
+#: inc/order.class.php:1721
 msgid "Ask for validation"
 msgstr "Richiesta di verifica"
 
-#: inc/order.class.php:1717
+#: inc/order.class.php:1727
 msgid "Do you really want to edit the order ?"
 msgstr "Vuoi modificare l'ordine? "
 
-#: inc/order.class.php:1719
+#: inc/order.class.php:1729
 msgid "Edit order"
 msgstr "Modifica Ordine"
 
-#: inc/order.class.php:1727
+#: inc/order.class.php:1737
 msgid "Thanks to add at least one equipment on your order."
 msgstr "Grazie per aver aggiunto attrezzature all ordine"
 
-#: inc/order.class.php:1778
+#: inc/order.class.php:1788
 msgid "Thanks to select a model into your preferences"
 msgstr "Grazie per aver selezionato il modello preferito"
 
-#: inc/order.class.php:1835
+#: inc/order.class.php:1845
 msgid "Invoice address"
 msgstr "Indirizzo fatturazione"
 
-#: inc/order.class.php:1866
+#: inc/order.class.php:1876
 msgid "Delivery address"
 msgstr "Indirizzo spedizione"
 
-#: inc/order.class.php:1876
+#: inc/order.class.php:1886
 msgid "The"
 msgstr "il"
 
-#: inc/order.class.php:1878
+#: inc/order.class.php:1888
 msgid "Issuer order"
 msgstr "Emissione Ordine"
 
-#: inc/order.class.php:1897
+#: inc/order.class.php:1907
 msgid "Recipient"
 msgstr "Recipient"
 
-#: inc/order.class.php:1900
+#: inc/order.class.php:1910
 msgid "Designation"
 msgstr "Denominazione"
 
-#: inc/order.class.php:1902
+#: inc/order.class.php:1912
 msgid "Unit price"
 msgstr "Importo unitario"
 
-#: inc/order.class.php:1904
+#: inc/order.class.php:1914
 msgid "Discount rate"
 msgstr "Percentuale di sconto"
 
-#: inc/order.class.php:1905
+#: inc/order.class.php:1915
 msgid "Sum tax free"
 msgstr "Importo totale (IVA esclusa)"
 
-#: inc/order.class.php:2026
+#: inc/order.class.php:2036
 msgid "Price tax free with postage"
 msgstr "Importo netto + spedizione"
 
-#: inc/order.class.php:2035
+#: inc/order.class.php:2045
 msgid "€"
 msgstr "€"
 
-#: inc/order.class.php:2036
+#: inc/order.class.php:2046
 msgid "Signature of issuing order"
 msgstr "Firma emettitore ordine"
 
-#: inc/order.class.php:2163
+#: inc/order.class.php:2173
 msgid "Unlink"
 msgstr "annulla collegamento"
 
-#: inc/order.class.php:2324
+#: inc/order.class.php:2334
 msgid "Total orders related with this budget is greater than its value."
 msgstr "Total orders related with this budget is greater than its value."
 
-#: inc/order.class.php:2329
+#: inc/order.class.php:2339
 msgid "Total orders related with this budget is equal to its value."
 msgstr "Total orders related with this budget is equal to its value."
 
