@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [UNRELEASED]
 
+## [2.11.3] - 2025-10-14
+
 ### Fixed
 
 - SQL expression in supplier survey total calculation
