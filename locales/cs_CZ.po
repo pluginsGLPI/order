@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-14 01:52+0000\n"
+"POT-Creation-Date: 2025-10-14 06:13+0000\n"
 "PO-Revision-Date: 2015-09-18 10:11+0000\n"
 "Last-Translator: David Stepan <stepand@tiscali.cz>, 2015-2017,2019,2022,2024-2025\n"
 "Language-Team: Czech (Czech Republic) (http://app.transifex.com/teclib/glpi-project-plugin-order/language/cs_CZ/)\n"
@@ -35,28 +35,28 @@ msgstr "Produktová reference"
 
 #: templates/order_link_item.html.twig templates/order_getitems.html.twig
 msgid "Collapse all"
-msgstr ""
+msgstr "Sbalit vše"
 
 #: templates/order_link_item.html.twig templates/order_getitems.html.twig
 msgid "Expand all"
-msgstr ""
+msgstr "Rozbalit vše"
 
 #: templates/order_link_item.html.twig templates/order_getitems.html.twig
 #, php-format
 msgid "Showing %s to %s of %s entries"
-msgstr ""
+msgstr "Zobrazeno %s do %s z %s položek"
 
 #: templates/order_link_item.html.twig templates/order_getitems.html.twig
 msgid "Entries to show:"
-msgstr ""
+msgstr "Záznamy k zobrazení:"
 
 #: templates/generate_item.html.twig
 msgid "Mass value filling"
-msgstr ""
+msgstr "Hromadné vyplnění hodnot"
 
 #: templates/order_infocom.html.twig
 msgid "Order informations"
-msgstr ""
+msgstr "Informace o objednávce"
 
 #: templates/order_infocom.html.twig inc/surveysupplier.class.php:209
 #: inc/order.class.php:449 inc/order.class.php:952 hook.php:239
@@ -698,7 +698,7 @@ msgstr "Stav dodané objednávky"
 
 #: inc/config.class.php:421
 msgid "Order paied state"
-msgstr "Stav uhrazené objednávky"
+msgstr "Stav uhrazení objednávky"
 
 #: inc/config.class.php:431
 msgid "Canceled order state"
