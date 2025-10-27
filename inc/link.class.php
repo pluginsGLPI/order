@@ -521,6 +521,12 @@ class PluginOrderLink extends CommonDBChild
     public function getSpecificMassiveActions($checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
+
+        foreach ($actions as $action_key => $action_label) {
+            // Remove HTML tags from action labels (like the transfer list action)
+            $actions[$action_key] = strip_tags($action_label);
+        }
+
         $sep     = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
 
         $actions[$sep . 'generation']       = __("Generate item", "order");
