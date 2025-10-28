@@ -268,12 +268,12 @@
                                         {% elseif formatter == "editable_price" %}
                                             {% if canedit %}
                                                 {% if is_summary_table is defined and is_summary_table %}
-                                                <div id="pricetaxfree{{ summary_data.rand }}" class="btn-link" style="cursor: pointer;" onclick="showPricetaxfree{{ summary_data.rand }}()">
+                                                <div id="pricetaxfree{{ summary_data.rand }}" class="btn-link pointer" onclick="showPricetaxfree{{ summary_data.rand }}()">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="viewpricetaxfree{{ summary_data.rand }}" style="display: none;"></div>
                                                 {% else %}
-                                                    <div id="detail_pricetaxfree{{ entry['id'] }}" class="btn-link" style="cursor: pointer;" onclick="showDetailPricetaxfree{{ entry['id'] }}()">
+                                                    <div id="detail_pricetaxfree{{ entry['id'] }}" class="btn-link pointer" onclick="showDetailPricetaxfree{{ entry['id'] }}()">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="detail_viewpricetaxfree{{ entry['id'] }}" style="display: none;"></div>
@@ -284,12 +284,12 @@
                                         {% elseif formatter == "editable_discount" %}
                                             {% if canedit %}
                                                 {% if is_summary_table is defined and is_summary_table %}
-                                                <div id="discount{{ summary_data.rand }}" class="btn-link" style="cursor: pointer;" onclick="showDiscount{{ summary_data.rand }}()">
+                                                <div id="discount{{ summary_data.rand }}" class="btn-link pointer" onclick="showDiscount{{ summary_data.rand }}()">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="viewdiscount{{ summary_data.rand }}" style="display: none;"></div>
                                                 {% else %}
-                                                    <div id="detail_discount{{ entry['id'] }}" class="btn-link" style="cursor: pointer;" onclick="showDetailDiscount{{ entry['id'] }}()">
+                                                    <div id="detail_discount{{ entry['id'] }}" class="btn-link pointer" onclick="showDetailDiscount{{ entry['id'] }}()">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="detail_viewdiscount{{ entry['id'] }}" style="display: none;"></div>
@@ -300,12 +300,12 @@
                                         {% elseif formatter == "editable_quantity" %}
                                             {% if canedit %}
                                                 {% if is_summary_table is defined and is_summary_table %}
-                                                <div id="quantity{{ summary_data.rand }}" class="btn-link" style="cursor: pointer;" onclick="showQuantity{{ summary_data.rand }}()">
+                                                <div id="quantity{{ summary_data.rand }}" class="btn-link pointer" onclick="showQuantity{{ summary_data.rand }}()">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="viewquantity{{ summary_data.rand }}" style="display: none;"></div>
                                                 {% else %}
-                                                    <div id="quantity{{ entry['id'] }}" class="btn-link" style="cursor: pointer;" onclick="showQuantity{{ entry['id'] }}()">
+                                                    <div id="quantity{{ entry['id'] }}" class="btn-link pointer" onclick="showQuantity{{ entry['id'] }}()">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="viewquantity{{ entry['id'] }}" style="display: none;"></div>
