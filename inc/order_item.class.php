@@ -1054,10 +1054,10 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $entrie['manufacturer_reference'] = $this->getManufacturersReference($refID);
 
         /* unit price */
-        $entrie['unit_price'] = Html::formatNumber($price_taxfree);
+        $entrie['unit_price'] = number_format((float)$price_taxfree, 2, '.', '');
 
         /* reduction */
-        $entrie['discount'] = Html::formatNumber($discount);
+        $entrie['discount'] = number_format((float)$discount, 2, '.', '');
 
         // Add required fields for massive actions (even though disabled for summary)
         $entrie['itemtype'] = 'PluginOrderOrder_Item';
@@ -1092,8 +1092,8 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             'summary_data' => [
                 'rand' => $data_ref['IDD'],
                 'quantity' => $quantity,
-                'price_taxfree' => $price_taxfree,
-                'discount' => $discount,
+                'price_taxfree' => number_format((float)$price_taxfree, 2, '.', ''),
+                'discount' => number_format((float)$discount, 2, '.', ''),
                 'ajax_url' => Plugin::getWebDir('order') . "/ajax/inputnumber.php"
             ],
         ]);
@@ -1217,7 +1217,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             }
 
             // Price tax free
-            $entry['price_taxfree'] = Html::formatNumber((float) $data["price_taxfree"]);
+            $entry['price_taxfree'] = number_format((float) $data["price_taxfree"], 2, '.', '');
 
             // VAT
             $entry['vat'] = Dropdown::getDropdownName(
@@ -1226,13 +1226,13 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             );
 
             // Discount
-            $entry['discount'] = Html::formatNumber((float) $data["discount"]);
+            $entry['discount'] = number_format((float) $data["discount"], 2, '.', '');
 
             // Price with reduction
-            $entry['price_discounted'] = Html::formatNumber((float) $data["price_discounted"]);
+            $entry['price_discounted'] = number_format((float) $data["price_discounted"], 2, '.', '');
 
             // Price ATI
-            $entry['price_ati'] = Html::formatNumber((float) $data["price_ati"]);
+            $entry['price_ati'] = number_format((float) $data["price_ati"], 2, '.', '');
 
             // Status
             $entry['status'] = $reception->getReceptionStatus($data["IDD"]);
