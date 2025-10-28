@@ -45,6 +45,11 @@
     <input type="hidden" name="{{ countainer_name }}" value="true">
 {% endif %}
 
+{% if form_action is defined %}
+    <form method="post" name="order_updatedetail_form{{ rand|default(random()) }}" id="order_updatedetail_form{{ rand|default(random()) }}" action="{{ form_action }}">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+{% endif %}
+
 {% if hidden_fields is defined %}
     {% for field_name, field_value in hidden_fields %}
         <input type="hidden" name="{{ field_name }}" value="{{ field_value }}" />
@@ -601,6 +606,10 @@
     {% endif %}
 
     <br>
+{% endif %}
+
+{% if form_action is defined %}
+    </form>
 {% endif %}
 
 {% if hide_and_show %}

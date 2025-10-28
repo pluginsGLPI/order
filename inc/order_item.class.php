@@ -958,12 +958,6 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
         $config      = new PluginOrderConfig();
 
-        // Add form for order detail updates
-        echo "<form method='post' name='order_updatedetail_form$rand' " .
-             "id='order_updatedetail_form$rand'  " .
-             "action='" . Toolbox::getItemTypeFormURL('PluginOrderOrder') . "'>";
-        echo Html::hidden('plugin_order_orders_id', ['value' => $plugin_order_orders_id]);
-        echo Html::hidden('plugin_order_order_items_id', ['value' => $data_ref['IDD']]);
         $hidden_fields = [
             'plugin_order_orders_id' => $plugin_order_orders_id,
             'plugin_order_order_items_id' => $data_ref['IDD'],
@@ -1094,6 +1088,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             'canedit' => $canedit,
             'hidden_fields' => $hidden_fields,
             'is_summary_table' => true,
+            'form_action' => Toolbox::getItemTypeFormURL('PluginOrderOrder'),
             'summary_data' => [
                 'rand' => $data_ref['IDD'],
                 'quantity' => $quantity,
@@ -1338,10 +1333,8 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             'ajax_url' => Plugin::getWebDir('order') . "/ajax/inputnumber.php",
             'update_button_text' => _sx("button", "Update"),
             'cancel_button_text' => _sx("button", "Cancel"),
+            'form_action' => Toolbox::getItemTypeFormURL('PluginOrderOrder'),
         ]);
-
-        // Close the form
-        Html::closeForm();
     }
 
     public function getTotalQuantityByRefAndDiscount($orders_id, $references_id, $price_taxfree, $discount)
