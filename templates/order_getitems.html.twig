@@ -30,7 +30,7 @@
  #}
 
 {% set datatable_id = datatable_id|default('datatable' ~ random()) %}
-{% set showmassiveactions = canedit %}
+{% set showmassiveactions = showmassiveactions and canedit %}
 {% set table_visible = table_visible|default(false) %}
 {% if hide_and_show %}
     <button id="toggle-table-{{ datatable_id }}" class="btn btn-link btn-sm mb-2" type="button">
@@ -46,8 +46,8 @@
 {% endif %}
 
 {% if hidden_fields is defined %}
-    {% for field in hidden_fields %}
-        <input type="hidden" name="{{ field['name'] }}" value="{{ field['value'] }}" />
+    {% for field_name, field_value in hidden_fields %}
+        <input type="hidden" name="{{ field_name }}" value="{{ field_value }}" />
     {% endfor %}
 {% endif %}
 
@@ -260,6 +260,54 @@
                                             {{ entry[colkey] }}
                                         {% elseif formatter == "raw_html" %}
                                             {{ entry[colkey]|raw }}
+                                        {% elseif formatter == "editable_price" %}
+                                            {% if canedit %}
+                                                {% if is_summary_table is defined and is_summary_table %}
+                                                    <div id="pricetaxfree{{ summary_data.rand }}" class="editable-field" style="cursor: pointer; color: #0066cc;" onclick="showPricetaxfree{{ summary_data.rand }}()">
+                                                        {{ entry[colkey] }}
+                                                    </div>
+                                                    <div id="viewpricetaxfree{{ summary_data.rand }}" style="display: none;"></div>
+                                                {% else %}
+                                                    <div id="detail_pricetaxfree{{ entry['id'] }}" class="editable-field" style="cursor: pointer; color: #0066cc;" onclick="showDetailPricetaxfree{{ entry['id'] }}()">
+                                                        {{ entry[colkey] }}
+                                                    </div>
+                                                    <div id="detail_viewpricetaxfree{{ entry['id'] }}" style="display: none;"></div>
+                                                {% endif %}
+                                            {% else %}
+                                                {{ entry[colkey] }}
+                                            {% endif %}
+                                        {% elseif formatter == "editable_discount" %}
+                                            {% if canedit %}
+                                                {% if is_summary_table is defined and is_summary_table %}
+                                                    <div id="discount{{ summary_data.rand }}" class="editable-field" style="cursor: pointer; color: #0066cc;" onclick="showDiscount{{ summary_data.rand }}()">
+                                                        {{ entry[colkey] }}
+                                                    </div>
+                                                    <div id="viewdiscount{{ summary_data.rand }}" style="display: none;"></div>
+                                                {% else %}
+                                                    <div id="detail_discount{{ entry['id'] }}" class="editable-field" style="cursor: pointer; color: #0066cc;" onclick="showDetailDiscount{{ entry['id'] }}()">
+                                                        {{ entry[colkey] }}
+                                                    </div>
+                                                    <div id="detail_viewdiscount{{ entry['id'] }}" style="display: none;"></div>
+                                                {% endif %}
+                                            {% else %}
+                                                {{ entry[colkey] }}
+                                            {% endif %}
+                                        {% elseif formatter == "editable_quantity" %}
+                                            {% if canedit %}
+                                                {% if is_summary_table is defined and is_summary_table %}
+                                                    <div id="quantity{{ summary_data.rand }}" class="editable-field" style="cursor: pointer; color: #0066cc;" onclick="showQuantity{{ summary_data.rand }}()">
+                                                        {{ entry[colkey] }}
+                                                    </div>
+                                                    <div id="viewquantity{{ summary_data.rand }}" style="display: none;"></div>
+                                                {% else %}
+                                                    <div id="quantity{{ entry['id'] }}" class="editable-field" style="cursor: pointer; color: #0066cc;" onclick="showQuantity{{ entry['id'] }}()">
+                                                        {{ entry[colkey] }}
+                                                    </div>
+                                                    <div id="viewquantity{{ entry['id'] }}" style="display: none;"></div>
+                                                {% endif %}
+                                            {% else %}
+                                                {{ entry[colkey] }}
+                                            {% endif %}
                                         {% elseif formatter == 'avatar' %}
                                             {#  Note: Does not support anonymization currently #}
                                             {% set entry_data = entry[colkey] %}
@@ -393,6 +441,165 @@
         $('.filter-select-multiple').select2();
     });
     </script>
+
+    {# Inline editing functionality #}
+    {% if canedit %}
+        {# Summary table editing #}
+        {% if is_summary_table is defined and is_summary_table %}
+            <div id="viewaccept{{ summary_data.rand }}" style="display:none;">
+                <div class="center mt-2">
+                    <input type="submit" name="update_item" value="{{ _x('button', 'Update') }}" class="btn btn-primary">
+                    <input type="button" onclick="hideForm{{ summary_data.rand }}();" value="{{ _x('button', 'Cancel') }}" class="btn btn-secondary">
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                function hideForm{{ summary_data.rand }}() {
+                    $('#quantity{{ summary_data.rand }}').show();
+                    $('#viewquantity{{ summary_data.rand }} input').remove();
+                    $('#pricetaxfree{{ summary_data.rand }}').show();
+                    $('#viewpricetaxfree{{ summary_data.rand }} input').remove();
+                    $('#discount{{ summary_data.rand }}').show();
+                    $('#viewdiscount{{ summary_data.rand }} input').remove();
+                    $('#viewaccept{{ summary_data.rand }}').hide();
+                }
+
+                function showQuantity{{ summary_data.rand }}() {
+                    $('#quantity{{ summary_data.rand }}').hide();
+                    $('#viewaccept{{ summary_data.rand }}').show();
+                    $.ajax({
+                        url: '{{ summary_data.ajax_url }}',
+                        method: 'POST',
+                        data: {
+                            maxlength: 15,
+                            size: 8,
+                            name: 'quantity',
+                            class: 'form-control quantity',
+                            force_integer: true,
+                            min: '{{ summary_data.quantity }}',
+                            data: '{{ summary_data.quantity }}'
+                        },
+                        success: function(data) {
+                            $('#viewquantity{{ summary_data.rand }}').html(data);
+                            $('#viewquantity{{ summary_data.rand }}').show();
+                        }
+                    });
+                }
+
+                function showPricetaxfree{{ summary_data.rand }}() {
+                    $('#pricetaxfree{{ summary_data.rand }}').hide();
+                    $('#viewaccept{{ summary_data.rand }}').show();
+                    $.ajax({
+                        url: '{{ summary_data.ajax_url }}',
+                        method: 'POST',
+                        data: {
+                            maxlength: 15,
+                            size: 8,
+                            name: 'price_taxfree',
+                            class: 'form-control decimal',
+                            data: '{{ summary_data.price_taxfree }}'
+                        },
+                        success: function(data) {
+                            $('#viewpricetaxfree{{ summary_data.rand }}').html(data);
+                            $('#viewpricetaxfree{{ summary_data.rand }}').show();
+                        }
+                    });
+                }
+
+                function showDiscount{{ summary_data.rand }}() {
+                    $('#discount{{ summary_data.rand }}').hide();
+                    $('#viewaccept{{ summary_data.rand }}').show();
+                    $.ajax({
+                        url: '{{ summary_data.ajax_url }}',
+                        method: 'POST',
+                        data: {
+                            maxlength: 15,
+                            size: 8,
+                            name: 'discount',
+                            class: 'form-control smalldecimal',
+                            data: '{{ summary_data.discount }}'
+                        },
+                        success: function(data) {
+                            $('#viewdiscount{{ summary_data.rand }}').html(data);
+                            $('#viewdiscount{{ summary_data.rand }}').show();
+                        }
+                    });
+                }
+            </script>
+        {% endif %}
+
+        {# Detail table editing #}
+        {% if is_detail_table is defined and is_detail_table and edit_data|length > 0 %}
+            <div id="detail_viewaccept{{ rand }}" style="display:none;">
+                <div class="center mt-2">
+                    <input type="submit" name="update_detail_item" value="{{ update_button_text }}" class="btn btn-primary">
+                    <input type="button" onclick="detail_hideForm{{ rand }}();" value="{{ cancel_button_text }}" class="btn btn-secondary">
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                function detail_hideForm{{ rand }}() {
+                    {% for item in edit_data %}
+                        $('#detail_pricetaxfree{{ item.id }}').show();
+                        $('#detail_viewpricetaxfree{{ item.id }} input').remove();
+                        $('#detail_discount{{ item.id }}').show();
+                        $('#detail_viewdiscount{{ item.id }} input').remove();
+                        $('#quantity{{ item.id }}').show();
+                        $('#viewquantity{{ item.id }} input').remove();
+                    {% endfor %}
+                    $('#detail_viewaccept{{ rand }}').hide();
+                }
+
+                {% for item in edit_data %}
+                    function showDetailPricetaxfree{{ item.id }}() {
+                        $('#detail_pricetaxfree{{ item.id }}').hide();
+                        $('#detail_viewaccept{{ rand }}').show();
+                        $.ajax({
+                            url: '{{ ajax_url }}',
+                            method: 'POST',
+                            data: {
+                                maxlength: 15,
+                                size: 8,
+                                name: 'detail_price_taxfree[{{ item.id }}]',
+                                class: 'form-control decimal',
+                                data: '{{ item.price_taxfree }}'
+                            },
+                            success: function(data) {
+                                $('#detail_viewpricetaxfree{{ item.id }}').html(data);
+                                $('#detail_viewpricetaxfree{{ item.id }}').show();
+                            }
+                        });
+                    }
+
+                    function showDetailDiscount{{ item.id }}() {
+                        $('#detail_discount{{ item.id }}').hide();
+                        $('#detail_viewaccept{{ rand }}').show();
+                        $.ajax({
+                            url: '{{ ajax_url }}',
+                            method: 'POST',
+                            data: {
+                                maxlength: 15,
+                                size: 8,
+                                name: 'detail_discount[{{ item.id }}]',
+                                class: 'form-control smalldecimal',
+                                data: '{{ item.discount }}'
+                            },
+                            success: function(data) {
+                                $('#detail_viewdiscount{{ item.id }}').html(data);
+                                $('#detail_viewdiscount{{ item.id }}').show();
+                            }
+                        });
+                    }
+
+                    $(document).ready(function() {
+                        $('body').append('<input type="hidden" name="detail_old_price_taxfree[{{ item.id }}]" value="{{ item.price_taxfree }}" />');
+                        $('body').append('<input type="hidden" name="detail_old_discount[{{ item.id }}]" value="{{ item.discount }}" />');
+                    });
+                {% endfor %}
+            </script>
+        {% endif %}
+    {% endif %}
+
     <br>
 {% endif %}
 
