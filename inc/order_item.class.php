@@ -1390,8 +1390,8 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 'SUM' => [
                     'price_ati AS priceTTC',
                     'price_discounted AS priceHT',
-                    'price_ati` - `price_discounted AS priceTVA',
                 ],
+                new QueryExpression('SUM(price_ati - price_discounted) AS priceTVA'),
             ],
             'FROM' => self::getTable(),
             'WHERE' => ['plugin_order_orders_id' => $orders_id],
