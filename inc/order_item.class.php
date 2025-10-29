@@ -953,11 +953,11 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function getItems($rand, $data_ref, $plugin_order_orders_id, $numref, $canedit, $reference, $reception, $table_ref)
     {
-        /** @var array $CFG_GLPI */
         /** @var \DBmysql $DB */
-        global  $CFG_GLPI,$DB;
+        global $DB;
 
         $config      = new PluginOrderConfig();
+
         $hidden_fields = [
             'plugin_order_orders_id' => $plugin_order_orders_id,
             'plugin_order_order_items_id' => $data_ref['IDD'],
@@ -1054,10 +1054,14 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $entrie['manufacturer_reference'] = $this->getManufacturersReference($refID);
 
         /* unit price */
-        $entrie['unit_price'] = Html::formatNumber($price_taxfree);
+        $entrie['unit_price'] = number_format((float)$price_taxfree, 2, '.', '');
 
         /* reduction */
-        $entrie['discount'] = Html::formatNumber($discount);
+        $entrie['discount'] = number_format((float)$discount, 2, '.', '');
+
+        // Add required fields for massive actions (even though disabled for summary)
+        $entrie['itemtype'] = 'PluginOrderOrder_Item';
+        $entrie['id'] = $data_ref['IDD'];
 
         TemplateRenderer::getInstance()->display('@order/order_getitems.html.twig', [
             'nopager' => true,
@@ -1072,13 +1076,26 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 'manufacturer' => 'raw_html',
                 'type' => 'raw_html',
                 'model' => 'raw_html',
+                'quantity' => 'editable_quantity',
+                'unit_price' => 'editable_price',
+                'discount' => 'editable_discount',
             ],
             'columns_values' => [],
             'entries' => [$entrie],
             'total_number' => $numref,
             'filtered_number' => $numref,
             'showmassiveactions' => false,
+            'canedit' => $canedit,
             'hidden_fields' => $hidden_fields,
+            'is_summary_table' => true,
+            'form_action' => Toolbox::getItemTypeFormURL('PluginOrderOrder'),
+            'summary_data' => [
+                'rand' => $data_ref['IDD'],
+                'quantity' => $quantity,
+                'price_taxfree' => number_format((float)$price_taxfree, 2, '.', ''),
+                'discount' => number_format((float)$discount, 2, '.', ''),
+                'ajax_url' => Plugin::getWebDir('order') . "/ajax/inputnumber.php"
+            ],
         ]);
 
         // Initialize columns array based on needed headers
@@ -1200,7 +1217,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             }
 
             // Price tax free
-            $entry['price_taxfree'] = Html::formatNumber((float) $data["price_taxfree"]);
+            $entry['price_taxfree'] = number_format((float) $data["price_taxfree"], 2, '.', '');
 
             // VAT
             $entry['vat'] = Dropdown::getDropdownName(
@@ -1209,13 +1226,13 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             );
 
             // Discount
-            $entry['discount'] = Html::formatNumber((float) $data["discount"]);
+            $entry['discount'] = number_format((float) $data["discount"], 2, '.', '');
 
             // Price with reduction
-            $entry['price_discounted'] = Html::formatNumber((float) $data["price_discounted"]);
+            $entry['price_discounted'] = number_format((float) $data["price_discounted"], 2, '.', '');
 
             // Price ATI
-            $entry['price_ati'] = Html::formatNumber((float) $data["price_ati"]);
+            $entry['price_ati'] = number_format((float) $data["price_ati"], 2, '.', '');
 
             // Status
             $entry['status'] = $reception->getReceptionStatus($data["IDD"]);
@@ -1263,6 +1280,19 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         }
 
         // Render the table using the template
+        // Prepare edit data for JavaScript
+        $edit_data = [];
+        if ($canedit && !empty($entries)) {
+            foreach ($entries as $entry) {
+                $edit_data[] = [
+                    'id' => $entry['id'],
+                    'price_taxfree' => strip_tags($entry['price_taxfree']),
+                    'discount' => strip_tags($entry['discount']),
+                    'quantity' => '1' // Default quantity for detail items
+                ];
+            }
+        }
+
         TemplateRenderer::getInstance()->display('@order/order_getitems.html.twig', [
             'rand' => $rand,
             'ID' => $plugin_order_orders_id,
@@ -1280,8 +1310,8 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 'id_showed' => 'raw_html',
                 'reference' => 'raw_html',
                 'vat' => 'raw_html',
-                'price_taxfree' => 'raw_html',
-                'discount' => 'raw_html',
+                'price_taxfree' => 'editable_price',
+                'discount' => 'editable_discount',
             ],
             'entries' => $entries,
             'canedit' => $canedit,
@@ -1290,6 +1320,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             'displayed_count' => $displayed_number,
             'start' => $start,
             'limit' => $limit,
+            'showmassiveactions' => true,
             'massiveactionparams' => [
                 'container'        => 'mass' . __CLASS__ . $rand,
                 'itemtype'         => PluginOrderOrder_Item::class,
@@ -1297,6 +1328,12 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                     'purge'     => _x('button', 'Delete permanently')
                 ]
             ],
+            'is_detail_table' => true,
+            'edit_data' => $edit_data,
+            'ajax_url' => Plugin::getWebDir('order') . "/ajax/inputnumber.php",
+            'update_button_text' => _sx("button", "Update"),
+            'cancel_button_text' => _sx("button", "Cancel"),
+            'form_action' => Toolbox::getItemTypeFormURL('PluginOrderOrder'),
         ]);
     }
 

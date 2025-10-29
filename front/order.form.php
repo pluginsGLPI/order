@@ -411,6 +411,7 @@ if (isset($_POST["add"])) {
         } else {
             $price = isset($_POST['price_taxfree']) ? $_POST['price_taxfree'] : $_POST['old_price_taxfree'];
 
+            $price = number_format((float)$price, 6, '.', '');
             $data = $pluginOrderOrder_Item->queryRef(
                 $_POST['plugin_order_orders_id'],
                 $_POST['old_plugin_order_references_id'],
