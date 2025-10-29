@@ -1071,10 +1071,10 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $entrie['manufacturer_reference'] = $this->getManufacturersReference($refID);
 
         /* unit price */
-        $entrie['unit_price'] = number_format((float)$price_taxfree, 2, '.', '');
+        $entrie['unit_price'] = number_format((float) $price_taxfree, 2, '.', '');
 
         /* reduction */
-        $entrie['discount'] = number_format((float)$discount, 2, '.', '');
+        $entrie['discount'] = number_format((float) $discount, 2, '.', '');
 
         // Add required fields for massive actions (even though disabled for summary)
         $entrie['itemtype'] = 'PluginOrderOrder_Item';
@@ -1109,8 +1109,8 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             'summary_data' => [
                 'rand' => $data_ref['IDD'],
                 'quantity' => $quantity,
-                'price_taxfree' => number_format((float)$price_taxfree, 2, '.', ''),
-                'discount' => number_format((float)$discount, 2, '.', ''),
+                'price_taxfree' => number_format((float) $price_taxfree, 2, '.', ''),
+                'discount' => number_format((float) $discount, 2, '.', ''),
                 'ajax_url' => 'plugins/order/ajax/inputnumber.php',
             ],
         ]);
@@ -1296,7 +1296,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                     'id' => $entry['id'],
                     'price_taxfree' => strip_tags($entry['price_taxfree']),
                     'discount' => strip_tags($entry['discount']),
-                    'quantity' => '1' // Default quantity for detail items
+                    'quantity' => '1', // Default quantity for detail items
                 ];
             }
         }
