@@ -1338,7 +1338,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             ],
             'is_detail_table' => true,
             'edit_data' => $edit_data,
-            'ajax_url' => Plugin::getWebDir('order') . "/ajax/inputnumber.php",
+            'ajax_url' => 'plugins/order/ajax/inputnumber.php',
             'update_button_text' => _sx("button", "Update"),
             'cancel_button_text' => _sx("button", "Cancel"),
             'form_action' => Toolbox::getItemTypeFormURL('PluginOrderOrder'),
