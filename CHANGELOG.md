@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Add missing mass input field for immobilization number
 - SQL expression in supplier survey total calculation
 
 ## [2.11.2] - 2025-08-07
