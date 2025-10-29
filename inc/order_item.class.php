@@ -1111,7 +1111,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 'quantity' => $quantity,
                 'price_taxfree' => number_format((float)$price_taxfree, 2, '.', ''),
                 'discount' => number_format((float)$discount, 2, '.', ''),
-                'ajax_url' => Plugin::getWebDir('order') . "/ajax/inputnumber.php"
+                'ajax_url' => 'plugins/order/ajax/inputnumber.php',
             ],
         ]);
 
