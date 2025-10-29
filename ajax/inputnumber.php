@@ -43,11 +43,7 @@ Session::checkLoginUser();
 if (isset($_POST['name'])) {
     $step = 1;
     if (!isset($_REQUEST['force_integer'])) {
-        if (isset($_REQUEST['step'])) {
-            $step = (float)$_REQUEST['step'];
-        } else {
-            $step = PLUGIN_ORDER_NUMBER_STEP;
-        }
+        $step = isset($_REQUEST['step']) ? (float)$_REQUEST['step'] : PLUGIN_ORDER_NUMBER_STEP;
     }
 
     $class = "";

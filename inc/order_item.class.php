@@ -967,7 +967,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function getItems($rand, $data_ref, $plugin_order_orders_id, $numref, $canedit, $reference, $reception, $table_ref)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $config      = new PluginOrderConfig();
