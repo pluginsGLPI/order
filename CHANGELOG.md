@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Restore inline editing functionality in items tab
+- Fix the 'Missing table name' error message on the order.
 
 ## [2.12.1] - 2025-10-14
 
@@ -28,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Add missing mass input field for immobilization number
 - SQL expression in supplier survey total calculation
 
 ## [2.11.2] - 2025-08-07

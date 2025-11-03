@@ -65,6 +65,16 @@
                         fields_option|merge({'id': 'mass_otherserial_insertion'})
                     ) }}
                 </td>
+                {% if config.canAddImmobilizationNumber() %}
+                    <td style="min-width: 200px !important;">
+                        {{ fields.textareaField(
+                            "mass_immo_number_insertion",
+                            "",
+                            "",
+                            fields_option|merge({'id': 'mass_immo_number_insertion'})
+                        ) }}
+                    </td>
+                {% endif %}
                 {% if is_multi_entities_mode and active_entities|length > 1 %}
                     <td>
                         {{ fields.dropdownField(
@@ -406,6 +416,12 @@
         $('#mass_otherserial_insertion').on('input', function() {
             plugin_order_setFieldsFromTextarea(this.value, 'otherserial');
         });
+
+        {% if config.canAddImmobilizationNumber() %}
+        $('#mass_immo_number_insertion').on('input', function() {
+            plugin_order_setFieldsFromTextarea(this.value, 'immo_number');
+        });
+        {% endif %}
     });
 
     function sendFieldUpdateToServer(field, fieldType) {

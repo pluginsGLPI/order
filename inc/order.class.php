@@ -2293,8 +2293,8 @@ class PluginOrderOrder extends CommonDBTM
         // Compute all prices for BUDGET
         $table = $this->getTable();
         $query = [
-            'FROM' => `$table`,
-            'WHERE' => [`budgets_id` => "{$this->fields['budgets_id']}"],
+            'FROM' => $table,
+            'WHERE' => ['budgets_id' => $this->fields['budgets_id']],
         ];
 
         // Get BUDGET
