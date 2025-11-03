@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [UNRELEASED]
 
+### Fixed
+
+Fix the 'Missing table name' error message on the order.
+
 ## [2.12.1] - 2025-10-14
 
 ### Fixed
