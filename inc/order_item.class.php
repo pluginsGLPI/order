@@ -967,8 +967,11 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function getItems($rand, $data_ref, $plugin_order_orders_id, $numref, $canedit, $reference, $reception, $table_ref)
     {
-        /** @var DBmysql $DB */
-        global $DB;
+        /**
+         * @var DBmysql $DB
+         * @var array $CFG_GLPI
+         */
+        global $DB, $CFG_GLPI;
 
         $config      = new PluginOrderConfig();
 
@@ -1111,7 +1114,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 'quantity' => $quantity,
                 'price_taxfree' => number_format((float) $price_taxfree, 2, '.', ''),
                 'discount' => number_format((float) $discount, 2, '.', ''),
-                'ajax_url' => 'plugins/order/ajax/inputnumber.php',
+                'ajax_url' => $CFG_GLPI['root_doc'] . '/plugins/order/ajax/inputnumber.php',
             ],
         ]);
 
@@ -1338,7 +1341,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             ],
             'is_detail_table' => true,
             'edit_data' => $edit_data,
-            'ajax_url' => 'plugins/order/ajax/inputnumber.php',
+            'ajax_url' => $CFG_GLPI['root_doc'] . '/plugins/order/ajax/inputnumber.php',
             'update_button_text' => _sx("button", "Update"),
             'cancel_button_text' => _sx("button", "Cancel"),
             'form_action' => Toolbox::getItemTypeFormURL('PluginOrderOrder'),
