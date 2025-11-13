@@ -99,6 +99,7 @@ class PluginOrderReferenceInjection extends PluginOrderReference implements Plug
             $lib->processAddOrUpdate();
             return $lib->getInjectionResults();
         }
+
         throw new NotFoundHttpException();
     }
 
@@ -126,6 +127,7 @@ class PluginOrderReferenceInjection extends PluginOrderReference implements Plug
                         }
                     }
                 }
+
                 break;
             case "reference_model":
             case "reference_type":
@@ -137,8 +139,10 @@ class PluginOrderReferenceInjection extends PluginOrderReference implements Plug
                         $values[$itemtype][$field] = Dropdown::getDropdownName($itemtype_formodel::getTable(), $value);
                     }
                 }
+
                 break;
         }
+
         return $value;
     }
 }

@@ -57,11 +57,14 @@ class PluginOrderOrder extends CommonDBTM
     ];
 
     public const ORDER_DEVICE_NOT_DELIVRED = 0;
+
     public const ORDER_DEVICE_DELIVRED     = 1;
 
     // Const Budget
     public const ORDER_IS_OVER_BUDGET      = 1;
+
     public const ORDER_IS_EQUAL_BUDGET     = 2;
+
     public const ORDER_IS_UNDER_BUDGET     = 3;
 
     /**
@@ -72,11 +75,17 @@ class PluginOrderOrder extends CommonDBTM
 
     // additionnals rights
     public const RIGHT_VALIDATION                       = 256;
+
     public const RIGHT_UNDO_VALIDATION                  = 512;
+
     public const RIGHT_CANCEL                           = 1024;
+
     public const RIGHT_GENERATEODT_WITHOUT_VALIDATION   = 2048;
+
     public const RIGHT_GENERATEODT                      = 4096;
+
     public const RIGHT_DELIVERY                         = 8192;
+
     public const ALLRIGHTS                              = 16255;
 
 
@@ -245,7 +254,7 @@ class PluginOrderOrder extends CommonDBTM
     public function canCancelOrder()
     {
         //If order is canceled or if no right to cancel!
-        return !($this->isCanceled() || !self::canCancel());
+        return !$this->isCanceled() && self::canCancel();
     }
 
 
@@ -319,15 +328,10 @@ class PluginOrderOrder extends CommonDBTM
 
     public function rawSearchOptions()
     {
-
-        $tab = [];
-
-        $tab[] = [
+        return [[
             'id'            => 'common',
             'name'          => __s('Orders management', 'order'),
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 1,
             'table'         => self::getTable(),
             'field'         => 'num_order',
@@ -338,9 +342,7 @@ class PluginOrderOrder extends CommonDBTM
             'injectable'    => true,
             'massiveaction' => false,
             'autocomplete'  => true,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 2,
             'table'         => self::getTable(),
             'field'         => 'order_date',
@@ -350,9 +352,7 @@ class PluginOrderOrder extends CommonDBTM
             'displaytype'   => 'date',
             'injectable'    => true,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 3,
             'table'         => 'glpi_plugin_order_ordertaxes',
             'field'         => 'name',
@@ -362,9 +362,7 @@ class PluginOrderOrder extends CommonDBTM
             'displaytype'   => 'dropdown',
             'injectable'    => true,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 4,
             'table'         => 'glpi_locations',
             'field'         => 'completename',
@@ -374,9 +372,7 @@ class PluginOrderOrder extends CommonDBTM
             'displaytype'   => 'dropdown',
             'injectable'    => true,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 5,
             'table'         => 'glpi_plugin_order_orderstates',
             'field'         => 'name',
@@ -386,9 +382,7 @@ class PluginOrderOrder extends CommonDBTM
             'displaytype'   => 'dropdown',
             'injectable'    => true,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 6,
             'table'         => 'glpi_suppliers',
             'field'         => 'name',
@@ -400,9 +394,7 @@ class PluginOrderOrder extends CommonDBTM
             'displaytype'   => 'dropdown',
             'injectable'    => true,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 7,
             'table'         => 'glpi_plugin_order_orderpayments',
             'field'         => 'name',
@@ -412,9 +404,7 @@ class PluginOrderOrder extends CommonDBTM
             'displaytype'   => 'dropdown',
             'injectable'    => true,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 8,
             'table'         => 'glpi_contacts',
             'field'         => 'name',
@@ -426,9 +416,7 @@ class PluginOrderOrder extends CommonDBTM
             'displaytype'   => 'dropdown',
             'injectable'    => true,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 9,
             'table'         => 'glpi_budgets',
             'field'         => 'name',
@@ -440,9 +428,7 @@ class PluginOrderOrder extends CommonDBTM
             'displaytype'   => 'dropdown',
             'injectable'    => true,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 10,
             'table'         => self::getTable(),
             'field'         => 'name',
@@ -454,9 +440,7 @@ class PluginOrderOrder extends CommonDBTM
             'injectable'    => true,
             'massiveaction' => false,
             'autocomplete'  => true,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 11,
             'table'         => 'glpi_plugin_order_ordertypes',
             'field'         => 'name',
@@ -466,9 +450,7 @@ class PluginOrderOrder extends CommonDBTM
             'displaytype'   => 'dropdown',
             'injectable'    => true,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 12,
             'table'         => self::getTable(),
             'field'         => 'duedate',
@@ -478,9 +460,7 @@ class PluginOrderOrder extends CommonDBTM
             'displaytype'   => 'date',
             'injectable'    => true,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 13,
             'table'         => self::getTable(),
             'field'         => 'deliverydate',
@@ -490,9 +470,7 @@ class PluginOrderOrder extends CommonDBTM
             'displaytype'   => 'date',
             'injectable'    => true,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 14,
             'table'         => self::getTable(),
             'field'         => 'is_late',
@@ -502,9 +480,7 @@ class PluginOrderOrder extends CommonDBTM
             'displaytype'   => 'bool',
             'injectable'    => true,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 15,
             'table'         => self::getTable(),
             'field'         => 'is_helpdesk_visible',
@@ -512,9 +488,7 @@ class PluginOrderOrder extends CommonDBTM
             'datatype'      => 'bool',
             'injectable'    => true,
             'massiveaction' => true,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 16,
             'table'         => self::getTable(),
             'field'         => 'comment',
@@ -524,9 +498,7 @@ class PluginOrderOrder extends CommonDBTM
             'displaytype'   => 'multiline_text',
             'injectable'    => true,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 17,
             'table'         => self::getTable(),
             'field'         => 'port_price',
@@ -536,9 +508,7 @@ class PluginOrderOrder extends CommonDBTM
             'displaytype'   => 'text',
             'injectable'    => true,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 24,
             'table'         => 'glpi_users',
             'field'         => 'name',
@@ -546,9 +516,7 @@ class PluginOrderOrder extends CommonDBTM
             'linkfield'     => 'users_id',
             'datatype'      => 'itemlink',
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 25,
             'table'         => 'glpi_users',
             'field'         => 'name',
@@ -556,9 +524,7 @@ class PluginOrderOrder extends CommonDBTM
             'linkfield'     => 'users_id_delivery',
             'datatype'      => 'itemlink',
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 26,
             'table'         => 'glpi_groups',
             'field'         => 'name',
@@ -566,9 +532,7 @@ class PluginOrderOrder extends CommonDBTM
             'linkfield'     => 'groups_id',
             'datatype'      => 'dropdown',
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 27,
             'table'         => 'glpi_groups',
             'field'         => 'name',
@@ -576,9 +540,7 @@ class PluginOrderOrder extends CommonDBTM
             'linkfield'     => 'groups_id_delivery',
             'datatype'      => 'dropdown',
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 28,
             'table'         => 'glpi_users',
             'field'         => 'name',
@@ -586,27 +548,21 @@ class PluginOrderOrder extends CommonDBTM
             'linkfield'     => 'users_id_tech',
             'datatype'      => 'itemlink',
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 31,
             'table'         => self::getTable(),
             'field'         => 'id',
             'name'          => __s('ID'),
             'injectable'    => false,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 35,
             'table'         => self::getTable(),
             'field'         => 'date_mod',
             'name'          => __s('Last update'),
             'datatype'      => 'datetime',
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 80,
             'table'         => 'glpi_entities',
             'field'         => 'completename',
@@ -614,9 +570,7 @@ class PluginOrderOrder extends CommonDBTM
             'datatype'      => 'dropdown',
             'injectable'    => false,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 86,
             'table'         => self::getTable(),
             'field'         => 'is_recursive',
@@ -626,9 +580,7 @@ class PluginOrderOrder extends CommonDBTM
             'displaytype'   => 'bool',
             'injectable'    => true,
             'massiveaction' => false,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 87,
             'table'         => 'glpi_plugin_order_accountsections',
             'field'         => 'name',
@@ -638,9 +590,7 @@ class PluginOrderOrder extends CommonDBTM
             'displaytype'   => 'dropdown',
             'injectable'    => true,
             'massiveaction' => false,
-        ];
-
-        return $tab;
+        ]];
     }
 
 
@@ -698,6 +648,7 @@ class PluginOrderOrder extends CommonDBTM
                     'ti ti-check',
                 );
             }
+
             if (
                 $config->canGenerateOrderPDF()
                 && ($item->getState() > PluginOrderOrderState::DRAFT
@@ -709,6 +660,7 @@ class PluginOrderOrder extends CommonDBTM
 
             return $ong;
         }
+
         return '';
     }
 
@@ -716,7 +668,7 @@ class PluginOrderOrder extends CommonDBTM
     public static function displayTabContentForItem(
         CommonGLPI $item,
         $tabnum = 1,
-        $withtemplate = 0
+        $withtemplate = 0,
     ) {
         if ($item instanceof Budget) {
             self::showForBudget($item->getField('id'));
@@ -864,6 +816,7 @@ class PluginOrderOrder extends CommonDBTM
         ) {
             $this->setIsLate();
         }
+
         return $input;
     }
 
@@ -909,7 +862,7 @@ class PluginOrderOrder extends CommonDBTM
                     <i class='ti ti-alert-triangle fa-2x'></i>
                 </div>
                 <div class='ms-2'>
-                    " . __s('You must set up at least the order life cycle before starting.', 'order') . " — $link
+                    " . __s('You must set up at least the order life cycle before starting.', 'order') . " — {$link}
                 </div>
             </div>
          </div>";
@@ -968,6 +921,7 @@ class PluginOrderOrder extends CommonDBTM
         } else {
             echo $this->fields["name"];
         }
+
         echo "</td>";
         /* date of order */
         echo "<td>" . __s("Date of order", "order") . ":</td><td>";
@@ -984,6 +938,7 @@ class PluginOrderOrder extends CommonDBTM
         } else {
             echo Html::convDate($this->fields["order_date"]);
         }
+
         echo "</td></tr>";
 
         /* num order */
@@ -993,6 +948,7 @@ class PluginOrderOrder extends CommonDBTM
         } else {
             echo " <span class='red'>*</span>";
         }
+
         echo ": </td>";
         echo "<td>";
         if ($canedit) {
@@ -1012,6 +968,7 @@ class PluginOrderOrder extends CommonDBTM
         } else {
             echo $this->fields["num_order"];
         }
+
         echo "</td>";
         /* type order */
         echo "<td>" . __s("Type") . ": </td><td>";
@@ -1026,12 +983,13 @@ class PluginOrderOrder extends CommonDBTM
                 $this->fields["plugin_order_ordertypes_id"],
             );
         }
+
         echo "</td></tr>";
 
         /* state */
         echo "<tr class='tab_bg_1'><td>" . __s("Order status", "order") . ": </td>";
         echo "<td>";
-        $state = !$this->getID() ? $config->getDraftState() : $this->fields["plugin_order_orderstates_id"];
+        $state = $this->getID() ? $this->fields["plugin_order_orderstates_id"] : $config->getDraftState();
         if ($canedit) {
             PluginOrderOrderState::Dropdown([
                 'name'   => "plugin_order_orderstates_id",
@@ -1040,6 +998,7 @@ class PluginOrderOrder extends CommonDBTM
         } else {
             echo Dropdown::getDropdownName("glpi_plugin_order_orderstates", $this->getState());
         }
+
         echo "</td>";
 
         /* budget */
@@ -1076,6 +1035,7 @@ class PluginOrderOrder extends CommonDBTM
                 echo Dropdown::getDropdownName("glpi_budgets", $this->fields["budgets_id"]);
             }
         }
+
         echo "</td></tr>";
 
         /* location */
@@ -1090,6 +1050,7 @@ class PluginOrderOrder extends CommonDBTM
         } else {
             echo Dropdown::getDropdownName("glpi_locations", $this->fields["locations_id"]);
         }
+
         echo "</td>";
 
         /* payment */
@@ -1105,6 +1066,7 @@ class PluginOrderOrder extends CommonDBTM
                 $this->fields["plugin_order_orderpayments_id"],
             );
         }
+
         echo "</td>";
         echo "</tr>";
 
@@ -1113,10 +1075,11 @@ class PluginOrderOrder extends CommonDBTM
         echo "<td>";
         if ($canedit) {
             echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='ecotax_price' size='5'"
-            . " value=\"" . Html::formatNumber($this->fields["ecotax_price"], true) . "\">";
+            . ' value="' . Html::formatNumber($this->fields["ecotax_price"], true) . '">';
         } else {
             echo Html::formatNumber($this->fields["ecotax_price"]);
         }
+
         echo "</td>";
 
         /* port price */
@@ -1124,10 +1087,11 @@ class PluginOrderOrder extends CommonDBTM
         echo "<td>";
         if ($canedit) {
             echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='port_price' size='5'"
-            . " value=\"" . Html::formatNumber($this->fields["port_price"], true) . "\">";
+            . ' value="' . Html::formatNumber($this->fields["port_price"], true) . '">';
         } else {
             echo Html::formatNumber($this->fields["port_price"]);
         }
+
         echo "</td>";
         echo "</tr>";
 
@@ -1149,6 +1113,7 @@ class PluginOrderOrder extends CommonDBTM
                 $this->fields["plugin_order_ordertaxes_ecotax_id"],
             );
         }
+
         echo "</td>";
 
         /* tva port price */
@@ -1168,6 +1133,7 @@ class PluginOrderOrder extends CommonDBTM
         } else {
             echo Dropdown::getDropdownName("glpi_plugin_order_ordertaxes", $taxes);
         }
+
         echo "</td>";
         echo "</tr>";
 
@@ -1189,8 +1155,8 @@ class PluginOrderOrder extends CommonDBTM
                 'fieldname'    => 'contacts_id',
             ];
             Ajax::updateItemOnSelectEvent(
-                "dropdown_suppliers_id$rand",
-                "show_contacts_id$rand",
+                'dropdown_suppliers_id' . $rand,
+                'show_contacts_id' . $rand,
                 "../ajax/dropdownSupplier.php",
                 $params,
             );
@@ -1202,13 +1168,14 @@ class PluginOrderOrder extends CommonDBTM
                 echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id"]);
             }
         }
+
         echo "</td>";
 
         /* linked contact of the supplier of order */
         echo "<td>" . __s("Contact") . ": </td>";
         echo "<td><span id='show_contacts_id'>";
         if ($canedit) {
-            echo "<span id='show_contacts_id$rand'>";
+            echo sprintf("<span id='show_contacts_id%d'>", $rand);
             // Make a select box
             $criteria = [
                 'SELECT' => ['c.id', 'c.name', 'c.firstname'],
@@ -1235,6 +1202,7 @@ class PluginOrderOrder extends CommonDBTM
                     $values[$data['id']] = formatUserName(0, '', $data['name'], $data['firstname']);
                 }
             }
+
             Dropdown::showFromArray("contacts_id", $values, [
                 'value' => $this->fields['contacts_id'],
                 'rand'  => $rand,
@@ -1243,6 +1211,7 @@ class PluginOrderOrder extends CommonDBTM
         } else {
             echo Dropdown::getDropdownName("glpi_contacts", $this->fields["contacts_id"]);
         }
+
         echo "</span></td>";
         echo "</tr>";
 
@@ -1253,12 +1222,14 @@ class PluginOrderOrder extends CommonDBTM
         } else {
             echo Dropdown::getYesNo($this->fields['is_helpdesk_visible']);
         }
+
         echo "</td>";
         echo "<td>";
         echo __s("Estimated due date", "order") . ":";
         if ($this->isDelivered() && $this->fields['deliverydate']) {
             echo "<br/>" . __s("Delivery date") . ":";
         }
+
         echo " </td><td>";
         if ($canedit) {
             $value = $this->fields["duedate"] == null ? '' : $this->fields["duedate"];
@@ -1270,12 +1241,15 @@ class PluginOrderOrder extends CommonDBTM
         } else {
             echo Html::convDate($this->fields["duedate"]);
         }
+
         if ($this->shouldBeAlreadyDelivered()) {
             echo "<br/><span class='red'>" . __s("Due date overtaken", "order") . "</span>";
         }
+
         if ($this->isDelivered() && $this->fields['deliverydate']) {
             echo "<br/>" . Html::convDate($this->fields['deliverydate']);
         }
+
         echo "</td>";
         echo "</tr>";
 
@@ -1283,10 +1257,11 @@ class PluginOrderOrder extends CommonDBTM
         echo "<td>" . __s("Global discount to apply to items", 'order') . "&nbsp;:</td><td>";
         if ($canedit) {
             echo "<input type='number' class='form-control' min='0' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='global_discount' size='5'"
-            . " value=\"" . Html::formatNumber($this->fields["global_discount"], true) . "\" class='smalldecimal'>";
+            . ' value="' . Html::formatNumber($this->fields["global_discount"], true) . "\" class='smalldecimal'>";
         } else {
             echo Html::formatNumber($this->fields["global_discount"]);
         }
+
         echo "%</td>";
         echo "<td>";
         echo "</td>";
@@ -1298,16 +1273,19 @@ class PluginOrderOrder extends CommonDBTM
         if (!$config->isAccountSectionDisplayed()) {
             echo "<span style='display:none'>";
         }
+
         echo __s("Account section", "order") . " :";
         if (!$config->isAccountSectionDisplayed()) {
             echo "</span>";
         }
+
         echo "</td>";
 
         echo "<td>";
         if (!$config->isAccountSectionDisplayed()) {
             echo "<span style='display:none'>";
         }
+
         if ($canedit) {
             PluginOrderAccountSection::Dropdown([
                 'name'  => "plugin_order_accountsections_id",
@@ -1323,9 +1301,11 @@ class PluginOrderOrder extends CommonDBTM
         if ($config->isAccountSectionMandatory()) {
             echo " <span class='red'>*</span>";
         }
+
         if (!$config->isAccountSectionDisplayed()) {
             echo "</span>";
         }
+
         echo "</td>";
         echo "<td colspan='2'></td>";
         echo "</tr>";
@@ -1336,6 +1316,7 @@ class PluginOrderOrder extends CommonDBTM
             echo "<span class='small_space'>(" . __s("Template name") . "&nbsp;: "
             . $this->fields['template_name'] . ")</span>";
         }
+
         echo "</td><td colspan='2'></td>";
         echo "</tr>";
 
@@ -1349,6 +1330,7 @@ class PluginOrderOrder extends CommonDBTM
         } else {
             echo $this->fields["comment"];
         }
+
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'>";
@@ -1358,6 +1340,7 @@ class PluginOrderOrder extends CommonDBTM
         } else {
             echo "<th colspan='2'></th>";
         }
+
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
@@ -1383,14 +1366,16 @@ class PluginOrderOrder extends CommonDBTM
                     $user->fields['firstname'],
                 );
             }
+
             echo $output;
         }
+
         echo "</td>";
         echo "<td>" . __s("Author group", "order") . ":</td>";
         echo "<td style='width: 180px;'>";
         if ($canedit) {
             if (empty($ID) || $ID < 0) {
-                $groups_id = ! empty($this->fields['groups_id']) ? $this->fields['groups_id'] : $config->getDefaultAuthorGroup();
+                $groups_id = empty($this->fields['groups_id']) ? $config->getDefaultAuthorGroup() : $this->fields['groups_id'];
             } else {
                 $groups_id = $this->fields['groups_id'];
             }
@@ -1402,6 +1387,7 @@ class PluginOrderOrder extends CommonDBTM
         } else {
             echo Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id']);
         }
+
         echo "</td></tr>";
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __s("Recipient") . ":</td>";
@@ -1416,6 +1402,7 @@ class PluginOrderOrder extends CommonDBTM
             } else {
                 $users_id = $this->fields['users_id_delivery'];
             }
+
             User::Dropdown([
                 'name'   => 'users_id_delivery',
                 'value'  => $users_id,
@@ -1433,6 +1420,7 @@ class PluginOrderOrder extends CommonDBTM
             );
             echo $output;
         }
+
         echo "</td>";
         echo "<td>" . __s("Recipient group", "order") . ":</td>";
         echo "<td style='width: 180px;'>";
@@ -1446,6 +1434,7 @@ class PluginOrderOrder extends CommonDBTM
             } else {
                 $groups_id = $this->fields['groups_id_delivery'];
             }
+
             Group::Dropdown([
                 'name'  => 'groups_id_delivery',
                 'value' => $groups_id,
@@ -1454,6 +1443,7 @@ class PluginOrderOrder extends CommonDBTM
         } else {
             echo Dropdown::getDropdownName('glpi_groups', $this->fields['groups_id_delivery']);
         }
+
         echo "</td>";
         echo "</tr></table></td>";
 
@@ -1467,6 +1457,7 @@ class PluginOrderOrder extends CommonDBTM
             if ($ecotaxHT == 0) {
                 $ecotaxHT = $this->fields["ecotax_price"];
             }
+
             $tax = new PluginOrderOrderTax();
             $tax->getFromDB($this->fields["plugin_order_ordertaxes_ecotax_id"]);
             $ecotaxTVA = $ecotaxHT * ($tax->getRate() / 100);
@@ -1561,6 +1552,7 @@ class PluginOrderOrder extends CommonDBTM
 
             echo "</table>";
         }
+
         echo "</td>";
         echo "</tr>";
 
@@ -1630,6 +1622,7 @@ class PluginOrderOrder extends CommonDBTM
                     $notify = false;
                     break;
             }
+
             if ($notify) {
                 NotificationEvent::raiseEvent($event, $this, ['comments' => $comments]);
             }
@@ -1664,6 +1657,7 @@ class PluginOrderOrder extends CommonDBTM
             if ($only_delivered) {
                 $where['states_id'] = ['>', 0];
             }
+
             return (countElementsInTable("glpi_plugin_order_orders_items", $where));
         } else {
             return false;
@@ -1675,10 +1669,10 @@ class PluginOrderOrder extends CommonDBTM
     {
         $this->getFromDB($orders_id);
 
-        echo "<form method='post' name='form' action=\"" . Toolbox::getItemTypeFormURL('PluginOrderOrder') . "\">";
+        echo "<form method='post' name='form' action=\"" . Toolbox::getItemTypeFormURL('PluginOrderOrder') . '">';
         echo "<div align='center'><table class='tab_cadre_fixe'>";
-        echo "<tr class='tab_bg_2'><th colspan='3'>" .
-         __s("Validation process", "order") . "</th></tr>";
+        echo "<tr class='tab_bg_2'><th colspan='3'>"
+         . __s("Validation process", "order") . "</th></tr>";
 
         if ($this->can($orders_id, READ) && $this->canDisplayValidationForm($orders_id)) {
             if ($this->checkIfDetailExists($orders_id)) {
@@ -1737,6 +1731,7 @@ class PluginOrderOrder extends CommonDBTM
                 . __s("Thanks to add at least one equipment on your order.", "order") . "</td></tr>";
             }
         }
+
         echo "</table></div>";
         Html::closeForm();
     }
@@ -1749,7 +1744,7 @@ class PluginOrderOrder extends CommonDBTM
 
         echo "<form action='" . $CFG_GLPI['root_doc'] . "/plugins/order/front/export.php?id=" . $ID
         . "&display_type=" . Search::PDF_OUTPUT_LANDSCAPE . "' method=\"GET\" target='_blank'>";
-        echo "<div align=\"center\">";
+        echo '<div align="center">';
         echo "<table class='tab_cadre_fixe'>";
         echo "<tr><th colspan='2'>" . __s("Order Generation", "order") . "</th></tr>";
 
@@ -1774,6 +1769,7 @@ class PluginOrderOrder extends CommonDBTM
                 } else {
                     echo Html::hidden('sign', ['value' => 0]);
                 }
+
                 echo "<tr class='tab_bg_1'>";
                 echo "<td class='center' colspan='2'>";
                 echo Html::hidden('id', ['value' => $ID]);
@@ -1835,7 +1831,7 @@ class PluginOrderOrder extends CommonDBTM
 
                 try {
                     $odf->setImage('logo', PLUGIN_ORDER_TEMPLATE_LOGO_DIR . '/logo.jpg');
-                } catch (OdfException $e) {
+                } catch (OdfException) {
                     $is_cs_happy = true;
                 }
 
@@ -1880,6 +1876,7 @@ class PluginOrderOrder extends CommonDBTM
                 if ($town) {
                     $town .= ", ";
                 }
+
                 $order_date = Html::convDate($this->fields["order_date"]);
                 $username   = getUserName(Session::getLoginUserID());
 
@@ -1991,10 +1988,11 @@ class PluginOrderOrder extends CommonDBTM
                     foreach ($articleValues as $field => $val) {
                         try {
                             $article->setVars($field, $val, true, 'UTF-8');
-                        } catch (SegmentException $e) {
+                        } catch (SegmentException) {
                             $is_cs_happy = true;
                         }
                     }
+
                     $article->merge();
                 }
 
@@ -2018,13 +2016,13 @@ class PluginOrderOrder extends CommonDBTM
                 if ($signature) {
                     try {
                         $odf->setImage('sign', PLUGIN_ORDER_SIGNATURE_DIR . $signature);
-                    } catch (OdfException $e) {
+                    } catch (OdfException) {
                         $is_cs_happy = true;
                     }
                 } else {
                     try {
                         $odf->setImage('sign', '../pics/nothing.gif');
-                    } catch (OdfException $e) {
+                    } catch (OdfException) {
                         $is_cs_happy = true;
                     }
                 }
@@ -2051,7 +2049,7 @@ class PluginOrderOrder extends CommonDBTM
                 foreach ($values as $field => $val) {
                     try {
                         $odf->setVars($field, $val, true, 'UTF-8');
-                    } catch (OdfException $e) {
+                    } catch (OdfException) {
                         $is_cs_happy = true;
                     }
                 }
@@ -2063,6 +2061,7 @@ class PluginOrderOrder extends CommonDBTM
                 $entity->getFromDB($this->fields['entities_id']);
                 $message .= $entity->getName();
             }
+
             $message   .= "_" . $this->fields['num_order'] . "_";
             $message   .= Html::convDateTime($_SESSION['glpi_currenttime']);
             $message    = str_replace(" ", "_", $message);
@@ -2165,20 +2164,22 @@ class PluginOrderOrder extends CommonDBTM
                 if ($data['plugin_order_orderstates_id'] !== PluginOrderOrderState::CANCELED) {
                     $total += $prices["priceHT"];
                 }
+
                 $link   = Toolbox::getItemTypeFormURL(self::class);
 
                 echo "<tr class='tab_bg_1' align='center'>";
                 echo "<td>";
-                echo "<a href=\"" . $link . "?unlink_order=unlink_order&id=" . $data["id"] . "\">"
+                echo '<a href="' . $link . "?unlink_order=unlink_order&id=" . $data["id"] . '">'
                  . __s("Unlink", "order") . "</a>";
                 echo "</td>";
                 echo "<td>";
 
                 if (self::canView()) {
-                    echo "<a href=\"" . $link . "?id=" . $data["id"] . "\">" . $data["name"] . "</a>";
+                    echo '<a href="' . $link . "?id=" . $data["id"] . '">' . $data["name"] . "</a>";
                 } else {
                     echo $data["name"];
                 }
+
                 echo "</td>";
 
                 echo "<td>";
@@ -2202,6 +2203,7 @@ class PluginOrderOrder extends CommonDBTM
 
                 echo "</tr>";
             }
+
             echo "</table></div>";
 
             echo "<br><div class='center'>";
@@ -2232,6 +2234,7 @@ class PluginOrderOrder extends CommonDBTM
             if ($input['order_date'] < $budget->getField('begin_date')) {
                 return false;
             }
+
             //There's an end date and order date is above it
             if (
                 !empty($budget->fields['end_date'])
@@ -2260,6 +2263,7 @@ class PluginOrderOrder extends CommonDBTM
 
         $order = new self();
         $order->getFromDB($ID);
+
         $conf = PluginOrderConfig::getConfig();
         if ($all_paid) {
             $bill_state = PluginOrderBillState::PAID;
@@ -2268,6 +2272,7 @@ class PluginOrderOrder extends CommonDBTM
             $bill_state = PluginOrderBillState::NOTPAID;
             $order_status = $order->fields['plugin_order_orderstates_id'];
         }
+
         $input = [
             'id'                         => $ID,
             'plugin_order_billstates_id' => $bill_state,
@@ -2290,6 +2295,7 @@ class PluginOrderOrder extends CommonDBTM
         if ($this->fields['is_template']) {
             return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
         }
+
         // Compute all prices for BUDGET
         $table = $this->getTable();
         $query = [
@@ -2384,6 +2390,7 @@ class PluginOrderOrder extends CommonDBTM
                 $nblate++;
             }
         }
+
         $task->addVolume($nblate);
 
         if ($CFG_GLPI["use_notifications"]) {
@@ -2401,6 +2408,7 @@ class PluginOrderOrder extends CommonDBTM
             foreach ($DB->request($query) as $entity) {
                 $entities[] = $entity['id'];
             }
+
             foreach ($entities as $entity) {
                 $query_alert = [
                     'SELECT' => [
@@ -2419,16 +2427,16 @@ class PluginOrderOrder extends CommonDBTM
                     'LEFT JOIN' => [
                         `glpi_alerts` => [
                             'ON' => [
-                                "`$table`.`id` = `glpi_alerts`.`items_id`",
+                                sprintf('`%s`.`id` = `glpi_alerts`.`items_id`', $table),
                                 "`glpi_alerts`.`itemtype` = '" . self::class . "'",
                             ],
                         ],
                     ],
                     'WHERE' => [
-                        "$table.entities_id" => "$entity",
+                        $table . '.entities_id' => $entity,
                         "glpi_alerts.date" => "IS NULL",
-                        "$table.is_late" => "1",
-                        "$table.plugin_order_orderstates_id" => "!=" . $config->getDeliveredState(),
+                        $table . '.is_late' => "1",
+                        $table . '.plugin_order_orderstates_id' => "!=" . $config->getDeliveredState(),
                     ],
                 ];
                 $orders = [];
@@ -2442,12 +2450,13 @@ class PluginOrderOrder extends CommonDBTM
                     if (NotificationEvent::raiseEvent('duedate', new PluginOrderOrder(), $options)) {
                         if ($task) {
                             $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
-                            . "&nbsp;:  $message\n");
+                            . sprintf('&nbsp;:  %s%s', $message, PHP_EOL));
                             $task->addVolume(1);
                         } else {
-                            Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity) .
-                                                      "&nbsp;:  $message");
+                            Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity)
+                                                      . ('&nbsp;:  ' . $message));
                         }
+
                         $input["type"]     = Alert::THRESHOLD;
                         $input["itemtype"] = 'PluginOrderOrder';
                         // add alerts
@@ -2457,15 +2466,16 @@ class PluginOrderOrder extends CommonDBTM
                             unset($alert->fields['id']);
                         }
                     } elseif ($task) {
-                        $task->log(Dropdown::getDropdownName("glpi_entities", $entity) .
-                            "&nbsp;: Send order alert failed\n");
+                        $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
+                            . "&nbsp;: Send order alert failed\n");
                     } else {
-                        Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity) .
-                                                  "&nbsp;: Send order alert failed", false, ERROR);
+                        Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity)
+                                                  . "&nbsp;: Send order alert failed", false, ERROR);
                     }
                 }
             }
         }
+
         return true;
     }
 
@@ -2501,17 +2511,19 @@ class PluginOrderOrder extends CommonDBTM
             if (!$documentCategory->getFromDBByCrit(['documentcategories_id' => $document->input['documentcategories_id']])) {
                 $documentCategory->getEmpty();
             }
+
             // Get order linked to document
             $document_item = new Document_Item();
             if ($document_item->getFromDBByCrit(['documents_id' => $document->fields['id'], 'itemtype' => self::getType()])) {
                 // Update document name
                 $order = new self();
                 $order->getFromDB($document_item->fields['items_id']);
-                $extension = explode('.', $document->fields['filename']);
+                $extension = explode('.', (string) $document->fields['filename']);
                 $tag = "";
                 if (!empty($documentCategory->fields['documentcategories_prefix'])) {
                     $tag = $documentCategory->fields['documentcategories_prefix'] . "-";
                 }
+
                 $document->fields['filename'] = $tag . $order->fields['num_order'] . "." . $extension[1];
                 $document->updateInDB(['filename']);
             }
@@ -2535,13 +2547,13 @@ class PluginOrderOrder extends CommonDBTM
      **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        switch ($ma->getAction()) {
-            case 'transfert':
-                Entity::dropdown();
-                echo "&nbsp;" .
-                  Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
-                return true;
+        if ($ma->getAction() === 'transfert') {
+            Entity::dropdown();
+            echo "&nbsp;"
+              . Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+            return true;
         }
+
         return true;
     }
 
@@ -2567,24 +2579,22 @@ class PluginOrderOrder extends CommonDBTM
      **/
     public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
     {
-        switch ($ma->getAction()) {
-            case "transfert":
-                $input = $ma->getInput();
-                $entities_id = $input['entities_id'];
-
-                foreach ($ids as $id) {
-                    if ($item->getFromDB($id)) {
-                        $item->update([
-                            "id"          => $id,
-                            "entities_id" => $entities_id,
-                            "update"      => __s('Update'),
-                        ]);
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                    }
+        if ($ma->getAction() === "transfert") {
+            $input = $ma->getInput();
+            $entities_id = $input['entities_id'];
+            foreach ($ids as $id) {
+                if ($item->getFromDB($id)) {
+                    $item->update([
+                        "id"          => $id,
+                        "entities_id" => $entities_id,
+                        "update"      => __s('Update'),
+                    ]);
+                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                 }
-                return;
+            }
+
+            return;
         }
-        return;
     }
 
 
@@ -2604,7 +2614,7 @@ class PluginOrderOrder extends CommonDBTM
         $table = self::getTable();
         //Installation
         if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order")) {
-            $migration->displayMessage("Installing $table");
+            $migration->displayMessage('Installing ' . $table);
 
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders` (
                `id` int {$default_key_sign} NOT NULL auto_increment,
@@ -2665,7 +2675,7 @@ class PluginOrderOrder extends CommonDBTM
             ]);
         } else {
             //Upgrade
-            $migration->displayMessage("Upgrading $table");
+            $migration->displayMessage('Upgrading ' . $table);
 
             if ($DB->tableExists('glpi_plugin_order')) {
                 //Update to 1.1.0
@@ -2683,6 +2693,7 @@ class PluginOrderOrder extends CommonDBTM
                         );
                     }
                 }
+
                 $migration->dropField('glpi_plugin_order', 'numordersupplier');
                 $migration->dropField('glpi_plugin_order', 'numbill');
                 $migration->migrationOneTable('glpi_plugin_order');
@@ -2695,12 +2706,12 @@ class PluginOrderOrder extends CommonDBTM
                 $domigration_itemtypes = true;
             }
 
-            $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL AUTO_INCREMENT");
+            $migration->changeField($table, "ID", "id", sprintf('int %s NOT NULL AUTO_INCREMENT', $default_key_sign));
             $migration->changeField(
                 $table,
                 "FK_entities",
                 "entities_id",
-                "int {$default_key_sign} NOT NULL default 0",
+                sprintf('int %s NOT NULL default 0', $default_key_sign),
             );
             $migration->changeField(
                 $table,
@@ -2718,7 +2729,7 @@ class PluginOrderOrder extends CommonDBTM
                 $table,
                 "budget",
                 "budgets_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_budgets (id)'",
+                sprintf("int %s NOT NULL default '0' COMMENT 'RELATION to glpi_budgets (id)'", $default_key_sign),
             );
             $migration->changeField(
                 $table,
@@ -2730,13 +2741,13 @@ class PluginOrderOrder extends CommonDBTM
                 $table,
                 "taxes",
                 "plugin_order_ordertaxes_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)'",
+                sprintf("int %s NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)'", $default_key_sign),
             );
             $migration->changeField(
                 $table,
                 "payment",
                 "plugin_order_orderpayments_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orderpayments (id)'",
+                sprintf("int %s NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orderpayments (id)'", $default_key_sign),
             );
             $migration->changeField(
                 $table,
@@ -2748,25 +2759,25 @@ class PluginOrderOrder extends CommonDBTM
                 $table,
                 "FK_enterprise",
                 "suppliers_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'",
+                sprintf("int %s NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'", $default_key_sign),
             );
             $migration->changeField(
                 $table,
                 "FK_contact",
                 "contacts_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_contacts (id)'",
+                sprintf("int %s NOT NULL default '0' COMMENT 'RELATION to glpi_contacts (id)'", $default_key_sign),
             );
             $migration->changeField(
                 $table,
                 "location",
                 "locations_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_locations (id)'",
+                sprintf("int %s NOT NULL default '0' COMMENT 'RELATION to glpi_locations (id)'", $default_key_sign),
             );
             $migration->changeField(
                 $table,
                 "status",
                 "states_id",
-                "int {$default_key_sign} NOT NULL default '0'",
+                sprintf("int %s NOT NULL default '0'", $default_key_sign),
             );
             $migration->changeField(
                 $table,
@@ -2799,18 +2810,18 @@ class PluginOrderOrder extends CommonDBTM
 
             if ($DB->tableExists("glpi_plugin_order_budgets")) {
                 //Manage budgets (here because class has been remove since 1.4.0)
-                $migration->changeField("glpi_plugin_order_budgets", "ID", "id", " int {$default_key_sign} NOT NULL auto_increment");
+                $migration->changeField("glpi_plugin_order_budgets", "ID", "id", sprintf(' int %s NOT NULL auto_increment', $default_key_sign));
                 $migration->changeField(
                     "glpi_plugin_order_budgets",
                     "FK_entities",
                     "entities_id",
-                    "int {$default_key_sign} NOT NULL default '0'",
+                    sprintf("int %s NOT NULL default '0'", $default_key_sign),
                 );
                 $migration->changeField(
                     "glpi_plugin_order_budgets",
                     "FK_budget",
                     "budgets_id",
-                    "int {$default_key_sign} NOT NULL default '0'",
+                    sprintf("int %s NOT NULL default '0'", $default_key_sign),
                 );
                 $migration->changeField(
                     "glpi_plugin_order_budgets",
@@ -2894,7 +2905,7 @@ class PluginOrderOrder extends CommonDBTM
             $migration->addField(
                 $table,
                 "plugin_order_ordertypes_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)'",
+                sprintf("int %s NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)'", $default_key_sign),
             );
             $migration->migrationOneTable($table);
 
@@ -2904,7 +2915,7 @@ class PluginOrderOrder extends CommonDBTM
                     "glpi_plugin_order_orders",
                     "states_id",
                     "plugin_order_orderstates_id",
-                    "int {$default_key_sign} NOT NULL default 1",
+                    sprintf('int %s NOT NULL default 1', $default_key_sign),
                 )
             ) {
                 $migration->addPostQuery(
@@ -2928,7 +2939,7 @@ class PluginOrderOrder extends CommonDBTM
                 $DB->doQuery("DROP TABLE IF EXISTS `glpi_plugin_order_mailing`;");
             }
 
-            $migration->addField($table, 'plugin_order_billstates_id', "int {$default_key_sign} NOT NULL default 0");
+            $migration->addField($table, 'plugin_order_billstates_id', sprintf('int %s NOT NULL default 0', $default_key_sign));
 
             //1.5.2
             $migration->addField($table, 'deliverydate', "DATETIME NULL");
@@ -2948,11 +2959,11 @@ class PluginOrderOrder extends CommonDBTM
                 $migration->migrationOneTable($table);
             }
 
-            $migration->addField($table, "users_id", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
-            $migration->addField($table, "groups_id", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
-            $migration->addField($table, "users_id_delivery", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
-            $migration->addField($table, "groups_id_delivery", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
-            $migration->addField($table, "users_id_tech", "INT {$default_key_sign} NOT NULL DEFAULT '0'");
+            $migration->addField($table, "users_id", sprintf("INT %s NOT NULL DEFAULT '0'", $default_key_sign));
+            $migration->addField($table, "groups_id", sprintf("INT %s NOT NULL DEFAULT '0'", $default_key_sign));
+            $migration->addField($table, "users_id_delivery", sprintf("INT %s NOT NULL DEFAULT '0'", $default_key_sign));
+            $migration->addField($table, "groups_id_delivery", sprintf("INT %s NOT NULL DEFAULT '0'", $default_key_sign));
+            $migration->addField($table, "users_id_tech", sprintf("INT %s NOT NULL DEFAULT '0'", $default_key_sign));
 
             //1.7.0
             $migration->addField($table, "date_mod", "timestamp");
@@ -2996,7 +3007,7 @@ class PluginOrderOrder extends CommonDBTM
             $migration->addField($table, "global_discount", "FLOAT NOT NULL default '0'");
 
             //2.7.3
-            $migration->changeField($table, "plugin_order_billstates_id", "plugin_order_billstates_id", "int {$default_key_sign} NOT NULL DEFAULT 0");
+            $migration->changeField($table, "plugin_order_billstates_id", "plugin_order_billstates_id", sprintf('int %s NOT NULL DEFAULT 0', $default_key_sign));
 
             // Add ecotax fields if they don't exist
             if (!$DB->fieldExists($table, 'ecotax_price')) {
@@ -3012,7 +3023,7 @@ class PluginOrderOrder extends CommonDBTM
                 $migration->addField(
                     $table,
                     'plugin_order_ordertaxes_ecotax_id',
-                    "int {$default_key_sign} NOT NULL DEFAULT '0'",
+                    sprintf("int %s NOT NULL DEFAULT '0'", $default_key_sign),
                     ['after' => 'ecotax_price'],
                 );
             }
@@ -3030,7 +3041,7 @@ class PluginOrderOrder extends CommonDBTM
         );
 
         if (!$DB->fieldExists($table, 'plugin_order_accountsections_id')) {
-            $migration->addField($table, 'plugin_order_accountsections_id', "int {$default_key_sign} NOT NULL DEFAULT 0", ['after' => 'contacts_id']);
+            $migration->addField($table, 'plugin_order_accountsections_id', sprintf('int %s NOT NULL DEFAULT 0', $default_key_sign), ['after' => 'contacts_id']);
             $migration->migrationOneTable($table);
         }
     }

@@ -69,6 +69,7 @@ if (isset($_POST["itemtype"])) {
             $values[$data['id']] = $data['name'] . " - " . $data['reference_code'];
         }
     }
+
     Dropdown::showFromArray(
         $_POST['fieldname'],
         $values,
@@ -97,5 +98,5 @@ if (isset($_POST["itemtype"])) {
     $row = $result->current();
     $price = $row['price_taxfree'];
     $price = Html::formatNumber($price, true);
-    echo "<input value='$price' type='number' class='form-control' step='" . PLUGIN_ORDER_NUMBER_STEP . "' name='price' class='decimal' min='0' />";
+    echo sprintf("<input value='%s' type='number' class='form-control' step='", $price) . PLUGIN_ORDER_NUMBER_STEP . "' name='price' class='decimal' min='0' />";
 }

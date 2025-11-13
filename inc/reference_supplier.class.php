@@ -71,6 +71,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         if (count($result) != 1) {
             return false;
         }
+
         $this->fields = $result->current();
         if (is_array($this->fields) && count($this->fields)) {
             return true;
@@ -81,32 +82,23 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
 
     public function rawSearchOptions()
     {
-
-        $tab = [];
-
-        $tab[] = [
+        return [[
             'id'            => 'common',
             'name'          => __s('Supplier for the reference', 'order'),
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 1,
             'table'         => self::getTable(),
             'field'         => 'reference_code',
-            'name'          => __s('Manufacturer\'s product reference', 'order'),
+            'name'          => __s("Manufacturer's product reference", 'order'),
             'datatype'      => 'text',
             'autocomplete'  => true,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 2,
             'table'         => self::getTable(),
             'field'         => 'price_taxfree',
             'name'          => __s('Unit price tax free', 'order'),
             'datatype'      => 'decimal',
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 3,
             'table'         => 'glpi_suppliers',
             'field'         => 'name',
@@ -114,23 +106,17 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             'datatype'      => 'itemlink',
             'itemlink_type' => 'Supplier',
             'forcegroupby'  => true,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 30,
             'table'         => self::getTable(),
             'field'         => 'id',
             'name'          => __s('ID'),
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 80,
             'table'         => 'glpi_entities',
             'field'         => 'completename',
             'name'          => __s('Entity'),
-        ];
-
-        return $tab;
+        ]];
     }
 
 
@@ -143,6 +129,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         ) {
             return false;
         }
+
         return $input;
     }
 
@@ -161,7 +148,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if (get_class($item) == self::class) {
+        if ($item::class === self::class) {
             return [1 => __s("Main")];
         } elseif ($item instanceof PluginOrderReference) {
             return self::createTabEntry(
@@ -171,6 +158,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 self::getIcon(),
             );
         }
+
         return '';
     }
 
@@ -186,6 +174,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             if ($item->can($item->getID(), UPDATE)) {
                 $reference_supplier->showForm(0, ['plugin_order_references_id' => $item->getID()]);
             }
+
             $reference_supplier->showReferenceManufacturers($item->getID());
         }
 
@@ -240,6 +229,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 'entity' => $PluginOrderReference->getEntityID(),
             ]);
         }
+
         echo "</td>";
 
         echo "<td>" . __s("Manufacturer's product reference", "order") . ": </td>";
@@ -302,7 +292,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         $result    = $DB->request($criteria);
         $rand      = mt_rand();
         echo "<div class='center'>";
-        echo "<form method='post' name='show_supplierref$rand' id='show_supplierref$rand' action=\"$target\">";
+        echo sprintf("<form method='post' name='show_supplierref%d' id='show_supplierref%d' action=\"%s\">", $rand, $rand, $target);
         echo Html::hidden('plugin_order_references_id', ['value' => $ID]);
         echo "<table class='tab_cadre_fixe'>";
 
@@ -314,7 +304,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         echo "</tr>";
 
         if (count($result) > 0) {
-            echo "<form method='post' name='show_ref_manu' action=\"$target\">";
+            echo sprintf("<form method='post' name='show_ref_manu' action=\"%s\">", $target);
             echo Html::hidden('plugin_order_references_id', ['value' => $ID]);
 
             foreach ($result as $data) {
@@ -336,8 +326,10 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                     ) {
                         echo " checked ";
                     }
+
                     echo ">";
                 }
+
                 echo "</td>";
 
                 $link = Toolbox::getItemTypeFormURL($this->getType());
@@ -351,16 +343,17 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 echo "</td>";
                 echo "</tr>";
             }
+
             echo "</table>";
 
             if ($candelete) {
                 echo "<div class='center'>";
                 echo "<table width='900px' class='tab_glpi'>";
                 echo "<tr><td><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></td>";
-                echo "<td class='center'><a onclick= \"if ( markCheckboxes('show_supplierref$rand') ) "
+                echo sprintf("<td class='center'><a onclick= \"if ( markCheckboxes('show_supplierref%d') ) ", $rand)
                 . "return false;\" href='#'>" . __s("Check all") . "</a></td>";
 
-                echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('show_supplierref$rand') ) "
+                echo sprintf("<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('show_supplierref%d') ) ", $rand)
                 . "return false;\" href='#'>" . __s("Uncheck all") . "</a>";
                 echo "</td><td align='left' width='80%'>";
                 echo "<input type='submit' name='delete' value=\"" . __s("Delete permanently")
@@ -414,7 +407,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
 
         $table = self::getTable();
         if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order_references_manufacturers")) {
-            $migration->displayMessage("Installing $table");
+            $migration->displayMessage('Installing ' . $table);
 
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_references_suppliers` (
                      `id` int {$default_key_sign} NOT NULL auto_increment,
@@ -431,7 +424,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
             $DB->doQuery($query);
         } else {
-            $migration->displayMessage("Upgrading $table");
+            $migration->displayMessage('Upgrading ' . $table);
 
             //1.1.0
             if ($DB->tableExists("glpi_plugin_order_references_manufacturers")) {
@@ -445,32 +438,32 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
 
             //1.2.0
             $migration->renameTable("glpi_plugin_order_references_manufacturers", $table);
-            $migration->addField($table, "is_recursive", "int {$default_key_sign} NOT NULL default '0'");
+            $migration->addField($table, "is_recursive", sprintf("int %s NOT NULL default '0'", $default_key_sign));
             $migration->addKey($table, "suppliers_id");
             $migration->addKey($table, "plugin_order_references_id");
             $migration->changeField(
                 $table,
                 "ID",
                 "id",
-                "int {$default_key_sign} NOT NULL auto_increment",
+                sprintf('int %s NOT NULL auto_increment', $default_key_sign),
             );
             $migration->changeField(
                 $table,
                 "FK_entities",
                 "entities_id",
-                "int {$default_key_sign} NOT NULL default '0'",
+                sprintf("int %s NOT NULL default '0'", $default_key_sign),
             );
             $migration->changeField(
                 $table,
                 "FK_reference",
                 "plugin_order_references_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'",
+                sprintf("int %s NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_references (id)'", $default_key_sign),
             );
             $migration->changeField(
                 $table,
                 "FK_enterprise",
                 "suppliers_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'",
+                sprintf("int %s NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'", $default_key_sign),
             );
             $migration->changeField(
                 $table,
@@ -599,6 +592,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 } else {
                     echo $data["itemtype"];
                 }
+
                 echo "</td>";
 
                 echo "<td>";
@@ -611,6 +605,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 echo "</tr>";
             }
         }
+
         echo "</table>";
         echo "</div>";
     }

@@ -52,7 +52,7 @@ class PluginOrderBillType extends CommonDropdown
 
         $table = self::getTable();
         if (!$DB->tableExists($table)) {
-            $migration->displayMessage("Installing $table");
+            $migration->displayMessage('Installing ' . $table);
 
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_billtypes` (
                     `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,

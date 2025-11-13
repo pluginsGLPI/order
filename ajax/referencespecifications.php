@@ -42,6 +42,7 @@ if ($_POST["itemtype"]) {
             if (class_exists($_POST["itemtype"] . 'Type')) {
                 Dropdown::show($_POST["itemtype"] . "Type", ['name' => "types_id"]);
             }
+
             break;
         case "models_id":
             if (class_exists($_POST["itemtype"] . 'Model')) {
@@ -49,6 +50,7 @@ if ($_POST["itemtype"]) {
             } else {
                 return "";
             }
+
             break;
         case "templates_id":
             $item = getItemForItemtype($_POST['itemtype']);
@@ -58,6 +60,7 @@ if ($_POST["itemtype"]) {
             } else {
                 return "";
             }
+
             break;
     }
 } else {

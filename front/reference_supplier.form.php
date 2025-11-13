@@ -33,9 +33,11 @@ Session::checkLoginUser();
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
+
 if (!isset($_GET["withtemplate"])) {
     $_GET["withtemplate"] = "";
 }
+
 if (!isset($_GET["plugin_order_references_id"])) {
     $_GET["plugin_order_references_id"] = "";
 }
@@ -46,11 +48,13 @@ if (isset($_POST["add"])) {
     if (PluginOrderReference_Supplier::canCreate() && (isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0)) {
         $PluginOrderReference_Supplier->add($_POST);
     }
+
     Html::redirect($_SERVER['HTTP_REFERER']);
 } elseif (isset($_POST["update"])) {
     if (PluginOrderReference_Supplier::canCreate()) {
         $PluginOrderReference_Supplier->update($_POST);
     }
+
     Html::redirect($_SERVER['HTTP_REFERER']);
 } elseif (isset($_POST["delete"])) {
     if (PluginOrderReference_Supplier::canCreate()) {
@@ -58,6 +62,7 @@ if (isset($_POST["add"])) {
             $PluginOrderReference_Supplier->delete(["id" => $ID]);
         }
     }
+
     Html::redirect($_SERVER['HTTP_REFERER']);
 } else {
     $PluginOrderReference_Supplier->checkGlobal(READ);

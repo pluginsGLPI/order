@@ -34,12 +34,19 @@
 class PluginOrderNotificationTargetOrder extends NotificationTarget
 {
     public const AUTHOR                    = 30;
+
     public const AUTHOR_GROUP              = 31;
+
     public const DELIVERY_USER             = 32;
+
     public const DELIVERY_GROUP            = 33;
+
     public const SUPERVISOR_AUTHOR_GROUP   = 34;
+
     public const SUPERVISOR_DELIVERY_GROUP = 35;
+
     public const SUPPLIER                  = 36;
+
     public const CONTACT                   = 37;
 
     public function getEvents()
@@ -122,25 +129,26 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
 
             switch ($event) {
                 case "ask":
-                    $this->data['##lang.ordervalidation.users##'] = __s("Request order validation", "order") .
-                                                                " " . __s("By");
+                    $this->data['##lang.ordervalidation.users##'] = __s("Request order validation", "order")
+                                                                . " " . __s("By");
                     break;
                 case "validation":
-                    $this->data['##lang.ordervalidation.users##'] = __s("Order is validated", "order") .
-                                                                " " . __s("By");
+                    $this->data['##lang.ordervalidation.users##'] = __s("Order is validated", "order")
+                                                                . " " . __s("By");
                     break;
                 case "cancel":
-                    $this->data['##lang.ordervalidation.users##'] = __s("Order canceled", "order") .
-                                                                " " . __s("By");
+                    $this->data['##lang.ordervalidation.users##'] = __s("Order canceled", "order")
+                                                                . " " . __s("By");
                     break;
                 case "undovalidation":
-                    $this->data['##lang.ordervalidation.users##'] = __s("Validation canceled successfully", "order") .
-                                                                " " . __s("By");
+                    $this->data['##lang.ordervalidation.users##'] = __s("Validation canceled successfully", "order")
+                                                                . " " . __s("By");
                     break;
                 case "delivered":
                     $this->data['##lang.ordervalidation.users##'] = __s("No item to generate", "order");
                     break;
             }
+
             $this->data['##ordervalidation.users##']    = getUserName(Session::getLoginUserID());
 
             $this->data['##order.author.name##']        = getUserName($this->obj->getField('users_id'));
@@ -257,19 +265,19 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                ##IFordervalidation.users####lang.ordervalidation.users## : ##ordervalidation.users####ENDIFordervalidation.users##
 
                ##IFordervalidation.comment####lang.ordervalidation.comment## : ##ordervalidation.comment####ENDIFordervalidation.comment##';
-                $tmp['content_html']             = '&lt;p&gt;&lt;strong&gt;##lang.ordervalidation.url##&lt;/strong&gt; : ' .
-                  '&lt;a href=\"##ordervalidation.url##\"&gt;##ordervalidation.url##&lt;/a&gt;&lt;br /&gt;' .
-                  '&lt;br /&gt;&lt;strong&gt;##lang.ordervalidation.entity##&lt;/strong&gt; : ##ordervalidation.entity##&lt;br /&gt;' .
-                  ' ##IFordervalidation.name##&lt;strong&gt;##lang.ordervalidation.name##&lt;/strong&gt;' .
-                  ' : ##ordervalidation.name####ENDIFordervalidation.name##&lt;br /&gt;' .
-                  '##IFordervalidation.numorder##&lt;strong&gt;##lang.ordervalidation.numorder##&lt;/strong&gt;' .
-                  ' : ##ordervalidation.numorder####ENDIFordervalidation.numorder##&lt;br /&gt;##IFordervalidation.orderdate##&lt;strong&gt;##lang.ordervalidation.orderdate##&lt;/strong&gt;' .
-                  ' : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##&lt;br /&gt;' .
-                  '##IFordervalidation.state##&lt;strong&gt;##lang.ordervalidation.state##&lt;/strong&gt;' .
-                  ' : ##ordervalidation.state####ENDIFordervalidation.state##&lt;br /&gt;' .
-                  '##IFordervalidation.users##&lt;strong&gt;##lang.ordervalidation.users##&lt;/strong&gt;' .
-                  ' : ##ordervalidation.users####ENDIFordervalidation.users##&lt;br /&gt;&lt;br /&gt;' .
-                  '##IFordervalidation.comment##&lt;strong&gt;##lang.ordervalidation.comment##&lt;/strong&gt; : ##ordervalidation.comment####ENDIFordervalidation.comment##&lt;/p&gt;';
+                $tmp['content_html']             = '&lt;p&gt;&lt;strong&gt;##lang.ordervalidation.url##&lt;/strong&gt; : '
+                  . '&lt;a href=\"##ordervalidation.url##\"&gt;##ordervalidation.url##&lt;/a&gt;&lt;br /&gt;'
+                  . '&lt;br /&gt;&lt;strong&gt;##lang.ordervalidation.entity##&lt;/strong&gt; : ##ordervalidation.entity##&lt;br /&gt;'
+                  . ' ##IFordervalidation.name##&lt;strong&gt;##lang.ordervalidation.name##&lt;/strong&gt;'
+                  . ' : ##ordervalidation.name####ENDIFordervalidation.name##&lt;br /&gt;'
+                  . '##IFordervalidation.numorder##&lt;strong&gt;##lang.ordervalidation.numorder##&lt;/strong&gt;'
+                  . ' : ##ordervalidation.numorder####ENDIFordervalidation.numorder##&lt;br /&gt;##IFordervalidation.orderdate##&lt;strong&gt;##lang.ordervalidation.orderdate##&lt;/strong&gt;'
+                  . ' : ##ordervalidation.orderdate####ENDIFordervalidation.orderdate##&lt;br /&gt;'
+                  . '##IFordervalidation.state##&lt;strong&gt;##lang.ordervalidation.state##&lt;/strong&gt;'
+                  . ' : ##ordervalidation.state####ENDIFordervalidation.state##&lt;br /&gt;'
+                  . '##IFordervalidation.users##&lt;strong&gt;##lang.ordervalidation.users##&lt;/strong&gt;'
+                  . ' : ##ordervalidation.users####ENDIFordervalidation.users##&lt;br /&gt;&lt;br /&gt;'
+                  . '##IFordervalidation.comment##&lt;strong&gt;##lang.ordervalidation.comment##&lt;/strong&gt; : ##ordervalidation.comment####ENDIFordervalidation.comment##&lt;/p&gt;';
                 $translation->add($tmp);
             }
 
@@ -332,22 +340,22 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                 $tmp['notificationtemplates_id'] = $templates_id;
                 $tmp['language']     = '';
                 $tmp['subject']      = '##order.action## ##order.entity##';
-                $tmp['content_text'] = '##lang.order.entity## : ##order.entity##\n' .
-                                   ' \n##FOREACHorders##\n' .
-                                   '##lang.order.item.name## : ##order.item.name##\n ' .
-                                   '##lang.order.item.numorder## : ##order.item.numorder##\n ' .
-                                   '##lang.order.item.orderdate## : ##order.item.orderdate##\n ' .
-                                   '##lang.order.item.duedate## : ##order.item.duedate##\n ' .
-                                   '##lang.order.item.deliverydate## : ##order.item.deliverydate##\n ' .
-                                   '##order.item.url## \n ##ENDFOREACHorders##';
-                $tmp['content_html'] = "##lang.order.entity## : ##order.entity##&lt;br /&gt; " .
-                                   "&lt;br /&gt;##FOREACHorders##&lt;br /&gt;" .
-                                   "##lang.order.item.name## : ##order.item.name##&lt;br /&gt; " .
-                                   "##lang.order.item.numorder## : ##order.item.numorder##&lt;br /&gt; " .
-                                   "##lang.order.item.orderdate## : ##order.item.orderdate##&lt;br /&gt; &lt;a&gt;" .
-                                   "##lang.order.item.duedate## : ##order.item.duedate##&lt;br /&gt; &lt;/a&gt;&lt;a&gt;" .
-                                   "##lang.order.item.deliverydate## : ##order.item.deliverydate##&lt;br /&gt; &lt;/a&gt;&lt;a&gt;" .
-                                   "##order.item.url##&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHorders##";
+                $tmp['content_text'] = '##lang.order.entity## : ##order.entity##\n'
+                                   . ' \n##FOREACHorders##\n'
+                                   . '##lang.order.item.name## : ##order.item.name##\n '
+                                   . '##lang.order.item.numorder## : ##order.item.numorder##\n '
+                                   . '##lang.order.item.orderdate## : ##order.item.orderdate##\n '
+                                   . '##lang.order.item.duedate## : ##order.item.duedate##\n '
+                                   . '##lang.order.item.deliverydate## : ##order.item.deliverydate##\n '
+                                   . '##order.item.url## \n ##ENDFOREACHorders##';
+                $tmp['content_html'] = "##lang.order.entity## : ##order.entity##&lt;br /&gt; "
+                                   . "&lt;br /&gt;##FOREACHorders##&lt;br /&gt;"
+                                   . "##lang.order.item.name## : ##order.item.name##&lt;br /&gt; "
+                                   . "##lang.order.item.numorder## : ##order.item.numorder##&lt;br /&gt; "
+                                   . "##lang.order.item.orderdate## : ##order.item.orderdate##&lt;br /&gt; &lt;a&gt;"
+                                   . "##lang.order.item.duedate## : ##order.item.duedate##&lt;br /&gt; &lt;/a&gt;&lt;a&gt;"
+                                   . "##lang.order.item.deliverydate## : ##order.item.deliverydate##&lt;br /&gt; &lt;/a&gt;&lt;a&gt;"
+                                   . "##order.item.url##&lt;/a&gt;&lt;br /&gt; ##ENDFOREACHorders##";
                 $translation->add($tmp);
             }
 

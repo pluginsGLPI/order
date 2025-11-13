@@ -51,7 +51,7 @@ class PluginOrderAnalyticNature extends CommonDropdown
 
         $table = getTableForItemType(self::class);
         if (!$DB->tableExists($table)) {
-            $migration->displayMessage("Installing $table");
+            $migration->displayMessage('Installing ' . $table);
 
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_analyticnatures` (
                     `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,

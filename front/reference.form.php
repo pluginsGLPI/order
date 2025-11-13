@@ -33,9 +33,11 @@ Session::checkLoginUser();
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
+
 if (!isset($_GET["withtemplate"])) {
     $_GET["withtemplate"] = "";
 }
+
 $_GET["popup"] = $_POST["popup"] ?? "";
 if (!isset($_GET["itemtype"])) {
     $_GET["itemtype"] = "";
@@ -46,10 +48,11 @@ $reference = new PluginOrderReference();
 if (isset($_POST["add"])) {
     $reference->check(-1, UPDATE, $_POST);
     $newID = $reference->add($_POST);
-    $url   = Toolbox::getItemTypeFormURL('PluginOrderReference') . "?id=$newID";
+    $url   = Toolbox::getItemTypeFormURL('PluginOrderReference') . ('?id=' . $newID);
     if (!empty($_GET["popup"]) && $_GET["popup"] == 1) {
         $url .= "&popup=1";
     }
+
     if ($_SESSION['glpibackcreated']) {
         Html::redirect($reference->getFormURL() . "?id=" . $newID);
     } else {

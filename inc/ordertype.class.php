@@ -55,7 +55,7 @@ class PluginOrderOrderType extends CommonDropdown
         $table = self::getTable();
 
         if (!$DB->tableExists($table)) {
-            $migration->displayMessage("Installing $table");
+            $migration->displayMessage('Installing ' . $table);
 
             $query = "CREATE TABLE `glpi_plugin_order_ordertypes` (
                   `id` int {$default_key_sign} NOT NULL auto_increment,

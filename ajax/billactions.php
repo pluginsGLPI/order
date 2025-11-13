@@ -35,14 +35,12 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (isset($_POST["action"])) {
-    switch ($_POST["action"]) {
-        case "bill":
-            echo "&nbsp;";
-            echo Html::hidden('plugin_order_orders_id', ['value' => $_POST["plugin_order_orders_id"]]);
-            PluginOrderBill::Dropdown([
-                'condition' => ['plugin_order_orders_id' => $_POST['plugin_order_orders_id']],
-            ]);
-            break;
+    if ($_POST["action"] === "bill") {
+        echo "&nbsp;";
+        echo Html::hidden('plugin_order_orders_id', ['value' => $_POST["plugin_order_orders_id"]]);
+        PluginOrderBill::Dropdown([
+            'condition' => ['plugin_order_orders_id' => $_POST['plugin_order_orders_id']],
+        ]);
     }
 
     PluginOrderBillState::Dropdown(['comments' => true]);

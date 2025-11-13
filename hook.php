@@ -68,11 +68,11 @@ function plugin_order_install()
     ];
     foreach ($classes as $class) {
         if ($plug = isPluginItemType($class)) {
-            $plugname = strtolower($plug['plugin']);
+            $plugname = strtolower((string) $plug['plugin']);
             $dir = Plugin::getPhpDir($plugname) . "/inc/";
-            $item = strtolower($plug['class']);
-            if (file_exists("$dir$item.class.php")) {
-                include_once("$dir$item.class.php");
+            $item = strtolower((string) $plug['class']);
+            if (file_exists(sprintf('%s%s.class.php', $dir, $item))) {
+                include_once(sprintf('%s%s.class.php', $dir, $item));
                 call_user_func([$class, 'install'], $migration);
             }
         }
@@ -93,14 +93,15 @@ function plugin_order_install()
         if (!is_dir($new_directory)) {
             @mkdir($new_directory, 0755, true);
             //Copy files from the old directories to the new ones
-            foreach (glob(PLUGIN_ORDER_DIR . "/$old_directory/*") as $file) {
-                $new_file = str_replace(PLUGIN_ORDER_DIR . "/$old_directory", $new_directory, $file);
+            foreach (glob(PLUGIN_ORDER_DIR . sprintf('/%s/*', $old_directory)) as $file) {
+                $new_file = str_replace(PLUGIN_ORDER_DIR . ('/' . $old_directory), $new_directory, $file);
                 if (!file_exists($new_directory . $file)) {
                     copy($file, $new_file);
                 }
             }
         }
     }
+
     return true;
 }
 
@@ -248,6 +249,7 @@ function plugin_order_getAddSearchOptions($itemtype)
         $sopt[3161]['datatype']      = 'itemlink';
         $sopt[3161]['itemlink_type'] = 'PluginOrderOrder';
     }
+
     return $sopt;
 }
 
@@ -258,8 +260,8 @@ function plugin_order_addLeftJoin($type, $ref_table, $new_table, $linkfield, &$a
     switch ($new_table) {
         case "glpi_plugin_order_orders": // From items
             $out = " LEFT JOIN `glpi_plugin_order_orders_items`
-                     ON `$ref_table`.`id` = `glpi_plugin_order_orders_items`.`items_id`
-                     AND `glpi_plugin_order_orders_items`.`itemtype` = '$type' ";
+                     ON `{$ref_table}`.`id` = `glpi_plugin_order_orders_items`.`items_id`
+                     AND `glpi_plugin_order_orders_items`.`itemtype` = '{$type}' ";
             $out .= " LEFT JOIN `glpi_plugin_order_orders`
                      ON `glpi_plugin_order_orders`.`id` = `glpi_plugin_order_orders_items`.`plugin_order_orders_id` ";
             break;
@@ -295,6 +297,7 @@ function plugin_order_giveItem($type, $ID, $data, $num)
             } else {
                 $file = GLPI_ROOT . "/src/" . $itemtype . "Type.php";
             }
+
             if (file_exists($file)) {
                 return Dropdown::getDropdownName(
                     getTableForItemType($itemtype . "Type"),
@@ -321,6 +324,7 @@ function plugin_order_giveItem($type, $ID, $data, $num)
                 return $reference->getTemplateName($itemtype, $itemnum);
             }
     }
+
     return "";
 }
 
@@ -330,17 +334,19 @@ function plugin_order_displayConfigItem($type, $ID, $data, $num)
     $searchopt = Search::getOptions($type);
     $table = $searchopt[$ID]["table"];
     $field = $searchopt[$ID]["field"];
-    switch ($table . '.' . $field) {
-        case "glpi_plugin_order_orders.is_late":
-            $message = "";
-            if ($data['raw']["ITEM_" . $num]) {
-                $config = PluginOrderConfig::getConfig();
-                if ($config->getShouldBeDevileredColor() != '') {
-                    $message .= " style=\"background-color:" . $config->getShouldBeDevileredColor() . ";\" ";
-                }
+    if ($table . '.' . $field === "glpi_plugin_order_orders.is_late") {
+        $message = "";
+        if ($data['raw']["ITEM_" . $num]) {
+            $config = PluginOrderConfig::getConfig();
+            if ($config->getShouldBeDevileredColor() != '') {
+                $message .= ' style="background-color:' . $config->getShouldBeDevileredColor() . ';" ';
             }
-            return $message;
+        }
+
+        return $message;
     }
+
+    return null;
 }
 
 

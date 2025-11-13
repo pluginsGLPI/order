@@ -49,6 +49,7 @@ class PluginOrderPreference extends CommonDBTM
             $input["sign"]     = "";
             $id = $this->add($input);
         }
+
         return $id;
     }
 
@@ -135,9 +136,11 @@ class PluginOrderPreference extends CommonDBTM
         if (empty($files)) {
             $values[0] = Dropdown::EMPTY_VALUE;
         }
+
         foreach ($files as $file) {
             $values[$file[0]] = $file[0];
         }
+
         return Dropdown::showFromArray($name, $values, ['value' => $value]);
     }
 
@@ -191,7 +194,7 @@ class PluginOrderPreference extends CommonDBTM
 
         if (isset($this->fields["sign"]) && !empty($this->fields["sign"])) {
             echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
-            echo "<img src='" . $CFG_GLPI['root_doc'] . "/plugins/order/front/signature.php?sign=" . rawurlencode($this->fields["sign"]) . "'>";
+            echo "<img src='" . $CFG_GLPI['root_doc'] . "/plugins/order/front/signature.php?sign=" . rawurlencode((string) $this->fields["sign"]) . "'>";
             echo "</td></tr>";
         }
 
@@ -219,12 +222,12 @@ class PluginOrderPreference extends CommonDBTM
                 $filedate  = Html::convDate(date("Y-m-d", filemtime($directory . $file)));
                 $basename  = explode('.', basename($filename));
                 $extension = array_pop($basename);
-                if ($filename == ".." || $filename == ".") {
+                if ($filename === ".." || $filename === ".") {
                     echo "";
-                } elseif ($filetype == 'file' && in_array($extension, $ext)) {
+                } elseif ($filetype === 'file' && in_array($extension, $ext)) {
                     if (in_array($ext, PLUGIN_ORDER_SIGNATURE_EXTENSION)) {
                         $name = array_shift($basename);
-                        if (strtolower($name) == strtolower($_SESSION["glpiname"])) {
+                        if (strtolower((string) $name) === strtolower((string) $_SESSION["glpiname"])) {
                             $array_file[] = [$filename, $filedate, $extension];
                         }
                     } else {
@@ -232,6 +235,7 @@ class PluginOrderPreference extends CommonDBTM
                     }
                 }
             }
+
             closedir($dh);
         }
 
@@ -253,9 +257,9 @@ class PluginOrderPreference extends CommonDBTM
         //Only avaiable since 1.2.0
         $table = self::getTable();
         if (!$DB->tableExists($table)) {
-            $migration->displayMessage("Installing $table");
+            $migration->displayMessage('Installing ' . $table);
 
-            $query = "CREATE TABLE `$table` (
+            $query = "CREATE TABLE `{$table}` (
                   `id` int {$default_key_sign} NOT NULL auto_increment,
                   `users_id` int {$default_key_sign} NOT NULL default 0,
                   `template` varchar(255) default NULL,
@@ -266,8 +270,8 @@ class PluginOrderPreference extends CommonDBTM
             $DB->doQuery($query);
         } else {
             //1.5.3
-            $migration->changeField($table, 'ID', 'id', "int {$default_key_sign} NOT NULL auto_increment");
-            $migration->changeField($table, 'user_id', 'users_id', "INT {$default_key_sign} NOT NULL DEFAULT '0'");
+            $migration->changeField($table, 'ID', 'id', sprintf('int %s NOT NULL auto_increment', $default_key_sign));
+            $migration->changeField($table, 'user_id', 'users_id', sprintf("INT %s NOT NULL DEFAULT '0'", $default_key_sign));
             $migration->addKey($table, 'users_id');
             $migration->migrationOneTable($table);
         }
@@ -288,7 +292,7 @@ class PluginOrderPreference extends CommonDBTM
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if (get_class($item) == 'Preference') {
+        if ($item::class === 'Preference') {
             return self::createTabEntry(
                 PluginOrderOrder::getTypeName(2),
                 0,
@@ -296,17 +300,19 @@ class PluginOrderPreference extends CommonDBTM
                 PluginOrderOrder::getIcon(),
             );
         }
+
         return '';
     }
 
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if (get_class($item) == 'Preference') {
+        if ($item::class === 'Preference') {
             $pref = new self();
             $id   = $pref->addDefaultPreference(Session::getLoginUserID());
             $pref->showForm($id);
         }
+
         return true;
     }
 }

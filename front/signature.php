@@ -65,7 +65,7 @@ Session::checkLoginUser();
 $sign = array_key_exists('sign', $_GET) ? $_GET['sign'] : '';
 
 // Avoid access to another directory or to files that does not match allowed extension
-$extensionPattern = '/\.(' . implode('|', array_map(fn($ext) => preg_quote($ext, '/'), PLUGIN_ORDER_SIGNATURE_EXTENSION)) . ')$/';
+$extensionPattern = '/\.(' . implode('|', array_map(fn($ext) => preg_quote((string) $ext, '/'), PLUGIN_ORDER_SIGNATURE_EXTENSION)) . ')$/';
 
 if (preg_match('/[\\\\\/]/', $sign) !== 0 || preg_match($extensionPattern, $sign) === 0) {
     throw new NotFoundHttpException();

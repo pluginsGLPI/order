@@ -53,7 +53,7 @@ class PluginOrderOther extends CommonDBTM
         //Only avaiable since 1.2.0
         $table = self::getTable();
         if (!$DB->tableExists($table)) {
-            $migration->displayMessage("Installing $table");
+            $migration->displayMessage('Installing ' . $table);
 
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_others` (
                   `id` int {$default_key_sign} NOT NULL auto_increment,
@@ -68,7 +68,7 @@ class PluginOrderOther extends CommonDBTM
             $DB->doQuery($query);
         } else {
             $migration->displayMessage("Rename 'othertypes_id' to 'plugin_order_othertypes_id'");
-            $migration->changeField($table, "othertypes_id", "plugin_order_othertypes_id", "int {$default_key_sign} NOT NULL default '0'");
+            $migration->changeField($table, "othertypes_id", "plugin_order_othertypes_id", sprintf("int %s NOT NULL default '0'", $default_key_sign));
         }
     }
 
