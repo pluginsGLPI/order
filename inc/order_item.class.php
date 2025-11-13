@@ -2245,7 +2245,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
                 return __s("Orders", "order");
             }
-        } elseif ($item::class === 'PluginOrderOrder') {
+        } elseif ($item instanceof PluginOrderOrder) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                 return self::createTabEntry(
                     __s("Order item", "order"),

@@ -487,23 +487,18 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        switch ($item::class) {
-            case 'Supplier':
-                return [1 => __s("Orders", "order")];
-            case 'PluginOrderOrder':
-                $config = PluginOrderConfig::getConfig();
-                if ($config->canUseSupplierInformations() && $item->fields['suppliers_id']) {
-                    return self::createTabEntry(
-                        __s("Supplier Detail", "order"),
-                        0,
-                        null,
-                        self::getIcon(),
-                    );
-                }
-
-                break;
-            default:
-                return '';
+        if ($item instanceof Supplier) {
+            return [1 => __s("Orders", "order")];
+        } elseif ($item instanceof PluginOrderOrder) {
+            $config = PluginOrderConfig::getConfig();
+            if ($config->canUseSupplierInformations() && $item->fields['suppliers_id']) {
+                return self::createTabEntry(
+                    __s("Supplier Detail", "order"),
+                    0,
+                    null,
+                    self::getIcon(),
+                );
+            }
         }
 
         return '';
@@ -512,20 +507,16 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item::class) {
-            case 'Supplier':
-                PluginOrderReference_Supplier::showReferencesFromSupplier($item->getField('id'));
-                self::showDeliveries($item->getField('id'));
-                PluginOrderSurveySupplier::showGlobalNotation($item->getField('id'));
-                break;
-            case 'PluginOrderOrder':
-                $order_supplier = new self();
-                if ($item->can($item->getID(), READ)) {
-                    self::showOrderSupplierInfos($item->getID());
-                    $order_supplier->showForm(-1, ['plugin_order_orders_id' => $item->getID()]);
-                }
-
-                break;
+        if ($item instanceof Supplier) {
+            PluginOrderReference_Supplier::showReferencesFromSupplier($item->getField('id'));
+            self::showDeliveries($item->getField('id'));
+            PluginOrderSurveySupplier::showGlobalNotation($item->getField('id'));
+        } elseif ($item instanceof PluginOrderOrder) {
+            $order_supplier = new self();
+            if ($item->can($item->getID(), READ)) {
+                self::showOrderSupplierInfos($item->getID());
+                $order_supplier->showForm(-1, ['plugin_order_orders_id' => $item->getID()]);
+            }
         }
 
         return true;
