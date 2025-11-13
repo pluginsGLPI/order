@@ -35,7 +35,9 @@ class PluginOrderConfig extends CommonDBTM
     public static $rightname = 'config';
 
     public const CONFIG_NEVER   = 0;
+
     public const CONFIG_YES     = 1;
+
     public const CONFIG_ASK     = 2;
 
 
@@ -68,6 +70,7 @@ class PluginOrderConfig extends CommonDBTM
         if (is_null($config)) {
             $config = new self();
         }
+
         if ($update) {
             $config->getFromDB(1);
         }
@@ -526,13 +529,13 @@ class PluginOrderConfig extends CommonDBTM
 
     public function isConfigured()
     {
-        return ($this->fields['order_status_draft'] &&
-        $this->fields['order_status_waiting_approval'] &&
-        $this->fields['order_status_approved'] &&
-        $this->fields['order_status_partially_delivred'] &&
-        $this->fields['order_status_completly_delivered'] &&
-        $this->fields['order_status_canceled'] &&
-        $this->fields['order_status_paid']);
+        return ($this->fields['order_status_draft']
+        && $this->fields['order_status_waiting_approval']
+        && $this->fields['order_status_approved']
+        && $this->fields['order_status_partially_delivred']
+        && $this->fields['order_status_completly_delivered']
+        && $this->fields['order_status_canceled']
+        && $this->fields['order_status_paid']);
     }
 
     public function getDefaultTaxes()
@@ -683,10 +686,10 @@ class PluginOrderConfig extends CommonDBTM
             !$DB->tableExists($table)
             && !$DB->tableExists("glpi_plugin_order_config")
         ) {
-            $migration->displayMessage("Installing $table");
+            $migration->displayMessage('Installing ' . $table);
 
             //Install
-            $query = "CREATE TABLE `$table` (
+            $query = "CREATE TABLE `{$table}` (
                         `id` int {$default_key_sign} NOT NULL auto_increment,
                         `use_validation` tinyint NOT NULL default '0',
                         `use_supplier_satisfaction` tinyint NOT NULL default '0',
@@ -745,7 +748,7 @@ class PluginOrderConfig extends CommonDBTM
             ]);
         } else {
             //Upgrade
-            $migration->displayMessage("Upgrading $table");
+            $migration->displayMessage('Upgrading ' . $table);
 
             //1.2.0
             $migration->renameTable("glpi_plugin_order_config", $table);
@@ -761,33 +764,33 @@ class PluginOrderConfig extends CommonDBTM
                 );
             }
 
-            $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
+            $migration->changeField($table, "ID", "id", sprintf('int %s NOT NULL auto_increment', $default_key_sign));
 
             //1.3.0
             $migration->addField($table, "generate_assets", "tinyint NOT NULL default '0'");
             $migration->addField($table, "generated_name", "varchar(255) default NULL");
             $migration->addField($table, "generated_serial", "varchar(255) default NULL");
             $migration->addField($table, "generated_otherserial", "varchar(255) default NULL");
-            $migration->addField($table, "default_asset_entities_id", "int {$default_key_sign} NOT NULL default '0'");
-            $migration->addField($table, "default_asset_states_id", "int {$default_key_sign} NOT NULL default '0'");
+            $migration->addField($table, "default_asset_entities_id", sprintf("int %s NOT NULL default '0'", $default_key_sign));
+            $migration->addField($table, "default_asset_states_id", sprintf("int %s NOT NULL default '0'", $default_key_sign));
             $migration->addField($table, "generated_title", "varchar(255) default NULL");
             $migration->addField($table, "generated_content", "text");
-            $migration->addField($table, "default_ticketcategories_id", "int {$default_key_sign} NOT NULL default '0'");
+            $migration->addField($table, "default_ticketcategories_id", sprintf("int %s NOT NULL default '0'", $default_key_sign));
             $migration->addField($table, "use_supplier_satisfaction", "tinyint NOT NULL default '0'");
             $migration->addField($table, "generate_order_pdf", "tinyint NOT NULL default '0'");
             $migration->addField($table, "use_supplier_informations", "tinyint NOT NULL default '1'");
             $migration->addField($table, "shoudbedelivered_color", "char(20) default '#ff5555'");
             $migration->addField($table, "copy_documents", "tinyint NOT NULL DEFAULT '0'");
-            $migration->addField($table, "documentcategories_id", "int {$default_key_sign} NOT NULL default '0'");
-            $migration->addField($table, "groups_id_author", "int {$default_key_sign} NOT NULL default '0'");
-            $migration->addField($table, "groups_id_recipient", "int {$default_key_sign} NOT NULL default '0'");
-            $migration->addField($table, "users_id_recipient", "int {$default_key_sign} NOT NULL default '0'");
+            $migration->addField($table, "documentcategories_id", sprintf("int %s NOT NULL default '0'", $default_key_sign));
+            $migration->addField($table, "groups_id_author", sprintf("int %s NOT NULL default '0'", $default_key_sign));
+            $migration->addField($table, "groups_id_recipient", sprintf("int %s NOT NULL default '0'", $default_key_sign));
+            $migration->addField($table, "users_id_recipient", sprintf("int %s NOT NULL default '0'", $default_key_sign));
 
             $migration->changeField(
                 $table,
                 "default_ticketcategories_id",
                 "default_itilcategories_id",
-                "int {$default_key_sign} NOT NULL default '0'",
+                sprintf("int %s NOT NULL default '0'", $default_key_sign),
             );
 
             //1.9.0
@@ -797,7 +800,7 @@ class PluginOrderConfig extends CommonDBTM
             $config = new self();
             $config->getFromDB(1);
 
-            $migration->addField($table, "tickettemplates_id_delivery", "int {$default_key_sign} NOT NULL default '0'");
+            $migration->addField($table, "tickettemplates_id_delivery", sprintf("int %s NOT NULL default '0'", $default_key_sign));
             $migration->migrationOneTable($table);
 
             $migration->dropField($table, "generated_title");
@@ -828,21 +831,25 @@ class PluginOrderConfig extends CommonDBTM
         ];
 
         foreach ($new_states as $field => $value) {
-            $migration->addField($table, $field, "int NOT NULL default '{$value}'", ['update' => $value]);
+            $migration->addField($table, $field, sprintf("int NOT NULL default '%s'", $value), ['update' => $value]);
         }
 
         if (!$DB->fieldExists($table, 'order_analyticnature_display')) {
             $migration->addField($table, 'order_analyticnature_display', 'integer');
         }
+
         if (!$DB->fieldExists($table, 'order_accountsection_display')) {
             $migration->addField($table, 'order_accountsection_display', 'integer');
         }
+
         if (!$DB->fieldExists($table, 'order_analyticnature_mandatory')) {
             $migration->addField($table, 'order_analyticnature_mandatory', 'integer');
         }
+
         if (!$DB->fieldExists($table, 'order_accountsection_mandatory')) {
             $migration->addField($table, 'order_accountsection_mandatory', 'integer');
         }
+
         if (!$DB->fieldExists($table, 'add_immobilization_number')) {
             $migration->addField($table, "add_immobilization_number", "TINYINT NOT NULL DEFAULT '0'");
         }
@@ -866,32 +873,24 @@ class PluginOrderConfig extends CommonDBTM
 
     public function rawSearchOptions()
     {
-        $tab = [];
-
-        $tab[] = [
+        return [[
             'id'            => '2',
             'table'         => $this->getTable(),
             'field'         => 'generated_name',
             'name'          => __s('Default name', 'order'),
             'autocomplete'  => true,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => '3',
             'table'         => $this->getTable(),
             'field'         => 'generated_serial',
             'name'          => __s('Default serial number', 'order'),
             'autocomplete'  => true,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => '4',
             'table'         => $this->getTable(),
             'field'         => 'generated_otherserial',
             'name'          => __s('Default inventory number', 'order'),
             'autocomplete'  => true,
-        ];
-
-        return $tab;
+        ]];
     }
 }

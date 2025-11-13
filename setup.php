@@ -44,12 +44,15 @@ if (!defined('PLUGIN_ORDER_DIR')) {
 if (!defined('PLUGIN_ORDER_TEMPLATE_DIR')) {
     define("PLUGIN_ORDER_TEMPLATE_DIR", GLPI_PLUGIN_DOC_DIR . "/order/templates/");
 }
+
 if (!defined('PLUGIN_ORDER_SIGNATURE_DIR')) {
     define("PLUGIN_ORDER_SIGNATURE_DIR", GLPI_PLUGIN_DOC_DIR . "/order/signatures/");
 }
+
 if (!defined('PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR')) {
     define("PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR", GLPI_PLUGIN_DOC_DIR . "/order/generate/");
 }
+
 if (!defined('PLUGIN_ORDER_TEMPLATE_LOGO_DIR')) {
     define("PLUGIN_ORDER_TEMPLATE_LOGO_DIR", GLPI_PLUGIN_DOC_DIR . "/order/logo/");
 }
@@ -57,9 +60,11 @@ if (!defined('PLUGIN_ORDER_TEMPLATE_LOGO_DIR')) {
 if (!defined('PLUGIN_ORDER_TEMPLATE_EXTENSION')) {
     define("PLUGIN_ORDER_TEMPLATE_EXTENSION", ["odt"]);
 }
+
 if (!defined('PLUGIN_ORDER_SIGNATURE_EXTENSION')) {
     define("PLUGIN_ORDER_SIGNATURE_EXTENSION", ["png"]);
 }
+
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 if (!defined('PLUGIN_ORDER_NUMBER_STEP')) {
@@ -70,6 +75,7 @@ if (!defined('PLUGIN_ORDER_NUMBER_STEP')) {
 if (!defined('PCLZIP_TEMPORARY_DIR')) {
     define('PCLZIP_TEMPORARY_DIR', GLPI_DOC_DIR . '/_tmp/pclzip');
 }
+
 include_once PLUGIN_ORDER_DIR . "/vendor/autoload.php";
 
 

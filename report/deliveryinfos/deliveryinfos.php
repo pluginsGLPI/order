@@ -86,8 +86,8 @@ if ($report->criteriasValidated()) {
                                  ON (`glpi_plugin_order_orders`.`suppliers_id` = suppliers.`id`)";
 
 
-    $query = "SELECT DISTINCT `suppliers_id`, ($query_total) AS `total`, ($query_late) AS `late`
-            FROM `glpi_plugin_order_orders` $supplier";
+    $query = "SELECT DISTINCT `suppliers_id`, ({$query_total}) AS `total`, ({$query_late}) AS `late`
+            FROM `glpi_plugin_order_orders` {$supplier}";
     $query .= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");
     $query .= $report->addSqlCriteriasRestriction();
     $report->setGroupBy("suppliers_id");

@@ -65,6 +65,7 @@ class PluginOrderProfile extends CommonDBTM
                     'name'        => $right,
                 ]);
             }
+
             if (
                 !countElementsInTable(
                     'glpi_profilerights',
@@ -115,6 +116,7 @@ class PluginOrderProfile extends CommonDBTM
             echo "</div>";
             Html::closeForm();
         }
+
         echo "</div>";
         return true;
     }
@@ -165,6 +167,7 @@ class PluginOrderProfile extends CommonDBTM
                 PluginOrderOrder::getIcon(),
             );
         }
+
         return '';
     }
 
@@ -180,6 +183,7 @@ class PluginOrderProfile extends CommonDBTM
             ]);
             $prof->showForm($item->getID());
         }
+
         return true;
     }
 
@@ -187,7 +191,7 @@ class PluginOrderProfile extends CommonDBTM
     public static function getAllRights($all = false)
     {
 
-        $rights = [[
+        return [[
             'itemtype' => 'PluginOrderOrder',
             'label'    => __s("Orders", "order"),
             'field'    => 'plugin_order_order',
@@ -201,27 +205,18 @@ class PluginOrderProfile extends CommonDBTM
             'field'    => 'plugin_order_bill',
         ],
         ];
-
-        return $rights;
     }
 
 
     public static function translateARight($old_right)
     {
-        switch ($old_right) {
-            case '':
-                return 0;
-            case 'r':
-                return READ;
-            case 'w':
-                return PluginOrderOrder::ALLRIGHTS;
-            case '0':
-            case '1':
-                return $old_right;
-
-            default:
-                return 0;
-        }
+        return match ($old_right) {
+            '' => 0,
+            'r' => READ,
+            'w' => PluginOrderOrder::ALLRIGHTS,
+            '0', '1' => $old_right,
+            default => 0,
+        };
     }
 
 
@@ -271,15 +266,19 @@ class PluginOrderProfile extends CommonDBTM
                             if ($profile_data[$old] == 'w') {
                                 $right = 1;
                             }
+
                             break;
                     }
+
                     $query = "UPDATE `glpi_profilerights`
                          SET `rights`='" . $right . "'
-                         WHERE `name`='$new' AND `profiles_id`='$profiles_id'";
+                         WHERE `name`='{$new}' AND `profiles_id`='{$profiles_id}'";
                     $DB->doQuery($query);
                 }
             }
         }
+
+        return null;
     }
 
 
@@ -316,6 +315,7 @@ class PluginOrderProfile extends CommonDBTM
         foreach ($DB->request($query_profiles) as $prof) {
             self::migrateOneProfile($prof['id']);
         }
+
         foreach (
             $DB->request($query_profiles_rights) as $prof
         ) {

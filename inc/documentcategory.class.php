@@ -57,6 +57,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
         if ($item->getType() == "DocumentCategory" && $config->canRenameDocuments()) {
             self::showForDocumentCategory($item);
         }
+
         return true;
     }
 
@@ -77,8 +78,8 @@ class PluginOrderDocumentCategory extends CommonDBTM
             $documentCategory->getEmpty();
         }
 
-        echo "<form name='form' method='post' action='" .
-        Toolbox::getItemTypeFormURL($documentCategory->getType()) . "'>";
+        echo "<form name='form' method='post' action='"
+        . Toolbox::getItemTypeFormURL($documentCategory->getType()) . "'>";
 
         echo "<div align='center'><table class='tab_cadre_fixe'>";
         echo "<tr><th colspan='2'>" . __s('Document category prefix', 'order') . "</th></tr>";
@@ -123,7 +124,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
             !$DB->tableExists($table)
             && !$DB->tableExists("glpi_plugin_order_documentcategories")
         ) {
-            $migration->displayMessage("Installing $table");
+            $migration->displayMessage('Installing ' . $table);
 
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_documentcategories` (
                      `id` int {$default_key_sign} NOT NULL auto_increment,

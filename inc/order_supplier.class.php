@@ -53,33 +53,24 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
     public function rawSearchOptions()
     {
-
-        $tab = [];
-
-        $tab[] = [
+        return [[
             'id'            => 'common',
             'name'          => __s('Supplier Detail', 'order'),
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 1,
             'table'         => self::getTable(),
             'field'         => 'num_quote',
             'name'          => __s('Quote number', 'order'),
             'datatype'      => 'text',
             'autocomplete'  => true,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 2,
             'table'         => self::getTable(),
             'field'         => 'num_order',
             'name'          => __s('Order number'),
             'datatype'      => 'text',
             'autocomplete'  => true,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 4,
             'table'         => 'glpi_suppliers',
             'field'         => 'name',
@@ -87,23 +78,17 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
             'datatype'      => 'itemlink',
             'itemlink_type' => 'Supplier',
             'forcegroupby'  => true,
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 30,
             'table'         => self::getTable(),
             'field'         => 'id',
             'name'          => __s('ID'),
-        ];
-
-        $tab[] = [
+        ], [
             'id'            => 80,
             'table'         => 'glpi_entities',
             'field'         => 'completename',
             'name'          => __s('Entity'),
-        ];
-
-        return $tab;
+        ]];
     }
 
 
@@ -122,6 +107,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         if (!isset($input['plugin_order_orders_id']) || $input['plugin_order_orders_id'] <= 0) {
             return false;
         }
+
         return $input;
     }
 
@@ -142,6 +128,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         if (count($result) === 0) {
             return false;
         }
+
         $this->fields = $result->current();
         if (is_array($this->fields) && count($this->fields)) {
             return true;
@@ -175,8 +162,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
         echo "<td>";
         $link = Toolbox::getItemTypeFormURL('Supplier');
-        echo "<a href=\"" . $link . "?id=" . $supplier . "\">" .
-         Dropdown::getDropdownName("glpi_suppliers", $supplier) . "</a></td>";
+        echo '<a href="' . $link . "?id=" . $supplier . '">'
+         . Dropdown::getDropdownName("glpi_suppliers", $supplier) . "</a></td>";
         echo Html::hidden('suppliers_id', ['value' => $supplier]);
         echo "</td>";
 
@@ -229,8 +216,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
         $link = Toolbox::getItemTypeFormURL(self::class);
 
-        echo "<form method='post' name='show_supplierinfos$rand' id='show_supplierinfos$rand' " .
-            "action=\"" . $link . "\">";
+        echo sprintf("<form method='post' name='show_supplierinfos%d' id='show_supplierinfos%d' ", $rand, $rand)
+            . 'action="' . $link . '">';
         echo "<div class='center'>";
         echo Html::hidden('plugin_order_orders_id', ['value' => $ID]);
 
@@ -267,8 +254,10 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                     ) {
                         echo " checked ";
                     }
+
                     echo ">";
                 }
+
                 echo "</td>";
                 echo "<td><a href='" . $link . "?id=" . $cur["id"] . "&plugin_order_orders_id=" . $ID . "'>"
                 . Dropdown::getDropdownName("glpi_suppliers", $cur["suppliers_id"]) . "</a></td>";
@@ -276,6 +265,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                 echo "<td>" . $cur["num_order"] . "</td>";
                 echo "</tr>";
             }
+
             echo "</table></div>";
 
             if ($candelete) {
@@ -284,20 +274,21 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                 $arrow = "fas fa-level-up-alt";
 
                 echo "<tr>";
-                echo "<td><i class='$arrow fa-flip-horizontal fa-lg mx-2'></i></td>";
+                echo sprintf("<td><i class='%s fa-flip-horizontal fa-lg mx-2'></i></td>", $arrow);
                 echo "<td class='center' style='white-space:nowrap;'>";
-                echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\" href='#'>" . __s('Check all') . "</a></td>";
+                echo sprintf("<a onclick= \"if ( markCheckboxes('%s') ) return false;\" href='#'>", $formname) . __s('Check all') . "</a></td>";
                 echo "<td>/</td>";
                 echo "<td class='center' style='white-space:nowrap;'>";
-                echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\" href='#'>" . __s('Uncheck all') . "</a></td>";
+                echo sprintf("<a onclick= \"if ( unMarkCheckboxes('%s') ) return false;\" href='#'>", $formname) . __s('Uncheck all') . "</a></td>";
                 echo "<td class='left' width='80%'>";
 
                 echo "<input type='submit' name='delete' ";
-                echo "value=\"" . addslashes(_sx('button', 'Delete permanently')) . "\" class='btn btn-primary'>&nbsp;";
+                echo 'value="' . addslashes(_sx('button', 'Delete permanently')) . "\" class='btn btn-primary'>&nbsp;";
                 echo "</td></tr>";
                 echo "</table>";
             }
         }
+
         Html::closeForm();
     }
 
@@ -358,10 +349,12 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                 } else {
                     $name = __s("No specified status", "order");
                 }
+
                 echo "<td>" . $name . "&nbsp;:" . $ref . "</td>";
                 echo "</tr>";
             }
         }
+
         echo "</table>";
         echo "</div>";
     }
@@ -380,7 +373,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
         if (!$DB->tableExists($table)) {
             if (!$DB->tableExists("glpi_plugin_order_suppliers")) {
-                $migration->displayMessage("Installing $table");
+                $migration->displayMessage('Installing ' . $table);
 
                 //install
                 $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orders_suppliers` (
@@ -400,24 +393,24 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                 $DB->doQuery($query);
             } else {
                 //Upgrade
-                $migration->displayMessage("Upgrading $table");
+                $migration->displayMessage('Upgrading ' . $table);
 
                 //1.2.0
                 $migration->renameTable("glpi_plugin_order_suppliers", $table);
 
-                $migration->addField($table, "entities_id", "int {$default_key_sign} NOT NULL default '0'");
+                $migration->addField($table, "entities_id", sprintf("int %s NOT NULL default '0'", $default_key_sign));
                 $migration->addField($table, "is_recursive", "tinyint NOT NULL default '0'");
                 $migration->addField(
                     $table,
                     "suppliers_id",
-                    "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'",
+                    sprintf("int %s NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'", $default_key_sign),
                 );
-                $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
+                $migration->changeField($table, "ID", "id", sprintf('int %s NOT NULL auto_increment', $default_key_sign));
                 $migration->changeField(
                     $table,
                     "FK_order",
                     "plugin_order_orders_id",
-                    "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'",
+                    sprintf("int %s NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'", $default_key_sign),
                 );
                 $migration->changeField(
                     $table,
@@ -494,7 +487,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        switch (get_class($item)) {
+        switch ($item::class) {
             case 'Supplier':
                 return [1 => __s("Orders", "order")];
             case 'PluginOrderOrder':
@@ -507,17 +500,19 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                         self::getIcon(),
                     );
                 }
+
                 break;
             default:
                 return '';
         }
+
         return '';
     }
 
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch (get_class($item)) {
+        switch ($item::class) {
             case 'Supplier':
                 PluginOrderReference_Supplier::showReferencesFromSupplier($item->getField('id'));
                 self::showDeliveries($item->getField('id'));
@@ -529,8 +524,10 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                     self::showOrderSupplierInfos($item->getID());
                     $order_supplier->showForm(-1, ['plugin_order_orders_id' => $item->getID()]);
                 }
+
                 break;
         }
+
         return true;
     }
 }

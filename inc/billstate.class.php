@@ -33,6 +33,7 @@
 class PluginOrderBillState extends CommonDropdown
 {
     public const NOTPAID = 0;
+
     public const PAID    = 1;
 
     public static $rightname = 'plugin_order_bill';
@@ -48,8 +49,8 @@ class PluginOrderBillState extends CommonDropdown
     {
         if ($this->getID() <= self::PAID) {
             Session::addMessageAfterRedirect(
-                __s("You cannot remove this status", "order") .
-                                          ": " . $this->fields['name'],
+                __s("You cannot remove this status", "order")
+                                          . ": " . $this->fields['name'],
                 false,
                 ERROR,
             );
@@ -90,7 +91,7 @@ class PluginOrderBillState extends CommonDropdown
 
         $table = self::getTable();
         if (!$DB->tableExists($table)) {
-            $migration->displayMessage("Installing $table");
+            $migration->displayMessage('Installing ' . $table);
 
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_billstates` (
                     `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
@@ -101,6 +102,7 @@ class PluginOrderBillState extends CommonDropdown
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
             $DB->doQuery($query);
         }
+
         if (countElementsInTable($table) < 2) {
             $state = new self();
             foreach (

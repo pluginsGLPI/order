@@ -46,7 +46,7 @@ if (PluginOrderOrder::canView() || Session::haveRight("config", UPDATE)) {
     Search::show("PluginOrderOrder");
 } else {
     echo "<div class='center'><br><br><img src=\""
-      . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
+      . $CFG_GLPI["root_doc"] . '/pics/warning.png" alt="warning"><br><br>';
     echo "<b>" . __s("Access denied") . "</b></div>";
 }
 

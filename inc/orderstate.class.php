@@ -34,11 +34,17 @@
 class PluginOrderOrderState extends CommonDropdown
 {
     public const DRAFT                = 1;
+
     public const WAITING_FOR_APPROVAL = 2;
+
     public const VALIDATED            = 3;
+
     public const BEING_DELIVERING     = 4;
+
     public const DELIVERED            = 5;
+
     public const CANCELED             = 6;
+
     public const PAID                 = 7;
 
     public static $rightname   = 'plugin_order_order';
@@ -81,7 +87,7 @@ class PluginOrderOrderState extends CommonDropdown
         $DB->doQuery("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_status`;");
 
         if (!$DB->tableExists($table)) {
-            $migration->displayMessage("Installing $table");
+            $migration->displayMessage('Installing ' . $table);
 
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_orderstates` (
                   `id` int {$default_key_sign} NOT NULL auto_increment,

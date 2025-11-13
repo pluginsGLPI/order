@@ -84,13 +84,14 @@ if (isset($_POST["action"])) {
                 Ajax::updateItemOnSelectEvent(
                     $_POST['id'] . "[entities_id]",
                     "show_location_by_entity_id_" . $_POST['id'],
-                    "$order_web_dir/ajax/linkactions.php",
+                    $order_web_dir . '/ajax/linkactions.php',
                     ['entities' => '__VALUE__',
                         'action'   => 'show_location_by_entity',
                         'id'       => $_POST['id'],
                     ],
                 );
             }
+
             break;
 
         case "show_group_by_entity":
@@ -105,13 +106,14 @@ if (isset($_POST["action"])) {
                 Ajax::updateItemOnSelectEvent(
                     $_POST['id'] . "[entities_id]",
                     "show_group_by_entity_id_" . $_POST['id'],
-                    "$order_web_dir/ajax/linkactions.php",
+                    $order_web_dir . '/ajax/linkactions.php',
                     ['entities' => '__VALUE__',
                         'action'   => 'show_group_by_entity',
                         'id'       => $_POST['id'],
                     ],
                 );
             }
+
             break;
 
         case "show_state_by_entity":
@@ -127,13 +129,14 @@ if (isset($_POST["action"])) {
                 Ajax::updateItemOnSelectEvent(
                     $_POST['id'] . "[entities_id]",
                     "show_state_by_entity_id_" . $_POST['id'],
-                    "$order_web_dir/ajax/linkactions.php",
+                    $order_web_dir . '/ajax/linkactions.php',
                     ['entities' => '__VALUE__',
                         'action'   => 'show_state_by_entity',
                         'id'       => $_POST['id'],
                     ],
                 );
             }
+
             break;
 
         case "update_entity":
@@ -146,7 +149,7 @@ if (isset($_POST["action"])) {
             Ajax::updateItemOnSelectEvent(
                 "dropdown_id[" . $_POST['id'] . "][entities_id]",
                 "show_location_by_entity_id_" . $_POST['id'],
-                "$order_web_dir/ajax/linkactions.php",
+                $order_web_dir . '/ajax/linkactions.php',
                 ['entities' => '__VALUE__',
                     'action'   => 'show_location_by_entity',
                     'id'       => $_POST['id'],
@@ -155,7 +158,7 @@ if (isset($_POST["action"])) {
             Ajax::updateItemOnSelectEvent(
                 "dropdown_id[" . $_POST['id'] . "][entities_id]",
                 "show_group_by_entity_id_" . $_POST['id'],
-                "$order_web_dir/ajax/linkactions.php",
+                $order_web_dir . '/ajax/linkactions.php',
                 ['entities' => '__VALUE__',
                     'action'   => 'show_group_by_entity',
                     'id'       => $_POST['id'],
@@ -164,7 +167,7 @@ if (isset($_POST["action"])) {
             Ajax::updateItemOnSelectEvent(
                 "dropdown_id[" . $_POST['id'] . "][entities_id]",
                 "show_state_by_entity_id_" . $_POST['id'],
-                "$order_web_dir/ajax/linkactions.php",
+                $order_web_dir . '/ajax/linkactions.php',
                 ['entities' => '__VALUE__',
                     'action'   => 'show_state_by_entity',
                     'id'       => $_POST['id'],

@@ -36,6 +36,7 @@ Session::checkLoginUser();
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
+
 if (!isset($_GET["withtemplate"])) {
     $_GET["withtemplate"] = "";
 }
@@ -53,10 +54,11 @@ if (isset($_POST["add"])) {
 
     $newID = $pluginOrderOrder->add($_POST);
 
-    $url = Toolbox::getItemTypeFormURL('PluginOrderOrder') . "?id=$newID";
+    $url = Toolbox::getItemTypeFormURL('PluginOrderOrder') . ('?id=' . $newID);
     if (isset($_REQUEST['is_template'])) {
         $url .= "&withtemplate=1";
     }
+
     Html::redirect($url);
 } elseif (isset($_POST["delete"])) {
     /* delete order */
@@ -88,6 +90,7 @@ if (isset($_POST["add"])) {
         PluginOrderReception::updateDelivryStatus($_POST["id"]);
         Session::addMessageAfterRedirect(__s("Order is validated", "order"));
     }
+
     Html::back();
 } elseif (isset($_POST["waiting_for_approval"])) {
     if (PluginOrderOrder::canCreate()) {
@@ -98,6 +101,7 @@ if (isset($_POST["add"])) {
         );
         Session::addMessageAfterRedirect(__s("Order validation successfully requested", "order"));
     }
+
     Html::back();
 } elseif (isset($_POST["cancel_waiting_for_approval"])) {
     if (PluginOrderOrder::canView() && PluginOrderOrder::canCancel()) {
@@ -163,6 +167,7 @@ if (isset($_POST["add"])) {
             $_POST["plugin_order_analyticnatures_id"],
         );
     }
+
     Html::back();
 } elseif (isset($_POST["delete_item"])) {
     if (
@@ -194,10 +199,12 @@ if (isset($_POST["add"])) {
                                 $values["number"] = $lic->fields["number"] - 1;
                                 $lic->update($values);
                             }
+
                             $input["id"] = $ID;
 
                             $pluginOrderOrder_Item->delete(['id' => $input["id"]]);
                         }
+
                         $new_value  = __s("Remove reference", "order") . " ";
                         $new_value .= Dropdown::getDropdownName(
                             "glpi_plugin_order_references",
@@ -306,6 +313,7 @@ if (isset($_POST["add"])) {
             );
         }
     }
+
     Html::back();
 } elseif (isset($_POST["delete_itemfree"])) {
     if (
@@ -337,10 +345,12 @@ if (isset($_POST["add"])) {
                                 $values["number"] = $lic->fields["number"] - 1;
                                 $lic->update($values);
                             }
+
                             $input["id"] = $ID;
 
                             $pluginOrderOrder_Item->delete(['id' => $input["id"]]);
                         }
+
                         $new_value = __s("Remove reference", "order") . " ";
                         $new_value .= Dropdown::getDropdownName("glpi_plugin_order_references", $ID);
                         $pluginOrderOrder->addHistory(
@@ -465,5 +475,6 @@ if (isset($_POST["add"])) {
     } else {
         $pluginOrderOrder->display($_GET);
     }
+
     Html::footer();
 }

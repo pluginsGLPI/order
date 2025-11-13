@@ -30,7 +30,7 @@
 /** @var DBmysql $DB */
 global $DB;
 
-if (strpos($_SERVER['PHP_SELF'], "dropdownSupplier.php")) {
+if (strpos((string) $_SERVER['PHP_SELF'], "dropdownSupplier.php")) {
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
 }
@@ -63,5 +63,6 @@ if (isset($_POST["suppliers_id"])) {
             $values[$data['id']] = formatUserName(0, '', $data['name'], $data['firstname']);
         }
     }
+
     Dropdown::showFromArray($_POST['fieldname'], $values);
 }

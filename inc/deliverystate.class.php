@@ -52,7 +52,7 @@ class PluginOrderDeliveryState extends CommonDropdown
             !$DB->tableExists($table)
             && !$DB->tableExists("glpi_dropdown_plugin_order_deliverystate")
         ) {
-            $migration->displayMessage("Installing $table");
+            $migration->displayMessage('Installing ' . $table);
 
             //Install
             $query = "CREATE TABLE `glpi_plugin_order_deliverystates` (
@@ -64,11 +64,11 @@ class PluginOrderDeliveryState extends CommonDropdown
                   ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
             $DB->doQuery($query);
         } else {
-            $migration->displayMessage("Upgrading $table");
+            $migration->displayMessage('Upgrading ' . $table);
 
             //Upgrade 1.2.0
             $migration->renameTable("glpi_dropdown_plugin_order_deliverystate", $table);
-            $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
+            $migration->changeField($table, "ID", "id", sprintf('int %s NOT NULL auto_increment', $default_key_sign));
             $migration->changeField($table, "name", "name", "varchar(255) default NULL");
             $migration->changeField($table, "comments", "comment", "text");
             $migration->migrationOneTable($table);

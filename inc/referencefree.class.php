@@ -33,6 +33,7 @@
 class PluginOrderReferenceFree extends CommonDBTM
 {
     public static $rightname         = 'plugin_order_reference';
+
     public $dohistory                = true;
 
     public static function getTypeName($nb = 0)
@@ -51,7 +52,7 @@ class PluginOrderReferenceFree extends CommonDBTM
 
         $table = getTableForItemType(self::class);
         if (!$DB->tableExists($table)) {
-            $migration->displayMessage("Installing $table");
+            $migration->displayMessage('Installing ' . $table);
             //Install
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_referencefrees` (
                `id` int {$default_key_sign} NOT NULL auto_increment,
@@ -115,7 +116,7 @@ class PluginOrderReferenceFree extends CommonDBTM
             $item->deleteByCriteria(['itemtype' => self::class]);
         }
 
-        $DB->doQuery("DROP TABLE IF EXISTS `$table`");
+        $DB->doQuery(sprintf('DROP TABLE IF EXISTS `%s`', $table));
     }
 
     /**

@@ -51,6 +51,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         if (!isset($input['plugin_order_orders_id']) || $input['plugin_order_orders_id'] <= 0) {
             return false;
         }
+
         return $input;
     }
 
@@ -70,6 +71,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         if (count($iterator) != 1) {
             return false;
         }
+
         $this->fields = $iterator->current();
         if (is_array($this->fields) && count($this->fields)) {
             return true;
@@ -87,23 +89,24 @@ class PluginOrderSurveySupplier extends CommonDBChild
         echo "<table style='font-size:0.9em; width:50%' class='tab_format'>";
         echo "<tr>";
         echo "<td>";
-        echo "<select id='$field$rand' name='$field'>";
+        echo sprintf("<select id='%s%d' name='%s'>", $field, $rand, $field);
         for ($i = 0; $i <= 5; $i++) {
-            echo "<option value='$i' " . (($i == $value) ? 'selected' : '') .
-            ">$i</option>";
+            echo sprintf("<option value='%d' ", $i) . (($i == $value) ? 'selected' : '')
+            . sprintf('>%d</option>', $i);
         }
+
         echo "</select>";
-        echo "<div class='rateit' id='notation$rand'></div>";
+        echo sprintf("<div class='rateit' id='notation%d'></div>", $rand);
         echo "</td>";
         echo "</tr>";
         echo "</table>";
 
         echo  "<script type='text/javascript'>\n";
-        echo "$('#notation$rand').rateit({value: '" . $value . "',
+        echo sprintf("\$('#notation%d').rateit({value: '", $rand) . $value . "',
                                 min : 0,
                                 max : 5,
                                 step: 1,
-                                backingfld: '#$field$rand',
+                                backingfld: '#{$field}{$rand}',
                                 ispreset: true,
                                 resetable: false});";
         echo "</script>";
@@ -138,10 +141,10 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $table = self::getTable();
         $criteria = [
             'SELECT' => [
-                "SUM(survey.$field) AS total",
+                sprintf('SUM(survey.%s) AS total', $field),
                 "COUNT(survey.id) AS nb",
             ],
-            'FROM' => ["glpi_plugin_order_orders AS orders", "$table AS survey"],
+            'FROM' => ["glpi_plugin_order_orders AS orders", $table . ' AS survey'],
             'WHERE' => [
                 'survey.suppliers_id' => 'orders.suppliers_id',
                 'survey.plugin_order_orders_id' => 'orders.id',
@@ -183,7 +186,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
             ],
             'FROM' => [
                 'glpi_plugin_order_orders AS orders',
-                "$survey_table AS survey",
+                $survey_table . ' AS survey',
             ],
             'WHERE' => [
                 'survey.suppliers_id' => 'orders.suppliers_id',
@@ -223,56 +226,57 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 echo Dropdown::getDropdownName("glpi_entities", $entities_id);
                 echo "</td>";
                 $link = Toolbox::getItemTypeFormURL('PluginOrderOrder');
-                echo "<td><a href=\"" . $link . "?id=" . $ID . "\">" . $name . "</a></td>";
+                echo '<td><a href="' . $link . "?id=" . $ID . '">' . $name . "</a></td>";
                 echo "<td>" . $note . " / 5</td>";
-                echo "<td>" . nl2br($comment) . "</td>";
+                echo "<td>" . nl2br((string) $comment) . "</td>";
                 echo "</tr>";
                 $total += $survey->getTotalNotation($ID);
                 $nb_order++;
             }
+
             echo "<tr>";
             echo "<th colspan='4'>&nbsp;</th>";
             echo "</tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='2'></td>";
-            echo "<td><div align='left'>" .
-              __s("Administrative followup quality (contracts, bills, mail, etc.)", "order") .
-              "</div></td>";
-            echo "<td><div align='left'>" .
-              Html::formatNumber($survey->getNotation($suppliers_id, "answer1")) .
-              "&nbsp;/ 5</div></td>";
+            echo "<td><div align='left'>"
+              . __s("Administrative followup quality (contracts, bills, mail, etc.)", "order")
+              . "</div></td>";
+            echo "<td><div align='left'>"
+              . Html::formatNumber($survey->getNotation($suppliers_id, "answer1"))
+              . "&nbsp;/ 5</div></td>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='2'></td>";
-            echo "<td><div align='left'>" .
-              __s("Commercial followup quality, visits, responseness", "order") . "</div></td>";
-            echo "<td><div align='left'>" .
-              Html::formatNumber($survey->getNotation($suppliers_id, "answer2")) .
-              "&nbsp;/ 5</div></td>";
+            echo "<td><div align='left'>"
+              . __s("Commercial followup quality, visits, responseness", "order") . "</div></td>";
+            echo "<td><div align='left'>"
+              . Html::formatNumber($survey->getNotation($suppliers_id, "answer2"))
+              . "&nbsp;/ 5</div></td>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='2'></td>";
             echo "<td><div align='left'>" . __s("Contacts availability", "order") . "</div></td>";
-            echo "<td><div align='left'>" .
-              Html::formatNumber($survey->getNotation($suppliers_id, "answer3")) .
-              "&nbsp;/ 5</div></td>";
+            echo "<td><div align='left'>"
+              . Html::formatNumber($survey->getNotation($suppliers_id, "answer3"))
+              . "&nbsp;/ 5</div></td>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='2'></td>";
-            echo "<td><div align='left'>" .
-              __s("Quality of supplier intervention", "order") . "</div></td>";
-            echo "<td><div align='left'>" .
-              Html::formatNumber($survey->getNotation($suppliers_id, "answer4")) .
-              "&nbsp;/ 5</div></td>";
+            echo "<td><div align='left'>"
+              . __s("Quality of supplier intervention", "order") . "</div></td>";
+            echo "<td><div align='left'>"
+              . Html::formatNumber($survey->getNotation($suppliers_id, "answer4"))
+              . "&nbsp;/ 5</div></td>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='2'></td>";
-            echo "<td><div align='left'>" . __s("Reliability about annouced delays", "order") .
-              "</div></td>";
-            echo "<td><div align='left'>" .
-              Html::formatNumber($survey->getNotation($suppliers_id, "answer5")) .
-              "&nbsp;/ 5</div></td>";
+            echo "<td><div align='left'>" . __s("Reliability about annouced delays", "order")
+              . "</div></td>";
+            echo "<td><div align='left'>"
+              . Html::formatNumber($survey->getNotation($suppliers_id, "answer5"))
+              . "&nbsp;/ 5</div></td>";
 
             echo "<tr>";
             echo "<th colspan='4'>&nbsp;</th>";
@@ -284,6 +288,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
             echo "<td><div align='left'>" . Html::formatNumber($total / $nb_order) . "&nbsp;/ 5</div></td>";
             echo "</tr>";
         }
+
         echo "</table>";
         echo "</div>";
     }
@@ -326,22 +331,23 @@ class PluginOrderSurveySupplier extends CommonDBChild
         if ($ID > 0) {
             $suppliers_id = $this->fields["suppliers_id"];
         }
+
         $link = Toolbox::getItemTypeFormURL('Supplier');
-        echo "<a href=\"" . $link . "?id=" . $suppliers_id . "\">" .
-         Dropdown::getDropdownName("glpi_suppliers", $suppliers_id) . "</a>";
+        echo '<a href="' . $link . "?id=" . $suppliers_id . '">'
+         . Dropdown::getDropdownName("glpi_suppliers", $suppliers_id) . "</a>";
         echo Html::hidden('suppliers_id', ['value' => $suppliers_id]);
         echo "</td>";
         echo "</tr>";
 
-        echo "<tr class='tab_bg_1'><td>" .
-           __s("Administrative followup quality (contracts, bills, mail, etc.)", "order") .
-           ": </td><td>";
+        echo "<tr class='tab_bg_1'><td>"
+           . __s("Administrative followup quality (contracts, bills, mail, etc.)", "order")
+           . ": </td><td>";
         $this->addNotation("answer1", $this->fields["answer1"]);
         echo "</td>";
         echo "</tr>";
 
-        echo "<tr class='tab_bg_1'><td>" .
-           __s("Commercial followup quality, visits, responseness", "order") . ": </td><td>";
+        echo "<tr class='tab_bg_1'><td>"
+           . __s("Commercial followup quality, visits, responseness", "order") . ": </td><td>";
         $this->addNotation("answer2", $this->fields["answer2"]);
         echo "</td>";
         echo "</tr>";
@@ -351,14 +357,14 @@ class PluginOrderSurveySupplier extends CommonDBChild
         echo "</td>";
         echo "</tr>";
 
-        echo "<tr class='tab_bg_1'><td>" .
-           __s("Quality of supplier intervention", "order") . ": </td><td>";
+        echo "<tr class='tab_bg_1'><td>"
+           . __s("Quality of supplier intervention", "order") . ": </td><td>";
         $this->addNotation("answer4", $this->fields["answer4"]);
         echo "</td>";
         echo "</tr>";
 
-        echo "<tr class='tab_bg_1'><td>" .
-           __s("Reliability about annouced delays", "order") . ": </td><td>";
+        echo "<tr class='tab_bg_1'><td>"
+           . __s("Reliability about annouced delays", "order") . ": </td><td>";
         $this->addNotation("answer5", $this->fields["answer5"]);
         echo "</td>";
         echo "</tr>";
@@ -406,8 +412,8 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $iterator = $DB->request($criteria);
         $rand      = mt_rand();
         echo "<div class='center'>";
-        echo "<form method='post' name='show_suppliersurvey$rand' id='show_suppliersurvey$rand' " .
-            " action=\"" . Toolbox::getItemTypeFormURL(self::class) . "\">";
+        echo sprintf("<form method='post' name='show_suppliersurvey%d' id='show_suppliersurvey%d' ", $rand, $rand)
+            . ' action="' . Toolbox::getItemTypeFormURL(self::class) . '">';
         echo Html::hidden('plugin_order_orders_id', ['value' => $ID]);
         echo "<table class='tab_cadre_fixe'>";
 
@@ -439,8 +445,10 @@ class PluginOrderSurveySupplier extends CommonDBChild
                     ) {
                         echo " checked ";
                     }
+
                     echo ">";
                 }
+
                 echo "</td>";
                 $link = Toolbox::getItemTypeFormURL(self::class);
                 echo "<td><a href='" . $link . "?id=" . $data["id"] . "&plugin_order_orders_id=" . $ID . "'>"
@@ -454,6 +462,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 echo "</td>";
                 echo "</tr>";
             }
+
             echo "</table>";
 
             if ($candelete) {
@@ -463,16 +472,16 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 $arrow = "fas fa-level-up-alt";
 
                 echo "<tr>";
-                echo "<td><i class='$arrow fa-flip-horizontal fa-lg mx-2'></i></td>";
+                echo sprintf("<td><i class='%s fa-flip-horizontal fa-lg mx-2'></i></td>", $arrow);
                 echo "<td class='center' style='white-space:nowrap;'>";
-                echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\" href='#'>" . __s('Check all') . "</a></td>";
+                echo sprintf("<a onclick= \"if ( markCheckboxes('%s') ) return false;\" href='#'>", $formname) . __s('Check all') . "</a></td>";
                 echo "<td>/</td>";
                 echo "<td class='center' style='white-space:nowrap;'>";
-                echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\" href='#'>" . __s('Uncheck all') . "</a></td>";
+                echo sprintf("<a onclick= \"if ( unMarkCheckboxes('%s') ) return false;\" href='#'>", $formname) . __s('Uncheck all') . "</a></td>";
                 echo "<td class='left' width='80%'>";
 
                 echo "<input type='submit' name='delete' ";
-                echo "value=\"" . addslashes(_sx('button', 'Delete permanently')) . "\" class='btn btn-primary'>&nbsp;";
+                echo 'value="' . addslashes(_sx('button', 'Delete permanently')) . "\" class='btn btn-primary'>&nbsp;";
                 echo "</td></tr>";
                 echo "</table>";
                 echo "</div>";
@@ -508,7 +517,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
         $table = self::getTable();
         if (!$DB->tableExists("glpi_plugin_order_surveysuppliers")) {
-            $migration->displayMessage("Installing $table");
+            $migration->displayMessage('Installing ' . $table);
 
             //Installation
             $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_order_surveysuppliers` (
@@ -531,21 +540,21 @@ class PluginOrderSurveySupplier extends CommonDBChild
             $DB->doQuery($query);
         } else {
             //upgrade
-            $migration->displayMessage("Upgrading $table");
+            $migration->displayMessage('Upgrading ' . $table);
 
             //1.2.0
-            $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
+            $migration->changeField($table, "ID", "id", sprintf('int %s NOT NULL auto_increment', $default_key_sign));
             $migration->changeField(
                 $table,
                 "FK_order",
                 "plugin_order_orders_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'",
+                sprintf("int %s NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_orders (id)'", $default_key_sign),
             );
             $migration->changeField(
                 $table,
                 "FK_enterprise",
                 "suppliers_id",
-                "int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'",
+                sprintf("int %s NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'", $default_key_sign),
             );
             $migration->changeField(
                 $table,
@@ -553,7 +562,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 "comment",
                 "text",
             );
-            $migration->addField($table, "entities_id", "int {$default_key_sign} NOT NULL default '0'");
+            $migration->addField($table, "entities_id", sprintf("int %s NOT NULL default '0'", $default_key_sign));
             $migration->addField($table, "is_recursive", "tinyint NOT NULL default '0'");
             $migration->addKey($table, "plugin_order_orders_id");
             $migration->addKey($table, "suppliers_id");
@@ -604,6 +613,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 return __s("Supplier quality", "order");
             }
         }
+
         return '';
     }
 

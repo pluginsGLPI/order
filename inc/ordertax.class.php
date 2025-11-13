@@ -54,7 +54,7 @@ class PluginOrderOrderTax extends CommonDropdown
         $table = self::getTable();
 
         if (!$DB->tableExists($table) && !$DB->tableExists("glpi_dropdown_plugin_order_taxes")) {
-            $migration->displayMessage("Installing $table");
+            $migration->displayMessage('Installing ' . $table);
 
             //Install
             $query = "CREATE TABLE `glpi_plugin_order_ordertaxes` (
@@ -73,11 +73,11 @@ class PluginOrderOrderTax extends CommonDropdown
         } else {
             //Update
 
-            $migration->displayMessage("Migrating $table");
+            $migration->displayMessage('Migrating ' . $table);
 
             //1.2.0
             $migration->renameTable("glpi_dropdown_plugin_order_taxes", $table);
-            $migration->changeField($table, "ID", "id", "int {$default_key_sign} NOT NULL auto_increment");
+            $migration->changeField($table, "ID", "id", sprintf('int %s NOT NULL auto_increment', $default_key_sign));
             $migration->changeField($table, "name", "name", "varchar(255) default NULL");
             $migration->changeField($table, "comments", "comment", "text");
             $migration->migrationOneTable($table);
@@ -89,7 +89,7 @@ class PluginOrderOrderTax extends CommonDropdown
 
             //Remplace , by . in taxes
             foreach ($DB->request($query_name) as $data) {
-                if (strpos($data["name"], ',')) {
+                if (strpos((string) $data["name"], ',')) {
                     $name  = str_replace(',', '.', $data["name"]);
                     $migration->addPostQuery(
                         $DB->buildUpdate(

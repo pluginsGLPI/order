@@ -33,9 +33,11 @@ Session::checkLoginUser();
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
+
 if (!isset($_GET["withtemplate"])) {
     $_GET["withtemplate"] = "";
 }
+
 if (!isset($_GET["plugin_order_orders_id"])) {
     $_GET["plugin_order_orders_id"] = "";
 }
@@ -49,11 +51,14 @@ if (isset($_POST["add"])) {
         if ($_POST["num_quote"]) {
             $new_value .= __s("Quote number", "order") . " " . $_POST["num_quote"];
         }
+
         if ($_POST["num_order"]) {
             $new_value .= " - " . __s("Order number") . " : " . $_POST["num_order"];
         }
+
         $order->addHistory('PluginOrderOrder', "", $new_value, $_POST["plugin_order_orders_id"]);
     }
+
     Html::back();
 } elseif (isset($_POST["delete"])) {
     if (PluginOrderOrder_Supplier::canCreate()) {
@@ -64,11 +69,13 @@ if (isset($_POST["add"])) {
             }
         }
     }
+
     Html::back();
 } elseif (isset($_POST["update"])) {
     if (PluginOrderOrder_Supplier::canCreate()) {
         $supplier->update($_POST);
     }
+
     Html::back();
 } else {
     Html::header(__s("Orders management", "order"), '', "plugins", "order", "order");
