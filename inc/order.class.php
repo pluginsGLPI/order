@@ -2399,9 +2399,9 @@ class PluginOrderOrder extends CommonDBTM
             $config  = PluginOrderConfig::getConfig();
 
             $query = [
-                'SELECT' => `id`,
-                'FROM' => `glpi_entities`,
-                'ORDER' => `id ASC`,
+                'SELECT' => 'id',
+                'FROM' => 'glpi_entities',
+                'ORDER' => 'id ASC',
             ];
 
             $entities[] = 0;
@@ -2409,34 +2409,36 @@ class PluginOrderOrder extends CommonDBTM
                 $entities[] = $entity['id'];
             }
 
+
             foreach ($entities as $entity) {
                 $query_alert = [
                     'SELECT' => [
-                        `$table.id AS id`,
-                        `$table.name AS name`,
-                        `$table.num_order AS num_order`,
-                        `$table.order_date AS order_date`,
-                        `$table.duedate AS duedate`,
-                        `$table.deliverydate AS deliverydate`,
-                        `$table.comment AS comment`,
-                        `$table.plugin_order_orderstates_id AS plugin_order_orderstates_id`,
-                        `glpi_alerts.id AS alertID`,
-                        `glpi_alerts.date`,
+                        "$table.id AS id",
+                        "$table.name AS name",
+                        "$table.num_order AS num_order",
+                        "$table.order_date AS order_date",
+                        "$table.duedate AS duedate",
+                        "$table.deliverydate AS deliverydate",
+                        "$table.comment AS comment",
+                        "$table.plugin_order_orderstates_id AS plugin_order_orderstates_id",
+                        "glpi_alerts.id AS alertID",
+                        "glpi_alerts.date",
                     ],
                     'FROM' => $table,
                     'LEFT JOIN' => [
-                        `glpi_alerts` => [
+                        'glpi_alerts' => [
                             'ON' => [
-                                sprintf('`%s`.`id` = `glpi_alerts`.`items_id`', $table),
-                                "`glpi_alerts`.`itemtype` = '" . self::class . "'",
+                                'glpi_alerts' => 'items_id',
+                                $table => 'id',
+                                ['AND' => ['glpi_alerts.itemtype' => self::class]],
                             ],
                         ],
                     ],
                     'WHERE' => [
                         $table . '.entities_id' => $entity,
-                        "glpi_alerts.date" => "IS NULL",
-                        $table . '.is_late' => "1",
-                        $table . '.plugin_order_orderstates_id' => "!=" . $config->getDeliveredState(),
+                        'glpi_alerts.date' => null,
+                        $table . '.is_late' => 1,
+                        'NOT' => [$table . '.plugin_order_orderstates_id' => $config->getDeliveredState()],
                     ],
                 ];
                 $orders = [];
