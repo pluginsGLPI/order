@@ -2413,14 +2413,14 @@ class PluginOrderOrder extends CommonDBTM
             foreach ($entities as $entity) {
                 $query_alert = [
                     'SELECT' => [
-                        "$table.id AS id",
-                        "$table.name AS name",
-                        "$table.num_order AS num_order",
-                        "$table.order_date AS order_date",
-                        "$table.duedate AS duedate",
-                        "$table.deliverydate AS deliverydate",
-                        "$table.comment AS comment",
-                        "$table.plugin_order_orderstates_id AS plugin_order_orderstates_id",
+                        $table . '.id AS id',
+                        $table . '.name AS name',
+                        $table . '.num_order AS num_order',
+                        $table . '.order_date AS order_date',
+                        $table . '.duedate AS duedate',
+                        $table . '.deliverydate AS deliverydate',
+                        $table . '.comment AS comment',
+                        $table . '.plugin_order_orderstates_id AS plugin_order_orderstates_id',
                         "glpi_alerts.id AS alertID",
                         "glpi_alerts.date",
                     ],
