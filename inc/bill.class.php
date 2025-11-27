@@ -192,6 +192,20 @@ class PluginOrderBill extends CommonDropdown
             'name'          => __s('Name'),
             'datatype'      => 'itemlink',
         ], [
+            'id'            => 10,
+            'table'         => PluginOrderOrder::getTable(),
+            'field'         => 'num_order',
+            'name'          => __s('Order number', 'order'),
+            'datatype'      => 'text',
+            'itemlink_type' => 'PluginOrderOrder',
+            'massiveaction' => false,
+        ], [
+            'id'            => 11,
+            'table'         => self::getTable(),
+            'field'         => 'value',
+            'name'          => __('Value'),
+            'datatype'      => 'decimal',
+        ],[
             'id'            => 16,
             'table'         => self::getTable(),
             'field'         => 'comment',

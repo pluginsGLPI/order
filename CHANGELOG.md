@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+
+### Fixed
+
+- Fix `order` search option from `Bill`
+
+### Add
+
+- add missing `value` / `num_order` from `Bill` search option
+
 ## [2.12.3] - 2025-11-25
 
 ### Fixed
