@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+
+### Fixed
+
+- Fix warning: Invalid relations declared between `glpi_plugin_order_accountsections` and `glpi_plugin_order_accountsections` table.
+
 ## [2.12.3] - 2025-11-25
 
 ### Fixed
