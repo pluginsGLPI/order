@@ -655,7 +655,13 @@ class PluginOrderOrder extends CommonDBTM
                 || static::canGenerateWithoutValidation())
             ) {
                 // generation
-                $ong[2] = __s("Purchase order", "order");
+                $ong[2] = self::createTabEntry(
+                    __s("Purchase order", "order"),
+                    0,
+                    null,
+                    'ti ti-file-type-pdf',
+                );
+
             }
 
             return $ong;

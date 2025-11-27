@@ -177,7 +177,7 @@ function plugin_order_getDatabaseRelations()
                 "glpi_plugin_order_orders_suppliers" => "plugin_order_orders_id",
             ],
             "glpi_plugin_order_accountsections" => [
-                "glpi_plugin_order_accountsections" => "plugin_order_accountsections_id",
+                "glpi_plugin_order_orders" => "plugin_order_accountsections_id",
             ],
             "glpi_plugin_order_analyticnatures" => [
                 "glpi_plugin_order_orders_items" => "plugin_order_analyticnatures_id",
