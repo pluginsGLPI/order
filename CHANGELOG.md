@@ -10,12 +10,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Fix `order` search option from `Bill`
-
-### Add
-
-- add missing `value` / `num_order` from `Bill` search option
+- Fix SQL error : Truncated incorrect DOUBLE value: `glpi_plugin_order_orders_items.plugin_order_orders_id`
 - Fix missing PDF generation menu
 - Fix warning: Invalid relations declared between `glpi_plugin_order_accountsections` and `glpi_plugin_order_accountsections` table.
+
+### Added
+
+- add missing `value` / `num_order` from `Bill` search option
 
 ## [2.12.3] - 2025-11-25
 
