@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- add missing `value` / `num_order` from `Bill` search option
+- Add missing `value` / `num_order` from `Bill` search option
 
 ## [2.12.3] - 2025-11-25
 
