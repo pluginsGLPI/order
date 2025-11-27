@@ -259,6 +259,7 @@ function plugin_order_addLeftJoin($type, $ref_table, $new_table, $linkfield, &$a
     if ($type == PluginOrderBill::class) {
         return "";
     }
+
     $out = "";
     switch ($new_table) {
         case "glpi_plugin_order_orders": // From items
