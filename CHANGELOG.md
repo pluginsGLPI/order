@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Fix missing PDF generation menu
 - Fix warning: Invalid relations declared between `glpi_plugin_order_accountsections` and `glpi_plugin_order_accountsections` table.
 
 ## [2.12.3] - 2025-11-25
