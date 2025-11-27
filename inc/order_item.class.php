@@ -1402,7 +1402,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             'SELECT' => 'glpi_plugin_order_orders.*',
             'FROM' => ['glpi_plugin_order_orders', $table],
             'WHERE' => [
-                "glpi_plugin_order_orders.id" => $table . '.plugin_order_orders_id',
+                "glpi_plugin_order_orders.id" => new QueryExpression($table . '.plugin_order_orders_id'),
                 $table . '.itemtype' => $itemtype,
                 $table . '.items_id' => $items_id,
             ],
