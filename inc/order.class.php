@@ -780,8 +780,8 @@ class PluginOrderOrder extends CommonDBTM
             $infocom = new Infocom();
             $query = [
                 'SELECT' => [
-                    `items_id`,
-                    `itemtype`,
+                    'items_id',
+                    'itemtype',
                 ],
                 'FROM' => `glpi_plugin_order_orders_items`,
                 'WHERE' => [

@@ -437,10 +437,10 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                 //1.5.0
                 $query = [
                     'SELECT' => [
-                        `suppliers_id`,
-                        `entities_id`,
-                        `is_recursive`,
-                        `id`,
+                        'suppliers_id',
+                        'entities_id',
+                        'is_recursive',
+                        'id',
                     ],
                     'FROM' => 'glpi_plugin_order_orders',
                 ];
