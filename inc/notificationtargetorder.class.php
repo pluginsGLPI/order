@@ -98,7 +98,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                     $this->data[$tag] = $values['label'];
                 }
             }
-        } else {
+        } elseif ($this->obj instanceof CommonDBTM) {
             $this->data['##lang.ordervalidation.title##']     = $events[$event];
 
             $this->data['##lang.ordervalidation.entity##']    = __s("Entity");
@@ -503,22 +503,40 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                 $this->addUserByField("users_id_delivery");
                 break;
             case self::AUTHOR_GROUP:
-                $this->addForGroup(0, $this->obj->fields['groups_id']);
+                if ($this->obj instanceof CommonDBTM) {
+                    $this->addForGroup(0, $this->obj->fields['groups_id']);
+                }
+
                 break;
             case self::DELIVERY_GROUP:
-                $this->addForGroup(0, $this->obj->fields['groups_id_delivery']);
+                if ($this->obj instanceof CommonDBTM) {
+                    $this->addForGroup(0, $this->obj->fields['groups_id_delivery']);
+                }
+
                 break;
             case self::SUPERVISOR_AUTHOR_GROUP:
-                $this->addForGroup(1, $this->obj->fields['groups_id']);
+                if ($this->obj instanceof CommonDBTM) {
+                    $this->addForGroup(1, $this->obj->fields['groups_id']);
+                }
+
                 break;
             case self::SUPERVISOR_DELIVERY_GROUP:
-                $this->addForGroup(1, $this->obj->fields['groups_id_delivery']);
+                if ($this->obj instanceof CommonDBTM) {
+                    $this->addForGroup(1, $this->obj->fields['groups_id_delivery']);
+                }
+
                 break;
             case self::SUPPLIER:
-                $this->addAddressesByType("suppliers", $this->obj->fields['id']);
+                if ($this->obj instanceof CommonDBTM) {
+                    $this->addAddressesByType("suppliers", $this->obj->fields['id']);
+                }
+
                 break;
             case self::CONTACT:
-                $this->addAddressesByType("contacts", $this->obj->fields['id']);
+                if ($this->obj instanceof CommonDBTM) {
+                    $this->addAddressesByType("contacts", $this->obj->fields['id']);
+                }
+
                 break;
         }
     }
