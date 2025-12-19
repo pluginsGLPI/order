@@ -979,7 +979,7 @@ class PluginOrderOrder extends CommonDBTM
         /* type order */
         echo "<td>" . __s("Type") . ": </td><td>";
         if ($canedit) {
-            PluginOrderOrderType::Dropdown([
+            PluginOrderOrdertype::Dropdown([
                 'name' => "plugin_order_ordertypes_id",
                 'value' => $this->fields["plugin_order_ordertypes_id"],
             ]);
@@ -1293,7 +1293,7 @@ class PluginOrderOrder extends CommonDBTM
         }
 
         if ($canedit) {
-            PluginOrderAccountSection::Dropdown([
+            PluginOrderAccountsection::Dropdown([
                 'name'  => "plugin_order_accountsections_id",
                 'value' => $this->fields["plugin_order_accountsections_id"],
             ]);

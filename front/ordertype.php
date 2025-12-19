@@ -30,6 +30,6 @@
 
 Session::checkLoginUser();
 
-$dropdown = new PluginOrderOrderType();
+$dropdown = new PluginOrderOrdertype();
 
 include(GLPI_ROOT . "/front/dropdown.common.php");

@@ -509,7 +509,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 echo "</span></td>";
 
                 echo "<td " . ($config->isAnalyticNatureDisplayed() ? '' : 'style="display:none;"') . ">";
-                PluginOrderAnalyticNature::Dropdown(['name'  => "plugin_order_analyticnatures_id"]);
+                PluginOrderAnalyticnature::Dropdown(['name'  => "plugin_order_analyticnatures_id"]);
 
                 if ($config->isAnalyticNatureMandatory()) {
                     echo " <span class='red'>*</span>";
@@ -589,7 +589,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                     echo "</td>";
 
                     echo "<td " . ($config->isAnalyticNatureDisplayed() ? '' : 'style="display:none;"') . ">";
-                    PluginOrderAnalyticNature::Dropdown(['name'  => "plugin_order_analyticnatures_id"]);
+                    PluginOrderAnalyticnature::Dropdown(['name'  => "plugin_order_analyticnatures_id"]);
 
                     if ($config->isAnalyticNatureMandatory()) {
                         echo " <span class='red'>*</span>";
@@ -662,7 +662,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
                     $core_typefilename   = GLPI_ROOT . "/src/" . $file . "Type.php";
                     $plugin_typefilename = PLUGIN_ORDER_DIR . "/inc/" . strtolower($file) . "type.class.php";
-                    $itemtypeclass       = "PluginOrderOtherType";
+                    $itemtypeclass       = "PluginOrderOthertype";
 
                     if (
                         file_exists($core_typefilename)
