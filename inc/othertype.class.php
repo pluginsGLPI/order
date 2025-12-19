@@ -30,7 +30,7 @@
 
 
 
-class PluginOrderOtherType extends CommonDropdown
+class PluginOrderOthertype extends CommonDropdown
 {
     public static $rightname = 'plugin_order_order';
 

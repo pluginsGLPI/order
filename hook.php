@@ -57,14 +57,14 @@ function plugin_order_install()
     $migration = new Migration(PLUGIN_ORDER_VERSION);
     $classes = ['PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',
         'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',
-        'PluginOrderReference', 'PluginOrderDeliveryState',
+        'PluginOrderReference', 'PluginOrderDeliverystate',
         'PluginOrderNotificationTargetOrder',
         'PluginOrderOrder_Supplier', 'PluginOrderBill', 'PluginOrderOrderPayment',
-        'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
+        'PluginOrderOrdertype', 'PluginOrderOther', 'PluginOrderOthertype',
         'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
         'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderDocumentCategory',
-        'PluginOrderReferenceFree', 'PluginOrderAccountSection',
-        'PluginOrderAnalyticNature',
+        'PluginOrderReferenceFree', 'PluginOrderAccountsection',
+        'PluginOrderAnalyticnature',
     ];
     foreach ($classes as $class) {
         if ($plug = isPluginItemType($class)) {
@@ -122,13 +122,13 @@ function plugin_order_uninstall()
 
     $classes = ['PluginOrderConfig', 'PluginOrderBill', 'PluginOrderBillState',
         'PluginOrderBillType', 'PluginOrderOrderState', 'PluginOrderOrder',
-        'PluginOrderOrder_Item', 'PluginOrderReference', 'PluginOrderDeliveryState',
+        'PluginOrderOrder_Item', 'PluginOrderReference', 'PluginOrderDeliverystate',
         'PluginOrderNotificationTargetOrder',
         'PluginOrderOrder_Supplier', 'PluginOrderOrderPayment','PluginOrderOrderTax',
-        'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
+        'PluginOrderOrdertype', 'PluginOrderOther', 'PluginOrderOthertype',
         'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
         'PluginOrderSurveySupplier', 'PluginOrderDocumentCategory',
-        'PluginOrderAccountSection', 'PluginOrderAnalyticNature',
+        'PluginOrderAccountsection', 'PluginOrderAnalyticnature',
     ];
     foreach ($classes as $class) {
         call_user_func([$class, 'uninstall']);
@@ -146,14 +146,14 @@ function plugin_order_getDropdown()
     if ($plugin->isActivated("order")) {
         return ['PluginOrderOrderTax'         => __s("VAT", "order"),
             'PluginOrderOrderPayment'     => __s("Payment conditions", "order"),
-            'PluginOrderOrderType'        => __s("Type"),
+            'PluginOrderOrdertype'        => __s("Type"),
             'PluginOrderOrderState'       => __s("Order status", "order"),
-            'PluginOrderOtherType'        => __s("Other type of item", "order"),
-            'PluginOrderDeliveryState'    => __s("Delivery status", "order"),
+            'PluginOrderOthertype'        => __s("Other type of item", "order"),
+            'PluginOrderDeliverystate'    => __s("Delivery status", "order"),
             'PluginOrderBillState'        => __s("Bill status", "order"),
             'PluginOrderBillType'         => __s("Bill type", "order"),
-            'PluginOrderAnalyticNature'   => __s("Analytic nature", "order"),
-            'PluginOrderAccountSection'   => __s("Account section", "order"),
+            'PluginOrderAnalyticnature'   => __s("Analytic nature", "order"),
+            'PluginOrderAccountsection'   => __s("Account section", "order"),
             'PluginOrderDocumentCategory' => __s("Orders", "order"),
         ];
     } else {

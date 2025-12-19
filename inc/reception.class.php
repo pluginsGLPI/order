@@ -257,7 +257,7 @@ class PluginOrderReception extends CommonDBChild
         echo "<td>" . __s("Delivery status", "order") . ": </td>";
         echo "<td>";
         if ($canedit) {
-            PluginOrderDeliveryState::Dropdown([
+            PluginOrderDeliverystate::Dropdown([
                 'name'  => "plugin_order_deliverystates_id",
                 'value' => $this->fields["plugin_order_deliverystates_id"],
             ]);
@@ -817,7 +817,7 @@ JAVASCRIPT;
         echo "<input type='text' name='delivery_number' size='20'>";
 
         echo "<label class='order_ma'>" . __s("Delivery status", "order") . "</label>";
-        PluginOrderDeliveryState::Dropdown(['name' => "plugin_order_deliverystates_id"]);
+        PluginOrderDeliverystate::Dropdown(['name' => "plugin_order_deliverystates_id"]);
 
         $config = PluginOrderConfig::getConfig();
         if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {

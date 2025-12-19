@@ -30,7 +30,7 @@
 
 
 
-class PluginOrderAccountSection extends CommonDropdown
+class PluginOrderAccountsection extends CommonDropdown
 {
     public static $rightname   = 'plugin_order_order';
 

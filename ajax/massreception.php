@@ -62,7 +62,7 @@ Dropdown::showNumber('number_reception', [
 ]);
 echo "</td><td>";
 echo __s("Delivery status", "order") . "&nbsp;";
-PluginOrderDeliveryState::Dropdown(['name' => "plugin_order_deliverystates_id"]);
+PluginOrderDeliverystate::Dropdown(['name' => "plugin_order_deliverystates_id"]);
 echo "</td></tr>";
 
 echo "<tr class='tab_bg_2'>";

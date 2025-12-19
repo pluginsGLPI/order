@@ -30,7 +30,7 @@
 
 
 
-class PluginOrderDeliveryState extends CommonDropdown
+class PluginOrderDeliverystate extends CommonDropdown
 {
     public static function getTypeName($nb = 0)
     {
