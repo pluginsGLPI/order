@@ -641,7 +641,7 @@ class PluginOrderOrder extends CommonDBTM
                     self::RIGHT_UNDO_VALIDATION,
                 ])
             ) {
-                return self::createTabEntry(
+                $ong[1] = self::createTabEntry(
                     __s("Validation", "order"),
                     0,
                     null,
