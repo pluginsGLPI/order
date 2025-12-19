@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Fix `Validation` tab from `Order`
 - Fix invalid relations declared
 - Fix uninstall method
+- Fix action to link an existing item
 
 ## [2.12.4] - 2025-12-02
 

@@ -579,7 +579,7 @@ class PluginOrderLink extends CommonDBChild
 
         // retrieve additional informations for each items
         $ma->POST['add_items'] = [];
-        if (isset($ma->items[self::class])) {
+        if (isset($ma->getItems()[self::class])) {
             $additional_data_ite = $DB->request([
                 'SELECT' => [
                     'glpi_plugin_order_orders_items.id',
