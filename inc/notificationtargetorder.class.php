@@ -469,11 +469,6 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
         $template->deleteByCriteria([
             'itemtype' => 'PluginOrderOrder',
         ]);
-
-        $translation = new NotificationTemplateTranslation();
-        $translation->deleteByCriteria([
-            'itemtype' => 'PluginOrderOrder',
-        ]);
     }
 
 

@@ -2301,11 +2301,6 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $template->deleteByCriteria([
             'itemtype' => 'PluginOrderOrder_Item',
         ]);
-
-        $translation = new NotificationTemplateTranslation();
-        $translation->deleteByCriteria([
-            'itemtype' => 'PluginOrderOrder_Item',
-        ]);
     }
 
     /**
