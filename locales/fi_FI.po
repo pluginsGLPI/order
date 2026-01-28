@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-18 02:03+0000\n"
+"POT-Creation-Date: 2026-01-12 02:22+0000\n"
 "PO-Revision-Date: 2015-09-18 10:11+0000\n"
 "Last-Translator: Markku Vepsä, 2018\n"
 "Language-Team: Finnish (Finland) (http://app.transifex.com/teclib/glpi-project-plugin-order/language/fi_FI/)\n"
@@ -469,14 +469,14 @@ msgstr "Vahvistuksen muokkaaja"
 msgid "Estimated due date"
 msgstr "Arvioitu toimituspäivä"
 
-#: inc/notificationtargetorder.class.php:486
-#: inc/notificationtargetorder.class.php:489 inc/config.class.php:174
+#: inc/notificationtargetorder.class.php:481
+#: inc/notificationtargetorder.class.php:484 inc/config.class.php:174
 #: inc/order.class.php:531 inc/order.class.php:1380
 msgid "Author group"
 msgstr "Tekijäryhmä"
 
-#: inc/notificationtargetorder.class.php:488
-#: inc/notificationtargetorder.class.php:490 inc/config.class.php:184
+#: inc/notificationtargetorder.class.php:483
+#: inc/notificationtargetorder.class.php:485 inc/config.class.php:184
 #: inc/order.class.php:539 inc/order.class.php:1431
 msgid "Recipient group"
 msgstr "Vastaanottajaryhmä"

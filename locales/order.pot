@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-18 02:03+0000\n"
+"POT-Creation-Date: 2026-01-28 02:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -468,14 +468,14 @@ msgstr ""
 msgid "Estimated due date"
 msgstr ""
 
-#: inc/notificationtargetorder.class.php:486
-#: inc/notificationtargetorder.class.php:489 inc/config.class.php:174
+#: inc/notificationtargetorder.class.php:481
+#: inc/notificationtargetorder.class.php:484 inc/config.class.php:174
 #: inc/order.class.php:531 inc/order.class.php:1380
 msgid "Author group"
 msgstr ""
 
-#: inc/notificationtargetorder.class.php:488
-#: inc/notificationtargetorder.class.php:490 inc/config.class.php:184
+#: inc/notificationtargetorder.class.php:483
+#: inc/notificationtargetorder.class.php:485 inc/config.class.php:184
 #: inc/order.class.php:539 inc/order.class.php:1431
 msgid "Recipient group"
 msgstr ""
