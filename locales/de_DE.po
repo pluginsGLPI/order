@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-18 02:03+0000\n"
+"POT-Creation-Date: 2026-01-12 02:22+0000\n"
 "PO-Revision-Date: 2015-09-18 10:11+0000\n"
 "Last-Translator: Michael Schieferer, 2022\n"
 "Language-Team: German (Germany) (http://app.transifex.com/teclib/glpi-project-plugin-order/language/de_DE/)\n"
@@ -472,14 +472,14 @@ msgstr "Bearbeiter der Validierung"
 msgid "Estimated due date"
 msgstr "Vorrausichtlich bis zum"
 
-#: inc/notificationtargetorder.class.php:486
-#: inc/notificationtargetorder.class.php:489 inc/config.class.php:174
+#: inc/notificationtargetorder.class.php:481
+#: inc/notificationtargetorder.class.php:484 inc/config.class.php:174
 #: inc/order.class.php:531 inc/order.class.php:1380
 msgid "Author group"
 msgstr "Ersteller Gruppe"
 
-#: inc/notificationtargetorder.class.php:488
-#: inc/notificationtargetorder.class.php:490 inc/config.class.php:184
+#: inc/notificationtargetorder.class.php:483
+#: inc/notificationtargetorder.class.php:485 inc/config.class.php:184
 #: inc/order.class.php:539 inc/order.class.php:1431
 msgid "Recipient group"
 msgstr "Empfänger Gruppe"
