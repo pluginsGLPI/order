@@ -68,7 +68,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         ];
 
         $iterator = $DB->request($criteria);
-        if (count($iterator) != 1) {
+        if (count($iterator) !== 1) {
             return false;
         }
 
