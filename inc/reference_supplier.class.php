@@ -68,7 +68,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         ];
         $result = $DB->request($criteria);
 
-        if (count($result) != 1) {
+        if (count($result) !== 1) {
             return false;
         }
 
