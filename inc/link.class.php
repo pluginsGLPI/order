@@ -172,7 +172,7 @@ class PluginOrderLink extends CommonDBChild
             'active_entities' => $_SESSION['glpiactiveentities'] ?? [],
             'item_rows' => $item_rows,
             'order_web_dir' => $order_web_dir,
-            'assignableitem' => Toolbox::hasTrait($itemtype, AssignableItem::class) ? true : false,
+            'assignableitem' => Toolbox::hasTrait($itemtype, AssignableItem::class),
         ]);
         return null;
     }
