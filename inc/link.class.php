@@ -29,6 +29,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssignableItem;
 
 class PluginOrderLink extends CommonDBChild
 {
@@ -95,6 +96,7 @@ class PluginOrderLink extends CommonDBChild
         $i = 0;
         $item_rows = [];
         $found = false;
+        $itemtype = '';
         $order_web_dir = $CFG_GLPI['root_doc'] . '/plugins/order';
 
         foreach ($params["items"][self::class] as $key => $val) {
@@ -122,6 +124,7 @@ class PluginOrderLink extends CommonDBChild
                         : $order->fields["entities_id"],
                     'condition' => self::getCondition($itemtype),
                     'itemtype' => $itemtype,
+                    'assignableitem' => false,
                 ];
 
                 if ($templateID) {
@@ -132,15 +135,20 @@ class PluginOrderLink extends CommonDBChild
                     $row['otherserial'] = $item->fields["otherserial"] ?? "";
                     $row['states_id'] = $item->fields["states_id"] ?? "";
                     $row['locations_id'] = $item->fields["locations_id"] ?? "";
-                    $row['groups_id'] = $item->fields["groups_id"] ?? "";
+                    $row['groups_id'] = $item->fields["groups_id"] ?? [];
                     $row['immo_number'] = $item->fields["immo_number"] ?? "";
                     $row['template_name'] = $reference->getTemplateName($itemtype, $templateID);
+
+                    if (Toolbox::hasTrait($itemtype, AssignableItem::class)) {
+                        $row['assignableitem'] = true;
+                    }
+
                 } else {
                     $row['name'] = false;
                     $row['otherserial'] = false;
                     $row['states_id'] = false;
                     $row['locations_id'] = false;
-                    $row['groups_id'] = false;
+                    $row['groups_id'] = [];
                     $row['immo_number'] = false;
                     $row['template_name'] = "";
                 }
@@ -164,6 +172,7 @@ class PluginOrderLink extends CommonDBChild
             'active_entities' => $_SESSION['glpiactiveentities'] ?? [],
             'item_rows' => $item_rows,
             'order_web_dir' => $order_web_dir,
+            'assignableitem' => Toolbox::hasTrait($itemtype, AssignableItem::class) ? true : false,
         ]);
         return null;
     }
