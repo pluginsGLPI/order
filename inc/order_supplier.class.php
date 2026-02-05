@@ -300,7 +300,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 
         $criteria = [
             'SELECT' => [
-                'COUNT(glpi_plugin_order_orders_items.plugin_order_references_id) AS ref',
+                'COUNT' => 'glpi_plugin_order_orders_items.plugin_order_references_id AS ref',
                 'glpi_plugin_order_orders_items.plugin_order_deliverystates_id AS sid',
                 'glpi_plugin_order_orders.entities_id',
             ],
