@@ -95,10 +95,22 @@ if (isset($_POST["action"])) {
             break;
 
         case "show_group_by_entity":
+
+            if (isset($_POST['multiple']) && $_POST['multiple']) {
+                if (isset($_POST['value']) && !is_array($_POST['value'])) {
+                    $_POST['value'] = [$_POST['value']];
+                }
+
+                if (!isset($_POST['value'])) {
+                    $_POST['value'] = [];
+                }
+            }
+
             Group::dropdown(['name'      => "id[" . $_POST['id'] . "][groups_id]",
                 'entity'    => $_POST['entities'],
                 'value'  => $_POST['value'] ?? 0,
-                'condition' => ['is_assign' => 1],
+                'condition' => ['is_itemgroup' => 1],
+                'multiple' => $_POST['multiple'] ?? false,
             ]);
 
             if (isset($_POST['massaction'])) {
