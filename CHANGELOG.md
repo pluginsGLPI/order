@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 
 - Fix SQL query error when displaying deliveries
+- Fix error during generate associated material action
 
 ## [2.12.5] - 2026-01-08
 

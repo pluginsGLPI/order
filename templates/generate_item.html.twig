@@ -99,13 +99,20 @@
                 </td>
                 <td>
                     <span id='show_group_by_entity_id_mass'>
+
                         {{ fields.dropdownField(
                             'Group',
-                            "mass[groups_id]",
-                            0,
+                             "mass[groups_id]",
+                            assignableitem ? [] : 0,
                             "",
-                            fields_option|merge({'on_change': 'plugin_order_setAllGroups(this.value)'})
+                            fields_option|merge({
+                                'entity': -1,
+                                'condition': {'is_itemgroup': 1},
+                                'multiple': assignableitem ? true : false,
+                                'on_change': 'plugin_order_setAllGroups(this)'
+                            })
                         ) }}
+
                     </span>
                 </td>
                 <td>
@@ -233,7 +240,11 @@
                                 "id[" ~ item.i ~ "][groups_id]",
                                 item.groups_id,
                                 "",
-                                fields_option
+                                fields_option|merge({
+                                    'entity': -1,
+                                    'condition': {'is_itemgroup': 1},
+                                    'multiple': item.assignableitem ? true : false
+                                })
                             ) }}
                         </span>
                     </td>
@@ -279,6 +290,7 @@
             data: {
                 'entities': value,
                 'action': 'show_group_by_entity',
+                'multiple': {{ assignableitem ? 'true' : 'false' }},
                 'id': id
             },
             success: function(response) {
@@ -344,7 +356,12 @@
         }
     }
 
-    function plugin_order_setAllGroups(value) {
+    function plugin_order_setAllGroups(dom_select) {
+
+        const values = Array.from(dom_select.selectedOptions).map(
+            option => option.value
+        );
+
         var elements = document.querySelectorAll('[id^="show_group_by"]');
         for (var i = 0; i < elements.length; i++) {
             (function(index) {
@@ -355,7 +372,8 @@
                         'entities': 0,
                         'action': 'show_group_by_entity',
                         'id': index,
-                        'value': value
+                        'value': values,
+                        'multiple': {{ assignableitem ? 'true' : 'false' }}
                     },
                     success: function(response) {
                         $('#show_group_by_entity_id_' + index).html(response);
