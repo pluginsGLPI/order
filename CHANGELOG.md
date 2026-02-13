@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Restore inline editing functionality in items tab
+- Fix SQL request
 
 ## [2.11.3] - 2025-10-14
 
