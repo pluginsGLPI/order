@@ -12,10 +12,7 @@
         "platform": {
             "php": "7.4.0"
         },
-        "sort-packages": true,
-        "allow-plugins": {
-            "phpstan/extension-installer": true
-        }
+        "sort-packages": true
     },
     "repositories": [
         {
