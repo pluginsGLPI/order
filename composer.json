@@ -4,7 +4,6 @@
         "masnathan/odtphp": "dev-teclib"
     },
     "require-dev": {
-        "glpi-project/phpstan-glpi": "^1.1",
         "glpi-project/tools": "^0.8",
         "phpstan/extension-installer": "^1.4",
         "squizlabs/php_codesniffer": "^3.13"
