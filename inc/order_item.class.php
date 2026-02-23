@@ -2162,7 +2162,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                     $table . ' as goi',
                 ],
                 'WHERE' => [
-                    'goi.plugin_order_orders_id' => 'go.id',
+                    'goi.plugin_order_orders_id' => new QueryExpression(DBmysql::quoteName('go.id')),
                 ],
             ];
             foreach ($DB->request($query) as $data) {
