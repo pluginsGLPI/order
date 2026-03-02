@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2018
 # Cédric Anne, 2018,2021-2022
@@ -150,6 +150,10 @@ msgstr "Commandes"
 #: inc/profile.class.php:200 front/menu.php:68
 msgid "Products references"
 msgstr "Références produits"
+
+#: inc/other.class.php:40
+msgid "Other kind of items"
+msgstr "Autres types d'articles"
 
 #: inc/profile.class.php:204 inc/order_item.class.php:1612 front/menu.php:75
 msgid "Bills"
