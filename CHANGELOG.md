@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased] - 2026-03-04
+
+### Fixed
+
+- Fix SQL syntax error in `getAllPrices()` function causing orders total amount calculation to fail
+
 ## [2.11.4] - 2026-02-23
 
 ### Fixed
