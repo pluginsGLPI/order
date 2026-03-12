@@ -8,7 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 
 ### Fixed
+
 - Fix generate associated item massive action
+- Update locales
+
 
 ## [2.12.6] - 2026-02-23
 
