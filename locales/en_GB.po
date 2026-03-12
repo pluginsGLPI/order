@@ -659,7 +659,6 @@ msgstr "Display analytic nature on item form"
 msgid "Set analytic nature as mandatory on item form"
 msgstr "Set analytic nature as mandatory on item form"
 
-
 #: inc/config.class.php:278
 msgid "Asked"
 msgstr "Asked"
