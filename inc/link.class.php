@@ -135,22 +135,24 @@ class PluginOrderLink extends CommonDBChild
                     $row['otherserial'] = $item->fields["otherserial"] ?? "";
                     $row['states_id'] = $item->fields["states_id"] ?? "";
                     $row['locations_id'] = $item->fields["locations_id"] ?? "";
-                    $row['groups_id'] = $item->fields["groups_id"] ?? [];
+                    $row['groups_id'] = $item->fields["groups_id"] ?? 0;
                     $row['immo_number'] = $item->fields["immo_number"] ?? "";
                     $row['template_name'] = $reference->getTemplateName($itemtype, $templateID);
-
-                    if (Toolbox::hasTrait($itemtype, AssignableItem::class)) {
-                        $row['assignableitem'] = true;
-                    }
-
                 } else {
                     $row['name'] = false;
                     $row['otherserial'] = false;
                     $row['states_id'] = false;
                     $row['locations_id'] = false;
-                    $row['groups_id'] = [];
+                    $row['groups_id'] = 0;
                     $row['immo_number'] = false;
                     $row['template_name'] = "";
+                }
+
+                if (Toolbox::hasTrait($itemtype, AssignableItem::class)) {
+                    $row['assignableitem'] = true;
+                    if (!is_array($row['groups_id'])) {
+                        $row['groups_id'] = $row['groups_id'] > 0 ? [$row['groups_id']] : [];
+                    }
                 }
 
                 $item_rows[] = $row;
