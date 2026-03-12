@@ -151,10 +151,6 @@ msgstr "Commandes"
 msgid "Products references"
 msgstr "Références produits"
 
-#: inc/other.class.php:40
-msgid "Other kind of items"
-msgstr "Autres types d'articles"
-
 #: inc/profile.class.php:204 inc/order_item.class.php:1612 front/menu.php:75
 msgid "Bills"
 msgstr "Factures"
