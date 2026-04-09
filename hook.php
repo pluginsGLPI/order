@@ -40,67 +40,67 @@ use function Safe\preg_match;
  */
 function plugin_order_install()
 {
-    foreach (glob(PLUGIN_ORDER_DIR . '/inc/*.php') as $file) {
-        //Do not load datainjection files (not needed and avoid missing class error message)
-        if (preg_match('/injection.class.php/', $file) === 0) {
-            include_once($file);
-        }
-    }
-
-    echo "<center>";
-    echo "<table class='tab_cadre_fixe'>";
-    echo "<tr><th>" . __s("Plugin installation or upgrade", "order") . "<th></tr>";
-
-    echo "<tr class='tab_bg_1'>";
-    echo "<td align='center'>";
-
-    $migration = new Migration(PLUGIN_ORDER_VERSION);
-    $classes = ['PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',
-        'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',
-        'PluginOrderReference', 'PluginOrderDeliverystate',
-        'PluginOrderNotificationTargetOrder',
-        'PluginOrderOrder_Supplier', 'PluginOrderBill', 'PluginOrderOrderPayment',
-        'PluginOrderOrdertype', 'PluginOrderOther', 'PluginOrderOthertype',
-        'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
-        'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderDocumentCategory',
-        'PluginOrderReferenceFree', 'PluginOrderAccountsection',
-        'PluginOrderAnalyticnature',
-    ];
-    foreach ($classes as $class) {
-        if ($plug = isPluginItemType($class)) {
-            $plugname = strtolower((string) $plug['plugin']);
-            $dir = Plugin::getPhpDir($plugname) . "/inc/";
-            $item = strtolower((string) $plug['class']);
-            if (file_exists(sprintf('%s%s.class.php', $dir, $item))) {
-                include_once(sprintf('%s%s.class.php', $dir, $item));
-                call_user_func([$class, 'install'], $migration);
-            }
-        }
-    }
-
-    echo "</td>";
-    echo "</tr>";
-    echo "</table>";
-    echo "</center>";
-
-    //Create directories for the plugin's files
-    $directories = [PLUGIN_ORDER_TEMPLATE_DIR        => 'templates',
-        PLUGIN_ORDER_SIGNATURE_DIR       => 'signatures',
-        PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR => 'generate',
-        PLUGIN_ORDER_TEMPLATE_LOGO_DIR   => 'logo',
-    ];
-    foreach ($directories as $new_directory => $old_directory) {
-        if (!is_dir($new_directory)) {
-            @mkdir($new_directory, 0755, true);
-            //Copy files from the old directories to the new ones
-            foreach (glob(PLUGIN_ORDER_DIR . sprintf('/%s/*', $old_directory)) as $file) {
-                $new_file = str_replace(PLUGIN_ORDER_DIR . ('/' . $old_directory), $new_directory, $file);
-                if (!file_exists($new_directory . $file)) {
-                    copy($file, $new_file);
-                }
-            }
-        }
-    }
+//    foreach (glob(PLUGIN_ORDER_DIR . '/inc/*.php') as $file) {
+//        //Do not load datainjection files (not needed and avoid missing class error message)
+//        if (preg_match('/injection.class.php/', $file) === 0) {
+//            include_once($file);
+//        }
+//    }
+//
+//    echo "<center>";
+//    echo "<table class='tab_cadre_fixe'>";
+//    echo "<tr><th>" . __s("Plugin installation or upgrade", "order") . "<th></tr>";
+//
+//    echo "<tr class='tab_bg_1'>";
+//    echo "<td align='center'>";
+//
+//    $migration = new Migration(PLUGIN_ORDER_VERSION);
+//    $classes = ['PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',
+//        'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',
+//        'PluginOrderReference', 'PluginOrderDeliverystate',
+//        'PluginOrderNotificationTargetOrder',
+//        'PluginOrderOrder_Supplier', 'PluginOrderBill', 'PluginOrderOrderPayment',
+//        'PluginOrderOrdertype', 'PluginOrderOther', 'PluginOrderOthertype',
+//        'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
+//        'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderDocumentCategory',
+//        'PluginOrderReferenceFree', 'PluginOrderAccountsection',
+//        'PluginOrderAnalyticnature',
+//    ];
+//    foreach ($classes as $class) {
+//        if ($plug = isPluginItemType($class)) {
+//            $plugname = strtolower((string) $plug['plugin']);
+//            $dir = Plugin::getPhpDir($plugname) . "/inc/";
+//            $item = strtolower((string) $plug['class']);
+//            if (file_exists(sprintf('%s%s.class.php', $dir, $item))) {
+//                include_once(sprintf('%s%s.class.php', $dir, $item));
+//                call_user_func([$class, 'install'], $migration);
+//            }
+//        }
+//    }
+//
+//    echo "</td>";
+//    echo "</tr>";
+//    echo "</table>";
+//    echo "</center>";
+//
+//    //Create directories for the plugin's files
+//    $directories = [PLUGIN_ORDER_TEMPLATE_DIR        => 'templates',
+//        PLUGIN_ORDER_SIGNATURE_DIR       => 'signatures',
+//        PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR => 'generate',
+//        PLUGIN_ORDER_TEMPLATE_LOGO_DIR   => 'logo',
+//    ];
+//    foreach ($directories as $new_directory => $old_directory) {
+//        if (!is_dir($new_directory)) {
+//            @mkdir($new_directory, 0755, true);
+//            //Copy files from the old directories to the new ones
+//            foreach (glob(PLUGIN_ORDER_DIR . sprintf('/%s/*', $old_directory)) as $file) {
+//                $new_file = str_replace(PLUGIN_ORDER_DIR . ('/' . $old_directory), $new_directory, $file);
+//                if (!file_exists($new_directory . $file)) {
+//                    copy($file, $new_file);
+//                }
+//            }
+//        }
+//    }
 
     return true;
 }
