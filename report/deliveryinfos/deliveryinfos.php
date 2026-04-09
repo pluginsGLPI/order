@@ -41,7 +41,6 @@
 //Options for GLPI 0.71 and newer : need slave db to access the report
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
-
 use GlpiPlugin\Reports\AutoReport;
 use GlpiPlugin\Reports\ColumnInteger;
 use GlpiPlugin\Reports\ColumnLink;

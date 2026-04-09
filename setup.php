@@ -28,8 +28,9 @@
  * -------------------------------------------------------------------------
  */
 
-use function Safe\define;
 use GlpiPlugin\Reports\Report;
+
+use function Safe\define;
 
 define('PLUGIN_ORDER_VERSION', '2.12.6');
 
@@ -195,7 +196,8 @@ function plugin_init_order()
                 Report::setReportsTitles(
                     ["deliveryinfos" => __s("Orders delivery statistics", "order"),
                         "orderdelivery" => __s("Orders delivery", "order"),
-                    ]);
+                    ],
+                );
             }
         }
     }

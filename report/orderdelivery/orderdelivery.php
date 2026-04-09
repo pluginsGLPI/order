@@ -130,4 +130,3 @@ if ($report->criteriasValidated()) {
 }
 
 $report->footer();
-
