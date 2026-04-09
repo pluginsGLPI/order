@@ -39,17 +39,25 @@
  */
 
 //Options for GLPI 0.71 and newer : need slave db to access the report
+use GlpiPlugin\Reports\AutoReport;
+use GlpiPlugin\Reports\Column;
+use GlpiPlugin\Reports\ColumnDateTime;
+use GlpiPlugin\Reports\ColumnLink;
+use GlpiPlugin\Reports\DateIntervalCriteria;
+use GlpiPlugin\Reports\DropdownCriteria;
+use GlpiPlugin\Reports\LocationCriteria;
+use GlpiPlugin\Reports\SupplierCriteria;
+
 $USEDBREPLICATE = 1;
 $DBCONNECTION_REQUIRED = 0; // Really a big SQL request
 
-include(__DIR__ . "/../../../../inc/includes.php");
+$report = new AutoReport(__s("Orders delivery", "order"));
 
-$report = new PluginReportsAutoReport(__s("orderdelivery_report_title", "order"));
-new PluginReportsDateIntervalCriteria($report, 'order_date', __s("Date of order", "order"));
-new PluginReportsDateIntervalCriteria($report, 'deliverydate', __s("Delivery date"));
-new PluginReportsLocationCriteria($report, 'locations_id', __s("Delivery location", "order"));
-new PluginReportsSupplierCriteria($report, 'suppliers_id', __s("Supplier"));
-new PluginReportsDropdownCriteria(
+new DateIntervalCriteria($report, 'order_date', __s("Date of order", "order"));
+new DateIntervalCriteria($report, 'deliverydate', __s("Delivery date"));
+new LocationCriteria($report, 'locations_id', __s("Delivery location", "order"));
+new SupplierCriteria($report, 'suppliers_id', __s("Supplier"));
+new DropdownCriteria(
     $report,
     'plugin_order_orderstates_id',
     'PluginOrderOrderState',
@@ -61,12 +69,12 @@ if ($report->criteriasValidated()) {
     $report->setSubNameAuto();
 
     $report->setColumns([
-        new PluginReportsColumnLink(
+        new ColumnLink(
             'entities_id',
             __s("Entity"),
             'Entity',
         ),
-        new PluginReportsColumnLink(
+        new ColumnLink(
             'id',
             __s("Name"),
             'PluginOrderOrder',
@@ -75,22 +83,22 @@ if ($report->criteriasValidated()) {
                 'with_navigate' => true,
             ],
         ),
-        new PluginReportsColumn('num_order', __s("Order number", "order")),
-        new PluginReportsColumnLink(
+        new Column('num_order', __s("Order number", "order")),
+        new ColumnLink(
             'suppliers_id',
             __s("Supplier"),
             'Supplier',
         ),
-        new PluginReportsColumnLink(
+        new ColumnLink(
             'plugin_order_orderstates_id',
             __s("Status"),
             'PluginOrderOrderState',
             ['with_comment' => true],
         ),
-        new PluginReportsColumnDateTime('order_date', __s("Date of order", "order")),
-        new PluginReportsColumnDateTime('duedate', __s("Estimated due date", "order")),
-        new PluginReportsColumnDateTime('deliverydate', __s("Delivery date")),
-        new PluginReportsColumnLink(
+        new ColumnDateTime('order_date', __s("Date of order", "order")),
+        new ColumnDateTime('duedate', __s("Estimated due date", "order")),
+        new ColumnDateTime('deliverydate', __s("Delivery date")),
+        new ColumnLink(
             'locations_id',
             __s("Delivery location", "order"),
             'Location',
@@ -98,13 +106,28 @@ if ($report->criteriasValidated()) {
         ),
     ]);
 
-    //TODO : ne pas chercher dans la poublelles
-    $query = "SELECT * FROM `glpi_plugin_order_orders`";
-    $query .= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");
-    $query .= $report->addSqlCriteriasRestriction();
-    $query .= " AND `is_deleted`='0' AND `is_template`='0' ";
-    $query .= "GROUP BY `entities_id`, `plugin_order_orderstates_id`, `num_order`, `order_date`";
-    $report->setGroupBy("entities_id", "plugin_order_orderstates_id", "num_order", "order_date");
-    $report->setSqlRequest($query);
+    $criteria = [
+        'SELECT' => [
+            '*',
+        ],
+        'FROM' => 'glpi_plugin_order_orders',
+        'WHERE' => [
+            'is_deleted' => 0,
+            'is_template' => 0,
+        ],
+        'GROUPBY' => ['entities_id', 'plugin_order_orderstates_id', 'num_order', 'order_date'],
+    ];
+
+    $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
+            'glpi_plugin_order_orders'
+        );
+
+    $criteria['WHERE'] = $criteria['WHERE'] + $report->addNewSqlCriteriasRestriction();
+
+    $report->setSqlRequest($criteria);
+
     $report->execute();
 }
+
+$report->footer();
+
