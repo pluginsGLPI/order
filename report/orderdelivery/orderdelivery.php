@@ -118,11 +118,11 @@ if ($report->criteriasValidated()) {
         'GROUPBY' => ['entities_id', 'plugin_order_orderstates_id', 'num_order', 'order_date'],
     ];
 
-    $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
-            'glpi_plugin_order_orders'
-        );
+    $criteria['WHERE'] += getEntitiesRestrictCriteria(
+        'glpi_plugin_order_orders'
+    );
 
-    $criteria['WHERE'] = $criteria['WHERE'] + $report->addNewSqlCriteriasRestriction();
+    $criteria['WHERE'] += $report->addNewSqlCriteriasRestriction();
 
     $report->setSqlRequest($criteria);
 

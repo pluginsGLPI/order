@@ -94,11 +94,11 @@ if ($report->criteriasValidated()) {
         'glpi_plugin_order_orders.suppliers_id' => new QueryExpression('suppliers.id')],
     ];
 
-    $criteria_total['WHERE'] = $criteria_total['WHERE'] + getEntitiesRestrictCriteria(
-            'glpi_plugin_order_orders'
-        );
+    $criteria_total['WHERE'] += getEntitiesRestrictCriteria(
+        'glpi_plugin_order_orders'
+    );
 
-    $criteria_total['WHERE'] = $criteria_total['WHERE'] + $report->addNewSqlCriteriasRestriction();
+    $criteria_total['WHERE'] += $report->addNewSqlCriteriasRestriction();
 
     $criteria_late = $criteria_total;
     $criteria_late['WHERE'] += [
@@ -127,11 +127,11 @@ if ($report->criteriasValidated()) {
         'GROUPBY' => ['suppliers_id'],
     ];
 
-    $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
-            'glpi_plugin_order_orders'
-        );
+    $criteria['WHERE'] += getEntitiesRestrictCriteria(
+        'glpi_plugin_order_orders'
+    );
 
-    $criteria['WHERE'] = $criteria['WHERE'] + $report->addNewSqlCriteriasRestriction();
+    $criteria['WHERE'] += $report->addNewSqlCriteriasRestriction();
 
     $report->setSqlRequest($criteria);
 
