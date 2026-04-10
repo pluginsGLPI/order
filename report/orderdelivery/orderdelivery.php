@@ -119,7 +119,7 @@ if ($report->criteriasValidated()) {
     ];
 
     $criteria['WHERE'] += getEntitiesRestrictCriteria(
-        'glpi_plugin_order_orders'
+        'glpi_plugin_order_orders',
     );
 
     $criteria['WHERE'] += $report->addNewSqlCriteriasRestriction();
