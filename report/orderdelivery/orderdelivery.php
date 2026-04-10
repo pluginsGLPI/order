@@ -79,7 +79,7 @@ if ($report->criteriasValidated()) {
             __s("Name"),
             'PluginOrderOrder',
             [
-                'with_comment'  => true,
+                'with_comment' => true,
                 'with_navigate' => true,
             ],
         ),

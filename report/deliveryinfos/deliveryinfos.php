@@ -88,9 +88,11 @@ if ($report->criteriasValidated()) {
             'COUNT' => 'glpi_plugin_order_orders.id'
         ],
         'FROM' => 'glpi_plugin_order_orders',
-        'WHERE' => ['glpi_plugin_order_orders.is_deleted' => '0',
+        'WHERE' => [
+            'glpi_plugin_order_orders.is_deleted' => '0',
             'glpi_plugin_order_orders.is_template' => '0',
-        'glpi_plugin_order_orders.suppliers_id' => new QueryExpression('suppliers.id')],
+            'glpi_plugin_order_orders.suppliers_id' => new QueryExpression('suppliers.id')
+        ],
     ];
 
     $criteria_total['WHERE'] += getEntitiesRestrictCriteria(
@@ -111,18 +113,20 @@ if ($report->criteriasValidated()) {
             new QuerySubQuery($criteria_late, 'late')
 
         ],
-        'DISTINCT'        => true,
+        'DISTINCT' => true,
         'FROM' => 'glpi_plugin_order_orders',
-        'LEFT JOIN'       => [
+        'LEFT JOIN' => [
             'glpi_suppliers as suppliers' => [
                 'ON' => [
                     'glpi_plugin_order_orders' => 'suppliers_id',
-                    'suppliers'          => 'id'
+                    'suppliers' => 'id'
                 ]
             ]
         ],
-        'WHERE' => ['glpi_plugin_order_orders.is_deleted' => '0',
-            'glpi_plugin_order_orders.is_template' => '0'],
+        'WHERE' => [
+            'glpi_plugin_order_orders.is_deleted' => '0',
+            'glpi_plugin_order_orders.is_template' => '0'
+        ],
         'GROUPBY' => ['suppliers_id'],
     ];
 
