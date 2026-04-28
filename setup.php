@@ -125,6 +125,29 @@ function plugin_init_order()
             'Pdu',
         ];
 
+
+        // Register the Orderable capacity for GLPI 11 custom assets and append
+        // any custom asset class that has it enabled to $ORDER_TYPES, provided
+        // the current user is allowed to view it.
+        if (class_exists(\Glpi\Asset\AssetDefinitionManager::class)) {
+            $asset_manager = \Glpi\Asset\AssetDefinitionManager::getInstance();
+            $orderable_capacity = new PluginOrderOrderableCapacity();
+            $asset_manager->registerCapacity($orderable_capacity);
+            $asset_manager->bootDefinitions();
+            foreach ($asset_manager->getDefinitions(true) as $definition) {
+                if (!$definition->hasCapacityEnabled($orderable_capacity)) {
+                    continue;
+                }
+                $custom_asset_class = $definition->getAssetClassName();
+                if (
+                    !in_array($custom_asset_class, $ORDER_TYPES, true)
+                    && $custom_asset_class::canView()
+                ) {
+                    $ORDER_TYPES[] = $custom_asset_class;
+                }
+            }
+        }
+
         $CFG_GLPI['plugin_order_types'] = $ORDER_TYPES;
 
         $PLUGIN_HOOKS['pre_item_purge']['order'] = [
