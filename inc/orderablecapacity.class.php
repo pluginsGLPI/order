@@ -42,4 +42,32 @@ class PluginOrderOrderableCapacity extends \Glpi\Asset\Capacity\AbstractCapacity
             $count
         );
     }
+
+    /**
+     * Clean up plugin data linked to the asset class when the capacity is
+     * disabled on its definition: remove Product references targeting the
+     * class and order line items that link orders to instances of the class.
+     * Free-form references are intentionally left untouched, as they are
+     * standalone records that do not reference any itemtype.
+     */
+    public function onCapacityDisabled(string $classname, \Glpi\Asset\CapacityConfig $config): void
+    {
+        // Delete order line items first: PluginOrderReference::pre_deleteItem()
+        // refuses deletion while references are still in use by orders_items,
+        // so child records must be removed before parent references.
+        if (class_exists('PluginOrderOrder_Item')) {
+            (new \PluginOrderOrder_Item())->deleteByCriteria(
+                ['itemtype' => $classname],
+                force: true,
+                history: false
+            );
+        }
+        if (class_exists('PluginOrderReference')) {
+            (new \PluginOrderReference())->deleteByCriteria(
+                ['itemtype' => $classname],
+                force: true,
+                history: false
+            );
+        }
+    }
 }

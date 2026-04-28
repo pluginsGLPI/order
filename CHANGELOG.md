@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [unreleased]
 
 ### Added
-- Add an `Orderable` capacity for GLPI 11 custom asset definitions, allowing each definition to opt-in to being used as a Product reference itemtype. Asset classes are filtered by per-user read permission.
+- Add an `Orderable` capacity for GLPI 11 custom asset definitions, allowing each definition to opt-in to being used as a Product reference itemtype. Asset classes are filtered by per-user read permission. Disabling the capacity on a definition cleans up its order line items and product references.
 
 ### Fixed
 
