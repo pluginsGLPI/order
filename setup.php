@@ -28,6 +28,8 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\Asset\AssetDefinitionManager;
+
 use function Safe\define;
 
 define('PLUGIN_ORDER_VERSION', '2.12.6');
@@ -129,8 +131,8 @@ function plugin_init_order()
         // Register the Orderable capacity for GLPI 11 custom assets and append
         // any custom asset class that has it enabled to $ORDER_TYPES, provided
         // the current user is allowed to view it.
-        if (class_exists(\Glpi\Asset\AssetDefinitionManager::class)) {
-            $asset_manager = \Glpi\Asset\AssetDefinitionManager::getInstance();
+        if (class_exists(AssetDefinitionManager::class)) {
+            $asset_manager = AssetDefinitionManager::getInstance();
             $orderable_capacity = new PluginOrderOrderableCapacity();
             $asset_manager->registerCapacity($orderable_capacity);
             $asset_manager->bootDefinitions();
@@ -138,6 +140,7 @@ function plugin_init_order()
                 if (!$definition->hasCapacityEnabled($orderable_capacity)) {
                     continue;
                 }
+
                 $custom_asset_class = $definition->getAssetClassName();
                 if (
                     !in_array($custom_asset_class, $ORDER_TYPES, true)
