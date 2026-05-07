@@ -1051,12 +1051,12 @@ JAVASCRIPT;
                                 $params2['POST']["delivery_number"],
                                 $params2['POST']["plugin_order_deliverystates_id"]
                             );
-                            if ($ma !== false) {
+                            if ($ma != false) {
                                  $ma->itemDone(__CLASS__, $key, MassiveAction::ACTION_OK);
                             }
                         } else {
                             Session::addMessageAfterRedirect(__("Item already taken delivery", "order"), true, ERROR);
-                            if ($ma !== false) {
+                            if ($ma != false) {
                                 $ma->itemDone(__CLASS__, $key, MassiveAction::ACTION_KO);
                             }
                         }
