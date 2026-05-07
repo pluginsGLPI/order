@@ -34,6 +34,8 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginOrderOrderInjection extends PluginOrderOrder implements PluginDatainjectionInjectionInterface
 {
+     protected $table;
+
     public function __construct()
     {
         $this->table = getTableForItemType(get_parent_class($this));
