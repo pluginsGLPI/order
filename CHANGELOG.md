@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Fix generate associated item massive action
 - Update locales
-
+- Fix getDatabaseRelations() declarations to fix warnings on order deletion
 
 ## [2.12.6] - 2026-02-23
 

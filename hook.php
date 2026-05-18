@@ -162,62 +162,77 @@ function plugin_order_getDropdown()
 }
 
 
-/* define dropdown relations */
 function plugin_order_getDatabaseRelations()
 {
     $plugin = new Plugin();
     if ($plugin->isActivated("order")) {
+        // Ensure all plugin classes are declared so that getItemTypeForTable() resolves
+        // them with the correct case on the first call (before they are in the cache).
+        foreach (glob(PLUGIN_ORDER_DIR . '/inc/*.php') as $file) {
+            if (preg_match('/injection.class.php/', $file) === 0) {
+                include_once($file);
+            }
+        }
+
         return [
-            "glpi_plugin_order_orders" => [
-                "glpi_plugin_order_orderpayments" => "plugin_order_orders_id",
-                "glpi_plugin_order_ordertaxes" => "plugin_order_orders_id",
-                "glpi_plugin_order_ordertypes" => "plugin_order_orders_id",
-                "glpi_plugin_order_orderstates" => "plugin_order_orders_id",
-                "glpi_plugin_order_orders_items" => "plugin_order_orders_id",
-                "glpi_plugin_order_orders_suppliers" => "plugin_order_orders_id",
+            "glpi_plugin_order_orderpayments" => [
+                "glpi_plugin_order_orders" => "plugin_order_orderpayments_id"
+            ],
+            "glpi_plugin_order_ordertaxes" => [
+                "glpi_plugin_order_orders" => "plugin_order_ordertaxes_id"
+            ],
+            "glpi_plugin_order_ordertypes" => [
+                "glpi_plugin_order_orders" => "plugin_order_ordertypes_id"
+            ],
+            "glpi_plugin_order_orderstates" => [
+                "glpi_plugin_order_orders" => "plugin_order_orderstates_id"
             ],
             "glpi_plugin_order_accountsections" => [
-                "glpi_plugin_order_orders" => "plugin_order_accountsections_id",
+                "glpi_plugin_order_accountsections" => "plugin_order_accountsections_id"
             ],
             "glpi_plugin_order_analyticnatures" => [
-                "glpi_plugin_order_orders_items" => "plugin_order_analyticnatures_id",
+                "glpi_plugin_order_orders_items" => "plugin_order_analyticnatures_id"
             ],
             "glpi_plugin_order_deliverystates" => [
-                "glpi_plugin_order_orders_items" => "plugin_order_deliverystates_id",
+                "glpi_plugin_order_orders_items" => "plugin_order_deliverystates_id"
+            ],
+            "glpi_plugin_order_orders" => [
+                "glpi_plugin_order_orders_items"     => "plugin_order_orders_id",
+                "glpi_plugin_order_orders_suppliers" => "plugin_order_orders_id"
             ],
             "glpi_plugin_order_references" => [
-                "glpi_plugin_order_orders_items" => "plugin_order_references_id",
-                "glpi_plugin_order_references_suppliers" => "plugin_order_references_id",
+                "glpi_plugin_order_orders_items"         => "plugin_order_references_id",
+                "glpi_plugin_order_references_suppliers" => "plugin_order_references_id"
             ],
             "glpi_entities" => [
-                "glpi_plugin_order_orders" => "entities_id",
+                "glpi_plugin_order_orders"    => "entities_id",
                 "glpi_plugin_order_references" => "entities_id",
-                "glpi_plugin_order_others" => "entities_id",
-                "glpi_plugin_order_bills" => "entities_id",
+                "glpi_plugin_order_others"     => "entities_id",
+                "glpi_plugin_order_bills"      => "entities_id"
             ],
             "glpi_budgets" => [
-                "glpi_plugin_order_orders" => "budgets_id",
+                "glpi_plugin_order_orders" => "budgets_id"
             ],
             "glpi_plugin_order_othertypes" => [
-                "glpi_plugin_order_others" => "plugin_order_othertypes_id",
+                "glpi_plugin_order_others" => "plugin_order_othertypes_id"
             ],
             "glpi_suppliers" => [
-                "glpi_plugin_order_orders" => "suppliers_id",
-                "glpi_plugin_order_orders_suppliers" => "suppliers_id",
-                "glpi_plugin_order_references_suppliers" => "suppliers_id",
+                "glpi_plugin_order_orders"               => "suppliers_id",
+                "glpi_plugin_order_orders_suppliers"     => "suppliers_id",
+                "glpi_plugin_order_references_suppliers" => "suppliers_id"
             ],
             "glpi_manufacturers" => [
-                "glpi_plugin_order_references" => "manufacturers_id",
+                "glpi_plugin_order_references" => "manufacturers_id"
             ],
             "glpi_contacts" => [
-                "glpi_plugin_order_orders" => "contacts_id",
+                "glpi_plugin_order_orders" => "contacts_id"
             ],
             "glpi_locations" => [
-                "glpi_plugin_order_orders" => "locations_id",
+                "glpi_plugin_order_orders" => "locations_id"
             ],
             "glpi_profiles" => [
-                "glpi_plugin_order_profiles" => "profiles_id",
-            ],
+                "glpi_plugin_order_profiles" => "profiles_id"
+            ]
         ];
     } else {
         return [];
