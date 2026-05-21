@@ -471,14 +471,14 @@ class PluginOrderReference extends CommonDBTM
         } else {
             $row = $result->current();
             $item = getItemForItemtype($itemtype);
-            // GLPI 11 safety: custom asset classes may fail to resolve in HTTP context
-            // and templates_id may be 0 for entries created before plugin migration.
-            if ($item === false || empty($row["templates_id"])) {
+            if (
+                $item === false
+                || (int) $row["templates_id"] === 0
+                || !$item->getFromDB($row["templates_id"])
+            ) {
                 return 0;
             }
-            if (!$item->getFromDB($row["templates_id"])) {
-                return 0;
-            }
+
             if ($item->getField('entities_id') == $entity
             || ($item->maybeRecursive()
             && $item->fields['is_recursive']
