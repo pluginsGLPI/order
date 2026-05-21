@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Fix generate associated item massive action
-- Add safety guards in Generate item flow for invalid references and non-existent classes (GLPI 11 / PHP 8.3)
+- Prevent invalid references and non-existent classes during generate item flow.
 - Update locales
 
 
