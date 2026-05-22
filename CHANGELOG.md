@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Fix generate associated item massive action
 - Prevent invalid references and non-existent classes during generate item flow.
 - Update locales
-
+- Migration of reports to next version of plugin Reports
 
 ## [2.12.6] - 2026-02-23
 

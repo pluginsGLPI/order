@@ -39,17 +39,25 @@
  */
 
 //Options for GLPI 0.71 and newer : need slave db to access the report
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+use GlpiPlugin\Reports\AutoReport;
+use GlpiPlugin\Reports\ColumnInteger;
+use GlpiPlugin\Reports\ColumnLink;
+use GlpiPlugin\Reports\DateIntervalCriteria;
+use GlpiPlugin\Reports\DropdownCriteria;
+use GlpiPlugin\Reports\LocationCriteria;
+use GlpiPlugin\Reports\SupplierCriteria;
+
 $USEDBREPLICATE = 1;
 $DBCONNECTION_REQUIRED = 0; // Really a big SQL request
 
-include(__DIR__ . "/../../../../inc/includes.php");
-
-$report = new PluginReportsAutoReport(__s("deliveryinfos_report_title", "order"));
-new PluginReportsDateIntervalCriteria($report, 'order_date', __s("Date of order", "order"));
-new PluginReportsDateIntervalCriteria($report, 'deliverydate', __s("Delivery date"));
-new PluginReportsLocationCriteria($report, 'locations_id', __s("Delivery location", "order"));
-new PluginReportsSupplierCriteria($report, 'suppliers_id', __s("Supplier"));
-new PluginReportsDropdownCriteria(
+$report = new AutoReport(__s("Orders delivery statistics", "order"));
+new DateIntervalCriteria($report, 'order_date', __s("Date of order", "order"));
+new DateIntervalCriteria($report, 'deliverydate', __s("Delivery date"));
+new LocationCriteria($report, 'locations_id', __s("Delivery location", "order"));
+new SupplierCriteria($report, 'suppliers_id', __s("Supplier"));
+new DropdownCriteria(
     $report,
     'plugin_order_orderstates_id',
     'PluginOrderOrderState',
@@ -61,36 +69,76 @@ if ($report->criteriasValidated()) {
     $report->setSubNameAuto();
 
     $report->setColumns([
-        new PluginReportsColumnLink(
+        new ColumnLink(
             'suppliers_id',
             __s("Supplier"),
             'Supplier',
         ),
-        new PluginReportsColumnLink(
+        new ColumnLink(
             'entities_id',
             __s("Entity"),
             'Entity',
         ),
-        new PluginReportsColumnInteger('total', __s("Orders total", "order")),
-        new PluginReportsColumnInteger('late', __s("Late orders total", "order")),
+        new ColumnInteger('total', __s("Orders total", "order")),
+        new ColumnInteger('late', __s("Late orders total", "order")),
     ]);
-    //TODO : ne pas chercher dans la poublelles
 
-    $query_total = "SELECT count(*) FROM `glpi_plugin_order_orders`";
-    $query_total .= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");
-    $query_total .= $report->addSqlCriteriasRestriction();
-    $query_total .= "AND `glpi_plugin_order_orders`.`suppliers_id`=`suppliers`.`id`";
-    $query_late = $query_total . " AND `is_late`='1' AND `is_deleted`='0' AND `is_template`='0'";
+    $criteria_total = [
+        'SELECT' => [
+            'COUNT' => 'glpi_plugin_order_orders.id',
+        ],
+        'FROM' => 'glpi_plugin_order_orders',
+        'WHERE' => [
+            'glpi_plugin_order_orders.is_deleted' => '0',
+            'glpi_plugin_order_orders.is_template' => '0',
+            'glpi_plugin_order_orders.suppliers_id' => new QueryExpression('suppliers.id'),
+        ],
+    ];
 
-    $supplier = "JOIN `glpi_suppliers`as suppliers
-                                 ON (`glpi_plugin_order_orders`.`suppliers_id` = suppliers.`id`)";
+    $criteria_total['WHERE'] += getEntitiesRestrictCriteria(
+        'glpi_plugin_order_orders',
+    );
 
+    $criteria_total['WHERE'] += $report->addNewSqlCriteriasRestriction();
 
-    $query = "SELECT DISTINCT `suppliers_id`, ({$query_total}) AS `total`, ({$query_late}) AS `late`
-            FROM `glpi_plugin_order_orders` {$supplier}";
-    $query .= getEntitiesRestrictRequest(" WHERE", "glpi_plugin_order_orders");
-    $query .= $report->addSqlCriteriasRestriction();
-    $report->setGroupBy("suppliers_id");
-    $report->setSqlRequest($query);
+    $criteria_late = $criteria_total;
+    $criteria_late['WHERE'] += [
+        'glpi_plugin_order_orders.is_late' => 1,
+    ];
+
+    $criteria = [
+        'SELECT' => [
+            'glpi_plugin_order_orders.suppliers_id',
+            new QuerySubQuery($criteria_total, 'total'),
+            new QuerySubQuery($criteria_late, 'late'),
+
+        ],
+        'DISTINCT' => true,
+        'FROM' => 'glpi_plugin_order_orders',
+        'LEFT JOIN' => [
+            'glpi_suppliers as suppliers' => [
+                'ON' => [
+                    'glpi_plugin_order_orders' => 'suppliers_id',
+                    'suppliers' => 'id',
+                ],
+            ],
+        ],
+        'WHERE' => [
+            'glpi_plugin_order_orders.is_deleted' => '0',
+            'glpi_plugin_order_orders.is_template' => '0',
+        ],
+        'GROUPBY' => ['suppliers_id'],
+    ];
+
+    $criteria['WHERE'] += getEntitiesRestrictCriteria(
+        'glpi_plugin_order_orders',
+    );
+
+    $criteria['WHERE'] += $report->addNewSqlCriteriasRestriction();
+
+    $report->setSqlRequest($criteria);
+
     $report->execute();
 }
+
+$report->footer();

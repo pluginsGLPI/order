@@ -28,6 +28,8 @@
  * -------------------------------------------------------------------------
  */
 
+use GlpiPlugin\Reports\Report;
+
 use function Safe\define;
 
 define('PLUGIN_ORDER_VERSION', '2.12.6');
@@ -189,6 +191,14 @@ function plugin_init_order()
             $PLUGIN_HOOKS['assign_to_ticket']['order'] = true;
             $PLUGIN_HOOKS['use_massive_action']['order'] = 1;
             $PLUGIN_HOOKS['plugin_datainjection_populate']['order'] = "plugin_datainjection_populate_order";
+
+            if (class_exists(Report::class)) {
+                Report::setReportsTitles(
+                    ["deliveryinfos" => __s("Orders delivery statistics", "order"),
+                        "orderdelivery" => __s("Orders delivery", "order"),
+                    ],
+                );
+            }
         }
     }
 }
