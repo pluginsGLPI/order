@@ -10,8 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Fix generate associated item massive action
+- Prevent invalid references and non-existent classes during generate item flow.
+- Remove unnecessary message during plugin installation
 - Update locales
 - Fix getDatabaseRelations() declarations to fix warnings on order deletion
+- Fix `glpi_plugin_order_referencefrees` table not removed on uninstall
+
 
 ## [2.12.6] - 2026-02-23
 

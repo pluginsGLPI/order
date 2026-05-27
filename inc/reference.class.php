@@ -471,7 +471,14 @@ class PluginOrderReference extends CommonDBTM
         } else {
             $row = $result->current();
             $item = getItemForItemtype($itemtype);
-            $item->getFromDB($row["templates_id"]);
+            if (
+                $item === false
+                || (int) $row["templates_id"] === 0
+                || !$item->getFromDB($row["templates_id"])
+            ) {
+                return 0;
+            }
+
             if ($item->getField('entities_id') == $entity
             || ($item->maybeRecursive()
             && $item->fields['is_recursive']
