@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Fix generate associated item massive action
 - Prevent invalid references and non-existent classes during generate item flow.
+- Remove unnecessary message during plugin installation
 - Update locales
 - Fix `glpi_plugin_order_referencefrees` table not removed on uninstall
 
