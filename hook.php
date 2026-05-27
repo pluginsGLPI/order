@@ -47,13 +47,6 @@ function plugin_order_install()
         }
     }
 
-    echo "<center>";
-    echo "<table class='tab_cadre_fixe'>";
-    echo "<tr><th>" . __s("Plugin installation or upgrade", "order") . "<th></tr>";
-
-    echo "<tr class='tab_bg_1'>";
-    echo "<td align='center'>";
-
     $migration = new Migration(PLUGIN_ORDER_VERSION);
     $classes = ['PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',
         'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',
@@ -77,11 +70,6 @@ function plugin_order_install()
             }
         }
     }
-
-    echo "</td>";
-    echo "</tr>";
-    echo "</table>";
-    echo "</center>";
 
     //Create directories for the plugin's files
     $directories = [PLUGIN_ORDER_TEMPLATE_DIR        => 'templates',
