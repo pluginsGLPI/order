@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-15 04:01+0000\n"
+"POT-Creation-Date: 2026-05-28 04:12+0000\n"
 "PO-Revision-Date: 2015-09-18 10:11+0000\n"
 "Last-Translator: Michael Schieferer, 2022\n"
 "Language-Team: German (Germany) (http://app.transifex.com/teclib/glpi-project-plugin-order/language/de_DE/)\n"
@@ -61,7 +61,7 @@ msgid "Order informations"
 msgstr ""
 
 #: templates/order_infocom.html.twig inc/surveysupplier.class.php:212
-#: inc/order.class.php:435 inc/order.class.php:911 hook.php:240
+#: inc/order.class.php:435 inc/order.class.php:911 hook.php:244
 msgid "Order name"
 msgstr "Name der Bestellung"
 
@@ -99,7 +99,7 @@ msgstr "Bestellinformationen"
 
 #: report/orderdelivery/orderdelivery.php:78 inc/bill.class.php:198
 #: inc/order.class.php:338 inc/order.class.php:951 inc/order.class.php:1845
-#: hook.php:247
+#: hook.php:251
 msgid "Order number"
 msgstr "Bestellnummer"
 
@@ -114,7 +114,7 @@ msgstr ""
 
 #: ajax/massreception.php:64 inc/order_item.class.php:184
 #: inc/reception.class.php:257 inc/reception.class.php:529
-#: inc/reception.class.php:819 inc/deliverystate.class.php:37 hook.php:152
+#: inc/reception.class.php:819 inc/deliverystate.class.php:37 hook.php:141
 msgid "Delivery status"
 msgstr "Lieferstatus"
 
@@ -152,7 +152,7 @@ msgstr "Bestellverwaltung"
 #: inc/order_item.class.php:2241 inc/order_item.class.php:2246
 #: inc/menu.class.php:35 inc/order.class.php:100 inc/order.class.php:633
 #: inc/documentcategory.class.php:46 inc/order_supplier.class.php:491
-#: hook.php:157
+#: hook.php:146
 msgid "Orders"
 msgstr "Bestellungen"
 
@@ -199,7 +199,7 @@ msgid "Add reference"
 msgstr "Referenz hinzufügen"
 
 #: front/order.form.php:151 front/order.form.php:275 front/order.form.php:301
-#: inc/link.class.php:383 inc/order_item.class.php:447
+#: inc/link.class.php:384 inc/order_item.class.php:447
 #: inc/order_item.class.php:570 inc/order_item.class.php:975
 #: inc/order.class.php:1912
 msgid "Quantity"
@@ -283,11 +283,11 @@ msgstr ""
 #: inc/bill.class.php:185 inc/order_item.class.php:922
 #: inc/order_item.class.php:1491 inc/order_item.class.php:2258
 #: inc/order.class.php:100 inc/reception.class.php:322
-#: inc/order_supplier.class.php:211 hook.php:396
+#: inc/order_supplier.class.php:211 hook.php:400
 msgid "Order"
 msgstr "Bestellung"
 
-#: inc/reference.class.php:164 inc/reference.class.php:653
+#: inc/reference.class.php:164 inc/reference.class.php:660
 #: inc/order_item.class.php:987
 msgid "Manufacturer reference"
 msgstr "Herstellerverweis"
@@ -323,21 +323,21 @@ msgstr "Eine Referenz mit gleichem Namen existiert bereits"
 msgid "Reference(s) in use"
 msgstr "Aktuell benutzte Referenzen"
 
-#: inc/reference.class.php:389 inc/reference.class.php:879
+#: inc/reference.class.php:389 inc/reference.class.php:886
 #: inc/order.class.php:2144
 msgid "Linked orders"
 msgstr "Verbundene Bestellungen"
 
-#: inc/reference.class.php:748 inc/order.class.php:1105
+#: inc/reference.class.php:755 inc/order.class.php:1105
 #: inc/order.class.php:1501
 msgid "Eco-responsibility fees"
 msgstr ""
 
-#: inc/reference.class.php:966
+#: inc/reference.class.php:973
 msgid "Copy of"
 msgstr "Kopie von"
 
-#: inc/reference.class.php:1031
+#: inc/reference.class.php:1038
 msgid "Copy reference"
 msgstr "Verweis kopieren"
 
@@ -501,7 +501,7 @@ msgid "A bill number is mandatory"
 msgstr "Eine Rechnungsnummer ist notwendig"
 
 #: inc/bill.class.php:402 inc/billstate.class.php:44
-#: inc/order_item.class.php:1770 hook.php:153
+#: inc/order_item.class.php:1770 hook.php:142
 msgid "Bill status"
 msgstr "Rechnungsstatus"
 
@@ -513,63 +513,63 @@ msgstr "ohne Produktreferenz"
 msgid "Generation"
 msgstr "Generieren"
 
-#: inc/link.class.php:550
+#: inc/link.class.php:551
 msgid "Generate item"
 msgstr "Verbundene Geräte generieren"
 
-#: inc/link.class.php:551
+#: inc/link.class.php:552
 msgid "Link to an existing item"
 msgstr "Mit bereits existierendem Gerät verbinden"
 
-#: inc/link.class.php:552
+#: inc/link.class.php:553
 msgid "Delete item link"
 msgstr "Verbindung mit Gerät entfernen"
 
-#: inc/link.class.php:553
+#: inc/link.class.php:554
 msgid "Cancel reception"
 msgstr ""
 
-#: inc/link.class.php:636
+#: inc/link.class.php:637
 msgid "Cannot link several items to one detail line"
 msgstr "Ein Gerät kann nicht mehreren Positionen zugewiesen werden"
 
-#: inc/link.class.php:648
+#: inc/link.class.php:649
 msgid "Cannot link items not delivered"
 msgstr "Noch nicht empfangene Geräte können nicht verbunden werden"
 
-#: inc/link.class.php:680
+#: inc/link.class.php:681
 msgid ""
 "Unable to cancel reception when items are already linked, please unlink them"
 " before trying again."
 msgstr ""
 
-#: inc/link.class.php:711
+#: inc/link.class.php:712
 msgid "No associated item"
 msgstr "Keine verbundene Geräte"
 
-#: inc/link.class.php:952 inc/link.class.php:1033 inc/link.class.php:1042
-#: inc/link.class.php:1046
+#: inc/link.class.php:953 inc/link.class.php:1034 inc/link.class.php:1043
+#: inc/link.class.php:1047
 msgid "Item linked to order"
 msgstr "Mit Bestellung verbundene Geräte"
 
-#: inc/link.class.php:1048
+#: inc/link.class.php:1049
 msgid "Item already linked to another one"
 msgstr "Bereits im Inventar aufgenommene Geräte"
 
-#: inc/link.class.php:1090 inc/link.class.php:1095 inc/link.class.php:1116
-#: inc/link.class.php:1121
+#: inc/link.class.php:1091 inc/link.class.php:1096 inc/link.class.php:1117
+#: inc/link.class.php:1122
 msgid "Item unlink form order"
 msgstr "Von Bestellung gelöste Geräte"
 
-#: inc/link.class.php:1113
+#: inc/link.class.php:1114
 msgid "One or several selected rows haven't linked items"
 msgstr "Eine oder mehrere ausgewählte Positionen wurden noch keinem Gerät zugeordnet"
 
-#: inc/link.class.php:1311 inc/link.class.php:1315
+#: inc/link.class.php:1312 inc/link.class.php:1316
 msgid "Item generated by using order"
 msgstr "Aus Bestellung erzeugte Geräte"
 
-#: inc/link.class.php:1322
+#: inc/link.class.php:1323
 msgid "Item successfully selected"
 msgstr "Geräte erfolgreich erzeugt"
 
@@ -611,7 +611,7 @@ msgid "Add to the order from the catalog"
 msgstr "aus Produktreferenz-Katalog zur Bestellung hinzufügen"
 
 #: inc/order_item.class.php:445 inc/order_item.class.php:568
-#: inc/order_item.class.php:978 inc/analyticnature.class.php:40 hook.php:155
+#: inc/order_item.class.php:978 inc/analyticnature.class.php:40 hook.php:144
 msgid "Analytic nature"
 msgstr ""
 
@@ -619,7 +619,7 @@ msgstr ""
 #: inc/order_item.class.php:1117 inc/order_item.class.php:1519
 #: inc/order.class.php:359 inc/order.class.php:1105 inc/order.class.php:1126
 #: inc/order.class.php:1916 inc/order.class.php:2045 inc/ordertax.class.php:41
-#: hook.php:147
+#: hook.php:136
 msgid "VAT"
 msgstr "MwSt"
 
@@ -661,16 +661,16 @@ msgid "Paid value"
 msgstr "Bezahlwert"
 
 #: inc/orderpayment.class.php:40 inc/order.class.php:401
-#: inc/order.class.php:1063 inc/order.class.php:2051 hook.php:148
+#: inc/order.class.php:1063 inc/order.class.php:2051 hook.php:137
 msgid "Payment conditions"
 msgstr "Zahlungskonditionen"
 
-#: inc/billtype.class.php:40 hook.php:154
+#: inc/billtype.class.php:40 hook.php:143
 msgid "Bill type"
 msgstr "Rechnungstyp"
 
 #: inc/orderstate.class.php:55 inc/order.class.php:379 inc/order.class.php:996
-#: inc/order.class.php:2150 hook.php:150
+#: inc/order.class.php:2150 hook.php:139
 msgid "Order status"
 msgstr "Bestellstatus"
 
@@ -776,7 +776,7 @@ msgstr "Due date overtaken"
 msgid "Global discount to apply to items"
 msgstr "Globalrabatt für Artikel anwenden"
 
-#: inc/order.class.php:1283 inc/accountsection.class.php:40 hook.php:156
+#: inc/order.class.php:1283 inc/accountsection.class.php:40 hook.php:145
 msgid "Account section"
 msgstr "Rechnungsbereich"
 
@@ -981,7 +981,7 @@ msgstr ""
 msgid "Item delivered"
 msgstr ""
 
-#: inc/othertype.class.php:40 hook.php:151
+#: inc/othertype.class.php:40 hook.php:140
 msgid "Other type of item"
 msgstr "Other type of item"
 
@@ -1024,7 +1024,3 @@ msgstr "Versandstatistik"
 #: inc/order_supplier.class.php:350
 msgid "No specified status"
 msgstr "Nicht spezifizierter Status"
-
-#: hook.php:52
-msgid "Plugin installation or upgrade"
-msgstr "Plugin installation oder upgrade"

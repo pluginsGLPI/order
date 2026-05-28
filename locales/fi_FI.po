@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-15 04:01+0000\n"
+"POT-Creation-Date: 2026-05-28 04:12+0000\n"
 "PO-Revision-Date: 2015-09-18 10:11+0000\n"
 "Last-Translator: Markku Vepsä, 2018\n"
 "Language-Team: Finnish (Finland) (http://app.transifex.com/teclib/glpi-project-plugin-order/language/fi_FI/)\n"
@@ -58,7 +58,7 @@ msgid "Order informations"
 msgstr ""
 
 #: templates/order_infocom.html.twig inc/surveysupplier.class.php:212
-#: inc/order.class.php:435 inc/order.class.php:911 hook.php:240
+#: inc/order.class.php:435 inc/order.class.php:911 hook.php:244
 msgid "Order name"
 msgstr "Tilauksen nimi"
 
@@ -96,7 +96,7 @@ msgstr "tilausraportin_otsikko"
 
 #: report/orderdelivery/orderdelivery.php:78 inc/bill.class.php:198
 #: inc/order.class.php:338 inc/order.class.php:951 inc/order.class.php:1845
-#: hook.php:247
+#: hook.php:251
 msgid "Order number"
 msgstr "Tilausnumero"
 
@@ -111,7 +111,7 @@ msgstr ""
 
 #: ajax/massreception.php:64 inc/order_item.class.php:184
 #: inc/reception.class.php:257 inc/reception.class.php:529
-#: inc/reception.class.php:819 inc/deliverystate.class.php:37 hook.php:152
+#: inc/reception.class.php:819 inc/deliverystate.class.php:37 hook.php:141
 msgid "Delivery status"
 msgstr "Toimituksen tila"
 
@@ -149,7 +149,7 @@ msgstr "Tilausten hallinta"
 #: inc/order_item.class.php:2241 inc/order_item.class.php:2246
 #: inc/menu.class.php:35 inc/order.class.php:100 inc/order.class.php:633
 #: inc/documentcategory.class.php:46 inc/order_supplier.class.php:491
-#: hook.php:157
+#: hook.php:146
 msgid "Orders"
 msgstr "Tilaukset"
 
@@ -196,7 +196,7 @@ msgid "Add reference"
 msgstr "Lisää viite"
 
 #: front/order.form.php:151 front/order.form.php:275 front/order.form.php:301
-#: inc/link.class.php:383 inc/order_item.class.php:447
+#: inc/link.class.php:384 inc/order_item.class.php:447
 #: inc/order_item.class.php:570 inc/order_item.class.php:975
 #: inc/order.class.php:1912
 msgid "Quantity"
@@ -280,11 +280,11 @@ msgstr ""
 #: inc/bill.class.php:185 inc/order_item.class.php:922
 #: inc/order_item.class.php:1491 inc/order_item.class.php:2258
 #: inc/order.class.php:100 inc/reception.class.php:322
-#: inc/order_supplier.class.php:211 hook.php:396
+#: inc/order_supplier.class.php:211 hook.php:400
 msgid "Order"
 msgstr "Tilaus"
 
-#: inc/reference.class.php:164 inc/reference.class.php:653
+#: inc/reference.class.php:164 inc/reference.class.php:660
 #: inc/order_item.class.php:987
 msgid "Manufacturer reference"
 msgstr "Valmistajan viite"
@@ -320,21 +320,21 @@ msgstr "Samanniminen viittaus on olemassa"
 msgid "Reference(s) in use"
 msgstr "Viite/viitteet käytössä"
 
-#: inc/reference.class.php:389 inc/reference.class.php:879
+#: inc/reference.class.php:389 inc/reference.class.php:886
 #: inc/order.class.php:2144
 msgid "Linked orders"
 msgstr "Linkitetyt tilaukset"
 
-#: inc/reference.class.php:748 inc/order.class.php:1105
+#: inc/reference.class.php:755 inc/order.class.php:1105
 #: inc/order.class.php:1501
 msgid "Eco-responsibility fees"
 msgstr ""
 
-#: inc/reference.class.php:966
+#: inc/reference.class.php:973
 msgid "Copy of"
 msgstr "Kopio"
 
-#: inc/reference.class.php:1031
+#: inc/reference.class.php:1038
 msgid "Copy reference"
 msgstr "Kopioi viite"
 
@@ -498,7 +498,7 @@ msgid "A bill number is mandatory"
 msgstr "Laskun numero on pakollinen"
 
 #: inc/bill.class.php:402 inc/billstate.class.php:44
-#: inc/order_item.class.php:1770 hook.php:153
+#: inc/order_item.class.php:1770 hook.php:142
 msgid "Bill status"
 msgstr "Laskun tila"
 
@@ -510,63 +510,63 @@ msgstr "Viite vapaa"
 msgid "Generation"
 msgstr "Luonti"
 
-#: inc/link.class.php:550
+#: inc/link.class.php:551
 msgid "Generate item"
 msgstr "Luo kohde"
 
-#: inc/link.class.php:551
+#: inc/link.class.php:552
 msgid "Link to an existing item"
 msgstr "Linkki olemassa olevaan kohteeseen"
 
-#: inc/link.class.php:552
+#: inc/link.class.php:553
 msgid "Delete item link"
 msgstr "Poista kohteen linkki"
 
-#: inc/link.class.php:553
+#: inc/link.class.php:554
 msgid "Cancel reception"
 msgstr ""
 
-#: inc/link.class.php:636
+#: inc/link.class.php:637
 msgid "Cannot link several items to one detail line"
 msgstr "Useita kohteita ei voida yhdistää yhteen yksityiskohtariviin"
 
-#: inc/link.class.php:648
+#: inc/link.class.php:649
 msgid "Cannot link items not delivered"
 msgstr "Toimittamattomia tuotteita ei voida linkittää"
 
-#: inc/link.class.php:680
+#: inc/link.class.php:681
 msgid ""
 "Unable to cancel reception when items are already linked, please unlink them"
 " before trying again."
 msgstr ""
 
-#: inc/link.class.php:711
+#: inc/link.class.php:712
 msgid "No associated item"
 msgstr "Ei liittyviä kohteita"
 
-#: inc/link.class.php:952 inc/link.class.php:1033 inc/link.class.php:1042
-#: inc/link.class.php:1046
+#: inc/link.class.php:953 inc/link.class.php:1034 inc/link.class.php:1043
+#: inc/link.class.php:1047
 msgid "Item linked to order"
 msgstr "Tuote liitetty tilaukseen"
 
-#: inc/link.class.php:1048
+#: inc/link.class.php:1049
 msgid "Item already linked to another one"
 msgstr "Tuote on jo liitetty toiseen kohteeseen"
 
-#: inc/link.class.php:1090 inc/link.class.php:1095 inc/link.class.php:1116
-#: inc/link.class.php:1121
+#: inc/link.class.php:1091 inc/link.class.php:1096 inc/link.class.php:1117
+#: inc/link.class.php:1122
 msgid "Item unlink form order"
 msgstr "Tuote poistettu tilauksesta"
 
-#: inc/link.class.php:1113
+#: inc/link.class.php:1114
 msgid "One or several selected rows haven't linked items"
 msgstr "Yhdellä tai useammalla valitulla rivillä ei ole linkitettyjä kohteita"
 
-#: inc/link.class.php:1311 inc/link.class.php:1315
+#: inc/link.class.php:1312 inc/link.class.php:1316
 msgid "Item generated by using order"
 msgstr "Tuote luotu tilauksen avulla"
 
-#: inc/link.class.php:1322
+#: inc/link.class.php:1323
 msgid "Item successfully selected"
 msgstr "Tuote on valittu onnistuneesti"
 
@@ -608,7 +608,7 @@ msgid "Add to the order from the catalog"
 msgstr "Lisää tilaukseen luettelosta"
 
 #: inc/order_item.class.php:445 inc/order_item.class.php:568
-#: inc/order_item.class.php:978 inc/analyticnature.class.php:40 hook.php:155
+#: inc/order_item.class.php:978 inc/analyticnature.class.php:40 hook.php:144
 msgid "Analytic nature"
 msgstr "Analyyttinen luonne"
 
@@ -616,7 +616,7 @@ msgstr "Analyyttinen luonne"
 #: inc/order_item.class.php:1117 inc/order_item.class.php:1519
 #: inc/order.class.php:359 inc/order.class.php:1105 inc/order.class.php:1126
 #: inc/order.class.php:1916 inc/order.class.php:2045 inc/ordertax.class.php:41
-#: hook.php:147
+#: hook.php:136
 msgid "VAT"
 msgstr "ALV"
 
@@ -658,16 +658,16 @@ msgid "Paid value"
 msgstr "Maksettu summa"
 
 #: inc/orderpayment.class.php:40 inc/order.class.php:401
-#: inc/order.class.php:1063 inc/order.class.php:2051 hook.php:148
+#: inc/order.class.php:1063 inc/order.class.php:2051 hook.php:137
 msgid "Payment conditions"
 msgstr "Maksuehdot"
 
-#: inc/billtype.class.php:40 hook.php:154
+#: inc/billtype.class.php:40 hook.php:143
 msgid "Bill type"
 msgstr "Laskun tyyppi"
 
 #: inc/orderstate.class.php:55 inc/order.class.php:379 inc/order.class.php:996
-#: inc/order.class.php:2150 hook.php:150
+#: inc/order.class.php:2150 hook.php:139
 msgid "Order status"
 msgstr "Tilauksen tila"
 
@@ -773,7 +773,7 @@ msgstr "Erääntymispäivä ylitetty"
 msgid "Global discount to apply to items"
 msgstr ""
 
-#: inc/order.class.php:1283 inc/accountsection.class.php:40 hook.php:156
+#: inc/order.class.php:1283 inc/accountsection.class.php:40 hook.php:145
 msgid "Account section"
 msgstr "Tili-osio"
 
@@ -978,7 +978,7 @@ msgstr ""
 msgid "Item delivered"
 msgstr ""
 
-#: inc/othertype.class.php:40 hook.php:151
+#: inc/othertype.class.php:40 hook.php:140
 msgid "Other type of item"
 msgstr "Muun tyyppinen tuote"
 
@@ -1021,7 +1021,3 @@ msgstr "Toimitustiedot"
 #: inc/order_supplier.class.php:350
 msgid "No specified status"
 msgstr "Ei määritettyä tilaa"
-
-#: hook.php:52
-msgid "Plugin installation or upgrade"
-msgstr "Liitännäisen asennus tai päivitys"
