@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-15 04:01+0000\n"
+"POT-Creation-Date: 2026-05-28 04:12+0000\n"
 "PO-Revision-Date: 2015-09-18 10:11+0000\n"
 "Last-Translator: Andrea Garelli <garelli.andrea@gmail.com>, 2022\n"
 "Language-Team: Italian (Italy) (http://app.transifex.com/teclib/glpi-project-plugin-order/language/it_IT/)\n"
@@ -60,7 +60,7 @@ msgid "Order informations"
 msgstr ""
 
 #: templates/order_infocom.html.twig inc/surveysupplier.class.php:212
-#: inc/order.class.php:435 inc/order.class.php:911 hook.php:240
+#: inc/order.class.php:435 inc/order.class.php:911 hook.php:244
 msgid "Order name"
 msgstr "Ordine"
 
@@ -98,7 +98,7 @@ msgstr ""
 
 #: report/orderdelivery/orderdelivery.php:78 inc/bill.class.php:198
 #: inc/order.class.php:338 inc/order.class.php:951 inc/order.class.php:1845
-#: hook.php:247
+#: hook.php:251
 msgid "Order number"
 msgstr "Numero d'ordine"
 
@@ -113,7 +113,7 @@ msgstr ""
 
 #: ajax/massreception.php:64 inc/order_item.class.php:184
 #: inc/reception.class.php:257 inc/reception.class.php:529
-#: inc/reception.class.php:819 inc/deliverystate.class.php:37 hook.php:152
+#: inc/reception.class.php:819 inc/deliverystate.class.php:37 hook.php:141
 msgid "Delivery status"
 msgstr "Stato spedizione"
 
@@ -151,7 +151,7 @@ msgstr "Gestione ordini"
 #: inc/order_item.class.php:2241 inc/order_item.class.php:2246
 #: inc/menu.class.php:35 inc/order.class.php:100 inc/order.class.php:633
 #: inc/documentcategory.class.php:46 inc/order_supplier.class.php:491
-#: hook.php:157
+#: hook.php:146
 msgid "Orders"
 msgstr "Ordini"
 
@@ -198,7 +198,7 @@ msgid "Add reference"
 msgstr "Aggiungi riferimento"
 
 #: front/order.form.php:151 front/order.form.php:275 front/order.form.php:301
-#: inc/link.class.php:383 inc/order_item.class.php:447
+#: inc/link.class.php:384 inc/order_item.class.php:447
 #: inc/order_item.class.php:570 inc/order_item.class.php:975
 #: inc/order.class.php:1912
 msgid "Quantity"
@@ -282,11 +282,11 @@ msgstr "Punteggio medio su 5 (X punti / 5)"
 #: inc/bill.class.php:185 inc/order_item.class.php:922
 #: inc/order_item.class.php:1491 inc/order_item.class.php:2258
 #: inc/order.class.php:100 inc/reception.class.php:322
-#: inc/order_supplier.class.php:211 hook.php:396
+#: inc/order_supplier.class.php:211 hook.php:400
 msgid "Order"
 msgstr "Ordine"
 
-#: inc/reference.class.php:164 inc/reference.class.php:653
+#: inc/reference.class.php:164 inc/reference.class.php:660
 #: inc/order_item.class.php:987
 msgid "Manufacturer reference"
 msgstr "Riferimento del produttore"
@@ -322,21 +322,21 @@ msgstr "Gia esiste un riferimento con lo stesso nome"
 msgid "Reference(s) in use"
 msgstr "Riferimenti già utilizzati"
 
-#: inc/reference.class.php:389 inc/reference.class.php:879
+#: inc/reference.class.php:389 inc/reference.class.php:886
 #: inc/order.class.php:2144
 msgid "Linked orders"
 msgstr "Ordini collegati"
 
-#: inc/reference.class.php:748 inc/order.class.php:1105
+#: inc/reference.class.php:755 inc/order.class.php:1105
 #: inc/order.class.php:1501
 msgid "Eco-responsibility fees"
 msgstr ""
 
-#: inc/reference.class.php:966
+#: inc/reference.class.php:973
 msgid "Copy of"
 msgstr "Copia di"
 
-#: inc/reference.class.php:1031
+#: inc/reference.class.php:1038
 msgid "Copy reference"
 msgstr "Copia di riferimento"
 
@@ -500,7 +500,7 @@ msgid "A bill number is mandatory"
 msgstr "Un numero di fattura è obbligatorio"
 
 #: inc/bill.class.php:402 inc/billstate.class.php:44
-#: inc/order_item.class.php:1770 hook.php:153
+#: inc/order_item.class.php:1770 hook.php:142
 msgid "Bill status"
 msgstr "Stato Fattura"
 
@@ -512,63 +512,63 @@ msgstr ""
 msgid "Generation"
 msgstr "Generazione"
 
-#: inc/link.class.php:550
+#: inc/link.class.php:551
 msgid "Generate item"
 msgstr "Carica in inventario"
 
-#: inc/link.class.php:551
+#: inc/link.class.php:552
 msgid "Link to an existing item"
 msgstr "Collegamento a Entità esistente"
 
-#: inc/link.class.php:552
+#: inc/link.class.php:553
 msgid "Delete item link"
 msgstr "Cancellazione collegamento articolo"
 
-#: inc/link.class.php:553
+#: inc/link.class.php:554
 msgid "Cancel reception"
 msgstr ""
 
-#: inc/link.class.php:636
+#: inc/link.class.php:637
 msgid "Cannot link several items to one detail line"
 msgstr "Non possibile collegare più dettagli articoli in una sola linea"
 
-#: inc/link.class.php:648
+#: inc/link.class.php:649
 msgid "Cannot link items not delivered"
 msgstr "Non posso associare articoli non spediti"
 
-#: inc/link.class.php:680
+#: inc/link.class.php:681
 msgid ""
 "Unable to cancel reception when items are already linked, please unlink them"
 " before trying again."
 msgstr ""
 
-#: inc/link.class.php:711
+#: inc/link.class.php:712
 msgid "No associated item"
 msgstr "Nessun elemento Associato"
 
-#: inc/link.class.php:952 inc/link.class.php:1033 inc/link.class.php:1042
-#: inc/link.class.php:1046
+#: inc/link.class.php:953 inc/link.class.php:1034 inc/link.class.php:1043
+#: inc/link.class.php:1047
 msgid "Item linked to order"
 msgstr "Articolo collegato a Ordine"
 
-#: inc/link.class.php:1048
+#: inc/link.class.php:1049
 msgid "Item already linked to another one"
 msgstr "Articolo collegato ad altro Ordine"
 
-#: inc/link.class.php:1090 inc/link.class.php:1095 inc/link.class.php:1116
-#: inc/link.class.php:1121
+#: inc/link.class.php:1091 inc/link.class.php:1096 inc/link.class.php:1117
+#: inc/link.class.php:1122
 msgid "Item unlink form order"
 msgstr "Articolo scollegato a ordine"
 
-#: inc/link.class.php:1113
+#: inc/link.class.php:1114
 msgid "One or several selected rows haven't linked items"
 msgstr "Uno o più righe selezionate non hanno materiali associati"
 
-#: inc/link.class.php:1311 inc/link.class.php:1315
+#: inc/link.class.php:1312 inc/link.class.php:1316
 msgid "Item generated by using order"
 msgstr "Articolo generato da ordine"
 
-#: inc/link.class.php:1322
+#: inc/link.class.php:1323
 msgid "Item successfully selected"
 msgstr "Articolo selezionato"
 
@@ -610,7 +610,7 @@ msgid "Add to the order from the catalog"
 msgstr "Aggiungi a ordine dal catalogo"
 
 #: inc/order_item.class.php:445 inc/order_item.class.php:568
-#: inc/order_item.class.php:978 inc/analyticnature.class.php:40 hook.php:155
+#: inc/order_item.class.php:978 inc/analyticnature.class.php:40 hook.php:144
 msgid "Analytic nature"
 msgstr ""
 
@@ -618,7 +618,7 @@ msgstr ""
 #: inc/order_item.class.php:1117 inc/order_item.class.php:1519
 #: inc/order.class.php:359 inc/order.class.php:1105 inc/order.class.php:1126
 #: inc/order.class.php:1916 inc/order.class.php:2045 inc/ordertax.class.php:41
-#: hook.php:147
+#: hook.php:136
 msgid "VAT"
 msgstr "IVA"
 
@@ -660,16 +660,16 @@ msgid "Paid value"
 msgstr "Valore pagato"
 
 #: inc/orderpayment.class.php:40 inc/order.class.php:401
-#: inc/order.class.php:1063 inc/order.class.php:2051 hook.php:148
+#: inc/order.class.php:1063 inc/order.class.php:2051 hook.php:137
 msgid "Payment conditions"
 msgstr "Condizioni di pagamento"
 
-#: inc/billtype.class.php:40 hook.php:154
+#: inc/billtype.class.php:40 hook.php:143
 msgid "Bill type"
 msgstr "Tipo di Fattura"
 
 #: inc/orderstate.class.php:55 inc/order.class.php:379 inc/order.class.php:996
-#: inc/order.class.php:2150 hook.php:150
+#: inc/order.class.php:2150 hook.php:139
 msgid "Order status"
 msgstr "Stato dell'ordine"
 
@@ -775,7 +775,7 @@ msgstr "Data di scadenza superata"
 msgid "Global discount to apply to items"
 msgstr "Sconto applicato"
 
-#: inc/order.class.php:1283 inc/accountsection.class.php:40 hook.php:156
+#: inc/order.class.php:1283 inc/accountsection.class.php:40 hook.php:145
 msgid "Account section"
 msgstr "Riferimento contabile"
 
@@ -980,7 +980,7 @@ msgstr ""
 msgid "Item delivered"
 msgstr ""
 
-#: inc/othertype.class.php:40 hook.php:151
+#: inc/othertype.class.php:40 hook.php:140
 msgid "Other type of item"
 msgstr "Tipo altre attrezzature"
 
@@ -1023,7 +1023,3 @@ msgstr "Statistiche spedizione"
 #: inc/order_supplier.class.php:350
 msgid "No specified status"
 msgstr "Nessun status specificato"
-
-#: hook.php:52
-msgid "Plugin installation or upgrade"
-msgstr "Installazione o aggiornamento del plugin"
