@@ -97,6 +97,7 @@ class PluginOrderLink extends CommonDBChild
         $item_rows = [];
         $found = false;
         $itemtype = '';
+        $mass_assignable = false;
         $order_web_dir = $CFG_GLPI['root_doc'] . '/plugins/order';
 
         foreach ($params["items"][self::class] as $key => $val) {
@@ -148,10 +149,31 @@ class PluginOrderLink extends CommonDBChild
                     $row['template_name'] = "";
                 }
 
-                if (Toolbox::hasTrait($itemtype, AssignableItem::class)) {
-                    $row['assignableitem'] = true;
+                // GLPI 11's Dropdown::show() runs strlen() on the 'value' option of a
+                // single-select dropdown, so passing an array there raises a fatal
+                // "strlen(): Argument #1 ($string) must be of type string, array given".
+                // Items using the AssignableItem behaviour (most assets, including GLPI
+                // 11 user-defined custom assets) expose groups_id as an array: keep it
+                // as an array only for the multi-select Group dropdown, and make sure
+                // every single-select value stays a scalar.
+                $is_assignable = Toolbox::hasTrait($itemtype, AssignableItem::class)
+                    || is_array($row['groups_id']);
+                $row['assignableitem'] = $is_assignable;
+                $mass_assignable = $is_assignable;
+
+                if ($is_assignable) {
                     if (!is_array($row['groups_id'])) {
                         $row['groups_id'] = $row['groups_id'] > 0 ? [$row['groups_id']] : [];
+                    }
+                } elseif (is_array($row['groups_id'])) {
+                    $row['groups_id'] = $row['groups_id'] === [] ? 0 : (int) reset($row['groups_id']);
+                }
+
+                foreach (['locations_id', 'states_id'] as $single_field) {
+                    if (is_array($row[$single_field])) {
+                        $row[$single_field] = $row[$single_field] === []
+                            ? 0
+                            : (int) reset($row[$single_field]);
                     }
                 }
 
@@ -174,7 +196,7 @@ class PluginOrderLink extends CommonDBChild
             'active_entities' => $_SESSION['glpiactiveentities'] ?? [],
             'item_rows' => $item_rows,
             'order_web_dir' => $order_web_dir,
-            'assignableitem' => Toolbox::hasTrait($itemtype, AssignableItem::class),
+            'assignableitem' => $mass_assignable,
         ]);
         return null;
     }

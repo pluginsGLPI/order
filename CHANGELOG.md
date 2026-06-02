@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Fix fatal error when opening the "Generate item" massive action form for
+  assignable assets (including GLPI 11 custom assets): an array value reaching a
+  single-select dropdown triggered `strlen(): ... array given`
 - Fix generate associated item massive action
 - Update locales
 
