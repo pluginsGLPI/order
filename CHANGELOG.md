@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Clean plugin uninstall residual data
 - Fix generate associated item massive action
 - Prevent invalid references and non-existent classes during generate item flow.
 - Remove unnecessary message during plugin installation
