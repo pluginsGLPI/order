@@ -147,10 +147,8 @@ class PluginOrderProfile extends CommonDBTM
 
     public static function uninstall()
     {
-        $item = new Profile();
-        $item->deleteByCriteria([
-            'name' => ['LIKE', 'PluginOrder%'],
-        ]);
+        $rights = array_column(self::getAllRights(true), 'field');
+        ProfileRight::deleteProfileRights($rights);
         self::removeRightsFromSession();
     }
 
