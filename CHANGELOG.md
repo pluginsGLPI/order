@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+
+### Fixed
+
+- Fix `Take item delivery` and `Cancel reception` action for `Software License` 
+
 ## [2.12.7] - 2026-06-03
 
 ### Fixed
