@@ -676,14 +676,14 @@ class PluginOrderLink extends CommonDBChild
             case 'cancelReceipt':
                 foreach ($ma->getItems()[self::class] as $key => $val) {
                     $order_item = new PluginOrderOrder_Item();
-                    $order_item->getFromDB($val);
+                    $order_item->getFromDB($key);
                     if ($order_item->fields["items_id"] != 0) {
                         $ma->addMessage(__s("Unable to cancel reception when items are already linked, please unlink them before trying again.", "order"));
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                     } elseif (!$link->cancelReception($key)) {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                     } else {
-                        $ma->itemDone($item->getType(), $val, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                     }
                 }
 
@@ -698,10 +698,34 @@ class PluginOrderLink extends CommonDBChild
         $order_item = new PluginOrderOrder_Item();
         $order_item->getFromDB($id);
 
+        if ($order_item->fields['itemtype'] === 'SoftwareLicense') {
+            $iterator = $order_item->queryRef(
+                $order_item->fields['plugin_order_orders_id'],
+                $order_item->fields['plugin_order_references_id'],
+                $order_item->fields['price_taxfree'],
+                $order_item->fields['discount'],
+                PluginOrderOrder::ORDER_DEVICE_DELIVRED,
+            );
+            $success = true;
+            foreach ($iterator as $data) {
+                $success = $order_item->update([
+                    'id'                             => $data['id'],
+                    'states_id'                      => PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED,
+                    'delivery_date'                  => null,
+                    'delivery_number'                => '',
+                    'plugin_order_deliverystates_id' => 0,
+                ]) && $success;
+            }
+
+            return $success;
+        }
+
         return $order_item->update([
-            'id'            => $id,
-            'states_id'     => PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED,
-            'delivery_date' => null,
+            'id'                             => $id,
+            'states_id'                      => PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED,
+            'delivery_date'                  => null,
+            'delivery_number'                => '',
+            'plugin_order_deliverystates_id' => 0,
         ]);
     }
 
