@@ -1200,6 +1200,7 @@ class PluginOrderLink extends CommonDBChild
                                 $input[$field_name] = $field_val;
                             }
                         }
+
                         unset($input['id'], $input['is_template'], $input['template_name'], $input['date_mod'], $input['date_creation']);
                         $input['name'] = $lic->fields['name']
                             ? autoName($lic->fields['name'], 'name', $templateID, 'SoftwareLicense', $entity)
@@ -1207,6 +1208,7 @@ class PluginOrderLink extends CommonDBChild
                     } else {
                         $input['name'] = $values['name'];
                     }
+
                     $input['entities_id'] = $entity;
                     $input['number']      = 0;
 
@@ -1230,6 +1232,7 @@ class PluginOrderLink extends CommonDBChild
                         $order->addHistory('PluginOrderOrder', '', $new_value, $params["plugin_order_orders_id"]);
                     }
                 }
+
                 continue;
             }
 
