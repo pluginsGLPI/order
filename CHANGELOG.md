@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.12.7] - 2026-06-03
 
+### Added
+- Add an `Orderable` capacity for GLPI 11 custom asset definitions.
+
 ### Fixed
 
 - Clean plugin uninstall residual data
