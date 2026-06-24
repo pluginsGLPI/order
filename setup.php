@@ -32,7 +32,7 @@ use Glpi\Asset\AssetDefinitionManager;
 
 use function Safe\define;
 
-define('PLUGIN_ORDER_VERSION', '2.12.7');
+define('PLUGIN_ORDER_VERSION', '2.12.8');
 
 // Minimal GLPI version, inclusive
 define("PLUGIN_ORDER_MIN_GLPI", "11.0.0");
