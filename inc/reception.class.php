@@ -407,10 +407,10 @@ class PluginOrderReception extends CommonDBChild
             echo "<tr class='tab_bg_1 center'>";
             echo "<td></td>";
             echo "<td align='center'>" . $item->getTypeName() . "</td>";
-            echo "<td align='center'>" . Dropdown::getDropdownName(
+            echo "<td align='center'>" . htmlentities(Dropdown::getDropdownName(
                 "glpi_manufacturers",
                 $data_ref["manufacturers_id"],
-            ) . "</td>";
+            ), ENT_QUOTES, "UTF-8") . "</td>";
             if ($table == 'glpi_plugin_order_referencefrees') {
                 echo "<td>" . $data_ref['name'] . "</td>";
             } else {
