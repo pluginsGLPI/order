@@ -576,7 +576,7 @@ class PluginOrderReception extends CommonDBChild
 
                 echo "<td align='center'>" . Dropdown::getDropdownName(getTableForItemType(Entity::class), (int) $data["entities_id"]) . "</td>";
                 echo "<td align='center'>" . Html::convDate($data["delivery_date"]) . "</td>";
-                echo "<td align='center'>" . $data["delivery_number"] . "</td>";
+                echo "<td align='center'>" . htmlentities($data["delivery_number"] ?? "", ENT_QUOTES, "UTF-8") . "</td>";
                 echo "<td align='center'>"
                  . Dropdown::getDropdownName(
                      "glpi_plugin_order_deliverystates",
