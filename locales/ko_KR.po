@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-28 04:12+0000\n"
+"POT-Creation-Date: 2026-06-25 04:08+0000\n"
 "PO-Revision-Date: 2015-09-18 10:11+0000\n"
 "Last-Translator: 조성현 (jaymz9634) <jaymz9634@gmail.com>, 2020\n"
 "Language-Team: Korean (Korea) (http://app.transifex.com/teclib/glpi-project-plugin-order/language/ko_KR/)\n"
@@ -18,22 +18,14 @@ msgstr ""
 "Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: templates/order_getitems.html.twig templates/order_link_item.html.twig
-msgid "Collapse all"
+#: templates/order_infocom.html.twig
+msgid "Order informations"
 msgstr ""
 
-#: templates/order_getitems.html.twig templates/order_link_item.html.twig
-msgid "Expand all"
-msgstr ""
-
-#: templates/order_getitems.html.twig templates/order_link_item.html.twig
-#, php-format
-msgid "Showing %s to %s of %s entries"
-msgstr ""
-
-#: templates/order_getitems.html.twig templates/order_link_item.html.twig
-msgid "Entries to show:"
-msgstr ""
+#: templates/order_infocom.html.twig inc/order.class.php:435
+#: inc/order.class.php:911 inc/surveysupplier.class.php:212 hook.php:244
+msgid "Order name"
+msgstr "주문 이름"
 
 #: templates/order_link_item.html.twig inc/bill.class.php:358
 #: inc/order_item.class.php:1727 inc/reception.class.php:374
@@ -41,125 +33,75 @@ msgid "No item to take delivery of"
 msgstr "수취할 품목 없음"
 
 #: templates/order_link_item.html.twig templates/generate_item.html.twig
-#: inc/reference.class.php:71 inc/reference.class.php:87
 #: inc/bill.class.php:370 inc/order_item.class.php:443
-#: inc/order_item.class.php:1739 inc/reference_supplier.class.php:277
-#: inc/reference_supplier.class.php:302 inc/reference_supplier.class.php:568
-#: inc/reference_supplier.class.php:570 inc/reception.class.php:404
+#: inc/order_item.class.php:1739 inc/reference.class.php:71
+#: inc/reference.class.php:87 inc/reception.class.php:404
+#: inc/reference_supplier.class.php:277 inc/reference_supplier.class.php:302
+#: inc/reference_supplier.class.php:568 inc/reference_supplier.class.php:570
 msgid "Product reference"
 msgstr "상품 참조"
+
+#: templates/order_link_item.html.twig templates/order_getitems.html.twig
+msgid "Collapse all"
+msgstr ""
+
+#: templates/order_link_item.html.twig templates/order_getitems.html.twig
+msgid "Expand all"
+msgstr ""
+
+#: templates/order_link_item.html.twig templates/order_getitems.html.twig
+#, php-format
+msgid "Showing %s to %s of %s entries"
+msgstr ""
+
+#: templates/order_link_item.html.twig templates/order_getitems.html.twig
+msgid "Entries to show:"
+msgstr ""
 
 #: templates/generate_item.html.twig
 msgid "Mass value filling"
 msgstr ""
 
-#: templates/order_infocom.html.twig
-msgid "Order informations"
-msgstr ""
-
-#: templates/order_infocom.html.twig inc/surveysupplier.class.php:212
-#: inc/order.class.php:435 inc/order.class.php:911 hook.php:244
-msgid "Order name"
-msgstr "주문 이름"
-
-#: report/deliveryinfos/deliveryinfos.php:47
-msgid "deliveryinfos_report_title"
-msgstr "deliveryinfos_report_title"
-
-#: report/deliveryinfos/deliveryinfos.php:48
-#: report/orderdelivery/orderdelivery.php:48
-#: report/orderdelivery/orderdelivery.php:90 inc/order.class.php:349
-#: inc/order.class.php:933 inc/notificationtargetorder.class.php:116
-#: inc/notificationtargetorder.class.php:171
-#: inc/notificationtargetorder.class.php:179
-msgid "Date of order"
-msgstr "주문 일자"
-
-#: report/deliveryinfos/deliveryinfos.php:50
-#: report/orderdelivery/orderdelivery.php:50
-#: report/orderdelivery/orderdelivery.php:95 inc/order.class.php:369
-#: inc/order.class.php:1048
-msgid "Delivery location"
-msgstr "배송 위치"
-
-#: report/deliveryinfos/deliveryinfos.php:74
-msgid "Orders total"
-msgstr "주문 총계"
-
-#: report/deliveryinfos/deliveryinfos.php:75
-msgid "Late orders total"
-msgstr "최근 주문 총계"
-
-#: report/orderdelivery/orderdelivery.php:47
-msgid "orderdelivery_report_title"
-msgstr "orderdelivery_report_title"
-
-#: report/orderdelivery/orderdelivery.php:78 inc/bill.class.php:198
-#: inc/order.class.php:338 inc/order.class.php:951 inc/order.class.php:1845
-#: hook.php:251
-msgid "Order number"
-msgstr "주문 번호"
-
-#: report/orderdelivery/orderdelivery.php:91 inc/order.class.php:457
-#: inc/order.class.php:1234 inc/notificationtargetorder.class.php:180
-msgid "Estimated due date"
-msgstr "예상 기한"
-
-#: ajax/massreception.php:52
-msgid "Number to deliver"
-msgstr ""
-
-#: ajax/massreception.php:64 inc/order_item.class.php:184
-#: inc/reception.class.php:257 inc/reception.class.php:529
-#: inc/reception.class.php:819 inc/deliverystate.class.php:37 hook.php:141
-msgid "Delivery status"
-msgstr "배송 상태"
-
-#: ajax/massreception.php:71 inc/config.class.php:272
-#: inc/reception.class.php:824
-msgid "Enable automatic generation"
-msgstr "자동 생성 활성화"
-
-#: ajax/massreception.php:74 inc/config.class.php:317 inc/config.class.php:880
-#: inc/reception.class.php:830
-msgid "Default name"
-msgstr "기본 이름"
-
-#: ajax/massreception.php:81 inc/config.class.php:329 inc/config.class.php:886
-#: inc/reception.class.php:838
-msgid "Default serial number"
-msgstr "기본 시리얼 번호"
-
-#: ajax/massreception.php:88 inc/config.class.php:341 inc/config.class.php:892
-#: inc/reception.class.php:846
-msgid "Default inventory number"
-msgstr "기본 물품 번호"
-
-#: setup.php:206 front/menu.php:37 front/menu.php:55
 #: front/surveysupplier.form.php:70 front/order_item.form.php:41
-#: front/reception.form.php:100 front/order_supplier.form.php:81
-#: inc/config.class.php:84 inc/order_item.class.php:123
-#: inc/order.class.php:333
+#: front/menu.php:37 front/menu.php:55 front/reception.form.php:100
+#: front/order_supplier.form.php:81 inc/order_item.class.php:123
+#: inc/order.class.php:333 inc/config.class.php:84 setup.php:232
 msgid "Orders management"
 msgstr "주문 관리"
 
-#: front/menu.php:61 front/order.php:38 front/order.form.php:466
-#: front/config.form.php:41 front/preference.form.php:43
-#: inc/bill.class.php:654 inc/profile.class.php:109 inc/profile.class.php:196
+#: front/menu.php:61 front/preference.form.php:43 front/order.php:38
+#: front/order.form.php:466 front/config.form.php:41 inc/bill.class.php:654
+#: inc/profile.class.php:109 inc/profile.class.php:194
 #: inc/order_item.class.php:2241 inc/order_item.class.php:2246
-#: inc/menu.class.php:35 inc/order.class.php:100 inc/order.class.php:633
-#: inc/documentcategory.class.php:46 inc/order_supplier.class.php:491
-#: hook.php:146
+#: inc/documentcategory.class.php:46 inc/menu.class.php:35
+#: inc/order_supplier.class.php:491 inc/order.class.php:100
+#: inc/order.class.php:633 hook.php:146
 msgid "Orders"
 msgstr "주문"
 
-#: front/menu.php:68 inc/profile.class.php:200
+#: front/menu.php:68 inc/profile.class.php:198
 msgid "Products references"
 msgstr "상품 참조"
 
-#: front/menu.php:75 inc/profile.class.php:204 inc/order_item.class.php:1612
+#: front/menu.php:75 inc/profile.class.php:202 inc/order_item.class.php:1612
 msgid "Bills"
 msgstr "청구서"
+
+#: front/order_supplier.form.php:52 inc/order_supplier.class.php:63
+#: inc/order_supplier.class.php:171 inc/order_supplier.class.php:233
+msgid "Quote number"
+msgstr "견적 번호"
+
+#: front/order_supplier.form.php:67
+msgid "Delete"
+msgstr "삭제"
+
+#: front/order_supplier.form.php:67 inc/order_supplier.class.php:46
+#: inc/order_supplier.class.php:58 inc/order_supplier.class.php:229
+#: inc/order_supplier.class.php:496 inc/reference_supplier.class.php:155
+#: inc/reference_supplier.class.php:299
+msgid "Supplier Detail"
+msgstr "공급자 상세"
 
 #: front/reference_supplier.form.php:70 inc/reference_supplier.class.php:46
 #: inc/reference_supplier.class.php:87
@@ -219,273 +161,113 @@ msgstr "참조 제거"
 msgid "No item selected"
 msgstr "선택된 품목 없음"
 
-#: front/order_supplier.form.php:52 inc/order_supplier.class.php:63
-#: inc/order_supplier.class.php:171 inc/order_supplier.class.php:233
-msgid "Quote number"
-msgstr "견적 번호"
+#: inc/orderstate.class.php:55 inc/order.class.php:379 inc/order.class.php:996
+#: inc/order.class.php:2150 hook.php:139
+msgid "Order status"
+msgstr "주문 상태"
 
-#: front/order_supplier.form.php:67
-msgid "Delete"
-msgstr "삭제"
+#: inc/orderstate.class.php:63 inc/billstate.class.php:52
+msgid "You cannot remove this status"
+msgstr "이 상태를 제거할 수 없습니다"
 
-#: front/order_supplier.form.php:67 inc/reference_supplier.class.php:155
-#: inc/reference_supplier.class.php:299 inc/order_supplier.class.php:46
-#: inc/order_supplier.class.php:58 inc/order_supplier.class.php:229
-#: inc/order_supplier.class.php:496
-msgid "Supplier Detail"
-msgstr "공급자 상세"
+#: inc/orderstate.class.php:105
+msgid "Draft"
+msgstr "초안"
 
-#: inc/surveysupplier.class.php:44 inc/surveysupplier.class.php:208
-#: inc/surveysupplier.class.php:420 inc/surveysupplier.class.php:613
-msgid "Supplier quality"
-msgstr "공급자 품질"
+#: inc/orderstate.class.php:106
+msgid "Waiting for approval"
+msgstr "승인 대기"
 
-#: inc/surveysupplier.class.php:213 inc/surveysupplier.class.php:423
-msgid "Note"
-msgstr "참고"
+#: inc/orderstate.class.php:107
+msgid "Validated"
+msgstr "검증됨"
 
-#: inc/surveysupplier.class.php:214 inc/surveysupplier.class.php:424
-msgid "Comment on survey"
-msgstr "설문에 대한 의견"
+#: inc/orderstate.class.php:108
+msgid "Being delivered"
+msgstr "배송 중"
 
-#: inc/surveysupplier.class.php:244 inc/surveysupplier.class.php:343
-msgid "Administrative followup quality (contracts, bills, mail, etc.)"
-msgstr "관리적 추적 품질 (연락처, 청구서, 이메일, 기타 등..)"
+#: inc/orderstate.class.php:109
+msgid "Delivered"
+msgstr "배송됨"
 
-#: inc/surveysupplier.class.php:253 inc/surveysupplier.class.php:350
-msgid "Commercial followup quality, visits, responseness"
-msgstr "상업적 품질, 방문, 반응 추적"
+#: inc/orderstate.class.php:110
+msgid "Canceled"
+msgstr "취소됨"
 
-#: inc/surveysupplier.class.php:260 inc/surveysupplier.class.php:355
-msgid "Contacts availability"
-msgstr "연락처 가용성"
+#: inc/orderstate.class.php:111 inc/billstate.class.php:67
+#: inc/billstate.class.php:109
+msgid "Paid"
+msgstr "지불됨"
 
-#: inc/surveysupplier.class.php:268 inc/surveysupplier.class.php:361
-msgid "Quality of supplier intervention"
-msgstr "공급사 개입 품질"
+#: inc/accountsection.class.php:40 inc/order.class.php:1283 hook.php:145
+msgid "Account section"
+msgstr "계정 섹션"
 
-#: inc/surveysupplier.class.php:275 inc/surveysupplier.class.php:367
-msgid "Reliability about annouced delays"
-msgstr "예고된 지연에 대한 신뢰성"
+#: inc/billtype.class.php:40 hook.php:143
+msgid "Bill type"
+msgstr "청구서 유형"
 
-#: inc/surveysupplier.class.php:287
-msgid "Final supplier note"
-msgstr "최종 공급사 참고"
+#: inc/notificationtargetorder.class.php:55
+#: inc/notificationtargetorder.class.php:132
+msgid "Request order validation"
+msgstr "주문 확인 요청"
 
-#: inc/surveysupplier.class.php:381
-msgid "Average mark up to 5 (X points / 5)"
-msgstr ""
+#: inc/notificationtargetorder.class.php:56
+msgid "Order validated"
+msgstr "주문 확인됨"
 
-#: inc/surveysupplier.class.php:405 inc/bill.class.php:106
-#: inc/bill.class.php:185 inc/order_item.class.php:922
-#: inc/order_item.class.php:1491 inc/order_item.class.php:2258
-#: inc/order.class.php:100 inc/reception.class.php:322
-#: inc/order_supplier.class.php:211 hook.php:400
-msgid "Order"
-msgstr "주문"
+#: inc/notificationtargetorder.class.php:59
+#: inc/notificationtargetorder.class.php:205
+msgid "Late orders"
+msgstr "마지막 주문"
 
-#: inc/reference.class.php:164 inc/reference.class.php:660
-#: inc/order_item.class.php:987
-msgid "Manufacturer reference"
-msgstr "제조사 참조"
+#: inc/notificationtargetorder.class.php:60
+#: inc/notificationtargetorder.class.php:148
+msgid "No item to generate"
+msgstr "생성할 품목 없음"
 
-#: inc/reference.class.php:187 inc/order_item.class.php:128
-#: inc/order_item.class.php:448 inc/order_item.class.php:571
-#: inc/order_item.class.php:988 inc/order_item.class.php:1116
-#: inc/order_item.class.php:1512 inc/reference_supplier.class.php:99
-#: inc/reference_supplier.class.php:249 inc/reference_supplier.class.php:303
-#: inc/reference_supplier.class.php:571
-msgid "Unit price tax free"
-msgstr "단가 면세"
+#: inc/notificationtargetorder.class.php:116
+#: inc/notificationtargetorder.class.php:171
+#: inc/notificationtargetorder.class.php:179 inc/order.class.php:349
+#: inc/order.class.php:933 report/deliveryinfos/deliveryinfos.php:48
+#: report/orderdelivery/orderdelivery.php:48
+#: report/orderdelivery/orderdelivery.php:90
+msgid "Date of order"
+msgstr "주문 일자"
 
-#: inc/reference.class.php:197 inc/order_item.class.php:169
-#: inc/order_item.class.php:577 inc/reference_supplier.class.php:92
-#: inc/reference_supplier.class.php:235
-msgid "Manufacturer's product reference"
-msgstr "제조사 상품 참조"
+#: inc/notificationtargetorder.class.php:125
+#: inc/notificationtargetorder.class.php:173
+msgid "Comment of validation"
+msgstr "검증 의견"
 
-#: inc/reference.class.php:301
-msgid "Cannot create reference without a name"
-msgstr "이름이 없는 참조는 생성할 수 없음"
+#: inc/notificationtargetorder.class.php:144
+msgid "Validation canceled successfully"
+msgstr "확인이 취소됨"
 
-#: inc/reference.class.php:306
-msgid "Cannot create reference without a type"
-msgstr "유형이 없는 참조는 생성할 수 없음"
+#: inc/notificationtargetorder.class.php:174
+msgid "Editor of validation"
+msgstr "확인 편집자"
 
-#: inc/reference.class.php:319
-msgid "A reference with the same name still exists"
-msgstr "같은 이름의 참조가 존재함"
+#: inc/notificationtargetorder.class.php:180 inc/order.class.php:457
+#: inc/order.class.php:1234 report/orderdelivery/orderdelivery.php:91
+msgid "Estimated due date"
+msgstr "예상 기한"
 
-#: inc/reference.class.php:336
-msgid "Reference(s) in use"
-msgstr "사용중인 참조(들)"
-
-#: inc/reference.class.php:389 inc/reference.class.php:886
-#: inc/order.class.php:2144
-msgid "Linked orders"
-msgstr "연결된 주문"
-
-#: inc/reference.class.php:755 inc/order.class.php:1105
-#: inc/order.class.php:1501
-msgid "Eco-responsibility fees"
-msgstr ""
-
-#: inc/reference.class.php:973
-msgid "Copy of"
-msgstr "복사본"
-
-#: inc/reference.class.php:1038
-msgid "Copy reference"
-msgstr "참조 복사"
-
-#: inc/config.class.php:111
-msgid "Plugin configuration"
-msgstr "플러그인 구성"
-
-#: inc/config.class.php:114
-msgid "Default VAT"
-msgstr "기본 VAT"
-
-#: inc/config.class.php:120 inc/order_item.class.php:534
-#: inc/order_item.class.php:614 inc/order.class.php:1137
-msgid "No VAT"
-msgstr "VAT 없음"
-
-#: inc/config.class.php:126
-msgid "Use validation process"
-msgstr "검증 절차 사용"
-
-#: inc/config.class.php:133
-msgid "Order generation in ODT"
-msgstr "ODT에서 주문 생성"
-
-#: inc/config.class.php:139
-msgid "Activate suppliers quality satisfaction"
-msgstr "공급자 품질 만족 활성화"
-
-#: inc/config.class.php:146
-msgid "Display order's suppliers informations"
-msgstr "주문의 공급자 정보 표시"
-
-#: inc/config.class.php:152
-msgid "Color to be displayed when order due date is overtaken"
-msgstr "주문 기한 초과 시 표시될 색상"
-
-#: inc/config.class.php:160
-msgid "Copy order documents when a new item is created"
-msgstr "새 품목 생성 시 주문 문서 복사"
-
-#: inc/config.class.php:167
-msgid "Default heading when adding a document to an order"
-msgstr "주문에 문서 추가 시 기본 머릿말"
-
-#: inc/config.class.php:174 inc/order.class.php:531 inc/order.class.php:1380
 #: inc/notificationtargetorder.class.php:481
-#: inc/notificationtargetorder.class.php:484
+#: inc/notificationtargetorder.class.php:484 inc/order.class.php:531
+#: inc/order.class.php:1380 inc/config.class.php:174
 msgid "Author group"
 msgstr "작성자 그룹"
 
-#: inc/config.class.php:184 inc/order.class.php:539 inc/order.class.php:1431
 #: inc/notificationtargetorder.class.php:483
-#: inc/notificationtargetorder.class.php:485
+#: inc/notificationtargetorder.class.php:485 inc/order.class.php:539
+#: inc/order.class.php:1431 inc/config.class.php:184
 msgid "Recipient group"
 msgstr "수취인 그룹"
 
-#: inc/config.class.php:206
-msgid "Hide inactive budgets"
-msgstr "비활성화 예산 숨김"
-
-#: inc/config.class.php:213
-msgid "Transmit budget change to linked assets"
-msgstr "연결된 자산에 예산 변경 전송"
-
-#: inc/config.class.php:220
-msgid "Display account section on order form"
-msgstr "주문 양식에 계정 섹션 표시"
-
-#: inc/config.class.php:227
-msgid "Set account section as mandatory on order form"
-msgstr "주문 양식에 필수 계정 섹션 설정"
-
-#: inc/config.class.php:234
-msgid "Use free references"
-msgstr "무료 참조 사용"
-
-#: inc/config.class.php:241
-msgid "Rename documents added in order"
-msgstr "주문에 추가된 문서 이름 변경"
-
-#: inc/config.class.php:249
-msgid "Automatic actions when delivery"
-msgstr "배송 시 자동 동작"
-
-#: inc/config.class.php:258
-msgid "Display analytic nature on item form"
-msgstr "품목 양식에 성향 분석 표기"
-
-#: inc/config.class.php:265
-msgid "Set analytic nature as mandatory on item form"
-msgstr "품목 양식에 필수 성향 분석 설정"
-
-#: inc/config.class.php:278
-msgid "Asked"
-msgstr "질의함"
-
-#: inc/config.class.php:286
-msgid "Default state"
-msgstr "기본 상태"
-
-#: inc/config.class.php:297
-msgid "Add order location to item"
-msgstr "품목에 주문 위치 추가"
-
-#: inc/config.class.php:304
-msgid "Add billing details to item"
-msgstr "품목에 청구서 상세 추가"
-
-#: inc/config.class.php:310
-msgid "Add immobilization number to item"
+#: inc/other.class.php:40
+msgid "Other kind of items"
 msgstr ""
-
-#: inc/config.class.php:370
-msgid "Order lifecycle"
-msgstr "주문 주기"
-
-#: inc/config.class.php:374
-msgid "State before validation"
-msgstr "검증 전 상태"
-
-#: inc/config.class.php:384
-msgid "Waiting for validation state"
-msgstr "검증 상태 대기"
-
-#: inc/config.class.php:394
-msgid "Validated order state"
-msgstr "검증된 주문 상태"
-
-#: inc/config.class.php:404
-msgid "Order being delivered state"
-msgstr "배송됨 상태가 되야 할 주문"
-
-#: inc/config.class.php:414
-msgid "Order delivered state"
-msgstr "주문 배송됨 상태"
-
-#: inc/config.class.php:424
-msgid "Order paied state"
-msgstr "주문 결제됨 상태"
-
-#: inc/config.class.php:434
-msgid "Canceled order state"
-msgstr "취소된 주문 상태"
-
-#: inc/preference.class.php:185 inc/order.class.php:1761
-msgid "Use this model"
-msgstr "이 모델 사용"
-
-#: inc/preference.class.php:190 inc/order.class.php:1770
-msgid "Use this sign"
-msgstr "이 사인 사용"
 
 #: inc/bill.class.php:46 inc/bill.class.php:139 inc/bill.class.php:401
 #: inc/order_item.class.php:1769 inc/order_item.class.php:1876
@@ -497,14 +279,28 @@ msgstr "청구서"
 msgid "A bill number is mandatory"
 msgstr "청구서 번호는 필수입니다"
 
-#: inc/bill.class.php:402 inc/billstate.class.php:44
-#: inc/order_item.class.php:1770 hook.php:142
+#: inc/bill.class.php:106 inc/bill.class.php:185 inc/order_item.class.php:922
+#: inc/order_item.class.php:1491 inc/order_item.class.php:2258
+#: inc/order_supplier.class.php:211 inc/order.class.php:100
+#: inc/reception.class.php:322 inc/surveysupplier.class.php:405 hook.php:400
+msgid "Order"
+msgstr "주문"
+
+#: inc/bill.class.php:198 inc/order.class.php:338 inc/order.class.php:951
+#: inc/order.class.php:1845 report/orderdelivery/orderdelivery.php:78
+#: hook.php:251
+msgid "Order number"
+msgstr "주문 번호"
+
+#: inc/bill.class.php:402 inc/order_item.class.php:1770
+#: inc/billstate.class.php:44 hook.php:142
 msgid "Bill status"
 msgstr "청구서 상태"
 
-#: inc/referencefree.class.php:41
-msgid "Reference free"
-msgstr "무료 참조"
+#: inc/orderpayment.class.php:40 inc/order.class.php:401
+#: inc/order.class.php:1063 inc/order.class.php:2051 hook.php:137
+msgid "Payment conditions"
+msgstr "결제 조건"
 
 #: inc/link.class.php:49
 msgid "Generation"
@@ -570,30 +366,42 @@ msgstr "주문을 사용하여 생성된 품목"
 msgid "Item successfully selected"
 msgstr "품목 선택됨"
 
-#: inc/billstate.class.php:52 inc/orderstate.class.php:63
-msgid "You cannot remove this status"
-msgstr "이 상태를 제거할 수 없습니다"
-
-#: inc/billstate.class.php:66
-msgid "Being paid"
-msgstr "결제됨"
-
-#: inc/billstate.class.php:67 inc/billstate.class.php:109
-#: inc/orderstate.class.php:111
-msgid "Paid"
-msgstr "지불됨"
-
-#: inc/billstate.class.php:110
-msgid "Not paid"
-msgstr "미 지불됨"
+#: inc/ordertax.class.php:41 inc/order_item.class.php:449
+#: inc/order_item.class.php:572 inc/order_item.class.php:1117
+#: inc/order_item.class.php:1519 inc/order.class.php:359
+#: inc/order.class.php:1105 inc/order.class.php:1126 inc/order.class.php:1916
+#: inc/order.class.php:2045 hook.php:136
+msgid "VAT"
+msgstr "VAT"
 
 #: inc/order_item.class.php:111 inc/order_item.class.php:2251
 msgid "Order item"
 msgstr "주문 품목"
 
+#: inc/order_item.class.php:128 inc/order_item.class.php:448
+#: inc/order_item.class.php:571 inc/order_item.class.php:988
+#: inc/order_item.class.php:1116 inc/order_item.class.php:1512
+#: inc/reference.class.php:187 inc/reference_supplier.class.php:99
+#: inc/reference_supplier.class.php:249 inc/reference_supplier.class.php:303
+#: inc/reference_supplier.class.php:571
+msgid "Unit price tax free"
+msgstr "단가 면세"
+
 #: inc/order_item.class.php:163 inc/order_item.class.php:565
 msgid "Product name"
 msgstr "상품 이름"
+
+#: inc/order_item.class.php:169 inc/order_item.class.php:577
+#: inc/reference.class.php:197 inc/reference_supplier.class.php:92
+#: inc/reference_supplier.class.php:235
+msgid "Manufacturer's product reference"
+msgstr "제조사 상품 참조"
+
+#: inc/order_item.class.php:184 inc/reception.class.php:257
+#: inc/reception.class.php:529 inc/reception.class.php:819
+#: inc/deliverystate.class.php:37 hook.php:141 ajax/massreception.php:64
+msgid "Delivery status"
+msgstr "배송 상태"
 
 #: inc/order_item.class.php:190
 msgid "Analytic Nature"
@@ -612,13 +420,10 @@ msgstr "분류에서 주문 추가"
 msgid "Analytic nature"
 msgstr "성향 분석"
 
-#: inc/order_item.class.php:449 inc/order_item.class.php:572
-#: inc/order_item.class.php:1117 inc/order_item.class.php:1519
-#: inc/order.class.php:359 inc/order.class.php:1105 inc/order.class.php:1126
-#: inc/order.class.php:1916 inc/order.class.php:2045 inc/ordertax.class.php:41
-#: hook.php:136
-msgid "VAT"
-msgstr "VAT"
+#: inc/order_item.class.php:534 inc/order_item.class.php:614
+#: inc/order.class.php:1137 inc/config.class.php:120
+msgid "No VAT"
+msgstr "VAT 없음"
 
 #: inc/order_item.class.php:548 inc/order_item.class.php:689
 msgid "Please select a supplier"
@@ -640,6 +445,11 @@ msgstr ""
 msgid "An analytic nature is mandatory !"
 msgstr "성향 분석은 필수 입니다 !"
 
+#: inc/order_item.class.php:987 inc/reference.class.php:164
+#: inc/reference.class.php:660
+msgid "Manufacturer reference"
+msgstr "제조사 참조"
+
 #: inc/order_item.class.php:1119 inc/order_item.class.php:1542
 msgid "Discounted price tax free"
 msgstr "할인가 면세"
@@ -657,43 +467,85 @@ msgstr "결제 상태"
 msgid "Paid value"
 msgstr "결제된 가치"
 
-#: inc/orderpayment.class.php:40 inc/order.class.php:401
-#: inc/order.class.php:1063 inc/order.class.php:2051 hook.php:137
-msgid "Payment conditions"
-msgstr "결제 조건"
+#: inc/billstate.class.php:66
+msgid "Being paid"
+msgstr "결제됨"
 
-#: inc/billtype.class.php:40 hook.php:143
-msgid "Bill type"
-msgstr "청구서 유형"
+#: inc/billstate.class.php:110
+msgid "Not paid"
+msgstr "미 지불됨"
 
-#: inc/orderstate.class.php:55 inc/order.class.php:379 inc/order.class.php:996
-#: inc/order.class.php:2150 hook.php:139
-msgid "Order status"
-msgstr "주문 상태"
+#: inc/documentcategory.class.php:37
+msgid "Document category"
+msgstr "문서 분류"
 
-#: inc/orderstate.class.php:105
-msgid "Draft"
-msgstr "초안"
+#: inc/documentcategory.class.php:85 inc/documentcategory.class.php:90
+msgid "Document category prefix"
+msgstr "문서 분류 접두어"
 
-#: inc/orderstate.class.php:106
-msgid "Waiting for approval"
-msgstr "승인 대기"
+#: inc/orderablecapacity.class.php:45
+msgid "Orderable"
+msgstr ""
 
-#: inc/orderstate.class.php:107
-msgid "Validated"
-msgstr "검증됨"
+#: inc/orderablecapacity.class.php:73
+#, php-format
+msgid "Used by %d order reference"
+msgid_plural "Used by %d order references"
+msgstr[0] ""
 
-#: inc/orderstate.class.php:108
-msgid "Being delivered"
-msgstr "배송 중"
+#: inc/reference.class.php:301
+msgid "Cannot create reference without a name"
+msgstr "이름이 없는 참조는 생성할 수 없음"
 
-#: inc/orderstate.class.php:109
-msgid "Delivered"
-msgstr "배송됨"
+#: inc/reference.class.php:306
+msgid "Cannot create reference without a type"
+msgstr "유형이 없는 참조는 생성할 수 없음"
 
-#: inc/orderstate.class.php:110
-msgid "Canceled"
-msgstr "취소됨"
+#: inc/reference.class.php:319
+msgid "A reference with the same name still exists"
+msgstr "같은 이름의 참조가 존재함"
+
+#: inc/reference.class.php:336
+msgid "Reference(s) in use"
+msgstr "사용중인 참조(들)"
+
+#: inc/reference.class.php:389 inc/reference.class.php:886
+#: inc/order.class.php:2144
+msgid "Linked orders"
+msgstr "연결된 주문"
+
+#: inc/reference.class.php:755 inc/order.class.php:1105
+#: inc/order.class.php:1501
+msgid "Eco-responsibility fees"
+msgstr ""
+
+#: inc/reference.class.php:973
+msgid "Copy of"
+msgstr "복사본"
+
+#: inc/reference.class.php:1038
+msgid "Copy reference"
+msgstr "참조 복사"
+
+#: inc/othertype.class.php:40 hook.php:140
+msgid "Other type of item"
+msgstr "품목의 다른 유형"
+
+#: inc/order_supplier.class.php:332
+msgid "Delivery statistics"
+msgstr "배송 통계"
+
+#: inc/order_supplier.class.php:350
+msgid "No specified status"
+msgstr "지정된 상태 없음"
+
+#: inc/preference.class.php:185 inc/order.class.php:1761
+msgid "Use this model"
+msgstr "이 모델 사용"
+
+#: inc/preference.class.php:190 inc/order.class.php:1770
+msgid "Use this sign"
+msgstr "이 사인 사용"
 
 #: inc/order.class.php:318 inc/order.class.php:1755 inc/order.class.php:1782
 msgid "Order Generation"
@@ -723,6 +575,13 @@ msgstr "확인 없이 주문 생성"
 #: inc/order.class.php:1126 inc/order.class.php:1525 inc/order.class.php:2042
 msgid "Postage"
 msgstr "배송 요금"
+
+#: inc/order.class.php:369 inc/order.class.php:1048
+#: report/deliveryinfos/deliveryinfos.php:50
+#: report/orderdelivery/orderdelivery.php:50
+#: report/orderdelivery/orderdelivery.php:95
+msgid "Delivery location"
+msgstr "배송 위치"
 
 #: inc/order.class.php:477 inc/order.class.php:2403
 msgid "Order is late"
@@ -772,10 +631,6 @@ msgstr "기한 초과"
 #: inc/order.class.php:1263
 msgid "Global discount to apply to items"
 msgstr ""
-
-#: inc/order.class.php:1283 inc/accountsection.class.php:40 hook.php:145
-msgid "Account section"
-msgstr "계정 섹션"
 
 #: inc/order.class.php:1491
 msgid "Articles"
@@ -922,22 +777,6 @@ msgstr "이 예산에 관련된 주문 총합은 그 값보다 커야 합니다.
 msgid "Total orders related with this budget is equal to its value."
 msgstr "이 예산에 관련된 주문 총합은 그 값과 같아야 합니다."
 
-#: inc/other.class.php:40
-msgid "Other kind of items"
-msgstr ""
-
-#: inc/documentcategory.class.php:37
-msgid "Document category"
-msgstr "문서 분류"
-
-#: inc/documentcategory.class.php:85 inc/documentcategory.class.php:90
-msgid "Document category prefix"
-msgstr "문서 분류 접두어"
-
-#: inc/reference_supplier.class.php:562
-msgid "List references"
-msgstr "참조 목록"
-
 #: inc/reception.class.php:54
 msgid "Delivery"
 msgstr "배송"
@@ -957,6 +796,26 @@ msgstr ""
 #: inc/reception.class.php:798
 msgid "Destination entity"
 msgstr ""
+
+#: inc/reception.class.php:824 inc/config.class.php:272
+#: ajax/massreception.php:71
+msgid "Enable automatic generation"
+msgstr "자동 생성 활성화"
+
+#: inc/reception.class.php:830 inc/config.class.php:317
+#: inc/config.class.php:880 ajax/massreception.php:74
+msgid "Default name"
+msgstr "기본 이름"
+
+#: inc/reception.class.php:838 inc/config.class.php:329
+#: inc/config.class.php:886 ajax/massreception.php:81
+msgid "Default serial number"
+msgstr "기본 시리얼 번호"
+
+#: inc/reception.class.php:846 inc/config.class.php:341
+#: inc/config.class.php:892 ajax/massreception.php:88
+msgid "Default inventory number"
+msgstr "기본 물품 번호"
 
 #: inc/reception.class.php:862
 msgid "Waiting for delivery"
@@ -978,46 +837,195 @@ msgstr ""
 msgid "Item delivered"
 msgstr ""
 
-#: inc/othertype.class.php:40 hook.php:140
-msgid "Other type of item"
-msgstr "품목의 다른 유형"
+#: inc/surveysupplier.class.php:44 inc/surveysupplier.class.php:208
+#: inc/surveysupplier.class.php:420 inc/surveysupplier.class.php:613
+msgid "Supplier quality"
+msgstr "공급자 품질"
 
-#: inc/notificationtargetorder.class.php:55
-#: inc/notificationtargetorder.class.php:132
-msgid "Request order validation"
-msgstr "주문 확인 요청"
+#: inc/surveysupplier.class.php:213 inc/surveysupplier.class.php:423
+msgid "Note"
+msgstr "참고"
 
-#: inc/notificationtargetorder.class.php:56
-msgid "Order validated"
-msgstr "주문 확인됨"
+#: inc/surveysupplier.class.php:214 inc/surveysupplier.class.php:424
+msgid "Comment on survey"
+msgstr "설문에 대한 의견"
 
-#: inc/notificationtargetorder.class.php:59
-#: inc/notificationtargetorder.class.php:205
-msgid "Late orders"
-msgstr "마지막 주문"
+#: inc/surveysupplier.class.php:244 inc/surveysupplier.class.php:343
+msgid "Administrative followup quality (contracts, bills, mail, etc.)"
+msgstr "관리적 추적 품질 (연락처, 청구서, 이메일, 기타 등..)"
 
-#: inc/notificationtargetorder.class.php:60
-#: inc/notificationtargetorder.class.php:148
-msgid "No item to generate"
-msgstr "생성할 품목 없음"
+#: inc/surveysupplier.class.php:253 inc/surveysupplier.class.php:350
+msgid "Commercial followup quality, visits, responseness"
+msgstr "상업적 품질, 방문, 반응 추적"
 
-#: inc/notificationtargetorder.class.php:125
-#: inc/notificationtargetorder.class.php:173
-msgid "Comment of validation"
-msgstr "검증 의견"
+#: inc/surveysupplier.class.php:260 inc/surveysupplier.class.php:355
+msgid "Contacts availability"
+msgstr "연락처 가용성"
 
-#: inc/notificationtargetorder.class.php:144
-msgid "Validation canceled successfully"
-msgstr "확인이 취소됨"
+#: inc/surveysupplier.class.php:268 inc/surveysupplier.class.php:361
+msgid "Quality of supplier intervention"
+msgstr "공급사 개입 품질"
 
-#: inc/notificationtargetorder.class.php:174
-msgid "Editor of validation"
-msgstr "확인 편집자"
+#: inc/surveysupplier.class.php:275 inc/surveysupplier.class.php:367
+msgid "Reliability about annouced delays"
+msgstr "예고된 지연에 대한 신뢰성"
 
-#: inc/order_supplier.class.php:332
-msgid "Delivery statistics"
-msgstr "배송 통계"
+#: inc/surveysupplier.class.php:287
+msgid "Final supplier note"
+msgstr "최종 공급사 참고"
 
-#: inc/order_supplier.class.php:350
-msgid "No specified status"
-msgstr "지정된 상태 없음"
+#: inc/surveysupplier.class.php:381
+msgid "Average mark up to 5 (X points / 5)"
+msgstr ""
+
+#: inc/config.class.php:111
+msgid "Plugin configuration"
+msgstr "플러그인 구성"
+
+#: inc/config.class.php:114
+msgid "Default VAT"
+msgstr "기본 VAT"
+
+#: inc/config.class.php:126
+msgid "Use validation process"
+msgstr "검증 절차 사용"
+
+#: inc/config.class.php:133
+msgid "Order generation in ODT"
+msgstr "ODT에서 주문 생성"
+
+#: inc/config.class.php:139
+msgid "Activate suppliers quality satisfaction"
+msgstr "공급자 품질 만족 활성화"
+
+#: inc/config.class.php:146
+msgid "Display order's suppliers informations"
+msgstr "주문의 공급자 정보 표시"
+
+#: inc/config.class.php:152
+msgid "Color to be displayed when order due date is overtaken"
+msgstr "주문 기한 초과 시 표시될 색상"
+
+#: inc/config.class.php:160
+msgid "Copy order documents when a new item is created"
+msgstr "새 품목 생성 시 주문 문서 복사"
+
+#: inc/config.class.php:167
+msgid "Default heading when adding a document to an order"
+msgstr "주문에 문서 추가 시 기본 머릿말"
+
+#: inc/config.class.php:206
+msgid "Hide inactive budgets"
+msgstr "비활성화 예산 숨김"
+
+#: inc/config.class.php:213
+msgid "Transmit budget change to linked assets"
+msgstr "연결된 자산에 예산 변경 전송"
+
+#: inc/config.class.php:220
+msgid "Display account section on order form"
+msgstr "주문 양식에 계정 섹션 표시"
+
+#: inc/config.class.php:227
+msgid "Set account section as mandatory on order form"
+msgstr "주문 양식에 필수 계정 섹션 설정"
+
+#: inc/config.class.php:234
+msgid "Use free references"
+msgstr "무료 참조 사용"
+
+#: inc/config.class.php:241
+msgid "Rename documents added in order"
+msgstr "주문에 추가된 문서 이름 변경"
+
+#: inc/config.class.php:249
+msgid "Automatic actions when delivery"
+msgstr "배송 시 자동 동작"
+
+#: inc/config.class.php:258
+msgid "Display analytic nature on item form"
+msgstr "품목 양식에 성향 분석 표기"
+
+#: inc/config.class.php:265
+msgid "Set analytic nature as mandatory on item form"
+msgstr "품목 양식에 필수 성향 분석 설정"
+
+#: inc/config.class.php:278
+msgid "Asked"
+msgstr "질의함"
+
+#: inc/config.class.php:286
+msgid "Default state"
+msgstr "기본 상태"
+
+#: inc/config.class.php:297
+msgid "Add order location to item"
+msgstr "품목에 주문 위치 추가"
+
+#: inc/config.class.php:304
+msgid "Add billing details to item"
+msgstr "품목에 청구서 상세 추가"
+
+#: inc/config.class.php:310
+msgid "Add immobilization number to item"
+msgstr ""
+
+#: inc/config.class.php:370
+msgid "Order lifecycle"
+msgstr "주문 주기"
+
+#: inc/config.class.php:374
+msgid "State before validation"
+msgstr "검증 전 상태"
+
+#: inc/config.class.php:384
+msgid "Waiting for validation state"
+msgstr "검증 상태 대기"
+
+#: inc/config.class.php:394
+msgid "Validated order state"
+msgstr "검증된 주문 상태"
+
+#: inc/config.class.php:404
+msgid "Order being delivered state"
+msgstr "배송됨 상태가 되야 할 주문"
+
+#: inc/config.class.php:414
+msgid "Order delivered state"
+msgstr "주문 배송됨 상태"
+
+#: inc/config.class.php:424
+msgid "Order paied state"
+msgstr "주문 결제됨 상태"
+
+#: inc/config.class.php:434
+msgid "Canceled order state"
+msgstr "취소된 주문 상태"
+
+#: inc/referencefree.class.php:41
+msgid "Reference free"
+msgstr "무료 참조"
+
+#: inc/reference_supplier.class.php:562
+msgid "List references"
+msgstr "참조 목록"
+
+#: report/deliveryinfos/deliveryinfos.php:47
+msgid "deliveryinfos_report_title"
+msgstr "deliveryinfos_report_title"
+
+#: report/deliveryinfos/deliveryinfos.php:74
+msgid "Orders total"
+msgstr "주문 총계"
+
+#: report/deliveryinfos/deliveryinfos.php:75
+msgid "Late orders total"
+msgstr "최근 주문 총계"
+
+#: report/orderdelivery/orderdelivery.php:47
+msgid "orderdelivery_report_title"
+msgstr "orderdelivery_report_title"
+
+#: ajax/massreception.php:52
+msgid "Number to deliver"
+msgstr ""
