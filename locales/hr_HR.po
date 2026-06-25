@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-28 04:12+0000\n"
+"POT-Creation-Date: 2026-06-25 04:08+0000\n"
 "PO-Revision-Date: 2015-09-18 10:11+0000\n"
 "Last-Translator: Milo Ivir <mail@milotype.de>, 2020,2022,2025-2026\n"
 "Language-Team: Croatian (Croatia) (http://app.transifex.com/teclib/glpi-project-plugin-order/language/hr_HR/)\n"
@@ -18,22 +18,14 @@ msgstr ""
 "Language: hr_HR\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
-#: templates/order_getitems.html.twig templates/order_link_item.html.twig
-msgid "Collapse all"
-msgstr "Sažmi sve"
+#: templates/order_infocom.html.twig
+msgid "Order informations"
+msgstr "Podaci narudžbe"
 
-#: templates/order_getitems.html.twig templates/order_link_item.html.twig
-msgid "Expand all"
-msgstr "Proširi sve"
-
-#: templates/order_getitems.html.twig templates/order_link_item.html.twig
-#, php-format
-msgid "Showing %s to %s of %s entries"
-msgstr "Prikazuje se %s do %s od %s unosa"
-
-#: templates/order_getitems.html.twig templates/order_link_item.html.twig
-msgid "Entries to show:"
-msgstr "Broj unosa za prikaz:"
+#: templates/order_infocom.html.twig inc/order.class.php:435
+#: inc/order.class.php:911 inc/surveysupplier.class.php:212 hook.php:244
+msgid "Order name"
+msgstr "Ime narudžbe"
 
 #: templates/order_link_item.html.twig inc/bill.class.php:358
 #: inc/order_item.class.php:1727 inc/reception.class.php:374
@@ -41,125 +33,75 @@ msgid "No item to take delivery of"
 msgstr "Nema predmeta koji se može uzeti iz isporuke"
 
 #: templates/order_link_item.html.twig templates/generate_item.html.twig
-#: inc/reference.class.php:71 inc/reference.class.php:87
 #: inc/bill.class.php:370 inc/order_item.class.php:443
-#: inc/order_item.class.php:1739 inc/reference_supplier.class.php:277
-#: inc/reference_supplier.class.php:302 inc/reference_supplier.class.php:568
-#: inc/reference_supplier.class.php:570 inc/reception.class.php:404
+#: inc/order_item.class.php:1739 inc/reference.class.php:71
+#: inc/reference.class.php:87 inc/reception.class.php:404
+#: inc/reference_supplier.class.php:277 inc/reference_supplier.class.php:302
+#: inc/reference_supplier.class.php:568 inc/reference_supplier.class.php:570
 msgid "Product reference"
 msgstr "Referenca proizvoda"
+
+#: templates/order_link_item.html.twig templates/order_getitems.html.twig
+msgid "Collapse all"
+msgstr "Sažmi sve"
+
+#: templates/order_link_item.html.twig templates/order_getitems.html.twig
+msgid "Expand all"
+msgstr "Proširi sve"
+
+#: templates/order_link_item.html.twig templates/order_getitems.html.twig
+#, php-format
+msgid "Showing %s to %s of %s entries"
+msgstr "Prikazuje se %s do %s od %s unosa"
+
+#: templates/order_link_item.html.twig templates/order_getitems.html.twig
+msgid "Entries to show:"
+msgstr "Broj unosa za prikaz:"
 
 #: templates/generate_item.html.twig
 msgid "Mass value filling"
 msgstr "Masovno ispunjavanje vrijednosti"
 
-#: templates/order_infocom.html.twig
-msgid "Order informations"
-msgstr "Podaci narudžbe"
-
-#: templates/order_infocom.html.twig inc/surveysupplier.class.php:212
-#: inc/order.class.php:435 inc/order.class.php:911 hook.php:244
-msgid "Order name"
-msgstr "Ime narudžbe"
-
-#: report/deliveryinfos/deliveryinfos.php:47
-msgid "deliveryinfos_report_title"
-msgstr "Podaci o dostavi"
-
-#: report/deliveryinfos/deliveryinfos.php:48
-#: report/orderdelivery/orderdelivery.php:48
-#: report/orderdelivery/orderdelivery.php:90 inc/order.class.php:349
-#: inc/order.class.php:933 inc/notificationtargetorder.class.php:116
-#: inc/notificationtargetorder.class.php:171
-#: inc/notificationtargetorder.class.php:179
-msgid "Date of order"
-msgstr "Datum narudžbe"
-
-#: report/deliveryinfos/deliveryinfos.php:50
-#: report/orderdelivery/orderdelivery.php:50
-#: report/orderdelivery/orderdelivery.php:95 inc/order.class.php:369
-#: inc/order.class.php:1048
-msgid "Delivery location"
-msgstr "Mjesto dostave"
-
-#: report/deliveryinfos/deliveryinfos.php:74
-msgid "Orders total"
-msgstr "Narudžbe ukupno"
-
-#: report/deliveryinfos/deliveryinfos.php:75
-msgid "Late orders total"
-msgstr "Kasne narudžbe ukupno"
-
-#: report/orderdelivery/orderdelivery.php:47
-msgid "orderdelivery_report_title"
-msgstr "Dostava narudžbe"
-
-#: report/orderdelivery/orderdelivery.php:78 inc/bill.class.php:198
-#: inc/order.class.php:338 inc/order.class.php:951 inc/order.class.php:1845
-#: hook.php:251
-msgid "Order number"
-msgstr "Broj narudžbe"
-
-#: report/orderdelivery/orderdelivery.php:91 inc/order.class.php:457
-#: inc/order.class.php:1234 inc/notificationtargetorder.class.php:180
-msgid "Estimated due date"
-msgstr "Procijenjeni datum dospijeća"
-
-#: ajax/massreception.php:52
-msgid "Number to deliver"
-msgstr "Broj za dostavljanje"
-
-#: ajax/massreception.php:64 inc/order_item.class.php:184
-#: inc/reception.class.php:257 inc/reception.class.php:529
-#: inc/reception.class.php:819 inc/deliverystate.class.php:37 hook.php:141
-msgid "Delivery status"
-msgstr "Stanje dostave"
-
-#: ajax/massreception.php:71 inc/config.class.php:272
-#: inc/reception.class.php:824
-msgid "Enable automatic generation"
-msgstr "Aktiviraj automatsko generiranje"
-
-#: ajax/massreception.php:74 inc/config.class.php:317 inc/config.class.php:880
-#: inc/reception.class.php:830
-msgid "Default name"
-msgstr "Standardno ime"
-
-#: ajax/massreception.php:81 inc/config.class.php:329 inc/config.class.php:886
-#: inc/reception.class.php:838
-msgid "Default serial number"
-msgstr "Standardni serijski broj"
-
-#: ajax/massreception.php:88 inc/config.class.php:341 inc/config.class.php:892
-#: inc/reception.class.php:846
-msgid "Default inventory number"
-msgstr "Standardni inventarski broj"
-
-#: setup.php:206 front/menu.php:37 front/menu.php:55
 #: front/surveysupplier.form.php:70 front/order_item.form.php:41
-#: front/reception.form.php:100 front/order_supplier.form.php:81
-#: inc/config.class.php:84 inc/order_item.class.php:123
-#: inc/order.class.php:333
+#: front/menu.php:37 front/menu.php:55 front/reception.form.php:100
+#: front/order_supplier.form.php:81 inc/order_item.class.php:123
+#: inc/order.class.php:333 inc/config.class.php:84 setup.php:232
 msgid "Orders management"
 msgstr "Upravljanje narudžbama"
 
-#: front/menu.php:61 front/order.php:38 front/order.form.php:466
-#: front/config.form.php:41 front/preference.form.php:43
-#: inc/bill.class.php:654 inc/profile.class.php:109 inc/profile.class.php:196
+#: front/menu.php:61 front/preference.form.php:43 front/order.php:38
+#: front/order.form.php:466 front/config.form.php:41 inc/bill.class.php:654
+#: inc/profile.class.php:109 inc/profile.class.php:194
 #: inc/order_item.class.php:2241 inc/order_item.class.php:2246
-#: inc/menu.class.php:35 inc/order.class.php:100 inc/order.class.php:633
-#: inc/documentcategory.class.php:46 inc/order_supplier.class.php:491
-#: hook.php:146
+#: inc/documentcategory.class.php:46 inc/menu.class.php:35
+#: inc/order_supplier.class.php:491 inc/order.class.php:100
+#: inc/order.class.php:633 hook.php:146
 msgid "Orders"
 msgstr "Narudžbe"
 
-#: front/menu.php:68 inc/profile.class.php:200
+#: front/menu.php:68 inc/profile.class.php:198
 msgid "Products references"
 msgstr "Reference proizvoda"
 
-#: front/menu.php:75 inc/profile.class.php:204 inc/order_item.class.php:1612
+#: front/menu.php:75 inc/profile.class.php:202 inc/order_item.class.php:1612
 msgid "Bills"
 msgstr "Ulazni računi"
+
+#: front/order_supplier.form.php:52 inc/order_supplier.class.php:63
+#: inc/order_supplier.class.php:171 inc/order_supplier.class.php:233
+msgid "Quote number"
+msgstr "Broj predračuna"
+
+#: front/order_supplier.form.php:67
+msgid "Delete"
+msgstr "Brisanje"
+
+#: front/order_supplier.form.php:67 inc/order_supplier.class.php:46
+#: inc/order_supplier.class.php:58 inc/order_supplier.class.php:229
+#: inc/order_supplier.class.php:496 inc/reference_supplier.class.php:155
+#: inc/reference_supplier.class.php:299
+msgid "Supplier Detail"
+msgstr "Podaci o dobavljaču"
 
 #: front/reference_supplier.form.php:70 inc/reference_supplier.class.php:46
 #: inc/reference_supplier.class.php:87
@@ -219,273 +161,113 @@ msgstr "Ukloni referencu"
 msgid "No item selected"
 msgstr "Nijedan predmet nije odabran"
 
-#: front/order_supplier.form.php:52 inc/order_supplier.class.php:63
-#: inc/order_supplier.class.php:171 inc/order_supplier.class.php:233
-msgid "Quote number"
-msgstr "Broj predračuna"
+#: inc/orderstate.class.php:55 inc/order.class.php:379 inc/order.class.php:996
+#: inc/order.class.php:2150 hook.php:139
+msgid "Order status"
+msgstr "Stanje narudžbe"
 
-#: front/order_supplier.form.php:67
-msgid "Delete"
-msgstr "Brisanje"
+#: inc/orderstate.class.php:63 inc/billstate.class.php:52
+msgid "You cannot remove this status"
+msgstr "Ne možeš ukloniti ovo stanje"
 
-#: front/order_supplier.form.php:67 inc/reference_supplier.class.php:155
-#: inc/reference_supplier.class.php:299 inc/order_supplier.class.php:46
-#: inc/order_supplier.class.php:58 inc/order_supplier.class.php:229
-#: inc/order_supplier.class.php:496
-msgid "Supplier Detail"
-msgstr "Podaci o dobavljaču"
+#: inc/orderstate.class.php:105
+msgid "Draft"
+msgstr "Skica"
 
-#: inc/surveysupplier.class.php:44 inc/surveysupplier.class.php:208
-#: inc/surveysupplier.class.php:420 inc/surveysupplier.class.php:613
-msgid "Supplier quality"
-msgstr "Kvaliteta dobavljača"
+#: inc/orderstate.class.php:106
+msgid "Waiting for approval"
+msgstr "Čekanje na odobrenje"
 
-#: inc/surveysupplier.class.php:213 inc/surveysupplier.class.php:423
-msgid "Note"
-msgstr "Bilješka"
+#: inc/orderstate.class.php:107
+msgid "Validated"
+msgstr "Provjereno"
 
-#: inc/surveysupplier.class.php:214 inc/surveysupplier.class.php:424
-msgid "Comment on survey"
-msgstr "Komentiraj anketu"
+#: inc/orderstate.class.php:108
+msgid "Being delivered"
+msgstr "Dostavlja se"
 
-#: inc/surveysupplier.class.php:244 inc/surveysupplier.class.php:343
-msgid "Administrative followup quality (contracts, bills, mail, etc.)"
-msgstr "Kvaliteta administrativnog objavljivanja (ugovori, računi, pošta itd.)"
+#: inc/orderstate.class.php:109
+msgid "Delivered"
+msgstr "Dostavljeno"
 
-#: inc/surveysupplier.class.php:253 inc/surveysupplier.class.php:350
-msgid "Commercial followup quality, visits, responseness"
-msgstr "Kvaliteta komercijalnog objavljivanja, posjeta, odgovora"
+#: inc/orderstate.class.php:110
+msgid "Canceled"
+msgstr "Otkazano"
 
-#: inc/surveysupplier.class.php:260 inc/surveysupplier.class.php:355
-msgid "Contacts availability"
-msgstr "Dostupnost kontakta"
+#: inc/orderstate.class.php:111 inc/billstate.class.php:67
+#: inc/billstate.class.php:109
+msgid "Paid"
+msgstr "Plaćeno"
 
-#: inc/surveysupplier.class.php:268 inc/surveysupplier.class.php:361
-msgid "Quality of supplier intervention"
-msgstr "Kvaliteta intervencije dobavljača"
+#: inc/accountsection.class.php:40 inc/order.class.php:1283 hook.php:145
+msgid "Account section"
+msgstr "Odjeljak računa"
 
-#: inc/surveysupplier.class.php:275 inc/surveysupplier.class.php:367
-msgid "Reliability about annouced delays"
-msgstr "Pouzdanost o najavljenim kašnjenjima"
+#: inc/billtype.class.php:40 hook.php:143
+msgid "Bill type"
+msgstr "Vrsta ulaznog računa"
 
-#: inc/surveysupplier.class.php:287
-msgid "Final supplier note"
-msgstr "Krajnja bilješka dobavljača"
+#: inc/notificationtargetorder.class.php:55
+#: inc/notificationtargetorder.class.php:132
+msgid "Request order validation"
+msgstr "Zatraži provjeru narudžbe"
 
-#: inc/surveysupplier.class.php:381
-msgid "Average mark up to 5 (X points / 5)"
-msgstr "Prosječna ocjena do 5 (X bodova / 5)"
+#: inc/notificationtargetorder.class.php:56
+msgid "Order validated"
+msgstr "Narudžba provjerena"
 
-#: inc/surveysupplier.class.php:405 inc/bill.class.php:106
-#: inc/bill.class.php:185 inc/order_item.class.php:922
-#: inc/order_item.class.php:1491 inc/order_item.class.php:2258
-#: inc/order.class.php:100 inc/reception.class.php:322
-#: inc/order_supplier.class.php:211 hook.php:400
-msgid "Order"
-msgstr "Narudžba"
+#: inc/notificationtargetorder.class.php:59
+#: inc/notificationtargetorder.class.php:205
+msgid "Late orders"
+msgstr "Kasne narudžbe"
 
-#: inc/reference.class.php:164 inc/reference.class.php:660
-#: inc/order_item.class.php:987
-msgid "Manufacturer reference"
-msgstr "Referenca proizvođaća"
+#: inc/notificationtargetorder.class.php:60
+#: inc/notificationtargetorder.class.php:148
+msgid "No item to generate"
+msgstr "Nema predmeta za generiranje"
 
-#: inc/reference.class.php:187 inc/order_item.class.php:128
-#: inc/order_item.class.php:448 inc/order_item.class.php:571
-#: inc/order_item.class.php:988 inc/order_item.class.php:1116
-#: inc/order_item.class.php:1512 inc/reference_supplier.class.php:99
-#: inc/reference_supplier.class.php:249 inc/reference_supplier.class.php:303
-#: inc/reference_supplier.class.php:571
-msgid "Unit price tax free"
-msgstr "Jedinična cijena bez poreza"
+#: inc/notificationtargetorder.class.php:116
+#: inc/notificationtargetorder.class.php:171
+#: inc/notificationtargetorder.class.php:179 inc/order.class.php:349
+#: inc/order.class.php:933 report/deliveryinfos/deliveryinfos.php:48
+#: report/orderdelivery/orderdelivery.php:48
+#: report/orderdelivery/orderdelivery.php:90
+msgid "Date of order"
+msgstr "Datum narudžbe"
 
-#: inc/reference.class.php:197 inc/order_item.class.php:169
-#: inc/order_item.class.php:577 inc/reference_supplier.class.php:92
-#: inc/reference_supplier.class.php:235
-msgid "Manufacturer's product reference"
-msgstr "Proizvođačka referenca proizvoda"
+#: inc/notificationtargetorder.class.php:125
+#: inc/notificationtargetorder.class.php:173
+msgid "Comment of validation"
+msgstr "Komentar provjere"
 
-#: inc/reference.class.php:301
-msgid "Cannot create reference without a name"
-msgstr "Nije moguće stvoriti referencu bez imena"
+#: inc/notificationtargetorder.class.php:144
+msgid "Validation canceled successfully"
+msgstr "Provjera uspješno prekinuta"
 
-#: inc/reference.class.php:306
-msgid "Cannot create reference without a type"
-msgstr "Nije moguće stvoriti referencu bez vrste"
+#: inc/notificationtargetorder.class.php:174
+msgid "Editor of validation"
+msgstr "Autor provjere"
 
-#: inc/reference.class.php:319
-msgid "A reference with the same name still exists"
-msgstr "Još uvijek postoji referenca s istim imenom"
+#: inc/notificationtargetorder.class.php:180 inc/order.class.php:457
+#: inc/order.class.php:1234 report/orderdelivery/orderdelivery.php:91
+msgid "Estimated due date"
+msgstr "Procijenjeni datum dospijeća"
 
-#: inc/reference.class.php:336
-msgid "Reference(s) in use"
-msgstr "Korištene reference"
-
-#: inc/reference.class.php:389 inc/reference.class.php:886
-#: inc/order.class.php:2144
-msgid "Linked orders"
-msgstr "Povezane narudžbe"
-
-#: inc/reference.class.php:755 inc/order.class.php:1105
-#: inc/order.class.php:1501
-msgid "Eco-responsibility fees"
-msgstr "Naknade za ekološku odgovornost"
-
-#: inc/reference.class.php:973
-msgid "Copy of"
-msgstr "Kopija od"
-
-#: inc/reference.class.php:1038
-msgid "Copy reference"
-msgstr "Kopiraj referencu"
-
-#: inc/config.class.php:111
-msgid "Plugin configuration"
-msgstr "Konfiguracija dodatka"
-
-#: inc/config.class.php:114
-msgid "Default VAT"
-msgstr "Standardni PDV"
-
-#: inc/config.class.php:120 inc/order_item.class.php:534
-#: inc/order_item.class.php:614 inc/order.class.php:1137
-msgid "No VAT"
-msgstr "Bez PDV-a"
-
-#: inc/config.class.php:126
-msgid "Use validation process"
-msgstr "Koristi proces provjere"
-
-#: inc/config.class.php:133
-msgid "Order generation in ODT"
-msgstr "Generiranje narudžbe u ODT-u"
-
-#: inc/config.class.php:139
-msgid "Activate suppliers quality satisfaction"
-msgstr "Aktiviraj kvalitetu zadovoljstva dobavljača"
-
-#: inc/config.class.php:146
-msgid "Display order's suppliers informations"
-msgstr "Prikaži podatke o dobavljaču u narudžbi"
-
-#: inc/config.class.php:152
-msgid "Color to be displayed when order due date is overtaken"
-msgstr "Boja za narudžbe čiji je datum dospijeća istekao"
-
-#: inc/config.class.php:160
-msgid "Copy order documents when a new item is created"
-msgstr "Kopiraj dokumente narudžbe pri stvaranju novog predmeta"
-
-#: inc/config.class.php:167
-msgid "Default heading when adding a document to an order"
-msgstr "Standaradno zaglavlje prilikom dodavanja dokumenta narudžbi"
-
-#: inc/config.class.php:174 inc/order.class.php:531 inc/order.class.php:1380
 #: inc/notificationtargetorder.class.php:481
-#: inc/notificationtargetorder.class.php:484
+#: inc/notificationtargetorder.class.php:484 inc/order.class.php:531
+#: inc/order.class.php:1380 inc/config.class.php:174
 msgid "Author group"
 msgstr "Grupa autora"
 
-#: inc/config.class.php:184 inc/order.class.php:539 inc/order.class.php:1431
 #: inc/notificationtargetorder.class.php:483
-#: inc/notificationtargetorder.class.php:485
+#: inc/notificationtargetorder.class.php:485 inc/order.class.php:539
+#: inc/order.class.php:1431 inc/config.class.php:184
 msgid "Recipient group"
 msgstr "Grupa primatelja"
 
-#: inc/config.class.php:206
-msgid "Hide inactive budgets"
-msgstr "Sakrij neaktivne proračune"
-
-#: inc/config.class.php:213
-msgid "Transmit budget change to linked assets"
-msgstr "Prenesi promjene proračuna na povezani inventar"
-
-#: inc/config.class.php:220
-msgid "Display account section on order form"
-msgstr "Prikaži odjeljak računa na obrascu narudžbe"
-
-#: inc/config.class.php:227
-msgid "Set account section as mandatory on order form"
-msgstr "Postavi odjeljak računa kao obavezni podatak na obrascu narudžbe"
-
-#: inc/config.class.php:234
-msgid "Use free references"
-msgstr "Koristi slobodne reference"
-
-#: inc/config.class.php:241
-msgid "Rename documents added in order"
-msgstr "Preimenuj dokumente koji su dodani u narudžbu"
-
-#: inc/config.class.php:249
-msgid "Automatic actions when delivery"
-msgstr "Automatske radnje pri dostavi"
-
-#: inc/config.class.php:258
-msgid "Display analytic nature on item form"
-msgstr "Prikaži svojstvo analitike na obrascu predmeta"
-
-#: inc/config.class.php:265
-msgid "Set analytic nature as mandatory on item form"
-msgstr "Postavi svojstvo analitike kao obavezni podatak na obrascu predmeta"
-
-#: inc/config.class.php:278
-msgid "Asked"
-msgstr "Upitano"
-
-#: inc/config.class.php:286
-msgid "Default state"
-msgstr "Standardno stanje"
-
-#: inc/config.class.php:297
-msgid "Add order location to item"
-msgstr "Dodaj lokaciju narudžbe za predmet"
-
-#: inc/config.class.php:304
-msgid "Add billing details to item"
-msgstr "Dodaj detalje o naplaćivanju za predmet"
-
-#: inc/config.class.php:310
-msgid "Add immobilization number to item"
-msgstr "Dodaj predmetu imobilizacijski broj"
-
-#: inc/config.class.php:370
-msgid "Order lifecycle"
-msgstr "Životni vijek narudžbe"
-
-#: inc/config.class.php:374
-msgid "State before validation"
-msgstr "Stanje prije provjere"
-
-#: inc/config.class.php:384
-msgid "Waiting for validation state"
-msgstr "Stanje čekanja na provjeru"
-
-#: inc/config.class.php:394
-msgid "Validated order state"
-msgstr "Stanje provjerene narudžbe"
-
-#: inc/config.class.php:404
-msgid "Order being delivered state"
-msgstr "Stanje narudžbe koja se dostavlja"
-
-#: inc/config.class.php:414
-msgid "Order delivered state"
-msgstr "Stanje dostavljene narudžbe"
-
-#: inc/config.class.php:424
-msgid "Order paied state"
-msgstr "Stanje plaćene narudžbe"
-
-#: inc/config.class.php:434
-msgid "Canceled order state"
-msgstr "Stanje otkazane narudžbe"
-
-#: inc/preference.class.php:185 inc/order.class.php:1761
-msgid "Use this model"
-msgstr "Koristi ovaj model"
-
-#: inc/preference.class.php:190 inc/order.class.php:1770
-msgid "Use this sign"
-msgstr "Koristi ovaj znak"
+#: inc/other.class.php:40
+msgid "Other kind of items"
+msgstr "Druga vrsta predmeta"
 
 #: inc/bill.class.php:46 inc/bill.class.php:139 inc/bill.class.php:401
 #: inc/order_item.class.php:1769 inc/order_item.class.php:1876
@@ -497,14 +279,28 @@ msgstr "Ulazni račun"
 msgid "A bill number is mandatory"
 msgstr "Broj računa je obavezan"
 
-#: inc/bill.class.php:402 inc/billstate.class.php:44
-#: inc/order_item.class.php:1770 hook.php:142
+#: inc/bill.class.php:106 inc/bill.class.php:185 inc/order_item.class.php:922
+#: inc/order_item.class.php:1491 inc/order_item.class.php:2258
+#: inc/order_supplier.class.php:211 inc/order.class.php:100
+#: inc/reception.class.php:322 inc/surveysupplier.class.php:405 hook.php:400
+msgid "Order"
+msgstr "Narudžba"
+
+#: inc/bill.class.php:198 inc/order.class.php:338 inc/order.class.php:951
+#: inc/order.class.php:1845 report/orderdelivery/orderdelivery.php:78
+#: hook.php:251
+msgid "Order number"
+msgstr "Broj narudžbe"
+
+#: inc/bill.class.php:402 inc/order_item.class.php:1770
+#: inc/billstate.class.php:44 hook.php:142
 msgid "Bill status"
 msgstr "Stanje ulaznog računa"
 
-#: inc/referencefree.class.php:41
-msgid "Reference free"
-msgstr "Bez reference"
+#: inc/orderpayment.class.php:40 inc/order.class.php:401
+#: inc/order.class.php:1063 inc/order.class.php:2051 hook.php:137
+msgid "Payment conditions"
+msgstr "Uvjeti plaćanja"
 
 #: inc/link.class.php:49
 msgid "Generation"
@@ -570,30 +366,42 @@ msgstr "Predmet generiran pomoću narudžbe"
 msgid "Item successfully selected"
 msgstr "Predmet uspješno odabran"
 
-#: inc/billstate.class.php:52 inc/orderstate.class.php:63
-msgid "You cannot remove this status"
-msgstr "Ne možeš ukloniti ovo stanje"
-
-#: inc/billstate.class.php:66
-msgid "Being paid"
-msgstr "Plaća se"
-
-#: inc/billstate.class.php:67 inc/billstate.class.php:109
-#: inc/orderstate.class.php:111
-msgid "Paid"
-msgstr "Plaćeno"
-
-#: inc/billstate.class.php:110
-msgid "Not paid"
-msgstr "Nije plaćeno"
+#: inc/ordertax.class.php:41 inc/order_item.class.php:449
+#: inc/order_item.class.php:572 inc/order_item.class.php:1117
+#: inc/order_item.class.php:1519 inc/order.class.php:359
+#: inc/order.class.php:1105 inc/order.class.php:1126 inc/order.class.php:1916
+#: inc/order.class.php:2045 hook.php:136
+msgid "VAT"
+msgstr "PDV"
 
 #: inc/order_item.class.php:111 inc/order_item.class.php:2251
 msgid "Order item"
 msgstr "Predmet narudžbe"
 
+#: inc/order_item.class.php:128 inc/order_item.class.php:448
+#: inc/order_item.class.php:571 inc/order_item.class.php:988
+#: inc/order_item.class.php:1116 inc/order_item.class.php:1512
+#: inc/reference.class.php:187 inc/reference_supplier.class.php:99
+#: inc/reference_supplier.class.php:249 inc/reference_supplier.class.php:303
+#: inc/reference_supplier.class.php:571
+msgid "Unit price tax free"
+msgstr "Jedinična cijena bez poreza"
+
 #: inc/order_item.class.php:163 inc/order_item.class.php:565
 msgid "Product name"
 msgstr "Ime proizvoda"
+
+#: inc/order_item.class.php:169 inc/order_item.class.php:577
+#: inc/reference.class.php:197 inc/reference_supplier.class.php:92
+#: inc/reference_supplier.class.php:235
+msgid "Manufacturer's product reference"
+msgstr "Proizvođačka referenca proizvoda"
+
+#: inc/order_item.class.php:184 inc/reception.class.php:257
+#: inc/reception.class.php:529 inc/reception.class.php:819
+#: inc/deliverystate.class.php:37 hook.php:141 ajax/massreception.php:64
+msgid "Delivery status"
+msgstr "Stanje dostave"
 
 #: inc/order_item.class.php:190
 msgid "Analytic Nature"
@@ -612,13 +420,10 @@ msgstr "Dodaj narudžbi iz kataloga"
 msgid "Analytic nature"
 msgstr "Svojstvo analitike"
 
-#: inc/order_item.class.php:449 inc/order_item.class.php:572
-#: inc/order_item.class.php:1117 inc/order_item.class.php:1519
-#: inc/order.class.php:359 inc/order.class.php:1105 inc/order.class.php:1126
-#: inc/order.class.php:1916 inc/order.class.php:2045 inc/ordertax.class.php:41
-#: hook.php:136
-msgid "VAT"
-msgstr "PDV"
+#: inc/order_item.class.php:534 inc/order_item.class.php:614
+#: inc/order.class.php:1137 inc/config.class.php:120
+msgid "No VAT"
+msgstr "Bez PDV-a"
 
 #: inc/order_item.class.php:548 inc/order_item.class.php:689
 msgid "Please select a supplier"
@@ -640,6 +445,11 @@ msgstr "Moraš odabrati referencu"
 msgid "An analytic nature is mandatory !"
 msgstr "Svojstvo analitike je obavezno!"
 
+#: inc/order_item.class.php:987 inc/reference.class.php:164
+#: inc/reference.class.php:660
+msgid "Manufacturer reference"
+msgstr "Referenca proizvođaća"
+
 #: inc/order_item.class.php:1119 inc/order_item.class.php:1542
 msgid "Discounted price tax free"
 msgstr "Cijena s popustom bez poreza"
@@ -657,43 +467,87 @@ msgstr "Stanje plaćanja"
 msgid "Paid value"
 msgstr "Plaćeni iznos"
 
-#: inc/orderpayment.class.php:40 inc/order.class.php:401
-#: inc/order.class.php:1063 inc/order.class.php:2051 hook.php:137
-msgid "Payment conditions"
-msgstr "Uvjeti plaćanja"
+#: inc/billstate.class.php:66
+msgid "Being paid"
+msgstr "Plaća se"
 
-#: inc/billtype.class.php:40 hook.php:143
-msgid "Bill type"
-msgstr "Vrsta ulaznog računa"
+#: inc/billstate.class.php:110
+msgid "Not paid"
+msgstr "Nije plaćeno"
 
-#: inc/orderstate.class.php:55 inc/order.class.php:379 inc/order.class.php:996
-#: inc/order.class.php:2150 hook.php:139
-msgid "Order status"
-msgstr "Stanje narudžbe"
+#: inc/documentcategory.class.php:37
+msgid "Document category"
+msgstr "Kategorija dokumenta"
 
-#: inc/orderstate.class.php:105
-msgid "Draft"
-msgstr "Skica"
+#: inc/documentcategory.class.php:85 inc/documentcategory.class.php:90
+msgid "Document category prefix"
+msgstr "Prefiks kategorije dokumenta"
 
-#: inc/orderstate.class.php:106
-msgid "Waiting for approval"
-msgstr "Čekanje na odobrenje"
+#: inc/orderablecapacity.class.php:45
+msgid "Orderable"
+msgstr ""
 
-#: inc/orderstate.class.php:107
-msgid "Validated"
-msgstr "Provjereno"
+#: inc/orderablecapacity.class.php:73
+#, php-format
+msgid "Used by %d order reference"
+msgid_plural "Used by %d order references"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
-#: inc/orderstate.class.php:108
-msgid "Being delivered"
-msgstr "Dostavlja se"
+#: inc/reference.class.php:301
+msgid "Cannot create reference without a name"
+msgstr "Nije moguće stvoriti referencu bez imena"
 
-#: inc/orderstate.class.php:109
-msgid "Delivered"
-msgstr "Dostavljeno"
+#: inc/reference.class.php:306
+msgid "Cannot create reference without a type"
+msgstr "Nije moguće stvoriti referencu bez vrste"
 
-#: inc/orderstate.class.php:110
-msgid "Canceled"
-msgstr "Otkazano"
+#: inc/reference.class.php:319
+msgid "A reference with the same name still exists"
+msgstr "Još uvijek postoji referenca s istim imenom"
+
+#: inc/reference.class.php:336
+msgid "Reference(s) in use"
+msgstr "Korištene reference"
+
+#: inc/reference.class.php:389 inc/reference.class.php:886
+#: inc/order.class.php:2144
+msgid "Linked orders"
+msgstr "Povezane narudžbe"
+
+#: inc/reference.class.php:755 inc/order.class.php:1105
+#: inc/order.class.php:1501
+msgid "Eco-responsibility fees"
+msgstr "Naknade za ekološku odgovornost"
+
+#: inc/reference.class.php:973
+msgid "Copy of"
+msgstr "Kopija od"
+
+#: inc/reference.class.php:1038
+msgid "Copy reference"
+msgstr "Kopiraj referencu"
+
+#: inc/othertype.class.php:40 hook.php:140
+msgid "Other type of item"
+msgstr "Druga vrsta predmeta"
+
+#: inc/order_supplier.class.php:332
+msgid "Delivery statistics"
+msgstr "Statistika dostave"
+
+#: inc/order_supplier.class.php:350
+msgid "No specified status"
+msgstr "Neodređeno stanje"
+
+#: inc/preference.class.php:185 inc/order.class.php:1761
+msgid "Use this model"
+msgstr "Koristi ovaj model"
+
+#: inc/preference.class.php:190 inc/order.class.php:1770
+msgid "Use this sign"
+msgstr "Koristi ovaj znak"
 
 #: inc/order.class.php:318 inc/order.class.php:1755 inc/order.class.php:1782
 msgid "Order Generation"
@@ -723,6 +577,13 @@ msgstr "Generiraj narudžbu bez provjere"
 #: inc/order.class.php:1126 inc/order.class.php:1525 inc/order.class.php:2042
 msgid "Postage"
 msgstr "Poštarina"
+
+#: inc/order.class.php:369 inc/order.class.php:1048
+#: report/deliveryinfos/deliveryinfos.php:50
+#: report/orderdelivery/orderdelivery.php:50
+#: report/orderdelivery/orderdelivery.php:95
+msgid "Delivery location"
+msgstr "Mjesto dostave"
 
 #: inc/order.class.php:477 inc/order.class.php:2403
 msgid "Order is late"
@@ -772,10 +633,6 @@ msgstr "Datum dospijeća istekao"
 #: inc/order.class.php:1263
 msgid "Global discount to apply to items"
 msgstr "Globalni popust koji se primjenjuje na predmete"
-
-#: inc/order.class.php:1283 inc/accountsection.class.php:40 hook.php:145
-msgid "Account section"
-msgstr "Odjeljak računa"
 
 #: inc/order.class.php:1491
 msgid "Articles"
@@ -922,22 +779,6 @@ msgstr "Ukupne narudžbe povezane s ovim proračunom veće su od njegove vrijedn
 msgid "Total orders related with this budget is equal to its value."
 msgstr "Ukupne narudžbe povezane s ovim proračunom jednake su njegovoj vrijednosti."
 
-#: inc/other.class.php:40
-msgid "Other kind of items"
-msgstr "Druga vrsta predmeta"
-
-#: inc/documentcategory.class.php:37
-msgid "Document category"
-msgstr "Kategorija dokumenta"
-
-#: inc/documentcategory.class.php:85 inc/documentcategory.class.php:90
-msgid "Document category prefix"
-msgstr "Prefiks kategorije dokumenta"
-
-#: inc/reference_supplier.class.php:562
-msgid "List references"
-msgstr "Popis referenca"
-
 #: inc/reception.class.php:54
 msgid "Delivery"
 msgstr "Dostava"
@@ -957,6 +798,26 @@ msgstr "Uzmi predmet dostave (skupno)"
 #: inc/reception.class.php:798
 msgid "Destination entity"
 msgstr "Entitet odredišta"
+
+#: inc/reception.class.php:824 inc/config.class.php:272
+#: ajax/massreception.php:71
+msgid "Enable automatic generation"
+msgstr "Aktiviraj automatsko generiranje"
+
+#: inc/reception.class.php:830 inc/config.class.php:317
+#: inc/config.class.php:880 ajax/massreception.php:74
+msgid "Default name"
+msgstr "Standardno ime"
+
+#: inc/reception.class.php:838 inc/config.class.php:329
+#: inc/config.class.php:886 ajax/massreception.php:81
+msgid "Default serial number"
+msgstr "Standardni serijski broj"
+
+#: inc/reception.class.php:846 inc/config.class.php:341
+#: inc/config.class.php:892 ajax/massreception.php:88
+msgid "Default inventory number"
+msgstr "Standardni inventarski broj"
 
 #: inc/reception.class.php:862
 msgid "Waiting for delivery"
@@ -978,46 +839,195 @@ msgstr "Predmet već preuzete dostave"
 msgid "Item delivered"
 msgstr "Predmet dostavljen"
 
-#: inc/othertype.class.php:40 hook.php:140
-msgid "Other type of item"
-msgstr "Druga vrsta predmeta"
+#: inc/surveysupplier.class.php:44 inc/surveysupplier.class.php:208
+#: inc/surveysupplier.class.php:420 inc/surveysupplier.class.php:613
+msgid "Supplier quality"
+msgstr "Kvaliteta dobavljača"
 
-#: inc/notificationtargetorder.class.php:55
-#: inc/notificationtargetorder.class.php:132
-msgid "Request order validation"
-msgstr "Zatraži provjeru narudžbe"
+#: inc/surveysupplier.class.php:213 inc/surveysupplier.class.php:423
+msgid "Note"
+msgstr "Bilješka"
 
-#: inc/notificationtargetorder.class.php:56
-msgid "Order validated"
-msgstr "Narudžba provjerena"
+#: inc/surveysupplier.class.php:214 inc/surveysupplier.class.php:424
+msgid "Comment on survey"
+msgstr "Komentiraj anketu"
 
-#: inc/notificationtargetorder.class.php:59
-#: inc/notificationtargetorder.class.php:205
-msgid "Late orders"
-msgstr "Kasne narudžbe"
+#: inc/surveysupplier.class.php:244 inc/surveysupplier.class.php:343
+msgid "Administrative followup quality (contracts, bills, mail, etc.)"
+msgstr "Kvaliteta administrativnog objavljivanja (ugovori, računi, pošta itd.)"
 
-#: inc/notificationtargetorder.class.php:60
-#: inc/notificationtargetorder.class.php:148
-msgid "No item to generate"
-msgstr "Nema predmeta za generiranje"
+#: inc/surveysupplier.class.php:253 inc/surveysupplier.class.php:350
+msgid "Commercial followup quality, visits, responseness"
+msgstr "Kvaliteta komercijalnog objavljivanja, posjeta, odgovora"
 
-#: inc/notificationtargetorder.class.php:125
-#: inc/notificationtargetorder.class.php:173
-msgid "Comment of validation"
-msgstr "Komentar provjere"
+#: inc/surveysupplier.class.php:260 inc/surveysupplier.class.php:355
+msgid "Contacts availability"
+msgstr "Dostupnost kontakta"
 
-#: inc/notificationtargetorder.class.php:144
-msgid "Validation canceled successfully"
-msgstr "Provjera uspješno prekinuta"
+#: inc/surveysupplier.class.php:268 inc/surveysupplier.class.php:361
+msgid "Quality of supplier intervention"
+msgstr "Kvaliteta intervencije dobavljača"
 
-#: inc/notificationtargetorder.class.php:174
-msgid "Editor of validation"
-msgstr "Autor provjere"
+#: inc/surveysupplier.class.php:275 inc/surveysupplier.class.php:367
+msgid "Reliability about annouced delays"
+msgstr "Pouzdanost o najavljenim kašnjenjima"
 
-#: inc/order_supplier.class.php:332
-msgid "Delivery statistics"
-msgstr "Statistika dostave"
+#: inc/surveysupplier.class.php:287
+msgid "Final supplier note"
+msgstr "Krajnja bilješka dobavljača"
 
-#: inc/order_supplier.class.php:350
-msgid "No specified status"
-msgstr "Neodređeno stanje"
+#: inc/surveysupplier.class.php:381
+msgid "Average mark up to 5 (X points / 5)"
+msgstr "Prosječna ocjena do 5 (X bodova / 5)"
+
+#: inc/config.class.php:111
+msgid "Plugin configuration"
+msgstr "Konfiguracija dodatka"
+
+#: inc/config.class.php:114
+msgid "Default VAT"
+msgstr "Standardni PDV"
+
+#: inc/config.class.php:126
+msgid "Use validation process"
+msgstr "Koristi proces provjere"
+
+#: inc/config.class.php:133
+msgid "Order generation in ODT"
+msgstr "Generiranje narudžbe u ODT-u"
+
+#: inc/config.class.php:139
+msgid "Activate suppliers quality satisfaction"
+msgstr "Aktiviraj kvalitetu zadovoljstva dobavljača"
+
+#: inc/config.class.php:146
+msgid "Display order's suppliers informations"
+msgstr "Prikaži podatke o dobavljaču u narudžbi"
+
+#: inc/config.class.php:152
+msgid "Color to be displayed when order due date is overtaken"
+msgstr "Boja za narudžbe čiji je datum dospijeća istekao"
+
+#: inc/config.class.php:160
+msgid "Copy order documents when a new item is created"
+msgstr "Kopiraj dokumente narudžbe pri stvaranju novog predmeta"
+
+#: inc/config.class.php:167
+msgid "Default heading when adding a document to an order"
+msgstr "Standaradno zaglavlje prilikom dodavanja dokumenta narudžbi"
+
+#: inc/config.class.php:206
+msgid "Hide inactive budgets"
+msgstr "Sakrij neaktivne proračune"
+
+#: inc/config.class.php:213
+msgid "Transmit budget change to linked assets"
+msgstr "Prenesi promjene proračuna na povezani inventar"
+
+#: inc/config.class.php:220
+msgid "Display account section on order form"
+msgstr "Prikaži odjeljak računa na obrascu narudžbe"
+
+#: inc/config.class.php:227
+msgid "Set account section as mandatory on order form"
+msgstr "Postavi odjeljak računa kao obavezni podatak na obrascu narudžbe"
+
+#: inc/config.class.php:234
+msgid "Use free references"
+msgstr "Koristi slobodne reference"
+
+#: inc/config.class.php:241
+msgid "Rename documents added in order"
+msgstr "Preimenuj dokumente koji su dodani u narudžbu"
+
+#: inc/config.class.php:249
+msgid "Automatic actions when delivery"
+msgstr "Automatske radnje pri dostavi"
+
+#: inc/config.class.php:258
+msgid "Display analytic nature on item form"
+msgstr "Prikaži svojstvo analitike na obrascu predmeta"
+
+#: inc/config.class.php:265
+msgid "Set analytic nature as mandatory on item form"
+msgstr "Postavi svojstvo analitike kao obavezni podatak na obrascu predmeta"
+
+#: inc/config.class.php:278
+msgid "Asked"
+msgstr "Upitano"
+
+#: inc/config.class.php:286
+msgid "Default state"
+msgstr "Standardno stanje"
+
+#: inc/config.class.php:297
+msgid "Add order location to item"
+msgstr "Dodaj lokaciju narudžbe za predmet"
+
+#: inc/config.class.php:304
+msgid "Add billing details to item"
+msgstr "Dodaj detalje o naplaćivanju za predmet"
+
+#: inc/config.class.php:310
+msgid "Add immobilization number to item"
+msgstr "Dodaj predmetu imobilizacijski broj"
+
+#: inc/config.class.php:370
+msgid "Order lifecycle"
+msgstr "Životni vijek narudžbe"
+
+#: inc/config.class.php:374
+msgid "State before validation"
+msgstr "Stanje prije provjere"
+
+#: inc/config.class.php:384
+msgid "Waiting for validation state"
+msgstr "Stanje čekanja na provjeru"
+
+#: inc/config.class.php:394
+msgid "Validated order state"
+msgstr "Stanje provjerene narudžbe"
+
+#: inc/config.class.php:404
+msgid "Order being delivered state"
+msgstr "Stanje narudžbe koja se dostavlja"
+
+#: inc/config.class.php:414
+msgid "Order delivered state"
+msgstr "Stanje dostavljene narudžbe"
+
+#: inc/config.class.php:424
+msgid "Order paied state"
+msgstr "Stanje plaćene narudžbe"
+
+#: inc/config.class.php:434
+msgid "Canceled order state"
+msgstr "Stanje otkazane narudžbe"
+
+#: inc/referencefree.class.php:41
+msgid "Reference free"
+msgstr "Bez reference"
+
+#: inc/reference_supplier.class.php:562
+msgid "List references"
+msgstr "Popis referenca"
+
+#: report/deliveryinfos/deliveryinfos.php:47
+msgid "deliveryinfos_report_title"
+msgstr "Podaci o dostavi"
+
+#: report/deliveryinfos/deliveryinfos.php:74
+msgid "Orders total"
+msgstr "Narudžbe ukupno"
+
+#: report/deliveryinfos/deliveryinfos.php:75
+msgid "Late orders total"
+msgstr "Kasne narudžbe ukupno"
+
+#: report/orderdelivery/orderdelivery.php:47
+msgid "orderdelivery_report_title"
+msgstr "Dostava narudžbe"
+
+#: ajax/massreception.php:52
+msgid "Number to deliver"
+msgstr "Broj za dostavljanje"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-28 04:12+0000\n"
+"POT-Creation-Date: 2026-06-25 04:08+0000\n"
 "PO-Revision-Date: 2015-09-18 10:11+0000\n"
 "Last-Translator: David Stepan <stepand@tiscali.cz>, 2015-2017,2019,2022,2024-2025\n"
 "Language-Team: Czech (Czech Republic) (http://app.transifex.com/teclib/glpi-project-plugin-order/language/cs_CZ/)\n"
@@ -19,22 +19,14 @@ msgstr ""
 "Language: cs_CZ\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-#: templates/order_getitems.html.twig templates/order_link_item.html.twig
-msgid "Collapse all"
-msgstr "Sbalit vše"
+#: templates/order_infocom.html.twig
+msgid "Order informations"
+msgstr "Informace o objednávce"
 
-#: templates/order_getitems.html.twig templates/order_link_item.html.twig
-msgid "Expand all"
-msgstr "Rozbalit vše"
-
-#: templates/order_getitems.html.twig templates/order_link_item.html.twig
-#, php-format
-msgid "Showing %s to %s of %s entries"
-msgstr "Zobrazeno %s do %s z %s položek"
-
-#: templates/order_getitems.html.twig templates/order_link_item.html.twig
-msgid "Entries to show:"
-msgstr "Záznamy k zobrazení:"
+#: templates/order_infocom.html.twig inc/order.class.php:435
+#: inc/order.class.php:911 inc/surveysupplier.class.php:212 hook.php:244
+msgid "Order name"
+msgstr "Název objednávky"
 
 #: templates/order_link_item.html.twig inc/bill.class.php:358
 #: inc/order_item.class.php:1727 inc/reception.class.php:374
@@ -42,125 +34,75 @@ msgid "No item to take delivery of"
 msgstr "Žádná položka k dodání"
 
 #: templates/order_link_item.html.twig templates/generate_item.html.twig
-#: inc/reference.class.php:71 inc/reference.class.php:87
 #: inc/bill.class.php:370 inc/order_item.class.php:443
-#: inc/order_item.class.php:1739 inc/reference_supplier.class.php:277
-#: inc/reference_supplier.class.php:302 inc/reference_supplier.class.php:568
-#: inc/reference_supplier.class.php:570 inc/reception.class.php:404
+#: inc/order_item.class.php:1739 inc/reference.class.php:71
+#: inc/reference.class.php:87 inc/reception.class.php:404
+#: inc/reference_supplier.class.php:277 inc/reference_supplier.class.php:302
+#: inc/reference_supplier.class.php:568 inc/reference_supplier.class.php:570
 msgid "Product reference"
 msgstr "Produktová reference"
+
+#: templates/order_link_item.html.twig templates/order_getitems.html.twig
+msgid "Collapse all"
+msgstr "Sbalit vše"
+
+#: templates/order_link_item.html.twig templates/order_getitems.html.twig
+msgid "Expand all"
+msgstr "Rozbalit vše"
+
+#: templates/order_link_item.html.twig templates/order_getitems.html.twig
+#, php-format
+msgid "Showing %s to %s of %s entries"
+msgstr "Zobrazeno %s do %s z %s položek"
+
+#: templates/order_link_item.html.twig templates/order_getitems.html.twig
+msgid "Entries to show:"
+msgstr "Záznamy k zobrazení:"
 
 #: templates/generate_item.html.twig
 msgid "Mass value filling"
 msgstr "Hromadné vyplnění hodnot"
 
-#: templates/order_infocom.html.twig
-msgid "Order informations"
-msgstr "Informace o objednávce"
-
-#: templates/order_infocom.html.twig inc/surveysupplier.class.php:212
-#: inc/order.class.php:435 inc/order.class.php:911 hook.php:244
-msgid "Order name"
-msgstr "Název objednávky"
-
-#: report/deliveryinfos/deliveryinfos.php:47
-msgid "deliveryinfos_report_title"
-msgstr "Statistiky doručení objednávek"
-
-#: report/deliveryinfos/deliveryinfos.php:48
-#: report/orderdelivery/orderdelivery.php:48
-#: report/orderdelivery/orderdelivery.php:90 inc/order.class.php:349
-#: inc/order.class.php:933 inc/notificationtargetorder.class.php:116
-#: inc/notificationtargetorder.class.php:171
-#: inc/notificationtargetorder.class.php:179
-msgid "Date of order"
-msgstr "Datum objednávky"
-
-#: report/deliveryinfos/deliveryinfos.php:50
-#: report/orderdelivery/orderdelivery.php:50
-#: report/orderdelivery/orderdelivery.php:95 inc/order.class.php:369
-#: inc/order.class.php:1048
-msgid "Delivery location"
-msgstr "Místo doručení"
-
-#: report/deliveryinfos/deliveryinfos.php:74
-msgid "Orders total"
-msgstr "Objednávky celkem"
-
-#: report/deliveryinfos/deliveryinfos.php:75
-msgid "Late orders total"
-msgstr "Zpožděné objednávky celkem"
-
-#: report/orderdelivery/orderdelivery.php:47
-msgid "orderdelivery_report_title"
-msgstr "Odeslání objednávek"
-
-#: report/orderdelivery/orderdelivery.php:78 inc/bill.class.php:198
-#: inc/order.class.php:338 inc/order.class.php:951 inc/order.class.php:1845
-#: hook.php:251
-msgid "Order number"
-msgstr "Číslo objednávky"
-
-#: report/orderdelivery/orderdelivery.php:91 inc/order.class.php:457
-#: inc/order.class.php:1234 inc/notificationtargetorder.class.php:180
-msgid "Estimated due date"
-msgstr "Odhadované datum doručení"
-
-#: ajax/massreception.php:52
-msgid "Number to deliver"
-msgstr "Počet k dodání"
-
-#: ajax/massreception.php:64 inc/order_item.class.php:184
-#: inc/reception.class.php:257 inc/reception.class.php:529
-#: inc/reception.class.php:819 inc/deliverystate.class.php:37 hook.php:141
-msgid "Delivery status"
-msgstr "Stav dodání"
-
-#: ajax/massreception.php:71 inc/config.class.php:272
-#: inc/reception.class.php:824
-msgid "Enable automatic generation"
-msgstr "Zapnout automatické vytváření"
-
-#: ajax/massreception.php:74 inc/config.class.php:317 inc/config.class.php:880
-#: inc/reception.class.php:830
-msgid "Default name"
-msgstr "Výchozí název"
-
-#: ajax/massreception.php:81 inc/config.class.php:329 inc/config.class.php:886
-#: inc/reception.class.php:838
-msgid "Default serial number"
-msgstr "Výchozí sériové číslo"
-
-#: ajax/massreception.php:88 inc/config.class.php:341 inc/config.class.php:892
-#: inc/reception.class.php:846
-msgid "Default inventory number"
-msgstr "Výchozí inventární číslo"
-
-#: setup.php:206 front/menu.php:37 front/menu.php:55
 #: front/surveysupplier.form.php:70 front/order_item.form.php:41
-#: front/reception.form.php:100 front/order_supplier.form.php:81
-#: inc/config.class.php:84 inc/order_item.class.php:123
-#: inc/order.class.php:333
+#: front/menu.php:37 front/menu.php:55 front/reception.form.php:100
+#: front/order_supplier.form.php:81 inc/order_item.class.php:123
+#: inc/order.class.php:333 inc/config.class.php:84 setup.php:232
 msgid "Orders management"
 msgstr "Správa objednávek"
 
-#: front/menu.php:61 front/order.php:38 front/order.form.php:466
-#: front/config.form.php:41 front/preference.form.php:43
-#: inc/bill.class.php:654 inc/profile.class.php:109 inc/profile.class.php:196
+#: front/menu.php:61 front/preference.form.php:43 front/order.php:38
+#: front/order.form.php:466 front/config.form.php:41 inc/bill.class.php:654
+#: inc/profile.class.php:109 inc/profile.class.php:194
 #: inc/order_item.class.php:2241 inc/order_item.class.php:2246
-#: inc/menu.class.php:35 inc/order.class.php:100 inc/order.class.php:633
-#: inc/documentcategory.class.php:46 inc/order_supplier.class.php:491
-#: hook.php:146
+#: inc/documentcategory.class.php:46 inc/menu.class.php:35
+#: inc/order_supplier.class.php:491 inc/order.class.php:100
+#: inc/order.class.php:633 hook.php:146
 msgid "Orders"
 msgstr "Objednávky"
 
-#: front/menu.php:68 inc/profile.class.php:200
+#: front/menu.php:68 inc/profile.class.php:198
 msgid "Products references"
 msgstr "Produktové reference"
 
-#: front/menu.php:75 inc/profile.class.php:204 inc/order_item.class.php:1612
+#: front/menu.php:75 inc/profile.class.php:202 inc/order_item.class.php:1612
 msgid "Bills"
 msgstr "Faktury"
+
+#: front/order_supplier.form.php:52 inc/order_supplier.class.php:63
+#: inc/order_supplier.class.php:171 inc/order_supplier.class.php:233
+msgid "Quote number"
+msgstr "Číslo nabídky"
+
+#: front/order_supplier.form.php:67
+msgid "Delete"
+msgstr "Smazat"
+
+#: front/order_supplier.form.php:67 inc/order_supplier.class.php:46
+#: inc/order_supplier.class.php:58 inc/order_supplier.class.php:229
+#: inc/order_supplier.class.php:496 inc/reference_supplier.class.php:155
+#: inc/reference_supplier.class.php:299
+msgid "Supplier Detail"
+msgstr "Podrobnosti o dodavateli"
 
 #: front/reference_supplier.form.php:70 inc/reference_supplier.class.php:46
 #: inc/reference_supplier.class.php:87
@@ -220,273 +162,113 @@ msgstr "Odstranit referenci"
 msgid "No item selected"
 msgstr "Nebyla vybrána žádná položka"
 
-#: front/order_supplier.form.php:52 inc/order_supplier.class.php:63
-#: inc/order_supplier.class.php:171 inc/order_supplier.class.php:233
-msgid "Quote number"
-msgstr "Číslo nabídky"
+#: inc/orderstate.class.php:55 inc/order.class.php:379 inc/order.class.php:996
+#: inc/order.class.php:2150 hook.php:139
+msgid "Order status"
+msgstr "Stav objednávky"
 
-#: front/order_supplier.form.php:67
-msgid "Delete"
-msgstr "Smazat"
+#: inc/orderstate.class.php:63 inc/billstate.class.php:52
+msgid "You cannot remove this status"
+msgstr "Nemůžete odstranit tento stav"
 
-#: front/order_supplier.form.php:67 inc/reference_supplier.class.php:155
-#: inc/reference_supplier.class.php:299 inc/order_supplier.class.php:46
-#: inc/order_supplier.class.php:58 inc/order_supplier.class.php:229
-#: inc/order_supplier.class.php:496
-msgid "Supplier Detail"
-msgstr "Podrobnosti o dodavateli"
+#: inc/orderstate.class.php:105
+msgid "Draft"
+msgstr "Návrh"
 
-#: inc/surveysupplier.class.php:44 inc/surveysupplier.class.php:208
-#: inc/surveysupplier.class.php:420 inc/surveysupplier.class.php:613
-msgid "Supplier quality"
-msgstr "Kvalita dodavatele"
+#: inc/orderstate.class.php:106
+msgid "Waiting for approval"
+msgstr "Čeká na schválení"
 
-#: inc/surveysupplier.class.php:213 inc/surveysupplier.class.php:423
-msgid "Note"
-msgstr "Poznámka"
+#: inc/orderstate.class.php:107
+msgid "Validated"
+msgstr "Ověřena"
 
-#: inc/surveysupplier.class.php:214 inc/surveysupplier.class.php:424
-msgid "Comment on survey"
-msgstr "Komentář k průzkumu"
+#: inc/orderstate.class.php:108
+msgid "Being delivered"
+msgstr "Dodávána"
 
-#: inc/surveysupplier.class.php:244 inc/surveysupplier.class.php:343
-msgid "Administrative followup quality (contracts, bills, mail, etc.)"
-msgstr "Kvalita administrativy (smlouvy, platby, korespondence, atd.)"
+#: inc/orderstate.class.php:109
+msgid "Delivered"
+msgstr "Dodána"
 
-#: inc/surveysupplier.class.php:253 inc/surveysupplier.class.php:350
-msgid "Commercial followup quality, visits, responseness"
-msgstr "Obchodní kvalita, schůzky, vnímavost"
+#: inc/orderstate.class.php:110
+msgid "Canceled"
+msgstr "Zrušena"
 
-#: inc/surveysupplier.class.php:260 inc/surveysupplier.class.php:355
-msgid "Contacts availability"
-msgstr "Dostupnost kontaktů"
+#: inc/orderstate.class.php:111 inc/billstate.class.php:67
+#: inc/billstate.class.php:109
+msgid "Paid"
+msgstr "Uhrazena"
 
-#: inc/surveysupplier.class.php:268 inc/surveysupplier.class.php:361
-msgid "Quality of supplier intervention"
-msgstr "Kvalita zásahu dodavatele"
+#: inc/accountsection.class.php:40 inc/order.class.php:1283 hook.php:145
+msgid "Account section"
+msgstr "Sekce účtu"
 
-#: inc/surveysupplier.class.php:275 inc/surveysupplier.class.php:367
-msgid "Reliability about annouced delays"
-msgstr "Spolehlivost ohlášené dostupnosti"
+#: inc/billtype.class.php:40 hook.php:143
+msgid "Bill type"
+msgstr "Typ platby"
 
-#: inc/surveysupplier.class.php:287
-msgid "Final supplier note"
-msgstr "Celkové hodnocení dodavatele"
+#: inc/notificationtargetorder.class.php:55
+#: inc/notificationtargetorder.class.php:132
+msgid "Request order validation"
+msgstr "Požadavek na ověření objednávky"
 
-#: inc/surveysupplier.class.php:381
-msgid "Average mark up to 5 (X points / 5)"
-msgstr "Průměrná známka až 5 bodů (x bodů / 5)"
+#: inc/notificationtargetorder.class.php:56
+msgid "Order validated"
+msgstr "Objednávka ověřena"
 
-#: inc/surveysupplier.class.php:405 inc/bill.class.php:106
-#: inc/bill.class.php:185 inc/order_item.class.php:922
-#: inc/order_item.class.php:1491 inc/order_item.class.php:2258
-#: inc/order.class.php:100 inc/reception.class.php:322
-#: inc/order_supplier.class.php:211 hook.php:400
-msgid "Order"
-msgstr "Objednávka"
+#: inc/notificationtargetorder.class.php:59
+#: inc/notificationtargetorder.class.php:205
+msgid "Late orders"
+msgstr "Zpožděné objednávky"
 
-#: inc/reference.class.php:164 inc/reference.class.php:660
-#: inc/order_item.class.php:987
-msgid "Manufacturer reference"
-msgstr "Reference výrobce"
+#: inc/notificationtargetorder.class.php:60
+#: inc/notificationtargetorder.class.php:148
+msgid "No item to generate"
+msgstr "Žádná položka k vytvoření"
 
-#: inc/reference.class.php:187 inc/order_item.class.php:128
-#: inc/order_item.class.php:448 inc/order_item.class.php:571
-#: inc/order_item.class.php:988 inc/order_item.class.php:1116
-#: inc/order_item.class.php:1512 inc/reference_supplier.class.php:99
-#: inc/reference_supplier.class.php:249 inc/reference_supplier.class.php:303
-#: inc/reference_supplier.class.php:571
-msgid "Unit price tax free"
-msgstr "Cena za jednotku bez DPH"
+#: inc/notificationtargetorder.class.php:116
+#: inc/notificationtargetorder.class.php:171
+#: inc/notificationtargetorder.class.php:179 inc/order.class.php:349
+#: inc/order.class.php:933 report/deliveryinfos/deliveryinfos.php:48
+#: report/orderdelivery/orderdelivery.php:48
+#: report/orderdelivery/orderdelivery.php:90
+msgid "Date of order"
+msgstr "Datum objednávky"
 
-#: inc/reference.class.php:197 inc/order_item.class.php:169
-#: inc/order_item.class.php:577 inc/reference_supplier.class.php:92
-#: inc/reference_supplier.class.php:235
-msgid "Manufacturer's product reference"
-msgstr "Produktová reference výrobce"
+#: inc/notificationtargetorder.class.php:125
+#: inc/notificationtargetorder.class.php:173
+msgid "Comment of validation"
+msgstr "Komentář ověření"
 
-#: inc/reference.class.php:301
-msgid "Cannot create reference without a name"
-msgstr "Nelze vytvořit referenci bez názvu"
+#: inc/notificationtargetorder.class.php:144
+msgid "Validation canceled successfully"
+msgstr "Ověření bylo úspěšně zrušeno"
 
-#: inc/reference.class.php:306
-msgid "Cannot create reference without a type"
-msgstr "Nelze vytvořit referenci bez typu"
+#: inc/notificationtargetorder.class.php:174
+msgid "Editor of validation"
+msgstr "Editor ověření"
 
-#: inc/reference.class.php:319
-msgid "A reference with the same name still exists"
-msgstr "Reference s tímto názvem už existuje"
+#: inc/notificationtargetorder.class.php:180 inc/order.class.php:457
+#: inc/order.class.php:1234 report/orderdelivery/orderdelivery.php:91
+msgid "Estimated due date"
+msgstr "Odhadované datum doručení"
 
-#: inc/reference.class.php:336
-msgid "Reference(s) in use"
-msgstr "Používané reference"
-
-#: inc/reference.class.php:389 inc/reference.class.php:886
-#: inc/order.class.php:2144
-msgid "Linked orders"
-msgstr "Propojené objednávky"
-
-#: inc/reference.class.php:755 inc/order.class.php:1105
-#: inc/order.class.php:1501
-msgid "Eco-responsibility fees"
-msgstr "Poplatky za ekologickou odpovědnost"
-
-#: inc/reference.class.php:973
-msgid "Copy of"
-msgstr "Kopie z"
-
-#: inc/reference.class.php:1038
-msgid "Copy reference"
-msgstr "Kopírovat referenci"
-
-#: inc/config.class.php:111
-msgid "Plugin configuration"
-msgstr "Nastavení zásuvného modulu"
-
-#: inc/config.class.php:114
-msgid "Default VAT"
-msgstr "Výchozí DPH"
-
-#: inc/config.class.php:120 inc/order_item.class.php:534
-#: inc/order_item.class.php:614 inc/order.class.php:1137
-msgid "No VAT"
-msgstr "Bez DPH"
-
-#: inc/config.class.php:126
-msgid "Use validation process"
-msgstr "Použít ověřovací proces"
-
-#: inc/config.class.php:133
-msgid "Order generation in ODT"
-msgstr "Vytvoření objednávky ve formátu ODT"
-
-#: inc/config.class.php:139
-msgid "Activate suppliers quality satisfaction"
-msgstr "Zapnout hodnocení kvality dodavatele"
-
-#: inc/config.class.php:146
-msgid "Display order's suppliers informations"
-msgstr "Zobrazit informace o dodavateli objednávky"
-
-#: inc/config.class.php:152
-msgid "Color to be displayed when order due date is overtaken"
-msgstr "Barva kterou zobrazit při překročení odhadovaného data doručení"
-
-#: inc/config.class.php:160
-msgid "Copy order documents when a new item is created"
-msgstr "Kopírovat dokumenty objednávky do vytvářené nové položky"
-
-#: inc/config.class.php:167
-msgid "Default heading when adding a document to an order"
-msgstr "Výchozí hlavička při přidání dokumentu k objednávce"
-
-#: inc/config.class.php:174 inc/order.class.php:531 inc/order.class.php:1380
 #: inc/notificationtargetorder.class.php:481
-#: inc/notificationtargetorder.class.php:484
+#: inc/notificationtargetorder.class.php:484 inc/order.class.php:531
+#: inc/order.class.php:1380 inc/config.class.php:174
 msgid "Author group"
 msgstr "Skupina autora"
 
-#: inc/config.class.php:184 inc/order.class.php:539 inc/order.class.php:1431
 #: inc/notificationtargetorder.class.php:483
-#: inc/notificationtargetorder.class.php:485
+#: inc/notificationtargetorder.class.php:485 inc/order.class.php:539
+#: inc/order.class.php:1431 inc/config.class.php:184
 msgid "Recipient group"
 msgstr "Skupina příjemce"
 
-#: inc/config.class.php:206
-msgid "Hide inactive budgets"
-msgstr "Skrýt neaktivní rozpočty"
-
-#: inc/config.class.php:213
-msgid "Transmit budget change to linked assets"
-msgstr "Přenášet změny rozpočtu na související položky"
-
-#: inc/config.class.php:220
-msgid "Display account section on order form"
-msgstr "Zobrazovat sekci účtu ve formuláři objednávky"
-
-#: inc/config.class.php:227
-msgid "Set account section as mandatory on order form"
-msgstr "Ve formuláři objednávky je povinná sekce účtu"
-
-#: inc/config.class.php:234
-msgid "Use free references"
-msgstr "Použít volné refrence"
-
-#: inc/config.class.php:241
-msgid "Rename documents added in order"
-msgstr "Přejmenovat dokumenty přidané v pořadí"
-
-#: inc/config.class.php:249
-msgid "Automatic actions when delivery"
-msgstr "Automatické akce při doručení"
-
-#: inc/config.class.php:258
-msgid "Display analytic nature on item form"
-msgstr "Zobrazovat analytickou povahu ve formuláři položky"
-
-#: inc/config.class.php:265
-msgid "Set analytic nature as mandatory on item form"
-msgstr "Nastavit ve formuláři položky analytickou povahu jako povinnou"
-
-#: inc/config.class.php:278
-msgid "Asked"
-msgstr "Poptáváno"
-
-#: inc/config.class.php:286
-msgid "Default state"
-msgstr "Výchozí stav"
-
-#: inc/config.class.php:297
-msgid "Add order location to item"
-msgstr "Přidat umístění objednávky k položce"
-
-#: inc/config.class.php:304
-msgid "Add billing details to item"
-msgstr "Přidat fakturační údaje k položce"
-
-#: inc/config.class.php:310
-msgid "Add immobilization number to item"
-msgstr "Přidat k položce číslo imobilizace"
-
-#: inc/config.class.php:370
-msgid "Order lifecycle"
-msgstr "Životní cyklus objednávky"
-
-#: inc/config.class.php:374
-msgid "State before validation"
-msgstr "Stav před ověřením"
-
-#: inc/config.class.php:384
-msgid "Waiting for validation state"
-msgstr "Stav čekání na ověření"
-
-#: inc/config.class.php:394
-msgid "Validated order state"
-msgstr "Stav ověřené objednávky"
-
-#: inc/config.class.php:404
-msgid "Order being delivered state"
-msgstr "Stav dodávané objednávky"
-
-#: inc/config.class.php:414
-msgid "Order delivered state"
-msgstr "Stav dodané objednávky"
-
-#: inc/config.class.php:424
-msgid "Order paied state"
-msgstr "Stav uhrazení objednávky"
-
-#: inc/config.class.php:434
-msgid "Canceled order state"
-msgstr "Stav zrušené objednávky"
-
-#: inc/preference.class.php:185 inc/order.class.php:1761
-msgid "Use this model"
-msgstr "Použít tento model"
-
-#: inc/preference.class.php:190 inc/order.class.php:1770
-msgid "Use this sign"
-msgstr "Použít tento podpis"
+#: inc/other.class.php:40
+msgid "Other kind of items"
+msgstr ""
 
 #: inc/bill.class.php:46 inc/bill.class.php:139 inc/bill.class.php:401
 #: inc/order_item.class.php:1769 inc/order_item.class.php:1876
@@ -498,14 +280,28 @@ msgstr "Faktura"
 msgid "A bill number is mandatory"
 msgstr "Číslo faktury je povinné"
 
-#: inc/bill.class.php:402 inc/billstate.class.php:44
-#: inc/order_item.class.php:1770 hook.php:142
+#: inc/bill.class.php:106 inc/bill.class.php:185 inc/order_item.class.php:922
+#: inc/order_item.class.php:1491 inc/order_item.class.php:2258
+#: inc/order_supplier.class.php:211 inc/order.class.php:100
+#: inc/reception.class.php:322 inc/surveysupplier.class.php:405 hook.php:400
+msgid "Order"
+msgstr "Objednávka"
+
+#: inc/bill.class.php:198 inc/order.class.php:338 inc/order.class.php:951
+#: inc/order.class.php:1845 report/orderdelivery/orderdelivery.php:78
+#: hook.php:251
+msgid "Order number"
+msgstr "Číslo objednávky"
+
+#: inc/bill.class.php:402 inc/order_item.class.php:1770
+#: inc/billstate.class.php:44 hook.php:142
 msgid "Bill status"
 msgstr "Stav platby"
 
-#: inc/referencefree.class.php:41
-msgid "Reference free"
-msgstr "Bez reference"
+#: inc/orderpayment.class.php:40 inc/order.class.php:401
+#: inc/order.class.php:1063 inc/order.class.php:2051 hook.php:137
+msgid "Payment conditions"
+msgstr "Platební podmínky"
 
 #: inc/link.class.php:49
 msgid "Generation"
@@ -571,30 +367,42 @@ msgstr "Položka byla vytvořena objednávkou"
 msgid "Item successfully selected"
 msgstr "Položka byla úspěšně vybrána"
 
-#: inc/billstate.class.php:52 inc/orderstate.class.php:63
-msgid "You cannot remove this status"
-msgstr "Nemůžete odstranit tento stav"
-
-#: inc/billstate.class.php:66
-msgid "Being paid"
-msgstr "Zaplaceno"
-
-#: inc/billstate.class.php:67 inc/billstate.class.php:109
-#: inc/orderstate.class.php:111
-msgid "Paid"
-msgstr "Uhrazena"
-
-#: inc/billstate.class.php:110
-msgid "Not paid"
-msgstr "Neuhrazeno"
+#: inc/ordertax.class.php:41 inc/order_item.class.php:449
+#: inc/order_item.class.php:572 inc/order_item.class.php:1117
+#: inc/order_item.class.php:1519 inc/order.class.php:359
+#: inc/order.class.php:1105 inc/order.class.php:1126 inc/order.class.php:1916
+#: inc/order.class.php:2045 hook.php:136
+msgid "VAT"
+msgstr "DPH"
 
 #: inc/order_item.class.php:111 inc/order_item.class.php:2251
 msgid "Order item"
 msgstr "Položka objednávky"
 
+#: inc/order_item.class.php:128 inc/order_item.class.php:448
+#: inc/order_item.class.php:571 inc/order_item.class.php:988
+#: inc/order_item.class.php:1116 inc/order_item.class.php:1512
+#: inc/reference.class.php:187 inc/reference_supplier.class.php:99
+#: inc/reference_supplier.class.php:249 inc/reference_supplier.class.php:303
+#: inc/reference_supplier.class.php:571
+msgid "Unit price tax free"
+msgstr "Cena za jednotku bez DPH"
+
 #: inc/order_item.class.php:163 inc/order_item.class.php:565
 msgid "Product name"
 msgstr "Název produktu"
+
+#: inc/order_item.class.php:169 inc/order_item.class.php:577
+#: inc/reference.class.php:197 inc/reference_supplier.class.php:92
+#: inc/reference_supplier.class.php:235
+msgid "Manufacturer's product reference"
+msgstr "Produktová reference výrobce"
+
+#: inc/order_item.class.php:184 inc/reception.class.php:257
+#: inc/reception.class.php:529 inc/reception.class.php:819
+#: inc/deliverystate.class.php:37 hook.php:141 ajax/massreception.php:64
+msgid "Delivery status"
+msgstr "Stav dodání"
 
 #: inc/order_item.class.php:190
 msgid "Analytic Nature"
@@ -613,13 +421,10 @@ msgstr "Přidat do objednávky z katalogu"
 msgid "Analytic nature"
 msgstr "Analytická povaha"
 
-#: inc/order_item.class.php:449 inc/order_item.class.php:572
-#: inc/order_item.class.php:1117 inc/order_item.class.php:1519
-#: inc/order.class.php:359 inc/order.class.php:1105 inc/order.class.php:1126
-#: inc/order.class.php:1916 inc/order.class.php:2045 inc/ordertax.class.php:41
-#: hook.php:136
-msgid "VAT"
-msgstr "DPH"
+#: inc/order_item.class.php:534 inc/order_item.class.php:614
+#: inc/order.class.php:1137 inc/config.class.php:120
+msgid "No VAT"
+msgstr "Bez DPH"
 
 #: inc/order_item.class.php:548 inc/order_item.class.php:689
 msgid "Please select a supplier"
@@ -641,6 +446,11 @@ msgstr "Musíte vybrat referenci"
 msgid "An analytic nature is mandatory !"
 msgstr "Analytická povaha je povinná!"
 
+#: inc/order_item.class.php:987 inc/reference.class.php:164
+#: inc/reference.class.php:660
+msgid "Manufacturer reference"
+msgstr "Reference výrobce"
+
 #: inc/order_item.class.php:1119 inc/order_item.class.php:1542
 msgid "Discounted price tax free"
 msgstr "Cena po slevě bez DPH"
@@ -658,43 +468,88 @@ msgstr "Stav platby"
 msgid "Paid value"
 msgstr "Zaplacená hodnota"
 
-#: inc/orderpayment.class.php:40 inc/order.class.php:401
-#: inc/order.class.php:1063 inc/order.class.php:2051 hook.php:137
-msgid "Payment conditions"
-msgstr "Platební podmínky"
+#: inc/billstate.class.php:66
+msgid "Being paid"
+msgstr "Zaplaceno"
 
-#: inc/billtype.class.php:40 hook.php:143
-msgid "Bill type"
-msgstr "Typ platby"
+#: inc/billstate.class.php:110
+msgid "Not paid"
+msgstr "Neuhrazeno"
 
-#: inc/orderstate.class.php:55 inc/order.class.php:379 inc/order.class.php:996
-#: inc/order.class.php:2150 hook.php:139
-msgid "Order status"
-msgstr "Stav objednávky"
+#: inc/documentcategory.class.php:37
+msgid "Document category"
+msgstr "Kategorie dokumentu"
 
-#: inc/orderstate.class.php:105
-msgid "Draft"
-msgstr "Návrh"
+#: inc/documentcategory.class.php:85 inc/documentcategory.class.php:90
+msgid "Document category prefix"
+msgstr "Předpona kategorie dokumentu"
 
-#: inc/orderstate.class.php:106
-msgid "Waiting for approval"
-msgstr "Čeká na schválení"
+#: inc/orderablecapacity.class.php:45
+msgid "Orderable"
+msgstr ""
 
-#: inc/orderstate.class.php:107
-msgid "Validated"
-msgstr "Ověřena"
+#: inc/orderablecapacity.class.php:73
+#, php-format
+msgid "Used by %d order reference"
+msgid_plural "Used by %d order references"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
-#: inc/orderstate.class.php:108
-msgid "Being delivered"
-msgstr "Dodávána"
+#: inc/reference.class.php:301
+msgid "Cannot create reference without a name"
+msgstr "Nelze vytvořit referenci bez názvu"
 
-#: inc/orderstate.class.php:109
-msgid "Delivered"
-msgstr "Dodána"
+#: inc/reference.class.php:306
+msgid "Cannot create reference without a type"
+msgstr "Nelze vytvořit referenci bez typu"
 
-#: inc/orderstate.class.php:110
-msgid "Canceled"
-msgstr "Zrušena"
+#: inc/reference.class.php:319
+msgid "A reference with the same name still exists"
+msgstr "Reference s tímto názvem už existuje"
+
+#: inc/reference.class.php:336
+msgid "Reference(s) in use"
+msgstr "Používané reference"
+
+#: inc/reference.class.php:389 inc/reference.class.php:886
+#: inc/order.class.php:2144
+msgid "Linked orders"
+msgstr "Propojené objednávky"
+
+#: inc/reference.class.php:755 inc/order.class.php:1105
+#: inc/order.class.php:1501
+msgid "Eco-responsibility fees"
+msgstr "Poplatky za ekologickou odpovědnost"
+
+#: inc/reference.class.php:973
+msgid "Copy of"
+msgstr "Kopie z"
+
+#: inc/reference.class.php:1038
+msgid "Copy reference"
+msgstr "Kopírovat referenci"
+
+#: inc/othertype.class.php:40 hook.php:140
+msgid "Other type of item"
+msgstr "Jiný typ položky"
+
+#: inc/order_supplier.class.php:332
+msgid "Delivery statistics"
+msgstr "Statistika doručení"
+
+#: inc/order_supplier.class.php:350
+msgid "No specified status"
+msgstr "Neurčený stav"
+
+#: inc/preference.class.php:185 inc/order.class.php:1761
+msgid "Use this model"
+msgstr "Použít tento model"
+
+#: inc/preference.class.php:190 inc/order.class.php:1770
+msgid "Use this sign"
+msgstr "Použít tento podpis"
 
 #: inc/order.class.php:318 inc/order.class.php:1755 inc/order.class.php:1782
 msgid "Order Generation"
@@ -724,6 +579,13 @@ msgstr "Vytvořit objednávku bez ověření"
 #: inc/order.class.php:1126 inc/order.class.php:1525 inc/order.class.php:2042
 msgid "Postage"
 msgstr "Poštovné/balné"
+
+#: inc/order.class.php:369 inc/order.class.php:1048
+#: report/deliveryinfos/deliveryinfos.php:50
+#: report/orderdelivery/orderdelivery.php:50
+#: report/orderdelivery/orderdelivery.php:95
+msgid "Delivery location"
+msgstr "Místo doručení"
 
 #: inc/order.class.php:477 inc/order.class.php:2403
 msgid "Order is late"
@@ -773,10 +635,6 @@ msgstr "Překročen předpokládaný termín"
 #: inc/order.class.php:1263
 msgid "Global discount to apply to items"
 msgstr "Globální sleva na položky"
-
-#: inc/order.class.php:1283 inc/accountsection.class.php:40 hook.php:145
-msgid "Account section"
-msgstr "Sekce účtu"
 
 #: inc/order.class.php:1491
 msgid "Articles"
@@ -923,22 +781,6 @@ msgstr "Celková hodnota objednávek spojených s tímto rozpočtem je větší 
 msgid "Total orders related with this budget is equal to its value."
 msgstr "Celková hodnota objednávek spojených s tímto rozpočtem je rovna jeho výši."
 
-#: inc/other.class.php:40
-msgid "Other kind of items"
-msgstr ""
-
-#: inc/documentcategory.class.php:37
-msgid "Document category"
-msgstr "Kategorie dokumentu"
-
-#: inc/documentcategory.class.php:85 inc/documentcategory.class.php:90
-msgid "Document category prefix"
-msgstr "Předpona kategorie dokumentu"
-
-#: inc/reference_supplier.class.php:562
-msgid "List references"
-msgstr "Seznam referencí"
-
 #: inc/reception.class.php:54
 msgid "Delivery"
 msgstr "Dodávka"
@@ -958,6 +800,26 @@ msgstr "Převzít položku (hromadně)"
 #: inc/reception.class.php:798
 msgid "Destination entity"
 msgstr "Cílová entita"
+
+#: inc/reception.class.php:824 inc/config.class.php:272
+#: ajax/massreception.php:71
+msgid "Enable automatic generation"
+msgstr "Zapnout automatické vytváření"
+
+#: inc/reception.class.php:830 inc/config.class.php:317
+#: inc/config.class.php:880 ajax/massreception.php:74
+msgid "Default name"
+msgstr "Výchozí název"
+
+#: inc/reception.class.php:838 inc/config.class.php:329
+#: inc/config.class.php:886 ajax/massreception.php:81
+msgid "Default serial number"
+msgstr "Výchozí sériové číslo"
+
+#: inc/reception.class.php:846 inc/config.class.php:341
+#: inc/config.class.php:892 ajax/massreception.php:88
+msgid "Default inventory number"
+msgstr "Výchozí inventární číslo"
 
 #: inc/reception.class.php:862
 msgid "Waiting for delivery"
@@ -979,46 +841,195 @@ msgstr "Položka byla již převzata"
 msgid "Item delivered"
 msgstr "Položka doručena"
 
-#: inc/othertype.class.php:40 hook.php:140
-msgid "Other type of item"
-msgstr "Jiný typ položky"
+#: inc/surveysupplier.class.php:44 inc/surveysupplier.class.php:208
+#: inc/surveysupplier.class.php:420 inc/surveysupplier.class.php:613
+msgid "Supplier quality"
+msgstr "Kvalita dodavatele"
 
-#: inc/notificationtargetorder.class.php:55
-#: inc/notificationtargetorder.class.php:132
-msgid "Request order validation"
-msgstr "Požadavek na ověření objednávky"
+#: inc/surveysupplier.class.php:213 inc/surveysupplier.class.php:423
+msgid "Note"
+msgstr "Poznámka"
 
-#: inc/notificationtargetorder.class.php:56
-msgid "Order validated"
-msgstr "Objednávka ověřena"
+#: inc/surveysupplier.class.php:214 inc/surveysupplier.class.php:424
+msgid "Comment on survey"
+msgstr "Komentář k průzkumu"
 
-#: inc/notificationtargetorder.class.php:59
-#: inc/notificationtargetorder.class.php:205
-msgid "Late orders"
-msgstr "Zpožděné objednávky"
+#: inc/surveysupplier.class.php:244 inc/surveysupplier.class.php:343
+msgid "Administrative followup quality (contracts, bills, mail, etc.)"
+msgstr "Kvalita administrativy (smlouvy, platby, korespondence, atd.)"
 
-#: inc/notificationtargetorder.class.php:60
-#: inc/notificationtargetorder.class.php:148
-msgid "No item to generate"
-msgstr "Žádná položka k vytvoření"
+#: inc/surveysupplier.class.php:253 inc/surveysupplier.class.php:350
+msgid "Commercial followup quality, visits, responseness"
+msgstr "Obchodní kvalita, schůzky, vnímavost"
 
-#: inc/notificationtargetorder.class.php:125
-#: inc/notificationtargetorder.class.php:173
-msgid "Comment of validation"
-msgstr "Komentář ověření"
+#: inc/surveysupplier.class.php:260 inc/surveysupplier.class.php:355
+msgid "Contacts availability"
+msgstr "Dostupnost kontaktů"
 
-#: inc/notificationtargetorder.class.php:144
-msgid "Validation canceled successfully"
-msgstr "Ověření bylo úspěšně zrušeno"
+#: inc/surveysupplier.class.php:268 inc/surveysupplier.class.php:361
+msgid "Quality of supplier intervention"
+msgstr "Kvalita zásahu dodavatele"
 
-#: inc/notificationtargetorder.class.php:174
-msgid "Editor of validation"
-msgstr "Editor ověření"
+#: inc/surveysupplier.class.php:275 inc/surveysupplier.class.php:367
+msgid "Reliability about annouced delays"
+msgstr "Spolehlivost ohlášené dostupnosti"
 
-#: inc/order_supplier.class.php:332
-msgid "Delivery statistics"
-msgstr "Statistika doručení"
+#: inc/surveysupplier.class.php:287
+msgid "Final supplier note"
+msgstr "Celkové hodnocení dodavatele"
 
-#: inc/order_supplier.class.php:350
-msgid "No specified status"
-msgstr "Neurčený stav"
+#: inc/surveysupplier.class.php:381
+msgid "Average mark up to 5 (X points / 5)"
+msgstr "Průměrná známka až 5 bodů (x bodů / 5)"
+
+#: inc/config.class.php:111
+msgid "Plugin configuration"
+msgstr "Nastavení zásuvného modulu"
+
+#: inc/config.class.php:114
+msgid "Default VAT"
+msgstr "Výchozí DPH"
+
+#: inc/config.class.php:126
+msgid "Use validation process"
+msgstr "Použít ověřovací proces"
+
+#: inc/config.class.php:133
+msgid "Order generation in ODT"
+msgstr "Vytvoření objednávky ve formátu ODT"
+
+#: inc/config.class.php:139
+msgid "Activate suppliers quality satisfaction"
+msgstr "Zapnout hodnocení kvality dodavatele"
+
+#: inc/config.class.php:146
+msgid "Display order's suppliers informations"
+msgstr "Zobrazit informace o dodavateli objednávky"
+
+#: inc/config.class.php:152
+msgid "Color to be displayed when order due date is overtaken"
+msgstr "Barva kterou zobrazit při překročení odhadovaného data doručení"
+
+#: inc/config.class.php:160
+msgid "Copy order documents when a new item is created"
+msgstr "Kopírovat dokumenty objednávky do vytvářené nové položky"
+
+#: inc/config.class.php:167
+msgid "Default heading when adding a document to an order"
+msgstr "Výchozí hlavička při přidání dokumentu k objednávce"
+
+#: inc/config.class.php:206
+msgid "Hide inactive budgets"
+msgstr "Skrýt neaktivní rozpočty"
+
+#: inc/config.class.php:213
+msgid "Transmit budget change to linked assets"
+msgstr "Přenášet změny rozpočtu na související položky"
+
+#: inc/config.class.php:220
+msgid "Display account section on order form"
+msgstr "Zobrazovat sekci účtu ve formuláři objednávky"
+
+#: inc/config.class.php:227
+msgid "Set account section as mandatory on order form"
+msgstr "Ve formuláři objednávky je povinná sekce účtu"
+
+#: inc/config.class.php:234
+msgid "Use free references"
+msgstr "Použít volné refrence"
+
+#: inc/config.class.php:241
+msgid "Rename documents added in order"
+msgstr "Přejmenovat dokumenty přidané v pořadí"
+
+#: inc/config.class.php:249
+msgid "Automatic actions when delivery"
+msgstr "Automatické akce při doručení"
+
+#: inc/config.class.php:258
+msgid "Display analytic nature on item form"
+msgstr "Zobrazovat analytickou povahu ve formuláři položky"
+
+#: inc/config.class.php:265
+msgid "Set analytic nature as mandatory on item form"
+msgstr "Nastavit ve formuláři položky analytickou povahu jako povinnou"
+
+#: inc/config.class.php:278
+msgid "Asked"
+msgstr "Poptáváno"
+
+#: inc/config.class.php:286
+msgid "Default state"
+msgstr "Výchozí stav"
+
+#: inc/config.class.php:297
+msgid "Add order location to item"
+msgstr "Přidat umístění objednávky k položce"
+
+#: inc/config.class.php:304
+msgid "Add billing details to item"
+msgstr "Přidat fakturační údaje k položce"
+
+#: inc/config.class.php:310
+msgid "Add immobilization number to item"
+msgstr "Přidat k položce číslo imobilizace"
+
+#: inc/config.class.php:370
+msgid "Order lifecycle"
+msgstr "Životní cyklus objednávky"
+
+#: inc/config.class.php:374
+msgid "State before validation"
+msgstr "Stav před ověřením"
+
+#: inc/config.class.php:384
+msgid "Waiting for validation state"
+msgstr "Stav čekání na ověření"
+
+#: inc/config.class.php:394
+msgid "Validated order state"
+msgstr "Stav ověřené objednávky"
+
+#: inc/config.class.php:404
+msgid "Order being delivered state"
+msgstr "Stav dodávané objednávky"
+
+#: inc/config.class.php:414
+msgid "Order delivered state"
+msgstr "Stav dodané objednávky"
+
+#: inc/config.class.php:424
+msgid "Order paied state"
+msgstr "Stav uhrazení objednávky"
+
+#: inc/config.class.php:434
+msgid "Canceled order state"
+msgstr "Stav zrušené objednávky"
+
+#: inc/referencefree.class.php:41
+msgid "Reference free"
+msgstr "Bez reference"
+
+#: inc/reference_supplier.class.php:562
+msgid "List references"
+msgstr "Seznam referencí"
+
+#: report/deliveryinfos/deliveryinfos.php:47
+msgid "deliveryinfos_report_title"
+msgstr "Statistiky doručení objednávek"
+
+#: report/deliveryinfos/deliveryinfos.php:74
+msgid "Orders total"
+msgstr "Objednávky celkem"
+
+#: report/deliveryinfos/deliveryinfos.php:75
+msgid "Late orders total"
+msgstr "Zpožděné objednávky celkem"
+
+#: report/orderdelivery/orderdelivery.php:47
+msgid "orderdelivery_report_title"
+msgstr "Odeslání objednávek"
+
+#: ajax/massreception.php:52
+msgid "Number to deliver"
+msgstr "Počet k dodání"
