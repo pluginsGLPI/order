@@ -624,7 +624,7 @@ class PluginOrderLink extends CommonDBChild
                 $newIDs = $link->generateNewItem($ma->POST);
                 foreach ($ma->getItems()[self::class] as $key => $val) {
                     $itemtype = $ma->POST['add_items'][$key]['itemtype'] ?? '';
-                    if (in_array($itemtype, self::getTypesThanCannotBeGenerated())) {
+                    if ($itemtype !== 'SoftwareLicense' && in_array($itemtype, self::getTypesThanCannotBeGenerated())) {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                     } elseif (isset($newIDs[$key]) && $newIDs[$key]) {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
