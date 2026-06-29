@@ -1080,7 +1080,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             'columns' => $columns,
             'formatters' => [
                 'reference' => 'raw_html',
-                'manufacturer' => 'raw_html',
+                'manufacturer' => '',
                 'type' => 'raw_html',
                 'model' => 'raw_html',
                 'quantity' => 'editable_quantity',

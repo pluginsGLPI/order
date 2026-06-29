@@ -454,7 +454,7 @@ class PluginOrderLink extends CommonDBChild
 
         $reference_header_data = [
             'item_type_name' => $item->getTypeName(),
-            'manufacturer_name' => Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]),
+            'manufacturer_name' => htmlentities(Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]), ENT_QUOTES, "UTF-8"),
             'reference_name' => ($table == 'glpi_plugin_order_referencefrees') ? $data_ref['name'] : $PluginOrderReference->getReceptionReferenceLink($data_ref),
             'item_count' => $total_number,
         ];

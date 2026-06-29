@@ -9,7 +9,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
-- Fix `Take item delivery` and `Cancel reception` action for `Software License` 
+- Fix `Take item delivery` and `Cancel reception` action for `Software License`
+
+
+## [2.12.8] - 2026-06-24
+
+### Added
+- Add an `Orderable` capacity for GLPI 11 custom asset definitions.
+
 
 ## [2.12.7] - 2026-06-03
 
