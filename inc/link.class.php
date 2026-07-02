@@ -633,7 +633,18 @@ class PluginOrderLink extends CommonDBChild
                 break;
 
             case 'createLink':
-                if (count($ids) > 1) {
+                //  For consumables and cartridges, createLinkWithItem creates a new item
+                // (glpi_consumables/glpi_cartridges) for each selected detail line;
+                // therefore, multiple items can be linked to the same reference item at once
+                $reference = new PluginOrderReference();
+                $reference->getFromDB($ma->POST["plugin_order_references_id"]);
+                $allow_multiple_link = in_array(
+                    $reference->fields["itemtype"] ?? '',
+                    ['ConsumableItem', 'CartridgeItem'],
+                    true,
+                );
+
+                if (!$allow_multiple_link && count($ids) > 1) {
                     $ma->addMessage(__s("Cannot link several items to one detail line", "order"));
                     foreach ($ids as $id) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
