@@ -636,10 +636,9 @@ class PluginOrderLink extends CommonDBChild
                 //  For consumables and cartridges, createLinkWithItem creates a new item
                 // (glpi_consumables/glpi_cartridges) for each selected detail line;
                 // therefore, multiple items can be linked to the same reference item at once
-                $reference = new PluginOrderReference();
-                $reference->getFromDB($ma->POST["plugin_order_references_id"]);
-                $allow_multiple_link = in_array(
-                    $reference->fields["itemtype"] ?? '',
+                $first_item_data = reset($ma->POST['add_items']);
+                $allow_multiple_link = is_array($first_item_data) && in_array(
+                    $first_item_data['itemtype'] ?? '',
                     ['ConsumableItem', 'CartridgeItem'],
                     true,
                 );
