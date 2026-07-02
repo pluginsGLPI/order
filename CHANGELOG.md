@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+
+### Added
+- Add grouped actions to link consumables and related items
+
 ## [2.12.8] - 2026-06-24
 
 ### Added
