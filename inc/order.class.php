@@ -1825,7 +1825,6 @@ class PluginOrderOrder extends CommonDBTM
             $this->getFromDB($ID);
 
             if (file_exists(PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR . "custom.php")) {
-                // @phpstan-ignore-next-line: custom.php is not a file or it does not exist.
                 include_once(PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR . "custom.php");
             }
 
