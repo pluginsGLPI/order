@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+
+### Fixed
+
+- Fix `Take item delivery` and `Cancel reception` action for `Software License`
+
 ## [2.12.9] - 2026-08-04
 
 ### Added
@@ -14,7 +20,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 - Add an `Orderable` capacity for GLPI 11 custom asset definitions.
-
 
 ## [2.12.7] - 2026-06-03
 

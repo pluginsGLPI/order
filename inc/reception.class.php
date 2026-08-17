@@ -1041,6 +1041,9 @@ JAVASCRIPT;
                         $params2['POST']["plugin_order_deliverystates_id"],
                     );
                     $plugin_order_orders_id = $params2['POST']["plugin_order_orders_id"];
+                    if ($ma !== false) {
+                        $ma->itemDone(self::class, $key, MassiveAction::ACTION_OK);
+                    }
                 } elseif ($detail->getFromDB($key)) {
                     if (!$plugin_order_orders_id) {
                         $plugin_order_orders_id = $detail->fields["plugin_order_orders_id"];
