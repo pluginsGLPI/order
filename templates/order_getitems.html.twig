@@ -60,7 +60,6 @@
 
 {% if form_action is defined %}
     <form method="post" name="order_updatedetail_form{{ rand|default(random()) }}" id="order_updatedetail_form{{ rand|default(random()) }}" action="{{ form_action }}">
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
 {% endif %}
 
 {% if hidden_fields is defined %}

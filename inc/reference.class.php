@@ -59,11 +59,11 @@ use Glpi\DBAL\QuerySubQuery;
  */
 class PluginOrderReference extends CommonDBTM
 {
-    public static $rightname         = 'plugin_order_reference'; //'plugin_order_reference'; //TODO : A développer
+    public static string $rightname         = 'plugin_order_reference'; //'plugin_order_reference'; //TODO : A développer
 
-    public $dohistory                = true;
+    public bool $dohistory                = true;
 
-    public static $forward_entity_to = ['PluginOrderReference_Supplier'];
+    public static array $forward_entity_to = ['PluginOrderReference_Supplier'];
 
 
     public static function getTypeName($nb = 0)
@@ -1029,7 +1029,7 @@ class PluginOrderReference extends CommonDBTM
 
         if ($isadmin) {
             if (
-                Session::haveRight('transfer', READ)
+                Session::haveRight(Transfer::$rightname, READ)
                 && Session::isMultiEntitiesMode()
             ) {
                 $actions['PluginOrderReference:transfert'] = __s('Transfer');

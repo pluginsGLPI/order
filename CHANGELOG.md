@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [UNRELEASED]
 
+### Added
+
+- GLPI 12 compatibility
+
 ### Fixed
 
 - Fix `Take item delivery` and `Cancel reception` action for `Software License`

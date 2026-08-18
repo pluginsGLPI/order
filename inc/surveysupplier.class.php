@@ -32,11 +32,11 @@ use Glpi\DBAL\QueryExpression;
 
 class PluginOrderSurveySupplier extends CommonDBChild
 {
-    public static $rightname = 'plugin_order_order';
+    public static string $rightname = 'plugin_order_order';
 
-    public static $itemtype  = 'PluginOrderOrder';
+    public static string $itemtype  = 'PluginOrderOrder';
 
-    public static $items_id  = 'plugin_order_orders_id';
+    public static string $items_id  = 'plugin_order_orders_id';
 
 
     public static function getTypeName($nb = 0)
@@ -174,8 +174,6 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
         $survey       = new self();
         $survey_table = $survey->getTable();
-
-        getEntitiesRestrictRequest(" AND ", "orders", "entities_id", '', true);
 
         $criteria = [
             'SELECT' => [

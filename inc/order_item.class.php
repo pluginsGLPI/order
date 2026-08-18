@@ -36,24 +36,24 @@ use function Safe\preg_match;
 
 class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 {
-    public static $rightname              = 'plugin_order_order';
+    public static string $rightname              = 'plugin_order_order';
 
-    public $dohistory                     = true;
+    public bool $dohistory                     = true;
 
     // From CommonDBRelation
-    public static $itemtype_1             = "PluginOrderOrder";
+    public static ?string $itemtype_1             = "PluginOrderOrder";
 
-    public static $items_id_1             = 'plugin_order_orders_id';
+    public static ?string $items_id_1             = 'plugin_order_orders_id';
 
-    public static $checkItem_1_Rights     = self::DONT_CHECK_ITEM_RIGHTS;
+    public static int $checkItem_1_Rights     = self::DONT_CHECK_ITEM_RIGHTS;
 
-    public static $itemtype_2             = 'itemtype';
+    public static ?string $itemtype_2             = 'itemtype';
 
-    public static $items_id_2             = 'items_id';
+    public static ?string $items_id_2             = 'items_id';
 
-    public static $checkItem_2_Rights     = self::DONT_CHECK_ITEM_RIGHTS;
+    public static int $checkItem_2_Rights     = self::DONT_CHECK_ITEM_RIGHTS;
 
-    public static $check_entity_coherency = false;
+    public static bool $check_entity_coherency = false;
 
     //TODO better right and entity menber (ex Computer_Item)
 
@@ -1434,11 +1434,11 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                     'items_id' => $ID,
                 ],
             );
-            if (!empty($result)) {
+            if ($result !== []) {
                 $link = array_shift($result);
                 $reference = new PluginOrderReference();
                 $reference->getFromDB($link['plugin_order_references_id']);
-                if (Session::haveRight('plugin_order_reference', READ)) {
+                if (Session::haveRight(PluginOrderReference::$rightname, READ)) {
                     $twig_option['reference_link'] = $reference->getLink();
                 }
 

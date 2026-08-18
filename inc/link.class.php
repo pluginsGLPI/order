@@ -33,15 +33,15 @@ use Glpi\Features\AssignableItem;
 
 class PluginOrderLink extends CommonDBChild
 {
-    public static $rightname         = 'plugin_order_order';
+    public static string $rightname         = 'plugin_order_order';
 
-    public $dohistory                = true;
+    public bool $dohistory                = true;
 
-    public static $itemtype          = 'PluginOrderOrder';
+    public static string $itemtype          = 'PluginOrderOrder';
 
-    public static $items_id          = 'plugin_order_orders_id';
+    public static string $items_id          = 'plugin_order_orders_id';
 
-    public static $checkParentRights = self::DONT_CHECK_ITEM_RIGHTS;
+    public static int $checkParentRights = self::DONT_CHECK_ITEM_RIGHTS;
 
 
     public static function getTypeName($nb = 0)
@@ -639,7 +639,7 @@ class PluginOrderLink extends CommonDBChild
                 //  For consumables and cartridges, createLinkWithItem creates a new item
                 // (glpi_consumables/glpi_cartridges) for each selected detail line;
                 // therefore, multiple items can be linked to the same reference item at once
-                $allow_multiple_link = isset($ma->POST['add_items']) && $ma->POST['add_items'] !== [] && array_reduce(
+                $allow_multiple_link = $ma->POST['add_items'] !== [] && array_reduce(
                     $ma->POST['add_items'],
                     fn($carry, $data) => $carry && in_array(
                         $data['itemtype'] ?? '',
@@ -1446,7 +1446,7 @@ class PluginOrderLink extends CommonDBChild
         if (
             $item instanceof PluginOrderOrder
             && $item->checkIfDetailExists($item->getID(), true)
-            && Session::haveRight('plugin_order_order', READ)
+            && Session::haveRight(PluginOrderOrder::$rightname, READ)
         ) {
             return self::createTabEntry(
                 _sn("Associated item", "Associated items", 2),
@@ -1515,7 +1515,7 @@ class PluginOrderLink extends CommonDBChild
                             'sha1sum' => $document->fields['sha1sum'],
                         ],
                     );
-                    if (empty($found_docs)) {
+                    if ($found_docs === []) {
                         $tmpdoc                = $document->fields;
                         $tmpdoc['entities_id'] = $entity;
                         unset($tmpdoc['id']);

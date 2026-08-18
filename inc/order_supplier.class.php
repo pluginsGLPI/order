@@ -32,13 +32,13 @@
 
 class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
 {
-    public static $rightname = 'plugin_order_order';
+    public static string $rightname = 'plugin_order_order';
 
-    public static $itemtype  = 'PluginOrderOrder';
+    public static string $itemtype  = 'PluginOrderOrder';
 
-    public static $items_id  = 'plugin_order_orders_id';
+    public static string $items_id  = 'plugin_order_orders_id';
 
-    public $dohistory        = true;
+    public bool $dohistory        = true;
 
 
     public static function getTypeName($nb = 0)

@@ -32,9 +32,9 @@
 
 class PluginOrderBill extends CommonDropdown
 {
-    public static $rightname  = 'plugin_order_bill';
+    public static string $rightname  = 'plugin_order_bill';
 
-    public $dohistory         = true;
+    public bool $dohistory         = true;
 
     public $first_level_menu  = "plugins";
 

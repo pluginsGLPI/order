@@ -93,7 +93,7 @@ if (isset($_POST['action'])) {
     Html::back();
 }
 
-Session::checkRight("plugin_order_bill", READ);
+Session::checkRight(PluginOrderBill::$rightname, READ);
 
 Html::header(PluginOrderBill::getTypeName(), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "bill");
 if (isset($_REQUEST['id'])) {

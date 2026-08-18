@@ -28,7 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-Session::checkRight("plugin_order_bill", READ);
+Session::checkRight(PluginOrderBill::$rightname, READ);
 
 header("Content-Type: text/html; charset=UTF-8");
 
