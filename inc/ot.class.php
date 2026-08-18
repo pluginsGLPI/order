@@ -34,6 +34,12 @@
 class PluginOrderOt
 {
     /**
+     * Marks a superseded OT document. Kept in ASCII so re-runs recognise it
+     * whatever language the interface is in.
+     */
+    public const ARCHIVED_PREFIX = '[ARCHIVED] ';
+
+    /**
      * Show the input sub-form for the "Generate OT" massive action popup.
      */
     public static function showMassiveActionSubForm(): void
@@ -142,6 +148,26 @@ class PluginOrderOt
 
         $doc_id = $this->saveAsDocument($order, $pdf_path, $base_name . '.' . $ext, $mime);
 
+        // Regenerating an OT for a corrected order supersedes the earlier ones.
+        if ($doc_id) {
+            $archived = self::archivePreviousDocuments($order, (int) $doc_id);
+            if ($archived > 0) {
+                Session::addMessageAfterRedirect(
+                    sprintf(
+                        _sn(
+                            "%s previous OT document was archived and stays attached to the order",
+                            "%s previous OT documents were archived and stay attached to the order",
+                            $archived,
+                            "order",
+                        ),
+                        $archived,
+                    ),
+                    true,
+                    INFO,
+                );
+            }
+        }
+
         // Auto-create bill if invoice number provided
         $bill_id = false;
         if ($invoice_number !== '') {
@@ -214,10 +240,85 @@ class PluginOrderOt
             return false;
         }
 
+        // A correcting invoice supersedes the previous one: both stay attached to
+        // the order, but only the new one counts as covering it.
+        $archived = PluginOrderBill::archivePreviousForOrder($order_id, (int) $bill_id);
+        if ($archived > 0) {
+            Session::addMessageAfterRedirect(
+                sprintf(
+                    _sn(
+                        "%s previous bill was archived and stays attached to the order",
+                        "%s previous bills were archived and stay attached to the order",
+                        $archived,
+                        "order",
+                    ),
+                    $archived,
+                ),
+                true,
+                INFO,
+            );
+        }
+
         // Link all order items to this bill and set their bill state to PAID
         $this->linkBillToOrderItems($order, $bill_id, $bill);
 
         return $bill_id;
+    }
+
+
+    /**
+     * Mark the OT documents generated earlier for this order as archived.
+     *
+     * They keep their link to the order so the paper trail stays complete; the
+     * marker only tells readers which one is superseded.
+     *
+     * @param int $keep_document_id Document that must stay current
+     * @return int Number of documents archived
+     */
+    public static function archivePreviousDocuments(PluginOrderOrder $order, int $keep_document_id): int
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT'    => ['doc.id', 'doc.name', 'doc.comment'],
+            'FROM'      => 'glpi_documents_items AS di',
+            'INNER JOIN' => [
+                'glpi_documents AS doc' => [
+                    'ON' => ['di' => 'documents_id', 'doc' => 'id'],
+                ],
+            ],
+            'WHERE'     => [
+                'di.itemtype' => PluginOrderOrder::class,
+                'di.items_id' => $order->getID(),
+                'doc.id'      => ['!=', $keep_document_id],
+                'doc.filepath' => ['LIKE', '_plugins/order/ot/%'],
+            ],
+        ]);
+
+        $document = new Document();
+        $archived = 0;
+
+        foreach ($iterator as $row) {
+            if (str_starts_with((string) $row['name'], self::ARCHIVED_PREFIX)) {
+                continue;
+            }
+
+            $note = sprintf(
+                __("Archived on %s: replaced by a newer OT document", "order"),
+                Html::convDateTime($_SESSION['glpi_currenttime'] ?? date('Y-m-d H:i:s')),
+            );
+            $comment = trim((string) $row['comment']);
+
+            $document->update([
+                'id'      => $row['id'],
+                'name'    => self::ARCHIVED_PREFIX . $row['name'],
+                'comment' => $comment === '' ? $note : $comment . "\n" . $note,
+            ]);
+            $archived++;
+        }
+
+        return $archived;
     }
 
 

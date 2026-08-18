@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - OT generation popup: order number and optional commissioning / warehouse deposit dates
 - New "Invoicing" massive action: create and link a bill without generating the OT file
 - Configurable e-mail reminders (multiple day thresholds) for orders not yet invoiced
+- Reopening an invoiced order keeps its bill, and the validation tab asks whether that bill is still correct
+- A correcting bill or a regenerated OT archives the superseded ones, which stay attached to the order
 
 ### Changed
 

@@ -1701,9 +1701,61 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
     }
 
 
+    /**
+     * Ask whether the bill an order already carries still covers it.
+     *
+     * Shown only while a previously invoiced order is open for editing. Saying
+     * the bill is still correct closes the order again; a correcting bill is
+     * added through the usual invoicing action, which archives this one.
+     */
+    public function showInvoiceReviewForm($orders_id): void
+    {
+        if (!$this->getFromDB($orders_id) || !$this->hasInvoiceAwaitingReview()) {
+            return;
+        }
+
+        if (!$this->can($orders_id, UPDATE)) {
+            return;
+        }
+
+        $bills = PluginOrderBill::getForOrder($orders_id);
+        $bill  = reset($bills);
+
+        echo "<form method='post' name='invoice_review' action=\""
+           . Toolbox::getItemTypeFormURL('PluginOrderOrder') . '">';
+        echo "<div align='center'><table class='tab_cadre_fixe'>";
+        echo "<tr class='tab_bg_2'><th colspan='2'>"
+           . __s("Invoice of a reopened order", "order") . "</th></tr>";
+
+        echo "<tr class='tab_bg_1'><td>";
+        echo sprintf(
+            __s("This order is already covered by bill %s of %s, which stays attached to it.", "order"),
+            "<b>" . htmlescape($bill['number'] !== '' ? $bill['number'] : $bill['name']) . "</b>",
+            "<b>" . Html::convDate($bill['billdate']) . "</b>",
+        );
+        echo "<br>";
+        echo __s("Is this bill still correct?", "order");
+        echo "<br><span class='text-muted' style='font-size:0.9em;'>"
+           . __s("If a correcting bill is needed, add it with the Invoicing action: the current bill and the earlier OT documents are then archived and stay attached to the order.", "order")
+           . "</span>";
+        echo "</td>";
+
+        echo "<td align='center'>";
+        echo Html::hidden('id', ['value' => $orders_id]);
+        echo "<input type='submit' name='confirm_invoice' value=\""
+           . __s("The bill is still correct", "order") . "\" class='submit'>";
+        echo "</td></tr>";
+
+        echo "</table></div>";
+        Html::closeForm();
+    }
+
+
     public function showValidationForm($orders_id)
     {
         $this->getFromDB($orders_id);
+
+        $this->showInvoiceReviewForm($orders_id);
 
         echo "<form method='post' name='form' action=\"" . Toolbox::getItemTypeFormURL('PluginOrderOrder') . '">';
         echo "<div align='center'><table class='tab_cadre_fixe'>";
@@ -2320,6 +2372,72 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
             'plugin_order_billstates_id' => $bill_state,
             'plugin_order_orderstates_id' => $order_status,
         ]);
+    }
+
+
+    /**
+     * An order that was already invoiced and has been reopened for editing.
+     *
+     * Its bills stay attached the whole time; this only tells the interface to
+     * ask whether they still cover the order before closing it again.
+     */
+    public function hasInvoiceAwaitingReview(): bool
+    {
+        if (!$this->isDraft() && !$this->isWaitingForApproval()) {
+            return false;
+        }
+
+        return PluginOrderBill::getForOrder($this->getID()) !== [];
+    }
+
+
+    /**
+     * Close a reopened order again against the bill it already carries.
+     *
+     * Anything added while the order was open is attached to that bill, so the
+     * order goes back to being fully invoiced instead of half covered.
+     *
+     * @return bool
+     */
+    public function confirmExistingInvoice(int $orders_id): bool
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        if (!$this->getFromDB($orders_id)) {
+            return false;
+        }
+
+        $bills = PluginOrderBill::getForOrder($orders_id);
+        if ($bills === []) {
+            return false;
+        }
+
+        $current_bill_id = (int) array_key_first($bills);
+
+        $items = $DB->request([
+            'FROM'  => PluginOrderOrder_Item::getTable(),
+            'WHERE' => [
+                'plugin_order_orders_id' => $orders_id,
+                'OR'                     => [
+                    ['plugin_order_bills_id'      => 0],
+                    ['plugin_order_billstates_id' => PluginOrderBillState::NOTPAID],
+                ],
+            ],
+        ]);
+
+        $order_item = new PluginOrderOrder_Item();
+        foreach ($items as $item) {
+            $order_item->update([
+                'id'                         => $item['id'],
+                'plugin_order_bills_id'      => $current_bill_id,
+                'plugin_order_billstates_id' => PluginOrderBillState::PAID,
+            ]);
+        }
+
+        self::updateBillState($orders_id);
+
+        return true;
     }
 
 

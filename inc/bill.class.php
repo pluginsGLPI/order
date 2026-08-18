@@ -53,6 +53,59 @@ class PluginOrderBill extends CommonDropdown
     }
 
 
+    /**
+     * Bills attached to an order, newest first.
+     *
+     * @param int  $orders_id
+     * @param bool $include_archived Also return bills superseded by a later one
+     * @return array<int, array> Raw rows indexed by bill id
+     */
+    public static function getForOrder(int $orders_id, bool $include_archived = false): array
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $where = ['plugin_order_orders_id' => $orders_id];
+        if (!$include_archived) {
+            $where['is_archived'] = 0;
+        }
+
+        $bills = [];
+        foreach ($DB->request(['FROM' => self::getTable(), 'WHERE' => $where, 'ORDER' => 'id DESC']) as $row) {
+            $bills[(int) $row['id']] = $row;
+        }
+
+        return $bills;
+    }
+
+
+    /**
+     * Mark the bills an order carried before $current_bill_id as archived.
+     *
+     * They stay attached to the order as history; only the newest bill is
+     * treated as the one currently covering it.
+     *
+     * @return int Number of bills archived
+     */
+    public static function archivePreviousForOrder(int $orders_id, int $current_bill_id): int
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $archived = 0;
+        foreach (self::getForOrder($orders_id) as $bill_id => $row) {
+            if ($bill_id === $current_bill_id) {
+                continue;
+            }
+
+            $DB->update(self::getTable(), ['is_archived' => 1], ['id' => $bill_id]);
+            $archived++;
+        }
+
+        return $archived;
+    }
+
+
     public function prepareInputForAdd($input)
     {
         if (
@@ -211,6 +264,13 @@ class PluginOrderBill extends CommonDropdown
             'field'         => 'comment',
             'name'          => __s('Description'),
             'datatype'      => 'text',
+        ], [
+            'id'            => 17,
+            'table'         => self::getTable(),
+            'field'         => 'is_archived',
+            'name'          => __s('Archived', 'order'),
+            'datatype'      => 'bool',
+            'massiveaction' => false,
         ], [
             'id'            => 30,
             'table'         => self::getTable(),
@@ -564,6 +624,7 @@ class PluginOrderBill extends CommonDropdown
                     `plugin_order_billtypes_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                     `suppliers_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                     `plugin_order_orders_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                    `is_archived` tinyint NOT NULL DEFAULT '0',
                     `users_id_validation` int {$default_key_sign} NOT NULL DEFAULT '0',
                     `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
                     `is_recursive` int NOT NULL DEFAULT '0',
@@ -612,6 +673,11 @@ class PluginOrderBill extends CommonDropdown
             }
 
             $migration->changeField($table, "value", "value", "decimal(20,6) NOT NULL DEFAULT '0.000000'");
+            $migration->migrationOneTable($table);
+        }
+
+        if (!$DB->fieldExists($table, 'is_archived')) {
+            $migration->addField($table, 'is_archived', "TINYINT NOT NULL DEFAULT '0'");
             $migration->migrationOneTable($table);
         }
 

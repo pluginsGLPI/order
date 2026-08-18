@@ -1052,3 +1052,59 @@ msgstr "Próg przypomnienia w dniach"
 #: inc/notificationtargetorder.class.php
 msgid "Days since the order"
 msgstr "Dni od zamówienia"
+
+#: inc/bill.class.php
+msgid "Archived"
+msgstr "Archiwalna"
+
+#: inc/ot.class.php
+msgid "%s previous bill was archived and stays attached to the order"
+msgid_plural "%s previous bills were archived and stay attached to the order"
+msgstr[0] "%s poprzednia faktura została zarchiwizowana i pozostaje powiązana z zamówieniem"
+msgstr[1] "%s poprzednie faktury zostały zarchiwizowane i pozostają powiązane z zamówieniem"
+msgstr[2] "%s poprzednich faktur zostało zarchiwizowanych i pozostaje powiązanych z zamówieniem"
+msgstr[3] "%s poprzednich faktur zostało zarchiwizowanych i pozostaje powiązanych z zamówieniem"
+
+#: inc/ot.class.php
+msgid "%s previous OT document was archived and stays attached to the order"
+msgid_plural "%s previous OT documents were archived and stay attached to the order"
+msgstr[0] "%s poprzedni dokument OT został zarchiwizowany i pozostaje powiązany z zamówieniem"
+msgstr[1] "%s poprzednie dokumenty OT zostały zarchiwizowane i pozostają powiązane z zamówieniem"
+msgstr[2] "%s poprzednich dokumentów OT zostało zarchiwizowanych i pozostaje powiązanych z zamówieniem"
+msgstr[3] "%s poprzednich dokumentów OT zostało zarchiwizowanych i pozostaje powiązanych z zamówieniem"
+
+#: inc/ot.class.php
+msgid "Archived on %s: replaced by a newer OT document"
+msgstr "Zarchiwizowano %s: zastąpiony nowszym dokumentem OT"
+
+#: inc/order.class.php
+msgid "Invoice of a reopened order"
+msgstr "Faktura zamówienia otwartego ponownie"
+
+#: inc/order.class.php
+msgid "This order is already covered by bill %s of %s, which stays attached to it."
+msgstr "To zamówienie jest już objęte fakturą %s z dnia %s, która pozostaje z nim powiązana."
+
+#: inc/order.class.php
+msgid "Is this bill still correct?"
+msgstr "Czy ta faktura jest nadal poprawna?"
+
+#: inc/order.class.php
+msgid "If a correcting bill is needed, add it with the Invoicing action: the current bill and the earlier OT documents are then archived and stay attached to the order."
+msgstr "Jeśli potrzebna jest faktura korygująca, dodaj ją akcją Fakturowanie: obecna faktura i wcześniejsze dokumenty OT zostaną wtedy zarchiwizowane i pozostaną powiązane z zamówieniem."
+
+#: inc/order.class.php
+msgid "The bill is still correct"
+msgstr "Faktura jest nadal poprawna"
+
+#: front/order.form.php
+msgid "The bill stays attached to this order. Confirm on the validation tab whether it is still correct."
+msgstr "Faktura pozostaje powiązana z tym zamówieniem. Na zakładce walidacji potwierdź, czy jest nadal poprawna."
+
+#: front/order.form.php
+msgid "The order has been closed again with its existing bill."
+msgstr "Zamówienie zostało ponownie zamknięte z dotychczasową fakturą."
+
+#: front/order.form.php
+msgid "This order has no bill to confirm."
+msgstr "To zamówienie nie ma faktury do potwierdzenia."
