@@ -29,6 +29,7 @@
  */
 use Glpi\DBAL\QueryExpression;
 use Glpi\Features\Clonable;
+use Glpi\Search\DefaultSearchRequestInterface;
 use Odtphp\Exceptions\OdfException;
 use Odtphp\Exceptions\SegmentException;
 use Odtphp\Odf;
@@ -36,7 +37,7 @@ use Safe\DateTime;
 
 use function Safe\preg_match;
 
-class PluginOrderOrder extends CommonDBTM
+class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterface
 {
     use Clonable;
 
@@ -326,6 +327,18 @@ class PluginOrderOrder extends CommonDBTM
         return $values;
     }
 
+    /**
+     * Show the most recently created orders first, so users do not have to sort manually.
+     */
+    public static function getDefaultSearchRequest(): array
+    {
+        return [
+            'sort'  => 121, // Creation date
+            'order' => 'DESC',
+        ];
+    }
+
+
     public function rawSearchOptions()
     {
         return [[
@@ -589,6 +602,23 @@ class PluginOrderOrder extends CommonDBTM
             'checktype'     => 'text',
             'displaytype'   => 'dropdown',
             'injectable'    => true,
+            'massiveaction' => false,
+        ], [
+            // Aggregate maintained by self::updateBillState(): PAID means every
+            // order item has been billed. Values are class constants (0/1), not
+            // dropdown rows, hence the bool datatype.
+            'id'            => 88,
+            'table'         => self::getTable(),
+            'field'         => 'plugin_order_billstates_id',
+            'name'          => __s('Invoiced', 'order'),
+            'datatype'      => 'bool',
+            'massiveaction' => false,
+        ], [
+            'id'            => 121,
+            'table'         => self::getTable(),
+            'field'         => 'date_creation',
+            'name'          => __s('Creation date'),
+            'datatype'      => 'datetime',
             'massiveaction' => false,
         ]];
     }
@@ -2703,6 +2733,7 @@ class PluginOrderOrder extends CommonDBTM
                `users_id_tech` int {$default_key_sign} NOT NULL default '0',
                `plugin_order_ordertypes_id` int {$default_key_sign} NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertypes (id)',
                `date_mod` timestamp NULL default NULL,
+               `date_creation` timestamp NULL default NULL,
                `is_helpdesk_visible` tinyint NOT NULL default '1',
                PRIMARY KEY  (`id`),
                KEY `name` (`name`),
@@ -2717,7 +2748,8 @@ class PluginOrderOrder extends CommonDBTM
                KEY `is_late` (`is_late`),
                KEY `is_template` (`is_template`),
                KEY `is_deleted` (`is_deleted`),
-               KEY date_mod (date_mod)
+               KEY date_mod (date_mod),
+               KEY `date_creation` (`date_creation`)
             ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
             $DB->doQuery($query);
 
@@ -3095,6 +3127,19 @@ class PluginOrderOrder extends CommonDBTM
         if (!$DB->fieldExists($table, 'plugin_order_accountsections_id')) {
             $migration->addField($table, 'plugin_order_accountsections_id', sprintf('int %s NOT NULL DEFAULT 0', $default_key_sign), ['after' => 'contacts_id']);
             $migration->migrationOneTable($table);
+        }
+
+        if (!$DB->fieldExists($table, 'date_creation')) {
+            $migration->addField($table, 'date_creation', 'timestamp NULL DEFAULT NULL', ['after' => 'date_mod']);
+            $migration->addKey($table, 'date_creation');
+            $migration->migrationOneTable($table);
+            // Existing orders predate the column: fall back to the best approximation
+            // available so the default "newest first" sort is meaningful for them too.
+            $DB->doQuery(
+                "UPDATE `{$table}`
+                 SET `date_creation` = COALESCE(`order_date`, `date_mod`)
+                 WHERE `date_creation` IS NULL",
+            );
         }
     }
 
