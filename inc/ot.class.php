@@ -34,16 +34,11 @@
 class PluginOrderOt
 {
     /**
-     * Show the Cost Center input sub-form for the massive action popup.
+     * Show the input sub-form for the "Generate OT" massive action popup.
      */
     public static function showMassiveActionSubForm(): void
     {
-        echo "<label for='invoice_number'>" . __s("Invoice Number", "order") . ":&nbsp;</label>";
-        echo Html::input('invoice_number', [
-            'id'    => 'invoice_number',
-            'value' => '',
-            'size'  => 30,
-        ]);
+        self::showInvoiceNumberField();
         echo "<br><br>";
         echo "<label for='cost_center'>" . __s("Cost Center", "order") . " (MPK):&nbsp;</label>";
         echo Html::input('cost_center', [
@@ -52,28 +47,89 @@ class PluginOrderOt
             'size'  => 20,
         ]);
         echo "<br><br>";
+        echo "<label for='ot_num_order'>" . __s("Order number", "order") . ":&nbsp;</label>";
+        echo Html::input('ot_num_order', [
+            'id'    => 'ot_num_order',
+            'value' => '',
+            'size'  => 30,
+        ]);
+        echo "<br><span class='text-muted' style='font-size:0.85em;'>"
+           . __s("Leave empty to use the order's own number", "order")
+           . "</span>";
+        echo "<br><br>";
+        echo "<label for='date_usage'>" . __s("Commissioning date", "order") . ":&nbsp;</label>";
+        Html::showDateField('date_usage', ['value' => '', 'maybeempty' => true]);
+        echo "<br><br>";
+        echo "<label for='date_warehouse'>" . __s("Warehouse deposit date", "order") . ":&nbsp;</label>";
+        Html::showDateField('date_warehouse', ['value' => '', 'maybeempty' => true]);
+        echo "<br><span class='text-muted' style='font-size:0.85em;'>"
+           . __s("Both dates are optional - fill in only the one that applies", "order")
+           . "</span>";
+        echo "<br><br>";
         echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+    }
+
+
+    /**
+     * Invoice number input, shared by the "Generate OT" and "Invoicing" sub-forms.
+     *
+     * @param bool $required Whether the field must be filled in
+     */
+    public static function showInvoiceNumberField(bool $required = false): void
+    {
+        $options = [
+            'id'    => 'invoice_number',
+            'value' => '',
+            'size'  => 30,
+        ];
+        if ($required) {
+            $options['required'] = 'required';
+        }
+
+        echo "<label for='invoice_number'>" . __s("Invoice Number", "order") . ":&nbsp;</label>";
+        echo Html::input('invoice_number', $options);
+    }
+
+
+    /**
+     * Normalize the sub-form input into the parameter set used to build an OT.
+     *
+     * @param array $input Raw massive action input
+     * @return array{cost_center: string, invoice_number: string, num_order: string, date_usage: string, date_warehouse: string}
+     */
+    public static function extractParams(array $input): array
+    {
+        return [
+            'cost_center'    => trim((string) ($input['cost_center'] ?? '')),
+            'invoice_number' => trim((string) ($input['invoice_number'] ?? '')),
+            'num_order'      => trim((string) ($input['ot_num_order'] ?? '')),
+            'date_usage'     => trim((string) ($input['date_usage'] ?? '')),
+            'date_warehouse' => trim((string) ($input['date_warehouse'] ?? '')),
+        ];
     }
 
 
     /**
      * Full orchestration: generate HTML -> PDF -> save as Document -> create Bill -> return result.
      *
-     * @param int    $order_id       The order ID
-     * @param string $cost_center    Cost Center / MPK value entered by user
-     * @param string $invoice_number Invoice number entered by user
+     * @param int   $order_id The order ID
+     * @param array $params   Values from the sub-form, see self::extractParams()
      * @return array|false ['doc_id' => int, 'bill_id' => int|false] on success, false on failure
      */
-    public function processAction(int $order_id, string $cost_center, string $invoice_number = '')
+    public function processAction(int $order_id, array $params)
     {
         $order = new PluginOrderOrder();
         if (!$order->getFromDB($order_id)) {
             return false;
         }
 
-        $html = $this->generateOtHtml($order, $cost_center, $invoice_number);
-        $num_order = $order->fields['num_order'] ?: $order_id;
-        $base_name = 'OT_' . preg_replace('/[^a-zA-Z0-9_\-]/', '_', $num_order);
+        $invoice_number = $params['invoice_number'] ?? '';
+
+        $html = $this->generateOtHtml($order, $params);
+        $num_order = ($params['num_order'] ?? '') !== ''
+            ? $params['num_order']
+            : ($order->fields['num_order'] ?: $order_id);
+        $base_name = 'OT_' . preg_replace('/[^a-zA-Z0-9_\-]/', '_', (string) $num_order);
 
         $pdf_path = $this->generatePdf($html, $base_name);
         if ($pdf_path === false) {
@@ -96,6 +152,28 @@ class PluginOrderOt
             'doc_id'  => $doc_id,
             'bill_id' => $bill_id,
         ];
+    }
+
+
+    /**
+     * Create and link the bill without producing an OT document.
+     *
+     * @param int    $order_id       The order ID
+     * @param string $invoice_number Invoice number entered by user
+     * @return int|false Bill ID on success, false on failure
+     */
+    public function processInvoiceOnly(int $order_id, string $invoice_number)
+    {
+        if ($invoice_number === '') {
+            return false;
+        }
+
+        $order = new PluginOrderOrder();
+        if (!$order->getFromDB($order_id)) {
+            return false;
+        }
+
+        return $this->createBill($order, $invoice_number);
     }
 
 
@@ -204,13 +282,28 @@ class PluginOrderOt
      * @param string           $invoice_number Invoice number
      * @return string Complete HTML document
      */
-    public function generateOtHtml(PluginOrderOrder $order, string $cost_center, string $invoice_number = ''): string
+    public function generateOtHtml(PluginOrderOrder $order, array $params): string
     {
         /** @var DBmysql $DB */
         global $DB;
 
+        $cost_center    = $params['cost_center'] ?? '';
+        $invoice_number = $params['invoice_number'] ?? '';
+        $date_usage     = $params['date_usage'] ?? '';
+        $date_warehouse = $params['date_warehouse'] ?? '';
+
         $order_id  = $order->getID();
-        $num_order = $order->fields['num_order'] ?? '';
+        $num_order = ($params['num_order'] ?? '') !== ''
+            ? $params['num_order']
+            : ($order->fields['num_order'] ?? '');
+
+        // The two dates are mutually exclusive in practice (an item either goes
+        // into the warehouse or straight into use), so filling in one of them
+        // takes over both columns and an empty field stays empty. When neither
+        // is given, each item keeps showing its own delivery date as before.
+        $dates_given     = $date_usage !== '' || $date_warehouse !== '';
+        $usage_column     = $date_usage !== '' ? Html::convDate($date_usage) : '';
+        $warehouse_column = $date_warehouse !== '' ? Html::convDate($date_warehouse) : '';
 
         // Get supplier name
         $supplier_name = '';
@@ -264,10 +357,15 @@ class PluginOrderOt
             }
 
             $rows[] = [
-                'name'          => htmlspecialchars($ref_name, ENT_QUOTES, 'UTF-8'),
-                'serial'        => htmlspecialchars($asset_serial, ENT_QUOTES, 'UTF-8'),
-                'price'         => number_format($price, 2, ',', ' '),
-                'delivery_date' => htmlspecialchars($delivery_date, ENT_QUOTES, 'UTF-8'),
+                'name'           => htmlspecialchars($ref_name, ENT_QUOTES, 'UTF-8'),
+                'serial'         => htmlspecialchars($asset_serial, ENT_QUOTES, 'UTF-8'),
+                'price'          => number_format($price, 2, ',', ' '),
+                'date_usage'     => htmlspecialchars(
+                    $dates_given ? $usage_column : $delivery_date,
+                    ENT_QUOTES,
+                    'UTF-8',
+                ),
+                'date_warehouse' => htmlspecialchars($warehouse_column, ENT_QUOTES, 'UTF-8'),
             ];
         }
 
@@ -291,8 +389,8 @@ class PluginOrderOt
                 <td style='border:1px solid #000;padding:3px;'></td>
                 <td style='border:1px solid #000;padding:3px;'>{$cost_center_esc}</td>
                 <td style='border:1px solid #000;padding:3px;'>{$num_order_esc}</td>
-                <td style='border:1px solid #000;padding:3px;'>{$row['delivery_date']}</td>
-                <td style='border:1px solid #000;padding:3px;'></td>
+                <td style='border:1px solid #000;padding:3px;'>{$row['date_usage']}</td>
+                <td style='border:1px solid #000;padding:3px;'>{$row['date_warehouse']}</td>
             </tr>\n";
             $pos++;
         }

@@ -2597,6 +2597,13 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
             return true;
         }
 
+        if ($ma->getAction() === 'invoice') {
+            PluginOrderOt::showInvoiceNumberField(true);
+            echo "<br><br>";
+            echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+            return true;
+        }
+
         return true;
     }
 
@@ -2613,6 +2620,7 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
 
         if (static::canView()) {
             $actions['PluginOrderOrder:generate_ot'] = __s('Generate OT', 'order');
+            $actions['PluginOrderOrder:invoice']     = __s('Invoicing', 'order');
         }
 
         return $actions;
@@ -2647,14 +2655,12 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
             /** @var array $CFG_GLPI */
             global $CFG_GLPI;
 
-            $input          = $ma->getInput();
-            $cost_center    = $input['cost_center'] ?? '';
-            $invoice_number = $input['invoice_number'] ?? '';
-            $last_doc_id    = 0;
+            $params      = PluginOrderOt::extractParams($ma->getInput());
+            $last_doc_id = 0;
 
             foreach ($ids as $id) {
                 $ot     = new PluginOrderOt();
-                $result = $ot->processAction((int) $id, $cost_center, $invoice_number);
+                $result = $ot->processAction((int) $id, $params);
                 if ($result && $result['doc_id']) {
                     $last_doc_id = $result['doc_id'];
                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
@@ -2673,6 +2679,37 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
             // Redirect to download the last generated document
             if ($last_doc_id > 0) {
                 $ma->setRedirect($CFG_GLPI['root_doc'] . '/plugins/order/front/ot.form.php?download=1&doc_id=' . $last_doc_id);
+            }
+
+            return;
+        }
+
+        if ($ma->getAction() === "invoice") {
+            $input          = $ma->getInput();
+            $invoice_number = trim((string) ($input['invoice_number'] ?? ''));
+
+            if ($invoice_number === '') {
+                foreach ($ids as $id) {
+                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                }
+                $ma->addMessage(__s("An invoice number is required", "order"));
+                return;
+            }
+
+            foreach ($ids as $id) {
+                $ot      = new PluginOrderOt();
+                $bill_id = $ot->processInvoiceOnly((int) $id, $invoice_number);
+                if ($bill_id) {
+                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    Session::addMessageAfterRedirect(
+                        sprintf(__s("Bill #%s created", "order"), $bill_id),
+                        true,
+                        INFO,
+                    );
+                } else {
+                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                    $ma->addMessage(__s("Failed to create the bill", "order"));
+                }
             }
 
             return;
