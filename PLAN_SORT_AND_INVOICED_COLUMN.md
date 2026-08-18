@@ -93,7 +93,7 @@ Zalecana kolejność implementacji i commitów: **F → A → B → C → D → 
 
 ### Kroki
 1. **Subform** (`PluginOrderOt::showMassiveActionSubForm()`): dodaj pola:
-   - `ot_num_order` (text, label `__s('Order number', 'order')`): jeśli w akcji wybrano **dokładnie jedno** zamówienie — prefill jego `num_order`; przy wielu zostaw puste (puste = użyj `num_order` danego zamówienia). Selekcja jest dostępna w `$ma->POST['items']['PluginOrderOrder']` — wzorzec odczytu: `PluginOrderLink::showMassiveActionsSubForm()` (`inc/link.class.php:559-580`) i sygnatura przekazania `$ma` z `inc/order.class.php:2565` (trzeba przekazać `$ma` do subformu — zmień sygnaturę na `showMassiveActionSubForm(MassiveAction $ma)`).
+   - `ot_num_order` (text, label `__s('Order number', 'order')`): **bez prefill / auto-podpowiedzi** (wymóg użytkownika) — pole zawsze puste, do ręcznego wypełnienia. Puste przy zatwierdzeniu = fallback: dokument używa `num_order` danego zamówienia (przy akcji na wielu zamówieniach jeden ręcznie wpisany numer i tak nie miałby sensu dla wszystkich) — dodaj pod polem krótki hint o tym zachowaniu. Brak prefillu upraszcza implementację: subform nie potrzebuje dostępu do selekcji (`$ma`), sygnatura `showMassiveActionSubForm()` zostaje bez zmian.
    - `date_warehouse` (label `__s('Warehouse deposit date', 'order')` / PL „Data zdep. w magazynie") — `Html::showDateField('date_warehouse', ['value' => '', 'required' => false])` (lub `type=date` input, spójnie z resztą).
    - `date_usage` (label `__s('Commissioning date', 'order')` / PL „Data włącz. do użytku") — jw.
    - **Obie daty opcjonalne niezależnie** (magazyn vs od razu do użytku). Bez twardej walidacji „min. jedna" — dopuszczamy obie puste (zachowanie jak dziś).
@@ -146,6 +146,7 @@ Zalecana kolejność implementacji i commitów: **F → A → B → C → D → 
 2. **Config — UI** w `showForm()`: sekcja „Przypomnienia o niezafakturowanych zamówieniach": dwa pola tekstowe + opis formatu (CSV). Walidacja przy zapisie: progi → tylko dodatnie inty, sort rosnąco, dedup; e-maile → `filter_var(..., FILTER_VALIDATE_EMAIL)`, odrzucone zgłoś komunikatem.
 3. **Ledger** — CREATE TABLE w `PluginOrderOrder::install()` (albo osobna klasa wzorem innych tabel) + DROP w uninstall (lista tabel: `inc/order.class.php:3107`).
 4. **Event** `'not_invoiced' => __s("Order not invoiced", "order")` w `getEvents()` (:52-63) + branch w `addDataForTemplate` (dane pojedynczego zamówienia: name, numorder, orderdate, **url**, entity, wartość, liczba dni po terminie — nowy tag np. `##order.item.dayselapsed##`) + **seeding** szablonu (temat: „Zamówienie ##order.item.numorder## nie zostało zafakturowane") i notyfikacji w `install()` klasy target (wzorzec :221-462, idempotentny). Szablon dwujęzyczny EN + tłumaczenie PL (NotificationTemplateTranslation — wzorzec w istniejącym seedingu).
+   **Wymóg edytowalności (twardy):** cała treść maila idzie WYŁĄCZNIE przez `NotificationTemplate` — **zero HTML hardcodowanego w PHP** — dzięki czemu admin edytuje temat i treść w UI: *Ustawienia → Powiadomienia → Szablony powiadomień → „Order not invoiced"* (edytor rich-text pozwala wstawić obrazek, np. nagłówek PNG). Seedowany HTML ma mieć na samym początku wyraźnie oznaczony blok nagłówka (np. `<!-- MIEJSCE NA NAGŁÓWEK / LOGO -->` z prostym tekstowym nagłówkiem), żeby podmiana na PNG była oczywista. Seeding NIE nadpisuje istniejącego szablonu przy upgrade (idempotentny wzorzec `countElementsInTable` to gwarantuje) — edycje admina przeżywają aktualizacje pluginu.
 5. **Odbiorcy**: autor zamówienia (`users_id`) — w klasie target obsłuż target „Author" (`$this->addUserByField('users_id')` w odpowiednim hooku targetów; zbadaj, jak istniejące eventy pluginu dodają odbiorców — sekcja :462+ — i zrób analogicznie) + dodatkowe adresy z configu przez `$this->addToRecipientsList(['email' => $addr, 'language' => $CFG_GLPI["language"]])` dla eventu `not_invoiced`.
 6. **Cron** `cronNotInvoicedReminder($task)` w `PluginOrderOrder` (wzorzec :2382):
    - wczytaj progi z configu; puste → `return 0`;
@@ -187,17 +188,30 @@ Zalecana kolejność implementacji i commitów: **F → A → B → C → D → 
    ```
 3. **Commity**: osobny commit na funkcję (F, A, B, C, D, E), na końcu wersja+changelog+locale rebuild. Push → **draft PR** z sekcją „known limitations" (B: staleness, E: wymagania środowiskowe).
 
-## QA (ręczne, instancja dev)
+## QA — obowiązkowo na ŻYWYM GLPI 11.0.4 + Chromium (wymóg użytkownika)
 
+Testów NIE wolno ograniczyć do `php -l`/statycznej analizy. Wykonawca stawia żywą instancję i przechodzi wszystkie scenariusze E2E w przeglądarce.
+
+### Środowisko testowe
+1. **GLPI 11.0.4**: pobierz oficjalny release tarball `glpi-11.0.4.tgz` (GitHub `glpi-project/glpi`, releases), PHP 8.2+ z wymaganymi rozszerzeniami, MariaDB/MySQL; instalacja: `php bin/console db:install` (lub kreator WWW); konta domyślne `glpi/glpi`. Serwuj przez `php -S` z poprawnym routerem (`public/index.php`) albo apache/nginx.
+2. **Plugin**: sklonuj gałąź roboczą do `<GLPI>/plugins/order` — repo zawiera `vendor/` w wersjonowaniu (commit `2bd9cc5`), więc composer nie jest wymagany; aktywuj plugin w UI i nadaj uprawnienia profilowi.
+3. **Dane testowe**: dostawca, budżet, referencje kilku typów (minimum `Computer`, `Phone`; jeżeli zdołasz — także zasób własny GLPI 11 utworzony w *Konfiguracja → Zasoby*), kilka zamówień z pozycjami w różnych stanach (w tym dostarczone), zamówienia z `order_date` przesuniętą wstecz pod testy progów.
+4. **Przeglądarka**: Chromium przez Playwright. W zdalnym środowisku Claude Code Chromium jest preinstalowany — `PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers`, a przy pinowanej wersji `@playwright/test` używaj `executablePath: '/opt/pw-browsers/chromium'`; **nie uruchamiaj** `playwright install`. Każdy scenariusz: wykonanie w przeglądarce + zrzut ekranu jako dowód + kontrola konsoli JS (zero błędów) i sieci (zero 500).
+5. **Maile bez SMTP**: ustaw powiadomienia GLPI w tryb mail z kolejką i asertuj na `glpi_queuednotifications` (wyrenderowany temat/treść/odbiorcy w wierszach kolejki) — realny SMTP nie jest potrzebny do weryfikacji treści, linku i odbiorców.
+6. **Cron**: wywołania przez CLI (`php bin/console glpi:cron` lub front cron) — nie czekaj na harmonogram.
+
+### Scenariusze
 1. **Upgrade** 2.13.1→2.14.0: kolumna `date_creation` istnieje i zbackfillowana; tabela ledger istnieje; nowe pola configu istnieją; cron `notInvoicedReminder` widoczny w Ustawienia→Automatyczne akcje.
 2. **A**: świeża lista → najnowsze na górze; ręczne sortowanie działa i przeżywa nawigację; reset wraca do date_creation DESC; nowe zamówienie ma date_creation.
 3. **B**: kolumna w ustawieniach widoku; Nie/Tak wg scenariuszy: bez faktury / OT z fakturą (wszystkie pozycje) / faktura częściowa; filtr Tak/Nie.
-4. **C**: popup ma 5 pól; prefill Order przy 1 zamówieniu, pusty przy wielu; daty trafiają do OBU tabel dokumentu OT; puste daty = puste komórki; nazwa pliku używa wpisanego numeru.
+4. **C**: popup ma 5 pól; pole Order **zawsze puste — bez auto-podpowiedzi**; puste → dokument i nazwa pliku używają `num_order` zamówienia (fallback), wpisane → dokument i nazwa pliku używają wpisanej wartości; daty trafiają do OBU tabel dokumentu OT; puste daty = puste komórki.
 5. **D**: akcja „Fakturowanie" widoczna; wymaga numeru; tworzy Bill + linkuje pozycje + ustawia PAID; NIE tworzy dokumentu OT; „Generuj OT" po polsku.
-6. **E**: ustaw progi `1,2`, utwórz zamówienie z order_date sprzed 3 dni → ręczne odpalenie crona (`php bin/console glpi:cron` lub front cron) wysyła DWA maile (po jednym na próg), z danymi + działającym linkiem; drugi bieg crona nie wysyła nic (ledger); zamówienie zafakturowane/anulowane — brak maili; adresy dodatkowe z configu dostają kopię.
-7. **F**: obie zakładki domyślnie rozwinięte; toggle działa; stan z GET respektowany.
-8. `php -l` na zmienionych plikach; phpstan/cs-fixer jeśli w CI (`.php-cs-fixer.php`, `phpstan.neon` są w repo).
-9. Wydajność listy (prod ma 22k+ pozycji): kolumna B bez JOIN-ów, sort A po indeksie.
+6. **E**: ustaw progi `1,2`, utwórz zamówienie z order_date sprzed 3 dni → ręczne odpalenie crona wysyła DWA maile (po jednym na próg), z danymi + działającym linkiem (assert w `glpi_queuednotifications`); drugi bieg crona nie wysyła nic (ledger); zamówienie zafakturowane/anulowane — brak maili; adresy dodatkowe z configu dostają kopię.
+7. **E — edytowalność szablonu**: w UI (*Ustawienia → Powiadomienia → Szablony powiadomień*) zmień treść szablonu „Order not invoiced" i wstaw przez edytor obrazek PNG jako nagłówek → kolejne przypomnienie zawiera zmienioną treść i obraz (sprawdź HTML w kolejce; jeśli mailer GLPI nie osadza wstawionego obrazu inline, udokumentuj to w PR i zweryfikuj wariant z obrazkiem linkowanym po URL); upgrade pluginu NIE nadpisuje edytowanego szablonu.
+8. **F**: obie zakładki domyślnie rozwinięte; toggle działa; stan z GET respektowany.
+9. `php -l` na zmienionych plikach; phpstan/cs-fixer jeśli w CI (`.php-cs-fixer.php`, `phpstan.neon` są w repo).
+10. Wydajność listy (prod ma 22k+ pozycji): kolumna B bez JOIN-ów, sort A po indeksie.
+11. **Raport QA**: do PR dołącz podsumowanie wykonanych scenariuszy ze zrzutami ekranu z Chromium (co najmniej: lista posortowana, kolumna „Zafakturowane", popup OT, popup Fakturowanie, wpis kolejki maila, rozwinięte wiersze).
 
 ## Pułapki (nie pomiń)
 
