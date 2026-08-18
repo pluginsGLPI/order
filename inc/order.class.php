@@ -2409,6 +2409,113 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
     }
 
 
+    /**
+     * @param string $name Cron task name
+     * @return array{description: string}
+     */
+    public static function cronInfo($name)
+    {
+        switch ($name) {
+            case 'notInvoicedReminder':
+                return ['description' => __s("Remind about orders not invoiced", "order")];
+        }
+
+        return ['description' => $name];
+    }
+
+
+    /**
+     * Remind about orders that were never completed with a bill.
+     *
+     * Every configured threshold fires once per order: the ledger table records
+     * what has been sent, so re-running the task does not re-notify anyone.
+     *
+     * @param CronTask $task
+     * @return int 1 if something was sent, 0 otherwise
+     */
+    public static function cronNotInvoicedReminder($task)
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $config     = PluginOrderConfig::getConfig();
+        $thresholds = $config->getNotInvoicedReminderDays();
+        if ($thresholds === []) {
+            return 0;
+        }
+
+        $table          = self::getTable();
+        $reminder_table = self::getReminderTable();
+        $canceled_state = (int) $config->getCanceledState();
+        $sent           = 0;
+
+        $iterator = $DB->request([
+            'SELECT' => [
+                'id',
+                'users_id',
+                new QueryExpression(
+                    'DATEDIFF(NOW(), COALESCE(' . $DB->quoteName('order_date') . ', '
+                    . $DB->quoteName('date_creation') . ')) AS ' . $DB->quoteName('age_days'),
+                ),
+            ],
+            'FROM'   => $table,
+            'WHERE'  => [
+                'is_template'                => 0,
+                'is_deleted'                 => 0,
+                'plugin_order_billstates_id' => ['!=', PluginOrderBillState::PAID],
+                'NOT'                        => ['plugin_order_orderstates_id' => $canceled_state],
+            ],
+        ]);
+
+        foreach ($iterator as $data) {
+            $age = $data['age_days'];
+            if ($age === null) {
+                continue;
+            }
+
+            $order_id = (int) $data['id'];
+
+            foreach ($thresholds as $threshold) {
+                if ((int) $age < $threshold) {
+                    continue;
+                }
+
+                $already_sent = countElementsInTable($reminder_table, [
+                    'plugin_order_orders_id' => $order_id,
+                    'threshold_days'         => $threshold,
+                ]);
+                if ($already_sent > 0) {
+                    continue;
+                }
+
+                $order = new self();
+                if (!$order->getFromDB($order_id)) {
+                    continue;
+                }
+
+                $raised = NotificationEvent::raiseEvent('not_invoiced', $order, [
+                    'reminder_days' => $threshold,
+                    'age_days'      => (int) $age,
+                ]);
+
+                $DB->insert($reminder_table, [
+                    'plugin_order_orders_id' => $order_id,
+                    'threshold_days'         => $threshold,
+                    'date_creation'          => $_SESSION['glpi_currenttime'] ?? date('Y-m-d H:i:s'),
+                ]);
+
+                if ($raised) {
+                    $sent++;
+                }
+            }
+        }
+
+        $task->addVolume($sent);
+
+        return $sent > 0 ? 1 : 0;
+    }
+
+
     public static function cronComputeLateOrders($task)
     {
         /** @var array $CFG_GLPI */
@@ -3178,6 +3285,36 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
                  WHERE `date_creation` IS NULL",
             );
         }
+
+        // Ledger of reminders already sent, so a threshold only ever fires once
+        // per order. The unique key is what makes the cron safe to re-run.
+        $reminder_table = self::getReminderTable();
+        if (!$DB->tableExists($reminder_table)) {
+            $migration->displayMessage('Installing ' . $reminder_table);
+            $DB->doQuery(
+                "CREATE TABLE IF NOT EXISTS `{$reminder_table}` (
+                   `id` int {$default_key_sign} NOT NULL auto_increment,
+                   `plugin_order_orders_id` int {$default_key_sign} NOT NULL default '0',
+                   `threshold_days` int NOT NULL default '0',
+                   `date_creation` timestamp NULL default NULL,
+                   PRIMARY KEY (`id`),
+                   UNIQUE KEY `unicity` (`plugin_order_orders_id`,`threshold_days`)
+                 ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;",
+            );
+        }
+
+        CronTask::Register(self::class, 'notInvoicedReminder', DAY_TIMESTAMP, [
+            'mode' => CronTask::MODE_EXTERNAL,
+        ]);
+    }
+
+
+    /**
+     * Table recording which reminder thresholds have already been sent.
+     */
+    public static function getReminderTable(): string
+    {
+        return 'glpi_plugin_order_orders_reminders';
     }
 
 
@@ -3199,6 +3336,8 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
 
         //Current table name
         $DB->doQuery("DROP TABLE IF EXISTS  `" . self::getTable() . "`");
+
+        $DB->doQuery("DROP TABLE IF EXISTS `" . self::getReminderTable() . "`");
     }
 
 

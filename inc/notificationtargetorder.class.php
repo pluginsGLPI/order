@@ -49,6 +49,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
 
     public const CONTACT                   = 37;
 
+    public const REMINDER_RECIPIENTS       = 38;
+
     public function getEvents()
     {
         return [
@@ -58,6 +60,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             'undovalidation' => __s("Order currently edited", "order"),
             'duedate'        => __s("Late orders", "order"),
             'delivered'      => __s("No item to generate", "order"),
+            'not_invoiced'   => __s("Order not invoiced", "order"),
         ];
     }
 
@@ -124,8 +127,14 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
 
             $this->data['##lang.ordervalidation.comment##']   = __s("Comment of validation", "order");
 
-            $comment = str_replace(['\r\n', '\n', '\r'], "<br/>", $options['comments']);
+            $comment = str_replace(['\r\n', '\n', '\r'], "<br/>", $options['comments'] ?? '');
             $this->data['##ordervalidation.comment##']        = nl2br($comment);
+
+            $this->data['##lang.order.reminderdays##']        = __s("Reminder threshold in days", "order");
+            $this->data['##order.reminderdays##']             = $options['reminder_days'] ?? '';
+
+            $this->data['##lang.order.dayselapsed##']         = __s("Days since the order", "order");
+            $this->data['##order.dayselapsed##']              = $options['age_days'] ?? '';
 
             switch ($event) {
                 case "ask":
@@ -146,6 +155,9 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                     break;
                 case "delivered":
                     $this->data['##lang.ordervalidation.users##'] = __s("No item to generate", "order");
+                    break;
+                case "not_invoiced":
+                    $this->data['##lang.ordervalidation.users##'] = __s("Order not invoiced", "order");
                     break;
             }
 
@@ -184,6 +196,8 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             'order.author.phone'          => __s("Author") . ' - ' . __s("Phone"),
             'order.deliveryuser.name'     => __s("Recipient"),
             'order.deliveryuser.phone'    => __s("Recipient") . ' - ' . __s("Phone"),
+            'order.reminderdays'          => __s("Reminder threshold in days", "order"),
+            'order.dayselapsed'           => __s("Days since the order", "order"),
         ];
 
         foreach ($tags as $tag => $label) {
@@ -454,6 +468,115 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
                 }
             }
         }
+
+        self::installNotInvoicedNotification($template, $translation, $notification, $n_n_template);
+    }
+
+
+    /**
+     * Seed the reminder sent for orders that were never completed with a bill.
+     *
+     * Everything the recipient sees lives in the notification template, so the
+     * subject, the wording and any header image can be changed from Setup >
+     * Notifications > Notification templates. Nothing here overwrites an
+     * existing template, so those edits survive plugin upgrades.
+     */
+    private static function installNotInvoicedNotification(
+        NotificationTemplate $template,
+        NotificationTemplateTranslation $translation,
+        Notification $notification,
+        Notification_NotificationTemplate $n_n_template,
+    ): void {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $template_name = 'Order not invoiced';
+        $templates_id  = false;
+
+        $result = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_notificationtemplates',
+            'WHERE'  => ['itemtype' => 'PluginOrderOrder', 'name' => $template_name],
+        ]);
+
+        if (count($result) > 0) {
+            $templates_id = $result->current()['id'];
+        } else {
+            $templates_id = $template->add([
+                'name'     => $template_name,
+                'itemtype' => 'PluginOrderOrder',
+                'date_mod' => $_SESSION['glpi_currenttime'],
+                'comment'  => '',
+                'css'      => '',
+            ]);
+        }
+
+        if (!$templates_id) {
+            return;
+        }
+
+        if (!countElementsInTable($translation->getTable(), ['notificationtemplates_id' => $templates_id])) {
+            $translation->add([
+                'notificationtemplates_id' => $templates_id,
+                'language'                 => '',
+                'subject'                  => '##order.action## : ##ordervalidation.numorder##',
+                'content_text'             => '##order.action##
+
+##lang.ordervalidation.numorder## : ##ordervalidation.numorder##
+##lang.ordervalidation.name## : ##ordervalidation.name##
+##lang.ordervalidation.orderdate## : ##ordervalidation.orderdate##
+##lang.ordervalidation.entity## : ##ordervalidation.entity##
+##lang.ordervalidation.state## : ##ordervalidation.state##
+##lang.order.dayselapsed## : ##order.dayselapsed##
+
+##lang.ordervalidation.url## : ##ordervalidation.url##',
+                'content_html'             => '<!-- HEADER / LOGO: replace this line with your image -->'
+                  . '<h2>##order.action##</h2>'
+                  . '<table cellpadding="4">'
+                  . '<tr><td><strong>##lang.ordervalidation.numorder##</strong></td><td>##ordervalidation.numorder##</td></tr>'
+                  . '<tr><td><strong>##lang.ordervalidation.name##</strong></td><td>##ordervalidation.name##</td></tr>'
+                  . '<tr><td><strong>##lang.ordervalidation.orderdate##</strong></td><td>##ordervalidation.orderdate##</td></tr>'
+                  . '<tr><td><strong>##lang.ordervalidation.entity##</strong></td><td>##ordervalidation.entity##</td></tr>'
+                  . '<tr><td><strong>##lang.ordervalidation.state##</strong></td><td>##ordervalidation.state##</td></tr>'
+                  . '<tr><td><strong>##lang.order.dayselapsed##</strong></td><td>##order.dayselapsed##</td></tr>'
+                  . '</table>'
+                  . '<p><a href="##ordervalidation.url##">##ordervalidation.url##</a></p>',
+            ]);
+        }
+
+        if (countElementsInTable("glpi_notifications", ['itemtype' => 'PluginOrderOrder', 'event' => 'not_invoiced'])) {
+            return;
+        }
+
+        $notification_id = $notification->add([
+            'name'         => $template_name,
+            'entities_id'  => 0,
+            'itemtype'     => 'PluginOrderOrder',
+            'event'        => 'not_invoiced',
+            'comment'      => '',
+            'is_recursive' => 1,
+            'is_active'    => 1,
+            'date_mod'     => $_SESSION['glpi_currenttime'],
+        ]);
+
+        if (!$notification_id) {
+            return;
+        }
+
+        $n_n_template->add([
+            'notifications_id'         => $notification_id,
+            'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+            'notificationtemplates_id' => $templates_id,
+        ]);
+
+        $target = new NotificationTarget();
+        foreach ([self::AUTHOR, self::REMINDER_RECIPIENTS] as $items_id) {
+            $target->add([
+                'notifications_id' => $notification_id,
+                'items_id'         => $items_id,
+                'type'             => Notification::USER_TYPE,
+            ]);
+        }
     }
 
 
@@ -485,6 +608,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
         $this->addTarget(self::SUPERVISOR_DELIVERY_GROUP, __s("Manager") . " " . __s("Recipient group", "order"));
         $this->addTarget(self::SUPPLIER, __s('Supplier'));
         $this->addTarget(self::CONTACT, __s('Contact'));
+        $this->addTarget(self::REMINDER_RECIPIENTS, __s("Additional reminder recipients", "order"));
     }
 
 
@@ -530,6 +654,20 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             case self::CONTACT:
                 if ($this->obj instanceof CommonDBTM) {
                     $this->addAddressesByType("contacts", $this->obj->fields['id']);
+                }
+
+                break;
+            case self::REMINDER_RECIPIENTS:
+                /** @var array $CFG_GLPI */
+                global $CFG_GLPI;
+
+                foreach (PluginOrderConfig::getConfig()->getNotInvoicedReminderEmails() as $email) {
+                    $this->addToRecipientsList([
+                        'email'    => $email,
+                        'name'     => $email,
+                        'language' => $CFG_GLPI["language"],
+                        'usertype' => NotificationTarget::ANONYMOUS_USER,
+                    ]);
                 }
 
                 break;
