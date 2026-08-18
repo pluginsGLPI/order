@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 
+### Added
+
+- Orders list: default sort by creation date, newest first
+- Orders list: "Invoiced" column available in the column view settings
+- OT generation popup: order number and optional commissioning / warehouse deposit dates
+- New "Invoicing" massive action: create and link a bill without generating the OT file
+- Configurable e-mail reminders (multiple day thresholds) for orders not yet invoiced
+
+### Changed
+
+- Order item rows are now expanded by default
+- Polish translation for the OT and invoicing actions
+
 ### Fixed
 
 - Fix fatal error when opening the "Generate item" massive action form for
