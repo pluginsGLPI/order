@@ -1058,12 +1058,12 @@ msgid "Archived"
 msgstr "Archiwalna"
 
 #: inc/ot.class.php
-msgid "%s previous bill was archived and stays attached to the order"
-msgid_plural "%s previous bills were archived and stay attached to the order"
-msgstr[0] "%s poprzednia faktura została zarchiwizowana i pozostaje powiązana z zamówieniem"
-msgstr[1] "%s poprzednie faktury zostały zarchiwizowane i pozostają powiązane z zamówieniem"
-msgstr[2] "%s poprzednich faktur zostało zarchiwizowanych i pozostaje powiązanych z zamówieniem"
-msgstr[3] "%s poprzednich faktur zostało zarchiwizowanych i pozostaje powiązanych z zamówieniem"
+msgid "%s previous bill no longer covers any position and was archived"
+msgid_plural "%s previous bills no longer cover any position and were archived"
+msgstr[0] "%s poprzednia faktura nie pokrywa już żadnej pozycji i została zarchiwizowana"
+msgstr[1] "%s poprzednie faktury nie pokrywają już żadnej pozycji i zostały zarchiwizowane"
+msgstr[2] "%s poprzednich faktur nie pokrywa już żadnej pozycji i zostało zarchiwizowanych"
+msgstr[3] "%s poprzednich faktur nie pokrywa już żadnej pozycji i zostało zarchiwizowanych"
 
 #: inc/ot.class.php
 msgid "%s previous OT document was archived and stays attached to the order"
@@ -1108,3 +1108,23 @@ msgstr "Zamówienie zostało ponownie zamknięte z dotychczasową fakturą."
 #: front/order.form.php
 msgid "This order has no bill to confirm."
 msgstr "To zamówienie nie ma faktury do potwierdzenia."
+
+#: inc/ot.class.php
+msgid "Positions covered by this bill"
+msgstr "Pozycje objęte tą fakturą"
+
+#: inc/ot.class.php
+msgid "Untick the positions this bill does not cover."
+msgstr "Odznacz pozycje, których ta faktura nie obejmuje."
+
+#: inc/ot.class.php
+msgid "Several orders are selected: the bill will cover all of their positions."
+msgstr "Zaznaczono kilka zamówień: faktura obejmie wszystkie ich pozycje."
+
+#: inc/ot.class.php
+msgid "Position %s"
+msgstr "Pozycja %s"
+
+#: inc/ot.class.php
+msgid "currently on bill %s"
+msgstr "obecnie na fakturze %s"

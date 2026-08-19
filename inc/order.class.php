@@ -2824,6 +2824,9 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
 
         if ($ma->getAction() === 'invoice') {
             PluginOrderOt::showInvoiceNumberField(true);
+            PluginOrderOt::showInvoiceItemsPicker(
+                array_keys($ma->POST['items'][self::class] ?? []),
+            );
             echo "<br><br>";
             echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
             return true;
@@ -2921,9 +2924,13 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
                 return;
             }
 
+            // The position picker only appears for a single order, so a
+            // selection is meaningless - and ignored - for a bulk run.
+            $item_ids = count($ids) === 1 ? ($input['invoice_items'] ?? []) : [];
+
             foreach ($ids as $id) {
                 $ot      = new PluginOrderOt();
-                $bill_id = $ot->processInvoiceOnly((int) $id, $invoice_number);
+                $bill_id = $ot->processInvoiceOnly((int) $id, $invoice_number, (array) $item_ids);
                 if ($bill_id) {
                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                     Session::addMessageAfterRedirect(

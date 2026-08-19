@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - New "Invoicing" massive action: create and link a bill without generating the OT file
 - Configurable e-mail reminders (multiple day thresholds) for orders not yet invoiced
 - Reopening an invoiced order keeps its bill, and the validation tab asks whether that bill is still correct
-- A correcting bill or a regenerated OT archives the superseded ones, which stay attached to the order
+- A correcting bill can cover only part of an order, and a regenerated OT or a fully superseded bill is archived while staying attached to the order
 
 ### Changed
 

@@ -80,14 +80,17 @@ class PluginOrderBill extends CommonDropdown
 
 
     /**
-     * Mark the bills an order carried before $current_bill_id as archived.
+     * Archive the bills of an order that no longer cover any position.
      *
-     * They stay attached to the order as history; only the newest bill is
-     * treated as the one currently covering it.
+     * A correcting bill takes positions away from the bill that covered them
+     * before. Only when nothing points at that older bill any more has it been
+     * fully superseded; a partial correction leaves it in place for the rest of
+     * the order. Archived bills stay attached as history either way.
      *
+     * @param int $current_bill_id The bill just issued, never archived here
      * @return int Number of bills archived
      */
-    public static function archivePreviousForOrder(int $orders_id, int $current_bill_id): int
+    public static function archiveUncoveredForOrder(int $orders_id, int $current_bill_id): int
     {
         /** @var DBmysql $DB */
         global $DB;
@@ -95,6 +98,17 @@ class PluginOrderBill extends CommonDropdown
         $archived = 0;
         foreach (self::getForOrder($orders_id) as $bill_id => $row) {
             if ($bill_id === $current_bill_id) {
+                continue;
+            }
+
+            $still_covers = countElementsInTable(
+                PluginOrderOrder_Item::getTable(),
+                [
+                    'plugin_order_orders_id' => $orders_id,
+                    'plugin_order_bills_id'  => $bill_id,
+                ],
+            );
+            if ($still_covers > 0) {
                 continue;
             }
 

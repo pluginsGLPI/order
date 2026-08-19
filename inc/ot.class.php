@@ -98,6 +98,84 @@ class PluginOrderOt
 
 
     /**
+     * Let the user narrow a bill down to some positions of a single order.
+     *
+     * A correcting bill often covers only part of an order, so the positions are
+     * offered with everything ticked: leaving them alone bills the whole order.
+     * The picker is skipped for a multi-order selection, where one list of
+     * positions would not mean anything.
+     *
+     * @param array $selected_orders Order ids picked in the list
+     */
+    public static function showInvoiceItemsPicker(array $selected_orders): void
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        if (count($selected_orders) !== 1) {
+            echo "<br><span class='text-muted' style='font-size:0.85em;'>"
+               . __s("Several orders are selected: the bill will cover all of their positions.", "order")
+               . "</span>";
+            return;
+        }
+
+        $order_id = (int) reset($selected_orders);
+        $iterator = $DB->request([
+            'FROM'  => PluginOrderOrder_Item::getTable(),
+            'WHERE' => ['plugin_order_orders_id' => $order_id],
+            'ORDER' => 'id ASC',
+        ]);
+
+        if (count($iterator) === 0) {
+            return;
+        }
+
+        $reference = new PluginOrderReference();
+        $bill      = new PluginOrderBill();
+
+        echo "<br><br><div style='text-align:left;display:inline-block;'>";
+        echo "<strong>" . __s("Positions covered by this bill", "order") . "</strong>";
+        echo "<br><span class='text-muted' style='font-size:0.85em;'>"
+           . __s("Untick the positions this bill does not cover.", "order")
+           . "</span>";
+        echo "<table class='tab_cadre' style='margin-top:6px;'>";
+
+        foreach ($iterator as $item) {
+            // Orders regularly repeat the same product, so the position id is
+            // what tells two otherwise identical rows apart.
+            $label = sprintf(__('Position %s', 'order'), $item['id']);
+            if ((int) $item['plugin_order_references_id'] > 0
+                && $reference->getFromDB($item['plugin_order_references_id'])
+                && $reference->fields['name'] !== ''
+            ) {
+                $label .= ' - ' . $reference->fields['name'];
+            }
+
+            $current = '';
+            if ((int) $item['plugin_order_bills_id'] > 0
+                && $bill->getFromDB($item['plugin_order_bills_id'])
+            ) {
+                $current = ' <span class="text-muted">('
+                    . sprintf(
+                        __s('currently on bill %s', 'order'),
+                        htmlescape($bill->fields['number'] !== '' ? $bill->fields['number'] : $bill->fields['name']),
+                    )
+                    . ')</span>';
+            }
+
+            echo "<tr class='tab_bg_1'><td>";
+            echo "<input type='checkbox' class='form-check-input' name='invoice_items[]' value='"
+               . (int) $item['id'] . "' checked id='invoice_item_" . (int) $item['id'] . "'>";
+            echo "&nbsp;<label for='invoice_item_" . (int) $item['id'] . "'>"
+               . htmlescape($label) . $current . "</label>";
+            echo "</td></tr>";
+        }
+
+        echo "</table></div>";
+    }
+
+
+    /**
      * Normalize the sub-form input into the parameter set used to build an OT.
      *
      * @param array $input Raw massive action input
@@ -188,7 +266,7 @@ class PluginOrderOt
      * @param string $invoice_number Invoice number entered by user
      * @return int|false Bill ID on success, false on failure
      */
-    public function processInvoiceOnly(int $order_id, string $invoice_number)
+    public function processInvoiceOnly(int $order_id, string $invoice_number, array $item_ids = [])
     {
         if ($invoice_number === '') {
             return false;
@@ -199,7 +277,7 @@ class PluginOrderOt
             return false;
         }
 
-        return $this->createBill($order, $invoice_number);
+        return $this->createBill($order, $invoice_number, $item_ids);
     }
 
 
@@ -208,15 +286,29 @@ class PluginOrderOt
      *
      * @param PluginOrderOrder $order          The order (already loaded)
      * @param string           $invoice_number Invoice number entered by user
+     * @param int[]            $item_ids       Order items the bill covers; empty means the whole order
      * @return int|false Bill ID on success, false on failure
      */
-    private function createBill(PluginOrderOrder $order, string $invoice_number)
+    private function createBill(PluginOrderOrder $order, string $invoice_number, array $item_ids = [])
     {
-        $order_id = $order->getID();
+        /** @var DBmysql $DB */
+        global $DB;
 
-        // Get total price (tax-free)
-        $order_item = new PluginOrderOrder_Item();
-        $prices = $order_item->getAllPrices($order_id);
+        $order_id = $order->getID();
+        $item_ids = self::filterOrderItems($order_id, $item_ids);
+
+        // The bill is worth what it actually covers, so a correcting bill for a
+        // few positions does not carry the whole order's value.
+        if ($item_ids === []) {
+            $order_item = new PluginOrderOrder_Item();
+            $prices = $order_item->getAllPrices($order_id);
+        } else {
+            $prices = $DB->request([
+                'SELECT' => ['SUM' => ['price_discounted AS priceHT']],
+                'FROM'   => PluginOrderOrder_Item::getTable(),
+                'WHERE'  => ['id' => $item_ids],
+            ])->current();
+        }
         $value = (float) ($prices['priceHT'] ?? 0);
 
         $today = date('Y-m-d');
@@ -240,15 +332,18 @@ class PluginOrderOt
             return false;
         }
 
-        // A correcting invoice supersedes the previous one: both stay attached to
-        // the order, but only the new one counts as covering it.
-        $archived = PluginOrderBill::archivePreviousForOrder($order_id, (int) $bill_id);
+        $this->linkBillToOrderItems($order, $bill_id, $bill, $item_ids);
+
+        // A bill is superseded once nothing points at it any more. A correcting
+        // bill covering part of the order therefore leaves the earlier one in
+        // place for the positions it still covers.
+        $archived = PluginOrderBill::archiveUncoveredForOrder($order_id, (int) $bill_id);
         if ($archived > 0) {
             Session::addMessageAfterRedirect(
                 sprintf(
                     _sn(
-                        "%s previous bill was archived and stays attached to the order",
-                        "%s previous bills were archived and stay attached to the order",
+                        "%s previous bill no longer covers any position and was archived",
+                        "%s previous bills no longer cover any position and were archived",
                         $archived,
                         "order",
                     ),
@@ -259,10 +354,43 @@ class PluginOrderOt
             );
         }
 
-        // Link all order items to this bill and set their bill state to PAID
-        $this->linkBillToOrderItems($order, $bill_id, $bill);
-
         return $bill_id;
+    }
+
+
+    /**
+     * Keep only ids that really belong to this order.
+     *
+     * @param int[] $item_ids
+     * @return int[] Empty when the whole order is meant
+     */
+    private static function filterOrderItems(int $order_id, array $item_ids): array
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $item_ids = array_filter(array_map('intval', $item_ids));
+        if ($item_ids === []) {
+            return [];
+        }
+
+        $valid = [];
+        $iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => PluginOrderOrder_Item::getTable(),
+            'WHERE'  => ['plugin_order_orders_id' => $order_id, 'id' => $item_ids],
+        ]);
+        foreach ($iterator as $row) {
+            $valid[] = (int) $row['id'];
+        }
+
+        // Selecting everything is the same as not selecting at all.
+        $total = countElementsInTable(
+            PluginOrderOrder_Item::getTable(),
+            ['plugin_order_orders_id' => $order_id],
+        );
+
+        return count($valid) === $total ? [] : $valid;
     }
 
 
@@ -329,18 +457,26 @@ class PluginOrderOt
      * @param int              $bill_id The newly created bill ID
      * @param PluginOrderBill  $bill    The bill object (already loaded after add)
      */
-    private function linkBillToOrderItems(PluginOrderOrder $order, int $bill_id, PluginOrderBill $bill): void
-    {
+    private function linkBillToOrderItems(
+        PluginOrderOrder $order,
+        int $bill_id,
+        PluginOrderBill $bill,
+        array $item_ids = [],
+    ): void {
         /** @var DBmysql $DB */
         global $DB;
 
         $order_id = $order->getID();
         $bill->getFromDB($bill_id);
 
-        // Get all order items for this order
+        $where = ['plugin_order_orders_id' => $order_id];
+        if ($item_ids !== []) {
+            $where['id'] = $item_ids;
+        }
+
         $items_result = $DB->request([
             'FROM'  => 'glpi_plugin_order_orders_items',
-            'WHERE' => ['plugin_order_orders_id' => $order_id],
+            'WHERE' => $where,
         ]);
 
         $order_item = new PluginOrderOrder_Item();
