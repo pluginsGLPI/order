@@ -96,7 +96,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
 
         echo "<tr>";
         echo "<td class='tab_bg_2 center' colspan='6'>";
-        echo "<input type='submit' name='update' class='submit' value='" . _sx('button', 'Save') . "' >";
+        echo "<input type='submit' name='update' class='btn btn-primary' value='" . _sx('button', 'Save') . "' >";
         echo Html::hidden('documentcategories_id', ['value' => $item->getID()]);
         echo "</td>";
         echo "</tr>";

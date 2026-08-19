@@ -1758,7 +1758,7 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
         echo "<td align='center'>";
         echo Html::hidden('id', ['value' => $orders_id]);
         echo "<input type='submit' name='confirm_invoice' value=\""
-           . __s("The bill is still correct", "order") . "\" class='submit'>";
+           . __s("The bill is still correct", "order") . "\" class='btn btn-success'>";
         echo "</td></tr>";
 
         echo "</table></div>";
@@ -1795,13 +1795,13 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
                 if ($this->canCancelOrder()) {
                     echo "<input type='submit' onclick=\"return confirm('"
                     . __s("Do you really want to cancel this order ? This option is irreversible !", "order")
-                    . "')\" name='cancel_order' value=\"" . __s("Cancel order", "order") . "\" class='submit'>";
+                    . "')\" name='cancel_order' value=\"" . __s("Cancel order", "order") . "\" class='btn btn-danger'>";
                     $link = "<br><br>";
                 }
 
                 if ($this->canValidateOrder()) {
                     echo $link . "<input type='submit' name='validate' value=\""
-                    . __s("Validate order", "order") . "\" class='submit'>";
+                    . __s("Validate order", "order") . "\" class='btn btn-success'>";
                     $link = "<br><br>";
                 }
 
@@ -1809,13 +1809,13 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
                     echo $link . "<input type='submit' onclick=\"return confirm('"
                     . __s("Do you want to cancel the validation approval ?", "order")
                     . "')\" name='cancel_waiting_for_approval' value=\""
-                    . __s("Cancel ask for validation", "order") . "\" class='submit'>";
+                    . __s("Cancel ask for validation", "order") . "\" class='btn btn-warning'>";
                     $link = "<br><br>";
                 }
 
                 if ($this->canDoValidationRequest()) {
                     echo $link . "<input type='submit' name='waiting_for_approval' value=\""
-                    . __s("Ask for validation", "order") . "\" class='submit'>";
+                    . __s("Ask for validation", "order") . "\" class='btn btn-success'>";
                     $link = "<br><br>";
                 }
 
@@ -1823,7 +1823,7 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
                     echo $link . "<input type='submit' onclick=\"return confirm('"
                     . __s("Do you really want to edit the order ?", "order")
                     . "')\" name='undovalidation' value=\""
-                    . __s("Edit order", "order") . "\" class='submit'>";
+                    . __s("Edit order", "order") . "\" class='btn btn-success'>";
                     $link = "<br><br>";
                 }
 
@@ -1876,7 +1876,7 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
                 echo "<tr class='tab_bg_1'>";
                 echo "<td class='center' colspan='2'>";
                 echo Html::hidden('id', ['value' => $ID]);
-                echo "<input type='submit' value=\"" . __s("Order Generation", "order") . "\" class='submit' >";
+                echo "<input type='submit' value=\"" . __s("Order Generation", "order") . "\" class='btn btn-primary' >";
                 echo "</td>";
                 echo "</tr>";
             }

@@ -93,5 +93,5 @@ if ($config->canGenerateAsset() == PluginOrderConfig::CONFIG_ASK) {
     echo "</td>";
 }
 
-echo "<td><input type='submit' name='bulk_reception' class='submit' value='"
+echo "<td><input type='submit' name='bulk_reception' class='btn btn-primary' value='"
       . _sx('button', 'Post') . "'></td></tr></table>";
