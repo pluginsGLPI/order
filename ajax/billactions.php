@@ -44,5 +44,5 @@ if (isset($_POST["action"])) {
     }
 
     PluginOrderBillState::Dropdown(['comments' => true]);
-    echo "&nbsp;<input type='submit' name='action' class='submit' value='" . _sx('button', 'Post') . "'>";
+    echo "&nbsp;<input type='submit' name='action' class='btn btn-primary' value='" . _sx('button', 'Post') . "'>";
 }

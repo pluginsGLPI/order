@@ -357,7 +357,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 . "return false;\" href='#'>" . __s("Uncheck all") . "</a>";
                 echo "</td><td align='left' width='80%'>";
                 echo "<input type='submit' name='delete' value=\"" . __s("Delete permanently")
-                . "\" class='submit' >";
+                . "\" class='btn btn-primary' >";
                 echo "</td>";
                 echo "</table>";
                 echo "</div>";

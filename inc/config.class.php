@@ -470,7 +470,7 @@ class PluginOrderConfig extends CommonDBTM
 
         echo "<tr class='tab_bg_1' align='center'>";
         echo "<td colspan='2' align='center'>";
-        echo "<input type='submit' name='update' value=\"" . _sx("button", "Post") . "\" class='submit' >";
+        echo "<input type='submit' name='update' value=\"" . _sx("button", "Post") . "\" class='btn btn-primary' >";
         echo"</td>";
         echo "</tr>";
 

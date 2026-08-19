@@ -546,7 +546,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 echo "</span></td>";
 
                 echo "<td class='tab_bg_1'><span id='show_validate'>";
-                echo "<input type='submit' name='add_item' value=\"" . __s("Add") . "\" class='submit'>";
+                echo "<input type='submit' name='add_item' value=\"" . __s("Add") . "\" class='btn btn-primary'>";
                 echo "</span></td>";
                 echo "</tr>";
             } else {
@@ -687,7 +687,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                     echo "</td>";
 
                     echo "<td class='tab_bg_1'><span id='show_validate'>";
-                    echo "<input type='submit' name='add_itemfree' value=\"" . __s("Add") . "\" class='submit'>";
+                    echo "<input type='submit' name='add_itemfree' value=\"" . __s("Add") . "\" class='btn btn-primary'>";
                     echo "</span></td>";
                     echo "</tr>";
                 } else {

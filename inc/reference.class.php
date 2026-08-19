@@ -1194,7 +1194,7 @@ class PluginOrderReference extends CommonDBTM
                 return true;
             case 'copy_reference':
                 //useless ?
-                echo '&nbsp;<input type="submit" name="massiveaction" class="submit" value="'
+                echo '&nbsp;<input type="submit" name="massiveaction" class="btn btn-primary" value="'
                      . _sx('button', 'Post') . '" >';
                 return true;
         }

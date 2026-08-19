@@ -201,7 +201,7 @@ class PluginOrderPreference extends CommonDBTM
         echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
         echo Html::hidden('id', ['value' => $ID]);
         echo Html::hidden('users_id', ['value' => $this->fields['users_id']]);
-        echo "<input type='submit' name='update' value='" . _sx('button', 'Post') . "' class='submit' ></td>";
+        echo "<input type='submit' name='update' value='" . _sx('button', 'Post') . "' class='btn btn-primary' ></td>";
         echo "</tr>";
 
         echo "</table>";
