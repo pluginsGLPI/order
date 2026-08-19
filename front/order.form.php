@@ -148,6 +148,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_POST["confirm_invoice"])) {
     $pluginOrderOrder->check($_POST["id"], UPDATE);
+    Session::checkRight('plugin_order_order', PluginOrderOrder::RIGHT_INVOICE);
     if ($pluginOrderOrder->confirmExistingInvoice((int) $_POST["id"])) {
         Session::addMessageAfterRedirect(
             __s("The order has been closed again with its existing bill.", "order"),

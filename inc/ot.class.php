@@ -134,6 +134,10 @@ class PluginOrderOt
         $bill      = new PluginOrderBill();
 
         echo "<br><br><div style='text-align:left;display:inline-block;'>";
+        // Unchecked boxes are absent from the POST, so this marker is how the
+        // server tells "picker shown, everything unticked" apart from "no
+        // picker at all" - the two must not both mean "bill the whole order".
+        echo Html::hidden('invoice_items_shown', ['value' => 1]);
         echo "<strong>" . __s("Positions covered by this bill", "order") . "</strong>";
         echo "<br><span class='text-muted' style='font-size:0.85em;'>"
            . __s("Untick the positions this bill does not cover.", "order")
@@ -266,7 +270,7 @@ class PluginOrderOt
      * @param string $invoice_number Invoice number entered by user
      * @return int|false Bill ID on success, false on failure
      */
-    public function processInvoiceOnly(int $order_id, string $invoice_number, array $item_ids = [])
+    public function processInvoiceOnly(int $order_id, string $invoice_number, ?array $item_ids = null)
     {
         if ($invoice_number === '') {
             return false;
@@ -286,20 +290,29 @@ class PluginOrderOt
      *
      * @param PluginOrderOrder $order          The order (already loaded)
      * @param string           $invoice_number Invoice number entered by user
-     * @param int[]            $item_ids       Order items the bill covers; empty means the whole order
+     * @param int[]|null       $item_ids       Order items the bill covers; null means the whole order
      * @return int|false Bill ID on success, false on failure
      */
-    private function createBill(PluginOrderOrder $order, string $invoice_number, array $item_ids = [])
+    private function createBill(PluginOrderOrder $order, string $invoice_number, ?array $item_ids = null)
     {
         /** @var DBmysql $DB */
         global $DB;
 
         $order_id = $order->getID();
-        $item_ids = self::filterOrderItems($order_id, $item_ids);
+
+        if ($item_ids !== null) {
+            $item_ids = self::filterOrderItems($order_id, $item_ids);
+            // A selection that no longer matches anything (rows deleted between
+            // popup and submit, or nothing ticked) must never widen into "bill
+            // the whole order".
+            if ($item_ids === []) {
+                return false;
+            }
+        }
 
         // The bill is worth what it actually covers, so a correcting bill for a
         // few positions does not carry the whole order's value.
-        if ($item_ids === []) {
+        if ($item_ids === null) {
             $order_item = new PluginOrderOrder_Item();
             $prices = $order_item->getAllPrices($order_id);
         } else {
@@ -362,9 +375,10 @@ class PluginOrderOt
      * Keep only ids that really belong to this order.
      *
      * @param int[] $item_ids
-     * @return int[] Empty when the whole order is meant
+     * @return int[]|null null when the selection covers the whole order,
+     *                    [] when nothing valid remains (the caller must abort)
      */
-    private static function filterOrderItems(int $order_id, array $item_ids): array
+    private static function filterOrderItems(int $order_id, array $item_ids): ?array
     {
         /** @var DBmysql $DB */
         global $DB;
@@ -384,13 +398,17 @@ class PluginOrderOt
             $valid[] = (int) $row['id'];
         }
 
+        if ($valid === []) {
+            return [];
+        }
+
         // Selecting everything is the same as not selecting at all.
         $total = countElementsInTable(
             PluginOrderOrder_Item::getTable(),
             ['plugin_order_orders_id' => $order_id],
         );
 
-        return count($valid) === $total ? [] : $valid;
+        return count($valid) === $total ? null : $valid;
     }
 
 
@@ -461,7 +479,7 @@ class PluginOrderOt
         PluginOrderOrder $order,
         int $bill_id,
         PluginOrderBill $bill,
-        array $item_ids = [],
+        ?array $item_ids = null,
     ): void {
         /** @var DBmysql $DB */
         global $DB;
@@ -470,7 +488,7 @@ class PluginOrderOt
         $bill->getFromDB($bill_id);
 
         $where = ['plugin_order_orders_id' => $order_id];
-        if ($item_ids !== []) {
+        if ($item_ids !== null) {
             $where['id'] = $item_ids;
         }
 
@@ -483,12 +501,21 @@ class PluginOrderOt
         $config = PluginOrderConfig::getConfig();
 
         foreach ($items_result as $item_data) {
-            // Update order item with bill ID and PAID state
-            $order_item->update([
+            // Update order item with bill ID and PAID state. Item form rules
+            // (e.g. a mandatory analytic nature on legacy rows) must not block
+            // this internal bookkeeping, so fall back to a direct write when
+            // the ORM update is rejected.
+            $updated = $order_item->update([
                 'id'                         => $item_data['id'],
                 'plugin_order_bills_id'      => $bill_id,
                 'plugin_order_billstates_id' => PluginOrderBillState::PAID,
             ]);
+            if (!$updated) {
+                $DB->update('glpi_plugin_order_orders_items', [
+                    'plugin_order_bills_id'      => $bill_id,
+                    'plugin_order_billstates_id' => PluginOrderBillState::PAID,
+                ], ['id' => $item_data['id']]);
+            }
 
             // Update Infocom on the linked asset (if delivered and config allows)
             if ($config->canAddBillDetails()
@@ -924,11 +951,19 @@ HTML;
         @mkdir($doc_dir, 0755, true);
 
         $dest_path = $doc_dir . $filename;
-        // If file already exists, add unique suffix
+        // If the name is taken, keep suffixing until it is not: a bulk run with
+        // a shared order-number override can collide several times within the
+        // same second, and rename() would silently overwrite an earlier OT.
         if (file_exists($dest_path)) {
-            $info = pathinfo($filename);
-            $dest_path = $doc_dir . $info['filename'] . '_' . date('YmdHis') . '.' . $info['extension'];
-            $filename  = basename($dest_path);
+            $info   = pathinfo($filename);
+            $stamp  = date('YmdHis');
+            $suffix = '';
+            $i      = 1;
+            do {
+                $dest_path = $doc_dir . $info['filename'] . '_' . $stamp . $suffix . '.' . $info['extension'];
+                $suffix    = '_' . ++$i;
+            } while (file_exists($dest_path));
+            $filename = basename($dest_path);
         }
 
         if (!rename($filepath, $dest_path)) {

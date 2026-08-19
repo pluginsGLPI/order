@@ -87,7 +87,11 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
 
     public const RIGHT_DELIVERY                         = 8192;
 
-    public const ALLRIGHTS                              = 16255;
+    public const RIGHT_GENERATE_OT                      = 16384;
+
+    public const RIGHT_INVOICE                          = 32768;
+
+    public const ALLRIGHTS                              = 65407;
 
 
     public function getCloneRelations(): array
@@ -195,10 +199,17 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
 
     public function cleanDBonPurge()
     {
+        /** @var DBmysql $DB */
+        global $DB;
+
         foreach (self::$forward_entity_to as $itemtype) {
             $temp = getItemForItemtype($itemtype);
             $temp->deleteByCriteria(['plugin_order_orders_id' => $this->getID()]);
         }
+
+        // The reminder ledger has no itemtype class of its own; without this
+        // the rows of purged orders would pile up until plugin uninstall.
+        $DB->delete(self::getReminderTable(), ['plugin_order_orders_id' => $this->getID()]);
     }
 
 
@@ -322,6 +333,8 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
             $values[self::RIGHT_CANCEL]          = __s("Cancel order", "order");
             $values[self::RIGHT_UNDO_VALIDATION] = __s("Edit a validated order", "order");
             $values[self::RIGHT_GENERATEODT_WITHOUT_VALIDATION] = __s("Generate order without validation", "order");
+            $values[self::RIGHT_GENERATE_OT] = __s("Generate OT", "order");
+            $values[self::RIGHT_INVOICE]     = __s("Invoicing", "order");
         }
 
         return $values;
@@ -1714,7 +1727,9 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
             return;
         }
 
-        if (!$this->can($orders_id, UPDATE)) {
+        if (!$this->can($orders_id, UPDATE)
+            || !Session::haveRight(self::$rightname, self::RIGHT_INVOICE)
+        ) {
             return;
         }
 
@@ -2361,17 +2376,24 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
             $order_status = $order->fields['plugin_order_orderstates_id'];
         }
 
-        $input = [
-            'id'                         => $ID,
-            'plugin_order_billstates_id' => $bill_state,
-            'plugin_order_orderstates_id' => $order_status,
-        ];
-        $order->check($ID, UPDATE, $input);
-        $order->update([
+        // Rights are enforced by the entry points (massive-action rights,
+        // front-file check() calls); checking again here used to abort the
+        // flow midway, after the bill and the item links already existed.
+        $updated = $order->update([
             'id'                         => $ID,
             'plugin_order_billstates_id' => $bill_state,
             'plugin_order_orderstates_id' => $order_status,
         ]);
+        if (!$updated) {
+            // Order form rules (e.g. a mandatory account section on legacy
+            // rows) must not leave the aggregate out of sync with the items.
+            /** @var DBmysql $DB */
+            global $DB;
+            $DB->update(self::getTable(), [
+                'plugin_order_billstates_id' => $bill_state,
+                'plugin_order_orderstates_id' => $order_status,
+            ], ['id' => $ID]);
+        }
     }
 
 
@@ -2408,6 +2430,13 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
             return false;
         }
 
+        // The confirmation only makes sense while the order is actually open
+        // for review; a stale tab or a hand-crafted POST on an order that
+        // moved on must not silently re-close it.
+        if (!$this->hasInvoiceAwaitingReview()) {
+            return false;
+        }
+
         $bills = PluginOrderBill::getForOrder($orders_id);
         if ($bills === []) {
             return false;
@@ -2428,11 +2457,19 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
 
         $order_item = new PluginOrderOrder_Item();
         foreach ($items as $item) {
-            $order_item->update([
+            $updated = $order_item->update([
                 'id'                         => $item['id'],
                 'plugin_order_bills_id'      => $current_bill_id,
                 'plugin_order_billstates_id' => PluginOrderBillState::PAID,
             ]);
+            if (!$updated) {
+                // Same fallback as in the invoicing flow: item form rules must
+                // not leave a position half attached.
+                $DB->update(PluginOrderOrder_Item::getTable(), [
+                    'plugin_order_bills_id'      => $current_bill_id,
+                    'plugin_order_billstates_id' => PluginOrderBillState::PAID,
+                ], ['id' => $item['id']]);
+            }
         }
 
         self::updateBillState($orders_id);
@@ -2553,12 +2590,29 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
      */
     public static function cronNotInvoicedReminder($task)
     {
+        /** @var array $CFG_GLPI */
         /** @var DBmysql $DB */
-        global $DB;
+        global $CFG_GLPI, $DB;
 
         $config     = PluginOrderConfig::getConfig();
         $thresholds = $config->getNotInvoicedReminderDays();
         if ($thresholds === []) {
+            return 0;
+        }
+
+        // NotificationEvent::raiseEvent() returns true even when notifications
+        // are globally off or the seeded notification is deactivated. Marking a
+        // threshold as sent then would silence it forever, so bail out while
+        // nothing can actually be delivered and retry on a later run.
+        if (
+            !$CFG_GLPI['use_notifications']
+            || !Notification_NotificationTemplate::hasActiveMode()
+            || countElementsInTable('glpi_notifications', [
+                'itemtype'  => self::class,
+                'event'     => 'not_invoiced',
+                'is_active' => 1,
+            ]) === 0
+        ) {
             return 0;
         }
 
@@ -2570,7 +2624,6 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
         $iterator = $DB->request([
             'SELECT' => [
                 'id',
-                'users_id',
                 new QueryExpression(
                     'DATEDIFF(NOW(), COALESCE(' . $DB->quoteName('order_date') . ', '
                     . $DB->quoteName('date_creation') . ')) AS ' . $DB->quoteName('age_days'),
@@ -2593,38 +2646,47 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
 
             $order_id = (int) $data['id'];
 
-            foreach ($thresholds as $threshold) {
-                if ((int) $age < $threshold) {
-                    continue;
-                }
+            $due = array_filter($thresholds, fn($threshold) => (int) $age >= $threshold);
+            if ($due === []) {
+                continue;
+            }
 
-                $already_sent = countElementsInTable($reminder_table, [
-                    'plugin_order_orders_id' => $order_id,
-                    'threshold_days'         => $threshold,
-                ]);
-                if ($already_sent > 0) {
-                    continue;
-                }
+            $already_sent = [];
+            foreach (
+                $DB->request([
+                    'SELECT' => ['threshold_days'],
+                    'FROM'   => $reminder_table,
+                    'WHERE'  => ['plugin_order_orders_id' => $order_id],
+                ]) as $row
+            ) {
+                $already_sent[(int) $row['threshold_days']] = true;
+            }
 
-                $order = new self();
-                if (!$order->getFromDB($order_id)) {
-                    continue;
-                }
+            $due = array_filter($due, fn($threshold) => !isset($already_sent[$threshold]));
+            if ($due === []) {
+                continue;
+            }
 
+            $order = new self();
+            if (!$order->getFromDB($order_id)) {
+                continue;
+            }
+
+            foreach ($due as $threshold) {
                 $raised = NotificationEvent::raiseEvent('not_invoiced', $order, [
                     'reminder_days' => $threshold,
                     'age_days'      => (int) $age,
                 ]);
+                if (!$raised) {
+                    continue;
+                }
 
                 $DB->insert($reminder_table, [
                     'plugin_order_orders_id' => $order_id,
                     'threshold_days'         => $threshold,
                     'date_creation'          => $_SESSION['glpi_currenttime'] ?? date('Y-m-d H:i:s'),
                 ]);
-
-                if ($raised) {
-                    $sent++;
-                }
+                $sent++;
             }
         }
 
@@ -2846,9 +2908,12 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
             $actions['PluginOrderOrder:transfert'] = __s('Transfer');
         }
 
-        if (static::canView()) {
+        if (Session::haveRight(self::$rightname, self::RIGHT_GENERATE_OT)) {
             $actions['PluginOrderOrder:generate_ot'] = __s('Generate OT', 'order');
-            $actions['PluginOrderOrder:invoice']     = __s('Invoicing', 'order');
+        }
+
+        if (Session::haveRight(self::$rightname, self::RIGHT_INVOICE)) {
+            $actions['PluginOrderOrder:invoice'] = __s('Invoicing', 'order');
         }
 
         return $actions;
@@ -2883,6 +2948,16 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
             /** @var array $CFG_GLPI */
             global $CFG_GLPI;
 
+            // The action list is filtered per user, but the POST itself must be
+            // checked too: creating documents and bills is a write operation.
+            if (!Session::haveRight(self::$rightname, self::RIGHT_GENERATE_OT)) {
+                foreach ($ids as $id) {
+                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                }
+                $ma->addMessage(__s("You are not allowed to generate OT documents", "order"));
+                return;
+            }
+
             $params      = PluginOrderOt::extractParams($ma->getInput());
             $last_doc_id = 0;
 
@@ -2913,6 +2988,14 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
         }
 
         if ($ma->getAction() === "invoice") {
+            if (!Session::haveRight(self::$rightname, self::RIGHT_INVOICE)) {
+                foreach ($ids as $id) {
+                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                }
+                $ma->addMessage(__s("You are not allowed to create bills", "order"));
+                return;
+            }
+
             $input          = $ma->getInput();
             $invoice_number = trim((string) ($input['invoice_number'] ?? ''));
 
@@ -2926,11 +3009,24 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
 
             // The position picker only appears for a single order, so a
             // selection is meaningless - and ignored - for a bulk run.
-            $item_ids = count($ids) === 1 ? ($input['invoice_items'] ?? []) : [];
+            // null = the whole order; a list = exactly those positions.
+            $item_ids = null;
+            if (count($ids) === 1 && !empty($input['invoice_items_shown'])) {
+                $item_ids = array_filter(array_map('intval', (array) ($input['invoice_items'] ?? [])));
+                if ($item_ids === []) {
+                    // Every checkbox was unticked: billing the whole order here
+                    // would be the opposite of what the user asked for.
+                    foreach ($ids as $id) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                    }
+                    $ma->addMessage(__s("No position selected for this bill", "order"));
+                    return;
+                }
+            }
 
             foreach ($ids as $id) {
                 $ot      = new PluginOrderOt();
-                $bill_id = $ot->processInvoiceOnly((int) $id, $invoice_number, (array) $item_ids);
+                $bill_id = $ot->processInvoiceOnly((int) $id, $invoice_number, $item_ids);
                 if ($bill_id) {
                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                     Session::addMessageAfterRedirect(

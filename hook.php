@@ -169,12 +169,24 @@ function plugin_order_getDatabaseRelations()
     if ($plugin->isActivated("order")) {
         return [
             "glpi_plugin_order_orders" => [
-                "glpi_plugin_order_orderpayments" => "plugin_order_orders_id",
-                "glpi_plugin_order_ordertaxes" => "plugin_order_orders_id",
-                "glpi_plugin_order_ordertypes" => "plugin_order_orders_id",
-                "glpi_plugin_order_orderstates" => "plugin_order_orders_id",
                 "glpi_plugin_order_orders_items" => "plugin_order_orders_id",
                 "glpi_plugin_order_orders_suppliers" => "plugin_order_orders_id",
+            ],
+            // The dropdowns are the referenced side: orders point at them, not
+            // the other way round. The inverted declarations made every order
+            // purge crash on a column that does not exist.
+            "glpi_plugin_order_orderpayments" => [
+                "glpi_plugin_order_orders" => "plugin_order_orderpayments_id",
+            ],
+            "glpi_plugin_order_ordertaxes" => [
+                "glpi_plugin_order_orders" => ["plugin_order_ordertaxes_id", "plugin_order_ordertaxes_ecotax_id"],
+                "glpi_plugin_order_orders_items" => "plugin_order_ordertaxes_id",
+            ],
+            "glpi_plugin_order_ordertypes" => [
+                "glpi_plugin_order_orders" => "plugin_order_ordertypes_id",
+            ],
+            "glpi_plugin_order_orderstates" => [
+                "glpi_plugin_order_orders" => "plugin_order_orderstates_id",
             ],
             "glpi_plugin_order_accountsections" => [
                 "glpi_plugin_order_orders" => "plugin_order_accountsections_id",

@@ -1128,3 +1128,15 @@ msgstr "Pozycja %s"
 #: inc/ot.class.php
 msgid "currently on bill %s"
 msgstr "obecnie na fakturze %s"
+
+#: inc/order.class.php
+msgid "You are not allowed to generate OT documents"
+msgstr "Nie masz uprawnień do generowania dokumentów OT"
+
+#: inc/order.class.php
+msgid "You are not allowed to create bills"
+msgstr "Nie masz uprawnień do fakturowania"
+
+#: inc/order.class.php
+msgid "No position selected for this bill"
+msgstr "Nie wybrano żadnej pozycji dla tej faktury"
