@@ -1205,7 +1205,8 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
         $sort = $_GET[$countainer_name . 'sort'] ?? 'id_showed';
         $order = $_GET[$countainer_name . 'order'] ?? 'ASC';
-        $visible = $_GET[$countainer_name . 'visible'] ?? false;
+        // Rows are expanded by default; the toggle sends back the string "true"/"false".
+        $visible = filter_var($_GET[$countainer_name . 'visible'] ?? true, FILTER_VALIDATE_BOOLEAN);
 
         foreach ($iterator as $data) {
             Session::addToNavigateListItems($this->getType(), (int) $data['IDD']);

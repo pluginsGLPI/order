@@ -7,10 +7,36 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [unreleased]
 
+### Added
+
+- Orders list: default sort by creation date, newest first
+- Orders list: "Invoiced" column available in the column view settings
+- OT generation popup: order number and optional commissioning / warehouse deposit dates
+- New "Invoicing" massive action: create and link a bill without generating the OT file
+- Configurable e-mail reminders (multiple day thresholds) for orders not yet invoiced
+- Reopening an invoiced order keeps its bill, and the validation tab asks whether that bill is still correct
+- A correcting bill can cover only part of an order, and a regenerated OT or a fully superseded bill is archived while staying attached to the order
+- Dedicated profile rights for "Generate OT" and "Invoicing"; profiles holding UPDATE on orders receive both on upgrade
+
 ### Fixed
 
+- OT/invoicing massive actions require their dedicated right server-side, instead of being runnable by read-only users
+- The reminder cron no longer consumes thresholds while notifications are disabled or the reminder notification is inactive
+- Unticking every position in the invoicing picker aborts with a message instead of billing the whole order
+- Confirming the bill of a reopened order re-validates the order state, so a stale tab cannot re-close it
+- Bill-to-item linking and the invoiced aggregate are no longer silently blocked by mandatory analytic-nature / account-section rules on legacy rows
+- OT file names deduplicate in a loop, so same-second bulk runs cannot overwrite an earlier document
+- Purging an order removes its reminder-ledger rows
+- Fix fatal error when opening the "Generate item" massive action form for
+  assignable assets (including GLPI 11 custom assets): an array value reaching a
+  single-select dropdown triggered `strlen(): ... array given`
 - Fix generate associated item massive action
 - Update locales
+
+### Changed
+
+- Order item rows are now expanded by default
+- Polish translation for the OT and invoicing actions
 
 
 ## [2.12.6] - 2026-02-23

@@ -134,6 +134,33 @@ if (isset($_POST["add"])) {
             $_POST["comment"],
         );
         Session::addMessageAfterRedirect(__s("Order currently edited", "order"));
+
+        // Reopening never drops the paperwork: say so, and point at the review.
+        if (PluginOrderBill::getForOrder((int) $_POST["id"]) !== []) {
+            Session::addMessageAfterRedirect(
+                __s("The bill stays attached to this order. Confirm on the validation tab whether it is still correct.", "order"),
+                true,
+                INFO,
+            );
+        }
+    }
+
+    Html::back();
+} elseif (isset($_POST["confirm_invoice"])) {
+    $pluginOrderOrder->check($_POST["id"], UPDATE);
+    Session::checkRight('plugin_order_order', PluginOrderOrder::RIGHT_INVOICE);
+    if ($pluginOrderOrder->confirmExistingInvoice((int) $_POST["id"])) {
+        Session::addMessageAfterRedirect(
+            __s("The order has been closed again with its existing bill.", "order"),
+            true,
+            INFO,
+        );
+    } else {
+        Session::addMessageAfterRedirect(
+            __s("This order has no bill to confirm.", "order"),
+            true,
+            ERROR,
+        );
     }
 
     Html::back();

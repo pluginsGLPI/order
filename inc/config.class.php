@@ -440,6 +440,34 @@ class PluginOrderConfig extends CommonDBTM
         echo "</td>";
         echo "</tr>";
 
+        echo "<tr><th colspan='2'>" . __s("Reminders for orders not invoiced", "order") . "</th></tr>";
+
+        echo "<tr class='tab_bg_1' align='center'>";
+        echo "<td>" . __s("Reminder thresholds in days", "order")
+           . "<br><span class='text-muted' style='font-size:0.85em;'>"
+           . __s("Comma separated, for example 14,30,60 - leave empty to disable", "order")
+           . "</span></td>";
+        echo "<td>";
+        echo Html::input('not_invoiced_reminder_days', [
+            'value' => $this->fields['not_invoiced_reminder_days'] ?? '',
+            'size'  => 30,
+        ]);
+        echo "</td>";
+        echo "</tr>";
+
+        echo "<tr class='tab_bg_1' align='center'>";
+        echo "<td>" . __s("Additional reminder recipients", "order")
+           . "<br><span class='text-muted' style='font-size:0.85em;'>"
+           . __s("Comma separated addresses, notified on top of the order author", "order")
+           . "</span></td>";
+        echo "<td>";
+        echo Html::input('not_invoiced_reminder_emails', [
+            'value' => $this->fields['not_invoiced_reminder_emails'] ?? '',
+            'size'  => 50,
+        ]);
+        echo "</td>";
+        echo "</tr>";
+
         echo "<tr class='tab_bg_1' align='center'>";
         echo "<td colspan='2' align='center'>";
         echo "<input type='submit' name='update' value=\"" . _sx("button", "Post") . "\" class='submit' >";
@@ -451,6 +479,49 @@ class PluginOrderConfig extends CommonDBTM
         echo "</div>";
 
         return true;
+    }
+
+
+    /**
+     * Normalize the reminder settings so the stored value is always a clean,
+     * ordered list and invalid entries are reported instead of silently kept.
+     */
+    public function prepareInputForUpdate($input)
+    {
+        if (isset($input['not_invoiced_reminder_days'])) {
+            $input['not_invoiced_reminder_days'] = implode(
+                ',',
+                self::parseReminderDays((string) $input['not_invoiced_reminder_days']),
+            );
+        }
+
+        if (isset($input['not_invoiced_reminder_emails'])) {
+            $submitted = (string) $input['not_invoiced_reminder_emails'];
+            $valid     = self::parseReminderEmails($submitted);
+
+            $rejected = [];
+            foreach (preg_split('/[,;]/', $submitted) ?: [] as $email) {
+                $email = trim($email);
+                if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $rejected[] = $email;
+                }
+            }
+
+            if ($rejected !== []) {
+                Session::addMessageAfterRedirect(
+                    sprintf(
+                        __s("These addresses are not valid and were ignored: %s", "order"),
+                        htmlescape(implode(', ', $rejected)),
+                    ),
+                    true,
+                    ERROR,
+                );
+            }
+
+            $input['not_invoiced_reminder_emails'] = implode(', ', $valid);
+        }
+
+        return $input;
     }
 
 
@@ -668,6 +739,66 @@ class PluginOrderConfig extends CommonDBTM
     }
 
 
+    /**
+     * Day thresholds after which a reminder is sent for an order that has not
+     * been invoiced yet. An empty list disables the reminders altogether.
+     *
+     * @return int[] Positive thresholds, deduplicated, in ascending order
+     */
+    public function getNotInvoicedReminderDays(): array
+    {
+        return self::parseReminderDays($this->fields['not_invoiced_reminder_days'] ?? '');
+    }
+
+
+    /**
+     * Extra recipients notified on top of the order's author.
+     *
+     * @return string[] Valid e-mail addresses
+     */
+    public function getNotInvoicedReminderEmails(): array
+    {
+        return self::parseReminderEmails($this->fields['not_invoiced_reminder_emails'] ?? '');
+    }
+
+
+    /**
+     * @param string $value Comma separated list of day thresholds
+     * @return int[]
+     */
+    public static function parseReminderDays(string $value): array
+    {
+        $days = [];
+        foreach (explode(',', $value) as $threshold) {
+            $threshold = (int) trim($threshold);
+            if ($threshold > 0) {
+                $days[$threshold] = $threshold;
+            }
+        }
+        sort($days);
+
+        return $days;
+    }
+
+
+    /**
+     * @param string $value Comma (or semicolon) separated list of addresses
+     * @return string[]
+     */
+    public static function parseReminderEmails(string $value): array
+    {
+        $emails = [];
+        foreach (preg_split('/[,;]/', $value) ?: [] as $email) {
+            $email = trim($email);
+            if ($email !== '' && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $emails[strtolower($email)] = $email;
+            }
+        }
+
+        return array_values($emails);
+    }
+
+
     //----------------- Install & uninstall -------------------//
     public static function install(Migration $migration)
     {
@@ -727,6 +858,8 @@ class PluginOrderConfig extends CommonDBTM
                         `rename_documents` tinyint NOT NULL default '0',
                         `transmit_budget_change` tinyint NOT NULL default '0',
                         `use_free_reference` tinyint NOT NULL default '0',
+                        `not_invoiced_reminder_days` varchar(255) NOT NULL default '',
+                        `not_invoiced_reminder_emails` text,
                         PRIMARY KEY  (`id`)
                      ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
             $DB->doQuery($query);
@@ -852,6 +985,14 @@ class PluginOrderConfig extends CommonDBTM
 
         if (!$DB->fieldExists($table, 'add_immobilization_number')) {
             $migration->addField($table, "add_immobilization_number", "TINYINT NOT NULL DEFAULT '0'");
+        }
+
+        if (!$DB->fieldExists($table, 'not_invoiced_reminder_days')) {
+            $migration->addField($table, 'not_invoiced_reminder_days', "VARCHAR(255) NOT NULL DEFAULT ''");
+        }
+
+        if (!$DB->fieldExists($table, 'not_invoiced_reminder_emails')) {
+            $migration->addField($table, 'not_invoiced_reminder_emails', 'text');
         }
 
         $migration->migrationOneTable($table);

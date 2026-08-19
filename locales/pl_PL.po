@@ -968,3 +968,175 @@ msgstr ""
 #: inc/order.class.php:1808
 msgid "€"
 msgstr "zł"
+
+#: inc/order.class.php
+msgid "Generate OT"
+msgstr "Generuj OT"
+
+#: inc/order.class.php
+msgid "Invoicing"
+msgstr "Fakturowanie"
+
+#: inc/ot.class.php
+msgid "Invoice Number"
+msgstr "Numer faktury"
+
+#: inc/ot.class.php
+msgid "Cost Center"
+msgstr "Centrum kosztów"
+
+#: inc/order.class.php
+msgid "Invoiced"
+msgstr "Zafakturowane"
+
+#: inc/ot.class.php
+msgid "Leave empty to use the order's own number"
+msgstr "Pozostaw puste, aby użyć numeru zamówienia"
+
+#: inc/ot.class.php
+msgid "Commissioning date"
+msgstr "Data włącz. do użytku"
+
+#: inc/ot.class.php
+msgid "Warehouse deposit date"
+msgstr "Data zdep. w magazynie"
+
+#: inc/ot.class.php
+msgid "Both dates are optional - fill in only the one that applies"
+msgstr "Obie daty są opcjonalne - wypełnij tylko tę, która dotyczy"
+
+#: inc/order.class.php
+msgid "An invoice number is required"
+msgstr "Numer faktury jest wymagany"
+
+#: inc/order.class.php
+msgid "Failed to create the bill"
+msgstr "Nie udało się utworzyć faktury"
+
+#: inc/config.class.php
+msgid "Reminders for orders not invoiced"
+msgstr "Przypomnienia o niezafakturowanych zamówieniach"
+
+#: inc/config.class.php
+msgid "Reminder thresholds in days"
+msgstr "Progi przypomnień w dniach"
+
+#: inc/config.class.php
+msgid "Comma separated, for example 14,30,60 - leave empty to disable"
+msgstr "Rozdzielone przecinkami, np. 14,30,60 - puste pole wyłącza przypomnienia"
+
+#: inc/config.class.php
+msgid "Additional reminder recipients"
+msgstr "Dodatkowi odbiorcy przypomnień"
+
+#: inc/config.class.php
+msgid "Comma separated addresses, notified on top of the order author"
+msgstr "Adresy rozdzielone przecinkami, powiadamiane oprócz autora zamówienia"
+
+#: inc/config.class.php
+msgid "These addresses are not valid and were ignored: %s"
+msgstr "Te adresy są nieprawidłowe i zostały pominięte: %s"
+
+#: inc/notificationtargetorder.class.php
+msgid "Order not invoiced"
+msgstr "Zamówienie niezafakturowane"
+
+#: inc/order.class.php
+msgid "Remind about orders not invoiced"
+msgstr "Przypominaj o niezafakturowanych zamówieniach"
+
+#: inc/notificationtargetorder.class.php
+msgid "Reminder threshold in days"
+msgstr "Próg przypomnienia w dniach"
+
+#: inc/notificationtargetorder.class.php
+msgid "Days since the order"
+msgstr "Dni od zamówienia"
+
+#: inc/bill.class.php
+msgid "Archived"
+msgstr "Archiwalna"
+
+#: inc/ot.class.php
+msgid "%s previous bill no longer covers any position and was archived"
+msgid_plural "%s previous bills no longer cover any position and were archived"
+msgstr[0] "%s poprzednia faktura nie pokrywa już żadnej pozycji i została zarchiwizowana"
+msgstr[1] "%s poprzednie faktury nie pokrywają już żadnej pozycji i zostały zarchiwizowane"
+msgstr[2] "%s poprzednich faktur nie pokrywa już żadnej pozycji i zostało zarchiwizowanych"
+msgstr[3] "%s poprzednich faktur nie pokrywa już żadnej pozycji i zostało zarchiwizowanych"
+
+#: inc/ot.class.php
+msgid "%s previous OT document was archived and stays attached to the order"
+msgid_plural "%s previous OT documents were archived and stay attached to the order"
+msgstr[0] "%s poprzedni dokument OT został zarchiwizowany i pozostaje powiązany z zamówieniem"
+msgstr[1] "%s poprzednie dokumenty OT zostały zarchiwizowane i pozostają powiązane z zamówieniem"
+msgstr[2] "%s poprzednich dokumentów OT zostało zarchiwizowanych i pozostaje powiązanych z zamówieniem"
+msgstr[3] "%s poprzednich dokumentów OT zostało zarchiwizowanych i pozostaje powiązanych z zamówieniem"
+
+#: inc/ot.class.php
+msgid "Archived on %s: replaced by a newer OT document"
+msgstr "Zarchiwizowano %s: zastąpiony nowszym dokumentem OT"
+
+#: inc/order.class.php
+msgid "Invoice of a reopened order"
+msgstr "Faktura zamówienia otwartego ponownie"
+
+#: inc/order.class.php
+msgid "This order is already covered by bill %s of %s, which stays attached to it."
+msgstr "To zamówienie jest już objęte fakturą %s z dnia %s, która pozostaje z nim powiązana."
+
+#: inc/order.class.php
+msgid "Is this bill still correct?"
+msgstr "Czy ta faktura jest nadal poprawna?"
+
+#: inc/order.class.php
+msgid "If a correcting bill is needed, add it with the Invoicing action: the current bill and the earlier OT documents are then archived and stay attached to the order."
+msgstr "Jeśli potrzebna jest faktura korygująca, dodaj ją akcją Fakturowanie: obecna faktura i wcześniejsze dokumenty OT zostaną wtedy zarchiwizowane i pozostaną powiązane z zamówieniem."
+
+#: inc/order.class.php
+msgid "The bill is still correct"
+msgstr "Faktura jest nadal poprawna"
+
+#: front/order.form.php
+msgid "The bill stays attached to this order. Confirm on the validation tab whether it is still correct."
+msgstr "Faktura pozostaje powiązana z tym zamówieniem. Na zakładce walidacji potwierdź, czy jest nadal poprawna."
+
+#: front/order.form.php
+msgid "The order has been closed again with its existing bill."
+msgstr "Zamówienie zostało ponownie zamknięte z dotychczasową fakturą."
+
+#: front/order.form.php
+msgid "This order has no bill to confirm."
+msgstr "To zamówienie nie ma faktury do potwierdzenia."
+
+#: inc/ot.class.php
+msgid "Positions covered by this bill"
+msgstr "Pozycje objęte tą fakturą"
+
+#: inc/ot.class.php
+msgid "Untick the positions this bill does not cover."
+msgstr "Odznacz pozycje, których ta faktura nie obejmuje."
+
+#: inc/ot.class.php
+msgid "Several orders are selected: the bill will cover all of their positions."
+msgstr "Zaznaczono kilka zamówień: faktura obejmie wszystkie ich pozycje."
+
+#: inc/ot.class.php
+msgid "Position %s"
+msgstr "Pozycja %s"
+
+#: inc/ot.class.php
+msgid "currently on bill %s"
+msgstr "obecnie na fakturze %s"
+
+#: inc/order.class.php
+msgid "You are not allowed to generate OT documents"
+msgstr "Nie masz uprawnień do generowania dokumentów OT"
+
+#: inc/order.class.php
+msgid "You are not allowed to create bills"
+msgstr "Nie masz uprawnień do fakturowania"
+
+#: inc/order.class.php
+msgid "No position selected for this bill"
+msgstr "Nie wybrano żadnej pozycji dla tej faktury"

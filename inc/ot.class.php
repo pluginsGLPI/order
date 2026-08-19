@@ -34,16 +34,17 @@
 class PluginOrderOt
 {
     /**
-     * Show the Cost Center input sub-form for the massive action popup.
+     * Marks a superseded OT document. Kept in ASCII so re-runs recognise it
+     * whatever language the interface is in.
+     */
+    public const ARCHIVED_PREFIX = '[ARCHIVED] ';
+
+    /**
+     * Show the input sub-form for the "Generate OT" massive action popup.
      */
     public static function showMassiveActionSubForm(): void
     {
-        echo "<label for='invoice_number'>" . __s("Invoice Number", "order") . ":&nbsp;</label>";
-        echo Html::input('invoice_number', [
-            'id'    => 'invoice_number',
-            'value' => '',
-            'size'  => 30,
-        ]);
+        self::showInvoiceNumberField();
         echo "<br><br>";
         echo "<label for='cost_center'>" . __s("Cost Center", "order") . " (MPK):&nbsp;</label>";
         echo Html::input('cost_center', [
@@ -52,28 +53,171 @@ class PluginOrderOt
             'size'  => 20,
         ]);
         echo "<br><br>";
+        echo "<label for='ot_num_order'>" . __s("Order number", "order") . ":&nbsp;</label>";
+        echo Html::input('ot_num_order', [
+            'id'    => 'ot_num_order',
+            'value' => '',
+            'size'  => 30,
+        ]);
+        echo "<br><span class='text-muted' style='font-size:0.85em;'>"
+           . __s("Leave empty to use the order's own number", "order")
+           . "</span>";
+        echo "<br><br>";
+        echo "<label for='date_usage'>" . __s("Commissioning date", "order") . ":&nbsp;</label>";
+        Html::showDateField('date_usage', ['value' => '', 'maybeempty' => true]);
+        echo "<br><br>";
+        echo "<label for='date_warehouse'>" . __s("Warehouse deposit date", "order") . ":&nbsp;</label>";
+        Html::showDateField('date_warehouse', ['value' => '', 'maybeempty' => true]);
+        echo "<br><span class='text-muted' style='font-size:0.85em;'>"
+           . __s("Both dates are optional - fill in only the one that applies", "order")
+           . "</span>";
+        echo "<br><br>";
         echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+    }
+
+
+    /**
+     * Invoice number input, shared by the "Generate OT" and "Invoicing" sub-forms.
+     *
+     * @param bool $required Whether the field must be filled in
+     */
+    public static function showInvoiceNumberField(bool $required = false): void
+    {
+        $options = [
+            'id'    => 'invoice_number',
+            'value' => '',
+            'size'  => 30,
+        ];
+        if ($required) {
+            $options['required'] = 'required';
+        }
+
+        echo "<label for='invoice_number'>" . __s("Invoice Number", "order") . ":&nbsp;</label>";
+        echo Html::input('invoice_number', $options);
+    }
+
+
+    /**
+     * Let the user narrow a bill down to some positions of a single order.
+     *
+     * A correcting bill often covers only part of an order, so the positions are
+     * offered with everything ticked: leaving them alone bills the whole order.
+     * The picker is skipped for a multi-order selection, where one list of
+     * positions would not mean anything.
+     *
+     * @param array $selected_orders Order ids picked in the list
+     */
+    public static function showInvoiceItemsPicker(array $selected_orders): void
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        if (count($selected_orders) !== 1) {
+            echo "<br><span class='text-muted' style='font-size:0.85em;'>"
+               . __s("Several orders are selected: the bill will cover all of their positions.", "order")
+               . "</span>";
+            return;
+        }
+
+        $order_id = (int) reset($selected_orders);
+        $iterator = $DB->request([
+            'FROM'  => PluginOrderOrder_Item::getTable(),
+            'WHERE' => ['plugin_order_orders_id' => $order_id],
+            'ORDER' => 'id ASC',
+        ]);
+
+        if (count($iterator) === 0) {
+            return;
+        }
+
+        $reference = new PluginOrderReference();
+        $bill      = new PluginOrderBill();
+
+        echo "<br><br><div style='text-align:left;display:inline-block;'>";
+        // Unchecked boxes are absent from the POST, so this marker is how the
+        // server tells "picker shown, everything unticked" apart from "no
+        // picker at all" - the two must not both mean "bill the whole order".
+        echo Html::hidden('invoice_items_shown', ['value' => 1]);
+        echo "<strong>" . __s("Positions covered by this bill", "order") . "</strong>";
+        echo "<br><span class='text-muted' style='font-size:0.85em;'>"
+           . __s("Untick the positions this bill does not cover.", "order")
+           . "</span>";
+        echo "<table class='tab_cadre' style='margin-top:6px;'>";
+
+        foreach ($iterator as $item) {
+            // Orders regularly repeat the same product, so the position id is
+            // what tells two otherwise identical rows apart.
+            $label = sprintf(__('Position %s', 'order'), $item['id']);
+            if ((int) $item['plugin_order_references_id'] > 0
+                && $reference->getFromDB($item['plugin_order_references_id'])
+                && $reference->fields['name'] !== ''
+            ) {
+                $label .= ' - ' . $reference->fields['name'];
+            }
+
+            $current = '';
+            if ((int) $item['plugin_order_bills_id'] > 0
+                && $bill->getFromDB($item['plugin_order_bills_id'])
+            ) {
+                $current = ' <span class="text-muted">('
+                    . sprintf(
+                        __s('currently on bill %s', 'order'),
+                        htmlescape($bill->fields['number'] !== '' ? $bill->fields['number'] : $bill->fields['name']),
+                    )
+                    . ')</span>';
+            }
+
+            echo "<tr class='tab_bg_1'><td>";
+            echo "<input type='checkbox' class='form-check-input' name='invoice_items[]' value='"
+               . (int) $item['id'] . "' checked id='invoice_item_" . (int) $item['id'] . "'>";
+            echo "&nbsp;<label for='invoice_item_" . (int) $item['id'] . "'>"
+               . htmlescape($label) . $current . "</label>";
+            echo "</td></tr>";
+        }
+
+        echo "</table></div>";
+    }
+
+
+    /**
+     * Normalize the sub-form input into the parameter set used to build an OT.
+     *
+     * @param array $input Raw massive action input
+     * @return array{cost_center: string, invoice_number: string, num_order: string, date_usage: string, date_warehouse: string}
+     */
+    public static function extractParams(array $input): array
+    {
+        return [
+            'cost_center'    => trim((string) ($input['cost_center'] ?? '')),
+            'invoice_number' => trim((string) ($input['invoice_number'] ?? '')),
+            'num_order'      => trim((string) ($input['ot_num_order'] ?? '')),
+            'date_usage'     => trim((string) ($input['date_usage'] ?? '')),
+            'date_warehouse' => trim((string) ($input['date_warehouse'] ?? '')),
+        ];
     }
 
 
     /**
      * Full orchestration: generate HTML -> PDF -> save as Document -> create Bill -> return result.
      *
-     * @param int    $order_id       The order ID
-     * @param string $cost_center    Cost Center / MPK value entered by user
-     * @param string $invoice_number Invoice number entered by user
+     * @param int   $order_id The order ID
+     * @param array $params   Values from the sub-form, see self::extractParams()
      * @return array|false ['doc_id' => int, 'bill_id' => int|false] on success, false on failure
      */
-    public function processAction(int $order_id, string $cost_center, string $invoice_number = '')
+    public function processAction(int $order_id, array $params)
     {
         $order = new PluginOrderOrder();
         if (!$order->getFromDB($order_id)) {
             return false;
         }
 
-        $html = $this->generateOtHtml($order, $cost_center, $invoice_number);
-        $num_order = $order->fields['num_order'] ?: $order_id;
-        $base_name = 'OT_' . preg_replace('/[^a-zA-Z0-9_\-]/', '_', $num_order);
+        $invoice_number = $params['invoice_number'] ?? '';
+
+        $html = $this->generateOtHtml($order, $params);
+        $num_order = ($params['num_order'] ?? '') !== ''
+            ? $params['num_order']
+            : ($order->fields['num_order'] ?: $order_id);
+        $base_name = 'OT_' . preg_replace('/[^a-zA-Z0-9_\-]/', '_', (string) $num_order);
 
         $pdf_path = $this->generatePdf($html, $base_name);
         if ($pdf_path === false) {
@@ -85,6 +229,26 @@ class PluginOrderOt
         $mime    = $is_pdf ? 'application/pdf' : 'text/html';
 
         $doc_id = $this->saveAsDocument($order, $pdf_path, $base_name . '.' . $ext, $mime);
+
+        // Regenerating an OT for a corrected order supersedes the earlier ones.
+        if ($doc_id) {
+            $archived = self::archivePreviousDocuments($order, (int) $doc_id);
+            if ($archived > 0) {
+                Session::addMessageAfterRedirect(
+                    sprintf(
+                        _sn(
+                            "%s previous OT document was archived and stays attached to the order",
+                            "%s previous OT documents were archived and stay attached to the order",
+                            $archived,
+                            "order",
+                        ),
+                        $archived,
+                    ),
+                    true,
+                    INFO,
+                );
+            }
+        }
 
         // Auto-create bill if invoice number provided
         $bill_id = false;
@@ -100,19 +264,64 @@ class PluginOrderOt
 
 
     /**
+     * Create and link the bill without producing an OT document.
+     *
+     * @param int    $order_id       The order ID
+     * @param string $invoice_number Invoice number entered by user
+     * @return int|false Bill ID on success, false on failure
+     */
+    public function processInvoiceOnly(int $order_id, string $invoice_number, ?array $item_ids = null)
+    {
+        if ($invoice_number === '') {
+            return false;
+        }
+
+        $order = new PluginOrderOrder();
+        if (!$order->getFromDB($order_id)) {
+            return false;
+        }
+
+        return $this->createBill($order, $invoice_number, $item_ids);
+    }
+
+
+    /**
      * Create a PluginOrderBill record for the order.
      *
      * @param PluginOrderOrder $order          The order (already loaded)
      * @param string           $invoice_number Invoice number entered by user
+     * @param int[]|null       $item_ids       Order items the bill covers; null means the whole order
      * @return int|false Bill ID on success, false on failure
      */
-    private function createBill(PluginOrderOrder $order, string $invoice_number)
+    private function createBill(PluginOrderOrder $order, string $invoice_number, ?array $item_ids = null)
     {
+        /** @var DBmysql $DB */
+        global $DB;
+
         $order_id = $order->getID();
 
-        // Get total price (tax-free)
-        $order_item = new PluginOrderOrder_Item();
-        $prices = $order_item->getAllPrices($order_id);
+        if ($item_ids !== null) {
+            $item_ids = self::filterOrderItems($order_id, $item_ids);
+            // A selection that no longer matches anything (rows deleted between
+            // popup and submit, or nothing ticked) must never widen into "bill
+            // the whole order".
+            if ($item_ids === []) {
+                return false;
+            }
+        }
+
+        // The bill is worth what it actually covers, so a correcting bill for a
+        // few positions does not carry the whole order's value.
+        if ($item_ids === null) {
+            $order_item = new PluginOrderOrder_Item();
+            $prices = $order_item->getAllPrices($order_id);
+        } else {
+            $prices = $DB->request([
+                'SELECT' => ['SUM' => ['price_discounted AS priceHT']],
+                'FROM'   => PluginOrderOrder_Item::getTable(),
+                'WHERE'  => ['id' => $item_ids],
+            ])->current();
+        }
         $value = (float) ($prices['priceHT'] ?? 0);
 
         $today = date('Y-m-d');
@@ -136,10 +345,126 @@ class PluginOrderOt
             return false;
         }
 
-        // Link all order items to this bill and set their bill state to PAID
-        $this->linkBillToOrderItems($order, $bill_id, $bill);
+        $this->linkBillToOrderItems($order, $bill_id, $bill, $item_ids);
+
+        // A bill is superseded once nothing points at it any more. A correcting
+        // bill covering part of the order therefore leaves the earlier one in
+        // place for the positions it still covers.
+        $archived = PluginOrderBill::archiveUncoveredForOrder($order_id, (int) $bill_id);
+        if ($archived > 0) {
+            Session::addMessageAfterRedirect(
+                sprintf(
+                    _sn(
+                        "%s previous bill no longer covers any position and was archived",
+                        "%s previous bills no longer cover any position and were archived",
+                        $archived,
+                        "order",
+                    ),
+                    $archived,
+                ),
+                true,
+                INFO,
+            );
+        }
 
         return $bill_id;
+    }
+
+
+    /**
+     * Keep only ids that really belong to this order.
+     *
+     * @param int[] $item_ids
+     * @return int[]|null null when the selection covers the whole order,
+     *                    [] when nothing valid remains (the caller must abort)
+     */
+    private static function filterOrderItems(int $order_id, array $item_ids): ?array
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $item_ids = array_filter(array_map('intval', $item_ids));
+        if ($item_ids === []) {
+            return [];
+        }
+
+        $valid = [];
+        $iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => PluginOrderOrder_Item::getTable(),
+            'WHERE'  => ['plugin_order_orders_id' => $order_id, 'id' => $item_ids],
+        ]);
+        foreach ($iterator as $row) {
+            $valid[] = (int) $row['id'];
+        }
+
+        if ($valid === []) {
+            return [];
+        }
+
+        // Selecting everything is the same as not selecting at all.
+        $total = countElementsInTable(
+            PluginOrderOrder_Item::getTable(),
+            ['plugin_order_orders_id' => $order_id],
+        );
+
+        return count($valid) === $total ? null : $valid;
+    }
+
+
+    /**
+     * Mark the OT documents generated earlier for this order as archived.
+     *
+     * They keep their link to the order so the paper trail stays complete; the
+     * marker only tells readers which one is superseded.
+     *
+     * @param int $keep_document_id Document that must stay current
+     * @return int Number of documents archived
+     */
+    public static function archivePreviousDocuments(PluginOrderOrder $order, int $keep_document_id): int
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT'    => ['doc.id', 'doc.name', 'doc.comment'],
+            'FROM'      => 'glpi_documents_items AS di',
+            'INNER JOIN' => [
+                'glpi_documents AS doc' => [
+                    'ON' => ['di' => 'documents_id', 'doc' => 'id'],
+                ],
+            ],
+            'WHERE'     => [
+                'di.itemtype' => PluginOrderOrder::class,
+                'di.items_id' => $order->getID(),
+                'doc.id'      => ['!=', $keep_document_id],
+                'doc.filepath' => ['LIKE', '_plugins/order/ot/%'],
+            ],
+        ]);
+
+        $document = new Document();
+        $archived = 0;
+
+        foreach ($iterator as $row) {
+            if (str_starts_with((string) $row['name'], self::ARCHIVED_PREFIX)) {
+                continue;
+            }
+
+            $note = sprintf(
+                __("Archived on %s: replaced by a newer OT document", "order"),
+                Html::convDateTime($_SESSION['glpi_currenttime'] ?? date('Y-m-d H:i:s')),
+            );
+            $comment = trim((string) $row['comment']);
+
+            $document->update([
+                'id'      => $row['id'],
+                'name'    => self::ARCHIVED_PREFIX . $row['name'],
+                'comment' => $comment === '' ? $note : $comment . "\n" . $note,
+            ]);
+            $archived++;
+        }
+
+        return $archived;
     }
 
 
@@ -150,30 +475,47 @@ class PluginOrderOt
      * @param int              $bill_id The newly created bill ID
      * @param PluginOrderBill  $bill    The bill object (already loaded after add)
      */
-    private function linkBillToOrderItems(PluginOrderOrder $order, int $bill_id, PluginOrderBill $bill): void
-    {
+    private function linkBillToOrderItems(
+        PluginOrderOrder $order,
+        int $bill_id,
+        PluginOrderBill $bill,
+        ?array $item_ids = null,
+    ): void {
         /** @var DBmysql $DB */
         global $DB;
 
         $order_id = $order->getID();
         $bill->getFromDB($bill_id);
 
-        // Get all order items for this order
+        $where = ['plugin_order_orders_id' => $order_id];
+        if ($item_ids !== null) {
+            $where['id'] = $item_ids;
+        }
+
         $items_result = $DB->request([
             'FROM'  => 'glpi_plugin_order_orders_items',
-            'WHERE' => ['plugin_order_orders_id' => $order_id],
+            'WHERE' => $where,
         ]);
 
         $order_item = new PluginOrderOrder_Item();
         $config = PluginOrderConfig::getConfig();
 
         foreach ($items_result as $item_data) {
-            // Update order item with bill ID and PAID state
-            $order_item->update([
+            // Update order item with bill ID and PAID state. Item form rules
+            // (e.g. a mandatory analytic nature on legacy rows) must not block
+            // this internal bookkeeping, so fall back to a direct write when
+            // the ORM update is rejected.
+            $updated = $order_item->update([
                 'id'                         => $item_data['id'],
                 'plugin_order_bills_id'      => $bill_id,
                 'plugin_order_billstates_id' => PluginOrderBillState::PAID,
             ]);
+            if (!$updated) {
+                $DB->update('glpi_plugin_order_orders_items', [
+                    'plugin_order_bills_id'      => $bill_id,
+                    'plugin_order_billstates_id' => PluginOrderBillState::PAID,
+                ], ['id' => $item_data['id']]);
+            }
 
             // Update Infocom on the linked asset (if delivered and config allows)
             if ($config->canAddBillDetails()
@@ -204,13 +546,28 @@ class PluginOrderOt
      * @param string           $invoice_number Invoice number
      * @return string Complete HTML document
      */
-    public function generateOtHtml(PluginOrderOrder $order, string $cost_center, string $invoice_number = ''): string
+    public function generateOtHtml(PluginOrderOrder $order, array $params): string
     {
         /** @var DBmysql $DB */
         global $DB;
 
+        $cost_center    = $params['cost_center'] ?? '';
+        $invoice_number = $params['invoice_number'] ?? '';
+        $date_usage     = $params['date_usage'] ?? '';
+        $date_warehouse = $params['date_warehouse'] ?? '';
+
         $order_id  = $order->getID();
-        $num_order = $order->fields['num_order'] ?? '';
+        $num_order = ($params['num_order'] ?? '') !== ''
+            ? $params['num_order']
+            : ($order->fields['num_order'] ?? '');
+
+        // The two dates are mutually exclusive in practice (an item either goes
+        // into the warehouse or straight into use), so filling in one of them
+        // takes over both columns and an empty field stays empty. When neither
+        // is given, each item keeps showing its own delivery date as before.
+        $dates_given     = $date_usage !== '' || $date_warehouse !== '';
+        $usage_column     = $date_usage !== '' ? Html::convDate($date_usage) : '';
+        $warehouse_column = $date_warehouse !== '' ? Html::convDate($date_warehouse) : '';
 
         // Get supplier name
         $supplier_name = '';
@@ -264,10 +621,15 @@ class PluginOrderOt
             }
 
             $rows[] = [
-                'name'          => htmlspecialchars($ref_name, ENT_QUOTES, 'UTF-8'),
-                'serial'        => htmlspecialchars($asset_serial, ENT_QUOTES, 'UTF-8'),
-                'price'         => number_format($price, 2, ',', ' '),
-                'delivery_date' => htmlspecialchars($delivery_date, ENT_QUOTES, 'UTF-8'),
+                'name'           => htmlspecialchars($ref_name, ENT_QUOTES, 'UTF-8'),
+                'serial'         => htmlspecialchars($asset_serial, ENT_QUOTES, 'UTF-8'),
+                'price'          => number_format($price, 2, ',', ' '),
+                'date_usage'     => htmlspecialchars(
+                    $dates_given ? $usage_column : $delivery_date,
+                    ENT_QUOTES,
+                    'UTF-8',
+                ),
+                'date_warehouse' => htmlspecialchars($warehouse_column, ENT_QUOTES, 'UTF-8'),
             ];
         }
 
@@ -291,8 +653,8 @@ class PluginOrderOt
                 <td style='border:1px solid #000;padding:3px;'></td>
                 <td style='border:1px solid #000;padding:3px;'>{$cost_center_esc}</td>
                 <td style='border:1px solid #000;padding:3px;'>{$num_order_esc}</td>
-                <td style='border:1px solid #000;padding:3px;'>{$row['delivery_date']}</td>
-                <td style='border:1px solid #000;padding:3px;'></td>
+                <td style='border:1px solid #000;padding:3px;'>{$row['date_usage']}</td>
+                <td style='border:1px solid #000;padding:3px;'>{$row['date_warehouse']}</td>
             </tr>\n";
             $pos++;
         }
@@ -589,11 +951,19 @@ HTML;
         @mkdir($doc_dir, 0755, true);
 
         $dest_path = $doc_dir . $filename;
-        // If file already exists, add unique suffix
+        // If the name is taken, keep suffixing until it is not: a bulk run with
+        // a shared order-number override can collide several times within the
+        // same second, and rename() would silently overwrite an earlier OT.
         if (file_exists($dest_path)) {
-            $info = pathinfo($filename);
-            $dest_path = $doc_dir . $info['filename'] . '_' . date('YmdHis') . '.' . $info['extension'];
-            $filename  = basename($dest_path);
+            $info   = pathinfo($filename);
+            $stamp  = date('YmdHis');
+            $suffix = '';
+            $i      = 1;
+            do {
+                $dest_path = $doc_dir . $info['filename'] . '_' . $stamp . $suffix . '.' . $info['extension'];
+                $suffix    = '_' . ++$i;
+            } while (file_exists($dest_path));
+            $filename = basename($dest_path);
         }
 
         if (!rename($filepath, $dest_path)) {

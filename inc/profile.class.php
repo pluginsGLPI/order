@@ -138,8 +138,32 @@ class PluginOrderProfile extends CommonDBTM
                      ADD `plugin_order_generate_order_without_validation` char(1) default NULL;");
         }
 
+        // 2.14.0 splits OT generation and invoicing into dedicated rights.
+        // Decide whether to seed them BEFORE createFirstAccess hands the full
+        // right mask to the current profile, otherwise that grant would make
+        // every later upgrade skip the other profiles.
+        $new_rights = PluginOrderOrder::RIGHT_GENERATE_OT | PluginOrderOrder::RIGHT_INVOICE;
+        $seed_new_rights = countElementsInTable('glpi_profilerights', [
+            'name'   => 'plugin_order_order',
+            'rights' => ['&', $new_rights],
+        ]) === 0;
+
         self::initProfile();
         self::createFirstAccess($_SESSION['glpiactiveprofile']['id']);
+
+        // Seed once, for the profiles that could already run these actions
+        // (i.e. that hold UPDATE on orders); later revocations made by admins
+        // must survive upgrades, hence the run-once guard above.
+        if ($seed_new_rights) {
+            $DB->update(
+                'glpi_profilerights',
+                ['rights' => new \Glpi\DBAL\QueryExpression($DB->quoteName('rights') . ' | ' . $new_rights)],
+                [
+                    'name'   => 'plugin_order_order',
+                    'rights' => ['&', UPDATE],
+                ],
+            );
+        }
 
         $migration->dropTable('glpi_plugin_order_profiles');
     }
