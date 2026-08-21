@@ -476,12 +476,26 @@ class PluginOrderConfig extends CommonDBTM
            . __s("Image prepended to every e-mail sent by the Order plugin", "order")
            . "</span></td>";
         echo "<td>";
-        $header_url = $this->getMailHeaderUrl();
-        if ($header_url !== null) {
-            echo "<img src='" . htmlescape($header_url) . "' alt='' style='max-width:320px;max-height:90px;display:block;margin:0 auto 8px;'>";
+        $header_path = $this->getMailHeaderPath();
+        if ($header_path !== null) {
+            echo "<img src='" . htmlescape($this->getMailHeaderWebPath())
+               . "' alt='' style='max-width:320px;max-height:90px;display:block;margin:0 auto 6px;border:1px solid rgba(0,0,0,.15);padding:2px;background:#fff;'>";
+            $size = @getimagesize($header_path);
+            echo "<span class='text-muted' style='font-size:0.85em;display:block;margin-bottom:8px;'>"
+               . htmlescape(sprintf(
+                   '%s - %s - %s',
+                   (string) $this->fields['mail_header_filename'],
+                   $size !== false ? $size[0] . 'x' . $size[1] . ' px' : '?',
+                   Html::convDateTime(date('Y-m-d H:i:s', filemtime($header_path))),
+               ))
+               . "</span>";
+        } else {
+            echo "<span class='text-muted' style='font-size:0.85em;display:block;margin-bottom:8px;'>"
+               . __s("No header uploaded yet", "order")
+               . "</span>";
         }
         echo "<input type='file' name='mail_header_file' accept='image/png,image/jpeg,image/gif,image/webp' class='form-control' style='max-width:320px;display:inline-block;'>";
-        if ($header_url !== null) {
+        if ($header_path !== null) {
             echo "<br><label style='margin-top:6px;display:inline-block;'>"
                . "<input type='checkbox' name='_drop_mail_header' value='1' class='form-check-input'>&nbsp;"
                . __s("Remove current header", "order")
@@ -558,6 +572,9 @@ class PluginOrderConfig extends CommonDBTM
      */
     private function handleMailHeaderInput(array $input): array
     {
+        /** @var DBmysql $DB */
+        global $DB;
+
         $dir = self::getMailHeaderDir();
 
         if (!empty($input['_drop_mail_header'])) {
@@ -566,10 +583,22 @@ class PluginOrderConfig extends CommonDBTM
                 @unlink($current);
             }
             $input['mail_header_filename'] = '';
+            Session::addMessageAfterRedirect(__s("Message header removed", "order"), true, INFO);
         }
 
         $upload = $_FILES['mail_header_file'] ?? null;
         if ($upload === null || ($upload['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+            return $input;
+        }
+
+        // A stale schema would silently drop the filename from the update and
+        // leave the upload invisible - refuse loudly instead.
+        if (!$DB->fieldExists(self::getTable(), 'mail_header_filename')) {
+            Session::addMessageAfterRedirect(
+                __s("The plugin database is outdated: run the plugin update, then upload the header again", "order"),
+                true,
+                ERROR,
+            );
             return $input;
         }
 
@@ -616,6 +645,7 @@ class PluginOrderConfig extends CommonDBTM
         }
 
         $input['mail_header_filename'] = $filename;
+        Session::addMessageAfterRedirect(__s("Message header uploaded", "order"), true, INFO);
 
         return $input;
     }
@@ -906,7 +936,7 @@ class PluginOrderConfig extends CommonDBTM
      * Public URL of the header image (cache-busted), or null when unset.
      *
      * Mail clients fetch this without a GLPI session, so it points at the
-     * plugin's unauthenticated image endpoint.
+     * plugin's unauthenticated image endpoint, absolute via url_base.
      */
     public function getMailHeaderUrl(): ?string
     {
@@ -919,6 +949,26 @@ class PluginOrderConfig extends CommonDBTM
         }
 
         return $CFG_GLPI['url_base'] . '/plugins/order/front/mailheader.php?ts=' . filemtime($path);
+    }
+
+
+    /**
+     * Same endpoint as a root-relative path, for in-app previews.
+     *
+     * The configuration page must show the image even when url_base does not
+     * match the address the administrator is browsing from.
+     */
+    public function getMailHeaderWebPath(): ?string
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $path = $this->getMailHeaderPath();
+        if ($path === null) {
+            return null;
+        }
+
+        return $CFG_GLPI['root_doc'] . '/plugins/order/front/mailheader.php?ts=' . filemtime($path);
     }
 
 

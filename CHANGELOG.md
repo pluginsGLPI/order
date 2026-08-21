@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Bill-to-item linking and the invoiced aggregate are no longer silently blocked by mandatory analytic-nature / account-section rules on legacy rows
 - OT file names deduplicate in a loop, so same-second bulk runs cannot overwrite an earlier document
 - Purging an order removes its reminder-ledger rows
+- Uploading the mail header now confirms with a message and shows the preview through a root-relative URL (independent of url_base); a stale schema is reported instead of silently ignoring the upload
 - Fix fatal error when opening the "Generate item" massive action form for
   assignable assets (including GLPI 11 custom assets): an array value reaching a
   single-select dropdown triggered `strlen(): ... array given`
