@@ -126,6 +126,9 @@
                         ) }}
                     </span>
                 </td>
+                {% for extra_field, extra_label in extra_columns %}
+                    <td></td>
+                {% endfor %}
             </tr>
 
             <tr>
@@ -142,6 +145,9 @@
                 <th>{{ __("Location") }}</th>
                 <th>{{ __("Group") }}</th>
                 <th>{{ __("Status") }}</th>
+                {% for extra_field, extra_label in extra_columns %}
+                    <th>{{ extra_label }}</th>
+                {% endfor %}
             </tr>
         </thead>
 
@@ -260,6 +266,20 @@
                             ) }}
                         </span>
                     </td>
+                    {% for extra_field, extra_label in extra_columns %}
+                        {% if extra_field in item.extra_fields %}
+                            <td>
+                                {{ fields.textField(
+                                    "id[" ~ item.i ~ "][extra][" ~ extra_field ~ "]",
+                                    "",
+                                    "",
+                                    fields_option
+                                ) }}
+                            </td>
+                        {% else %}
+                            <td align='center'>{{ constant('Dropdown::EMPTY_VALUE') }}</td>
+                        {% endif %}
+                    {% endfor %}
                 </tr>
                 <input type="hidden" name="id[{{ item.i }}][id]" value="{{ item.key }}">
                 <input type="hidden" name="id[{{ item.i }}][itemtype]" value="{{ item.itemtype }}">

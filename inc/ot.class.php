@@ -71,6 +71,28 @@ class PluginOrderOt
         echo "<br><span class='text-muted' style='font-size:0.85em;'>"
            . __s("Both dates are optional - fill in only the one that applies", "order")
            . "</span>";
+
+        // With mapped extra fields available, the administrator may pick one of
+        // them (e.g. an IMEI) as the document's serial-number source.
+        $sources = [];
+        foreach (PluginOrderGenerationField::getAllMappings() as $mapping) {
+            $sources[$mapping['field']] ??= $mapping['label'];
+        }
+        if ($sources !== []) {
+            echo "<br><br>";
+            echo "<label for='ot_serial_source'>" . __s("Serial number source on the document", "order") . ":&nbsp;</label>";
+            echo "<select name='ot_serial_source' id='ot_serial_source' class='form-select' style='display:inline-block;width:auto;'>";
+            echo "<option value=''>" . __s("Serial number") . "</option>";
+            foreach ($sources as $field => $label) {
+                echo "<option value='" . htmlescape($field) . "'>"
+                   . htmlescape(sprintf('%s (%s)', $label, $field)) . "</option>";
+            }
+            echo "</select>";
+            echo "<br><span class='text-muted' style='font-size:0.85em;'>"
+               . __s("Items without a value in the chosen field fall back to their serial number", "order")
+               . "</span>";
+        }
+
         echo "<br><br>";
         echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
     }
@@ -187,12 +209,23 @@ class PluginOrderOt
      */
     public static function extractParams(array $input): array
     {
+        // The source must be one of the configured mappings: anything else in
+        // the POST falls back to the plain serial number.
+        $serial_source = trim((string) ($input['ot_serial_source'] ?? ''));
+        if ($serial_source !== '') {
+            $mapped = array_column(PluginOrderGenerationField::getAllMappings(), 'field');
+            if (!in_array($serial_source, $mapped, true)) {
+                $serial_source = '';
+            }
+        }
+
         return [
             'cost_center'    => trim((string) ($input['cost_center'] ?? '')),
             'invoice_number' => trim((string) ($input['invoice_number'] ?? '')),
             'num_order'      => trim((string) ($input['ot_num_order'] ?? '')),
             'date_usage'     => trim((string) ($input['date_usage'] ?? '')),
             'date_warehouse' => trim((string) ($input['date_warehouse'] ?? '')),
+            'serial_source'  => $serial_source,
         ];
     }
 
@@ -594,11 +627,19 @@ class PluginOrderOt
             $itemtype     = $item_data['itemtype'] ?? '';
             $items_id     = (int) ($item_data['items_id'] ?? 0);
 
-            // Get serial number from the delivered asset in GLPI
+            // Serial column value: the plain serial, or - when the user picked
+            // a mapped source (e.g. IMEI) - that field, falling back per item.
             if ($itemtype && $items_id > 0) {
                 $asset = getItemForItemtype($itemtype);
                 if ($asset !== false && $asset->getFromDB($items_id)) {
                     $asset_serial = $asset->fields['serial'] ?? '';
+                    $serial_source = $params['serial_source'] ?? '';
+                    if ($serial_source !== '') {
+                        $mapped_value = PluginOrderGenerationField::resolveValueForAsset($asset, $serial_source);
+                        if ($mapped_value !== '') {
+                            $asset_serial = $mapped_value;
+                        }
+                    }
                 }
             }
 

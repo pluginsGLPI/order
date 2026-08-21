@@ -512,9 +512,100 @@ class PluginOrderConfig extends CommonDBTM
 
         echo "</table>";
         Html::closeForm();
+
+        $this->showGenerationFieldsSection();
+
         echo "</div>";
 
         return true;
+    }
+
+
+    /**
+     * Mapping manager for the extra fields of the item generation form.
+     *
+     * Rendered outside the main configuration form: each mapping row and the
+     * add row are small forms of their own (nested forms are invalid HTML).
+     */
+    private function showGenerationFieldsSection(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $target = Toolbox::getItemTypeFormURL('PluginOrderGenerationField');
+        $ajax   = $CFG_GLPI['root_doc'] . '/plugins/order/ajax/generationfields.php';
+
+        echo "<table class='tab_cadre_fixe' style='margin-top:14px;'>";
+        echo "<tr><th colspan='3'>" . __s("Generation extra fields", "order") . "</th></tr>";
+        echo "<tr class='tab_bg_1'><td colspan='3' class='center'>"
+           . "<span class='text-muted' style='font-size:0.9em;'>"
+           . __s("Extra asset fields (for example an IMEI) shown as additional columns on the item generation form, per item type. Custom asset fields are supported.", "order")
+           . "</span></td></tr>";
+
+        $mappings = PluginOrderGenerationField::getAllMappings();
+        if ($mappings === []) {
+            echo "<tr class='tab_bg_1'><td colspan='3' class='center'>"
+               . "<span class='text-muted'>" . __s("No extra field mapped yet", "order") . "</span>"
+               . "</td></tr>";
+        } else {
+            echo "<tr class='tab_bg_2'>"
+               . "<th>" . __s("Item type", "order") . "</th>"
+               . "<th>" . __s("Field", "order") . "</th>"
+               . "<th></th></tr>";
+            foreach ($mappings as $row) {
+                $type_label = is_a($row['itemtype'], CommonDBTM::class, true)
+                    ? $row['itemtype']::getTypeName(1)
+                    : $row['itemtype'];
+                echo "<tr class='tab_bg_1'>";
+                echo "<td>" . htmlescape($type_label)
+                   . " <span class='text-muted' style='font-size:0.85em;'>(" . htmlescape($row['itemtype']) . ")</span></td>";
+                echo "<td>" . htmlescape($row['label'])
+                   . " <span class='text-muted' style='font-size:0.85em;'>(" . htmlescape($row['field']) . ")</span></td>";
+                echo "<td class='center'>";
+                echo "<form method='post' action='" . $target . "' style='display:inline;'>";
+                echo Html::hidden('id', ['value' => $row['id']]);
+                echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
+                echo "<input type='submit' name='purge' value=\"" . _sx('button', 'Delete permanently') . "\" class='btn btn-sm btn-outline-danger'>";
+                Html::closeForm();
+                echo "</td></tr>";
+            }
+        }
+
+        echo "<tr class='tab_bg_1'><td colspan='3'>";
+        echo "<form method='post' action='" . $target . "' class='d-flex align-items-center justify-content-center' style='gap:10px;flex-wrap:wrap;'>";
+        echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
+        echo "<label>" . __s("Item type", "order") . "&nbsp;";
+        echo "<select name='itemtype' id='generation_field_itemtype' class='form-select' style='display:inline-block;width:auto;'>";
+        echo "<option value=''>-----</option>";
+        foreach ($CFG_GLPI['plugin_order_types'] ?? [] as $order_type) {
+            if (!is_a($order_type, CommonDBTM::class, true)) {
+                continue;
+            }
+            echo "<option value='" . htmlescape($order_type) . "'>"
+               . htmlescape($order_type::getTypeName(1)) . "</option>";
+        }
+        echo "</select></label>";
+        echo "<label>" . __s("Field", "order") . "&nbsp;";
+        echo "<select name='field' id='generation_field_field' class='form-select' style='display:inline-block;width:auto;min-width:220px;'>";
+        echo "<option value=''>-----</option>";
+        echo "</select></label>";
+        echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
+        Html::closeForm();
+        echo "</td></tr>";
+        echo "</table>";
+
+        echo Html::scriptBlock("
+            $('#generation_field_itemtype').on('change', function() {
+                var field = $('#generation_field_field');
+                field.html(\"<option value=''>-----</option>\");
+                if (this.value === '') {
+                    return;
+                }
+                $.get('" . $ajax . "', {itemtype: this.value}, function(html) {
+                    field.html(html);
+                });
+            });
+        ");
     }
 
 

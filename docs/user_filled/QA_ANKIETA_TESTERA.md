@@ -31,7 +31,7 @@
 **Kroki:**
 1. Na liście zamówień zaznacz jedno **dostarczone** zamówienie → *Akcje → Generuj OT*.
 2. Obejrzyj pola popupu.
-3. Wypełnij: *Numer faktury*, *Centrum kosztów (MPK)*, **zostaw pole „Numer ORDER" puste**, wpisz tylko *Data zdep. w magazynie*. Zatwierdź.
+3. Wypełnij: *Numer faktury*, *Centrum kosztów (MPK)*, **zostaw pole „Numer ORDER" puste**, wpisz tylko *Data zdep. w magazynie*. Jeśli widoczny jest wybór **„Źródło numeru seryjnego na dokumencie"** (pojawia się, gdy zmapowano pola dodatkowe — sekcja 11), zostaw domyślny *Numer seryjny*. Zatwierdź.
 4. Powtórz na innym zamówieniu, tym razem **wpisując własny** „Numer ORDER" (np. `TEST-ORDER-1`) i *Datę włącz. do użytku*.
 5. Otwórz wygenerowane dokumenty z zakładki *Dokumenty* zamówienia.
 
@@ -40,6 +40,7 @@
 - Puste pole ORDER → dokument i nazwa pliku używają numeru zamówienia; wpisany `TEST-ORDER-1` → widnieje w kolumnie **Order** każdego wiersza dokumentu i w nazwie pliku.
 - Wpisana data trafia do właściwej kolumny dokumentu; druga kolumna zostaje pusta.
 - Po akcji zamówienie ma status *Zapłacone*, faktura widoczna w zakładce *Faktura*.
+- (Jeśli zmapowano pola dodatkowe) wybranie w polu „Źródło numeru seryjnego" np. *IMEI* sprawia, że kolumna „Nr seryjny" dokumentu zawiera IMEI zasobu, a pozycje bez IMEI — zwykły numer seryjny.
 
 - [ ] PASS  - [ ] FAIL — uwagi: ______________________________________________
 
@@ -177,6 +178,29 @@
 
 ---
 
+## 11. Pola dodatkowe generowania pozycji (np. IMEI)
+
+**Przygotowanie:** typ sprzętu z dodatkowym polem — np. kolumna `imei` na telefonach (dodana na instalacji) **lub** custom asset GLPI 11 z polem własnym typu tekstowego.
+
+**Kroki:**
+1. *Konfiguracja wtyczki* → sekcja **Pola dodatkowe generowania pozycji**: wybierz *Typ sprzętu* = Telefon — lista pól powinna się zawęzić do pól tego typu; wybierz pole (np. `IMEI`) i kliknij *Dodaj*.
+2. Powtórz dla custom asseta z polem własnym (pole widoczne jako `custom_<nazwa>`).
+3. Spróbuj dodać to samo mapowanie drugi raz.
+4. Otwórz zamówienie z dostarczonymi pozycjami obu typów oraz np. drukarką → *Dostarczone pozycje* → zaznacz pozycje → *Akcje → Generuj pozycję*.
+5. Obejrzyj kolumny formularza; wypełnij pole IMEI dla telefonu i custom asseta, wygeneruj.
+6. Otwórz utworzone zasoby i sprawdź wartości pól.
+7. Usuń jedno mapowanie w konfiguracji i odśwież formularz generowania.
+
+**Oczekiwany rezultat:**
+- Lista pól w konfiguracji zależy od wybranego typu; duplikat odrzucony z komunikatem „To pole jest już zmapowane…".
+- Formularz generowania ma dodatkową kolumnę z etykietą pola; **wiersz drukarki pokazuje w niej kreskę** (pole nie dotyczy tego typu), wiersze telefonu/custom asseta mają pole tekstowe.
+- Po wygenerowaniu: telefon ma zapisany IMEI w swoim polu, custom asset ma wartość w polu własnym (widoczna na formularzu zasobu).
+- Po usunięciu mapowania kolumna znika z formularza.
+
+- [ ] PASS  - [ ] FAIL — uwagi: ______________________________________________
+
+---
+
 ## Podsumowanie
 
 | Sekcja | Wynik |
@@ -191,6 +215,7 @@
 | 8. Szablon przypomnienia | |
 | 9. Rozwinięcie i przyciski | |
 | 10. Kasowanie | |
+| 11. Pola dodatkowe generowania | |
 
 **Werdykt końcowy:**  - [ ] ZALICZONE  - [ ] NIEZALICZONE
 

@@ -64,7 +64,7 @@ function plugin_order_install()
         'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
         'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderDocumentCategory',
         'PluginOrderReferenceFree', 'PluginOrderAccountsection',
-        'PluginOrderAnalyticnature',
+        'PluginOrderAnalyticnature', 'PluginOrderGenerationField',
     ];
     foreach ($classes as $class) {
         if ($plug = isPluginItemType($class)) {
@@ -129,6 +129,7 @@ function plugin_order_uninstall()
         'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
         'PluginOrderSurveySupplier', 'PluginOrderDocumentCategory',
         'PluginOrderAccountsection', 'PluginOrderAnalyticnature',
+        'PluginOrderGenerationField',
     ];
     foreach ($classes as $class) {
         call_user_func([$class, 'uninstall']);

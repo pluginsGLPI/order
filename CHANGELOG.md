@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - A correcting bill can cover only part of an order, and a regenerated OT or a fully superseded bill is archived while staying attached to the order
 - Dedicated profile rights for "Generate OT" and "Invoicing"; profiles holding UPDATE on orders receive both on upgrade
 - Plugin setup can hold an uploaded header image, prepended to every e-mail the plugin sends (native notifications included)
+- Administrator-mapped extra asset fields (e.g. an IMEI) as additional columns on the item generation form, per item type, custom assets included
+- The OT popup can use a mapped extra field (e.g. IMEI) as the document's serial-number source, falling back per item
 
 ### Fixed
 

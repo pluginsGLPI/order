@@ -177,6 +177,8 @@ class PluginOrderLink extends CommonDBChild
                     }
                 }
 
+                $row['extra_fields'] = array_keys(PluginOrderGenerationField::getForItemtype($itemtype));
+
                 $item_rows[] = $row;
                 $found = true;
             }
@@ -188,6 +190,17 @@ class PluginOrderLink extends CommonDBChild
             return false;
         }
 
+        // Ordered union of the mapped extra fields across the displayed rows:
+        // each becomes one more column, filled only for rows whose itemtype
+        // maps it.
+        $extra_columns = [];
+        foreach ($item_rows as $row) {
+            foreach (PluginOrderGenerationField::getForItemtype($row['itemtype']) as $field => $label) {
+                $extra_columns[$field] ??= $label;
+            }
+        }
+        $colspan += count($extra_columns);
+
         // Render the template with all prepared data
         TemplateRenderer::getInstance()->display('@order/generate_item.html.twig', [
             'config' => $config,
@@ -195,6 +208,7 @@ class PluginOrderLink extends CommonDBChild
             'is_multi_entities_mode' => Session::isMultiEntitiesMode(),
             'active_entities' => $_SESSION['glpiactiveentities'] ?? [],
             'item_rows' => $item_rows,
+            'extra_columns' => $extra_columns,
             'order_web_dir' => $order_web_dir,
             'assignableitem' => $mass_assignable,
         ]);
@@ -1297,6 +1311,14 @@ class PluginOrderLink extends CommonDBChild
                     $input[$modelfield] = $reference->fields["models_id"];
                 }
             }
+
+            // Administrator-mapped extra fields (e.g. an IMEI column): only
+            // configured fields pass, so the POST cannot set arbitrary columns.
+            $input = PluginOrderGenerationField::applyExtras(
+                $input,
+                $add_item['itemtype'],
+                is_array($values['extra'] ?? null) ? $values['extra'] : [],
+            );
 
             $newID = $item->add($input);
             $newIDs[$values["id"]] = $newID;

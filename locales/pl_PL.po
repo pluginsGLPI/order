@@ -1188,3 +1188,39 @@ msgstr "Nagłówek wiadomości został usunięty"
 #: inc/config.class.php
 msgid "The plugin database is outdated: run the plugin update, then upload the header again"
 msgstr "Baza wtyczki jest nieaktualna: uruchom aktualizację wtyczki i wgraj nagłówek ponownie"
+
+#: inc/generationfield.class.php
+msgid "Generation extra fields"
+msgstr "Pola dodatkowe generowania pozycji"
+
+#: inc/config.class.php
+msgid "Extra asset fields (for example an IMEI) shown as additional columns on the item generation form, per item type. Custom asset fields are supported."
+msgstr "Dodatkowe pola zasobu (np. IMEI) wyświetlane jako kolumny w formularzu generowania pozycji, osobno dla każdego typu sprzętu. Obsługiwane są też pola własne custom assetów."
+
+#: inc/config.class.php
+msgid "No extra field mapped yet"
+msgstr "Nie zmapowano jeszcze żadnego pola"
+
+#: inc/config.class.php
+msgid "Item type"
+msgstr "Typ sprzętu"
+
+#: inc/config.class.php
+msgid "Field"
+msgstr "Pole"
+
+#: inc/generationfield.class.php
+msgid "This field cannot be mapped for this item type"
+msgstr "Tego pola nie można zmapować dla tego typu sprzętu"
+
+#: inc/generationfield.class.php
+msgid "This field is already mapped for this item type"
+msgstr "To pole jest już zmapowane dla tego typu sprzętu"
+
+#: inc/ot.class.php
+msgid "Serial number source on the document"
+msgstr "Źródło numeru seryjnego na dokumencie"
+
+#: inc/ot.class.php
+msgid "Items without a value in the chosen field fall back to their serial number"
+msgstr "Pozycje bez wartości w wybranym polu użyją numeru seryjnego"
