@@ -102,7 +102,7 @@ class PluginOrderConfig extends CommonDBTM
         $this->getFromDB($ID);
 
         echo "<div class='center'>";
-        echo "<form name='form' method='post' action='" . $this->getFormURL() . "'>";
+        echo "<form name='form' method='post' action='" . $this->getFormURL() . "' enctype='multipart/form-data'>";
 
         echo Html::hidden('id', ['value' => 1]);
 
@@ -468,6 +468,28 @@ class PluginOrderConfig extends CommonDBTM
         echo "</td>";
         echo "</tr>";
 
+        echo "<tr><th colspan='2'>" . __s("E-mail appearance", "order") . "</th></tr>";
+
+        echo "<tr class='tab_bg_1' align='center'>";
+        echo "<td>" . __s("Upload message header", "order")
+           . "<br><span class='text-muted' style='font-size:0.85em;'>"
+           . __s("Image prepended to every e-mail sent by the Order plugin", "order")
+           . "</span></td>";
+        echo "<td>";
+        $header_url = $this->getMailHeaderUrl();
+        if ($header_url !== null) {
+            echo "<img src='" . htmlescape($header_url) . "' alt='' style='max-width:320px;max-height:90px;display:block;margin:0 auto 8px;'>";
+        }
+        echo "<input type='file' name='mail_header_file' accept='image/png,image/jpeg,image/gif,image/webp' class='form-control' style='max-width:320px;display:inline-block;'>";
+        if ($header_url !== null) {
+            echo "<br><label style='margin-top:6px;display:inline-block;'>"
+               . "<input type='checkbox' name='_drop_mail_header' value='1' class='form-check-input'>&nbsp;"
+               . __s("Remove current header", "order")
+               . "</label>";
+        }
+        echo "</td>";
+        echo "</tr>";
+
         echo "<tr class='tab_bg_1' align='center'>";
         echo "<td colspan='2' align='center'>";
         echo "<input type='submit' name='update' value=\"" . _sx("button", "Post") . "\" class='btn btn-primary' >";
@@ -520,6 +542,80 @@ class PluginOrderConfig extends CommonDBTM
 
             $input['not_invoiced_reminder_emails'] = implode(', ', $valid);
         }
+
+        $input = $this->handleMailHeaderInput($input);
+
+        return $input;
+    }
+
+
+    /**
+     * Store, replace or drop the uploaded e-mail header image.
+     *
+     * The file lives under GLPI's files directory (not the plugin directory,
+     * which is replaced on upgrade) and only its bare name is kept in the
+     * configuration row.
+     */
+    private function handleMailHeaderInput(array $input): array
+    {
+        $dir = self::getMailHeaderDir();
+
+        if (!empty($input['_drop_mail_header'])) {
+            $current = $this->getMailHeaderPath();
+            if ($current !== null) {
+                @unlink($current);
+            }
+            $input['mail_header_filename'] = '';
+        }
+
+        $upload = $_FILES['mail_header_file'] ?? null;
+        if ($upload === null || ($upload['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+            return $input;
+        }
+
+        if ($upload['error'] !== UPLOAD_ERR_OK) {
+            Session::addMessageAfterRedirect(__s("The header image could not be uploaded", "order"), true, ERROR);
+            return $input;
+        }
+
+        if ((int) $upload['size'] > 2 * 1024 * 1024) {
+            Session::addMessageAfterRedirect(__s("The header image is too large (max 2 MB)", "order"), true, ERROR);
+            return $input;
+        }
+
+        $mime_to_ext = [
+            'image/png'  => 'png',
+            'image/jpeg' => 'jpg',
+            'image/gif'  => 'gif',
+            'image/webp' => 'webp',
+        ];
+        $info = @getimagesize($upload['tmp_name']);
+        $ext  = $info !== false ? ($mime_to_ext[$info['mime']] ?? null) : null;
+        if ($ext === null) {
+            Session::addMessageAfterRedirect(__s("The header must be a PNG, JPG, GIF or WebP image", "order"), true, ERROR);
+            return $input;
+        }
+
+        if (!is_dir($dir) && !@mkdir($dir, 0755, true)) {
+            Session::addMessageAfterRedirect(__s("The header image could not be uploaded", "order"), true, ERROR);
+            return $input;
+        }
+
+        // One header at a time: drop whatever was there before.
+        foreach (glob($dir . '/header.*') ?: [] as $old) {
+            @unlink($old);
+        }
+
+        $filename = 'header.' . $ext;
+        $moved = is_uploaded_file($upload['tmp_name'])
+            ? move_uploaded_file($upload['tmp_name'], $dir . '/' . $filename)
+            : @rename($upload['tmp_name'], $dir . '/' . $filename);
+        if (!$moved) {
+            Session::addMessageAfterRedirect(__s("The header image could not be uploaded", "order"), true, ERROR);
+            return $input;
+        }
+
+        $input['mail_header_filename'] = $filename;
 
         return $input;
     }
@@ -782,6 +878,51 @@ class PluginOrderConfig extends CommonDBTM
 
 
     /**
+     * Directory holding the uploaded e-mail header image.
+     */
+    public static function getMailHeaderDir(): string
+    {
+        return GLPI_DOC_DIR . '/_plugins/order/mailheader';
+    }
+
+
+    /**
+     * Absolute path of the configured header image, or null when unset/missing.
+     */
+    public function getMailHeaderPath(): ?string
+    {
+        $filename = (string) ($this->fields['mail_header_filename'] ?? '');
+        if ($filename === '' || basename($filename) !== $filename) {
+            return null;
+        }
+
+        $path = self::getMailHeaderDir() . '/' . $filename;
+
+        return is_readable($path) ? $path : null;
+    }
+
+
+    /**
+     * Public URL of the header image (cache-busted), or null when unset.
+     *
+     * Mail clients fetch this without a GLPI session, so it points at the
+     * plugin's unauthenticated image endpoint.
+     */
+    public function getMailHeaderUrl(): ?string
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $path = $this->getMailHeaderPath();
+        if ($path === null) {
+            return null;
+        }
+
+        return $CFG_GLPI['url_base'] . '/plugins/order/front/mailheader.php?ts=' . filemtime($path);
+    }
+
+
+    /**
      * @param string $value Comma (or semicolon) separated list of addresses
      * @return string[]
      */
@@ -860,6 +1001,7 @@ class PluginOrderConfig extends CommonDBTM
                         `use_free_reference` tinyint NOT NULL default '0',
                         `not_invoiced_reminder_days` varchar(255) NOT NULL default '',
                         `not_invoiced_reminder_emails` text,
+                        `mail_header_filename` varchar(255) NOT NULL default '',
                         PRIMARY KEY  (`id`)
                      ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
             $DB->doQuery($query);
@@ -995,6 +1137,10 @@ class PluginOrderConfig extends CommonDBTM
             $migration->addField($table, 'not_invoiced_reminder_emails', 'text');
         }
 
+        if (!$DB->fieldExists($table, 'mail_header_filename')) {
+            $migration->addField($table, 'mail_header_filename', "VARCHAR(255) NOT NULL DEFAULT ''");
+        }
+
         $migration->migrationOneTable($table);
     }
 
@@ -1009,6 +1155,11 @@ class PluginOrderConfig extends CommonDBTM
 
         //New table
         $DB->doQuery("DROP TABLE IF EXISTS `" . self::getTable() . "`");
+
+        foreach (glob(self::getMailHeaderDir() . '/header.*') ?: [] as $file) {
+            @unlink($file);
+        }
+        @rmdir(self::getMailHeaderDir());
     }
 
 

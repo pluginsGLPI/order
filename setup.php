@@ -97,6 +97,14 @@ function plugin_init_order()
     Plugin::registerClass('PluginOrderProfile');
     $PLUGIN_HOOKS['csrf_compliant']['order'] = true;
 
+    // Mail clients fetch the configured header image without a GLPI session,
+    // so that one endpoint is exempt from the authentication firewall.
+    \Glpi\Http\Firewall::addPluginStrategyForLegacyScripts(
+        'order',
+        '#^/front/mailheader\.php$#',
+        \Glpi\Http\Firewall::STRATEGY_NO_CHECK,
+    );
+
     /* Init current profile */
     $PLUGIN_HOOKS['change_profile']['order'] = ['PluginOrderProfile', 'initProfile'];
 
@@ -181,6 +189,11 @@ function plugin_init_order()
         ];
         $PLUGIN_HOOKS['item_add']['order'] = [
             'Document' => ['PluginOrderOrder', 'addDocumentCategory'],
+        ];
+
+        // Configured header image goes on top of every mail this plugin queues.
+        $PLUGIN_HOOKS['pre_item_add']['order'] = [
+            'QueuedNotification' => 'plugin_order_prepend_mail_header',
         ];
 
         include_once(PLUGIN_ORDER_DIR . "/inc/order_item.class.php");

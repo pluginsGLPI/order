@@ -1140,3 +1140,35 @@ msgstr "Nie masz uprawnień do fakturowania"
 #: inc/order.class.php
 msgid "No position selected for this bill"
 msgstr "Nie wybrano żadnej pozycji dla tej faktury"
+
+#: inc/ot.class.php
+msgid "ORDER number"
+msgstr "Numer ORDER"
+
+#: inc/config.class.php
+msgid "E-mail appearance"
+msgstr "Wygląd wiadomości e-mail"
+
+#: inc/config.class.php
+msgid "Upload message header"
+msgstr "Wgraj nagłówek wiadomości"
+
+#: inc/config.class.php
+msgid "Image prepended to every e-mail sent by the Order plugin"
+msgstr "Obraz doklejany na górze każdego e-maila wysyłanego przez wtyczkę Zamówienia"
+
+#: inc/config.class.php
+msgid "Remove current header"
+msgstr "Usuń obecny nagłówek"
+
+#: inc/config.class.php
+msgid "The header image could not be uploaded"
+msgstr "Nie udało się wgrać obrazu nagłówka"
+
+#: inc/config.class.php
+msgid "The header image is too large (max 2 MB)"
+msgstr "Obraz nagłówka jest zbyt duży (maks. 2 MB)"
+
+#: inc/config.class.php
+msgid "The header must be a PNG, JPG, GIF or WebP image"
+msgstr "Nagłówek musi być obrazem PNG, JPG, GIF lub WebP"
