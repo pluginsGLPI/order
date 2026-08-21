@@ -1172,3 +1172,19 @@ msgstr "Obraz nagłówka jest zbyt duży (maks. 2 MB)"
 #: inc/config.class.php
 msgid "The header must be a PNG, JPG, GIF or WebP image"
 msgstr "Nagłówek musi być obrazem PNG, JPG, GIF lub WebP"
+
+#: inc/config.class.php
+msgid "No header uploaded yet"
+msgstr "Nie wgrano jeszcze nagłówka"
+
+#: inc/config.class.php
+msgid "Message header uploaded"
+msgstr "Nagłówek wiadomości został wgrany"
+
+#: inc/config.class.php
+msgid "Message header removed"
+msgstr "Nagłówek wiadomości został usunięty"
+
+#: inc/config.class.php
+msgid "The plugin database is outdated: run the plugin update, then upload the header again"
+msgstr "Baza wtyczki jest nieaktualna: uruchom aktualizację wtyczki i wgraj nagłówek ponownie"

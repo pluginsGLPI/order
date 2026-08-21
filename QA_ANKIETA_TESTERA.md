@@ -123,7 +123,7 @@
 
 **Kroki:**
 1. *Konfiguracja wtyczki (Zarządzanie zamówieniami)* → sekcja **Wygląd wiadomości e-mail** → pole **„Wgraj nagłówek wiadomości"**: wgraj obraz PNG (np. logo 600×150), zapisz.
-2. Sprawdź podgląd nagłówka w konfiguracji.
+2. Sprawdź potwierdzenie „Nagłówek wiadomości został wgrany" oraz podgląd w konfiguracji (miniatura + nazwa pliku, wymiary i data wgrania; przed wgraniem pole pokazuje „Nie wgrano jeszcze nagłówka").
 3. Wywołaj dowolny mail wtyczki (np. przypomnienie jak w sekcji 6 **albo** natywne powiadomienie — cofnięcie zatwierdzonego zamówienia przy aktywnym powiadomieniu „Cancel Order Validation").
 4. Obejrzyj treść maila (kolejka powiadomień → podgląd HTML, lub skrzynka).
 5. Spróbuj wgrać plik niebędący obrazem (np. .txt) i plik > 2 MB.
