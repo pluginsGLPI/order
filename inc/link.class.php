@@ -1323,6 +1323,14 @@ class PluginOrderLink extends CommonDBChild
             $newID = $item->add($input);
             $newIDs[$values["id"]] = $newID;
 
+            // fields-plugin values live in per-container tables and need the
+            // created asset's id, hence the separate write after add().
+            PluginOrderGenerationField::writeFieldsPluginValues(
+                $add_item['itemtype'],
+                (int) $newID,
+                is_array($values['extra'] ?? null) ? $values['extra'] : [],
+            );
+
             // Attach new ticket if option is on
             if (isset($params['generate_ticket'])) {
                 $tkt = new TicketTemplate();

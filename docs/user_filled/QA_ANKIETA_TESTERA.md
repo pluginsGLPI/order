@@ -180,10 +180,10 @@
 
 ## 11. Pola dodatkowe generowania pozycji (np. IMEI)
 
-**Przygotowanie:** typ sprzętu z dodatkowym polem — np. kolumna `imei` na telefonach (dodana na instalacji) **lub** custom asset GLPI 11 z polem własnym typu tekstowego.
+**Przygotowanie:** typ sprzętu z dodatkowym polem — z **pluginu fields** (kontener obejmujący np. telefony, z polem tekstowym IMEI), **lub** kolumna dodana wprost do tabeli zasobu, **lub** custom asset GLPI 11 z polem własnym typu tekstowego.
 
 **Kroki:**
-1. *Konfiguracja wtyczki* → sekcja **Pola dodatkowe generowania pozycji**: wybierz *Typ sprzętu* = Telefon — lista pól powinna się zawęzić do pól tego typu; wybierz pole (np. `IMEI`) i kliknij *Dodaj*.
+1. *Konfiguracja wtyczki* → sekcja **Pola dodatkowe generowania pozycji**: wybierz *Typ sprzętu* = Telefon — lista pól powinna się zawęzić do pól tego typu; pola z pluginu fields mają dopisek kontenera w nawiasie kwadratowym (np. `IMEI (fields) [Telefon dane]`). Wybierz pole i kliknij *Dodaj*.
 2. Powtórz dla custom asseta z polem własnym (pole widoczne jako `custom_<nazwa>`).
 3. Spróbuj dodać to samo mapowanie drugi raz.
 4. Otwórz zamówienie z dostarczonymi pozycjami obu typów oraz np. drukarką → *Dostarczone pozycje* → zaznacz pozycje → *Akcje → Generuj pozycję*.
@@ -194,7 +194,7 @@
 **Oczekiwany rezultat:**
 - Lista pól w konfiguracji zależy od wybranego typu; duplikat odrzucony z komunikatem „To pole jest już zmapowane…".
 - Formularz generowania ma dodatkową kolumnę z etykietą pola; **wiersz drukarki pokazuje w niej kreskę** (pole nie dotyczy tego typu), wiersze telefonu/custom asseta mają pole tekstowe.
-- Po wygenerowaniu: telefon ma zapisany IMEI w swoim polu, custom asset ma wartość w polu własnym (widoczna na formularzu zasobu).
+- Po wygenerowaniu: telefon ma zapisany IMEI w swoim polu (dla pola z pluginu fields — widoczny na zakładce kontenera zasobu), custom asset ma wartość w polu własnym (widoczna na formularzu zasobu).
 - Po usunięciu mapowania kolumna znika z formularza.
 
 - [ ] PASS  - [ ] FAIL — uwagi: ______________________________________________

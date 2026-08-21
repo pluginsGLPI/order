@@ -173,9 +173,69 @@ class PluginOrderGenerationField extends CommonDBTM
             }
         }
 
+        foreach (self::getFieldsPluginFields($itemtype) as $key => $label) {
+            $available[$key] = $label;
+        }
+
         ksort($available);
 
         return $available;
+    }
+
+
+    /**
+     * Simple-typed fields the "fields" plugin defines for an itemtype.
+     *
+     * That plugin is where sites usually keep extra data on NATIVE assets (an
+     * IMEI on phones, say): containers declare which itemtypes they cover and
+     * each holds a list of fields, with values living in one generated table
+     * per container. Mapped keys encode the container: fields_<cid>_<name>.
+     *
+     * @return array<string, string> mapping key => label
+     */
+    private static function getFieldsPluginFields(string $itemtype): array
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        if (
+            !Plugin::isPluginActive('fields')
+            || !$DB->tableExists('glpi_plugin_fields_containers')
+            || !$DB->tableExists('glpi_plugin_fields_fields')
+        ) {
+            return [];
+        }
+
+        $result = [];
+        foreach (
+            $DB->request([
+                'FROM'  => 'glpi_plugin_fields_containers',
+                'WHERE' => ['is_active' => 1],
+            ]) as $container
+        ) {
+            $covered = json_decode((string) $container['itemtypes'], true);
+            if (!is_array($covered) || !in_array($itemtype, $covered, true)) {
+                continue;
+            }
+
+            foreach (
+                $DB->request([
+                    'FROM'  => 'glpi_plugin_fields_fields',
+                    'WHERE' => [
+                        'plugin_fields_containers_id' => $container['id'],
+                        'is_active'                   => 1,
+                        'multiple'                    => 0,
+                        'type'                        => ['text', 'number', 'url', 'date', 'datetime'],
+                    ],
+                ]) as $field
+            ) {
+                $key   = sprintf('fields_%d_%s', $container['id'], $field['name']);
+                $label = $field['label'] !== '' ? $field['label'] : $field['name'];
+                $result[$key] = sprintf('%s [%s]', $label, $container['label']);
+            }
+        }
+
+        return $result;
     }
 
 
@@ -220,6 +280,11 @@ class PluginOrderGenerationField extends CommonDBTM
     public static function applyExtras(array $input, string $itemtype, array $posted): array
     {
         foreach (self::getForItemtype($itemtype) as $field => $label) {
+            // fields-plugin values live in container tables, not on the asset
+            // row: they are written separately, after the asset exists.
+            if (str_starts_with($field, 'fields_')) {
+                continue;
+            }
             $value = trim((string) ($posted[$field] ?? ''));
             if ($value !== '') {
                 $input[$field] = $value;
@@ -227,6 +292,65 @@ class PluginOrderGenerationField extends CommonDBTM
         }
 
         return $input;
+    }
+
+
+    /**
+     * Write mapped fields-plugin values for a freshly created asset.
+     *
+     * Values go through the generated container class (one row per item in the
+     * container's own table), grouped per container. The deliberate bypass of
+     * the plugin's form validation mirrors what an import does: the generation
+     * form only offers administrator-mapped fields.
+     */
+    public static function writeFieldsPluginValues(string $itemtype, int $items_id, array $posted): void
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        if ($items_id <= 0 || !Plugin::isPluginActive('fields') || !class_exists('PluginFieldsContainer')) {
+            return;
+        }
+
+        $per_container = [];
+        foreach (self::getForItemtype($itemtype) as $field => $label) {
+            if (!str_starts_with($field, 'fields_')) {
+                continue;
+            }
+            $value = trim((string) ($posted[$field] ?? ''));
+            if ($value === '') {
+                continue;
+            }
+            if (preg_match('/^fields_(\d+)_(.+)$/', $field, $m) !== 1) {
+                continue;
+            }
+            $per_container[(int) $m[1]][$m[2]] = $value;
+        }
+
+        foreach ($per_container as $containers_id => $values) {
+            $container = new PluginFieldsContainer();
+            if (!$container->getFromDB($containers_id) || !(bool) $container->fields['is_active']) {
+                continue;
+            }
+
+            $classname = PluginFieldsContainer::getClassname($itemtype, $container->fields['name']);
+            if (!class_exists($classname)) {
+                continue;
+            }
+
+            $row = [
+                'plugin_fields_containers_id' => $containers_id,
+                'itemtype'                    => $itemtype,
+                'items_id'                    => $items_id,
+            ] + $values;
+
+            $obj = new $classname();
+            if ($obj->getFromDBByCrit(['items_id' => $items_id])) {
+                $obj->update(['id' => $obj->fields['id']] + $row);
+            } else {
+                $obj->add($row);
+            }
+        }
     }
 
 
@@ -239,6 +363,27 @@ class PluginOrderGenerationField extends CommonDBTM
      */
     public static function resolveValueForAsset(CommonDBTM $asset, string $field): string
     {
+        if (preg_match('/^fields_(\d+)_(.+)$/', $field, $m) === 1) {
+            if (!Plugin::isPluginActive('fields') || !class_exists('PluginFieldsContainer')) {
+                return '';
+            }
+            $container = new PluginFieldsContainer();
+            if (!$container->getFromDB((int) $m[1])) {
+                return '';
+            }
+            $classname = PluginFieldsContainer::getClassname($asset::class, $container->fields['name']);
+            if (!class_exists($classname)) {
+                return '';
+            }
+            $obj = new $classname();
+            if (!$obj->getFromDBByCrit(['items_id' => $asset->getID()])) {
+                return '';
+            }
+            $value = $obj->fields[$m[2]] ?? '';
+
+            return is_scalar($value) ? (string) $value : '';
+        }
+
         if (!str_starts_with($field, 'custom_')) {
             $value = $asset->fields[$field] ?? '';
 
