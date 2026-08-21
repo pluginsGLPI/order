@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Reopening an invoiced order keeps its bill, and the validation tab asks whether that bill is still correct
 - A correcting bill can cover only part of an order, and a regenerated OT or a fully superseded bill is archived while staying attached to the order
 - Dedicated profile rights for "Generate OT" and "Invoicing"; profiles holding UPDATE on orders receive both on upgrade
+- Plugin setup can hold an uploaded header image, prepended to every e-mail the plugin sends (native notifications included)
 
 ### Fixed
 
@@ -37,6 +38,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Order item rows are now expanded by default
 - Polish translation for the OT and invoicing actions
+- The OT popup field feeding the document's Order column is labeled "ORDER number"
+- Plugin buttons use semantic Tabler classes, so custom themes cannot leave them unreadable
 
 
 ## [2.12.6] - 2026-02-23

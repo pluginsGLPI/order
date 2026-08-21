@@ -53,7 +53,7 @@ class PluginOrderOt
             'size'  => 20,
         ]);
         echo "<br><br>";
-        echo "<label for='ot_num_order'>" . __s("Order number", "order") . ":&nbsp;</label>";
+        echo "<label for='ot_num_order'>" . __s("ORDER number", "order") . ":&nbsp;</label>";
         echo Html::input('ot_num_order', [
             'id'    => 'ot_num_order',
             'value' => '',

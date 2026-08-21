@@ -404,3 +404,37 @@ function plugin_order_AssignToTicket($types)
     $types['PluginOrderOrder'] = __s("Order", "order");
     return $types;
 }
+
+
+/**
+ * Prepend the configured header image to every e-mail this plugin queues.
+ *
+ * Hooked on QueuedNotification pre_item_add: all of the plugin's
+ * notifications (validation workflow, late orders, delivered, not invoiced)
+ * carry itemtype PluginOrderOrder, so the one filter covers the native
+ * events and the reminder alike without touching any template.
+ */
+function plugin_order_prepend_mail_header(QueuedNotification $item)
+{
+    if (($item->input['itemtype'] ?? '') !== 'PluginOrderOrder') {
+        return;
+    }
+
+    if (empty($item->input['body_html'])) {
+        return;
+    }
+
+    $url = PluginOrderConfig::getConfig()->getMailHeaderUrl();
+    if ($url === null) {
+        return;
+    }
+
+    $img = "<div style='margin:0 0 16px 0;'><img src='" . htmlescape($url)
+         . "' alt='' style='max-width:100%;height:auto;'></div>";
+
+    $html = $item->input['body_html'];
+    // The queued body is a full HTML document: inject right after <body>,
+    // falling back to a plain prepend for bodies without one.
+    $patched = preg_replace('/(<body[^>]*>)/i', '$1' . $img, $html, 1, $count);
+    $item->input['body_html'] = $count > 0 ? $patched : $img . $html;
+}
