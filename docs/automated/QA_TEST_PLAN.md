@@ -1,12 +1,38 @@
-# Order Plugin v2.13.1 - QA Test Plan
+# Order Plugin v2.14.2 - QA Test Plan
 
 ## Prerequisites
 
-- GLPI 11.0.x instance with the Order plugin v2.13.1 installed
-- At least one user-defined custom asset type created in **Setup > Asset Definitions** (e.g. "Laptop", "Mobile Phone")
+- GLPI 11.0.x instance with the Order plugin v2.14.2 installed
+- At least one user-defined custom asset type created in **Setup > Asset Definitions** (e.g. "Laptop", "Mobile Phone"), with the **Orderable capacity enabled** on its definition and profile rights granted for the asset (upgrades grant the capacity automatically to definitions that existed before)
 - At least one Supplier configured
 - At least one Budget configured
 - Super-Admin access for testing
+
+---
+
+## A-Z automated regression - v2.14.2 after the upstream 2.12.9 sync (2026-08-22)
+
+Executed on a **fresh** GLPI 11.0.4 install (MariaDB, `db:install`, plugin installed via `plugin:install`)
+driven through Chromium/Playwright, with the fields plugin 1.21.19 installed from source.
+Zero JS console errors and zero HTTP 5xx across all runs.
+
+| # | Suite | Covers | Result |
+|---|-------|--------|--------|
+| az1 | List | Default sort newest-first (creation date, DESC chip), "Invoiced" + "Creation date" offered in the column dialog | PASS |
+| az2/az2b | Configuration | Reminder thresholds/addresses persisted, PNG mail-header upload (toast, preview, name-size-date meta), generation-field mappings for all three sources (table column, fields plugin, custom asset), duplicate refusal, mapping delete, custom asset present in the itemtype dropdown | PASS |
+| az3/az3b | Generation | Extra columns on the generate form (phone: imei + fields-plugin IMEI), per-type scoping (laptop/printer rows carry no extra column), expanded rows, values persisted to the native column, the fields-plugin container table and the custom-asset `custom_fields` JSON; custom asset created through the Orderable-capacity path | PASS |
+| az4 | Generate OT | Popup contract ("ORDER number" label, empty = no auto-suggest, both optional dates, serial-source select fed by mappings), OT document content (IMEI as serial with per-item fallback to serial, manual ORDER number, MPK, both dates), bill created + linked to every position, order -> Paid, document attached | PASS |
+| az5 | Invoicing | Position picker (all pre-checked), empty selection refused without creating anything, partial bill worth only its positions, second partial covers the rest ("currently on bill" labels), order -> Paid once fully covered | PASS |
+| az6/az6b | Reopen & correction | Reopen keeps the bill (notice shown), validation-tab panel asks "still correct?", confirming re-closes on the same bill; correcting OT archives the previous bill, renames the previous OT to "[ARCHIVED] ..." (still attached), relinks all positions | PASS |
+| az7/az7b | Rights | Technician (READ+UPDATE+INVOICE) sees Invoicing but not Generate OT, admin sees both, profile matrix carries both rights with correct checkbox state | PASS |
+| az8 | Reminder cron | Mails for both due thresholds to the author and configured addresses, body carries order data + days elapsed + link, uploaded header injected into every queued plugin mail, ledger rows written, second run adds nothing | PASS |
+| az9/az9b/c | Buttons & purge | Validation-tab buttons use semantic classes (btn-danger/success/primary), trashbin massive action, permanent purge clean including reminder-ledger rows | PASS |
+| az10 | Upstream regressions | SoftwareLicense "Take item delivery" + "Cancel reception" (upstream #587), custom asset offered in the reference form and labelled on an existing reference | PASS |
+| az11b | Columns | "Invoiced" column renders Yes/No per order, bills list "Archived" column flags the superseded bill | PASS |
+
+Fresh-install checks: schema complete (mapping + reminder tables, `date_creation`, `is_archived`,
+`mail_header_filename`), both cron tasks registered, all 7 notifications seeded (incl. `not_invoiced`),
+run-once Orderable-capacity seed granted the capacity to the pre-existing asset definition.
 
 ---
 

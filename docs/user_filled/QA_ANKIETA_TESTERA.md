@@ -1,7 +1,8 @@
-# Ankieta QA — wtyczka Order 2.14.0 (dla testera)
+# Ankieta QA — wtyczka Order 2.14.2 (dla testera)
 
-> **Środowisko:** GLPI 11.0.x z zainstalowaną i aktywną wtyczką Order 2.14.0.
+> **Środowisko:** GLPI 11.0.x z zainstalowaną i aktywną wtyczką Order 2.14.2 (fork zsynchronizowany z oficjalnym 2.12.9).
 > **Konto:** Super-Admin (chyba że krok mówi inaczej). Po instalacji/aktualizacji wtyczki wyczyść cache: `php bin/console cache:clear`.
+> **Custom assety:** od tej wersji custom asset bierze udział w zamówieniach tylko, gdy jego definicja ma włączoną zdolność **„Orderable"** (*Ustawienia → Definicje zasobów → [definicja] → Zdolności*). Przy aktualizacji wtyczki zdolność jest nadawana automatycznie istniejącym aktywnym definicjom; definicjom tworzonym później trzeba ją włączyć ręcznie (sekcja 12).
 > **Jak wypełniać:** wykonaj kroki po kolei, porównaj z „Oczekiwany rezultat", zaznacz `[x]` przy PASS albo FAIL i dopisz uwagi.
 
 **Tester:** ______________________  **Data:** ____________  **Wersja GLPI:** ____________
@@ -180,7 +181,7 @@
 
 ## 11. Pola dodatkowe generowania pozycji (np. IMEI)
 
-**Przygotowanie:** typ sprzętu z dodatkowym polem — z **pluginu fields** (kontener obejmujący np. telefony, z polem tekstowym IMEI), **lub** kolumna dodana wprost do tabeli zasobu, **lub** custom asset GLPI 11 z polem własnym typu tekstowego.
+**Przygotowanie:** typ sprzętu z dodatkowym polem — z **pluginu fields** (kontener obejmujący np. telefony, z polem tekstowym IMEI), **lub** kolumna dodana wprost do tabeli zasobu, **lub** custom asset GLPI 11 z polem własnym typu tekstowego (definicja z włączoną zdolnością **Orderable** i nadanymi uprawnieniami profilu do tego zasobu — patrz nagłówek ankiety i sekcja 12).
 
 **Kroki:**
 1. *Konfiguracja wtyczki* → sekcja **Pola dodatkowe generowania pozycji**: wybierz *Typ sprzętu* = Telefon — lista pól powinna się zawęzić do pól tego typu; pola z pluginu fields mają dopisek kontenera w nawiasie kwadratowym (np. `IMEI (fields) [Telefon dane]`). Wybierz pole i kliknij *Dodaj*.
@@ -201,6 +202,25 @@
 
 ---
 
+## 12. Custom assety w zamówieniach (zdolność „Orderable")
+
+**Kroki:**
+1. Utwórz **nową** definicję custom asseta (*Ustawienia → Definicje zasobów*), aktywną, z uprawnieniami dla Twojego profilu; **nie włączaj** żadnych zdolności.
+2. Otwórz formularz nowej referencji produktu (*Zarządzanie → Zamówienia → Referencje → Dodaj*) i przejrzyj listę „Typ sprzętu".
+3. Wróć do definicji → zakładka *Zdolności* → włącz **Orderable** → odśwież formularz referencji.
+4. Utwórz referencję dla tego custom asseta, dodaj ją do zamówienia, dostarcz pozycję i wygeneruj zasób (*Dostarczone pozycje → Generuj pozycję*).
+5. (Po aktualizacji wtyczki z wcześniejszej wersji) sprawdź, czy definicje custom assetów istniejące **przed** aktualizacją mają zdolność Orderable włączoną automatycznie.
+
+**Oczekiwany rezultat:**
+- Krok 2: definicja **bez** zdolności nie występuje na liście typów.
+- Krok 3: po włączeniu zdolności typ pojawia się na liście (etykieta definicji, nie surowa nazwa klasy).
+- Krok 4: pozycja przechodzi cały obieg (dostawa → generowanie → zasób w *Zasoby → [definicja]*), bez błędów.
+- Krok 5: istniejące definicje działają jak przed aktualizacją bez ręcznych zmian.
+
+- [ ] PASS  - [ ] FAIL — uwagi: ______________________________________________
+
+---
+
 ## Podsumowanie
 
 | Sekcja | Wynik |
@@ -216,6 +236,7 @@
 | 9. Rozwinięcie i przyciski | |
 | 10. Kasowanie | |
 | 11. Pola dodatkowe generowania | |
+| 12. Custom assety (Orderable) | |
 
 **Werdykt końcowy:**  - [ ] ZALICZONE  - [ ] NIEZALICZONE
 
