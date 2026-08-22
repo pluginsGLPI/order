@@ -1922,7 +1922,6 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
             $this->getFromDB($ID);
 
             if (file_exists(PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR . "custom.php")) {
-                // @phpstan-ignore-next-line: custom.php is not a file or it does not exist.
                 include_once(PLUGIN_ORDER_TEMPLATE_CUSTOM_DIR . "custom.php");
             }
 
@@ -3527,6 +3526,36 @@ class PluginOrderOrder extends CommonDBTM implements DefaultSearchRequestInterfa
         CronTask::Register(self::class, 'notInvoicedReminder', DAY_TIMESTAMP, [
             'mode' => CronTask::MODE_EXTERNAL,
         ]);
+
+        // Upstream gates custom assets behind the "Orderable" capacity. On the
+        // first upgrade to that mechanism, grant it to every active definition
+        // so assets already referenced by orders stay orderable; later manual
+        // revocations survive subsequent upgrades (run-once guard).
+        if (
+            $DB->tableExists('glpi_assets_assetdefinitions')
+            && class_exists('PluginOrderOrderableCapacity')
+        ) {
+            $already_granted = countElementsInTable('glpi_assets_assetdefinitions', [
+                'capacities' => ['LIKE', '%PluginOrderOrderableCapacity%'],
+            ]);
+            if ($already_granted === 0) {
+                foreach (
+                    $DB->request([
+                        'FROM'  => 'glpi_assets_assetdefinitions',
+                        'WHERE' => ['is_active' => 1],
+                    ]) as $definition
+                ) {
+                    $capacities = json_decode((string) $definition['capacities'], true);
+                    if (!is_array($capacities)) {
+                        $capacities = [];
+                    }
+                    $capacities[] = ['name' => 'PluginOrderOrderableCapacity'];
+                    $DB->update('glpi_assets_assetdefinitions', [
+                        'capacities' => json_encode($capacities),
+                    ], ['id' => $definition['id']]);
+                }
+            }
+        }
     }
 
 

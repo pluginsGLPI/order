@@ -21,7 +21,7 @@
    <homepage>https://github.com/pluginsGLPI/order/</homepage>
    <download>https://github.com/pluginsGLPI/order/releases</download>
    <issues>https://github.com/pluginsGLPI/order/issues</issues>
-   <readme>https://glpi-plugins.readthedocs.io/en/latest/order/index.html</readme>
+   <readme>https://help.glpi-project.org/doc-plugins/order</readme>
    <authors>
       <author>Walid Nouh</author>
       <author>Xavier Caillaud / Infotel</author>
@@ -29,6 +29,26 @@
       <author>Benjamin Fontan</author>
    </authors>
    <versions>
+      <version>
+         <num>2.12.9</num>
+         <compatibility>~11.0.0</compatibility>
+         <download_url>https://github.com/pluginsGLPI/order/releases/download/2.12.9/glpi-order-2.12.9.tar.bz2</download_url>
+      </version>
+      <version>
+          <num>2.12.8</num>
+          <compatibility>~11.0.0</compatibility>
+          <download_url>https://github.com/pluginsGLPI/order/releases/download/2.12.8/glpi-order-2.12.8.tar.bz2</download_url>
+      </version>
+      <version>
+          <num>2.12.7</num>
+          <compatibility>~11.0.0</compatibility>
+          <download_url>https://github.com/pluginsGLPI/order/releases/download/2.12.7/glpi-order-2.12.7.tar.bz2</download_url>
+      </version>
+      <version>
+          <num>2.11.5</num>
+          <compatibility>~10.0.11</compatibility>
+          <download_url>https://github.com/pluginsGLPI/order/releases/download/2.11.5/glpi-order-2.11.5.tar.bz2</download_url>
+      </version>
       <version>
           <num>2.12.6</num>
           <compatibility>~11.0.0</compatibility>

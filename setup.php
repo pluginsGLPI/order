@@ -28,6 +28,8 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\Asset\AssetDefinitionManager;
+
 use function Safe\define;
 
 define('PLUGIN_ORDER_VERSION', '2.14.2');
@@ -133,46 +135,27 @@ function plugin_init_order()
             'Pdu',
         ];
 
-        // GLPI 11+ custom assets support: dynamically discover user-defined asset types
-        // Custom assets are stored in glpi_assets_assetdefinitions (definitions) and
-        // glpi_assets_assets (instances). The concrete class name follows the pattern:
-        // Glpi\CustomAsset\{system_name}Asset
-        if (class_exists('Glpi\Asset\AssetDefinition')) {
-            try {
-                // Try ORM approach first
-                $asset_definition = new \Glpi\Asset\AssetDefinition();
-                $found_via_orm = false;
-                foreach ($asset_definition->find(['is_active' => 1]) as $def) {
-                    $asset_definition->getFromDB($def['id']);
-                    if (method_exists($asset_definition, 'getAssetClassName')) {
-                        $concrete_class = $asset_definition->getAssetClassName();
-                        if (!empty($concrete_class) && !in_array($concrete_class, $ORDER_TYPES)) {
-                            $ORDER_TYPES[] = $concrete_class;
-                            $found_via_orm = true;
-                        }
-                    }
+
+        // Register the Orderable capacity for GLPI 11 custom assets and append
+        // any custom asset class that has it enabled to $ORDER_TYPES, provided
+        // the current user is allowed to view it.
+        if (class_exists(AssetDefinitionManager::class)) {
+            $asset_manager = AssetDefinitionManager::getInstance();
+            $orderable_capacity = new PluginOrderOrderableCapacity();
+            $asset_manager->registerCapacity($orderable_capacity);
+            $asset_manager->bootDefinitions();
+            foreach ($asset_manager->getDefinitions(true) as $definition) {
+                if (!$definition->hasCapacityEnabled($orderable_capacity)) {
+                    continue;
                 }
 
-                // Fallback: query DB directly and construct class names
-                if (!$found_via_orm) {
-                    /** @var DBmysql $DB */
-                    global $DB;
-                    if ($DB->tableExists('glpi_assets_assetdefinitions')) {
-                        $result = $DB->request([
-                            'SELECT' => ['id', 'system_name', 'label'],
-                            'FROM'   => 'glpi_assets_assetdefinitions',
-                            'WHERE'  => ['is_active' => 1],
-                        ]);
-                        foreach ($result as $row) {
-                            $concrete_class = 'Glpi\\CustomAsset\\' . $row['system_name'] . 'Asset';
-                            if (!in_array($concrete_class, $ORDER_TYPES)) {
-                                $ORDER_TYPES[] = $concrete_class;
-                            }
-                        }
-                    }
+                $custom_asset_class = $definition->getAssetClassName();
+                if (
+                    !in_array($custom_asset_class, $ORDER_TYPES, true)
+                    && $custom_asset_class::canView()
+                ) {
+                    $ORDER_TYPES[] = $custom_asset_class;
                 }
-            } catch (\Throwable $e) {
-                // Tables may not exist during install/upgrade — silently ignore
             }
         }
 

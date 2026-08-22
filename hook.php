@@ -47,13 +47,6 @@ function plugin_order_install()
         }
     }
 
-    echo "<center>";
-    echo "<table class='tab_cadre_fixe'>";
-    echo "<tr><th>" . __s("Plugin installation or upgrade", "order") . "<th></tr>";
-
-    echo "<tr class='tab_bg_1'>";
-    echo "<td align='center'>";
-
     $migration = new Migration(PLUGIN_ORDER_VERSION);
     $classes = ['PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',
         'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',
@@ -77,11 +70,6 @@ function plugin_order_install()
             }
         }
     }
-
-    echo "</td>";
-    echo "</tr>";
-    echo "</table>";
-    echo "</center>";
 
     //Create directories for the plugin's files
     $directories = [PLUGIN_ORDER_TEMPLATE_DIR        => 'templates',
@@ -128,8 +116,8 @@ function plugin_order_uninstall()
         'PluginOrderOrdertype', 'PluginOrderOther', 'PluginOrderOthertype',
         'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
         'PluginOrderSurveySupplier', 'PluginOrderDocumentCategory',
-        'PluginOrderAccountsection', 'PluginOrderAnalyticnature',
-        'PluginOrderGenerationField',
+        'PluginOrderReferenceFree', 'PluginOrderAccountsection',
+        'PluginOrderAnalyticnature', 'PluginOrderGenerationField',
     ];
     foreach ($classes as $class) {
         call_user_func([$class, 'uninstall']);
@@ -163,19 +151,19 @@ function plugin_order_getDropdown()
 }
 
 
-/* define dropdown relations */
 function plugin_order_getDatabaseRelations()
 {
     $plugin = new Plugin();
     if ($plugin->isActivated("order")) {
+        // Ensure all plugin classes are declared so that getItemTypeForTable() resolves
+        // them with the correct case on the first call (before they are in the cache).
+        foreach (glob(PLUGIN_ORDER_DIR . '/inc/*.php') as $file) {
+            if (preg_match('/injection.class.php/', $file) === 0) {
+                include_once($file);
+            }
+        }
+
         return [
-            "glpi_plugin_order_orders" => [
-                "glpi_plugin_order_orders_items" => "plugin_order_orders_id",
-                "glpi_plugin_order_orders_suppliers" => "plugin_order_orders_id",
-            ],
-            // The dropdowns are the referenced side: orders point at them, not
-            // the other way round. The inverted declarations made every order
-            // purge crash on a column that does not exist.
             "glpi_plugin_order_orderpayments" => [
                 "glpi_plugin_order_orders" => "plugin_order_orderpayments_id",
             ],
@@ -190,7 +178,7 @@ function plugin_order_getDatabaseRelations()
                 "glpi_plugin_order_orders" => "plugin_order_orderstates_id",
             ],
             "glpi_plugin_order_accountsections" => [
-                "glpi_plugin_order_orders" => "plugin_order_accountsections_id",
+                "glpi_plugin_order_accountsections" => "plugin_order_accountsections_id",
             ],
             "glpi_plugin_order_analyticnatures" => [
                 "glpi_plugin_order_orders_items" => "plugin_order_analyticnatures_id",
@@ -198,15 +186,19 @@ function plugin_order_getDatabaseRelations()
             "glpi_plugin_order_deliverystates" => [
                 "glpi_plugin_order_orders_items" => "plugin_order_deliverystates_id",
             ],
+            "glpi_plugin_order_orders" => [
+                "glpi_plugin_order_orders_items"     => "plugin_order_orders_id",
+                "glpi_plugin_order_orders_suppliers" => "plugin_order_orders_id",
+            ],
             "glpi_plugin_order_references" => [
-                "glpi_plugin_order_orders_items" => "plugin_order_references_id",
+                "glpi_plugin_order_orders_items"         => "plugin_order_references_id",
                 "glpi_plugin_order_references_suppliers" => "plugin_order_references_id",
             ],
             "glpi_entities" => [
-                "glpi_plugin_order_orders" => "entities_id",
+                "glpi_plugin_order_orders"    => "entities_id",
                 "glpi_plugin_order_references" => "entities_id",
-                "glpi_plugin_order_others" => "entities_id",
-                "glpi_plugin_order_bills" => "entities_id",
+                "glpi_plugin_order_others"     => "entities_id",
+                "glpi_plugin_order_bills"      => "entities_id",
             ],
             "glpi_budgets" => [
                 "glpi_plugin_order_orders" => "budgets_id",
@@ -215,8 +207,8 @@ function plugin_order_getDatabaseRelations()
                 "glpi_plugin_order_others" => "plugin_order_othertypes_id",
             ],
             "glpi_suppliers" => [
-                "glpi_plugin_order_orders" => "suppliers_id",
-                "glpi_plugin_order_orders_suppliers" => "suppliers_id",
+                "glpi_plugin_order_orders"               => "suppliers_id",
+                "glpi_plugin_order_orders_suppliers"     => "suppliers_id",
                 "glpi_plugin_order_references_suppliers" => "suppliers_id",
             ],
             "glpi_manufacturers" => [

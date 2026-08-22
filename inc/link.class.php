@@ -155,8 +155,9 @@ class PluginOrderLink extends CommonDBChild
                 // Items using the AssignableItem behaviour (most assets, including GLPI
                 // 11 user-defined custom assets) expose groups_id as an array: keep it
                 // as an array only for the multi-select Group dropdown, and make sure
-                // every single-select value stays a scalar.
-                $is_assignable = Toolbox::hasTrait($itemtype, AssignableItem::class)
+                // every single-select value stays a scalar. class_exists() guards
+                // against leftovers of uninstalled plugins (upstream safety fix).
+                $is_assignable = (class_exists($itemtype) && Toolbox::hasTrait($itemtype, AssignableItem::class))
                     || is_array($row['groups_id']);
                 $row['assignableitem'] = $is_assignable;
                 $mass_assignable = $is_assignable;
@@ -490,7 +491,7 @@ class PluginOrderLink extends CommonDBChild
 
         $reference_header_data = [
             'item_type_name' => $item->getTypeName(),
-            'manufacturer_name' => Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]),
+            'manufacturer_name' => htmlentities(Dropdown::getDropdownName("glpi_manufacturers", $data_ref["manufacturers_id"]), ENT_QUOTES, "UTF-8"),
             'reference_name' => ($table == 'glpi_plugin_order_referencefrees') ? $data_ref['name'] : $PluginOrderReference->getReceptionReferenceLink($data_ref),
             'item_count' => $total_number,
         ];
@@ -659,7 +660,10 @@ class PluginOrderLink extends CommonDBChild
             case 'generation':
                 $newIDs = $link->generateNewItem($ma->POST);
                 foreach ($ma->getItems()[self::class] as $key => $val) {
-                    if (isset($newIDs[$key]) && $newIDs[$key]) {
+                    $itemtype = $ma->POST['add_items'][$key]['itemtype'] ?? '';
+                    if (in_array($itemtype, self::getTypesThanCannotBeGenerated()) && $itemtype !== 'SoftwareLicense') {
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                    } elseif (isset($newIDs[$key]) && $newIDs[$key]) {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                     } else {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
@@ -669,7 +673,20 @@ class PluginOrderLink extends CommonDBChild
                 break;
 
             case 'createLink':
-                if (count($ids) > 1) {
+                //  For consumables and cartridges, createLinkWithItem creates a new item
+                // (glpi_consumables/glpi_cartridges) for each selected detail line;
+                // therefore, multiple items can be linked to the same reference item at once
+                $allow_multiple_link = isset($ma->POST['add_items']) && $ma->POST['add_items'] !== [] && array_reduce(
+                    $ma->POST['add_items'],
+                    fn($carry, $data) => $carry && in_array(
+                        $data['itemtype'] ?? '',
+                        ['ConsumableItem', 'CartridgeItem'],
+                        true,
+                    ),
+                    true,
+                );
+
+                if (!$allow_multiple_link && count($ids) > 1) {
                     $ma->addMessage(__s("Cannot link several items to one detail line", "order"));
                     foreach ($ids as $id) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -712,14 +729,14 @@ class PluginOrderLink extends CommonDBChild
             case 'cancelReceipt':
                 foreach ($ma->getItems()[self::class] as $key => $val) {
                     $order_item = new PluginOrderOrder_Item();
-                    $order_item->getFromDB($val);
+                    $order_item->getFromDB($key);
                     if ($order_item->fields["items_id"] != 0) {
                         $ma->addMessage(__s("Unable to cancel reception when items are already linked, please unlink them before trying again.", "order"));
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                     } elseif (!$link->cancelReception($key)) {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                     } else {
-                        $ma->itemDone($item->getType(), $val, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                     }
                 }
 
@@ -734,10 +751,39 @@ class PluginOrderLink extends CommonDBChild
         $order_item = new PluginOrderOrder_Item();
         $order_item->getFromDB($id);
 
+        if ($order_item->fields['itemtype'] === 'SoftwareLicense') {
+            $iterator = $order_item->queryRef(
+                $order_item->fields['plugin_order_orders_id'],
+                $order_item->fields['plugin_order_references_id'],
+                $order_item->fields['price_taxfree'],
+                $order_item->fields['discount'],
+                PluginOrderOrder::ORDER_DEVICE_DELIVRED,
+            );
+            $success = true;
+            foreach ($iterator as $data) {
+                if ($data['items_id'] != 0) {
+                    $success = false;
+                    continue;
+                }
+
+                $success = $order_item->update([
+                    'id'                             => $data['id'],
+                    'states_id'                      => PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED,
+                    'delivery_date'                  => null,
+                    'delivery_number'                => '',
+                    'plugin_order_deliverystates_id' => 0,
+                ]) && $success;
+            }
+
+            return $success;
+        }
+
         return $order_item->update([
-            'id'            => $id,
-            'states_id'     => PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED,
-            'delivery_date' => null,
+            'id'                             => $id,
+            'states_id'                      => PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED,
+            'delivery_date'                  => null,
+            'delivery_number'                => '',
+            'plugin_order_deliverystates_id' => 0,
         ]);
     }
 
@@ -1165,6 +1211,10 @@ class PluginOrderLink extends CommonDBChild
     {
         $newIDs = [];
 
+        if (empty($params["id"])) {
+            return $newIDs;
+        }
+
         // Retrieve plugin configuration
         $config    = new PluginOrderConfig();
         $reference = new PluginOrderReference();
@@ -1185,6 +1235,59 @@ class PluginOrderLink extends CommonDBChild
 
             //If itemtype cannot be generated, go to the new occurence
             if (in_array($add_item['itemtype'], self::getTypesThanCannotBeGenerated())) {
+                if ($add_item['itemtype'] === 'SoftwareLicense') {
+                    $entity     = $values["entities_id"];
+                    $templateID = $reference->checkIfTemplateExistsInEntity(
+                        $values["id"],
+                        'SoftwareLicense',
+                        $entity,
+                    );
+                    $order = new PluginOrderOrder();
+                    $order->getFromDB($params["plugin_order_orders_id"]);
+                    $reference->getFromDB($add_item["plugin_order_references_id"]);
+
+                    $lic   = new SoftwareLicense();
+                    $input = [];
+                    if ($templateID) {
+                        $lic->getFromDB($templateID);
+                        foreach ($lic->fields as $field_name => $field_val) {
+                            if ($field_val !== '') {
+                                $input[$field_name] = $field_val;
+                            }
+                        }
+
+                        unset($input['id'], $input['is_template'], $input['template_name'], $input['date_mod'], $input['date_creation']);
+                        $input['name'] = $lic->fields['name']
+                            ? autoName($lic->fields['name'], 'name', $templateID, 'SoftwareLicense', $entity)
+                            : $values['name'];
+                    } else {
+                        $input['name'] = $values['name'];
+                    }
+
+                    $input['entities_id'] = $entity;
+                    $input['number']      = 0;
+
+                    $newID = $lic->add($input);
+                    if ($newID) {
+                        $newIDs[$values["id"]] = $newID;
+                        $this->createLinkWithItem(
+                            $values["id"],
+                            $newID,
+                            'SoftwareLicense',
+                            $params["plugin_order_orders_id"],
+                            $entity,
+                            $templateID,
+                            false,
+                            false,
+                        );
+                        $new_value = __s("Item generated by using order", "order") . ' : ' . $order->fields["name"];
+                        $order->addHistory('SoftwareLicense', '', $new_value, $newID);
+                        $new_value = __s("Item generated by using order", "order") . ' : '
+                            . $lic->getTypeName() . ' -> ' . $lic->getField("name");
+                        $order->addHistory('PluginOrderOrder', '', $new_value, $params["plugin_order_orders_id"]);
+                    }
+                }
+
                 continue;
             }
 

@@ -261,8 +261,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                 echo "</td>";
                 echo "<td><a href='" . $link . "?id=" . $cur["id"] . "&plugin_order_orders_id=" . $ID . "'>"
                 . Dropdown::getDropdownName("glpi_suppliers", $cur["suppliers_id"]) . "</a></td>";
-                echo "<td>" . $cur["num_quote"] . "</td>";
-                echo "<td>" . $cur["num_order"] . "</td>";
+                echo "<td>" . htmlentities((string) $cur["num_quote"], ENT_QUOTES, "UTF-8") . "</td>";
+                echo "<td>" . htmlentities((string) $cur["num_order"], ENT_QUOTES, "UTF-8") . "</td>";
                 echo "</tr>";
             }
 

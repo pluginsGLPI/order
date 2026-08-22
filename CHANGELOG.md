@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [unreleased]
+## [UNRELEASED]
 
 ### Added
 
@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - A correcting bill can cover only part of an order, and a regenerated OT or a fully superseded bill is archived while staying attached to the order
 - Dedicated profile rights for "Generate OT" and "Invoicing"; profiles holding UPDATE on orders receive both on upgrade
 - Plugin setup can hold an uploaded header image, prepended to every e-mail the plugin sends (native notifications included)
-- Administrator-mapped extra asset fields (e.g. an IMEI) as additional columns on the item generation form, per item type, custom assets included
+- Administrator-mapped extra asset fields (e.g. an IMEI) as additional columns on the item generation form, per item type - covering plain table columns, the fields plugin and GLPI 11 custom assets
 - The OT popup can use a mapped extra field (e.g. IMEI) as the document's serial-number source, falling back per item
 
 ### Fixed
@@ -34,8 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Fix fatal error when opening the "Generate item" massive action form for
   assignable assets (including GLPI 11 custom assets): an array value reaching a
   single-select dropdown triggered `strlen(): ... array given`
-- Fix generate associated item massive action
-- Update locales
+- Fix `Take item delivery` and `Cancel reception` action for `Software License`
 
 ### Changed
 
@@ -43,7 +42,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Polish translation for the OT and invoicing actions
 - The OT popup field feeding the document's Order column is labeled "ORDER number"
 - Plugin buttons use semantic Tabler classes, so custom themes cannot leave them unreadable
+- Synchronised with upstream pluginsGLPI/order 2.12.9; custom assets now become orderable through the upstream "Orderable" capacity, granted automatically on upgrade to definitions that were already in use
 
+## [2.12.9] - 2026-08-04
+
+### Added
+- Add grouped actions to link consumables and related items
+
+## [2.12.8] - 2026-06-24
+
+### Added
+- Add an `Orderable` capacity for GLPI 11 custom asset definitions.
+
+## [2.12.7] - 2026-06-03
+
+### Fixed
+
+- Clean plugin uninstall residual data
+- Fix generate associated item massive action
+- Prevent invalid references and non-existent classes during generate item flow.
+- Remove unnecessary message during plugin installation
+- Update locales
+- Fix getDatabaseRelations() declarations to fix warnings on order deletion
+- Fix `glpi_plugin_order_referencefrees` table not removed on uninstall
 
 ## [2.12.6] - 2026-02-23
 
