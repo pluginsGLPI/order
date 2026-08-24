@@ -127,7 +127,10 @@
                     </span>
                 </td>
                 {% for extra_field, extra_label in extra_columns %}
-                    <td></td>
+                    {# The min-width anchors the whole column, exactly like the
+                       name/serial cells above - without it the browser crushes
+                       the extra-field inputs to a few pixels. #}
+                    <td style="min-width: 200px !important;"></td>
                 {% endfor %}
             </tr>
 
