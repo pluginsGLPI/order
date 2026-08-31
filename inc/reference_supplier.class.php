@@ -273,7 +273,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
 
         $target = Toolbox::getItemTypeFormURL(self::class);
         Session::initNavigateListItems(
-            $this->getType(),
+            static::class,
             __s("Product reference", "order") . " = " . $ref->fields["name"],
         );
 
@@ -308,7 +308,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             echo Html::hidden('plugin_order_references_id', ['value' => $ID]);
 
             foreach ($result as $data) {
-                Session::addToNavigateListItems($this->getType(), (int) $data['id']);
+                Session::addToNavigateListItems(static::class, (int) $data['id']);
                 echo Html::hidden("item[" . $data["id"] . "]", ['value' => $ID]);
                 echo "<tr class='tab_bg_1 center'>";
                 echo "<td>";
@@ -332,7 +332,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
 
                 echo "</td>";
 
-                $link = Toolbox::getItemTypeFormURL($this->getType());
+                $link = Toolbox::getItemTypeFormURL(static::class);
                 echo "<td><a href='" . $link . "?id=" . $data["id"] . "&plugin_order_references_id=" . $ID . "'>"
                 . Dropdown::getDropdownName("glpi_suppliers", (int) $data["suppliers_id"]) . "</a></td>";
                 echo "<td>";

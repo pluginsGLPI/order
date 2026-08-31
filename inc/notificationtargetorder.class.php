@@ -157,7 +157,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             $this->data['##lang.ordervalidation.url##'] = "URL";
             $this->data['##ordervalidation.url##']      = $this->formatURL(
                 $options['additionnaloption']['usertype'],
-                $this->obj->getType() . "_" . $this->obj->getField("id"),
+                $this->obj::class . "_" . $this->obj->getField("id"),
             );
         }
     }

@@ -625,11 +625,11 @@ class PluginOrderLink extends CommonDBChild
                 foreach ($ma->getItems()[self::class] as $key => $val) {
                     $itemtype = $ma->POST['add_items'][$key]['itemtype'] ?? '';
                     if (in_array($itemtype, self::getTypesThanCannotBeGenerated()) && $itemtype !== 'SoftwareLicense') {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                     } elseif (isset($newIDs[$key]) && $newIDs[$key]) {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                     } else {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                     }
                 }
 
@@ -652,7 +652,7 @@ class PluginOrderLink extends CommonDBChild
                 if (!$allow_multiple_link && count($ids) > 1) {
                     $ma->addMessage(__s("Cannot link several items to one detail line", "order"));
                     foreach ($ids as $id) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                     }
 
                     break;
@@ -663,7 +663,7 @@ class PluginOrderLink extends CommonDBChild
                     $order_item->getFromDB($val);
                     if ($order_item->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
                         $ma->addMessage(__s("Cannot link items not delivered", "order"));
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                     } else {
                         $link->createLinkWithItem(
                             $key,
@@ -671,7 +671,7 @@ class PluginOrderLink extends CommonDBChild
                             $ma->POST['add_items'][$key]['itemtype'],
                             $ma->POST['plugin_order_orders_id'],
                         );
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                     }
                 }
 
@@ -684,7 +684,7 @@ class PluginOrderLink extends CommonDBChild
                         $ma->POST['add_items'][$key]['itemtype'],
                         $ma->POST['plugin_order_orders_id'],
                     );
-                    $ma->itemDone($item->getType(), $val, MassiveAction::ACTION_OK);
+                    $ma->itemDone($item::class, $val, MassiveAction::ACTION_OK);
                 }
 
                 break;
@@ -695,11 +695,11 @@ class PluginOrderLink extends CommonDBChild
                     $order_item->getFromDB($key);
                     if ($order_item->fields["items_id"] != 0) {
                         $ma->addMessage(__s("Unable to cancel reception when items are already linked, please unlink them before trying again.", "order"));
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                     } elseif (!$link->cancelReception($key)) {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                     } else {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                     }
                 }
 

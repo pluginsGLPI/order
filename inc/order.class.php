@@ -751,13 +751,13 @@ class PluginOrderOrder extends CommonDBTM
                 "glpi_documents_items",
                 [
                     'items_id' => $this->input["_oldID"],
-                    'itemtype' => $this->getType(),
+                    'itemtype' => static::class,
                 ],
             );
             foreach ($docs as $doc) {
                 $docitem->add([
                     'documents_id' => $doc["documents_id"],
-                    'itemtype'     => $this->getType(),
+                    'itemtype'     => static::class,
                     'items_id'     => $this->fields['id'],
                 ]);
             }
@@ -913,7 +913,7 @@ class PluginOrderOrder extends CommonDBTM
                 $this->fields["name"],
                 "name",
                 ($template === "newcomp"),
-                $this->getType(),
+                static::class,
                 $this->fields["entities_id"],
             );
             echo Html::input(
@@ -960,7 +960,7 @@ class PluginOrderOrder extends CommonDBTM
                 $this->fields["num_order"],
                 "num_order",
                 ($template === "newcomp"),
-                $this->getType(),
+                static::class,
                 $this->fields["entities_id"],
             );
             echo Html::input(
@@ -1579,7 +1579,7 @@ class PluginOrderOrder extends CommonDBTM
             $changes .= " : " . $comments;
         }
 
-        $this->addHistory($this->getType(), '', $changes, $orders_id);
+        $this->addHistory(static::class, '', $changes, $orders_id);
     }
 
 
@@ -2519,7 +2519,7 @@ class PluginOrderOrder extends CommonDBTM
 
             // Get order linked to document
             $document_item = new Document_Item();
-            if ($document_item->getFromDBByCrit(['documents_id' => $document->fields['id'], 'itemtype' => self::getType()])) {
+            if ($document_item->getFromDBByCrit(['documents_id' => $document->fields['id'], 'itemtype' => static::class])) {
                 // Update document name
                 $order = new self();
                 $order->getFromDB($document_item->fields['items_id']);
@@ -2594,7 +2594,7 @@ class PluginOrderOrder extends CommonDBTM
                         "entities_id" => $entities_id,
                         "update"      => __s('Update'),
                     ]);
-                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                 }
             }
 

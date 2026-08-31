@@ -918,7 +918,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $canedit              = $order->can($plugin_order_orders_id, UPDATE)
                               && $order->canUpdateOrder();
         Session::initNavigateListItems(
-            $this->getType(),
+            static::class,
             __s("Order", "order") . " = " . $order->getName(),
         );
         foreach ($result_ref as $data_ref) {
@@ -1201,7 +1201,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $visible = $_GET[$countainer_name . 'visible'] ?? false;
 
         foreach ($iterator as $data) {
-            Session::addToNavigateListItems($this->getType(), (int) $data['IDD']);
+            Session::addToNavigateListItems(static::class, (int) $data['IDD']);
 
             // Build entry for this row
             $entry = [];
@@ -2219,7 +2219,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         return countElementsInTable(
             'glpi_plugin_order_orders_items',
             [
-                'itemtype' => $item->getType(),
+                'itemtype' => $item::class,
                 'items_id' => $item->getID(),
             ],
         );
@@ -2271,7 +2271,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             }
         } elseif (
             is_subclass_of($item, CommonDBTM::class)
-            && in_array($item->getType(), PluginOrderOrder_Item::getClasses(true))
+            && in_array($item::class, PluginOrderOrder_Item::getClasses(true))
         ) {
             $order_item = new self();
             $order_item->showPluginFromItems($item::class, $item->fields['id']);

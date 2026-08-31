@@ -318,7 +318,7 @@ class PluginOrderReception extends CommonDBChild
         $order_order->getFromDB($orders_id);
 
         Session::initNavigateListItems(
-            $this->getType(),
+            static::class,
             __s("Order", "order") . " = " . $order_order->fields["name"],
         );
 
@@ -531,7 +531,7 @@ class PluginOrderReception extends CommonDBChild
 
             foreach ($all_data as $data) {
                 $detailID = $data["IDD"];
-                Session::addToNavigateListItems($this->getType(), (int) $detailID);
+                Session::addToNavigateListItems(static::class, (int) $detailID);
                 echo "<tr class='tab_bg_2'>";
                 $status    = 1;
                 if ($typeRef != 'SoftwareLicense') {
@@ -562,7 +562,7 @@ class PluginOrderReception extends CommonDBChild
                 }
 
                 echo "<td align='center'>";
-                $link = Toolbox::getItemTypeFormURL($this->getType());
+                $link = Toolbox::getItemTypeFormURL(static::class);
                 if ($canedit && $data["states_id"] == PluginOrderOrder::ORDER_DEVICE_DELIVRED) {
                     echo '<a href="' . $link . "?id=" . $data["IDD"] . '">';
                 }

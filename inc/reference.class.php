@@ -355,7 +355,7 @@ class PluginOrderReference extends CommonDBTM
 
     public function getReceptionReferenceLink($data)
     {
-        $link = Toolbox::getItemTypeFormURL($this->getType());
+        $link = Toolbox::getItemTypeFormURL(static::class);
 
         if (self::canView()) {
             return '<a href="' . $link . "?id=" . $data["id"] . '">' . $data["name"] . "</a>";
@@ -1061,7 +1061,7 @@ class PluginOrderReference extends CommonDBTM
                             "entities_id" => $entities_id,
                             "update" => __s('Update'),
                         ]);
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     }
                 }
 
@@ -1075,7 +1075,7 @@ class PluginOrderReference extends CommonDBTM
                         $item->copy($id);
                     }
 
-                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                 }
 
                 return;

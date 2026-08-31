@@ -641,7 +641,7 @@ class PluginOrderBill extends CommonDropdown
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case 'PluginOrderOrder':
                     return self::createTabEntry(
                         self::getTypeName(),
