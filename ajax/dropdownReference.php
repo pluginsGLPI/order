@@ -31,8 +31,6 @@
 /** @var DBmysql $DB */
 global $DB;
 
-include_once(__DIR__ . "/../../../inc/includes.php");
-
 Session::checkRight(PluginOrderReference::$rightname, READ);
 
 // Make a select box for references
