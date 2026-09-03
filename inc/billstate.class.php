@@ -36,7 +36,7 @@ class PluginOrderBillState extends CommonDropdown
 
     public const PAID    = 1;
 
-    public static $rightname = 'plugin_order_bill';
+    public static string $rightname = 'plugin_order_bill';
 
 
     public static function getTypeName($nb = 0)

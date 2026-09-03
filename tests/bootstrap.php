@@ -28,20 +28,9 @@
  * -------------------------------------------------------------------------
  */
 
-Session::checkLoginUser();
+require __DIR__ . '/../../../tests/bootstrap.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-$config = new PluginOrderConfig();
-
-if (isset($_POST["update"])) {
-    $config->update($_POST);
-    //Update singelton
-    PluginOrderConfig::getConfig(true);
-    Html::back();
-} else {
-    Html::header(__s("Orders", "order"), $_SERVER['PHP_SELF'], "management", "PluginOrderMenu", "order");
-
-    Session::checkRight(Config::$rightname, UPDATE);
-    $config->showForm(1);
-
-    Html::footer();
+if (!Plugin::isPluginActive('order')) {
+    throw new RuntimeException('Plugin order is not active in the test database');
 }

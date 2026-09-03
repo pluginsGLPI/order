@@ -40,17 +40,17 @@ class PluginOrderOrder extends CommonDBTM
 {
     use Clonable;
 
-    public static $rightname         = 'plugin_order_order';
+    public static string $rightname         = 'plugin_order_order';
 
     public $is_template              = true;
 
-    public $dohistory                = true;
+    public bool $dohistory                = true;
 
     protected $usenotepadrights      = true;
 
-    protected $usenotepad            = true;
+    protected bool $usenotepad            = true;
 
-    public static $forward_entity_to = [
+    public static array $forward_entity_to = [
         "PluginOrderOrder_Item",
         "PluginOrderOrder_Supplier",
         "PluginOrderSurveySupplier",
@@ -108,37 +108,37 @@ class PluginOrderOrder extends CommonDBTM
 
     public static function canCancel()
     {
-        return Session::haveRight("plugin_order_order", self::RIGHT_CANCEL);
+        return Session::haveRight(self::$rightname, self::RIGHT_CANCEL);
     }
 
 
     public static function canUndo()
     {
-        return Session::haveRight("plugin_order_order", self::RIGHT_UNDO_VALIDATION);
+        return Session::haveRight(self::$rightname, self::RIGHT_UNDO_VALIDATION);
     }
 
 
     public static function canValidate()
     {
-        return Session::haveRight("plugin_order_order", self::RIGHT_VALIDATION);
+        return Session::haveRight(self::$rightname, self::RIGHT_VALIDATION);
     }
 
 
     public static function canGenerateWithoutValidation()
     {
-        return Session::haveRight("plugin_order_order", self::RIGHT_GENERATEODT_WITHOUT_VALIDATION);
+        return Session::haveRight(self::$rightname, self::RIGHT_GENERATEODT_WITHOUT_VALIDATION);
     }
 
 
     public static function canGenerate()
     {
-        return Session::haveRight("plugin_order_order", self::RIGHT_GENERATEODT);
+        return Session::haveRight(self::$rightname, self::RIGHT_GENERATEODT);
     }
 
 
     public static function canDeliver()
     {
-        return Session::haveRight("plugin_order_order", self::RIGHT_DELIVERY);
+        return Session::haveRight(self::$rightname, self::RIGHT_DELIVERY);
     }
 
 
@@ -635,7 +635,7 @@ class PluginOrderOrder extends CommonDBTM
             $ong    = [];
             $config = PluginOrderConfig::getConfig();
             if (
-                Session::haveRightsOr("plugin_order_order", [
+                Session::haveRightsOr(self::$rightname, [
                     self::RIGHT_VALIDATION,
                     self::RIGHT_CANCEL,
                     self::RIGHT_UNDO_VALIDATION,
@@ -751,17 +751,15 @@ class PluginOrderOrder extends CommonDBTM
                 "glpi_documents_items",
                 [
                     'items_id' => $this->input["_oldID"],
-                    'itemtype' => $this->getType(),
+                    'itemtype' => static::class,
                 ],
             );
-            if (!empty($docs)) {
-                foreach ($docs as $doc) {
-                    $docitem->add([
-                        'documents_id' => $doc["documents_id"],
-                        'itemtype'     => $this->getType(),
-                        'items_id'     => $this->fields['id'],
-                    ]);
-                }
+            foreach ($docs as $doc) {
+                $docitem->add([
+                    'documents_id' => $doc["documents_id"],
+                    'itemtype'     => static::class,
+                    'items_id'     => $this->fields['id'],
+                ]);
             }
         }
     }
@@ -915,7 +913,7 @@ class PluginOrderOrder extends CommonDBTM
                 $this->fields["name"],
                 "name",
                 ($template === "newcomp"),
-                $this->getType(),
+                static::class,
                 $this->fields["entities_id"],
             );
             echo Html::input(
@@ -962,7 +960,7 @@ class PluginOrderOrder extends CommonDBTM
                 $this->fields["num_order"],
                 "num_order",
                 ($template === "newcomp"),
-                $this->getType(),
+                static::class,
                 $this->fields["entities_id"],
             );
             echo Html::input(
@@ -1581,7 +1579,7 @@ class PluginOrderOrder extends CommonDBTM
             $changes .= " : " . $comments;
         }
 
-        $this->addHistory($this->getType(), '', $changes, $orders_id);
+        $this->addHistory(static::class, '', $changes, $orders_id);
     }
 
 
@@ -2521,7 +2519,7 @@ class PluginOrderOrder extends CommonDBTM
 
             // Get order linked to document
             $document_item = new Document_Item();
-            if ($document_item->getFromDBByCrit(['documents_id' => $document->fields['id'], 'itemtype' => self::getType()])) {
+            if ($document_item->getFromDBByCrit(['documents_id' => $document->fields['id'], 'itemtype' => static::class])) {
                 // Update document name
                 $order = new self();
                 $order->getFromDB($document_item->fields['items_id']);
@@ -2571,7 +2569,7 @@ class PluginOrderOrder extends CommonDBTM
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
-        if ($isadmin && (Session::haveRight('transfer', READ) && Session::isMultiEntitiesMode())) {
+        if ($isadmin && (Session::haveRight(Transfer::$rightname, READ) && Session::isMultiEntitiesMode())) {
             $actions['PluginOrderOrder:transfert'] = __s('Transfer');
         }
 
@@ -2596,7 +2594,7 @@ class PluginOrderOrder extends CommonDBTM
                         "entities_id" => $entities_id,
                         "update"      => __s('Update'),
                     ]);
-                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                 }
             }
 

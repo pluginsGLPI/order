@@ -177,7 +177,7 @@ function plugin_order_getDatabaseRelations()
                 "glpi_plugin_order_orders" => "plugin_order_orderstates_id",
             ],
             "glpi_plugin_order_accountsections" => [
-                "glpi_plugin_order_accountsections" => "plugin_order_accountsections_id",
+                "glpi_plugin_order_orders" => "plugin_order_accountsections_id",
             ],
             "glpi_plugin_order_analyticnatures" => [
                 "glpi_plugin_order_orders_items" => "plugin_order_analyticnatures_id",
@@ -237,7 +237,12 @@ function plugin_order_getAddSearchOptions($itemtype)
     $plugin = new Plugin();
 
     $sopt = [];
-    if ($plugin->isInstalled('order') && $plugin->isActivated('order') && Session::haveRight("plugin_order_order", READ) && in_array($itemtype, PluginOrderOrder_Item::getClasses(true))) {
+    if (
+        $plugin->isInstalled('order')
+        && $plugin->isActivated('order')
+        && Session::haveRight(PluginOrderOrder::$rightname, READ)
+        && in_array($itemtype, PluginOrderOrder_Item::getClasses(true))
+    ) {
         $sopt[3160]['table']         = 'glpi_plugin_order_orders';
         $sopt[3160]['field']         = 'name';
         $sopt[3160]['linkfield']     = '';

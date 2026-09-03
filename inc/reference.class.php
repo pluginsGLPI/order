@@ -59,11 +59,11 @@ use Glpi\DBAL\QuerySubQuery;
  */
 class PluginOrderReference extends CommonDBTM
 {
-    public static $rightname         = 'plugin_order_reference'; //'plugin_order_reference'; //TODO : A développer
+    public static string $rightname         = 'plugin_order_reference'; //'plugin_order_reference'; //TODO : A développer
 
-    public $dohistory                = true;
+    public bool $dohistory                = true;
 
-    public static $forward_entity_to = ['PluginOrderReference_Supplier'];
+    public static array $forward_entity_to = ['PluginOrderReference_Supplier'];
 
 
     public static function getTypeName($nb = 0)
@@ -355,7 +355,7 @@ class PluginOrderReference extends CommonDBTM
 
     public function getReceptionReferenceLink($data)
     {
-        $link = Toolbox::getItemTypeFormURL($this->getType());
+        $link = Toolbox::getItemTypeFormURL(static::class);
 
         if (self::canView()) {
             return '<a href="' . $link . "?id=" . $data["id"] . '">' . $data["name"] . "</a>";
@@ -1029,7 +1029,7 @@ class PluginOrderReference extends CommonDBTM
 
         if ($isadmin) {
             if (
-                Session::haveRight('transfer', READ)
+                Session::haveRight(Transfer::$rightname, READ)
                 && Session::isMultiEntitiesMode()
             ) {
                 $actions['PluginOrderReference:transfert'] = __s('Transfer');
@@ -1061,7 +1061,7 @@ class PluginOrderReference extends CommonDBTM
                             "entities_id" => $entities_id,
                             "update" => __s('Update'),
                         ]);
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     }
                 }
 
@@ -1075,7 +1075,7 @@ class PluginOrderReference extends CommonDBTM
                         $item->copy($id);
                     }
 
-                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                 }
 
                 return;

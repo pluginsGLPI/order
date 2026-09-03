@@ -32,9 +32,9 @@
 
 class PluginOrderBill extends CommonDropdown
 {
-    public static $rightname  = 'plugin_order_bill';
+    public static string $rightname  = 'plugin_order_bill';
 
-    public $dohistory         = true;
+    public bool $dohistory         = true;
 
     public $first_level_menu  = "plugins";
 
@@ -641,7 +641,7 @@ class PluginOrderBill extends CommonDropdown
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case 'PluginOrderOrder':
                     return self::createTabEntry(
                         self::getTypeName(),

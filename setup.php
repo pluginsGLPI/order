@@ -35,9 +35,9 @@ use function Safe\define;
 define('PLUGIN_ORDER_VERSION', '2.12.9');
 
 // Minimal GLPI version, inclusive
-define("PLUGIN_ORDER_MIN_GLPI", "11.0.0");
+define("PLUGIN_ORDER_MIN_GLPI", "12.0.0");
 // Maximum GLPI version, exclusive
-define("PLUGIN_ORDER_MAX_GLPI", "11.0.99");
+define("PLUGIN_ORDER_MAX_GLPI", "12.0.99");
 
 if (!defined('PLUGIN_ORDER_DIR')) {
     define("PLUGIN_ORDER_DIR", Plugin::getPhpDir('order'));
@@ -200,7 +200,7 @@ function plugin_init_order()
             $PLUGIN_HOOKS['add_css']['order'][] = 'css/order.css';
 
             /* link to the config page in plugins menu */
-            if (Session::haveRight("config", UPDATE)) {
+            if (Session::haveRight(Config::$rightname, UPDATE)) {
                 $PLUGIN_HOOKS['config_page']['order'] = 'front/config.form.php';
             }
 

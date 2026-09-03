@@ -32,15 +32,15 @@
 
 class PluginOrderReception extends CommonDBChild
 {
-    public static $rightname          = 'plugin_order_order';
+    public static string $rightname          = 'plugin_order_order';
 
-    public $dohistory                 = true;
+    public bool $dohistory                 = true;
 
-    public static $itemtype           = 'PluginOrderOrder';
+    public static string $itemtype           = 'PluginOrderOrder';
 
-    public static $items_id           = 'plugin_order_orders_id';
+    public static string $items_id           = 'plugin_order_orders_id';
 
-    public static $checkParentRights  = self::DONT_CHECK_ITEM_RIGHTS;
+    public static int $checkParentRights  = self::DONT_CHECK_ITEM_RIGHTS;
 
 
     public static function getTable($classname = null)
@@ -61,14 +61,14 @@ class PluginOrderReception extends CommonDBChild
 
     public function canUpdateItem(): bool
     {
-        return Session::haveRight('plugin_order_order', PluginOrderOrder::RIGHT_DELIVERY);
+        return Session::haveRight(PluginOrderOrder::$rightname, PluginOrderOrder::RIGHT_DELIVERY);
     }
 
 
     public function canViewItem(): bool
     {
-        return Session::haveRight('plugin_order_order', PluginOrderOrder::RIGHT_DELIVERY)
-         && Session::haveRight('plugin_order_order', READ);
+        return Session::haveRight(PluginOrderOrder::$rightname, PluginOrderOrder::RIGHT_DELIVERY)
+         && Session::haveRight(PluginOrderOrder::$rightname, READ);
     }
 
 
@@ -272,12 +272,12 @@ class PluginOrderReception extends CommonDBChild
 
         echo "<td>" . __s("Bill", "order") . "</td>";
         echo "<td>";
-        if (Session::haveRight("plugin_order_bill", UPDATE)) {
+        if (Session::haveRight(PluginOrderBill::$rightname, UPDATE)) {
             PluginOrderBill::Dropdown([
                 'name'  => "plugin_order_bills_id",
                 'value' => $this->fields["plugin_order_bills_id"],
             ]);
-        } elseif (Session::haveRight("plugin_order_bill", READ)) {
+        } elseif (Session::haveRight(PluginOrderBill::$rightname, READ)) {
             echo Dropdown::getDropdownName(
                 "glpi_plugin_order_bills",
                 $this->fields["plugin_order_bills_id"],
@@ -318,7 +318,7 @@ class PluginOrderReception extends CommonDBChild
         $order_order->getFromDB($orders_id);
 
         Session::initNavigateListItems(
-            $this->getType(),
+            static::class,
             __s("Order", "order") . " = " . $order_order->fields["name"],
         );
 
@@ -531,7 +531,7 @@ class PluginOrderReception extends CommonDBChild
 
             foreach ($all_data as $data) {
                 $detailID = $data["IDD"];
-                Session::addToNavigateListItems($this->getType(), (int) $detailID);
+                Session::addToNavigateListItems(static::class, (int) $detailID);
                 echo "<tr class='tab_bg_2'>";
                 $status    = 1;
                 if ($typeRef != 'SoftwareLicense') {
@@ -562,7 +562,7 @@ class PluginOrderReception extends CommonDBChild
                 }
 
                 echo "<td align='center'>";
-                $link = Toolbox::getItemTypeFormURL($this->getType());
+                $link = Toolbox::getItemTypeFormURL(static::class);
                 if ($canedit && $data["states_id"] == PluginOrderOrder::ORDER_DEVICE_DELIVRED) {
                     echo '<a href="' . $link . "?id=" . $data["IDD"] . '">';
                 }

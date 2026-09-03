@@ -32,7 +32,7 @@
 
 class PluginOrderConfig extends CommonDBTM
 {
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public const CONFIG_NEVER   = 0;
 
@@ -53,13 +53,13 @@ class PluginOrderConfig extends CommonDBTM
 
     public static function canView(): bool
     {
-        return Session::haveRight('config', READ);
+        return Session::haveRight(Config::$rightname, READ);
     }
 
 
     public static function canCreate(): bool
     {
-        return Session::haveRight('config', UPDATE);
+        return Session::haveRight(Config::$rightname, UPDATE);
     }
 
 

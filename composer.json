@@ -4,9 +4,6 @@
         "php": ">=8.2",
         "sboden/odtphp": "^3.2"
     },
-    "require-dev": {
-        "glpi-project/tools": "^0.8"
-    },
     "config": {
         "optimize-autoloader": true,
         "platform": {
@@ -20,6 +17,11 @@
             "url": "https://github.com/teclib/odtphp/"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "GlpiPlugin\\Order\\Tests\\": "tests"
+        }
+    },
     "autoload-dev": {
         "psr-4": {
             "Glpi\\Tools\\": "../../tools/src/"
