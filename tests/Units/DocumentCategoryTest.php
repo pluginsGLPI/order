@@ -22,32 +22,42 @@
  * You should have received a copy of the GNU General Public License
  * along with Order. If not, see <http://www.gnu.org/licenses/>.
  * -------------------------------------------------------------------------
- * @copyright Copyright (C) 2009-2023 by Order plugin team.
+ * @copyright Copyright (C) 2009-2026 by Order plugin team.
  * @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
  * @link      https://github.com/pluginsGLPI/order
  * -------------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
-Session::checkLoginUser();
-$item = new PluginOrderOrder_Item();
+declare(strict_types=1);
 
-if (isset($_POST['update'])) {
-    $item->getFromDB($_POST['id']);
-    (new PluginOrderOrder())->check($item->fields['plugin_order_orders_id'], UPDATE);
-    $item->update($_POST);
-    $item->updatePrices($_POST['id']);
-    Html::redirect($_SERVER['HTTP_REFERER']);
+namespace GlpiPlugin\Order\Tests\Units;
+
+use DocumentCategory;
+use Glpi\Tests\DbTestCase;
+use PluginOrderDocumentCategory;
+
+final class DocumentCategoryTest extends DbTestCase
+{
+    private const XSS_PAYLOAD = '<script>alert(1);</script>';
+
+    public function testShowForDocumentCategoryEscapesPrefix(): void
+    {
+        $this->login();
+
+        $document_category = $this->createItem(DocumentCategory::class, [
+            'name' => $this->getUniqueString(),
+        ]);
+
+        $this->createItem(PluginOrderDocumentCategory::class, [
+            'documentcategories_id'     => $document_category->getID(),
+            'documentcategories_prefix' => self::XSS_PAYLOAD,
+        ]);
+
+        ob_start();
+        PluginOrderDocumentCategory::showForDocumentCategory($document_category);
+        $output = ob_get_clean();
+
+        $this->assertStringNotContainsString(self::XSS_PAYLOAD, $output);
+        $this->assertStringContainsString(htmlspecialchars(self::XSS_PAYLOAD, ENT_QUOTES, 'UTF-8'), $output);
+    }
 }
-
-Html::header(
-    __("Orders management", "order"),
-    $_SERVER['PHP_SELF'],
-    "management",
-    "PluginOrderMenu",
-    "order"
-);
-
-$item->display($_REQUEST);
-
-Html::footer();

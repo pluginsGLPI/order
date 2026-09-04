@@ -29,6 +29,10 @@
  */
 
 include("../../../inc/includes.php");
+
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
@@ -175,6 +179,15 @@ if (isset($_POST["action"])) {
             break;
 
         case "check_unicity":
+            Session::checkRight('plugin_order_order', READ);
+
+            if (
+                !in_array($_POST['itemtype'] ?? '', $CFG_GLPI['asset_types'], true)
+                || !in_array($_POST['field'] ?? '', ['name', 'serial'], true)
+            ) {
+                throw new RuntimeException("Invalid item type or field");
+            }
+
             $itemtype = new $_POST['itemtype']();
             if (count($itemtype->find([$_POST['field'] => $_POST['field_value'], ])) > 0) {
                 echo "false";

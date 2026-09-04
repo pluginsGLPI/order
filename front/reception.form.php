@@ -45,8 +45,9 @@ $reception  = new PluginOrderReception();
 $order_item = new PluginOrderOrder_Item();
 
 if (isset($_POST["update"])) {
+    $order_item->getFromDB($_POST["id"]);
+    (new PluginOrderOrder())->check($order_item->fields["plugin_order_orders_id"], UPDATE);
     if (PluginOrderReception::canCreate()) {
-        $order_item->getFromDB($_POST["id"]);
         if ($order_item->fields["itemtype"] == 'SoftwareLicense') {
             $result = $order_item->queryRef(
                 $order_item->fields["plugin_order_orders_id"],
@@ -82,6 +83,8 @@ if (isset($_POST["update"])) {
     ]);
     Html::redirect($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["delete"])) {
+    $order_item->getFromDB($_POST["id"]);
+    (new PluginOrderOrder())->check($order_item->fields["plugin_order_orders_id"], UPDATE);
     $reception->deleteDelivery($_POST["id"]);
     $reception->updateReceptionStatus([
         'items' => [
@@ -93,6 +96,7 @@ if (isset($_POST["update"])) {
     Html::redirect(Toolbox::getItemTypeFormURL('PluginOrderOrder') . "?id=" . $_POST["plugin_order_orders_id"]);
 } else if (isset($_POST["bulk_reception"])) {
    //Several new items are delivered
+    (new PluginOrderOrder())->check($_POST["plugin_order_orders_id"], UPDATE);
     $reception->updateBulkReceptionStatus($_POST);
     Html::redirect($_SERVER["HTTP_REFERER"]);
 } else {
