@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Fix warning : `creation of dynamic property $table is deprecated`
+- Fix missing rights checks
+- Fix unescaped output in order/reception forms
 
 ## [2.11.5] - 2026-03-24
 

@@ -313,6 +313,16 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
     }
 
     /**
+     * Check that this item belongs to the given order, to prevent cross-order IDOR on deletion.
+     *
+     * @param int $orders_id Order ID expected to own this item
+     */
+    public function belongsToOrder(int $orders_id): bool
+    {
+        return (int) $this->fields['plugin_order_orders_id'] === $orders_id;
+    }
+
+    /**
      * Calculate the total ecotax from all ordered items with their quantities
      *
      * @param int $orders_id Order ID

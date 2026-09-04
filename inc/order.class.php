@@ -1818,6 +1818,15 @@ class PluginOrderOrder extends CommonDBTM
             throw new \RuntimeException("Invalid template name");
         }
 
+        // Avoid access to another directory or to files that does not match allowed extension
+        $extensionPattern = '/\.(' . implode('|', array_map(fn($ext) => preg_quote((string) $ext, '/'), PLUGIN_ORDER_SIGNATURE_EXTENSION)) . ')$/';
+        if (
+            !empty($signature)
+            && (preg_match('/[\\\\\/]/', $signature) !== 0 || preg_match($extensionPattern, $signature) === 0)
+        ) {
+            throw new RuntimeException("Invalid signature file name");
+        }
+
         $template_path = PLUGIN_ORDER_TEMPLATE_DIR . $template;
 
         // Ensure the file exists and is readable
