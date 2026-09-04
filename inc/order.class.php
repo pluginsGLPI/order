@@ -957,7 +957,7 @@ class PluginOrderOrder extends CommonDBTM
                 ]
             );
         } else {
-            echo $this->fields["name"];
+            echo htmlspecialchars($this->fields["name"], ENT_QUOTES, 'UTF-8');
         }
         echo "</td>";
         /* date of order */
@@ -1001,7 +1001,7 @@ class PluginOrderOrder extends CommonDBTM
                 ]
             );
         } else {
-            echo $this->fields["num_order"];
+            echo htmlspecialchars($this->fields["num_order"], ENT_QUOTES, 'UTF-8');
         }
         echo "</td>";
         /* type order */
@@ -1340,9 +1340,9 @@ class PluginOrderOrder extends CommonDBTM
         echo "<td>" . __("Comments") . ":  </td>";
         echo "<td colspan='3' align='center'>";
         if ($canedit) {
-            echo "<textarea cols='40' rows='3' name='comment' class='form-control'>" . $this->fields["comment"] . "</textarea>";
+            echo "<textarea cols='40' rows='3' name='comment' class='form-control'>" . htmlspecialchars($this->fields["comment"], ENT_QUOTES, 'UTF-8') . "</textarea>";
         } else {
-            echo $this->fields["comment"];
+            echo htmlspecialchars($this->fields["comment"], ENT_QUOTES, 'UTF-8');
         }
         echo "</td></tr>";
 
@@ -1818,6 +1818,15 @@ class PluginOrderOrder extends CommonDBTM
             throw new \RuntimeException("Invalid template name");
         }
 
+        // Avoid access to another directory or to files that does not match allowed extension
+        $extensionPattern = '/\.(' . implode('|', array_map(fn($ext) => preg_quote((string) $ext, '/'), PLUGIN_ORDER_SIGNATURE_EXTENSION)) . ')$/';
+        if (
+            !empty($signature)
+            && (preg_match('/[\\\\\/]/', $signature) !== 0 || preg_match($extensionPattern, $signature) === 0)
+        ) {
+            throw new RuntimeException("Invalid signature file name");
+        }
+
         $template_path = PLUGIN_ORDER_TEMPLATE_DIR . $template;
 
         // Ensure the file exists and is readable
@@ -2194,9 +2203,9 @@ class PluginOrderOrder extends CommonDBTM
                 echo "<td>";
 
                 if (self::canView()) {
-                    echo "<a href=\"" . $link . "?id=" . $data["id"] . "\">" . $data["name"] . "</a>";
+                    echo "<a href=\"" . $link . "?id=" . $data["id"] . "\">" . htmlspecialchars($data["name"], ENT_QUOTES, 'UTF-8') . "</a>";
                 } else {
-                    echo $data["name"];
+                    echo htmlspecialchars($data["name"], ENT_QUOTES, 'UTF-8');
                 }
                 echo "</td>";
 

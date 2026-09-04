@@ -30,6 +30,7 @@
 
 include('../../../inc/includes.php');
 Session::checkLoginUser();
+Session::checkRight("config", UPDATE);
 
 $documentCategory = new PluginOrderDocumentCategory();
 
