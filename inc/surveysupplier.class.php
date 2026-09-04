@@ -373,7 +373,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         //comments of order
         echo __s("Comments") . ": </td>";
         echo "<td>";
-        echo "<textarea cols='80' rows='4' name='comment'>" . $this->fields["comment"] . "</textarea>";
+        echo "<textarea cols='80' rows='4' name='comment'>" . htmlescape($this->fields["comment"]) . "</textarea>";
         echo "</td>";
         echo "</tr>";
 
@@ -458,7 +458,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 echo $total . " / 5";
                 echo "</td>";
                 echo "<td>";
-                echo $data["comment"];
+                echo htmlescape($data["comment"]);
                 echo "</td>";
                 echo "</tr>";
             }

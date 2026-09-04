@@ -358,9 +358,9 @@ class PluginOrderReference extends CommonDBTM
         $link = Toolbox::getItemTypeFormURL($this->getType());
 
         if (self::canView()) {
-            return '<a href="' . $link . "?id=" . $data["id"] . '">' . $data["name"] . "</a>";
+            return '<a href="' . $link . "?id=" . $data["id"] . '">' . htmlescape($data["name"]) . "</a>";
         } else {
-            return $data['name'];
+            return htmlescape($data['name']);
         }
     }
 
@@ -644,7 +644,7 @@ class PluginOrderReference extends CommonDBTM
         echo "</td>";
         echo "<td rowspan='2'>" . __s("Comments") . "</td>";
         echo "<td rowspan='2'>";
-        echo "<textarea cols='50' rows='3' name='comment'>" . $this->fields["comment"]
+        echo "<textarea cols='50' rows='3' name='comment'>" . htmlescape($this->fields["comment"])
             . "</textarea>";
         echo "</td></tr>";
 

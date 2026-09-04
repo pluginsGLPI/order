@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 - Fix `Take item delivery` and `Cancel reception` action for `Software License`
+- Fix missing rights checks
+- Fix unescaped output in order/reception forms
 
 ## [2.12.9] - 2026-08-04
 

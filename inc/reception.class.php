@@ -203,7 +203,7 @@ class PluginOrderReception extends CommonDBChild
         echo "<td>" . __s("Reference") . ": </td>";
         echo "<td>";
         if ($this->fields['itemtype'] == 'PluginOrderReferenceFree') {
-            echo $order_reference->fields["name"];
+            echo htmlescape($order_reference->fields["name"]);
         } else {
             $data         = [];
             $data["id"]   = $this->fields["plugin_order_references_id"];
@@ -293,9 +293,9 @@ class PluginOrderReception extends CommonDBChild
         echo "<td colspan='3'>";
         if ($canedit) {
             echo "<textarea cols='100' rows='4' name='delivery_comment'>"
-             . $this->fields["delivery_comment"] . "</textarea>";
+             . htmlescape($this->fields["delivery_comment"]) . "</textarea>";
         } else {
-            echo $this->fields["delivery_comment"];
+            echo htmlescape($this->fields["delivery_comment"]);
         }
 
         echo "</td>";
