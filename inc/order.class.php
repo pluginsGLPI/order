@@ -925,7 +925,7 @@ class PluginOrderOrder extends CommonDBTM
                 ],
             );
         } else {
-            echo $this->fields["name"];
+            echo htmlescape($this->fields["name"]);
         }
 
         echo "</td>";
@@ -972,7 +972,7 @@ class PluginOrderOrder extends CommonDBTM
                 ],
             );
         } else {
-            echo $this->fields["num_order"];
+            echo htmlescape($this->fields["num_order"]);
         }
 
         echo "</td>";
@@ -1332,9 +1332,9 @@ class PluginOrderOrder extends CommonDBTM
         echo "<td>" . __s("Comments") . ":  </td>";
         echo "<td colspan='3' align='center'>";
         if ($canedit) {
-            echo "<textarea cols='40' rows='3' name='comment' class='form-control'>" . $this->fields["comment"] . "</textarea>";
+            echo "<textarea cols='40' rows='3' name='comment' class='form-control'>" . htmlescape($this->fields["comment"]) . "</textarea>";
         } else {
-            echo $this->fields["comment"];
+            echo htmlescape($this->fields["comment"]);
         }
 
         echo "</td></tr>";
@@ -1812,6 +1812,15 @@ class PluginOrderOrder extends CommonDBTM
             throw new RuntimeException("Invalid template name");
         }
 
+        // Avoid access to another directory or to files that does not match allowed extension
+        $extensionPattern = '/\.(' . implode('|', array_map(fn($ext) => preg_quote((string) $ext, '/'), PLUGIN_ORDER_SIGNATURE_EXTENSION)) . ')$/';
+        if (
+            !empty($signature)
+            && (preg_match('/[\\\\\/]/', $signature) !== 0 || preg_match($extensionPattern, $signature) === 0)
+        ) {
+            throw new RuntimeException("Invalid signature file name");
+        }
+
         $template_path = PLUGIN_ORDER_TEMPLATE_DIR . $template;
 
         // Ensure the file exists and is readable
@@ -2180,9 +2189,9 @@ class PluginOrderOrder extends CommonDBTM
                 echo "<td>";
 
                 if (self::canView()) {
-                    echo '<a href="' . $link . "?id=" . $data["id"] . '">' . $data["name"] . "</a>";
+                    echo '<a href="' . $link . "?id=" . $data["id"] . '">' . htmlescape($data["name"]) . "</a>";
                 } else {
-                    echo $data["name"];
+                    echo htmlescape($data["name"]);
                 }
 
                 echo "</td>";

@@ -336,7 +336,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 echo "<td><a href='" . $link . "?id=" . $data["id"] . "&plugin_order_references_id=" . $ID . "'>"
                 . Dropdown::getDropdownName("glpi_suppliers", (int) $data["suppliers_id"]) . "</a></td>";
                 echo "<td>";
-                echo $data["reference_code"];
+                echo htmlescape($data["reference_code"]);
                 echo "</td>";
                 echo "<td>";
                 echo Html::formatNumber((float) $data["price_taxfree"]);
@@ -596,7 +596,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 echo "</td>";
 
                 echo "<td>";
-                echo $data['reference_code'];
+                echo htmlescape($data['reference_code']);
                 echo "</td>";
 
                 echo "<td>";

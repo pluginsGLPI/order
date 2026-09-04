@@ -294,6 +294,16 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
     }
 
     /**
+     * Check that this item belongs to the given order, to prevent cross-order IDOR on deletion.
+     *
+     * @param int $orders_id Order ID expected to own this item
+     */
+    public function belongsToOrder(int $orders_id): bool
+    {
+        return (int) $this->fields['plugin_order_orders_id'] === $orders_id;
+    }
+
+    /**
      * Calculate the total ecotax from all ordered items with their quantities
      *
      * @param int $orders_id Order ID
@@ -1496,7 +1506,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         echo "<td>" . __s("Reference") . ": </td>";
         echo "<td>";
         if ($this->fields['itemtype'] == 'PluginOrderReferenceFree') {
-            echo $order_reference->fields["name"];
+            echo htmlescape($order_reference->fields["name"]);
         } else {
             $data         = [];
             $data["id"]   = $this->fields["plugin_order_references_id"];
@@ -1562,9 +1572,9 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         echo __s("Description") . ":  </td>";
         echo "<td colspan='3'>";
         if ($canedit_comment) {
-            echo "<textarea cols='50' rows='4' name='comment'>" . $this->fields["comment"] . "</textarea>";
+            echo "<textarea cols='50' rows='4' name='comment'>" . htmlescape($this->fields["comment"]) . "</textarea>";
         } else {
-            echo $this->fields['comment'];
+            echo htmlescape($this->fields['comment']);
         }
 
         echo "</td></tr>";
