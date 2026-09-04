@@ -32,6 +32,8 @@ Session::checkLoginUser();
 $item = new PluginOrderOrder_Item();
 
 if (isset($_POST['update'])) {
+    $item->getFromDB($_POST['id']);
+    (new PluginOrderOrder())->check($item->fields['plugin_order_orders_id'], UPDATE);
     $item->update($_POST);
     $item->updatePrices($_POST['id']);
     Html::redirect($_SERVER['HTTP_REFERER']);

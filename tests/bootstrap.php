@@ -22,24 +22,16 @@
  * You should have received a copy of the GNU General Public License
  * along with Order. If not, see <http://www.gnu.org/licenses/>.
  * -------------------------------------------------------------------------
- * @copyright Copyright (C) 2009-2023 by Order plugin team.
+ * @copyright Copyright (C) 2009-2026 by Order plugin team.
  * @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
  * @link      https://github.com/pluginsGLPI/order
  * -------------------------------------------------------------------------
  */
 
-Session::checkLoginUser();
-Session::checkRight("config", UPDATE);
+declare(strict_types=1);
 
-$documentCategory = new PluginOrderDocumentCategory();
+require __DIR__ . '/../../../tests/bootstrap.php';
 
-if (isset($_POST["update"])) {
-    if (!$documentCategory->getFromDBByCrit(['documentcategories_id' => $_POST['documentcategories_id']])) {
-        $documentCategory->add($_POST);
-    } else {
-        $_POST['id'] = $documentCategory->fields['id'];
-        $documentCategory->update($_POST);
-    }
-
-    Html::back();
+if (!Plugin::isPluginActive('order')) {
+    throw new RuntimeException('Plugin order is not active in the test database');
 }

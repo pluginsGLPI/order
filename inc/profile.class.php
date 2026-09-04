@@ -268,10 +268,11 @@ class PluginOrderProfile extends CommonDBTM
                             break;
                     }
 
-                    $query = "UPDATE `glpi_profilerights`
-                         SET `rights`='" . $right . "'
-                         WHERE `name`='{$new}' AND `profiles_id`='{$profiles_id}'";
-                    $DB->doQuery($query);
+                    $DB->update(
+                        'glpi_profilerights',
+                        ['rights' => $right],
+                        ['name' => $new, 'profiles_id' => $profiles_id],
+                    );
                 }
             }
         }

@@ -22,24 +22,34 @@
  * You should have received a copy of the GNU General Public License
  * along with Order. If not, see <http://www.gnu.org/licenses/>.
  * -------------------------------------------------------------------------
- * @copyright Copyright (C) 2009-2023 by Order plugin team.
+ * @copyright Copyright (C) 2009-2026 by Order plugin team.
  * @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
  * @link      https://github.com/pluginsGLPI/order
  * -------------------------------------------------------------------------
  */
 
-Session::checkLoginUser();
-Session::checkRight("config", UPDATE);
+declare(strict_types=1);
 
-$documentCategory = new PluginOrderDocumentCategory();
+namespace GlpiPlugin\Order\Tests\Units;
 
-if (isset($_POST["update"])) {
-    if (!$documentCategory->getFromDBByCrit(['documentcategories_id' => $_POST['documentcategories_id']])) {
-        $documentCategory->add($_POST);
-    } else {
-        $_POST['id'] = $documentCategory->fields['id'];
-        $documentCategory->update($_POST);
+use Glpi\Tests\DbTestCase;
+use PluginOrderOrder_Item;
+
+final class OrderItemTest extends DbTestCase
+{
+    public function testBelongsToOrderReturnsTrueForOwningOrder(): void
+    {
+        $item = new PluginOrderOrder_Item();
+        $item->fields['plugin_order_orders_id'] = 5;
+
+        $this->assertTrue($item->belongsToOrder(5));
     }
 
-    Html::back();
+    public function testBelongsToOrderReturnsFalseForForeignOrder(): void
+    {
+        $item = new PluginOrderOrder_Item();
+        $item->fields['plugin_order_orders_id'] = 5;
+
+        $this->assertFalse($item->belongsToOrder(42));
+    }
 }
