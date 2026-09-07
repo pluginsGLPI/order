@@ -132,7 +132,7 @@ function plugin_order_uninstall()
         'PluginOrderOrderType', 'PluginOrderOther', 'PluginOrderOtherType',
         'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
         'PluginOrderSurveySupplier', 'PluginOrderDocumentCategory',
-        'PluginOrderAccountSection', 'PluginOrderAnalyticNature'
+        'PluginOrderAccountSection', 'PluginOrderAnalyticNature', 'PluginOrderReferenceFree'
     ];
     foreach ($classes as $class) {
         call_user_func([$class, 'uninstall']);

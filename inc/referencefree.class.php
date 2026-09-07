@@ -107,20 +107,21 @@ class PluginOrderReferenceFree extends CommonDBTM
 
     public static function uninstall()
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
-        $table  = getTableForItemType(__CLASS__);
+        $table  = getTableForItemType(self::class);
         foreach (
             ["glpi_displaypreferences", "glpi_documents_items", "glpi_savedsearches",
-                "glpi_logs"
+                "glpi_logs",
             ] as $t
         ) {
-            $query = "DELETE FROM `$t` WHERE `itemtype`='" . __CLASS__ . "'";
-            $DB->query($query);
+            $itemtype = getItemTypeForTable($t);
+            $item = getItemForItemtype($itemtype);
+            $item->deleteByCriteria(['itemtype' => self::class]);
         }
 
-        $DB->query("DROP TABLE IF EXISTS `$table`") or die($DB->error());
+        $DB->doQuery(sprintf('DROP TABLE IF EXISTS `%s`', $table));
     }
 
     /**
