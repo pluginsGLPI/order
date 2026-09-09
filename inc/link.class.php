@@ -855,7 +855,7 @@ class PluginOrderLink extends CommonDBChild
 
             if ($templateID && $ic->getFromDBforDevice($itemtype, $templateID)) {
                 $fields = $ic->fields;
-                unset($fields["id"]);
+                unset($fields["id"], $fields["date_creation"], $fields["date_mod"]);
                 if (isset($fields["immo_number"])) {
                     $fields["immo_number"] = autoName(
                         $fields["immo_number"],
