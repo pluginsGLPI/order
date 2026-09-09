@@ -219,9 +219,6 @@ function plugin_order_getDatabaseRelations()
             "glpi_locations" => [
                 "glpi_plugin_order_orders" => "locations_id",
             ],
-            "glpi_profiles" => [
-                "glpi_plugin_order_profiles" => "profiles_id",
-            ],
         ];
     } else {
         return [];
