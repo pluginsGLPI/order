@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Fix `Take item delivery` and `Cancel reception` action for `Software License`
 - Fix missing rights checks
 - Fix unescaped output in order/reception forms
+- Fix SQL error during item generation when the reference's template has financial information
 
 ## [2.12.9] - 2026-08-04
 
