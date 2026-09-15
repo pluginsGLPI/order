@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- Order detail price and discount updates are now restricted to items of the current order
+
 ## [2.11.6] 2026-09-11
 
 ### Fixed

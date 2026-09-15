@@ -420,6 +420,7 @@ if (isset($_POST["add"])) {
         foreach ($data as $item) {
             $pluginOrderOrder_Item->updatePrice_taxfree([
                 'item_id'       => $item['id'],
+                'orders_id'     => (int) $_POST['plugin_order_orders_id'],
                 'price_taxfree' => $_POST['price_taxfree'],
             ]);
         }
@@ -440,9 +441,10 @@ if (isset($_POST["add"])) {
             );
             foreach ($data as $item) {
                 $pluginOrderOrder_Item->updateDiscount([
-                    'item_id'  => $item['id'],
-                    'discount' => $_POST['discount'],
-                    'price'    => $price
+                    'item_id'   => $item['id'],
+                    'orders_id' => (int) $_POST['plugin_order_orders_id'],
+                    'discount'  => $_POST['discount'],
+                    'price'     => $price,
                 ]);
             }
         }
@@ -451,10 +453,13 @@ if (isset($_POST["add"])) {
     Html::back();
 } else if (isset($_POST["update_detail_item"])) {
     $pluginOrderOrder->check($_POST["plugin_order_orders_id"], UPDATE);
+    $orders_id = (int) $_POST["plugin_order_orders_id"];
+
     if (isset($_POST['detail_price_taxfree'])) {
         foreach ($_POST['detail_price_taxfree'] as $item_id => $price) {
             $pluginOrderOrder_Item->updatePrice_taxfree([
                 'item_id'       => $item_id,
+                'orders_id'     => $orders_id,
                 'price_taxfree' => $price,
             ]);
         }
@@ -463,9 +468,10 @@ if (isset($_POST["add"])) {
     if (isset($_POST['detail_discount'])) {
         foreach ($_POST['detail_discount'] as $item_id => $discount) {
             $pluginOrderOrder_Item->updateDiscount([
-                'item_id'  => $item_id,
-                'discount' => $discount,
-                'price'    => isset($_POST['detail_price_taxfree']) ? $_POST['detail_price_taxfree'][$item_id] : $_POST['detail_old_price_taxfree'][$item_id]
+                'item_id'   => $item_id,
+                'orders_id' => $orders_id,
+                'discount'  => $discount,
+                'price'     => isset($_POST['detail_price_taxfree']) ? $_POST['detail_price_taxfree'][$item_id] : $_POST['detail_old_price_taxfree'][$item_id],
             ]);
         }
     }
