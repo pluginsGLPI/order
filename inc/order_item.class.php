@@ -294,7 +294,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
     }
 
     /**
-     * Check that this item belongs to the given order, to prevent cross-order IDOR on deletion.
+     * Check that this item belongs to the given order, to prevent cross-order updates and deletions.
      *
      * @param int $orders_id Order ID expected to own this item
      */
@@ -1597,16 +1597,19 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             isset($this->input['price_taxfree'])
             || isset($this->input['plugin_order_ordertaxes_id'])
         ) {
+            $orders_id     = (int) $this->fields['plugin_order_orders_id'];
+            $price_taxfree = $this->fields['price_taxfree'];
             $iterator = $this->queryRef(
-                $this->fields['plugin_order_orders_id'],
+                $orders_id,
                 $this->fields['plugin_order_references_id'],
-                $this->fields['price_taxfree'],
+                $price_taxfree,
                 $this->fields['discount'],
             );
             foreach ($iterator as $item) {
                 $this->updatePrice_taxfree([
                     'item_id'       => $item['id'],
-                    'price_taxfree'  => $this->fields['price_taxfree'],
+                    'orders_id'     => $orders_id,
+                    'price_taxfree' => $price_taxfree,
                 ]);
             }
         }
@@ -1945,7 +1948,9 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function updatePrice_taxfree($post)
     {
-        $this->getFromDB($post['item_id']);
+        if (!$this->getFromDB($post['item_id']) || !$this->belongsToOrder((int) $post['orders_id'])) {
+            return;
+        }
 
         $input = $this->fields;
         $discount                   = $input['discount'];
@@ -1965,7 +1970,9 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public function updateDiscount($post)
     {
-        $this->getFromDB($post['item_id']);
+        if (!$this->getFromDB($post['item_id']) || !$this->belongsToOrder((int) $post['orders_id'])) {
+            return;
+        }
 
         $input                        = $this->fields;
         $plugin_order_ordertaxes_id   = $input['plugin_order_ordertaxes_id'];
