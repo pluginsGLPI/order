@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-11 04:08+0000\n"
+"POT-Creation-Date: 2026-09-16 04:22+0000\n"
 "PO-Revision-Date: 2015-09-18 10:11+0000\n"
 "Last-Translator: Michael Schieferer, 2022\n"
 "Language-Team: German (Germany) (http://app.transifex.com/teclib/glpi-project-plugin-order/language/de_DE/)\n"
@@ -48,13 +48,13 @@ msgstr ""
 msgid "Entries to show:"
 msgstr ""
 
-#: templates/order_link_item.html.twig inc/order_item.class.php:1737
+#: templates/order_link_item.html.twig inc/order_item.class.php:1740
 #: inc/bill.class.php:358 inc/reception.class.php:374
 msgid "No item to take delivery of"
 msgstr "Kein Gerät kann empfangen werden"
 
 #: templates/order_link_item.html.twig templates/generate_item.html.twig
-#: inc/order_item.class.php:453 inc/order_item.class.php:1749
+#: inc/order_item.class.php:453 inc/order_item.class.php:1752
 #: inc/reference.class.php:71 inc/reference.class.php:87
 #: inc/bill.class.php:370 inc/reception.class.php:404
 #: inc/reference_supplier.class.php:277 inc/reference_supplier.class.php:302
@@ -118,9 +118,9 @@ msgstr "Späten Bestellungen insgesamt"
 msgid "Orders management"
 msgstr "Bestellverwaltung"
 
-#: front/order.php:38 front/order.form.php:487 front/config.form.php:41
+#: front/order.php:38 front/order.form.php:493 front/config.form.php:41
 #: front/preference.form.php:43 front/menu.php:61 hook.php:146
-#: inc/order_item.class.php:2251 inc/order_item.class.php:2256
+#: inc/order_item.class.php:2258 inc/order_item.class.php:2263
 #: inc/bill.class.php:654 inc/documentcategory.class.php:46
 #: inc/order_supplier.class.php:491 inc/order.class.php:100
 #: inc/order.class.php:633 inc/profile.class.php:109 inc/profile.class.php:194
@@ -149,7 +149,7 @@ msgstr "Bestellung wurde storniert"
 msgid "Order currently edited"
 msgstr "Bestellung wird gerade bearbeitet"
 
-#: front/order.form.php:149 front/order.form.php:257 front/order.form.php:435
+#: front/order.form.php:149 front/order.form.php:257 front/order.form.php:436
 msgid "The discount pourcentage must be between 0 and 100"
 msgstr "Der Rabattsatz muss zwischen 0 und 100 liegen"
 
@@ -190,7 +190,7 @@ msgstr "Lieferant für eine Referenz"
 msgid "Products references"
 msgstr "Liste der Produktreferenzen verwalten"
 
-#: front/menu.php:75 inc/order_item.class.php:1622 inc/profile.class.php:202
+#: front/menu.php:75 inc/order_item.class.php:1625 inc/profile.class.php:202
 msgid "Bills"
 msgstr "Rechnungen"
 
@@ -237,7 +237,7 @@ msgstr "Other type of item"
 msgid "Delivery status"
 msgstr "Lieferstatus"
 
-#: hook.php:142 inc/order_item.class.php:1780 inc/billstate.class.php:44
+#: hook.php:142 inc/order_item.class.php:1783 inc/billstate.class.php:44
 #: inc/bill.class.php:402
 msgid "Bill status"
 msgstr "Rechnungsstatus"
@@ -256,13 +256,13 @@ msgid "Account section"
 msgstr "Rechnungsbereich"
 
 #: hook.php:397 inc/order_item.class.php:932 inc/order_item.class.php:1501
-#: inc/order_item.class.php:2268 inc/surveysupplier.class.php:405
+#: inc/order_item.class.php:2275 inc/surveysupplier.class.php:405
 #: inc/bill.class.php:106 inc/bill.class.php:185 inc/reception.class.php:322
 #: inc/order_supplier.class.php:211 inc/order.class.php:100
 msgid "Order"
 msgstr "Bestellung"
 
-#: inc/order_item.class.php:111 inc/order_item.class.php:2261
+#: inc/order_item.class.php:111 inc/order_item.class.php:2268
 msgid "Order item"
 msgstr "Bestellartikel"
 
@@ -336,15 +336,15 @@ msgstr "Nettostückpreis mit Rabatt"
 msgid "Price ATI"
 msgstr "Gesamtpreis Brutto"
 
-#: inc/order_item.class.php:1623
+#: inc/order_item.class.php:1626
 msgid "Payment status"
 msgstr "Bezahlstatus"
 
-#: inc/order_item.class.php:1641
+#: inc/order_item.class.php:1644
 msgid "Paid value"
 msgstr "Bezahlwert"
 
-#: inc/order_item.class.php:1779 inc/order_item.class.php:1886
+#: inc/order_item.class.php:1782 inc/order_item.class.php:1889
 #: inc/bill.class.php:46 inc/bill.class.php:139 inc/bill.class.php:401
 #: inc/reception.class.php:273
 msgid "Bill"

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-11 04:08+0000\n"
+"POT-Creation-Date: 2026-09-16 04:22+0000\n"
 "PO-Revision-Date: 2015-09-18 10:11+0000\n"
 "Last-Translator: Andrea Garelli <garelli.andrea@gmail.com>, 2022\n"
 "Language-Team: Italian (Italy) (http://app.transifex.com/teclib/glpi-project-plugin-order/language/it_IT/)\n"
@@ -47,13 +47,13 @@ msgstr ""
 msgid "Entries to show:"
 msgstr ""
 
-#: templates/order_link_item.html.twig inc/order_item.class.php:1737
+#: templates/order_link_item.html.twig inc/order_item.class.php:1740
 #: inc/bill.class.php:358 inc/reception.class.php:374
 msgid "No item to take delivery of"
 msgstr "Nessun  articolo da prendere in consegna"
 
 #: templates/order_link_item.html.twig templates/generate_item.html.twig
-#: inc/order_item.class.php:453 inc/order_item.class.php:1749
+#: inc/order_item.class.php:453 inc/order_item.class.php:1752
 #: inc/reference.class.php:71 inc/reference.class.php:87
 #: inc/bill.class.php:370 inc/reception.class.php:404
 #: inc/reference_supplier.class.php:277 inc/reference_supplier.class.php:302
@@ -117,9 +117,9 @@ msgstr "Ordini tardivi totali"
 msgid "Orders management"
 msgstr "Gestione ordini"
 
-#: front/order.php:38 front/order.form.php:487 front/config.form.php:41
+#: front/order.php:38 front/order.form.php:493 front/config.form.php:41
 #: front/preference.form.php:43 front/menu.php:61 hook.php:146
-#: inc/order_item.class.php:2251 inc/order_item.class.php:2256
+#: inc/order_item.class.php:2258 inc/order_item.class.php:2263
 #: inc/bill.class.php:654 inc/documentcategory.class.php:46
 #: inc/order_supplier.class.php:491 inc/order.class.php:100
 #: inc/order.class.php:633 inc/profile.class.php:109 inc/profile.class.php:194
@@ -148,7 +148,7 @@ msgstr "Ordine cancellato"
 msgid "Order currently edited"
 msgstr "Ordine in corso di modifica"
 
-#: front/order.form.php:149 front/order.form.php:257 front/order.form.php:435
+#: front/order.form.php:149 front/order.form.php:257 front/order.form.php:436
 msgid "The discount pourcentage must be between 0 and 100"
 msgstr "La percentuale di sconto deve essere compresa tra 0 e 100"
 
@@ -189,7 +189,7 @@ msgstr "Riferimento del fornitore"
 msgid "Products references"
 msgstr "Gestione Riferimenti Prodotti"
 
-#: front/menu.php:75 inc/order_item.class.php:1622 inc/profile.class.php:202
+#: front/menu.php:75 inc/order_item.class.php:1625 inc/profile.class.php:202
 msgid "Bills"
 msgstr "Fatture"
 
@@ -236,7 +236,7 @@ msgstr "Tipo altre attrezzature"
 msgid "Delivery status"
 msgstr "Stato spedizione"
 
-#: hook.php:142 inc/order_item.class.php:1780 inc/billstate.class.php:44
+#: hook.php:142 inc/order_item.class.php:1783 inc/billstate.class.php:44
 #: inc/bill.class.php:402
 msgid "Bill status"
 msgstr "Stato Fattura"
@@ -255,13 +255,13 @@ msgid "Account section"
 msgstr "Riferimento contabile"
 
 #: hook.php:397 inc/order_item.class.php:932 inc/order_item.class.php:1501
-#: inc/order_item.class.php:2268 inc/surveysupplier.class.php:405
+#: inc/order_item.class.php:2275 inc/surveysupplier.class.php:405
 #: inc/bill.class.php:106 inc/bill.class.php:185 inc/reception.class.php:322
 #: inc/order_supplier.class.php:211 inc/order.class.php:100
 msgid "Order"
 msgstr "Ordine"
 
-#: inc/order_item.class.php:111 inc/order_item.class.php:2261
+#: inc/order_item.class.php:111 inc/order_item.class.php:2268
 msgid "Order item"
 msgstr "Ordina articolo"
 
@@ -335,15 +335,15 @@ msgstr "Importo scontato (IVA esclusa)"
 msgid "Price ATI"
 msgstr "Importo totale (IVA + sconto)"
 
-#: inc/order_item.class.php:1623
+#: inc/order_item.class.php:1626
 msgid "Payment status"
 msgstr "Stato del pagamento"
 
-#: inc/order_item.class.php:1641
+#: inc/order_item.class.php:1644
 msgid "Paid value"
 msgstr "Valore pagato"
 
-#: inc/order_item.class.php:1779 inc/order_item.class.php:1886
+#: inc/order_item.class.php:1782 inc/order_item.class.php:1889
 #: inc/bill.class.php:46 inc/bill.class.php:139 inc/bill.class.php:401
 #: inc/reception.class.php:273
 msgid "Bill"
