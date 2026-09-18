@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Plugin - Order\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-11 04:08+0000\n"
+"POT-Creation-Date: 2026-09-16 04:22+0000\n"
 "PO-Revision-Date: 2015-09-18 10:11+0000\n"
 "Last-Translator: David Štěpán <stepand@tiscali.cz>, 2015-2017,2019,2022,2024-2025\n"
 "Language-Team: Czech (Czech Republic) (http://app.transifex.com/teclib/glpi-project-plugin-order/language/cs_CZ/)\n"
@@ -46,13 +46,13 @@ msgstr "Zobrazeno %s do %s z %s položek"
 msgid "Entries to show:"
 msgstr "Záznamy k zobrazení:"
 
-#: templates/order_link_item.html.twig inc/order_item.class.php:1737
+#: templates/order_link_item.html.twig inc/order_item.class.php:1740
 #: inc/bill.class.php:358 inc/reception.class.php:374
 msgid "No item to take delivery of"
 msgstr "Žádná položka k dodání"
 
 #: templates/order_link_item.html.twig templates/generate_item.html.twig
-#: inc/order_item.class.php:453 inc/order_item.class.php:1749
+#: inc/order_item.class.php:453 inc/order_item.class.php:1752
 #: inc/reference.class.php:71 inc/reference.class.php:87
 #: inc/bill.class.php:370 inc/reception.class.php:404
 #: inc/reference_supplier.class.php:277 inc/reference_supplier.class.php:302
@@ -116,9 +116,9 @@ msgstr "Zpožděné objednávky celkem"
 msgid "Orders management"
 msgstr "Správa objednávek"
 
-#: front/order.php:38 front/order.form.php:487 front/config.form.php:41
+#: front/order.php:38 front/order.form.php:493 front/config.form.php:41
 #: front/preference.form.php:43 front/menu.php:61 hook.php:146
-#: inc/order_item.class.php:2251 inc/order_item.class.php:2256
+#: inc/order_item.class.php:2258 inc/order_item.class.php:2263
 #: inc/bill.class.php:654 inc/documentcategory.class.php:46
 #: inc/order_supplier.class.php:491 inc/order.class.php:100
 #: inc/order.class.php:633 inc/profile.class.php:109 inc/profile.class.php:194
@@ -147,7 +147,7 @@ msgstr "Objednávka byla zrušena"
 msgid "Order currently edited"
 msgstr "Objednávka je právě upravována"
 
-#: front/order.form.php:149 front/order.form.php:257 front/order.form.php:435
+#: front/order.form.php:149 front/order.form.php:257 front/order.form.php:436
 msgid "The discount pourcentage must be between 0 and 100"
 msgstr "Je třeba, aby procenta výše slevy bylo z rozmezí 0 až 100"
 
@@ -188,7 +188,7 @@ msgstr "Dodavatel pro referenci"
 msgid "Products references"
 msgstr "Produktové reference"
 
-#: front/menu.php:75 inc/order_item.class.php:1622 inc/profile.class.php:202
+#: front/menu.php:75 inc/order_item.class.php:1625 inc/profile.class.php:202
 msgid "Bills"
 msgstr "Faktury"
 
@@ -235,7 +235,7 @@ msgstr "Jiný typ položky"
 msgid "Delivery status"
 msgstr "Stav dodání"
 
-#: hook.php:142 inc/order_item.class.php:1780 inc/billstate.class.php:44
+#: hook.php:142 inc/order_item.class.php:1783 inc/billstate.class.php:44
 #: inc/bill.class.php:402
 msgid "Bill status"
 msgstr "Stav platby"
@@ -254,13 +254,13 @@ msgid "Account section"
 msgstr "Sekce účtu"
 
 #: hook.php:397 inc/order_item.class.php:932 inc/order_item.class.php:1501
-#: inc/order_item.class.php:2268 inc/surveysupplier.class.php:405
+#: inc/order_item.class.php:2275 inc/surveysupplier.class.php:405
 #: inc/bill.class.php:106 inc/bill.class.php:185 inc/reception.class.php:322
 #: inc/order_supplier.class.php:211 inc/order.class.php:100
 msgid "Order"
 msgstr "Objednávka"
 
-#: inc/order_item.class.php:111 inc/order_item.class.php:2261
+#: inc/order_item.class.php:111 inc/order_item.class.php:2268
 msgid "Order item"
 msgstr "Položka objednávky"
 
@@ -334,15 +334,15 @@ msgstr "Cena po slevě bez DPH"
 msgid "Price ATI"
 msgstr "Cena celkem"
 
-#: inc/order_item.class.php:1623
+#: inc/order_item.class.php:1626
 msgid "Payment status"
 msgstr "Stav platby"
 
-#: inc/order_item.class.php:1641
+#: inc/order_item.class.php:1644
 msgid "Paid value"
 msgstr "Zaplacená hodnota"
 
-#: inc/order_item.class.php:1779 inc/order_item.class.php:1886
+#: inc/order_item.class.php:1782 inc/order_item.class.php:1889
 #: inc/bill.class.php:46 inc/bill.class.php:139 inc/bill.class.php:401
 #: inc/reception.class.php:273
 msgid "Bill"
