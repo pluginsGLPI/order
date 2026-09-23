@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+
+### Fixed
+
+- Automatic generation on delivery no longer creates a consumable model per received consumable
+
 ## [2.12.11] - 2026-09-18
 
 ### Fixed
