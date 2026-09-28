@@ -30,6 +30,7 @@
 
 namespace GlpiPlugin\Order\Tests\Units;
 
+use ConsumableItem;
 use Glpi\Tests\DbTestCase;
 use Infocom;
 use Entity;
@@ -104,5 +105,60 @@ final class OrderLinkTest extends DbTestCase
 
         $infocom = new Infocom();
         $this->assertTrue($infocom->getFromDBforDevice(Phone::class, $phone->getID()));
+    }
+
+    public function testGenerateNewItemDoesNotCreateConsumableItem(): void
+    {
+        $this->login();
+
+        $entities_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        $order = $this->createItem(PluginOrderOrder::class, [
+            'name'        => 'Order consumable order',
+            'entities_id' => $entities_id,
+            'num_order'   => mt_rand(),
+            'order_date'  => date('Y-m-d'),
+        ]);
+
+        $reference = $this->createItem(PluginOrderReference::class, [
+            'name'        => 'Order consumable reference',
+            'entities_id' => $entities_id,
+            'itemtype'    => ConsumableItem::class,
+        ]);
+
+        $order_item = $this->createItem(PluginOrderOrder_Item::class, [
+            'plugin_order_orders_id'     => $order->getID(),
+            'plugin_order_references_id' => $reference->getID(),
+            'itemtype'                   => ConsumableItem::class,
+            'states_id'                  => PluginOrderOrder::ORDER_DEVICE_DELIVRED,
+        ]);
+
+        $nb_before = countElementsInTable(ConsumableItem::getTable());
+
+        // Same input as the automatic generation on delivery
+        $link   = new PluginOrderLink();
+        $newIDs = $link->generateNewItem([
+            'plugin_order_orders_id'     => $order->getID(),
+            'plugin_order_references_id' => $reference->getID(),
+            'itemtype'                   => ConsumableItem::class,
+            'id'                         => [[
+                'id'          => $order_item->getID(),
+                'itemtype'    => ConsumableItem::class,
+                'name'        => 'A_COMPLETER',
+                'serial'      => '',
+                'otherserial' => '',
+                'entities_id' => $entities_id,
+                'locations_id' => 0,
+                'groups_id'   => 0,
+                'states_id'   => 0,
+            ]],
+        ]);
+
+        $this->assertSame([], $newIDs);
+        $this->assertSame($nb_before, countElementsInTable(ConsumableItem::getTable()));
+
+        // Detail line stays unlinked, so it can be linked to an existing consumable model
+        $this->assertTrue($order_item->getFromDB($order_item->getID()));
+        $this->assertEquals(0, $order_item->fields['items_id']);
     }
 }
