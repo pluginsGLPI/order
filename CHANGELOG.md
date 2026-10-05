@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Automatic generation on delivery no longer creates a consumable model per received consumable
 - CI: fix Psalm cache directory, drop the stray `glpi-project/tools` composer dependency, declare a unique composer autoloader suffix
+- Plugin upgrade no longer rebuilds tables whose columns already have the expected type, nor replays legacy data migrations, which made it time out on large databases (#616)
 
 ## [2.12.11] - 2026-09-18
 
