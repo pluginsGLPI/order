@@ -559,6 +559,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
             if (!PluginOrderConfig::fieldHasType($table, "comment", 'text')) {
                 $migration->changeField($table, "comment", "comment", "text");
             }
+
             $entities_added = $migration->addField($table, "entities_id", sprintf("int %s NOT NULL default '0'", $default_key_sign));
             $migration->addField($table, "is_recursive", "tinyint NOT NULL default '0'");
             $migration->addKey($table, "plugin_order_orders_id");

@@ -612,6 +612,7 @@ class PluginOrderBill extends CommonDropdown
             if (!PluginOrderConfig::fieldHasType($table, "value", 'decimal(20,6)')) {
                 $migration->changeField($table, "value", "value", "decimal(20,6) NOT NULL DEFAULT '0.000000'");
             }
+
             $migration->migrationOneTable($table);
         }
 

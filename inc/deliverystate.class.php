@@ -72,6 +72,7 @@ class PluginOrderDeliverystate extends CommonDropdown
             if (!PluginOrderConfig::fieldHasType($table, "name", 'varchar(255)')) {
                 $migration->changeField($table, "name", "name", "varchar(255) default NULL");
             }
+
             $migration->changeField($table, "comments", "comment", "text");
             $migration->migrationOneTable($table);
         }

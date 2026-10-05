@@ -1149,6 +1149,7 @@ class PluginOrderReference extends CommonDBTM
             if (!PluginOrderConfig::fieldHasType($table, "name", 'varchar(255)')) {
                 $migration->changeField($table, "name", "name", "varchar(255) default NULL");
             }
+
             $migration->changeField(
                 $table,
                 "FK_glpi_enterprise",

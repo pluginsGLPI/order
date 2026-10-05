@@ -2738,6 +2738,7 @@ class PluginOrderOrder extends CommonDBTM
             if (!PluginOrderConfig::fieldHasType($table, "name", 'varchar(255)')) {
                 $migration->changeField($table, "name", "name", "varchar(255) default NULL");
             }
+
             $migration->changeField(
                 $table,
                 "budget",
@@ -2795,6 +2796,7 @@ class PluginOrderOrder extends CommonDBTM
             if (!PluginOrderConfig::fieldHasType($table, "comment", 'text')) {
                 $migration->changeField($table, "comment", "comment", "text");
             }
+
             $migration->changeField(
                 $table,
                 "notes",
@@ -2860,6 +2862,7 @@ class PluginOrderOrder extends CommonDBTM
                 if (!PluginOrderConfig::fieldHasType("glpi_plugin_order_budgets", "value", 'float')) {
                     $migration->changeField("glpi_plugin_order_budgets", "value", "value", "float NOT NULL DEFAULT '0'");
                 }
+
                 $migration->addKey("glpi_plugin_order_budgets", "entities_id");
                 $migration->addKey("glpi_plugin_order_budgets", "is_deleted");
                 $migration->migrationOneTable("glpi_plugin_order_budgets");

@@ -471,9 +471,11 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             if (!PluginOrderConfig::fieldHasType($table, "reference_code", 'varchar(255)')) {
                 $migration->changeField($table, "reference_code", "reference_code", "varchar(255) default NULL");
             }
+
             if (!PluginOrderConfig::fieldHasType($table, "price_taxfree", 'decimal(20,6)')) {
                 $migration->changeField($table, "price_taxfree", "price_taxfree", "decimal(20,6) NOT NULL DEFAULT '0.000000'");
             }
+
             $migration->migrationOneTable($table);
 
             //1.5.0, replayed on every upgrade otherwise (one query per reference)
