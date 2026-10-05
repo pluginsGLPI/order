@@ -556,38 +556,39 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 "suppliers_id",
                 sprintf("int %s NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'", $default_key_sign),
             );
-            $migration->changeField(
-                $table,
-                "comment",
-                "comment",
-                "text",
-            );
-            $migration->addField($table, "entities_id", sprintf("int %s NOT NULL default '0'", $default_key_sign));
+            if (!PluginOrderConfig::fieldHasType($table, "comment", 'text')) {
+                $migration->changeField($table, "comment", "comment", "text");
+            }
+            $entities_added = $migration->addField($table, "entities_id", sprintf("int %s NOT NULL default '0'", $default_key_sign));
             $migration->addField($table, "is_recursive", "tinyint NOT NULL default '0'");
             $migration->addKey($table, "plugin_order_orders_id");
             $migration->addKey($table, "suppliers_id");
             $migration->migrationOneTable($table);
 
-            $query = [
-                'SELECT' => [
-                    'suppliers_id',
-                    'entities_id',
-                    'is_recursive',
-                    'id',
-                ],
-                'FROM' => 'glpi_plugin_order_orders',
-            ];
-            foreach ($DB->request($query) as $data) {
-                $migration->addPostQuery(
-                    $DB->buildUpdate(
-                        'glpi_plugin_order_surveysuppliers',
-                        [
-                            'entities_id' => $data['entities_id'],
-                            'is_recursive' => $data['is_recursive'],
-                        ],
-                        ['plugin_order_orders_id' => $data['id']],
-                    ),
-                );
+            //Forward the order entity only when the column has just been created
+            //(one query per order on every upgrade otherwise)
+            if ($entities_added) {
+                $query = [
+                    'SELECT' => [
+                        'suppliers_id',
+                        'entities_id',
+                        'is_recursive',
+                        'id',
+                    ],
+                    'FROM' => 'glpi_plugin_order_orders',
+                ];
+                foreach ($DB->request($query) as $data) {
+                    $migration->addPostQuery(
+                        $DB->buildUpdate(
+                            'glpi_plugin_order_surveysuppliers',
+                            [
+                                'entities_id' => $data['entities_id'],
+                                'is_recursive' => $data['is_recursive'],
+                            ],
+                            ['plugin_order_orders_id' => $data['id']],
+                        ),
+                    );
+                }
             }
         }
     }

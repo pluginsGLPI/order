@@ -69,7 +69,9 @@ class PluginOrderDeliverystate extends CommonDropdown
             //Upgrade 1.2.0
             $migration->renameTable("glpi_dropdown_plugin_order_deliverystate", $table);
             $migration->changeField($table, "ID", "id", sprintf('int %s NOT NULL auto_increment', $default_key_sign));
-            $migration->changeField($table, "name", "name", "varchar(255) default NULL");
+            if (!PluginOrderConfig::fieldHasType($table, "name", 'varchar(255)')) {
+                $migration->changeField($table, "name", "name", "varchar(255) default NULL");
+            }
             $migration->changeField($table, "comments", "comment", "text");
             $migration->migrationOneTable($table);
         }
