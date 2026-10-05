@@ -1146,12 +1146,10 @@ class PluginOrderReference extends CommonDBTM
                 "is_recursive",
                 "tinyint NOT NULL default '0'",
             );
-            $migration->changeField(
-                $table,
-                "name",
-                "name",
-                "varchar(255) default NULL",
-            );
+            if (!PluginOrderConfig::fieldHasType($table, "name", 'varchar(255)')) {
+                $migration->changeField($table, "name", "name", "varchar(255) default NULL");
+            }
+
             $migration->changeField(
                 $table,
                 "FK_glpi_enterprise",

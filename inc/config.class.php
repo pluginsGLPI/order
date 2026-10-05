@@ -28,7 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-
+use function Safe\preg_replace;
 
 class PluginOrderConfig extends CommonDBTM
 {
@@ -669,6 +669,33 @@ class PluginOrderConfig extends CommonDBTM
 
 
     //----------------- Install & uninstall -------------------//
+
+    /**
+     * Tell whether a column already has the expected SQL type, so that an upgrade does
+     * not replay a type change: every CHANGE rebuilds the whole table.
+     *
+     * @param string $table Table name
+     * @param string $field Column name
+     * @param string $type  Expected type, as reported by SHOW COLUMNS (ie. "decimal(20,6)", "int unsigned")
+     *
+     * @return bool true when the column is missing or already has this type
+     */
+    public static function fieldHasType(string $table, string $field, string $type): bool
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $column = $DB->getField($table, $field, false);
+        if ($column === null) {
+            return true;
+        }
+
+        // MySQL 5.7 and MariaDB report an integer display width ("int(10) unsigned"), MySQL 8 does not
+        $current = preg_replace('/^(tinyint|smallint|mediumint|int|bigint)\(\d+\)/', '$1', strtolower((string) $column['Type']));
+
+        return $current === strtolower($type);
+    }
+
     public static function install(Migration $migration)
     {
         /** @var DBmysql $DB */

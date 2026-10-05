@@ -2735,12 +2735,10 @@ class PluginOrderOrder extends CommonDBTM
                 "is_recursive",
                 "tinyint NOT NULL default 0",
             );
-            $migration->changeField(
-                $table,
-                "name",
-                "name",
-                "varchar(255) default NULL",
-            );
+            if (!PluginOrderConfig::fieldHasType($table, "name", 'varchar(255)')) {
+                $migration->changeField($table, "name", "name", "varchar(255) default NULL");
+            }
+
             $migration->changeField(
                 $table,
                 "budget",
@@ -2795,12 +2793,10 @@ class PluginOrderOrder extends CommonDBTM
                 "states_id",
                 sprintf("int %s NOT NULL default '0'", $default_key_sign),
             );
-            $migration->changeField(
-                $table,
-                "comment",
-                "comment",
-                "text",
-            );
+            if (!PluginOrderConfig::fieldHasType($table, "comment", 'text')) {
+                $migration->changeField($table, "comment", "comment", "text");
+            }
+
             $migration->changeField(
                 $table,
                 "notes",
@@ -2863,12 +2859,10 @@ class PluginOrderOrder extends CommonDBTM
                     "end_date",
                     "date default NULL",
                 );
-                $migration->changeField(
-                    "glpi_plugin_order_budgets",
-                    "value",
-                    "value",
-                    "float NOT NULL DEFAULT '0'",
-                );
+                if (!PluginOrderConfig::fieldHasType("glpi_plugin_order_budgets", "value", 'float')) {
+                    $migration->changeField("glpi_plugin_order_budgets", "value", "value", "float NOT NULL DEFAULT '0'");
+                }
+
                 $migration->addKey("glpi_plugin_order_budgets", "entities_id");
                 $migration->addKey("glpi_plugin_order_budgets", "is_deleted");
                 $migration->migrationOneTable("glpi_plugin_order_budgets");
@@ -3023,7 +3017,9 @@ class PluginOrderOrder extends CommonDBTM
             $migration->addField($table, "global_discount", "FLOAT NOT NULL default '0'");
 
             //2.7.3
-            $migration->changeField($table, "plugin_order_billstates_id", "plugin_order_billstates_id", sprintf('int %s NOT NULL DEFAULT 0', $default_key_sign));
+            if (!PluginOrderConfig::fieldHasType($table, "plugin_order_billstates_id", trim('int ' . $default_key_sign))) {
+                $migration->changeField($table, "plugin_order_billstates_id", "plugin_order_billstates_id", sprintf('int %s NOT NULL DEFAULT 0', $default_key_sign));
+            }
 
             // Add ecotax fields if they don't exist
             if (!$DB->fieldExists($table, 'ecotax_price')) {
