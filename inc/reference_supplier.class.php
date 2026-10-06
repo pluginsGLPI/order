@@ -73,11 +73,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         }
 
         $this->fields = $result->current();
-        if (is_array($this->fields) && count($this->fields)) {
-            return true;
-        } else {
-            return false;
-        }
+        return is_array($this->fields) && count($this->fields);
     }
 
     public function rawSearchOptions()
@@ -150,7 +146,8 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
     {
         if ($item::class === self::class) {
             return [1 => __s("Main")];
-        } elseif ($item instanceof PluginOrderReference) {
+        }
+        if ($item instanceof PluginOrderReference) {
             return self::createTabEntry(
                 __s("Supplier Detail", "order"),
                 0,
@@ -390,9 +387,8 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         if (count($result) > 0) {
             $row = $result->current();
             return $row["reference_code"];
-        } else {
-            return 0;
         }
+        return 0;
     }
 
 

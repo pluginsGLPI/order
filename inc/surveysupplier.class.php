@@ -73,11 +73,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         }
 
         $this->fields = $iterator->current();
-        if (is_array($this->fields) && count($this->fields)) {
-            return true;
-        } else {
-            return false;
-        }
+        return is_array($this->fields) && count($this->fields);
     }
 
 
@@ -127,9 +123,8 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $iterator = $DB->request($criteria);
         if (count($iterator) > 0) {
             return $iterator->current()["total"] / 5;
-        } else {
-            return 0;
         }
+        return 0;
     }
 
 
@@ -156,9 +151,8 @@ class PluginOrderSurveySupplier extends CommonDBChild
         if (count($iterator) > 0) {
             $result = $iterator->current();
             return $result["total"] / $result["nb"];
-        } else {
-            return 0;
         }
+        return 0;
     }
 
 
@@ -497,9 +491,8 @@ class PluginOrderSurveySupplier extends CommonDBChild
     {
         if ($orders_id) {
             return (countElementsInTable(self::getTable(), ['plugin_order_orders_id' => $orders_id]));
-        } else {
-            return false;
         }
+        return false;
     }
 
 

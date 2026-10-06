@@ -205,10 +205,9 @@ class PluginOrderOrder extends CommonDBTM
     {
         if ($this->isNewID($this->getID())) {
             return true;
-        } else {
-            return $this->isDraft()
-                || $this->isWaitingForApproval();
         }
+        return $this->isDraft()
+            || $this->isWaitingForApproval();
     }
 
 
@@ -217,11 +216,10 @@ class PluginOrderOrder extends CommonDBTM
         //If it's an order creation -> do not display form
         if (!$orders_id) {
             return false;
-        } else {
-            return $this->canValidateOrder()
-                || $this->canUndoValidation()
-                || $this->canCancelOrder();
         }
+        return $this->canValidateOrder()
+            || $this->canUndoValidation()
+            || $this->canCancelOrder();
     }
 
 
@@ -232,22 +230,18 @@ class PluginOrderOrder extends CommonDBTM
         //If no validation process -> can validate if order is in draft state
         if (!$config->useValidation()) {
             return $this->isDraft();
-        } else {
-            //Validation process is used
-
-            //If order is canceled, cannot validate !
-            if ($this->isCanceled()) {
-                return false;
-            }
-
-            //If no right to validate
-            if (!self::canValidate()) {
-                return false;
-            } else {
-                return $this->isDraft()
-                   || $this->isWaitingForApproval();
-            }
         }
+        //Validation process is used
+        //If order is canceled, cannot validate !
+        if ($this->isCanceled()) {
+            return false;
+        }
+        //If no right to validate
+        if (!self::canValidate()) {
+            return false;
+        }
+        return $this->isDraft()
+           || $this->isWaitingForApproval();
     }
 
 
@@ -263,9 +257,8 @@ class PluginOrderOrder extends CommonDBTM
         $config = PluginOrderConfig::getConfig();
         if (!$config->useValidation()) {
             return false;
-        } else {
-            return $this->isDraft();
         }
+        return $this->isDraft();
     }
 
 
@@ -631,7 +624,8 @@ class PluginOrderOrder extends CommonDBTM
     {
         if ($item instanceof Budget) {
             return __s("Orders", "order");
-        } elseif ($item instanceof self) {
+        }
+        if ($item instanceof self) {
             $ong    = [];
             $config = PluginOrderConfig::getConfig();
             if (
@@ -648,7 +642,6 @@ class PluginOrderOrder extends CommonDBTM
                     'ti ti-check',
                 );
             }
-
             if (
                 $config->canGenerateOrderPDF()
                 && ($item->getState() > PluginOrderOrderState::DRAFT
@@ -663,7 +656,6 @@ class PluginOrderOrder extends CommonDBTM
                 );
 
             }
-
             return $ong;
         }
 
@@ -711,16 +703,13 @@ class PluginOrderOrder extends CommonDBTM
             unset($input['id']);
             unset($input['withtemplate']);
         } else {
-            if (
-                !isset($input["num_order"])
-                || $input["num_order"] == ''
-            ) {
+            if (!isset($input["num_order"])
+            || $input["num_order"] == '') {
                 Session::addMessageAfterRedirect(__s("An order number is mandatory !", "order"), false, ERROR);
                 return [];
-            } elseif (
-                !isset($input["name"])
-                    || $input["name"] == ''
-            ) {
+            }
+            if (!isset($input["name"])
+                || $input["name"] == '') {
                 $input["name"] = $input["num_order"];
             }
 
@@ -837,17 +826,10 @@ class PluginOrderOrder extends CommonDBTM
     public function shouldBeAlreadyDelivered($check_all_status = false)
     {
         if ($check_all_status || $this->isApproved() || $this->isPartiallyDelivered()) {
-            if (
-                !is_null($this->fields['duedate']) && $this->fields['duedate'] != ''
-                && (new DateTime($this->fields['duedate']) < new DateTime())
-            ) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
+            return !is_null($this->fields['duedate']) && $this->fields['duedate'] != ''
+            && (new DateTime($this->fields['duedate']) < new DateTime());
         }
+        return false;
     }
 
 
@@ -1663,9 +1645,8 @@ class PluginOrderOrder extends CommonDBTM
             }
 
             return (countElementsInTable("glpi_plugin_order_orders_items", $where));
-        } else {
-            return false;
         }
+        return false;
     }
 
 
@@ -2241,22 +2222,13 @@ class PluginOrderOrder extends CommonDBTM
         //If no begin date on a budget : do not display a warning
         if (empty($budget->fields['begin_date'])) {
             return true;
-        } else {
-            //There's a begin date and order date is prior to it
-            if ($input['order_date'] < $budget->getField('begin_date')) {
-                return false;
-            }
-
-            //There's an end date and order date is above it
-            if (
-                !empty($budget->fields['end_date'])
-                && $input['order_date'] > $budget->getField('end_date')
-            ) {
-                return false;
-            }
         }
-
-        return true;
+        //There's a begin date and order date is prior to it
+        if ($input['order_date'] < $budget->getField('begin_date')) {
+            return false;
+        }
+        //There's an end date and order date is above it
+        return empty($budget->fields['end_date']) || $input['order_date'] <= $budget->getField('end_date');
     }
 
 
@@ -2331,15 +2303,16 @@ class PluginOrderOrder extends CommonDBTM
             $prices    = $item->getAllPrices($data['id']);
             $total_HT += $prices["priceHT"] + $data['port_price'];
         }
-
         // Compare BUDGET value to TOTAL_HT value
         if ($total_HT > $budget->getField('value')) {
             return PluginOrderOrder::ORDER_IS_OVER_BUDGET;
-        } elseif ($total_HT == $budget->getField('value')) {
-            return PluginOrderOrder::ORDER_IS_EQUAL_BUDGET;
-        } else {
-            return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
         }
+
+        // Compare BUDGET value to TOTAL_HT value
+        if ($total_HT == $budget->getField('value')) {
+            return PluginOrderOrder::ORDER_IS_EQUAL_BUDGET;
+        }
+        return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
     }
 
 

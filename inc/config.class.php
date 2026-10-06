@@ -67,9 +67,7 @@ class PluginOrderConfig extends CommonDBTM
     {
         static $config = null;
 
-        if (is_null($config)) {
-            $config = new self();
-        }
+        $config ??= new self();
 
         if ($update) {
             $config->getFromDB(1);

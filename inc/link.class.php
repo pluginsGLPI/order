@@ -756,21 +756,20 @@ class PluginOrderLink extends CommonDBChild
     {
         if ($items_id == 0) {
             return (__s("No associated item", "order"));
-        } else {
-            switch ($itemtype) {
-                case 'ConsumableItem':
-                case 'CartridgeItem':
-                    $table = $itemtype::getTable();
-                    $item = $itemtype == 'ConsumableItem' ? new Consumable() : new Cartridge();
-                    $item->getFromDB($items_id);
-                    $item_type = getItemForItemtype($itemtype);
-                    $item_type->getFromDB($item->fields[getForeignKeyFieldForTable($table)]);
-                    return $item_type->getLink(['comments' => 1]);
-                default:
-                    $item = getItemForItemtype($itemtype);
-                    $item->getFromDB($items_id);
-                    return $item->getLink(['comments' => 1]);
-            }
+        }
+        switch ($itemtype) {
+            case 'ConsumableItem':
+            case 'CartridgeItem':
+                $table = $itemtype::getTable();
+                $item = $itemtype == 'ConsumableItem' ? new Consumable() : new Cartridge();
+                $item->getFromDB($items_id);
+                $item_type = getItemForItemtype($itemtype);
+                $item_type->getFromDB($item->fields[getForeignKeyFieldForTable($table)]);
+                return $item_type->getLink(['comments' => 1]);
+            default:
+                $item = getItemForItemtype($itemtype);
+                $item->getFromDB($items_id);
+                return $item->getLink(['comments' => 1]);
         }
     }
 
@@ -792,16 +791,10 @@ class PluginOrderLink extends CommonDBChild
             );
 
             return ($cpt > 0);
-        } else {
-            $detail = new PluginOrderOrder_Item();
-            $detail->getFromDB($detailID);
-
-            if (!$detail->fields['items_id']) {
-                return false;
-            } else {
-                return true;
-            }
         }
+        $detail = new PluginOrderOrder_Item();
+        $detail->getFromDB($detailID);
+        return (bool) $detail->fields['items_id'];
     }
 
 
@@ -823,9 +816,8 @@ class PluginOrderLink extends CommonDBChild
         if (count($result) > 0) {
             $row = $result->current();
             return $row['id'];
-        } else {
-            return 0;
         }
+        return 0;
     }
 
 
@@ -901,9 +893,7 @@ class PluginOrderLink extends CommonDBChild
             }
 
             foreach (['warranty_date', 'buy_date', 'inventory_date'] as $date) {
-                if (!isset($fields[$date])) {
-                    $fields[$date] = 'NULL';
-                }
+                $fields[$date] ??= 'NULL';
             }
 
             $fields['_no_warning'] = true;
@@ -1192,10 +1182,7 @@ class PluginOrderLink extends CommonDBChild
                 $add_item = array_merge($params['add_items'][$values['id']], $add_item);
             }
 
-            //retrieve plugin_order_references_id from param if needed
-            if (!isset($add_item["plugin_order_references_id"])) {
-                $add_item["plugin_order_references_id"] = $params['plugin_order_references_id'];
-            }
+            $add_item["plugin_order_references_id"] ??= $params['plugin_order_references_id'];
 
             //If itemtype cannot be generated, go to the new occurence
             if (in_array($add_item['itemtype'], self::getTypesThanCannotBeGenerated())) {

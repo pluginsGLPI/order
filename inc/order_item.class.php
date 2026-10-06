@@ -798,39 +798,38 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 'ORDER' => 'ref.name',
             ];
             return $DB->request($criteria);
-        } else {
-            $criteria = [
-                'SELECT' => [
-                    'item.id AS IDD',
-                    'ref.id',
-                    'ref.itemtype',
-                    'ref.manufacturers_id',
-                    'ref.name',
-                    'item.price_taxfree',
-                    'item.price_ati',
-                    'item.price_discounted',
-                    'item.discount',
-                    'item.plugin_order_ordertaxes_id',
-                    'item.plugin_order_analyticnatures_id',
-                ],
-                'FROM' => $table . ' AS item',
-                'INNER JOIN' => [
-                    $tableRef . ' AS ref' => [
-                        'ON' => [
-                            'item' => 'plugin_order_references_id',
-                            'ref' => 'id',
-                        ],
+        }
+        $criteria = [
+            'SELECT' => [
+                'item.id AS IDD',
+                'ref.id',
+                'ref.itemtype',
+                'ref.manufacturers_id',
+                'ref.name',
+                'item.price_taxfree',
+                'item.price_ati',
+                'item.price_discounted',
+                'item.discount',
+                'item.plugin_order_ordertaxes_id',
+                'item.plugin_order_analyticnatures_id',
+            ],
+            'FROM' => $table . ' AS item',
+            'INNER JOIN' => [
+                $tableRef . ' AS ref' => [
+                    'ON' => [
+                        'item' => 'plugin_order_references_id',
+                        'ref' => 'id',
                     ],
                 ],
-                'WHERE' => [
-                    'item.plugin_order_orders_id' => $ID,
-                    ['item.itemtype' => ['LIKE', 'PluginOrderReferenceFree']],
-                ],
-                'GROUPBY' => ['ref.id', 'item.price_taxfree', 'item.discount'],
-                'ORDER' => 'ref.name',
-            ];
-            return $DB->request($criteria);
-        }
+            ],
+            'WHERE' => [
+                'item.plugin_order_orders_id' => $ID,
+                ['item.itemtype' => ['LIKE', 'PluginOrderReferenceFree']],
+            ],
+            'GROUPBY' => ['ref.id', 'item.price_taxfree', 'item.discount'],
+            'ORDER' => 'ref.name',
+        ];
+        return $DB->request($criteria);
     }
 
 
@@ -1420,9 +1419,8 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $iterator = $DB->request($criteria);
         if (count($iterator) > 0) {
             return $iterator->current();
-        } else {
-            return false;
         }
+        return false;
     }
 
 

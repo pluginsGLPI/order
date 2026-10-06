@@ -130,11 +130,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         }
 
         $this->fields = $result->current();
-        if (is_array($this->fields) && count($this->fields)) {
-            return true;
-        } else {
-            return false;
-        }
+        return is_array($this->fields) && count($this->fields);
     }
 
 
@@ -489,7 +485,8 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
     {
         if ($item instanceof Supplier) {
             return [1 => __s("Orders", "order")];
-        } elseif ($item instanceof PluginOrderOrder) {
+        }
+        if ($item instanceof PluginOrderOrder) {
             $config = PluginOrderConfig::getConfig();
             if ($config->canUseSupplierInformations() && $item->fields['suppliers_id']) {
                 return self::createTabEntry(

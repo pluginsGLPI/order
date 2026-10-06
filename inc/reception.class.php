@@ -91,11 +91,7 @@ class PluginOrderReception extends CommonDBChild
 
         foreach ($result as $fields) {
             $this->fields = $fields;
-            if (is_array($this->fields) && count($this->fields)) {
-                return true;
-            } else {
-                return false;
-            }
+            return is_array($this->fields) && count($this->fields);
         }
 
         return false;
@@ -106,11 +102,7 @@ class PluginOrderReception extends CommonDBChild
     {
         $order_item = new PluginOrderOrder_Item();
         $order_item->getFromDB($detailID);
-        if ($order_item->fields["states_id"] == $states_id) {
-            return true;
-        } else {
-            return false;
-        }
+        return $order_item->fields["states_id"] == $states_id;
     }
 
 

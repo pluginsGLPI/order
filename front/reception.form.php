@@ -33,13 +33,9 @@ global $DB;
 
 Session::checkLoginUser();
 
-if (!isset($_GET["id"])) {
-    $_GET["id"] = "";
-}
+$_GET["id"] ??= "";
 
-if (!isset($_GET["withtemplate"])) {
-    $_GET["withtemplate"] = "";
-}
+$_GET["withtemplate"] ??= "";
 
 $reception  = new PluginOrderReception();
 $order_item = new PluginOrderOrder_Item();

@@ -145,9 +145,8 @@ function plugin_order_getDropdown()
             'PluginOrderAccountsection'   => __s("Account section", "order"),
             'PluginOrderDocumentCategory' => __s("Orders", "order"),
         ];
-    } else {
-        return [];
     }
+    return [];
 }
 
 
@@ -220,9 +219,8 @@ function plugin_order_getDatabaseRelations()
                 "glpi_plugin_order_orders" => "locations_id",
             ],
         ];
-    } else {
-        return [];
     }
+    return [];
 }
 
 
@@ -313,9 +311,8 @@ function plugin_order_giveItem($type, $ID, $data, $num)
                     getTableForItemType($itemtype . "Type"),
                     $itemnum,
                 );
-            } else {
-                return " ";
             }
+            return " ";
             // no break
         case "glpi_plugin_order_references.models_id":
             if (file_exists(GLPI_ROOT . "/src/" . $itemtype . "Model.php")) {
@@ -323,16 +320,14 @@ function plugin_order_giveItem($type, $ID, $data, $num)
                     getTableForItemType($itemtype . "Model"),
                     $itemnum,
                 );
-            } else {
-                return " ";
             }
+            return " ";
             // no break
         case "glpi_plugin_order_references.templates_id":
             if (!$itemnum) {
                 return " ";
-            } else {
-                return $reference->getTemplateName($itemtype, $itemnum);
             }
+            return $reference->getTemplateName($itemtype, $itemnum);
     }
 
     return "";

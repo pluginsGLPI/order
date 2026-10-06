@@ -55,9 +55,8 @@ class PluginOrderBillState extends CommonDropdown
                 ERROR,
             );
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
 
@@ -72,11 +71,7 @@ class PluginOrderBillState extends CommonDropdown
     public static function getState($states_id)
     {
         $states = self::getStates();
-        if (isset($states[$states_id])) {
-            return $states[$states_id];
-        } else {
-            return '';
-        }
+        return $states[$states_id] ?? '';
     }
 
 

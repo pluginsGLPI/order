@@ -68,9 +68,8 @@ class PluginOrderPreference extends CommonDBTM
         if ($data !== []) {
             $first = array_pop($data);
             return $first[$field];
-        } else {
-            return 0;
         }
+        return 0;
     }
 
 

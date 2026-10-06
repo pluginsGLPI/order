@@ -66,9 +66,8 @@ class PluginOrderOrderState extends CommonDropdown
                 ERROR,
             );
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
 
