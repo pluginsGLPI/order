@@ -90,7 +90,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
         echo __s('Document category prefix', 'order');
         echo "</td>";
         echo "<td>";
-        echo "<input type='text' name='documentcategories_prefix' value='" . $documentCategory->fields['documentcategories_prefix'] . "'>";
+        echo "<input type='text' name='documentcategories_prefix' value='" . htmlescape($documentCategory->fields['documentcategories_prefix']) . "'>";
         echo "</td>";
         echo "</tr>";
 

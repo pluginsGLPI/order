@@ -13,7 +13,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+- Automatic generation on delivery no longer creates a consumable model per received consumable
+- CI: fix Psalm cache directory, drop the stray `glpi-project/tools` composer dependency, declare a unique composer autoloader suffix
+
+## [2.12.11] - 2026-09-18
+
+### Fixed
+
+- Order detail price and discount updates are now restricted to items of the current order
+
+## [2.12.10] - 2026-09-11
+
+### Fixed
+
 - Fix `Take item delivery` and `Cancel reception` action for `Software License`
+- Fix missing rights checks
+- Fix unescaped output in order/reception forms
+- Fix fatal error on profile deletion caused by a stale `glpi_plugin_order_profiles` relation declaration
+- Fix SQL error during item generation when the reference's template has financial information
 
 ## [2.12.9] - 2026-08-04
 

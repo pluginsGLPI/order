@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2bde386e0433e43036c970ecd142d686",
+    "content-hash": "9983e2a4f2c2e3a6e4da04c757167a2d",
     "packages": [
         {
             "name": "sboden/odtphp",

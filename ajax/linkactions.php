@@ -28,6 +28,8 @@
  * -------------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
@@ -188,6 +190,15 @@ if (isset($_POST["action"])) {
             break;
 
         case "check_unicity":
+            Session::checkRight('plugin_order_order', READ);
+
+            if (
+                !in_array($_POST['itemtype'] ?? '', $CFG_GLPI['asset_types'], true)
+                || !in_array($_POST['field'] ?? '', ['name', 'serial'], true)
+            ) {
+                throw new BadRequestHttpException();
+            }
+
             $itemtype = getItemForItemtype($_POST['itemtype']);
             if (count($itemtype->find([$_POST['field'] => $_POST['field_value'], ])) > 0) {
                 echo "false";

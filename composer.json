@@ -6,6 +6,7 @@
     },
     "config": {
         "optimize-autoloader": true,
+        "autoloader-suffix": "PluginOrder",
         "platform": {
             "php": "8.2.99"
         },
