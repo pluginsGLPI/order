@@ -33,7 +33,7 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
-Session::checkRight('plugin_order_order', READ);
+Session::checkRight(PluginOrderOrder::$rightname, READ);
 (new PluginOrderOrder())->check($_POST['plugin_order_orders_id'], READ);
 
 $PluginOrderReception = new PluginOrderReception();

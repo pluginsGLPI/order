@@ -36,24 +36,24 @@ use function Safe\preg_match;
 
 class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 {
-    public static $rightname              = 'plugin_order_order';
+    public static string $rightname              = 'plugin_order_order';
 
-    public $dohistory                     = true;
+    public bool $dohistory                     = true;
 
     // From CommonDBRelation
-    public static $itemtype_1             = "PluginOrderOrder";
+    public static ?string $itemtype_1             = "PluginOrderOrder";
 
-    public static $items_id_1             = 'plugin_order_orders_id';
+    public static ?string $items_id_1             = 'plugin_order_orders_id';
 
-    public static $checkItem_1_Rights     = self::DONT_CHECK_ITEM_RIGHTS;
+    public static int $checkItem_1_Rights     = self::DONT_CHECK_ITEM_RIGHTS;
 
-    public static $itemtype_2             = 'itemtype';
+    public static ?string $itemtype_2             = 'itemtype';
 
-    public static $items_id_2             = 'items_id';
+    public static ?string $items_id_2             = 'items_id';
 
-    public static $checkItem_2_Rights     = self::DONT_CHECK_ITEM_RIGHTS;
+    public static int $checkItem_2_Rights     = self::DONT_CHECK_ITEM_RIGHTS;
 
-    public static $check_entity_coherency = false;
+    public static bool $check_entity_coherency = false;
 
     //TODO better right and entity menber (ex Computer_Item)
 
@@ -798,39 +798,39 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 'ORDER' => 'ref.name',
             ];
             return $DB->request($criteria);
-        } else {
-            $criteria = [
-                'SELECT' => [
-                    'item.id AS IDD',
-                    'ref.id',
-                    'ref.itemtype',
-                    'ref.manufacturers_id',
-                    'ref.name',
-                    'item.price_taxfree',
-                    'item.price_ati',
-                    'item.price_discounted',
-                    'item.discount',
-                    'item.plugin_order_ordertaxes_id',
-                    'item.plugin_order_analyticnatures_id',
-                ],
-                'FROM' => $table . ' AS item',
-                'INNER JOIN' => [
-                    $tableRef . ' AS ref' => [
-                        'ON' => [
-                            'item' => 'plugin_order_references_id',
-                            'ref' => 'id',
-                        ],
+        }
+
+        $criteria = [
+            'SELECT' => [
+                'item.id AS IDD',
+                'ref.id',
+                'ref.itemtype',
+                'ref.manufacturers_id',
+                'ref.name',
+                'item.price_taxfree',
+                'item.price_ati',
+                'item.price_discounted',
+                'item.discount',
+                'item.plugin_order_ordertaxes_id',
+                'item.plugin_order_analyticnatures_id',
+            ],
+            'FROM' => $table . ' AS item',
+            'INNER JOIN' => [
+                $tableRef . ' AS ref' => [
+                    'ON' => [
+                        'item' => 'plugin_order_references_id',
+                        'ref' => 'id',
                     ],
                 ],
-                'WHERE' => [
-                    'item.plugin_order_orders_id' => $ID,
-                    ['item.itemtype' => ['LIKE', 'PluginOrderReferenceFree']],
-                ],
-                'GROUPBY' => ['ref.id', 'item.price_taxfree', 'item.discount'],
-                'ORDER' => 'ref.name',
-            ];
-            return $DB->request($criteria);
-        }
+            ],
+            'WHERE' => [
+                'item.plugin_order_orders_id' => $ID,
+                ['item.itemtype' => ['LIKE', 'PluginOrderReferenceFree']],
+            ],
+            'GROUPBY' => ['ref.id', 'item.price_taxfree', 'item.discount'],
+            'ORDER' => 'ref.name',
+        ];
+        return $DB->request($criteria);
     }
 
 
@@ -928,7 +928,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $canedit              = $order->can($plugin_order_orders_id, UPDATE)
                               && $order->canUpdateOrder();
         Session::initNavigateListItems(
-            $this->getType(),
+            static::class,
             __s("Order", "order") . " = " . $order->getName(),
         );
         foreach ($result_ref as $data_ref) {
@@ -1211,7 +1211,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $visible = $_GET[$countainer_name . 'visible'] ?? false;
 
         foreach ($iterator as $data) {
-            Session::addToNavigateListItems($this->getType(), (int) $data['IDD']);
+            Session::addToNavigateListItems(static::class, (int) $data['IDD']);
 
             // Build entry for this row
             $entry = [];
@@ -1420,9 +1420,9 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $iterator = $DB->request($criteria);
         if (count($iterator) > 0) {
             return $iterator->current();
-        } else {
-            return false;
         }
+
+        return false;
     }
 
 
@@ -1444,11 +1444,11 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                     'items_id' => $ID,
                 ],
             );
-            if (!empty($result)) {
+            if ($result !== []) {
                 $link = array_shift($result);
                 $reference = new PluginOrderReference();
                 $reference->getFromDB($link['plugin_order_references_id']);
-                if (Session::haveRight('plugin_order_reference', READ)) {
+                if (Session::haveRight(PluginOrderReference::$rightname, READ)) {
                     $twig_option['reference_link'] = $reference->getLink();
                 }
 
@@ -2236,7 +2236,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         return countElementsInTable(
             'glpi_plugin_order_orders_items',
             [
-                'itemtype' => $item->getType(),
+                'itemtype' => $item::class,
                 'items_id' => $item->getID(),
             ],
         );
@@ -2288,7 +2288,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             }
         } elseif (
             is_subclass_of($item, CommonDBTM::class)
-            && in_array($item->getType(), PluginOrderOrder_Item::getClasses(true))
+            && in_array($item::class, PluginOrderOrder_Item::getClasses(true))
         ) {
             $order_item = new self();
             $order_item->showPluginFromItems($item::class, $item->fields['id']);

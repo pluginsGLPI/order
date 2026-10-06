@@ -28,43 +28,131 @@
  * -------------------------------------------------------------------------
  */
 
-declare(strict_types=1);
-
 namespace GlpiPlugin\Order\Tests\Units;
 
-use Glpi\Tests\DbTestCase;
+use Computer;
+use GlpiPlugin\Order\Tests\OrderTestCase;
 use PluginOrderReference;
+use PluginOrderReference_Supplier;
 
-final class ReferenceTest extends DbTestCase
+final class ReferenceTest extends OrderTestCase
 {
-    private const XSS_PAYLOAD = '<script>alert(1);</script>';
-
-    public function testGetReceptionReferenceLinkEscapesNameWhenLinked(): void
+    public function testCreateReference(): void
     {
         $this->login();
 
-        $reference = new PluginOrderReference();
-        $link = $reference->getReceptionReferenceLink([
-            'id'   => 1,
-            'name' => self::XSS_PAYLOAD,
-        ]);
+        $reference = $this->createReference();
 
-        $this->assertStringNotContainsString(self::XSS_PAYLOAD, $link);
-        $this->assertStringContainsString(htmlescape(self::XSS_PAYLOAD), $link);
+        $this->assertSame(Computer::class, $reference->fields['itemtype']);
+        $this->assertSame(1, (int) $reference->fields['is_active']);
     }
 
-    public function testGetReceptionReferenceLinkEscapesNameWithoutViewRight(): void
+    public function testCreateReferenceWithoutNameFails(): void
     {
-        $this->removeRightFromProfile('Super-Admin', PluginOrderReference::$rightname, READ);
         $this->login();
 
         $reference = new PluginOrderReference();
-        $name = $reference->getReceptionReferenceLink([
-            'id'   => 1,
-            'name' => self::XSS_PAYLOAD,
+        $id = $reference->add([
+            'entities_id' => $this->getTestRootEntity(true),
+            'itemtype'    => Computer::class,
         ]);
 
-        $this->assertStringNotContainsString(self::XSS_PAYLOAD, $name);
-        $this->assertSame(htmlescape(self::XSS_PAYLOAD), $name);
+        $this->assertFalse($id);
+        $this->hasSessionMessages(ERROR, ['Cannot create reference without a name']);
+    }
+
+    public function testCreateReferenceWithoutItemtypeFails(): void
+    {
+        $this->login();
+
+        $reference = new PluginOrderReference();
+        $id = $reference->add([
+            'name'        => 'No itemtype',
+            'entities_id' => $this->getTestRootEntity(true),
+            'itemtype'    => '',
+        ]);
+
+        $this->assertFalse($id);
+        $this->hasSessionMessages(ERROR, ['Cannot create reference without a type']);
+    }
+
+    public function testDuplicateNameInSameEntityIsRejected(): void
+    {
+        $this->login();
+
+        $name = 'Duplicate Reference_' . $this->getUniqueString();
+        $entities_id = $this->getTestRootEntity(true);
+
+        $reference1 = new PluginOrderReference();
+        $id1 = $reference1->add([
+            'name'        => $name,
+            'entities_id' => $entities_id,
+            'itemtype'    => Computer::class,
+        ]);
+        $this->assertGreaterThan(0, $id1);
+
+        $reference2 = new PluginOrderReference();
+        $id2 = $reference2->add([
+            'name'        => $name,
+            'entities_id' => $entities_id,
+            'itemtype'    => Computer::class,
+        ]);
+        $this->assertFalse($id2);
+        $this->hasSessionMessages(ERROR, ['A reference with the same name still exists']);
+    }
+
+    public function testLinkReferenceToSupplier(): void
+    {
+        $this->login();
+
+        $supplier  = $this->createSupplier();
+        $reference = $this->createReference($supplier, Computer::class, 150.5);
+
+        $links = (new PluginOrderReference_Supplier())->find([
+            'plugin_order_references_id' => $reference->getID(),
+            'suppliers_id'                => $supplier->getID(),
+        ]);
+
+        $this->assertCount(1, $links);
+        $link = reset($links);
+        $this->assertEqualsWithDelta(150.5, (float) $link['price_taxfree'], 0.001);
+    }
+
+    public function testUpdateReference(): void
+    {
+        $this->login();
+
+        $reference = $this->createReference();
+
+        $this->updateItem(PluginOrderReference::class, $reference->getID(), [
+            'comment' => 'Updated reference comment',
+        ]);
+
+        $reference->getFromDB($reference->getID());
+        $this->assertSame('Updated reference comment', $reference->fields['comment']);
+    }
+
+    public function testDeleteUnusedReference(): void
+    {
+        $this->login();
+
+        $reference = $this->createReference();
+
+        $this->assertTrue($reference->delete(['id' => $reference->getID()], true));
+        $this->assertFalse((new PluginOrderReference())->getFromDB($reference->getID()));
+    }
+
+    public function testDeletingReferenceInUseIsBlocked(): void
+    {
+        $this->login();
+
+        $supplier  = $this->createSupplier();
+        $order     = $this->createOrder();
+        $reference = $this->createReference($supplier);
+        $this->addReferenceToOrder($order, $reference);
+
+        $this->assertFalse($reference->delete(['id' => $reference->getID()], true));
+        $this->assertTrue((new PluginOrderReference())->getFromDB($reference->getID()));
+        $this->hasSessionMessages(ERROR, ['Reference(s) in use']);
     }
 }

@@ -28,9 +28,8 @@
  * -------------------------------------------------------------------------
  */
 
-declare(strict_types=1);
-
 require __DIR__ . '/../../../tests/bootstrap.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 if (!Plugin::isPluginActive('order')) {
     throw new RuntimeException('Plugin order is not active in the test database');

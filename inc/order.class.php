@@ -40,17 +40,17 @@ class PluginOrderOrder extends CommonDBTM
 {
     use Clonable;
 
-    public static $rightname         = 'plugin_order_order';
+    public static string $rightname         = 'plugin_order_order';
 
     public $is_template              = true;
 
-    public $dohistory                = true;
+    public bool $dohistory                = true;
 
     protected $usenotepadrights      = true;
 
-    protected $usenotepad            = true;
+    protected bool $usenotepad            = true;
 
-    public static $forward_entity_to = [
+    public static array $forward_entity_to = [
         "PluginOrderOrder_Item",
         "PluginOrderOrder_Supplier",
         "PluginOrderSurveySupplier",
@@ -108,37 +108,37 @@ class PluginOrderOrder extends CommonDBTM
 
     public static function canCancel()
     {
-        return Session::haveRight("plugin_order_order", self::RIGHT_CANCEL);
+        return Session::haveRight(self::$rightname, self::RIGHT_CANCEL);
     }
 
 
     public static function canUndo()
     {
-        return Session::haveRight("plugin_order_order", self::RIGHT_UNDO_VALIDATION);
+        return Session::haveRight(self::$rightname, self::RIGHT_UNDO_VALIDATION);
     }
 
 
     public static function canValidate()
     {
-        return Session::haveRight("plugin_order_order", self::RIGHT_VALIDATION);
+        return Session::haveRight(self::$rightname, self::RIGHT_VALIDATION);
     }
 
 
     public static function canGenerateWithoutValidation()
     {
-        return Session::haveRight("plugin_order_order", self::RIGHT_GENERATEODT_WITHOUT_VALIDATION);
+        return Session::haveRight(self::$rightname, self::RIGHT_GENERATEODT_WITHOUT_VALIDATION);
     }
 
 
     public static function canGenerate()
     {
-        return Session::haveRight("plugin_order_order", self::RIGHT_GENERATEODT);
+        return Session::haveRight(self::$rightname, self::RIGHT_GENERATEODT);
     }
 
 
     public static function canDeliver()
     {
-        return Session::haveRight("plugin_order_order", self::RIGHT_DELIVERY);
+        return Session::haveRight(self::$rightname, self::RIGHT_DELIVERY);
     }
 
 
@@ -205,10 +205,10 @@ class PluginOrderOrder extends CommonDBTM
     {
         if ($this->isNewID($this->getID())) {
             return true;
-        } else {
-            return $this->isDraft()
-                || $this->isWaitingForApproval();
         }
+
+        return $this->isDraft()
+            || $this->isWaitingForApproval();
     }
 
 
@@ -217,11 +217,11 @@ class PluginOrderOrder extends CommonDBTM
         //If it's an order creation -> do not display form
         if (!$orders_id) {
             return false;
-        } else {
-            return $this->canValidateOrder()
-                || $this->canUndoValidation()
-                || $this->canCancelOrder();
         }
+
+        return $this->canValidateOrder()
+            || $this->canUndoValidation()
+            || $this->canCancelOrder();
     }
 
 
@@ -232,22 +232,21 @@ class PluginOrderOrder extends CommonDBTM
         //If no validation process -> can validate if order is in draft state
         if (!$config->useValidation()) {
             return $this->isDraft();
-        } else {
-            //Validation process is used
-
-            //If order is canceled, cannot validate !
-            if ($this->isCanceled()) {
-                return false;
-            }
-
-            //If no right to validate
-            if (!self::canValidate()) {
-                return false;
-            } else {
-                return $this->isDraft()
-                   || $this->isWaitingForApproval();
-            }
         }
+
+        //Validation process is used
+        //If order is canceled, cannot validate !
+        if ($this->isCanceled()) {
+            return false;
+        }
+
+        //If no right to validate
+        if (!self::canValidate()) {
+            return false;
+        }
+
+        return $this->isDraft()
+           || $this->isWaitingForApproval();
     }
 
 
@@ -263,9 +262,9 @@ class PluginOrderOrder extends CommonDBTM
         $config = PluginOrderConfig::getConfig();
         if (!$config->useValidation()) {
             return false;
-        } else {
-            return $this->isDraft();
         }
+
+        return $this->isDraft();
     }
 
 
@@ -631,11 +630,13 @@ class PluginOrderOrder extends CommonDBTM
     {
         if ($item instanceof Budget) {
             return __s("Orders", "order");
-        } elseif ($item instanceof self) {
+        }
+
+        if ($item instanceof self) {
             $ong    = [];
             $config = PluginOrderConfig::getConfig();
             if (
-                Session::haveRightsOr("plugin_order_order", [
+                Session::haveRightsOr(self::$rightname, [
                     self::RIGHT_VALIDATION,
                     self::RIGHT_CANCEL,
                     self::RIGHT_UNDO_VALIDATION,
@@ -711,16 +712,14 @@ class PluginOrderOrder extends CommonDBTM
             unset($input['id']);
             unset($input['withtemplate']);
         } else {
-            if (
-                !isset($input["num_order"])
-                || $input["num_order"] == ''
-            ) {
+            if (!isset($input["num_order"])
+            || $input["num_order"] == '') {
                 Session::addMessageAfterRedirect(__s("An order number is mandatory !", "order"), false, ERROR);
                 return [];
-            } elseif (
-                !isset($input["name"])
-                    || $input["name"] == ''
-            ) {
+            }
+
+            if (!isset($input["name"])
+                || $input["name"] == '') {
                 $input["name"] = $input["num_order"];
             }
 
@@ -751,17 +750,15 @@ class PluginOrderOrder extends CommonDBTM
                 "glpi_documents_items",
                 [
                     'items_id' => $this->input["_oldID"],
-                    'itemtype' => $this->getType(),
+                    'itemtype' => static::class,
                 ],
             );
-            if (!empty($docs)) {
-                foreach ($docs as $doc) {
-                    $docitem->add([
-                        'documents_id' => $doc["documents_id"],
-                        'itemtype'     => $this->getType(),
-                        'items_id'     => $this->fields['id'],
-                    ]);
-                }
+            foreach ($docs as $doc) {
+                $docitem->add([
+                    'documents_id' => $doc["documents_id"],
+                    'itemtype'     => static::class,
+                    'items_id'     => $this->fields['id'],
+                ]);
             }
         }
     }
@@ -839,17 +836,11 @@ class PluginOrderOrder extends CommonDBTM
     public function shouldBeAlreadyDelivered($check_all_status = false)
     {
         if ($check_all_status || $this->isApproved() || $this->isPartiallyDelivered()) {
-            if (
-                !is_null($this->fields['duedate']) && $this->fields['duedate'] != ''
-                && (new DateTime($this->fields['duedate']) < new DateTime())
-            ) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
+            return !is_null($this->fields['duedate']) && $this->fields['duedate'] != ''
+            && (new DateTime($this->fields['duedate']) < new DateTime());
         }
+
+        return false;
     }
 
 
@@ -915,7 +906,7 @@ class PluginOrderOrder extends CommonDBTM
                 $this->fields["name"],
                 "name",
                 ($template === "newcomp"),
-                $this->getType(),
+                static::class,
                 $this->fields["entities_id"],
             );
             echo Html::input(
@@ -962,7 +953,7 @@ class PluginOrderOrder extends CommonDBTM
                 $this->fields["num_order"],
                 "num_order",
                 ($template === "newcomp"),
-                $this->getType(),
+                static::class,
                 $this->fields["entities_id"],
             );
             echo Html::input(
@@ -1581,7 +1572,7 @@ class PluginOrderOrder extends CommonDBTM
             $changes .= " : " . $comments;
         }
 
-        $this->addHistory($this->getType(), '', $changes, $orders_id);
+        $this->addHistory(static::class, '', $changes, $orders_id);
     }
 
 
@@ -1665,9 +1656,9 @@ class PluginOrderOrder extends CommonDBTM
             }
 
             return (countElementsInTable("glpi_plugin_order_orders_items", $where));
-        } else {
-            return false;
         }
+
+        return false;
     }
 
 
@@ -2243,22 +2234,15 @@ class PluginOrderOrder extends CommonDBTM
         //If no begin date on a budget : do not display a warning
         if (empty($budget->fields['begin_date'])) {
             return true;
-        } else {
-            //There's a begin date and order date is prior to it
-            if ($input['order_date'] < $budget->getField('begin_date')) {
-                return false;
-            }
-
-            //There's an end date and order date is above it
-            if (
-                !empty($budget->fields['end_date'])
-                && $input['order_date'] > $budget->getField('end_date')
-            ) {
-                return false;
-            }
         }
 
-        return true;
+        //There's a begin date and order date is prior to it
+        if ($input['order_date'] < $budget->getField('begin_date')) {
+            return false;
+        }
+
+        //There's an end date and order date is above it
+        return empty($budget->fields['end_date']) || $input['order_date'] <= $budget->getField('end_date');
     }
 
 
@@ -2337,11 +2321,14 @@ class PluginOrderOrder extends CommonDBTM
         // Compare BUDGET value to TOTAL_HT value
         if ($total_HT > $budget->getField('value')) {
             return PluginOrderOrder::ORDER_IS_OVER_BUDGET;
-        } elseif ($total_HT == $budget->getField('value')) {
-            return PluginOrderOrder::ORDER_IS_EQUAL_BUDGET;
-        } else {
-            return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
         }
+
+        // Compare BUDGET value to TOTAL_HT value
+        if ($total_HT == $budget->getField('value')) {
+            return PluginOrderOrder::ORDER_IS_EQUAL_BUDGET;
+        }
+
+        return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
     }
 
 
@@ -2530,7 +2517,7 @@ class PluginOrderOrder extends CommonDBTM
 
             // Get order linked to document
             $document_item = new Document_Item();
-            if ($document_item->getFromDBByCrit(['documents_id' => $document->fields['id'], 'itemtype' => self::getType()])) {
+            if ($document_item->getFromDBByCrit(['documents_id' => $document->fields['id'], 'itemtype' => static::class])) {
                 // Update document name
                 $order = new self();
                 $order->getFromDB($document_item->fields['items_id']);
@@ -2580,7 +2567,7 @@ class PluginOrderOrder extends CommonDBTM
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
-        if ($isadmin && (Session::haveRight('transfer', READ) && Session::isMultiEntitiesMode())) {
+        if ($isadmin && (Session::haveRight(Transfer::$rightname, READ) && Session::isMultiEntitiesMode())) {
             $actions['PluginOrderOrder:transfert'] = __s('Transfer');
         }
 
@@ -2605,7 +2592,7 @@ class PluginOrderOrder extends CommonDBTM
                         "entities_id" => $entities_id,
                         "update"      => __s('Update'),
                     ]);
-                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                 }
             }
 

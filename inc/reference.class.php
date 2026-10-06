@@ -59,11 +59,11 @@ use Glpi\DBAL\QuerySubQuery;
  */
 class PluginOrderReference extends CommonDBTM
 {
-    public static $rightname         = 'plugin_order_reference'; //'plugin_order_reference'; //TODO : A développer
+    public static string $rightname         = 'plugin_order_reference'; //'plugin_order_reference'; //TODO : A développer
 
-    public $dohistory                = true;
+    public bool $dohistory                = true;
 
-    public static $forward_entity_to = ['PluginOrderReference_Supplier'];
+    public static array $forward_entity_to = ['PluginOrderReference_Supplier'];
 
 
     public static function getTypeName($nb = 0)
@@ -252,9 +252,9 @@ class PluginOrderReference extends CommonDBTM
             $item = getItemForItemtype($values['itemtype']);
             if ($item !== false) {
                 return $item->getTypeName();
-            } else {
-                return $values['itemtype'];
             }
+
+            return $values['itemtype'];
         }
 
         return '';
@@ -332,10 +332,10 @@ class PluginOrderReference extends CommonDBTM
     {
         if (!$this->referenceInUse()) {
             return true;
-        } else {
-            Session::addMessageAfterRedirect(__s("Reference(s) in use", "order"), true, ERROR);
-            return false;
         }
+
+        Session::addMessageAfterRedirect(__s("Reference(s) in use", "order"), true, ERROR);
+        return false;
     }
 
 
@@ -345,23 +345,19 @@ class PluginOrderReference extends CommonDBTM
             "glpi_plugin_order_orders_items",
             ['plugin_order_references_id' => $this->fields["id"]],
         );
-        if ($number > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return $number > 0;
     }
 
 
     public function getReceptionReferenceLink($data)
     {
-        $link = Toolbox::getItemTypeFormURL($this->getType());
+        $link = Toolbox::getItemTypeFormURL(static::class);
 
         if (self::canView()) {
             return '<a href="' . $link . "?id=" . $data["id"] . '">' . htmlescape($data["name"]) . "</a>";
-        } else {
-            return htmlescape($data['name']);
         }
+
+        return htmlescape($data['name']);
     }
 
 
@@ -468,46 +464,48 @@ class PluginOrderReference extends CommonDBTM
 
         if (count($result) === 0) {
             return 0;
-        } else {
-            $row = $result->current();
-            $item = getItemForItemtype($itemtype);
-            if (
-                $item === false
-                || (int) $row["templates_id"] === 0
-                || !$item->getFromDB($row["templates_id"])
-            ) {
-                return 0;
+        }
+
+        $row = $result->current();
+        $item = getItemForItemtype($itemtype);
+        if (
+            $item === false
+            || (int) $row["templates_id"] === 0
+            || !$item->getFromDB($row["templates_id"])
+        ) {
+            return 0;
+        }
+
+        if ($item->getField('entities_id') == $entity
+        || ($item->maybeRecursive()
+        && $item->fields['is_recursive']
+        && Session::haveAccessToEntity($entity, true))) {
+            return $item->getField('id');
+        }
+
+        if ($item->getField('template_name') != NOT_AVAILABLE) {
+            //Workaround when templates are not recursive (ie computers, monitors, etc.)
+            //If templates have the same name in several entities : search for a template with
+            //the same name
+            $criteria_template = [
+                'SELECT' => ['id'],
+                'FROM' => $item->getTable(),
+                'WHERE' => [
+                    'entities_id' => $entity,
+                    'template_name' => $item->fields['template_name'],
+                    'is_template' => 1,
+                ],
+            ];
+            $result_template = $DB->request($criteria_template);
+            if (count($result_template) >= 1) {
+                $row_template = $result_template->current();
+                return $row_template["id"];
             }
 
-            if ($item->getField('entities_id') == $entity
-            || ($item->maybeRecursive()
-            && $item->fields['is_recursive']
-            && Session::haveAccessToEntity($entity, true))) {
-                return $item->getField('id');
-            } elseif ($item->getField('template_name') != NOT_AVAILABLE) {
-                //Workaround when templates are not recursive (ie computers, monitors, etc.)
-                //If templates have the same name in several entities : search for a template with
-                //the same name
-                $criteria_template = [
-                    'SELECT' => ['id'],
-                    'FROM' => $item->getTable(),
-                    'WHERE' => [
-                        'entities_id' => $entity,
-                        'template_name' => $item->fields['template_name'],
-                        'is_template' => 1,
-                    ],
-                ];
-                $result_template = $DB->request($criteria_template);
-                if (count($result_template) >= 1) {
-                    $row_template = $result_template->current();
-                    return $row_template["id"];
-                } else {
-                    return 0;
-                }
-            } else {
-                return 0;
-            }
+            return 0;
         }
+
+        return 0;
     }
 
 
@@ -1029,7 +1027,7 @@ class PluginOrderReference extends CommonDBTM
 
         if ($isadmin) {
             if (
-                Session::haveRight('transfer', READ)
+                Session::haveRight(Transfer::$rightname, READ)
                 && Session::isMultiEntitiesMode()
             ) {
                 $actions['PluginOrderReference:transfert'] = __s('Transfer');
@@ -1061,7 +1059,7 @@ class PluginOrderReference extends CommonDBTM
                             "entities_id" => $entities_id,
                             "update" => __s('Update'),
                         ]);
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     }
                 }
 
@@ -1075,7 +1073,7 @@ class PluginOrderReference extends CommonDBTM
                         $item->copy($id);
                     }
 
-                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                 }
 
                 return;

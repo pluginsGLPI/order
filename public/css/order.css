@@ -37,7 +37,9 @@ input[type="number"].quantity {
 input[type="number"].decimal,
 input[type="number"].smalldecimal,
 input[type="number"].quantity {
-   width: 100px;
+   width: 100%;
+   max-width: 100px;
+   box-sizing: border-box;
 }
 
 input[type="number"].decimal::-webkit-inner-spin-button,
@@ -68,6 +70,30 @@ input[type="number"].quantity::-webkit-inner-spin-button {
 .tab_order_add_items th:nth-child(2),
 .tab_order_add_items td:nth-child(2) {
    width: 25%;
+}
+
+/* quantity */
+.tab_order_add_items th:nth-child(4),
+.tab_order_add_items td:nth-child(4) {
+   width: 90px;
+}
+
+/* unit price tax free */
+.tab_order_add_items th:nth-child(5),
+.tab_order_add_items td:nth-child(5) {
+   width: 100px;
+}
+
+/* VAT */
+.tab_order_add_items th:nth-child(6),
+.tab_order_add_items td:nth-child(6) {
+   width: 130px;
+}
+
+/* discount */
+.tab_order_add_items th:nth-child(7),
+.tab_order_add_items td:nth-child(7) {
+   width: 100px;
 }
 
 /* ADD button */

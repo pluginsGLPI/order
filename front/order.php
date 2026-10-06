@@ -42,7 +42,7 @@ Html::header(
     "order",
 );
 
-if (PluginOrderOrder::canView() || Session::haveRight("config", UPDATE)) {
+if (PluginOrderOrder::canView() || Session::haveRight(Config::$rightname, UPDATE)) {
     Search::show("PluginOrderOrder");
 } else {
     echo "<div class='center'><br><br><img src=\""

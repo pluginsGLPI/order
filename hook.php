@@ -145,9 +145,9 @@ function plugin_order_getDropdown()
             'PluginOrderAccountsection'   => __s("Account section", "order"),
             'PluginOrderDocumentCategory' => __s("Orders", "order"),
         ];
-    } else {
-        return [];
     }
+
+    return [];
 }
 
 
@@ -177,7 +177,7 @@ function plugin_order_getDatabaseRelations()
                 "glpi_plugin_order_orders" => "plugin_order_orderstates_id",
             ],
             "glpi_plugin_order_accountsections" => [
-                "glpi_plugin_order_accountsections" => "plugin_order_accountsections_id",
+                "glpi_plugin_order_orders" => "plugin_order_accountsections_id",
             ],
             "glpi_plugin_order_analyticnatures" => [
                 "glpi_plugin_order_orders_items" => "plugin_order_analyticnatures_id",
@@ -220,9 +220,9 @@ function plugin_order_getDatabaseRelations()
                 "glpi_plugin_order_orders" => "locations_id",
             ],
         ];
-    } else {
-        return [];
     }
+
+    return [];
 }
 
 
@@ -234,7 +234,12 @@ function plugin_order_getAddSearchOptions($itemtype)
     $plugin = new Plugin();
 
     $sopt = [];
-    if ($plugin->isInstalled('order') && $plugin->isActivated('order') && Session::haveRight("plugin_order_order", READ) && in_array($itemtype, PluginOrderOrder_Item::getClasses(true))) {
+    if (
+        $plugin->isInstalled('order')
+        && $plugin->isActivated('order')
+        && Session::haveRight(PluginOrderOrder::$rightname, READ)
+        && in_array($itemtype, PluginOrderOrder_Item::getClasses(true))
+    ) {
         $sopt[3160]['table']         = 'glpi_plugin_order_orders';
         $sopt[3160]['field']         = 'name';
         $sopt[3160]['linkfield']     = '';
@@ -308,26 +313,24 @@ function plugin_order_giveItem($type, $ID, $data, $num)
                     getTableForItemType($itemtype . "Type"),
                     $itemnum,
                 );
-            } else {
-                return " ";
             }
-            // no break
+
+            return " ";
         case "glpi_plugin_order_references.models_id":
             if (file_exists(GLPI_ROOT . "/src/" . $itemtype . "Model.php")) {
                 return Dropdown::getDropdownName(
                     getTableForItemType($itemtype . "Model"),
                     $itemnum,
                 );
-            } else {
-                return " ";
             }
-            // no break
+
+            return " ";
         case "glpi_plugin_order_references.templates_id":
             if (!$itemnum) {
                 return " ";
-            } else {
-                return $reference->getTemplateName($itemtype, $itemnum);
             }
+
+            return $reference->getTemplateName($itemtype, $itemnum);
     }
 
     return "";

@@ -103,9 +103,7 @@ if (isset($_POST["action"])) {
                     $_POST['value'] = [$_POST['value']];
                 }
 
-                if (!isset($_POST['value'])) {
-                    $_POST['value'] = [];
-                }
+                $_POST['value'] ??= [];
             }
 
             Group::dropdown(['name'      => "id[" . $_POST['id'] . "][groups_id]",
@@ -190,7 +188,7 @@ if (isset($_POST["action"])) {
             break;
 
         case "check_unicity":
-            Session::checkRight('plugin_order_order', READ);
+            Session::checkRight(PluginOrderOrder::$rightname, READ);
 
             if (
                 !in_array($_POST['itemtype'] ?? '', $CFG_GLPI['asset_types'], true)

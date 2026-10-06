@@ -33,15 +33,15 @@ use Glpi\Features\AssignableItem;
 
 class PluginOrderLink extends CommonDBChild
 {
-    public static $rightname         = 'plugin_order_order';
+    public static string $rightname         = 'plugin_order_order';
 
-    public $dohistory                = true;
+    public bool $dohistory                = true;
 
-    public static $itemtype          = 'PluginOrderOrder';
+    public static string $itemtype          = 'PluginOrderOrder';
 
-    public static $items_id          = 'plugin_order_orders_id';
+    public static string $items_id          = 'plugin_order_orders_id';
 
-    public static $checkParentRights = self::DONT_CHECK_ITEM_RIGHTS;
+    public static int $checkParentRights = self::DONT_CHECK_ITEM_RIGHTS;
 
 
     public static function getTypeName($nb = 0)
@@ -626,11 +626,11 @@ class PluginOrderLink extends CommonDBChild
                 foreach ($ma->getItems()[self::class] as $key => $val) {
                     $itemtype = $ma->POST['add_items'][$key]['itemtype'] ?? '';
                     if (in_array($itemtype, self::getTypesThanCannotBeGenerated()) && $itemtype !== 'SoftwareLicense') {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                     } elseif (isset($newIDs[$key]) && $newIDs[$key]) {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                     } else {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                     }
                 }
 
@@ -640,7 +640,7 @@ class PluginOrderLink extends CommonDBChild
                 //  For consumables and cartridges, createLinkWithItem creates a new item
                 // (glpi_consumables/glpi_cartridges) for each selected detail line;
                 // therefore, multiple items can be linked to the same reference item at once
-                $allow_multiple_link = isset($ma->POST['add_items']) && $ma->POST['add_items'] !== [] && array_reduce(
+                $allow_multiple_link = $ma->POST['add_items'] !== [] && array_reduce(
                     $ma->POST['add_items'],
                     fn($carry, $data) => $carry && in_array(
                         $data['itemtype'] ?? '',
@@ -653,7 +653,7 @@ class PluginOrderLink extends CommonDBChild
                 if (!$allow_multiple_link && count($ids) > 1) {
                     $ma->addMessage(__s("Cannot link several items to one detail line", "order"));
                     foreach ($ids as $id) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                     }
 
                     break;
@@ -664,7 +664,7 @@ class PluginOrderLink extends CommonDBChild
                     $order_item->getFromDB($val);
                     if ($order_item->fields["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) {
                         $ma->addMessage(__s("Cannot link items not delivered", "order"));
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                     } else {
                         $link->createLinkWithItem(
                             $key,
@@ -672,7 +672,7 @@ class PluginOrderLink extends CommonDBChild
                             $ma->POST['add_items'][$key]['itemtype'],
                             $ma->POST['plugin_order_orders_id'],
                         );
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                     }
                 }
 
@@ -685,7 +685,7 @@ class PluginOrderLink extends CommonDBChild
                         $ma->POST['add_items'][$key]['itemtype'],
                         $ma->POST['plugin_order_orders_id'],
                     );
-                    $ma->itemDone($item->getType(), $val, MassiveAction::ACTION_OK);
+                    $ma->itemDone($item::class, $val, MassiveAction::ACTION_OK);
                 }
 
                 break;
@@ -696,11 +696,11 @@ class PluginOrderLink extends CommonDBChild
                     $order_item->getFromDB($key);
                     if ($order_item->fields["items_id"] != 0) {
                         $ma->addMessage(__s("Unable to cancel reception when items are already linked, please unlink them before trying again.", "order"));
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                     } elseif (!$link->cancelReception($key)) {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                     } else {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                     }
                 }
 
@@ -756,21 +756,21 @@ class PluginOrderLink extends CommonDBChild
     {
         if ($items_id == 0) {
             return (__s("No associated item", "order"));
-        } else {
-            switch ($itemtype) {
-                case 'ConsumableItem':
-                case 'CartridgeItem':
-                    $table = $itemtype::getTable();
-                    $item = $itemtype == 'ConsumableItem' ? new Consumable() : new Cartridge();
-                    $item->getFromDB($items_id);
-                    $item_type = getItemForItemtype($itemtype);
-                    $item_type->getFromDB($item->fields[getForeignKeyFieldForTable($table)]);
-                    return $item_type->getLink(['comments' => 1]);
-                default:
-                    $item = getItemForItemtype($itemtype);
-                    $item->getFromDB($items_id);
-                    return $item->getLink(['comments' => 1]);
-            }
+        }
+
+        switch ($itemtype) {
+            case 'ConsumableItem':
+            case 'CartridgeItem':
+                $table = $itemtype::getTable();
+                $item = $itemtype == 'ConsumableItem' ? new Consumable() : new Cartridge();
+                $item->getFromDB($items_id);
+                $item_type = getItemForItemtype($itemtype);
+                $item_type->getFromDB($item->fields[getForeignKeyFieldForTable($table)]);
+                return $item_type->getLink(['comments' => 1]);
+            default:
+                $item = getItemForItemtype($itemtype);
+                $item->getFromDB($items_id);
+                return $item->getLink(['comments' => 1]);
         }
     }
 
@@ -792,16 +792,11 @@ class PluginOrderLink extends CommonDBChild
             );
 
             return ($cpt > 0);
-        } else {
-            $detail = new PluginOrderOrder_Item();
-            $detail->getFromDB($detailID);
-
-            if (!$detail->fields['items_id']) {
-                return false;
-            } else {
-                return true;
-            }
         }
+
+        $detail = new PluginOrderOrder_Item();
+        $detail->getFromDB($detailID);
+        return (bool) $detail->fields['items_id'];
     }
 
 
@@ -823,9 +818,9 @@ class PluginOrderLink extends CommonDBChild
         if (count($result) > 0) {
             $row = $result->current();
             return $row['id'];
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
 
@@ -901,9 +896,7 @@ class PluginOrderLink extends CommonDBChild
             }
 
             foreach (['warranty_date', 'buy_date', 'inventory_date'] as $date) {
-                if (!isset($fields[$date])) {
-                    $fields[$date] = 'NULL';
-                }
+                $fields[$date] ??= 'NULL';
             }
 
             $fields['_no_warning'] = true;
@@ -1192,10 +1185,7 @@ class PluginOrderLink extends CommonDBChild
                 $add_item = array_merge($params['add_items'][$values['id']], $add_item);
             }
 
-            //retrieve plugin_order_references_id from param if needed
-            if (!isset($add_item["plugin_order_references_id"])) {
-                $add_item["plugin_order_references_id"] = $params['plugin_order_references_id'];
-            }
+            $add_item["plugin_order_references_id"] ??= $params['plugin_order_references_id'];
 
             //If itemtype cannot be generated, go to the new occurence
             if (in_array($add_item['itemtype'], self::getTypesThanCannotBeGenerated())) {
@@ -1447,7 +1437,7 @@ class PluginOrderLink extends CommonDBChild
         if (
             $item instanceof PluginOrderOrder
             && $item->checkIfDetailExists($item->getID(), true)
-            && Session::haveRight('plugin_order_order', READ)
+            && Session::haveRight(PluginOrderOrder::$rightname, READ)
         ) {
             return self::createTabEntry(
                 _sn("Associated item", "Associated items", 2),
@@ -1516,7 +1506,7 @@ class PluginOrderLink extends CommonDBChild
                             'sha1sum' => $document->fields['sha1sum'],
                         ],
                     );
-                    if (empty($found_docs)) {
+                    if ($found_docs === []) {
                         $tmpdoc                = $document->fields;
                         $tmpdoc['entities_id'] = $entity;
                         unset($tmpdoc['id']);

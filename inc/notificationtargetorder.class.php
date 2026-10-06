@@ -94,9 +94,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
 
             $this->getTags();
             foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
-                if (!isset($this->data[$tag])) {
-                    $this->data[$tag] = $values['label'];
-                }
+                $this->data[$tag] ??= $values['label'];
             }
         } elseif ($this->obj instanceof CommonDBTM) {
             $this->data['##lang.ordervalidation.title##']     = $events[$event];
@@ -157,7 +155,7 @@ class PluginOrderNotificationTargetOrder extends NotificationTarget
             $this->data['##lang.ordervalidation.url##'] = "URL";
             $this->data['##ordervalidation.url##']      = $this->formatURL(
                 $options['additionnaloption']['usertype'],
-                $this->obj->getType() . "_" . $this->obj->getField("id"),
+                $this->obj::class . "_" . $this->obj->getField("id"),
             );
         }
     }

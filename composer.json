@@ -18,6 +18,11 @@
             "url": "https://github.com/teclib/odtphp/"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "GlpiPlugin\\Order\\Tests\\": "tests"
+        }
+    },
     "autoload-dev": {
         "psr-4": {
             "Glpi\\Tools\\": "../../tools/src/"
