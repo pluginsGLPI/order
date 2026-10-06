@@ -147,6 +147,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
         if ($item::class === self::class) {
             return [1 => __s("Main")];
         }
+
         if ($item instanceof PluginOrderReference) {
             return self::createTabEntry(
                 __s("Supplier Detail", "order"),
@@ -388,6 +389,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             $row = $result->current();
             return $row["reference_code"];
         }
+
         return 0;
     }
 

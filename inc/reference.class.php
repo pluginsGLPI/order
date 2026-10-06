@@ -253,6 +253,7 @@ class PluginOrderReference extends CommonDBTM
             if ($item !== false) {
                 return $item->getTypeName();
             }
+
             return $values['itemtype'];
         }
 
@@ -332,6 +333,7 @@ class PluginOrderReference extends CommonDBTM
         if (!$this->referenceInUse()) {
             return true;
         }
+
         Session::addMessageAfterRedirect(__s("Reference(s) in use", "order"), true, ERROR);
         return false;
     }
@@ -354,6 +356,7 @@ class PluginOrderReference extends CommonDBTM
         if (self::canView()) {
             return '<a href="' . $link . "?id=" . $data["id"] . '">' . htmlescape($data["name"]) . "</a>";
         }
+
         return htmlescape($data['name']);
     }
 
@@ -462,6 +465,7 @@ class PluginOrderReference extends CommonDBTM
         if (count($result) === 0) {
             return 0;
         }
+
         $row = $result->current();
         $item = getItemForItemtype($itemtype);
         if (
@@ -471,12 +475,14 @@ class PluginOrderReference extends CommonDBTM
         ) {
             return 0;
         }
+
         if ($item->getField('entities_id') == $entity
         || ($item->maybeRecursive()
         && $item->fields['is_recursive']
         && Session::haveAccessToEntity($entity, true))) {
             return $item->getField('id');
         }
+
         if ($item->getField('template_name') != NOT_AVAILABLE) {
             //Workaround when templates are not recursive (ie computers, monitors, etc.)
             //If templates have the same name in several entities : search for a template with
@@ -495,8 +501,10 @@ class PluginOrderReference extends CommonDBTM
                 $row_template = $result_template->current();
                 return $row_template["id"];
             }
+
             return 0;
         }
+
         return 0;
     }
 

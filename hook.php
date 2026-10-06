@@ -146,6 +146,7 @@ function plugin_order_getDropdown()
             'PluginOrderDocumentCategory' => __s("Orders", "order"),
         ];
     }
+
     return [];
 }
 
@@ -220,6 +221,7 @@ function plugin_order_getDatabaseRelations()
             ],
         ];
     }
+
     return [];
 }
 
@@ -312,8 +314,8 @@ function plugin_order_giveItem($type, $ID, $data, $num)
                     $itemnum,
                 );
             }
+
             return " ";
-            // no break
         case "glpi_plugin_order_references.models_id":
             if (file_exists(GLPI_ROOT . "/src/" . $itemtype . "Model.php")) {
                 return Dropdown::getDropdownName(
@@ -321,12 +323,13 @@ function plugin_order_giveItem($type, $ID, $data, $num)
                     $itemnum,
                 );
             }
+
             return " ";
-            // no break
         case "glpi_plugin_order_references.templates_id":
             if (!$itemnum) {
                 return " ";
             }
+
             return $reference->getTemplateName($itemtype, $itemnum);
     }
 

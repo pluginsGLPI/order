@@ -56,6 +56,7 @@ class PluginOrderBillState extends CommonDropdown
             );
             return false;
         }
+
         return true;
     }
 

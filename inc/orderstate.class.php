@@ -67,6 +67,7 @@ class PluginOrderOrderState extends CommonDropdown
             );
             return false;
         }
+
         return true;
     }
 

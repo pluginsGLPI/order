@@ -757,6 +757,7 @@ class PluginOrderLink extends CommonDBChild
         if ($items_id == 0) {
             return (__s("No associated item", "order"));
         }
+
         switch ($itemtype) {
             case 'ConsumableItem':
             case 'CartridgeItem':
@@ -792,6 +793,7 @@ class PluginOrderLink extends CommonDBChild
 
             return ($cpt > 0);
         }
+
         $detail = new PluginOrderOrder_Item();
         $detail->getFromDB($detailID);
         return (bool) $detail->fields['items_id'];
@@ -817,6 +819,7 @@ class PluginOrderLink extends CommonDBChild
             $row = $result->current();
             return $row['id'];
         }
+
         return 0;
     }
 

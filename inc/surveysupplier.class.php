@@ -124,6 +124,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         if (count($iterator) > 0) {
             return $iterator->current()["total"] / 5;
         }
+
         return 0;
     }
 
@@ -152,6 +153,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
             $result = $iterator->current();
             return $result["total"] / $result["nb"];
         }
+
         return 0;
     }
 
@@ -492,6 +494,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         if ($orders_id) {
             return (countElementsInTable(self::getTable(), ['plugin_order_orders_id' => $orders_id]));
         }
+
         return false;
     }
 

@@ -799,6 +799,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             ];
             return $DB->request($criteria);
         }
+
         $criteria = [
             'SELECT' => [
                 'item.id AS IDD',
@@ -1420,6 +1421,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         if (count($iterator) > 0) {
             return $iterator->current();
         }
+
         return false;
     }
 

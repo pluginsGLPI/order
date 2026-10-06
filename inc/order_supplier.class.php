@@ -486,6 +486,7 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
         if ($item instanceof Supplier) {
             return [1 => __s("Orders", "order")];
         }
+
         if ($item instanceof PluginOrderOrder) {
             $config = PluginOrderConfig::getConfig();
             if ($config->canUseSupplierInformations() && $item->fields['suppliers_id']) {

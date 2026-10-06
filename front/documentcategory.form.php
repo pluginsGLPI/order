@@ -29,7 +29,7 @@
  */
 
 Session::checkLoginUser();
-Session::checkRight(\Config::$rightname, UPDATE);
+Session::checkRight(Config::$rightname, UPDATE);
 
 $documentCategory = new PluginOrderDocumentCategory();
 
