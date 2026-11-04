@@ -32,9 +32,9 @@
 
 class PluginOrderReferenceFree extends CommonDBTM
 {
-    public static $rightname         = 'plugin_order_reference';
+    public static string $rightname         = 'plugin_order_reference';
 
-    public $dohistory                = true;
+    public bool $dohistory                = true;
 
     public static function getTypeName($nb = 0)
     {

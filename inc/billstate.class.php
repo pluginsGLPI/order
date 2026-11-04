@@ -36,7 +36,7 @@ class PluginOrderBillState extends CommonDropdown
 
     public const PAID    = 1;
 
-    public static $rightname = 'plugin_order_bill';
+    public static string $rightname = 'plugin_order_bill';
 
 
     public static function getTypeName($nb = 0)
@@ -55,9 +55,9 @@ class PluginOrderBillState extends CommonDropdown
                 ERROR,
             );
             return false;
-        } else {
-            return true;
         }
+
+        return true;
     }
 
 
@@ -72,11 +72,7 @@ class PluginOrderBillState extends CommonDropdown
     public static function getState($states_id)
     {
         $states = self::getStates();
-        if (isset($states[$states_id])) {
-            return $states[$states_id];
-        } else {
-            return '';
-        }
+        return $states[$states_id] ?? '';
     }
 
 

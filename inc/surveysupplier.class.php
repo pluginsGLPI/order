@@ -32,11 +32,11 @@ use Glpi\DBAL\QueryExpression;
 
 class PluginOrderSurveySupplier extends CommonDBChild
 {
-    public static $rightname = 'plugin_order_order';
+    public static string $rightname = 'plugin_order_order';
 
-    public static $itemtype  = 'PluginOrderOrder';
+    public static string $itemtype  = 'PluginOrderOrder';
 
-    public static $items_id  = 'plugin_order_orders_id';
+    public static string $items_id  = 'plugin_order_orders_id';
 
 
     public static function getTypeName($nb = 0)
@@ -73,11 +73,7 @@ class PluginOrderSurveySupplier extends CommonDBChild
         }
 
         $this->fields = $iterator->current();
-        if (is_array($this->fields) && count($this->fields)) {
-            return true;
-        } else {
-            return false;
-        }
+        return is_array($this->fields) && count($this->fields);
     }
 
 
@@ -127,9 +123,9 @@ class PluginOrderSurveySupplier extends CommonDBChild
         $iterator = $DB->request($criteria);
         if (count($iterator) > 0) {
             return $iterator->current()["total"] / 5;
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
 
@@ -156,9 +152,9 @@ class PluginOrderSurveySupplier extends CommonDBChild
         if (count($iterator) > 0) {
             $result = $iterator->current();
             return $result["total"] / $result["nb"];
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 
 
@@ -174,8 +170,6 @@ class PluginOrderSurveySupplier extends CommonDBChild
 
         $survey       = new self();
         $survey_table = $survey->getTable();
-
-        getEntitiesRestrictRequest(" AND ", "orders", "entities_id", '', true);
 
         $criteria = [
             'SELECT' => [
@@ -499,9 +493,9 @@ class PluginOrderSurveySupplier extends CommonDBChild
     {
         if ($orders_id) {
             return (countElementsInTable(self::getTable(), ['plugin_order_orders_id' => $orders_id]));
-        } else {
-            return false;
         }
+
+        return false;
     }
 
 

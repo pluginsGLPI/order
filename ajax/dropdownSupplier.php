@@ -35,7 +35,7 @@ if (strpos((string) $_SERVER['PHP_SELF'], "dropdownSupplier.php")) {
     Html::header_nocache();
 }
 
-Session::checkRight("contact_enterprise", READ);
+Session::checkRight(Contact::$rightname, READ);
 
 // Make a select box
 if (isset($_POST["suppliers_id"])) {

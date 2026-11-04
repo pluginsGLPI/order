@@ -28,7 +28,7 @@
  * -------------------------------------------------------------------------
  */
 
-Session::checkRight("profile", UPDATE);
+Session::checkRight(Profile::$rightname, UPDATE);
 
 $prof = new PluginOrderProfile();
 

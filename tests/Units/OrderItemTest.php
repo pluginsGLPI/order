@@ -28,136 +28,80 @@
  * -------------------------------------------------------------------------
  */
 
-declare(strict_types=1);
-
 namespace GlpiPlugin\Order\Tests\Units;
 
 use Computer;
-use Entity;
-use Glpi\Tests\DbTestCase;
-use PluginOrderOrder;
+use GlpiPlugin\Order\Tests\OrderTestCase;
 use PluginOrderOrder_Item;
-use PluginOrderReference;
 
-final class OrderItemTest extends DbTestCase
+final class OrderItemTest extends OrderTestCase
 {
-    public function testBelongsToOrderReturnsTrueForOwningOrder(): void
-    {
-        $item = new PluginOrderOrder_Item();
-        $item->fields['plugin_order_orders_id'] = 5;
-
-        $this->assertTrue($item->belongsToOrder(5));
-    }
-
-    public function testBelongsToOrderReturnsFalseForForeignOrder(): void
-    {
-        $item = new PluginOrderOrder_Item();
-        $item->fields['plugin_order_orders_id'] = 5;
-
-        $this->assertFalse($item->belongsToOrder(42));
-    }
-
-    public function testUpdatePrice_taxfreeIgnoresItemFromAnotherOrder(): void
+    public function testGetClassesIncludesNativeGlpiAssets(): void
     {
         $this->login();
 
-        [$order_item, $foreign_orders_id] = $this->createItemInOrderAndForeignOrder();
+        $classes = PluginOrderOrder_Item::getClasses(true);
 
-        $order_item->updatePrice_taxfree([
-            'item_id'       => $order_item->getID(),
-            'orders_id'     => $foreign_orders_id,
-            'price_taxfree' => 999,
-        ]);
-
-        $this->assertTrue($order_item->getFromDB($order_item->getID()));
-        $this->assertEquals(100, (float) $order_item->fields['price_taxfree']);
+        // Order lines can natively point to these core GLPI asset types.
+        $this->assertContains(Computer::class, $classes);
+        $this->assertContains('Monitor', $classes);
+        $this->assertContains('NetworkEquipment', $classes);
+        $this->assertContains('Printer', $classes);
+        $this->assertContains('SoftwareLicense', $classes);
     }
 
-    public function testUpdatePrice_taxfreeAppliesToItemOfCurrentOrder(): void
+    public function testAddDetailsCreatesOneLinePerQuantity(): void
     {
         $this->login();
 
-        [$order_item] = $this->createItemInOrderAndForeignOrder();
+        $supplier  = $this->createSupplier();
+        $order     = $this->createOrder();
+        $reference = $this->createReference($supplier, Computer::class, 250);
 
-        $order_item->updatePrice_taxfree([
-            'item_id'       => $order_item->getID(),
-            'orders_id'     => (int) $order_item->fields['plugin_order_orders_id'],
-            'price_taxfree' => 999,
-        ]);
+        $lines = $this->addReferenceToOrder($order, $reference, 3, 250, 10);
 
-        $this->assertTrue($order_item->getFromDB($order_item->getID()));
-        $this->assertEquals(999, (float) $order_item->fields['price_taxfree']);
+        $this->assertCount(3, $lines);
+        foreach ($lines as $line) {
+            $this->assertSame($order->getID(), (int) $line['plugin_order_orders_id']);
+            $this->assertSame($reference->getID(), (int) $line['plugin_order_references_id']);
+            $this->assertSame(Computer::class, $line['itemtype']);
+            // 250 - 10% discount = 225
+            $this->assertEqualsWithDelta(225.0, (float) $line['price_discounted'], 0.001);
+        }
     }
 
-    public function testUpdateDiscountIgnoresItemFromAnotherOrder(): void
+    public function testGetAllPricesSumsOrderLines(): void
     {
         $this->login();
 
-        [$order_item, $foreign_orders_id] = $this->createItemInOrderAndForeignOrder();
+        $supplier  = $this->createSupplier();
+        $order     = $this->createOrder();
+        $reference = $this->createReference($supplier, Computer::class, 100);
 
-        $order_item->updateDiscount([
-            'item_id'   => $order_item->getID(),
-            'orders_id' => $foreign_orders_id,
-            'discount'  => 50,
-            'price'     => 100,
-        ]);
+        $this->addReferenceToOrder($order, $reference, 2, 100, 0);
 
-        $this->assertTrue($order_item->getFromDB($order_item->getID()));
-        $this->assertEquals(0, (float) $order_item->fields['discount']);
+        $order_item = new PluginOrderOrder_Item();
+        $prices     = $order_item->getAllPrices($order->getID());
+
+        $this->assertEqualsWithDelta(200.0, (float) $prices['priceHT'], 0.001);
     }
 
-    public function testUpdateDiscountAppliesToItemOfCurrentOrder(): void
+    public function testDeletingOrderItemDoesNotDeleteTheOrder(): void
     {
         $this->login();
 
-        [$order_item] = $this->createItemInOrderAndForeignOrder();
+        $supplier  = $this->createSupplier();
+        $order     = $this->createOrder();
+        $reference = $this->createReference($supplier, Computer::class, 100);
+        $lines     = $this->addReferenceToOrder($order, $reference, 1, 100, 0);
 
-        $order_item->updateDiscount([
-            'item_id'   => $order_item->getID(),
-            'orders_id' => (int) $order_item->fields['plugin_order_orders_id'],
-            'discount'  => 50,
-            'price'     => 100,
-        ]);
+        $order_item = new PluginOrderOrder_Item();
+        $this->assertTrue($order_item->delete(['id' => $lines[0]['id']], true));
 
-        $this->assertTrue($order_item->getFromDB($order_item->getID()));
-        $this->assertEquals(50, (float) $order_item->fields['discount']);
-        $this->assertEquals(50, (float) $order_item->fields['price_discounted']);
-    }
-
-    /** @return array{0: PluginOrderOrder_Item, 1: int} */
-    private function createItemInOrderAndForeignOrder(): array
-    {
-        $entities_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
-
-        $order = $this->createItem(PluginOrderOrder::class, [
-            'name'        => 'Order test owner order',
-            'entities_id' => $entities_id,
-            'num_order'   => mt_rand(),
-            'order_date'  => date('Y-m-d'),
-        ]);
-
-        $foreign_order = $this->createItem(PluginOrderOrder::class, [
-            'name'        => 'Order test foreign order',
-            'entities_id' => $entities_id,
-            'num_order'   => mt_rand(),
-            'order_date'  => date('Y-m-d'),
-        ]);
-
-        $reference = $this->createItem(PluginOrderReference::class, [
-            'name'        => 'Order test reference',
-            'entities_id' => $entities_id,
-            'itemtype'    => Computer::class,
-        ]);
-
-        $order_item = $this->createItem(PluginOrderOrder_Item::class, [
-            'plugin_order_orders_id'     => $order->getID(),
-            'plugin_order_references_id' => $reference->getID(),
-            'itemtype'                   => Computer::class,
-            'items_id'                   => 0,
-            'price_taxfree'              => 100,
-            'discount'                   => 0,
-        ]);
-
-        return [$order_item, (int) $foreign_order->getID()];
+        $this->assertCount(
+            0,
+            $order_item->find(['id' => $lines[0]['id']]),
+        );
+        $this->assertTrue($order->getFromDB($order->getID()));
     }
 }

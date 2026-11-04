@@ -32,7 +32,7 @@
 
 class PluginOrderProfile extends CommonDBTM
 {
-    public static $rightname = 'profile';
+    public static string $rightname = 'profile';
 
 
     public static function createFirstAccess($ID)

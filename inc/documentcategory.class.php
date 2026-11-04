@@ -42,7 +42,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
     {
         $config = PluginOrderConfig::getConfig();
 
-        if ($item->getType() == "DocumentCategory" && $config->canRenameDocuments()) {
+        if ($item::class == "DocumentCategory" && $config->canRenameDocuments()) {
             return __s("Orders", "order");
         }
 
@@ -54,7 +54,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
     {
         $config = PluginOrderConfig::getConfig();
 
-        if ($item->getType() == "DocumentCategory" && $config->canRenameDocuments()) {
+        if ($item::class == "DocumentCategory" && $config->canRenameDocuments()) {
             self::showForDocumentCategory($item);
         }
 
@@ -79,7 +79,7 @@ class PluginOrderDocumentCategory extends CommonDBTM
         }
 
         echo "<form name='form' method='post' action='"
-        . Toolbox::getItemTypeFormURL($documentCategory->getType()) . "'>";
+        . Toolbox::getItemTypeFormURL($documentCategory::class) . "'>";
 
         echo "<div align='center'><table class='tab_cadre_fixe'>";
         echo "<tr><th colspan='2'>" . __s('Document category prefix', 'order') . "</th></tr>";

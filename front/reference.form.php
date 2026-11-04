@@ -30,18 +30,12 @@
 
 Session::checkLoginUser();
 
-if (!isset($_GET["id"])) {
-    $_GET["id"] = "";
-}
+$_GET["id"] ??= "";
 
-if (!isset($_GET["withtemplate"])) {
-    $_GET["withtemplate"] = "";
-}
+$_GET["withtemplate"] ??= "";
 
 $_GET["popup"] = $_POST["popup"] ?? "";
-if (!isset($_GET["itemtype"])) {
-    $_GET["itemtype"] = "";
-}
+$_GET["itemtype"] ??= "";
 
 $reference = new PluginOrderReference();
 

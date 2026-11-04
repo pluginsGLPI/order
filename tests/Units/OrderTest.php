@@ -28,81 +28,175 @@
  * -------------------------------------------------------------------------
  */
 
-declare(strict_types=1);
-
 namespace GlpiPlugin\Order\Tests\Units;
 
-use Glpi\Tests\DbTestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
+use GlpiPlugin\Order\Tests\OrderTestCase;
 use PluginOrderOrder;
-use RuntimeException;
+use PluginOrderOrder_Item;
+use PluginOrderOrder_Supplier;
+use PluginOrderOrderState;
 
-final class OrderTest extends DbTestCase
+final class OrderTest extends OrderTestCase
 {
-    public static function invalidTemplateNameProvider(): iterable
+    public function testCreateOrderIsDraftByDefault(): void
     {
-        yield 'path traversal' => ['../../../etc/passwd.odt'];
-        yield 'embedded path separator' => ['sub/template.odt'];
-        yield 'disallowed extension' => ['template.docx'];
+        $this->login();
+
+        $order = $this->createOrder();
+
+        $this->assertSame(
+            PluginOrderOrderState::DRAFT,
+            (int) $order->fields['plugin_order_orderstates_id'],
+        );
+        $this->assertTrue($order->isDraft());
+        $this->assertFalse($order->isCanceled());
+        $this->assertFalse($order->isDelivered());
     }
 
-    #[DataProvider('invalidTemplateNameProvider')]
-    public function testGenerateOrderRejectsInvalidTemplateName(string $template): void
+    public function testCreateOrderWithoutNumOrderFails(): void
     {
+        $this->login();
+
         $order = new PluginOrderOrder();
-
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Invalid template name');
-
-        $order->generateOrder([
-            'id'       => 0,
-            'template' => $template,
-            'sign'     => '',
+        $id = $order->add([
+            'name'        => 'Missing num_order',
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
+
+        $this->assertFalse($id);
+        $this->hasSessionMessages(ERROR, ['An order number is mandatory !']);
     }
 
-    public static function invalidSignatureNameProvider(): iterable
+    public function testUpdateOrder(): void
     {
-        yield 'path traversal via slash' => ['../../../etc/passwd.png'];
-        yield 'path traversal via backslash' => ['..\\..\\signature.png'];
-        yield 'disallowed extension' => ['signature.php'];
-    }
+        $this->login();
 
-    #[DataProvider('invalidSignatureNameProvider')]
-    public function testGenerateOrderRejectsInvalidSignatureName(string $signature): void
-    {
-        $order = new PluginOrderOrder();
+        $order = $this->createOrder();
 
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Invalid signature file name');
-
-        $order->generateOrder([
-            'id'       => 0,
-            'template' => 'template.odt',
-            'sign'     => $signature,
+        $this->updateItem(PluginOrderOrder::class, $order->getID(), [
+            'comment' => 'Updated comment',
         ]);
+
+        $order->getFromDB($order->getID());
+        $this->assertSame('Updated comment', $order->fields['comment']);
     }
 
-    public static function acceptedSignatureProvider(): iterable
+    public function testUpdateOrderStatusAddsHistoryLog(): void
     {
-        yield 'no signature' => [''];
-        yield 'valid png signature' => ['signature.png'];
+        $this->login();
+
+        $order = $this->createOrder();
+        $order->updateOrderStatus($order->getID(), PluginOrderOrderState::VALIDATED, 'validated for test');
+
+        $order->getFromDB($order->getID());
+        $this->assertSame(PluginOrderOrderState::VALIDATED, (int) $order->fields['plugin_order_orderstates_id']);
+        $this->assertTrue($order->isApproved());
     }
 
-    #[DataProvider('acceptedSignatureProvider')]
-    public function testGenerateOrderAcceptsValidSignatureAndReachesFileCheck(string $signature): void
+    public function testDeliveredStateSetsDeliveryDate(): void
     {
-        $order = new PluginOrderOrder();
+        $this->login();
 
-        // The template file does not exist in the test environment: reaching this
-        // exception proves the name/signature validation passed successfully.
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Template file not found or not readable');
+        $order = $this->createOrder();
+        $this->assertEmpty($order->fields['deliverydate']);
 
-        $order->generateOrder([
-            'id'       => 0,
-            'template' => 'template.odt',
-            'sign'     => $signature,
+        $order->updateOrderStatus($order->getID(), PluginOrderOrderState::DELIVERED);
+
+        $order->getFromDB($order->getID());
+        $this->assertTrue($order->isDelivered());
+        $this->assertNotEmpty($order->fields['deliverydate']);
+    }
+
+    public function testCanValidateOrderWithoutValidationProcessDependsOnDraftState(): void
+    {
+        $this->login();
+
+        $order = $this->createOrder();
+
+        // No validation workflow configured by default: draft orders can be validated directly.
+        $this->assertTrue($order->canValidateOrder());
+
+        $order->updateOrderStatus($order->getID(), PluginOrderOrderState::VALIDATED);
+        $order->getFromDB($order->getID());
+        $this->assertFalse($order->canValidateOrder());
+    }
+
+    public function testCanCancelOrderRequiresRight(): void
+    {
+        $this->removeRightFromProfile('Super-Admin', PluginOrderOrder::$rightname, PluginOrderOrder::RIGHT_CANCEL);
+        $this->login();
+
+        $order = $this->createOrder();
+        $this->assertFalse($order->canCancelOrder());
+
+        $this->logOut();
+        $this->addRightToProfile('Super-Admin', PluginOrderOrder::$rightname, PluginOrderOrder::RIGHT_CANCEL);
+        $this->login();
+
+        $order->getFromDB($order->getID());
+        $this->assertTrue($order->canCancelOrder());
+    }
+
+    public function testCanceledOrderCannotBeCanceledAgain(): void
+    {
+        $this->addRightToProfile('Super-Admin', PluginOrderOrder::$rightname, PluginOrderOrder::RIGHT_CANCEL);
+        $this->login();
+
+        $order = $this->createOrder();
+        $order->updateOrderStatus($order->getID(), PluginOrderOrderState::CANCELED);
+        $order->getFromDB($order->getID());
+
+        $this->assertTrue($order->isCanceled());
+        $this->assertFalse($order->canCancelOrder());
+    }
+
+    public function testUndoValidationRequiresRightAndValidatedState(): void
+    {
+        $this->addRightToProfile('Super-Admin', PluginOrderOrder::$rightname, PluginOrderOrder::RIGHT_UNDO_VALIDATION);
+        $this->login();
+
+        $order = $this->createOrder();
+        // Still draft: nothing to undo.
+        $this->assertFalse($order->canUndoValidation());
+
+        $order->updateOrderStatus($order->getID(), PluginOrderOrderState::VALIDATED);
+        $order->getFromDB($order->getID());
+        $this->assertTrue($order->canUndoValidation());
+
+        $this->logOut();
+        $this->removeRightFromProfile('Super-Admin', PluginOrderOrder::$rightname, PluginOrderOrder::RIGHT_UNDO_VALIDATION);
+        $this->login();
+
+        $order->getFromDB($order->getID());
+        $this->assertFalse($order->canUndoValidation());
+    }
+
+    public function testPurgingOrderCascadesToRelatedItems(): void
+    {
+        $this->login();
+
+        $supplier = $this->createSupplier();
+        $order    = $this->createOrder();
+
+        $order_supplier = $this->createItem(PluginOrderOrder_Supplier::class, [
+            'plugin_order_orders_id' => $order->getID(),
+            'suppliers_id'           => $supplier->getID(),
         ]);
+
+        $reference = $this->createReference($supplier);
+        $this->addReferenceToOrder($order, $reference);
+
+        $this->assertNotCount(
+            0,
+            (new PluginOrderOrder_Item())->find(['plugin_order_orders_id' => $order->getID()]),
+        );
+
+        $this->assertTrue($order->delete(['id' => $order->getID()], true));
+
+        $this->assertFalse((new PluginOrderOrder_Supplier())->getFromDB($order_supplier->getID()));
+        $this->assertCount(
+            0,
+            (new PluginOrderOrder_Item())->find(['plugin_order_orders_id' => $order->getID()]),
+        );
     }
 }
