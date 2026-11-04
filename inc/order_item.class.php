@@ -2107,26 +2107,29 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             $migration->migrationOneTable($table);
 
             //1.4.0
-            $migration->addField(
+            $vat_added = $migration->addField(
                 $table,
                 "plugin_order_ordertaxes_id",
                 sprintf("INT %s NOT NULL default '0' COMMENT 'RELATION to glpi_plugin_order_ordertaxes (id)'", $default_key_sign),
             );
             $migration->migrationOneTable($table);
 
-            /* Migrate VAT */
-            foreach ($DB->request(['FROM' => 'glpi_plugin_order_orders']) as $data) {
-                $migration->addPostQuery(
-                    $DB->buildUpdate(
-                        'glpi_plugin_order_orders_items',
-                        ['plugin_order_ordertaxes_id' => $data['plugin_order_ordertaxes_id']],
-                        ['plugin_order_orders_id' => $data['id']],
-                    ),
-                );
+            /* Migrate VAT, only when the column has just been created: one query per order
+               on every upgrade makes the migration time out on large databases */
+            if ($vat_added) {
+                foreach ($DB->request(['FROM' => 'glpi_plugin_order_orders']) as $data) {
+                    $migration->addPostQuery(
+                        $DB->buildUpdate(
+                            'glpi_plugin_order_orders_items',
+                            ['plugin_order_ordertaxes_id' => $data['plugin_order_ordertaxes_id']],
+                            ['plugin_order_orders_id' => $data['id']],
+                        ),
+                    );
+                }
             }
 
             //1.5.0
-            $migration->addField($table, "entities_id", sprintf("INT %s NOT NULL DEFAULT '0'", $default_key_sign));
+            $entities_added = $migration->addField($table, "entities_id", sprintf("INT %s NOT NULL DEFAULT '0'", $default_key_sign));
             $migration->addField($table, "is_recursive", "TINYINT NOT NULL DEFAULT '0'");
             $migration->addField($table, "plugin_order_bills_id", sprintf("INT %s NOT NULL DEFAULT '0'", $default_key_sign));
             $migration->addField($table, "plugin_order_billstates_id", sprintf("INT %s NOT NULL DEFAULT '0'", $default_key_sign));
@@ -2137,62 +2140,51 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             $migration->migrationOneTable($table);
 
             //Change format for prices : from float to decimal
-            $migration->changeField(
-                $table,
-                "price_taxfree",
-                "price_taxfree",
-                "decimal(20,6) NOT NULL DEFAULT '0.000000'",
-            );
-            $migration->changeField(
-                $table,
-                "price_discounted",
-                "price_discounted",
-                "decimal(20,6) NOT NULL DEFAULT '0.000000'",
-            );
-            $migration->changeField(
-                $table,
-                "price_ati",
-                "price_ati",
-                "decimal(20,6) NOT NULL DEFAULT '0.000000'",
-            );
-            $migration->changeField(
-                $table,
-                "discount",
-                "discount",
-                "decimal(20,6) NOT NULL DEFAULT '0.000000'",
-            );
+            foreach (['price_taxfree', 'price_discounted', 'price_ati', 'discount'] as $field) {
+                if (!PluginOrderConfig::fieldHasType($table, $field, 'decimal(20,6)')) {
+                    $migration->changeField(
+                        $table,
+                        $field,
+                        $field,
+                        "decimal(20,6) NOT NULL DEFAULT '0.000000'",
+                    );
+                }
+            }
 
             //Drop unused fields from previous migration
             $migration->dropField($table, "price_taxfree2");
             $migration->dropField($table, "price_discounted2");
             $migration->migrationOneTable($table);
 
-            //Forward entities_id and is_recursive into table glpi_plugin_order_orders_items
-            $query = [
-                'SELECT' => [
-                    'go.entities_id as entities_id',
-                    'go.is_recursive as is_recursive',
-                    'goi.id as items_id',
-                ],
-                'FROM' => [
-                    'glpi_plugin_order_orders as go',
-                    $table . ' as goi',
-                ],
-                'WHERE' => [
-                    'goi.plugin_order_orders_id' => new QueryExpression(DBmysql::quoteName('go.id')),
-                ],
-            ];
-            foreach ($DB->request($query) as $data) {
-                $migration->addPostQuery(
-                    $DB->buildUpdate(
-                        $table,
-                        [
-                            'entities_id' => $data['entities_id'],
-                            'is_recursive' => $data['is_recursive'],
-                        ],
-                        ['id' => $data['items_id']],
-                    ),
-                );
+            //Forward entities_id and is_recursive into table glpi_plugin_order_orders_items,
+            //only when the column has just been created (one query per order line otherwise)
+            if ($entities_added) {
+                $query = [
+                    'SELECT' => [
+                        'go.entities_id as entities_id',
+                        'go.is_recursive as is_recursive',
+                        'goi.id as items_id',
+                    ],
+                    'FROM' => [
+                        'glpi_plugin_order_orders as go',
+                        $table . ' as goi',
+                    ],
+                    'WHERE' => [
+                        'goi.plugin_order_orders_id' => new QueryExpression(DBmysql::quoteName('go.id')),
+                    ],
+                ];
+                foreach ($DB->request($query) as $data) {
+                    $migration->addPostQuery(
+                        $DB->buildUpdate(
+                            $table,
+                            [
+                                'entities_id' => $data['entities_id'],
+                                'is_recursive' => $data['is_recursive'],
+                            ],
+                            ['id' => $data['items_id']],
+                        ),
+                    );
+                }
             }
 
             if (!$DB->fieldExists($table, 'plugin_order_analyticnatures_id')) {
