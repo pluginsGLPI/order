@@ -91,7 +91,7 @@
                                 massive_select_params["params"]|default([])
                             ]
                         ) %}
-                        <button type='button' class='btn btn-secondary btn-sm' onclick='selectNItems("mass{{ classname }}{{ rand }}", "dropdown_nb_items_to_check_top_{{ rand }}")'>
+                        <button type='button' class='btn btn-secondary btn-sm' data-order-select-container="mass{{ classname }}{{ rand }}" data-order-select-target="dropdown_nb_items_to_check_top_{{ rand }}">
                             {{ __("Select") }}
                         </button>
                     </span>
@@ -131,7 +131,7 @@
                                 <div>
                                     <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
                                         value="" aria-label="{{ __('Check all') }}"
-                                        onclick="checkAsCheckboxes(this, '{{ massiveactionparams['container'] }}', '.massive_action_checkbox');" />
+                                        data-glpi-check-all="{{ massiveactionparams['container'] }}" />
                                 </div>
                             </th>
                         {% endif %}
@@ -145,16 +145,16 @@
                                 {% set new_order = (order == 'ASC' ? 'DESC' : 'ASC') %}
                             {% endif %}
 
-                            {% set sort_href = "javascript:reloadTab('start=" ~ start ~ "&" ~ countainer_name ~ "sort=" ~ colkey ~ "&" ~ countainer_name ~ "order=" ~ new_order ~ "&" ~ countainer_name ~ "visible=" ~ true ~ "');" %}
+                            {% set sort_params = "start=" ~ start ~ "&" ~ countainer_name ~ "sort=" ~ colkey ~ "&" ~ countainer_name ~ "order=" ~ new_order ~ "&" ~ countainer_name ~ "visible=" ~ true %}
 
                             <th>
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
-                                    <a href="{{ sort_href }}">
+                                    <button type="button" class="btn-as-link" data-glpi-reload-tab="{{ sort_params }}">
                                     <i class="{{ sort_icon }}"></i>
                                 {% endif %}
                                 <span>{{ raw_header ? column_label|raw : column_label }}</span>
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
-                                    </a>
+                                    </button>
                                 {% endif %}
                             </th>
                         {% endfor %}
@@ -242,14 +242,14 @@
                         {% if nb_pages > 1 %}
                             <ul class="pagination mb-0">
                                 <li class="page-item {{ start == 0 ? 'disabled' : '' }}">
-                                    <a class="page-link" href="javascript:reloadTab('start=0&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
+                                    <button type="button" class="page-link" data-glpi-reload-tab="start=0&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                         <i class="ti ti-chevrons-left"></i>
-                                    </a>
+                                    </button>
                                 </li>
                                 <li class="page-item {{ start == 0 ? 'disabled' : '' }}">
-                                    <a class="page-link" href="javascript:reloadTab('start={{ start - limit < 0 ? 0 : start - limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
+                                    <button type="button" class="page-link" data-glpi-reload-tab="start={{ start - limit < 0 ? 0 : start - limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                         <i class="ti ti-chevron-left"></i>
-                                    </a>
+                                    </button>
                                 </li>
 
                                 {% set current_page = (start / limit)|round(0, 'floor') + 1 %}
@@ -258,21 +258,21 @@
 
                                 {% for i in start_page..end_page %}
                                     <li class="page-item {{ current_page == i ? 'active' : '' }}">
-                                        <a class="page-link" href="javascript:reloadTab('start={{ (i - 1) * limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
+                                        <button type="button" class="page-link" data-glpi-reload-tab="start={{ (i - 1) * limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                             {{ i }}
-                                        </a>
+                                        </button>
                                     </li>
                                 {% endfor %}
 
                                 <li class="page-item {{ start + limit >= total_count ? 'disabled' : '' }}">
-                                    <a class="page-link" href="javascript:reloadTab('start={{ start + limit >= total_count ? start : start + limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
+                                    <button type="button" class="page-link" data-glpi-reload-tab="start={{ start + limit >= total_count ? start : start + limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                         <i class="ti ti-chevron-right"></i>
-                                    </a>
+                                    </button>
                                 </li>
                                 <li class="page-item {{ start + limit >= total_count ? 'disabled' : '' }}">
-                                    <a class="page-link" href="javascript:reloadTab('start={{ ((nb_pages - 1) * limit)|round(0, 'floor') }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
+                                    <button type="button" class="page-link" data-glpi-reload-tab="start={{ ((nb_pages - 1) * limit)|round(0, 'floor') }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                         <i class="ti ti-chevrons-right"></i>
-                                    </a>
+                                    </button>
                                 </li>
                             </ul>
                         {% endif %}
@@ -313,10 +313,9 @@
                         countainer_name.val('false');
                         isVisible = false;
                     }
-                    // Update all reloadTab links to reflect the new visibility state
-                    $('a[href^="javascript:reloadTab("]').each(function() {
-                        let href = $(this).attr('href');
-                        let params = href.substring(href.indexOf("'") + 1, href.lastIndexOf("'"));
+                    // Update all reloadTab buttons to reflect the new visibility state
+                    $('[data-glpi-reload-tab]').each(function() {
+                        let params = $(this).attr('data-glpi-reload-tab');
                         // Parse parameters
                         let paramsObj = {};
                         params.split('&').forEach(function(param) {
@@ -327,9 +326,8 @@
                         paramsObj['{{ countainer_name }}visible'] = isVisible ? '1' : '0';
                         // Reconstruct parameters string
                         let newParams = Object.entries(paramsObj).map(([key, value]) => `${key}=${value}`).join('&');
-                        // Update href
-                        let newHref = `javascript:reloadTab('${newParams}');`;
-                        $(this).attr('href', newHref);
+                        // Update reload parameters
+                        $(this).attr('data-glpi-reload-tab', newParams);
                     });
                 });
             });

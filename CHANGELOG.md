@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- Make the plugin compatible with the Content Security Policy (requires the GLPI release with CSP support)
+
 ### Fixed
 
 - Faster order form, reception, bills and budget tabs on large volumes (missing indexes, budget check and prices read in one query)

@@ -276,10 +276,10 @@ class PluginOrderOrder_Supplier extends CommonDBChild // phpcs:ignore
                 echo "<tr>";
                 echo sprintf("<td><i class='%s fa-flip-horizontal fa-lg mx-2'></i></td>", $arrow);
                 echo "<td class='center' style='white-space:nowrap;'>";
-                echo sprintf("<a onclick= \"if ( markCheckboxes('%s') ) return false;\" href='#'>", $formname) . __s('Check all') . "</a></td>";
+                echo sprintf("<a data-order-mark-checkboxes='%s' href='#'>", htmlescape($formname)) . __s('Check all') . "</a></td>";
                 echo "<td>/</td>";
                 echo "<td class='center' style='white-space:nowrap;'>";
-                echo sprintf("<a onclick= \"if ( unMarkCheckboxes('%s') ) return false;\" href='#'>", $formname) . __s('Uncheck all') . "</a></td>";
+                echo sprintf("<a data-order-unmark-checkboxes='%s' href='#'>", htmlescape($formname)) . __s('Uncheck all') . "</a></td>";
                 echo "<td class='left' width='80%'>";
 
                 echo "<input type='submit' name='delete' ";
