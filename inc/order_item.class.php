@@ -650,7 +650,8 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                                 }
 
                         };");
-                    echo "<input type='checkbox' id='addreference' onclick='plugin_order_checkboxAction()' name='addreference' value='0' />";
+                    echo "<input type='checkbox' id='addreference' name='addreference' value='0' />";
+                    echo Html::scriptBlock('$("#addreference").on("click", function () { plugin_order_checkboxAction(); });');
                     echo "</span></td>";
 
                     echo "<td class='tab_bg_1' name='add_reference' style='display: none;'><span id='show_addreference'>";
@@ -1742,8 +1743,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             $itemtype = $data_ref["itemtype"];
             $item     = getItemForItemtype($itemtype);
             echo "<tr><th><ul class='list-unstyled'><li>";
-            echo sprintf("<a href=\"javascript:showHideDiv('generation%d','generation_img%d', '", $rand, $rand)
-              . $CFG_GLPI['root_doc'] . "/pics/plus.png','" . $CFG_GLPI['root_doc'] . "/pics/moins.png');\">";
+            echo sprintf("<a href='#' data-order-show-div='generation%d' data-order-show-img='generation_img%d'>", $rand, $rand);
             echo sprintf("<img alt='' name='generation_img%d' src=\"", $rand) . $CFG_GLPI['root_doc'] . '/pics/plus.png">';
             echo "</a>";
             echo "</li></ul></th>";
@@ -1863,12 +1863,12 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             echo "<div class='center'>";
             echo "<table width='950px' class='tab_cadre_fixe left'>";
             echo "<tr><td><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></td><td class='center'>";
-            echo sprintf("<a onclick= \"if ( markCheckboxes('bills_form%d') ) ", $rand)
-              . "return false;\" href='#'>" . __s("Check all") . "</a></td>";
+            echo sprintf("<a data-order-mark-checkboxes='bills_form%d' href='#'>", $rand)
+              . __s("Check all") . "</a></td>";
 
             echo "<td>/</td><td class='center'>";
-            echo sprintf("<a onclick= \"if ( unMarkCheckboxes('bills_form%d') ) ", $rand)
-              . "return false;\" href='#'>" . __s("Uncheck all") . "</a>";
+            echo sprintf("<a data-order-unmark-checkboxes='bills_form%d' href='#'>", $rand)
+              . __s("Uncheck all") . "</a>";
             echo "</td><td align='left' width='80%'>";
             echo Html::hidden('plugin_order_orders_id', ['value' => $order->getID()]);
             $this->dropdownBillItemsActions($order->getID());
