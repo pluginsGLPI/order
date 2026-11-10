@@ -120,7 +120,7 @@
                                 <div>
                                     <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
                                         value="" aria-label="{{ __('Check all') }}"
-                                        onclick="checkAsCheckboxes(this, '{{ massiveactionparams['container'] }}', '.massive_action_checkbox');" />
+                                        data-glpi-check-all="{{ massiveactionparams['container'] }}" />
                                 </div>
                             </th>
                         {% endif %}
@@ -134,16 +134,16 @@
                                 {% set new_order = (order == 'ASC' ? 'DESC' : 'ASC') %}
                             {% endif %}
 
-                            {% set sort_href = "javascript:reloadTab('start=" ~ start ~ "&limit=" ~ limit ~ "&" ~ countainer_name ~ "sort=" ~ colkey ~ "&" ~ countainer_name ~ "order=" ~ new_order ~ "&" ~ countainer_name ~ "visible=" ~ true ~ "');" %}
+                            {% set sort_params = "start=" ~ start ~ "&limit=" ~ limit ~ "&" ~ countainer_name ~ "sort=" ~ colkey ~ "&" ~ countainer_name ~ "order=" ~ new_order ~ "&" ~ countainer_name ~ "visible=" ~ true %}
 
                             <th>
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
-                                    <a href="{{ sort_href }}">
+                                    <button type="button" class="btn-as-link" data-glpi-reload-tab="{{ sort_params }}">
                                     <i class="{{ sort_icon }}"></i>
                                 {% endif %}
                                 <span>{{ raw_header ? column_label|raw : column_label }}</span>
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
-                                    </a>
+                                    </button>
                                 {% endif %}
                             </th>
                         {% endfor %}
@@ -285,12 +285,12 @@
                                         {% elseif formatter == "editable_price" %}
                                             {% if canedit %}
                                                 {% if is_summary_table is defined and is_summary_table %}
-                                                <div id="pricetaxfree{{ summary_data.rand }}" class="btn-link pointer" onclick="showPricetaxfree{{ summary_data.rand }}()">
+                                                <div id="pricetaxfree{{ summary_data.rand }}" class="btn-link pointer">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="viewpricetaxfree{{ summary_data.rand }}" style="display: none;"></div>
                                                 {% else %}
-                                                    <div id="detail_pricetaxfree{{ entry['id'] }}" class="btn-link pointer" onclick="showDetailPricetaxfree{{ entry['id'] }}()">
+                                                    <div id="detail_pricetaxfree{{ entry['id'] }}" class="btn-link pointer">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="detail_viewpricetaxfree{{ entry['id'] }}" style="display: none;"></div>
@@ -301,12 +301,12 @@
                                         {% elseif formatter == "editable_discount" %}
                                             {% if canedit %}
                                                 {% if is_summary_table is defined and is_summary_table %}
-                                                <div id="discount{{ summary_data.rand }}" class="btn-link pointer" onclick="showDiscount{{ summary_data.rand }}()">
+                                                <div id="discount{{ summary_data.rand }}" class="btn-link pointer">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="viewdiscount{{ summary_data.rand }}" style="display: none;"></div>
                                                 {% else %}
-                                                    <div id="detail_discount{{ entry['id'] }}" class="btn-link pointer" onclick="showDetailDiscount{{ entry['id'] }}()">
+                                                    <div id="detail_discount{{ entry['id'] }}" class="btn-link pointer">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="detail_viewdiscount{{ entry['id'] }}" style="display: none;"></div>
@@ -317,12 +317,12 @@
                                         {% elseif formatter == "editable_quantity" %}
                                             {% if canedit %}
                                                 {% if is_summary_table is defined and is_summary_table %}
-                                                <div id="quantity{{ summary_data.rand }}" class="btn-link pointer" onclick="showQuantity{{ summary_data.rand }}()">
+                                                <div id="quantity{{ summary_data.rand }}" class="btn-link pointer">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="viewquantity{{ summary_data.rand }}" style="display: none;"></div>
                                                 {% else %}
-                                                    <div id="quantity{{ entry['id'] }}" class="btn-link pointer" onclick="showQuantity{{ entry['id'] }}()">
+                                                    <div id="quantity{{ entry['id'] }}" class="btn-link pointer">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="viewquantity{{ entry['id'] }}" style="display: none;"></div>
@@ -419,14 +419,14 @@
                     {% if nb_pages > 1 %}
                         <ul class="pagination mb-0">
                             <li class="page-item {{ start == 0 ? 'disabled' : '' }}">
-                                <a class="page-link" href="javascript:reloadTab('start=0&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
+                                <button type="button" class="page-link" data-glpi-reload-tab="start=0&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                     <i class="ti ti-chevrons-left"></i>
-                                </a>
+                                </button>
                             </li>
                             <li class="page-item {{ start == 0 ? 'disabled' : '' }}">
-                                <a class="page-link" href="javascript:reloadTab('start={{ start - limit < 0 ? 0 : start - limit }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
+                                <button type="button" class="page-link" data-glpi-reload-tab="start={{ start - limit < 0 ? 0 : start - limit }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                     <i class="ti ti-chevron-left"></i>
-                                </a>
+                                </button>
                             </li>
 
                             {% set current_page = (start / limit)|round(0, 'floor') + 1 %}
@@ -435,21 +435,21 @@
 
                             {% for i in start_page..end_page %}
                                 <li class="page-item {{ current_page == i ? 'active' : '' }}">
-                                    <a class="page-link" href="javascript:reloadTab('start={{ (i - 1) * limit }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
+                                    <button type="button" class="page-link" data-glpi-reload-tab="start={{ (i - 1) * limit }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                         {{ i }}
-                                    </a>
+                                    </button>
                                 </li>
                             {% endfor %}
 
                             <li class="page-item {{ start + limit >= total_number ? 'disabled' : '' }}">
-                                <a class="page-link" href="javascript:reloadTab('start={{ start + limit >= total_number ? start : start + limit }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
+                                <button type="button" class="page-link" data-glpi-reload-tab="start={{ start + limit >= total_number ? start : start + limit }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                     <i class="ti ti-chevron-right"></i>
-                                </a>
+                                </button>
                             </li>
                             <li class="page-item {{ start + limit >= total_number ? 'disabled' : '' }}">
-                                <a class="page-link" href="javascript:reloadTab('start={{ ((nb_pages - 1) * limit)|round(0, 'floor') }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1');">
+                                <button type="button" class="page-link" data-glpi-reload-tab="start={{ ((nb_pages - 1) * limit)|round(0, 'floor') }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                     <i class="ti ti-chevrons-right"></i>
-                                </a>
+                                </button>
                             </li>
                         </ul>
                     {% endif %}
@@ -471,11 +471,16 @@
             <div id="viewaccept{{ summary_data.rand }}" style="display:none;">
                 <div class="center mt-2">
                     <input type="submit" name="update_item" value="{{ _x('button', 'Update') }}" class="btn btn-primary">
-                    <input type="button" onclick="hideForm{{ summary_data.rand }}();" value="{{ _x('button', 'Cancel') }}" class="btn btn-secondary">
+                    <input type="button" id="cancel_quantity{{ summary_data.rand }}" value="{{ _x('button', 'Cancel') }}" class="btn btn-secondary">
                 </div>
             </div>
 
             <script type="text/javascript">
+                $('#pricetaxfree{{ summary_data.rand }}').on('click', function () { showPricetaxfree{{ summary_data.rand }}(); });
+                $('#discount{{ summary_data.rand }}').on('click', function () { showDiscount{{ summary_data.rand }}(); });
+                $('#quantity{{ summary_data.rand }}').on('click', function () { showQuantity{{ summary_data.rand }}(); });
+                $('#cancel_quantity{{ summary_data.rand }}').on('click', function () { hideForm{{ summary_data.rand }}(); });
+
                 function hideForm{{ summary_data.rand }}() {
                     $('#quantity{{ summary_data.rand }}').show();
                     $('#viewquantity{{ summary_data.rand }} input').remove();
@@ -560,11 +565,13 @@
             <div id="detail_viewaccept{{ rand }}" style="display:none;">
                 <div class="center mt-2">
                     <input type="submit" name="update_detail_item" value="{{ update_button_text }}" class="btn btn-primary">
-                    <input type="button" onclick="detail_hideForm{{ rand }}();" value="{{ cancel_button_text }}" class="btn btn-secondary">
+                    <input type="button" id="detail_cancel{{ rand }}" value="{{ cancel_button_text }}" class="btn btn-secondary">
                 </div>
             </div>
 
             <script type="text/javascript">
+                $('#detail_cancel{{ rand }}').on('click', function () { detail_hideForm{{ rand }}(); });
+
                 function detail_hideForm{{ rand }}() {
                     {% for item in edit_data %}
                         $('#detail_pricetaxfree{{ item.id }}').show();
@@ -623,6 +630,10 @@
                         });
                     }
 
+                    $('#detail_pricetaxfree{{ item.id }}').on('click', function () { showDetailPricetaxfree{{ item.id }}(); });
+                    $('#detail_discount{{ item.id }}').on('click', function () { showDetailDiscount{{ item.id }}(); });
+                    $('#quantity{{ item.id }}').on('click', function () { showQuantity{{ item.id }}(); });
+
                     $(document).ready(function() {
                         $('body').append('<input type="hidden" name="detail_old_price_taxfree[{{ item.id }}]" value="{{ item.price_taxfree }}" />');
                         $('body').append('<input type="hidden" name="detail_old_discount[{{ item.id }}]" value="{{ item.discount }}" />');
@@ -666,10 +677,9 @@
                     isVisible = false;
                 }
 
-                // Update all reloadTab links to reflect the new visibility state
-                $('a[href^="javascript:reloadTab("]').each(function() {
-                    let href = $(this).attr('href');
-                    let params = href.substring(href.indexOf("'") + 1, href.lastIndexOf("'"));
+                // Update all reloadTab buttons to reflect the new visibility state
+                $('[data-glpi-reload-tab]').each(function() {
+                    let params = $(this).attr('data-glpi-reload-tab');
 
                     // Parse parameters
                     let paramsObj = {};
@@ -684,9 +694,8 @@
                     // Reconstruct parameters string
                     let newParams = Object.entries(paramsObj).map(([key, value]) => `${key}=${value}`).join('&');
 
-                    // Update href
-                    let newHref = `javascript:reloadTab('${newParams}');`;
-                    $(this).attr('href', newHref);
+                    // Update reload parameters
+                    $(this).attr('data-glpi-reload-tab', newParams);
                 });
             });
         });

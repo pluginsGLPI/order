@@ -198,6 +198,7 @@ function plugin_init_order()
         /*if glpi is loaded */
         if (Session::getLoginUserID()) {
             $PLUGIN_HOOKS['add_css']['order'][] = 'css/order.css';
+            $PLUGIN_HOOKS['add_javascript']['order'][] = 'js/order.js';
 
             /* link to the config page in plugins menu */
             if (Session::haveRight("config", UPDATE)) {
@@ -234,6 +235,7 @@ function plugin_version_order()
         'author'         => 'The plugin order team',
         'homepage'       => 'https://github.com/pluginsGLPI/order',
         'license'        => 'GPLv2+',
+        'csp_compliant'  => true,
         'requirements'   => [
             'glpi' => [
                 'min' => PLUGIN_ORDER_MIN_GLPI,

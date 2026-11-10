@@ -394,8 +394,7 @@ class PluginOrderReception extends CommonDBChild
             $item = getItemForItemtype($typeRef);
             $rand = mt_rand();
             echo "<tr><th><ul class='list-unstyled'><li>";
-            echo sprintf("<a href=\"javascript:showHideDiv('reception%d','reception_img%d', '", $rand, $rand)
-              . $CFG_GLPI['root_doc'] . "/pics/plus.png','" . $CFG_GLPI['root_doc'] . "/pics/moins.png');\">";
+            echo sprintf("<a href='#' data-order-show-div='reception%d' data-order-show-img='reception_img%d'>", $rand, $rand);
             echo sprintf("<img alt='' name='reception_img%d' src=\"", $rand) . $CFG_GLPI['root_doc'] . '/pics/plus.png">';
             echo "</a>";
             echo "</li></ul></th>";
@@ -507,7 +506,7 @@ class PluginOrderReception extends CommonDBChild
                         'rand' => $rand,
                     ],
                 );
-                echo "&nbsp;<button type='button' class='btn btn-secondary btn-sm' onclick='selectNItems(\"mass" . self::class . sprintf("%d\", \"dropdown_nb_items_to_check_top_%d\")'>", $rand, $rand) . __s("Select") . "</button>";
+                echo sprintf("&nbsp;<button type='button' class='btn btn-secondary btn-sm' data-order-select-container='%s' data-order-select-target='%s'>", htmlescape('mass' . self::class . $rand), htmlescape("dropdown_nb_items_to_check_top_$rand")) . __s("Select") . "</button>";
                 echo "</span>";
             }
 
@@ -625,7 +624,7 @@ class PluginOrderReception extends CommonDBChild
                             'rand' => $rand,
                         ],
                     );
-                    echo "&nbsp;<button type='button' class='btn btn-secondary btn-sm' onclick='selectNItems(\"mass" . self::class . sprintf("%d\", \"dropdown_nb_items_to_check_bottom_%d\")'>", $rand, $rand) . __s("Select") . "</button>";
+                    echo sprintf("&nbsp;<button type='button' class='btn btn-secondary btn-sm' data-order-select-container='%s' data-order-select-target='%s'>", htmlescape('mass' . self::class . $rand), htmlescape("dropdown_nb_items_to_check_bottom_$rand")) . __s("Select") . "</button>";
                     echo "</span>";
                 }
 
@@ -685,8 +684,10 @@ JAVASCRIPT;
 
         if ($order_order->canDeliver() && $this->checkItemStatus($orders_id, $references_id, PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) && $typeRef != 'SoftwareLicense') {
             $bulk_rand = mt_rand();
-            $button = "<p><a href='javascript:viewmassreception" . $suffix . $orders_id . ($bulk_rand . "();'>");
+            $button_id = 'massreception_button' . $suffix . $orders_id . $bulk_rand;
+            $button = "<p><a href='#' id='{$button_id}'>";
             $button .= __s("Take item delivery (bulk)", "order") . "</a></p>";
+            $button .= Html::scriptBlock("\$('#{$button_id}').on('click', function (e) { e.preventDefault(); viewmassreception{$suffix}{$orders_id}{$bulk_rand}(); });");
             echo "<form method='post' name='order_reception_form{$suffix}{$bulk_rand}'
                           action='" . Toolbox::getItemTypeFormURL("PluginOrderReception") . "'>";
             if ($position == 'top') {

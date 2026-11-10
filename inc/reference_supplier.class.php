@@ -350,11 +350,11 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 echo "<div class='center'>";
                 echo "<table width='900px' class='tab_glpi'>";
                 echo "<tr><td><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></td>";
-                echo sprintf("<td class='center'><a onclick= \"if ( markCheckboxes('show_supplierref%d') ) ", $rand)
-                . "return false;\" href='#'>" . __s("Check all") . "</a></td>";
+                echo sprintf("<td class='center'><a data-order-mark-checkboxes='show_supplierref%d' href='#'>", $rand)
+                . __s("Check all") . "</a></td>";
 
-                echo sprintf("<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('show_supplierref%d') ) ", $rand)
-                . "return false;\" href='#'>" . __s("Uncheck all") . "</a>";
+                echo sprintf("<td>/</td><td class='center'><a data-order-unmark-checkboxes='show_supplierref%d' href='#'>", $rand)
+                . __s("Uncheck all") . "</a>";
                 echo "</td><td align='left' width='80%'>";
                 echo "<input type='submit' name='delete' value=\"" . __s("Delete permanently")
                 . "\" class='submit' >";
