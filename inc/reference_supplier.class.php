@@ -434,8 +434,10 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 $migration->migrationOneTable("glpi_plugin_order_references_manufacturers");
             }
 
-            //Legacy data forwarding below only applies to a pre-1.2.0 table
-            $is_legacy = $DB->tableExists("glpi_plugin_order_references_manufacturers");
+            //The 1.5.0 entity forwarding below only applies to a database older than 1.5.0: a
+            //pre-1.2.0 table, or a 1.2.0 to 1.4.x one (told by the order lines, installed before)
+            $before_1_5_0 = $DB->tableExists("glpi_plugin_order_references_manufacturers")
+                || PluginOrderOrder_Item::$upgraded_from_before_1_5_0;
 
             //1.2.0
             $migration->renameTable("glpi_plugin_order_references_manufacturers", $table);
@@ -477,7 +479,7 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
             $migration->migrationOneTable($table);
 
             //1.5.0, replayed on every upgrade otherwise (one query per reference)
-            if ($is_legacy) {
+            if ($before_1_5_0) {
                 $query = [
                     'SELECT' => [
                         'entities_id',

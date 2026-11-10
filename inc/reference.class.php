@@ -1205,21 +1205,18 @@ class PluginOrderReference extends CommonDBTM
             $migration->addKey($table, "date_mod");
             $migration->migrationOneTable($table);
 
-            //1.3.0
-            $migration->addPostQuery(
-                $DB->buildUpdate(
-                    'glpi_plugin_order_references',
-                    ['itemtype' => 'ConsumableItem'],
-                    ['itemtype' => 'Consumable'],
-                ),
-            );
-            $migration->addPostQuery(
-                $DB->buildUpdate(
-                    'glpi_plugin_order_references',
-                    ['itemtype' => 'CartridgeItem'],
-                    ['itemtype' => 'Cartridge'],
-                ),
-            );
+            //1.3.0, only while references still use the old itemtypes
+            foreach (['Consumable' => 'ConsumableItem', 'Cartridge' => 'CartridgeItem'] as $old => $new) {
+                if (countElementsInTable('glpi_plugin_order_references', ['itemtype' => $old]) > 0) {
+                    $migration->addPostQuery(
+                        $DB->buildUpdate(
+                            'glpi_plugin_order_references',
+                            ['itemtype' => $new],
+                            ['itemtype' => $old],
+                        ),
+                    );
+                }
+            }
 
             //1.7.0
             $migration->addField($table, "date_mod", "timestamp NULL DEFAULT NULL");

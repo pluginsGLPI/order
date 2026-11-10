@@ -55,6 +55,13 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public static bool $check_entity_coherency = false;
 
+    /**
+     * Set by install() when the upgraded database predates 1.5.0 (its order lines had no
+     * entities_id yet). The 1.5.0 entity forwarding of the tables installed afterwards
+     * (PluginOrderReference_Supplier) relies on it: their own schema no longer tells.
+     */
+    public static bool $upgraded_from_before_1_5_0 = false;
+
     //TODO better right and entity menber (ex Computer_Item)
 
 
@@ -1999,6 +2006,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
         $table = self::getTable();
+        self::$upgraded_from_before_1_5_0 = false;
 
         if (!$DB->tableExists($table) && !$DB->tableExists("glpi_plugin_order_detail")) {
             $migration->displayMessage('Installing ' . $table);
@@ -2130,6 +2138,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
             //1.5.0
             $entities_added = $migration->addField($table, "entities_id", sprintf("INT %s NOT NULL DEFAULT '0'", $default_key_sign));
+            self::$upgraded_from_before_1_5_0 = $entities_added;
             $migration->addField($table, "is_recursive", "TINYINT NOT NULL DEFAULT '0'");
             $migration->addField($table, "plugin_order_bills_id", sprintf("INT %s NOT NULL DEFAULT '0'", $default_key_sign));
             $migration->addField($table, "plugin_order_billstates_id", sprintf("INT %s NOT NULL DEFAULT '0'", $default_key_sign));
