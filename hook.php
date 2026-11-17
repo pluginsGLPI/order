@@ -38,17 +38,15 @@ use function Safe\preg_match;
  *
  * @return boolean
  */
-function plugin_order_install()
+/**
+ * Classes whose install() method plugin_order_install() runs, in this order: some upgrade steps
+ * rely on the ones run before them (see PluginOrderOrder_Item::$upgraded_from_before_1_5_0).
+ *
+ * @return list<string>
+ */
+function plugin_order_get_install_classes(): array
 {
-    foreach (glob(PLUGIN_ORDER_DIR . '/inc/*.php') as $file) {
-        //Do not load datainjection files (not needed and avoid missing class error message)
-        if (preg_match('/injection.class.php/', $file) === 0) {
-            include_once($file);
-        }
-    }
-
-    $migration = new Migration(PLUGIN_ORDER_VERSION);
-    $classes = ['PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',
+    return ['PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',
         'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',
         'PluginOrderReference', 'PluginOrderDeliverystate',
         'PluginOrderNotificationTargetOrder',
@@ -59,7 +57,19 @@ function plugin_order_install()
         'PluginOrderReferenceFree', 'PluginOrderAccountsection',
         'PluginOrderAnalyticnature',
     ];
-    foreach ($classes as $class) {
+}
+
+function plugin_order_install()
+{
+    foreach (glob(PLUGIN_ORDER_DIR . '/inc/*.php') as $file) {
+        //Do not load datainjection files (not needed and avoid missing class error message)
+        if (preg_match('/injection.class.php/', $file) === 0) {
+            include_once($file);
+        }
+    }
+
+    $migration = new Migration(PLUGIN_ORDER_VERSION);
+    foreach (plugin_order_get_install_classes() as $class) {
         if ($plug = isPluginItemType($class)) {
             $plugname = strtolower((string) $plug['plugin']);
             $dir = Plugin::getPhpDir($plugname) . "/inc/";

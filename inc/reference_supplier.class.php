@@ -434,6 +434,11 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 $migration->migrationOneTable("glpi_plugin_order_references_manufacturers");
             }
 
+            //The 1.5.0 entity forwarding below only applies to a database older than 1.5.0: a
+            //pre-1.2.0 table, or a 1.2.0 to 1.4.x one (told by the order lines, installed before)
+            $before_1_5_0 = $DB->tableExists("glpi_plugin_order_references_manufacturers")
+                || PluginOrderOrder_Item::$upgraded_from_before_1_5_0;
+
             //1.2.0
             $migration->renameTable("glpi_plugin_order_references_manufacturers", $table);
             $migration->addField($table, "is_recursive", sprintf("int %s NOT NULL default '0'", $default_key_sign));
@@ -463,40 +468,38 @@ class PluginOrderReference_Supplier extends CommonDBChild // phpcs:ignore
                 "suppliers_id",
                 sprintf("int %s NOT NULL default '0' COMMENT 'RELATION to glpi_suppliers (id)'", $default_key_sign),
             );
-            $migration->changeField(
-                $table,
-                "reference_code",
-                "reference_code",
-                "varchar(255) default NULL",
-            );
-            $migration->changeField(
-                $table,
-                "price_taxfree",
-                "price_taxfree",
-                "decimal(20,6) NOT NULL DEFAULT '0.000000'",
-            );
+            if (!PluginOrderConfig::fieldHasType($table, "reference_code", 'varchar(255)')) {
+                $migration->changeField($table, "reference_code", "reference_code", "varchar(255) default NULL");
+            }
+
+            if (!PluginOrderConfig::fieldHasType($table, "price_taxfree", 'decimal(20,6)')) {
+                $migration->changeField($table, "price_taxfree", "price_taxfree", "decimal(20,6) NOT NULL DEFAULT '0.000000'");
+            }
+
             $migration->migrationOneTable($table);
 
-            //1.5.0
-            $query = [
-                'SELECT' => [
-                    'entities_id',
-                    'is_recursive',
-                    'id',
-                ],
-                'FROM' => 'glpi_plugin_order_references',
-            ];
-            foreach ($DB->request($query) as $data) {
-                $migration->addPostQuery(
-                    $DB->buildUpdate(
-                        'glpi_plugin_order_references_suppliers',
-                        [
-                            'entities_id' => $data['entities_id'],
-                            'is_recursive' => $data['is_recursive'],
-                        ],
-                        ['plugin_order_references_id' => $data['id']],
-                    ),
-                );
+            //1.5.0, replayed on every upgrade otherwise (one query per reference)
+            if ($before_1_5_0) {
+                $query = [
+                    'SELECT' => [
+                        'entities_id',
+                        'is_recursive',
+                        'id',
+                    ],
+                    'FROM' => 'glpi_plugin_order_references',
+                ];
+                foreach ($DB->request($query) as $data) {
+                    $migration->addPostQuery(
+                        $DB->buildUpdate(
+                            'glpi_plugin_order_references_suppliers',
+                            [
+                                'entities_id' => $data['entities_id'],
+                                'is_recursive' => $data['is_recursive'],
+                            ],
+                            ['plugin_order_references_id' => $data['id']],
+                        ),
+                    );
+                }
             }
         }
     }

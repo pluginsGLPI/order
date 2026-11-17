@@ -83,8 +83,10 @@ class PluginOrderOrderState extends CommonDropdown
 
         $table = self::getTable();
 
-        //1.2.0
-        $DB->doQuery("DROP TABLE IF EXISTS `glpi_dropdown_plugin_order_status`;");
+        //1.2.0, only when the legacy table is still there: no DDL on an up-to-date schema
+        if ($DB->tableExists("glpi_dropdown_plugin_order_status")) {
+            $DB->dropTable("glpi_dropdown_plugin_order_status");
+        }
 
         if (!$DB->tableExists($table)) {
             $migration->displayMessage('Installing ' . $table);
