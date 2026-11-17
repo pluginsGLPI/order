@@ -1185,6 +1185,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 $table . '.discount',
                 $table . '.plugin_order_ordertaxes_id',
                 $table . '.price_ati',
+                $table . '.states_id',
             ],
             'FROM' => $table,
             'JOIN' => [
@@ -1259,7 +1260,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             $entry['price_ati'] = number_format((float) $data["price_ati"], 2, '.', '');
 
             // Status
-            $entry['status'] = $reception->getReceptionStatus($data["IDD"]);
+            $entry['status'] = PluginOrderReception::getReceptionStatusLabel((int) $data["states_id"]);
 
             // Add entry require for massive actions
             $entry['itemtype'] = PluginOrderOrder_Item::class;

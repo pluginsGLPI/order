@@ -34,6 +34,7 @@ namespace GlpiPlugin\Order\Tests\Units;
 
 use Budget;
 use Computer;
+use DBmysql;
 use Entity;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -166,5 +167,30 @@ final class OrderTest extends DbTestCase
         }
 
         $this->assertSame($expected, $orders[0]->isOverBudget($orders[0]->getID()));
+    }
+
+    public static function indexProvider(): iterable
+    {
+        yield 'order lines by order' => ['glpi_plugin_order_orders_items', 'plugin_order_orders_id'];
+        yield 'orders by budget' => ['glpi_plugin_order_orders', 'budgets_id'];
+    }
+
+    #[DataProvider('indexProvider')]
+    public function testOrderTablesAreIndexedForBudgetAndLineLookups(string $table, string $index): void
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $count = $DB->request([
+            'COUNT' => 'cpt',
+            'FROM'  => 'information_schema.statistics',
+            'WHERE' => [
+                'table_schema' => $DB->dbdefault,
+                'table_name'   => $table,
+                'index_name'   => $index,
+            ],
+        ])->current()['cpt'];
+
+        $this->assertGreaterThan(0, $count, "Index $index is missing on $table");
     }
 }
