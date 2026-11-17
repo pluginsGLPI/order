@@ -2161,17 +2161,45 @@ class PluginOrderOrder extends CommonDBTM
             echo "<th>" . __s("Price ATI", "order") . "</th>";
             echo "</tr>";
 
-            $total = 0;
-            foreach ($result_limited as $data) {
-                $PluginOrderOrder_Item = new PluginOrderOrder_Item();
-                $prices                = $PluginOrderOrder_Item->getAllPrices($data["id"]);
+            $orders = iterator_to_array($result_limited, false);
 
-                $tax = new PluginOrderOrderTax();
-                $tax->getFromDB($data["plugin_order_ordertaxes_id"]);
+            // Prices of the displayed orders, in one query
+            $all_prices = [];
+            if ($orders !== []) {
+                $prices_iterator = $DB->request([
+                    'SELECT' => [
+                        'plugin_order_orders_id',
+                        'SUM' => [
+                            'price_ati AS priceTTC',
+                            'price_discounted AS priceHT',
+                        ],
+                    ],
+                    'FROM' => PluginOrderOrder_Item::getTable(),
+                    'WHERE' => ['plugin_order_orders_id' => array_column($orders, 'id')],
+                    'GROUPBY' => 'plugin_order_orders_id',
+                ]);
+                foreach ($prices_iterator as $row) {
+                    $all_prices[$row['plugin_order_orders_id']] = $row;
+                }
+            }
+
+            $PluginOrderOrder_Item = new PluginOrderOrder_Item();
+            $tax_rates    = [];
+            $state_names  = [];
+            $entity_names = [];
+            $total = 0;
+            foreach ($orders as $data) {
+                $prices = $all_prices[$data["id"]] ?? ['priceTTC' => null, 'priceHT' => null];
+
+                if (!isset($tax_rates[$data["plugin_order_ordertaxes_id"]])) {
+                    $tax = new PluginOrderOrderTax();
+                    $tax->getFromDB($data["plugin_order_ordertaxes_id"]);
+                    $tax_rates[$data["plugin_order_ordertaxes_id"]] = $tax->getRate();
+                }
 
                 $postagewithTVA        = $PluginOrderOrder_Item->getPricesATI(
                     $data["port_price"],
-                    $tax->getRate(),
+                    $tax_rates[$data["plugin_order_ordertaxes_id"]],
                 );
 
                 //if state is cancel do not decremente total already use
@@ -2197,14 +2225,14 @@ class PluginOrderOrder extends CommonDBTM
                 echo "</td>";
 
                 echo "<td>";
-                echo Dropdown::getDropdownName(
+                echo $state_names[$data["plugin_order_orderstates_id"]] ??= Dropdown::getDropdownName(
                     PluginOrderOrderState::getTable(),
                     $data["plugin_order_orderstates_id"],
                 );
                 echo "</td>";
 
                 echo "<td>";
-                echo Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
+                echo $entity_names[$data["entities_id"]] ??= Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
                 echo "</td>";
 
                 echo "<td>";
@@ -2310,13 +2338,6 @@ class PluginOrderOrder extends CommonDBTM
             return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
         }
 
-        // Compute all prices for BUDGET
-        $table = $this->getTable();
-        $query = [
-            'FROM' => $table,
-            'WHERE' => ['budgets_id' => $this->fields['budgets_id']],
-        ];
-
         // Get BUDGET
         $budget = new Budget();
         if (!$budget->getFromDB($this->fields['budgets_id'])) {
@@ -2327,12 +2348,28 @@ class PluginOrderOrder extends CommonDBTM
             return PluginOrderOrder::ORDER_IS_UNDER_BUDGET;
         }
 
-        $total_HT = 0;
-        foreach ($DB->request($query) as $data) {
-            $item      = new PluginOrderOrder_Item();
-            $prices    = $item->getAllPrices($data['id']);
-            $total_HT += $prices["priceHT"] + $data['port_price'];
-        }
+        // Compute all prices for BUDGET
+        $table       = $this->getTable();
+        $items_table = PluginOrderOrder_Item::getTable();
+        $items_HT    = $DB->request([
+            'SELECT' => ['SUM' => $items_table . '.price_discounted AS total'],
+            'FROM' => $items_table,
+            'INNER JOIN' => [
+                $table => [
+                    'ON' => [
+                        $items_table => 'plugin_order_orders_id',
+                        $table => 'id',
+                    ],
+                ],
+            ],
+            'WHERE' => [$table . '.budgets_id' => $this->fields['budgets_id']],
+        ])->current();
+        $port_HT = $DB->request([
+            'SELECT' => ['SUM' => 'port_price AS total'],
+            'FROM' => $table,
+            'WHERE' => ['budgets_id' => $this->fields['budgets_id']],
+        ])->current();
+        $total_HT = (float) $items_HT['total'] + (float) $port_HT['total'];
 
         // Compare BUDGET value to TOTAL_HT value
         if ($total_HT > $budget->getField('value')) {
@@ -2671,6 +2708,7 @@ class PluginOrderOrder extends CommonDBTM
                PRIMARY KEY  (`id`),
                KEY `name` (`name`),
                KEY `entities_id` (`entities_id`),
+               KEY `budgets_id` (`budgets_id`),
                KEY `plugin_order_ordertaxes_id` (`plugin_order_ordertaxes_id`),
                KEY `plugin_order_orderpayments_id` (`plugin_order_orderpayments_id`),
                KEY `states_id` (`plugin_order_orderstates_id`),
@@ -3043,6 +3081,8 @@ class PluginOrderOrder extends CommonDBTM
                     ['after' => 'ecotax_price'],
                 );
             }
+
+            $migration->addKey($table, "budgets_id");
 
             $migration->migrationOneTable($table);
         }
