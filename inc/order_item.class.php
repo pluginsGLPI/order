@@ -55,6 +55,13 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
 
     public static $check_entity_coherency = false;
 
+    /**
+     * Names and bill links already rendered by the bills tab, keyed by table and id.
+     *
+     * @var array<string, array<int, string>>
+     */
+    private array $bills_tab_cache = [];
+
     //TODO better right and entity menber (ex Computer_Item)
 
 
@@ -1178,6 +1185,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 $table . '.discount',
                 $table . '.plugin_order_ordertaxes_id',
                 $table . '.price_ati',
+                $table . '.states_id',
             ],
             'FROM' => $table,
             'JOIN' => [
@@ -1252,7 +1260,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             $entry['price_ati'] = number_format((float) $data["price_ati"], 2, '.', '');
 
             // Status
-            $entry['status'] = $reception->getReceptionStatus($data["IDD"]);
+            $entry['status'] = PluginOrderReception::getReceptionStatusLabel((int) $data["states_id"]);
 
             // Add entry require for massive actions
             $entry['itemtype'] = PluginOrderOrder_Item::class;
@@ -1726,6 +1734,11 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
         return $DB->request($criteria);
     }
 
+    private function getBillsTabDropdownName(string $table, int $id): string
+    {
+        return $this->bills_tab_cache[$table][$id] ??= Dropdown::getDropdownName($table, $id);
+    }
+
     public function showBillsItemsDetail($data_ref, $result_ref, $canedit, $order, $table)
     {
         /** @var \DBmysql $DB */
@@ -1821,7 +1834,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 //Type
                 echo "<td align='center'>";
                 if (file_exists(GLPI_ROOT . "/src/" . $data["itemtype"] . "Type.php")) {
-                    echo Dropdown::getDropdownName(
+                    echo $this->getBillsTabDropdownName(
                         getTableForItemType($data["itemtype"] . "Type"),
                         (int) $data["types_id"],
                     );
@@ -1831,25 +1844,30 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                 //Model
                 echo "<td align='center'>";
                 if (file_exists(GLPI_ROOT . "/src/" . $data["itemtype"] . "Model.php")) {
-                    echo Dropdown::getDropdownName(
+                    echo $this->getBillsTabDropdownName(
                         getTableForItemType($data["itemtype"] . "Model"),
                         (int) $data["models_id"],
                     );
                 }
 
-                $bill = new PluginOrderBill();
                 echo "<td align='center'>";
                 if ($data["plugin_order_bills_id"] > 0) {
-                    if ($bill->can((int) $data['plugin_order_bills_id'], READ)) {
-                        echo "<a href='" . $bill->getLinkURL() . "'>" . $bill->getName() . "</a>";
-                    } else {
-                        echo $bill->getName();
+                    $bills_id = (int) $data['plugin_order_bills_id'];
+                    if (!isset($this->bills_tab_cache[PluginOrderBill::class][$bills_id])) {
+                        $bill = new PluginOrderBill();
+                        if ($bill->can($bills_id, READ)) {
+                            $this->bills_tab_cache[PluginOrderBill::class][$bills_id] = "<a href='" . $bill->getLinkURL() . "'>" . $bill->getName() . "</a>";
+                        } else {
+                            $this->bills_tab_cache[PluginOrderBill::class][$bills_id] = $bill->getName();
+                        }
                     }
+
+                    echo $this->bills_tab_cache[PluginOrderBill::class][$bills_id];
                 }
 
                 echo "</td>";
                 echo "<td align='center'>";
-                echo Dropdown::getDropdownName(
+                echo $this->getBillsTabDropdownName(
                     getTableForItemType('PluginOrderBillState'),
                     (int) $data['plugin_order_billstates_id'],
                 );
@@ -2030,6 +2048,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                KEY `FK_device` (`items_id`,`itemtype`),
                KEY `entities_id` (`entities_id`),
                KEY `item` (`itemtype`,`items_id`),
+               KEY `plugin_order_orders_id` (`plugin_order_orders_id`),
                KEY `plugin_order_references_id` (`plugin_order_references_id`),
                KEY `plugin_order_deliverystates_id` (`plugin_order_deliverystates_id`),
                KEY `plugin_order_analyticnatures_id` (`plugin_order_analyticnatures_id`),
@@ -2203,6 +2222,8 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             if (!$DB->fieldExists($table, 'immo_number')) {
                 $migration->addField($table, "immo_number", "varchar(255) default NULL");
             }
+
+            $migration->addKey($table, "plugin_order_orders_id");
 
             $migration->executeMigration();
         }

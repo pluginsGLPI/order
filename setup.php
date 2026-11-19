@@ -102,120 +102,117 @@ function plugin_init_order()
     /* Init current profile */
     $PLUGIN_HOOKS['change_profile']['order'] = ['PluginOrderProfile', 'initProfile'];
 
-    $plugin = new Plugin();
-    if ($plugin->isActivated('order')) {
-        $PLUGIN_HOOKS['migratetypes']['order'] = 'plugin_order_migratetypes';
+    $PLUGIN_HOOKS['migratetypes']['order'] = 'plugin_order_migratetypes';
+
+    $PLUGIN_HOOKS['assign_to_ticket']['order'] = true;
+
+    //Itemtypes in use for an order
+    $ORDER_TYPES = [
+        'Computer',
+        'Monitor',
+        'NetworkEquipment',
+        'Peripheral',
+        'Printer',
+        'Phone',
+        'ConsumableItem',
+        'CartridgeItem',
+        'Contract',
+        'PluginOrderOther',
+        'SoftwareLicense',
+        'Certificate',
+        'Rack',
+        'Enclosure',
+        'Pdu',
+    ];
+
+
+    // Register the Orderable capacity for GLPI 11 custom assets and append
+    // any custom asset class that has it enabled to $ORDER_TYPES, provided
+    // the current user is allowed to view it.
+    if (class_exists(AssetDefinitionManager::class)) {
+        $asset_manager = AssetDefinitionManager::getInstance();
+        $orderable_capacity = new PluginOrderOrderableCapacity();
+        $asset_manager->registerCapacity($orderable_capacity);
+        $asset_manager->bootDefinitions();
+        foreach ($asset_manager->getDefinitions(true) as $definition) {
+            if (!$definition->hasCapacityEnabled($orderable_capacity)) {
+                continue;
+            }
+
+            $custom_asset_class = $definition->getAssetClassName();
+            if (
+                !in_array($custom_asset_class, $ORDER_TYPES, true)
+                && $custom_asset_class::canView()
+            ) {
+                $ORDER_TYPES[] = $custom_asset_class;
+            }
+        }
+    }
+
+    $CFG_GLPI['plugin_order_types'] = $ORDER_TYPES;
+
+    $PLUGIN_HOOKS['pre_item_purge']['order'] = [
+        'Profile'          => ['PluginOrderProfile', 'purgeProfiles'],
+        'DocumentCategory' => ['PluginOrderDocumentCategory', 'purgeItem'],
+    ];
+
+    $PLUGIN_HOOKS['pre_item_update']['order'] = [
+        'Infocom'  => ['PluginOrderOrder_Item', 'updateItem'],
+        'Contract' => ['PluginOrderOrder_Item', 'updateItem'],
+    ];
+    $PLUGIN_HOOKS['item_add']['order'] = [
+        'Document' => ['PluginOrderOrder', 'addDocumentCategory'],
+    ];
+
+    include_once(PLUGIN_ORDER_DIR . "/inc/order_item.class.php");
+    foreach (PluginOrderOrder_Item::getClasses(true) as $type) {
+        $PLUGIN_HOOKS['item_purge']['order'][$type] = 'plugin_item_purge_order';
+    }
+
+    Plugin::registerClass('PluginOrderOrder', [
+        'document_types'              => true,
+        'unicity_types'               => true,
+        'notificationtemplates_types' => true,
+        'helpdesk_visible_types'      => true,
+        'ticket_types'                => true,
+        'contract_types'              => true,
+        'assignable_types'            => true,
+        'addtabon'                    => ['Budget'],
+    ]);
+
+    Plugin::registerClass('PluginOrderReference', ['document_types' => true]);
+    Plugin::registerClass('PluginOrderProfile', ['addtabon' => ['Profile']]);
+
+    $values['notificationtemplates_types'] = true;
+    $PLUGIN_HOOKS['infocom']['order'] = ['PluginOrderOrder_Item', 'showForInfocom'];
+    Plugin::registerClass('PluginOrderOrder_Item', $values);
+
+    if (PluginOrderOrder::canView()) {
+        Plugin::registerClass('PluginOrderDocumentCategory', ['addtabon' => ['DocumentCategory']]);
+        Plugin::registerClass('PluginOrderOrder_Supplier', ['addtabon' => ['Supplier']]);
+        Plugin::registerClass('PluginOrderPreference', ['addtabon' => ['Preference']]);
+    }
+
+    /*if glpi is loaded */
+    if (Session::getLoginUserID()) {
+        $PLUGIN_HOOKS['add_css']['order'][] = 'css/order.css';
+
+        /* link to the config page in plugins menu */
+        if (Session::haveRight("config", UPDATE)) {
+            $PLUGIN_HOOKS['config_page']['order'] = 'front/config.form.php';
+        }
+
+        if (
+            PluginOrderOrder::canView()
+            || PluginOrderReference::canView()
+            || PluginOrderBill::canView()
+        ) {
+            $PLUGIN_HOOKS['menu_toadd']['order']['management'] = 'PluginOrderMenu';
+        }
 
         $PLUGIN_HOOKS['assign_to_ticket']['order'] = true;
-
-        //Itemtypes in use for an order
-        $ORDER_TYPES = [
-            'Computer',
-            'Monitor',
-            'NetworkEquipment',
-            'Peripheral',
-            'Printer',
-            'Phone',
-            'ConsumableItem',
-            'CartridgeItem',
-            'Contract',
-            'PluginOrderOther',
-            'SoftwareLicense',
-            'Certificate',
-            'Rack',
-            'Enclosure',
-            'Pdu',
-        ];
-
-
-        // Register the Orderable capacity for GLPI 11 custom assets and append
-        // any custom asset class that has it enabled to $ORDER_TYPES, provided
-        // the current user is allowed to view it.
-        if (class_exists(AssetDefinitionManager::class)) {
-            $asset_manager = AssetDefinitionManager::getInstance();
-            $orderable_capacity = new PluginOrderOrderableCapacity();
-            $asset_manager->registerCapacity($orderable_capacity);
-            $asset_manager->bootDefinitions();
-            foreach ($asset_manager->getDefinitions(true) as $definition) {
-                if (!$definition->hasCapacityEnabled($orderable_capacity)) {
-                    continue;
-                }
-
-                $custom_asset_class = $definition->getAssetClassName();
-                if (
-                    !in_array($custom_asset_class, $ORDER_TYPES, true)
-                    && $custom_asset_class::canView()
-                ) {
-                    $ORDER_TYPES[] = $custom_asset_class;
-                }
-            }
-        }
-
-        $CFG_GLPI['plugin_order_types'] = $ORDER_TYPES;
-
-        $PLUGIN_HOOKS['pre_item_purge']['order'] = [
-            'Profile'          => ['PluginOrderProfile', 'purgeProfiles'],
-            'DocumentCategory' => ['PluginOrderDocumentCategory', 'purgeItem'],
-        ];
-
-        $PLUGIN_HOOKS['pre_item_update']['order'] = [
-            'Infocom'  => ['PluginOrderOrder_Item', 'updateItem'],
-            'Contract' => ['PluginOrderOrder_Item', 'updateItem'],
-        ];
-        $PLUGIN_HOOKS['item_add']['order'] = [
-            'Document' => ['PluginOrderOrder', 'addDocumentCategory'],
-        ];
-
-        include_once(PLUGIN_ORDER_DIR . "/inc/order_item.class.php");
-        foreach (PluginOrderOrder_Item::getClasses(true) as $type) {
-            $PLUGIN_HOOKS['item_purge']['order'][$type] = 'plugin_item_purge_order';
-        }
-
-        Plugin::registerClass('PluginOrderOrder', [
-            'document_types'              => true,
-            'unicity_types'               => true,
-            'notificationtemplates_types' => true,
-            'helpdesk_visible_types'      => true,
-            'ticket_types'                => true,
-            'contract_types'              => true,
-            'assignable_types'            => true,
-            'addtabon'                    => ['Budget'],
-        ]);
-
-        Plugin::registerClass('PluginOrderReference', ['document_types' => true]);
-        Plugin::registerClass('PluginOrderProfile', ['addtabon' => ['Profile']]);
-
-        $values['notificationtemplates_types'] = true;
-        $PLUGIN_HOOKS['infocom']['order'] = ['PluginOrderOrder_Item', 'showForInfocom'];
-        Plugin::registerClass('PluginOrderOrder_Item', $values);
-
-        if (PluginOrderOrder::canView()) {
-            Plugin::registerClass('PluginOrderDocumentCategory', ['addtabon' => ['DocumentCategory']]);
-            Plugin::registerClass('PluginOrderOrder_Supplier', ['addtabon' => ['Supplier']]);
-            Plugin::registerClass('PluginOrderPreference', ['addtabon' => ['Preference']]);
-        }
-
-        /*if glpi is loaded */
-        if (Session::getLoginUserID()) {
-            $PLUGIN_HOOKS['add_css']['order'][] = 'css/order.css';
-
-            /* link to the config page in plugins menu */
-            if (Session::haveRight("config", UPDATE)) {
-                $PLUGIN_HOOKS['config_page']['order'] = 'front/config.form.php';
-            }
-
-            if (
-                PluginOrderOrder::canView()
-                || PluginOrderReference::canView()
-                || PluginOrderBill::canView()
-            ) {
-                $PLUGIN_HOOKS['menu_toadd']['order']['management'] = 'PluginOrderMenu';
-            }
-
-            $PLUGIN_HOOKS['assign_to_ticket']['order'] = true;
-            $PLUGIN_HOOKS['use_massive_action']['order'] = 1;
-            $PLUGIN_HOOKS['plugin_datainjection_populate']['order'] = "plugin_datainjection_populate_order";
-        }
+        $PLUGIN_HOOKS['use_massive_action']['order'] = 1;
+        $PLUGIN_HOOKS['plugin_datainjection_populate']['order'] = "plugin_datainjection_populate_order";
     }
 }
 

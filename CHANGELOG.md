@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- Faster order form, reception, bills and budget tabs on large volumes (missing indexes, budget check and prices read in one query)
+
 ## [2.12.12] - 2026-10-06
 
 ### Fixed
