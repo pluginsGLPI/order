@@ -521,16 +521,15 @@ class PluginOrderReception extends CommonDBChild
             echo "<th>" . __s("Delivery status", "order") . "</th>";
             echo "</tr>";
 
+            $entity_names        = [];
+            $deliverystate_names = [];
             foreach ($all_data as $data) {
                 $detailID = $data["IDD"];
                 Session::addToNavigateListItems(static::class, (int) $detailID);
                 echo "<tr class='tab_bg_2'>";
                 $status    = 1;
                 if ($typeRef != 'SoftwareLicense') {
-                    $status = $this->checkThisItemStatus(
-                        $detailID,
-                        PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED,
-                    );
+                    $status = $data["states_id"] == PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED;
                 }
 
                 if ($order_order->canDeliver() && $status) {
@@ -559,21 +558,22 @@ class PluginOrderReception extends CommonDBChild
                     echo '<a href="' . $link . "?id=" . $data["IDD"] . '">';
                 }
 
-                echo $this->getReceptionStatus($detailID);
+                echo self::getReceptionStatusLabel((int) $data["states_id"]);
                 if ($canedit && $data["states_id"] == PluginOrderOrder::ORDER_DEVICE_DELIVRED) {
                     echo "</a>";
                 }
 
                 echo "</td>";
 
-                echo "<td align='center'>" . Dropdown::getDropdownName(getTableForItemType(Entity::class), (int) $data["entities_id"]) . "</td>";
+                $entity_names[$data["entities_id"]] ??= Dropdown::getDropdownName(getTableForItemType(Entity::class), (int) $data["entities_id"]);
+                echo "<td align='center'>" . $entity_names[$data["entities_id"]] . "</td>";
                 echo "<td align='center'>" . Html::convDate($data["delivery_date"]) . "</td>";
                 echo "<td align='center'>" . htmlentities($data["delivery_number"] ?? "", ENT_QUOTES, "UTF-8") . "</td>";
-                echo "<td align='center'>"
-                 . Dropdown::getDropdownName(
-                     "glpi_plugin_order_deliverystates",
-                     (int) $data["plugin_order_deliverystates_id"],
-                 ) . "</td>";
+                $deliverystate_names[$data["plugin_order_deliverystates_id"]] ??= Dropdown::getDropdownName(
+                    "glpi_plugin_order_deliverystates",
+                    (int) $data["plugin_order_deliverystates_id"],
+                );
+                echo "<td align='center'>" . $deliverystate_names[$data["plugin_order_deliverystates_id"]] . "</td>";
                 echo Html::hidden(
                     sprintf('id[%s]', $detailID),
                     ['value' => $detailID],
@@ -850,7 +850,13 @@ JAVASCRIPT;
         $detail = new PluginOrderOrder_Item();
         $detail->getFromDB($ID);
 
-        return match ($detail->fields["states_id"]) {
+        return self::getReceptionStatusLabel((int) $detail->fields["states_id"]);
+    }
+
+
+    public static function getReceptionStatusLabel(int $states_id): string
+    {
+        return match ($states_id) {
             PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED => __s("Waiting for delivery", "order"),
             PluginOrderOrder::ORDER_DEVICE_DELIVRED => __s("Taken delivery", "order"),
             default => "",
