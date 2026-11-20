@@ -102,13 +102,13 @@ class PluginOrderOrderState extends CommonDropdown
         $state = new self();
         foreach (
             [
-                1 => __s("Draft", "order"),
-                2 => __s("Waiting for approval", "order"),
-                3 => __s("Validated", "order"),
-                4 => __s("Being delivered", "order"),
-                5 => __s("Delivered", "order"),
-                6 => __s("Canceled", "order"),
-                7 => __s("Paid", "order"),
+                1 => __("Draft", "order"),
+                2 => __("Waiting for approval", "order"),
+                3 => __("Validated", "order"),
+                4 => __("Being delivered", "order"),
+                5 => __("Delivered", "order"),
+                6 => __("Canceled", "order"),
+                7 => __("Paid", "order"),
             ] as $id => $label
         ) {
             if (!countElementsInTable($table, ['id' => $id])) {
@@ -117,6 +117,23 @@ class PluginOrderOrderState extends CommonDropdown
                     'name' => $label,
                 ]);
             }
+        }
+
+        // Default labels used to be stored HTML-escaped
+        $escaped_states = $DB->request([
+            'SELECT' => ['id', 'name'],
+            'FROM'   => $table,
+            'WHERE'  => [
+                'id'   => range(self::DRAFT, self::PAID),
+                'name' => ['LIKE', '%&%'],
+            ],
+        ]);
+        foreach ($escaped_states as $data) {
+            $DB->update(
+                $table,
+                ['name' => htmlspecialchars_decode($data['name'], ENT_QUOTES)],
+                ['id' => $data['id']],
+            );
         }
     }
 

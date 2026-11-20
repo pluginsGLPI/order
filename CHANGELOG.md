@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Add Transifex translations link to README
 
+### Fixed
+
+- An order can no longer be locked by picking, from its form, a status that only the validation workflow should set
+- Default order status labels are no longer stored HTML-escaped
+
 ## [2.13.0] - 2026-10-06
 
 ### Added
