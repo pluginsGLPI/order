@@ -9,7 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
+<<<<<<< HEAD
 - Add Transifex translations link to README
+=======
+- Faster order form, reception, bills and budget tabs on large volumes (missing indexes, budget check and prices read in one query)
+- An order can no longer be locked by picking, from its form, a status that only the validation workflow should set
+- Default order status labels are no longer stored HTML-escaped
+>>>>>>> 6c8a4b1 (Fix: prevent order lockout from the status dropdown (#633))
 
 ## [2.13.0] - 2026-10-06
 
