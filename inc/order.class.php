@@ -997,9 +997,17 @@ class PluginOrderOrder extends CommonDBTM
         echo "<td>";
         $state = $this->getID() ? $this->fields["plugin_order_orderstates_id"] : $config->getDraftState();
         if ($canedit) {
+            // Other states lock the order and must only be reached through the validation workflow
+            $editable_states = [$config->getDraftState()];
+            if ($config->useValidation()) {
+                $editable_states[] = $config->getWaitingForApprovalState();
+            }
+
             PluginOrderOrderState::Dropdown([
-                'name'   => "plugin_order_orderstates_id",
-                'value'  => $state,
+                'name'                => "plugin_order_orderstates_id",
+                'value'               => $state,
+                'display_emptychoice' => false,
+                'condition'           => ['id' => $editable_states],
             ]);
         } else {
             echo Dropdown::getDropdownName("glpi_plugin_order_orderstates", $this->getState());
