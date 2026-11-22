@@ -34,11 +34,6 @@ use function Safe\mkdir;
 use function Safe\preg_match;
 
 /**
- * Plugin install process
- *
- * @return boolean
- */
-/**
  * Classes whose install() method plugin_order_install() runs, in this order: some upgrade steps
  * rely on the ones run before them (see PluginOrderOrder_Item::$upgraded_from_before_1_5_0).
  *
@@ -59,6 +54,11 @@ function plugin_order_get_install_classes(): array
     ];
 }
 
+/**
+ * Plugin install process
+ *
+ * @return boolean
+ */
 function plugin_order_install()
 {
     foreach (glob(PLUGIN_ORDER_DIR . '/inc/*.php') as $file) {
