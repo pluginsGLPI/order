@@ -132,7 +132,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             'id'            => 1,
             'table'         => self::getTable(),
             'field'         => 'price_ati',
-            'name'          => __s('Unit price tax free', 'order'),
+            'name'          => __s('Price ATI', 'order'),
             'datatype'      => 'decimal',
         ], [
             'id'            => 2,
@@ -144,7 +144,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             'id'            => 3,
             'table'         => self::getTable(),
             'field'         => 'price_taxfree',
-            'name'          => __s('Discount (%)', 'order'),
+            'name'          => __s('Unit price tax free', 'order'),
             'datatype'      => 'decimal',
         ], [
             'id'            => 4,
@@ -165,16 +165,19 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
             'injectable'    => true,
         ], [
             'id'            => 6,
-            'table'         => self::getTable(),
+            'table'         => PluginOrderReference::getTable(),
             'field'         => 'name',
             'name'          => __s('Product name', 'order'),
-            'autocomplete'  => true,
+            'datatype'      => 'itemlink',
+            'itemlink_type' => PluginOrderReference::class,
+            'massiveaction' => false,
         ], [
             'id'            => 7,
-            'table'         => self::getTable(),
-            'field'         => 'reference_code',
+            'table'         => PluginOrderReference::getTable(),
+            'field'         => 'manufacturers_reference',
             'name'          => __s("Manufacturer's product reference", 'order'),
-            'autocomplete'  => true,
+            'datatype'      => 'string',
+            'massiveaction' => false,
         ], [
             'id'            => 16,
             'table'         => self::getTable(),
