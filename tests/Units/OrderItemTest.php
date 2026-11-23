@@ -38,6 +38,7 @@ use Glpi\Tests\DbTestCase;
 use PluginOrderOrder;
 use PluginOrderOrder_Item;
 use PluginOrderReference;
+use Search;
 
 final class OrderItemTest extends DbTestCase
 {
@@ -124,6 +125,36 @@ final class OrderItemTest extends DbTestCase
         $this->assertEquals(50, (float) $order_item->fields['price_discounted']);
     }
 
+    public function testSearchWithAllColumnsDisplayed(): void
+    {
+        $this->login();
+
+        [$order_item] = $this->createItemInOrderAndForeignOrder();
+        $reference_id = (int) $order_item->fields['plugin_order_references_id'];
+        $this->updateItem(PluginOrderReference::class, $reference_id, [
+            'manufacturers_reference' => 'MFR-REF-42',
+        ]);
+
+        $options = array_filter(
+            array_keys(Search::getOptions(PluginOrderOrder_Item::class)),
+            'is_int',
+        );
+
+        $data = Search::getDatas(PluginOrderOrder_Item::class, [
+            'criteria' => [[
+                'field'      => 7,
+                'searchtype' => 'contains',
+                'value'      => 'MFR-REF-42',
+            ],
+            ],
+        ], $options);
+
+        $this->assertSame(1, $data['data']['totalcount']);
+        $row = $data['data']['rows'][0];
+        $this->assertSame('Order test reference', $row['PluginOrderOrder_Item_6'][0]['name']);
+        $this->assertSame('MFR-REF-42', $row['PluginOrderOrder_Item_7'][0]['name']);
+    }
+
     /** @return array{0: PluginOrderOrder_Item, 1: int} */
     private function createItemInOrderAndForeignOrder(): array
     {
@@ -150,6 +181,7 @@ final class OrderItemTest extends DbTestCase
         ]);
 
         $order_item = $this->createItem(PluginOrderOrder_Item::class, [
+            'entities_id'                => $entities_id,
             'plugin_order_orders_id'     => $order->getID(),
             'plugin_order_references_id' => $reference->getID(),
             'itemtype'                   => Computer::class,

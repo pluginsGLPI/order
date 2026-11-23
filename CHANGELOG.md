@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Faster order form, reception, bills and budget tabs on large volumes (missing indexes, budget check and prices read in one query)
 - An order can no longer be locked by picking, from its form, a status that only the validation workflow should set
 - Default order status labels are no longer stored HTML-escaped
+- The order item search no longer fails when the product name or manufacturer reference column is displayed, and its price columns have the right labels
 
 ## [2.12.12] - 2026-10-06
 
