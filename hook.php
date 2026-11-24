@@ -34,6 +34,27 @@ use function Safe\mkdir;
 use function Safe\preg_match;
 
 /**
+ * Classes whose install() method plugin_order_install() runs, in this order: some upgrade steps
+ * rely on the ones run before them (see PluginOrderOrder_Item::$upgraded_from_before_1_5_0).
+ *
+ * @return list<string>
+ */
+function plugin_order_get_install_classes(): array
+{
+    return ['PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',
+        'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',
+        'PluginOrderReference', 'PluginOrderDeliverystate',
+        'PluginOrderNotificationTargetOrder',
+        'PluginOrderOrder_Supplier', 'PluginOrderBill', 'PluginOrderOrderPayment',
+        'PluginOrderOrdertype', 'PluginOrderOther', 'PluginOrderOthertype',
+        'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
+        'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderDocumentCategory',
+        'PluginOrderReferenceFree', 'PluginOrderAccountsection',
+        'PluginOrderAnalyticnature',
+    ];
+}
+
+/**
  * Plugin install process
  *
  * @return boolean
@@ -48,18 +69,7 @@ function plugin_order_install()
     }
 
     $migration = new Migration(PLUGIN_ORDER_VERSION);
-    $classes = ['PluginOrderConfig', 'PluginOrderBillState', 'PluginOrderBillType',
-        'PluginOrderOrderState', 'PluginOrderOrder','PluginOrderOrder_Item',
-        'PluginOrderReference', 'PluginOrderDeliverystate',
-        'PluginOrderNotificationTargetOrder',
-        'PluginOrderOrder_Supplier', 'PluginOrderBill', 'PluginOrderOrderPayment',
-        'PluginOrderOrdertype', 'PluginOrderOther', 'PluginOrderOthertype',
-        'PluginOrderPreference', 'PluginOrderProfile', 'PluginOrderReference_Supplier',
-        'PluginOrderSurveySupplier', 'PluginOrderOrderTax', 'PluginOrderDocumentCategory',
-        'PluginOrderReferenceFree', 'PluginOrderAccountsection',
-        'PluginOrderAnalyticnature',
-    ];
-    foreach ($classes as $class) {
+    foreach (plugin_order_get_install_classes() as $class) {
         if ($plug = isPluginItemType($class)) {
             $plugname = strtolower((string) $plug['plugin']);
             $dir = Plugin::getPhpDir($plugname) . "/inc/";
