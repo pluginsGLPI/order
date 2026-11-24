@@ -30,6 +30,8 @@
 
 use Glpi\DBAL\QueryExpression;
 
+use function Safe\json_encode;
+
 class PluginOrderSurveySupplier extends CommonDBChild
 {
     public static $rightname = 'plugin_order_order';
@@ -96,20 +98,21 @@ class PluginOrderSurveySupplier extends CommonDBChild
         }
 
         echo "</select>";
-        echo sprintf("<div class='rateit' id='notation%d'></div>", $rand);
+        $rateit_options = [
+            'value'      => $value,
+            'min'        => 0,
+            'max'        => 5,
+            'step'       => 1,
+            'backingfld' => sprintf('#%s%d', $field, $rand),
+            'ispreset'   => true,
+            'resetable'  => false,
+        ];
+        echo sprintf("<div class='rateit' id='notation%d' data-order-rateit='%s'></div>", $rand, htmlescape(json_encode($rateit_options)));
         echo "</td>";
         echo "</tr>";
         echo "</table>";
 
-        echo  "<script type='text/javascript'>\n";
-        echo sprintf("\$('#notation%d').rateit({value: '", $rand) . $value . "',
-                                min : 0,
-                                max : 5,
-                                step: 1,
-                                backingfld: '#{$field}{$rand}',
-                                ispreset: true,
-                                resetable: false});";
-        echo "</script>";
+        echo Html::script('/plugins/order/js/order_items.js', [], false);
     }
 
 
@@ -474,10 +477,10 @@ class PluginOrderSurveySupplier extends CommonDBChild
                 echo "<tr>";
                 echo sprintf("<td><i class='%s fa-flip-horizontal fa-lg mx-2'></i></td>", $arrow);
                 echo "<td class='center' style='white-space:nowrap;'>";
-                echo sprintf("<a onclick= \"if ( markCheckboxes('%s') ) return false;\" href='#'>", $formname) . __s('Check all') . "</a></td>";
+                echo sprintf("<a data-order-mark-checkboxes='%s' href='#'>", htmlescape($formname)) . __s('Check all') . "</a></td>";
                 echo "<td>/</td>";
                 echo "<td class='center' style='white-space:nowrap;'>";
-                echo sprintf("<a onclick= \"if ( unMarkCheckboxes('%s') ) return false;\" href='#'>", $formname) . __s('Uncheck all') . "</a></td>";
+                echo sprintf("<a data-order-unmark-checkboxes='%s' href='#'>", htmlescape($formname)) . __s('Uncheck all') . "</a></td>";
                 echo "<td class='left' width='80%'>";
 
                 echo "<input type='submit' name='delete' ";

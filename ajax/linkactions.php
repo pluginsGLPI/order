@@ -156,7 +156,6 @@ if (isset($_POST["action"])) {
         case "update_entity":
             Entity::dropdown(['name'      => "id[" . $_POST['id'] . "][entities_id]",
                 'value'     => $_POST['value'],
-                'on_change' => "plugin_order_adaptOnSelectedEntity(" . $_POST['id'] . ", this.value);",
             ]);
 
             $order_web_dir = $CFG_GLPI['root_doc'] . '/plugins/order';
