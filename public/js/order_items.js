@@ -1,0 +1,46 @@
+/**
+ * -------------------------------------------------------------------------
+ * Order plugin for GLPI
+ * -------------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of Order.
+ *
+ * Order is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Order is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Order. If not, see <http://www.gnu.org/licenses/>.
+ * -------------------------------------------------------------------------
+ * @copyright Copyright (C) 2009-2023 by Order plugin team.
+ * @license   GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
+ * @link      https://github.com/pluginsGLPI/order
+ * -------------------------------------------------------------------------
+ */
+
+// Init of the order items tables, run each time a table is rendered
+(function () {
+    $('.filter-select-multiple:not(.select2-hidden-accessible)').select2();
+
+    $('[data-order-rateit]:not([data-order-ready])').each(function () {
+        $(this).attr('data-order-ready', '');
+        $(this).rateit(JSON.parse($(this).attr('data-order-rateit')));
+    });
+
+    $('[data-order-old-name]:not([data-order-ready])').each(function () {
+        $(this).attr('data-order-ready', '');
+        $('body').append($('<input>', {
+            type: 'hidden',
+            name: $(this).attr('data-order-old-name'),
+            value: $(this).attr('data-order-old-value')
+        }));
+    });
+})();

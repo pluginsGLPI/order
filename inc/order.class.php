@@ -1696,7 +1696,7 @@ class PluginOrderOrder extends CommonDBTM
                 $link = "";
 
                 if ($this->canCancelOrder()) {
-                    echo "<input type='submit' data-glpi-confirm=\""
+                    echo "<input type='submit' data-order-confirm=\""
                     . __s("Do you really want to cancel this order ? This option is irreversible !", "order")
                     . "\" name='cancel_order' value=\"" . __s("Cancel order", "order") . "\" class='submit'>";
                     $link = "<br><br>";
@@ -1709,7 +1709,7 @@ class PluginOrderOrder extends CommonDBTM
                 }
 
                 if ($this->canCancelValidationRequest()) {
-                    echo $link . "<input type='submit' data-glpi-confirm=\""
+                    echo $link . "<input type='submit' data-order-confirm=\""
                     . __s("Do you want to cancel the validation approval ?", "order")
                     . "\" name='cancel_waiting_for_approval' value=\""
                     . __s("Cancel ask for validation", "order") . "\" class='submit'>";
@@ -1723,7 +1723,7 @@ class PluginOrderOrder extends CommonDBTM
                 }
 
                 if ($this->canUndoValidation()) {
-                    echo $link . "<input type='submit' data-glpi-confirm=\""
+                    echo $link . "<input type='submit' data-order-confirm=\""
                     . __s("Do you really want to edit the order ?", "order")
                     . "\" name='undovalidation' value=\""
                     . __s("Edit order", "order") . "\" class='submit'>";

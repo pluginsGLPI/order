@@ -657,8 +657,7 @@ class PluginOrderOrder_Item extends CommonDBRelation // phpcs:ignore
                                 }
 
                         };");
-                    echo "<input type='checkbox' id='addreference' name='addreference' value='0' />";
-                    echo Html::scriptBlock('$("#addreference").on("click", function () { plugin_order_checkboxAction(); });');
+                    echo "<input type='checkbox' id='addreference' data-order-add-reference name='addreference' value='0' />";
                     echo "</span></td>";
 
                     echo "<td class='tab_bg_1' name='add_reference' style='display: none;'><span id='show_addreference'>";

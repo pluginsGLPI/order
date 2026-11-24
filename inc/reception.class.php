@@ -685,9 +685,8 @@ JAVASCRIPT;
         if ($order_order->canDeliver() && $this->checkItemStatus($orders_id, $references_id, PluginOrderOrder::ORDER_DEVICE_NOT_DELIVRED) && $typeRef != 'SoftwareLicense') {
             $bulk_rand = mt_rand();
             $button_id = 'massreception_button' . $suffix . $orders_id . $bulk_rand;
-            $button = sprintf("<p><a href='#' id='%s'>", $button_id);
+            $button = sprintf("<p><a href='#' id='%s' data-order-bulk-reception='%s'>", $button_id, htmlescape('viewmassreception' . $suffix . $orders_id . $bulk_rand));
             $button .= __s("Take item delivery (bulk)", "order") . "</a></p>";
-            $button .= Html::scriptBlock(sprintf("\$('#%s').on('click', function (e) { e.preventDefault(); viewmassreception%s%d%d(); });", $button_id, $suffix, $orders_id, $bulk_rand));
             echo "<form method='post' name='order_reception_form{$suffix}{$bulk_rand}'
                           action='" . Toolbox::getItemTypeFormURL("PluginOrderReception") . "'>";
             if ($position == 'top') {

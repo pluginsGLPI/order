@@ -46,7 +46,7 @@
 {% set nosort = nosort|default(false) %}
 
 {% if hide_and_show is defined and hide_and_show %}
-    <button id="toggle-table-{{ datatable_id }}" class="btn btn-link btn-sm mb-2" type="button">
+    <button id="toggle-table-{{ datatable_id }}" class="btn btn-link btn-sm mb-2" type="button" data-order-toggle-table="{{ datatable_id }}" data-order-toggle-container="{{ countainer_name }}" data-order-collapse-label="{{ __('Collapse all', 'order') }}" data-order-expand-label="{{ __('Expand all', 'order') }}">
         {% if table_visible %}
             <i class="ti ti-sort-ascending"></i>
             <span>{{ __('Collapse all', 'order') }}</span>
@@ -120,7 +120,7 @@
                                 <div>
                                     <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
                                         value="" aria-label="{{ __('Check all') }}"
-                                        data-glpi-check-all="{{ massiveactionparams['container'] }}" />
+                                        data-order-check-all="{{ massiveactionparams['container'] }}" />
                                 </div>
                             </th>
                         {% endif %}
@@ -138,12 +138,12 @@
 
                             <th>
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
-                                    <button type="button" class="btn-as-link" data-glpi-reload-tab="{{ sort_params }}">
+                                    <a href="#" role="button" data-order-reload-tab="{{ sort_params }}">
                                     <i class="{{ sort_icon }}"></i>
                                 {% endif %}
                                 <span>{{ raw_header ? column_label|raw : column_label }}</span>
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
-                                    </button>
+                                    </a>
                                 {% endif %}
                             </th>
                         {% endfor %}
@@ -285,12 +285,12 @@
                                         {% elseif formatter == "editable_price" %}
                                             {% if canedit %}
                                                 {% if is_summary_table is defined and is_summary_table %}
-                                                <div id="pricetaxfree{{ summary_data.rand }}" class="btn-link pointer">
+                                                <div id="pricetaxfree{{ summary_data.rand }}" class="btn-link pointer" data-order-inline-edit data-order-inline-form="viewaccept{{ summary_data.rand }}" data-order-inline-view="viewpricetaxfree{{ summary_data.rand }}" data-order-inline-url="{{ summary_data.ajax_url }}" data-order-inline-params="{{ {'maxlength': 15, 'size': 8, 'name': 'price_taxfree', 'class': 'form-control decimal', 'step': '0.01', 'min': '0', 'data': summary_data.price_taxfree}|json_encode }}">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="viewpricetaxfree{{ summary_data.rand }}" style="display: none;"></div>
                                                 {% else %}
-                                                    <div id="detail_pricetaxfree{{ entry['id'] }}" class="btn-link pointer">
+                                                    <div id="detail_pricetaxfree{{ entry['id'] }}" class="btn-link pointer" data-order-inline-edit data-order-inline-form="detail_viewaccept{{ rand }}" data-order-inline-view="detail_viewpricetaxfree{{ entry['id'] }}" data-order-inline-url="{{ ajax_url }}" data-order-inline-params="{{ {'maxlength': 15, 'size': 8, 'name': 'detail_price_taxfree[' ~ entry['id'] ~ ']', 'class': 'form-control decimal', 'step': '0.01', 'min': '0', 'data': entry['price_taxfree']|striptags}|json_encode }}" data-order-old-name="detail_old_price_taxfree[{{ entry['id'] }}]" data-order-old-value="{{ entry['price_taxfree']|striptags }}">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="detail_viewpricetaxfree{{ entry['id'] }}" style="display: none;"></div>
@@ -301,12 +301,12 @@
                                         {% elseif formatter == "editable_discount" %}
                                             {% if canedit %}
                                                 {% if is_summary_table is defined and is_summary_table %}
-                                                <div id="discount{{ summary_data.rand }}" class="btn-link pointer">
+                                                <div id="discount{{ summary_data.rand }}" class="btn-link pointer" data-order-inline-edit data-order-inline-form="viewaccept{{ summary_data.rand }}" data-order-inline-view="viewdiscount{{ summary_data.rand }}" data-order-inline-url="{{ summary_data.ajax_url }}" data-order-inline-params="{{ {'maxlength': 15, 'size': 8, 'name': 'discount', 'class': 'form-control smalldecimal', 'step': '0.01', 'min': '0', 'max': '100', 'data': summary_data.discount}|json_encode }}">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="viewdiscount{{ summary_data.rand }}" style="display: none;"></div>
                                                 {% else %}
-                                                    <div id="detail_discount{{ entry['id'] }}" class="btn-link pointer">
+                                                    <div id="detail_discount{{ entry['id'] }}" class="btn-link pointer" data-order-inline-edit data-order-inline-form="detail_viewaccept{{ rand }}" data-order-inline-view="detail_viewdiscount{{ entry['id'] }}" data-order-inline-url="{{ ajax_url }}" data-order-inline-params="{{ {'maxlength': 15, 'size': 8, 'name': 'detail_discount[' ~ entry['id'] ~ ']', 'class': 'form-control smalldecimal', 'step': '0.01', 'min': '0', 'max': '100', 'data': entry['discount']|striptags}|json_encode }}" data-order-old-name="detail_old_discount[{{ entry['id'] }}]" data-order-old-value="{{ entry['discount']|striptags }}">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="detail_viewdiscount{{ entry['id'] }}" style="display: none;"></div>
@@ -317,7 +317,7 @@
                                         {% elseif formatter == "editable_quantity" %}
                                             {% if canedit %}
                                                 {% if is_summary_table is defined and is_summary_table %}
-                                                <div id="quantity{{ summary_data.rand }}" class="btn-link pointer">
+                                                <div id="quantity{{ summary_data.rand }}" class="btn-link pointer" data-order-inline-edit data-order-inline-form="viewaccept{{ summary_data.rand }}" data-order-inline-view="viewquantity{{ summary_data.rand }}" data-order-inline-url="{{ summary_data.ajax_url }}" data-order-inline-params="{{ {'maxlength': 15, 'size': 8, 'name': 'quantity', 'class': 'form-control quantity', 'force_integer': true, 'min': summary_data.quantity, 'data': summary_data.quantity}|json_encode }}">
                                                         {{ entry[colkey] }}
                                                     </div>
                                                     <div id="viewquantity{{ summary_data.rand }}" style="display: none;"></div>
@@ -419,12 +419,12 @@
                     {% if nb_pages > 1 %}
                         <ul class="pagination mb-0">
                             <li class="page-item {{ start == 0 ? 'disabled' : '' }}">
-                                <button type="button" class="page-link" data-glpi-reload-tab="start=0&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
+                                <button type="button" class="page-link" data-order-reload-tab="start=0&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                     <i class="ti ti-chevrons-left"></i>
                                 </button>
                             </li>
                             <li class="page-item {{ start == 0 ? 'disabled' : '' }}">
-                                <button type="button" class="page-link" data-glpi-reload-tab="start={{ start - limit < 0 ? 0 : start - limit }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
+                                <button type="button" class="page-link" data-order-reload-tab="start={{ start - limit < 0 ? 0 : start - limit }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                     <i class="ti ti-chevron-left"></i>
                                 </button>
                             </li>
@@ -435,19 +435,19 @@
 
                             {% for i in start_page..end_page %}
                                 <li class="page-item {{ current_page == i ? 'active' : '' }}">
-                                    <button type="button" class="page-link" data-glpi-reload-tab="start={{ (i - 1) * limit }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
+                                    <button type="button" class="page-link" data-order-reload-tab="start={{ (i - 1) * limit }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                         {{ i }}
                                     </button>
                                 </li>
                             {% endfor %}
 
                             <li class="page-item {{ start + limit >= total_number ? 'disabled' : '' }}">
-                                <button type="button" class="page-link" data-glpi-reload-tab="start={{ start + limit >= total_number ? start : start + limit }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
+                                <button type="button" class="page-link" data-order-reload-tab="start={{ start + limit >= total_number ? start : start + limit }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                     <i class="ti ti-chevron-right"></i>
                                 </button>
                             </li>
                             <li class="page-item {{ start + limit >= total_number ? 'disabled' : '' }}">
-                                <button type="button" class="page-link" data-glpi-reload-tab="start={{ ((nb_pages - 1) * limit)|round(0, 'floor') }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
+                                <button type="button" class="page-link" data-order-reload-tab="start={{ ((nb_pages - 1) * limit)|round(0, 'floor') }}&limit={{ limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                     <i class="ti ti-chevrons-right"></i>
                                 </button>
                             </li>
@@ -458,11 +458,6 @@
         {% endif %}
     </div>
 
-    <script type="text/javascript">
-    $(function() {
-        $('.filter-select-multiple').select2();
-    });
-    </script>
 
     {# Inline editing functionality #}
     {% if canedit %}
@@ -471,93 +466,10 @@
             <div id="viewaccept{{ summary_data.rand }}" style="display:none;">
                 <div class="center mt-2">
                     <input type="submit" name="update_item" value="{{ _x('button', 'Update') }}" class="btn btn-primary">
-                    <input type="button" id="cancel_quantity{{ summary_data.rand }}" value="{{ _x('button', 'Cancel') }}" class="btn btn-secondary">
+                    <input type="button" id="cancel_quantity{{ summary_data.rand }}" value="{{ _x('button', 'Cancel') }}" class="btn btn-secondary" data-order-inline-cancel="viewaccept{{ summary_data.rand }}">
                 </div>
             </div>
 
-            <script type="text/javascript">
-                $('#pricetaxfree{{ summary_data.rand }}').on('click', function () { showPricetaxfree{{ summary_data.rand }}(); });
-                $('#discount{{ summary_data.rand }}').on('click', function () { showDiscount{{ summary_data.rand }}(); });
-                $('#quantity{{ summary_data.rand }}').on('click', function () { showQuantity{{ summary_data.rand }}(); });
-                $('#cancel_quantity{{ summary_data.rand }}').on('click', function () { hideForm{{ summary_data.rand }}(); });
-
-                function hideForm{{ summary_data.rand }}() {
-                    $('#quantity{{ summary_data.rand }}').show();
-                    $('#viewquantity{{ summary_data.rand }} input').remove();
-                    $('#pricetaxfree{{ summary_data.rand }}').show();
-                    $('#viewpricetaxfree{{ summary_data.rand }} input').remove();
-                    $('#discount{{ summary_data.rand }}').show();
-                    $('#viewdiscount{{ summary_data.rand }} input').remove();
-                    $('#viewaccept{{ summary_data.rand }}').hide();
-                }
-
-                function showQuantity{{ summary_data.rand }}() {
-                    $('#quantity{{ summary_data.rand }}').hide();
-                    $('#viewaccept{{ summary_data.rand }}').show();
-                    $.ajax({
-                        url: '{{ summary_data.ajax_url }}',
-                        method: 'POST',
-                        data: {
-                            maxlength: 15,
-                            size: 8,
-                            name: 'quantity',
-                            class: 'form-control quantity',
-                            force_integer: true,
-                            min: '{{ summary_data.quantity }}',
-                            data: '{{ summary_data.quantity }}'
-                        },
-                        success: function(data) {
-                            $('#viewquantity{{ summary_data.rand }}').html(data);
-                            $('#viewquantity{{ summary_data.rand }}').show();
-                        }
-                    });
-                }
-
-                function showPricetaxfree{{ summary_data.rand }}() {
-                    $('#pricetaxfree{{ summary_data.rand }}').hide();
-                    $('#viewaccept{{ summary_data.rand }}').show();
-                    $.ajax({
-                        url: '{{ summary_data.ajax_url }}',
-                        method: 'POST',
-                        data: {
-                            maxlength: 15,
-                            size: 8,
-                            name: 'price_taxfree',
-                            class: 'form-control decimal',
-                            step: '0.01',
-                            min: '0',
-                            data: '{{ summary_data.price_taxfree }}'
-                        },
-                        success: function(data) {
-                            $('#viewpricetaxfree{{ summary_data.rand }}').html(data);
-                            $('#viewpricetaxfree{{ summary_data.rand }}').show();
-                        }
-                    });
-                }
-
-                function showDiscount{{ summary_data.rand }}() {
-                    $('#discount{{ summary_data.rand }}').hide();
-                    $('#viewaccept{{ summary_data.rand }}').show();
-                    $.ajax({
-                        url: '{{ summary_data.ajax_url }}',
-                        method: 'POST',
-                        data: {
-                            maxlength: 15,
-                            size: 8,
-                            name: 'discount',
-                            class: 'form-control smalldecimal',
-                            step: '0.01',
-                            min: '0',
-                            max: '100',
-                            data: '{{ summary_data.discount }}'
-                        },
-                        success: function(data) {
-                            $('#viewdiscount{{ summary_data.rand }}').html(data);
-                            $('#viewdiscount{{ summary_data.rand }}').show();
-                        }
-                    });
-                }
-            </script>
         {% endif %}
 
         {# Detail table editing #}
@@ -565,81 +477,10 @@
             <div id="detail_viewaccept{{ rand }}" style="display:none;">
                 <div class="center mt-2">
                     <input type="submit" name="update_detail_item" value="{{ update_button_text }}" class="btn btn-primary">
-                    <input type="button" id="detail_cancel{{ rand }}" value="{{ cancel_button_text }}" class="btn btn-secondary">
+                    <input type="button" id="detail_cancel{{ rand }}" value="{{ cancel_button_text }}" class="btn btn-secondary" data-order-inline-cancel="detail_viewaccept{{ rand }}">
                 </div>
             </div>
 
-            <script type="text/javascript">
-                $('#detail_cancel{{ rand }}').on('click', function () { detail_hideForm{{ rand }}(); });
-
-                function detail_hideForm{{ rand }}() {
-                    {% for item in edit_data %}
-                        $('#detail_pricetaxfree{{ item.id }}').show();
-                        $('#detail_viewpricetaxfree{{ item.id }} input').remove();
-                        $('#detail_discount{{ item.id }}').show();
-                        $('#detail_viewdiscount{{ item.id }} input').remove();
-                        $('#quantity{{ item.id }}').show();
-                        $('#viewquantity{{ item.id }} input').remove();
-                    {% endfor %}
-                    $('#detail_viewaccept{{ rand }}').hide();
-                }
-
-                {% for item in edit_data %}
-                    function showDetailPricetaxfree{{ item.id }}() {
-                        $('#detail_pricetaxfree{{ item.id }}').hide();
-                        $('#detail_viewaccept{{ rand }}').show();
-                        $.ajax({
-                            url: '{{ ajax_url }}',
-                            method: 'POST',
-                            data: {
-                                maxlength: 15,
-                                size: 8,
-                                name: 'detail_price_taxfree[{{ item.id }}]',
-                                class: 'form-control decimal',
-                                step: '0.01',
-                                min: '0',
-                                data: '{{ item.price_taxfree }}'
-                            },
-                            success: function(data) {
-                                $('#detail_viewpricetaxfree{{ item.id }}').html(data);
-                                $('#detail_viewpricetaxfree{{ item.id }}').show();
-                            }
-                        });
-                    }
-
-                    function showDetailDiscount{{ item.id }}() {
-                        $('#detail_discount{{ item.id }}').hide();
-                        $('#detail_viewaccept{{ rand }}').show();
-                        $.ajax({
-                            url: '{{ ajax_url }}',
-                            method: 'POST',
-                            data: {
-                                maxlength: 15,
-                                size: 8,
-                                name: 'detail_discount[{{ item.id }}]',
-                                class: 'form-control smalldecimal',
-                                step: '0.01',
-                                min: '0',
-                                max: '100',
-                                data: '{{ item.discount }}'
-                            },
-                            success: function(data) {
-                                $('#detail_viewdiscount{{ item.id }}').html(data);
-                                $('#detail_viewdiscount{{ item.id }}').show();
-                            }
-                        });
-                    }
-
-                    $('#detail_pricetaxfree{{ item.id }}').on('click', function () { showDetailPricetaxfree{{ item.id }}(); });
-                    $('#detail_discount{{ item.id }}').on('click', function () { showDetailDiscount{{ item.id }}(); });
-                    $('#quantity{{ item.id }}').on('click', function () { showQuantity{{ item.id }}(); });
-
-                    $(document).ready(function() {
-                        $('body').append('<input type="hidden" name="detail_old_price_taxfree[{{ item.id }}]" value="{{ item.price_taxfree }}" />');
-                        $('body').append('<input type="hidden" name="detail_old_discount[{{ item.id }}]" value="{{ item.discount }}" />');
-                    });
-                {% endfor %}
-            </script>
         {% endif %}
     {% endif %}
 
@@ -651,53 +492,5 @@
 {% endif %}
 
 {% if hide_and_show is defined and hide_and_show %}
-    <script>
-        $(function() {
-            // Toggle button functionality
-            $('#toggle-table-{{ datatable_id }}').on('click', function() {
-                const div_table = $('[name="{{ datatable_id }}"]');
-                const icon = $(this).find('i');
-                const textSpan = icon.next('span');
-                const countainer_name = $('#{{ countainer_name }}');
-
-                let isVisible = !div_table.is(':hidden');
-
-                // Toggle visibility
-                if (!isVisible) {
-                    div_table.show();
-                    icon.removeClass('ti-sort-descending').addClass('ti-sort-ascending');
-                    textSpan.text('{{ __("Collapse all", "order") }}');
-                    countainer_name.val('true');
-                    isVisible = true;
-                } else {
-                    div_table.hide();
-                    icon.removeClass('ti-sort-ascending').addClass('ti-sort-descending');
-                    textSpan.text('{{ __("Expand all", "order") }}');
-                    countainer_name.val('false');
-                    isVisible = false;
-                }
-
-                // Update all reloadTab buttons to reflect the new visibility state
-                $('[data-glpi-reload-tab]').each(function() {
-                    let params = $(this).attr('data-glpi-reload-tab');
-
-                    // Parse parameters
-                    let paramsObj = {};
-                    params.split('&').forEach(function(param) {
-                        let [key, value] = param.split('=');
-                        paramsObj[key] = value;
-                    });
-
-                    // Update visible parameter
-                    paramsObj['{{ countainer_name }}visible'] = isVisible ? '1' : '0';
-
-                    // Reconstruct parameters string
-                    let newParams = Object.entries(paramsObj).map(([key, value]) => `${key}=${value}`).join('&');
-
-                    // Update reload parameters
-                    $(this).attr('data-glpi-reload-tab', newParams);
-                });
-            });
-        });
-    </script>
 {% endif %}
+{{ call('Html::script', ['/plugins/order/js/order_items.js', {}, false])|raw }}

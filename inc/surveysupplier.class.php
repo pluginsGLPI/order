@@ -30,6 +30,8 @@
 
 use Glpi\DBAL\QueryExpression;
 
+use function Safe\json_encode;
+
 class PluginOrderSurveySupplier extends CommonDBChild
 {
     public static $rightname = 'plugin_order_order';
@@ -96,18 +98,21 @@ class PluginOrderSurveySupplier extends CommonDBChild
         }
 
         echo "</select>";
-        echo sprintf("<div class='rateit' id='notation%d'></div>", $rand);
+        $rateit_options = [
+            'value'      => $value,
+            'min'        => 0,
+            'max'        => 5,
+            'step'       => 1,
+            'backingfld' => sprintf('#%s%d', $field, $rand),
+            'ispreset'   => true,
+            'resetable'  => false,
+        ];
+        echo sprintf("<div class='rateit' id='notation%d' data-order-rateit='%s'></div>", $rand, htmlescape(json_encode($rateit_options)));
         echo "</td>";
         echo "</tr>";
         echo "</table>";
 
-        echo Html::scriptBlock(sprintf("\$('#notation%d').rateit({value: '", $rand) . $value . "',
-                                min : 0,
-                                max : 5,
-                                step: 1,
-                                backingfld: '#{$field}{$rand}',
-                                ispreset: true,
-                                resetable: false});");
+        echo Html::script('/plugins/order/js/order_items.js', [], false);
     }
 
 

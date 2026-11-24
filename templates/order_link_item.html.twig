@@ -57,7 +57,7 @@
     </table>
 
     {% if hide_and_show %}
-        <button id="toggle-table-{{ datatable_id }}" class="btn btn-link btn-sm mb-2" type="button">
+        <button id="toggle-table-{{ datatable_id }}" class="btn btn-link btn-sm mb-2" type="button" data-order-toggle-table="{{ datatable_id }}" data-order-toggle-container="{{ countainer_name }}" data-order-collapse-label="{{ __('Collapse all', 'order') }}" data-order-expand-label="{{ __('Expand all', 'order') }}">
             {% if table_visible %}
                 <i class="ti ti-sort-ascending"></i>
                 <span>{{ __('Collapse all', 'order') }}</span>
@@ -95,32 +95,6 @@
                             {{ __("Select") }}
                         </button>
                     </span>
-                    <script>
-                        function selectNItems(container_id, select_id) {
-                            var selectElement = document.getElementById(select_id);
-                            if (!selectElement) {
-                                console.error("Select element not found:", select_id);
-                                return;
-                            }
-                            var n = parseInt(selectElement.value);
-                            if (isNaN(n) || n <= 0) {
-                                console.error("Invalid number selected:", selectElement.value);
-                                return;
-                            }
-                            var checked = 0;
-                            var selector = "#" + container_id + " input[type='checkbox'][name^='item[PluginOrderLink]']";
-                            var checkboxes = document.querySelectorAll(selector);
-                            checkboxes.forEach(function(checkbox) {
-                                checkbox.checked = false;
-                            });
-                            checkboxes.forEach(function(checkbox) {
-                                if (checked < n) {
-                                    checkbox.checked = true;
-                                    checked++;
-                                }
-                            });
-                        }
-                    </script>
                 </div>
             {% endif %}
             <table id="{{ datatable_id }}" class="table {{ table_class_style|default('table-hover table-sm') }} mb-1">
@@ -131,7 +105,7 @@
                                 <div>
                                     <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
                                         value="" aria-label="{{ __('Check all') }}"
-                                        data-glpi-check-all="{{ massiveactionparams['container'] }}" />
+                                        data-order-check-all="{{ massiveactionparams['container'] }}" />
                                 </div>
                             </th>
                         {% endif %}
@@ -149,12 +123,12 @@
 
                             <th>
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
-                                    <button type="button" class="btn-as-link" data-glpi-reload-tab="{{ sort_params }}">
+                                    <a href="#" role="button" data-order-reload-tab="{{ sort_params }}">
                                     <i class="{{ sort_icon }}"></i>
                                 {% endif %}
                                 <span>{{ raw_header ? column_label|raw : column_label }}</span>
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
-                                    </button>
+                                    </a>
                                 {% endif %}
                             </th>
                         {% endfor %}
@@ -242,12 +216,12 @@
                         {% if nb_pages > 1 %}
                             <ul class="pagination mb-0">
                                 <li class="page-item {{ start == 0 ? 'disabled' : '' }}">
-                                    <button type="button" class="page-link" data-glpi-reload-tab="start=0&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
+                                    <button type="button" class="page-link" data-order-reload-tab="start=0&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                         <i class="ti ti-chevrons-left"></i>
                                     </button>
                                 </li>
                                 <li class="page-item {{ start == 0 ? 'disabled' : '' }}">
-                                    <button type="button" class="page-link" data-glpi-reload-tab="start={{ start - limit < 0 ? 0 : start - limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
+                                    <button type="button" class="page-link" data-order-reload-tab="start={{ start - limit < 0 ? 0 : start - limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                         <i class="ti ti-chevron-left"></i>
                                     </button>
                                 </li>
@@ -258,19 +232,19 @@
 
                                 {% for i in start_page..end_page %}
                                     <li class="page-item {{ current_page == i ? 'active' : '' }}">
-                                        <button type="button" class="page-link" data-glpi-reload-tab="start={{ (i - 1) * limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
+                                        <button type="button" class="page-link" data-order-reload-tab="start={{ (i - 1) * limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                             {{ i }}
                                         </button>
                                     </li>
                                 {% endfor %}
 
                                 <li class="page-item {{ start + limit >= total_count ? 'disabled' : '' }}">
-                                    <button type="button" class="page-link" data-glpi-reload-tab="start={{ start + limit >= total_count ? start : start + limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
+                                    <button type="button" class="page-link" data-order-reload-tab="start={{ start + limit >= total_count ? start : start + limit }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                         <i class="ti ti-chevron-right"></i>
                                     </button>
                                 </li>
                                 <li class="page-item {{ start + limit >= total_count ? 'disabled' : '' }}">
-                                    <button type="button" class="page-link" data-glpi-reload-tab="start={{ ((nb_pages - 1) * limit)|round(0, 'floor') }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
+                                    <button type="button" class="page-link" data-order-reload-tab="start={{ ((nb_pages - 1) * limit)|round(0, 'floor') }}&{{ countainer_name }}sort={{ sort }}&{{ countainer_name }}order={{ order }}&{{ countainer_name }}visible=1">
                                         <i class="ti ti-chevrons-right"></i>
                                     </button>
                                 </li>
@@ -281,56 +255,9 @@
             {% endif %}
         </div>
 
-        <script type="text/javascript">
-        $(function() {
-            $('.filter-select-multiple').select2();
-        });
-        </script>
     {% endif %}
 
     {% if hide_and_show %}
-        <script>
-            $(function() {
-                // Toggle button functionality
-                $('#toggle-table-{{ datatable_id }}').on('click', function() {
-                    const div_table = $('[name="{{ datatable_id }}"]');
-                    const icon = $(this).find('i');
-                    const textSpan = icon.next('span');
-                    const countainer_name = $('#{{ countainer_name }}');
-                    let isVisible = !div_table.is(':hidden');
-
-                    // Toggle visibility
-                    if (!isVisible) {
-                        div_table.show();
-                        icon.removeClass('ti-sort-descending').addClass('ti-sort-ascending');
-                        textSpan.text('{{ __("Collapse all", "order") }}');
-                        countainer_name.val('true');
-                        isVisible = true;
-                    } else {
-                        div_table.hide();
-                        icon.removeClass('ti-sort-ascending').addClass('ti-sort-descending');
-                        textSpan.text('{{ __("Expand all", "order") }}');
-                        countainer_name.val('false');
-                        isVisible = false;
-                    }
-                    // Update all reloadTab buttons to reflect the new visibility state
-                    $('[data-glpi-reload-tab]').each(function() {
-                        let params = $(this).attr('data-glpi-reload-tab');
-                        // Parse parameters
-                        let paramsObj = {};
-                        params.split('&').forEach(function(param) {
-                            let [key, value] = param.split('=');
-                            paramsObj[key] = value;
-                        });
-                        // Update visible parameter
-                        paramsObj['{{ countainer_name }}visible'] = isVisible ? '1' : '0';
-                        // Reconstruct parameters string
-                        let newParams = Object.entries(paramsObj).map(([key, value]) => `${key}=${value}`).join('&');
-                        // Update reload parameters
-                        $(this).attr('data-glpi-reload-tab', newParams);
-                    });
-                });
-            });
-        </script>
     {% endif %}
 {% endif %}
+{{ call('Html::script', ['/plugins/order/js/order_items.js', {}, false])|raw }}
