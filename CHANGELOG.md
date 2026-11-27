@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+<<<<<<< HEAD
 ### Added
 
 - Add Transifex translations link to README
@@ -21,6 +22,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - GLPI 12 compatibility
+=======
+### Fixed
+
+- Faster order form, reception, bills and budget tabs on large volumes (missing indexes, budget check and prices read in one query)
+
+## [2.12.12] - 2026-10-06
+>>>>>>> 880912c (Fix(Perf): index order lines, check budget in one query and stop re-r… (#631))
 
 ### Fixed
 

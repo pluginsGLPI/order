@@ -294,7 +294,6 @@ class PluginOrderLink extends CommonDBChild
 
         $PluginOrderOrder_Item = new PluginOrderOrder_Item();
         $PluginOrderReference  = new PluginOrderReference();
-        $PluginOrderReception  = new PluginOrderReception();
 
         $plugin_order_references_id = $data_ref["id"];
         $itemtype                   = $data_ref["itemtype"];
@@ -417,7 +416,7 @@ class PluginOrderLink extends CommonDBChild
                 $entry['reference'] = $PluginOrderReference->getReceptionReferenceLink($data);
             }
 
-            $entry['status'] = $PluginOrderReception->getReceptionStatus($detailID);
+            $entry['status'] = PluginOrderReception::getReceptionStatusLabel((int) $data["states_id"]);
             $entry['entity'] = Dropdown::getDropdownName(getTableForItemType(Entity::class), (int) $data["entities_id"]);
             $entry['delivery_date'] = Html::convDate($data["delivery_date"]);
             $entry['associated_item'] = $this->getReceptionItemName($data["items_id"], $data["itemtype"]);
